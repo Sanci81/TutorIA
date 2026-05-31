@@ -21,8 +21,28 @@ function initCountryRegionToggle() {
     update();
 }
 
+// Jelszó megjelenítés / elrejtés (szem ikon).
+function initPasswordToggles() {
+    document.querySelectorAll('[data-password-toggle]').forEach(function (btn) {
+        const inputId = btn.dataset.passwordToggle;
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        const labelShow = btn.getAttribute('aria-label');
+        const labelHide = btn.dataset.labelHide;
+
+        btn.addEventListener('click', function () {
+            const visible = input.type === 'text';
+            input.type = visible ? 'password' : 'text';
+            btn.classList.toggle('visible', !visible);
+            btn.setAttribute('aria-label', visible ? labelShow : labelHide);
+        });
+    });
+}
+
 // Flash üzenetek automatikus elhalványítása néhány másodperc után.
 document.addEventListener('DOMContentLoaded', function () {
+    initPasswordToggles();
     const flashes = document.querySelectorAll('.flash');
     flashes.forEach(function (el) {
         setTimeout(function () {

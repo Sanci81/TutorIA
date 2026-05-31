@@ -76,6 +76,8 @@ TRANSLATIONS = {
     "label_email": {"hu": "E-mail cím", "es": "Correo electrónico"},
     "label_password": {"hu": "Jelszó", "es": "Contraseña"},
     "label_password_confirm": {"hu": "Jelszó megerősítése", "es": "Confirmar contraseña"},
+    "show_password": {"hu": "Jelszó megjelenítése", "es": "Mostrar contraseña"},
+    "hide_password": {"hu": "Jelszó elrejtése", "es": "Ocultar contraseña"},
     "btn_register": {"hu": "Regisztráció", "es": "Registrarse"},
     "have_account": {"hu": "Van már fiókod?", "es": "¿Ya tienes cuenta?"},
 

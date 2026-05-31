@@ -270,6 +270,37 @@ a:hover { text-decoration: underline; }
 }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 
+.password-field { position: relative; }
+.password-field input {
+    width: 100%;
+    padding-right: 2.75rem;
+}
+.password-toggle {
+    position: absolute;
+    right: 0.65rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+.password-toggle:hover { color: var(--green-700); background: var(--green-50); }
+.password-toggle:focus-visible {
+    outline: 2px solid var(--green-500);
+    outline-offset: 2px;
+}
+.password-toggle.visible .icon-eye { display: none; }
+.password-toggle.visible .icon-eye-off { display: block; }
+.password-toggle .icon-eye-off { display: none; }
+
 .form-actions {
     display: flex;
     justify-content: flex-end;
