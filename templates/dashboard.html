@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('dashboard_title') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<section class="dashboard-header">
+    <div>
+        <p class="welcome">{{ t('dashboard_welcome') }}, <strong>{{ parent['email'] }}</strong></p>
+        <h1>{{ t('dashboard_title') }}</h1>
+    </div>
+    <a class="btn btn-primary" href="{{ url_for('add_child') }}">{{ t('btn_add_child') }}</a>
+</section>
+
+{% if children %}
+    <section class="children-grid">
+        {% for child in children %}
+            <article class="child-card">
+                <div class="child-avatar">{{ child['name'][:1]|upper }}</div>
+                <h3 class="child-name">{{ child['name'] }}</h3>
+                <ul class="child-meta">
+                    <li>
+                        <span class="meta-label">{{ t('card_age') }}</span>
+                        <span class="meta-value">{{ child['age'] }} {{ t('years_old') }}</span>
+                    </li>
+                    <li>
+                        <span class="meta-label">{{ t('card_grade') }}</span>
+                        <span class="meta-value">{{ child['grade'] }}</span>
+                    </li>
+                    <li>
+                        <span class="meta-label">{{ t('card_location') }}</span>
+                        <span class="meta-value">
+                            {% if child['country'] == 'ES' %}
+                                {{ t('country_es') }}{% if child['region'] %} · {{ region_name(child['region']) }}{% endif %}
+                            {% else %}
+                                {{ t('country_hu') }}
+                            {% endif %}
+                        </span>
+                    </li>
+                </ul>
+            </article>
+        {% endfor %}
+    </section>
+{% else %}
+    <section class="empty-state">
+        <div class="empty-emoji">📚</div>
+        <p>{{ t('empty_children') }}</p>
+        <a class="btn btn-primary" href="{{ url_for('add_child') }}">{{ t('btn_add_child') }}</a>
+    </section>
+{% endif %}
+{% endblock %}

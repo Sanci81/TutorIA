@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('add_child_title') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="card form-card">
+        <h1 class="card-title">{{ t('add_child_title') }}</h1>
+        <p class="card-subtitle">{{ t('add_child_subtitle') }}</p>
+
+        <form method="post" action="{{ url_for('add_child') }}" novalidate>
+            <div class="field">
+                <label for="name">{{ t('label_child_name') }}</label>
+                <input type="text" id="name" name="name" value="{{ form.get('name', '') }}" required>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label for="age">{{ t('label_child_age') }}</label>
+                    <input type="number" id="age" name="age" min="1" max="25"
+                           value="{{ form.get('age', '') }}" required>
+                </div>
+                <div class="field">
+                    <label for="grade">{{ t('label_child_grade') }}</label>
+                    <input type="text" id="grade" name="grade" value="{{ form.get('grade', '') }}" required>
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="country">{{ t('label_country') }}</label>
+                <select id="country" name="country" required>
+                    <option value="" disabled {{ 'selected' if not form.get('country') else '' }}>
+                        {{ t('select_placeholder') }}
+                    </option>
+                    <option value="HU" {{ 'selected' if form.get('country') == 'HU' else '' }}>
+                        {{ t('country_hu') }}
+                    </option>
+                    <option value="ES" {{ 'selected' if form.get('country') == 'ES' else '' }}>
+                        {{ t('country_es') }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="field" id="region-field"
+                 style="{{ '' if form.get('country') == 'ES' else 'display:none;' }}">
+                <label for="region">{{ t('label_region') }}</label>
+                <select id="region" name="region">
+                    <option value="" disabled {{ 'selected' if not form.get('region') else '' }}>
+                        {{ t('select_placeholder') }}
+                    </option>
+                    {% for region in spanish_regions %}
+                        <option value="{{ region.code }}"
+                            {{ 'selected' if form.get('region') == region.code else '' }}>
+                            {{ region[lang] }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">{{ t('btn_cancel') }}</a>
+                <button type="submit" class="btn btn-primary">{{ t('btn_save_child') }}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    initCountryRegionToggle();
+</script>
+{% endblock %}

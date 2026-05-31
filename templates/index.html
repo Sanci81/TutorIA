@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-text">
+        <h1>{{ t('landing_title') }}</h1>
+        <p class="hero-subtitle">{{ t('landing_subtitle') }}</p>
+        <div class="hero-actions">
+            <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">{{ t('landing_cta') }}</a>
+            <span class="hero-login">
+                {{ t('landing_login_prompt') }}
+                <a href="{{ url_for('login') }}">{{ t('nav_login') }}</a>
+            </span>
+        </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+        <div class="blob"></div>
+        <div class="hero-emoji">🎓</div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="feature-card">
+        <div class="feature-icon">👨‍👩‍👧‍👦</div>
+        <h3>{{ t('feature_1_title') }}</h3>
+        <p>{{ t('feature_1_text') }}</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <h3>{{ t('feature_2_title') }}</h3>
+        <p>{{ t('feature_2_text') }}</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>{{ t('feature_3_title') }}</h3>
+        <p>{{ t('feature_3_text') }}</p>
+    </div>
+</section>
+{% endblock %}

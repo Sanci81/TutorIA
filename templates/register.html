@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('register_title') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="card auth-card">
+        <h1 class="card-title">{{ t('register_title') }}</h1>
+        <p class="card-subtitle">{{ t('register_subtitle') }}</p>
+
+        <form method="post" action="{{ url_for('register') }}" novalidate>
+            <div class="field">
+                <label for="email">{{ t('label_email') }}</label>
+                <input type="email" id="email" name="email" value="{{ email }}" required autocomplete="email">
+            </div>
+
+            <div class="field">
+                <label for="password">{{ t('label_password') }}</label>
+                <input type="password" id="password" name="password" required minlength="6" autocomplete="new-password">
+            </div>
+
+            <div class="field">
+                <label for="password_confirm">{{ t('label_password_confirm') }}</label>
+                <input type="password" id="password_confirm" name="password_confirm" required minlength="6" autocomplete="new-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">{{ t('btn_register') }}</button>
+        </form>
+
+        <p class="auth-alt">
+            {{ t('have_account') }}
+            <a href="{{ url_for('login') }}">{{ t('nav_login') }}</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

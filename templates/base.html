@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{ t('app_name') }}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="{{ url_for('index') }}">
+                <span class="brand-mark">T</span>
+                <span class="brand-name">{{ t('app_name') }}</span>
+            </a>
+
+            <nav class="nav-links">
+                {% if session.get('parent_id') %}
+                    <a href="{{ url_for('dashboard') }}">{{ t('nav_dashboard') }}</a>
+                    <a href="{{ url_for('logout') }}">{{ t('nav_logout') }}</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}">{{ t('nav_login') }}</a>
+                    <a class="nav-cta" href="{{ url_for('register') }}">{{ t('nav_register') }}</a>
+                {% endif %}
+
+                <div class="lang-switch">
+                    {% for code, label in languages.items() %}
+                        <a class="lang-btn {{ 'active' if code == lang else '' }}"
+                           href="{{ url_for('set_language', lang_code=code) }}">{{ code|upper }}</a>
+                    {% endfor %}
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>{{ t('footer_text') }}</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
