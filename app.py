@@ -21,7 +21,7 @@ from flask import (
     session,
     url_for,
 )
-from flask_mail import Mail, Message
+import resend
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import database
@@ -32,20 +32,8 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-insecure-key")
 
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
-app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
-app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_DEFAULT_SENDER") or os.environ.get(
-    "MAIL_USERNAME"
-)
-
 # Railway HTTPS linkekhez (elfelejtett jelszó e-mail)
 app.config["PREFERRED_URL_SCHEME"] = os.environ.get("PREFERRED_URL_SCHEME", "https")
-
-mail = Mail()
-mail.init_app(app)
 
 try:
     database.init_db()
@@ -102,7 +90,11 @@ def login_required(view):
 
 
 def _mail_is_configured() -> bool:
-    return bool(app.config.get("MAIL_USERNAME") and app.config.get("MAIL_PASSWORD"))
+    return bool(os.environ.get("RESEND_API_KEY"))
+
+
+def _resend_from_address() -> str:
+    return os.environ.get("RESEND_FROM", "TutorIA <onboarding@resend.dev>")
 
 
 def _reset_password_url(token: str) -> str:
@@ -119,8 +111,9 @@ def _reset_password_url(token: str) -> str:
 
 
 def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
-    if not _mail_is_configured():
-        raise RuntimeError("MAIL_USERNAME vagy MAIL_PASSWORD nincs beállítva")
+    api_key = os.environ.get("RESEND_API_KEY")
+    if not api_key:
+        raise RuntimeError("RESEND_API_KEY nincs beállítva")
 
     reset_url = _reset_password_url(token)
     subjects = {
@@ -139,13 +132,16 @@ def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
             "Si no lo solicitaste, ignora este correo."
         ),
     }
-    msg = Message(
-        subject=subjects.get(lang, subjects["hu"]),
-        recipients=[recipient],
-        body=bodies.get(lang, bodies["hu"]),
-        sender=app.config["MAIL_DEFAULT_SENDER"],
+
+    resend.api_key = api_key
+    resend.Emails.send(
+        {
+            "from": _resend_from_address(),
+            "to": [recipient],
+            "subject": subjects.get(lang, subjects["hu"]),
+            "text": bodies.get(lang, bodies["hu"]),
+        }
     )
-    mail.send(msg)
 
 
 # ---------------------------------------------------------------------------
@@ -211,7 +207,7 @@ def forgot_password():
             parent = database.get_parent_by_email(email)
             if parent:
                 if not _mail_is_configured():
-                    logger.error("E-mail küldés: MAIL_USERNAME / MAIL_PASSWORD hiányzik")
+                    logger.error("E-mail küldés: RESEND_API_KEY hiányzik")
                     flash(i18n.t("flash_reset_email_failed", lang), "error")
                     return render_template("forgot_password.html", email=email)
 
