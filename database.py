@@ -21,7 +21,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, rela
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import func
 
-RESET_TOKEN_HOURS = 1
+RESET_TOKEN_HOURS = 24
 
 
 def _database_url() -> str:

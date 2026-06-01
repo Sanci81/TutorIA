@@ -26,6 +26,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 import database
 import translations as i18n
+from database import RESET_TOKEN_HOURS
 
 logger = logging.getLogger(__name__)
 
@@ -123,12 +124,12 @@ def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
     bodies = {
         "hu": (
             "Kérted a TutorIA jelszavad visszaállítását.\n\n"
-            f"Kattints az alábbi linkre (1 órán belül érvényes):\n{reset_url}\n\n"
+            f"Kattints az alábbi linkre ({RESET_TOKEN_HOURS} órán belül érvényes):\n{reset_url}\n\n"
             "Ha nem te kérted, hagyd figyelmen kívül ezt az e-mailt."
         ),
         "es": (
             "Has solicitado restablecer tu contraseña de TutorIA.\n\n"
-            f"Haz clic en el siguiente enlace (válido durante 1 hora):\n{reset_url}\n\n"
+            f"Haz clic en el siguiente enlace (válido durante {RESET_TOKEN_HOURS} horas):\n{reset_url}\n\n"
             "Si no lo solicitaste, ignora este correo."
         ),
     }
