@@ -156,6 +156,11 @@ def init_db() -> None:
     Base.metadata.create_all(bind=_get_engine())
 
 
+def ensure_password_reset_table() -> None:
+    """Biztosítja, hogy a password_reset_tokens tábla létezik (PostgreSQL)."""
+    PasswordResetToken.__table__.create(bind=_get_engine(), checkfirst=True)
+
+
 # ---------------------------------------------------------------------------
 # Szülő (parent) műveletek
 # ---------------------------------------------------------------------------
@@ -248,28 +253,37 @@ def get_children_for_parent(parent_id: int) -> list[dict[str, Any]]:
 
 def create_password_reset_token(parent_id: int) -> str:
     """Új visszaállító token; visszaadja a nyers tokent (e-mail linkhez)."""
-    token = secrets.token_urlsafe(32)
-    token_hash = _hash_token(token)
+    ensure_password_reset_table()
     expires_at = datetime.now(timezone.utc) + timedelta(hours=RESET_TOKEN_HOURS)
 
     db = _session()
     try:
-        db.execute(
-            delete(PasswordResetToken).where(
-                PasswordResetToken.parent_id == parent_id,
-                PasswordResetToken.used_at.is_(None),
-            )
-        )
+        for _ in range(3):
+            token = secrets.token_urlsafe(32)
+            token_hash = _hash_token(token)
+            try:
+                db.execute(
+                    delete(PasswordResetToken).where(
+                        PasswordResetToken.parent_id == parent_id,
+                        PasswordResetToken.used_at.is_(None),
+                    )
+                )
+                db.add(
+                    PasswordResetToken(
+                        parent_id=parent_id,
+                        token_hash=token_hash,
+                        expires_at=expires_at,
+                    )
+                )
+                db.commit()
+                return token
+            except IntegrityError:
+                db.rollback()
 
-        db.add(
-            PasswordResetToken(
-                parent_id=parent_id,
-                token_hash=token_hash,
-                expires_at=expires_at,
-            )
-        )
-        db.commit()
-        return token
+        raise RuntimeError("Nem sikerült visszaállító tokent létrehozni")
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
 
@@ -283,7 +297,7 @@ def get_password_reset_by_token(token: str) -> dict[str, Any] | None:
             .where(
                 PasswordResetToken.token_hash == _hash_token(token),
                 PasswordResetToken.used_at.is_(None),
-                PasswordResetToken.expires_at > datetime.now(timezone.utc),
+                PasswordResetToken.expires_at > func.now(),
             )
         ).first()
         if not row:

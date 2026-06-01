@@ -7,6 +7,7 @@ Funkciók (1. fázis):
   - Kétnyelvű felület (magyar / spanyol) nyelvváltóval
 """
 
+import logging
 import os
 from functools import wraps
 
@@ -26,22 +27,30 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import database
 import translations as i18n
 
+logger = logging.getLogger(__name__)
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-insecure-key")
 
-app.config["MAIL_SERVER"] = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
-app.config["MAIL_PORT"] = int(os.environ.get("MAIL_PORT", "587"))
-app.config["MAIL_USE_TLS"] = os.environ.get("MAIL_USE_TLS", "true").lower() == "true"
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 587
+app.config["MAIL_USE_TLS"] = True
 app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
 app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
-app.config["MAIL_DEFAULT_SENDER"] = os.environ.get(
-    "MAIL_DEFAULT_SENDER", app.config["MAIL_USERNAME"]
+app.config["MAIL_DEFAULT_SENDER"] = os.environ.get("MAIL_DEFAULT_SENDER") or os.environ.get(
+    "MAIL_USERNAME"
 )
 
-mail = Mail(app)
+# Railway HTTPS linkekhez (elfelejtett jelszó e-mail)
+app.config["PREFERRED_URL_SCHEME"] = os.environ.get("PREFERRED_URL_SCHEME", "https")
 
-# Az adatbázis biztosan létezik induláskor
-database.init_db()
+mail = Mail()
+mail.init_app(app)
+
+try:
+    database.init_db()
+except Exception:
+    logger.exception("Adatbázis inicializálás sikertelen induláskor")
 
 
 # ---------------------------------------------------------------------------
@@ -92,8 +101,28 @@ def login_required(view):
     return wrapped
 
 
+def _mail_is_configured() -> bool:
+    return bool(app.config.get("MAIL_USERNAME") and app.config.get("MAIL_PASSWORD"))
+
+
+def _reset_password_url(token: str) -> str:
+    """Visszaállító link – Railway-en APP_URL env ajánlott."""
+    app_url = (os.environ.get("APP_URL") or os.environ.get("RAILWAY_PUBLIC_DOMAIN") or "").rstrip(
+        "/"
+    )
+    path = url_for("reset_password", token=token, _external=False)
+    if app_url:
+        if not app_url.startswith("http"):
+            app_url = f"https://{app_url}"
+        return f"{app_url}{path}"
+    return url_for("reset_password", token=token, _external=True)
+
+
 def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
-    reset_url = url_for("reset_password", token=token, _external=True)
+    if not _mail_is_configured():
+        raise RuntimeError("MAIL_USERNAME vagy MAIL_PASSWORD nincs beállítva")
+
+    reset_url = _reset_password_url(token)
     subjects = {
         "hu": "TutorIA – Jelszó visszaállítása",
         "es": "TutorIA – Restablecer contraseña",
@@ -114,6 +143,7 @@ def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
         subject=subjects.get(lang, subjects["hu"]),
         recipients=[recipient],
         body=bodies.get(lang, bodies["hu"]),
+        sender=app.config["MAIL_DEFAULT_SENDER"],
     )
     mail.send(msg)
 
@@ -175,17 +205,24 @@ def login():
 def forgot_password():
     if request.method == "POST":
         email = (request.form.get("email") or "").strip()
-        parent = database.get_parent_by_email(email)
+        lang = g.lang
 
-        if parent:
-            token = database.create_password_reset_token(parent["id"])
-            try:
-                _send_password_reset_email(parent["email"], token, g.lang)
-            except Exception:
-                flash(i18n.t("flash_reset_email_failed", g.lang), "error")
-                return render_template("forgot_password.html", email=email)
+        try:
+            parent = database.get_parent_by_email(email)
+            if parent:
+                if not _mail_is_configured():
+                    logger.error("E-mail küldés: MAIL_USERNAME / MAIL_PASSWORD hiányzik")
+                    flash(i18n.t("flash_reset_email_failed", lang), "error")
+                    return render_template("forgot_password.html", email=email)
 
-        flash(i18n.t("flash_reset_email_sent", g.lang), "success")
+                token = database.create_password_reset_token(parent["id"])
+                _send_password_reset_email(parent["email"], token, lang)
+        except Exception:
+            logger.exception("Elfelejtett jelszó feldolgozás sikertelen")
+            flash(i18n.t("flash_reset_email_failed", lang), "error")
+            return render_template("forgot_password.html", email=email)
+
+        flash(i18n.t("flash_reset_email_sent", lang), "success")
         return redirect(url_for("login"))
 
     return render_template("forgot_password.html", email="")
@@ -193,7 +230,13 @@ def forgot_password():
 
 @app.route("/reset-password/<token>", methods=["GET", "POST"])
 def reset_password(token):
-    reset_row = database.get_password_reset_by_token(token)
+    try:
+        reset_row = database.get_password_reset_by_token(token)
+    except Exception:
+        logger.exception("Token ellenőrzés sikertelen")
+        flash(i18n.t("flash_invalid_reset_token", g.lang), "error")
+        return redirect(url_for("forgot_password"))
+
     if not reset_row:
         flash(i18n.t("flash_invalid_reset_token", g.lang), "error")
         return redirect(url_for("forgot_password"))
