@@ -85,6 +85,20 @@ TRANSLATIONS = {
     "login_title": {"hu": "Bejelentkezés", "es": "Iniciar sesión"},
     "btn_login": {"hu": "Bejelentkezés", "es": "Iniciar sesión"},
     "no_account": {"hu": "Nincs még fiókod?", "es": "¿No tienes cuenta?"},
+    "forgot_password": {"hu": "Elfelejtett jelszó?", "es": "¿Olvidaste tu contraseña?"},
+    "forgot_password_title": {"hu": "Elfelejtett jelszó", "es": "Contraseña olvidada"},
+    "forgot_password_subtitle": {
+        "hu": "Add meg az e-mail címedet, és küldünk egy visszaállító linket.",
+        "es": "Introduce tu correo y te enviaremos un enlace para restablecerla.",
+    },
+    "reset_password_title": {"hu": "Új jelszó beállítása", "es": "Establecer nueva contraseña"},
+    "reset_password_subtitle": {
+        "hu": "Add meg az új jelszavadat.",
+        "es": "Introduce tu nueva contraseña.",
+    },
+    "btn_send_reset_link": {"hu": "Link küldése", "es": "Enviar enlace"},
+    "btn_reset_password": {"hu": "Jelszó mentése", "es": "Guardar contraseña"},
+    "back_to_login": {"hu": "Vissza a bejelentkezéshez", "es": "Volver al inicio de sesión"},
 
     # --- gyerek hozzáadása ---
     "add_child_title": {"hu": "Gyerek hozzáadása", "es": "Añadir niño/a"},
@@ -152,6 +166,22 @@ TRANSLATIONS = {
     "flash_login_required": {
         "hu": "Kérlek, jelentkezz be a folytatáshoz.",
         "es": "Por favor, inicia sesión para continuar.",
+    },
+    "flash_reset_email_sent": {
+        "hu": "Ha ez az e-mail cím regisztrálva van, hamarosan kapsz egy visszaállító linket.",
+        "es": "Si este correo está registrado, recibirás un enlace para restablecer la contraseña.",
+    },
+    "flash_reset_email_failed": {
+        "hu": "Az e-mail küldése sikertelen. Próbáld újra később.",
+        "es": "No se pudo enviar el correo. Inténtalo más tarde.",
+    },
+    "flash_invalid_reset_token": {
+        "hu": "Érvénytelen vagy lejárt visszaállító link. Kérj újat.",
+        "es": "Enlace inválido o caducado. Solicita uno nuevo.",
+    },
+    "flash_password_reset_success": {
+        "hu": "A jelszavad sikeresen megváltozott. Most már bejelentkezhetsz.",
+        "es": "Contraseña cambiada correctamente. Ya puedes iniciar sesión.",
     },
 
     # --- lábléc ---

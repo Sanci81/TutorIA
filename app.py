@@ -20,6 +20,7 @@ from flask import (
     session,
     url_for,
 )
+from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import database
@@ -27,6 +28,17 @@ import translations as i18n
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-insecure-key")
+
+app.config["MAIL_SERVER"] = os.environ.get("MAIL_SERVER", "smtp.gmail.com")
+app.config["MAIL_PORT"] = int(os.environ.get("MAIL_PORT", "587"))
+app.config["MAIL_USE_TLS"] = os.environ.get("MAIL_USE_TLS", "true").lower() == "true"
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.environ.get(
+    "MAIL_DEFAULT_SENDER", app.config["MAIL_USERNAME"]
+)
+
+mail = Mail(app)
 
 # Az adatbázis biztosan létezik induláskor
 database.init_db()
@@ -80,6 +92,32 @@ def login_required(view):
     return wrapped
 
 
+def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
+    reset_url = url_for("reset_password", token=token, _external=True)
+    subjects = {
+        "hu": "TutorIA – Jelszó visszaállítása",
+        "es": "TutorIA – Restablecer contraseña",
+    }
+    bodies = {
+        "hu": (
+            "Kérted a TutorIA jelszavad visszaállítását.\n\n"
+            f"Kattints az alábbi linkre (1 órán belül érvényes):\n{reset_url}\n\n"
+            "Ha nem te kérted, hagyd figyelmen kívül ezt az e-mailt."
+        ),
+        "es": (
+            "Has solicitado restablecer tu contraseña de TutorIA.\n\n"
+            f"Haz clic en el siguiente enlace (válido durante 1 hora):\n{reset_url}\n\n"
+            "Si no lo solicitaste, ignora este correo."
+        ),
+    }
+    msg = Message(
+        subject=subjects.get(lang, subjects["hu"]),
+        recipients=[recipient],
+        body=bodies.get(lang, bodies["hu"]),
+    )
+    mail.send(msg)
+
+
 # ---------------------------------------------------------------------------
 # Útvonalak
 # ---------------------------------------------------------------------------
@@ -131,6 +169,55 @@ def login():
         return render_template("login.html", email=email)
 
     return render_template("login.html", email="")
+
+
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        email = (request.form.get("email") or "").strip()
+        parent = database.get_parent_by_email(email)
+
+        if parent:
+            token = database.create_password_reset_token(parent["id"])
+            try:
+                _send_password_reset_email(parent["email"], token, g.lang)
+            except Exception:
+                flash(i18n.t("flash_reset_email_failed", g.lang), "error")
+                return render_template("forgot_password.html", email=email)
+
+        flash(i18n.t("flash_reset_email_sent", g.lang), "success")
+        return redirect(url_for("login"))
+
+    return render_template("forgot_password.html", email="")
+
+
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    reset_row = database.get_password_reset_by_token(token)
+    if not reset_row:
+        flash(i18n.t("flash_invalid_reset_token", g.lang), "error")
+        return redirect(url_for("forgot_password"))
+
+    if request.method == "POST":
+        password = request.form.get("password") or ""
+        confirm = request.form.get("password_confirm") or ""
+
+        if len(password) < 6:
+            flash(i18n.t("flash_password_short", g.lang), "error")
+            return render_template("reset_password.html", token=token)
+
+        if password != confirm:
+            flash(i18n.t("flash_password_mismatch", g.lang), "error")
+            return render_template("reset_password.html", token=token)
+
+        database.update_parent_password(
+            reset_row["parent_id"], generate_password_hash(password)
+        )
+        database.mark_reset_token_used(reset_row["id"])
+        flash(i18n.t("flash_password_reset_success", g.lang), "success")
+        return redirect(url_for("login"))
+
+    return render_template("reset_password.html", token=token)
 
 
 @app.route("/logout")

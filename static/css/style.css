@@ -308,6 +308,8 @@ a:hover { text-decoration: underline; }
     margin-top: 1rem;
 }
 .auth-alt { text-align: center; margin-top: 1.25rem; color: var(--muted); }
+.auth-forgot { text-align: right; margin: -0.35rem 0 0.75rem; }
+.auth-forgot a { font-size: 0.92rem; font-weight: 600; }
 
 /* ---------- Dashboard ---------- */
 .dashboard-header {
