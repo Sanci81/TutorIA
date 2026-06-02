@@ -567,7 +567,7 @@ def select_tasks(child_id: int):
     region = child["region"] if child["country"] == "ES" else None
     grade_num = parse_grade(child["grade"])
 
-    if child["country"] == "HU" and is_hu_1_4_grade(grade_num):
+    if g.lang == "hu" and is_hu_1_4_grade(grade_num):
         subject_options = get_hu_1_4_subjects()
         curriculum = {
             "subjects": [o["label"] for o in subject_options],
