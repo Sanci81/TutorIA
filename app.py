@@ -235,6 +235,18 @@ def _openai_api_key() -> str | None:
     return os.environ.get("OPENAI_API_KEY") or os.environ.get("OPENAI_KEY")
 
 
+def _openai_client(api_key: str, *, request_timeout: float = 90.0):
+    """OpenAI kliens httpx timeout-tal (Railway connection error ellen)."""
+    import httpx
+    from openai import OpenAI
+
+    return OpenAI(
+        api_key=api_key,
+        timeout=httpx.Timeout(request_timeout, connect=10.0),
+        max_retries=2,
+    )
+
+
 def _call_ai_for_tasks(
     prompt: str, *, lang: str, foreign_language: str | None = None
 ) -> list[dict]:
@@ -284,9 +296,7 @@ def _call_ai_for_tasks(
 
     raw = ""
     try:
-        from openai import OpenAI
-
-        client = OpenAI(api_key=api_key, timeout=90.0)
+        client = _openai_client(api_key, request_timeout=90.0)
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             response_format={"type": "json_object"},
@@ -365,9 +375,7 @@ def test_openai():
         if not api_key:
             return "ERROR: OpenAI API key missing", 500
 
-        from openai import OpenAI
-
-        client = OpenAI(api_key=api_key, timeout=30.0)
+        client = _openai_client(api_key, request_timeout=30.0)
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[{"role": "user", "content": "Say hello in one word."}],

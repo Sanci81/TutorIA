@@ -233,15 +233,18 @@ a:hover { text-decoration: underline; }
 a.btn-generate,
 a.btn-generate:visited {
     background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    color: #1a1a1a;
-    -webkit-text-fill-color: #1a1a1a;
+    color: #1a1a1a !important;
+    -webkit-text-fill-color: #1a1a1a !important;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.85rem 1.5rem;
+    width: 100%;
+    border-radius: 2rem;
     box-shadow: var(--shadow-sm);
     margin-top: 0;
-    font-size: 0.88rem;
-    padding: 0.62rem 1rem;
-    white-space: normal;
-    width: 100%;
-    letter-spacing: -0.01em;
 }
 .btn-generate:hover,
 a.btn-generate:hover {
@@ -249,8 +252,8 @@ a.btn-generate:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     text-decoration: none;
-    color: #1a1a1a;
-    -webkit-text-fill-color: #1a1a1a;
+    color: #1a1a1a !important;
+    -webkit-text-fill-color: #1a1a1a !important;
 }
 .child-card-actions { margin-top: auto; padding-top: 1rem; }
 
