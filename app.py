@@ -30,7 +30,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 import database
 import translations as i18n
-from curriculum_loader import get_curriculum_for_child, get_subjects
+from curriculum_loader import get_curriculum_for_child, get_subjects_for_profile
 from database import RESET_TOKEN_HOURS
 
 logger = logging.getLogger(__name__)
@@ -157,7 +157,7 @@ def _curriculum_for_child(child: dict, *, subject: str | None = None) -> dict:
         return get_curriculum_for_child(
             child["country"], child["grade"], region, subject=subject
         )
-    return get_subjects(child["country"], child["grade"], region)
+    return get_subjects_for_profile(child["country"], child["grade"], region)
 
 
 def _build_task_generation_prompt(
@@ -176,10 +176,13 @@ def _build_task_generation_prompt(
 
     topic_block = ""
     ctx = curriculum.get("subject_context") or {}
-    if ctx.get("summary"):
+    summary = ctx.get("summary") or ""
+    if summary:
+        if len(summary) > 3500:
+            summary = summary[:3500] + "\n..."
         topic_block = (
             f"\nHivatalos tantervi témakörök ({ctx.get('subject', subject_line)}, "
-            f"{curriculum.get('grade', child['grade'])}. évfolyam):\n{ctx['summary']}\n"
+            f"{curriculum.get('grade', child['grade'])}. évfolyam):\n{summary}\n"
         )
 
     if lang == "es":
@@ -212,10 +215,16 @@ def _build_task_generation_prompt(
     return prompt
 
 
+def _openai_api_key() -> str | None:
+    """OpenAI kulcs – OPENAI_API_KEY vagy OPENAI_KEY env-ből."""
+    return os.environ.get("OPENAI_API_KEY") or os.environ.get("OPENAI_KEY")
+
+
 def _call_ai_for_tasks(prompt: str, *, lang: str) -> list[dict]:
     """OpenAI (gpt-4o-mini) hívás – 3 gyakorló feladat JSON formában."""
-    api_key = os.environ.get("OPENAI_API_KEY")
+    api_key = _openai_api_key()
     if not api_key:
+        logger.error("Task generation: OPENAI_API_KEY / OPENAI_KEY nincs beállítva")
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
 
     system_hu = (
@@ -236,29 +245,75 @@ def _call_ai_for_tasks(prompt: str, *, lang: str) -> list[dict]:
         '"hint": "...", "answer": "..."}, ...]} – exactamente 3 ejercicios.'
     )
 
-    client = OpenAI(api_key=api_key)
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
-        response_format={"type": "json_object"},
-        messages=[
-            {
-                "role": "system",
-                "content": system_es if lang == "es" else system_hu,
-            },
-            {
-                "role": "user",
-                "content": prompt + (user_suffix_es if lang == "es" else user_suffix_hu),
-            },
-        ],
-        temperature=0.7,
+    user_content = prompt + (user_suffix_es if lang == "es" else user_suffix_hu)
+    logger.info(
+        "OpenAI task request: model=gpt-4o-mini lang=%s prompt_chars=%d",
+        lang,
+        len(user_content),
     )
 
-    raw = response.choices[0].message.content or "{}"
-    payload = json.loads(raw)
+    raw = ""
+    try:
+        client = OpenAI(api_key=api_key, timeout=90.0)
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            response_format={"type": "json_object"},
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_es if lang == "es" else system_hu,
+                },
+                {"role": "user", "content": user_content},
+            ],
+            temperature=0.7,
+        )
+        raw = response.choices[0].message.content or "{}"
+        logger.info("OpenAI response received: chars=%d", len(raw))
+    except Exception as exc:
+        logger.exception(
+            "OpenAI API hívás sikertelen (%s): %s",
+            type(exc).__name__,
+            exc,
+        )
+        raise RuntimeError(f"OpenAI API hiba: {type(exc).__name__}: {exc}") from exc
+
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        logger.error(
+            "OpenAI JSON feldolgozás sikertelen: %s | raw_preview=%r",
+            exc,
+            raw[:800],
+        )
+        raise RuntimeError(f"AI válasz nem érvényes JSON: {exc}") from exc
+
     tasks = payload.get("tasks", payload if isinstance(payload, list) else [])
     if not isinstance(tasks, list) or not tasks:
+        logger.error(
+            "OpenAI válasz üres vagy hibás tasks mező: keys=%s preview=%r",
+            list(payload.keys()) if isinstance(payload, dict) else type(payload),
+            raw[:800],
+        )
         raise RuntimeError("Az AI nem adott vissza feladatlistát")
-    return tasks[:3]
+
+    normalized: list[dict] = []
+    for idx, task in enumerate(tasks[:3], start=1):
+        if not isinstance(task, dict):
+            logger.warning("Task #%d nem dict: %r", idx, task)
+            continue
+        normalized.append(
+            {
+                "title": task.get("title") or f"Feladat {idx}",
+                "question": task.get("question") or task.get("text") or "",
+                "hint": task.get("hint") or "",
+                "answer": task.get("answer") or "",
+            }
+        )
+
+    if not normalized:
+        raise RuntimeError("Az AI válaszából nem sikerült feladatot kinyerni")
+
+    return normalized
 
 
 # ---------------------------------------------------------------------------
@@ -452,7 +507,7 @@ def select_tasks(child_id: int):
 
     region = child["region"] if child["country"] == "ES" else None
     try:
-        curriculum = get_subjects(child["country"], child["grade"], region)
+        curriculum = get_subjects_for_profile(child["country"], child["grade"], region)
         subjects = curriculum.get("subjects") or []
     except Exception:
         logger.exception("Tantárgy-lista betöltése sikertelen (child_id=%s)", child_id)
@@ -485,7 +540,9 @@ def generate_tasks(child_id: int):
 
     region = child["region"] if child["country"] == "ES" else None
     try:
-        available = get_subjects(child["country"], child["grade"], region).get("subjects", [])
+        available = get_subjects_for_profile(
+            child["country"], child["grade"], region
+        ).get("subjects", [])
     except Exception:
         available = []
 

@@ -505,7 +505,7 @@ def get_curriculum_for_child(
     subject: str | None = None,
 ) -> dict[str, Any]:
     """Tantervi kontextus gyerekprofilhoz – tantárgy-lista + (HU) JSON témakörök."""
-    base = get_subjects(country, grade, region)
+    base = get_subjects_for_profile(country, grade, region)
     grade_num = base["grade"]
     result: dict[str, Any] = dict(base)
 
@@ -517,6 +517,59 @@ def get_curriculum_for_child(
     if ctx.get("summary"):
         result["curriculum_summary"] = ctx["summary"]
     return result
+
+
+def _is_spanish_subject_list(subjects: list[str]) -> bool:
+    """Felismeri, ha a lista spanyol tantervi neveket tartalmaz."""
+    markers = (
+        "matemáticas",
+        "lengua castellana",
+        "educación artística",
+        "conocimiento del medio",
+        "lengua extranjera",
+    )
+    joined = " ".join(s.casefold() for s in subjects)
+    return any(marker in joined for marker in markers)
+
+
+def get_subjects_for_profile(
+    country: str,
+    grade: str | int,
+    region: str | None = None,
+) -> dict[str, Any]:
+    """Ország-specifikus tantárgy-lista – HU: magyar, ES: spanyol (nem UI nyelv!)."""
+    country = country.upper()
+    grade_num = parse_grade(grade)
+
+    if country == "HU":
+        subjects: list[str] = []
+        source = "fallback"
+        if 1 <= grade_num <= 8:
+            try:
+                json_subjects = list_hu_subjects_from_json(grade_num)
+                if json_subjects and not _is_spanish_subject_list(json_subjects):
+                    subjects = json_subjects
+                    source = "json"
+            except Exception:
+                pass
+        if not subjects:
+            subjects = _hu_fallback(grade_num)
+            source = "fallback"
+        return {
+            "subjects": subjects,
+            "source": source,
+            "fetched_at": _now_iso() if source == "json" else None,
+            "country": country,
+            "grade": grade_num,
+            "region": None,
+        }
+
+    if country == "ES":
+        if not region:
+            raise ValueError("Spanyolország esetén kötelező a region paraméter")
+        return get_subjects(country, grade_num, region)
+
+    raise ValueError(f"Ismeretlen ország: {country}")
 
 
 # ---------------------------------------------------------------------------
@@ -834,8 +887,13 @@ def get_subjects(
     if not force_refresh and _cache_valid(cache_file):
         cached = _read_cache(cache_file)
         if cached and cached.get("subjects"):
-            cached["source"] = "cache"
-            return cached
+            cached_country = (cached.get("country") or country).upper()
+            subjects = cached.get("subjects", [])
+            if cached_country == country and not (
+                country == "HU" and _is_spanish_subject_list(subjects)
+            ):
+                cached["source"] = "cache"
+                return cached
 
     try:
         if country == "HU":
