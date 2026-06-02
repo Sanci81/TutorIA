@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('tasks_page_title') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<section class="tasks-page">
+    <div class="tasks-hero">
+        <div class="tasks-hero-stars" aria-hidden="true">✨ 🌈 ⭐</div>
+        <h1 class="tasks-hero-title">{{ t('tasks_page_title') }}</h1>
+        <p class="tasks-hero-sub">
+            {{ t('tasks_for') }} <strong>{{ child['name'] }}</strong>
+        </p>
+        <p class="tasks-hero-subject">
+            {{ t('tasks_subject') }}: <span>{{ subject }}</span>
+        </p>
+        <p class="tasks-encouragement">{{ t('tasks_encouragement') }}</p>
+    </div>
+
+    <div class="tasks-list">
+        {% for task in tasks %}
+            {% set idx = loop.index %}
+            {% set accent = (idx - 1) % 3 %}
+            <article class="task-card task-accent-{{ accent }}" data-task-card>
+                <div class="task-badge">
+                    <span class="task-badge-num">{{ idx }}</span>
+                    <span class="task-badge-label">{{ t('task_number') }} {{ idx }}</span>
+                </div>
+
+                {% if task.get('title') %}
+                    <h2 class="task-title">{{ task['title'] }}</h2>
+                {% endif %}
+
+                <div class="task-question">
+                    <span class="task-emoji" aria-hidden="true">📝</span>
+                    <p>{{ task.get('question', task.get('text', '')) }}</p>
+                </div>
+
+                <div class="task-actions">
+                    <button type="button" class="btn btn-hint" data-show-hint>
+                        {{ t('btn_show_hint') }}
+                    </button>
+                    <button type="button" class="btn btn-answer is-disabled" data-show-answer disabled>
+                        {{ t('btn_show_answer') }}
+                    </button>
+                </div>
+
+                <div class="task-reveal task-hint" hidden>
+                    <div class="task-reveal-label">💡 {{ t('label_hint') }}</div>
+                    <p>{{ task.get('hint', '') }}</p>
+                </div>
+
+                <div class="task-reveal task-answer" hidden>
+                    <div class="task-reveal-label">✅ {{ t('label_answer') }}</div>
+                    <p>{{ task.get('answer', '') }}</p>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+
+    <div class="tasks-footer-actions">
+        <a class="btn btn-primary" href="{{ url_for('select_tasks', child_id=child['id']) }}">
+            {{ t('btn_new_tasks') }}
+        </a>
+        <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">
+            {{ t('btn_back_dashboard') }}
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/tasks.js') }}"></script>
+{% endblock %}

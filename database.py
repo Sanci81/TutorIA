@@ -246,6 +246,18 @@ def get_children_for_parent(parent_id: int) -> list[dict[str, Any]]:
         db.close()
 
 
+def get_child_by_id(child_id: int, parent_id: int) -> dict[str, Any] | None:
+    """Gyerek profil lekérése – csak a megadott szülőhöz tartozó rekord."""
+    db = _session()
+    try:
+        child = db.scalar(
+            select(Child).where(Child.id == child_id, Child.parent_id == parent_id)
+        )
+        return _child_dict(child) if child else None
+    finally:
+        db.close()
+
+
 # ---------------------------------------------------------------------------
 # Jelszó-visszaállítás
 # ---------------------------------------------------------------------------

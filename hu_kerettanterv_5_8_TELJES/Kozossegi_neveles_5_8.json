@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "tantargy": "Kozossegi neveles",
+    "evfolyam": "5-8",
+    "forras": "Kerettanterv az általános iskola 5-8. évfolyamára (kerettanterv.oh.gov.hu)",
+    "dokumentum": "kozossegi_neveles_kerettanterv_5-8__éfolyamára.docx"
+  },
+  "evfolyamok": {
+    "5": {
+      "Egyén és közösség": [],
+      "A tanulás tanulása": [],
+      "Egészségfejlesztés": [],
+      "Közlekedésbiztonság": [],
+      "Alkalmazkodás és biztonság": []
+    },
+    "6": {
+      "Egyén és közösség": [],
+      "A tanulás tanulása": [],
+      "Egészségfejlesztés": [],
+      "Közlekedésbiztonság": [],
+      "Alkalmazkodás és biztonság": []
+    },
+    "7": {
+      "Egyén és közösség": [],
+      "A tanulás tanulása": [],
+      "Egészségfejlesztés": [],
+      "Közlekedésbiztonság": [],
+      "Alkalmazkodás és biztonság": []
+    },
+    "8": {
+      "Egyén és közösség": [],
+      "A tanulás tanulása": [],
+      "Egészségfejlesztés": [],
+      "Közlekedésbiztonság": [],
+      "Alkalmazkodás és biztonság": []
+    }
+  }
+}

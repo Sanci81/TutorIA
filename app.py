@@ -7,14 +7,17 @@ Funkciók (1. fázis):
   - Kétnyelvű felület (magyar / spanyol) nyelvváltóval
 """
 
+import json
 import logging
 import os
 from functools import wraps
 
 from flask import (
     Flask,
+    abort,
     flash,
     g,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -22,10 +25,12 @@ from flask import (
     url_for,
 )
 import resend
+from openai import OpenAI
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import database
 import translations as i18n
+from curriculum_loader import get_curriculum_for_child, get_subjects
 from database import RESET_TOKEN_HOURS
 
 logger = logging.getLogger(__name__)
@@ -143,6 +148,117 @@ def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
             "text": bodies.get(lang, bodies["hu"]),
         }
     )
+
+
+def _curriculum_for_child(child: dict, *, subject: str | None = None) -> dict:
+    """Tanterv a gyerek profiljához; HU esetén JSON témakörökkel."""
+    region = child["region"] if child["country"] == "ES" else None
+    if child["country"] == "HU" and subject:
+        return get_curriculum_for_child(
+            child["country"], child["grade"], region, subject=subject
+        )
+    return get_subjects(child["country"], child["grade"], region)
+
+
+def _build_task_generation_prompt(
+    child: dict,
+    curriculum: dict,
+    *,
+    subject: str | None = None,
+    lang: str,
+) -> str:
+    """AI prompt – hivatalos tantervi tantárgyak és (HU) JSON témakörök."""
+    subjects = curriculum["subjects"]
+    subject_line = subject if subject else (subjects[0] if subjects else "általános")
+    location = child["country"]
+    if child.get("region"):
+        location = f"{location} ({child['region']})"
+
+    topic_block = ""
+    ctx = curriculum.get("subject_context") or {}
+    if ctx.get("summary"):
+        topic_block = (
+            f"\nHivatalos tantervi témakörök ({ctx.get('subject', subject_line)}, "
+            f"{curriculum.get('grade', child['grade'])}. évfolyam):\n{ctx['summary']}\n"
+        )
+
+    if lang == "es":
+        prompt = (
+            f"Genera 3 ejercicios de práctica para un/a niño/a de {child['age']} años, "
+            f"curso {child['grade']}, ubicación {location}.\n"
+            f"Tema / asignatura: {subject_line}\n"
+            f"Asignaturas del currículo oficial: {', '.join(subjects)}\n"
+        )
+        if topic_block:
+            prompt += topic_block.replace("Hivatalos", "Contenido oficial")
+        prompt += (
+            "Los ejercicios deben alinearse con el currículo anterior, "
+            "ser apropiados para la edad y el curso, y tener dificultad moderada."
+        )
+        return prompt
+
+    prompt = (
+        f"Készíts 3 gyakorló feladatot egy {child['age']} éves gyereknek, "
+        f"{child['grade']}. osztály, helyszín: {location}.\n"
+        f"Tantárgy: {subject_line}\n"
+        f"Hivatalos tantervi tantárgyak: {', '.join(subjects)}\n"
+    )
+    if topic_block:
+        prompt += topic_block
+    prompt += (
+        "A feladatok illeszkedjenek a fenti hivatalos tantervi témakörökhöz, "
+        "legyenek életkornak és osztály szintnek megfelelőek, közepes nehézségűek."
+    )
+    return prompt
+
+
+def _call_ai_for_tasks(prompt: str, *, lang: str) -> list[dict]:
+    """OpenAI (gpt-4o-mini) hívás – 3 gyakorló feladat JSON formában."""
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
+
+    system_hu = (
+        "Te egy tapasztalt magyar tanár vagy. A megadott hivatalos NAT 2020 "
+        "kerettantervi témakörök alapján készíts gyakorló feladatokat. "
+        "Válaszolj kizárólag érvényes JSON-nal, magyar nyelven."
+    )
+    system_es = (
+        "Eres un/a profesor/a experimentado/a. Crea ejercicios según el currículo "
+        "oficial indicado. Responde solo con JSON válido en español."
+    )
+    user_suffix_hu = (
+        'Add vissza JSON objektumként: {"tasks": [{"title": "...", "question": "...", '
+        '"hint": "...", "answer": "..."}, ...]} – pontosan 3 feladat.'
+    )
+    user_suffix_es = (
+        'Devuelve un objeto JSON: {"tasks": [{"title": "...", "question": "...", '
+        '"hint": "...", "answer": "..."}, ...]} – exactamente 3 ejercicios.'
+    )
+
+    client = OpenAI(api_key=api_key)
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        response_format={"type": "json_object"},
+        messages=[
+            {
+                "role": "system",
+                "content": system_es if lang == "es" else system_hu,
+            },
+            {
+                "role": "user",
+                "content": prompt + (user_suffix_es if lang == "es" else user_suffix_hu),
+            },
+        ],
+        temperature=0.7,
+    )
+
+    raw = response.choices[0].message.content or "{}"
+    payload = json.loads(raw)
+    tasks = payload.get("tasks", payload if isinstance(payload, list) else [])
+    if not isinstance(tasks, list) or not tasks:
+        raise RuntimeError("Az AI nem adott vissza feladatlistát")
+    return tasks[:3]
 
 
 # ---------------------------------------------------------------------------
@@ -324,6 +440,93 @@ def add_child():
         return redirect(url_for("dashboard"))
 
     return render_template("add_child.html", form={})
+
+
+@app.route("/children/<int:child_id>/tasks", methods=["GET"])
+@login_required
+def select_tasks(child_id: int):
+    """Tantárgy választása feladatgeneráláshoz."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    region = child["region"] if child["country"] == "ES" else None
+    try:
+        curriculum = get_subjects(child["country"], child["grade"], region)
+        subjects = curriculum.get("subjects") or []
+    except Exception:
+        logger.exception("Tantárgy-lista betöltése sikertelen (child_id=%s)", child_id)
+        subjects = []
+
+    return render_template(
+        "select_tasks.html",
+        child=child,
+        subjects=subjects,
+    )
+
+
+@app.route("/children/<int:child_id>/tasks/generate", methods=["POST"])
+@login_required
+def generate_tasks(child_id: int):
+    """Feladatgenerálás – tanterv JSON + OpenAI."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    payload = request.get_json(silent=True) if request.is_json else None
+    subject = (payload or request.form).get("subject")
+    subject = subject.strip() if subject else None
+
+    if not subject:
+        if request.is_json:
+            return jsonify({"error": "subject_required"}), 400
+        flash(i18n.t("flash_subject_required", g.lang), "error")
+        return redirect(url_for("select_tasks", child_id=child_id))
+
+    region = child["region"] if child["country"] == "ES" else None
+    try:
+        available = get_subjects(child["country"], child["grade"], region).get("subjects", [])
+    except Exception:
+        available = []
+
+    if available and subject not in available:
+        if request.is_json:
+            return jsonify({"error": "invalid_subject"}), 400
+        flash(i18n.t("flash_subject_required", g.lang), "error")
+        return redirect(url_for("select_tasks", child_id=child_id))
+
+    curriculum = _curriculum_for_child(child, subject=subject)
+
+    prompt = _build_task_generation_prompt(
+        child, curriculum, subject=subject, lang=g.lang
+    )
+
+    try:
+        tasks = _call_ai_for_tasks(prompt, lang=g.lang)
+    except NotImplementedError:
+        if request.is_json or request.headers.get("Accept") == "application/json":
+            return jsonify(
+                {
+                    "status": "pending",
+                    "message": "OPENAI_API_KEY not configured",
+                    "curriculum": curriculum,
+                    "prompt_preview": prompt,
+                }
+            ), 501
+        flash(i18n.t("flash_tasks_pending", g.lang), "info")
+        return redirect(url_for("select_tasks", child_id=child_id))
+    except Exception:
+        logger.exception("Feladatgenerálás sikertelen (child_id=%s)", child_id)
+        if request.is_json:
+            return jsonify({"error": "task_generation_failed"}), 500
+        flash(i18n.t("flash_tasks_failed", g.lang), "error")
+        return redirect(url_for("select_tasks", child_id=child_id))
+
+    if request.is_json:
+        return jsonify({"tasks": tasks, "curriculum": curriculum})
+    return render_template(
+        "tasks.html", child=child, tasks=tasks, curriculum=curriculum, subject=subject
+    )
 
 
 if __name__ == "__main__":

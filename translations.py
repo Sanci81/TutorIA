@@ -130,6 +130,46 @@ TRANSLATIONS = {
     "card_location": {"hu": "Helyszín", "es": "Ubicación"},
     "years_old": {"hu": "éves", "es": "años"},
 
+    # --- feladatgenerálás ---
+    "btn_generate_tasks": {"hu": "Feladatok generálása", "es": "Generar ejercicios"},
+    "select_tasks_title": {"hu": "Feladatok generálása", "es": "Generar ejercicios"},
+    "select_tasks_subtitle": {
+        "hu": "Válassz tantárgyat {name} számára, majd kattints a generálás gombra.",
+        "es": "Elige una asignatura para {name} y pulsa generar.",
+    },
+    "label_subject": {"hu": "Tantárgy", "es": "Asignatura"},
+    "btn_generate_now": {"hu": "Generálás ✨", "es": "Generar ✨"},
+    "generating_tasks": {
+        "hu": "Feladatok készülnek… egy pillanat!",
+        "es": "Creando ejercicios… ¡un momento!",
+    },
+    "tasks_page_title": {"hu": "Gyakorló feladatok", "es": "Ejercicios de práctica"},
+    "tasks_for": {"hu": "Feladatok neki:", "es": "Ejercicios para:"},
+    "tasks_subject": {"hu": "Tantárgy", "es": "Asignatura"},
+    "task_number": {"hu": "Feladat", "es": "Ejercicio"},
+    "btn_show_hint": {"hu": "Segítség kell? 💡", "es": "¿Necesitas ayuda? 💡"},
+    "btn_show_answer": {"hu": "Mutasd a választ! ✅", "es": "¡Muéstrame la respuesta! ✅"},
+    "label_hint": {"hu": "Tipp", "es": "Pista"},
+    "label_answer": {"hu": "Válasz", "es": "Respuesta"},
+    "btn_new_tasks": {"hu": "Új feladatok", "es": "Nuevos ejercicios"},
+    "btn_back_dashboard": {"hu": "Vissza a vezérlőpulthoz", "es": "Volver al panel"},
+    "tasks_encouragement": {
+        "hu": "Szuper vagy! Próbáld meg egyedül, aztán kérj segítséget! 🌟",
+        "es": "¡Genial! Inténtalo tú solo/a, y pide ayuda si la necesitas! 🌟",
+    },
+    "flash_tasks_pending": {
+        "hu": "A feladatgenerálás hamarosan elérhető.",
+        "es": "La generación de ejercicios estará disponible pronto.",
+    },
+    "flash_tasks_failed": {
+        "hu": "Feladatgenerálás sikertelen. Próbáld újra később.",
+        "es": "No se pudieron generar los ejercicios. Inténtalo más tarde.",
+    },
+    "flash_subject_required": {
+        "hu": "Kérlek, válassz tantárgyat.",
+        "es": "Por favor, elige una asignatura.",
+    },
+
     # --- flash üzenetek ---
     "flash_registered": {
         "hu": "Sikeres regisztráció! Üdv a TutorIA-ban.",

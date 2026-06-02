@@ -37,6 +37,12 @@
                         </span>
                     </li>
                 </ul>
+                <div class="child-card-actions">
+                    <a class="btn btn-generate btn-block"
+                       href="{{ url_for('select_tasks', child_id=child['id']) }}">
+                        ✨ {{ t('btn_generate_tasks') }}
+                    </a>
+                </div>
             </article>
         {% endfor %}
     </section>

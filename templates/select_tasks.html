@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('select_tasks_title') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<section class="select-tasks-page">
+    <a class="back-link" href="{{ url_for('dashboard') }}">← {{ t('btn_back_dashboard') }}</a>
+
+    <div class="select-tasks-header">
+        <div class="select-tasks-avatar">{{ child['name'][:1]|upper }}</div>
+        <div>
+            <h1>{{ t('select_tasks_title') }}</h1>
+            <p class="select-tasks-subtitle">
+                {{ t('select_tasks_subtitle').format(name=child['name']) }}
+            </p>
+            <p class="select-tasks-meta">
+                {{ child['grade'] }} · {{ child['age'] }} {{ t('years_old') }}
+            </p>
+        </div>
+    </div>
+
+    <div class="card select-tasks-card">
+        {% if subjects %}
+            <form class="select-tasks-form"
+                  method="post"
+                  action="{{ url_for('generate_tasks', child_id=child['id']) }}"
+                  id="generate-tasks-form">
+                <div class="field">
+                    <label for="subject">{{ t('label_subject') }}</label>
+                    <select id="subject" name="subject" required>
+                        <option value="">{{ t('select_placeholder') }}</option>
+                        {% for subj in subjects %}
+                            <option value="{{ subj }}">{{ subj }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">{{ t('btn_cancel') }}</a>
+                    <button class="btn btn-primary btn-lg" type="submit" id="generate-btn">
+                        {{ t('btn_generate_now') }}
+                    </button>
+                </div>
+            </form>
+        {% else %}
+            <p class="select-tasks-empty">{{ t('flash_tasks_failed') }}</p>
+            <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">{{ t('btn_back_dashboard') }}</a>
+        {% endif %}
+    </div>
+</section>
+
+<div class="loading-overlay" id="loading-overlay" hidden>
+    <div class="loading-box">
+        <div class="loading-spinner" aria-hidden="true"></div>
+        <p>{{ t('generating_tasks') }}</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var form = document.getElementById('generate-tasks-form');
+    var overlay = document.getElementById('loading-overlay');
+    var btn = document.getElementById('generate-btn');
+    if (!form || !overlay) return;
+
+    form.addEventListener('submit', function () {
+        overlay.hidden = false;
+        if (btn) {
+            btn.disabled = true;
+            btn.setAttribute('aria-busy', 'true');
+        }
+    });
+});
+</script>
+{% endblock %}

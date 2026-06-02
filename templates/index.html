@@ -6,11 +6,15 @@
         <h1>{{ t('landing_title') }}</h1>
         <p class="hero-subtitle">{{ t('landing_subtitle') }}</p>
         <div class="hero-actions">
-            <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">{{ t('landing_cta') }}</a>
-            <span class="hero-login">
-                {{ t('landing_login_prompt') }}
-                <a href="{{ url_for('login') }}">{{ t('nav_login') }}</a>
-            </span>
+            {% if session.get('parent_id') %}
+                <a class="btn btn-primary btn-lg" href="{{ url_for('dashboard') }}">{{ t('landing_cta') }}</a>
+            {% else %}
+                <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">{{ t('landing_cta') }}</a>
+                <span class="hero-login">
+                    {{ t('landing_login_prompt') }}
+                    <a href="{{ url_for('login') }}">{{ t('nav_login') }}</a>
+                </span>
+            {% endif %}
         </div>
     </div>
     <div class="hero-art" aria-hidden="true">

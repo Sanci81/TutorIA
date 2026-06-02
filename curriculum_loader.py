@@ -12,6 +12,7 @@ import json
 import os
 import re
 import ssl
+import unicodedata
 import urllib.error
 import urllib.request
 from datetime import datetime, timezone
@@ -87,7 +88,7 @@ _HU_GRADE_RULES_UPPER: dict[str, tuple[int, int]] = {
     "Technika és tervezés": (5, 7),
     "Kémia": (7, 8),
     "Fizika": (7, 8),
-    "Biologia": (7, 8),
+    "Biológia": (7, 8),
     "Földrajz": (7, 8),
     "Dráma és színház": (7, 8),
     "Állampolgári ismeretek": (8, 8),
@@ -277,6 +278,246 @@ FALLBACK_ES_REGION_EXTRAS: dict[str, list[str]] = {
     "IB": ["Lengua Cooficial y Literatura (Catalán)"],
     "VC": ["Lengua Cooficial y Literatura (Valenciano)"],
 }
+
+# ---------------------------------------------------------------------------
+# Magyar hivatalos kerettanterv JSON (hu_kerettanterv_*_TELJES mappák)
+# ---------------------------------------------------------------------------
+
+_PROJECT_ROOT = Path(__file__).parent
+_HU_JSON_DIR_CANDIDATES: dict[str, tuple[str, ...]] = {
+    "1-4": ("hu_kerettanterv_1_4_TELJES", "hu_kerettanterv_1_4"),
+    "5-8": ("hu_kerettanterv_5_8_TELJES",),
+}
+_HU_FILENAME_RE = re.compile(r"^(.+)_(\d+)_(\d+)\.json$", re.IGNORECASE)
+_HU_AGGREGATE_PREFIX = "hu_kerettanterv_"
+
+_json_file_cache: dict[str, dict[str, Any]] = {}
+_hu_json_index: dict[tuple[int, int, int], list[tuple[Path, str, str]]] | None = None
+
+
+def _normalize_key(value: str) -> str:
+    text = unicodedata.normalize("NFKD", value)
+    text = "".join(ch for ch in text if not unicodedata.combining(ch))
+    return re.sub(r"[^a-z0-9]", "", text.casefold())
+
+
+def _display_subject_name(raw: str) -> str:
+    key = _normalize_key(raw)
+    for slug, display in _HU_DOCX_SUBJECTS.items():
+        if key in (_normalize_key(slug), _normalize_key(display)):
+            return display
+    aliases = {
+        "digitaliskultura": "Digitális kultúra",
+        "enekzene": "Ének-zene",
+        "vizualiskultura": "Vizuális kultúra",
+        "kornyezetismeret": "Környezetismeret",
+        "eloidegennyelv": "Első élő idegen nyelv",
+        "technikaestervezes": "Technika és tervezés",
+        "testneveles": "Testnevelés",
+        "tortenelem": "Történelem",
+        "allampolgariismeretek": "Állampolgári ismeretek",
+        "honesnepismeret": "Hon- és népismeret",
+        "termeszettudomany": "Természettudomány",
+        "dramaesszinhaz": "Dráma és színház",
+    }
+    return aliases.get(key, raw)
+
+
+def _subjects_match(requested: str, slug: str, meta_name: str) -> bool:
+    req = _normalize_key(requested)
+    file_keys = {
+        _normalize_key(slug),
+        _normalize_key(meta_name),
+        _normalize_key(_display_subject_name(meta_name)),
+    }
+    return req in file_keys
+
+
+def _hu_band_for_grade(grade: int) -> str:
+    if 1 <= grade <= 4:
+        return "1-4"
+    if 5 <= grade <= 8:
+        return "5-8"
+    raise ValueError(f"Magyar JSON tanterv csak 1–8. évfolyamhoz érhető el: {grade}")
+
+
+def _hu_json_directories(grade: int) -> list[Path]:
+    band = _hu_band_for_grade(grade)
+    dirs: list[Path] = []
+    for name in _HU_JSON_DIR_CANDIDATES[band]:
+        path = _PROJECT_ROOT / name
+        if path.is_dir():
+            dirs.append(path)
+    return dirs
+
+
+def _load_hu_json(path: Path) -> dict[str, Any]:
+    key = str(path.resolve())
+    if key not in _json_file_cache:
+        _json_file_cache[key] = json.loads(path.read_text(encoding="utf-8"))
+    return _json_file_cache[key]
+
+
+def _build_hu_json_index() -> dict[tuple[int, int, int], list[tuple[Path, str, str]]]:
+    """Index: (grade_lo, grade_hi, grade) -> [(path, slug, display_name), ...]."""
+    global _hu_json_index
+    if _hu_json_index is not None:
+        return _hu_json_index
+
+    index: dict[tuple[int, int, int], list[tuple[Path, str, str]]] = {}
+    seen: set[tuple[str, int, int]] = set()
+
+    for band, dir_names in _HU_JSON_DIR_CANDIDATES.items():
+        grade_lo, grade_hi = (1, 4) if band == "1-4" else (5, 8)
+        for dir_name in dir_names:
+            directory = _PROJECT_ROOT / dir_name
+            if not directory.is_dir():
+                continue
+            for path in directory.glob("*.json"):
+                if path.name.lower().startswith(_HU_AGGREGATE_PREFIX):
+                    continue
+                match = _HU_FILENAME_RE.match(path.name)
+                if not match:
+                    continue
+                slug, file_lo, file_hi = match.group(1), int(match.group(2)), int(match.group(3))
+                dedupe_key = (slug.casefold(), file_lo, file_hi)
+                if dedupe_key in seen:
+                    continue
+                seen.add(dedupe_key)
+                data = _load_hu_json(path)
+                meta_name = data.get("meta", {}).get("tantargy", slug.replace("_", " "))
+                display = _display_subject_name(meta_name)
+                lo = max(grade_lo, file_lo)
+                hi = min(grade_hi, file_hi)
+                for grade in range(lo, hi + 1):
+                    index.setdefault((grade_lo, grade_hi, grade), []).append((path, slug, display))
+
+    _hu_json_index = index
+    return index
+
+
+def _hu_json_applies_to_grade(display_name: str, grade: int, band: str) -> bool:
+    rules = _HU_GRADE_RULES_LOWER if band == "1-4" else _HU_GRADE_RULES_UPPER
+    if display_name in rules:
+        lo, hi = rules[display_name]
+        return lo <= grade <= hi
+    return True
+
+
+def list_hu_subjects_from_json(grade: int) -> list[str]:
+    """Tantárgy-lista a helyi JSON fájlokból (1–8. évfolyam)."""
+    band = _hu_band_for_grade(grade)
+    grade_lo, grade_hi = (1, 4) if band == "1-4" else (5, 8)
+    entries = _build_hu_json_index().get((grade_lo, grade_hi, grade), [])
+    subjects: list[str] = []
+    for _, _, display in entries:
+        if _hu_json_applies_to_grade(display, grade, band) and display not in subjects:
+            subjects.append(display)
+    return subjects
+
+
+def find_hu_json_file(grade: int, subject: str) -> Path | None:
+    """Megfelelő tantárgy-JSON fájl keresése évfolyam és tantárgy alapján."""
+    band = _hu_band_for_grade(grade)
+    grade_lo, grade_hi = (1, 4) if band == "1-4" else (5, 8)
+    entries = _build_hu_json_index().get((grade_lo, grade_hi, grade), [])
+    for path, slug, display in entries:
+        data = _load_hu_json(path)
+        meta_name = data.get("meta", {}).get("tantargy", slug)
+        if _subjects_match(subject, slug, meta_name) or _subjects_match(subject, slug, display):
+            if _hu_json_applies_to_grade(display, grade, band):
+                return path
+    return None
+
+
+def extract_hu_grade_topics(data: dict[str, Any], grade: int) -> dict[str, list[str]]:
+    """Évfolyam-specifikus témakörök kinyerése egy tantárgy JSON-ból."""
+    evfolyamok = data.get("evfolyamok", {})
+    grade_node = evfolyamok.get(str(grade))
+    if not isinstance(grade_node, dict):
+        return {}
+    topics: dict[str, list[str]] = {}
+    for category, items in grade_node.items():
+        if isinstance(items, list):
+            cleaned = [str(item).strip() for item in items if str(item).strip()]
+            if cleaned:
+                topics[str(category)] = cleaned
+    return topics
+
+
+def format_hu_topics_for_prompt(
+    topics: dict[str, list[str]],
+    *,
+    max_categories: int = 12,
+    max_items_per_category: int = 6,
+) -> str:
+    """Tantervi témakörök tömör szöveges összefoglalója AI prompthoz."""
+    if not topics:
+        return ""
+    lines: list[str] = []
+    for idx, (category, items) in enumerate(topics.items()):
+        if idx >= max_categories:
+            lines.append(f"... és még {len(topics) - max_categories} témakör")
+            break
+        sample = items[:max_items_per_category]
+        joined = "; ".join(sample)
+        if len(items) > max_items_per_category:
+            joined += f" (... összesen {len(items)} követelmény)"
+        lines.append(f"- {category}: {joined}")
+    return "\n".join(lines)
+
+
+def get_hu_curriculum_context(grade: int, subject: str) -> dict[str, Any]:
+    """Egy tantárgy teljes tantervi kontextusa feladatgeneráláshoz."""
+    grade_num = parse_grade(grade)
+    path = find_hu_json_file(grade_num, subject)
+    if not path:
+        return {
+            "found": False,
+            "subject": subject,
+            "grade": grade_num,
+            "topics": {},
+            "summary": "",
+            "source": "json",
+        }
+
+    data = _load_hu_json(path)
+    meta = data.get("meta", {})
+    display = _display_subject_name(meta.get("tantargy", subject))
+    topics = extract_hu_grade_topics(data, grade_num)
+    return {
+        "found": True,
+        "subject": display,
+        "grade": grade_num,
+        "file": path.name,
+        "topics": topics,
+        "summary": format_hu_topics_for_prompt(topics),
+        "meta": meta,
+        "source": "json",
+    }
+
+
+def get_curriculum_for_child(
+    country: str,
+    grade: str | int,
+    region: str | None = None,
+    *,
+    subject: str | None = None,
+) -> dict[str, Any]:
+    """Tantervi kontextus gyerekprofilhoz – tantárgy-lista + (HU) JSON témakörök."""
+    base = get_subjects(country, grade, region)
+    grade_num = base["grade"]
+    result: dict[str, Any] = dict(base)
+
+    if country.upper() != "HU" or not subject:
+        return result
+
+    ctx = get_hu_curriculum_context(grade_num, subject)
+    result["subject_context"] = ctx
+    if ctx.get("summary"):
+        result["curriculum_summary"] = ctx["summary"]
+    return result
+
 
 # ---------------------------------------------------------------------------
 # HTTP / cache segédek
@@ -598,6 +839,18 @@ def get_subjects(
 
     try:
         if country == "HU":
+            json_subjects = list_hu_subjects_from_json(grade_num)
+            if json_subjects:
+                payload = {
+                    "subjects": json_subjects,
+                    "source": "json",
+                    "fetched_at": _now_iso(),
+                    "country": country,
+                    "grade": grade_num,
+                    "region": None,
+                }
+                _write_cache(cache_file, payload)
+                return payload
             subjects = fetch_hu_subjects(grade_num)
         elif country == "ES":
             if not region:
