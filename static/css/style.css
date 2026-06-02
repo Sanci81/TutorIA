@@ -229,23 +229,28 @@ a:hover { text-decoration: underline; }
     border: 1px solid var(--border);
 }
 .btn-ghost:hover { background: var(--green-50); }
-.btn-generate {
+.btn-generate,
+a.btn-generate,
+a.btn-generate:visited {
     background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    color: #ffffff;
+    color: #1a1a1a;
+    -webkit-text-fill-color: #1a1a1a;
     box-shadow: var(--shadow-sm);
     margin-top: 0;
     font-size: 0.88rem;
     padding: 0.62rem 1rem;
-    white-space: nowrap;
+    white-space: normal;
     width: 100%;
     letter-spacing: -0.01em;
 }
-.btn-generate:hover {
+.btn-generate:hover,
+a.btn-generate:hover {
     background: linear-gradient(135deg, #f59e0b, #d97706);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     text-decoration: none;
-    color: #ffffff;
+    color: #1a1a1a;
+    -webkit-text-fill-color: #1a1a1a;
 }
 .child-card-actions { margin-top: auto; padding-top: 1rem; }
 
@@ -281,6 +286,8 @@ a:hover { text-decoration: underline; }
 }
 .select-tasks-card { margin-top: 0.5rem; }
 .select-tasks-empty { color: var(--muted); margin-bottom: 1rem; }
+.language-selector { margin-top: 1rem; }
+.language-selector[hidden] { display: none !important; }
 
 .loading-overlay {
     position: fixed;

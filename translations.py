@@ -169,6 +169,13 @@ TRANSLATIONS = {
         "hu": "Kérlek, válassz tantárgyat.",
         "es": "Por favor, elige una asignatura.",
     },
+    "flash_language_required": {
+        "hu": "Kérlek, válassz nyelvet (angol vagy német).",
+        "es": "Por favor, elige un idioma (inglés o alemán).",
+    },
+    "label_language": {"hu": "Nyelv", "es": "Idioma"},
+    "language_angol": {"hu": "Angol", "es": "Inglés"},
+    "language_nemet": {"hu": "Német", "es": "Alemán"},
 
     # --- flash üzenetek ---
     "flash_registered": {

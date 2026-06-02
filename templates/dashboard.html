@@ -20,11 +20,13 @@
                 <ul class="child-meta">
                     <li>
                         <span class="meta-label">{{ t('card_age') }}</span>
-                        <span class="meta-value">{{ child['age'] }} {{ t('years_old') }}</span>
-                    </li>
-                    <li>
-                        <span class="meta-label">{{ t('card_grade') }}</span>
-                        <span class="meta-value">{{ child['grade'] }}</span>
+                        <span class="meta-value">
+                            {% if child['grade'] %}
+                                {{ child['grade'] }}. osztály / {{ child['age'] }} {{ t('years_old') }}
+                            {% else %}
+                                {{ child['age'] }} {{ t('years_old') }}
+                            {% endif %}
+                        </span>
                     </li>
                     <li>
                         <span class="meta-label">{{ t('card_location') }}</span>

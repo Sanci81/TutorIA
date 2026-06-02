@@ -14,7 +14,11 @@
                 {{ t('select_tasks_subtitle').format(name=child['name']) }}
             </p>
             <p class="select-tasks-meta">
-                {{ child['grade'] }} · {{ child['age'] }} {{ t('years_old') }}
+                {% if child['grade'] %}
+                    {{ child['grade'] }}. osztály / {{ child['age'] }} {{ t('years_old') }}
+                {% else %}
+                    {{ child['age'] }} {{ t('years_old') }}
+                {% endif %}
             </p>
         </div>
     </div>
@@ -24,14 +28,23 @@
             <form class="select-tasks-form"
                   method="post"
                   action="{{ url_for('generate_tasks', child_id=child['id']) }}"
-                  id="generate-tasks-form">
+                  id="generate-tasks-form"
+                  lang="{{ lang }}">
                 <div class="field">
-                    <label for="subject">{{ t('label_subject') }}</label>
-                    <select id="subject" name="subject" required>
+                    <label for="subject-select">{{ t('label_subject') }}</label>
+                    <select id="subject-select" name="subject" required lang="{{ lang }}">
                         <option value="">{{ t('select_placeholder') }}</option>
                         {% for opt in subject_options %}
                             <option value="{{ opt['value'] }}">{{ opt['label'] }}</option>
                         {% endfor %}
+                    </select>
+                </div>
+                <div class="field language-selector" id="language-selector" hidden>
+                    <label for="language-select">{{ t('label_language') }}</label>
+                    <select id="language-select" name="language" lang="{{ lang }}">
+                        <option value="">{{ t('select_placeholder') }}</option>
+                        <option value="angol">{{ t('language_angol') }}</option>
+                        <option value="nemet">{{ t('language_nemet') }}</option>
                     </select>
                 </div>
                 <div class="form-actions">
@@ -62,9 +75,43 @@ document.addEventListener('DOMContentLoaded', function () {
     var form = document.getElementById('generate-tasks-form');
     var overlay = document.getElementById('loading-overlay');
     var btn = document.getElementById('generate-btn');
+    var subjectSelect = document.getElementById('subject-select');
+    var langDiv = document.getElementById('language-selector');
+    var langSelect = document.getElementById('language-select');
+    var eloFile = {{ elo_idegen_file|tojson }};
+
+    function isIdegenNyelvSelected() {
+        if (!subjectSelect) return false;
+        var val = subjectSelect.value;
+        var text = subjectSelect.options[subjectSelect.selectedIndex].text;
+        return val === eloFile || text === 'Idegen nyelv';
+    }
+
+    function updateLanguageSelector() {
+        if (!langDiv || !langSelect) return;
+        if (isIdegenNyelvSelected()) {
+            langDiv.hidden = false;
+            langSelect.required = true;
+        } else {
+            langDiv.hidden = true;
+            langSelect.required = false;
+            langSelect.value = '';
+        }
+    }
+
+    if (subjectSelect) {
+        subjectSelect.addEventListener('change', updateLanguageSelector);
+        updateLanguageSelector();
+    }
+
     if (!form || !overlay) return;
 
-    form.addEventListener('submit', function () {
+    form.addEventListener('submit', function (e) {
+        if (isIdegenNyelvSelected() && langSelect && !langSelect.value) {
+            e.preventDefault();
+            alert({{ t('flash_language_required')|tojson }});
+            return;
+        }
         overlay.hidden = false;
         if (btn) {
             btn.disabled = true;

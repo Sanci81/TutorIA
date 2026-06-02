@@ -9,6 +9,7 @@ Az eredmény fájl-cache-be kerül; sikertelen lekérés esetén fallback lista.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 import ssl
@@ -43,6 +44,8 @@ ES_COMMUNITIES_PATH = (
 )
 
 USER_AGENT = "TutorIA/1.0 (education curriculum loader)"
+
+logger = logging.getLogger(__name__)
 
 _SSL_CTX = ssl.create_default_context()
 _SSL_CTX.check_hostname = False
@@ -80,6 +83,7 @@ _HU_DOCX_SUBJECTS: dict[str, str] = {
 _HU_GRADE_RULES_LOWER: dict[str, tuple[int, int]] = {
     "Környezetismeret": (3, 4),
     "Digitális kultúra": (3, 4),
+    "Idegen nyelv": (4, 4),
     "Első élő idegen nyelv": (4, 4),
 }
 
@@ -101,6 +105,7 @@ _HU_SUBJECT_UI_ES: dict[str, str] = {
     "Etika": "Ética",
     "Környezetismeret": "Conocimiento del medio",
     "Digitális kultúra": "Cultura digital",
+    "Idegen nyelv": "Lengua extranjera",
     "Első élő idegen nyelv": "Lengua extranjera",
     "Ének-zene": "Educación musical",
     "Vizuális kultúra": "Educación plástica y visual",
@@ -119,6 +124,8 @@ _HU_SUBJECT_UI_ES: dict[str, str] = {
 
 _ES_SUBJECT_UI_HU: dict[str, str] = {
     "Conocimiento del Medio Natural, Social y Cultural": "Környezetismeret",
+    "Ciencias de la Naturaleza": "Természetismeret",
+    "Ciencias Sociales": "Társadalomismeret",
     "Educación Artística": "Művészetek",
     "Educación Física": "Testnevelés",
     "Lengua Castellana y Literatura": "Spanyol nyelv és irodalom",
@@ -131,6 +138,116 @@ _ES_SUBJECT_UI_HU: dict[str, str] = {
     "Lengua Cooficial y Literatura (Galego)": "Galíciai nyelv és irodalom",
     "Lengua Cooficial y Literatura (Valenciano)": "Valenciai nyelv és irodalom",
 }
+
+# Spanyol tantárgynevek – HU profilban soha nem jelenhetnek meg
+_SPANISH_SUBJECT_KEYS = frozenset(
+    {
+        "cienciasdelanaturaleza",
+        "cienciassociales",
+        "cienciasnaturales",
+        "conocimientodelmedionaturalsocialycultural",
+        "lenguacastellanayliteratura",
+        "ensenanzasdereligion",
+        "educacionartistica",
+        "educacionfisica",
+        "lenguaextranjera",
+        "matematicas",
+        "educacionenvalorescivicosyetico",
+    }
+)
+
+# ES profil + HU UI: ezek a magyar fordítások csak spanyol UI-ban
+_ES_ONLY_HU_UI_LABELS = frozenset(
+    {
+        "Spanyol nyelv és irodalom",
+        "Vallásoktatás",
+    }
+)
+
+_HU_CORE_SUBJECT = "Magyar nyelv és irodalom"
+
+_HU_EXCLUDED_SUBJECT_KEYS = frozenset(
+    {
+        "kozossegieneveles",
+        "kozossegineveles",
+    }
+)
+
+# Feladatgeneráláshoz: megjelenített név → JSON fájl tantárgy
+_HU_SUBJECT_JSON_ALIASES: dict[str, tuple[str, ...]] = {
+    "idegennyelv": ("eloidegennyelv",),
+    "magyarnyelvesirodalom": ("magyarnyelvesirodalom",),
+}
+
+# HU 1–4: kizárólag hardcoded lista (NE fájlrendszer-ből építsd!)
+_HU_1_4_SUBJECT_MAP: dict[str, str] = {
+    "Magyar nyelv és irodalom": "Magyar_nyelv_es_irodalom_1_4.json",
+    "Matematika": "Matematika_1_4.json",
+    "Környezetismeret": "Kornyezetismeret_1_4.json",
+    "Etika": "Etika_1_4.json",
+    "Idegen nyelv": "Elo_idegen_nyelv_1_4.json",
+    "Ének-zene": "Enek_zene_1_4.json",
+    "Vizuális kultúra": "Vizualis_kultura_1_4.json",
+    "Technika és tervezés": "Technika_es_tervezes_1_4.json",
+    "Digitális kultúra": "Digitalis_kultura_1_4.json",
+    "Testnevelés": "Testneveles_1_4.json",
+}
+
+ELO_IDEGEN_NYELV_1_4_FILE = "Elo_idegen_nyelv_1_4.json"
+
+# Sablonokhoz: megengedett fájlnevek és címkék
+HU_1_4_SUBJECT_NAMES: list[str] = list(_HU_1_4_SUBJECT_MAP.keys())
+HU_1_4_SUBJECT_FILES: frozenset[str] = frozenset(_HU_1_4_SUBJECT_MAP.values())
+
+
+def get_hu_1_4_subjects() -> list[dict[str, str]]:
+    """HU 1–4 tantárgyválasztó – fix lista, label + JSON fájlnév."""
+    return [
+        {"label": label, "value": filename}
+        for label, filename in _HU_1_4_SUBJECT_MAP.items()
+    ]
+
+
+def is_hu_1_4_grade(grade: str | int) -> bool:
+    try:
+        grade_num = parse_grade(grade)
+    except ValueError:
+        return False
+    return 1 <= grade_num <= 4
+
+
+def hu_1_4_label_from_value(value: str) -> str:
+    """JSON fájlnév vagy régi megjelenítési név → magyar tantárgy név."""
+    if value in _HU_1_4_SUBJECT_MAP:
+        return value
+    for label, filename in _HU_1_4_SUBJECT_MAP.items():
+        if value == filename:
+            return label
+    return value
+
+
+def foreign_language_prompt_block(language: str | None) -> str:
+    """Idegen nyelv tantárgyhoz: angol/német feladat utasítás."""
+    if language == "angol":
+        return (
+            "\nFONTOS: A feladatok KIZÁRÓLAG ANGOL nyelvűek legyenek. "
+            "A gyerek angolul tanulja ezt a nyelvet; a feladatok, szavak, "
+            "mondatok és fordítások is angolul legyenek.\n"
+        )
+    if language == "nemet":
+        return (
+            "\nFONTOS: A feladatok KIZÁRÓLAG NÉMET nyelvűek legyenek. "
+            "A gyerek németül tanulja ezt a nyelvet; a feladatok, szavak, "
+            "mondatok és fordítások is németül legyenek.\n"
+        )
+    return ""
+
+
+# Régi katalógus – csak 5–8 indexhez (1–4 NE használja dinamikus listát)
+_HU_1_4_JSON_CATALOG: tuple[tuple[str, str, int, int], ...] = tuple(
+    (label, filename.replace("_1_4.json", ""), 1, 4)
+    for label, filename in _HU_1_4_SUBJECT_MAP.items()
+)
 
 # ---------------------------------------------------------------------------
 # Spanyol ár-nevek (slug -> megjelenített név)
@@ -217,7 +334,7 @@ FALLBACK_HU: dict[str, list[str]] = {
         "Matematika",
         "Etika",
         "Környezetismeret",
-        "Első élő idegen nyelv",
+        "Idegen nyelv",
         "Digitális kultúra",
         "Ének-zene",
         "Vizuális kultúra",
@@ -329,6 +446,38 @@ _HU_JSON_DIR_CANDIDATES: dict[str, tuple[str, ...]] = {
 _HU_FILENAME_RE = re.compile(r"^(.+)_(\d+)_(\d+)\.json$", re.IGNORECASE)
 _HU_AGGREGATE_PREFIX = "hu_kerettanterv_"
 
+# Csak ezek jelenhetnek meg HU 1–4 feladatválasztóban (JSON fájlokkal párosítva)
+_HU_1_4_ALLOWED: frozenset[str] = frozenset(
+    {
+        "Magyar nyelv és irodalom",
+        "Matematika",
+        "Környezetismeret",
+        "Etika",
+        "Idegen nyelv",
+        "Ének-zene",
+        "Vizuális kultúra",
+        "Technika és tervezés",
+        "Digitális kultúra",
+        "Testnevelés",
+    }
+)
+
+# Spanyol tantárgyak – kizárólag ES ország + spanyol UI
+_ES_CIENCIAS_CANONICAL = frozenset(
+    {
+        "Ciencias de la Naturaleza",
+        "Ciencias Sociales",
+    }
+)
+
+# HU profilban tiltott feliratok / téves mappingek
+_FORBIDDEN_HU_LABELS = frozenset(
+    {
+        "Spanyol nyelv és irodalom",
+        "Vallásoktatás",
+    }
+)
+
 _json_file_cache: dict[str, dict[str, Any]] = {}
 _hu_json_index: dict[tuple[int, int, int], list[tuple[Path, str, str]]] | None = None
 
@@ -349,6 +498,7 @@ def _display_subject_name(raw: str) -> str:
         "enekzene": "Ének-zene",
         "vizualiskultura": "Vizuális kultúra",
         "kornyezetismeret": "Környezetismeret",
+        "idegennyelv": "Idegen nyelv",
         "eloidegennyelv": "Első élő idegen nyelv",
         "technikaestervezes": "Technika és tervezés",
         "testneveles": "Testnevelés",
@@ -368,7 +518,12 @@ def _subjects_match(requested: str, slug: str, meta_name: str) -> bool:
         _normalize_key(meta_name),
         _normalize_key(_display_subject_name(meta_name)),
     }
-    return req in file_keys
+    if req in file_keys:
+        return True
+    for alias_key in _HU_SUBJECT_JSON_ALIASES.get(req, ()):
+        if alias_key in file_keys:
+            return True
+    return False
 
 
 def _hu_band_for_grade(grade: int) -> str:
@@ -412,7 +567,7 @@ def _build_hu_json_index() -> dict[tuple[int, int, int], list[tuple[Path, str, s
             if not directory.is_dir():
                 continue
             for path in directory.glob("*.json"):
-                if path.name.lower().startswith(_HU_AGGREGATE_PREFIX):
+                if _is_hu_aggregate_json(path):
                     continue
                 match = _HU_FILENAME_RE.match(path.name)
                 if not match:
@@ -445,11 +600,113 @@ def _normalize_filename_slug(slug: str) -> str:
     return text
 
 
+def _is_hu_aggregate_json(path: Path) -> bool:
+    """Összesítő / master JSON – nem tantárgy (pl. hu_kerettanterv_1_4_HIVATALOS.json)."""
+    name = path.name.casefold()
+    return name.startswith(_HU_AGGREGATE_PREFIX) or "hivatalos" in name
+
+
+def _is_aggregate_subject_name(name: str) -> bool:
+    """Tantárgy-név, ami valójában összesítő fájlra utal – kiszűrendő."""
+    key = _normalize_key(name)
+    return (
+        "hivatalos" in key
+        or key.startswith("hukerettanterv")
+        or ("kerettanterv" in key and "magyar" not in key)
+    )
+
+
+def _hu_1_4_json_path(slug: str) -> Path | None:
+    """JSON fájl elérési útja slug alapján (relatív a curriculum_loader.py-hoz)."""
+    filename = f"{slug}_1_4.json"
+    return _hu_1_4_path_from_filename(filename)
+
+
+def _hu_1_4_path_from_filename(filename: str) -> Path | None:
+    """Hardcoded JSON fájlnév → teljes elérési út (hu_kerettanterv_1_4_TELJES)."""
+    if filename not in HU_1_4_SUBJECT_FILES:
+        return None
+    for dir_name in _HU_JSON_DIR_CANDIDATES["1-4"]:
+        path = Path(__file__).parent.joinpath(dir_name, filename)
+        if path.is_file() and not _is_hu_aggregate_json(path):
+            return path
+    return None
+
+
+def list_hu_subjects_1_4(grade: int) -> list[str]:
+    """1–4. évfolyam: mind a 10 hardcoded tantárgy (megjelenítési nevek)."""
+    if not 1 <= grade <= 4:
+        return []
+    return [entry["label"] for entry in get_hu_1_4_subjects()]
+
+
+def _is_spanish_subject_name(name: str) -> bool:
+    return _normalize_key(name) in _SPANISH_SUBJECT_KEYS
+
+
+def _ciencias_visible_in_ui(country: str, ui_lang: str) -> bool:
+    """Ciencias de la Naturaleza / Sociales – csak ES ország + spanyol UI."""
+    return country.upper() == "ES" and ui_lang == "es"
+
+
+def _sanitize_hu_subjects(subjects: list[str], grade: int) -> list[str]:
+    """HU tantárgy-lista: 1–4 JSON katalógus; 5+ spanyol nevek kiszűrése."""
+    if 1 <= grade <= 4:
+        catalog = list_hu_subjects_1_4(grade)
+        if catalog:
+            return catalog
+        return [s for s in _hu_fallback(grade) if s in _HU_1_4_ALLOWED]
+
+    if grade < 1 or grade > 12:
+        return _dedupe(subjects)
+
+    band = _hu_band_for_grade(grade)
+    cleaned: list[str] = []
+    seen: set[str] = set()
+
+    for raw in subjects:
+        raw_name = (raw or "").strip()
+        if not raw_name or _is_spanish_subject_name(raw_name):
+            continue
+        canonical = _display_subject_name(raw_name)
+        key = _normalize_key(canonical)
+        if key in _HU_EXCLUDED_SUBJECT_KEYS or key in seen:
+            continue
+        if not _hu_json_applies_to_grade(canonical, grade, band):
+            continue
+        seen.add(key)
+        cleaned.append(canonical)
+
+    magyar_key = _normalize_key(_HU_CORE_SUBJECT)
+    if magyar_key not in seen:
+        cleaned.insert(0, _HU_CORE_SUBJECT)
+
+    if not cleaned:
+        return _hu_fallback(grade)
+
+    ordered: list[str] = []
+    for subj in _hu_fallback(grade):
+        if subj not in ordered:
+            ordered.append(subj)
+    for subj in cleaned:
+        if subj not in ordered:
+            ordered.append(subj)
+    return ordered
+
+
 def subject_ui_label(canonical: str, ui_lang: str, country: str) -> str:
     """Tantárgy megjelenítési neve a UI nyelve szerint (HU / ES)."""
+    country = country.upper()
     if ui_lang == "es":
-        return _HU_SUBJECT_UI_ES.get(canonical, canonical)
-    return _ES_SUBJECT_UI_HU.get(canonical, canonical)
+        if country == "HU":
+            return _HU_SUBJECT_UI_ES.get(canonical, canonical)
+        return canonical
+    if country == "HU":
+        return canonical
+    label = _ES_SUBJECT_UI_HU.get(canonical, canonical)
+    if label in _ES_ONLY_HU_UI_LABELS:
+        return canonical
+    return label
 
 
 def get_subject_options_for_ui(
@@ -459,14 +716,41 @@ def get_subject_options_for_ui(
     ui_lang: str,
 ) -> tuple[dict[str, Any], list[dict[str, str]]]:
     """Tanterv + legördülő opciók: value=tantervi név, label=UI nyelv."""
-    profile = get_subjects_for_profile(country, grade, region)
-    options = [
-        {
-            "value": canonical,
-            "label": subject_ui_label(canonical, ui_lang, country.upper()),
+    country = country.upper()
+    grade_num = parse_grade(grade)
+
+    # HU 1–4: kizárólag hardcoded lista – semmi más logika nem írhatja felül
+    if country == "HU" and 1 <= grade_num <= 4:
+        options = get_hu_1_4_subjects()
+        profile: dict[str, Any] = {
+            "subjects": [o["label"] for o in options],
+            "source": "hardcoded",
+            "fetched_at": _now_iso(),
+            "country": country,
+            "grade": grade_num,
+            "region": None,
         }
-        for canonical in profile["subjects"]
-    ]
+        return profile, options
+
+    profile = get_subjects_for_profile(country, grade, region)
+    options: list[dict[str, str]] = []
+    for canonical in profile["subjects"]:
+        if country == "HU":
+            if _is_spanish_subject_name(canonical) or _is_aggregate_subject_name(
+                canonical
+            ):
+                continue
+        if canonical in _ES_CIENCIAS_CANONICAL and not _ciencias_visible_in_ui(
+            country, ui_lang
+        ):
+            continue
+        label = subject_ui_label(canonical, ui_lang, country)
+        if country == "HU" and (
+            label in _FORBIDDEN_HU_LABELS
+            or label == "Spanyol nyelv és irodalom"
+        ):
+            continue
+        options.append({"value": canonical, "label": label})
     return profile, options
 
 
@@ -485,7 +769,10 @@ def _hu_json_applies_to_grade(display_name: str, grade: int, band: str) -> bool:
 def list_hu_subjects_from_json(grade: int) -> list[str]:
     """Tantárgy-lista a helyi JSON fájlokból (1–8. évfolyam)."""
     band = _hu_band_for_grade(grade)
-    grade_lo, grade_hi = (1, 4) if band == "1-4" else (5, 8)
+    if band == "1-4":
+        return list_hu_subjects_1_4(grade)
+
+    grade_lo, grade_hi = (5, 8)
     entries = _build_hu_json_index().get((grade_lo, grade_hi, grade), [])
     from_json: list[str] = []
     for _, _, display in entries:
@@ -500,13 +787,26 @@ def list_hu_subjects_from_json(grade: int) -> list[str]:
     for subj in from_json:
         if subj not in ordered:
             ordered.append(subj)
-    return ordered
+    return _sanitize_hu_subjects(ordered, grade)
 
 
 def find_hu_json_file(grade: int, subject: str) -> Path | None:
     """Megfelelő tantárgy-JSON fájl keresése évfolyam és tantárgy alapján."""
     band = _hu_band_for_grade(grade)
-    grade_lo, grade_hi = (1, 4) if band == "1-4" else (5, 8)
+    if band == "1-4":
+        if subject in HU_1_4_SUBJECT_FILES:
+            path = _hu_1_4_path_from_filename(subject)
+            if path:
+                return path
+        for label, filename in _HU_1_4_SUBJECT_MAP.items():
+            slug = filename.replace("_1_4.json", "")
+            if _subjects_match(subject, slug, label):
+                path = _hu_1_4_path_from_filename(filename)
+                if path:
+                    return path
+        return None
+
+    grade_lo, grade_hi = (5, 8)
     entries = _build_hu_json_index().get((grade_lo, grade_hi, grade), [])
     for path, slug, display in entries:
         data = _load_hu_json(path)
@@ -559,6 +859,12 @@ def get_hu_curriculum_context(grade: int, subject: str) -> dict[str, Any]:
     grade_num = parse_grade(grade)
     path = find_hu_json_file(grade_num, subject)
     if not path:
+        logger.warning(
+            "HU JSON tanterv nem található: subject=%r grade=%s (path keresés: %s)",
+            subject,
+            grade_num,
+            Path(__file__).parent,
+        )
         return {
             "found": False,
             "subject": subject,
@@ -614,6 +920,10 @@ def _is_spanish_subject_list(subjects: list[str]) -> bool:
         "educación artística",
         "conocimiento del medio",
         "lengua extranjera",
+        "ciencias de la naturaleza",
+        "ciencias sociales",
+        "educación física",
+        "enseñanzas de religión",
     )
     joined = " ".join(s.casefold() for s in subjects)
     return any(marker in joined for marker in markers)
@@ -642,6 +952,7 @@ def get_subjects_for_profile(
         if not subjects:
             subjects = _hu_fallback(grade_num)
             source = "fallback"
+        subjects = _sanitize_hu_subjects(subjects, grade_num)
         return {
             "subjects": subjects,
             "source": source,
@@ -979,6 +1290,8 @@ def get_subjects(
             if cached_country == country and not (
                 country == "HU" and _is_spanish_subject_list(subjects)
             ):
+                if country == "HU":
+                    cached["subjects"] = _sanitize_hu_subjects(subjects, grade_num)
                 cached["source"] = "cache"
                 return cached
 
@@ -986,6 +1299,7 @@ def get_subjects(
         if country == "HU":
             json_subjects = list_hu_subjects_from_json(grade_num)
             if json_subjects:
+                json_subjects = _sanitize_hu_subjects(json_subjects, grade_num)
                 payload = {
                     "subjects": json_subjects,
                     "source": "json",
