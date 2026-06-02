@@ -231,7 +231,7 @@ a:hover { text-decoration: underline; }
 .btn-ghost:hover { background: var(--green-50); }
 .btn-generate {
     background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    color: #78350f;
+    color: #ffffff;
     box-shadow: var(--shadow-sm);
     margin-top: 0;
     font-size: 0.88rem;
@@ -245,7 +245,7 @@ a:hover { text-decoration: underline; }
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     text-decoration: none;
-    color: #78350f;
+    color: #ffffff;
 }
 .child-card-actions { margin-top: auto; padding-top: 1rem; }
 

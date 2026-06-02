@@ -20,7 +20,7 @@
     </div>
 
     <div class="card select-tasks-card">
-        {% if subjects %}
+        {% if subject_options %}
             <form class="select-tasks-form"
                   method="post"
                   action="{{ url_for('generate_tasks', child_id=child['id']) }}"
@@ -29,8 +29,8 @@
                     <label for="subject">{{ t('label_subject') }}</label>
                     <select id="subject" name="subject" required>
                         <option value="">{{ t('select_placeholder') }}</option>
-                        {% for subj in subjects %}
-                            <option value="{{ subj }}">{{ subj }}</option>
+                        {% for opt in subject_options %}
+                            <option value="{{ opt['value'] }}">{{ opt['label'] }}</option>
                         {% endfor %}
                     </select>
                 </div>

@@ -25,12 +25,16 @@ from flask import (
     url_for,
 )
 import resend
-from openai import OpenAI
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import database
 import translations as i18n
-from curriculum_loader import get_curriculum_for_child, get_subjects_for_profile
+from curriculum_loader import (
+    get_curriculum_for_child,
+    get_subject_options_for_ui,
+    get_subjects_for_profile,
+    subject_ui_label,
+)
 from database import RESET_TOKEN_HOURS
 
 logger = logging.getLogger(__name__)
@@ -178,8 +182,8 @@ def _build_task_generation_prompt(
     ctx = curriculum.get("subject_context") or {}
     summary = ctx.get("summary") or ""
     if summary:
-        if len(summary) > 3500:
-            summary = summary[:3500] + "\n..."
+        if len(summary) > 2500:
+            summary = summary[:2500] + "\n..."
         topic_block = (
             f"\nHivatalos tantervi témakörök ({ctx.get('subject', subject_line)}, "
             f"{curriculum.get('grade', child['grade'])}. évfolyam):\n{summary}\n"
@@ -254,6 +258,8 @@ def _call_ai_for_tasks(prompt: str, *, lang: str) -> list[dict]:
 
     raw = ""
     try:
+        from openai import OpenAI
+
         client = OpenAI(api_key=api_key, timeout=90.0)
         response = client.chat.completions.create(
             model="gpt-4o-mini",
@@ -269,6 +275,11 @@ def _call_ai_for_tasks(prompt: str, *, lang: str) -> list[dict]:
         )
         raw = response.choices[0].message.content or "{}"
         logger.info("OpenAI response received: chars=%d", len(raw))
+    except ImportError as exc:
+        logger.exception("OpenAI csomag nincs telepítve – pip install openai")
+        raise RuntimeError(
+            "OpenAI csomag hiányzik a szerverről. Telepítsd: pip install openai"
+        ) from exc
     except Exception as exc:
         logger.exception(
             "OpenAI API hívás sikertelen (%s): %s",
@@ -507,16 +518,19 @@ def select_tasks(child_id: int):
 
     region = child["region"] if child["country"] == "ES" else None
     try:
-        curriculum = get_subjects_for_profile(child["country"], child["grade"], region)
-        subjects = curriculum.get("subjects") or []
+        curriculum, subject_options = get_subject_options_for_ui(
+            child["country"], child["grade"], region, g.lang
+        )
     except Exception:
         logger.exception("Tantárgy-lista betöltése sikertelen (child_id=%s)", child_id)
-        subjects = []
+        curriculum = {"subjects": []}
+        subject_options = []
 
     return render_template(
         "select_tasks.html",
         child=child,
-        subjects=subjects,
+        subject_options=subject_options,
+        curriculum=curriculum,
     )
 
 
@@ -582,7 +596,12 @@ def generate_tasks(child_id: int):
     if request.is_json:
         return jsonify({"tasks": tasks, "curriculum": curriculum})
     return render_template(
-        "tasks.html", child=child, tasks=tasks, curriculum=curriculum, subject=subject
+        "tasks.html",
+        child=child,
+        tasks=tasks,
+        curriculum=curriculum,
+        subject=subject,
+        subject_label=subject_ui_label(subject, g.lang, child["country"]),
     )
 
 

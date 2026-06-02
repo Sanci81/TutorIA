@@ -11,7 +11,7 @@
             {{ t('tasks_for') }} <strong>{{ child['name'] }}</strong>
         </p>
         <p class="tasks-hero-subject">
-            {{ t('tasks_subject') }}: <span>{{ subject }}</span>
+            {{ t('tasks_subject') }}: <span>{{ subject_label or subject }}</span>
         </p>
         <p class="tasks-encouragement">{{ t('tasks_encouragement') }}</p>
     </div>

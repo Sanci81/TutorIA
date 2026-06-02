@@ -94,6 +94,44 @@ _HU_GRADE_RULES_UPPER: dict[str, tuple[int, int]] = {
     "Állampolgári ismeretek": (8, 8),
 }
 
+# UI nyelv szerinti tantárgy-feliratok (value = tantervi név, label = UI nyelv)
+_HU_SUBJECT_UI_ES: dict[str, str] = {
+    "Magyar nyelv és irodalom": "Lengua y literatura húngaras",
+    "Matematika": "Matemáticas",
+    "Etika": "Ética",
+    "Környezetismeret": "Conocimiento del medio",
+    "Digitális kultúra": "Cultura digital",
+    "Első élő idegen nyelv": "Lengua extranjera",
+    "Ének-zene": "Educación musical",
+    "Vizuális kultúra": "Educación plástica y visual",
+    "Technika és tervezés": "Tecnología",
+    "Testnevelés": "Educación física",
+    "Történelem": "Historia",
+    "Hon- és népismeret": "Patria y folklore",
+    "Természettudomány": "Ciencias naturales",
+    "Kémia": "Química",
+    "Fizika": "Física",
+    "Biológia": "Biología",
+    "Földrajz": "Geografía",
+    "Dráma és színház": "Teatro y drama",
+    "Állampolgári ismeretek": "Educación cívica",
+}
+
+_ES_SUBJECT_UI_HU: dict[str, str] = {
+    "Conocimiento del Medio Natural, Social y Cultural": "Környezetismeret",
+    "Educación Artística": "Művészetek",
+    "Educación Física": "Testnevelés",
+    "Lengua Castellana y Literatura": "Spanyol nyelv és irodalom",
+    "Lengua Extranjera": "Idegen nyelv",
+    "Matemáticas": "Matematika",
+    "Educación en Valores Cívicos y Éticos": "Polgári értékek",
+    "Enseñanzas de religión": "Vallásoktatás",
+    "Lengua Cooficial y Literatura (Catalán)": "Katalán nyelv és irodalom",
+    "Lengua Cooficial y Literatura (Euskera)": "Baszk nyelv és irodalom",
+    "Lengua Cooficial y Literatura (Galego)": "Galíciai nyelv és irodalom",
+    "Lengua Cooficial y Literatura (Valenciano)": "Valenciai nyelv és irodalom",
+}
+
 # ---------------------------------------------------------------------------
 # Spanyol ár-nevek (slug -> megjelenített név)
 # ---------------------------------------------------------------------------
@@ -380,6 +418,7 @@ def _build_hu_json_index() -> dict[tuple[int, int, int], list[tuple[Path, str, s
                 if not match:
                     continue
                 slug, file_lo, file_hi = match.group(1), int(match.group(2)), int(match.group(3))
+                slug = _normalize_filename_slug(slug)
                 dedupe_key = (slug.casefold(), file_lo, file_hi)
                 if dedupe_key in seen:
                     continue
@@ -396,8 +435,47 @@ def _build_hu_json_index() -> dict[tuple[int, int, int], list[tuple[Path, str, s
     return index
 
 
+def _normalize_filename_slug(slug: str) -> str:
+    """Fájlnév slug tisztítása (mojibake / ékezetek kezelése)."""
+    text = unicodedata.normalize("NFKD", slug)
+    text = "".join(ch for ch in text if not unicodedata.combining(ch))
+    text = re.sub(r"[^a-zA-Z0-9_]", "", text)
+    if _normalize_key(text).startswith("testnevel"):
+        return "Testneveles"
+    return text
+
+
+def subject_ui_label(canonical: str, ui_lang: str, country: str) -> str:
+    """Tantárgy megjelenítési neve a UI nyelve szerint (HU / ES)."""
+    if ui_lang == "es":
+        return _HU_SUBJECT_UI_ES.get(canonical, canonical)
+    return _ES_SUBJECT_UI_HU.get(canonical, canonical)
+
+
+def get_subject_options_for_ui(
+    country: str,
+    grade: str | int,
+    region: str | None,
+    ui_lang: str,
+) -> tuple[dict[str, Any], list[dict[str, str]]]:
+    """Tanterv + legördülő opciók: value=tantervi név, label=UI nyelv."""
+    profile = get_subjects_for_profile(country, grade, region)
+    options = [
+        {
+            "value": canonical,
+            "label": subject_ui_label(canonical, ui_lang, country.upper()),
+        }
+        for canonical in profile["subjects"]
+    ]
+    return profile, options
+
+
 def _hu_json_applies_to_grade(display_name: str, grade: int, band: str) -> bool:
     rules = _HU_GRADE_RULES_LOWER if band == "1-4" else _HU_GRADE_RULES_UPPER
+    canonical = _display_subject_name(display_name)
+    if canonical in rules:
+        lo, hi = rules[canonical]
+        return lo <= grade <= hi
     if display_name in rules:
         lo, hi = rules[display_name]
         return lo <= grade <= hi
@@ -409,11 +487,20 @@ def list_hu_subjects_from_json(grade: int) -> list[str]:
     band = _hu_band_for_grade(grade)
     grade_lo, grade_hi = (1, 4) if band == "1-4" else (5, 8)
     entries = _build_hu_json_index().get((grade_lo, grade_hi, grade), [])
-    subjects: list[str] = []
+    from_json: list[str] = []
     for _, _, display in entries:
-        if _hu_json_applies_to_grade(display, grade, band) and display not in subjects:
-            subjects.append(display)
-    return subjects
+        canonical = _display_subject_name(display)
+        if _hu_json_applies_to_grade(canonical, grade, band) and canonical not in from_json:
+            from_json.append(canonical)
+    fallback = _hu_fallback(grade)
+    ordered: list[str] = []
+    for subj in fallback:
+        if _hu_json_applies_to_grade(subj, grade, band) and subj not in ordered:
+            ordered.append(subj)
+    for subj in from_json:
+        if subj not in ordered:
+            ordered.append(subj)
+    return ordered
 
 
 def find_hu_json_file(grade: int, subject: str) -> Path | None:
