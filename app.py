@@ -38,7 +38,6 @@ from curriculum_loader import (
     get_subject_options_for_ui,
     get_subjects_for_profile,
     hu_1_4_label_from_value,
-    is_hu_1_4_grade,
     parse_grade,
     subject_ui_label,
 )
@@ -572,27 +571,23 @@ def select_tasks(child_id: int):
     if not child:
         abort(404)
 
-    region = child["region"] if child["country"] == "ES" else None
     grade_num = parse_grade(child["grade"])
 
-    if g.lang == "hu" and is_hu_1_4_grade(grade_num):
+    # Mindig g.lang alapján dönt, nem country alapján
+    if g.lang == "hu":
         subject_options = get_hu_1_4_subjects()
         curriculum = {
             "subjects": [o["label"] for o in subject_options],
             "source": "hardcoded",
-            "country": "HU",
             "grade": grade_num,
-            "region": None,
         }
     else:
+        region = child["region"] if child["country"] == "ES" else None
         try:
             curriculum, subject_options = get_subject_options_for_ui(
                 child["country"], child["grade"], region, g.lang
             )
         except Exception:
-            logger.exception(
-                "Tantárgy-lista betöltése sikertelen (child_id=%s)", child_id
-            )
             curriculum = {"subjects": []}
             subject_options = []
 
@@ -626,7 +621,7 @@ def generate_tasks(child_id: int):
         return redirect(url_for("select_tasks", child_id=child_id))
 
     grade_num = parse_grade(child["grade"])
-    if child["country"] == "HU" and is_hu_1_4_grade(grade_num):
+    if g.lang == "hu":
         allowed_files = {o["value"] for o in get_hu_1_4_subjects()}
         if subject not in allowed_files:
             if request.is_json:
@@ -734,7 +729,7 @@ def generate_tasks(child_id: int):
         subject=subject,
         subject_label=(
             subject_display
-            if child["country"] == "HU" and is_hu_1_4_grade(grade_num)
+            if g.lang == "hu"
             else subject_ui_label(subject, g.lang, child["country"])
         ),
     )

@@ -216,6 +216,11 @@ def is_hu_1_4_grade(grade: str | int) -> bool:
     return 1 <= grade_num <= 4
 
 
+def uses_hu_1_4_curriculum(country: str, grade: str | int) -> bool:
+    """HU 1–4: fájlnév-alapú tantárgylista + helyi JSON tanterv."""
+    return (country or "").upper() == "HU" and is_hu_1_4_grade(grade)
+
+
 def hu_1_4_label_from_value(value: str) -> str:
     """JSON fájlnév vagy régi megjelenítési név → magyar tantárgy név."""
     if value in _HU_1_4_SUBJECT_MAP:
