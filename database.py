@@ -7,6 +7,7 @@ A kapcsolati URL a DATABASE_URL environment variable-ből jön
   - password_reset_tokens: jelszó-visszaállító tokenek
   - chat_sessions, chat_messages: AI tanár beszélgetés
   - child_progress: tantárgyankénti haladás
+  - vocabulary: idegen nyelvi szójegyzék
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ from sqlalchemy import (
     JSON,
     String,
     Text,
+    UniqueConstraint,
     create_engine,
     delete,
     select,
@@ -160,6 +162,31 @@ class ChatMessage(Base):
     )
 
     session: Mapped["ChatSession"] = relationship(back_populates="messages")
+
+
+class Vocabulary(Base):
+    __tablename__ = "vocabulary"
+    __table_args__ = (
+        UniqueConstraint(
+            "child_id",
+            "subject",
+            "word_native",
+            "word_foreign",
+            name="uq_vocab_child_subject_words",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id", ondelete="CASCADE"), nullable=False
+    )
+    subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    language: Mapped[str] = mapped_column(String(20), nullable=False, default="")
+    word_native: Mapped[str] = mapped_column(String(255), nullable=False)
+    word_foreign: Mapped[str] = mapped_column(String(255), nullable=False)
+    learned_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
 
 
 class ChildProgress(Base):
@@ -600,6 +627,86 @@ def update_child_progress(
         db.commit()
         db.refresh(row)
         return _progress_dict(row)
+    finally:
+        db.close()
+
+
+def _vocabulary_dict(row: Vocabulary) -> dict[str, Any]:
+    return {
+        "id": row.id,
+        "child_id": row.child_id,
+        "subject": row.subject,
+        "language": row.language,
+        "word_native": row.word_native,
+        "word_foreign": row.word_foreign,
+        "learned_at": row.learned_at,
+    }
+
+
+def get_vocabulary(
+    child_id: int,
+    subject: str,
+    *,
+    language: str | None = None,
+) -> list[dict[str, Any]]:
+    db = _session()
+    try:
+        stmt = select(Vocabulary).where(
+            Vocabulary.child_id == child_id,
+            Vocabulary.subject == subject,
+        )
+        if language:
+            stmt = stmt.where(Vocabulary.language == language)
+        rows = db.scalars(
+            stmt.order_by(Vocabulary.word_native.asc())
+        ).all()
+        return [_vocabulary_dict(r) for r in rows]
+    finally:
+        db.close()
+
+
+def add_vocabulary_word(
+    child_id: int,
+    subject: str,
+    *,
+    language: str,
+    word_native: str,
+    word_foreign: str,
+) -> dict[str, Any] | None:
+    """Új szó hozzáadása – None ha már létezik."""
+    native = word_native.strip()
+    foreign = word_foreign.strip()
+    if not native or not foreign:
+        return None
+
+    db = _session()
+    try:
+        existing = db.scalar(
+            select(Vocabulary).where(
+                Vocabulary.child_id == child_id,
+                Vocabulary.subject == subject,
+                Vocabulary.word_native == native,
+                Vocabulary.word_foreign == foreign,
+            )
+        )
+        if existing:
+            return None
+
+        row = Vocabulary(
+            child_id=child_id,
+            subject=subject,
+            language=(language or "").strip().lower(),
+            word_native=native,
+            word_foreign=foreign,
+        )
+        db.add(row)
+        try:
+            db.commit()
+        except IntegrityError:
+            db.rollback()
+            return None
+        db.refresh(row)
+        return _vocabulary_dict(row)
     finally:
         db.close()
 

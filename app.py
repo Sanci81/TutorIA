@@ -33,13 +33,16 @@ import database
 import translations as i18n
 from curriculum_loader import (
     ELO_IDEGEN_NYELV_1_4_FILE,
-    curriculum_topic_names,
+    ELO_IDEGEN_NYELV_5_8_FILE,
     foreign_language_prompt_block,
+    get_curriculum_for_chat,
     get_curriculum_for_child,
-    get_hu_1_4_subjects,
+    get_hu_subjects_for_grade,
     get_subject_options_for_ui,
     get_subjects_for_profile,
     hu_1_4_label_from_value,
+    is_elo_idegen_subject,
+    is_hu_1_4_grade,
     parse_grade,
     subject_ui_label,
 )
@@ -583,10 +586,10 @@ def select_tasks(child_id: int):
 
     # Mindig g.lang alapján dönt, nem country alapján
     if g.lang == "hu":
-        subject_options = get_hu_1_4_subjects()
+        subject_options = get_hu_subjects_for_grade(grade_num)
         curriculum = {
             "subjects": [o["label"] for o in subject_options],
-            "source": "hardcoded",
+            "source": "json",
             "grade": grade_num,
         }
     else:
@@ -604,7 +607,11 @@ def select_tasks(child_id: int):
         child=child,
         subject_options=subject_options,
         curriculum=curriculum,
-        elo_idegen_file=ELO_IDEGEN_NYELV_1_4_FILE,
+        elo_idegen_file=(
+            ELO_IDEGEN_NYELV_1_4_FILE
+            if is_hu_1_4_grade(grade_num)
+            else ELO_IDEGEN_NYELV_5_8_FILE
+        ),
     )
 
 
@@ -630,13 +637,14 @@ def generate_tasks(child_id: int):
 
     grade_num = parse_grade(child["grade"])
     if g.lang == "hu":
-        allowed_files = {o["value"] for o in get_hu_1_4_subjects()}
+        allowed_files = {o["value"] for o in get_hu_subjects_for_grade(grade_num)}
         if subject not in allowed_files:
             if request.is_json:
                 return jsonify({"error": "invalid_subject"}), 400
             flash(i18n.t("flash_subject_required", g.lang), "error")
             return redirect(url_for("select_tasks", child_id=child_id))
-        if subject == ELO_IDEGEN_NYELV_1_4_FILE and language not in (
+        idegen_files = (ELO_IDEGEN_NYELV_1_4_FILE, ELO_IDEGEN_NYELV_5_8_FILE)
+        if subject in idegen_files and language not in (
             "angol",
             "nemet",
             "spanyol",
@@ -645,7 +653,7 @@ def generate_tasks(child_id: int):
                 return jsonify({"error": "language_required"}), 400
             flash(i18n.t("flash_language_required", g.lang), "error")
             return redirect(url_for("select_tasks", child_id=child_id))
-        if subject != ELO_IDEGEN_NYELV_1_4_FILE:
+        if subject not in idegen_files:
             language = None
     else:
         region = child["region"] if child["country"] == "ES" else None
@@ -683,7 +691,7 @@ def generate_tasks(child_id: int):
                 child_id,
             )
 
-    if subject == ELO_IDEGEN_NYELV_1_4_FILE:
+    if is_elo_idegen_subject(subject):
         if language == "spanyol":
             foreign_language = "spanyol"
         elif language in ("angol", "nemet"):
@@ -761,23 +769,34 @@ def generate_tasks(child_id: int):
 
 _CHAT_MARKER_TOPIC = re.compile(r"<TOPIC_COMPLETE>", re.IGNORECASE)
 _CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
+_CHAT_MARKER_VOCAB = re.compile(
+    r"<VOCAB>\s*([^=]+?)\s*=\s*([^<]+?)\s*</VOCAB>", re.IGNORECASE
+)
 
 
-def _parse_chat_markers(text: str) -> tuple[str, bool, int | None]:
-    """Eltávolítja a belső jelölőket; topic_complete és level érték."""
+def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[str, str]]]:
+    """Belső jelölők eltávolítása; topic, level, szójegyzék párok."""
     level_val: int | None = None
     level_match = _CHAT_MARKER_LEVEL.search(text)
     if level_match:
         level_val = int(level_match.group(1))
+
+    vocab_pairs: list[tuple[str, str]] = []
+    for native, foreign in _CHAT_MARKER_VOCAB.findall(text):
+        n, f = native.strip(), foreign.strip()
+        if n and f:
+            vocab_pairs.append((n, f))
+
     clean = _CHAT_MARKER_TOPIC.sub("", text)
-    clean = _CHAT_MARKER_LEVEL.sub("", clean).strip()
+    clean = _CHAT_MARKER_LEVEL.sub("", clean)
+    clean = _CHAT_MARKER_VOCAB.sub("", clean).strip()
     topic_done = bool(_CHAT_MARKER_TOPIC.search(text))
-    return clean, topic_done, level_val
+    return clean, topic_done, level_val, vocab_pairs
 
 
-def _chat_topic_list(curriculum: dict) -> list[str]:
-    ctx = curriculum.get("subject_context") or {}
-    return curriculum_topic_names(ctx.get("topics") or {})
+def _chat_load_curriculum(subject_file: str, grade: str | int) -> dict:
+    """Kerettanterv kizárólag helyi JSON-ból."""
+    return get_curriculum_for_chat(subject_file, grade)
 
 
 def _chat_progress_percent(progress: dict, all_topics: list[str]) -> int:
@@ -817,47 +836,74 @@ def _build_chat_system_prompt(
     *,
     subject_label: str,
     current_topic: str,
-    curriculum_context: str,
+    curriculum_json_content: str,
     completed_topics: list[str],
     level: int,
+    is_foreign_language: bool,
 ) -> str:
     age = child["age"]
-    if age <= 8:
-        age_style = (
-            "6-8 éves kornak megfelelő: rövid mondatok, sok emoji, egyszerű szavak."
-        )
-    else:
-        age_style = "9+ éves kornak megfelelő: részletesebb, de közérthető magyarázatok."
+    redirect_example = (
+        f"Érdekes! De most tanuljunk. Térjünk vissza ehhez: "
+        f"{current_topic or subject_label}"
+    )
 
     placement_block = ""
     if level == 0:
-        placement_block = f"""
-SZINTFELMÉRŐ MÓD (level == 0):
-- Tegyél fel 5 kérdést a {subject_label} alapjairól, egyenként, a gyerek válaszai alapján.
-- Az eredmény alapján határozd meg a szintet 1-5 skálán.
-- Ha kész a felmérés, a válasz végén add meg: <LEVEL:X> ahol X a megállapított szint (1-5).
+        placement_block = """
+4. SZINTFELMÉRŐ (level == 0):
+- Nézd át a kerettanterv TELJES tartalmát az adott osztályra
+- Tegyél fel 5 kérdést amelyek LEFEDIK a kerettanterv fő témaköreit
+  (nem te találod ki, hanem a JSON-ból veszed)
+- Értékeld a válaszokat és add meg a szintet: <LEVEL:X> (X = 1-5)
 """
 
-    return f"""Te {child["name"]} AI tanára vagy.
+    vocab_block = ""
+    if is_foreign_language:
+        vocab_block = """
+5. NYELVTANULÁSNÁL minden új szót, amit megtanítasz, jelöld:
+<VOCAB>magyar=idegen_nyelvi_szó</VOCAB>
+Példa: <VOCAB>kutya=dog</VOCAB>
+A gyerek NE lássa a VOCAB tageket a válasz szövegében – csak természetesen tanítsd a szót.
+"""
+
+    curriculum_body = curriculum_json_content or (
+        "NINCS BETÖLTÖTT KERETTANTERV – NE TANÍTS, kérd a szülőtől a tananyag betöltését."
+    )
+
+    return f"""Te {child["name"]} személyes AI tanára vagy.
 {child["name"]} {child["grade"]}. osztályos, {age} éves.
-Most {subject_label} tantárgyból tanulsz.
-Jelenlegi fejezet: {current_topic}
-Kerettanterv kontextus:
-{curriculum_context or "(nincs részletes tanterv – általános iskolai szint)"}
+Tantárgy: {subject_label}
+Jelenlegi témakör: {current_topic}
+Már elvégzett témakörök: {", ".join(completed_topics) if completed_topics else "(még nincs)"}
 
-SZEMÉLYISÉG:
-- Kedves, türelmes, lelkesítő tanár
-- {age_style}
+SZIGORÚ SZABÁLYOK:
 
-HALADÁS:
-- Már elvégzett témák: {", ".join(completed_topics) if completed_topics else "(még nincs)"}
-- Mindig ott folytasd, ahol abbahagyta
-- Ha egy témát megértett (kb. 3 helyes válasz vagy magabiztos megértés): jelezd a válasz végén <TOPIC_COMPLETE> és lépj a következő témára
-- NE ismételd már elvégzett anyagot
-{placement_block}
-Belső jelölők (a gyerek NE lássa a szögletes zárójeleket – csak a szöveget írd ki nekik):
+1. CSAK az alábbi kerettantervből taníthatsz, SEMMI MÁSBÓL:
+{curriculum_body}
+
+Ez a teljes anyag amit tanítanod kell, ebből SOHA ne térj el.
+Ne találj ki saját tananyagot, ne hozz be külső példákat
+amelyek nem szerepelnek a kerettantervben.
+
+2. CSAK tanításról beszélhetsz. Bármi más téma esetén:
+"{redirect_example}"
+
+3. TANÍTÁSI MÓDSZER (mint egy igazi tanár):
+Új lecke esetén KÖTELEZŐ sorrend:
+a) OKTATÁS: magyarázd el a témát saját szavaiddal, példákkal
+   amelyek SZEREPELNEK a kerettantervben
+b) MEGÉRTÉS ELLENŐRZÉSE: kérdezd meg "Megértetted?",
+   "Tudnál mondani egy példát?"
+c) KÖZÖS FELADAT: csinálj egy feladatot együtt vele,
+   lépésről lépésre vezesd
+d) GYAKORLÓ FELADATOK: adj 5-10 gyakorló feladatot
+   amíg biztosan érti
+e) Ha biztosan érti: <TOPIC_COMPLETE> (a gyerek ne lássa ezt a taget)
+{placement_block}{vocab_block}
+Belső jelölők (NE jelenjenek meg a gyereknek látható szövegben):
 - Téma kész: <TOPIC_COMPLETE>
-- Szintfelmérés kész: <LEVEL:X> (X = 1-5)
+- Szint: <LEVEL:X>
+- Szó: <VOCAB>magyar=idegen</VOCAB>
 """
 
 
@@ -898,35 +944,85 @@ def _chat_initial_assistant_message(
     )
 
 
-@app.route("/children/<int:child_id>/chat")
+def _chat_subject_label(child: dict, subject_file: str, chat_curriculum: dict) -> str:
+    if chat_curriculum.get("subject_name"):
+        return chat_curriculum["subject_name"]
+    if g.lang == "hu":
+        return hu_1_4_label_from_value(subject_file)
+    return subject_ui_label(subject_file, g.lang, child["country"])
+
+
+def _chat_save_vocabulary(
+    child_id: int,
+    subject: str,
+    language: str,
+    vocab_pairs: list[tuple[str, str]],
+) -> list[dict]:
+    added: list[dict] = []
+    for native, foreign in vocab_pairs:
+        row = database.add_vocabulary_word(
+            child_id,
+            subject,
+            language=language,
+            word_native=native,
+            word_foreign=foreign,
+        )
+        if row:
+            added.append(row)
+    return added
+
+
+@app.route("/children/<int:child_id>/vocabulary")
 @login_required
-def child_chat(child_id: int):
-    """AI tanár chat – tantárgy és haladás alapján."""
+def child_vocabulary(child_id: int):
+    """Szójegyzék JSON – ABC sorrend."""
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
 
     subject = (request.args.get("subject") or "").strip()
+    language = (request.args.get("language") or "").strip().lower()
+    if not subject:
+        return jsonify({"words": []})
+
+    words = database.get_vocabulary(
+        child_id, subject, language=language or None
+    )
+    return jsonify({"words": words})
+
+
+@app.route("/children/<int:child_id>/chat")
+@login_required
+def child_chat(child_id: int):
+    """AI tanár chat – kizárólag kerettanterv JSON alapján."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    subject = (request.args.get("subject") or "").strip()
+    language = (request.args.get("language") or "").strip().lower()
     if not subject:
         flash(i18n.t("flash_subject_required", g.lang), "error")
         return redirect(url_for("select_tasks", child_id=child_id))
 
-    curriculum = _curriculum_for_child(child, subject=subject)
-    all_topics = _chat_topic_list(curriculum)
-    subject_label = (
-        hu_1_4_label_from_value(subject)
-        if g.lang == "hu"
-        else subject_ui_label(subject, g.lang, child["country"])
-    )
+    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    if not chat_curriculum.get("found") or not chat_curriculum.get("content"):
+        flash(
+            "Ehhez a tantárgyhoz nem található kerettanterv JSON. Válassz másik tantárgyat.",
+            "error",
+        )
+        return redirect(url_for("select_tasks", child_id=child_id))
+
+    all_topics = chat_curriculum.get("topics") or []
+    subject_label = _chat_subject_label(child, subject, chat_curriculum)
+    is_foreign = is_elo_idegen_subject(subject)
 
     progress = database.get_or_create_child_progress(
         child_id, subject, last_position=all_topics[0] if all_topics else None
     )
     current_topic = _chat_current_topic(progress, all_topics)
     progress_pct = _chat_progress_percent(progress, all_topics)
-
-    ctx = curriculum.get("subject_context") or {}
-    curriculum_summary = ctx.get("summary") or curriculum.get("curriculum_summary") or ""
+    completed_topics = progress.get("topics_completed") or []
 
     chat_session = database.get_or_create_chat_session(
         child_id,
@@ -949,6 +1045,10 @@ def child_chat(child_id: int):
         database.add_chat_message(chat_session["id"], "assistant", welcome)
         messages = database.get_chat_messages(chat_session["id"], limit=20)
 
+    vocabulary = []
+    if is_foreign and language:
+        vocabulary = database.get_vocabulary(child_id, subject, language=language)
+
     return render_template(
         "chat.html",
         child=child,
@@ -960,6 +1060,11 @@ def child_chat(child_id: int):
         current_topic=current_topic,
         placement_mode=placement_mode,
         level=progress.get("level", 0),
+        topics=all_topics,
+        completed_topics=completed_topics,
+        is_foreign_language=is_foreign,
+        language=language,
+        vocabulary=vocabulary,
     )
 
 
@@ -975,6 +1080,8 @@ def child_chat_send(child_id: int):
     user_text = (data.get("message") or request.form.get("message") or "").strip()
     subject = (data.get("subject") or request.form.get("subject") or "").strip()
     session_id = data.get("session_id") or request.form.get("session_id")
+    language = (data.get("language") or request.form.get("language") or "").strip().lower()
+    focus_topic = (data.get("focus_topic") or "").strip()
 
     if not user_text or not subject:
         return jsonify({"error": "message_and_subject_required"}), 400
@@ -984,28 +1091,32 @@ def child_chat_send(child_id: int):
     except (TypeError, ValueError):
         return jsonify({"error": "invalid_session"}), 400
 
-    curriculum = _curriculum_for_child(child, subject=subject)
-    all_topics = _chat_topic_list(curriculum)
-    ctx = curriculum.get("subject_context") or {}
-    curriculum_summary = ctx.get("summary") or ""
+    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    if not chat_curriculum.get("found") or not chat_curriculum.get("content"):
+        return jsonify({"error": "curriculum_not_found"}), 400
+
+    all_topics = chat_curriculum.get("topics") or []
+    subject_label = _chat_subject_label(child, subject, chat_curriculum)
+    is_foreign = is_elo_idegen_subject(subject)
 
     progress = database.get_or_create_child_progress(
         child_id, subject, last_position=all_topics[0] if all_topics else None
     )
+    if focus_topic and focus_topic in all_topics:
+        progress = database.update_child_progress(
+            child_id, subject, last_position=focus_topic
+        )
+
     current_topic = _chat_current_topic(progress, all_topics)
-    subject_label = (
-        hu_1_4_label_from_value(subject)
-        if g.lang == "hu"
-        else subject_ui_label(subject, g.lang, child["country"])
-    )
 
     system_prompt = _build_chat_system_prompt(
         child,
         subject_label=subject_label,
         current_topic=current_topic,
-        curriculum_context=curriculum_summary,
+        curriculum_json_content=chat_curriculum["content"],
         completed_topics=progress.get("topics_completed") or [],
         level=progress.get("level", 0),
+        is_foreign_language=is_foreign,
     )
 
     history = database.get_chat_messages(session_id, limit=20)
@@ -1019,8 +1130,11 @@ def child_chat_send(child_id: int):
         logger.exception("Chat AI hiba (child_id=%s): %s", child_id, exc)
         return jsonify({"error": "chat_failed", "detail": str(exc)}), 500
 
-    reply, topic_done, level_set = _parse_chat_markers(raw_reply)
+    reply, topic_done, level_set, vocab_pairs = _parse_chat_markers(raw_reply)
     database.add_chat_message(session_id, "assistant", reply)
+
+    if is_foreign and language and vocab_pairs:
+        _chat_save_vocabulary(child_id, subject, language, vocab_pairs)
 
     completed = list(progress.get("topics_completed") or [])
     last_pos = progress.get("last_position")
@@ -1053,6 +1167,9 @@ def child_chat_send(child_id: int):
     )
 
     progress_pct = _chat_progress_percent(progress, all_topics)
+    vocabulary = []
+    if is_foreign and language:
+        vocabulary = database.get_vocabulary(child_id, subject, language=language)
 
     return jsonify(
         {
@@ -1061,6 +1178,8 @@ def child_chat_send(child_id: int):
             "current_topic": last_pos or current_topic,
             "level": progress.get("level", 0),
             "placement_mode": progress.get("level", 0) == 0,
+            "topics_completed": progress.get("topics_completed") or [],
+            "vocabulary": vocabulary,
         }
     )
 

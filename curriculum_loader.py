@@ -194,6 +194,7 @@ _HU_1_4_SUBJECT_MAP: dict[str, str] = {
 }
 
 ELO_IDEGEN_NYELV_1_4_FILE = "Elo_idegen_nyelv_1_4.json"
+ELO_IDEGEN_NYELV_5_8_FILE = "Elo_idegen_nyelv_5_8.json"
 
 # Sablonokhoz: megengedett fájlnevek és címkék
 HU_1_4_SUBJECT_NAMES: list[str] = list(_HU_1_4_SUBJECT_MAP.keys())
@@ -206,6 +207,54 @@ def get_hu_1_4_subjects() -> list[dict[str, str]]:
         {"label": label, "value": filename}
         for label, filename in _HU_1_4_SUBJECT_MAP.items()
     ]
+
+
+def get_hu_5_8_subjects(grade: int) -> list[dict[str, str]]:
+    """HU 5–8 tantárgyválasztó – helyi JSON fájlokból (grade szerint szűrve)."""
+    grade_num = parse_grade(grade)
+    if not 5 <= grade_num <= 8:
+        return []
+
+    entries = _build_hu_json_index().get((5, 8, grade_num), [])
+    options: list[dict[str, str]] = []
+    seen_files: set[str] = set()
+    for path, _slug, display in entries:
+        if path.name in seen_files:
+            continue
+        seen_files.add(path.name)
+        data = _load_hu_json(path)
+        label = _display_subject_name(data.get("meta", {}).get("tantargy", display))
+        options.append({"label": label, "value": path.name})
+
+    options.sort(key=lambda o: o["label"].casefold())
+    has_idegen = any(
+        o["value"] == ELO_IDEGEN_NYELV_5_8_FILE
+        or "idegen" in o["label"].casefold()
+        for o in options
+    )
+    if not has_idegen:
+        idegen_path = _PROJECT_ROOT / "hu_kerettanterv_5_8_TELJES" / ELO_IDEGEN_NYELV_5_8_FILE
+        if idegen_path.is_file():
+            options.append({"label": "Idegen nyelv", "value": ELO_IDEGEN_NYELV_5_8_FILE})
+            options.sort(key=lambda o: o["label"].casefold())
+    return options
+
+
+def is_elo_idegen_subject(subject_file: str) -> bool:
+    return subject_file in (
+        ELO_IDEGEN_NYELV_1_4_FILE,
+        ELO_IDEGEN_NYELV_5_8_FILE,
+    )
+
+
+def get_hu_subjects_for_grade(grade: int) -> list[dict[str, str]]:
+    """HU tantárgylista évfolyam szerint (1–4 fix, 5–8 index)."""
+    grade_num = parse_grade(grade)
+    if is_hu_1_4_grade(grade_num):
+        return get_hu_1_4_subjects()
+    if 5 <= grade_num <= 8:
+        return get_hu_5_8_subjects(grade_num)
+    return []
 
 
 def is_hu_1_4_grade(grade: str | int) -> bool:
@@ -848,6 +897,75 @@ def curriculum_topic_names(topics: dict[str, list[str]]) -> list[str]:
     if not topics:
         return ["Általános"]
     return list(topics.keys())
+
+
+def format_curriculum_for_grade(data: dict[str, Any], grade: int | str) -> str:
+    """Egy évfolyam teljes kerettanterve szöveges formában (AI system prompt)."""
+    grade_num = parse_grade(grade)
+    evfolyamok = data.get("evfolyamok", {})
+    grade_node = evfolyamok.get(str(grade_num))
+    if not isinstance(grade_node, dict) or not grade_node:
+        return ""
+
+    subject_name = data.get("meta", {}).get("tantargy", "Tantárgy")
+    lines = [
+        f"=== {subject_name} – {grade_num}. évfolyam (hivatalos kerettanterv) ===",
+        "",
+    ]
+    for category, items in grade_node.items():
+        lines.append(f"## {category}")
+        if isinstance(items, list):
+            for idx, item in enumerate(items, 1):
+                text = str(item).strip()
+                if text:
+                    lines.append(f"  {idx}. {text}")
+        lines.append("")
+    return "\n".join(lines).strip()
+
+
+def get_curriculum_for_chat(
+    subject_file: str, grade: int | str
+) -> dict[str, Any]:
+    """JSON betöltés + évfolyam szerinti teljes tananyag (chat AI-hoz)."""
+    grade_num = parse_grade(grade)
+    subject_file = (subject_file or "").strip()
+
+    candidates: list[Path] = []
+    if subject_file:
+        for directory in (
+            _PROJECT_ROOT / "hu_kerettanterv_1_4_TELJES",
+            _PROJECT_ROOT / "hu_kerettanterv_5_8_TELJES",
+        ):
+            path = directory / subject_file
+            if path.is_file():
+                candidates.append(path)
+
+        resolved = find_hu_json_file(grade_num, subject_file)
+        if resolved and resolved not in candidates:
+            candidates.append(resolved)
+
+    for path in candidates:
+        data = _load_hu_json(path)
+        topics = extract_hu_grade_topics(data, grade_num)
+        content = format_curriculum_for_grade(data, grade_num)
+        if content:
+            return {
+                "found": True,
+                "content": content,
+                "topics": curriculum_topic_names(topics),
+                "topics_detail": topics,
+                "file": path.name,
+                "subject_name": data.get("meta", {}).get("tantargy", ""),
+            }
+
+    return {
+        "found": False,
+        "content": "",
+        "topics": [],
+        "topics_detail": {},
+        "file": subject_file,
+        "subject_name": "",
+    }
 
 
 def format_hu_topics_for_prompt(

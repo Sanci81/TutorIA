@@ -3,52 +3,94 @@
 {% block title %}{{ subject_label }} · {{ child['name'] }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
-<section class="chat-page" id="chat-page">
-    <header class="chat-header">
-        <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
-        <div class="chat-header-info">
-            <h1 class="chat-child-name">{{ child['name'] }}</h1>
-            <p class="chat-subject">{{ subject_label }}</p>
-            <div class="chat-progress-wrap">
-                <div class="chat-progress-bar" role="progressbar"
-                     aria-valuenow="{{ progress_pct }}" aria-valuemin="0" aria-valuemax="100">
-                    <div class="chat-progress-fill" id="progress-fill" style="width: {{ progress_pct }}%"></div>
-                </div>
-                <span class="chat-progress-label" id="progress-label">{{ progress_pct }}%</span>
-            </div>
-            {% if placement_mode %}
-                <p class="chat-mode-badge">📋 Szintfelmérő</p>
-            {% else %}
-                <p class="chat-topic-label" id="topic-label">{{ current_topic }}</p>
-            {% endif %}
-        </div>
-    </header>
+<section class="chat-layout" id="chat-page">
+    <aside class="chat-sidebar chat-sidebar-topics">
+        <h2 class="chat-sidebar-title">Témakörök</h2>
+        <ul class="chat-topic-list" id="topic-list">
+            {% for topic in topics %}
+                <li>
+                    <button type="button"
+                            class="chat-topic-btn {% if topic == current_topic %}active{% endif %}"
+                            data-topic="{{ topic }}">
+                        {% if topic in completed_topics %}
+                            <span class="topic-check">✓</span>
+                        {% else %}
+                            <span class="topic-check topic-check-empty">○</span>
+                        {% endif %}
+                        <span class="topic-name">{{ topic }}</span>
+                    </button>
+                </li>
+            {% endfor %}
+        </ul>
+    </aside>
 
-    <div class="chat-messages" id="chat-messages" aria-live="polite">
-        {% for msg in messages %}
-            <div class="chat-bubble chat-bubble-{{ msg['role'] }}">
-                <div class="chat-bubble-inner">{{ msg['content'] }}</div>
+    <div class="chat-main">
+        <header class="chat-header">
+            <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
+            <div class="chat-header-info">
+                <h1 class="chat-child-name">{{ child['name'] }}</h1>
+                <p class="chat-subject">{{ subject_label }}</p>
+                <div class="chat-progress-wrap">
+                    <div class="chat-progress-bar" role="progressbar"
+                         aria-valuenow="{{ progress_pct }}" aria-valuemin="0" aria-valuemax="100">
+                        <div class="chat-progress-fill" id="progress-fill" style="width: {{ progress_pct }}%"></div>
+                    </div>
+                    <span class="chat-progress-label" id="progress-label">{{ progress_pct }}%</span>
+                </div>
+                {% if placement_mode %}
+                    <p class="chat-mode-badge">📋 Szintfelmérő</p>
+                {% else %}
+                    <p class="chat-topic-label" id="topic-label">{{ current_topic }}</p>
+                {% endif %}
             </div>
-        {% endfor %}
-        <div class="chat-bubble chat-bubble-assistant chat-typing" id="typing-indicator" hidden>
-            <div class="chat-bubble-inner">
-                <span class="typing-dot"></span>
-                <span class="typing-dot"></span>
-                <span class="typing-dot"></span>
+        </header>
+
+        <div class="chat-messages" id="chat-messages" aria-live="polite">
+            {% for msg in messages %}
+                <div class="chat-bubble chat-bubble-{{ msg['role'] }}">
+                    <div class="chat-bubble-inner">{{ msg['content'] }}</div>
+                </div>
+            {% endfor %}
+            <div class="chat-bubble chat-bubble-assistant chat-typing" id="typing-indicator" hidden>
+                <div class="chat-bubble-inner">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
             </div>
         </div>
+
+        <form class="chat-input-bar" id="chat-form">
+            <input type="hidden" name="subject" id="chat-subject" value="{{ subject }}">
+            <input type="hidden" name="session_id" id="chat-session-id" value="{{ session_id }}">
+            <input type="hidden" name="language" id="chat-language" value="{{ language }}">
+            <label class="visually-hidden" for="chat-input">Üzenet</label>
+            <textarea id="chat-input" name="message" rows="2"
+                      placeholder="Írd ide az üzeneted…" required></textarea>
+            <button type="submit" class="btn btn-primary chat-send-btn" id="chat-send-btn">
+                Küldés
+            </button>
+        </form>
     </div>
 
-    <form class="chat-input-bar" id="chat-form">
-        <input type="hidden" name="subject" id="chat-subject" value="{{ subject }}">
-        <input type="hidden" name="session_id" id="chat-session-id" value="{{ session_id }}">
-        <label class="visually-hidden" for="chat-input">Üzenet</label>
-        <textarea id="chat-input" name="message" rows="2"
-                  placeholder="Írd ide az üzeneted…" required></textarea>
-        <button type="submit" class="btn btn-primary chat-send-btn" id="chat-send-btn">
-            Küldés
-        </button>
-    </form>
+    {% if is_foreign_language and language %}
+    <aside class="chat-sidebar chat-sidebar-vocab">
+        <h2 class="chat-sidebar-title">Szójegyzék</h2>
+        <p class="chat-vocab-lang">{{ language|capitalize }}</p>
+        <ul class="chat-vocab-list" id="vocab-list">
+            {% for w in vocabulary %}
+                <li>
+                    <span class="vocab-native">{{ w['word_native'] }}</span>
+                    <span class="vocab-arrow">→</span>
+                    <span class="vocab-foreign">{{ w['word_foreign'] }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <p class="chat-vocab-empty" id="vocab-empty" {% if vocabulary %}hidden{% endif %}>
+            Még nincs szó – tanulás közben töltődik fel.
+        </p>
+    </aside>
+    {% endif %}
 </section>
 {% endblock %}
 
@@ -63,8 +105,11 @@
     var progressFill = document.getElementById('progress-fill');
     var progressLabel = document.getElementById('progress-label');
     var topicLabel = document.getElementById('topic-label');
-    var childId = {{ child['id']|tojson }};
+    var topicList = document.getElementById('topic-list');
+    var vocabList = document.getElementById('vocab-list');
+    var vocabEmpty = document.getElementById('vocab-empty');
     var sendUrl = {{ url_for('child_chat_send', child_id=child['id'])|tojson }};
+    var completedTopics = new Set({{ completed_topics|tojson }});
 
     function scrollToBottom() {
         messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -88,30 +133,66 @@
         if (on) scrollToBottom();
     }
 
-    input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            form.requestSubmit();
+    function updateTopicUI(currentTopic, completed) {
+        if (topicLabel && currentTopic) topicLabel.textContent = currentTopic;
+        if (!topicList) return;
+        completedTopics = new Set(completed || []);
+        topicList.querySelectorAll('.chat-topic-btn').forEach(function (btn) {
+            var t = btn.getAttribute('data-topic');
+            btn.classList.toggle('active', t === currentTopic);
+            var check = btn.querySelector('.topic-check');
+            if (check) {
+                if (completedTopics.has(t)) {
+                    check.textContent = '✓';
+                    check.classList.remove('topic-check-empty');
+                } else {
+                    check.textContent = '○';
+                    check.classList.add('topic-check-empty');
+                }
+            }
+        });
+    }
+
+    function renderVocabulary(words) {
+        if (!vocabList) return;
+        vocabList.innerHTML = '';
+        if (!words || !words.length) {
+            if (vocabEmpty) vocabEmpty.hidden = false;
+            return;
         }
-    });
+        if (vocabEmpty) vocabEmpty.hidden = true;
+        words.forEach(function (w) {
+            var li = document.createElement('li');
+            li.innerHTML = '<span class="vocab-native">' + escapeHtml(w.word_native) +
+                '</span><span class="vocab-arrow">→</span><span class="vocab-foreign">' +
+                escapeHtml(w.word_foreign) + '</span>';
+            vocabList.appendChild(li);
+        });
+    }
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var text = (input.value || '').trim();
-        if (!text) return;
+    function escapeHtml(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
 
+    function sendMessage(text, focusTopic) {
         appendBubble('user', text);
         input.value = '';
         setLoading(true);
 
+        var payload = {
+            message: text,
+            subject: document.getElementById('chat-subject').value,
+            session_id: document.getElementById('chat-session-id').value,
+            language: document.getElementById('chat-language').value
+        };
+        if (focusTopic) payload.focus_topic = focusTopic;
+
         fetch(sendUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message: text,
-                subject: document.getElementById('chat-subject').value,
-                session_id: document.getElementById('chat-session-id').value
-            })
+            body: JSON.stringify(payload)
         })
             .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
             .then(function (res) {
@@ -125,14 +206,36 @@
                     progressFill.style.width = res.data.progress_pct + '%';
                     progressLabel.textContent = res.data.progress_pct + '%';
                 }
-                if (topicLabel && res.data.current_topic) {
-                    topicLabel.textContent = res.data.current_topic;
-                }
+                updateTopicUI(res.data.current_topic, res.data.topics_completed);
+                renderVocabulary(res.data.vocabulary);
             })
             .catch(function () {
                 setLoading(false);
                 appendBubble('assistant', 'Hálózati hiba – próbáld újra!');
             });
+    }
+
+    if (topicList) {
+        topicList.addEventListener('click', function (e) {
+            var btn = e.target.closest('.chat-topic-btn');
+            if (!btn) return;
+            var topic = btn.getAttribute('data-topic');
+            sendMessage('Szeretnék a „' + topic + '” témakörrel folytatni.', topic);
+        });
+    }
+
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            form.requestSubmit();
+        }
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = (input.value || '').trim();
+        if (!text) return;
+        sendMessage(text, null);
     });
 
     scrollToBottom();

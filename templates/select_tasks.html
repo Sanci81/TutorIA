@@ -48,8 +48,12 @@
                         <option value="spanyol">{{ 'Spanyol' }}</option>
                     </select>
                 </div>
-                <a class="btn btn-ghost btn-block chat-start-link" id="chat-start-link" hidden
-                   href="{{ url_for('child_chat', child_id=child['id']) }}?subject=">
+                <a id="chat-start-link" hidden
+                   href="{{ url_for('child_chat', child_id=child['id']) }}?subject="
+                   style="display:block; width:100%; padding:1rem;
+                          background:#166534; color:#ffffff; font-weight:700;
+                          font-size:1.1rem; text-align:center; border-radius:999px;
+                          text-decoration:none; margin:1rem 0; border:2px solid #15803d;">
                     💬 AI tanár – beszélgetés
                 </a>
                 <div class="form-actions">
@@ -89,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!subjectSelect) return false;
         var val = subjectSelect.value;
         var text = subjectSelect.options[subjectSelect.selectedIndex].text;
-        return val === eloFile || text === 'Idegen nyelv';
+        return val === eloFile || val.indexOf('Elo_idegen') !== -1 || text === 'Idegen nyelv';
     }
 
     function updateLanguageSelector() {
@@ -110,8 +114,12 @@ document.addEventListener('DOMContentLoaded', function () {
         var val = subjectSelect.value;
         if (val) {
             chatLink.hidden = false;
-            chatLink.href = {{ url_for('child_chat', child_id=child['id'])|tojson }}
-                + '?subject=' + encodeURIComponent(val);
+            var base = {{ url_for('child_chat', child_id=child['id'])|tojson }};
+            var q = '?subject=' + encodeURIComponent(val);
+            if (isIdegenNyelvSelected() && langSelect && langSelect.value) {
+                q += '&language=' + encodeURIComponent(langSelect.value);
+            }
+            chatLink.href = base + q;
         } else {
             chatLink.hidden = true;
         }
