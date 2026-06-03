@@ -245,6 +245,12 @@ def foreign_language_prompt_block(language: str | None) -> str:
             "A gyerek németül tanulja ezt a nyelvet; a feladatok, szavak, "
             "mondatok és fordítások is németül legyenek.\n"
         )
+    if language == "spanyol":
+        return (
+            "\nFONTOS: A feladatok KIZÁRÓLAG spanyol nyelvűek legyenek. "
+            "A gyerek spanyolul tanulja ezt a nyelvet; a feladatok, szavak, "
+            "mondatok és fordítások is spanyolul legyenek.\n"
+        )
     return ""
 
 
@@ -835,6 +841,13 @@ def extract_hu_grade_topics(data: dict[str, Any], grade: int) -> dict[str, list[
             if cleaned:
                 topics[str(category)] = cleaned
     return topics
+
+
+def curriculum_topic_names(topics: dict[str, list[str]]) -> list[str]:
+    """Tananyag-fejlécek listája haladáskövetéshez."""
+    if not topics:
+        return ["Általános"]
+    return list(topics.keys())
 
 
 def format_hu_topics_for_prompt(

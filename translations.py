@@ -170,7 +170,7 @@ TRANSLATIONS = {
         "es": "Por favor, elige una asignatura.",
     },
     "flash_language_required": {
-        "hu": "Kérlek, válassz nyelvet (angol vagy német).",
+        "hu": "Kérlek, válassz nyelvet (angol, német vagy spanyol).",
         "es": "Por favor, elige un idioma (inglés o alemán).",
     },
     "label_language": {"hu": "Nyelv", "es": "Idioma"},

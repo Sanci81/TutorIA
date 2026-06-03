@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}{{ subject_label }} · {{ child['name'] }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<section class="chat-page" id="chat-page">
+    <header class="chat-header">
+        <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
+        <div class="chat-header-info">
+            <h1 class="chat-child-name">{{ child['name'] }}</h1>
+            <p class="chat-subject">{{ subject_label }}</p>
+            <div class="chat-progress-wrap">
+                <div class="chat-progress-bar" role="progressbar"
+                     aria-valuenow="{{ progress_pct }}" aria-valuemin="0" aria-valuemax="100">
+                    <div class="chat-progress-fill" id="progress-fill" style="width: {{ progress_pct }}%"></div>
+                </div>
+                <span class="chat-progress-label" id="progress-label">{{ progress_pct }}%</span>
+            </div>
+            {% if placement_mode %}
+                <p class="chat-mode-badge">📋 Szintfelmérő</p>
+            {% else %}
+                <p class="chat-topic-label" id="topic-label">{{ current_topic }}</p>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="chat-messages" id="chat-messages" aria-live="polite">
+        {% for msg in messages %}
+            <div class="chat-bubble chat-bubble-{{ msg['role'] }}">
+                <div class="chat-bubble-inner">{{ msg['content'] }}</div>
+            </div>
+        {% endfor %}
+        <div class="chat-bubble chat-bubble-assistant chat-typing" id="typing-indicator" hidden>
+            <div class="chat-bubble-inner">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            </div>
+        </div>
+    </div>
+
+    <form class="chat-input-bar" id="chat-form">
+        <input type="hidden" name="subject" id="chat-subject" value="{{ subject }}">
+        <input type="hidden" name="session_id" id="chat-session-id" value="{{ session_id }}">
+        <label class="visually-hidden" for="chat-input">Üzenet</label>
+        <textarea id="chat-input" name="message" rows="2"
+                  placeholder="Írd ide az üzeneted…" required></textarea>
+        <button type="submit" class="btn btn-primary chat-send-btn" id="chat-send-btn">
+            Küldés
+        </button>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    var form = document.getElementById('chat-form');
+    var input = document.getElementById('chat-input');
+    var messagesEl = document.getElementById('chat-messages');
+    var typing = document.getElementById('typing-indicator');
+    var sendBtn = document.getElementById('chat-send-btn');
+    var progressFill = document.getElementById('progress-fill');
+    var progressLabel = document.getElementById('progress-label');
+    var topicLabel = document.getElementById('topic-label');
+    var childId = {{ child['id']|tojson }};
+    var sendUrl = {{ url_for('child_chat_send', child_id=child['id'])|tojson }};
+
+    function scrollToBottom() {
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function appendBubble(role, text) {
+        var wrap = document.createElement('div');
+        wrap.className = 'chat-bubble chat-bubble-' + role;
+        var inner = document.createElement('div');
+        inner.className = 'chat-bubble-inner';
+        inner.textContent = text;
+        wrap.appendChild(inner);
+        messagesEl.insertBefore(wrap, typing);
+        scrollToBottom();
+    }
+
+    function setLoading(on) {
+        typing.hidden = !on;
+        sendBtn.disabled = on;
+        input.disabled = on;
+        if (on) scrollToBottom();
+    }
+
+    input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            form.requestSubmit();
+        }
+    });
+
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = (input.value || '').trim();
+        if (!text) return;
+
+        appendBubble('user', text);
+        input.value = '';
+        setLoading(true);
+
+        fetch(sendUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: text,
+                subject: document.getElementById('chat-subject').value,
+                session_id: document.getElementById('chat-session-id').value
+            })
+        })
+            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+            .then(function (res) {
+                setLoading(false);
+                if (!res.ok) {
+                    appendBubble('assistant', 'Sajnos most nem tudok válaszolni. Próbáld újra később! 😊');
+                    return;
+                }
+                appendBubble('assistant', res.data.reply || '');
+                if (progressFill && res.data.progress_pct != null) {
+                    progressFill.style.width = res.data.progress_pct + '%';
+                    progressLabel.textContent = res.data.progress_pct + '%';
+                }
+                if (topicLabel && res.data.current_topic) {
+                    topicLabel.textContent = res.data.current_topic;
+                }
+            })
+            .catch(function () {
+                setLoading(false);
+                appendBubble('assistant', 'Hálózati hiba – próbáld újra!');
+            });
+    });
+
+    scrollToBottom();
+})();
+</script>
+{% endblock %}

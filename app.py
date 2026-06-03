@@ -10,6 +10,7 @@ Funkciók (1. fázis):
 import json
 import logging
 import os
+import re
 import traceback
 from functools import wraps
 
@@ -32,6 +33,7 @@ import database
 import translations as i18n
 from curriculum_loader import (
     ELO_IDEGEN_NYELV_1_4_FILE,
+    curriculum_topic_names,
     foreign_language_prompt_block,
     get_curriculum_for_child,
     get_hu_1_4_subjects,
@@ -266,6 +268,12 @@ def _call_ai_for_tasks(
             "Te egy tapasztalt német nyelvtanár vagy magyar általános iskolásoknak. "
             "A feladatok tartalma kizárólag német nyelven legyen. "
             "Válaszolj kizárólag érvényes JSON-nal; a task mezők németül legyenek."
+        )
+    elif foreign_language == "spanyol":
+        system_hu = (
+            "Te egy tapasztalt spanyol nyelvtanár vagy magyar általános iskolásoknak. "
+            "A feladatok tartalma kizárólag spanyol nyelven legyen. "
+            "Válaszolj kizárólag érvényes JSON-nal; a task mezők spanyolul legyenek."
         )
     else:
         system_hu = (
@@ -628,7 +636,11 @@ def generate_tasks(child_id: int):
                 return jsonify({"error": "invalid_subject"}), 400
             flash(i18n.t("flash_subject_required", g.lang), "error")
             return redirect(url_for("select_tasks", child_id=child_id))
-        if subject == ELO_IDEGEN_NYELV_1_4_FILE and language not in ("angol", "nemet"):
+        if subject == ELO_IDEGEN_NYELV_1_4_FILE and language not in (
+            "angol",
+            "nemet",
+            "spanyol",
+        ):
             if request.is_json:
                 return jsonify({"error": "language_required"}), 400
             flash(i18n.t("flash_language_required", g.lang), "error")
@@ -671,7 +683,15 @@ def generate_tasks(child_id: int):
                 child_id,
             )
 
-    foreign_language = language if subject == ELO_IDEGEN_NYELV_1_4_FILE else None
+    if subject == ELO_IDEGEN_NYELV_1_4_FILE:
+        if language == "spanyol":
+            foreign_language = "spanyol"
+        elif language in ("angol", "nemet"):
+            foreign_language = language
+        else:
+            foreign_language = None
+    else:
+        foreign_language = None
     prompt = _build_task_generation_prompt(
         child,
         curriculum,
@@ -732,6 +752,316 @@ def generate_tasks(child_id: int):
             if g.lang == "hu"
             else subject_ui_label(subject, g.lang, child["country"])
         ),
+    )
+
+
+# ---------------------------------------------------------------------------
+# AI tanár chat
+# ---------------------------------------------------------------------------
+
+_CHAT_MARKER_TOPIC = re.compile(r"<TOPIC_COMPLETE>", re.IGNORECASE)
+_CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
+
+
+def _parse_chat_markers(text: str) -> tuple[str, bool, int | None]:
+    """Eltávolítja a belső jelölőket; topic_complete és level érték."""
+    level_val: int | None = None
+    level_match = _CHAT_MARKER_LEVEL.search(text)
+    if level_match:
+        level_val = int(level_match.group(1))
+    clean = _CHAT_MARKER_TOPIC.sub("", text)
+    clean = _CHAT_MARKER_LEVEL.sub("", clean).strip()
+    topic_done = bool(_CHAT_MARKER_TOPIC.search(text))
+    return clean, topic_done, level_val
+
+
+def _chat_topic_list(curriculum: dict) -> list[str]:
+    ctx = curriculum.get("subject_context") or {}
+    return curriculum_topic_names(ctx.get("topics") or {})
+
+
+def _chat_progress_percent(progress: dict, all_topics: list[str]) -> int:
+    if not all_topics:
+        return 0
+    done = len(progress.get("topics_completed") or [])
+    return min(100, int(100 * done / len(all_topics)))
+
+
+def _chat_current_topic(progress: dict, all_topics: list[str]) -> str:
+    if progress.get("last_position"):
+        return progress["last_position"]
+    completed = set(progress.get("topics_completed") or [])
+    for topic in all_topics:
+        if topic not in completed:
+            return topic
+    return all_topics[-1] if all_topics else "Általános"
+
+
+def _chat_advance_topic(
+    progress: dict, all_topics: list[str], completed_now: str
+) -> tuple[list[str], str | None]:
+    completed = list(progress.get("topics_completed") or [])
+    if completed_now and completed_now not in completed:
+        completed.append(completed_now)
+    completed_set = set(completed)
+    next_topic = None
+    for topic in all_topics:
+        if topic not in completed_set:
+            next_topic = topic
+            break
+    return completed, next_topic
+
+
+def _build_chat_system_prompt(
+    child: dict,
+    *,
+    subject_label: str,
+    current_topic: str,
+    curriculum_context: str,
+    completed_topics: list[str],
+    level: int,
+) -> str:
+    age = child["age"]
+    if age <= 8:
+        age_style = (
+            "6-8 éves kornak megfelelő: rövid mondatok, sok emoji, egyszerű szavak."
+        )
+    else:
+        age_style = "9+ éves kornak megfelelő: részletesebb, de közérthető magyarázatok."
+
+    placement_block = ""
+    if level == 0:
+        placement_block = f"""
+SZINTFELMÉRŐ MÓD (level == 0):
+- Tegyél fel 5 kérdést a {subject_label} alapjairól, egyenként, a gyerek válaszai alapján.
+- Az eredmény alapján határozd meg a szintet 1-5 skálán.
+- Ha kész a felmérés, a válasz végén add meg: <LEVEL:X> ahol X a megállapított szint (1-5).
+"""
+
+    return f"""Te {child["name"]} AI tanára vagy.
+{child["name"]} {child["grade"]}. osztályos, {age} éves.
+Most {subject_label} tantárgyból tanulsz.
+Jelenlegi fejezet: {current_topic}
+Kerettanterv kontextus:
+{curriculum_context or "(nincs részletes tanterv – általános iskolai szint)"}
+
+SZEMÉLYISÉG:
+- Kedves, türelmes, lelkesítő tanár
+- {age_style}
+
+HALADÁS:
+- Már elvégzett témák: {", ".join(completed_topics) if completed_topics else "(még nincs)"}
+- Mindig ott folytasd, ahol abbahagyta
+- Ha egy témát megértett (kb. 3 helyes válasz vagy magabiztos megértés): jelezd a válasz végén <TOPIC_COMPLETE> és lépj a következő témára
+- NE ismételd már elvégzett anyagot
+{placement_block}
+Belső jelölők (a gyerek NE lássa a szögletes zárójeleket – csak a szöveget írd ki nekik):
+- Téma kész: <TOPIC_COMPLETE>
+- Szintfelmérés kész: <LEVEL:X> (X = 1-5)
+"""
+
+
+def _call_ai_for_chat(
+    system_prompt: str, history: list[dict[str, str]], user_message: str
+) -> str:
+    api_key = _openai_api_key()
+    if not api_key:
+        raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
+
+    messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
+    for msg in history:
+        if msg["role"] in ("user", "assistant"):
+            messages.append({"role": msg["role"], "content": msg["content"]})
+    messages.append({"role": "user", "content": user_message})
+
+    client = _openai_client(api_key, request_timeout=60.0)
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=messages,
+        temperature=0.7,
+    )
+    return (response.choices[0].message.content or "").strip()
+
+
+def _chat_initial_assistant_message(
+    child_name: str, subject_label: str, *, placement: bool
+) -> str:
+    if placement:
+        return (
+            f"Szia {child_name}! 🌟 Én vagyok a {subject_label} AI tanárod. "
+            "Először egy rövid játékos felmérést csinálunk, hogy tudjam, "
+            "honnan induljunk. Kész vagy az első kérdésre?"
+        )
+    return (
+        f"Szia {child_name}! 👋 Folytatjuk a {subject_label} tanulást. "
+        "Írd meg, miben segíthetek, vagy válaszolj az utolsó kérdésemre!"
+    )
+
+
+@app.route("/children/<int:child_id>/chat")
+@login_required
+def child_chat(child_id: int):
+    """AI tanár chat – tantárgy és haladás alapján."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    subject = (request.args.get("subject") or "").strip()
+    if not subject:
+        flash(i18n.t("flash_subject_required", g.lang), "error")
+        return redirect(url_for("select_tasks", child_id=child_id))
+
+    curriculum = _curriculum_for_child(child, subject=subject)
+    all_topics = _chat_topic_list(curriculum)
+    subject_label = (
+        hu_1_4_label_from_value(subject)
+        if g.lang == "hu"
+        else subject_ui_label(subject, g.lang, child["country"])
+    )
+
+    progress = database.get_or_create_child_progress(
+        child_id, subject, last_position=all_topics[0] if all_topics else None
+    )
+    current_topic = _chat_current_topic(progress, all_topics)
+    progress_pct = _chat_progress_percent(progress, all_topics)
+
+    ctx = curriculum.get("subject_context") or {}
+    curriculum_summary = ctx.get("summary") or curriculum.get("curriculum_summary") or ""
+
+    chat_session = database.get_or_create_chat_session(
+        child_id,
+        subject,
+        curriculum_position={
+            "current_topic": current_topic,
+            "topic_index": all_topics.index(current_topic)
+            if current_topic in all_topics
+            else 0,
+        },
+    )
+
+    messages = database.get_chat_messages(chat_session["id"], limit=20)
+    placement_mode = progress.get("level", 0) == 0
+
+    if not messages:
+        welcome = _chat_initial_assistant_message(
+            child["name"], subject_label, placement=placement_mode
+        )
+        database.add_chat_message(chat_session["id"], "assistant", welcome)
+        messages = database.get_chat_messages(chat_session["id"], limit=20)
+
+    return render_template(
+        "chat.html",
+        child=child,
+        subject=subject,
+        subject_label=subject_label,
+        messages=messages,
+        session_id=chat_session["id"],
+        progress_pct=progress_pct,
+        current_topic=current_topic,
+        placement_mode=placement_mode,
+        level=progress.get("level", 0),
+    )
+
+
+@app.route("/children/<int:child_id>/chat/send", methods=["POST"])
+@login_required
+def child_chat_send(child_id: int):
+    """Chat üzenet küldése – OpenAI válasz + haladás mentés."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    data = request.get_json(silent=True) or {}
+    user_text = (data.get("message") or request.form.get("message") or "").strip()
+    subject = (data.get("subject") or request.form.get("subject") or "").strip()
+    session_id = data.get("session_id") or request.form.get("session_id")
+
+    if not user_text or not subject:
+        return jsonify({"error": "message_and_subject_required"}), 400
+
+    try:
+        session_id = int(session_id)
+    except (TypeError, ValueError):
+        return jsonify({"error": "invalid_session"}), 400
+
+    curriculum = _curriculum_for_child(child, subject=subject)
+    all_topics = _chat_topic_list(curriculum)
+    ctx = curriculum.get("subject_context") or {}
+    curriculum_summary = ctx.get("summary") or ""
+
+    progress = database.get_or_create_child_progress(
+        child_id, subject, last_position=all_topics[0] if all_topics else None
+    )
+    current_topic = _chat_current_topic(progress, all_topics)
+    subject_label = (
+        hu_1_4_label_from_value(subject)
+        if g.lang == "hu"
+        else subject_ui_label(subject, g.lang, child["country"])
+    )
+
+    system_prompt = _build_chat_system_prompt(
+        child,
+        subject_label=subject_label,
+        current_topic=current_topic,
+        curriculum_context=curriculum_summary,
+        completed_topics=progress.get("topics_completed") or [],
+        level=progress.get("level", 0),
+    )
+
+    history = database.get_chat_messages(session_id, limit=20)
+    database.add_chat_message(session_id, "user", user_text)
+
+    try:
+        raw_reply = _call_ai_for_chat(system_prompt, history, user_text)
+    except NotImplementedError:
+        return jsonify({"error": "openai_not_configured"}), 501
+    except Exception as exc:
+        logger.exception("Chat AI hiba (child_id=%s): %s", child_id, exc)
+        return jsonify({"error": "chat_failed", "detail": str(exc)}), 500
+
+    reply, topic_done, level_set = _parse_chat_markers(raw_reply)
+    database.add_chat_message(session_id, "assistant", reply)
+
+    completed = list(progress.get("topics_completed") or [])
+    last_pos = progress.get("last_position")
+    level = progress.get("level", 0)
+
+    if level_set is not None:
+        level = level_set
+
+    if topic_done and current_topic:
+        completed, last_pos = _chat_advance_topic(progress, all_topics, current_topic)
+        if last_pos is None and completed:
+            last_pos = all_topics[-1] if all_topics else current_topic
+
+    progress = database.update_child_progress(
+        child_id,
+        subject,
+        topics_completed=completed,
+        last_position=last_pos or current_topic,
+        level=level,
+    )
+
+    database.update_chat_session_position(
+        session_id,
+        {
+            "current_topic": last_pos or current_topic,
+            "topic_index": all_topics.index(last_pos)
+            if last_pos and last_pos in all_topics
+            else 0,
+        },
+    )
+
+    progress_pct = _chat_progress_percent(progress, all_topics)
+
+    return jsonify(
+        {
+            "reply": reply,
+            "progress_pct": progress_pct,
+            "current_topic": last_pos or current_topic,
+            "level": progress.get("level", 0),
+            "placement_mode": progress.get("level", 0) == 0,
+        }
     )
 
 

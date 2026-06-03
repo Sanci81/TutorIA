@@ -5,6 +5,8 @@ A kapcsolati URL a DATABASE_URL environment variable-ből jön
   - parents:  szülői fiókok
   - children: gyerek profilok
   - password_reset_tokens: jelszó-visszaállító tokenek
+  - chat_sessions, chat_messages: AI tanár beszélgetés
+  - child_progress: tantárgyankénti haladás
 """
 
 from __future__ import annotations
@@ -15,7 +17,17 @@ import secrets
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, create_engine, delete, select
+from sqlalchemy import (
+    DateTime,
+    ForeignKey,
+    Integer,
+    JSON,
+    String,
+    Text,
+    create_engine,
+    delete,
+    select,
+)
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship
 from sqlalchemy.orm import sessionmaker
@@ -114,6 +126,58 @@ class PasswordResetToken(Base):
     )
 
     parent: Mapped["Parent"] = relationship(back_populates="reset_tokens")
+
+
+class ChatSession(Base):
+    __tablename__ = "chat_sessions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id", ondelete="CASCADE"), nullable=False
+    )
+    subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    curriculum_position: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+    messages: Mapped[list["ChatMessage"]] = relationship(
+        back_populates="session", cascade="all, delete-orphan"
+    )
+
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    session_id: Mapped[int] = mapped_column(
+        ForeignKey("chat_sessions.id", ondelete="CASCADE"), nullable=False
+    )
+    role: Mapped[str] = mapped_column(String(20), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+    session: Mapped["ChatSession"] = relationship(back_populates="messages")
+
+
+class ChildProgress(Base):
+    __tablename__ = "child_progress"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id", ondelete="CASCADE"), nullable=False
+    )
+    subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    topics_completed: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
+    last_position: Mapped[str | None] = mapped_column(String(255))
+    level: Mapped[int] = mapped_column(Integer, default=0)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -346,6 +410,196 @@ def update_parent_password(parent_id: int, password_hash: str) -> None:
         if parent:
             parent.password_hash = password_hash
             db.commit()
+    finally:
+        db.close()
+
+
+# ---------------------------------------------------------------------------
+# Chat és haladás
+# ---------------------------------------------------------------------------
+
+
+def _chat_session_dict(row: ChatSession) -> dict[str, Any]:
+    return {
+        "id": row.id,
+        "child_id": row.child_id,
+        "subject": row.subject,
+        "curriculum_position": row.curriculum_position or {},
+        "created_at": row.created_at,
+    }
+
+
+def _chat_message_dict(row: ChatMessage) -> dict[str, Any]:
+    return {
+        "id": row.id,
+        "session_id": row.session_id,
+        "role": row.role,
+        "content": row.content,
+        "created_at": row.created_at,
+    }
+
+
+def _progress_dict(row: ChildProgress) -> dict[str, Any]:
+    return {
+        "id": row.id,
+        "child_id": row.child_id,
+        "subject": row.subject,
+        "topics_completed": list(row.topics_completed or []),
+        "last_position": row.last_position,
+        "level": row.level,
+        "updated_at": row.updated_at,
+    }
+
+
+def get_or_create_chat_session(
+    child_id: int, subject: str, *, curriculum_position: dict | None = None
+) -> dict[str, Any]:
+    db = _session()
+    try:
+        row = db.scalar(
+            select(ChatSession)
+            .where(ChatSession.child_id == child_id, ChatSession.subject == subject)
+            .order_by(ChatSession.created_at.desc())
+        )
+        if row:
+            if curriculum_position and row.curriculum_position != curriculum_position:
+                row.curriculum_position = curriculum_position
+                db.commit()
+            return _chat_session_dict(row)
+
+        row = ChatSession(
+            child_id=child_id,
+            subject=subject,
+            curriculum_position=curriculum_position or {},
+        )
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+        return _chat_session_dict(row)
+    finally:
+        db.close()
+
+
+def update_chat_session_position(session_id: int, position: dict) -> None:
+    db = _session()
+    try:
+        row = db.get(ChatSession, session_id)
+        if row:
+            row.curriculum_position = position
+            db.commit()
+    finally:
+        db.close()
+
+
+def get_chat_messages(session_id: int, *, limit: int = 20) -> list[dict[str, Any]]:
+    db = _session()
+    try:
+        rows = db.scalars(
+            select(ChatMessage)
+            .where(ChatMessage.session_id == session_id)
+            .order_by(ChatMessage.created_at.desc())
+            .limit(limit)
+        ).all()
+        ordered = list(reversed(rows))
+        return [_chat_message_dict(m) for m in ordered]
+    finally:
+        db.close()
+
+
+def add_chat_message(session_id: int, role: str, content: str) -> dict[str, Any]:
+    db = _session()
+    try:
+        msg = ChatMessage(session_id=session_id, role=role, content=content.strip())
+        db.add(msg)
+        db.commit()
+        db.refresh(msg)
+        return _chat_message_dict(msg)
+    finally:
+        db.close()
+
+
+def get_child_progress(child_id: int, subject: str) -> dict[str, Any] | None:
+    db = _session()
+    try:
+        row = db.scalar(
+            select(ChildProgress).where(
+                ChildProgress.child_id == child_id,
+                ChildProgress.subject == subject,
+            )
+        )
+        return _progress_dict(row) if row else None
+    finally:
+        db.close()
+
+
+def get_or_create_child_progress(
+    child_id: int,
+    subject: str,
+    *,
+    last_position: str | None = None,
+) -> dict[str, Any]:
+    db = _session()
+    try:
+        row = db.scalar(
+            select(ChildProgress).where(
+                ChildProgress.child_id == child_id,
+                ChildProgress.subject == subject,
+            )
+        )
+        if row:
+            return _progress_dict(row)
+
+        row = ChildProgress(
+            child_id=child_id,
+            subject=subject,
+            topics_completed=[],
+            last_position=last_position,
+            level=0,
+        )
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+        return _progress_dict(row)
+    finally:
+        db.close()
+
+
+def update_child_progress(
+    child_id: int,
+    subject: str,
+    *,
+    topics_completed: list[str] | None = None,
+    last_position: str | None = None,
+    level: int | None = None,
+) -> dict[str, Any]:
+    db = _session()
+    try:
+        row = db.scalar(
+            select(ChildProgress).where(
+                ChildProgress.child_id == child_id,
+                ChildProgress.subject == subject,
+            )
+        )
+        if not row:
+            row = ChildProgress(
+                child_id=child_id,
+                subject=subject,
+                topics_completed=topics_completed or [],
+                last_position=last_position,
+                level=level if level is not None else 0,
+            )
+            db.add(row)
+        else:
+            if topics_completed is not None:
+                row.topics_completed = topics_completed
+            if last_position is not None:
+                row.last_position = last_position
+            if level is not None:
+                row.level = level
+            row.updated_at = datetime.now(timezone.utc)
+        db.commit()
+        db.refresh(row)
+        return _progress_dict(row)
     finally:
         db.close()
 
