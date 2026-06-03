@@ -877,13 +877,38 @@ def find_hu_json_file(grade: int, subject: str) -> Path | None:
     return None
 
 
+def _hu_evfolyam_blokk_for_grade(
+    data: dict[str, Any], grade: int | str
+) -> dict[str, Any] | None:
+    """Új JSON: evfolyam_blokkok – melyik blokk tartozik az osztályhoz."""
+    grade_num = parse_grade(grade)
+    for _key, blokk in data.get("evfolyam_blokkok", {}).items():
+        if not isinstance(blokk, dict):
+            continue
+        if grade_num in blokk.get("evfolyamok", []):
+            return blokk
+    return None
+
+
 def extract_hu_grade_topics(data: dict[str, Any], grade: int) -> dict[str, list[str]]:
     """Évfolyam-specifikus témakörök kinyerése egy tantárgy JSON-ból."""
+    blokk = _hu_evfolyam_blokk_for_grade(data, grade)
+    if blokk:
+        topics: dict[str, list[str]] = {}
+        temakorok = blokk.get("temakorok") or []
+        if isinstance(temakorok, list):
+            for item in temakorok:
+                if isinstance(item, dict) and item.get("nev"):
+                    topics[str(item["nev"])] = []
+                elif isinstance(item, str) and item.strip():
+                    topics[item.strip()] = []
+        return topics
+
     evfolyamok = data.get("evfolyamok", {})
-    grade_node = evfolyamok.get(str(grade))
+    grade_node = evfolyamok.get(str(parse_grade(grade)))
     if not isinstance(grade_node, dict):
         return {}
-    topics: dict[str, list[str]] = {}
+    topics = {}
     for category, items in grade_node.items():
         if isinstance(items, list):
             cleaned = [str(item).strip() for item in items if str(item).strip()]
@@ -900,8 +925,21 @@ def curriculum_topic_names(topics: dict[str, list[str]]) -> list[str]:
 
 
 def format_curriculum_for_grade(data: dict[str, Any], grade: int | str) -> str:
-    """Egy évfolyam teljes kerettanterve szöveges formában (AI system prompt)."""
-    grade_num = parse_grade(grade)
+    """Új struktúra: evfolyam_blokkok -> teljes_szoveg + temakorok."""
+    grade_num = int(parse_grade(grade))
+
+    blokk = _hu_evfolyam_blokk_for_grade(data, grade_num)
+    if blokk:
+        subject_name = data.get("meta", {}).get("tantargy", "Tantárgy")
+        output = [
+            f"=== {subject_name} – {grade_num}. évfolyam ===",
+            "",
+            "HIVATALOS KERETTANTERV TELJES SZÖVEGE:",
+            "",
+            str(blokk.get("teljes_szoveg", "")),
+        ]
+        return "\n".join(output)
+
     evfolyamok = data.get("evfolyamok", {})
     grade_node = evfolyamok.get(str(grade_num))
     if not isinstance(grade_node, dict) or not grade_node:
@@ -932,17 +970,27 @@ def get_curriculum_for_chat(
 
     candidates: list[Path] = []
     if subject_file:
-        for directory in (
+        search_dirs = [
             _PROJECT_ROOT / "hu_kerettanterv_1_4_TELJES",
+            _PROJECT_ROOT / "hu_kerettanterv_1_4_TELJES" / "hu_kerettanterv_1_4_TELJES",
             _PROJECT_ROOT / "hu_kerettanterv_5_8_TELJES",
-        ):
+        ]
+        for directory in search_dirs:
             path = directory / subject_file
-            if path.is_file():
+            if path.is_file() and path not in candidates:
                 candidates.append(path)
 
         resolved = find_hu_json_file(grade_num, subject_file)
         if resolved and resolved not in candidates:
             candidates.append(resolved)
+
+    def _has_new_structure(path: Path) -> bool:
+        try:
+            return bool(_load_hu_json(path).get("evfolyam_blokkok"))
+        except Exception:
+            return False
+
+    candidates.sort(key=lambda p: (not _has_new_structure(p), len(str(p))))
 
     for path in candidates:
         data = _load_hu_json(path)
