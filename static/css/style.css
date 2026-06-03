@@ -230,27 +230,32 @@ a:hover { text-decoration: underline; }
 }
 .btn-ghost:hover { background: var(--green-50); }
 .btn-generate {
-    background: #f59e0b;
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-    font-size: 1rem;
-    font-weight: 700;
     display: block;
-    text-align: center;
-    padding: 1rem 1.5rem;
     width: 100%;
-    border-radius: 2rem;
-    border: none;
-    margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    color: #000000;
+    font-weight: 700;
+    font-size: 1rem;
+    text-align: center;
+    border-radius: 999px;
     text-decoration: none;
-    letter-spacing: 0;
+    margin-top: 1rem;
+    box-sizing: border-box;
 }
 .btn-generate:hover {
-    background: #d97706;
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
+    background: linear-gradient(135deg, #d97706, #ea6c00);
+    color: #000000;
     text-decoration: none;
     transform: translateY(-2px);
+}
+.btn-generate:visited {
+    color: #000000;
+}
+* .btn-generate,
+a.btn-generate {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
 }
 .child-card-actions { margin-top: auto; padding-top: 1rem; }
 
