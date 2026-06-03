@@ -41,8 +41,13 @@
                 </ul>
                 <div class="child-card-actions">
                     <a href="{{ url_for('select_tasks', child_id=child['id']) }}"
-                       class="btn-generate">
-                        ⚡ {{ t('btn_generate_tasks') }}
+                       style="display:block; width:100%; padding:1rem;
+                              background:#f59e0b; color:#000000;
+                              font-weight:800; font-size:1.1rem;
+                              text-align:center; border-radius:999px;
+                              text-decoration:none; margin-top:1rem;
+                              border:3px solid #d97706;">
+                        ✨ {{ t('btn_generate_tasks') }}
                     </a>
                 </div>
             </article>
