@@ -287,7 +287,11 @@ def _call_ai_for_tasks(
         system_hu = (
             "Te egy tapasztalt magyar tanár vagy. A megadott hivatalos NAT 2020 "
             "kerettantervi témakörök alapján készíts gyakorló feladatokat. "
-            "Válaszolj kizárólag érvényes JSON-nal, magyar nyelven."
+            "Válaszolj kizárólag érvényes JSON-nal, magyar nyelven.\n\n"
+            "A feladatok legyenek nyelvtanilag helyesek magyarul.\n"
+            "Összehasonlító kérdéseknél használj '-ból/-ből' ragot: "
+            "'Melyikből van több?' nem 'Melyik van több?'\n"
+            "A feladatok legyenek pontosan az adott osztály szintjének megfelelők."
         )
     system_es = (
         "Eres un/a profesor/a experimentado/a. Crea ejercicios según el currículo "
