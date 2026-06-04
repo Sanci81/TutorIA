@@ -58,7 +58,7 @@
             {% if chat_mode == 'voice' and show_chat_switch %}
             <a class="voice-switch-chat" href="{{ chat_switch_url }}">← Inkább írok</a>
             {% else %}
-            <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
+            <a class="chat-back" href="{{ url_for('dashboard') }}">← {{ t('btn_back_dashboard') }}</a>
             {% endif %}
             <div class="chat-header-info">
                 <h1 class="chat-child-name">{{ child['name'] }}</h1>

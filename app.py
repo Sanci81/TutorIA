@@ -1310,32 +1310,6 @@ def _chat_advance_topic(
     return completed, next_topic
 
 
-def _chat_teaching_language_block(teaching_language: str | None) -> str:
-    lang = _normalize_chat_language(teaching_language)
-    if lang == "angol":
-        return """
-6. NYELV – ANGOL:
-- A tanítás nyelve ANGOL. A gyereknek angolul taníts (egyszerű, korának megfelelő szinten).
-- Rövid magyarázat magyarul megengedett, ha szükséges, de példák, feladatok, kérdések angolul legyenek.
-- Új szavaknál: <VOCAB>magyar=english_word</VOCAB>
-"""
-    if lang == "nemet":
-        return """
-6. NYELV – NÉMET:
-- A tanítás nyelve NÉMET. A gyereknek németül taníts (egyszerű, korának megfelelő szinten).
-- Rövid magyarázat magyarul megengedett, ha szükséges, de példák, feladatok, kérdések németül legyenek.
-- Új szavaknál: <VOCAB>magyar=deutsches_Wort</VOCAB>
-"""
-    if lang == "spanyol":
-        return """
-6. NYELV – SPANYOL:
-- A tanítás nyelve SPANYOL. A gyereknek spanyolul taníts (egyszerű, korának megfelelő szinten).
-- Rövid magyarázat magyarul megengedett, ha szükséges, de példák, feladatok, kérdések spanyolul legyenek.
-- Új szavaknál: <VOCAB>magyar=palabra</VOCAB>
-"""
-    return ""
-
-
 def _build_chat_system_prompt(
     child: dict,
     *,
@@ -1348,70 +1322,51 @@ def _build_chat_system_prompt(
     teaching_language: str | None = None,
 ) -> str:
     age = _child_effective_age(child)
-    redirect_example = (
-        f"Érdekes! De most tanuljunk. Térjünk vissza ehhez: "
-        f"{current_topic or subject_label}"
-    )
-    lang_block = _chat_teaching_language_block(teaching_language)
-
-    placement_block = ""
-    if level == 0:
-        placement_block = """
-4. SZINTFELMÉRŐ (level == 0):
-- Nézd át a kerettanterv TELJES tartalmát az adott osztályra
-- Tegyél fel 5 kérdést amelyek LEFEDIK a kerettanterv fő témaköreit
-  (nem te találod ki, hanem a JSON-ból veszed)
-- Értékeld a válaszokat és add meg a szintet: <LEVEL:X> (X = 1-5)
-"""
-
-    vocab_block = ""
-    if is_foreign_language and not lang_block:
-        vocab_block = """
-5. NYELVTANULÁSNÁL minden új szót, amit megtanítasz, jelöld:
-<VOCAB>magyar=idegen_nyelvi_szó</VOCAB>
-Példa: <VOCAB>kutya=dog</VOCAB>
-A gyerek NE lássa a VOCAB tageket a válasz szövegében – csak természetesen tanítsd a szót.
-"""
-
     curriculum_body = curriculum_json_content or (
-        "NINCS BETÖLTÖTT KERETTANTERV – NE TANÍTS, kérd a szülőtől a tananyag betöltését."
+        "NINCS BETÖLTÖTT KERETTANTERV – kérd a szülőtől a tananyag betöltését."
     )
+    lang = _normalize_chat_language(teaching_language)
+    lang_line = f"language={lang}" if lang else "language= (magyar tantárgy – magyarul taníts)"
 
-    return f"""Te {child["name"]} személyes AI tanára vagy.
-{child["name"]} {child["grade"]}. osztályos, {age} éves.
-Tantárgy: {subject_label}
-Jelenlegi témakör: {current_topic}
-Már elvégzett témakörök: {", ".join(completed_topics) if completed_topics else "(még nincs)"}
+    prompt = f"""Te egy kedves, türelmes, lelkesítő AI tanár vagy, aki {subject_label}-t tanít
+{child["name"]} nevű, {age} éves, {child["grade"]}. osztályos gyereknek.
 
-SZIGORÚ SZABÁLYOK:
+FONTOS SZABÁLYOK:
+1. MINDIG a kerettanterv szerint taníts - csak azt amit a lenti tananyag tartalmaz
+2. Ha a gyerek először nyitja meg a témát, kezdd az alapoktól (ne ugorj bele a közepébe)
+3. Légy NAGYON barátságos, bátorító, használj emojit
+4. Rövid mondatok, egyszerű szavak
+5. Ha a gyerek jól válaszol: dicsérj lelkesen ('Szuper!', 'Brávó!', 'Fantasztikus!')
+6. Ha rosszul válaszol: bátorítsd ('Majdnem!', 'Próbáld újra!', 'Segítek egy kicsit!')
+7. SOHA ne ismételd szó szerint ugyanazt a mondatot ha visszautasítasz valamit
+8. Ha idegen nyelvet tanítasz, akkor a MEGADOTT nyelven taníts, ne keverj más nyelvet
 
-1. CSAK az alábbi kerettantervből taníthatsz, SEMMI MÁSBÓL:
-{curriculum_body}
+Idegen nyelveknél: {lang_line}. Ha language=angol, CSAK angolul taníts.
+Ha language=spanyol, CSAK spanyolul taníts. Ha language=nemet, CSAK németül taníts.
 
-Ez a teljes anyag amit tanítanod kell, ebből SOHA ne térj el.
-Ne találj ki saját tananyagot, ne hozz be külső példákat
-amelyek nem szerepelnek a kerettantervben.
+AKTUÁLIS TANANYAG (ezt tanítsd, ebből ne lépj ki):
+{curriculum_body}"""
 
-2. CSAK tanításról beszélhetsz. Bármi más téma esetén:
-"{redirect_example}"
+    if current_topic:
+        prompt += f"\n\nJelenlegi témakör: {current_topic}"
+    if completed_topics:
+        prompt += f"\nMár elvégzett témakörök: {', '.join(completed_topics)}"
 
-3. TANÍTÁSI MÓDSZER (mint egy igazi tanár):
-Új lecke esetén KÖTELEZŐ sorrend:
-a) OKTATÁS: magyarázd el a témát saját szavaiddal, példákkal
-   amelyek SZEREPELNEK a kerettantervben
-b) MEGÉRTÉS ELLENŐRZÉSE: kérdezd meg "Megértetted?",
-   "Tudnál mondani egy példát?"
-c) KÖZÖS FELADAT: csinálj egy feladatot együtt vele,
-   lépésről lépésre vezesd
-d) GYAKORLÓ FELADATOK: adj 5-10 gyakorló feladatot
-   amíg biztosan érti
-e) Ha biztosan érti: <TOPIC_COMPLETE> (a gyerek ne lássa ezt a taget)
-{placement_block}{vocab_block}{lang_block}
-Belső jelölők (NE jelenjenek meg a gyereknek látható szövegben):
-- Téma kész: <TOPIC_COMPLETE>
-- Szint: <LEVEL:X>
-- Szó: <VOCAB>magyar=idegen</VOCAB>
+    if level == 0:
+        prompt += """
+\nSZINTFELMÉRŐ: Tegyél fel 5 játékos kérdést a kerettanterv fő részeiből, majd add meg: <LEVEL:X> (X=1-5).
 """
+
+    if is_foreign_language and lang:
+        prompt += """
+\nÚj idegen szó tanításakor (rejtett, a gyerek ne lássa): <VOCAB>magyar=idegen_szó</VOCAB>
+"""
+
+    prompt += """
+\nHa egy témakör biztosan megvan (rejtett tag): <TOPIC_COMPLETE>
+Csak tanításról beszélj; más témánál finoman terelj vissza a tananyaghoz (mindig más szavakkal).
+"""
+    return prompt
 
 
 def _call_ai_for_quiz(
