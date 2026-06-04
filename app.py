@@ -1453,6 +1453,15 @@ FONTOS SZABÁLYOK:
     sorold fel őket így: alma, körte, szőlő - nem így: {{alma, körte}}
 11. Folyamatos mondatokban írj, nem markdown formátumban
 
+12. SZIGORÚAN kövesd a témakörök sorrendjét. Az aktuális témakör az
+    egyetlen amit most tanítasz: {current_topic}
+    NE ugorj előre más témakörre, NE tanítsd a később következő témákat.
+    Ha a gyerek más témáról kérdez, barátságosan mondd:
+    "Azt majd később tanuljuk! Most a(z) [aktuális téma]-val foglalkozunk."
+
+13. Az aktuális témakört a LEGELEJÉTŐL kezdd tanítani, még ha a gyerek
+    már tudni látszik is valamit. Az alapoktól haladj fokozatosan.
+
 Idegen nyelveknél: {lang_line}. Ha language=angol, CSAK angolul taníts.
 Ha language=spanyol, CSAK spanyolul taníts. Ha language=nemet, CSAK németül taníts.
 
