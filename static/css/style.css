@@ -307,9 +307,6 @@ a.btn-generate {
 .btn-ai-voice,
 .btn-ai-chat,
 .btn-ai-placement {
-    background: linear-gradient(135deg, #fbbf24, #d97706);
-    color: #000000;
-}
     display: inline-flex;
     align-items: center;
     justify-content: center;
