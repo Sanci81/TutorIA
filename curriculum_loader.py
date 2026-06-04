@@ -1195,6 +1195,35 @@ def format_curriculum_for_grade(data: dict[str, Any], grade: int | str) -> str:
     return "\n".join(lines).strip()
 
 
+def _elo_json_language_branch_score(
+    path: Path, effective_language: str | None
+) -> int:
+    """0 = megfelelő nyelvi ág; magasabb = rosszabb (pl. német-only 1–4 JSON)."""
+    if not effective_language:
+        return 0
+    lang = effective_language.strip().lower()
+    if lang not in ("angol", "nemet", "spanyol"):
+        return 0
+    try:
+        raw = _load_hu_json(path)
+        if lang == "spanyol":
+            name = path.name.casefold()
+            meta = str((raw.get("meta") or {}).get("tantargy", "")).casefold()
+            if "spanyol" in name or "spanyol" in meta:
+                return 0
+            if is_elo_idegen_subject(path.name):
+                return 3
+            return 1
+        nyelvek = raw.get("nyelvek")
+        if isinstance(nyelvek, dict) and lang in nyelvek:
+            return 0
+        if is_elo_idegen_subject(path.name) and not nyelvek:
+            return 3
+        return 1
+    except Exception:
+        return 5
+
+
 def get_curriculum_for_chat(
     subject_file: str,
     grade: int | str,
@@ -1204,18 +1233,20 @@ def get_curriculum_for_chat(
     """JSON betöltés + évfolyam szerinti teljes tananyag (chat AI-hoz)."""
     grade_num = parse_grade(grade)
     subject_file = (subject_file or "").strip()
-    effective_language = (language or "").strip().lower() or None
+    explicit_language = (language or "").strip().lower() or None
+    effective_language = explicit_language
 
     resolved = _resolve_hu_subject_file(subject_file, grade_num)
     if resolved:
         subject_file = resolved["file"]
-        if resolved.get("language"):
+        if not effective_language and resolved.get("language"):
             effective_language = resolved["language"]
         display_label = resolved.get("label") or subject_file
     else:
         display_label = subject_file
 
     candidates: list[Path] = []
+    root = Path(__file__).parent
     if subject_file:
         for path in _hu_json_search_paths(subject_file, grade_num):
             if path not in candidates:
@@ -1224,6 +1255,21 @@ def get_curriculum_for_chat(
         found = find_hu_json_file(grade_num, subject_file)
         if found and found not in candidates:
             candidates.append(found)
+
+    if effective_language in ("angol", "nemet") and is_hu_1_4_grade(grade_num):
+        for alt_name in (ELO_IDEGEN_NYELV_5_8_ALT, ELO_IDEGEN_NYELV_5_8_FILE):
+            alt = root / "hu_kerettanterv_5_8_TELJES" / alt_name
+            if alt.is_file() and alt not in candidates:
+                candidates.insert(0, alt)
+
+    if effective_language == "spanyol" and is_hu_1_4_grade(grade_num):
+        sp_path = _hu_1_4_path_from_filename(SPANYOL_1_4_FILE)
+        if sp_path and sp_path not in candidates:
+            candidates.insert(0, sp_path)
+    elif effective_language == "spanyol" and grade_num >= 5:
+        sp_path = root / "hu_kerettanterv_5_8_TELJES" / SPANYOL_5_8_FILE
+        if sp_path.is_file() and sp_path not in candidates:
+            candidates.insert(0, sp_path)
 
     def _has_new_structure(path: Path) -> bool:
         try:
@@ -1234,11 +1280,17 @@ def get_curriculum_for_chat(
             return False
 
     def _score_path(path: Path) -> tuple:
+        lang_score = _elo_json_language_branch_score(path, effective_language)
         name = path.name.casefold()
         prefer_nyelvek = 0
         if effective_language in ("angol", "nemet"):
             prefer_nyelvek = 0 if ELO_IDEGEN_NYELV_5_8_ALT in name else 1
-        return (not _has_new_structure(path), prefer_nyelvek, len(str(path)))
+        return (
+            lang_score,
+            not _has_new_structure(path),
+            prefer_nyelvek,
+            len(str(path)),
+        )
 
     candidates.sort(key=_score_path)
 
@@ -1249,11 +1301,17 @@ def get_curriculum_for_chat(
         catalog = extract_topic_catalog(data, grade_num)
         content = format_curriculum_for_grade(data, grade_num)
         subject_name = (
-            data.get("meta", {}).get("tantargy")
-            or data.get("nyelv")
+            data.get("nyelv")
+            or data.get("meta", {}).get("tantargy")
             or raw.get("meta", {}).get("tantargy", "")
             or display_label
         )
+        if effective_language == "angol":
+            subject_name = "Angol"
+        elif effective_language == "nemet":
+            subject_name = "Német"
+        elif effective_language == "spanyol":
+            subject_name = "Spanyol"
         if content or catalog:
             return {
                 "found": True,

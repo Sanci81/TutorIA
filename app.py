@@ -1112,6 +1112,33 @@ def _chat_load_curriculum(
     return get_curriculum_for_chat(subject_file, grade, language=language)
 
 
+_CHAT_LANGUAGES = frozenset({"angol", "nemet", "spanyol"})
+
+
+def _normalize_chat_language(language: str | None) -> str:
+    lang = (language or "").strip().lower()
+    return lang if lang in _CHAT_LANGUAGES else ""
+
+
+def _chat_progress_subject(subject: str, language: str | None) -> str:
+    """Haladás / teszt pontok: tantárgy + nyelv külön scope."""
+    subj = (subject or "").strip()
+    lang = _normalize_chat_language(language)
+    return f"{subj}::{lang}" if lang else subj
+
+
+def _chat_bind_flask_session(
+    child_id: int, subject: str, language: str | None
+) -> str:
+    """Flask session: aktív chat kontextus (child + tantárgy + nyelv)."""
+    lang = _normalize_chat_language(language)
+    session["language"] = lang
+    session["chat_subject"] = (subject or "").strip()
+    session["chat_child_id"] = child_id
+    session[f"chat_{child_id}_{subject}_{lang}"] = True
+    return lang
+
+
 def _chat_grade_num(child: dict) -> int:
     return parse_grade(child["grade"])
 
@@ -1283,6 +1310,32 @@ def _chat_advance_topic(
     return completed, next_topic
 
 
+def _chat_teaching_language_block(teaching_language: str | None) -> str:
+    lang = _normalize_chat_language(teaching_language)
+    if lang == "angol":
+        return """
+6. NYELV – ANGOL:
+- A tanítás nyelve ANGOL. A gyereknek angolul taníts (egyszerű, korának megfelelő szinten).
+- Rövid magyarázat magyarul megengedett, ha szükséges, de példák, feladatok, kérdések angolul legyenek.
+- Új szavaknál: <VOCAB>magyar=english_word</VOCAB>
+"""
+    if lang == "nemet":
+        return """
+6. NYELV – NÉMET:
+- A tanítás nyelve NÉMET. A gyereknek németül taníts (egyszerű, korának megfelelő szinten).
+- Rövid magyarázat magyarul megengedett, ha szükséges, de példák, feladatok, kérdések németül legyenek.
+- Új szavaknál: <VOCAB>magyar=deutsches_Wort</VOCAB>
+"""
+    if lang == "spanyol":
+        return """
+6. NYELV – SPANYOL:
+- A tanítás nyelve SPANYOL. A gyereknek spanyolul taníts (egyszerű, korának megfelelő szinten).
+- Rövid magyarázat magyarul megengedett, ha szükséges, de példák, feladatok, kérdések spanyolul legyenek.
+- Új szavaknál: <VOCAB>magyar=palabra</VOCAB>
+"""
+    return ""
+
+
 def _build_chat_system_prompt(
     child: dict,
     *,
@@ -1292,12 +1345,14 @@ def _build_chat_system_prompt(
     completed_topics: list[str],
     level: int,
     is_foreign_language: bool,
+    teaching_language: str | None = None,
 ) -> str:
     age = _child_effective_age(child)
     redirect_example = (
         f"Érdekes! De most tanuljunk. Térjünk vissza ehhez: "
         f"{current_topic or subject_label}"
     )
+    lang_block = _chat_teaching_language_block(teaching_language)
 
     placement_block = ""
     if level == 0:
@@ -1310,7 +1365,7 @@ def _build_chat_system_prompt(
 """
 
     vocab_block = ""
-    if is_foreign_language:
+    if is_foreign_language and not lang_block:
         vocab_block = """
 5. NYELVTANULÁSNÁL minden új szót, amit megtanítasz, jelöld:
 <VOCAB>magyar=idegen_nyelvi_szó</VOCAB>
@@ -1351,7 +1406,7 @@ c) KÖZÖS FELADAT: csinálj egy feladatot együtt vele,
 d) GYAKORLÓ FELADATOK: adj 5-10 gyakorló feladatot
    amíg biztosan érti
 e) Ha biztosan érti: <TOPIC_COMPLETE> (a gyerek ne lássa ezt a taget)
-{placement_block}{vocab_block}
+{placement_block}{vocab_block}{lang_block}
 Belső jelölők (NE jelenjenek meg a gyereknek látható szövegben):
 - Téma kész: <TOPIC_COMPLETE>
 - Szint: <LEVEL:X>
@@ -1489,7 +1544,9 @@ def child_chat(child_id: int):
         abort(404)
 
     subject = (request.args.get("subject") or "").strip()
-    language = (request.args.get("language") or "").strip().lower()
+    language = _chat_bind_flask_session(
+        child_id, subject, request.args.get("language")
+    )
     if not subject:
         flash(i18n.t("flash_subject_required", g.lang), "error")
         return redirect(url_for("select_tasks", child_id=child_id))
@@ -1512,13 +1569,14 @@ def child_chat(child_id: int):
     grade_num = _chat_grade_num(child)
     subject_label = _chat_subject_label(child, subject, chat_curriculum)
     is_foreign = is_elo_idegen_subject(subject) or bool(language)
+    progress_subject = _chat_progress_subject(subject, language)
 
     progress = database.get_or_create_child_progress(
         child_id,
-        subject,
+        progress_subject,
         last_position=catalog[0]["name"] if catalog else None,
     )
-    scores = database.get_topic_scores(child_id, subject, grade_num)
+    scores = database.get_topic_scores(child_id, progress_subject, grade_num)
     current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
     current_topic = next(
         (t["name"] for t in catalog if t["id"] == current_topic_id), ""
@@ -1535,6 +1593,7 @@ def child_chat(child_id: int):
     chat_session = database.get_or_create_chat_session(
         child_id,
         subject,
+        language=language,
         curriculum_position={
             "current_topic": current_topic,
             "current_topic_id": current_topic_id,
@@ -1598,7 +1657,9 @@ def child_chat_send(child_id: int):
     user_text = (data.get("message") or request.form.get("message") or "").strip()
     subject = (data.get("subject") or request.form.get("subject") or "").strip()
     session_id = data.get("session_id") or request.form.get("session_id")
-    language = (data.get("language") or request.form.get("language") or "").strip().lower()
+    language = _normalize_chat_language(
+        data.get("language") or request.form.get("language") or session.get("language")
+    )
     focus_topic = (data.get("focus_topic") or "").strip()
     topic_id = (data.get("topic_id") or "").strip()
     req_mode = (data.get("mode") or request.form.get("mode") or "").strip().lower()
@@ -1613,6 +1674,11 @@ def child_chat_send(child_id: int):
     except (TypeError, ValueError):
         return jsonify({"error": "invalid_session"}), 400
 
+    if not database.get_chat_session_for_child(
+        session_id, child_id, subject, language=language
+    ):
+        return jsonify({"error": "invalid_session"}), 403
+
     chat_curriculum = _chat_load_curriculum(
         subject, child["grade"], language=language or None
     )
@@ -1623,25 +1689,27 @@ def child_chat_send(child_id: int):
     grade_num = _chat_grade_num(child)
     subject_label = _chat_subject_label(child, subject, chat_curriculum)
     is_foreign = is_elo_idegen_subject(subject) or bool(language)
+    progress_subject = _chat_progress_subject(subject, language)
+    teaching_language = chat_curriculum.get("language") or language
 
     progress = database.get_or_create_child_progress(
         child_id,
-        subject,
+        progress_subject,
         last_position=catalog[0]["name"] if catalog else None,
     )
-    scores = database.get_topic_scores(child_id, subject, grade_num)
+    scores = database.get_topic_scores(child_id, progress_subject, grade_num)
 
     if topic_id:
         topic_item = get_topic_from_catalog(catalog, topic_id)
         if topic_item:
             progress = database.update_child_progress(
-                child_id, subject, last_position=topic_item["name"]
+                child_id, progress_subject, last_position=topic_item["name"]
             )
     elif focus_topic:
         for t in catalog:
             if t["name"] == focus_topic:
                 progress = database.update_child_progress(
-                    child_id, subject, last_position=focus_topic
+                    child_id, progress_subject, last_position=focus_topic
                 )
                 topic_id = t["id"]
                 break
@@ -1662,6 +1730,7 @@ def child_chat_send(child_id: int):
         ],
         level=progress.get("level", 0),
         is_foreign_language=is_foreign,
+        teaching_language=teaching_language,
     )
     system_prompt += _topic_teaching_prompt_block(current_topic_item)
     if chat_mode == "voice":
@@ -1699,7 +1768,7 @@ def child_chat_send(child_id: int):
 
     progress = database.update_child_progress(
         child_id,
-        subject,
+        progress_subject,
         topics_completed=completed,
         last_position=last_pos or current_topic,
         level=level,
@@ -1713,7 +1782,7 @@ def child_chat_send(child_id: int):
         },
     )
 
-    scores = database.get_topic_scores(child_id, subject, grade_num)
+    scores = database.get_topic_scores(child_id, progress_subject, grade_num)
     sidebar = _build_topic_sidebar(
         catalog, scores, current_topic_id, level=progress.get("level", 0)
     )
@@ -1749,7 +1818,9 @@ def child_chat_progress(child_id: int):
     if not child:
         abort(404)
     subject = (request.args.get("subject") or "").strip()
-    language = (request.args.get("language") or "").strip().lower()
+    language = _normalize_chat_language(
+        request.args.get("language") or session.get("language")
+    )
     if not subject:
         return jsonify({"error": "subject_required"}), 400
     grade_num = _chat_grade_num(child)
@@ -1757,8 +1828,9 @@ def child_chat_progress(child_id: int):
         subject, child["grade"], language=language or None
     )
     catalog = chat_curriculum.get("topic_catalog") or []
-    progress = database.get_or_create_child_progress(child_id, subject)
-    scores = database.get_topic_scores(child_id, subject, grade_num)
+    progress_subject = _chat_progress_subject(subject, language)
+    progress = database.get_or_create_child_progress(child_id, progress_subject)
+    scores = database.get_topic_scores(child_id, progress_subject, grade_num)
     current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
     sidebar = _build_topic_sidebar(
         catalog, scores, current_topic_id, level=progress.get("level", 0)
@@ -1775,7 +1847,9 @@ def child_chat_test_generate(child_id: int):
     data = request.get_json(silent=True) or {}
     subject = (data.get("subject") or "").strip()
     topic_id = (data.get("topic_id") or "").strip()
-    language = (data.get("language") or "").strip().lower()
+    language = _normalize_chat_language(
+        data.get("language") or session.get("language")
+    )
     if not subject or not topic_id:
         return jsonify({"error": "subject_and_topic_required"}), 400
 
@@ -1811,12 +1885,15 @@ def child_chat_test_submit(child_id: int):
     data = request.get_json(silent=True) or {}
     subject = (data.get("subject") or "").strip()
     topic_id = (data.get("topic_id") or "").strip()
-    language = (data.get("language") or "").strip().lower()
+    language = _normalize_chat_language(
+        data.get("language") or session.get("language")
+    )
     answers = data.get("answers") or []
     questions = data.get("questions") or []
 
     if not subject or not topic_id or not questions:
         return jsonify({"error": "invalid_payload"}), 400
+    progress_subject = _chat_progress_subject(subject, language)
 
     correct = 0
     total = len(questions)
@@ -1839,7 +1916,7 @@ def child_chat_test_submit(child_id: int):
 
     database.save_topic_test_result(
         child_id,
-        subject,
+        progress_subject,
         grade_num,
         topic_id,
         topic_name,
@@ -1851,13 +1928,15 @@ def child_chat_test_submit(child_id: int):
         completed_names = [
             t["name"]
             for t in catalog
-            if (database.get_topic_scores(child_id, subject, grade_num).get(t["id"]) or {}).get(
-                "passed"
-            )
+            if (
+                database.get_topic_scores(child_id, progress_subject, grade_num)
+                .get(t["id"])
+                or {}
+            ).get("passed")
         ]
         database.update_child_progress(
             child_id,
-            subject,
+            progress_subject,
             topics_completed=completed_names,
             last_position=topic_name,
         )
@@ -1866,17 +1945,20 @@ def child_chat_test_submit(child_id: int):
             if t["id"] == topic_id:
                 continue
             if not (
-                database.get_topic_scores(child_id, subject, grade_num).get(t["id"]) or {}
+                database.get_topic_scores(child_id, progress_subject, grade_num).get(
+                    t["id"]
+                )
+                or {}
             ).get("passed"):
                 next_topic = t
                 break
         if next_topic:
             database.update_child_progress(
-                child_id, subject, last_position=next_topic["name"]
+                child_id, progress_subject, last_position=next_topic["name"]
             )
 
-    scores = database.get_topic_scores(child_id, subject, grade_num)
-    progress = database.get_or_create_child_progress(child_id, subject)
+    scores = database.get_topic_scores(child_id, progress_subject, grade_num)
+    progress = database.get_or_create_child_progress(child_id, progress_subject)
     current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
     sidebar = _build_topic_sidebar(
         catalog, scores, current_topic_id, level=progress.get("level", 0)

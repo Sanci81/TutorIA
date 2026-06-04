@@ -141,6 +141,7 @@ class ChatSession(Base):
         ForeignKey("children.id", ondelete="CASCADE"), nullable=False
     )
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    language: Mapped[str] = mapped_column(String(20), nullable=False, default="")
     curriculum_position: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
@@ -306,6 +307,7 @@ def init_db() -> None:
     """Létrehozza a táblákat, ha még nem léteznek."""
     Base.metadata.create_all(bind=_get_engine())
     ensure_children_birth_date_column()
+    ensure_chat_sessions_language_column()
 
 
 def ensure_children_birth_date_column() -> None:
@@ -327,6 +329,20 @@ def ensure_children_birth_date_column() -> None:
                 SET birth_date = CURRENT_DATE - (age * INTERVAL '365 days')
                 WHERE birth_date IS NULL AND age IS NOT NULL
                 """
+            )
+        )
+
+
+def ensure_chat_sessions_language_column() -> None:
+    """Chat session nyelv – külön előzmény angol / német / spanyol."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS "
+                "language VARCHAR(20) NOT NULL DEFAULT ''"
             )
         )
 
@@ -569,6 +585,7 @@ def _chat_session_dict(row: ChatSession) -> dict[str, Any]:
         "id": row.id,
         "child_id": row.child_id,
         "subject": row.subject,
+        "language": row.language or "",
         "curriculum_position": row.curriculum_position or {},
         "created_at": row.created_at,
     }
@@ -597,13 +614,22 @@ def _progress_dict(row: ChildProgress) -> dict[str, Any]:
 
 
 def get_or_create_chat_session(
-    child_id: int, subject: str, *, curriculum_position: dict | None = None
+    child_id: int,
+    subject: str,
+    *,
+    language: str = "",
+    curriculum_position: dict | None = None,
 ) -> dict[str, Any]:
+    lang_key = (language or "").strip().lower()
     db = _session()
     try:
         row = db.scalar(
             select(ChatSession)
-            .where(ChatSession.child_id == child_id, ChatSession.subject == subject)
+            .where(
+                ChatSession.child_id == child_id,
+                ChatSession.subject == subject,
+                ChatSession.language == lang_key,
+            )
             .order_by(ChatSession.created_at.desc())
         )
         if row:
@@ -615,12 +641,37 @@ def get_or_create_chat_session(
         row = ChatSession(
             child_id=child_id,
             subject=subject,
+            language=lang_key,
             curriculum_position=curriculum_position or {},
         )
         db.add(row)
         db.commit()
         db.refresh(row)
         return _chat_session_dict(row)
+    finally:
+        db.close()
+
+
+def get_chat_session_for_child(
+    session_id: int,
+    child_id: int,
+    subject: str,
+    *,
+    language: str = "",
+) -> dict[str, Any] | None:
+    """Chat session ellenőrzése küldéskor (child + tantárgy + nyelv)."""
+    lang_key = (language or "").strip().lower()
+    db = _session()
+    try:
+        row = db.scalar(
+            select(ChatSession).where(
+                ChatSession.id == session_id,
+                ChatSession.child_id == child_id,
+                ChatSession.subject == subject,
+                ChatSession.language == lang_key,
+            )
+        )
+        return _chat_session_dict(row) if row else None
     finally:
         db.close()
 
