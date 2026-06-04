@@ -1451,12 +1451,26 @@ def _chat_initial_assistant_message(
     )
 
 
-def _chat_subject_label(child: dict, subject_file: str, chat_curriculum: dict) -> str:
-    if chat_curriculum.get("subject_name"):
-        return chat_curriculum["subject_name"]
+def _chat_subject_label(
+    child: dict,
+    subject_file: str,
+    chat_curriculum: dict,
+    *,
+    language: str | None = None,
+) -> str:
     if g.lang == "hu":
-        return hu_1_4_label_from_value(subject_file)
-    return subject_ui_label(subject_file, g.lang, child["country"])
+        subject_label = hu_1_4_label_from_value(subject_file)
+    else:
+        subject_label = subject_ui_label(subject_file, g.lang, child["country"])
+    subject_label = chat_curriculum.get("subject_name", subject_label)
+    lang = _normalize_chat_language(language)
+    if lang == "angol":
+        return "Angol"
+    if lang == "nemet":
+        return "Német"
+    if lang == "spanyol":
+        return "Spanyol"
+    return subject_label
 
 
 def _chat_save_vocabulary(
@@ -1530,7 +1544,9 @@ def child_chat(child_id: int):
 
     catalog = chat_curriculum.get("topic_catalog") or []
     grade_num = _chat_grade_num(child)
-    subject_label = _chat_subject_label(child, subject, chat_curriculum)
+    subject_label = _chat_subject_label(
+        child, subject, chat_curriculum, language=language
+    )
     is_foreign = is_elo_idegen_subject(subject) or bool(language)
     progress_subject = _chat_progress_subject(subject, language)
 
@@ -1650,7 +1666,9 @@ def child_chat_send(child_id: int):
 
     catalog = chat_curriculum.get("topic_catalog") or []
     grade_num = _chat_grade_num(child)
-    subject_label = _chat_subject_label(child, subject, chat_curriculum)
+    subject_label = _chat_subject_label(
+        child, subject, chat_curriculum, language=language
+    )
     is_foreign = is_elo_idegen_subject(subject) or bool(language)
     progress_subject = _chat_progress_subject(subject, language)
     teaching_language = chat_curriculum.get("language") or language
