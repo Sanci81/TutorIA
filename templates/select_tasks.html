@@ -54,9 +54,6 @@
                         📝 Gyakorló feladatok
                     </button>
 
-                    <a class="btn-ai-placement" id="ai-placement-link" href="#" hidden>
-                        📋 Szintfelmérő
-                    </a>
                     {% if chat_profile == 'both' %}
                     <a class="btn-ai-chat" id="ai-chat-link" href="#" hidden>
                         💬 AI tanulás és beszélgetés (chat)
@@ -116,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
     var chatBase = {{ url_for('child_chat', child_id=child['id'])|tojson }};
     var taskActions = document.getElementById('task-actions');
     var taskChatAlt = document.getElementById('task-chat-alt');
-    var placementLink = document.getElementById('ai-placement-link');
     var voiceLink = document.getElementById('ai-voice-link');
     var chatLink = document.getElementById('ai-chat-link');
     var showChatAlt = document.getElementById('show-chat-alt');
@@ -166,10 +162,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!show) return;
 
-        if (placementLink) {
-            placementLink.href = chatBase + buildChatQuery('chat');
-            placementLink.hidden = false;
-        }
         if (voiceLink) {
             voiceLink.href = chatBase + buildChatQuery('voice');
             voiceLink.hidden = false;

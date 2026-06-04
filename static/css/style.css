@@ -1365,6 +1365,9 @@ a.btn-generate {
     color: var(--white);
     border-bottom-left-radius: 0.35rem;
 }
+.chat-bubble-assistant .chat-bubble-inner {
+    color: #1a1a1a;
+}
 .chat-bubble-user .chat-bubble-inner {
     background: #3b82f6;
     color: var(--white);
