@@ -280,12 +280,18 @@ def _call_ai_for_tasks(
     curriculum_block = f"""
 KIZÁRÓLAG a következő hivatalos kerettanterv alapján generálj feladatokat.
 Tilos kitalálni bármit ami nincs a tantervben.
-Tilos képekre, ábrákra hivatkozni.
-A kérdések legyenek teljes mondatok, helyes magyar nyelvtannal.
-Rossz: 'Melyikből van több: 45-ből vagy 32-ből?'
-Jó: 'Melyik szám nagyobb: 45 vagy 32?'
-Rossz: 'Sorolj fel gyümölcsöket' (ha Matematika a tantárgy)
-Jó: A tantárgynak megfelelő, kerettantervben szereplő témakör.
+
+TILOS:
+- Rajzolásra utasítani (nincs papír a képernyőn)
+- Képekre, ábrákra hivatkozni
+- Magyar nyelv tantárgynál matematikai feladatot adni
+- Matematikánál irodalmi feladatot adni
+- Olyan feladatot adni ami nem szerepel a kerettantervben
+
+KÖTELEZŐ:
+- A feladat egyértelműen megoldható szóban/írásban
+- Az adott tantárgy és osztály szintjének PONTOSAN megfeleljen
+- Minden szükséges adat benne legyen a kérdésben (ne hivatkozzon külső dologra)
 
 KERETTANTERV ({grade_num}. osztály, {subject_label}):
 {curriculum_text}
@@ -485,24 +491,32 @@ def _generate_practice_tasks_bundle(
         if child["country"] == "HU"
         else None
     )
-    curriculum_text = (curriculum_chat.get("content") or "") if curriculum_chat else ""
-    if not curriculum_text or len(curriculum_text) < 200:
+    curriculum_text = curriculum_chat.get("content", "") if curriculum_chat else ""
+
+    if not curriculum_text or len(curriculum_text) < 100:
         if curriculum_chat and curriculum_chat.get("data"):
-            # Fallback: evfolyam_blokkok->teljes_szoveg vagy data.teljes_szoveg
+            from curriculum_loader import _hu_evfolyam_blokk_for_grade
+
             data = curriculum_chat["data"]
-            for blk in (data.get("evfolyam_blokkok") or {}).values():
-                if isinstance(blk, dict) and blk.get("teljes_szoveg"):
-                    curriculum_text = blk["teljes_szoveg"]
-                    break
-            if not curriculum_text:
-                curriculum_text = data.get("teljes_szoveg", "")
+            blokk = _hu_evfolyam_blokk_for_grade(data, grade_num)
+            if blokk:
+                curriculum_text = blokk.get("teljes_szoveg", "")
         if not curriculum_text:
-            # Utolsó fallback: nyers JSON régi struktúra
-            raw = curriculum_chat.get("data") if curriculum_chat else {}
-            curriculum_text = raw.get("teljes_szoveg", "") if isinstance(raw, dict) else ""
+            if curriculum_chat and curriculum_chat.get("data"):
+                data = curriculum_chat["data"]
+                curriculum_text = data.get("teljes_szoveg", "")
+
+    logger.warning(
+        "CURRICULUM DEBUG: subject=%s grade=%s len=%d content_preview=%s",
+        subject_display,
+        grade_num,
+        len(curriculum_text),
+        curriculum_text[:200],
+    )
+
     curriculum["content"] = curriculum_text
     logger.info(
-        "curriculum_text length=%d grade=%s subject=%s language=%s",
+        "FINAL curriculum_text len=%d grade=%s subject=%s language=%s",
         len(curriculum_text), child["grade"], subject, language,
     )
 
