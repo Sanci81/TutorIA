@@ -1084,24 +1084,19 @@ _CHAT_PROFILE_BOTH = "both"
 
 
 def _child_effective_age(child: dict) -> int:
-    """Életkor: birth_date-ből, különben régi age, különben osztály + 5."""
-    birth = child.get("birth_date") or child.get("birthDate")
-    if birth:
+    """Életkor a birth_date-ből, különben age mező, különben osztály + 5."""
+    bd_str = child.get("birth_date")
+    if bd_str:
         try:
-            if isinstance(birth, str):
-                born = date.fromisoformat(birth.strip()[:10])
-            elif hasattr(birth, "year"):
-                born = birth
-            else:
-                born = None
-            if born:
-                return database.child_age_from_birth(born)
-        except (TypeError, ValueError):
+            bd = date.fromisoformat(str(bd_str)[:10])
+            today = date.today()
+            age = today.year - bd.year - (
+                (today.month, today.day) < (bd.month, bd.day)
+            )
+            return max(1, age)
+        except Exception:
             pass
-    computed = database.compute_child_age(age_legacy=child.get("age"))
-    if computed is not None:
-        return computed
-    return parse_grade(child["grade"]) + 5
+    return child.get("age") or (parse_grade(child.get("grade", 1)) + 5)
 
 
 def _chat_interaction_profile(effective_age: int) -> str:
@@ -1170,13 +1165,15 @@ def _normalize_chat_language(language: str | None) -> str:
 
 
 def _display_language_name(language: str | None) -> str:
-    """nemet → Német, angol → Angol, spanyol → Spanyol"""
-    lang = _normalize_chat_language(language)
-    return _CHAT_LANGUAGE_DISPLAY.get(lang, lang or "")
+    """nemet → Német, angol → Angol, spanyol → Spanyol (Jinja2 filter)."""
+    return _CHAT_LANGUAGE_DISPLAY.get(
+        (language or "").strip().lower(), (language or "").capitalize()
+    )
 
 
-# Jinja2 filter a sablonokhoz (chat.vocab-lang)
-app.add_template_filter(_display_language_name, "display_language")
+@app.template_filter("display_language")
+def display_language_filter(value: str) -> str:
+    return _display_language_name(value)
 
 
 def _chat_progress_subject(subject: str, language: str | None) -> str:
