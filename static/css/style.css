@@ -307,6 +307,9 @@ a.btn-generate {
 .btn-ai-voice,
 .btn-ai-chat,
 .btn-ai-placement {
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    color: #000000;
+}
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -338,9 +341,14 @@ a.btn-generate {
     background: linear-gradient(135deg, #22c55e, #16a34a);
     color: #ffffff;
 }
+.btn-ai-placement {
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+    color: #000000;
+}
 .btn-task-practice:hover,
 .btn-ai-voice:hover,
-.btn-ai-chat:hover {
+.btn-ai-chat:hover,
+.btn-ai-placement:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 18px rgba(22, 163, 74, 0.22);
 }
