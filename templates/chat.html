@@ -221,6 +221,36 @@
         scrollToBottom();
     }
 
+    function playTts(text) {
+        return fetch(speakUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        })
+            .then(function (r) {
+                if (!r.ok) throw new Error('tts');
+                return r.blob();
+            })
+            .then(function (blob) {
+                if (currentAudio) {
+                    currentAudio.pause();
+                    URL.revokeObjectURL(currentAudio.src);
+                }
+                var url = URL.createObjectURL(blob);
+                currentAudio = new Audio(url);
+                setVoiceUi('speaking');
+                currentAudio.onended = function () {
+                    URL.revokeObjectURL(url);
+                    currentAudio = null;
+                    setVoiceUi('idle');
+                };
+                currentAudio.onerror = function () {
+                    setVoiceUi('idle');
+                };
+                return currentAudio.play();
+            });
+    }
+
     function setLoading(on) {
         typing.hidden = !on;
         if (sendBtn) sendBtn.disabled = on;
@@ -522,36 +552,6 @@
         function getHidden(id) {
             var el = document.getElementById(id);
             return el ? el.value : '';
-        }
-
-        function playTts(text) {
-            return fetch(speakUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text: text })
-            })
-                .then(function (r) {
-                    if (!r.ok) throw new Error('tts');
-                    return r.blob();
-                })
-                .then(function (blob) {
-                    if (currentAudio) {
-                        currentAudio.pause();
-                        URL.revokeObjectURL(currentAudio.src);
-                    }
-                    var url = URL.createObjectURL(blob);
-                    currentAudio = new Audio(url);
-                    setVoiceUi('speaking');
-                    currentAudio.onended = function () {
-                        URL.revokeObjectURL(url);
-                        currentAudio = null;
-                        setVoiceUi('idle');
-                    };
-                    currentAudio.onerror = function () {
-                        setVoiceUi('idle');
-                    };
-                    return currentAudio.play();
-                });
         }
 
         function sendVoiceChat(userText) {
