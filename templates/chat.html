@@ -127,7 +127,7 @@
     {% if is_foreign_language and language %}
     <aside class="chat-sidebar chat-sidebar-vocab">
         <h2 class="chat-sidebar-title">Szójegyzék</h2>
-        <p class="chat-vocab-lang">{{ language|capitalize }}</p>
+        <p class="chat-vocab-lang">{{ language|display_language }}</p>
         <ul class="chat-vocab-list" id="vocab-list">
             {% for w in vocabulary %}
                 <li>

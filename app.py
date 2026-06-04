@@ -1113,18 +1113,30 @@ def _chat_load_curriculum(
     subject_file: str, grade: str | int, *, language: str | None = None
 ) -> dict:
     """Kerettanterv kizárólag helyi JSON-ból (sidebar topic_catalog is innen)."""
-    lang = _normalize_chat_language(language) or _normalize_chat_language(
-        session.get("language")
-    )
-    return get_curriculum_for_chat(subject_file, grade, language=lang or None)
+    return get_curriculum_for_chat(subject_file, grade, language=language)
 
 
 _CHAT_LANGUAGES = frozenset({"angol", "nemet", "spanyol"})
+_CHAT_LANGUAGE_DISPLAY = {
+    "angol": "Angol",
+    "nemet": "Német",
+    "spanyol": "Spanyol",
+}
 
 
 def _normalize_chat_language(language: str | None) -> str:
     lang = (language or "").strip().lower()
     return lang if lang in _CHAT_LANGUAGES else ""
+
+
+def _display_language_name(language: str | None) -> str:
+    """nemet → Német, angol → Angol, spanyol → Spanyol"""
+    lang = _normalize_chat_language(language)
+    return _CHAT_LANGUAGE_DISPLAY.get(lang, lang or "")
+
+
+# Jinja2 filter a sablonokhoz (chat.vocab-lang)
+app.add_template_filter(_display_language_name, "display_language")
 
 
 def _chat_progress_subject(subject: str, language: str | None) -> str:
@@ -1137,10 +1149,10 @@ def _chat_progress_subject(subject: str, language: str | None) -> str:
 def _chat_bind_flask_session(
     child_id: int, subject: str, language: str | None
 ) -> str:
-    """Flask session: aktív chat kontextus (child + tantárgy + nyelv)."""
-    lang = _normalize_chat_language(language) or _normalize_chat_language(
-        session.get("language")
-    )
+    """Flask session: aktív chat kontextus (child + tantárgy + nyelv).
+    A hívó felelős a helyes language átadásáért – a függvény NEM
+    esik vissza a régi session értékre (lásd child_chat logika)."""
+    lang = _normalize_chat_language(language)
     session["language"] = lang
     session["chat_subject"] = (subject or "").strip()
     session["chat_child_id"] = child_id
@@ -1526,14 +1538,22 @@ def child_chat(child_id: int):
         abort(404)
 
     subject = (request.args.get("subject") or "").strip()
-    language = _chat_bind_flask_session(
-        child_id,
-        subject,
-        request.args.get("language") or session.get("language"),
-    )
     if not subject:
         flash(i18n.t("flash_subject_required", g.lang), "error")
         return redirect(url_for("select_tasks", child_id=child_id))
+
+    # Language: explicit request.args → session fallback (csak idegen nyelvnél)
+    explicit_language = (request.args.get("language") or "").strip().lower()
+    is_foreign_subj = is_elo_idegen_subject(subject)
+    if not explicit_language:
+        if is_foreign_subj:
+            language = session.get("language", "")
+        else:
+            language = ""  # nem idegen nyelv → régi session["language"] törlődik
+    else:
+        language = explicit_language
+
+    language = _chat_bind_flask_session(child_id, subject, language)
 
     effective_age = _child_effective_age(child)
     chat_profile = _chat_interaction_profile(effective_age)
