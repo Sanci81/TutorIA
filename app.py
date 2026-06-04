@@ -262,6 +262,8 @@ def _call_ai_for_tasks(
     lang: str,
     foreign_language: str | None = None,
     curriculum_text: str = "",
+    grade_num: int = 1,
+    subject_label: str = "",
 ) -> list[dict]:
     """OpenAI (gpt-4o-mini) hívás – 3 gyakorló feladat JSON formában."""
     api_key = _openai_api_key()
@@ -269,51 +271,62 @@ def _call_ai_for_tasks(
         logger.error("Task generation: OPENAI_API_KEY / OPENAI_KEY nincs beállítva")
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
 
-    curriculum_block = (
-        "\n\nKIZÁRÓLAG a következő kerettanterv alapján generálj feladatokat.\n"
-        "Ne találj ki semmit ami nincs benne. A feladatok legyenek\n"
-        "az adott osztály szintjének pontosan megfelelők.\n"
-        "TILOS: képekre, ábrákra hivatkozni.\n"
-        "TILOS: összehasonlítás ahol nincs valódi mennyiség (pl. '45-ből vs 32-ből').\n"
-        "Helyes feladattípus: 'Melyik szám nagyobb: 45 vagy 32?'\n"
-        f"Kerettanterv:\n{curriculum_text}"
-    ) if curriculum_text else ""
+    logger.info(
+        "curriculum_text length=%d grade=%d subject=%s",
+        len(curriculum_text), grade_num, subject_label,
+    )
+
+    # Kerettanterv blokk – minden system prompt ELEJÉN
+    curriculum_block = f"""
+KIZÁRÓLAG a következő hivatalos kerettanterv alapján generálj feladatokat.
+Tilos kitalálni bármit ami nincs a tantervben.
+Tilos képekre, ábrákra hivatkozni.
+A kérdések legyenek teljes mondatok, helyes magyar nyelvtannal.
+Rossz: 'Melyikből van több: 45-ből vagy 32-ből?'
+Jó: 'Melyik szám nagyobb: 45 vagy 32?'
+Rossz: 'Sorolj fel gyümölcsöket' (ha Matematika a tantárgy)
+Jó: A tantárgynak megfelelő, kerettantervben szereplő témakör.
+
+KERETTANTERV ({grade_num}. osztály, {subject_label}):
+{curriculum_text}
+""" if curriculum_text and len(curriculum_text) > 200 else ""
+
+    logger.info(
+        "curriculum_block length=%d used=%s",
+        len(curriculum_block), "yes" if curriculum_block else "no",
+    )
 
     if foreign_language == "angol":
-        system_hu = (
+        system_hu = curriculum_block + (
             "Te egy tapasztalt angol nyelvtanár vagy magyar általános iskolásoknak. "
             "A feladatok tartalma kizárólag angol nyelven legyen. "
             "Válaszolj kizárólag érvényes JSON-nal; a task mezők angolul legyenek."
-            f"{curriculum_block}"
         )
     elif foreign_language == "nemet":
-        system_hu = (
+        system_hu = curriculum_block + (
             "Te egy tapasztalt német nyelvtanár vagy magyar általános iskolásoknak. "
             "A feladatok tartalma kizárólag német nyelven legyen. "
             "Válaszolj kizárólag érvényes JSON-nal; a task mezők németül legyenek."
-            f"{curriculum_block}"
         )
     elif foreign_language == "spanyol":
-        system_hu = (
+        system_hu = curriculum_block + (
             "Te egy tapasztalt spanyol nyelvtanár vagy magyar általános iskolásoknak. "
             "A feladatok tartalma kizárólag spanyol nyelven legyen. "
             "Válaszolj kizárólag érvényes JSON-nal; a task mezők spanyolul legyenek."
-            f"{curriculum_block}"
         )
     else:
-        system_hu = (
+        system_hu = curriculum_block + (
             "Te egy tapasztalt magyar tanár vagy. A megadott hivatalos NAT 2020 "
             "kerettantervi témakörök alapján készíts gyakorló feladatokat. "
             "Válaszolj kizárólag érvényes JSON-nal, magyar nyelven.\n\n"
             "A feladatok legyenek nyelvtanilag helyesek magyarul.\n"
             "Összehasonlító kérdéseknél használj '-ból/-ből' ragot: "
             "'Melyikből van több?' nem 'Melyik van több?'\n"
-            f"{curriculum_block}"
+            "A feladatok legyenek pontosan az adott osztály szintjének megfelelők."
         )
-    system_es = (
+    system_es = curriculum_block + (
         "Eres un/a profesor/a experimentado/a. Crea ejercicios según el currículo "
         "oficial indicado. Responde solo con JSON válido en español."
-        f"{curriculum_block}"
     )
     user_suffix_hu = (
         'Add vissza JSON objektumként: {"tasks": [{"title": "...", "question": "...", '
@@ -472,7 +485,26 @@ def _generate_practice_tasks_bundle(
         if child["country"] == "HU"
         else None
     )
-    curriculum["content"] = curriculum_chat.get("content", "") if curriculum_chat else ""
+    curriculum_text = (curriculum_chat.get("content") or "") if curriculum_chat else ""
+    if not curriculum_text or len(curriculum_text) < 200:
+        if curriculum_chat and curriculum_chat.get("data"):
+            # Fallback: evfolyam_blokkok->teljes_szoveg vagy data.teljes_szoveg
+            data = curriculum_chat["data"]
+            for blk in (data.get("evfolyam_blokkok") or {}).values():
+                if isinstance(blk, dict) and blk.get("teljes_szoveg"):
+                    curriculum_text = blk["teljes_szoveg"]
+                    break
+            if not curriculum_text:
+                curriculum_text = data.get("teljes_szoveg", "")
+        if not curriculum_text:
+            # Utolsó fallback: nyers JSON régi struktúra
+            raw = curriculum_chat.get("data") if curriculum_chat else {}
+            curriculum_text = raw.get("teljes_szoveg", "") if isinstance(raw, dict) else ""
+    curriculum["content"] = curriculum_text
+    logger.info(
+        "curriculum_text length=%d grade=%s subject=%s language=%s",
+        len(curriculum_text), child["grade"], subject, language,
+    )
 
     if is_elo_idegen_subject(subject):
         if language == "spanyol":
@@ -505,6 +537,8 @@ def _generate_practice_tasks_bundle(
             lang=g.lang,
             foreign_language=foreign_language,
             curriculum_text=curriculum.get("content", ""),
+            grade_num=grade_num,
+            subject_label=subject_display,
         )
     except NotImplementedError:
         flash(i18n.t("flash_tasks_pending", g.lang), "info")
