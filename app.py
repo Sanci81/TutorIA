@@ -1683,6 +1683,13 @@ def child_chat(child_id: int):
     subject_label = _chat_subject_label(
         child, subject, chat_curriculum, language=language
     )
+    logger.warning(
+        "SUBJECT_DEBUG: subject=%s subject_label=%s session_subject=%s language=%s",
+        subject,
+        subject_label,
+        session.get("subject"),
+        session.get("language"),
+    )
     is_foreign = is_elo_idegen_subject(subject) or bool(language)
     progress_subject = _chat_progress_subject(subject, language)
 
