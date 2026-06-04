@@ -305,7 +305,8 @@ a.btn-generate {
 .task-actions[hidden] { display: none !important; }
 .btn-task-practice,
 .btn-ai-voice,
-.btn-ai-chat {
+.btn-ai-chat,
+.btn-ai-placement {
     display: inline-flex;
     align-items: center;
     justify-content: center;

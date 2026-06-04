@@ -183,7 +183,7 @@ TRANSLATIONS = {
     "btn_regenerate_tasks": {"hu": "🔄 Új feladatok", "es": "🔄 Nuevos ejercicios"},
     "btn_other_subject": {"hu": "📚 Másik tantárgy", "es": "📚 Otra asignatura"},
     "btn_tasks_home": {"hu": "👈 Főoldal", "es": "👈 Inicio"},
-    "btn_back_dashboard": {"hu": "Vissza a vezérlőpulthoz", "es": "Volver al panel"},
+    "btn_back_dashboard": {"hu": "← Vissza", "es": "← Volver"},
     "tasks_encouragement": {
         "hu": "Szuper vagy! Próbáld meg egyedül, aztán kérj segítséget! 🌟",
         "es": "¡Genial! Inténtalo tú solo/a, y pide ayuda si la necesitas! 🌟",
