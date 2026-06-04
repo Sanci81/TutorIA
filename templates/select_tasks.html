@@ -48,19 +48,41 @@
                         <option value="spanyol">{{ 'Spanyol' }}</option>
                     </select>
                 </div>
-                <a id="chat-start-link" hidden
-                   href="{{ url_for('child_chat', child_id=child['id']) }}?subject="
-                   style="display:block; width:100%; padding:1rem;
-                          background:#166534; color:#ffffff; font-weight:700;
-                          font-size:1.1rem; text-align:center; border-radius:999px;
-                          text-decoration:none; margin:1rem 0; border:2px solid #15803d;">
-                    💬 AI tanár – beszélgetés
-                </a>
-                <div class="form-actions">
-                    <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">{{ t('btn_cancel') }}</a>
-                    <button class="btn btn-primary btn-lg" type="submit" id="generate-btn">
-                        {{ t('btn_generate_now') }}
+
+                <div class="task-actions" id="task-actions" hidden>
+                    <button type="submit" class="btn-task-practice" id="generate-btn">
+                        📝 Gyakorló feladatok
                     </button>
+
+                    {% if chat_profile == 'both' %}
+                    <a class="btn-ai-chat" id="ai-chat-link" href="#" hidden>
+                        💬 AI tanulás és beszélgetés (chat)
+                    </a>
+                    <a class="btn-ai-voice" id="ai-voice-link" href="#" hidden>
+                        🎙️ AI tanulás és beszélgetés (hangos)
+                    </a>
+                    {% else %}
+                    <a class="btn-ai-voice" id="ai-voice-link" href="#" hidden>
+                        🎙️ AI tanulás és beszélgetés (hangos)
+                    </a>
+                    {% endif %}
+                </div>
+
+                {% if chat_profile == 'voice_default' %}
+                <div class="task-chat-alt" id="task-chat-alt" hidden>
+                    <button type="button" class="task-alt-link" id="show-chat-alt">
+                        vagy inkább írok ✍️
+                    </button>
+                    <div class="task-chat-alt-reveal" id="chat-alt-reveal" hidden>
+                        <a class="btn-ai-chat" id="ai-chat-link" href="#">
+                            💬 Inkább chatelünk
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="form-actions select-tasks-cancel">
+                    <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">{{ t('btn_cancel') }}</a>
                 </div>
             </form>
         {% else %}
@@ -88,6 +110,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var langDiv = document.getElementById('language-selector');
     var langSelect = document.getElementById('language-select');
     var eloFile = {{ elo_idegen_file|tojson }};
+    var chatBase = {{ url_for('child_chat', child_id=child['id'])|tojson }};
+    var taskActions = document.getElementById('task-actions');
+    var taskChatAlt = document.getElementById('task-chat-alt');
+    var voiceLink = document.getElementById('ai-voice-link');
+    var chatLink = document.getElementById('ai-chat-link');
+    var showChatAlt = document.getElementById('show-chat-alt');
+    var chatAltReveal = document.getElementById('chat-alt-reveal');
 
     function isIdegenNyelvSelected() {
         if (!subjectSelect) return false;
@@ -108,30 +137,58 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    var chatLink = document.getElementById('chat-start-link');
-    function updateChatLink() {
-        if (!chatLink || !subjectSelect) return;
+    function buildChatQuery(mode) {
         var val = subjectSelect.value;
-        if (val) {
-            chatLink.hidden = false;
-            var base = {{ url_for('child_chat', child_id=child['id'])|tojson }};
-            var q = '?subject=' + encodeURIComponent(val);
-            if (isIdegenNyelvSelected() && langSelect && langSelect.value) {
-                q += '&language=' + encodeURIComponent(langSelect.value);
-            }
-            chatLink.href = base + q;
-        } else {
-            chatLink.hidden = true;
+        var q = '?subject=' + encodeURIComponent(val) + '&mode=' + encodeURIComponent(mode);
+        if (isIdegenNyelvSelected() && langSelect && langSelect.value) {
+            q += '&language=' + encodeURIComponent(langSelect.value);
         }
+        return q;
+    }
+
+    function updateTaskActions() {
+        if (!subjectSelect || !taskActions) return;
+        var val = subjectSelect.value;
+        var hasSubject = !!val;
+        var langOk = !isIdegenNyelvSelected() || (langSelect && langSelect.value);
+        var show = hasSubject && langOk;
+
+        taskActions.hidden = !show;
+        if (taskChatAlt) {
+            taskChatAlt.hidden = !show;
+            if (chatAltReveal) chatAltReveal.hidden = true;
+            if (showChatAlt) showChatAlt.hidden = false;
+        }
+
+        if (!show) return;
+
+        if (voiceLink) {
+            voiceLink.href = chatBase + buildChatQuery('voice');
+            voiceLink.hidden = false;
+        }
+        if (chatLink) {
+            chatLink.href = chatBase + buildChatQuery('chat');
+            chatLink.hidden = false;
+        }
+    }
+
+    if (showChatAlt && chatAltReveal) {
+        showChatAlt.addEventListener('click', function () {
+            showChatAlt.hidden = true;
+            chatAltReveal.hidden = false;
+        });
     }
 
     if (subjectSelect) {
         subjectSelect.addEventListener('change', function () {
             updateLanguageSelector();
-            updateChatLink();
+            updateTaskActions();
         });
+        if (langSelect) {
+            langSelect.addEventListener('change', updateTaskActions);
+        }
         updateLanguageSelector();
-        updateChatLink();
+        updateTaskActions();
     }
 
     if (!form || !overlay) return;

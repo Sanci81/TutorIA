@@ -1,0 +1,514 @@
+{
+  "meta": {
+    "tantargy": "Spanyol",
+    "tantargy_tipus": "élő idegen nyelv",
+    "evfolyam": "5-8",
+    "evfolyamok": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "forras": "Saját felépítés – NAT 'élő idegen nyelv' témakörök + KER/CEFR (Pre-A1→A2)",
+    "megjegyzes": "A spanyol nincs a NAT-ban önálló tantárgyként. A teljes_szoveg a nyelvfüggetlen NAT témakörökre és a KER szintekre épített tananyag. Az AI ebből olvassa ki, hogy az adott osztályban mit tanítson."
+  },
+  "teljes_szoveg": "SPANYOL mint élő idegen nyelv – 1-8. évfolyam.\n\nA spanyol nem szerepel önálló tantárgyként a Nemzeti alaptantervben, ezért ez a tananyag a NAT 'élő idegen nyelv' (nyelvfüggetlen) kerettantervi témaköreire és a Közös Európai Referenciakeret (KER/CEFR) Pre-A1 → A2 szintleírásaira épül. A felépítés azonos az angol és német tantervével, csak a szókincs, a nyelvtani progresszió és a kulturális tartalom spanyol.\n\nSzintprogresszió: 1-2. o. Pre-A1 (szóbeli, játékos) · 3-4. o. Pre-A1→A1 (írás-olvasás bevezetése) · 5-6. o. A1 · 7-8. o. A1→A2.\n\n==== 5–6. évfolyam ====\n5–6. évfolyam (CEFR/KER: A1 (KER))\n\nAz 5-6. évfolyamon a NAT élő idegen nyelv kilenc témaköre jelenik meg A1 szinten, spanyol tartalommal. A tanuló rövid szövegeket ért, egyszerű mondatokban kommunikál ismerős helyzetekben.\n\n\nTémakör: Temas personales y del entorno – Személyes és környezeti témák\nJavasolt óraszám: 40 óra\nKommunikációs / fejlesztési cél: Bemutatja magát, családját, lakhelyét, hobbiját egyszerű mondatokban.\nSzókincs (példák): familia, amigos, barrio, aficiones, mascota, horario, ciudad, pueblo\nNyelvtani fókusz: ser/estar különbség; presente regular (-ar/-er/-ir); posesivos (mi/tu/su)\nKommunikációs szándékok: bemutatkozás bővebben; család/lakóhely leírása; hobbi kifejezése\nJavasolt tevékenységek: önbemutató poszter; interjú párban; „¿quién es?\" találós leírás\n\nTémakör: Temas públicos – Közéleti helyzetek\nJavasolt óraszám: 8 óra\nKommunikációs / fejlesztési cél: Boltban, étteremben, közlekedésben egyszerű tranzakciókat bonyolít.\nSzókincs (példák): tienda, precio, euro, menú, billete, autobús, cuánto cuesta\nNyelvtani fókusz: ¿cuánto…?; números 1–1000; querer + főnév\nKommunikációs szándékok: árkérdezés, vásárlás; rendelés; jegyvétel\nJavasolt tevékenységek: bolti szerepjáték; étterem-jelenet; ár-bingó\n\nTémakör: Temas del aula – Tantermi helyzetek\nJavasolt óraszám: 24 óra\nKommunikációs / fejlesztési cél: Részt vesz a tantermi kommunikációban, követ és ad utasításokat.\nSzókincs (példák): ejercicio, página, deberes, repetir, entender, pregunta, ejemplo\nNyelvtani fókusz: felszólító mód alapszinten (abre, escucha); poder (¿puedo…?)\nKommunikációs szándékok: segítségkérés; utasítás adása/követése; kérdezés óra közben\nJavasolt tevékenységek: páros utasításjáték; tantermi nyelvi rutinok; szótár-használat\n\nTémakör: Temas interdisciplinares – Tantárgyközi témák\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: Más tantárgyak egyszerű tartalmát spanyolul dolgozza fel.\nSzókincs (példák): mapa, planeta, número, experimento, color, historia, animal\nNyelvtani fókusz: egyszerű leíró mondatok; hay + mennyiség\nKommunikációs szándékok: egyszerű tényközlés más tárgyak témáiból\nJavasolt tevékenységek: mini-projekt (állat/ország); plakát adatlappal\n\nTémakör: La lengua española y su aprendizaje – A nyelv és tanulása\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: Tudatosítja a nyelvtanulási stratégiákat, szótárt használ.\nSzókincs (példák): palabra, frase, significado, diccionario, ejemplo, práctica\nNyelvtani fókusz: szabálymegfigyelés példákból\nKommunikációs szándékok: szótárazás; szókártya-rendszer; önellenőrzés\nJavasolt tevékenységek: szókincs-napló vezetése; tanulási tippek megbeszélése\n\nTémakör: Temas interculturales – Interkulturális témák\nJavasolt óraszám: 22 óra\nKommunikációs / fejlesztési cél: Megismeri a spanyol nyelvű országok kultúráját, ünnepeit.\nSzókincs (példák): España, México, fiesta, comida típica, música, tradición\nNyelvtani fókusz: egyszerű összehasonlító mondatok (en España…, en Hungría…)\nKommunikációs szándékok: kulturális tény megfogalmazása; összehasonlítás a saját kultúrával\nJavasolt tevékenységek: országkártyák; ünnep bemutatása; tipikus étel poszter\n\nTémakör: Temas actuales – Aktuális témák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Egyszerű aktuális témákról (időjárás, sport, hírek) beszél.\nSzókincs (példák): noticia, tiempo, deporte, fútbol, evento, fin de semana\nNyelvtani fókusz: presente continuo (estar + gerundio)\nKommunikációs szándékok: aktuális esemény leírása; hétvégi terv elmondása\nJavasolt tevékenységek: időjárás-jelentés eljátszása; mini hírműsor\n\nTémakör: Entretenimiento y aprendizaje lúdico – Szórakozás, játékos tanulás\nJavasolt óraszám: 18 óra\nKommunikációs / fejlesztési cél: Dalok, játékok, rövid videók révén bővíti a nyelvet.\nSzókincs (példák): canción, juego, película, dibujos animados, cuento\nNyelvtani fókusz: ismert szerkezetek játékos újrahasználata\nKommunikációs szándékok: véleménynyilvánítás (me encanta/odio); kedvenc bemutatása\nJavasolt tevékenységek: spanyol dal feldolgozása; társasjáték spanyolul; rövid mese\n\nTémakör: Adquisición y transmisión de conocimiento – Tudásszerzés, -átadás\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: Egyszerű forrásból információt gyűjt és megoszt.\nSzókincs (példák): información, buscar, internet, libro, compartir, presentar\nNyelvtani fókusz: egyszerű jelen idejű beszámoló\nKommunikációs szándékok: információ keresése és bemutatása\nJavasolt tevékenységek: mini-kutatás egy spanyol városról; rövid kiselőadás\n\n==== 7–8. évfolyam ====\n7–8. évfolyam (CEFR/KER: A1 → A2 (KER))\n\nA 7-8. évfolyamon ugyanaz a kilenc NAT témakör bővül és mélyül A2 felé. Megjelennek a múlt és jövő idők, a tanuló összefüggő rövid szövegeket alkot, véleményt fejt ki és egyszerű vitában részt vesz.\n\n\nTémakör: Temas personales y del entorno – Személyes és környezeti témák\nJavasolt óraszám: 38 óra\nKommunikációs / fejlesztési cél: Részletesen beszél magáról, múltbeli eseményekről, terveiről.\nSzókincs (példák): experiencia, recuerdo, plan, futuro, sentimiento, carácter\nNyelvtani fókusz: pretérito perfecto; pretérito indefinido (alap); ir a + infinitivo\nKommunikációs szándékok: múltbeli élmény elmesélése; jövőbeli terv kifejtése; jellemzés\nJavasolt tevékenységek: napló-bejegyzés; élménybeszámoló; jövőkép-poszter\n\nTémakör: Temas públicos – Közéleti helyzetek\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Összetettebb tranzakciókat bonyolít, problémát jelez, reklamál.\nSzókincs (példák): reserva, cita, problema, solución, reclamar, servicio\nNyelvtani fókusz: feltételes alap (me gustaría); tárgyas névmások (lo/la)\nKommunikációs szándékok: foglalás, időpontkérés; probléma jelzése udvariasan\nJavasolt tevékenységek: telefonos szerepjáték; panaszlevél-vázlat; ügyintézés-jelenet\n\nTémakör: Temas del aula – Tantermi helyzetek\nJavasolt óraszám: 18 óra\nKommunikációs / fejlesztési cél: Önállóan szervezi tanulását, projektmunkában együttműködik.\nSzókincs (példák): proyecto, grupo, tarea, opinión, acuerdo, resumen\nNyelvtani fókusz: felszólító mód bővebben; porque (okhatározás)\nKommunikációs szándékok: véleményegyeztetés csoportban; feladatmegosztás\nJavasolt tevékenységek: csoportprojekt spanyolul; vita egyszerű szabályokkal\n\nTémakör: Temas interdisciplinares – Tantárgyközi témák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Más tárgyak témáit összefüggő szöveggé szervezi spanyolul.\nSzókincs (példák): medio ambiente, tecnología, salud, geografía, clima\nNyelvtani fókusz: okság és következmény egyszerű kifejezése\nKommunikációs szándékok: folyamat/jelenség leírása; adat értelmezése\nJavasolt tevékenységek: környezetvédelmi miniprojekt; grafikon leírása szóban\n\nTémakör: La lengua española y su aprendizaje – A nyelv és tanulása\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Tudatos stratégiákkal tanul, hibáit javítja, önállóan szótáraz.\nSzókincs (példák): estrategia, corrección, fluidez, vocabulario, gramática\nNyelvtani fókusz: szabályok tudatosítása és alkalmazása\nKommunikációs szándékok: önértékelés; hibajavítás; célkitűzés\nJavasolt tevékenységek: tanulási napló; hibanapló; kortárs visszajelzés\n\nTémakör: Temas interculturales – Interkulturális témák\nJavasolt óraszám: 24 óra\nKommunikációs / fejlesztési cél: Mélyebben ismeri a hispán világ kultúráját, összehasonlít.\nSzókincs (példák): Latinoamérica, costumbre, arte, gastronomía, diversidad\nNyelvtani fókusz: összehasonlító szerkezetek (más… que, tan… como)\nKommunikációs szándékok: kulturális összehasonlítás indoklással; álláspont kifejtése\nJavasolt tevékenységek: ország-összehasonlító projekt; kulturális kvíz; recept bemutatása\n\nTémakör: Temas actuales – Aktuális témák\nJavasolt óraszám: 14 óra\nKommunikációs / fejlesztési cél: Aktuális hírekről, eseményekről véleményt formál.\nSzókincs (példák): actualidad, medio de comunicación, redes sociales, tendencia\nNyelvtani fókusz: múlt idők kontrasztja (perfecto vs indefinido)\nKommunikációs szándékok: hír összefoglalása; vélemény indoklással\nJavasolt tevékenységek: hírösszefoglaló készítése; álláspont-kártyás vita\n\nTémakör: Entretenimiento – Szórakozás\nJavasolt óraszám: 20 óra\nKommunikációs / fejlesztési cél: Filmekről, zenéről, könyvekről beszél, ajánl.\nSzókincs (példák): película, serie, música, libro, videojuego, recomendar\nNyelvtani fókusz: véleményt árnyaló szerkezetek; creo que…\nKommunikációs szándékok: ajánlás indoklással; kedvenc részletes bemutatása\nJavasolt tevékenységek: filmajánló videó-szkript; top5 lista indoklással\n\nTémakör: Adquisición y transmisión de conocimiento – Tudásszerzés, -átadás\nJavasolt óraszám: 18 óra\nKommunikációs / fejlesztési cél: Több forrásból kutat, rendszerez és összefüggően bemutat.\nSzókincs (példák): fuente, investigación, datos, presentación, conclusión\nNyelvtani fókusz: összefüggő, több mondatos beszámoló\nKommunikációs szándékok: forrás összevetése; kiselőadás tartása\nJavasolt tevékenységek: kutatási miniprojekt; prezentáció spanyolul; poszterkonferencia",
+  "bevezeto": "SPANYOL mint élő idegen nyelv – 1-8. évfolyam.\n\nA spanyol nem szerepel önálló tantárgyként a Nemzeti alaptantervben, ezért ez a tananyag a NAT 'élő idegen nyelv' (nyelvfüggetlen) kerettantervi témaköreire és a Közös Európai Referenciakeret (KER/CEFR) Pre-A1 → A2 szintleírásaira épül. A felépítés azonos az angol és német tantervével, csak a szókincs, a nyelvtani progresszió és a kulturális tartalom spanyol.\n\nSzintprogresszió: 1-2. o. Pre-A1 (szóbeli, játékos) · 3-4. o. Pre-A1→A1 (írás-olvasás bevezetése) · 5-6. o. A1 · 7-8. o. A1→A2.",
+  "evfolyam_blokkok": {
+    "5-6": {
+      "evfolyamok": [
+        5,
+        6
+      ],
+      "cefr_szint": "A1 (KER)",
+      "leiras": "Az 5-6. évfolyamon a NAT élő idegen nyelv kilenc témaköre jelenik meg A1 szinten, spanyol tartalommal. A tanuló rövid szövegeket ért, egyszerű mondatokban kommunikál ismerős helyzetekben.",
+      "temakorok": [
+        {
+          "nev": "Temas personales y del entorno – Személyes és környezeti témák",
+          "javasolt_oraszam": 40,
+          "cefr_cel": "Bemutatja magát, családját, lakhelyét, hobbiját egyszerű mondatokban.",
+          "szokincs": [
+            "familia",
+            "amigos",
+            "barrio",
+            "aficiones",
+            "mascota",
+            "horario",
+            "ciudad",
+            "pueblo"
+          ],
+          "nyelvtan": [
+            "ser/estar különbség",
+            "presente regular (-ar/-er/-ir)",
+            "posesivos (mi/tu/su)"
+          ],
+          "kommunikacios_szandekok": [
+            "bemutatkozás bővebben",
+            "család/lakóhely leírása",
+            "hobbi kifejezése"
+          ],
+          "javasolt_tevekenysegek": [
+            "önbemutató poszter",
+            "interjú párban",
+            "„¿quién es?\" találós leírás"
+          ],
+          "teljes_szoveg": "Témakör: Temas personales y del entorno – Személyes és környezeti témák\nJavasolt óraszám: 40 óra\nKommunikációs / fejlesztési cél: Bemutatja magát, családját, lakhelyét, hobbiját egyszerű mondatokban.\nSzókincs (példák): familia, amigos, barrio, aficiones, mascota, horario, ciudad, pueblo\nNyelvtani fókusz: ser/estar különbség; presente regular (-ar/-er/-ir); posesivos (mi/tu/su)\nKommunikációs szándékok: bemutatkozás bővebben; család/lakóhely leírása; hobbi kifejezése\nJavasolt tevékenységek: önbemutató poszter; interjú párban; „¿quién es?\" találós leírás"
+        },
+        {
+          "nev": "Temas públicos – Közéleti helyzetek",
+          "javasolt_oraszam": 8,
+          "cefr_cel": "Boltban, étteremben, közlekedésben egyszerű tranzakciókat bonyolít.",
+          "szokincs": [
+            "tienda",
+            "precio",
+            "euro",
+            "menú",
+            "billete",
+            "autobús",
+            "cuánto cuesta"
+          ],
+          "nyelvtan": [
+            "¿cuánto…?",
+            "números 1–1000",
+            "querer + főnév"
+          ],
+          "kommunikacios_szandekok": [
+            "árkérdezés, vásárlás",
+            "rendelés",
+            "jegyvétel"
+          ],
+          "javasolt_tevekenysegek": [
+            "bolti szerepjáték",
+            "étterem-jelenet",
+            "ár-bingó"
+          ],
+          "teljes_szoveg": "Témakör: Temas públicos – Közéleti helyzetek\nJavasolt óraszám: 8 óra\nKommunikációs / fejlesztési cél: Boltban, étteremben, közlekedésben egyszerű tranzakciókat bonyolít.\nSzókincs (példák): tienda, precio, euro, menú, billete, autobús, cuánto cuesta\nNyelvtani fókusz: ¿cuánto…?; números 1–1000; querer + főnév\nKommunikációs szándékok: árkérdezés, vásárlás; rendelés; jegyvétel\nJavasolt tevékenységek: bolti szerepjáték; étterem-jelenet; ár-bingó"
+        },
+        {
+          "nev": "Temas del aula – Tantermi helyzetek",
+          "javasolt_oraszam": 24,
+          "cefr_cel": "Részt vesz a tantermi kommunikációban, követ és ad utasításokat.",
+          "szokincs": [
+            "ejercicio",
+            "página",
+            "deberes",
+            "repetir",
+            "entender",
+            "pregunta",
+            "ejemplo"
+          ],
+          "nyelvtan": [
+            "felszólító mód alapszinten (abre, escucha)",
+            "poder (¿puedo…?)"
+          ],
+          "kommunikacios_szandekok": [
+            "segítségkérés",
+            "utasítás adása/követése",
+            "kérdezés óra közben"
+          ],
+          "javasolt_tevekenysegek": [
+            "páros utasításjáték",
+            "tantermi nyelvi rutinok",
+            "szótár-használat"
+          ],
+          "teljes_szoveg": "Témakör: Temas del aula – Tantermi helyzetek\nJavasolt óraszám: 24 óra\nKommunikációs / fejlesztési cél: Részt vesz a tantermi kommunikációban, követ és ad utasításokat.\nSzókincs (példák): ejercicio, página, deberes, repetir, entender, pregunta, ejemplo\nNyelvtani fókusz: felszólító mód alapszinten (abre, escucha); poder (¿puedo…?)\nKommunikációs szándékok: segítségkérés; utasítás adása/követése; kérdezés óra közben\nJavasolt tevékenységek: páros utasításjáték; tantermi nyelvi rutinok; szótár-használat"
+        },
+        {
+          "nev": "Temas interdisciplinares – Tantárgyközi témák",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "Más tantárgyak egyszerű tartalmát spanyolul dolgozza fel.",
+          "szokincs": [
+            "mapa",
+            "planeta",
+            "número",
+            "experimento",
+            "color",
+            "historia",
+            "animal"
+          ],
+          "nyelvtan": [
+            "egyszerű leíró mondatok",
+            "hay + mennyiség"
+          ],
+          "kommunikacios_szandekok": [
+            "egyszerű tényközlés más tárgyak témáiból"
+          ],
+          "javasolt_tevekenysegek": [
+            "mini-projekt (állat/ország)",
+            "plakát adatlappal"
+          ],
+          "teljes_szoveg": "Témakör: Temas interdisciplinares – Tantárgyközi témák\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: Más tantárgyak egyszerű tartalmát spanyolul dolgozza fel.\nSzókincs (példák): mapa, planeta, número, experimento, color, historia, animal\nNyelvtani fókusz: egyszerű leíró mondatok; hay + mennyiség\nKommunikációs szándékok: egyszerű tényközlés más tárgyak témáiból\nJavasolt tevékenységek: mini-projekt (állat/ország); plakát adatlappal"
+        },
+        {
+          "nev": "La lengua española y su aprendizaje – A nyelv és tanulása",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "Tudatosítja a nyelvtanulási stratégiákat, szótárt használ.",
+          "szokincs": [
+            "palabra",
+            "frase",
+            "significado",
+            "diccionario",
+            "ejemplo",
+            "práctica"
+          ],
+          "nyelvtan": [
+            "szabálymegfigyelés példákból"
+          ],
+          "kommunikacios_szandekok": [
+            "szótárazás",
+            "szókártya-rendszer",
+            "önellenőrzés"
+          ],
+          "javasolt_tevekenysegek": [
+            "szókincs-napló vezetése",
+            "tanulási tippek megbeszélése"
+          ],
+          "teljes_szoveg": "Témakör: La lengua española y su aprendizaje – A nyelv és tanulása\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: Tudatosítja a nyelvtanulási stratégiákat, szótárt használ.\nSzókincs (példák): palabra, frase, significado, diccionario, ejemplo, práctica\nNyelvtani fókusz: szabálymegfigyelés példákból\nKommunikációs szándékok: szótárazás; szókártya-rendszer; önellenőrzés\nJavasolt tevékenységek: szókincs-napló vezetése; tanulási tippek megbeszélése"
+        },
+        {
+          "nev": "Temas interculturales – Interkulturális témák",
+          "javasolt_oraszam": 22,
+          "cefr_cel": "Megismeri a spanyol nyelvű országok kultúráját, ünnepeit.",
+          "szokincs": [
+            "España",
+            "México",
+            "fiesta",
+            "comida típica",
+            "música",
+            "tradición"
+          ],
+          "nyelvtan": [
+            "egyszerű összehasonlító mondatok (en España…, en Hungría…)"
+          ],
+          "kommunikacios_szandekok": [
+            "kulturális tény megfogalmazása",
+            "összehasonlítás a saját kultúrával"
+          ],
+          "javasolt_tevekenysegek": [
+            "országkártyák",
+            "ünnep bemutatása",
+            "tipikus étel poszter"
+          ],
+          "teljes_szoveg": "Témakör: Temas interculturales – Interkulturális témák\nJavasolt óraszám: 22 óra\nKommunikációs / fejlesztési cél: Megismeri a spanyol nyelvű országok kultúráját, ünnepeit.\nSzókincs (példák): España, México, fiesta, comida típica, música, tradición\nNyelvtani fókusz: egyszerű összehasonlító mondatok (en España…, en Hungría…)\nKommunikációs szándékok: kulturális tény megfogalmazása; összehasonlítás a saját kultúrával\nJavasolt tevékenységek: országkártyák; ünnep bemutatása; tipikus étel poszter"
+        },
+        {
+          "nev": "Temas actuales – Aktuális témák",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "Egyszerű aktuális témákról (időjárás, sport, hírek) beszél.",
+          "szokincs": [
+            "noticia",
+            "tiempo",
+            "deporte",
+            "fútbol",
+            "evento",
+            "fin de semana"
+          ],
+          "nyelvtan": [
+            "presente continuo (estar + gerundio)"
+          ],
+          "kommunikacios_szandekok": [
+            "aktuális esemény leírása",
+            "hétvégi terv elmondása"
+          ],
+          "javasolt_tevekenysegek": [
+            "időjárás-jelentés eljátszása",
+            "mini hírműsor"
+          ],
+          "teljes_szoveg": "Témakör: Temas actuales – Aktuális témák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Egyszerű aktuális témákról (időjárás, sport, hírek) beszél.\nSzókincs (példák): noticia, tiempo, deporte, fútbol, evento, fin de semana\nNyelvtani fókusz: presente continuo (estar + gerundio)\nKommunikációs szándékok: aktuális esemény leírása; hétvégi terv elmondása\nJavasolt tevékenységek: időjárás-jelentés eljátszása; mini hírműsor"
+        },
+        {
+          "nev": "Entretenimiento y aprendizaje lúdico – Szórakozás, játékos tanulás",
+          "javasolt_oraszam": 18,
+          "cefr_cel": "Dalok, játékok, rövid videók révén bővíti a nyelvet.",
+          "szokincs": [
+            "canción",
+            "juego",
+            "película",
+            "dibujos animados",
+            "cuento"
+          ],
+          "nyelvtan": [
+            "ismert szerkezetek játékos újrahasználata"
+          ],
+          "kommunikacios_szandekok": [
+            "véleménynyilvánítás (me encanta/odio)",
+            "kedvenc bemutatása"
+          ],
+          "javasolt_tevekenysegek": [
+            "spanyol dal feldolgozása",
+            "társasjáték spanyolul",
+            "rövid mese"
+          ],
+          "teljes_szoveg": "Témakör: Entretenimiento y aprendizaje lúdico – Szórakozás, játékos tanulás\nJavasolt óraszám: 18 óra\nKommunikációs / fejlesztési cél: Dalok, játékok, rövid videók révén bővíti a nyelvet.\nSzókincs (példák): canción, juego, película, dibujos animados, cuento\nNyelvtani fókusz: ismert szerkezetek játékos újrahasználata\nKommunikációs szándékok: véleménynyilvánítás (me encanta/odio); kedvenc bemutatása\nJavasolt tevékenységek: spanyol dal feldolgozása; társasjáték spanyolul; rövid mese"
+        },
+        {
+          "nev": "Adquisición y transmisión de conocimiento – Tudásszerzés, -átadás",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "Egyszerű forrásból információt gyűjt és megoszt.",
+          "szokincs": [
+            "información",
+            "buscar",
+            "internet",
+            "libro",
+            "compartir",
+            "presentar"
+          ],
+          "nyelvtan": [
+            "egyszerű jelen idejű beszámoló"
+          ],
+          "kommunikacios_szandekok": [
+            "információ keresése és bemutatása"
+          ],
+          "javasolt_tevekenysegek": [
+            "mini-kutatás egy spanyol városról",
+            "rövid kiselőadás"
+          ],
+          "teljes_szoveg": "Témakör: Adquisición y transmisión de conocimiento – Tudásszerzés, -átadás\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: Egyszerű forrásból információt gyűjt és megoszt.\nSzókincs (példák): información, buscar, internet, libro, compartir, presentar\nNyelvtani fókusz: egyszerű jelen idejű beszámoló\nKommunikációs szándékok: információ keresése és bemutatása\nJavasolt tevékenységek: mini-kutatás egy spanyol városról; rövid kiselőadás"
+        }
+      ],
+      "teljes_szoveg": "5–6. évfolyam (CEFR/KER: A1 (KER))\n\nAz 5-6. évfolyamon a NAT élő idegen nyelv kilenc témaköre jelenik meg A1 szinten, spanyol tartalommal. A tanuló rövid szövegeket ért, egyszerű mondatokban kommunikál ismerős helyzetekben.\n\n\nTémakör: Temas personales y del entorno – Személyes és környezeti témák\nJavasolt óraszám: 40 óra\nKommunikációs / fejlesztési cél: Bemutatja magát, családját, lakhelyét, hobbiját egyszerű mondatokban.\nSzókincs (példák): familia, amigos, barrio, aficiones, mascota, horario, ciudad, pueblo\nNyelvtani fókusz: ser/estar különbség; presente regular (-ar/-er/-ir); posesivos (mi/tu/su)\nKommunikációs szándékok: bemutatkozás bővebben; család/lakóhely leírása; hobbi kifejezése\nJavasolt tevékenységek: önbemutató poszter; interjú párban; „¿quién es?\" találós leírás\n\nTémakör: Temas públicos – Közéleti helyzetek\nJavasolt óraszám: 8 óra\nKommunikációs / fejlesztési cél: Boltban, étteremben, közlekedésben egyszerű tranzakciókat bonyolít.\nSzókincs (példák): tienda, precio, euro, menú, billete, autobús, cuánto cuesta\nNyelvtani fókusz: ¿cuánto…?; números 1–1000; querer + főnév\nKommunikációs szándékok: árkérdezés, vásárlás; rendelés; jegyvétel\nJavasolt tevékenységek: bolti szerepjáték; étterem-jelenet; ár-bingó\n\nTémakör: Temas del aula – Tantermi helyzetek\nJavasolt óraszám: 24 óra\nKommunikációs / fejlesztési cél: Részt vesz a tantermi kommunikációban, követ és ad utasításokat.\nSzókincs (példák): ejercicio, página, deberes, repetir, entender, pregunta, ejemplo\nNyelvtani fókusz: felszólító mód alapszinten (abre, escucha); poder (¿puedo…?)\nKommunikációs szándékok: segítségkérés; utasítás adása/követése; kérdezés óra közben\nJavasolt tevékenységek: páros utasításjáték; tantermi nyelvi rutinok; szótár-használat\n\nTémakör: Temas interdisciplinares – Tantárgyközi témák\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: Más tantárgyak egyszerű tartalmát spanyolul dolgozza fel.\nSzókincs (példák): mapa, planeta, número, experimento, color, historia, animal\nNyelvtani fókusz: egyszerű leíró mondatok; hay + mennyiség\nKommunikációs szándékok: egyszerű tényközlés más tárgyak témáiból\nJavasolt tevékenységek: mini-projekt (állat/ország); plakát adatlappal\n\nTémakör: La lengua española y su aprendizaje – A nyelv és tanulása\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: Tudatosítja a nyelvtanulási stratégiákat, szótárt használ.\nSzókincs (példák): palabra, frase, significado, diccionario, ejemplo, práctica\nNyelvtani fókusz: szabálymegfigyelés példákból\nKommunikációs szándékok: szótárazás; szókártya-rendszer; önellenőrzés\nJavasolt tevékenységek: szókincs-napló vezetése; tanulási tippek megbeszélése\n\nTémakör: Temas interculturales – Interkulturális témák\nJavasolt óraszám: 22 óra\nKommunikációs / fejlesztési cél: Megismeri a spanyol nyelvű országok kultúráját, ünnepeit.\nSzókincs (példák): España, México, fiesta, comida típica, música, tradición\nNyelvtani fókusz: egyszerű összehasonlító mondatok (en España…, en Hungría…)\nKommunikációs szándékok: kulturális tény megfogalmazása; összehasonlítás a saját kultúrával\nJavasolt tevékenységek: országkártyák; ünnep bemutatása; tipikus étel poszter\n\nTémakör: Temas actuales – Aktuális témák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Egyszerű aktuális témákról (időjárás, sport, hírek) beszél.\nSzókincs (példák): noticia, tiempo, deporte, fútbol, evento, fin de semana\nNyelvtani fókusz: presente continuo (estar + gerundio)\nKommunikációs szándékok: aktuális esemény leírása; hétvégi terv elmondása\nJavasolt tevékenységek: időjárás-jelentés eljátszása; mini hírműsor\n\nTémakör: Entretenimiento y aprendizaje lúdico – Szórakozás, játékos tanulás\nJavasolt óraszám: 18 óra\nKommunikációs / fejlesztési cél: Dalok, játékok, rövid videók révén bővíti a nyelvet.\nSzókincs (példák): canción, juego, película, dibujos animados, cuento\nNyelvtani fókusz: ismert szerkezetek játékos újrahasználata\nKommunikációs szándékok: véleménynyilvánítás (me encanta/odio); kedvenc bemutatása\nJavasolt tevékenységek: spanyol dal feldolgozása; társasjáték spanyolul; rövid mese\n\nTémakör: Adquisición y transmisión de conocimiento – Tudásszerzés, -átadás\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: Egyszerű forrásból információt gyűjt és megoszt.\nSzókincs (példák): información, buscar, internet, libro, compartir, presentar\nNyelvtani fókusz: egyszerű jelen idejű beszámoló\nKommunikációs szándékok: információ keresése és bemutatása\nJavasolt tevékenységek: mini-kutatás egy spanyol városról; rövid kiselőadás"
+    },
+    "7-8": {
+      "evfolyamok": [
+        7,
+        8
+      ],
+      "cefr_szint": "A1 → A2 (KER)",
+      "leiras": "A 7-8. évfolyamon ugyanaz a kilenc NAT témakör bővül és mélyül A2 felé. Megjelennek a múlt és jövő idők, a tanuló összefüggő rövid szövegeket alkot, véleményt fejt ki és egyszerű vitában részt vesz.",
+      "temakorok": [
+        {
+          "nev": "Temas personales y del entorno – Személyes és környezeti témák",
+          "javasolt_oraszam": 38,
+          "cefr_cel": "Részletesen beszél magáról, múltbeli eseményekről, terveiről.",
+          "szokincs": [
+            "experiencia",
+            "recuerdo",
+            "plan",
+            "futuro",
+            "sentimiento",
+            "carácter"
+          ],
+          "nyelvtan": [
+            "pretérito perfecto",
+            "pretérito indefinido (alap)",
+            "ir a + infinitivo"
+          ],
+          "kommunikacios_szandekok": [
+            "múltbeli élmény elmesélése",
+            "jövőbeli terv kifejtése",
+            "jellemzés"
+          ],
+          "javasolt_tevekenysegek": [
+            "napló-bejegyzés",
+            "élménybeszámoló",
+            "jövőkép-poszter"
+          ],
+          "teljes_szoveg": "Témakör: Temas personales y del entorno – Személyes és környezeti témák\nJavasolt óraszám: 38 óra\nKommunikációs / fejlesztési cél: Részletesen beszél magáról, múltbeli eseményekről, terveiről.\nSzókincs (példák): experiencia, recuerdo, plan, futuro, sentimiento, carácter\nNyelvtani fókusz: pretérito perfecto; pretérito indefinido (alap); ir a + infinitivo\nKommunikációs szándékok: múltbeli élmény elmesélése; jövőbeli terv kifejtése; jellemzés\nJavasolt tevékenységek: napló-bejegyzés; élménybeszámoló; jövőkép-poszter"
+        },
+        {
+          "nev": "Temas públicos – Közéleti helyzetek",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "Összetettebb tranzakciókat bonyolít, problémát jelez, reklamál.",
+          "szokincs": [
+            "reserva",
+            "cita",
+            "problema",
+            "solución",
+            "reclamar",
+            "servicio"
+          ],
+          "nyelvtan": [
+            "feltételes alap (me gustaría)",
+            "tárgyas névmások (lo/la)"
+          ],
+          "kommunikacios_szandekok": [
+            "foglalás, időpontkérés",
+            "probléma jelzése udvariasan"
+          ],
+          "javasolt_tevekenysegek": [
+            "telefonos szerepjáték",
+            "panaszlevél-vázlat",
+            "ügyintézés-jelenet"
+          ],
+          "teljes_szoveg": "Témakör: Temas públicos – Közéleti helyzetek\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Összetettebb tranzakciókat bonyolít, problémát jelez, reklamál.\nSzókincs (példák): reserva, cita, problema, solución, reclamar, servicio\nNyelvtani fókusz: feltételes alap (me gustaría); tárgyas névmások (lo/la)\nKommunikációs szándékok: foglalás, időpontkérés; probléma jelzése udvariasan\nJavasolt tevékenységek: telefonos szerepjáték; panaszlevél-vázlat; ügyintézés-jelenet"
+        },
+        {
+          "nev": "Temas del aula – Tantermi helyzetek",
+          "javasolt_oraszam": 18,
+          "cefr_cel": "Önállóan szervezi tanulását, projektmunkában együttműködik.",
+          "szokincs": [
+            "proyecto",
+            "grupo",
+            "tarea",
+            "opinión",
+            "acuerdo",
+            "resumen"
+          ],
+          "nyelvtan": [
+            "felszólító mód bővebben",
+            "porque (okhatározás)"
+          ],
+          "kommunikacios_szandekok": [
+            "véleményegyeztetés csoportban",
+            "feladatmegosztás"
+          ],
+          "javasolt_tevekenysegek": [
+            "csoportprojekt spanyolul",
+            "vita egyszerű szabályokkal"
+          ],
+          "teljes_szoveg": "Témakör: Temas del aula – Tantermi helyzetek\nJavasolt óraszám: 18 óra\nKommunikációs / fejlesztési cél: Önállóan szervezi tanulását, projektmunkában együttműködik.\nSzókincs (példák): proyecto, grupo, tarea, opinión, acuerdo, resumen\nNyelvtani fókusz: felszólító mód bővebben; porque (okhatározás)\nKommunikációs szándékok: véleményegyeztetés csoportban; feladatmegosztás\nJavasolt tevékenységek: csoportprojekt spanyolul; vita egyszerű szabályokkal"
+        },
+        {
+          "nev": "Temas interdisciplinares – Tantárgyközi témák",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "Más tárgyak témáit összefüggő szöveggé szervezi spanyolul.",
+          "szokincs": [
+            "medio ambiente",
+            "tecnología",
+            "salud",
+            "geografía",
+            "clima"
+          ],
+          "nyelvtan": [
+            "okság és következmény egyszerű kifejezése"
+          ],
+          "kommunikacios_szandekok": [
+            "folyamat/jelenség leírása",
+            "adat értelmezése"
+          ],
+          "javasolt_tevekenysegek": [
+            "környezetvédelmi miniprojekt",
+            "grafikon leírása szóban"
+          ],
+          "teljes_szoveg": "Témakör: Temas interdisciplinares – Tantárgyközi témák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Más tárgyak témáit összefüggő szöveggé szervezi spanyolul.\nSzókincs (példák): medio ambiente, tecnología, salud, geografía, clima\nNyelvtani fókusz: okság és következmény egyszerű kifejezése\nKommunikációs szándékok: folyamat/jelenség leírása; adat értelmezése\nJavasolt tevékenységek: környezetvédelmi miniprojekt; grafikon leírása szóban"
+        },
+        {
+          "nev": "La lengua española y su aprendizaje – A nyelv és tanulása",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "Tudatos stratégiákkal tanul, hibáit javítja, önállóan szótáraz.",
+          "szokincs": [
+            "estrategia",
+            "corrección",
+            "fluidez",
+            "vocabulario",
+            "gramática"
+          ],
+          "nyelvtan": [
+            "szabályok tudatosítása és alkalmazása"
+          ],
+          "kommunikacios_szandekok": [
+            "önértékelés",
+            "hibajavítás",
+            "célkitűzés"
+          ],
+          "javasolt_tevekenysegek": [
+            "tanulási napló",
+            "hibanapló",
+            "kortárs visszajelzés"
+          ],
+          "teljes_szoveg": "Témakör: La lengua española y su aprendizaje – A nyelv és tanulása\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Tudatos stratégiákkal tanul, hibáit javítja, önállóan szótáraz.\nSzókincs (példák): estrategia, corrección, fluidez, vocabulario, gramática\nNyelvtani fókusz: szabályok tudatosítása és alkalmazása\nKommunikációs szándékok: önértékelés; hibajavítás; célkitűzés\nJavasolt tevékenységek: tanulási napló; hibanapló; kortárs visszajelzés"
+        },
+        {
+          "nev": "Temas interculturales – Interkulturális témák",
+          "javasolt_oraszam": 24,
+          "cefr_cel": "Mélyebben ismeri a hispán világ kultúráját, összehasonlít.",
+          "szokincs": [
+            "Latinoamérica",
+            "costumbre",
+            "arte",
+            "gastronomía",
+            "diversidad"
+          ],
+          "nyelvtan": [
+            "összehasonlító szerkezetek (más… que, tan… como)"
+          ],
+          "kommunikacios_szandekok": [
+            "kulturális összehasonlítás indoklással",
+            "álláspont kifejtése"
+          ],
+          "javasolt_tevekenysegek": [
+            "ország-összehasonlító projekt",
+            "kulturális kvíz",
+            "recept bemutatása"
+          ],
+          "teljes_szoveg": "Témakör: Temas interculturales – Interkulturális témák\nJavasolt óraszám: 24 óra\nKommunikációs / fejlesztési cél: Mélyebben ismeri a hispán világ kultúráját, összehasonlít.\nSzókincs (példák): Latinoamérica, costumbre, arte, gastronomía, diversidad\nNyelvtani fókusz: összehasonlító szerkezetek (más… que, tan… como)\nKommunikációs szándékok: kulturális összehasonlítás indoklással; álláspont kifejtése\nJavasolt tevékenységek: ország-összehasonlító projekt; kulturális kvíz; recept bemutatása"
+        },
+        {
+          "nev": "Temas actuales – Aktuális témák",
+          "javasolt_oraszam": 14,
+          "cefr_cel": "Aktuális hírekről, eseményekről véleményt formál.",
+          "szokincs": [
+            "actualidad",
+            "medio de comunicación",
+            "redes sociales",
+            "tendencia"
+          ],
+          "nyelvtan": [
+            "múlt idők kontrasztja (perfecto vs indefinido)"
+          ],
+          "kommunikacios_szandekok": [
+            "hír összefoglalása",
+            "vélemény indoklással"
+          ],
+          "javasolt_tevekenysegek": [
+            "hírösszefoglaló készítése",
+            "álláspont-kártyás vita"
+          ],
+          "teljes_szoveg": "Témakör: Temas actuales – Aktuális témák\nJavasolt óraszám: 14 óra\nKommunikációs / fejlesztési cél: Aktuális hírekről, eseményekről véleményt formál.\nSzókincs (példák): actualidad, medio de comunicación, redes sociales, tendencia\nNyelvtani fókusz: múlt idők kontrasztja (perfecto vs indefinido)\nKommunikációs szándékok: hír összefoglalása; vélemény indoklással\nJavasolt tevékenységek: hírösszefoglaló készítése; álláspont-kártyás vita"
+        },
+        {
+          "nev": "Entretenimiento – Szórakozás",
+          "javasolt_oraszam": 20,
+          "cefr_cel": "Filmekről, zenéről, könyvekről beszél, ajánl.",
+          "szokincs": [
+            "película",
+            "serie",
+            "música",
+            "libro",
+            "videojuego",
+            "recomendar"
+          ],
+          "nyelvtan": [
+            "véleményt árnyaló szerkezetek",
+            "creo que…"
+          ],
+          "kommunikacios_szandekok": [
+            "ajánlás indoklással",
+            "kedvenc részletes bemutatása"
+          ],
+          "javasolt_tevekenysegek": [
+            "filmajánló videó-szkript",
+            "top5 lista indoklással"
+          ],
+          "teljes_szoveg": "Témakör: Entretenimiento – Szórakozás\nJavasolt óraszám: 20 óra\nKommunikációs / fejlesztési cél: Filmekről, zenéről, könyvekről beszél, ajánl.\nSzókincs (példák): película, serie, música, libro, videojuego, recomendar\nNyelvtani fókusz: véleményt árnyaló szerkezetek; creo que…\nKommunikációs szándékok: ajánlás indoklással; kedvenc részletes bemutatása\nJavasolt tevékenységek: filmajánló videó-szkript; top5 lista indoklással"
+        },
+        {
+          "nev": "Adquisición y transmisión de conocimiento – Tudásszerzés, -átadás",
+          "javasolt_oraszam": 18,
+          "cefr_cel": "Több forrásból kutat, rendszerez és összefüggően bemutat.",
+          "szokincs": [
+            "fuente",
+            "investigación",
+            "datos",
+            "presentación",
+            "conclusión"
+          ],
+          "nyelvtan": [
+            "összefüggő, több mondatos beszámoló"
+          ],
+          "kommunikacios_szandekok": [
+            "forrás összevetése",
+            "kiselőadás tartása"
+          ],
+          "javasolt_tevekenysegek": [
+            "kutatási miniprojekt",
+            "prezentáció spanyolul",
+            "poszterkonferencia"
+          ],
+          "teljes_szoveg": "Témakör: Adquisición y transmisión de conocimiento – Tudásszerzés, -átadás\nJavasolt óraszám: 18 óra\nKommunikációs / fejlesztési cél: Több forrásból kutat, rendszerez és összefüggően bemutat.\nSzókincs (példák): fuente, investigación, datos, presentación, conclusión\nNyelvtani fókusz: összefüggő, több mondatos beszámoló\nKommunikációs szándékok: forrás összevetése; kiselőadás tartása\nJavasolt tevékenységek: kutatási miniprojekt; prezentáció spanyolul; poszterkonferencia"
+        }
+      ],
+      "teljes_szoveg": "7–8. évfolyam (CEFR/KER: A1 → A2 (KER))\n\nA 7-8. évfolyamon ugyanaz a kilenc NAT témakör bővül és mélyül A2 felé. Megjelennek a múlt és jövő idők, a tanuló összefüggő rövid szövegeket alkot, véleményt fejt ki és egyszerű vitában részt vesz.\n\n\nTémakör: Temas personales y del entorno – Személyes és környezeti témák\nJavasolt óraszám: 38 óra\nKommunikációs / fejlesztési cél: Részletesen beszél magáról, múltbeli eseményekről, terveiről.\nSzókincs (példák): experiencia, recuerdo, plan, futuro, sentimiento, carácter\nNyelvtani fókusz: pretérito perfecto; pretérito indefinido (alap); ir a + infinitivo\nKommunikációs szándékok: múltbeli élmény elmesélése; jövőbeli terv kifejtése; jellemzés\nJavasolt tevékenységek: napló-bejegyzés; élménybeszámoló; jövőkép-poszter\n\nTémakör: Temas públicos – Közéleti helyzetek\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Összetettebb tranzakciókat bonyolít, problémát jelez, reklamál.\nSzókincs (példák): reserva, cita, problema, solución, reclamar, servicio\nNyelvtani fókusz: feltételes alap (me gustaría); tárgyas névmások (lo/la)\nKommunikációs szándékok: foglalás, időpontkérés; probléma jelzése udvariasan\nJavasolt tevékenységek: telefonos szerepjáték; panaszlevél-vázlat; ügyintézés-jelenet\n\nTémakör: Temas del aula – Tantermi helyzetek\nJavasolt óraszám: 18 óra\nKommunikációs / fejlesztési cél: Önállóan szervezi tanulását, projektmunkában együttműködik.\nSzókincs (példák): proyecto, grupo, tarea, opinión, acuerdo, resumen\nNyelvtani fókusz: felszólító mód bővebben; porque (okhatározás)\nKommunikációs szándékok: véleményegyeztetés csoportban; feladatmegosztás\nJavasolt tevékenységek: csoportprojekt spanyolul; vita egyszerű szabályokkal\n\nTémakör: Temas interdisciplinares – Tantárgyközi témák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Más tárgyak témáit összefüggő szöveggé szervezi spanyolul.\nSzókincs (példák): medio ambiente, tecnología, salud, geografía, clima\nNyelvtani fókusz: okság és következmény egyszerű kifejezése\nKommunikációs szándékok: folyamat/jelenség leírása; adat értelmezése\nJavasolt tevékenységek: környezetvédelmi miniprojekt; grafikon leírása szóban\n\nTémakör: La lengua española y su aprendizaje – A nyelv és tanulása\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: Tudatos stratégiákkal tanul, hibáit javítja, önállóan szótáraz.\nSzókincs (példák): estrategia, corrección, fluidez, vocabulario, gramática\nNyelvtani fókusz: szabályok tudatosítása és alkalmazása\nKommunikációs szándékok: önértékelés; hibajavítás; célkitűzés\nJavasolt tevékenységek: tanulási napló; hibanapló; kortárs visszajelzés\n\nTémakör: Temas interculturales – Interkulturális témák\nJavasolt óraszám: 24 óra\nKommunikációs / fejlesztési cél: Mélyebben ismeri a hispán világ kultúráját, összehasonlít.\nSzókincs (példák): Latinoamérica, costumbre, arte, gastronomía, diversidad\nNyelvtani fókusz: összehasonlító szerkezetek (más… que, tan… como)\nKommunikációs szándékok: kulturális összehasonlítás indoklással; álláspont kifejtése\nJavasolt tevékenységek: ország-összehasonlító projekt; kulturális kvíz; recept bemutatása\n\nTémakör: Temas actuales – Aktuális témák\nJavasolt óraszám: 14 óra\nKommunikációs / fejlesztési cél: Aktuális hírekről, eseményekről véleményt formál.\nSzókincs (példák): actualidad, medio de comunicación, redes sociales, tendencia\nNyelvtani fókusz: múlt idők kontrasztja (perfecto vs indefinido)\nKommunikációs szándékok: hír összefoglalása; vélemény indoklással\nJavasolt tevékenységek: hírösszefoglaló készítése; álláspont-kártyás vita\n\nTémakör: Entretenimiento – Szórakozás\nJavasolt óraszám: 20 óra\nKommunikációs / fejlesztési cél: Filmekről, zenéről, könyvekről beszél, ajánl.\nSzókincs (példák): película, serie, música, libro, videojuego, recomendar\nNyelvtani fókusz: véleményt árnyaló szerkezetek; creo que…\nKommunikációs szándékok: ajánlás indoklással; kedvenc részletes bemutatása\nJavasolt tevékenységek: filmajánló videó-szkript; top5 lista indoklással\n\nTémakör: Adquisición y transmisión de conocimiento – Tudásszerzés, -átadás\nJavasolt óraszám: 18 óra\nKommunikációs / fejlesztési cél: Több forrásból kutat, rendszerez és összefüggően bemutat.\nSzókincs (példák): fuente, investigación, datos, presentación, conclusión\nNyelvtani fókusz: összefüggő, több mondatos beszámoló\nKommunikációs szándékok: forrás összevetése; kiselőadás tartása\nJavasolt tevékenységek: kutatási miniprojekt; prezentáció spanyolul; poszterkonferencia"
+    }
+  }
+}

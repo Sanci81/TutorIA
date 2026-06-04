@@ -1,0 +1,295 @@
+{
+  "verzio": "1.0",
+  "szakasz": "felso_tagozat_5-8",
+  "leiras": "TutorIA kerettanterv JSON-ok 5-8. osztályhoz. Minden fájl tartalmazza a hivatalos kerettanterv TELJES szövegét (teljes_szoveg). Az AI ebből olvassa ki, mit kell az egyes évfolyamokon (5/6/7/8) tanítani.",
+  "tantargyak": [
+    {
+      "fajl": "allampolgari_ismeretek_5-8.json",
+      "tantargy": "Állampolgári ismeretek",
+      "evfolyam": "8",
+      "evfolyamok": [
+        8
+      ],
+      "karakter": 31408,
+      "blokkok": [
+        "8"
+      ]
+    },
+    {
+      "fajl": "biologia_5-8.json",
+      "tantargy": "Biológia",
+      "evfolyam": "7-8",
+      "evfolyamok": [
+        7,
+        8
+      ],
+      "karakter": 56761,
+      "blokkok": [
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "digitalis_kultura_5-8.json",
+      "tantargy": "Digitális kultúra",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 46933,
+      "blokkok": [
+        "5-6",
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "drama_es_szinhaz_5-8.json",
+      "tantargy": "Dráma és színház",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 20924,
+      "blokkok": [
+        "5-8"
+      ]
+    },
+    {
+      "fajl": "elo_idegen_nyelv_5-8.json",
+      "tantargy": "Élő idegen nyelv",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 141817,
+      "nyelvek": [
+        "angol",
+        "nemet"
+      ]
+    },
+    {
+      "fajl": "enek_zene_5-8.json",
+      "tantargy": "Ének-zene",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 32306,
+      "blokkok": [
+        "5-8",
+        "5-6",
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "etika_5-8.json",
+      "tantargy": "Etika",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 45936,
+      "blokkok": [
+        "5-8",
+        "5-6",
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "fizika_5-8.json",
+      "tantargy": "Fizika",
+      "evfolyam": "7-8",
+      "evfolyamok": [
+        7,
+        8
+      ],
+      "karakter": 38193,
+      "blokkok": [
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "foldrajz_5-8.json",
+      "tantargy": "Földrajz",
+      "evfolyam": "7-8",
+      "evfolyamok": [
+        7,
+        8
+      ],
+      "karakter": 59329,
+      "blokkok": [
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "hon_es_nepismeret_5-8.json",
+      "tantargy": "Hon- és népismeret",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 24311,
+      "blokkok": [
+        "5-8"
+      ]
+    },
+    {
+      "fajl": "kemia_5-8.json",
+      "tantargy": "Kémia",
+      "evfolyam": "7-8",
+      "evfolyamok": [
+        7,
+        8
+      ],
+      "karakter": 39091,
+      "blokkok": [
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "kozossegi_neveles_5-8.json",
+      "tantargy": "Közösségi nevelés",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 38709,
+      "blokkok": [
+        "5-6",
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "magyar_nyelv_es_irodalom_5-8.json",
+      "tantargy": "Magyar nyelv és irodalom",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 74998,
+      "blokkok": [
+        "5-8",
+        "5-6",
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "matematika_5-8.json",
+      "tantargy": "Matematika",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 80415,
+      "blokkok": [
+        "5-6",
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "technika_es_tervezes_5-8.json",
+      "tantargy": "Technika és tervezés",
+      "evfolyam": "5-7",
+      "evfolyamok": [
+        5,
+        6,
+        7
+      ],
+      "karakter": 201916,
+      "modulok": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    {
+      "fajl": "termeszettudomany_5-8.json",
+      "tantargy": "Természettudomány",
+      "evfolyam": "5-6",
+      "evfolyamok": [
+        5,
+        6
+      ],
+      "karakter": 48394,
+      "blokkok": [
+        "5-6"
+      ]
+    },
+    {
+      "fajl": "testneveles_5-8.json",
+      "tantargy": "Testnevelés",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 101231,
+      "blokkok": [
+        "5-6",
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "tortenelem_5-8.json",
+      "tantargy": "Történelem",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 85831,
+      "blokkok": [
+        "5-8",
+        "5-6",
+        "7-8"
+      ]
+    },
+    {
+      "fajl": "vizualis_kultura_5-8.json",
+      "tantargy": "Vizuális kultúra",
+      "evfolyam": "5-8",
+      "evfolyamok": [
+        5,
+        6,
+        7,
+        8
+      ],
+      "karakter": 56862,
+      "blokkok": [
+        "5-6",
+        "7-8"
+      ]
+    }
+  ]
+}

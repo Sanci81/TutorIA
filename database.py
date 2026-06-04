@@ -19,6 +19,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy import (
+    Boolean,
     DateTime,
     ForeignKey,
     Integer,
@@ -187,6 +188,33 @@ class Vocabulary(Base):
     learned_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+
+
+class ChildTopicScore(Base):
+    """Témakörönkénti teszt eredmény (child + subject + grade + topic_id)."""
+
+    __tablename__ = "child_topic_scores"
+    __table_args__ = (
+        UniqueConstraint(
+            "child_id",
+            "subject",
+            "grade",
+            "topic_id",
+            name="uq_child_topic_score",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id", ondelete="CASCADE"), nullable=False
+    )
+    subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    grade: Mapped[int] = mapped_column(Integer, nullable=False)
+    topic_id: Mapped[str] = mapped_column(String(32), nullable=False)
+    topic_name: Mapped[str] = mapped_column(String(512), nullable=False)
+    score: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    passed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class ChildProgress(Base):
@@ -627,6 +655,80 @@ def update_child_progress(
         db.commit()
         db.refresh(row)
         return _progress_dict(row)
+    finally:
+        db.close()
+
+
+def _topic_score_dict(row: ChildTopicScore) -> dict[str, Any]:
+    return {
+        "topic_id": row.topic_id,
+        "topic_name": row.topic_name,
+        "score": row.score,
+        "passed": row.passed,
+        "completed_at": row.completed_at.isoformat() if row.completed_at else None,
+    }
+
+
+def get_topic_scores(
+    child_id: int, subject: str, grade: int
+) -> dict[str, dict[str, Any]]:
+    """topic_id -> {score, passed, completed_at, topic_name}."""
+    db = _session()
+    try:
+        rows = db.scalars(
+            select(ChildTopicScore).where(
+                ChildTopicScore.child_id == child_id,
+                ChildTopicScore.subject == subject,
+                ChildTopicScore.grade == grade,
+            )
+        ).all()
+        return {r.topic_id: _topic_score_dict(r) for r in rows}
+    finally:
+        db.close()
+
+
+def save_topic_test_result(
+    child_id: int,
+    subject: str,
+    grade: int,
+    topic_id: str,
+    topic_name: str,
+    score: int,
+    *,
+    pass_threshold: int = 70,
+) -> dict[str, Any]:
+    passed = score >= pass_threshold
+    now = datetime.now(timezone.utc)
+    db = _session()
+    try:
+        row = db.scalar(
+            select(ChildTopicScore).where(
+                ChildTopicScore.child_id == child_id,
+                ChildTopicScore.subject == subject,
+                ChildTopicScore.grade == grade,
+                ChildTopicScore.topic_id == topic_id,
+            )
+        )
+        if row:
+            row.score = score
+            row.passed = passed
+            row.topic_name = topic_name
+            row.completed_at = now
+        else:
+            row = ChildTopicScore(
+                child_id=child_id,
+                subject=subject,
+                grade=grade,
+                topic_id=topic_id,
+                topic_name=topic_name,
+                score=score,
+                passed=passed,
+                completed_at=now,
+            )
+            db.add(row)
+        db.commit()
+        db.refresh(row)
+        return _topic_score_dict(row)
     finally:
         db.close()
 

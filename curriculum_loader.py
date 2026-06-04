@@ -924,6 +924,42 @@ def curriculum_topic_names(topics: dict[str, list[str]]) -> list[str]:
     return list(topics.keys())
 
 
+def extract_topic_catalog(data: dict[str, Any], grade: int | str) -> list[dict[str, Any]]:
+    """Témakör lista chat sidebarhoz: id, name, text, index."""
+    grade_num = parse_grade(grade)
+    blokk = _hu_evfolyam_blokk_for_grade(data, grade_num)
+    if blokk:
+        catalog: list[dict[str, Any]] = []
+        temakorok = blokk.get("temakorok") or []
+        if isinstance(temakorok, list):
+            for idx, item in enumerate(temakorok):
+                if isinstance(item, dict) and item.get("nev"):
+                    catalog.append(
+                        {
+                            "id": f"t{idx}",
+                            "name": str(item["nev"]),
+                            "text": str(item.get("teljes_szoveg", "")),
+                            "index": idx,
+                        }
+                    )
+        return catalog
+
+    topics = extract_hu_grade_topics(data, grade_num)
+    return [
+        {"id": f"t{idx}", "name": name, "text": "", "index": idx}
+        for idx, name in enumerate(topics.keys())
+    ]
+
+
+def get_topic_from_catalog(
+    catalog: list[dict[str, Any]], topic_id: str
+) -> dict[str, Any] | None:
+    for item in catalog:
+        if item.get("id") == topic_id:
+            return item
+    return None
+
+
 def format_curriculum_for_grade(data: dict[str, Any], grade: int | str) -> str:
     """Új struktúra: evfolyam_blokkok -> teljes_szoveg + temakorok."""
     grade_num = int(parse_grade(grade))
@@ -995,15 +1031,19 @@ def get_curriculum_for_chat(
     for path in candidates:
         data = _load_hu_json(path)
         topics = extract_hu_grade_topics(data, grade_num)
+        catalog = extract_topic_catalog(data, grade_num)
         content = format_curriculum_for_grade(data, grade_num)
-        if content:
+        if content or catalog:
             return {
                 "found": True,
                 "content": content,
-                "topics": curriculum_topic_names(topics),
+                "topics": [t["name"] for t in catalog]
+                or curriculum_topic_names(topics),
                 "topics_detail": topics,
+                "topic_catalog": catalog,
                 "file": path.name,
                 "subject_name": data.get("meta", {}).get("tantargy", ""),
+                "data": data,
             }
 
     return {
@@ -1011,8 +1051,10 @@ def get_curriculum_for_chat(
         "content": "",
         "topics": [],
         "topics_detail": {},
+        "topic_catalog": [],
         "file": subject_file,
         "subject_name": "",
+        "data": {},
     }
 
 

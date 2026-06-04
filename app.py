@@ -16,6 +16,7 @@ from functools import wraps
 
 from flask import (
     Flask,
+    Response,
     abort,
     flash,
     g,
@@ -40,6 +41,7 @@ from curriculum_loader import (
     get_hu_subjects_for_grade,
     get_subject_options_for_ui,
     get_subjects_for_profile,
+    get_topic_from_catalog,
     hu_1_4_label_from_value,
     is_elo_idegen_subject,
     is_hu_1_4_grade,
@@ -602,11 +604,16 @@ def select_tasks(child_id: int):
             curriculum = {"subjects": []}
             subject_options = []
 
+    effective_age = _child_effective_age(child)
+    chat_profile = _chat_interaction_profile(effective_age)
+
     return render_template(
         "select_tasks.html",
         child=child,
         subject_options=subject_options,
         curriculum=curriculum,
+        effective_age=effective_age,
+        chat_profile=chat_profile,
         elo_idegen_file=(
             ELO_IDEGEN_NYELV_1_4_FILE
             if is_hu_1_4_grade(grade_num)
@@ -767,6 +774,63 @@ def generate_tasks(child_id: int):
 # AI tanár chat
 # ---------------------------------------------------------------------------
 
+TOPIC_PASS_THRESHOLD = 70
+
+_CHAT_PROFILE_VOICE_ONLY = "voice_only"
+_CHAT_PROFILE_VOICE_DEFAULT = "voice_default"
+_CHAT_PROFILE_BOTH = "both"
+
+
+def _child_effective_age(child: dict) -> int:
+    """Életkor: birth_date (ha van), különben child.age, különben osztály + 5."""
+    birth = child.get("birth_date") or child.get("birthDate")
+    if birth:
+        try:
+            from datetime import date
+
+            if isinstance(birth, str):
+                raw = birth.strip()[:10]
+                born = date.fromisoformat(raw)
+            elif hasattr(birth, "year"):
+                born = birth
+            else:
+                born = None
+            if born:
+                today = date.today()
+                age = today.year - born.year
+                if (today.month, today.day) < (born.month, born.day):
+                    age -= 1
+                if age >= 1:
+                    return age
+        except (TypeError, ValueError):
+            pass
+    age = child.get("age")
+    if age is not None:
+        try:
+            return int(age)
+        except (TypeError, ValueError):
+            pass
+    return parse_grade(child["grade"]) + 5
+
+
+def _chat_interaction_profile(effective_age: int) -> str:
+    if effective_age <= 6:
+        return _CHAT_PROFILE_VOICE_ONLY
+    if effective_age == 7:
+        return _CHAT_PROFILE_VOICE_DEFAULT
+    return _CHAT_PROFILE_BOTH
+
+
+def _normalize_chat_mode(mode: str | None, profile: str) -> str:
+    requested = (mode or "").strip().lower()
+    if profile == _CHAT_PROFILE_VOICE_ONLY:
+        return "voice"
+    if profile == _CHAT_PROFILE_VOICE_DEFAULT:
+        return "chat" if requested == "chat" else "voice"
+    if requested == "voice":
+        return "voice"
+    return "chat"
+
 _CHAT_MARKER_TOPIC = re.compile(r"<TOPIC_COMPLETE>", re.IGNORECASE)
 _CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
 _CHAT_MARKER_VOCAB = re.compile(
@@ -797,6 +861,145 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
 def _chat_load_curriculum(subject_file: str, grade: str | int) -> dict:
     """Kerettanterv kizárólag helyi JSON-ból."""
     return get_curriculum_for_chat(subject_file, grade)
+
+
+def _chat_grade_num(child: dict) -> int:
+    return parse_grade(child["grade"])
+
+
+def _build_topic_sidebar(
+    catalog: list[dict],
+    scores: dict[str, dict],
+    current_topic_id: str | None,
+    *,
+    level: int = 1,
+) -> dict[str, Any]:
+    """Sidebar állapot: témakörök zárolás / aktív / teljesített."""
+    items: list[dict[str, Any]] = []
+    passed_count = 0
+    score_sum = 0
+    score_n = 0
+
+    for i, topic in enumerate(catalog):
+        tid = topic["id"]
+        rec = scores.get(tid) or {}
+        passed = bool(rec.get("passed"))
+        score = rec.get("score")
+
+        if passed:
+            passed_count += 1
+            if score is not None:
+                score_sum += int(score)
+                score_n += 1
+
+        prev_passed = (
+            i == 0
+            or bool((scores.get(catalog[i - 1]["id"]) or {}).get("passed"))
+        )
+        if level == 0:
+            unlocked = i == 0
+        else:
+            unlocked = prev_passed
+
+        if not unlocked:
+            state = "locked"
+        elif passed:
+            state = "completed"
+        elif tid == current_topic_id:
+            state = "active"
+        else:
+            state = "available"
+
+        items.append(
+            {
+                "id": tid,
+                "name": topic["name"],
+                "index": i + 1,
+                "state": state,
+                "score": score if passed else None,
+                "unlocked": unlocked,
+            }
+        )
+
+    total = len(catalog)
+    avg = round(score_sum / score_n) if score_n else 0
+
+    return {
+        "topics": items,
+        "completed_count": passed_count,
+        "total_count": total,
+        "average_score": avg,
+        "current_topic_id": current_topic_id,
+    }
+
+
+def _resolve_current_topic_id(
+    catalog: list[dict], progress: dict, scores: dict[str, dict]
+) -> str | None:
+    if not catalog:
+        return None
+    last = progress.get("last_position")
+    if last:
+        for t in catalog:
+            if t["name"] == last:
+                return t["id"]
+    for t in catalog:
+        tid = t["id"]
+        if not (scores.get(tid) or {}).get("passed"):
+            return tid
+    return catalog[0]["id"]
+
+
+def _topic_teaching_prompt_block(topic: dict | None) -> str:
+    if not topic:
+        return ""
+    text = (topic.get("text") or "")[:12000]
+    return (
+        f"\n\nMost a következő témán vagytok: {topic.get('name', '')}.\n"
+        f"Témakör tananyaga (kerettanterv):\n{text}\n"
+        "Ebből tanítsd a gyereket lépésről lépésre, majd kínáld fel a tesztet, "
+        "ha úgy érzed, készen áll (vagy ha a gyerek kéri).\n"
+    )
+
+
+def _voice_mode_prompt_block(effective_age: int) -> str:
+    return f"""
+
+HANGOS MÓD: A tanuló {effective_age} éves és hangon kommunikál veled.
+Válaszaidat RÖVIDEN fogalmazd (max 2-3 mondat).
+Csak egyszerű szavakat használj, amit egy {effective_age} éves megért.
+Ne tegyél fel egyszerre több kérdést.
+"""
+
+
+def _whisper_transcribe(audio_bytes: bytes, filename: str = "audio.webm") -> str:
+    api_key = _openai_api_key()
+    if not api_key:
+        raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
+    import io
+
+    client = _openai_client(api_key, request_timeout=60.0)
+    buf = io.BytesIO(audio_bytes)
+    buf.name = filename if "." in filename else f"{filename}.webm"
+    transcription = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=buf,
+        language="hu",
+    )
+    return (transcription.text or "").strip()
+
+
+def _openai_tts_speak(text: str) -> bytes:
+    api_key = _openai_api_key()
+    if not api_key:
+        raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
+    client = _openai_client(api_key, request_timeout=60.0)
+    response = client.audio.speech.create(
+        model="tts-1",
+        voice="nova",
+        input=text[:4096],
+    )
+    return response.content
 
 
 def _chat_progress_percent(progress: dict, all_topics: list[str]) -> int:
@@ -907,6 +1110,43 @@ Belső jelölők (NE jelenjenek meg a gyereknek látható szövegben):
 """
 
 
+def _call_ai_for_quiz(
+    *, grade: int, topic_name: str, topic_text: str
+) -> list[dict[str, Any]]:
+    api_key = _openai_api_key()
+    if not api_key:
+        raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
+
+    material = (topic_text or topic_name)[:10000]
+    system = (
+        f"Generálj 4 feleletválasztós kérdést {grade}. osztályos gyereknek.\n"
+        "Minden kérdésnél 3 válasz, 1 helyes (correct: 0, 1 vagy 2).\n"
+        'Válaszolj CSAK JSON tömbben, semmi más szöveg:\n'
+        '[{"q":"kérdés","options":["a","b","c"],"correct":0}]\n'
+        f"Tananyag:\n{material}"
+    )
+    client = _openai_client(api_key, request_timeout=60.0)
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        response_format={"type": "json_object"},
+        messages=[
+            {
+                "role": "system",
+                "content": system
+                + '\nA válasz {"questions":[...]} formátumú JSON legyen.',
+            },
+            {"role": "user", "content": "Generáld a 4 kérdést."},
+        ],
+        temperature=0.5,
+    )
+    raw = response.choices[0].message.content or "{}"
+    payload = json.loads(raw)
+    questions = payload.get("questions", payload if isinstance(payload, list) else [])
+    if not isinstance(questions, list) or len(questions) < 1:
+        raise ValueError("Érvénytelen kvíz JSON")
+    return questions[:4]
+
+
 def _call_ai_for_chat(
     system_prompt: str, history: list[dict[str, str]], user_message: str
 ) -> str:
@@ -1005,6 +1245,10 @@ def child_chat(child_id: int):
         flash(i18n.t("flash_subject_required", g.lang), "error")
         return redirect(url_for("select_tasks", child_id=child_id))
 
+    effective_age = _child_effective_age(child)
+    chat_profile = _chat_interaction_profile(effective_age)
+    chat_mode = _normalize_chat_mode(request.args.get("mode"), chat_profile)
+
     chat_curriculum = _chat_load_curriculum(subject, child["grade"])
     if not chat_curriculum.get("found") or not chat_curriculum.get("content"):
         flash(
@@ -1013,25 +1257,36 @@ def child_chat(child_id: int):
         )
         return redirect(url_for("select_tasks", child_id=child_id))
 
-    all_topics = chat_curriculum.get("topics") or []
+    catalog = chat_curriculum.get("topic_catalog") or []
+    grade_num = _chat_grade_num(child)
     subject_label = _chat_subject_label(child, subject, chat_curriculum)
     is_foreign = is_elo_idegen_subject(subject)
 
     progress = database.get_or_create_child_progress(
-        child_id, subject, last_position=all_topics[0] if all_topics else None
+        child_id,
+        subject,
+        last_position=catalog[0]["name"] if catalog else None,
     )
-    current_topic = _chat_current_topic(progress, all_topics)
-    progress_pct = _chat_progress_percent(progress, all_topics)
-    completed_topics = progress.get("topics_completed") or []
+    scores = database.get_topic_scores(child_id, subject, grade_num)
+    current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
+    current_topic = next(
+        (t["name"] for t in catalog if t["id"] == current_topic_id), ""
+    )
+    sidebar = _build_topic_sidebar(
+        catalog, scores, current_topic_id, level=progress.get("level", 0)
+    )
+    progress_pct = (
+        int(100 * sidebar["completed_count"] / sidebar["total_count"])
+        if sidebar["total_count"]
+        else 0
+    )
 
     chat_session = database.get_or_create_chat_session(
         child_id,
         subject,
         curriculum_position={
             "current_topic": current_topic,
-            "topic_index": all_topics.index(current_topic)
-            if current_topic in all_topics
-            else 0,
+            "current_topic_id": current_topic_id,
         },
     )
 
@@ -1049,6 +1304,11 @@ def child_chat(child_id: int):
     if is_foreign and language:
         vocabulary = database.get_vocabulary(child_id, subject, language=language)
 
+    chat_switch_params = {"child_id": child_id, "subject": subject, "mode": "chat"}
+    if language:
+        chat_switch_params["language"] = language
+    chat_switch_url = url_for("child_chat", **chat_switch_params)
+
     return render_template(
         "chat.html",
         child=child,
@@ -1058,13 +1318,20 @@ def child_chat(child_id: int):
         session_id=chat_session["id"],
         progress_pct=progress_pct,
         current_topic=current_topic,
+        current_topic_id=current_topic_id,
         placement_mode=placement_mode,
         level=progress.get("level", 0),
-        topics=all_topics,
-        completed_topics=completed_topics,
+        grade_num=grade_num,
+        sidebar=sidebar,
         is_foreign_language=is_foreign,
         language=language,
         vocabulary=vocabulary,
+        pass_threshold=TOPIC_PASS_THRESHOLD,
+        chat_mode=chat_mode,
+        chat_profile=chat_profile,
+        effective_age=effective_age,
+        chat_switch_url=chat_switch_url,
+        show_chat_switch=chat_profile != _CHAT_PROFILE_VOICE_ONLY,
     )
 
 
@@ -1082,6 +1349,10 @@ def child_chat_send(child_id: int):
     session_id = data.get("session_id") or request.form.get("session_id")
     language = (data.get("language") or request.form.get("language") or "").strip().lower()
     focus_topic = (data.get("focus_topic") or "").strip()
+    topic_id = (data.get("topic_id") or "").strip()
+    req_mode = (data.get("mode") or request.form.get("mode") or "").strip().lower()
+    chat_profile = _chat_interaction_profile(_child_effective_age(child))
+    chat_mode = _normalize_chat_mode(req_mode or None, chat_profile)
 
     if not user_text or not subject:
         return jsonify({"error": "message_and_subject_required"}), 400
@@ -1095,29 +1366,53 @@ def child_chat_send(child_id: int):
     if not chat_curriculum.get("found") or not chat_curriculum.get("content"):
         return jsonify({"error": "curriculum_not_found"}), 400
 
-    all_topics = chat_curriculum.get("topics") or []
+    catalog = chat_curriculum.get("topic_catalog") or []
+    grade_num = _chat_grade_num(child)
     subject_label = _chat_subject_label(child, subject, chat_curriculum)
     is_foreign = is_elo_idegen_subject(subject)
 
     progress = database.get_or_create_child_progress(
-        child_id, subject, last_position=all_topics[0] if all_topics else None
+        child_id,
+        subject,
+        last_position=catalog[0]["name"] if catalog else None,
     )
-    if focus_topic and focus_topic in all_topics:
-        progress = database.update_child_progress(
-            child_id, subject, last_position=focus_topic
-        )
+    scores = database.get_topic_scores(child_id, subject, grade_num)
 
-    current_topic = _chat_current_topic(progress, all_topics)
+    if topic_id:
+        topic_item = get_topic_from_catalog(catalog, topic_id)
+        if topic_item:
+            progress = database.update_child_progress(
+                child_id, subject, last_position=topic_item["name"]
+            )
+    elif focus_topic:
+        for t in catalog:
+            if t["name"] == focus_topic:
+                progress = database.update_child_progress(
+                    child_id, subject, last_position=focus_topic
+                )
+                topic_id = t["id"]
+                break
+
+    current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
+    current_topic_item = get_topic_from_catalog(catalog, current_topic_id)
+    current_topic = current_topic_item["name"] if current_topic_item else ""
 
     system_prompt = _build_chat_system_prompt(
         child,
         subject_label=subject_label,
         current_topic=current_topic,
         curriculum_json_content=chat_curriculum["content"],
-        completed_topics=progress.get("topics_completed") or [],
+        completed_topics=[
+            t["name"]
+            for t in catalog
+            if (scores.get(t["id"]) or {}).get("passed")
+        ],
         level=progress.get("level", 0),
         is_foreign_language=is_foreign,
     )
+    system_prompt += _topic_teaching_prompt_block(current_topic_item)
+    if chat_mode == "voice":
+        system_prompt += _voice_mode_prompt_block(_child_effective_age(child))
 
     history = database.get_chat_messages(session_id, limit=20)
     database.add_chat_message(session_id, "user", user_text)
@@ -1143,10 +1438,11 @@ def child_chat_send(child_id: int):
     if level_set is not None:
         level = level_set
 
-    if topic_done and current_topic:
-        completed, last_pos = _chat_advance_topic(progress, all_topics, current_topic)
+    topic_names = [t["name"] for t in catalog]
+    if topic_done and current_topic and current_topic in topic_names:
+        completed, last_pos = _chat_advance_topic(progress, topic_names, current_topic)
         if last_pos is None and completed:
-            last_pos = all_topics[-1] if all_topics else current_topic
+            last_pos = topic_names[-1] if topic_names else current_topic
 
     progress = database.update_child_progress(
         child_id,
@@ -1160,13 +1456,19 @@ def child_chat_send(child_id: int):
         session_id,
         {
             "current_topic": last_pos or current_topic,
-            "topic_index": all_topics.index(last_pos)
-            if last_pos and last_pos in all_topics
-            else 0,
+            "current_topic_id": current_topic_id,
         },
     )
 
-    progress_pct = _chat_progress_percent(progress, all_topics)
+    scores = database.get_topic_scores(child_id, subject, grade_num)
+    sidebar = _build_topic_sidebar(
+        catalog, scores, current_topic_id, level=progress.get("level", 0)
+    )
+    progress_pct = (
+        int(100 * sidebar["completed_count"] / sidebar["total_count"])
+        if sidebar["total_count"]
+        else 0
+    )
     vocabulary = []
     if is_foreign and language:
         vocabulary = database.get_vocabulary(child_id, subject, language=language)
@@ -1175,13 +1477,199 @@ def child_chat_send(child_id: int):
         {
             "reply": reply,
             "progress_pct": progress_pct,
-            "current_topic": last_pos or current_topic,
+            "current_topic": current_topic,
+            "current_topic_id": current_topic_id,
             "level": progress.get("level", 0),
             "placement_mode": progress.get("level", 0) == 0,
-            "topics_completed": progress.get("topics_completed") or [],
+            "sidebar": sidebar,
             "vocabulary": vocabulary,
+            "show_test_offer": "teszt" in reply.lower()
+            or "tesztet" in reply.lower(),
         }
     )
+
+
+@app.route("/children/<int:child_id>/chat/progress")
+@login_required
+def child_chat_progress(child_id: int):
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+    subject = (request.args.get("subject") or "").strip()
+    if not subject:
+        return jsonify({"error": "subject_required"}), 400
+    grade_num = _chat_grade_num(child)
+    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    catalog = chat_curriculum.get("topic_catalog") or []
+    progress = database.get_or_create_child_progress(child_id, subject)
+    scores = database.get_topic_scores(child_id, subject, grade_num)
+    current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
+    sidebar = _build_topic_sidebar(
+        catalog, scores, current_topic_id, level=progress.get("level", 0)
+    )
+    return jsonify(sidebar)
+
+
+@app.route("/children/<int:child_id>/chat/test/generate", methods=["POST"])
+@login_required
+def child_chat_test_generate(child_id: int):
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+    data = request.get_json(silent=True) or {}
+    subject = (data.get("subject") or "").strip()
+    topic_id = (data.get("topic_id") or "").strip()
+    if not subject or not topic_id:
+        return jsonify({"error": "subject_and_topic_required"}), 400
+
+    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    catalog = chat_curriculum.get("topic_catalog") or []
+    topic = get_topic_from_catalog(catalog, topic_id)
+    if not topic:
+        return jsonify({"error": "topic_not_found"}), 404
+
+    try:
+        questions = _call_ai_for_quiz(
+            grade=_chat_grade_num(child),
+            topic_name=topic["name"],
+            topic_text=topic.get("text", ""),
+        )
+    except NotImplementedError:
+        return jsonify({"error": "openai_not_configured"}), 501
+    except Exception as exc:
+        logger.exception("Kvíz generálás hiba: %s", exc)
+        return jsonify({"error": "quiz_failed", "detail": str(exc)}), 500
+
+    return jsonify({"questions": questions, "topic_id": topic_id, "topic_name": topic["name"]})
+
+
+@app.route("/children/<int:child_id>/chat/test/submit", methods=["POST"])
+@login_required
+def child_chat_test_submit(child_id: int):
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+    data = request.get_json(silent=True) or {}
+    subject = (data.get("subject") or "").strip()
+    topic_id = (data.get("topic_id") or "").strip()
+    answers = data.get("answers") or []
+    questions = data.get("questions") or []
+
+    if not subject or not topic_id or not questions:
+        return jsonify({"error": "invalid_payload"}), 400
+
+    correct = 0
+    total = len(questions)
+    for i, q in enumerate(questions):
+        try:
+            if int(answers[i]) == int(q.get("correct", -1)):
+                correct += 1
+        except (IndexError, TypeError, ValueError):
+            pass
+    score = int(round(100 * correct / total)) if total else 0
+    passed = score >= TOPIC_PASS_THRESHOLD
+
+    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    catalog = chat_curriculum.get("topic_catalog") or []
+    topic = get_topic_from_catalog(catalog, topic_id)
+    topic_name = topic["name"] if topic else topic_id
+    grade_num = _chat_grade_num(child)
+
+    database.save_topic_test_result(
+        child_id,
+        subject,
+        grade_num,
+        topic_id,
+        topic_name,
+        score,
+        pass_threshold=TOPIC_PASS_THRESHOLD,
+    )
+
+    if passed:
+        completed_names = [
+            t["name"]
+            for t in catalog
+            if (database.get_topic_scores(child_id, subject, grade_num).get(t["id"]) or {}).get(
+                "passed"
+            )
+        ]
+        database.update_child_progress(
+            child_id,
+            subject,
+            topics_completed=completed_names,
+            last_position=topic_name,
+        )
+        next_topic = None
+        for t in catalog:
+            if t["id"] == topic_id:
+                continue
+            if not (
+                database.get_topic_scores(child_id, subject, grade_num).get(t["id"]) or {}
+            ).get("passed"):
+                next_topic = t
+                break
+        if next_topic:
+            database.update_child_progress(
+                child_id, subject, last_position=next_topic["name"]
+            )
+
+    scores = database.get_topic_scores(child_id, subject, grade_num)
+    progress = database.get_or_create_child_progress(child_id, subject)
+    current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
+    sidebar = _build_topic_sidebar(
+        catalog, scores, current_topic_id, level=progress.get("level", 0)
+    )
+
+    return jsonify(
+        {
+            "score": score,
+            "passed": passed,
+            "pass_threshold": TOPIC_PASS_THRESHOLD,
+            "topic_id": topic_id,
+            "topic_name": topic_name,
+            "sidebar": sidebar,
+        }
+    )
+
+
+@app.route("/api/voice/transcribe", methods=["POST"])
+@login_required
+def api_voice_transcribe():
+    """Whisper: audio/webm → magyar szöveg."""
+    upload = request.files.get("file") or request.files.get("audio")
+    if not upload or not upload.filename:
+        return jsonify({"error": "no_audio"}), 400
+    audio_bytes = upload.read()
+    if len(audio_bytes) < 200:
+        return jsonify({"error": "audio_too_short"}), 400
+    try:
+        text = _whisper_transcribe(audio_bytes, upload.filename)
+    except NotImplementedError:
+        return jsonify({"error": "openai_not_configured"}), 501
+    except Exception as exc:
+        logger.exception("Whisper átírás hiba: %s", exc)
+        return jsonify({"error": "transcribe_failed", "detail": str(exc)}), 500
+    if not text:
+        return jsonify({"error": "empty_transcript"}), 400
+    return jsonify({"text": text})
+
+
+@app.route("/api/voice/speak", methods=["POST"])
+@login_required
+def api_voice_speak():
+    """TTS: AI szöveg → audio/mpeg."""
+    data = request.get_json(silent=True) or {}
+    text = (data.get("text") or "").strip()
+    if not text:
+        return jsonify({"error": "no_text"}), 400
+    try:
+        audio_bytes = _openai_tts_speak(text)
+    except NotImplementedError:
+        return jsonify({"error": "openai_not_configured"}), 501
+    except Exception as exc:
+        logger.exception("TTS hiba: %s", exc)
+        return jsonify({"error": "speak_failed", "detail": str(exc)}), 500
+    return Response(audio_bytes, mimetype="audio/mpeg")
 
 
 if __name__ == "__main__":
