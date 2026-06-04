@@ -203,6 +203,20 @@
         inner.className = 'chat-bubble-inner';
         inner.textContent = text;
         wrap.appendChild(inner);
+
+        if (role === 'assistant') {
+            var replayBtn = document.createElement('button');
+            replayBtn.className = 'bubble-replay-btn';
+            replayBtn.innerHTML = '🔊';
+            replayBtn.title = 'Hallgasd meg újra';
+            replayBtn.setAttribute('data-text', text);
+            replayBtn.addEventListener('click', function() {
+                var t = this.getAttribute('data-text');
+                if (typeof playTts === 'function') playTts(t);
+            });
+            wrap.appendChild(replayBtn);
+        }
+
         messagesEl.insertBefore(wrap, typing);
         scrollToBottom();
     }
