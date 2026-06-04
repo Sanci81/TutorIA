@@ -1608,7 +1608,22 @@ def child_chat(child_id: int):
     if not child:
         abort(404)
 
-    subject = (request.args.get("subject") or "").strip()
+    # Language session törlése – LEGELEJÉN, mielőtt bármi más történne
+    subject_raw = (
+        request.args.get("subject") or request.form.get("subject") or ""
+    ).strip()
+    is_foreign = (
+        is_elo_idegen_subject(subject_raw)
+        or subject_raw.lower() in ("angol", "nemet", "spanyol", "idegen nyelv", "élő idegen nyelv")
+    )
+    if not is_foreign:
+        session.pop("language", None)
+        session["language"] = ""
+    explicit_lang = (request.args.get("language") or "").strip().lower()
+    if explicit_lang and is_foreign:
+        session["language"] = explicit_lang
+
+    subject = subject_raw
     if not subject:
         flash(i18n.t("flash_subject_required", g.lang), "error")
         return redirect(url_for("select_tasks", child_id=child_id))
