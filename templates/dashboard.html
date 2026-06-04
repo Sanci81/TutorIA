@@ -33,8 +33,6 @@
                 (function(){var el=document.getElementById('birthday-{{ child["id"] }}');if(el){setTimeout(function(){el.style.opacity='0';el.style.transition='opacity 0.8s';setTimeout(function(){el.remove();},800);},5000);}})();
             </script>
             {% endif %}
-    <section class="children-grid">
-        {% for child in children %}
             <article class="child-card">
                 <div class="child-avatar">{{ child['name'][:1]|upper }}</div>
                 <h3 class="child-name">{{ child['name'] }}</h3>
