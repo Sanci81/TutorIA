@@ -1622,6 +1622,14 @@ def child_chat(child_id: int):
     if not child:
         abort(404)
 
+    logger.warning(
+        "CHILD_CHAT DEBUG: request.args=%s request.form=%s session_subject=%s session_language=%s",
+        dict(request.args),
+        dict(request.form),
+        session.get("subject"),
+        session.get("language"),
+    )
+
     # Language session törlése – LEGELEJÉN, mielőtt bármi más történne
     subject_raw = (
         request.args.get("subject") or request.form.get("subject") or ""
