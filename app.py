@@ -1367,6 +1367,9 @@ def _whisper_transcribe(audio_bytes: bytes, filename: str = "audio.webm") -> str
         model="whisper-1",
         file=buf,
         language="hu",
+        prompt="Magyar gyerek beszél. Matematika, olvasás, számok, "
+               "állatok, színek, betűk. Lehetséges szavak: igen, nem, "
+               "kettő, három, alma, kutya, piros, kék, szia.",
     )
     return (transcription.text or "").strip()
 
@@ -1376,9 +1379,10 @@ def _openai_tts_speak(text: str) -> bytes:
     if not api_key:
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
     client = _openai_client(api_key, request_timeout=60.0)
+    text = text.replace("**", "").replace("##", "").replace("- ", "")
     response = client.audio.speech.create(
         model="tts-1",
-        voice="nova",
+        voice="alloy",
         input=text[:4096],
     )
     return response.content
