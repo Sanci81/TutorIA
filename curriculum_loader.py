@@ -261,6 +261,67 @@ def _elo_idegen_filename_for_grade(grade: int) -> str:
     return ELO_IDEGEN_NYELV_5_8_ALT
 
 
+def _hu_1_4_path_candidates(filename: str) -> list[Path]:
+    """1–4 JSON: lehetséges elérési utak (sorrendben), Railway / helyi mappa."""
+    root = Path(__file__).parent
+    seen: set[Path] = set()
+    ordered: list[Path] = []
+    for dir_name in _HU_JSON_DIR_CANDIDATES["1-4"]:
+        base = root / dir_name
+        for candidate in (
+            base / filename,
+            base / "hu_kerettanterv_1_4_TELJES" / filename,
+        ):
+            if candidate not in seen:
+                seen.add(candidate)
+                ordered.append(candidate)
+    return ordered
+
+
+def _log_resolve_hu_subject_file(
+    subject: str, grade_num: int, result: dict[str, Any] | None
+) -> None:
+    """Diagnosztika: mit old fel a resolver, mely útvonalakat próbálja megnyitni."""
+    root = Path(__file__).parent
+    if result is None:
+        logger.info(
+            "_resolve_hu_subject_file: subject=%r grade=%s -> None (project_root=%s)",
+            subject,
+            grade_num,
+            root,
+        )
+        return
+
+    filename = result.get("file", "")
+    if is_hu_1_4_grade(grade_num):
+        candidates = _hu_1_4_path_candidates(filename)
+        chosen = _hu_1_4_path_from_filename(filename)
+        tried = "; ".join(
+            f"{p} (exists={p.is_file()})" for p in candidates
+        )
+        logger.info(
+            "_resolve_hu_subject_file: subject=%r grade=%s -> %s; "
+            "project_root=%s; tried=[%s]; chosen=%s",
+            subject,
+            grade_num,
+            result,
+            root,
+            tried,
+            chosen,
+        )
+    else:
+        path_58 = root / "hu_kerettanterv_5_8_TELJES" / filename
+        logger.info(
+            "_resolve_hu_subject_file: subject=%r grade=%s -> %s; "
+            "5-8 path=%s (exists=%s)",
+            subject,
+            grade_num,
+            result,
+            path_58,
+            path_58.is_file(),
+        )
+
+
 def _resolve_hu_subject_file(
     subject: str, grade: int | str
 ) -> dict[str, Any] | None:
@@ -272,38 +333,43 @@ def _resolve_hu_subject_file(
     grade_num = parse_grade(grade)
     band_1_4 = is_hu_1_4_grade(grade_num)
 
+    result: dict[str, Any] | None = None
     if key in ("angol",):
-        return {
+        result = {
             "file": _elo_idegen_filename_for_grade(grade_num),
             "language": "angol",
             "label": "Angol",
         }
-    if key in ("nemet",):
-        return {
+    elif key in ("nemet",):
+        result = {
             "file": _elo_idegen_filename_for_grade(grade_num),
             "language": "nemet",
             "label": "Német",
         }
-    if key in ("spanyol",):
-        return {
+    elif key in ("spanyol",):
+        result = {
             "file": SPANYOL_1_4_FILE if band_1_4 else SPANYOL_5_8_FILE,
             "language": None,
             "label": "Spanyol",
         }
-    if key == "idegennyelv" or raw in _HU_1_4_SUBJECT_MAP or raw in HU_1_4_SUBJECT_FILES:
-        return {
+    elif key == "idegennyelv" or raw in _HU_1_4_SUBJECT_MAP or raw in HU_1_4_SUBJECT_FILES:
+        result = {
             "file": _elo_idegen_filename_for_grade(grade_num),
             "language": None,
             "label": "Idegen nyelv",
         }
-    if is_elo_idegen_subject(raw):
-        return {"file": raw, "language": None, "label": raw}
-    if raw in HU_1_4_SUBJECT_FILES:
-        return {"file": raw, "language": None, "label": hu_1_4_label_from_value(raw)}
-    for label, filename in _HU_1_4_SUBJECT_MAP.items():
-        if raw == label or raw == filename:
-            return {"file": filename, "language": None, "label": label}
-    return None
+    elif is_elo_idegen_subject(raw):
+        result = {"file": raw, "language": None, "label": raw}
+    elif raw in HU_1_4_SUBJECT_FILES:
+        result = {"file": raw, "language": None, "label": hu_1_4_label_from_value(raw)}
+    else:
+        for label, filename in _HU_1_4_SUBJECT_MAP.items():
+            if raw == label or raw == filename:
+                result = {"file": filename, "language": None, "label": label}
+                break
+
+    _log_resolve_hu_subject_file(raw, grade_num, result)
+    return result
 
 
 def _curriculum_data_for_language(
@@ -760,15 +826,9 @@ def _hu_1_4_path_from_filename(filename: str) -> Path | None:
     """Hardcoded JSON fájlnév → teljes elérési út (hu_kerettanterv_1_4_TELJES)."""
     if filename not in HU_1_4_SUBJECT_FILES and filename != SPANYOL_1_4_FILE:
         return None
-    root = Path(__file__).parent
-    for dir_name in _HU_JSON_DIR_CANDIDATES["1-4"]:
-        base = root / dir_name
-        for candidate in (
-            base / filename,
-            base / "hu_kerettanterv_1_4_TELJES" / filename,
-        ):
-            if candidate.is_file() and not _is_hu_aggregate_json(candidate):
-                return candidate
+    for candidate in _hu_1_4_path_candidates(filename):
+        if candidate.is_file() and not _is_hu_aggregate_json(candidate):
+            return candidate
     return None
 
 
