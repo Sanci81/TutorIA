@@ -257,7 +257,11 @@ def _openai_client(api_key: str, *, request_timeout: float = 90.0):
 
 
 def _call_ai_for_tasks(
-    prompt: str, *, lang: str, foreign_language: str | None = None
+    prompt: str,
+    *,
+    lang: str,
+    foreign_language: str | None = None,
+    curriculum_text: str = "",
 ) -> list[dict]:
     """OpenAI (gpt-4o-mini) hívás – 3 gyakorló feladat JSON formában."""
     api_key = _openai_api_key()
@@ -265,23 +269,36 @@ def _call_ai_for_tasks(
         logger.error("Task generation: OPENAI_API_KEY / OPENAI_KEY nincs beállítva")
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
 
+    curriculum_block = (
+        "\n\nKIZÁRÓLAG a következő kerettanterv alapján generálj feladatokat.\n"
+        "Ne találj ki semmit ami nincs benne. A feladatok legyenek\n"
+        "az adott osztály szintjének pontosan megfelelők.\n"
+        "TILOS: képekre, ábrákra hivatkozni.\n"
+        "TILOS: összehasonlítás ahol nincs valódi mennyiség (pl. '45-ből vs 32-ből').\n"
+        "Helyes feladattípus: 'Melyik szám nagyobb: 45 vagy 32?'\n"
+        f"Kerettanterv:\n{curriculum_text}"
+    ) if curriculum_text else ""
+
     if foreign_language == "angol":
         system_hu = (
             "Te egy tapasztalt angol nyelvtanár vagy magyar általános iskolásoknak. "
             "A feladatok tartalma kizárólag angol nyelven legyen. "
             "Válaszolj kizárólag érvényes JSON-nal; a task mezők angolul legyenek."
+            f"{curriculum_block}"
         )
     elif foreign_language == "nemet":
         system_hu = (
             "Te egy tapasztalt német nyelvtanár vagy magyar általános iskolásoknak. "
             "A feladatok tartalma kizárólag német nyelven legyen. "
             "Válaszolj kizárólag érvényes JSON-nal; a task mezők németül legyenek."
+            f"{curriculum_block}"
         )
     elif foreign_language == "spanyol":
         system_hu = (
             "Te egy tapasztalt spanyol nyelvtanár vagy magyar általános iskolásoknak. "
             "A feladatok tartalma kizárólag spanyol nyelven legyen. "
             "Válaszolj kizárólag érvényes JSON-nal; a task mezők spanyolul legyenek."
+            f"{curriculum_block}"
         )
     else:
         system_hu = (
@@ -291,11 +308,12 @@ def _call_ai_for_tasks(
             "A feladatok legyenek nyelvtanilag helyesek magyarul.\n"
             "Összehasonlító kérdéseknél használj '-ból/-ből' ragot: "
             "'Melyikből van több?' nem 'Melyik van több?'\n"
-            "A feladatok legyenek pontosan az adott osztály szintjének megfelelők."
+            f"{curriculum_block}"
         )
     system_es = (
         "Eres un/a profesor/a experimentado/a. Crea ejercicios según el currículo "
         "oficial indicado. Responde solo con JSON válido en español."
+        f"{curriculum_block}"
     )
     user_suffix_hu = (
         'Add vissza JSON objektumként: {"tasks": [{"title": "...", "question": "...", '
@@ -448,6 +466,14 @@ def _generate_practice_tasks_bundle(
                 child_id,
             )
 
+    # Teljes kerettanterv szöveg a feladat promptba (get_curriculum_for_chat).
+    curriculum_chat = (
+        get_curriculum_for_chat(subject, child["grade"], language=language)
+        if child["country"] == "HU"
+        else None
+    )
+    curriculum["content"] = curriculum_chat.get("content", "") if curriculum_chat else ""
+
     if is_elo_idegen_subject(subject):
         if language == "spanyol":
             foreign_language = "spanyol"
@@ -475,7 +501,10 @@ def _generate_practice_tasks_bundle(
 
     try:
         tasks = _call_ai_for_tasks(
-            prompt, lang=g.lang, foreign_language=foreign_language
+            prompt,
+            lang=g.lang,
+            foreign_language=foreign_language,
+            curriculum_text=curriculum.get("content", ""),
         )
     except NotImplementedError:
         flash(i18n.t("flash_tasks_pending", g.lang), "info")
@@ -746,6 +775,17 @@ def logout():
 def dashboard():
     parent = database.get_parent_by_id(session["parent_id"])
     children = database.get_children_for_parent(session["parent_id"])
+    today = date.today()
+    for child in children:
+        bd_str = child.get("birth_date")
+        if bd_str:
+            try:
+                bd = date.fromisoformat(bd_str)
+                child["is_birthday"] = bd.month == today.month and bd.day == today.day
+            except (ValueError, TypeError):
+                child["is_birthday"] = False
+        else:
+            child["is_birthday"] = False
     return render_template("dashboard.html", parent=parent, children=children)
 
 

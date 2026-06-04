@@ -1411,6 +1411,59 @@ a.btn-generate {
     border-radius: 1.25rem;
     white-space: nowrap;
 }
+
+/* ---------- Birthday confetti modal ---------- */
+.birthday-modal {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.45);
+    pointer-events: none;
+}
+.birthday-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 2rem 3rem;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    position: relative;
+    z-index: 2;
+    max-width: 420px;
+}
+.birthday-emoji { font-size: 3rem; margin-bottom: 0.5rem; }
+.birthday-card h2 { font-size: 1.5rem; margin: 0.5rem 0; color: #222; }
+.birthday-card p { font-size: 1rem; color: #666; margin: 0; }
+
+.confetti-container {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+.confetti {
+    position: absolute;
+    width: 10px; height: 10px;
+    top: -10px;
+    animation: confetti-fall linear forwards;
+}
+.confetti:nth-child(5n+1) { left: 10%; background: #f59e0b; animation-duration: 3s; animation-delay: 0s; }
+.confetti:nth-child(5n+2) { left: 30%; background: #3b82f6; animation-duration: 3.5s; animation-delay: 0.3s; }
+.confetti:nth-child(5n+3) { left: 50%; background: #10b981; animation-duration: 4s; animation-delay: 0.6s; }
+.confetti:nth-child(5n+4) { left: 70%; background: #ef4444; animation-duration: 2.8s; animation-delay: 0.1s; }
+.confetti:nth-child(5n+5) { left: 90%; background: #8b5cf6; animation-duration: 3.2s; animation-delay: 0.4s; }
+.confetti:nth-child(n+11) { animation-delay: 0.8s; }
+.confetti:nth-child(n+21) { animation-delay: 1.6s; }
+.confetti:nth-child(n+31) { animation-delay: 2.4s; }
+.confetti:nth-child(n+41) { animation-delay: 3.2s; }
+@keyframes confetti-fall {
+    0%   { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
 .visually-hidden {
     position: absolute;
     width: 1px;
