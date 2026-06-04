@@ -1284,6 +1284,8 @@ a.btn-generate {
 .chat-back {
     display: inline-block;
     margin-bottom: 0.75rem;
+    margin-left: 0;
+    padding-left: 16px;
     font-weight: 700;
     color: var(--muted);
     text-decoration: none;
