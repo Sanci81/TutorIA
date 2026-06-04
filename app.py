@@ -1662,6 +1662,7 @@ def child_chat(child_id: int):
         language = explicit_language
 
     language = _chat_bind_flask_session(child_id, subject, language)
+    session["subject"] = subject
 
     effective_age = _child_effective_age(child)
     chat_profile = _chat_interaction_profile(effective_age)
