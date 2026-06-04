@@ -15,11 +15,12 @@ from __future__ import annotations
 import hashlib
 import os
 import secrets
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from sqlalchemy import (
     Boolean,
+    Date,
     DateTime,
     ForeignKey,
     Integer,
@@ -103,7 +104,8 @@ class Child(Base):
         ForeignKey("parents.id", ondelete="CASCADE"), nullable=False
     )
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    age: Mapped[int] = mapped_column(Integer, nullable=False)
+    birth_date: Mapped[date | None] = mapped_column(Date, nullable=True)
+    age: Mapped[int | None] = mapped_column(Integer, nullable=True)
     grade: Mapped[str] = mapped_column(String(50), nullable=False)
     country: Mapped[str] = mapped_column(String(2), nullable=False)
     region: Mapped[str | None] = mapped_column(String(10))
@@ -253,16 +255,46 @@ def _parent_dict(parent: Parent) -> dict[str, Any]:
     }
 
 
+def child_age_from_birth(birth_date: date) -> int:
+    """Életkor születési dátumból (éves közelítés)."""
+    return max(1, (date.today() - birth_date).days // 365)
+
+
+def approximate_birth_from_age(age: int) -> date:
+    """Régi profilok: közelítő születési dátum az age mezőből."""
+    return date.today() - timedelta(days=int(age) * 365)
+
+
+def compute_child_age(
+    *,
+    birth_date: date | None = None,
+    age_legacy: int | None = None,
+) -> int | None:
+    """Megjelenített / logikai életkor – birth_date elsőbbsége."""
+    if birth_date:
+        return child_age_from_birth(birth_date)
+    if age_legacy is not None:
+        try:
+            return int(age_legacy)
+        except (TypeError, ValueError):
+            pass
+    return None
+
+
 def _child_dict(child: Child) -> dict[str, Any]:
+    bd = child.birth_date
+    age_val = compute_child_age(birth_date=bd, age_legacy=child.age)
     return {
         "id": child.id,
         "parent_id": child.parent_id,
         "name": child.name,
-        "age": child.age,
+        "birth_date": bd.isoformat() if bd else None,
+        "age": age_val,
         "grade": child.grade,
         "country": child.country,
         "region": child.region,
         "created_at": child.created_at,
+        "needs_birth_date": bd is None,
     }
 
 
@@ -273,6 +305,30 @@ def _hash_token(token: str) -> str:
 def init_db() -> None:
     """Létrehozza a táblákat, ha még nem léteznek."""
     Base.metadata.create_all(bind=_get_engine())
+    ensure_children_birth_date_column()
+
+
+def ensure_children_birth_date_column() -> None:
+    """birth_date oszlop + régi age → közelítő birth_date migráció."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    with engine.begin() as conn:
+        conn.execute(
+            text("ALTER TABLE children ADD COLUMN IF NOT EXISTS birth_date DATE")
+        )
+        conn.execute(
+            text("ALTER TABLE children ALTER COLUMN age DROP NOT NULL")
+        )
+        conn.execute(
+            text(
+                """
+                UPDATE children
+                SET birth_date = CURRENT_DATE - (age * INTERVAL '365 days')
+                WHERE birth_date IS NULL AND age IS NOT NULL
+                """
+            )
+        )
 
 
 def ensure_password_reset_table() -> None:
@@ -329,7 +385,7 @@ def get_parent_by_id(parent_id: int) -> dict[str, Any] | None:
 def create_child(
     parent_id: int,
     name: str,
-    age: int,
+    birth_date: date,
     grade: str,
     country: str,
     region: str | None,
@@ -339,7 +395,8 @@ def create_child(
         child = Child(
             parent_id=parent_id,
             name=name.strip(),
-            age=age,
+            birth_date=birth_date,
+            age=child_age_from_birth(birth_date),
             grade=grade.strip(),
             country=country,
             region=region,
@@ -348,6 +405,39 @@ def create_child(
         db.commit()
         db.refresh(child)
         return child.id
+    finally:
+        db.close()
+
+
+def update_child(
+    child_id: int,
+    parent_id: int,
+    *,
+    name: str,
+    birth_date: date,
+    grade: str,
+    country: str,
+    region: str | None,
+) -> bool:
+    """Gyerek profil szerkesztése – csak a megadott szülő gyerekéhez."""
+    db = _session()
+    try:
+        child = db.scalar(
+            select(Child).where(
+                Child.id == child_id,
+                Child.parent_id == parent_id,
+            )
+        )
+        if not child:
+            return False
+        child.name = name.strip()
+        child.birth_date = birth_date
+        child.age = child_age_from_birth(birth_date)
+        child.grade = grade.strip()
+        child.country = country
+        child.region = region
+        db.commit()
+        return True
     finally:
         db.close()
 

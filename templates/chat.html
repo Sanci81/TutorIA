@@ -97,7 +97,7 @@
         {% if chat_mode == 'voice' %}
         <input type="hidden" id="chat-subject" value="{{ subject }}">
         <input type="hidden" id="chat-session-id" value="{{ session_id }}">
-        <input type="hidden" id="chat-language" value="{{ language }}">
+        <input type="hidden" id="chat-language" value="{{ language or '' }}">
         <input type="hidden" id="chat-topic-id" value="{{ current_topic_id }}">
 
         <div class="voice-panel" id="voice-panel">
@@ -326,7 +326,24 @@
             });
     }
 
+    function closeTestModal() {
+        if (!testOverlay) return;
+        testOverlay.hidden = true;
+        if (testBody) {
+            testBody.hidden = false;
+            testBody.innerHTML = '';
+        }
+        if (testResult) {
+            testResult.hidden = true;
+            testResult.innerHTML = '';
+        }
+    }
+
     function showQuiz(questions, topicName) {
+        if (!questions || !questions.length) {
+            closeTestModal();
+            return;
+        }
         quizQuestions = questions;
         quizAnswers = new Array(questions.length).fill(null);
         testResult.hidden = true;
@@ -360,7 +377,8 @@
                 subject: subject,
                 topic_id: currentTopicId,
                 questions: quizQuestions,
-                answers: quizAnswers
+                answers: quizAnswers,
+                language: getChatLanguage()
             })
         })
             .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
@@ -385,38 +403,57 @@
                 testResult.querySelector('.result-pass')?.addEventListener('click', function (e) {
                     var btn = e.currentTarget;
                     openTopic(btn.getAttribute('data-topic-id'), btn.getAttribute('data-topic-name'));
-                    testOverlay.hidden = true;
+                    closeTestModal();
                 });
             });
     }
 
+    function getChatLanguage() {
+        var el = document.getElementById('chat-language');
+        return el ? el.value : '';
+    }
+
     function startTest() {
-        testBody.innerHTML = '<p class="test-loading">Kérdések generálása… ⏳</p>';
-        testResult.hidden = true;
-        testBody.hidden = false;
-        testOverlay.hidden = false;
+        closeTestModal();
+        if (btnTest) btnTest.disabled = true;
         fetch(testGenUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ subject: subject, topic_id: currentTopicId })
+            body: JSON.stringify({
+                subject: subject,
+                topic_id: currentTopicId,
+                language: getChatLanguage()
+            })
         })
             .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
             .then(function (res) {
-                if (!res.ok) {
-                    testBody.innerHTML = '<p>Nem sikerült a tesztet létrehozni.</p>';
+                if (btnTest) btnTest.disabled = false;
+                if (!res.ok || !res.data.questions || !res.data.questions.length) {
+                    alert('Nem sikerült a tesztet létrehozni.');
                     return;
                 }
                 showQuiz(res.data.questions, res.data.topic_name || currentTopicName);
             })
             .catch(function () {
-                testBody.innerHTML = '<p>Hálózati hiba.</p>';
+                if (btnTest) btnTest.disabled = false;
+                alert('Hálózati hiba.');
             });
     }
 
     if (btnTest) btnTest.addEventListener('click', startTest);
-    document.getElementById('test-close').addEventListener('click', function () {
-        testOverlay.hidden = true;
-    });
+    var testCloseBtn = document.getElementById('test-close');
+    if (testCloseBtn) {
+        testCloseBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeTestModal();
+        });
+    }
+    if (testOverlay) {
+        testOverlay.addEventListener('click', function (e) {
+            if (e.target === testOverlay) closeTestModal();
+        });
+    }
 
     if (form && input) {
         form.addEventListener('submit', function (e) {

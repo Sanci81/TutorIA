@@ -176,6 +176,9 @@ _HU_EXCLUDED_SUBJECT_KEYS = frozenset(
 # Feladatgeneráláshoz: megjelenített név → JSON fájl tantárgy
 _HU_SUBJECT_JSON_ALIASES: dict[str, tuple[str, ...]] = {
     "idegennyelv": ("eloidegennyelv",),
+    "angol": ("eloidegennyelv", "angol"),
+    "nemet": ("eloidegennyelv", "nemet"),
+    "spanyol": ("spanyol",),
     "magyarnyelvesirodalom": ("magyarnyelvesirodalom",),
 }
 
@@ -195,6 +198,9 @@ _HU_1_4_SUBJECT_MAP: dict[str, str] = {
 
 ELO_IDEGEN_NYELV_1_4_FILE = "Elo_idegen_nyelv_1_4.json"
 ELO_IDEGEN_NYELV_5_8_FILE = "Elo_idegen_nyelv_5_8.json"
+ELO_IDEGEN_NYELV_5_8_ALT = "elo_idegen_nyelv_5-8.json"
+SPANYOL_1_4_FILE = "spanyol_1-4.json"
+SPANYOL_5_8_FILE = "spanyol_5-8.json"
 
 # Sablonokhoz: megengedett fájlnevek és címkék
 HU_1_4_SUBJECT_NAMES: list[str] = list(_HU_1_4_SUBJECT_MAP.keys())
@@ -241,10 +247,78 @@ def get_hu_5_8_subjects(grade: int) -> list[dict[str, str]]:
 
 
 def is_elo_idegen_subject(subject_file: str) -> bool:
-    return subject_file in (
+    return (subject_file or "").strip() in (
         ELO_IDEGEN_NYELV_1_4_FILE,
         ELO_IDEGEN_NYELV_5_8_FILE,
+        ELO_IDEGEN_NYELV_5_8_ALT,
     )
+
+
+def _elo_idegen_filename_for_grade(grade: int) -> str:
+    grade_num = parse_grade(grade)
+    if is_hu_1_4_grade(grade_num):
+        return ELO_IDEGEN_NYELV_1_4_FILE
+    return ELO_IDEGEN_NYELV_5_8_ALT
+
+
+def _resolve_hu_subject_file(
+    subject: str, grade: int | str
+) -> dict[str, Any] | None:
+    """Tantárgy név / fájlnév → JSON fájl + opcionális nyelvi ág (angol, nemet)."""
+    raw = (subject or "").strip()
+    if not raw:
+        return None
+    key = _normalize_key(raw)
+    grade_num = parse_grade(grade)
+    band_1_4 = is_hu_1_4_grade(grade_num)
+
+    if key in ("angol",):
+        return {
+            "file": _elo_idegen_filename_for_grade(grade_num),
+            "language": "angol",
+            "label": "Angol",
+        }
+    if key in ("nemet",):
+        return {
+            "file": _elo_idegen_filename_for_grade(grade_num),
+            "language": "nemet",
+            "label": "Német",
+        }
+    if key in ("spanyol",):
+        return {
+            "file": SPANYOL_1_4_FILE if band_1_4 else SPANYOL_5_8_FILE,
+            "language": None,
+            "label": "Spanyol",
+        }
+    if key == "idegennyelv" or raw in _HU_1_4_SUBJECT_MAP or raw in HU_1_4_SUBJECT_FILES:
+        return {
+            "file": _elo_idegen_filename_for_grade(grade_num),
+            "language": None,
+            "label": "Idegen nyelv",
+        }
+    if is_elo_idegen_subject(raw):
+        return {"file": raw, "language": None, "label": raw}
+    if raw in HU_1_4_SUBJECT_FILES:
+        return {"file": raw, "language": None, "label": hu_1_4_label_from_value(raw)}
+    for label, filename in _HU_1_4_SUBJECT_MAP.items():
+        if raw == label or raw == filename:
+            return {"file": filename, "language": None, "label": label}
+    return None
+
+
+def _curriculum_data_for_language(
+    data: dict[str, Any], language: str | None
+) -> dict[str, Any]:
+    """Élő idegen nyelv JSON: angol / német ág kiválasztása a nyelvek blokkból."""
+    if not language:
+        return data
+    lang = (language or "").strip().lower()
+    nyelvek = data.get("nyelvek")
+    if isinstance(nyelvek, dict) and lang in nyelvek:
+        branch = nyelvek[lang]
+        if isinstance(branch, dict):
+            return branch
+    return data
 
 
 def get_hu_subjects_for_grade(grade: int) -> list[dict[str, str]]:
@@ -684,13 +758,39 @@ def _hu_1_4_json_path(slug: str) -> Path | None:
 
 def _hu_1_4_path_from_filename(filename: str) -> Path | None:
     """Hardcoded JSON fájlnév → teljes elérési út (hu_kerettanterv_1_4_TELJES)."""
-    if filename not in HU_1_4_SUBJECT_FILES:
+    if filename not in HU_1_4_SUBJECT_FILES and filename != SPANYOL_1_4_FILE:
         return None
+    root = Path(__file__).parent
     for dir_name in _HU_JSON_DIR_CANDIDATES["1-4"]:
-        path = Path(__file__).parent.joinpath(dir_name, filename)
-        if path.is_file() and not _is_hu_aggregate_json(path):
-            return path
+        base = root / dir_name
+        for candidate in (
+            base / filename,
+            base / "hu_kerettanterv_1_4_TELJES" / filename,
+        ):
+            if candidate.is_file() and not _is_hu_aggregate_json(candidate):
+                return candidate
     return None
+
+
+def _hu_json_search_paths(filename: str, grade: int) -> list[Path]:
+    """Keresési útvonalak egy tantárgy-JSON-hoz (1–4 és 5–8 mappák)."""
+    paths: list[Path] = []
+    root = Path(__file__).parent
+    grade_num = parse_grade(grade)
+    if is_hu_1_4_grade(grade_num):
+        p = _hu_1_4_path_from_filename(filename)
+        if p:
+            paths.append(p)
+    for dir_name in _HU_JSON_DIR_CANDIDATES.get("5-8", ()):
+        candidate = root / dir_name / filename
+        if candidate.is_file() and candidate not in paths:
+            paths.append(candidate)
+    if is_hu_1_4_grade(grade_num):
+        for dir_name in _HU_JSON_DIR_CANDIDATES["1-4"]:
+            candidate = root / dir_name / filename
+            if candidate.is_file() and candidate not in paths:
+                paths.append(candidate)
+    return paths
 
 
 def list_hu_subjects_1_4(grade: int) -> list[str]:
@@ -852,9 +952,14 @@ def list_hu_subjects_from_json(grade: int) -> list[str]:
 
 def find_hu_json_file(grade: int, subject: str) -> Path | None:
     """Megfelelő tantárgy-JSON fájl keresése évfolyam és tantárgy alapján."""
+    resolved = _resolve_hu_subject_file(subject, grade)
+    if resolved:
+        for path in _hu_json_search_paths(resolved["file"], grade):
+            return path
+
     band = _hu_band_for_grade(grade)
     if band == "1-4":
-        if subject in HU_1_4_SUBJECT_FILES:
+        if subject in HU_1_4_SUBJECT_FILES or subject == SPANYOL_1_4_FILE:
             path = _hu_1_4_path_from_filename(subject)
             if path:
                 return path
@@ -882,10 +987,43 @@ def _hu_evfolyam_blokk_for_grade(
 ) -> dict[str, Any] | None:
     """Új JSON: evfolyam_blokkok – melyik blokk tartozik az osztályhoz."""
     grade_num = parse_grade(grade)
-    for _key, blokk in data.get("evfolyam_blokkok", {}).items():
+    blocks = data.get("evfolyam_blokkok", {})
+    if not isinstance(blocks, dict):
+        return None
+    best_with_topics: dict[str, Any] | None = None
+    best_span = 999
+    for _key, blokk in blocks.items():
+        if not isinstance(blokk, dict):
+            continue
+        evs = blokk.get("evfolyamok") or []
+        if grade_num not in evs:
+            continue
+        if blokk.get("temakorok"):
+            span = (max(evs) - min(evs)) if evs else 999
+            if span < best_span:
+                best_span = span
+                best_with_topics = blokk
+    if best_with_topics:
+        return best_with_topics
+    for _key, blokk in blocks.items():
         if not isinstance(blokk, dict):
             continue
         if grade_num in blokk.get("evfolyamok", []):
+            return blokk
+    # Pl. 1–4. évfolyam egyetlen „4” blokkban – legközelebbi blokk temakorokkal
+    best: dict[str, Any] | None = None
+    best_hi = -1
+    for blokk in blocks.values():
+        if not isinstance(blokk, dict) or not blokk.get("temakorok"):
+            continue
+        evs = blokk.get("evfolyamok") or []
+        if evs and max(evs) <= grade_num and max(evs) > best_hi:
+            best_hi = max(evs)
+            best = blokk
+    if best:
+        return best
+    for blokk in blocks.values():
+        if isinstance(blokk, dict) and blokk.get("temakorok"):
             return blokk
     return None
 
@@ -998,41 +1136,64 @@ def format_curriculum_for_grade(data: dict[str, Any], grade: int | str) -> str:
 
 
 def get_curriculum_for_chat(
-    subject_file: str, grade: int | str
+    subject_file: str,
+    grade: int | str,
+    *,
+    language: str | None = None,
 ) -> dict[str, Any]:
     """JSON betöltés + évfolyam szerinti teljes tananyag (chat AI-hoz)."""
     grade_num = parse_grade(grade)
     subject_file = (subject_file or "").strip()
+    effective_language = (language or "").strip().lower() or None
+
+    resolved = _resolve_hu_subject_file(subject_file, grade_num)
+    if resolved:
+        subject_file = resolved["file"]
+        if resolved.get("language"):
+            effective_language = resolved["language"]
+        display_label = resolved.get("label") or subject_file
+    else:
+        display_label = subject_file
 
     candidates: list[Path] = []
     if subject_file:
-        search_dirs = [
-            _PROJECT_ROOT / "hu_kerettanterv_1_4_TELJES",
-            _PROJECT_ROOT / "hu_kerettanterv_1_4_TELJES" / "hu_kerettanterv_1_4_TELJES",
-            _PROJECT_ROOT / "hu_kerettanterv_5_8_TELJES",
-        ]
-        for directory in search_dirs:
-            path = directory / subject_file
-            if path.is_file() and path not in candidates:
+        for path in _hu_json_search_paths(subject_file, grade_num):
+            if path not in candidates:
                 candidates.append(path)
 
-        resolved = find_hu_json_file(grade_num, subject_file)
-        if resolved and resolved not in candidates:
-            candidates.append(resolved)
+        found = find_hu_json_file(grade_num, subject_file)
+        if found and found not in candidates:
+            candidates.append(found)
 
     def _has_new_structure(path: Path) -> bool:
         try:
-            return bool(_load_hu_json(path).get("evfolyam_blokkok"))
+            raw = _load_hu_json(path)
+            view = _curriculum_data_for_language(raw, effective_language)
+            return bool(view.get("evfolyam_blokkok"))
         except Exception:
             return False
 
-    candidates.sort(key=lambda p: (not _has_new_structure(p), len(str(p))))
+    def _score_path(path: Path) -> tuple:
+        name = path.name.casefold()
+        prefer_nyelvek = 0
+        if effective_language in ("angol", "nemet"):
+            prefer_nyelvek = 0 if ELO_IDEGEN_NYELV_5_8_ALT in name else 1
+        return (not _has_new_structure(path), prefer_nyelvek, len(str(path)))
+
+    candidates.sort(key=_score_path)
 
     for path in candidates:
-        data = _load_hu_json(path)
+        raw = _load_hu_json(path)
+        data = _curriculum_data_for_language(raw, effective_language)
         topics = extract_hu_grade_topics(data, grade_num)
         catalog = extract_topic_catalog(data, grade_num)
         content = format_curriculum_for_grade(data, grade_num)
+        subject_name = (
+            data.get("meta", {}).get("tantargy")
+            or data.get("nyelv")
+            or raw.get("meta", {}).get("tantargy", "")
+            or display_label
+        )
         if content or catalog:
             return {
                 "found": True,
@@ -1042,8 +1203,9 @@ def get_curriculum_for_chat(
                 "topics_detail": topics,
                 "topic_catalog": catalog,
                 "file": path.name,
-                "subject_name": data.get("meta", {}).get("tantargy", ""),
+                "subject_name": subject_name,
                 "data": data,
+                "language": effective_language,
             }
 
     return {
@@ -1053,8 +1215,9 @@ def get_curriculum_for_chat(
         "topics_detail": {},
         "topic_catalog": [],
         "file": subject_file,
-        "subject_name": "",
+        "subject_name": display_label,
         "data": {},
+        "language": effective_language,
     }
 
 
@@ -1080,10 +1243,21 @@ def format_hu_topics_for_prompt(
     return "\n".join(lines)
 
 
-def get_hu_curriculum_context(grade: int, subject: str) -> dict[str, Any]:
+def get_hu_curriculum_context(
+    grade: int, subject: str, *, language: str | None = None
+) -> dict[str, Any]:
     """Egy tantárgy teljes tantervi kontextusa feladatgeneráláshoz."""
     grade_num = parse_grade(grade)
-    path = find_hu_json_file(grade_num, subject)
+    effective_language = (language or "").strip().lower() or None
+    resolved = _resolve_hu_subject_file(subject, grade_num)
+    if resolved:
+        if resolved.get("language"):
+            effective_language = resolved["language"]
+        subject_lookup = resolved["file"]
+    else:
+        subject_lookup = subject
+
+    path = find_hu_json_file(grade_num, subject_lookup)
     if not path:
         logger.warning(
             "HU JSON tanterv nem található: subject=%r grade=%s (path keresés: %s)",
@@ -1100,9 +1274,12 @@ def get_hu_curriculum_context(grade: int, subject: str) -> dict[str, Any]:
             "source": "json",
         }
 
-    data = _load_hu_json(path)
-    meta = data.get("meta", {})
-    display = _display_subject_name(meta.get("tantargy", subject))
+    raw = _load_hu_json(path)
+    data = _curriculum_data_for_language(raw, effective_language)
+    meta = data.get("meta", {}) or raw.get("meta", {})
+    display = _display_subject_name(
+        data.get("nyelv") or meta.get("tantargy", subject)
+    )
     topics = extract_hu_grade_topics(data, grade_num)
     return {
         "found": True,

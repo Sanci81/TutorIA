@@ -444,6 +444,9 @@ a.btn-generate {
     color: #db2777;
     font-size: 1.05rem;
 }
+.tasks-encouragement[hidden] {
+    display: none !important;
+}
 
 .tasks-list {
     display: grid;
@@ -498,6 +501,7 @@ a.btn-generate {
 }
 .task-question {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.75rem;
     align-items: flex-start;
     background: var(--white);
@@ -505,6 +509,27 @@ a.btn-generate {
     padding: 1rem 1.1rem;
     border: 2px dashed var(--border);
     margin-bottom: 1rem;
+}
+.task-question p {
+    flex: 1 1 100%;
+}
+.btn-read-aloud {
+    background: linear-gradient(135deg, #a7f3d0, #34d399);
+    color: #065f46;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+.btn-read-aloud:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+.btn-read-aloud:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 .task-emoji { font-size: 1.75rem; flex-shrink: 0; line-height: 1; }
 .task-question p {
@@ -514,6 +539,115 @@ a.btn-generate {
     color: var(--ink);
 }
 
+.task-answer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    align-items: center;
+    margin-bottom: 0.85rem;
+}
+.task-answer-input {
+    flex: 1 1 200px;
+    min-width: 0;
+    padding: 0.75rem 1rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    border: 2px solid #bbf7d0;
+    border-radius: 12px;
+    font-family: inherit;
+}
+.task-answer-input:focus {
+    outline: none;
+    border-color: #16a34a;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+.task-answer-row-voice {
+    flex-direction: column;
+    align-items: stretch;
+}
+.btn-speak-answer {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    border: none;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 1rem 1.5rem;
+    border-radius: 14px;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    touch-action: none;
+    user-select: none;
+}
+.btn-speak-answer.recording {
+    background: linear-gradient(135deg, #f87171, #dc2626);
+    animation: voice-mic-pulse 1s ease-in-out infinite;
+}
+.btn-speak-answer:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+.btn-mic-optional {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 2px solid #bbf7d0;
+    font-size: 1.25rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 12px;
+    flex-shrink: 0;
+    line-height: 1;
+    touch-action: none;
+}
+.btn-mic-optional.recording {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #dc2626;
+}
+.task-voice-status {
+    margin: 0.35rem 0 0;
+    font-weight: 700;
+    color: #166534;
+    text-align: center;
+    font-size: 0.95rem;
+}
+.task-voice-status[hidden] {
+    display: none !important;
+}
+.tasks-page-voice .task-question .task-emoji {
+    font-size: 2rem;
+}
+.btn-check {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    border: none;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    flex-shrink: 0;
+}
+.btn-check:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+.btn-check:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+.task-feedback-correct {
+    background: #ecfdf5;
+    border: 2px solid #86efac;
+}
+.task-feedback-wrong {
+    background: #fff7ed;
+    border: 2px solid #fed7aa;
+}
+.task-reveal[hidden] {
+    display: none !important;
+}
+.btn-answer[hidden] {
+    display: none !important;
+}
 .task-actions {
     display: flex;
     flex-wrap: wrap;
@@ -542,14 +676,6 @@ a.btn-generate {
     background: linear-gradient(135deg, #4ade80, #16a34a);
     transform: translateY(-2px);
 }
-.btn-answer.is-disabled,
-.btn-answer:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-    transform: none;
-    filter: grayscale(0.3);
-}
-
 .task-reveal {
     margin-top: 0.85rem;
     padding: 1rem 1.1rem;
@@ -586,6 +712,14 @@ a.btn-generate {
     gap: 0.75rem;
     justify-content: center;
     padding-bottom: 1rem;
+    align-items: center;
+}
+.tasks-regenerate-form {
+    margin: 0;
+    display: inline-block;
+}
+.tasks-footer-actions .btn-primary {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
 }
 
 /* ---------- Cards / Forms ---------- */
@@ -1025,6 +1159,9 @@ a.btn-generate {
     align-items: center;
     justify-content: center;
     padding: 1rem;
+}
+.test-overlay[hidden] {
+    display: none !important;
 }
 .test-modal {
     background: #fff;

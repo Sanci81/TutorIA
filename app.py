@@ -12,6 +12,7 @@ import logging
 import os
 import re
 import traceback
+from datetime import date
 from functools import wraps
 from typing import Any
 
@@ -205,9 +206,10 @@ def _build_task_generation_prompt(
             f"{curriculum.get('grade', child['grade'])}. évfolyam):\n{summary}\n"
         )
 
+    child_age = _child_effective_age(child)
     if lang == "es":
         prompt = (
-            f"Genera 3 ejercicios de práctica para un/a niño/a de {child['age']} años, "
+            f"Genera 3 ejercicios de práctica para un/a niño/a de {child_age} años, "
             f"curso {child['grade']}, ubicación {location}.\n"
             f"Tema / asignatura: {subject_line}\n"
             f"Asignaturas del currículo oficial: {', '.join(subjects)}\n"
@@ -221,7 +223,7 @@ def _build_task_generation_prompt(
         return prompt
 
     prompt = (
-        f"Készíts 3 gyakorló feladatot egy {child['age']} éves gyereknek, "
+        f"Készíts 3 gyakorló feladatot egy {child_age} éves gyereknek, "
         f"{child['grade']}. osztály, helyszín: {location}.\n"
         f"Tantárgy: {subject_line}\n"
         f"Hivatalos tantervi tantárgyak: {', '.join(subjects)}\n"
@@ -376,6 +378,223 @@ def _call_ai_for_tasks(
     return normalized
 
 
+def _tasks_session_key(child_id: int) -> str:
+    return f"practice_tasks_{child_id}"
+
+
+def _generate_practice_tasks_bundle(
+    child_id: int,
+    child: dict,
+    subject: str,
+    language: str | None,
+) -> tuple[list[dict], dict, str, str | None] | None:
+    """
+    Feladatgenerálás – tanterv + OpenAI.
+    Vissza: (tasks, curriculum, subject_label, foreign_language) vagy None hiba esetén.
+    """
+    subject = (subject or "").strip()
+    language = (language or "").strip().lower() or None
+
+    if not subject:
+        flash(i18n.t("flash_subject_required", g.lang), "error")
+        return None
+
+    grade_num = parse_grade(child["grade"])
+    if g.lang == "hu":
+        allowed_files = {o["value"] for o in get_hu_subjects_for_grade(grade_num)}
+        if subject not in allowed_files:
+            flash(i18n.t("flash_subject_required", g.lang), "error")
+            return None
+        idegen_files = (ELO_IDEGEN_NYELV_1_4_FILE, ELO_IDEGEN_NYELV_5_8_FILE)
+        if subject in idegen_files and language not in ("angol", "nemet", "spanyol"):
+            flash(i18n.t("flash_language_required", g.lang), "error")
+            return None
+        if subject not in idegen_files:
+            language = None
+    else:
+        region = child["region"] if child["country"] == "ES" else None
+        try:
+            available = get_subjects_for_profile(
+                child["country"], child["grade"], region
+            ).get("subjects", [])
+        except Exception:
+            available = []
+        if available and subject not in available:
+            flash(i18n.t("flash_subject_required", g.lang), "error")
+            return None
+        language = None
+
+    subject_display = hu_1_4_label_from_value(subject)
+    curriculum = _curriculum_for_child(child, subject=subject)
+    subject_ctx = curriculum.get("subject_context") or {}
+    if child["country"] == "HU":
+        if subject_ctx.get("found"):
+            logger.info(
+                "Tanterv JSON betöltve: subject=%s file=%s child_id=%s",
+                subject,
+                subject_ctx.get("file"),
+                child_id,
+            )
+        else:
+            logger.warning(
+                "Tanterv JSON nem található (generálás JSON nélkül folytatódik): "
+                "subject=%s grade=%s child_id=%s",
+                subject,
+                child["grade"],
+                child_id,
+            )
+
+    if is_elo_idegen_subject(subject):
+        if language == "spanyol":
+            foreign_language = "spanyol"
+        elif language in ("angol", "nemet"):
+            foreign_language = language
+        else:
+            foreign_language = None
+    else:
+        foreign_language = None
+
+    prompt = _build_task_generation_prompt(
+        child,
+        curriculum,
+        subject=subject,
+        subject_display=subject_display,
+        lang=g.lang,
+        foreign_language=foreign_language,
+    )
+
+    api_key = _openai_api_key()
+    if not api_key:
+        logger.error("OPENAI_API_KEY hiányzik (child_id=%s)", child_id)
+        flash(i18n.t("flash_tasks_failed", g.lang), "error")
+        return None
+
+    try:
+        tasks = _call_ai_for_tasks(
+            prompt, lang=g.lang, foreign_language=foreign_language
+        )
+    except NotImplementedError:
+        flash(i18n.t("flash_tasks_pending", g.lang), "info")
+        return None
+    except Exception as exc:
+        tb = traceback.format_exc()
+        logger.error(
+            "Feladatgenerálás sikertelen (child_id=%s): %s\n%s",
+            child_id,
+            exc,
+            tb,
+        )
+        print(tb, flush=True)
+        flash(i18n.t("flash_tasks_failed", g.lang), "error")
+        return None
+
+    subject_label = (
+        subject_display
+        if g.lang == "hu"
+        else subject_ui_label(subject, g.lang, child["country"])
+    )
+    return tasks, curriculum, subject_label, foreign_language
+
+
+def _render_practice_tasks_page(
+    child_id: int,
+    child: dict,
+    *,
+    tasks: list[dict],
+    curriculum: dict,
+    subject: str,
+    subject_label: str,
+    language: str | None,
+) -> str:
+    session[_tasks_session_key(child_id)] = {
+        "tasks": tasks,
+        "subject": subject,
+        "language": language or "",
+        "lang": g.lang,
+    }
+    session.modified = True
+    effective_age = _child_effective_age(child)
+    return render_template(
+        "tasks.html",
+        child=child,
+        tasks=tasks,
+        curriculum=curriculum,
+        subject=subject,
+        subject_label=subject_label,
+        effective_age=effective_age,
+        tasks_voice_young=effective_age <= 7,
+    )
+
+
+def _call_ai_check_task_answer(
+    child: dict,
+    task: dict,
+    user_answer: str,
+    *,
+    lang: str,
+) -> dict[str, Any]:
+    """Tanuló válaszának ellenőrzése – helyes / visszajelzés."""
+    api_key = _openai_api_key()
+    if not api_key:
+        raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
+
+    age = _child_effective_age(child)
+    question = task.get("question") or ""
+    reference = task.get("answer") or ""
+    if lang == "es":
+        system = (
+            "Eres un/a profesor/a paciente de primaria. Evalúas la respuesta del alumno. "
+            "Responde SOLO con JSON válido."
+        )
+        user_msg = (
+            f"Alumno: {child['name']}, {age} años, curso {child['grade']}.\n"
+            f"Ejercicio: {question}\n"
+            f"Solución de referencia (profesor): {reference}\n"
+            f"Respuesta del alumno: {user_answer}\n\n"
+            'JSON: {"correct": true o false, "feedback": "mensaje corto y amable"}\n'
+            "Si es correcta: felicita brevemente.\n"
+            "Si no: explica por qué no encaja y cómo pensar el problema, "
+            "SIN dar la solución completa."
+        )
+    else:
+        system = (
+            "Te egy türelmes magyar általános iskolai tanár vagy. "
+            "A tanuló válaszát értékeled. Válaszolj KIZÁRÓLAG érvényes JSON-nal."
+        )
+        user_msg = (
+            f"Tanuló: {child['name']}, {age} éves, {child['grade']}. osztály.\n"
+            f"Feladat: {question}\n"
+            f"Helyes megoldás (tanári referencia): {reference}\n"
+            f"Tanuló válasza: {user_answer}\n\n"
+            'JSON: {"correct": true vagy false, "feedback": "rövid, barátságos üzenet"}\n'
+            "Ha helyes: rövid dicséret.\n"
+            "Ha nem helyes: mondd el miért nem jó, és hogyan gondolkodjon tovább – "
+            "NE add meg a teljes helyes választ."
+        )
+
+    client = _openai_client(api_key, request_timeout=45.0)
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": user_msg},
+        ],
+        temperature=0.4,
+    )
+    raw = response.choices[0].message.content or "{}"
+    payload = json.loads(raw)
+    correct = bool(payload.get("correct"))
+    feedback = (payload.get("feedback") or "").strip()
+    if not feedback:
+        feedback = (
+            "Szép munka, ez így helyes! 🌟"
+            if correct
+            else "Még nem teljesen jó – gondolkodj tovább! 💪"
+        )
+    return {"correct": correct, "feedback": feedback}
+
+
 # ---------------------------------------------------------------------------
 # Útvonalak
 # ---------------------------------------------------------------------------
@@ -526,27 +745,36 @@ def dashboard():
     return render_template("dashboard.html", parent=parent, children=children)
 
 
+def _parse_birth_date_form(raw: str) -> date | None:
+    """YYYY-MM-DD űrlapmező."""
+    text = (raw or "").strip()[:10]
+    if not text:
+        return None
+    try:
+        born = date.fromisoformat(text)
+    except ValueError:
+        return None
+    if born > date.today():
+        return None
+    return born
+
+
 @app.route("/children/add", methods=["GET", "POST"])
 @login_required
 def add_child():
     if request.method == "POST":
         name = (request.form.get("name") or "").strip()
-        age_raw = request.form.get("age") or ""
+        birth_date_raw = request.form.get("birth_date") or ""
         grade = (request.form.get("grade") or "").strip()
         country = request.form.get("country") or ""
         region = request.form.get("region") or None
 
         errors = False
-
-        try:
-            age = int(age_raw)
-            if age < 1 or age > 25:
-                raise ValueError
-        except ValueError:
-            age = None
+        birth_date = _parse_birth_date_form(birth_date_raw)
+        if not birth_date:
             errors = True
 
-        if not name or country not in ("ES", "HU") or not grade or age is None:
+        if not name or country not in ("ES", "HU") or not grade:
             errors = True
 
         if country == "ES" and not region:
@@ -558,7 +786,7 @@ def add_child():
                 "add_child.html",
                 form={
                     "name": name,
-                    "age": age_raw,
+                    "birth_date": birth_date_raw,
                     "grade": grade,
                     "country": country,
                     "region": region,
@@ -569,12 +797,76 @@ def add_child():
             region = None
 
         database.create_child(
-            session["parent_id"], name, age, grade, country, region
+            session["parent_id"], name, birth_date, grade, country, region
         )
         flash(i18n.t("flash_child_added", g.lang), "success")
         return redirect(url_for("dashboard"))
 
     return render_template("add_child.html", form={})
+
+
+@app.route("/children/<int:child_id>/edit", methods=["GET", "POST"])
+@login_required
+def edit_child(child_id: int):
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    if request.method == "POST":
+        name = (request.form.get("name") or "").strip()
+        birth_date_raw = request.form.get("birth_date") or ""
+        grade = (request.form.get("grade") or "").strip()
+        country = request.form.get("country") or ""
+        region = request.form.get("region") or None
+
+        errors = False
+        birth_date = _parse_birth_date_form(birth_date_raw)
+        if not birth_date:
+            errors = True
+
+        if not name or country not in ("ES", "HU") or not grade:
+            errors = True
+
+        if country == "ES" and not region:
+            flash(i18n.t("flash_region_required", g.lang), "error")
+            errors = True
+
+        if errors:
+            return render_template(
+                "edit_child.html",
+                child=child,
+                form={
+                    "name": name,
+                    "birth_date": birth_date_raw,
+                    "grade": grade,
+                    "country": country,
+                    "region": region,
+                },
+            )
+
+        if country != "ES":
+            region = None
+
+        database.update_child(
+            child_id,
+            session["parent_id"],
+            name=name,
+            birth_date=birth_date,
+            grade=grade,
+            country=country,
+            region=region,
+        )
+        flash(i18n.t("flash_child_updated", g.lang), "success")
+        return redirect(url_for("dashboard"))
+
+    form = {
+        "name": child["name"],
+        "birth_date": child.get("birth_date") or "",
+        "grade": child["grade"],
+        "country": child["country"],
+        "region": child.get("region") or "",
+    }
+    return render_template("edit_child.html", child=child, form=form)
 
 
 @app.route("/children/<int:child_id>/tasks", methods=["GET"])
@@ -643,132 +935,97 @@ def generate_tasks(child_id: int):
         flash(i18n.t("flash_subject_required", g.lang), "error")
         return redirect(url_for("select_tasks", child_id=child_id))
 
-    grade_num = parse_grade(child["grade"])
-    if g.lang == "hu":
-        allowed_files = {o["value"] for o in get_hu_subjects_for_grade(grade_num)}
-        if subject not in allowed_files:
-            if request.is_json:
-                return jsonify({"error": "invalid_subject"}), 400
-            flash(i18n.t("flash_subject_required", g.lang), "error")
-            return redirect(url_for("select_tasks", child_id=child_id))
-        idegen_files = (ELO_IDEGEN_NYELV_1_4_FILE, ELO_IDEGEN_NYELV_5_8_FILE)
-        if subject in idegen_files and language not in (
-            "angol",
-            "nemet",
-            "spanyol",
-        ):
-            if request.is_json:
-                return jsonify({"error": "language_required"}), 400
-            flash(i18n.t("flash_language_required", g.lang), "error")
-            return redirect(url_for("select_tasks", child_id=child_id))
-        if subject not in idegen_files:
-            language = None
-    else:
-        region = child["region"] if child["country"] == "ES" else None
-        try:
-            available = get_subjects_for_profile(
-                child["country"], child["grade"], region
-            ).get("subjects", [])
-        except Exception:
-            available = []
-
-        if available and subject not in available:
-            if request.is_json:
-                return jsonify({"error": "invalid_subject"}), 400
-            flash(i18n.t("flash_subject_required", g.lang), "error")
-            return redirect(url_for("select_tasks", child_id=child_id))
-        language = None
-
-    subject_display = hu_1_4_label_from_value(subject)
-    curriculum = _curriculum_for_child(child, subject=subject)
-    subject_ctx = curriculum.get("subject_context") or {}
-    if child["country"] == "HU":
-        if subject_ctx.get("found"):
-            logger.info(
-                "Tanterv JSON betöltve: subject=%s file=%s child_id=%s",
-                subject,
-                subject_ctx.get("file"),
-                child_id,
-            )
-        else:
-            logger.warning(
-                "Tanterv JSON nem található (generálás JSON nélkül folytatódik): "
-                "subject=%s grade=%s child_id=%s",
-                subject,
-                child["grade"],
-                child_id,
-            )
-
-    if is_elo_idegen_subject(subject):
-        if language == "spanyol":
-            foreign_language = "spanyol"
-        elif language in ("angol", "nemet"):
-            foreign_language = language
-        else:
-            foreign_language = None
-    else:
-        foreign_language = None
-    prompt = _build_task_generation_prompt(
-        child,
-        curriculum,
-        subject=subject,
-        subject_display=subject_display,
-        lang=g.lang,
-        foreign_language=foreign_language,
-    )
-
-    api_key = _openai_api_key()
-    if not api_key:
-        logger.error("OPENAI_API_KEY hiányzik (child_id=%s)", child_id)
+    bundle = _generate_practice_tasks_bundle(child_id, child, subject, language)
+    if bundle is None:
         if request.is_json:
-            return jsonify({"error": "OpenAI API key missing"}), 500
-        flash(i18n.t("flash_tasks_failed", g.lang), "error")
+            return jsonify({"error": "task_generation_failed"}), 500
         return redirect(url_for("select_tasks", child_id=child_id))
 
-    try:
-        tasks = _call_ai_for_tasks(
-            prompt, lang=g.lang, foreign_language=foreign_language
-        )
-    except NotImplementedError:
-        if request.is_json or request.headers.get("Accept") == "application/json":
-            return jsonify(
-                {
-                    "status": "pending",
-                    "message": "OPENAI_API_KEY not configured",
-                    "curriculum": curriculum,
-                    "prompt_preview": prompt,
-                }
-            ), 501
-        flash(i18n.t("flash_tasks_pending", g.lang), "info")
-        return redirect(url_for("select_tasks", child_id=child_id))
-    except Exception as exc:
-        tb = traceback.format_exc()
-        logger.error(
-            "Feladatgenerálás sikertelen (child_id=%s): %s\n%s",
-            child_id,
-            exc,
-            tb,
-        )
-        print(tb, flush=True)
-        if request.is_json:
-            return jsonify({"error": "task_generation_failed", "detail": str(exc)}), 500
-        flash(i18n.t("flash_tasks_failed", g.lang), "error")
-        return redirect(url_for("select_tasks", child_id=child_id))
+    tasks, curriculum, subject_label, _foreign = bundle
 
     if request.is_json:
         return jsonify({"tasks": tasks, "curriculum": curriculum})
-    return render_template(
-        "tasks.html",
-        child=child,
+
+    return _render_practice_tasks_page(
+        child_id,
+        child,
         tasks=tasks,
         curriculum=curriculum,
         subject=subject,
-        subject_label=(
-            subject_display
-            if g.lang == "hu"
-            else subject_ui_label(subject, g.lang, child["country"])
-        ),
+        subject_label=subject_label,
+        language=language,
     )
+
+
+@app.route("/children/<int:child_id>/tasks/regenerate", methods=["POST"])
+@login_required
+def regenerate_tasks(child_id: int):
+    """Új feladatok ugyanazzal a tantárggyal – azonnal, session paraméterekből."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    stored = session.get(_tasks_session_key(child_id)) or {}
+    subject = (stored.get("subject") or "").strip()
+    language = (stored.get("language") or "").strip().lower() or None
+
+    if not subject:
+        flash(i18n.t("flash_subject_required", g.lang), "error")
+        return redirect(url_for("select_tasks", child_id=child_id))
+
+    bundle = _generate_practice_tasks_bundle(child_id, child, subject, language)
+    if bundle is None:
+        return redirect(url_for("select_tasks", child_id=child_id))
+
+    tasks, curriculum, subject_label, _foreign = bundle
+    return _render_practice_tasks_page(
+        child_id,
+        child,
+        tasks=tasks,
+        curriculum=curriculum,
+        subject=subject,
+        subject_label=subject_label,
+        language=language,
+    )
+
+
+@app.route("/children/<int:child_id>/tasks/check", methods=["POST"])
+@login_required
+def check_task_answer(child_id: int):
+    """Tanuló válasz ellenőrzése OpenAI-val."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    data = request.get_json(silent=True) or {}
+    try:
+        task_index = int(data.get("task_index"))
+    except (TypeError, ValueError):
+        return jsonify({"error": "invalid_task_index"}), 400
+
+    user_answer = (data.get("answer") or "").strip()
+    if not user_answer:
+        return jsonify({"error": "answer_required"}), 400
+
+    stored = session.get(_tasks_session_key(child_id)) or {}
+    tasks = stored.get("tasks") or []
+    if task_index < 0 or task_index >= len(tasks):
+        return jsonify({"error": "task_not_found"}), 404
+
+    task = tasks[task_index]
+    lang = stored.get("lang") or g.lang
+
+    try:
+        result = _call_ai_check_task_answer(
+            child, task, user_answer, lang=lang
+        )
+    except NotImplementedError:
+        return jsonify({"error": "openai_not_configured"}), 501
+    except Exception as exc:
+        logger.exception("Feladat ellenőrzés hiba (child_id=%s): %s", child_id, exc)
+        return jsonify({"error": "check_failed", "detail": str(exc)}), 500
+
+    return jsonify(result)
 
 
 # ---------------------------------------------------------------------------
@@ -783,34 +1040,23 @@ _CHAT_PROFILE_BOTH = "both"
 
 
 def _child_effective_age(child: dict) -> int:
-    """Életkor: birth_date (ha van), különben child.age, különben osztály + 5."""
+    """Életkor: birth_date-ből, különben régi age, különben osztály + 5."""
     birth = child.get("birth_date") or child.get("birthDate")
     if birth:
         try:
-            from datetime import date
-
             if isinstance(birth, str):
-                raw = birth.strip()[:10]
-                born = date.fromisoformat(raw)
+                born = date.fromisoformat(birth.strip()[:10])
             elif hasattr(birth, "year"):
                 born = birth
             else:
                 born = None
             if born:
-                today = date.today()
-                age = today.year - born.year
-                if (today.month, today.day) < (born.month, born.day):
-                    age -= 1
-                if age >= 1:
-                    return age
+                return database.child_age_from_birth(born)
         except (TypeError, ValueError):
             pass
-    age = child.get("age")
-    if age is not None:
-        try:
-            return int(age)
-        except (TypeError, ValueError):
-            pass
+    computed = database.compute_child_age(age_legacy=child.get("age"))
+    if computed is not None:
+        return computed
     return parse_grade(child["grade"]) + 5
 
 
@@ -859,9 +1105,11 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     return clean, topic_done, level_val, vocab_pairs
 
 
-def _chat_load_curriculum(subject_file: str, grade: str | int) -> dict:
+def _chat_load_curriculum(
+    subject_file: str, grade: str | int, *, language: str | None = None
+) -> dict:
     """Kerettanterv kizárólag helyi JSON-ból."""
-    return get_curriculum_for_chat(subject_file, grade)
+    return get_curriculum_for_chat(subject_file, grade, language=language)
 
 
 def _chat_grade_num(child: dict) -> int:
@@ -1045,7 +1293,7 @@ def _build_chat_system_prompt(
     level: int,
     is_foreign_language: bool,
 ) -> str:
-    age = child["age"]
+    age = _child_effective_age(child)
     redirect_example = (
         f"Érdekes! De most tanuljunk. Térjünk vissza ehhez: "
         f"{current_topic or subject_label}"
@@ -1250,7 +1498,9 @@ def child_chat(child_id: int):
     chat_profile = _chat_interaction_profile(effective_age)
     chat_mode = _normalize_chat_mode(request.args.get("mode"), chat_profile)
 
-    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    chat_curriculum = _chat_load_curriculum(
+        subject, child["grade"], language=language or None
+    )
     if not chat_curriculum.get("found") or not chat_curriculum.get("content"):
         flash(
             "Ehhez a tantárgyhoz nem található kerettanterv JSON. Válassz másik tantárgyat.",
@@ -1261,7 +1511,7 @@ def child_chat(child_id: int):
     catalog = chat_curriculum.get("topic_catalog") or []
     grade_num = _chat_grade_num(child)
     subject_label = _chat_subject_label(child, subject, chat_curriculum)
-    is_foreign = is_elo_idegen_subject(subject)
+    is_foreign = is_elo_idegen_subject(subject) or bool(language)
 
     progress = database.get_or_create_child_progress(
         child_id,
@@ -1363,14 +1613,16 @@ def child_chat_send(child_id: int):
     except (TypeError, ValueError):
         return jsonify({"error": "invalid_session"}), 400
 
-    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    chat_curriculum = _chat_load_curriculum(
+        subject, child["grade"], language=language or None
+    )
     if not chat_curriculum.get("found") or not chat_curriculum.get("content"):
         return jsonify({"error": "curriculum_not_found"}), 400
 
     catalog = chat_curriculum.get("topic_catalog") or []
     grade_num = _chat_grade_num(child)
     subject_label = _chat_subject_label(child, subject, chat_curriculum)
-    is_foreign = is_elo_idegen_subject(subject)
+    is_foreign = is_elo_idegen_subject(subject) or bool(language)
 
     progress = database.get_or_create_child_progress(
         child_id,
@@ -1497,10 +1749,13 @@ def child_chat_progress(child_id: int):
     if not child:
         abort(404)
     subject = (request.args.get("subject") or "").strip()
+    language = (request.args.get("language") or "").strip().lower()
     if not subject:
         return jsonify({"error": "subject_required"}), 400
     grade_num = _chat_grade_num(child)
-    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    chat_curriculum = _chat_load_curriculum(
+        subject, child["grade"], language=language or None
+    )
     catalog = chat_curriculum.get("topic_catalog") or []
     progress = database.get_or_create_child_progress(child_id, subject)
     scores = database.get_topic_scores(child_id, subject, grade_num)
@@ -1520,10 +1775,13 @@ def child_chat_test_generate(child_id: int):
     data = request.get_json(silent=True) or {}
     subject = (data.get("subject") or "").strip()
     topic_id = (data.get("topic_id") or "").strip()
+    language = (data.get("language") or "").strip().lower()
     if not subject or not topic_id:
         return jsonify({"error": "subject_and_topic_required"}), 400
 
-    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    chat_curriculum = _chat_load_curriculum(
+        subject, child["grade"], language=language or None
+    )
     catalog = chat_curriculum.get("topic_catalog") or []
     topic = get_topic_from_catalog(catalog, topic_id)
     if not topic:
@@ -1553,6 +1811,7 @@ def child_chat_test_submit(child_id: int):
     data = request.get_json(silent=True) or {}
     subject = (data.get("subject") or "").strip()
     topic_id = (data.get("topic_id") or "").strip()
+    language = (data.get("language") or "").strip().lower()
     answers = data.get("answers") or []
     questions = data.get("questions") or []
 
@@ -1570,7 +1829,9 @@ def child_chat_test_submit(child_id: int):
     score = int(round(100 * correct / total)) if total else 0
     passed = score >= TOPIC_PASS_THRESHOLD
 
-    chat_curriculum = _chat_load_curriculum(subject, child["grade"])
+    chat_curriculum = _chat_load_curriculum(
+        subject, child["grade"], language=language or None
+    )
     catalog = chat_curriculum.get("topic_catalog") or []
     topic = get_topic_from_catalog(catalog, topic_id)
     topic_name = topic["name"] if topic else topic_id
