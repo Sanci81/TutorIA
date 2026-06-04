@@ -1112,8 +1112,11 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
 def _chat_load_curriculum(
     subject_file: str, grade: str | int, *, language: str | None = None
 ) -> dict:
-    """Kerettanterv kizárólag helyi JSON-ból."""
-    return get_curriculum_for_chat(subject_file, grade, language=language)
+    """Kerettanterv kizárólag helyi JSON-ból (sidebar topic_catalog is innen)."""
+    lang = _normalize_chat_language(language) or _normalize_chat_language(
+        session.get("language")
+    )
+    return get_curriculum_for_chat(subject_file, grade, language=lang or None)
 
 
 _CHAT_LANGUAGES = frozenset({"angol", "nemet", "spanyol"})
@@ -1135,7 +1138,9 @@ def _chat_bind_flask_session(
     child_id: int, subject: str, language: str | None
 ) -> str:
     """Flask session: aktív chat kontextus (child + tantárgy + nyelv)."""
-    lang = _normalize_chat_language(language)
+    lang = _normalize_chat_language(language) or _normalize_chat_language(
+        session.get("language")
+    )
     session["language"] = lang
     session["chat_subject"] = (subject or "").strip()
     session["chat_child_id"] = child_id
@@ -1522,7 +1527,9 @@ def child_chat(child_id: int):
 
     subject = (request.args.get("subject") or "").strip()
     language = _chat_bind_flask_session(
-        child_id, subject, request.args.get("language")
+        child_id,
+        subject,
+        request.args.get("language") or session.get("language"),
     )
     if not subject:
         flash(i18n.t("flash_subject_required", g.lang), "error")

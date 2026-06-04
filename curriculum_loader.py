@@ -1296,6 +1296,7 @@ def get_curriculum_for_chat(
 
     for path in candidates:
         raw = _load_hu_json(path)
+        # angol/német/spanyol: nyelvek.* ág (pl. 5–8 JSON), nem a nyers raw
         data = _curriculum_data_for_language(raw, effective_language)
         topics = extract_hu_grade_topics(data, grade_num)
         catalog = extract_topic_catalog(data, grade_num)
