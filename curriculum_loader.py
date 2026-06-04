@@ -352,7 +352,7 @@ def _resolve_hu_subject_file(
             "language": None,
             "label": "Spanyol",
         }
-    elif key == "idegennyelv" or raw in _HU_1_4_SUBJECT_MAP or raw in HU_1_4_SUBJECT_FILES:
+    elif key == "idegennyelv":
         result = {
             "file": _elo_idegen_filename_for_grade(grade_num),
             "language": None,
@@ -362,6 +362,9 @@ def _resolve_hu_subject_file(
         result = {"file": raw, "language": None, "label": raw}
     elif raw in HU_1_4_SUBJECT_FILES:
         result = {"file": raw, "language": None, "label": hu_1_4_label_from_value(raw)}
+    elif raw in _HU_1_4_SUBJECT_MAP:
+        filename = _HU_1_4_SUBJECT_MAP[raw]
+        result = {"file": filename, "language": None, "label": raw}
     else:
         for label, filename in _HU_1_4_SUBJECT_MAP.items():
             if raw == label or raw == filename:
