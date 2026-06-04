@@ -1382,7 +1382,7 @@ def _openai_tts_speak(text: str) -> bytes:
     text = text.replace("**", "").replace("##", "").replace("- ", "")
     response = client.audio.speech.create(
         model="tts-1",
-        voice="alloy",
+        voice="nova",
         input=text[:4096],
     )
     return response.content
