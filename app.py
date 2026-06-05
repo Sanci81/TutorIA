@@ -1782,7 +1782,12 @@ def child_chat(child_id: int):
     chat_switch_url = url_for("child_chat", **chat_switch_params)
 
     learning_today = database.get_learning_time_today(child_id, subject)
-    show_early_test = learning_today >= 60
+    attempts = progress.get("early_placement_attempts", 0)
+    if attempts < 3:
+        show_early_test = True
+    else:
+        learning_total = database.get_learning_time_total(child_id, subject)
+        show_early_test = learning_total >= 60
 
     return render_template(
         "chat.html",

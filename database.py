@@ -1175,6 +1175,20 @@ def get_learning_time_summary(child_id: int) -> list[dict[str, Any]]:
         db.close()
 
 
+def get_learning_time_total(child_id: int, subject: str) -> float:
+    """Visszaadja a tantárgyhoz tartozó összes tanulási percet."""
+    db = _session()
+    try:
+        q = select(ChildLearningTime).where(
+            ChildLearningTime.child_id == child_id,
+            ChildLearningTime.subject == subject,
+        )
+        rows = db.scalars(q).all()
+        return round(sum(r.minutes for r in rows), 1)
+    finally:
+        db.close()
+
+
 def get_incomplete_learning_sessions(child_id: int) -> list[dict[str, Any]]:
     """Megnyitott (session_end IS NULL) session-ök, időtúllépés kezeléshez."""
     db = _session()
@@ -1196,6 +1210,11 @@ def get_incomplete_learning_sessions(child_id: int) -> list[dict[str, Any]]:
         ]
     finally:
         db.close()
+
+
+if __name__ == "__main__":
+    init_db()
+    print("PostgreSQL táblák inicializálva.")
 
 
 if __name__ == "__main__":
