@@ -24,6 +24,21 @@
     </div>
 
     <div class="card select-tasks-card">
+        {% if learning_summary %}
+        <div class="learning-time-section">
+            <h3>⏱️ Tanulási idő</h3>
+            <div class="learning-time-grid">
+                {% for item in learning_summary %}
+                <div class="learning-time-subject">
+                    <span class="lt-subject">{{ item.subject }}</span>
+                    <span class="lt-today">{{ item.today }}p ma</span>
+                    <span class="lt-week">{{ item.week }}p ezen a héten</span>
+                    <span class="lt-total">{{ item.total }}p összesen</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
         {% if subject_options %}
             <form class="select-tasks-form"
                   method="post"

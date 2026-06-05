@@ -12,7 +12,7 @@ import logging
 import os
 import re
 import traceback
-from datetime import date
+from datetime import date, datetime, timezone, timedelta
 from functools import wraps
 from typing import Any
 
@@ -1004,6 +1004,7 @@ def select_tasks(child_id: int):
             if is_hu_1_4_grade(grade_num)
             else ELO_IDEGEN_NYELV_5_8_FILE
         ),
+        learning_summary=database.get_learning_time_summary(child_id),
     )
 
 
@@ -1803,6 +1804,7 @@ def child_chat(child_id: int):
         effective_age=effective_age,
         chat_switch_url=chat_switch_url,
         show_chat_switch=chat_profile != _CHAT_PROFILE_VOICE_ONLY,
+        learning_today=database.get_learning_time_today(child_id, subject),
     )
 
 
@@ -2177,6 +2179,141 @@ def api_voice_speak():
         logger.exception("TTS hiba: %s", exc)
         return jsonify({"error": "speak_failed", "detail": str(exc)}), 500
     return Response(audio_bytes, mimetype="audio/mpeg")
+
+
+# ---------------------------------------------------------------------------
+# Tanulási idő követés
+# ---------------------------------------------------------------------------
+
+
+@app.route("/api/learning/start", methods=["POST"])
+@login_required
+def api_learning_start():
+    """Tanulási session indítása."""
+    data = request.get_json(silent=True) or {}
+    child_id = data.get("child_id")
+    subject = (data.get("subject") or "").strip()
+    topic_id = (data.get("topic_id") or "").strip() or None
+    if not child_id or not subject:
+        return jsonify({"error": "child_id and subject required"}), 400
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        return jsonify({"error": "child not found"}), 404
+    result = database.start_learning_session(child_id, subject, topic_id)
+    if not result:
+        return jsonify({"error": "failed"}), 500
+    return jsonify(result)
+
+
+@app.route("/api/learning/heartbeat", methods=["POST"])
+@login_required
+def api_learning_heartbeat():
+    """Heartbeat – session_id alapján frissíti a session_end-et."""
+    data = request.get_json(silent=True) or {}
+    session_id = data.get("session_id")
+    minutes = float(data.get("minutes", 0))
+    if not session_id or minutes < 0:
+        return jsonify({"error": "invalid"}), 400
+    database.end_learning_session(session_id, minutes)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/learning/end", methods=["POST"])
+@login_required
+def api_learning_end():
+    """Tanulási session zárása."""
+    data = request.get_json(silent=True) or {}
+    session_id = data.get("session_id")
+    minutes = float(data.get("minutes", 0))
+    if session_id:
+        database.end_learning_session(session_id, minutes)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/learning/today", methods=["GET"])
+@login_required
+def api_learning_today():
+    """Mai tanulási percek (opcionálisan: ?subject=X)."""
+    child_id = request.args.get("child_id")
+    subject = request.args.get("subject")
+    if not child_id:
+        return jsonify({"error": "child_id required"}), 400
+    minutes = database.get_learning_time_today(int(child_id), subject)
+    return jsonify({"minutes": minutes})
+
+
+@app.route("/api/learning/weekly", methods=["GET"])
+@login_required
+def api_learning_weekly():
+    """Heti bontás: ?child_id=X&subject=Y."""
+    child_id = request.args.get("child_id")
+    subject = request.args.get("subject")
+    if not child_id or not subject:
+        return jsonify({"error": "child_id and subject required"}), 400
+    weekly = database.get_learning_time_weekly(int(child_id), subject)
+    return jsonify({"weekly": weekly})
+
+
+@app.route("/api/learning/early-placement", methods=["POST"])
+@login_required
+def api_learning_early_placement():
+    """Korai szintfelmérő indítása / státusz lekérése."""
+    data = request.get_json(silent=True) or {}
+    child_id = data.get("child_id")
+    subject = (data.get("subject") or "").strip()
+    if not child_id or not subject:
+        return jsonify({"error": "child_id and subject required"}), 400
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        return jsonify({"error": "child not found"}), 404
+
+    progress = database.get_or_create_child_progress(child_id, subject)
+    attempts = progress.get("early_placement_attempts", 0)
+    total_minutes = database.get_learning_time_today(child_id, subject)
+
+    # 3 próbálkozás után eltűnik a gomb
+    if attempts >= 3:
+        return jsonify({
+            "available": False,
+            "reason": "max_attempts",
+            "early_placement_attempts": attempts,
+        })
+
+    # Minimum 1 óra tanulás kell
+    if total_minutes < 60:
+        return jsonify({
+            "available": False,
+            "reason": "too_soon",
+            "remaining_minutes": round(60 - total_minutes, 1),
+            "early_placement_attempts": attempts,
+        })
+
+    return jsonify({
+        "available": True,
+        "reason": "ready",
+        "early_placement_attempts": attempts,
+    })
+
+
+@app.route("/api/learning/early-placement/start", methods=["POST"])
+@login_required
+def api_learning_early_placement_start():
+    """Korai szintfelmérő indítása – növeli a próbálkozások számát."""
+    data = request.get_json(silent=True) or {}
+    child_id = data.get("child_id")
+    subject = (data.get("subject") or "").strip()
+    if not child_id or not subject:
+        return jsonify({"error": "child_id and subject required"}), 400
+
+    progress = database.get_or_create_child_progress(child_id, subject)
+    attempts = progress.get("early_placement_attempts", 0) + 1
+
+    database.update_child_progress(
+        child_id, subject, level=0,  # level=0 → placement mode
+    )
+    database.increment_early_placement_attempts(child_id, subject)
+
+    return jsonify({"ok": True, "early_placement_attempts": attempts})
 
 
 if __name__ == "__main__":

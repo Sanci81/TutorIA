@@ -1,13 +1,14 @@
 """PostgreSQL adatbázis kezelés SQLAlchemy-vel (TutorIA).
 
 A kapcsolati URL a DATABASE_URL environment variable-ből jön
-(Railway PostgreSQL). Táblák:
+(railway PostgreSQL). Táblák:
   - parents:  szülői fiókok
   - children: gyerek profilok
   - password_reset_tokens: jelszó-visszaállító tokenek
   - chat_sessions, chat_messages: AI tanár beszélgetés
   - child_progress: tantárgyankénti haladás
   - vocabulary: idegen nyelvi szójegyzék
+  - child_learning_time: tanulási idő követés
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ from sqlalchemy import (
     Boolean,
     Date,
     DateTime,
+    Float,
     ForeignKey,
     Integer,
     JSON,
@@ -193,6 +195,31 @@ class Vocabulary(Base):
     )
 
 
+class ChildLearningTime(Base):
+    """Tanulási idő követés – session-alapú."""
+    __tablename__ = "child_learning_time"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id", ondelete="CASCADE"), nullable=False
+    )
+    subject: Mapped[str] = mapped_column(String(255), nullable=False)
+    topic_id: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    date: Mapped[date] = mapped_column(Date, nullable=False)
+    minutes: Mapped[float] = mapped_column(
+        Float, nullable=False, default=0.0
+    )
+    session_start: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
+    session_end: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+
 class ChildTopicScore(Base):
     """Témakörönkénti teszt eredmény (child + subject + grade + topic_id)."""
 
@@ -231,6 +258,7 @@ class ChildProgress(Base):
     topics_completed: Mapped[list] = mapped_column(JSON, default=list, nullable=False)
     last_position: Mapped[str | None] = mapped_column(String(255))
     level: Mapped[int] = mapped_column(Integer, default=0)
+    early_placement_attempts: Mapped[int] = mapped_column(Integer, default=0)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
@@ -308,6 +336,8 @@ def init_db() -> None:
     Base.metadata.create_all(bind=_get_engine())
     ensure_children_birth_date_column()
     ensure_chat_sessions_language_column()
+    ensure_child_learning_time_table()
+    ensure_child_progress_extra_columns()
 
 
 def ensure_children_birth_date_column() -> None:
@@ -343,6 +373,25 @@ def ensure_chat_sessions_language_column() -> None:
             text(
                 "ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS "
                 "language VARCHAR(20) NOT NULL DEFAULT ''"
+            )
+        )
+
+
+def ensure_child_learning_time_table() -> None:
+    """Biztosítja, hogy a child_learning_time tábla létezik."""
+    ChildLearningTime.__table__.create(bind=_get_engine(), checkfirst=True)
+
+
+def ensure_child_progress_extra_columns() -> None:
+    """early_placement_attempts oszlop hozzáadása ha még nincs."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+                "early_placement_attempts INTEGER NOT NULL DEFAULT 0"
             )
         )
 
@@ -609,6 +658,7 @@ def _progress_dict(row: ChildProgress) -> dict[str, Any]:
         "topics_completed": list(row.topics_completed or []),
         "last_position": row.last_position,
         "level": row.level,
+        "early_placement_attempts": row.early_placement_attempts,
         "updated_at": row.updated_at,
     }
 
@@ -800,6 +850,34 @@ def update_child_progress(
         db.close()
 
 
+def increment_early_placement_attempts(child_id: int, subject: str) -> int:
+    """Növeli a korai szintfelmérő próbálkozások számát. Visszaadja az új értéket."""
+    db = _session()
+    try:
+        row = db.scalar(
+            select(ChildProgress).where(
+                ChildProgress.child_id == child_id,
+                ChildProgress.subject == subject,
+            )
+        )
+        if not row:
+            row = ChildProgress(
+                child_id=child_id,
+                subject=subject,
+                topics_completed=[],
+                level=0,
+            )
+            db.add(row)
+        row.early_placement_attempts = (row.early_placement_attempts or 0) + 1
+        db.commit()
+        return row.early_placement_attempts
+    except Exception:
+        db.rollback()
+        return 0
+    finally:
+        db.close()
+
+
 def _topic_score_dict(row: ChildTopicScore) -> dict[str, Any]:
     return {
         "topic_id": row.topic_id,
@@ -950,6 +1028,172 @@ def add_vocabulary_word(
             return None
         db.refresh(row)
         return _vocabulary_dict(row)
+    finally:
+        db.close()
+
+
+# ---------------------------------------------------------------------------
+# Tanulási idő (child_learning_time)
+# ---------------------------------------------------------------------------
+
+
+def start_learning_session(
+    child_id: int,
+    subject: str,
+    topic_id: str | None = None,
+) -> dict[str, Any] | None:
+    """Rögzíti a tanulási session kezdetét. Visszaadja a session adatait."""
+    db = _session()
+    try:
+        now = datetime.now(timezone.utc)
+        row = ChildLearningTime(
+            child_id=child_id,
+            subject=subject,
+            topic_id=topic_id,
+            date=now.date(),
+            minutes=0.0,
+            session_start=now,
+        )
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+        return {
+            "id": row.id,
+            "child_id": row.child_id,
+            "subject": row.subject,
+            "topic_id": row.topic_id,
+            "date": row.date.isoformat(),
+            "minutes": row.minutes,
+            "session_start": row.session_start.isoformat(),
+            "session_end": row.session_end.isoformat() if row.session_end else None,
+        }
+    except Exception:
+        db.rollback()
+        return None
+    finally:
+        db.close()
+
+
+def end_learning_session(session_id: int, minutes: float) -> bool:
+    """Zárja a tanulási session-t a pontos percekkel."""
+    db = _session()
+    try:
+        row = db.get(ChildLearningTime, session_id)
+        if not row:
+            return False
+        row.session_end = datetime.now(timezone.utc)
+        row.minutes = round(minutes, 1)
+        db.commit()
+        return True
+    except Exception:
+        db.rollback()
+        return False
+    finally:
+        db.close()
+
+
+def get_learning_time_today(
+    child_id: int, subject: str | None = None
+) -> float:
+    """Visszaadja a mai tanulási percek összegét (opcionálisan tantárgyra szűrve)."""
+    db = _session()
+    try:
+        today = date.today()
+        q = select(ChildLearningTime).where(
+            ChildLearningTime.child_id == child_id,
+            ChildLearningTime.date == today,
+        )
+        if subject:
+            q = q.where(ChildLearningTime.subject == subject)
+        rows = db.scalars(q).all()
+        return round(sum(r.minutes for r in rows), 1)
+    finally:
+        db.close()
+
+
+def get_learning_time_weekly(
+    child_id: int, subject: str
+) -> list[dict[str, Any]]:
+    """Heti bontás: hét napjai 0-6 (H=0, V=6), perc összeg."""
+    db = _session()
+    try:
+        today = date.today()
+        # hétfő = 0, vasárnap = 6
+        monday = today - timedelta(days=today.weekday())
+        sunday = monday + timedelta(days=6)
+
+        q = select(ChildLearningTime).where(
+            ChildLearningTime.child_id == child_id,
+            ChildLearningTime.subject == subject,
+            ChildLearningTime.date >= monday,
+            ChildLearningTime.date <= sunday,
+        )
+        rows = db.scalars(q).all()
+        day_minutes = {i: 0.0 for i in range(7)}
+        for r in rows:
+            dow = r.date.weekday()  # 0=H
+            day_minutes[dow] = round(day_minutes[dow] + r.minutes, 1)
+        return [
+            {"day": i, "minutes": day_minutes[i]} for i in range(7)
+        ]
+    finally:
+        db.close()
+
+
+def get_learning_time_summary(child_id: int) -> list[dict[str, Any]]:
+    """Összesítés tantárgyanként (mai + heti + összes perc)."""
+    db = _session()
+    try:
+        q = select(ChildLearningTime).where(
+            ChildLearningTime.child_id == child_id,
+        )
+        rows = db.scalars(q).all()
+        today = date.today()
+        monday = today - timedelta(days=today.weekday())
+
+        subjects: dict[str, dict[str, float]] = {}
+        for r in rows:
+            subj = r.subject
+            if subj not in subjects:
+                subjects[subj] = {"today": 0.0, "week": 0.0, "total": 0.0}
+            subjects[subj]["total"] = round(
+                subjects[subj]["total"] + r.minutes, 1
+            )
+            if r.date == today:
+                subjects[subj]["today"] = round(
+                    subjects[subj]["today"] + r.minutes, 1
+                )
+            if monday <= r.date <= today:
+                subjects[subj]["week"] = round(
+                    subjects[subj]["week"] + r.minutes, 1
+                )
+
+        return [
+            {"subject": s, **v} for s, v in subjects.items()
+        ]
+    finally:
+        db.close()
+
+
+def get_incomplete_learning_sessions(child_id: int) -> list[dict[str, Any]]:
+    """Megnyitott (session_end IS NULL) session-ök, időtúllépés kezeléshez."""
+    db = _session()
+    try:
+        q = select(ChildLearningTime).where(
+            ChildLearningTime.child_id == child_id,
+            ChildLearningTime.session_end.is_(None),
+        )
+        rows = db.scalars(q).all()
+        return [
+            {
+                "id": r.id,
+                "child_id": r.child_id,
+                "subject": r.subject,
+                "session_start": r.session_start.isoformat(),
+                "date": r.date,
+            }
+            for r in rows
+        ]
     finally:
         db.close()
 

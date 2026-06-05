@@ -73,6 +73,9 @@
                 {% else %}
                     <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
                 {% endif %}
+                <p class="chat-time-display" id="chat-time-display">
+                    ⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> perc ma
+                </p>
             </div>
             <button type="button" class="btn-test-start" id="btn-test-start" {% if placement_mode %}hidden{% endif %}>
                 Teszt indítása ✏️
@@ -188,6 +191,94 @@
 
     var quizQuestions = [];
     var quizAnswers = [];
+
+    /* ---------- Tanulási idő követés ---------- */
+    var learningSessionId = null;
+    var learningStartTime = Date.now();
+    var inactivityTimer = null;
+    var heartbeatTimer = null;
+    var learningPaused = false;
+    var learningMinutesEl = document.getElementById('learning-minutes-today');
+    var INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 perc
+
+    function startLearningSession() {
+        fetch('/api/learning/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                child_id: childId,
+                subject: subject,
+                topic_id: currentTopicId
+            })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (data.id) learningSessionId = data.id;
+        });
+    }
+
+    function endLearningSession() {
+        if (!learningSessionId) return;
+        var elapsed = (Date.now() - learningStartTime) / 60000;
+        if (learningPaused) elapsed = 0;
+        fetch('/api/learning/end', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                session_id: learningSessionId,
+                minutes: elapsed
+            })
+        });
+        learningSessionId = null;
+    }
+
+    function heartbeat() {
+        if (!learningSessionId) return;
+        var elapsed = (Date.now() - learningStartTime) / 60000;
+        if (learningPaused) elapsed = 0;
+        fetch('/api/learning/heartbeat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                session_id: learningSessionId,
+                minutes: elapsed
+            })
+        });
+        // Update display
+        if (learningMinutesEl) {
+            learningMinutesEl.textContent = Math.round(elapsed);
+        }
+    }
+
+    function resetInactivity() {
+        if (learningPaused) {
+            learningPaused = false;
+            learningStartTime = Date.now();
+        }
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(function () {
+            learningPaused = true;
+            heartbeat();
+        }, INACTIVITY_LIMIT);
+    }
+
+    // Start session on load
+    startLearningSession();
+    heartbeatTimer = setInterval(heartbeat, 30000);
+    resetInactivity();
+
+    // Track user activity
+    document.addEventListener('click', resetInactivity);
+    document.addEventListener('keydown', resetInactivity);
+    document.addEventListener('touchstart', resetInactivity);
+    document.addEventListener('scroll', resetInactivity);
+
+    // End on unload
+    window.addEventListener('beforeunload', function () {
+        clearInterval(heartbeatTimer);
+        clearTimeout(inactivityTimer);
+        endLearningSession();
+    });
 
     function scrollToBottom() {
         messagesEl.scrollTop = messagesEl.scrollHeight;
