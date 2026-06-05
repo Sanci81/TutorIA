@@ -1395,19 +1395,27 @@ a.btn-generate {
     40% { opacity: 1; transform: scale(1); }
 }
 .bubble-replay-wrap {
-    display: inline-block;
-    margin-left: 8px;
-    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -8px;
+    margin-bottom: 4px;
 }
+
 .bubble-replay-btn {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 18px;
-    opacity: 0.6;
+    font-size: 22px;
+    opacity: 0.85;
     padding: 2px 4px;
+    filter: brightness(0.3);
 }
-.bubble-replay-btn:hover { opacity: 1; }
+
+.bubble-replay-btn:hover { 
+    opacity: 1;
+    filter: brightness(0);
+}
 .chat-input-bar {
     display: flex;
     gap: 0.65rem;
