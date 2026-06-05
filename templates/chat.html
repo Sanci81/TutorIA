@@ -576,7 +576,12 @@
                 testResult.hidden = false;
                 var d = res.data;
                 if (d.passed) {
-                    testResult.innerHTML =
+                    var congratsHtml = '';
+                    if (d.congrats_message) {
+                        congratsHtml = '<div class="chat-bubble chat-bubble-assistant"><div class="chat-bubble-inner">' +
+                            escapeHtml(d.congrats_message) + '</div></div>';
+                    }
+                    testResult.innerHTML = congratsHtml +
                         '<button type="button" class="result-box result-pass" data-topic-id="' + d.topic_id +
                         '" data-topic-name="' + escapeAttr(d.topic_name) + '">✓ ' + escapeHtml(d.topic_name) +
                         ' — ' + d.score + '%</button><p class="result-hint">Kattints a gombra, ha újra át szeretnéd nézni a témát.</p>';
@@ -588,6 +593,9 @@
                     document.getElementById('quiz-retry').addEventListener('click', startTest);
                 }
                 if (d.sidebar) renderSidebar(d.sidebar);
+                if (d.congrats_message) {
+                    appendBubble('assistant', d.congrats_message);
+                }
                 testResult.querySelector('.result-pass')?.addEventListener('click', function (e) {
                     var btn = e.currentTarget;
                     openTopic(btn.getAttribute('data-topic-id'), btn.getAttribute('data-topic-name'));

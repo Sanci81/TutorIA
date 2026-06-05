@@ -2118,6 +2118,8 @@ def child_chat_test_submit(child_id: int):
         pass_threshold=TOPIC_PASS_THRESHOLD,
     )
 
+    congrats_message = None
+
     if passed:
         completed_names = [
             t["name"]
@@ -2151,6 +2153,33 @@ def child_chat_test_submit(child_id: int):
                 child_id, progress_subject, last_position=next_topic["name"]
             )
 
+        # 100% → AI gratuláció
+        congrats_message = None
+        if score == 100:
+            try:
+                age = _child_effective_age(child)
+                congrats_prompt = (
+                    f"Te egy kedves, lelkesítő AI tanár vagy. A gyerek ({child['name']}, "
+                    f"{age} éves, {child['grade']}. osztályos) épp 100%-os eredményt ért el "
+                    f"a(z) „{topic_name}” témakör tesztjén.\n\n"
+                    f"GRATULÁLJ neki nagyon lelkesen, korának megfelelő stílusban!\n"
+                    f"{age} éves gyereknek:\n"
+                    f"- Rövid, lelkes mondatok\n"
+                    f"- Emojik használata\n"
+                    f"- Jelezd, hogy továbbléptek a következő témakörre\n"
+                    f"- A következő témakör: {next_topic['name'] if next_topic else 'nincs'}\n"
+                    f"Ne használj ###, **, {{ }} formázást."
+                )
+                chat_session = database.get_or_create_chat_session(
+                    child_id, subject, language=language
+                )
+                reply = _call_ai_for_chat(congrats_prompt, [], "")
+                database.add_chat_message(chat_session["id"], "assistant", reply)
+                congrats_message = reply
+            except Exception:
+                logger.exception("Gratuláció generálás hiba")
+                congrats_message = None
+
     scores = database.get_topic_scores(child_id, progress_subject, grade_num)
     progress = database.get_or_create_child_progress(child_id, progress_subject)
     current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
@@ -2165,6 +2194,7 @@ def child_chat_test_submit(child_id: int):
             "pass_threshold": TOPIC_PASS_THRESHOLD,
             "topic_id": topic_id,
             "topic_name": topic_name,
+            "congrats_message": congrats_message,
             "sidebar": sidebar,
         }
     )
