@@ -1074,7 +1074,6 @@ a.btn-generate {
     max-height: calc(100vh - 340px);
 }
 .chat-bubble.voice-assistant-card .chat-bubble-inner {
-    background: #fff;
     border-radius: 16px;
     box-shadow: 0 4px 14px rgba(22, 163, 74, 0.1);
     padding: 1rem 1.15rem;
@@ -1396,10 +1395,9 @@ a.btn-generate {
     40% { opacity: 1; transform: scale(1); }
 }
 .bubble-replay-wrap {
-    text-align: left;
-    margin-top: -8px;
-    margin-bottom: 4px;
-    padding-left: 8px;
+    display: inline-block;
+    margin-left: 8px;
+    vertical-align: middle;
 }
 .bubble-replay-btn {
     background: none;

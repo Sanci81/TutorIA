@@ -214,16 +214,13 @@
                 var t = this.getAttribute('data-text');
                 if (typeof playTts === 'function') playTts(t);
             });
-        }
-
-        messagesEl.insertBefore(wrap, typing);
-        // hangszóró a buborékon kívül
-        if (role === 'assistant') {
             var replayWrap = document.createElement('div');
             replayWrap.className = 'bubble-replay-wrap';
             replayWrap.appendChild(replayBtn);
-            messagesEl.insertBefore(replayWrap, typing);
+            wrap.appendChild(replayWrap);
         }
+
+        messagesEl.insertBefore(wrap, typing);
         scrollToBottom();
     }
 
