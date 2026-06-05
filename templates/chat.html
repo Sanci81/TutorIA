@@ -214,7 +214,7 @@
                 var t = this.getAttribute('data-text');
                 if (typeof playTts === 'function') playTts(t);
             });
-            wrap.appendChild(replayBtn);
+            inner.appendChild(replayBtn);
         }
 
         messagesEl.insertBefore(wrap, typing);
