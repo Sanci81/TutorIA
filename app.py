@@ -1781,6 +1781,9 @@ def child_chat(child_id: int):
         chat_switch_params["language"] = language
     chat_switch_url = url_for("child_chat", **chat_switch_params)
 
+    learning_today = database.get_learning_time_today(child_id, subject)
+    show_early_test = learning_today >= 60
+
     return render_template(
         "chat.html",
         child=child,
@@ -1804,7 +1807,8 @@ def child_chat(child_id: int):
         effective_age=effective_age,
         chat_switch_url=chat_switch_url,
         show_chat_switch=chat_profile != _CHAT_PROFILE_VOICE_ONLY,
-        learning_today=database.get_learning_time_today(child_id, subject),
+        learning_today=learning_today,
+        show_early_test=show_early_test,
     )
 
 
