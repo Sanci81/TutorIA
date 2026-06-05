@@ -1520,18 +1520,34 @@ Csak tanításról beszélj; más témánál finoman terelj vissza a tananyaghoz
 
 
 def _call_ai_for_quiz(
-    *, grade: int, topic_name: str, topic_text: str
+    *, grade: int, topic_name: str, topic_text: str, age: int, ora_szam: int, all_ora_szamok: list[int]
 ) -> list[dict[str, Any]]:
     api_key = _openai_api_key()
     if not api_key:
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
 
+    max_ora = max(all_ora_szamok) if all_ora_szamok else 1
+    q_count = max(8, min(15, round(8 + (ora_szam / max_ora) * 7)))
     material = (topic_text or topic_name)[:10000]
+
+    forbidden = ""
+    if age < 9:
+        forbidden = (
+            "TILOS témakörök 9 év alatti gyereknek:\n"
+            "- Törtek, törtszámok\n"
+            "- Valószínűség számítás\n"
+            "- Négyjegyű számokkal műveletek\n"
+        )
     system = (
-        f"Generálj 4 feleletválasztós kérdést {grade}. osztályos gyereknek.\n"
+        f"Generálj {q_count} feleletválasztós kérdést {grade}. osztályos, "
+        f"{age} éves gyereknek.\n"
         "Minden kérdésnél 3 válasz, 1 helyes (correct: 0, 1 vagy 2).\n"
         'Válaszolj CSAK JSON tömbben, semmi más szöveg:\n'
         '[{"q":"kérdés","options":["a","b","c"],"correct":0}]\n'
+        f"{forbidden}"
+        "KÖTELEZŐ:\n"
+        "- Maximum 1-2 soros kérdések\n"
+        "- Konkrét, kézzel fogható példák (alma, kutya, labda)\n"
         f"Tananyag:\n{material}"
     )
     client = _openai_client(api_key, request_timeout=60.0)
@@ -1542,9 +1558,9 @@ def _call_ai_for_quiz(
             {
                 "role": "system",
                 "content": system
-                + '\nA válasz {"questions":[...]} formátumú JSON legyen.',
+                + f'\nA válasz {{"questions":[...]}} formátumú JSON legyen ({q_count} kérdés).',
             },
-            {"role": "user", "content": "Generáld a 4 kérdést."},
+            {"role": "user", "content": f"Generáld a {q_count} kérdést."},
         ],
         temperature=0.5,
     )
@@ -1553,7 +1569,7 @@ def _call_ai_for_quiz(
     questions = payload.get("questions", payload if isinstance(payload, list) else [])
     if not isinstance(questions, list) or len(questions) < 1:
         raise ValueError("Érvénytelen kvíz JSON")
-    return questions[:4]
+    return questions[:q_count]
 
 
 def _call_ai_for_chat(
@@ -2036,10 +2052,14 @@ def child_chat_test_generate(child_id: int):
         return jsonify({"error": "topic_not_found"}), 404
 
     try:
+        all_ora_szamok = [t.get("ora_szam", 0) for t in catalog]
         questions = _call_ai_for_quiz(
             grade=_chat_grade_num(child),
             topic_name=topic["name"],
             topic_text=topic.get("text", ""),
+            age=_child_effective_age(child),
+            ora_szam=topic.get("ora_szam", 0),
+            all_ora_szamok=all_ora_szamok,
         )
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
