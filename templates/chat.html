@@ -289,9 +289,21 @@
         replayBtn.innerHTML = '🔊';
         replayBtn.title = 'Hallgasd meg újra';
         replayBtn.setAttribute('data-text', text);
-        replayBtn.addEventListener('click', function() {
+        replayBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             var t = this.getAttribute('data-text');
-            if (typeof playTts === 'function') playTts(t);
+            fetch(speakUrl, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({text: t})
+            })
+            .then(function(r) { return r.blob(); })
+            .then(function(blob) {
+                var url = URL.createObjectURL(blob);
+                var audio = new Audio(url);
+                audio.play();
+            });
         });
         var wrap = inner.closest('.chat-bubble-assistant');
         if (wrap) {
@@ -323,9 +335,21 @@
             replayBtn.innerHTML = '🔊';
             replayBtn.title = 'Hallgasd meg újra';
             replayBtn.setAttribute('data-text', text);
-            replayBtn.addEventListener('click', function() {
+            replayBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 var t = this.getAttribute('data-text');
-                if (typeof playTts === 'function') playTts(t);
+                fetch(speakUrl, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text: t})
+                })
+                .then(function(r) { return r.blob(); })
+                .then(function(blob) {
+                    var url = URL.createObjectURL(blob);
+                    var audio = new Audio(url);
+                    audio.play();
+                });
             });
             var replayWrap = document.createElement('div');
             replayWrap.className = 'bubble-replay-wrap';
