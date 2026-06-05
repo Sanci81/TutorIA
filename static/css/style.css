@@ -1373,6 +1373,22 @@ a.btn-generate {
     margin: 0.25rem 0 0;
     text-align: center;
 }
+.chat-placement-link {
+    display: inline-block;
+    font-size: 13px;
+    color: #16a34a;
+    text-decoration: none;
+    padding: 2px 8px;
+    border-radius: 8px;
+    background: #dcfce7;
+    margin-top: 4px;
+}
+.chat-placement-disabled {
+    color: #9ca3af;
+    background: #f3f4f6;
+    cursor: not-allowed;
+    pointer-events: none;
+}
 .chat-early-test-btn {
     display: block;
     margin: 0.5rem auto;

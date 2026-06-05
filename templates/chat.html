@@ -68,11 +68,13 @@
                 {% elif chat_mode == 'chat' %}
                     <p class="chat-mode-badge chat-mode-chat">💬 Chat mód</p>
                 {% endif %}
-                {% if placement_mode %}
-                    <p class="chat-mode-badge">📋 Szintfelmérő</p>
-                {% else %}
+                {% if not placement_mode %}
                     <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
                 {% endif %}
+                <a class="chat-placement-link {% if not show_early_test %}chat-placement-disabled{% endif %}"
+                   {% if show_early_test %}href="{{ url_for('child_chat', child_id=child['id'], subject=subject, mode='chat') }}?placement=1"{% endif %}>
+                   📋 Szintfelmérő {% if not show_early_test %}(1 óra tanulás után){% endif %}
+                </a>
                 <p class="chat-time-display" id="chat-time-display">
                     ⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> perc ma
                 </p>
