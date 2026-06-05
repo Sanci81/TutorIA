@@ -1421,6 +1421,50 @@ def _chat_advance_topic(
     return completed, next_topic
 
 
+def _age_specific_rules(age: int) -> str:
+    """Kor-specifikus TILOS/KÖTELEZŐ szabályblokk a system promptba."""
+    lines = []
+    lines.append("TILOS:")
+    # Általános tiltások életkor szerint
+    if age < 11:
+        lines.append("- Törtek, tizedestörtek, százalékok")
+        lines.append("- Valószínűség számítás")
+    if age <= 6:
+        lines.append("- 10-nél nagyobb számok használata")
+        lines.append("- Összetett, többszörösen összetett mondatok")
+        lines.append("- Elvont fogalmak (absztrakt gondolkodást igénylő feladatok)")
+    elif age <= 8:
+        lines.append("- 20-nál nagyobb számok használata")
+    elif age <= 10:
+        lines.append("- 100-nál nagyobb számok használata")
+    lines.append("- Bonyolult, hosszú magyarázatok")
+    if age < 9:
+        lines.append("- Négyjegyű számokkal végzett műveletek")
+        lines.append("- Többszörösen összetett mondatok (több mint 2 tagmondat)")
+
+    # Kötelező szabályok kor szerint
+    lines.append("")
+    lines.append(f"KÖTELEZŐ {age} éves gyereknek:")
+    if age <= 6:
+        lines.append("- Maximum 1 mondatos kérdések")
+        lines.append("- Csak számok 1-től 10-ig")
+        lines.append("- Mese stílus, játékos hang")
+        lines.append("- Példa: 'Hány ujjad van? Számold meg! 🖐️'")
+    elif age <= 8:
+        lines.append("- Maximum 2 mondatos kérdések")
+        lines.append("- Csak számok 1-től 20-ig")
+        lines.append("- Egyszerű, barátságos hang")
+    elif age <= 10:
+        lines.append("- Maximum 3 mondatos kérdések")
+        lines.append("- Csak számok 1-től 100-ig")
+        lines.append("- Normál tanári hang, de barátságos")
+    else:
+        lines.append("- Normál nehézség, korosztálynak megfelelő")
+    lines.append("- Konkrét, kézzel fogható példák (alma, kutya, labda)")
+    lines.append("- Az aktuális témakör ELSŐ leckéjétől kezdve")
+    return "\n".join(lines)
+
+
 def _build_chat_system_prompt(
     child: dict,
     *,
@@ -1448,29 +1492,13 @@ KRITIKUS: Ez a gyerek profilja amit MINDEN válasznál figyelembe kell venni:
 - Osztálya: {child["grade"]}. osztály
 - Szintje: {age} éves gyereknek megfelelő feladatok kellenek
 
-TILOS {age} éves gyereknek:
-- Valószínűség számítás (ez 10-12 éves anyag)
-- Törtszámok, százalékok
-- Összetett matematikai műveletek
-- Bonyolult mondatok
-
-KÖTELEZŐ {age} éves gyereknek:
-- Maximum 1-2 mondatos kérdések
-- Konkrét, kézzel fogható példák (alma, kutya, labda)
-- Az aktuális témakör ELSŐ leckéjétől kezdve
+{_age_specific_rules(age)}
 
 FONTOS SZABÁLYOK:
 1. MINDIG a kerettanterv szerint taníts - csak azt amit a lenti tananyag tartalmaz
 2. Ha a gyerek először nyitja meg a témát, kezdd az alapoktól (ne ugorj bele a közepébe)
 3. Légy NAGYON barátságos, bátorító, használj emojit
 4. Rövid mondatok, egyszerű szavak
-4b. A gyerek {age} éves. Igazítsd MINDEN válaszodat a korához:
-    - 5-6 éves: NAGYON rövid mondatok (max 1-2 mondat egyszerre),
-      sok emoji, játékos hang, mintha mesét mondanál
-      Példa: "Hány ujjad van? Számold meg! 🖐️"
-    - 7-8 éves: Rövid mondatok, barátságos hang, egyszerű szavak
-    - 9+ éves: Normál tanári hang, de barátságos
-    TILOS: hosszú magyarázatok fiatal gyerekeknek, bonyolult szavak
 5. Ha a gyerek jól válaszol: dicsérj lelkesen ('Szuper!', 'Brávó!', 'Fantasztikus!')
 6. Ha rosszul válaszol: bátorítsd ('Majdnem!', 'Próbáld újra!', 'Segítek egy kicsit!')
 7. SOHA ne ismételd szó szerint ugyanazt a mondatot ha visszautasítasz valamit
