@@ -1126,7 +1126,7 @@ def curriculum_topic_names(topics: dict[str, list[str]]) -> list[str]:
 
 
 def extract_topic_catalog(data: dict[str, Any], grade: int | str) -> list[dict[str, Any]]:
-    """Témakör lista chat sidebarhoz: id, name, text, index."""
+    """Témakör lista chat sidebarhoz: id, name, text, index, ora_szam."""
     grade_num = parse_grade(grade)
     blokk = _hu_evfolyam_blokk_for_grade(data, grade_num)
     if blokk:
@@ -1135,19 +1135,23 @@ def extract_topic_catalog(data: dict[str, Any], grade: int | str) -> list[dict[s
         if isinstance(temakorok, list):
             for idx, item in enumerate(temakorok):
                 if isinstance(item, dict) and item.get("nev"):
+                    raw = str(item.get("javasolt_oraszam", "0"))
+                    m = re.search(r"\d+", raw)
+                    ora_szam = int(m.group()) if m else 0
                     catalog.append(
                         {
                             "id": f"t{idx}",
                             "name": str(item["nev"]),
                             "text": str(item.get("teljes_szoveg", "")),
                             "index": idx,
+                            "ora_szam": ora_szam,
                         }
                     )
         return catalog
 
     topics = extract_hu_grade_topics(data, grade_num)
     return [
-        {"id": f"t{idx}", "name": name, "text": "", "index": idx}
+        {"id": f"t{idx}", "name": name, "text": "", "index": idx, "ora_szam": 0}
         for idx, name in enumerate(topics.keys())
     ]
 
