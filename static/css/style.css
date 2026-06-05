@@ -1396,16 +1396,21 @@ a.btn-generate {
     40% { opacity: 1; transform: scale(1); }
 }
 .bubble-replay-btn {
-    background: none;
+    background: rgba(255,255,255,0.2);
     border: none;
+    border-radius: 50%;
     cursor: pointer;
     font-size: 16px;
-    opacity: 0.6;
-    padding: 2px 6px;
+    opacity: 0.8;
+    padding: 4px 8px;
     float: right;
     margin-left: 8px;
+    display: inline-block;
 }
-.bubble-replay-btn:hover { opacity: 1; }
+.bubble-replay-btn:hover { 
+    opacity: 1; 
+    background: rgba(255,255,255,0.4);
+}
 .chat-input-bar {
     display: flex;
     gap: 0.65rem;
