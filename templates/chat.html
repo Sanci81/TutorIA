@@ -280,6 +280,28 @@
         endLearningSession();
     });
 
+    // Hangszóró gomb a meglévő (betöltött) assistant üzenetekhez
+    document.querySelectorAll('.chat-bubble-assistant .chat-bubble-inner').forEach(function(inner) {
+        var text = inner.textContent;
+        if (!text.trim()) return;
+        var replayBtn = document.createElement('button');
+        replayBtn.className = 'bubble-replay-btn';
+        replayBtn.innerHTML = '🔊';
+        replayBtn.title = 'Hallgasd meg újra';
+        replayBtn.setAttribute('data-text', text);
+        replayBtn.addEventListener('click', function() {
+            var t = this.getAttribute('data-text');
+            if (typeof playTts === 'function') playTts(t);
+        });
+        var wrap = inner.closest('.chat-bubble-assistant');
+        if (wrap) {
+            var replayWrap = document.createElement('div');
+            replayWrap.className = 'bubble-replay-wrap';
+            replayWrap.appendChild(replayBtn);
+            wrap.parentNode.insertBefore(replayWrap, wrap.nextSibling);
+        }
+    });
+
     function scrollToBottom() {
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
