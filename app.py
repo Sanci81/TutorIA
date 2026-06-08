@@ -1422,45 +1422,18 @@ def _chat_advance_topic(
 
 
 def _age_specific_rules(age: int) -> str:
-    """Kor-specifikus TILOS/KÖTELEZŐ szabályblokk a system promptba."""
+    """Egyszerű TILOS/KÖTELEZŐ szabályblokk: a curriculum a mérvadó."""
     lines = []
     lines.append("TILOS:")
-    # Általános tiltások életkor szerint
-    if age < 11:
-        lines.append("- Törtek, tizedestörtek, százalékok")
-        lines.append("- Valószínűség számítás")
-    if age <= 6:
-        lines.append("- 10-nél nagyobb számok használata")
-        lines.append("- Összetett, többszörösen összetett mondatok")
-        lines.append("- Elvont fogalmak (absztrakt gondolkodást igénylő feladatok)")
-    elif age <= 8:
-        lines.append("- 20-nál nagyobb számok használata")
-    elif age <= 10:
-        lines.append("- 100-nál nagyobb számok használata")
-    lines.append("- Bonyolult, hosszú magyarázatok")
-    if age < 9:
-        lines.append("- Négyjegyű számokkal végzett műveletek")
-        lines.append("- Többszörösen összetett mondatok (több mint 2 tagmondat)")
-
-    # Kötelező szabályok kor szerint
+    lines.append("- Markdown formázás (###, **, *, {{ }})")
+    lines.append("- Törtek, tizedestörtek, százalékok, kivéve ha a kerettanterv kifejezetten tartalmazza")
+    lines.append("- A kerettantervben NEM szereplő témák tanítása")
+    lines.append("- Hosszú, bonyolult magyarázatok")
     lines.append("")
-    lines.append(f"KÖTELEZŐ {age} éves gyereknek:")
-    if age <= 6:
-        lines.append("- Maximum 1 mondatos kérdések")
-        lines.append("- Csak számok 1-től 10-ig")
-        lines.append("- Mese stílus, játékos hang")
-        lines.append("- Példa: 'Hány ujjad van? Számold meg! 🖐️'")
-    elif age <= 8:
-        lines.append("- Maximum 2 mondatos kérdések")
-        lines.append("- Csak számok 1-től 20-ig")
-        lines.append("- Egyszerű, barátságos hang")
-    elif age <= 10:
-        lines.append("- Maximum 3 mondatos kérdések")
-        lines.append("- Csak számok 1-től 100-ig")
-        lines.append("- Normál tanári hang, de barátságos")
-    else:
-        lines.append("- Normál nehézség, korosztálynak megfelelő")
-    lines.append("- Konkrét, kézzel fogható példák (alma, kutya, labda)")
+    lines.append("KÖTELEZŐ:")
+    lines.append("- SZIGORÚAN csak a megadott kerettantervi szöveget tanítsd és kérdezd")
+    lines.append("- A nehézséget a kerettanterv határozza meg, nem manuális korlátozások")
+    lines.append("- Mindig a kerettantervi szövegből vett konkrét példákat használj")
     lines.append("- Az aktuális témakör ELSŐ leckéjétől kezdve")
     return "\n".join(lines)
 
@@ -2081,6 +2054,14 @@ def child_chat_test_generate(child_id: int):
 
     try:
         all_ora_szamok = [t.get("ora_szam", 0) for t in catalog]
+        _debug_topic_text = topic.get("text", "")
+        logger.warning(
+            "QUIZ_DEBUG topic_text hossz=%s | topic_name=%s | topic_id=%s | első 200: %s",
+            len(_debug_topic_text),
+            topic.get("name", ""),
+            topic_id,
+            _debug_topic_text[:200],
+        )
         questions = _call_ai_for_quiz(
             grade=_chat_grade_num(child),
             topic_name=topic["name"],
