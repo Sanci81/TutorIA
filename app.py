@@ -2114,7 +2114,6 @@ def child_chat_test_submit(child_id: int):
         except (IndexError, TypeError, ValueError):
             pass
     score = int(round(100 * correct / total)) if total else 0
-    passed = score >= TOPIC_PASS_THRESHOLD
 
     chat_curriculum = _chat_load_curriculum(
         subject, child["grade"], language=language or None
@@ -2123,7 +2122,57 @@ def child_chat_test_submit(child_id: int):
     topic = get_topic_from_catalog(catalog, topic_id)
     topic_name = topic["name"] if topic else topic_id
     grade_num = _chat_grade_num(child)
+    ora_szam = topic.get("ora_szam", 0) if topic else 0
 
+    # ── Two-phase logic ──────────────────────────────────────────────
+    total_req_minutes = ora_szam * 60  # ora_szam in hours → minutes
+    topic_learning_minutes = database.get_topic_learning_minutes(
+        child_id, progress_subject, topic_id
+    )
+    existing = database.get_topic_score(child_id, progress_subject, grade_num, topic_id)
+    attempts = (existing.get("topic_attempts", 0) if existing else 0)
+
+    if topic_learning_minutes < total_req_minutes:
+        # ── PHASE 1 ──
+        phase = 1
+        phase_pass_threshold = 100
+        passed = score >= phase_pass_threshold
+
+        if passed:
+            # 100% – immediate pass even in phase 1
+            can_retry = False
+            attempts_remaining = 0
+            minutes_needed = 0
+        else:
+            # Failed in phase 1
+            minutes_needed = max(0, total_req_minutes - topic_learning_minutes)
+            if attempts < 3:
+                # Still have attempts left – need 60 min before next retry
+                can_retry = True
+                attempts_remaining = 3 - attempts
+                minutes_needed = max(60, minutes_needed)
+            else:
+                # 3rd+ attempt failed – need full remaining learning time
+                can_retry = False
+                attempts_remaining = 0
+                minutes_needed = minutes_needed  # full remaining time
+    else:
+        # ── PHASE 2 ──
+        phase = 2
+        phase_pass_threshold = 70
+        passed = score >= phase_pass_threshold
+
+        if passed:
+            can_retry = False
+            attempts_remaining = 0
+            minutes_needed = 0
+        else:
+            # Failed in phase 2 – need 60 min before retry, no attempt limit
+            can_retry = True
+            attempts_remaining = -1  # unlimited
+            minutes_needed = 60
+
+    # ── Save result ──────────────────────────────────────────────────
     database.save_topic_test_result(
         child_id,
         progress_subject,
@@ -2131,7 +2180,8 @@ def child_chat_test_submit(child_id: int):
         topic_id,
         topic_name,
         score,
-        pass_threshold=TOPIC_PASS_THRESHOLD,
+        pass_threshold=phase_pass_threshold,
+        topic_learning_minutes=topic_learning_minutes,
     )
 
     congrats_message = None
@@ -2207,7 +2257,11 @@ def child_chat_test_submit(child_id: int):
         {
             "score": score,
             "passed": passed,
-            "pass_threshold": TOPIC_PASS_THRESHOLD,
+            "phase": phase,
+            "phase_pass_threshold": phase_pass_threshold,
+            "attempts_remaining": attempts_remaining,
+            "minutes_needed": minutes_needed,
+            "can_retry": can_retry,
             "topic_id": topic_id,
             "topic_name": topic_name,
             "congrats_message": congrats_message,

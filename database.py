@@ -246,6 +246,8 @@ class ChildTopicScore(Base):
     score: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     passed: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    topic_attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    topic_learning_minutes: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
 
 
 class ChildProgress(Base):
@@ -340,6 +342,7 @@ def init_db() -> None:
     ensure_chat_sessions_topic_id_column()
     ensure_child_learning_time_table()
     ensure_child_progress_extra_columns()
+    ensure_topic_scores_extra_columns()
 
 
 def ensure_children_birth_date_column() -> None:
@@ -408,6 +411,26 @@ def ensure_child_progress_extra_columns() -> None:
             text(
                 "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
                 "early_placement_attempts INTEGER NOT NULL DEFAULT 0"
+            )
+        )
+
+
+def ensure_topic_scores_extra_columns() -> None:
+    """topic_attempts és topic_learning_minutes oszlopok hozzáadása."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "ALTER TABLE child_topic_scores ADD COLUMN IF NOT EXISTS "
+                "topic_attempts INTEGER NOT NULL DEFAULT 0"
+            )
+        )
+        conn.execute(
+            text(
+                "ALTER TABLE child_topic_scores ADD COLUMN IF NOT EXISTS "
+                "topic_learning_minutes FLOAT NOT NULL DEFAULT 0.0"
             )
         )
 
@@ -906,6 +929,8 @@ def _topic_score_dict(row: ChildTopicScore) -> dict[str, Any]:
         "score": row.score,
         "passed": row.passed,
         "completed_at": row.completed_at.isoformat() if row.completed_at else None,
+        "topic_attempts": row.topic_attempts,
+        "topic_learning_minutes": row.topic_learning_minutes,
     }
 
 
@@ -927,6 +952,23 @@ def get_topic_scores(
         db.close()
 
 
+def get_topic_score(child_id: int, subject: str, grade: int, topic_id: str) -> dict[str, Any] | None:
+    """Egyetlen témakör score dictje, vagy None ha nincs még eredmény."""
+    db = _session()
+    try:
+        row = db.scalar(
+            select(ChildTopicScore).where(
+                ChildTopicScore.child_id == child_id,
+                ChildTopicScore.subject == subject,
+                ChildTopicScore.grade == grade,
+                ChildTopicScore.topic_id == topic_id,
+            )
+        )
+        return _topic_score_dict(row) if row else None
+    finally:
+        db.close()
+
+
 def save_topic_test_result(
     child_id: int,
     subject: str,
@@ -936,6 +978,7 @@ def save_topic_test_result(
     score: int,
     *,
     pass_threshold: int = 70,
+    topic_learning_minutes: float = 0.0,
 ) -> dict[str, Any]:
     passed = score >= pass_threshold
     now = datetime.now(timezone.utc)
@@ -954,6 +997,8 @@ def save_topic_test_result(
             row.passed = passed
             row.topic_name = topic_name
             row.completed_at = now
+            row.topic_attempts = (row.topic_attempts or 0) + 1
+            row.topic_learning_minutes = topic_learning_minutes
         else:
             row = ChildTopicScore(
                 child_id=child_id,
@@ -964,6 +1009,8 @@ def save_topic_test_result(
                 score=score,
                 passed=passed,
                 completed_at=now,
+                topic_attempts=1,
+                topic_learning_minutes=topic_learning_minutes,
             )
             db.add(row)
         db.commit()
@@ -1203,6 +1250,21 @@ def get_learning_time_total(child_id: int, subject: str) -> float:
         q = select(ChildLearningTime).where(
             ChildLearningTime.child_id == child_id,
             ChildLearningTime.subject == subject,
+        )
+        rows = db.scalars(q).all()
+        return round(sum(r.minutes for r in rows), 1)
+    finally:
+        db.close()
+
+
+def get_topic_learning_minutes(child_id: int, subject: str, topic_id: str) -> float:
+    """Visszaadja a témakörhöz tartozó összes tanulási percet."""
+    db = _session()
+    try:
+        q = select(ChildLearningTime).where(
+            ChildLearningTime.child_id == child_id,
+            ChildLearningTime.subject == subject,
+            ChildLearningTime.topic_id == topic_id,
         )
         rows = db.scalars(q).all()
         return round(sum(r.minutes for r in rows), 1)

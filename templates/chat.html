@@ -581,26 +581,61 @@
                         congratsHtml = '<div class="chat-bubble chat-bubble-assistant"><div class="chat-bubble-inner">' +
                             escapeHtml(d.congrats_message) + '</div></div>';
                     }
-                    testResult.innerHTML = congratsHtml +
-                        '<button type="button" class="result-box result-pass" data-topic-id="' + d.topic_id +
-                        '" data-topic-name="' + escapeAttr(d.topic_name) + '">✓ ' + escapeHtml(d.topic_name) +
-                        ' — ' + d.score + '%</button><p class="result-hint">Kattints a gombra, ha újra át szeretnéd nézni a témát.</p>';
+                    if (d.phase === 2) {
+                        // Phase 2 pass — offer choice
+                        testResult.innerHTML = congratsHtml +
+                            '<div class="result-box result-pass">✓ ' + escapeHtml(d.topic_name) +
+                            ' — ' + d.score + '%</div>' +
+                            '<button type="button" class="btn btn-primary" id="quiz-advance" style="margin:4px">Továbblépek</button>' +
+                            '<button type="button" class="btn btn-outline" id="quiz-practice" style="margin:4px">Még gyakorlok</button>';
+                        document.getElementById('quiz-advance').addEventListener('click', function () {
+                            var nextBtn = document.querySelector('.sidebar-item:not(.sidebar-item-passed) .sidebar-item-link');
+                            if (nextBtn) nextBtn.click();
+                            closeTestModal();
+                        });
+                        document.getElementById('quiz-practice').addEventListener('click', function () {
+                            startTest();
+                        });
+                    } else {
+                        // Phase 1 pass (100%) — normal pass view
+                        testResult.innerHTML = congratsHtml +
+                            '<button type="button" class="result-box result-pass" data-topic-id="' + d.topic_id +
+                            '" data-topic-name="' + escapeAttr(d.topic_name) + '">✓ ' + escapeHtml(d.topic_name) +
+                            ' — ' + d.score + '%</button><p class="result-hint">Kattints a gombra, ha újra át szeretnéd nézni a témát.</p>';
+                    }
                 } else {
+                    var failMsg = '';
+                    if (d.phase === 1) {
+                        if (d.attempts_remaining > 0) {
+                            failMsg = '<p class="result-hint">Még ' + d.attempts_remaining + ' próbálkozásod van. Tanulj még ' +
+                                d.minutes_needed + ' percet és próbálhatsz újra!</p>';
+                        } else {
+                            failMsg = '<p class="result-hint">Tanulj még ' + d.minutes_needed +
+                                ' percet és utána próbálhatsz újra!</p>';
+                        }
+                    } else {
+                        failMsg = '<p class="result-hint">Tanulj még 60 percet és újra próbálhatod!</p>';
+                    }
                     testResult.innerHTML =
                         '<div class="result-box result-fail">Próbáld újra! ' + d.score + '%</div>' +
-                        '<p class="result-hint">Legalább ' + passThreshold + '% kell a teljesítéshez.</p>' +
-                        '<button type="button" class="btn btn-primary" id="quiz-retry">Újra</button>';
-                    document.getElementById('quiz-retry').addEventListener('click', startTest);
+                        failMsg +
+                        (d.can_retry ? '<button type="button" class="btn btn-primary" id="quiz-retry">Újra</button>' : '');
+                    if (d.can_retry) {
+                        document.getElementById('quiz-retry').addEventListener('click', startTest);
+                    }
                 }
                 if (d.sidebar) renderSidebar(d.sidebar);
                 if (d.congrats_message) {
                     appendBubble('assistant', d.congrats_message);
                 }
-                testResult.querySelector('.result-pass')?.addEventListener('click', function (e) {
-                    var btn = e.currentTarget;
-                    openTopic(btn.getAttribute('data-topic-id'), btn.getAttribute('data-topic-name'));
-                    closeTestModal();
-                });
+                var passBtn = testResult.querySelector('.result-pass');
+                if (passBtn) {
+                    passBtn.addEventListener('click', function (e) {
+                        var btn = e.currentTarget;
+                        openTopic(btn.getAttribute('data-topic-id'), btn.getAttribute('data-topic-name'));
+                        closeTestModal();
+                    });
+                }
             });
     }
 
