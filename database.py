@@ -144,6 +144,7 @@ class ChatSession(Base):
     )
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
     language: Mapped[str] = mapped_column(String(20), nullable=False, default="")
+    topic_id: Mapped[str] = mapped_column(String(100), nullable=False, default="")
     curriculum_position: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
@@ -336,6 +337,7 @@ def init_db() -> None:
     Base.metadata.create_all(bind=_get_engine())
     ensure_children_birth_date_column()
     ensure_chat_sessions_language_column()
+    ensure_chat_sessions_topic_id_column()
     ensure_child_learning_time_table()
     ensure_child_progress_extra_columns()
 
@@ -373,6 +375,20 @@ def ensure_chat_sessions_language_column() -> None:
             text(
                 "ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS "
                 "language VARCHAR(20) NOT NULL DEFAULT ''"
+            )
+        )
+
+
+def ensure_chat_sessions_topic_id_column() -> None:
+    """Chat session topic_id – külön előzmény témakörönként."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS "
+                "topic_id VARCHAR(100) NOT NULL DEFAULT ''"
             )
         )
 
@@ -635,6 +651,7 @@ def _chat_session_dict(row: ChatSession) -> dict[str, Any]:
         "child_id": row.child_id,
         "subject": row.subject,
         "language": row.language or "",
+        "topic_id": row.topic_id or "",
         "curriculum_position": row.curriculum_position or {},
         "created_at": row.created_at,
     }
@@ -668,9 +685,11 @@ def get_or_create_chat_session(
     subject: str,
     *,
     language: str = "",
+    topic_id: str = "",
     curriculum_position: dict | None = None,
 ) -> dict[str, Any]:
     lang_key = (language or "").strip().lower()
+    tpid = topic_id.strip()
     db = _session()
     try:
         row = db.scalar(
@@ -679,6 +698,7 @@ def get_or_create_chat_session(
                 ChatSession.child_id == child_id,
                 ChatSession.subject == subject,
                 ChatSession.language == lang_key,
+                ChatSession.topic_id == tpid,
             )
             .order_by(ChatSession.created_at.desc())
         )
@@ -692,6 +712,7 @@ def get_or_create_chat_session(
             child_id=child_id,
             subject=subject,
             language=lang_key,
+            topic_id=tpid,
             curriculum_position=curriculum_position or {},
         )
         db.add(row)

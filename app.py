@@ -1787,6 +1787,7 @@ def child_chat(child_id: int):
         child_id,
         subject,
         language=language,
+        topic_id=current_topic_id,
         curriculum_position={
             "current_topic": current_topic,
             "current_topic_id": current_topic_id,
@@ -2186,7 +2187,7 @@ def child_chat_test_submit(child_id: int):
                     f"Ne használj ###, **, {{ }} formázást."
                 )
                 chat_session = database.get_or_create_chat_session(
-                    child_id, subject, language=language
+                    child_id, subject, language=language, topic_id=topic_id
                 )
                 reply = _call_ai_for_chat(congrats_prompt, [], "")
                 database.add_chat_message(chat_session["id"], "assistant", reply)
