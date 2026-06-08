@@ -1552,6 +1552,13 @@ def _call_ai_for_quiz(
         "create actual word problems with numbers that need to be solved, not questions about what word problems are. "
         "Every question must require the child to actually DO something, not just recall a definition.\n"
         f"CURRICULUM TEXT (use ONLY this as your source):\n{material}\n"
+        "IMPORTANT: If the curriculum text describes only methodology or teaching approaches "
+        "without specific mathematical content (numbers, operations, formulas), "
+        "then create practical word problems appropriate for the child's grade level "
+        "based on the topic name and any mathematical hints in the text. "
+        f"For example if the topic is about word problems, create actual word problems "
+        f"with addition and subtraction appropriate for grade {grade}. "
+        "Always create solvable problems with concrete numbers.\n"
         f"Generate exactly {q_count} multiple choice questions with 3 options each, "
         "1 correct answer (correct: 0, 1 or 2).\n"
         'Return ONLY a JSON object in this exact format, no other text: '
