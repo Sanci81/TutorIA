@@ -1531,25 +1531,21 @@ def _call_ai_for_quiz(
     q_count = max(8, min(15, round(8 + (ora_szam / max_ora) * 7)))
     material = (topic_text or topic_name)[:10000]
 
-    forbidden = ""
-    if age < 9:
-        forbidden = (
-            "TILOS témakörök 9 év alatti gyereknek:\n"
-            "- Törtek, törtszámok\n"
-            "- Valószínűség számítás\n"
-            "- Négyjegyű számokkal műveletek\n"
-        )
     system = (
-        f"Generálj {q_count} feleletválasztós kérdést {grade}. osztályos, "
-        f"{age} éves gyereknek.\n"
-        "Minden kérdésnél 3 válasz, 1 helyes (correct: 0, 1 vagy 2).\n"
-        'Válaszolj CSAK JSON tömbben, semmi más szöveg:\n'
-        '[{"q":"kérdés","options":["a","b","c"],"correct":0}]\n'
-        f"{forbidden}"
-        "KÖTELEZŐ:\n"
-        "- Maximum 1-2 soros kérdések\n"
-        "- Konkrét, kézzel fogható példák (alma, kutya, labda)\n"
-        f"Tananyag:\n{material}"
+        "You are a strict curriculum-based quiz generator. "
+        "You must ONLY create questions based on the exact curriculum text provided below. "
+        "NEVER invent questions from outside this text.\n"
+        f"Child profile: {age} years old, grade {grade}. "
+        "Difficulty must match exactly what is written in the curriculum text - not easier, not harder.\n"
+        "STRICTLY FORBIDDEN: generating questions about topics not present in the curriculum text below, "
+        "using your own knowledge instead of the curriculum, "
+        "creating generic math or animal questions unrelated to the curriculum topic.\n"
+        "REQUIRED: every single question must directly reference concepts, terms, or examples "
+        "from the curriculum text below. If the curriculum mentions halmazok, ask about halmazok. "
+        "If it mentions mérés, ask about mérés.\n"
+        f"CURRICULUM TEXT (use ONLY this as your source):\n{material}\n"
+        f"Generate exactly {q_count} multiple choice questions with 3 options each, "
+        "1 correct answer (correct: 0, 1 or 2). Return ONLY valid JSON.\n"
     )
     client = _openai_client(api_key, request_timeout=60.0)
     response = client.chat.completions.create(
@@ -1559,9 +1555,9 @@ def _call_ai_for_quiz(
             {
                 "role": "system",
                 "content": system
-                + f'\nA válasz {{"questions":[...]}} formátumú JSON legyen ({q_count} kérdés).',
+                + f'\nWrap questions in JSON object: {{"questions":[...]}}.',
             },
-            {"role": "user", "content": f"Generáld a {q_count} kérdést."},
+            {"role": "user", "content": f"Generate {q_count} questions based on the curriculum text above."},
         ],
         temperature=0.5,
     )
@@ -2054,14 +2050,6 @@ def child_chat_test_generate(child_id: int):
 
     try:
         all_ora_szamok = [t.get("ora_szam", 0) for t in catalog]
-        _debug_topic_text = topic.get("text", "")
-        logger.warning(
-            "QUIZ_DEBUG topic_text hossz=%s | topic_name=%s | topic_id=%s | első 200: %s",
-            len(_debug_topic_text),
-            topic.get("name", ""),
-            topic_id,
-            _debug_topic_text[:200],
-        )
         questions = _call_ai_for_quiz(
             grade=_chat_grade_num(child),
             topic_name=topic["name"],
