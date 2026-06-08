@@ -1545,7 +1545,11 @@ def _call_ai_for_quiz(
         "If it mentions mérés, ask about mérés.\n"
         f"CURRICULUM TEXT (use ONLY this as your source):\n{material}\n"
         f"Generate exactly {q_count} multiple choice questions with 3 options each, "
-        "1 correct answer (correct: 0, 1 or 2). Return ONLY valid JSON.\n"
+        "1 correct answer (correct: 0, 1 or 2).\n"
+        'Return ONLY a JSON object in this exact format, no other text: '
+        '{"questions": [{"q": "question text here", "options": ["option a", "option b", "option c"], "correct": 0}]}. '
+        "The q field must be named exactly q, not question or text. "
+        "correct must be 0, 1, or 2.\n"
     )
     client = _openai_client(api_key, request_timeout=60.0)
     response = client.chat.completions.create(
@@ -1554,8 +1558,7 @@ def _call_ai_for_quiz(
         messages=[
             {
                 "role": "system",
-                "content": system
-                + f'\nWrap questions in JSON object: {{"questions":[...]}}.',
+                "content": system,
             },
             {"role": "user", "content": f"Generate {q_count} questions based on the curriculum text above."},
         ],
