@@ -2140,6 +2140,11 @@ def child_chat_test_submit(child_id: int):
 
     passed = score >= phase_pass_threshold
 
+    logger.warning(
+        'PHASE_DEBUG ora_szam=%s topic_learning_minutes=%s total_req=%s phase=%s',
+        ora_szam, topic_learning_minutes, total_req_minutes, phase,
+    )
+
     # ── Save result first (this increments topic_attempts) ───────────
     database.save_topic_test_result(
         child_id,
