@@ -1549,7 +1549,10 @@ def _call_ai_for_quiz(
         f"Generate exactly {q_count} multiple choice questions, each with 3 options, exactly 1 correct.\n"
         "ALL text in HUNGARIAN only.\n"
         'Return ONLY this JSON, nothing else: {"questions": [{"q": "...", "options": ["a","b","c"], "correct": 0}]}\n'
-        "The field must be named exactly q. correct must be 0, 1, or 2."
+        "The field must be named exactly q. correct must be 0, 1, or 2.\n"
+        "CRITICAL: Each option in the options array MUST be a complete meaningful Hungarian answer text "
+        "like Gyökér, Szilárd, 15 alma, Emlősök. NEVER use single letters a, b, c or just numbers "
+        "as the option text. Each option must be a real answer that makes sense by itself."
     )
     client = _openai_client(api_key, request_timeout=60.0)
     response = client.chat.completions.create(
@@ -1569,6 +1572,43 @@ def _call_ai_for_quiz(
     questions = payload.get("questions", payload if isinstance(payload, list) else [])
     if not isinstance(questions, list) or len(questions) < 1:
         raise ValueError("Érvénytelen kvíz JSON")
+
+    # Validate options — retry once if any option is too short (single-letter bug)
+    def _has_valid_options(qs: list) -> bool:
+        for q in qs:
+            opts = q.get("options", [])
+            for opt in opts:
+                if isinstance(opt, str) and len(opt.strip()) <= 1:
+                    return False
+        return True
+
+    if not _has_valid_options(questions):
+        logger.warning("Quiz options validation failed (single-letter options), retrying once…")
+        retry_response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": system},
+                {
+                    "role": "user",
+                    "content": (
+                        f"Generate {q_count} questions based on the curriculum text above. "
+                        "Generate the questions in Hungarian. "
+                        "CRITICAL: Every option must be a full meaningful answer. "
+                        "NEVER use single letters like a, b, c as option text."
+                    ),
+                },
+            ],
+            temperature=0.5,
+        )
+        raw2 = retry_response.choices[0].message.content or "{}"
+        payload2 = json.loads(raw2)
+        questions2 = payload2.get("questions", payload2 if isinstance(payload2, list) else [])
+        if isinstance(questions2, list) and len(questions2) > 0 and _has_valid_options(questions2):
+            questions = questions2
+        else:
+            logger.warning("Quiz retry also produced invalid options, using original")
+
     return questions[:q_count]
 
 
