@@ -173,6 +173,7 @@
     var passThreshold = {{ pass_threshold|tojson }};
     var currentTopicId = {{ current_topic_id|tojson }};
     var currentTopicName = {{ current_topic|tojson }};
+    var currentOraSzam = 0;
     var chatMode = {{ chat_mode|tojson }};
     var transcribeUrl = {{ url_for('api_voice_transcribe')|tojson }};
     var speakUrl = {{ url_for('api_voice_speak')|tojson }};
@@ -566,7 +567,8 @@
                 topic_id: currentTopicId,
                 questions: quizQuestions,
                 answers: quizAnswers,
-                language: getChatLanguage()
+                language: getChatLanguage(),
+                ora_szam: currentOraSzam
             })
         })
             .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
@@ -664,6 +666,7 @@
                     return;
                 }
                 showQuiz(res.data.questions, res.data.topic_name || currentTopicName);
+                if (res.data.ora_szam) currentOraSzam = res.data.ora_szam;
             })
             .catch(function () {
                 if (btnTest) { btnTest.disabled = false; btnTest.textContent = 'Teszt indítása ✏️'; }

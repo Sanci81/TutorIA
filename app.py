@@ -1565,6 +1565,7 @@ def _call_ai_for_quiz(
         '{"questions": [{"q": "question text here", "options": ["option a", "option b", "option c"], "correct": 0}]}. '
         "The q field must be named exactly q, not question or text. "
         "correct must be 0, 1, or 2.\n"
+        "IMPORTANT: Generate ALL questions and answers in Hungarian language only. Never use English.\n"
     )
     client = _openai_client(api_key, request_timeout=60.0)
     response = client.chat.completions.create(
@@ -1575,7 +1576,7 @@ def _call_ai_for_quiz(
                 "role": "system",
                 "content": system,
             },
-            {"role": "user", "content": f"Generate {q_count} questions based on the curriculum text above."},
+            {"role": "user", "content": f"Generate {q_count} questions based on the curriculum text above. Generate the questions in Hungarian."},
         ],
         temperature=0.5,
     )
@@ -2083,7 +2084,7 @@ def child_chat_test_generate(child_id: int):
         logger.exception("Kvíz generálás hiba: %s", exc)
         return jsonify({"error": "quiz_failed", "detail": str(exc)}), 500
 
-    return jsonify({"questions": questions, "topic_id": topic_id, "topic_name": topic["name"]})
+    return jsonify({"questions": questions, "topic_id": topic_id, "topic_name": topic["name"], "ora_szam": topic.get("ora_szam", 0)})
 
 
 @app.route("/children/<int:child_id>/chat/test/submit", methods=["POST"])
@@ -2122,70 +2123,24 @@ def child_chat_test_submit(child_id: int):
     topic = get_topic_from_catalog(catalog, topic_id)
     topic_name = topic["name"] if topic else topic_id
     grade_num = _chat_grade_num(child)
-    ora_szam = topic.get("ora_szam", 0) if topic else 0
+    ora_szam = topic.get("ora_szam", 0) if topic else data.get("ora_szam", 0)
 
-    # ── Two-phase logic ──────────────────────────────────────────────
-    total_req_minutes = ora_szam * 60  # ora_szam in hours → minutes
+    # ── Determine phase and pass threshold (before save) ─────────────
+    total_req_minutes = ora_szam * 60
     topic_learning_minutes = database.get_topic_learning_minutes(
         child_id, progress_subject, topic_id
     )
-    existing = database.get_topic_score(child_id, progress_subject, grade_num, topic_id)
-    attempts = (existing.get("topic_attempts", 0) if existing else 0)
-
-    logger.warning(
-        "TEST_DEBUG child_id=%s subject=%s topic_id=%s topic_name=%s "
-        "ora_szam=%s total_req_minutes=%s topic_learning_minutes=%s attempts=%s",
-        child_id, progress_subject, topic_id, topic_name,
-        ora_szam, total_req_minutes, topic_learning_minutes, attempts,
-    )
 
     if topic_learning_minutes < total_req_minutes:
-        # ── PHASE 1 ──
         phase = 1
         phase_pass_threshold = 100
-        passed = score >= phase_pass_threshold
-
-        if passed:
-            # 100% – immediate pass even in phase 1
-            can_retry = False
-            attempts_remaining = 0
-            minutes_needed = 0
-        else:
-            # Failed in phase 1
-            minutes_needed = max(0, total_req_minutes - topic_learning_minutes)
-            if attempts < 3:
-                # Still have attempts left – need 60 min before next retry
-                can_retry = True
-                attempts_remaining = 3 - attempts
-                minutes_needed = max(60, minutes_needed)
-            else:
-                # 3rd+ attempt failed – need full remaining learning time
-                can_retry = False
-                attempts_remaining = 0
-                minutes_needed = minutes_needed  # full remaining time
     else:
-        # ── PHASE 2 ──
         phase = 2
         phase_pass_threshold = 70
-        passed = score >= phase_pass_threshold
 
-        if passed:
-            can_retry = False
-            attempts_remaining = 0
-            minutes_needed = 0
-        else:
-            # Failed in phase 2 – need 60 min before retry, no attempt limit
-            can_retry = True
-            attempts_remaining = -1  # unlimited
-            minutes_needed = 60
+    passed = score >= phase_pass_threshold
 
-    # ── Save result ──────────────────────────────────────────────────
-    logger.warning(
-        "TEST_DEBUG phase=%s passed=%s score=%s threshold=%s "
-        "can_retry=%s attempts_remaining=%s minutes_needed=%s",
-        phase, passed, score, phase_pass_threshold,
-        can_retry, attempts_remaining, minutes_needed,
-    )
+    # ── Save result first (this increments topic_attempts) ───────────
     database.save_topic_test_result(
         child_id,
         progress_subject,
@@ -2195,6 +2150,42 @@ def child_chat_test_submit(child_id: int):
         score,
         pass_threshold=phase_pass_threshold,
         topic_learning_minutes=topic_learning_minutes,
+    )
+
+    # Re-fetch updated topic score to get the new attempts count
+    updated_existing = database.get_topic_score(child_id, progress_subject, grade_num, topic_id)
+    new_attempts = updated_existing.get("topic_attempts", 0) if updated_existing else 1
+
+    # ── Calculate remaining phase data ───────────────────────────────
+    if phase == 1:
+        if passed:
+            can_retry = False
+            attempts_remaining = 0
+            minutes_needed = 0
+        else:
+            minutes_needed = max(0, total_req_minutes - topic_learning_minutes)
+            if new_attempts < 3:
+                can_retry = True
+                attempts_remaining = 3 - new_attempts
+                minutes_needed = max(60, minutes_needed)
+            else:
+                can_retry = False
+                attempts_remaining = 0
+    else:
+        if passed:
+            can_retry = False
+            attempts_remaining = 0
+            minutes_needed = 0
+        else:
+            can_retry = True
+            attempts_remaining = -1
+            minutes_needed = 60
+
+    logger.warning(
+        "TEST_DEBUG phase=%s passed=%s score=%s threshold=%s "
+        "can_retry=%s attempts_remaining=%s minutes_needed=%s",
+        phase, passed, score, phase_pass_threshold,
+        can_retry, attempts_remaining, minutes_needed,
     )
 
     congrats_message = None
