@@ -2132,6 +2132,13 @@ def child_chat_test_submit(child_id: int):
     existing = database.get_topic_score(child_id, progress_subject, grade_num, topic_id)
     attempts = (existing.get("topic_attempts", 0) if existing else 0)
 
+    logger.warning(
+        "TEST_DEBUG child_id=%s subject=%s topic_id=%s topic_name=%s "
+        "ora_szam=%s total_req_minutes=%s topic_learning_minutes=%s attempts=%s",
+        child_id, progress_subject, topic_id, topic_name,
+        ora_szam, total_req_minutes, topic_learning_minutes, attempts,
+    )
+
     if topic_learning_minutes < total_req_minutes:
         # ── PHASE 1 ──
         phase = 1
@@ -2173,6 +2180,12 @@ def child_chat_test_submit(child_id: int):
             minutes_needed = 60
 
     # ── Save result ──────────────────────────────────────────────────
+    logger.warning(
+        "TEST_DEBUG phase=%s passed=%s score=%s threshold=%s "
+        "can_retry=%s attempts_remaining=%s minutes_needed=%s",
+        phase, passed, score, phase_pass_threshold,
+        can_retry, attempts_remaining, minutes_needed,
+    )
     database.save_topic_test_result(
         child_id,
         progress_subject,
