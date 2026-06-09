@@ -315,7 +315,7 @@
             var replayWrap = document.createElement('div');
             replayWrap.className = 'bubble-replay-wrap';
             replayWrap.appendChild(replayBtn);
-            wrap.parentNode.insertBefore(replayWrap, wrap.nextSibling);
+            wrap.appendChild(replayWrap);
         }
     });
 
@@ -610,10 +610,10 @@
                     if (d.phase === 1) {
                         if (d.attempts_remaining > 0) {
                             failMsg = '<p class="result-hint">Még ' + d.attempts_remaining + ' próbálkozásod van. Tanulj még ' +
-                                d.minutes_needed + ' percet és próbálhatsz újra!</p>';
+                                formatMinutes(d.minutes_needed) + ' és próbálhatsz újra!</p>';
                         } else {
-                            failMsg = '<p class="result-hint">Tanulj még ' + d.minutes_needed +
-                                ' percet és utána próbálhatsz újra!</p>';
+                            failMsg = '<p class="result-hint">Tanulj még ' + formatMinutes(d.minutes_needed) +
+                                ' és utána próbálhatsz újra!</p>';
                         }
                     } else {
                         failMsg = '<p class="result-hint">Tanulj még 60 percet és újra próbálhatod!</p>';
@@ -639,6 +639,17 @@
                     });
                 }
             });
+    }
+
+    function formatMinutes(mins) {
+        mins = Math.round(mins);
+        if (mins >= 60) {
+            var h = Math.floor(mins / 60);
+            var m = mins % 60;
+            if (m === 0) return 'kb. ' + h + ' órát';
+            return h + ' órát ' + m + ' percet';
+        }
+        return mins + ' percet';
     }
 
     function getChatLanguage() {

@@ -1432,6 +1432,7 @@ a.btn-generate {
 .chat-bubble {
     display: flex;
     max-width: 88%;
+    align-items: center;
 }
 .chat-bubble-assistant {
     align-self: flex-start;
@@ -1477,32 +1478,33 @@ a.btn-generate {
     40% { opacity: 1; transform: scale(1); }
 }
 .bubble-replay-wrap {
-    text-align: right;
-    margin-top: 2px;
-    margin-bottom: 4px;
-    padding-right: 8px;
+    display: flex;
+    align-items: center;
+    margin-left: 4px;
 }
 
 .bubble-replay-btn {
+    font-size: 20px;
+    width: 28px;
+    height: 28px;
     background: transparent;
     border: none;
+    color: #166534;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0.7;
     outline: none;
     box-shadow: none;
-    cursor: pointer;
-    font-size: 18px;
-    opacity: 0.6;
-    padding: 2px 6px;
+    padding: 0;
     margin: 0;
     line-height: 1;
     border-radius: 50%;
-    color: #555;
-    transition: opacity 0.15s, background 0.15s;
-    -webkit-appearance: none;
-    appearance: none;
+    transition: opacity 0.15s;
 }
 .bubble-replay-btn:hover {
     opacity: 1;
-    background: rgba(0,0,0,0.06);
 }
 .chat-input-bar {
     display: flex;
