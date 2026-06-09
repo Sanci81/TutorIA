@@ -1256,6 +1256,7 @@ def _build_topic_sidebar(
     current_topic_id: str | None,
     *,
     level: int = 1,
+    progress_subject: str = "",
 ) -> dict[str, Any]:
     """Sidebar állapot: témakörök zárolás / aktív / teljesített."""
     items: list[dict[str, Any]] = []
@@ -1306,6 +1307,12 @@ def _build_topic_sidebar(
 
     total = len(catalog)
     avg = round(score_sum / score_n) if score_n else 0
+
+    passed_topics = [t["name"] for t in items if t["state"] == "completed"]
+    logger.warning(
+        'SIDEBAR_DEBUG progress_subject=%s scores_keys=%s topic_count=%s passed_topics=%s',
+        progress_subject, list(scores.keys()), len(items), passed_topics,
+    )
 
     return {
         "topics": items,
@@ -1800,7 +1807,8 @@ def child_chat(child_id: int):
         (t["name"] for t in catalog if t["id"] == current_topic_id), ""
     )
     sidebar = _build_topic_sidebar(
-        catalog, scores, current_topic_id, level=progress.get("level", 0)
+        catalog, scores, current_topic_id, level=progress.get("level", 0),
+        progress_subject=progress_subject,
     )
     progress_pct = (
         int(100 * sidebar["completed_count"] / sidebar["total_count"])
@@ -2015,7 +2023,8 @@ def child_chat_send(child_id: int):
 
     scores = database.get_topic_scores(child_id, progress_subject, grade_num)
     sidebar = _build_topic_sidebar(
-        catalog, scores, current_topic_id, level=progress.get("level", 0)
+        catalog, scores, current_topic_id, level=progress.get("level", 0),
+        progress_subject=progress_subject,
     )
     progress_pct = (
         int(100 * sidebar["completed_count"] / sidebar["total_count"])
@@ -2064,7 +2073,8 @@ def child_chat_progress(child_id: int):
     scores = database.get_topic_scores(child_id, progress_subject, grade_num)
     current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
     sidebar = _build_topic_sidebar(
-        catalog, scores, current_topic_id, level=progress.get("level", 0)
+        catalog, scores, current_topic_id, level=progress.get("level", 0),
+        progress_subject=progress_subject,
     )
     return jsonify(sidebar)
 
@@ -2283,7 +2293,8 @@ def child_chat_test_submit(child_id: int):
     progress = database.get_or_create_child_progress(child_id, progress_subject)
     current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
     sidebar = _build_topic_sidebar(
-        catalog, scores, current_topic_id, level=progress.get("level", 0)
+        catalog, scores, current_topic_id, level=progress.get("level", 0),
+        progress_subject=progress_subject,
     )
 
     return jsonify(
