@@ -1611,7 +1611,7 @@ def _call_ai_for_quiz(
             f"CURRICULUM TEXT:\n{material}\n\n"
             f"Generate exactly {q_count} multiple choice questions, 3 options each, 1 correct.\n"
             "ALL text in HUNGARIAN.\n"
-            'Return ONLY: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
+            'Return ONLY this JSON: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
             "CRITICAL: Every option must be a full meaningful Hungarian answer, never single letters."
         )
         model = "gpt-4o-mini"
@@ -1626,7 +1626,7 @@ def _call_ai_for_quiz(
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": (
-                    f"Generate {q_count} questions. "
+                    f"Generate {q_count} questions and return valid JSON. "
                     f"Language: {'Spanish' if is_foreign_language else 'Hungarian'}. "
                     + extra_user_note
                 )},
