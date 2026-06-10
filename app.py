@@ -1521,7 +1521,7 @@ Csak tanításról beszélj; más témánál finoman terelj vissza a tananyaghoz
 
 
 def _call_ai_for_quiz(
-    *, grade: int, topic_name: str, topic_text: str, age: int, ora_szam: int, all_ora_szamok: list[int]
+    *, grade: int, topic_name: str, topic_text: str, age: int, ora_szam: int, all_ora_szamok: list[int], szokincs: list | None = None,
 ) -> list[dict[str, Any]]:
     api_key = _openai_api_key()
     if not api_key:
@@ -1552,7 +1552,13 @@ def _call_ai_for_quiz(
         "The field must be named exactly q. correct must be 0, 1, or 2.\n"
         "CRITICAL: Each option in the options array MUST be a complete meaningful Hungarian answer text "
         "like Gyökér, Szilárd, 15 alma, Emlősök. NEVER use single letters a, b, c or just numbers "
-        "as the option text. Each option must be a real answer that makes sense by itself."
+        "as the option text. Each option must be a real answer that makes sense by itself.\n"
+        + (
+            f"SZIGORÚ SZABÁLY: Kizárólag ezekből a szavakból generálj kérdéseket: {', '.join(szokincs)}. "
+            "Más szót nem használhatsz!\n"
+            if szokincs
+            else ""
+        )
     )
     client = _openai_client(api_key, request_timeout=60.0)
     response = client.chat.completions.create(
@@ -2101,6 +2107,7 @@ def child_chat_test_generate(child_id: int):
             age=_child_effective_age(child),
             ora_szam=topic.get("ora_szam", 0),
             all_ora_szamok=all_ora_szamok,
+            szokincs=topic.get("szokincs", []),
         )
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
