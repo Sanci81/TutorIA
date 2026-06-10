@@ -1531,39 +1531,59 @@ def _call_ai_for_quiz(
     q_count = max(8, min(15, round(8 + (ora_szam / max_ora) * 7)))
     material = (topic_text or topic_name)[:10000]
 
-    system = (
-        "You are a curriculum-based quiz generator for Hungarian schoolchildren.\n"
-        f"CHILD: {age} years old, grade {grade}.\n\n"
-        "GRADE-APPROPRIATE DIFFICULTY (critical - match the child's exact grade):\n"
-        "- Grade 1: numbers up to 20, single-step addition/subtraction\n"
-        "- Grade 2: numbers up to 100, addition/subtraction, simple multiplication\n"
-        "- Grade 3: numbers up to 1000, multiplication, division, two-step problems\n"
-        "- Grade 4: numbers up to 10000, all four operations, multi-step word problems\n"
-        f"This child is grade {grade}. A grade 4 child must get grade-4-level problems, NOT baby questions.\n\n"
-        "RULES:\n"
-        "- Create PRACTICAL problems the child solves by calculating. No definition or theory questions.\n"
-        "- Every question must use the concepts from the curriculum text below.\n"
-        "- If the curriculum topic is abstract (rendszerezes, halmazok, allitasok), create CONCRETE grade-level problems practicing that skill. Example for grade 4 rendszerezes: how many different orders can 3 children line up? Example for grade 4 halmazok: grouping and counting elements by two properties.\n"
-        "- DO NOT copy any example from these instructions. Generate completely fresh questions matching the grade and curriculum.\n\n"
-        f"CURRICULUM TEXT:\n{material}\n\n"
-        f"Generate exactly {q_count} multiple choice questions, each with 3 options, exactly 1 correct.\n"
-        "ALL text in HUNGARIAN only.\n"
-        'Return ONLY this JSON, nothing else: {"questions": [{"q": "...", "options": ["a","b","c"], "correct": 0}]}\n'
-        "The field must be named exactly q. correct must be 0, 1, or 2.\n"
-        "CRITICAL: Each option in the options array MUST be a complete meaningful Hungarian answer text "
-        "like Gyökér, Szilárd, 15 alma, Emlősök. NEVER use single letters a, b, c or just numbers "
-        "as the option text. Each option must be a real answer that makes sense by itself.\n"
-        + (
-            f"SZIGORÚ SZABÁLY - Ha kapsz szókincslistát, KIZÁRÓLAG ilyen típusú kérdéseket generálj:\n"
-            "1. 'Mit jelent: [spanyol szó]?' – 3 magyar fordítás közül egy helyes\n"
-            "2. 'Hogy mondják spanyolul: [magyar szó]?' – 3 spanyol szó közül egy helyes\n"
-            "3. '[Spanyol szó] – melyik képhez illik?' – leírással helyettesítve\n"
-            "TILOS általános enciklopédikus kérdést feltenni. Minden kérdésnek "
-            f"tartalmaznia kell egy konkrét szót a szólistából: {', '.join(szokincs)}.\n"
-            if szokincs
-            else ""
+    if szokincs:
+        system = (
+            "You are a vocabulary quiz generator for Spanish language learners.\n"
+            f"CHILD: {age} years old, grade {grade}.\n\n"
+            "LANGUAGE RULE: Generate ALL questions and answers in Spanish only. "
+            "No Hungarian in questions or answer options.\n\n"
+            f"Use ONLY words from this vocabulary list: {', '.join(szokincs)}\n\n"
+            "Question types by grade:\n\n"
+            "Grade 1-2: Multiple choice only\n"
+            "- '¿Qué es esto?' + description → 3 Spanish words\n\n"
+            "Grade 3-4: 70% multiple choice + 30% fill-in\n"
+            "- Multiple choice: '¿Qué significa [word]?' → 3 Spanish options\n"
+            "- Fill-in: 'El alumno usa ___ para escribir.' → answer: lápiz\n\n"
+            "Grade 5-6: 50% multiple choice + 50% fill-in/sentence completion\n"
+            "- '¿Cómo se llama ___?' → write the word\n"
+            "- 'Completa: El profesor escribe en la ___.' → answer: clase\n\n"
+            "Grade 7-8: 30% multiple choice + 70% written\n"
+            "- Full sentences, descriptions, context-based\n\n"
+            f"This child is grade {grade}. Choose the question types accordingly.\n\n"
+            "STRICT RULES:\n"
+            "- NEVER put the answer inside the question\n"
+            "- NEVER mix Hungarian questions with Spanish answers\n"
+            "- ALWAYS use words from the vocabulary list\n"
+            "- Questions must test actual word knowledge\n\n"
+            f"Generate exactly {q_count} questions.\n"
+            'Return ONLY this JSON, nothing else: {"questions": [{"q": "...", "options": ["a","b","c"], "correct": 0}]}\n'
+            "For fill-in questions, use options as an array with the correct answer as one option and distractors as the others. "
+            "The field must be named exactly q. correct must be 0, 1, or 2."
         )
-    )
+    else:
+        system = (
+            "You are a curriculum-based quiz generator for Hungarian schoolchildren.\n"
+            f"CHILD: {age} years old, grade {grade}.\n\n"
+            "GRADE-APPROPRIATE DIFFICULTY (critical - match the child's exact grade):\n"
+            "- Grade 1: numbers up to 20, single-step addition/subtraction\n"
+            "- Grade 2: numbers up to 100, addition/subtraction, simple multiplication\n"
+            "- Grade 3: numbers up to 1000, multiplication, division, two-step problems\n"
+            "- Grade 4: numbers up to 10000, all four operations, multi-step word problems\n"
+            f"This child is grade {grade}. A grade 4 child must get grade-4-level problems, NOT baby questions.\n\n"
+            "RULES:\n"
+            "- Create PRACTICAL problems the child solves by calculating. No definition or theory questions.\n"
+            "- Every question must use the concepts from the curriculum text below.\n"
+            "- If the curriculum topic is abstract (rendszerezes, halmazok, allitasok), create CONCRETE grade-level problems practicing that skill. Example for grade 4 rendszerezes: how many different orders can 3 children line up? Example for grade 4 halmazok: grouping and counting elements by two properties.\n"
+            "- DO NOT copy any example from these instructions. Generate completely fresh questions matching the grade and curriculum.\n\n"
+            f"CURRICULUM TEXT:\n{material}\n\n"
+            f"Generate exactly {q_count} multiple choice questions, each with 3 options, exactly 1 correct.\n"
+            "ALL text in HUNGARIAN only.\n"
+            'Return ONLY this JSON, nothing else: {"questions": [{"q": "...", "options": ["a","b","c"], "correct": 0}]}\n'
+            "The field must be named exactly q. correct must be 0, 1, or 2.\n"
+            "CRITICAL: Each option in the options array MUST be a complete meaningful Hungarian answer text "
+            "like Gyökér, Szilárd, 15 alma, Emlősök. NEVER use single letters a, b, c or just numbers "
+            "as the option text. Each option must be a real answer that makes sense by itself.\n"
+        )
     client = _openai_client(api_key, request_timeout=60.0)
     response = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -1573,7 +1593,7 @@ def _call_ai_for_quiz(
                 "role": "system",
                 "content": system,
             },
-            {"role": "user", "content": f"Generate {q_count} questions based on the curriculum text above. Generate the questions in Hungarian."},
+            {"role": "user", "content": f"Generate {q_count} questions based on the curriculum text above. Generate the questions in {'Spanish' if szokincs else 'Hungarian'}."},
         ],
         temperature=0.5,
     )
