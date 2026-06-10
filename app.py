@@ -1538,6 +1538,12 @@ def _call_ai_for_quiz(
     q_count = max(8, min(15, round(8 + (ora_szam / max_ora) * 7)))
     material = (topic_text or topic_name)[:10000]
 
+    FOREIGN_LANGUAGE_SUBJECTS = ['spanyol', 'angol', 'nemet', 'német']
+    is_foreign_language = szokincs is not None or any(
+        lang in (topic_name or '').lower()
+        for lang in FOREIGN_LANGUAGE_SUBJECTS
+    )
+
     if szokincs:
         system = (
             "YOU MUST RESPOND ONLY IN SPANISH. THIS IS MANDATORY. NOT IN HUNGARIAN. ONLY SPANISH.\n\n"
@@ -1586,7 +1592,7 @@ def _call_ai_for_quiz(
         )
     client = _openai_client(api_key, request_timeout=60.0)
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4o" if is_foreign_language else "gpt-4o-mini",
         response_format={"type": "json_object"},
         messages=[
             {
@@ -1615,7 +1621,7 @@ def _call_ai_for_quiz(
     if not _has_valid_options(questions):
         logger.warning("Quiz options validation failed (single-letter options), retrying once…")
         retry_response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o" if is_foreign_language else "gpt-4o-mini",
             response_format={"type": "json_object"},
             messages=[
                 {"role": "system", "content": system},
@@ -1623,13 +1629,13 @@ def _call_ai_for_quiz(
                     "role": "user",
                     "content": (
                         f"Generate {q_count} questions based on the curriculum text above. "
-                        "Generate the questions in Hungarian. "
+                        f"Generate the questions in {'Spanish' if szokincs else 'Hungarian'}. "
                         "CRITICAL: Every option must be a full meaningful answer. "
                         "NEVER use single letters like a, b, c as option text."
                     ),
                 },
             ],
-            temperature=0.5,
+            temperature=0.3 if szokincs else 0.5,
         )
         raw2 = retry_response.choices[0].message.content or "{}"
         payload2 = json.loads(raw2)
