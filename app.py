@@ -1540,23 +1540,16 @@ def _call_ai_for_quiz(
 
     if szokincs:
         system = (
+            "YOU MUST RESPOND ONLY IN SPANISH. THIS IS MANDATORY. NOT IN HUNGARIAN. ONLY SPANISH.\n\n"
             "You are a vocabulary quiz generator for Spanish language learners.\n"
             f"CHILD: {age} years old, grade {grade}.\n\n"
-            "LANGUAGE RULE: Generate ALL questions and answers in Spanish only. "
-            "No Hungarian in questions or answer options.\n\n"
             f"Use ONLY words from this vocabulary list: {', '.join(szokincs)}\n\n"
-            "Question types by grade:\n\n"
-            "Grade 1-2: Multiple choice only\n"
-            "- '¿Qué es esto?' + description → 3 Spanish words\n\n"
-            "Grade 3-4: 70% multiple choice + 30% fill-in\n"
-            "- Multiple choice: '¿Qué significa [word]?' → 3 Spanish options\n"
-            "- Fill-in: 'El alumno usa ___ para escribir.' → answer: lápiz\n\n"
-            "Grade 5-6: 50% multiple choice + 50% fill-in/sentence completion\n"
-            "- '¿Cómo se llama ___?' → write the word\n"
-            "- 'Completa: El profesor escribe en la ___.' → answer: clase\n\n"
-            "Grade 7-8: 30% multiple choice + 70% written\n"
-            "- Full sentences, descriptions, context-based\n\n"
-            f"This child is grade {grade}. Choose the question types accordingly.\n\n"
+            f"CURRENT CHILD GRADE: {grade}\n"
+            "IF grade <= 2: ONLY multiple choice, questions like '¿Qué es esto?'\n"
+            "IF grade == 3 OR grade == 4: 70% multiple choice + 30% fill-in blank\n"
+            "IF grade == 5 OR grade == 6: 50% multiple choice + 50% fill-in\n"
+            "IF grade >= 7: 30% multiple choice + 70% written sentences\n"
+            f"APPLY THE RULE FOR GRADE {grade} NOW.\n\n"
             "STRICT RULES:\n"
             "- NEVER put the answer inside the question\n"
             "- NEVER mix Hungarian questions with Spanish answers\n"
@@ -1602,7 +1595,7 @@ def _call_ai_for_quiz(
             },
             {"role": "user", "content": f"Generate {q_count} questions based on the curriculum text above. Generate the questions in {'Spanish' if szokincs else 'Hungarian'}."},
         ],
-        temperature=0.5,
+        temperature=0.3 if szokincs else 0.5,
     )
     raw = response.choices[0].message.content or "{}"
     payload = json.loads(raw)
