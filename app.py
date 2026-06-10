@@ -1554,8 +1554,12 @@ def _call_ai_for_quiz(
         "like Gyökér, Szilárd, 15 alma, Emlősök. NEVER use single letters a, b, c or just numbers "
         "as the option text. Each option must be a real answer that makes sense by itself.\n"
         + (
-            f"SZIGORÚ SZABÁLY: Kizárólag ezekből a szavakból generálj kérdéseket: {', '.join(szokincs)}. "
-            "Más szót nem használhatsz!\n"
+            f"SZIGORÚ SZABÁLY - Ha kapsz szókincslistát, KIZÁRÓLAG ilyen típusú kérdéseket generálj:\n"
+            "1. 'Mit jelent: [spanyol szó]?' – 3 magyar fordítás közül egy helyes\n"
+            "2. 'Hogy mondják spanyolul: [magyar szó]?' – 3 spanyol szó közül egy helyes\n"
+            "3. '[Spanyol szó] – melyik képhez illik?' – leírással helyettesítve\n"
+            "TILOS általános enciklopédikus kérdést feltenni. Minden kérdésnek "
+            f"tartalmaznia kell egy konkrét szót a szólistából: {', '.join(szokincs)}.\n"
             if szokincs
             else ""
         )
