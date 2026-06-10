@@ -1528,7 +1528,8 @@ Csak tanításról beszélj; más témánál finoman terelj vissza a tananyaghoz
 
 
 def _call_ai_for_quiz(
-    *, grade: int, topic_name: str, topic_text: str, age: int, ora_szam: int, all_ora_szamok: list[int], szokincs: list | None = None,
+    *, grade: int, topic_name: str, topic_text: str, age: int,
+    ora_szam: int, all_ora_szamok: list[int], szokincs: list | None = None,
 ) -> list[dict[str, Any]]:
     api_key = _openai_api_key()
     if not api_key:
@@ -1538,112 +1539,133 @@ def _call_ai_for_quiz(
     q_count = max(8, min(15, round(8 + (ora_szam / max_ora) * 7)))
     material = (topic_text or topic_name)[:10000]
 
-    FOREIGN_LANGUAGE_SUBJECTS = ['spanyol', 'angol', 'nemet', 'német']
-    is_foreign_language = szokincs is not None or any(
-        lang in (topic_name or '').lower()
-        for lang in FOREIGN_LANGUAGE_SUBJECTS
-    )
+    is_foreign_language = szokincs is not None
 
-    if szokincs:
-        system = (
-            "YOU MUST RESPOND ONLY IN SPANISH. THIS IS MANDATORY. NOT IN HUNGARIAN. ONLY SPANISH.\n\n"
-            "You are a vocabulary quiz generator for Spanish language learners.\n"
-            f"CHILD: {age} years old, grade {grade}.\n\n"
-            f"Use ONLY words from this vocabulary list: {', '.join(szokincs)}\n\n"
-            f"CURRENT CHILD GRADE: {grade}\n"
-            "IF grade <= 2: ONLY multiple choice, questions like '¿Qué es esto?'\n"
-            "IF grade == 3 OR grade == 4: 70% multiple choice + 30% fill-in blank\n"
-            "IF grade == 5 OR grade == 6: 50% multiple choice + 50% fill-in\n"
-            "IF grade >= 7: 30% multiple choice + 70% written sentences\n"
-            f"APPLY THE RULE FOR GRADE {grade} NOW.\n\n"
-            "STRICT RULES:\n"
-            "- NEVER put the answer inside the question\n"
-            "- NEVER mix Hungarian questions with Spanish answers\n"
-            "- ALWAYS use words from the vocabulary list\n"
-            "- Questions must test actual word knowledge\n\n"
-            f"Generate exactly {q_count} questions.\n"
-            'Return ONLY this JSON, nothing else: {"questions": [{"q": "...", "options": ["a","b","c"], "correct": 0}]}\n'
-            "For fill-in questions, use options as an array with the correct answer as one option and distractors as the others. "
-            "The field must be named exactly q. correct must be 0, 1, or 2."
+    if grade <= 2:
+        mc_ratio, fill_ratio = 1.0, 0.0
+    elif grade <= 4:
+        mc_ratio, fill_ratio = 0.7, 0.3
+    elif grade <= 6:
+        mc_ratio, fill_ratio = 0.5, 0.3
+    else:
+        mc_ratio, fill_ratio = 0.3, 0.3
+
+    mc_count = max(1, round(q_count * mc_ratio))
+    fill_count = round(q_count * fill_ratio)
+    sent_count = q_count - mc_count - fill_count
+
+    if is_foreign_language:
+        if szokincs:
+            source_block = f"VOCABULARY LIST (use ONLY these words): {', '.join(szokincs)}"
+            source_rule = "ONLY use words from the vocabulary list. Every question must test these specific words."
+        else:
+            source_block = f"TOPIC CONTENT:\n{material}"
+            source_rule = "Create questions based on the topic content. Test vocabulary, phrases and structures from the text."
+
+        type_lines = []
+        if mc_count > 0:
+            type_lines.append(f'- {mc_count} MULTIPLE CHOICE: {{"type":"mc","q":"...","options":["a","b","c"],"correct":0}}')
+        if fill_count > 0:
+            type_lines.append(f'- {fill_count} FILL-IN (1-2 words): {{"type":"fill","q":"...","answer":"palabra"}}')
+        if sent_count > 0:
+            type_lines.append(f'- {sent_count} SENTENCE COMPLETION: {{"type":"sent","q":"El niño ___ en el parque.","answer":"juega"}}')
+
+        difficulty = (
+            "simple vocabulary, very short sentences" if grade <= 4
+            else "intermediate phrases and structures" if grade <= 6
+            else "complex sentences and grammar"
         )
+
+        system = (
+            "YOU MUST RESPOND ONLY IN SPANISH. ALL QUESTIONS AND ANSWERS IN SPANISH. NEVER USE HUNGARIAN.\n\n"
+            f"You are a Spanish language quiz generator.\n"
+            f"Student: {age} years old, grade {grade}.\n\n"
+            f"{source_block}\n\n"
+            f"{source_rule}\n\n"
+            "QUESTION TYPES:\n" + "\n".join(type_lines) + "\n\n"
+            "RULES:\n"
+            "- NEVER put the answer inside the question\n"
+            "- ALL text (questions, options, answers) MUST be in Spanish\n"
+            "- mc: options array has exactly 3 items, correct is 0, 1 or 2\n"
+            "- fill/sent: answer is a string, options field is omitted\n"
+            f"- Difficulty: {difficulty}\n\n"
+            f"Generate exactly {q_count} questions total.\n"
+            'Return ONLY this JSON: {"questions": [...]}'
+        )
+        model = "gpt-4o"
+        temperature = 0.3
     else:
         system = (
             "You are a curriculum-based quiz generator for Hungarian schoolchildren.\n"
             f"CHILD: {age} years old, grade {grade}.\n\n"
-            "GRADE-APPROPRIATE DIFFICULTY (critical - match the child's exact grade):\n"
+            "GRADE-APPROPRIATE DIFFICULTY:\n"
             "- Grade 1: numbers up to 20, single-step addition/subtraction\n"
             "- Grade 2: numbers up to 100, addition/subtraction, simple multiplication\n"
-            "- Grade 3: numbers up to 1000, multiplication, division, two-step problems\n"
-            "- Grade 4: numbers up to 10000, all four operations, multi-step word problems\n"
-            f"This child is grade {grade}. A grade 4 child must get grade-4-level problems, NOT baby questions.\n\n"
+            "- Grade 3: numbers up to 1000, multiplication, division\n"
+            "- Grade 4: numbers up to 10000, all four operations, multi-step problems\n"
+            f"This child is grade {grade}.\n\n"
             "RULES:\n"
-            "- Create PRACTICAL problems the child solves by calculating. No definition or theory questions.\n"
-            "- Every question must use the concepts from the curriculum text below.\n"
-            "- If the curriculum topic is abstract (rendszerezes, halmazok, allitasok), create CONCRETE grade-level problems practicing that skill. Example for grade 4 rendszerezes: how many different orders can 3 children line up? Example for grade 4 halmazok: grouping and counting elements by two properties.\n"
-            "- DO NOT copy any example from these instructions. Generate completely fresh questions matching the grade and curriculum.\n\n"
+            "- Practical problems the child solves by calculating\n"
+            "- Use concepts from the curriculum text\n"
+            "- Do NOT copy examples from these instructions\n\n"
             f"CURRICULUM TEXT:\n{material}\n\n"
-            f"Generate exactly {q_count} multiple choice questions, each with 3 options, exactly 1 correct.\n"
-            "ALL text in HUNGARIAN only.\n"
-            'Return ONLY this JSON, nothing else: {"questions": [{"q": "...", "options": ["a","b","c"], "correct": 0}]}\n'
-            "The field must be named exactly q. correct must be 0, 1, or 2.\n"
-            "CRITICAL: Each option in the options array MUST be a complete meaningful Hungarian answer text "
-            "like Gyökér, Szilárd, 15 alma, Emlősök. NEVER use single letters a, b, c or just numbers "
-            "as the option text. Each option must be a real answer that makes sense by itself.\n"
+            f"Generate exactly {q_count} multiple choice questions, 3 options each, 1 correct.\n"
+            "ALL text in HUNGARIAN.\n"
+            'Return ONLY: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
+            "CRITICAL: Every option must be a full meaningful Hungarian answer, never single letters."
         )
+        model = "gpt-4o-mini"
+        temperature = 0.5
+
     client = _openai_client(api_key, request_timeout=60.0)
-    response = client.chat.completions.create(
-        model="gpt-4o" if is_foreign_language else "gpt-4o-mini",
-        response_format={"type": "json_object"},
-        messages=[
-            {
-                "role": "system",
-                "content": system,
-            },
-            {"role": "user", "content": f"Generate {q_count} questions based on the curriculum text above. Generate the questions in {'Spanish' if szokincs else 'Hungarian'}."},
-        ],
-        temperature=0.3 if szokincs else 0.5,
-    )
-    raw = response.choices[0].message.content or "{}"
-    payload = json.loads(raw)
-    questions = payload.get("questions", payload if isinstance(payload, list) else [])
-    if not isinstance(questions, list) or len(questions) < 1:
-        raise ValueError("Érvénytelen kvíz JSON")
 
-    # Validate options — retry once if any option is too short (single-letter bug)
-    def _has_valid_options(qs: list) -> bool:
-        for q in qs:
-            opts = q.get("options", [])
-            for opt in opts:
-                if isinstance(opt, str) and len(opt.strip()) <= 1:
-                    return False
-        return True
-
-    if not _has_valid_options(questions):
-        logger.warning("Quiz options validation failed (single-letter options), retrying once…")
-        retry_response = client.chat.completions.create(
-            model="gpt-4o" if is_foreign_language else "gpt-4o-mini",
+    def _do_request(extra_user_note: str = "") -> list:
+        resp = client.chat.completions.create(
+            model=model,
             response_format={"type": "json_object"},
             messages=[
                 {"role": "system", "content": system},
-                {
-                    "role": "user",
-                    "content": (
-                        f"Generate {q_count} questions based on the curriculum text above. "
-                        f"Generate the questions in {'Spanish' if szokincs else 'Hungarian'}. "
-                        "CRITICAL: Every option must be a full meaningful answer. "
-                        "NEVER use single letters like a, b, c as option text."
-                    ),
-                },
+                {"role": "user", "content": (
+                    f"Generate {q_count} questions. "
+                    f"Language: {'Spanish' if is_foreign_language else 'Hungarian'}. "
+                    + extra_user_note
+                )},
             ],
-            temperature=0.3 if szokincs else 0.5,
+            temperature=temperature,
         )
-        raw2 = retry_response.choices[0].message.content or "{}"
-        payload2 = json.loads(raw2)
-        questions2 = payload2.get("questions", payload2 if isinstance(payload2, list) else [])
-        if isinstance(questions2, list) and len(questions2) > 0 and _has_valid_options(questions2):
-            questions = questions2
-        else:
-            logger.warning("Quiz retry also produced invalid options, using original")
+        raw = resp.choices[0].message.content or "{}"
+        payload = json.loads(raw)
+        return payload.get("questions", payload if isinstance(payload, list) else [])
+
+    def _normalize(questions: list) -> list:
+        result = []
+        for q in questions:
+            if not isinstance(q, dict) or not q.get("q"):
+                continue
+            q_type = q.get("type", "mc")
+            if q_type == "mc":
+                opts = q.get("options", [])
+                if len(opts) != 3:
+                    continue
+                if any(isinstance(o, str) and len(o.strip()) <= 1 for o in opts):
+                    continue
+                result.append({"type": "mc", "q": q["q"], "options": opts, "correct": int(q.get("correct", 0))})
+            elif q_type in ("fill", "sent"):
+                if not q.get("answer"):
+                    continue
+                result.append({"type": q_type, "q": q["q"], "answer": str(q["answer"]), "options": []})
+        return result
+
+    questions = _normalize(_do_request())
+
+    if len(questions) < 3:
+        logger.warning("Quiz: csak %d valid kérdés, retry...", len(questions))
+        questions = _normalize(_do_request(
+            "CRITICAL: For mc questions every option must be a full meaningful word or phrase, never a single letter."
+        ))
+
+    if not questions:
+        raise ValueError("Érvénytelen kvíz JSON – nulla valid kérdés")
 
     return questions[:q_count]
 
@@ -2137,7 +2159,7 @@ def child_chat_test_generate(child_id: int):
             age=_child_effective_age(child),
             ora_szam=topic.get("ora_szam", 0),
             all_ora_szamok=all_ora_szamok,
-            szokincs=topic.get("szokincs", []),
+            szokincs=topic.get("szokincs") if language else None,
         )
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
@@ -2171,8 +2193,13 @@ def child_chat_test_submit(child_id: int):
     total = len(questions)
     for i, q in enumerate(questions):
         try:
-            if int(answers[i]) == int(q.get("correct", -1)):
-                correct += 1
+            q_type = q.get("type", "mc")
+            if q_type == "mc":
+                if int(answers[i]) == int(q.get("correct", -1)):
+                    correct += 1
+            elif q_type in ("fill", "sent"):
+                if answers[i] is not None and str(answers[i]).strip().lower() == str(q.get("answer", "")).strip().lower():
+                    correct += 1
         except (IndexError, TypeError, ValueError):
             pass
     score = int(round(100 * correct / total)) if total else 0

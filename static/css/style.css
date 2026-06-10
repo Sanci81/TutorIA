@@ -1227,6 +1227,34 @@ a.btn-generate {
 .test-title { margin: 0 0 1rem; color: #166534; }
 .quiz-q { margin-bottom: 1.25rem; }
 .quiz-q-text { font-weight: 700; margin: 0 0 0.5rem; }
+.quiz-question { margin-bottom: 1.25rem; }
+.quiz-question .question-text { font-weight: 700; margin: 0 0 0.5rem; }
+.fill-answer-input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    font-size: 1rem;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    box-sizing: border-box;
+    margin-bottom: 0.4rem;
+}
+.check-fill-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+.fill-feedback {
+    margin-top: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+.fill-feedback.correct { background: #dcfce7; color: #166534; }
+.fill-feedback.incorrect { background: #fee2e2; color: #991b1b; }
 .quiz-opt {
     display: block;
     padding: 0.5rem 0;

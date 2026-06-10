@@ -528,6 +528,48 @@
         }
     }
 
+    function renderQuestion(q, index) {
+        if (q.type === "fill" || q.type === "sent") {
+            return '<div class="quiz-question" data-index="' + index + '" data-type="' + q.type + '" data-answer="' + escapeAttr(q.answer) + '">' +
+                '<p class="question-text">' + (index + 1) + '. ' + escapeHtml(q.q) + '</p>' +
+                '<input type="text" class="fill-answer-input" placeholder="Escribe tu respuesta..." autocomplete="off">' +
+                '<button class="check-fill-btn" onclick="checkFillAnswer(' + index + ')">\u2713 Comprobar</button>' +
+                '<div class="fill-feedback" style="display:none"></div></div>';
+        }
+        // MC (multiple choice) — existing logic unchanged
+        var html = '<div class="quiz-q" data-q="' + index + '"><p class="quiz-q-text">' +
+            (index + 1) + '. ' + escapeHtml(q.q) + '</p><div class="quiz-options">';
+        (q.options || []).forEach(function (opt, oi) {
+            html += '<label class="quiz-opt"><input type="radio" name="q' + index +
+                '" value="' + oi + '"> ' + escapeHtml(opt) + '</label>';
+        });
+        html += '</div></div>';
+        return html;
+    }
+
+    function checkFillAnswer(index) {
+        var qEl = document.querySelector('.quiz-question[data-index="' + index + '"]');
+        if (!qEl) return;
+        var userAnswer = qEl.querySelector('.fill-answer-input').value.trim().toLowerCase();
+        var correct = qEl.dataset.answer.trim().toLowerCase();
+        var feedback = qEl.querySelector('.fill-feedback');
+        if (!feedback) return;
+        feedback.style.display = 'block';
+        if (userAnswer === correct) {
+            feedback.textContent = '\u2705 \u00a1Correcto!';
+            feedback.className = 'fill-feedback correct';
+            recordAnswer(index, qEl.querySelector('.fill-answer-input').value.trim());
+        } else {
+            feedback.textContent = '\u274c La respuesta correcta es: ' + qEl.dataset.answer;
+            feedback.className = 'fill-feedback incorrect';
+            recordAnswer(index, null);
+        }
+    }
+
+    function recordAnswer(index, value) {
+        quizAnswers[index] = value;
+    }
+
     function showQuiz(questions, topicName) {
         if (!questions || !questions.length) {
             closeTestModal();
@@ -540,13 +582,7 @@
         testTitle.textContent = 'Teszt: ' + topicName;
         var html = '';
         questions.forEach(function (q, qi) {
-            html += '<div class="quiz-q" data-q="' + qi + '"><p class="quiz-q-text">' +
-                (qi + 1) + '. ' + escapeHtml(q.q) + '</p><div class="quiz-options">';
-            (q.options || []).forEach(function (opt, oi) {
-                html += '<label class="quiz-opt"><input type="radio" name="q' + qi +
-                    '" value="' + oi + '"> ' + escapeHtml(opt) + '</label>';
-            });
-            html += '</div></div>';
+            html += renderQuestion(q, qi);
         });
         html += '<button type="button" class="btn btn-primary btn-quiz-submit" id="quiz-submit">Beküldés</button>';
         testBody.innerHTML = html;
@@ -556,8 +592,11 @@
 
     function submitQuiz() {
         quizQuestions.forEach(function (_, qi) {
-            var picked = document.querySelector('input[name="q' + qi + '"]:checked');
-            quizAnswers[qi] = picked ? parseInt(picked.value, 10) : -1;
+            // Only collect MC answers from radio buttons; fill/sent are already stored by recordAnswer
+            if (quizAnswers[qi] === null) {
+                var picked = document.querySelector('input[name="q' + qi + '"]:checked');
+                quizAnswers[qi] = picked ? parseInt(picked.value, 10) : -1;
+            }
         });
         fetch(testSubmitUrl, {
             method: 'POST',
