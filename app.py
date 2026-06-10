@@ -1473,7 +1473,7 @@ FONTOS SZABÁLYOK:
 3. Légy NAGYON barátságos, bátorító, használj emojit
 4. Rövid mondatok, egyszerű szavak
 5. Ha a gyerek jól válaszol: dicsérj lelkesen ('Szuper!', 'Brávó!', 'Fantasztikus!')
-6. Ha rosszul válaszol: bátorítsd ('Majdnem!', 'Próbáld újra!', 'Segítek egy kicsit!')
+6. Ha rosszul válaszol: bátorítsd, és magyarázd el egyszerűen, mit kellett volna válaszolnia
 7. SOHA ne ismételd szó szerint ugyanazt a mondatot ha visszautasítasz valamit
 8. Ha idegen nyelvet tanítasz, akkor a MEGADOTT nyelven taníts, ne keverj más nyelvet
 9. SOHA ne írj ### fejléceket, ## alcímeket a válaszaidban
@@ -1511,6 +1511,13 @@ AKTUÁLIS TANANYAG (ezt tanítsd, ebből ne lépj ki):
     if is_foreign_language and lang:
         prompt += """
 \nÚj idegen szó tanításakor (rejtett, a gyerek ne lássa): <VOCAB>magyar=idegen_szó</VOCAB>
+
+Ha a gyerek nem tudja a választ vagy azt írja 'nem tudom':
+- NE mondd hogy 'Majdnem!' ha teljesen rossz volt
+- Magyarázd el a szó jelentését egyszerűen: 'A [szó] azt jelenti: [jelentés]'
+- Adj egy példamondatot vagy kontextust
+- Kérd meg hogy ismételje meg a szót
+- Csak akkor mondd 'Majdnem!' ha tényleg közel volt a helyes válaszhoz
 """
 
     prompt += """
