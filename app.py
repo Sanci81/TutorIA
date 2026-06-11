@@ -1355,11 +1355,29 @@ Ne tegyél fel egyszerre több kérdést.
 """
 
 
-def _whisper_transcribe(audio_bytes: bytes, filename: str = "audio.webm") -> str:
+def _whisper_transcribe(
+    audio_bytes: bytes, filename: str = "audio.webm", language: str = "hu"
+) -> str:
     api_key = _openai_api_key()
     if not api_key:
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
     import io
+
+    lang_map = {
+        "spanyol": "es",
+        "angol": "en",
+        "német": "de",
+        "hu": "hu",
+    }
+    whisper_lang = lang_map.get(language, "hu")
+
+    prompts = {
+        "es": "Niño hablando en español. Palabras del colegio: sí, no, mesa, silla, lápiz, libro, mochila, profesor, uno, dos, tres.",
+        "en": "Child speaking English. School words: yes, no, table, chair, pencil, book, bag, teacher, one, two, three.",
+        "de": "Kind spricht Deutsch. Schulwörter: ja, nein, Tisch, Stuhl, Bleistift, Buch, Tasche, Lehrer, eins, zwei, drei.",
+        "hu": "Magyar gyerek beszél. Matematika, olvasás, számok, állatok, színek, betűk. Lehetséges szavak: igen, nem, kettő, három, alma, kutya, piros, kék, szia.",
+    }
+    whisper_prompt = prompts.get(whisper_lang, prompts["hu"])
 
     client = _openai_client(api_key, request_timeout=60.0)
     buf = io.BytesIO(audio_bytes)
@@ -1367,10 +1385,8 @@ def _whisper_transcribe(audio_bytes: bytes, filename: str = "audio.webm") -> str
     transcription = client.audio.transcriptions.create(
         model="whisper-1",
         file=buf,
-        language="hu",
-        prompt="Magyar gyerek beszél. Matematika, olvasás, számok, "
-               "állatok, színek, betűk. Lehetséges szavak: igen, nem, "
-               "kettő, három, alma, kutya, piros, kék, szia.",
+        language=whisper_lang,
+        prompt=whisper_prompt,
     )
     return (transcription.text or "").strip()
 
@@ -2386,8 +2402,9 @@ def api_voice_transcribe():
     audio_bytes = upload.read()
     if len(audio_bytes) < 200:
         return jsonify({"error": "audio_too_short"}), 400
+    language = (request.form.get("language") or "hu").strip().lower()
     try:
-        text = _whisper_transcribe(audio_bytes, upload.filename)
+        text = _whisper_transcribe(audio_bytes, upload.filename, language=language)
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
     except Exception as exc:
