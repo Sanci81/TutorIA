@@ -474,6 +474,39 @@
         });
     }
 
+    function updateVocabulary(vocabArray, topicName) {
+        var list = document.getElementById('vocab-list');
+        var emptyMsg = document.getElementById('vocab-empty');
+        if (!list) return;
+
+        list.innerHTML = '';
+
+        if (!vocabArray || vocabArray.length === 0) {
+            if (emptyMsg) emptyMsg.hidden = false;
+            return;
+        }
+
+        if (emptyMsg) emptyMsg.hidden = true;
+
+        if (topicName) {
+            var titleLi = document.createElement('li');
+            titleLi.style.fontWeight = 'bold';
+            titleLi.style.marginTop = '10px';
+            titleLi.style.marginBottom = '5px';
+            titleLi.style.borderBottom = '1px solid #ddd';
+            titleLi.textContent = topicName;
+            list.appendChild(titleLi);
+        }
+
+        vocabArray.forEach(function(w) {
+            var li = document.createElement('li');
+            li.innerHTML = '<span class="vocab-native">' + (w.word_native || '') + '</span>' +
+                           '<span class="vocab-arrow"> - </span>' +
+                           '<span class="vocab-foreign">' + (w.word_foreign || '') + '</span>';
+            list.appendChild(li);
+        });
+    }
+
     function sendMessage(text, topicId) {
         if (chatMode === 'voice' || !form || !input) return;
         appendBubble('user', text);
@@ -508,6 +541,7 @@
                 }
                 if (res.data.sidebar) renderSidebar(res.data.sidebar);
                 if (res.data.show_test_offer && btnTest) btnTest.hidden = false;
+                updateVocabulary(res.data.vocabulary, res.data.current_topic);
             })
             .catch(function () {
                 setLoading(false);
@@ -830,6 +864,7 @@
                         topicTitle.textContent = res.data.current_topic;
                     }
                     if (res.data.sidebar) renderSidebar(res.data.sidebar);
+                    updateVocabulary(res.data.vocabulary, res.data.current_topic);
                     if (!reply.trim()) {
                         setVoiceUi('idle');
                         return;
