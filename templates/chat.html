@@ -881,7 +881,7 @@
         }
 
         function uploadAndProcess(blob) {
-            if (!blob || blob.size < 200) {
+            if (!blob || blob.size < 1000) {
                 setVoiceUi('idle');
                 return;
             }

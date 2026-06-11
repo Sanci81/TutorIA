@@ -2408,7 +2408,7 @@ def api_voice_transcribe():
     if not upload or not upload.filename:
         return jsonify({"error": "no_audio"}), 400
     audio_bytes = upload.read()
-    if len(audio_bytes) < 200:
+    if len(audio_bytes) < 1000:
         return jsonify({"error": "audio_too_short"}), 400
     language = (request.form.get("language") or "hu").strip().lower()
     try:
