@@ -1388,7 +1388,15 @@ def _whisper_transcribe(
         language=whisper_lang,
         prompt=whisper_prompt,
     )
-    return (transcription.text or "").strip()
+    result = (transcription.text or "").strip()
+    _WHISPER_HALLUCINATIONS = (
+        "amara.org", "subtítulos realizados", "feliratok készítője",
+        "translated by", "transcribed by", "iratkozz fel",
+        "www.", "http", "♪", "[ silence ]", "[silence]"
+    )
+    if any(h in result.lower() for h in _WHISPER_HALLUCINATIONS):
+        return ""
+    return result
 
 
 def _openai_tts_speak(text: str) -> bytes:
