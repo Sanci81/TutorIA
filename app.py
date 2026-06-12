@@ -1372,10 +1372,10 @@ def _whisper_transcribe(
     whisper_lang = lang_map.get(language, "hu")
 
     prompts = {
-        "es": "Niño hablando en español. Palabras del colegio: sí, no, mesa, silla, lápiz, libro, mochila, profesor, uno, dos, tres.",
-        "en": "Child speaking English. School words: yes, no, table, chair, pencil, book, bag, teacher, one, two, three.",
-        "de": "Kind spricht Deutsch. Schulwörter: ja, nein, Tisch, Stuhl, Bleistift, Buch, Tasche, Lehrer, eins, zwei, drei.",
-        "hu": "Magyar gyerek beszél. Matematika, olvasás, számok, állatok, színek, betűk. Lehetséges szavak: igen, nem, kettő, három, alma, kutya, piros, kék, szia.",
+        "es": "Magyar és spanyol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, agua, kenyér, pan, alma, manzana, hola, szia.",
+        "en": "Magyar és angol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, water, kenyér, bread, apple, alma, hello, szia.",
+        "de": "Magyar és német kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, Wasser, kenyér, Brot, Apfel, alma, hallo, szia.",
+        "hu": "Magyar gyerek beszél. Iskolai szavak: igen, nem, nem tudom, víz, alma, kutya, cica, egy, kettő, három.",
     }
     whisper_prompt = prompts.get(whisper_lang, prompts["hu"])
 
@@ -1385,7 +1385,6 @@ def _whisper_transcribe(
     transcription = client.audio.transcriptions.create(
         model="whisper-1",
         file=buf,
-        language=whisper_lang,
         prompt=whisper_prompt,
     )
     result = (transcription.text or "").strip()
@@ -1500,6 +1499,7 @@ FONTOS SZABÁLYOK:
 2. Ha jól válaszol: dicsérj lelkesen. Ha rosszul: rávezető kérdéssel segíts, ne add meg azonnal a választ.
 3. SOHA ne írj formázásokat (###, **, *, {{{{ }}}}).
 4. SZIGORÚAN kövesd a témakörök sorrendjét. Az aktuális témakör: {current_topic}
+5. A pedagógiai ciklust CSAK belső gondolatmenetként használd! SOHA ne írd ki a válaszodban a lépések neveit vagy számait (pl. TILOS ilyet írni: "1. BEMUTATÁS:", "2. PÉLDA:"). A válaszod egyetlen, természetes, összefüggő emberi beszéd legyen!
 
 Idegen nyelveknél: {lang_line}. Ha language=angol, CSAK angolul taníts. Ha language=spanyol, CSAK spanyolul taníts. Ha language=nemet, CSAK németül taníts.
 
