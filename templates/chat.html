@@ -531,7 +531,17 @@
                     appendBubble('assistant', 'Sajnos most nem tudok válaszolni. 😊');
                     return;
                 }
-                appendBubble('assistant', res.data.reply || '');
+                var aiMessage = res.data.reply || '';
+                if (aiMessage.includes('<TOPIC_COMPLETE>')) {
+                    confetti({
+                        particleCount: 150,
+                        spread: 100,
+                        origin: { y: 0.6 },
+                        colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+                    });
+                    aiMessage = aiMessage.replace('<TOPIC_COMPLETE>', '').trim();
+                }
+                appendBubble('assistant', aiMessage);
                 if (res.data.current_topic_id) {
                     currentTopicId = res.data.current_topic_id;
                     if (topicIdInput) topicIdInput.value = currentTopicId;
@@ -855,6 +865,15 @@
                         return;
                     }
                     var reply = res.data.reply || '';
+                    if (reply.includes('<TOPIC_COMPLETE>')) {
+                        confetti({
+                            particleCount: 150,
+                            spread: 100,
+                            origin: { y: 0.6 },
+                            colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+                        });
+                        reply = reply.replace('<TOPIC_COMPLETE>', '').trim();
+                    }
                     appendBubble('assistant', reply);
                     if (res.data.current_topic_id) {
                         currentTopicId = res.data.current_topic_id;
