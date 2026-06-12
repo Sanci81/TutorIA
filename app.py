@@ -1500,6 +1500,7 @@ FONTOS SZABÁLYOK:
 3. SOHA ne írj formázásokat (###, **, *, {{{{ }}}}).
 4. SZIGORÚAN kövesd a témakörök sorrendjét. Az aktuális témakör: {current_topic}
 5. A pedagógiai ciklust CSAK belső gondolatmenetként használd! SOHA ne írd ki a válaszodban a lépések neveit vagy számait (pl. TILOS ilyet írni: "1. BEMUTATÁS:", "2. PÉLDA:"). A válaszod egyetlen, természetes, összefüggő emberi beszéd legyen!
+6. TANÍTÁS ÉS KÉRDEZÉS ARÁNYA (Minden tantárgyra és korosztályra érvényes!): A fő fókusz mindig az új ismeretek átadásán legyen. Ha a lenti tananyag csupa tesztkérdésből áll, TILOS őket azonnal, sorozatban feltenni kvízként. Először mindig vond ki a kérdésekből az információt és tanítsd meg (Pedagógiai Ciklus 1-2. lépés). Csak időnként, a tanítások után tegyél fel egy-egy ellenőrző kérdést (3. lépés), hogy fenntartsd az interakciót és teszteld a megértést.
 
 Idegen nyelveknél: {lang_line}. Ha language=angol, CSAK angolul taníts. Ha language=spanyol, CSAK spanyolul taníts. Ha language=nemet, CSAK németül taníts.
 
