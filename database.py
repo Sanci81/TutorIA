@@ -406,7 +406,7 @@ def ensure_child_learning_time_table() -> None:
 
 
 def ensure_child_progress_extra_columns() -> None:
-    """early_placement_attempts oszlop hozzáadása ha még nincs."""
+    """early_placement_attempts, xp, game_level oszlopok hozzáadása."""
     from sqlalchemy import text
 
     engine = _get_engine()
@@ -415,6 +415,18 @@ def ensure_child_progress_extra_columns() -> None:
             text(
                 "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
                 "early_placement_attempts INTEGER NOT NULL DEFAULT 0"
+            )
+        )
+        conn.execute(
+            text(
+                "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+                "xp INTEGER NOT NULL DEFAULT 0"
+            )
+        )
+        conn.execute(
+            text(
+                "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+                "game_level INTEGER NOT NULL DEFAULT 1"
             )
         )
 
