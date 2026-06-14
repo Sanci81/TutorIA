@@ -268,6 +268,10 @@ class ChildProgress(Base):
         onupdate=func.now(),
     )
 
+    # Új gamifikációs mezők:
+    xp: Mapped[int] = mapped_column(Integer, default=0)
+    game_level: Mapped[int] = mapped_column(Integer, default=1)
+
 
 # ---------------------------------------------------------------------------
 # Segédek
@@ -700,6 +704,8 @@ def _progress_dict(row: ChildProgress) -> dict[str, Any]:
         "level": row.level,
         "early_placement_attempts": row.early_placement_attempts,
         "updated_at": row.updated_at,
+        "xp": row.xp,
+        "game_level": row.game_level,
     }
 
 
@@ -861,6 +867,8 @@ def update_child_progress(
     topics_completed: list[str] | None = None,
     last_position: str | None = None,
     level: int | None = None,
+    xp: int | None = None,
+    game_level: int | None = None,
 ) -> dict[str, Any]:
     db = _session()
     try:
@@ -877,6 +885,8 @@ def update_child_progress(
                 topics_completed=topics_completed or [],
                 last_position=last_position,
                 level=level if level is not None else 0,
+                xp=xp if xp is not None else 0,
+                game_level=game_level if game_level is not None else 1,
             )
             db.add(row)
         else:
@@ -886,6 +896,10 @@ def update_child_progress(
                 row.last_position = last_position
             if level is not None:
                 row.level = level
+            if xp is not None:
+                row.xp = xp
+            if game_level is not None:
+                row.game_level = game_level
             row.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(row)
