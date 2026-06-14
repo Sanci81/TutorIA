@@ -2090,12 +2090,21 @@ def child_chat_send(child_id: int):
         if last_pos is None and completed:
             last_pos = topic_names[-1] if topic_names else current_topic
 
+    # XP és game_level számítás
+    new_xp = progress.get("xp", 0)
+    new_game_level = progress.get("game_level", 1)
+    if topic_done:
+        new_xp += 50
+        new_game_level = (new_xp // 200) + 1
+
     progress = database.update_child_progress(
         child_id,
         progress_subject,
         topics_completed=completed,
         last_position=last_pos or current_topic,
         level=level,
+        xp=new_xp,
+        game_level=new_game_level,
     )
 
     database.update_chat_session_position(
