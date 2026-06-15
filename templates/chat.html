@@ -542,6 +542,7 @@
                     appendBubble('assistant', 'Sajnos most nem tudok válaszolni. 😊');
                     return;
                 }
+                console.log('Backend válasz:', res.data);
                 var aiMessage = res.data.reply || '';
                 if (res.data.topic_done) {
                     setTimeout(function () {
@@ -877,6 +878,7 @@
                         setVoiceUi('idle');
                         return;
                     }
+                    console.log('Backend válasz:', res.data);
                     var reply = res.data.reply || '';
                     if (res.data.topic_done) {
                         setTimeout(function () {
