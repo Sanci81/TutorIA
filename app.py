@@ -2330,12 +2330,17 @@ def child_chat_test_submit(child_id: int):
     )
 
     congrats_message = None
+    cur_progress = database.get_or_create_child_progress(child_id, progress_subject)
+    new_xp = cur_progress.get("xp", 0)
+    new_game_level = cur_progress.get("game_level", 1)
 
     if passed:
-        current_level = database.get_or_create_child_progress(
-            child_id, progress_subject
-        ).get("level", 0)
+        current_level = cur_progress.get("level", 0)
         new_level = 1 if current_level == 0 else current_level
+
+        # XP és game_level számítás
+        new_xp = cur_progress.get("xp", 0) + 50
+        new_game_level = (new_xp // 200) + 1
 
         completed_names = [
             t["name"]
@@ -2352,6 +2357,8 @@ def child_chat_test_submit(child_id: int):
             topics_completed=completed_names,
             last_position=topic_name,
             level=new_level,
+            xp=new_xp,
+            game_level=new_game_level,
         )
         next_topic = None
         for t in catalog:
@@ -2371,6 +2378,8 @@ def child_chat_test_submit(child_id: int):
                 progress_subject,
                 last_position=next_topic["name"],
                 level=new_level,
+                xp=new_xp,
+                game_level=new_game_level,
             )
 
         # 100% → AI gratuláció
@@ -2420,6 +2429,9 @@ def child_chat_test_submit(child_id: int):
             "topic_name": topic_name,
             "congrats_message": congrats_message,
             "sidebar": sidebar,
+            "xp": new_xp,
+            "game_level": new_game_level,
+            "topic_done": passed,
         }
     )
 

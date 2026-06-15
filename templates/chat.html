@@ -728,6 +728,17 @@
                 if (d.congrats_message) {
                     appendBubble('assistant', d.congrats_message);
                 }
+                updateGamification(d.xp, d.game_level);
+                if (d.topic_done) {
+                    setTimeout(function () {
+                        confetti({
+                            particleCount: 150,
+                            spread: 100,
+                            origin: { y: 0.6 },
+                            colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+                        });
+                    }, 200);
+                }
                 var passBtn = testResult.querySelector('.result-pass');
                 if (passBtn) {
                     passBtn.addEventListener('click', function (e) {
