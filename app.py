@@ -1964,6 +1964,7 @@ def child_chat(child_id: int):
         show_chat_switch=chat_profile != _CHAT_PROFILE_VOICE_ONLY,
         learning_today=learning_today,
         show_early_test=show_early_test,
+        progress=progress,
     )
 
 
