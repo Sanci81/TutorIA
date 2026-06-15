@@ -78,6 +78,10 @@
                 <p class="chat-time-display" id="chat-time-display">
                     ⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> perc ma
                 </p>
+                <div class="chat-gamification" id="chat-gamification">
+                    <span class="xp-badge">⭐ <span id="xp-display">{{ progress.get('xp', 0) }}</span> XP</span>
+                    <span class="level-badge">🏆 <span id="level-display">{{ progress.get('game_level', 1) }}</span>. szint</span>
+                </div>
             </div>
             {% if show_early_test %}
             <button type="button" class="btn-test-start" id="btn-test-start">
@@ -508,6 +512,13 @@
         });
     }
 
+    function updateGamification(xp, gameLevel) {
+        var xpEl = document.getElementById('xp-display');
+        var levelEl = document.getElementById('level-display');
+        if (xpEl) xpEl.textContent = xp;
+        if (levelEl) levelEl.textContent = gameLevel;
+    }
+
     function sendMessage(text, topicId) {
         if (chatMode === 'voice' || !form || !input) return;
         appendBubble('user', text);
@@ -553,6 +564,7 @@
                 if (res.data.sidebar) renderSidebar(res.data.sidebar);
                 if (res.data.show_test_offer && btnTest) btnTest.hidden = false;
                 updateVocabulary(res.data.vocabulary, res.data.current_topic);
+                updateGamification(res.data.xp, res.data.game_level);
             })
             .catch(function () {
                 setLoading(false);
@@ -885,6 +897,7 @@
                     }
                     if (res.data.sidebar) renderSidebar(res.data.sidebar);
                     updateVocabulary(res.data.vocabulary, res.data.current_topic);
+                    updateGamification(res.data.xp, res.data.game_level);
                     if (!reply.trim()) {
                         setVoiceUi('idle');
                         return;

@@ -2140,6 +2140,8 @@ def child_chat_send(child_id: int):
             "vocabulary": vocabulary,
             "show_test_offer": "teszt" in reply.lower()
             or "tesztet" in reply.lower(),
+            "xp": progress.get("xp", 0),
+            "game_level": progress.get("game_level", 1),
         }
     )
 

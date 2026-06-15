@@ -1408,6 +1408,31 @@ a.btn-generate {
     margin: 0.25rem 0 0;
     text-align: center;
 }
+.chat-gamification {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin: 6px 0 0;
+}
+.xp-badge, .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+.xp-badge {
+    background: linear-gradient(135deg, #fff3cd, #ffe69c);
+    color: #856404;
+    border: 1px solid #ffc107;
+}
+.level-badge {
+    background: linear-gradient(135deg, #cce5ff, #b8daff);
+    color: #004085;
+    border: 1px solid #6ea8fe;
+}
 .chat-placement-link {
     display: inline-block;
     font-size: 13px;
