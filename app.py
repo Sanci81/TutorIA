@@ -1461,6 +1461,57 @@ def _age_specific_rules(age: int) -> str:
     return "\n".join(lines)
 
 
+def _grade_block_context(grade: int) -> str:
+    """NAT 2020 kerettanterv blokk-pozíció — hol van a gyerek a spirális építkezésben."""
+    if 1 <= grade <= 2:
+        return (
+            f"Ez a {grade}. osztály a NAT 2020 '1-2 blokk' "
+            f"{'első' if grade == 1 else 'második'} éve.\n"
+            "Ez az alapozó szakasz: 100-as számkör, kisegyszeregy alapozás (2, 5, 10), "
+            "egyszerű mérések, halmazok.\n"
+            "KÖTELEZŐ ezen a szinten tanítani."
+        )
+    if grade == 3:
+        return (
+            "Ez a 3. osztály a NAT 2020 '3-4 blokk' ELSŐ éve.\n"
+            "Az 1-2 blokk anyagát (100-as számkör, alapszintű összehasonlítás, "
+            "egyszerű mérések) a gyerek MÁR ELSAJÁTÍTOTTA.\n"
+            "TILOS az 1-2 blokk szintjén tanítani! TILOS például:\n"
+            "- 100-as számkörön belüli alapfeladatok (pl. '8 kg vagy 10 kg, melyik több?')\n"
+            "- Triviális kisebb-nagyobb összehasonlítások ('50 cm vagy 75 cm?')\n"
+            "- Óvodás/1. osztály szintű feladatok\n"
+            "KÖTELEZŐ a 3-4 blokk anyagából tanítani: a teljes szorzótábla, írásbeli "
+            "összeadás-kivonás, 1000-es (majd 10 000-es) számkör felé építkezés, "
+            "törtrészek alapozása, negatív számok bevezetése, római számok (I, V, X)."
+        )
+    if grade == 4:
+        return (
+            "Ez a 4. osztály a NAT 2020 '3-4 blokk' MÁSODIK éve.\n"
+            "Az 1-2 blokk anyagát teljes egészében, a 3-4 blokk nagy részét MÁR "
+            "ELSAJÁTÍTOTTA.\n"
+            "TILOS az 1-2 blokk szintjén tanítani!\n"
+            "KÖTELEZŐ a 3-4 blokk legkomplexebb részeire koncentrálni: 10 000-es "
+            "számkör, írásbeli szorzás kétjegyűvel, írásbeli osztás egyjegyűvel, "
+            "törtrészek és többszöröseik, negatív számok."
+        )
+    if 5 <= grade <= 6:
+        return (
+            f"Ez a {grade}. osztály a NAT 2020 '5-6 blokk' "
+            f"{'első' if grade == 5 else 'második'} éve.\n"
+            "Az 1-4 blokk teljes anyagát ELSAJÁTÍTOTTA.\n"
+            "TILOS alsó tagozat (1-4) szintjén tanítani!\n"
+            "Felső tagozat szintjén kell tanítani."
+        )
+    if 7 <= grade <= 8:
+        return (
+            f"Ez a {grade}. osztály a NAT 2020 '7-8 blokk' "
+            f"{'első' if grade == 7 else 'második'} éve.\n"
+            "Az 1-6 blokk teljes anyagát ELSAJÁTÍTOTTA.\n"
+            "TILOS korábbi évfolyamok szintjén tanítani!"
+        )
+    return ""
+
+
 def _build_chat_system_prompt(
     child: dict,
     *,
@@ -1494,7 +1545,7 @@ FONTOS SZABÁLYOK – MINDIG tartsd be:
    - Ha a gyerek a tananyagon kívüli, de szellemi/tanulási jellegű kérdést tesz fel (pl. "mit jelent ez a szó?", "hogyan írjuk?"): válaszolj 1-2 mondatban, majd terelj vissza.
    - Ha a gyerek teljesen offtopic kérdést tesz fel (pl. "hol vehetek játékot?", "mit főzzek?"): mondd kedvesen: "Erre most nem tudok válaszolni, de szívesen segítek a tanulásban! Folytassuk ott, ahol abbahagytuk." – majd folytasd a tanítást.
    - SOHA ne mondd hogy "Azt majd később tanuljuk!" – ez túl rideg, és lehet nem is tanulják mert nem a tantárgyhoz kapcsolódik.
-6. A {grade}. osztályos szintnek MEGFELELŐ szókincset és mondatokat használj – ne taníts alacsonyabb szintű anyagot!
+6. A {grade}. osztály a kerettanterv adott blokkjának egy konkrét éve — a fenti BLOKK-POZÍCIÓ alapján tanítsd, ne adj alacsonyabb blokkba tartozó feladatokat.
 
 TANÍTÁSI MÓDSZER – ÚGY taníts, mint egy igazi tanár az osztályteremben!
 
@@ -1545,6 +1596,9 @@ NYELVHASZNÁLAT:
 """
 
     prompt += f"""
+BLOKK-POZÍCIÓ A KERETTANTERVBEN (KÖTELEZŐ figyelembe venni):
+{_grade_block_context(grade)}
+
 KERETTANTERVI ANYAG ({grade}. osztály, {current_topic}):
 {curriculum_body}
 
