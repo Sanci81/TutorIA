@@ -55,39 +55,57 @@
 
     <div class="chat-main">
         <header class="chat-header">
-            {% if chat_mode == 'voice' and show_chat_switch %}
-            <a class="voice-switch-chat" href="{{ chat_switch_url }}">← Inkább írok</a>
-            {% else %}
-            <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
-            {% endif %}
+            <div class="chat-header-topbar">
+                {% if chat_mode == 'voice' and show_chat_switch %}
+                <a class="voice-switch-chat" href="{{ chat_switch_url }}">← Inkább írok</a>
+                {% else %}
+                <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
+                {% endif %}
+                {% if chat_mode == 'voice' %}
+                    <span class="chat-mode-badge chat-mode-voice">🎙️ Hangos</span>
+                {% elif chat_mode == 'chat' %}
+                    <span class="chat-mode-badge chat-mode-chat">💬 Chat</span>
+                {% endif %}
+            </div>
+
             <div class="chat-header-info">
                 <h1 class="chat-child-name">{{ child['name'] }}</h1>
                 <p class="chat-subject">{{ subject_label }}</p>
-                {% if chat_mode == 'voice' %}
-                    <p class="chat-mode-badge chat-mode-voice">🎙️ Hangos tanulás</p>
-                {% elif chat_mode == 'chat' %}
-                    <p class="chat-mode-badge chat-mode-chat">💬 Chat mód</p>
-                {% endif %}
-                {% if not placement_mode %}
-                    <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
-                {% endif %}
+            </div>
+
+            {% if not placement_mode %}
+            <div class="chat-topic-card">
+                <span class="chat-topic-card-label">Aktuális témakör</span>
+                <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
+            </div>
+            {% endif %}
+
+            <div class="chat-stats-row">
+                <div class="chat-stat-pill chat-stat-time">
+                    <span class="chat-stat-icon">⏱️</span>
+                    <span class="chat-stat-value"><span id="learning-minutes-today">{{ learning_today }}</span> perc</span>
+                </div>
+                <div class="chat-stat-pill chat-stat-xp">
+                    <span class="chat-stat-icon">⭐</span>
+                    <span class="chat-stat-value"><span id="xp-display">{{ progress.get('xp', 0) }}</span> XP</span>
+                </div>
+                <div class="chat-stat-pill chat-stat-level">
+                    <span class="chat-stat-icon">🏆</span>
+                    <span class="chat-stat-value"><span id="level-display">{{ progress.get('game_level', 1) }}</span>. szint</span>
+                </div>
+            </div>
+
+            <div class="chat-header-actions">
                 <a class="chat-placement-link {% if not show_early_test %}chat-placement-disabled{% endif %}"
                    {% if show_early_test %}href="{{ url_for('child_chat', child_id=child['id'], subject=subject, mode='chat') }}?placement=1"{% endif %}>
                    📋 Szintfelmérő {% if not show_early_test %}(1 óra tanulás után){% endif %}
                 </a>
-                <p class="chat-time-display" id="chat-time-display">
-                    ⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> perc ma
-                </p>
-                <div class="chat-gamification" id="chat-gamification">
-                    <span class="xp-badge">⭐ <span id="xp-display">{{ progress.get('xp', 0) }}</span> XP</span>
-                    <span class="level-badge">🏆 <span id="level-display">{{ progress.get('game_level', 1) }}</span>. szint</span>
-                </div>
+                {% if show_early_test %}
+                <button type="button" class="btn-test-start" id="btn-test-start">
+                    Teszt indítása ✏️
+                </button>
+                {% endif %}
             </div>
-            {% if show_early_test %}
-            <button type="button" class="btn-test-start" id="btn-test-start">
-                Teszt indítása ✏️
-            </button>
-            {% endif %}
         </header>
 
         <div class="chat-messages" id="chat-messages" aria-live="polite">
