@@ -1942,7 +1942,18 @@ def child_chat(child_id: int):
         last_position=catalog[0]["name"] if catalog else None,
     )
     scores = database.get_topic_scores(child_id, progress_subject, grade_num)
-    current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
+    requested_topic_id = (request.args.get("topic_id") or "").strip()
+    if requested_topic_id and any(t["id"] == requested_topic_id for t in catalog):
+        current_topic_id = requested_topic_id
+        topic_item = next(
+            (t for t in catalog if t["id"] == requested_topic_id), None
+        )
+        if topic_item:
+            progress = database.update_child_progress(
+                child_id, progress_subject, last_position=topic_item["name"]
+            )
+    else:
+        current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
     current_topic = next(
         (t["name"] for t in catalog if t["id"] == current_topic_id), ""
     )

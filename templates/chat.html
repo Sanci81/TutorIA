@@ -455,12 +455,14 @@
     }
 
     function openTopic(topicId, topicName) {
-        currentTopicId = topicId;
-        currentTopicName = topicName;
-        if (topicIdInput) topicIdInput.value = topicId;
-        if (topicTitle) topicTitle.textContent = topicName;
-        if (chatMode === 'voice' || !form) return;
-        sendMessage('Szeretnék a „' + topicName + '” témakörrel tanulni.', topicId);
+        // Új témakör = új chat ablak: teljes oldal-újratöltés új topic_id-vel.
+        var params = new URLSearchParams();
+        params.set('subject', subject);
+        params.set('topic_id', topicId);
+        params.set('mode', chatMode);
+        var lang = getChatLanguage();
+        if (lang) params.set('language', lang);
+        window.location.href = '/children/' + childId + '/chat?' + params.toString();
     }
 
     function bindTopicClicks() {
