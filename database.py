@@ -14,6 +14,7 @@ A kapcsolati URL a DATABASE_URL environment variable-ből jön
 from __future__ import annotations
 
 import hashlib
+import logging
 import os
 import secrets
 from datetime import date, datetime, timedelta, timezone
@@ -38,6 +39,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, relationship
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import func
+
+logger = logging.getLogger(__name__)
 
 RESET_TOKEN_HOURS = 24
 
@@ -272,6 +275,14 @@ class ChildProgress(Base):
     xp: Mapped[int] = mapped_column(Integer, default=0)
     game_level: Mapped[int] = mapped_column(Integer, default=1)
 
+    # Virtuális bolt – skinek:
+    unlocked_skins: Mapped[str] = mapped_column(
+        String(500), nullable=False, default="default"
+    )
+    active_skin: Mapped[str] = mapped_column(
+        String(100), nullable=False, default="default"
+    )
+
 
 # ---------------------------------------------------------------------------
 # Segédek
@@ -406,29 +417,38 @@ def ensure_child_learning_time_table() -> None:
 
 
 def ensure_child_progress_extra_columns() -> None:
-    """early_placement_attempts, xp, game_level oszlopok hozzáadása."""
+    """early_placement_attempts, xp, game_level, skin oszlopok hozzáadása.
+
+    Minden ALTER külön, biztonságos tranzakcióban fut: ha egy oszlop
+    már létezik vagy az adott DB nem támogatja az IF NOT EXISTS-t (pl. SQLite),
+    az NEM gátolja meg az app elindulását.
+    """
     from sqlalchemy import text
 
+    statements = (
+        "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+        "early_placement_attempts INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+        "xp INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+        "game_level INTEGER NOT NULL DEFAULT 1",
+        "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+        "unlocked_skins VARCHAR(500) NOT NULL DEFAULT 'default'",
+        "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+        "active_skin VARCHAR(100) NOT NULL DEFAULT 'default'",
+    )
+
     engine = _get_engine()
-    with engine.begin() as conn:
-        conn.execute(
-            text(
-                "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
-                "early_placement_attempts INTEGER NOT NULL DEFAULT 0"
+    for stmt in statements:
+        try:
+            with engine.begin() as conn:
+                conn.execute(text(stmt))
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(
+                "ensure_child_progress_extra_columns: kihagyva (%s): %s",
+                exc.__class__.__name__,
+                stmt,
             )
-        )
-        conn.execute(
-            text(
-                "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
-                "xp INTEGER NOT NULL DEFAULT 0"
-            )
-        )
-        conn.execute(
-            text(
-                "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
-                "game_level INTEGER NOT NULL DEFAULT 1"
-            )
-        )
 
 
 def ensure_topic_scores_extra_columns() -> None:
@@ -718,6 +738,8 @@ def _progress_dict(row: ChildProgress) -> dict[str, Any]:
         "updated_at": row.updated_at,
         "xp": row.xp,
         "game_level": row.game_level,
+        "unlocked_skins": getattr(row, "unlocked_skins", None) or "default",
+        "active_skin": getattr(row, "active_skin", None) or "default",
     }
 
 
@@ -730,7 +752,7 @@ def get_or_create_chat_session(
     curriculum_position: dict | None = None,
 ) -> dict[str, Any]:
     lang_key = (language or "").strip().lower()
-    tpid = topic_id.strip()
+    tpid = topic_id.strip() if topic_id else ""
     db = _session()
     try:
         row = db.scalar(
