@@ -1660,7 +1660,7 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
 }
 .chat-bubble {
     display: flex;
-    max-width: 88%;
+    max-width: 96%;
     align-items: center;
 }
 .chat-bubble-assistant {
@@ -1850,7 +1850,7 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
 }
 @media (max-width: 560px) {
     .chat-messages { max-height: 50vh; }
-    .chat-bubble { max-width: 95%; }
+    .chat-bubble { max-width: 96%; }
     .chat-bubble-inner { font-size: 1.12rem; padding: 1.1rem 1.2rem; }
     .chat-input-bar { flex-direction: column; align-items: stretch; }
     .chat-send-btn { width: 100%; padding: 1.15rem; }
