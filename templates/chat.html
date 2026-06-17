@@ -90,13 +90,9 @@
             </div>
 
             <div class="chat-header-actions">
-                <a class="chat-placement-link {% if not show_early_test %}chat-placement-disabled{% endif %}"
-                   {% if show_early_test %}href="{{ url_for('child_chat', child_id=child['id'], subject=subject, mode='chat') }}?placement=1"{% endif %}>
-                   📋 Szintfelmérő {% if not show_early_test %}(1 óra tanulás után){% endif %}
-                </a>
                 {% if show_early_test %}
                 <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
-                    ⭐ Teszt indítása
+                    ⭐ Szintfelmérő teszt
                 </button>
                 {% endif %}
             </div>
