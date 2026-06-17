@@ -54,7 +54,7 @@
     </aside>
 
     <div class="chat-main">
-        <header class="chat-header">
+        <header class="chat-header chat-header-playful">
             <div class="chat-header-topbar">
                 {% if chat_mode == 'voice' and show_chat_switch %}
                 <a class="voice-switch-chat" href="{{ chat_switch_url }}">← Inkább írok</a>
@@ -62,37 +62,31 @@
                 <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
                 {% endif %}
                 {% if chat_mode == 'voice' %}
-                    <span class="chat-mode-badge chat-mode-voice">🎙️ Hangos</span>
+                    <a class="chat-mode-toggle chat-mode-voice" href="{{ chat_switch_url if show_chat_switch else '#' }}">🎙️ Hangos mód</a>
                 {% elif chat_mode == 'chat' %}
-                    <span class="chat-mode-badge chat-mode-chat">💬 Chat</span>
+                    <span class="chat-mode-toggle chat-mode-chat">💬 Chat mód</span>
                 {% endif %}
             </div>
 
-            <div class="chat-header-info">
-                <h1 class="chat-child-name">{{ child['name'] }}</h1>
-                <p class="chat-subject">{{ subject_label }}</p>
+            <div class="chat-header-identity">
+                <div class="chat-avatar-circle">{{ child['name'][0]|upper }}</div>
+                <div class="chat-header-identity-text">
+                    <h1 class="chat-child-name">{{ child['name'] }}</h1>
+                    <p class="chat-subject">{{ subject_label }}</p>
+                </div>
+                <div class="chat-xp-pill">⭐ <span id="xp-display">{{ progress.get('xp', 0) }}</span></div>
             </div>
 
             {% if not placement_mode %}
-            <div class="chat-topic-card">
-                <span class="chat-topic-card-label">Aktuális témakör</span>
+            <div class="chat-topic-card chat-topic-card-playful">
+                <span class="chat-topic-card-label">🎯 Most ezt tanulod</span>
                 <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
             </div>
             {% endif %}
 
-            <div class="chat-stats-row">
-                <div class="chat-stat-pill chat-stat-time">
-                    <span class="chat-stat-icon">⏱️</span>
-                    <span class="chat-stat-value"><span id="learning-minutes-today">{{ learning_today }}</span> perc</span>
-                </div>
-                <div class="chat-stat-pill chat-stat-xp">
-                    <span class="chat-stat-icon">⭐</span>
-                    <span class="chat-stat-value"><span id="xp-display">{{ progress.get('xp', 0) }}</span> XP</span>
-                </div>
-                <div class="chat-stat-pill chat-stat-level">
-                    <span class="chat-stat-icon">🏆</span>
-                    <span class="chat-stat-value"><span id="level-display">{{ progress.get('game_level', 1) }}</span>. szint</span>
-                </div>
+            <div class="chat-mini-stats">
+                <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> perc</span>
+                <span class="chat-mini-stat">🏆 <span id="level-display">{{ progress.get('game_level', 1) }}</span>. szint</span>
             </div>
 
             <div class="chat-header-actions">
@@ -101,8 +95,8 @@
                    📋 Szintfelmérő {% if not show_early_test %}(1 óra tanulás után){% endif %}
                 </a>
                 {% if show_early_test %}
-                <button type="button" class="btn-test-start" id="btn-test-start">
-                    Teszt indítása ✏️
+                <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
+                    ⭐ Teszt indítása
                 </button>
                 {% endif %}
             </div>
