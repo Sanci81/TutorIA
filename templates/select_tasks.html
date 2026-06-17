@@ -27,13 +27,27 @@
         {% if learning_summary %}
         <div class="learning-time-section">
             <h3>⏱️ Tanulási idő</h3>
-            <div class="learning-time-grid">
+            <div class="learning-time-grid learning-time-grid-playful{% if learning_summary|length > 10 %} learning-time-grid-compact{% endif %}">
                 {% for item in learning_summary %}
-                <div class="learning-time-subject">
-                    <span class="lt-subject">{{ item.subject }}</span>
-                    <span class="lt-today">{{ item.today }}p ma</span>
-                    <span class="lt-week">{{ item.week }}p ezen a héten</span>
-                    <span class="lt-total">{{ item.total }}p összesen</span>
+                <div class="lt-card">
+                    <div class="lt-card-header">
+                        <span class="lt-card-icon">{{ item.icon }}</span>
+                        <span class="lt-card-name">{{ item.label }}</span>
+                    </div>
+                    <div class="lt-card-times">
+                        <div class="lt-time-box lt-time-today">
+                            <span class="lt-time-value">{{ item.today }}p</span>
+                            <span class="lt-time-label">ma</span>
+                        </div>
+                        <div class="lt-time-box">
+                            <span class="lt-time-value">{{ item.week }}p</span>
+                            <span class="lt-time-label">e héten</span>
+                        </div>
+                        <div class="lt-time-box">
+                            <span class="lt-time-value">{{ item.total }}p</span>
+                            <span class="lt-time-label">összesen</span>
+                        </div>
+                    </div>
                 </div>
                 {% endfor %}
             </div>

@@ -961,6 +961,54 @@ def edit_child(child_id: int):
     return render_template("edit_child.html", child=child, form=form)
 
 
+_SUBJECT_ICONS: dict[str, str] = {
+    "Matematika": "🔢",
+    "Magyar nyelv és irodalom": "📖",
+    "Idegen nyelv": "🌍",
+    "Első élő idegen nyelv": "🌍",
+    "Környezetismeret": "🌿",
+    "Etika": "⚖️",
+    "Ének-zene": "🎵",
+    "Vizuális kultúra": "🎨",
+    "Technika és tervezés": "🔧",
+    "Digitális kultúra": "💻",
+    "Testnevelés": "⚽",
+    "Történelem": "🏰",
+    "Hon- és népismeret": "🏡",
+    "Természettudomány": "🧪",
+    "Kémia": "⚗️",
+    "Fizika": "🔬",
+    "Biológia": "🧬",
+    "Földrajz": "🗺️",
+    "Dráma és színház": "🎭",
+    "Állampolgári ismeretek": "🏛️",
+}
+
+
+def _build_learning_summary_for_display(
+    child_id: int, subject_options: list[dict[str, str]]
+) -> list[dict[str, Any]]:
+    """Minden jelenlegi évfolyamhoz tartozó tantárgy, idővel (0, ha nincs adat)."""
+    raw_summary = database.get_learning_time_summary(child_id)
+    by_subject_value = {item["subject"]: item for item in raw_summary}
+
+    result: list[dict[str, Any]] = []
+    for opt in subject_options:
+        value = opt["value"]
+        label = opt["label"]
+        data = by_subject_value.get(value, {"today": 0.0, "week": 0.0, "total": 0.0})
+        result.append(
+            {
+                "label": label,
+                "icon": _SUBJECT_ICONS.get(label, "📚"),
+                "today": data.get("today", 0.0),
+                "week": data.get("week", 0.0),
+                "total": data.get("total", 0.0),
+            }
+        )
+    return result
+
+
 @app.route("/children/<int:child_id>/tasks", methods=["GET"])
 @login_required
 def select_tasks(child_id: int):
@@ -1004,7 +1052,7 @@ def select_tasks(child_id: int):
             if is_hu_1_4_grade(grade_num)
             else ELO_IDEGEN_NYELV_5_8_FILE
         ),
-        learning_summary=database.get_learning_time_summary(child_id),
+        learning_summary=_build_learning_summary_for_display(child_id, subject_options),
     )
 
 

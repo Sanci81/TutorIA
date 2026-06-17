@@ -313,6 +313,87 @@ a.btn-generate {
     flex-direction: column;
     gap: 0.5rem;
 }
+.learning-time-grid-playful {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.learning-time-grid-playful.learning-time-grid-compact {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+.lt-card {
+    border-radius: 16px;
+    padding: 10px 14px;
+    border: 2px solid var(--white);
+}
+.learning-time-grid-compact .lt-card {
+    border-radius: 12px;
+    padding: 8px 10px;
+}
+.lt-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.learning-time-grid-compact .lt-card-header {
+    gap: 4px;
+    margin-bottom: 6px;
+}
+.lt-card-icon { font-size: 20px; line-height: 1; }
+.learning-time-grid-compact .lt-card-icon { font-size: 15px; }
+.lt-card-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+}
+.learning-time-grid-compact .lt-card-name { font-size: 12px; }
+.lt-card-times {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+.learning-time-grid-compact .lt-card-times {
+    grid-template-columns: 1fr;
+    gap: 2px;
+}
+.lt-time-box {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 6px;
+    text-align: center;
+}
+.learning-time-grid-compact .lt-time-box {
+    background: transparent;
+    padding: 0;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+}
+.lt-time-value {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+}
+.learning-time-grid-compact .lt-time-value { font-size: 10px; }
+.lt-time-label {
+    display: block;
+    font-size: 9px;
+    color: var(--muted);
+}
+.learning-time-grid-compact .lt-time-label { font-size: 9px; }
+.lt-time-today .lt-time-value { color: #16a34a; }
+
+.lt-card:nth-child(7n+1) { background: linear-gradient(135deg, #fef9c3, #fef08a); }
+.lt-card:nth-child(7n+2) { background: linear-gradient(135deg, #fce7f3, #fbcfe8); }
+.lt-card:nth-child(7n+3) { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+.lt-card:nth-child(7n+4) { background: linear-gradient(135deg, #dcfce7, #bbf7d0); }
+.lt-card:nth-child(7n+5) { background: linear-gradient(135deg, #fed7aa, #fdba74); }
+.lt-card:nth-child(7n+6) { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+.lt-card:nth-child(7n+0) { background: linear-gradient(135deg, #fee2e2, #fecaca); }
 .learning-time-subject {
     display: flex;
     flex-wrap: wrap;
