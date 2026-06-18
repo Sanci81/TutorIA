@@ -26,8 +26,11 @@
     <div class="card select-tasks-card">
         {% if learning_summary %}
         <div class="learning-time-section">
-            <h3>⏱️ Tanulási idő</h3>
-            <div class="learning-time-grid learning-time-grid-playful{% if learning_summary|length > 10 %} learning-time-grid-compact{% endif %}">
+            <button type="button" class="learning-time-toggle" id="learning-time-toggle" aria-expanded="false">
+                <span class="learning-time-toggle-label">⏱️ Tanulási idő</span>
+                <span class="learning-time-toggle-arrow" id="learning-time-arrow">▼</span>
+            </button>
+            <div class="learning-time-grid learning-time-grid-playful{% if learning_summary|length > 10 %} learning-time-grid-compact{% endif %}" id="learning-time-grid" hidden>
                 {% for item in learning_summary %}
                 <div class="lt-card">
                     <div class="lt-card-header">
@@ -235,5 +238,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+    var ltToggle = document.getElementById('learning-time-toggle');
+    var ltGrid = document.getElementById('learning-time-grid');
+    var ltArrow = document.getElementById('learning-time-arrow');
+    if (ltToggle && ltGrid) {
+        ltToggle.addEventListener('click', function () {
+            var isOpen = !ltGrid.hidden;
+            ltGrid.hidden = isOpen;
+            ltToggle.setAttribute('aria-expanded', String(!isOpen));
+            if (ltArrow) ltArrow.classList.toggle('learning-time-arrow-open', !isOpen);
+        });
+    }
 </script>
 {% endblock %}

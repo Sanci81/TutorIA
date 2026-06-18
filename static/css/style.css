@@ -303,10 +303,32 @@ a.btn-generate {
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border);
 }
-.learning-time-section h3 {
-    font-size: 1rem;
+.learning-time-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    background: var(--green-50);
+    border: none;
+    border-radius: 14px;
+    padding: 0.7rem 1rem;
     margin: 0 0 0.75rem;
+    cursor: pointer;
+    font-family: inherit;
+}
+.learning-time-toggle-label {
+    font-size: 1rem;
+    font-weight: 700;
     color: var(--green-700);
+}
+.learning-time-toggle-arrow {
+    font-size: 0.85rem;
+    color: var(--green-600);
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+.learning-time-arrow-open {
+    transform: rotate(180deg);
 }
 .learning-time-grid {
     display: flex;
