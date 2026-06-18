@@ -335,6 +335,9 @@ a.btn-generate {
     flex-direction: column;
     gap: 0.5rem;
 }
+.learning-time-grid[hidden] {
+    display: none !important;
+}
 .learning-time-grid-playful {
     display: flex;
     flex-direction: column;
