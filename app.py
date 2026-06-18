@@ -1646,6 +1646,10 @@ NYELVHASZNÁLAT:
 """
     else:
         prompt += f"""- Magyar tantárgy – MINDIG magyarul tanítsd és kommunikálj.
+- FIGYELJ a magyar nyelvtani helyességre! Gyakori hibák amiket KERÜLJ:
+  - "hallalak" HELYTELEN → helyesen: "hallak"
+  - Az igeragozás és a tárgyas/alanyi ragozás legyen pontos.
+  - Olvasd át magadban a mondatot, mielőtt leírod – legyen természetes, helyes magyar.
 """
 
     prompt += f"""
