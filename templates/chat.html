@@ -409,11 +409,50 @@
             });
     }
 
+    var thinkingMessages = [
+        'Gondolkodom... 🤔',
+        'Mindjárt kész... ✍️',
+        'Összeszedem a választ... 📚',
+        'Még egy pillanat... ⭐'
+    ];
+    var thinkingTimer = null;
+    var thinkingIndex = 0;
+
+    function startThinkingMessages() {
+        var inner = typing ? typing.querySelector('.chat-bubble-inner') : null;
+        if (!inner) return;
+        thinkingIndex = 0;
+        inner.classList.add('chat-thinking-text');
+        inner.innerHTML = '<span class="thinking-label">' + thinkingMessages[0] + '</span>';
+        thinkingTimer = setInterval(function () {
+            thinkingIndex = (thinkingIndex + 1) % thinkingMessages.length;
+            var label = inner.querySelector('.thinking-label');
+            if (label) label.textContent = thinkingMessages[thinkingIndex];
+        }, 2000);
+    }
+
+    function stopThinkingMessages() {
+        if (thinkingTimer) {
+            clearInterval(thinkingTimer);
+            thinkingTimer = null;
+        }
+        var inner = typing ? typing.querySelector('.chat-bubble-inner') : null;
+        if (inner) {
+            inner.classList.remove('chat-thinking-text');
+            inner.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+        }
+    }
+
     function setLoading(on) {
         typing.hidden = !on;
         if (sendBtn) sendBtn.disabled = on;
         if (input) input.disabled = on;
-        if (on) scrollToBottom();
+        if (on) {
+            startThinkingMessages();
+            scrollToBottom();
+        } else {
+            stopThinkingMessages();
+        }
     }
 
     function renderSidebar(sidebar) {
@@ -878,6 +917,7 @@
             appendBubble('user', userText);
             setVoiceUi('processing');
             typing.hidden = false;
+            startThinkingMessages();
             scrollToBottom();
             return fetch(sendUrl, {
                 method: 'POST',
@@ -894,6 +934,7 @@
                 .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
                     typing.hidden = true;
+                    stopThinkingMessages();
                     if (!res.ok) {
                         appendBubble('assistant', 'Sajnos most nem tudok válaszolni. 😊');
                         setVoiceUi('idle');
@@ -933,6 +974,7 @@
                 })
                 .catch(function () {
                     typing.hidden = true;
+                    stopThinkingMessages();
                     appendBubble('assistant', 'Hálózati hiba – próbáld újra!');
                     setVoiceUi('idle');
                 });

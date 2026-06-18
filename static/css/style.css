@@ -1961,3 +1961,16 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
     .chat-input-bar { flex-direction: column; align-items: stretch; }
     .chat-send-btn { width: 100%; padding: 1.15rem; }
 }
+.chat-thinking-text {
+    font-style: italic;
+    color: var(--green-700, #15803d);
+    font-weight: 600;
+}
+.chat-thinking-text .thinking-label {
+    display: inline-block;
+    animation: thinking-pulse 2s ease-in-out infinite;
+}
+@keyframes thinking-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
