@@ -274,6 +274,7 @@ class ChildProgress(Base):
     # Új gamifikációs mezők:
     xp: Mapped[int] = mapped_column(Integer, default=0)
     game_level: Mapped[int] = mapped_column(Integer, default=1)
+    coins: Mapped[int] = mapped_column(Integer, default=0)
 
     # Virtuális bolt – skinek:
     unlocked_skins: Mapped[str] = mapped_column(
@@ -432,6 +433,8 @@ def ensure_child_progress_extra_columns() -> None:
         "xp INTEGER NOT NULL DEFAULT 0",
         "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
         "game_level INTEGER NOT NULL DEFAULT 1",
+        "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+        "coins INTEGER NOT NULL DEFAULT 0",
         "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
         "unlocked_skins VARCHAR(500) NOT NULL DEFAULT 'default'",
         "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
@@ -738,6 +741,7 @@ def _progress_dict(row: ChildProgress) -> dict[str, Any]:
         "updated_at": row.updated_at,
         "xp": row.xp,
         "game_level": row.game_level,
+        "coins": getattr(row, "coins", 0) or 0,
         "unlocked_skins": getattr(row, "unlocked_skins", None) or "default",
         "active_skin": getattr(row, "active_skin", None) or "default",
     }
@@ -903,6 +907,9 @@ def update_child_progress(
     level: int | None = None,
     xp: int | None = None,
     game_level: int | None = None,
+    coins: int | None = None,
+    unlocked_skins: str | None = None,
+    active_skin: str | None = None,
 ) -> dict[str, Any]:
     db = _session()
     try:
@@ -921,6 +928,9 @@ def update_child_progress(
                 level=level if level is not None else 0,
                 xp=xp if xp is not None else 0,
                 game_level=game_level if game_level is not None else 1,
+                coins=coins if coins is not None else 0,
+                unlocked_skins=unlocked_skins if unlocked_skins is not None else "default",
+                active_skin=active_skin if active_skin is not None else "default",
             )
             db.add(row)
         else:
@@ -934,6 +944,12 @@ def update_child_progress(
                 row.xp = xp
             if game_level is not None:
                 row.game_level = game_level
+            if coins is not None:
+                row.coins = coins
+            if unlocked_skins is not None:
+                row.unlocked_skins = unlocked_skins
+            if active_skin is not None:
+                row.active_skin = active_skin
             row.updated_at = datetime.now(timezone.utc)
         db.commit()
         db.refresh(row)
