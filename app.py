@@ -2384,26 +2384,24 @@ def api_buy_skin():
     if skin_name in unlocked:
         return jsonify({"error": "already_owned"}), 400
 
-    current_xp = progress.get("xp", 0)
-    if current_xp < price:
+    current_coins = progress.get("coins", 0)
+    if current_coins < price:
         return jsonify(
             {
-                "error": "not_enough_xp",
-                "xp": current_xp,
+                "error": "not_enough_coins",
+                "coins": current_coins,
                 "price": price,
             }
         ), 400
 
-    new_xp = current_xp - price
-    new_game_level = (new_xp // 200) + 1
+    new_coins = current_coins - price
     unlocked.append(skin_name)
     new_unlocked = ",".join(unlocked)
 
     updated = database.update_child_progress(
         child_id,
         progress_subject,
-        xp=new_xp,
-        game_level=new_game_level,
+        coins=new_coins,
         unlocked_skins=new_unlocked,
     )
 
@@ -2411,8 +2409,9 @@ def api_buy_skin():
         {
             "success": True,
             "skin_name": skin_name,
-            "xp": updated.get("xp", new_xp),
-            "game_level": updated.get("game_level", new_game_level),
+            "coins": updated.get("coins", new_coins),
+            "xp": updated.get("xp", 0),
+            "game_level": updated.get("game_level", 1),
             "unlocked_skins": updated.get("unlocked_skins", new_unlocked),
         }
     )
