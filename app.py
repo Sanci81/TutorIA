@@ -2123,6 +2123,7 @@ def child_chat(child_id: int):
         learning_today=learning_today,
         show_early_test=show_early_test,
         progress=progress,
+        coins=progress.get("coins", 0),
     )
 
 
@@ -2790,6 +2791,19 @@ def api_learning_start():
     result = database.start_learning_session(child_id, subject, topic_id)
     if not result:
         return jsonify({"error": "failed"}), 500
+
+    # Napi első tanulás: +10 coins (csak ha ma még nem volt session)
+    from datetime import date as _date
+    today_minutes = database.get_learning_time_today(child_id, subject)
+    if today_minutes == 0:
+        progress_subject = _chat_progress_subject(subject, None)
+        cur = database.get_or_create_child_progress(child_id, progress_subject)
+        new_coins = cur.get("coins", 0) + 10
+        database.update_child_progress(child_id, progress_subject, coins=new_coins)
+        result["daily_bonus_coins"] = 10
+    else:
+        result["daily_bonus_coins"] = 0
+
     return jsonify(result)
 
 

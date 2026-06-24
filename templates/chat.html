@@ -75,6 +75,7 @@
                     <p class="chat-subject">{{ subject_label }}</p>
                 </div>
                 <div class="chat-xp-pill">⭐ <span id="xp-display">{{ progress.get('xp', 0) }}</span></div>
+                <div class="chat-coins-pill">🪙 <span id="coins-display">{{ coins }}</span></div>
             </div>
 
             {% if not placement_mode %}
@@ -561,11 +562,13 @@
         });
     }
 
-    function updateGamification(xp, gameLevel) {
+    function updateGamification(xp, gameLevel, coins) {
         var xpEl = document.getElementById('xp-display');
         var levelEl = document.getElementById('level-display');
+        var coinsEl = document.getElementById('coins-display');
         if (xpEl) xpEl.textContent = xp;
         if (levelEl) levelEl.textContent = gameLevel;
+        if (coinsEl && coins !== undefined) coinsEl.textContent = coins;
     }
 
     function sendMessage(text, topicId) {
@@ -615,7 +618,7 @@
                 if (res.data.sidebar) renderSidebar(res.data.sidebar);
                 if (res.data.show_test_offer && btnTest) btnTest.hidden = false;
                 updateVocabulary(res.data.vocabulary, res.data.current_topic);
-                updateGamification(res.data.xp, res.data.game_level);
+                updateGamification(res.data.xp, res.data.game_level, res.data.coins);
             })
             .catch(function () {
                 setLoading(false);
@@ -777,7 +780,7 @@
                 if (d.congrats_message) {
                     appendBubble('assistant', d.congrats_message);
                 }
-                updateGamification(d.xp, d.game_level);
+                updateGamification(d.xp, d.game_level, d.coins);
                 if (d.topic_done) {
                     setTimeout(function () {
                         confetti({
@@ -963,7 +966,7 @@
                     }
                     if (res.data.sidebar) renderSidebar(res.data.sidebar);
                     updateVocabulary(res.data.vocabulary, res.data.current_topic);
-                    updateGamification(res.data.xp, res.data.game_level);
+                    updateGamification(res.data.xp, res.data.game_level, res.data.coins);
                     if (!reply.trim()) {
                         setVoiceUi('idle');
                         return;

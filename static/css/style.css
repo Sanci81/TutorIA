@@ -1591,6 +1591,15 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
     font-weight: 800;
     flex-shrink: 0;
 }
+.chat-coins-pill {
+    background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+    color: #065f46;
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 0.95rem;
+    font-weight: 800;
+    flex-shrink: 0;
+}
 .chat-topic-card-playful {
     background: var(--white);
     border: 2px dashed #c4b5fd;
