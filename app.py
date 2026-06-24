@@ -2333,6 +2333,132 @@ def child_chat_progress(child_id: int):
     return jsonify(sidebar)
 
 
+# ── Virtuális bolt – skinek ──────────────────────────────────────────
+SKIN_PRICES: dict[str, int] = {
+    "default": 0,
+    "dark_knight": 200,
+    "space_adventure": 400,
+    "ocean_breeze": 300,
+    "sunset_glow": 350,
+    "forest_magic": 250,
+}
+
+
+def _parse_unlocked_skins(raw: str | None) -> list[str]:
+    """A 'default,dark_knight' stringből tisztított skin-lista."""
+    if not raw:
+        return ["default"]
+    skins = [s.strip() for s in raw.split(",") if s.strip()]
+    if "default" not in skins:
+        skins.insert(0, "default")
+    return skins
+
+
+@app.route("/api/buy_skin", methods=["POST"])
+@login_required
+def api_buy_skin():
+    """Skin vásárlása XP-ért."""
+    data = request.get_json(silent=True) or {}
+    child_id = data.get("child_id")
+    subject = (data.get("subject") or "").strip()
+    skin_name = (data.get("skin_name") or "").strip()
+    language = _normalize_chat_language(
+        data.get("language") or session.get("language")
+    )
+
+    if not child_id or not subject or not skin_name:
+        return jsonify({"error": "invalid_payload"}), 400
+
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    if skin_name not in SKIN_PRICES:
+        return jsonify({"error": "unknown_skin"}), 400
+
+    price = SKIN_PRICES[skin_name]
+    progress_subject = _chat_progress_subject(subject, language)
+    progress = database.get_or_create_child_progress(child_id, progress_subject)
+
+    unlocked = _parse_unlocked_skins(progress.get("unlocked_skins"))
+    if skin_name in unlocked:
+        return jsonify({"error": "already_owned"}), 400
+
+    current_xp = progress.get("xp", 0)
+    if current_xp < price:
+        return jsonify(
+            {
+                "error": "not_enough_xp",
+                "xp": current_xp,
+                "price": price,
+            }
+        ), 400
+
+    new_xp = current_xp - price
+    new_game_level = (new_xp // 200) + 1
+    unlocked.append(skin_name)
+    new_unlocked = ",".join(unlocked)
+
+    updated = database.update_child_progress(
+        child_id,
+        progress_subject,
+        xp=new_xp,
+        game_level=new_game_level,
+        unlocked_skins=new_unlocked,
+    )
+
+    return jsonify(
+        {
+            "success": True,
+            "skin_name": skin_name,
+            "xp": updated.get("xp", new_xp),
+            "game_level": updated.get("game_level", new_game_level),
+            "unlocked_skins": updated.get("unlocked_skins", new_unlocked),
+        }
+    )
+
+
+@app.route("/api/select_skin", methods=["POST"])
+@login_required
+def api_select_skin():
+    """Feloldott skin aktiválása."""
+    data = request.get_json(silent=True) or {}
+    child_id = data.get("child_id")
+    subject = (data.get("subject") or "").strip()
+    skin_name = (data.get("skin_name") or "").strip()
+    language = _normalize_chat_language(
+        data.get("language") or session.get("language")
+    )
+
+    if not child_id or not subject or not skin_name:
+        return jsonify({"error": "invalid_payload"}), 400
+
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    progress_subject = _chat_progress_subject(subject, language)
+    progress = database.get_or_create_child_progress(child_id, progress_subject)
+
+    unlocked = _parse_unlocked_skins(progress.get("unlocked_skins"))
+    if skin_name not in unlocked:
+        return jsonify({"error": "not_owned"}), 400
+
+    updated = database.update_child_progress(
+        child_id,
+        progress_subject,
+        active_skin=skin_name,
+    )
+
+    return jsonify(
+        {
+            "success": True,
+            "active_skin": updated.get("active_skin", skin_name),
+            "unlocked_skins": updated.get("unlocked_skins"),
+        }
+    )
+
+
 @app.route("/children/<int:child_id>/chat/test/generate", methods=["POST"])
 @login_required
 def child_chat_test_generate(child_id: int):
@@ -2491,6 +2617,7 @@ def child_chat_test_submit(child_id: int):
     cur_progress = database.get_or_create_child_progress(child_id, progress_subject)
     new_xp = cur_progress.get("xp", 0)
     new_game_level = cur_progress.get("game_level", 1)
+    new_coins = cur_progress.get("coins", 0)
 
     if passed:
         current_level = cur_progress.get("level", 0)
@@ -2499,6 +2626,11 @@ def child_chat_test_submit(child_id: int):
         # XP és game_level számítás
         new_xp = cur_progress.get("xp", 0) + 50
         new_game_level = (new_xp // 200) + 1
+
+        # Coins jóváírás: témakör teljesítés +100, ha 100% akkor +50 bónusz
+        new_coins = cur_progress.get("coins", 0) + 100
+        if score == 100:
+            new_coins += 50
 
         completed_names = [
             t["name"]
@@ -2517,6 +2649,7 @@ def child_chat_test_submit(child_id: int):
             level=new_level,
             xp=new_xp,
             game_level=new_game_level,
+            coins=new_coins,
         )
         next_topic = None
         for t in catalog:
@@ -2538,6 +2671,7 @@ def child_chat_test_submit(child_id: int):
                 level=new_level,
                 xp=new_xp,
                 game_level=new_game_level,
+                coins=new_coins,
             )
 
         # 100% → AI gratuláció
@@ -2589,6 +2723,7 @@ def child_chat_test_submit(child_id: int):
             "sidebar": sidebar,
             "xp": new_xp,
             "game_level": new_game_level,
+            "coins": new_coins,
             "topic_done": passed,
         }
     )
