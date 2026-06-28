@@ -1560,6 +1560,56 @@ def _grade_block_context(grade: int) -> str:
     return ""
 
 
+def _update_streak(child_id: int, progress_subject: str) -> dict:
+    """Streak frissítése a child_chat megnyitásakor.
+    - Ha tegnap volt legalább 10 perc tanulás: streak növekszik
+    - Ha ma már frissítettük: semmi sem változik
+    - Ha kimaradt nap: streak nullázódik
+    - 7 napos sorozatnál +50 coins, 30 naposnál +300 coins jutalom
+    """
+    today = date.today()
+    yesterday = today - timedelta(days=1)
+
+    progress = database.get_or_create_child_progress(child_id, progress_subject)
+    streak_days = progress.get("streak_days", 0)
+    streak_last = progress.get("streak_last_date", None)
+    coins = progress.get("coins", 0)
+
+    # Ha ma már frissítettük, nem csinálunk semmit
+    if streak_last and streak_last == today:
+        return progress
+
+    # Ellenőrizzük, hogy tegnap volt-e legalább 10 perc tanulás
+    yesterday_minutes = database.get_learning_time_today_for_date(child_id, yesterday)
+
+    bonus_coins = 0
+
+    if yesterday_minutes >= 10:
+        # Streak növekszik
+        streak_days += 1
+        # Mérföldkő jutalmak
+        if streak_days == 7:
+            bonus_coins = 50
+        elif streak_days == 30:
+            bonus_coins = 300
+    else:
+        # Kimaradt nap — csak akkor nullázunk, ha nem ma volt az utolsó
+        if streak_last and streak_last < yesterday:
+            streak_days = 0
+
+    new_coins = coins + bonus_coins
+
+    progress = database.update_child_progress(
+        child_id,
+        progress_subject,
+        streak_days=streak_days,
+        streak_last_date=today,
+        coins=new_coins if bonus_coins > 0 else None,
+    )
+
+    return progress
+
+
 def _child_safety_block() -> str:
     """Gyermekvédelmi szabályok – a G7 'safety by design' elv alapján.
     A system prompt LEGELEJÉN, a legmagasabb prioritással."""
@@ -2035,6 +2085,10 @@ def child_chat(child_id: int):
         last_position=catalog[0]["name"] if catalog else None,
     )
     scores = database.get_topic_scores(child_id, progress_subject, grade_num)
+
+    # Streak frissítése
+    progress = _update_streak(child_id, progress_subject)
+
     requested_topic_id = (request.args.get("topic_id") or "").strip()
     if requested_topic_id and any(t["id"] == requested_topic_id for t in catalog):
         current_topic_id = requested_topic_id
@@ -2124,6 +2178,7 @@ def child_chat(child_id: int):
         show_early_test=show_early_test,
         progress=progress,
         coins=progress.get("coins", 0),
+        streak_days=progress.get("streak_days", 0),
     )
 
 

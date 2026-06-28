@@ -1259,6 +1259,22 @@ def get_learning_time_today(
         db.close()
 
 
+def get_learning_time_today_for_date(
+    child_id: int, target_date: date
+) -> float:
+    """Visszaadja a megadott nap tanulási perceinek összegét (tantárgytól függetlenül)."""
+    db = _session()
+    try:
+        q = select(ChildLearningTime).where(
+            ChildLearningTime.child_id == child_id,
+            ChildLearningTime.date == target_date,
+        )
+        rows = db.scalars(q).all()
+        return round(sum(r.minutes for r in rows), 1)
+    finally:
+        db.close()
+
+
 def get_learning_time_weekly(
     child_id: int, subject: str
 ) -> list[dict[str, Any]]:
