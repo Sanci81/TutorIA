@@ -754,10 +754,18 @@
                         });
                     } else {
                         // Phase 1 pass (100%) — normal pass view
-                        testResult.innerHTML = congratsHtml +
-                            '<button type="button" class="result-box result-pass" data-topic-id="' + d.topic_id +
-                            '" data-topic-name="' + escapeAttr(d.topic_name) + '">✓ ' + escapeHtml(d.topic_name) +
-                            ' — ' + d.score + '%</button><p class="result-hint">Kattints a gombra, ha újra át szeretnéd nézni a témát.</p>';
+                        var nextTopicId = d.next_topic_id || null;
+                        var nextTopicName = d.next_topic_name || null;
+                        if (nextTopicId) {
+                            testResult.innerHTML = congratsHtml +
+                                '<button type="button" class="result-box result-pass" data-topic-id="' + nextTopicId +
+                                '" data-topic-name="' + escapeAttr(nextTopicName) + '">➡️ Tovább: ' + escapeHtml(nextTopicName) +
+                                '</button><p class="result-hint">Kattints a gombra a következő témakörre lépéshez.</p>';
+                        } else {
+                            testResult.innerHTML = congratsHtml +
+                                '<div class="result-box result-pass">✓ ' + escapeHtml(d.topic_name) + ' — ' + d.score + '%</div>' +
+                                '<p class="result-hint">Minden témakört teljesítettél ebben a tantárgyban! 🎉</p>';
+                        }
                     }
                 } else {
                     var failMsg = '';

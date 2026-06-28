@@ -2673,6 +2673,7 @@ def child_chat_test_submit(child_id: int):
     new_xp = cur_progress.get("xp", 0)
     new_game_level = cur_progress.get("game_level", 1)
     new_coins = cur_progress.get("coins", 0)
+    next_topic = None
 
     if passed:
         current_level = cur_progress.get("level", 0)
@@ -2706,7 +2707,6 @@ def child_chat_test_submit(child_id: int):
             game_level=new_game_level,
             coins=new_coins,
         )
-        next_topic = None
         for t in catalog:
             if t["id"] == topic_id:
                 continue
@@ -2774,6 +2774,8 @@ def child_chat_test_submit(child_id: int):
             "can_retry": can_retry,
             "topic_id": topic_id,
             "topic_name": topic_name,
+            "next_topic_id": next_topic["id"] if next_topic else None,
+            "next_topic_name": next_topic["name"] if next_topic else None,
             "congrats_message": congrats_message,
             "sidebar": sidebar,
             "xp": new_xp,
