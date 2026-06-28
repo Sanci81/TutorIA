@@ -88,6 +88,11 @@
                 <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> perc</span>
                 <span class="chat-mini-stat">🏆 <span id="level-display">{{ progress.get('game_level', 1) }}</span>. szint</span>
             </div>
+            {% if streak_days and streak_days > 0 %}
+            <div class="chat-streak-bar" id="streak-bar">
+                🔥 <span id="streak-display">{{ streak_days }}</span> napos sorozat!
+            </div>
+            {% endif %}
 
             <div class="chat-header-actions">
                 {% if show_early_test %}
