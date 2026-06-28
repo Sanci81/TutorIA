@@ -275,6 +275,8 @@ class ChildProgress(Base):
     xp: Mapped[int] = mapped_column(Integer, default=0)
     game_level: Mapped[int] = mapped_column(Integer, default=1)
     coins: Mapped[int] = mapped_column(Integer, default=0)
+    streak_days: Mapped[int] = mapped_column(Integer, default=0)
+    streak_last_date: Mapped[date | None] = mapped_column(Date, nullable=True)
 
     # Virtuális bolt – skinek:
     unlocked_skins: Mapped[str] = mapped_column(
@@ -435,6 +437,10 @@ def ensure_child_progress_extra_columns() -> None:
         "game_level INTEGER NOT NULL DEFAULT 1",
         "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
         "coins INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+        "streak_days INTEGER NOT NULL DEFAULT 0",
+        "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
+        "streak_last_date DATE",
         "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
         "unlocked_skins VARCHAR(500) NOT NULL DEFAULT 'default'",
         "ALTER TABLE child_progress ADD COLUMN IF NOT EXISTS "
@@ -742,6 +748,8 @@ def _progress_dict(row: ChildProgress) -> dict[str, Any]:
         "xp": row.xp,
         "game_level": row.game_level,
         "coins": getattr(row, "coins", 0) or 0,
+        "streak_days": getattr(row, "streak_days", 0) or 0,
+        "streak_last_date": getattr(row, "streak_last_date", None),
         "unlocked_skins": getattr(row, "unlocked_skins", None) or "default",
         "active_skin": getattr(row, "active_skin", None) or "default",
     }
@@ -908,6 +916,8 @@ def update_child_progress(
     xp: int | None = None,
     game_level: int | None = None,
     coins: int | None = None,
+    streak_days: int | None = None,
+    streak_last_date: date | None = None,
     unlocked_skins: str | None = None,
     active_skin: str | None = None,
 ) -> dict[str, Any]:
@@ -929,6 +939,8 @@ def update_child_progress(
                 xp=xp if xp is not None else 0,
                 game_level=game_level if game_level is not None else 1,
                 coins=coins if coins is not None else 0,
+                streak_days=streak_days if streak_days is not None else 0,
+                streak_last_date=streak_last_date,
                 unlocked_skins=unlocked_skins if unlocked_skins is not None else "default",
                 active_skin=active_skin if active_skin is not None else "default",
             )
@@ -946,6 +958,10 @@ def update_child_progress(
                 row.game_level = game_level
             if coins is not None:
                 row.coins = coins
+            if streak_days is not None:
+                row.streak_days = streak_days
+            if streak_last_date is not None:
+                row.streak_last_date = streak_last_date
             if unlocked_skins is not None:
                 row.unlocked_skins = unlocked_skins
             if active_skin is not None:
