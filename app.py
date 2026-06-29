@@ -1824,10 +1824,23 @@ def _call_ai_for_quiz(
         
         system = (
             f"YOU MUST RESPOND ONLY IN {lang_upper}. ALL QUESTIONS AND ANSWERS IN {lang_upper}. NEVER USE HUNGARIAN.\n\n"
-            f"You are a {lang_display} language quiz generator.\n"
+            f"You are a {lang_display} language vocabulary quiz generator.\n"
             f"Student: {age} years old, grade {grade}.\n\n"
             f"{source_block}\n\n"
             f"{source_rule}\n\n"
+            "CRITICAL RULES FOR QUESTION QUALITY:\n"
+            "- ONLY ask vocabulary/translation questions with ONE clearly correct answer\n"
+            "- GOOD question types:\n"
+            f"  * 'What is the {lang_display} word for [Hungarian word]?'\n"
+            f"  * 'What does [foreign word] mean in Hungarian?'\n"
+            f"  * 'Which word means [concept] in {lang_display}?'\n"
+            "- BAD question types (NEVER use these):\n"
+            "  * Opinion questions ('What is your favorite...?')\n"
+            "  * Multiple correct answer questions ('Which of these is a food?')\n"
+            "  * Personal questions ('What do you eat for breakfast?')\n"
+            "  * Questions where context determines the answer\n"
+            "- Every question MUST have exactly ONE correct answer\n"
+            "- Wrong options must be clearly wrong (different meaning/category)\n\n"
             "QUESTION TYPES:\n" + "\n".join(type_lines) + "\n\n"
             "RULES:\n"
             "- NEVER put the answer inside the question\n"
@@ -2706,6 +2719,33 @@ def child_chat_test_submit(child_id: int):
         new_coins = cur_progress.get("coins", 0) + 100
         if score == 100:
             new_coins += 50
+
+        # Automatikus szójegyzék feltöltés: ha a témakörnek van szokincs listája,
+        # az összes szó bekerül a szójegyzékbe (akkor is ha a gyerek nem chatelt)
+        if language and topic and topic.get("szokincs"):
+            for szo_par in topic["szokincs"]:
+                # A szokincs lista elemei "magyar=idegen" formátumban vannak
+                if isinstance(szo_par, str) and "=" in szo_par:
+                    parts = szo_par.split("=", 1)
+                    if len(parts) == 2:
+                        native, foreign = parts[0].strip(), parts[1].strip()
+                        if native and foreign:
+                            database.add_vocabulary_word(
+                                child_id, subject,
+                                language=language,
+                                word_native=native,
+                                word_foreign=foreign,
+                            )
+                elif isinstance(szo_par, dict):
+                    native = szo_par.get("magyar") or szo_par.get("native", "")
+                    foreign = szo_par.get("idegen") or szo_par.get("foreign", "")
+                    if native and foreign:
+                        database.add_vocabulary_word(
+                            child_id, subject,
+                            language=language,
+                            word_native=native,
+                            word_foreign=foreign,
+                        )
 
         completed_names = [
             t["name"]
