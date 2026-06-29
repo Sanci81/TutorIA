@@ -1762,6 +1762,7 @@ Jelenlegi témakör: {current_topic}
 def _call_ai_for_quiz(
     *, grade: int, topic_name: str, topic_text: str, age: int,
     ora_szam: int, all_ora_szamok: list[int], szokincs: list | None = None,
+    language: str | None = None,
 ) -> list[dict[str, Any]]:
     api_key = _openai_api_key()
     if not api_key:
@@ -1771,7 +1772,7 @@ def _call_ai_for_quiz(
     q_count = max(8, min(15, round(8 + (ora_szam / max_ora) * 7)))
     material = (topic_text or topic_name)[:10000]
 
-    is_foreign_language = szokincs is not None
+    is_foreign_language = szokincs is not None or bool(language and language.strip())
 
     if grade <= 2:
         mc_ratio, fill_ratio = 1.0, 0.0
@@ -1808,16 +1809,29 @@ def _call_ai_for_quiz(
             else "complex sentences and grammar"
         )
 
+        # Nyelv meghatározása: szokincs vagy language alapján
+        target_language = language or "spanyol"
+        lang_upper = {
+            "spanyol": "SPANISH",
+            "angol": "ENGLISH", 
+            "nemet": "GERMAN",
+        }.get(target_language.lower(), "SPANISH")
+        lang_display = {
+            "spanyol": "Spanish",
+            "angol": "English",
+            "nemet": "German",
+        }.get(target_language.lower(), "Spanish")
+        
         system = (
-            "YOU MUST RESPOND ONLY IN SPANISH. ALL QUESTIONS AND ANSWERS IN SPANISH. NEVER USE HUNGARIAN.\n\n"
-            f"You are a Spanish language quiz generator.\n"
+            f"YOU MUST RESPOND ONLY IN {lang_upper}. ALL QUESTIONS AND ANSWERS IN {lang_upper}. NEVER USE HUNGARIAN.\n\n"
+            f"You are a {lang_display} language quiz generator.\n"
             f"Student: {age} years old, grade {grade}.\n\n"
             f"{source_block}\n\n"
             f"{source_rule}\n\n"
             "QUESTION TYPES:\n" + "\n".join(type_lines) + "\n\n"
             "RULES:\n"
             "- NEVER put the answer inside the question\n"
-            "- ALL text (questions, options, answers) MUST be in Spanish\n"
+            "- ALL text (questions, options, answers) MUST be in " + lang_display + "\n"
             "- mc: options array has exactly 3 items, correct is 0, 1 or 2\n"
             "- fill/sent: answer is a string, options field is omitted\n"
             f"- Difficulty: {difficulty}\n\n"
@@ -1859,7 +1873,7 @@ def _call_ai_for_quiz(
                 {"role": "system", "content": system},
                 {"role": "user", "content": (
                     f"Generate {q_count} questions and return valid JSON. "
-                    f"Language: {'Spanish' if is_foreign_language else 'Hungarian'}. "
+                    f"Language: {lang_display if is_foreign_language else 'Hungarian'}. "
                     + extra_user_note
                 )},
             ],
@@ -2539,6 +2553,10 @@ def child_chat_test_generate(child_id: int):
 
     try:
         all_ora_szamok = [t.get("ora_szam", 0) for t in catalog]
+        # Ha van language (idegen nyelv), szokincs-ot átadjuk még ha None is
+        # A _call_ai_for_quiz is_foreign_language = szokincs is not None helyett
+        # language alapján döntjük el hogy idegen nyelvű-e a teszt
+        topic_szokincs = topic.get("szokincs") if language and language.strip() else None
         questions = _call_ai_for_quiz(
             grade=_chat_grade_num(child),
             topic_name=topic["name"],
@@ -2546,7 +2564,8 @@ def child_chat_test_generate(child_id: int):
             age=_child_effective_age(child),
             ora_szam=topic.get("ora_szam", 0),
             all_ora_szamok=all_ora_szamok,
-            szokincs=topic.get("szokincs") if language else None,
+            szokincs=topic_szokincs,
+            language=language or None,
         )
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
