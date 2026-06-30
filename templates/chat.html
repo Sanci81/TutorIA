@@ -647,9 +647,8 @@
         if (q.type === "fill" || q.type === "sent") {
             return '<div class="quiz-question" data-index="' + index + '" data-type="' + q.type + '" data-answer="' + escapeAttr(q.answer) + '">' +
                 '<p class="question-text">' + (index + 1) + '. ' + escapeHtml(q.q) + '</p>' +
-                '<input type="text" class="fill-answer-input" placeholder="Escribe tu respuesta..." autocomplete="off">' +
-                '<button class="check-fill-btn" onclick="checkFillAnswer(' + index + ')">\u2713 Comprobar</button>' +
-                '<div class="fill-feedback" style="display:none"></div></div>';
+                '<input type="text" class="fill-answer-input" placeholder="Írd ide a válaszod..." autocomplete="off">' +
+                '</div>';
         }
         // MC (multiple choice) — existing logic unchanged
         var html = '<div class="quiz-q" data-q="' + index + '"><p class="quiz-q-text">' +
@@ -662,28 +661,8 @@
         return html;
     }
 
-    function checkFillAnswer(index) {
-        var qEl = document.querySelector('.quiz-question[data-index="' + index + '"]');
-        if (!qEl) return;
-        var userAnswer = qEl.querySelector('.fill-answer-input').value.trim().toLowerCase();
-        var correct = qEl.dataset.answer.trim().toLowerCase();
-        var feedback = qEl.querySelector('.fill-feedback');
-        if (!feedback) return;
-        feedback.style.display = 'block';
-        if (userAnswer === correct) {
-            feedback.textContent = '\u2705 \u00a1Correcto!';
-            feedback.className = 'fill-feedback correct';
-            recordAnswer(index, qEl.querySelector('.fill-answer-input').value.trim());
-        } else {
-            feedback.textContent = '\u274c La respuesta correcta es: ' + qEl.dataset.answer;
-            feedback.className = 'fill-feedback incorrect';
-            recordAnswer(index, null);
-        }
-    }
-
-    function recordAnswer(index, value) {
-        quizAnswers[index] = value;
-    }
+    // checkFillAnswer és recordAnswer már nem szükségesek —
+    // a submitQuiz közvetlenül a mezőkből olvas beküldéskor
 
     function showQuiz(questions, topicName) {
         if (!questions || !questions.length) {
@@ -706,9 +685,13 @@
     }
 
     function submitQuiz() {
-        quizQuestions.forEach(function (_, qi) {
-            // Only collect MC answers from radio buttons; fill/sent are already stored by recordAnswer
-            if (quizAnswers[qi] === null) {
+        quizQuestions.forEach(function (q, qi) {
+            if (q.type === "fill" || q.type === "sent") {
+                var qEl = document.querySelector('.quiz-question[data-index="' + qi + '"]');
+                var input = qEl ? qEl.querySelector('.fill-answer-input') : null;
+                var val = input ? input.value.trim() : '';
+                quizAnswers[qi] = val || null;
+            } else {
                 var picked = document.querySelector('input[name="q' + qi + '"]:checked');
                 quizAnswers[qi] = picked ? parseInt(picked.value, 10) : -1;
             }
