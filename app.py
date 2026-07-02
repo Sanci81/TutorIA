@@ -1727,9 +1727,17 @@ NYELVHASZNÁLAT:
 - Ha a gyerek {lang}ul ír/beszél, te is {lang}ul válaszolj.
 - Ha a gyerek magyarul ír/beszél, te is magyarul válaszolj.
 - SOHA ne állítsd hogy idegen nyelven mondott valamit, ha magyarul mondta!
-- KÖTELEZŐ: minden új {lang} szó tanításakor a válaszod végére írd: <VOCAB>magyar_szó={lang}_szó</VOCAB>
-  Példa: ha "libro" szót tanítod: <VOCAB>könyv=libro</VOCAB>
-  Ez MINDEN új szónál kötelező, kihagyni TILOS!
+
+⚠️ SZÓJEGYZÉK SZABÁLY — KÖTELEZŐ, KIVÉTEL NÉLKÜL:
+Minden egyes új {lang} szó tanításakor a válaszod VÉGÉRE írd oda ezt a markert:
+<VOCAB>magyar_szó={lang}_szó</VOCAB>
+Példák:
+- ha "libro" szót tanítod → <VOCAB>könyv=libro</VOCAB>
+- ha "perro" szót tanítod → <VOCAB>kutya=perro</VOCAB>
+- ha "agua" szót tanítod → <VOCAB>víz=agua</VOCAB>
+Ha egy válaszban 3 új szót tanítasz, mindháromhoz kell marker:
+<VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB><VOCAB>szilva=ciruela</VOCAB>
+Ez MINDEN válaszban KÖTELEZŐ ahol új szót tanítasz. Kihagyni TILOS!
 """
     else:
         prompt += f"""- Magyar tantárgy – MINDIG magyarul tanítsd és kommunikálj.
@@ -1756,6 +1764,11 @@ Jelenlegi témakör: {current_topic}
         prompt += "\nSZINTFELMÉRŐ MÓD: Tegyél fel 5 játékos kérdést az anyagból, majd add meg: <LEVEL:X> (X=1-5).\n"
 
     prompt += "\nHa egy témakör biztosan teljesítve van (rejtett): <TOPIC_COMPLETE>\n"
+
+    if is_foreign_language and lang:
+        prompt += f"""
+EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>magyar={lang}</VOCAB> markereket minden új szónál!
+"""
 
     return prompt
 
