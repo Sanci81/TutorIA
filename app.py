@@ -1851,7 +1851,7 @@ def _call_ai_for_quiz(
             "RULES:\n"
             "- NEVER put the answer inside the question\n"
             "- ALL text (questions, options, answers) MUST be in " + lang_display + "\n"
-            "- mc: options array has exactly 3 items, correct is 0, 1 or 2\n"
+            "- mc: options array has exactly 3 items, correct is 0, 1 or 2 — RANDOMIZE the correct position, do NOT always put the correct answer first (index 0). Use index 0, 1, and 2 roughly equally across questions.\n"
             "- fill/sent: answer is a string, options field is omitted\n"
             f"- Difficulty: {difficulty}\n\n"
             f"Generate exactly {q_count} questions total.\n"
@@ -1874,7 +1874,7 @@ def _call_ai_for_quiz(
             "- Use concepts from the curriculum text\n"
             "- Do NOT copy examples from these instructions\n\n"
             f"CURRICULUM TEXT:\n{material}\n\n"
-            f"Generate exactly {q_count} multiple choice questions, 3 options each, 1 correct.\n"
+            f"Generate exactly {q_count} multiple choice questions, 3 options each, 1 correct. RANDOMIZE the correct answer position — do NOT always use index 0.\n"
             "ALL text in HUNGARIAN.\n"
             'Return ONLY this JSON: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
             "CRITICAL: Every option must be a full meaningful Hungarian answer, never single letters."
