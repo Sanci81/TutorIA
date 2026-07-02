@@ -10,6 +10,7 @@ Funkciók (1. fázis):
 import json
 import logging
 import os
+import random
 import re
 import traceback
 from datetime import date, datetime, timezone, timedelta
@@ -1931,6 +1932,17 @@ def _call_ai_for_quiz(
 
     if not questions:
         raise ValueError("Érvénytelen kvíz JSON – nulla valid kérdés")
+
+    # Véletlenszerűsítjük az mc kérdések helyes válaszának pozícióját
+    for q in questions:
+        if q.get("type") == "mc" and "options" in q and "correct" in q:
+            options = q["options"]
+            correct_idx = q["correct"]
+            if isinstance(correct_idx, int) and 0 <= correct_idx < len(options):
+                correct_answer = options[correct_idx]
+                random.shuffle(options)
+                q["correct"] = options.index(correct_answer)
+                q["options"] = options
 
     return questions[:q_count]
 
