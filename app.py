@@ -1657,6 +1657,7 @@ def _build_chat_system_prompt(
     level: int,
     is_foreign_language: bool,
     teaching_language: str | None = None,
+    szokincs: list | None = None,
 ) -> str:
     age = _child_effective_age(child)
     grade = int(_chat_grade_num(child))
@@ -1738,6 +1739,12 @@ Példák:
 Ha egy válaszban 3 új szót tanítasz, mindháromhoz kell marker:
 <VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB><VOCAB>szilva=ciruela</VOCAB>
 Ez MINDEN válaszban KÖTELEZŐ ahol új szót tanítasz. Kihagyni TILOS!
+"""
+        if szokincs:
+            prompt += f"""
+EBBEN A LECKÉBEN TANULANDÓ SZAVAK (csak ezeket tanítsd és jelöld VOCAB markerrel):
+{chr(10).join(f'- {szo}' for szo in szokincs)}
+Minden fenti szót tanítanod kell ebben a leckében. Ha a gyerek kérdez róluk, mindig add meg a <VOCAB> markert!
 """
     else:
         prompt += f"""- Magyar tantárgy – MINDIG magyarul tanítsd és kommunikálj.
@@ -2328,6 +2335,7 @@ def child_chat_send(child_id: int):
         level=progress.get("level", 0),
         is_foreign_language=is_foreign,
         teaching_language=teaching_language,
+        szokincs=current_topic_item.get("szokincs") if is_foreign and current_topic_item else None,
     )
     system_prompt += _topic_teaching_prompt_block(current_topic_item)
     if chat_mode == "voice":
