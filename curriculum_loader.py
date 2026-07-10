@@ -202,9 +202,204 @@ ELO_IDEGEN_NYELV_5_8_ALT = "elo_idegen_nyelv_5-8.json"
 SPANYOL_1_4_FILE = "spanyol_1-4.json"
 SPANYOL_5_8_FILE = "spanyol_5-8.json"
 
+# ── LOMLOE spanyol nemzeti tanterv (BOE-A-2022-3296) ──────────────────────
+ES_LOE_DIR: Path = Path(__file__).parent / "es_kerettanterv"
+ES_LOE_FILES: dict[str, str] = {
+    "conocimiento": "es_LOMLOE_Conocimiento_1-6.json",
+    "artistica": "es_LOMLOE_Artistica_1-6.json",
+    "fisica": "es_LOMLOE_Fisica_1-6.json",
+    "lengua": "es_LOMLOE_Lengua_1-6.json",
+    "extranjera": "es_LOMLOE_Extranjera_1-6.json",
+    "matematicas": "es_LOMLOE_Matematicas_1-6.json",
+    "valores": "es_LOMLOE_Valores_5-6.json",
+}
+
+# Startup check: log whether LOE files are available
+try:
+    _LOE_MISSING = []
+    if ES_LOE_DIR.is_dir():
+        for fname in ES_LOE_FILES.values():
+            if not (ES_LOE_DIR / fname).is_file():
+                _LOE_MISSING.append(fname)
+    else:
+        _LOE_MISSING = list(ES_LOE_FILES.values())
+    _LOE_AVAILABLE = len(_LOE_MISSING) == 0
+    logger.warning(
+        "LOMLOE startup: ES_LOE_DIR=%s EXISTS=%s ALL_PRESENT=%s MISSING=%s",
+        str(ES_LOE_DIR),
+        ES_LOE_DIR.is_dir(),
+        _LOE_AVAILABLE,
+        _LOE_MISSING,
+    )
+except Exception:
+    _LOE_AVAILABLE = False
+    logger.warning("LOMLOE startup: error checking ES_LOE_DIR", exc_info=True)
+
+# LOMLOE spanyol tantárgynevek – UI megjelenítéshez
+_ES_LOE_SUBJECT_LABELS: dict[str, str] = {
+    "conocimiento": "Conocimiento del Medio",
+    "artistica": "Educación Artística",
+    "fisica": "Educación Física",
+    "lengua": "Lengua Castellana y Literatura",
+    "extranjera": "Lengua Extranjera",
+    "matematicas": "Matemáticas",
+    "valores": "Educación en Valores Cívicos y Éticos",
+}
+
 # Sablonokhoz: megengedett fájlnevek és címkék
 HU_1_4_SUBJECT_NAMES: list[str] = list(_HU_1_4_SUBJECT_MAP.keys())
 HU_1_4_SUBJECT_FILES: frozenset[str] = frozenset(_HU_1_4_SUBJECT_MAP.values())
+
+# ── LOMLOE tanterv betöltése ────────────────────────────────────────────────
+
+_loe_cache: dict[str, dict[str, Any]] = {}
+
+
+def _load_loe_json(subject_key: str) -> dict[str, Any] | None:
+    """Betölt egy LOMLOE JSON fájlt az es_kerettanterv könyvtárból."""
+    if subject_key in _loe_cache:
+        logger.warning("_load_loe_json CACHE HIT: key=%r", subject_key)
+        return _loe_cache[subject_key]
+    filename = ES_LOE_FILES.get(subject_key)
+    if not filename:
+        logger.warning("_load_loe_json FAIL: no filename for key=%r in ES_LOE_FILES=%r", subject_key, list(ES_LOE_FILES.keys()))
+        return None
+    path = ES_LOE_DIR / filename
+    if not path.is_file():
+        logger.warning(
+            "_load_loe_json FAIL: file not found key=%r expected_path=%r ES_LOE_DIR=%r cwd=%r",
+            subject_key, str(path), str(ES_LOE_DIR), str(Path.cwd()),
+        )
+        return None
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        _loe_cache[subject_key] = data
+        logger.warning(
+            "_load_loe_json SUCCESS: key=%r path=%s size=%s",
+            subject_key, path, len(json.dumps(data)),
+        )
+        return data
+    except Exception as exc:
+        logger.warning(
+            "_load_loe_json FAIL: json.load error key=%r path=%s error=%r",
+            subject_key, path, exc,
+            exc_info=True,
+        )
+        return None
+
+
+def get_loe_subject_keys() -> list[str]:
+    """Visszaadja az elérhető LOMLOE tantárgy-kulcsokat."""
+    return [k for k in ES_LOE_FILES if (ES_LOE_DIR / ES_LOE_FILES[k]).is_file()]
+
+
+def get_loe_subjects_for_grade(grade: int) -> list[dict[str, str]]:
+    """Visszaadja az elérhető LOMLOE tantárgyakat adott évfolyamhoz."""
+    result = []
+    for k in get_loe_subject_keys():
+        data = _load_loe_json(k)
+        if data is None:
+            continue
+        evfolyamok = data.get("meta", {}).get("evfolyamok", [1, 2, 3, 4, 5, 6])
+        if grade in evfolyamok:
+            result.append({
+                "label": _ES_LOE_SUBJECT_LABELS.get(k, k),
+                "value": k,
+            })
+    return result
+
+
+def get_loe_subject_label(subject_key: str) -> str:
+    """LOMLOE tantárgy emberi neve."""
+    return _ES_LOE_SUBJECT_LABELS.get(subject_key, subject_key)
+
+
+def loe_cycle_for_grade(grade: int) -> str | None:
+    """Visszaadja a LOMLOE ciklus nevét adott évfolyamhoz."""
+    if 1 <= grade <= 2:
+        return "1_ciclo"
+    elif 3 <= grade <= 4:
+        return "2_ciclo"
+    elif 5 <= grade <= 6:
+        return "3_ciclo"
+    return None
+
+
+def get_loe_curriculum_text(subject_key: str, grade: int) -> str | None:
+    """Visszaadja a LOMLOE tantervi szöveget adott tantárgyhoz és évfolyamhoz."""
+    data = _load_loe_json(subject_key)
+    if not data:
+        logger.warning(
+            "get_loe_curriculum_text FAIL: _load_loe_json returned None for key=%r grade=%s",
+            subject_key, grade,
+        )
+        return None
+    cycle = loe_cycle_for_grade(grade)
+    if not cycle:
+        logger.warning(
+            "get_loe_curriculum_text FAIL: no cycle for grade=%s (loe_cycle_for_grade returned None)",
+            grade,
+        )
+        return None
+    # Ellenőrizzük, hogy a ciklus létezik-e az adatokban
+    ciklusok = data.get("ciklusok", {})
+    if cycle not in ciklusok:
+        logger.warning(
+            "get_loe_curriculum_text FAIL: cycle=%r not in ciklusok keys=%r for key=%r",
+            cycle, list(ciklusok.keys()), subject_key,
+        )
+        return None
+
+    bevezeto = data.get("bevezeto", "")
+    cycle_data = ciklusok.get(cycle, {})
+    cycle_text = cycle_data.get("teljes_szoveg", "")
+
+    # Összeállítjuk a teljes szöveget: bevezető + ciklus-specifikus rész
+    parts = [bevezeto] if bevezeto else []
+    if cycle_text:
+        parts.append(cycle_text)
+    result = "\n\n".join(parts)
+    logger.warning(
+        "get_loe_curriculum_text SUCCESS: key=%r grade=%s cycle=%s text_len=%s",
+        subject_key, grade, cycle, len(result),
+    )
+    return result
+
+
+def get_loe_curriculum_for_chat(subject_key: str, grade: int) -> dict[str, Any]:
+    """Chat-hez használható LOMLOE tantervi kontextus."""
+    text = get_loe_curriculum_text(subject_key, grade)
+    if not text:
+        logger.warning(
+            "get_loe_curriculum_for_chat FAIL: no text for key=%r grade=%s",
+            subject_key, grade,
+        )
+        return {
+            "curriculum_body": "",
+            "topics": {},
+            "catalog": [],
+            "data": {},
+        }
+
+    # A LOMLOE tantervet nyers szövegként adjuk vissza,
+    # a magyar struktúra (topics, catalog) itt nem értelmezhető közvetlenül.
+    data = _load_loe_json(subject_key) or {}
+    meta = data.get("meta", {})
+
+    result = {
+        "curriculum_body": text,
+        "topics": {"Általános tanterv": [meta.get("tantargy", subject_key)]},
+        "catalog": [],
+        "data": data,
+        "subject_name": _ES_LOE_SUBJECT_LABELS.get(subject_key, subject_key),
+        "language": "spanyol",
+    }
+    logger.warning(
+        "get_loe_curriculum_for_chat SUCCESS: key=%r grade=%s body_len=%s",
+        subject_key, grade, len(text),
+    )
+    return result
 
 
 def get_hu_1_4_subjects() -> list[dict[str, str]]:
@@ -973,6 +1168,9 @@ def get_subject_options_for_ui(
             or label == "Spanyol nyelv és irodalom"
         ):
             continue
+        # LOMLOE tantárgyak: használjuk a LOE labelt
+        if canonical in _ES_LOE_SUBJECT_LABELS:
+            label = _ES_LOE_SUBJECT_LABELS[canonical]
         options.append({"value": canonical, "label": label})
     return profile, options
 
@@ -1243,7 +1441,45 @@ def get_curriculum_for_chat(
     explicit_language = (language or "").strip().lower() or None
     effective_language = explicit_language
 
+    logger.warning(
+        "get_curriculum_for_chat START: subject_file=%r grade=%s language=%s "
+        "in_ES_LOE_FILES=%s loe_cycle=%s ES_LOE_DIR=%r ES_LOE_FILES_keys=%s",
+        subject_file,
+        grade_num,
+        effective_language,
+        subject_file in ES_LOE_FILES,
+        loe_cycle_for_grade(grade_num),
+        str(ES_LOE_DIR),
+        list(ES_LOE_FILES.keys()),
+    )
+
+    # ── LOMLOE spanyol nemzeti tanterv ──────────────────────────────────────
+    if subject_file in ES_LOE_FILES and loe_cycle_for_grade(grade_num):
+        loe = get_loe_curriculum_for_chat(subject_file, grade_num)
+        logger.warning(
+            "get_curriculum_for_chat LOE branch: curriculum_body_len=%s subject_name=%s",
+            len(loe.get("curriculum_body") or ""),
+            loe.get("subject_name", "?"),
+        )
+        if loe.get("curriculum_body"):
+            return {
+                "found": True,
+                "content": loe["curriculum_body"],
+                "topics": ["LOMLOE tananyag"],
+                "topics_detail": {},
+                "topic_catalog": [],
+                "file": ES_LOE_FILES[subject_file],
+                "subject_name": loe.get("subject_name", subject_file),
+                "data": loe.get("data", {}),
+                "language": "spanyol",
+            }
+        logger.warning("get_curriculum_for_chat LOE branch: curriculum_body was EMPTY, falling through to HU path")
+
     resolved = _resolve_hu_subject_file(subject_file, grade_num)
+    logger.warning(
+        "get_curriculum_for_chat HU path: resolved=%r",
+        resolved,
+    )
     if resolved:
         subject_file = resolved["file"]
         if not effective_language and resolved.get("language"):
@@ -1254,6 +1490,10 @@ def get_curriculum_for_chat(
 
     candidates: list[Path] = []
     root = Path(__file__).parent
+    logger.warning(
+        "get_curriculum_for_chat SEARCH: root=%r cwd=%r",
+        str(root), str(Path.cwd()),
+    )
     if subject_file:
         for path in _hu_json_search_paths(subject_file, grade_num):
             if path not in candidates:
@@ -1263,7 +1503,8 @@ def get_curriculum_for_chat(
         if found and found not in candidates:
             candidates.append(found)
 
-    if effective_language in ("angol", "nemet") and is_hu_1_4_grade(grade_num):
+    if effective_language in ("angol", "nemet"):
+        # 1-4 and 5-8 grade: prefer file with nyelvek structure for language separation
         for alt_name in (ELO_IDEGEN_NYELV_5_8_ALT, ELO_IDEGEN_NYELV_5_8_FILE):
             alt = root / "hu_kerettanterv_5_8_TELJES" / alt_name
             if alt.is_file() and alt not in candidates:
@@ -1301,6 +1542,12 @@ def get_curriculum_for_chat(
 
     candidates.sort(key=_score_path)
 
+    logger.warning(
+        "get_curriculum_for_chat CANDIDATES: count=%s paths=%s",
+        len(candidates),
+        [str(p) for p in candidates],
+    )
+
     for path in candidates:
         raw = _load_hu_json(path)
         # angol/német/spanyol: nyelvek.* ág (pl. 5–8 JSON), nem a nyers raw
@@ -1320,6 +1567,15 @@ def get_curriculum_for_chat(
             subject_name = "Német"
         elif effective_language == "spanyol":
             subject_name = "Spanyol"
+        logger.warning(
+            "get_curriculum_for_chat CANDIDATE: path=%s content_len=%s catalog_len=%s "
+            "content_or_catalog=%s subject_name=%s",
+            str(path),
+            len(content or ""),
+            len(catalog),
+            bool(content or catalog),
+            subject_name,
+        )
         if content or catalog:
             return {
                 "found": True,
@@ -1334,6 +1590,11 @@ def get_curriculum_for_chat(
                 "language": effective_language,
             }
 
+    logger.warning(
+        "get_curriculum_for_chat FALLBACK: no matching candidate found, returning found=False "
+        "subject_file=%r grade=%s candidates_checked=%s",
+        subject_file, grade_num, len(candidates),
+    )
     return {
         "found": False,
         "content": "",
@@ -1432,6 +1693,20 @@ def get_curriculum_for_child(
     result: dict[str, Any] = dict(base)
 
     if country.upper() != "HU" or not subject:
+        # LOMLOE spanyol tanterv kontextus
+        if country.upper() == "ES" and subject and subject in ES_LOE_FILES:
+            loe = get_loe_curriculum_for_chat(subject, grade_num)
+            result["subject_context"] = {
+                "found": True,
+                "subject": loe["subject_name"],
+                "grade": grade_num,
+                "file": ES_LOE_FILES[subject],
+                "topics": loe.get("topics", {}),
+                "summary": loe.get("curriculum_body", "")[:500],
+                "meta": loe.get("data", {}).get("meta", {}),
+                "source": "loe_json",
+            }
+            result["curriculum_summary"] = result["subject_context"]["summary"]
         return result
 
     ctx = get_hu_curriculum_context(grade_num, subject)
@@ -1441,8 +1716,22 @@ def get_curriculum_for_child(
     return result
 
 
+def get_subject_label_for_loe(subject_key: str) -> str:
+    """LOMLOE tantárgy emberi neve, magyar címkével."""
+    labels = {
+        "conocimiento": "Conocimiento del Medio (LOMLOE)",
+        "artistica": "Educación Artística (LOMLOE)",
+        "fisica": "Educación Física (LOMLOE)",
+        "lengua": "Lengua Castellana (LOMLOE)",
+        "extranjera": "Lengua Extranjera (LOMLOE)",
+        "matematicas": "Matemáticas (LOMLOE)",
+        "valores": "Educación en Valores Cívicos y Éticos (LOMLOE)",
+    }
+    return labels.get(subject_key, subject_key)
+
+
 def _is_spanish_subject_list(subjects: list[str]) -> bool:
-    """Felismeri, ha a lista spanyol tantervi neveket tartalmaz."""
+    """Felismeri, ha a lista spanyol tantervi neveket vagy LOMLOE kulcsokat tartalmaz."""
     markers = (
         "matemáticas",
         "lengua castellana",
@@ -1455,7 +1744,11 @@ def _is_spanish_subject_list(subjects: list[str]) -> bool:
         "enseñanzas de religión",
     )
     joined = " ".join(s.casefold() for s in subjects)
-    return any(marker in joined for marker in markers)
+    if any(marker in joined for marker in markers):
+        return True
+    # LOMLOE kulcsok
+    loe_keys = frozenset(ES_LOE_FILES.keys())
+    return bool(loe_keys.intersection(subjects))
 
 
 def get_subjects_for_profile(
@@ -1492,9 +1785,34 @@ def get_subjects_for_profile(
         }
 
     if country == "ES":
-        if not region:
-            raise ValueError("Spanyolország esetén kötelező a region paraméter")
-        return get_subjects(country, grade_num, region)
+        # LOMLOE tantárgyak spanyol gyerekeknek
+        subjects = get_loe_subject_keys()
+        if subjects:
+            return {
+                "subjects": subjects,
+                "source": "loe_json",
+                "fetched_at": _now_iso(),
+                "country": country,
+                "grade": grade_num,
+                "region": region,
+            }
+        # LOMLOE fájlok nem találhatók – logolás és üres lista visszaadása
+        logger.warning(
+            "get_subjects_for_profile: LOE files not found at %r (ES_LOE_DIR), "
+            "trying fallback with region=%r",
+            str(ES_LOE_DIR), region,
+        )
+        if region:
+            return get_subjects(country, grade_num, region)
+        # Nincs region → nincs tantárgy lista (hibaüzenet helyett üres lista)
+        return {
+            "subjects": [],
+            "source": "loe_missing",
+            "fetched_at": _now_iso(),
+            "country": country,
+            "grade": grade_num,
+            "region": None,
+        }
 
     raise ValueError(f"Ismeretlen ország: {country}")
 
