@@ -113,6 +113,7 @@ class Child(Base):
     age: Mapped[int | None] = mapped_column(Integer, nullable=True)
     grade: Mapped[str] = mapped_column(String(50), nullable=False)
     country: Mapped[str] = mapped_column(String(2), nullable=False)
+    curriculum: Mapped[str] = mapped_column(String(2), nullable=False, default="HU")
     region: Mapped[str | None] = mapped_column(String(10))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
@@ -342,6 +343,7 @@ def _child_dict(child: Child) -> dict[str, Any]:
         "age": age_val,
         "grade": child.grade,
         "country": child.country,
+        "curriculum": getattr(child, "curriculum", child.country) or child.country,
         "region": child.region,
         "created_at": child.created_at,
         "needs_birth_date": bd is None,
@@ -361,6 +363,30 @@ def init_db() -> None:
     ensure_child_learning_time_table()
     ensure_child_progress_extra_columns()
     ensure_topic_scores_extra_columns()
+    ensure_children_curriculum_column()
+
+
+def ensure_children_curriculum_column() -> None:
+    """curriculum oszlop hozzáadása a children táblához (HU | ES)."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    stmts = (
+        "ALTER TABLE children ADD COLUMN IF NOT EXISTS "
+        "curriculum TEXT NOT NULL DEFAULT 'HU'",
+        "UPDATE children SET curriculum = country "
+        "WHERE curriculum IS NULL",
+    )
+    for stmt in stmts:
+        try:
+            with engine.begin() as conn:
+                conn.execute(text(stmt))
+        except Exception as exc:
+            logger.warning(
+                "ensure_children_curriculum_column: kihagyva (%s): %s",
+                exc.__class__.__name__,
+                stmt,
+            )
 
 
 def ensure_children_birth_date_column() -> None:
@@ -538,6 +564,7 @@ def create_child(
     grade: str,
     country: str,
     region: str | None,
+    curriculum: str = "HU",
 ) -> int:
     db = _session()
     try:
@@ -548,6 +575,7 @@ def create_child(
             age=child_age_from_birth(birth_date),
             grade=grade.strip(),
             country=country,
+            curriculum=curriculum,
             region=region,
         )
         db.add(child)
@@ -567,6 +595,7 @@ def update_child(
     grade: str,
     country: str,
     region: str | None,
+    curriculum: str = "HU",
 ) -> bool:
     """Gyerek profil szerkesztése – csak a megadott szülő gyerekéhez."""
     db = _session()
@@ -584,6 +613,7 @@ def update_child(
         child.age = child_age_from_birth(birth_date)
         child.grade = grade.strip()
         child.country = country
+        child.curriculum = curriculum
         child.region = region
         db.commit()
         return True

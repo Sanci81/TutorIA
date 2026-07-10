@@ -30,6 +30,18 @@
             </div>
 
             <div class="field">
+                <label for="curriculum">Tanterv / Currículo</label>
+                <select id="curriculum" name="curriculum" required>
+                    <option value="HU" {{ 'selected' if form.get('curriculum', 'HU') == 'HU' else '' }}>
+                        Magyar (HU)
+                    </option>
+                    <option value="ES" {{ 'selected' if form.get('curriculum') == 'ES' else '' }}>
+                        Spanyol (ES)
+                    </option>
+                </select>
+            </div>
+
+            <div class="field">
                 <label for="country">{{ t('label_country') }}</label>
                 <select id="country" name="country" required>
                     <option value="" disabled {{ 'selected' if not form.get('country') else '' }}>
@@ -44,8 +56,9 @@
                 </select>
             </div>
 
-            <div class="field" id="region-field"
-                 style="{{ '' if form.get('country') == 'ES' else 'display:none;' }}">
+            <!-- Régióválasztó elrejtve: castellano mindenhol érthető.
+                 Andalúz tananyag bevezetésekor visszakapcsolható. -->
+            <div class="field" id="region-field" hidden>
                 <label for="region">{{ t('label_region') }}</label>
                 <select id="region" name="region">
                     <option value="" disabled {{ 'selected' if not form.get('region') else '' }}>
@@ -73,19 +86,19 @@
 <script>
     initCountryRegionToggle();
     (function () {
-        var countrySel = document.getElementById('country');
-        var gradeSel   = document.getElementById('grade');
-        var gradeHint  = document.getElementById('grade-hint');
-        var currentGrade = gradeSel.dataset.current || '';
+        var curriculumSel = document.getElementById('curriculum');
+        var gradeSel      = document.getElementById('grade');
+        var gradeHint     = document.getElementById('grade-hint');
+        var currentGrade  = gradeSel.dataset.current || '';
 
         function isSpain(v) {
-            v = (v || '').trim().toLowerCase();
-            return v === 'es' || v === 'españa' || v === 'espana' || v === 'spanyolország';
+            v = (v || '').trim().toUpperCase();
+            return v === 'ES';
         }
 
         function rebuildGrades() {
-            var max = isSpain(countrySel.value) ? 6 : 8;
-            var hint = isSpain(countrySel.value)
+            var max  = isSpain(curriculumSel.value) ? 6 : 8;
+            var hint = isSpain(curriculumSel.value)
                 ? '1–6. osztály (Educación Primaria)'
                 : '1–8. osztály (általános iskola)';
             gradeSel.innerHTML = '<option value="">{{ t('select_placeholder') }}</option>';
@@ -99,7 +112,7 @@
             gradeHint.textContent = hint;
         }
 
-        countrySel.addEventListener('change', rebuildGrades);
+        curriculumSel.addEventListener('change', rebuildGrades);
         rebuildGrades();
     })();
 </script>

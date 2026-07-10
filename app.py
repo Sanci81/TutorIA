@@ -172,12 +172,13 @@ def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
 
 def _curriculum_for_child(child: dict, *, subject: str | None = None) -> dict:
     """Tanterv a gyerek profiljához; HU esetén JSON témakörökkel."""
-    region = child["region"] if child["country"] == "ES" else None
-    if child["country"] == "HU" and subject:
+    child_curr = child.get("curriculum") or child.get("country", "HU")
+    region = child.get("region") if child_curr == "ES" else None
+    if child_curr == "HU" and subject:
         return get_curriculum_for_child(
-            child["country"], child["grade"], region, subject=subject
+            child_curr, child["grade"], region, subject=subject
         )
-    return get_subjects_for_profile(child["country"], child["grade"], region)
+    return get_subjects_for_profile(child_curr, child["grade"], region)
 
 
 def _build_task_generation_prompt(
@@ -454,10 +455,11 @@ def _generate_practice_tasks_bundle(
         if subject not in idegen_files:
             language = None
     else:
-        region = child["region"] if child["country"] == "ES" else None
+        child_curr = child.get("curriculum") or child.get("country", "HU")
+        region = child.get("region") if child_curr == "ES" else None
         try:
             available = get_subjects_for_profile(
-                child["country"], child["grade"], region
+                child_curr, child["grade"], region
             ).get("subjects", [])
         except Exception:
             available = []
@@ -469,7 +471,7 @@ def _generate_practice_tasks_bundle(
     subject_display = hu_1_4_label_from_value(subject)
     curriculum = _curriculum_for_child(child, subject=subject)
     subject_ctx = curriculum.get("subject_context") or {}
-    if child["country"] == "HU":
+    if child_curr == "HU":
         if subject_ctx.get("found"):
             logger.info(
                 "Tanterv JSON betöltve: subject=%s file=%s child_id=%s",
@@ -489,7 +491,7 @@ def _generate_practice_tasks_bundle(
     # Teljes kerettanterv szöveg a feladat promptba (get_curriculum_for_chat).
     curriculum_chat = (
         get_curriculum_for_chat(subject, child["grade"], language=language)
-        if child["country"] == "HU"
+        if child_curr == "HU"
         else None
     )
     curriculum_text = curriculum_chat.get("content", "") if curriculum_chat else ""
@@ -573,7 +575,7 @@ def _generate_practice_tasks_bundle(
     subject_label = (
         subject_display
         if g.lang == "hu"
-        else subject_ui_label(subject, g.lang, child["country"])
+        else subject_ui_label(subject, g.lang, child_curr)
     )
     return tasks, curriculum, subject_label, foreign_language
 
@@ -852,10 +854,10 @@ def _parse_birth_date_form(raw: str) -> date | None:
     return born
 
 
-def _validate_grade_for_country(country: str, grade: int) -> str | None:
-    """Visszaad egy hibaüzenetet, ha az osztály nem érvényes az adott országban."""
-    c = (country or "").strip().lower()
-    is_spain = c in ("es", "españa", "espana", "spanyolország")
+def _validate_grade_for_curriculum(curriculum: str, grade: int) -> str | None:
+    """Visszaad egy hibaüzenetet, ha az osztály nem érvényes az adott tantervben."""
+    c = (curriculum or "").strip().upper()
+    is_spain = c == "ES"
     max_grade = 6 if is_spain else 8
     if grade < 1 or grade > max_grade:
         if is_spain:
@@ -872,6 +874,7 @@ def add_child():
         birth_date_raw = request.form.get("birth_date") or ""
         grade = (request.form.get("grade") or "").strip()
         country = request.form.get("country") or ""
+        curriculum = request.form.get("curriculum") or ""
         region = request.form.get("region") or None
 
         errors = False
@@ -879,16 +882,15 @@ def add_child():
         if not birth_date:
             errors = True
 
-        if not name or country not in ("ES", "HU") or not grade:
+        if not name or country not in ("ES", "HU") or curriculum not in ("HU", "ES") or not grade:
             errors = True
 
-        if country == "ES" and not region:
-            flash(i18n.t("flash_region_required", g.lang), "error")
-            errors = True
+        if curriculum == "ES":
+            region = "base"
 
         try:
             grade_int = int(grade)
-            err = _validate_grade_for_country(country, grade_int)
+            err = _validate_grade_for_curriculum(curriculum, grade_int)
             if err:
                 flash(err, "error")
                 errors = True
@@ -903,20 +905,24 @@ def add_child():
                     "birth_date": birth_date_raw,
                     "grade": grade,
                     "country": country,
+                    "curriculum": curriculum,
                     "region": region,
                 },
             )
 
-        if country != "ES":
+        if curriculum != "ES":
             region = None
 
         database.create_child(
-            session["parent_id"], name, birth_date, grade, country, region
+            session["parent_id"], name, birth_date, grade, country, region,
+            curriculum=curriculum,
         )
         flash(i18n.t("flash_child_added", g.lang), "success")
         return redirect(url_for("dashboard"))
 
-    return render_template("add_child.html", form={})
+    # GET: alapértelmezett curriculum a felületi nyelv alapján
+    default_curriculum = "ES" if g.lang == "es" else "HU"
+    return render_template("add_child.html", form={"curriculum": default_curriculum})
 
 
 @app.route("/children/<int:child_id>/edit", methods=["GET", "POST"])
@@ -931,6 +937,7 @@ def edit_child(child_id: int):
         birth_date_raw = request.form.get("birth_date") or ""
         grade = (request.form.get("grade") or "").strip()
         country = request.form.get("country") or ""
+        curriculum = request.form.get("curriculum") or ""
         region = request.form.get("region") or None
 
         errors = False
@@ -938,16 +945,15 @@ def edit_child(child_id: int):
         if not birth_date:
             errors = True
 
-        if not name or country not in ("ES", "HU") or not grade:
+        if not name or country not in ("ES", "HU") or curriculum not in ("HU", "ES") or not grade:
             errors = True
 
-        if country == "ES" and not region:
-            flash(i18n.t("flash_region_required", g.lang), "error")
-            errors = True
+        if curriculum == "ES":
+            region = "base"
 
         try:
             grade_int = int(grade)
-            err = _validate_grade_for_country(country, grade_int)
+            err = _validate_grade_for_curriculum(curriculum, grade_int)
             if err:
                 flash(err, "error")
                 errors = True
@@ -963,11 +969,12 @@ def edit_child(child_id: int):
                     "birth_date": birth_date_raw,
                     "grade": grade,
                     "country": country,
+                    "curriculum": curriculum,
                     "region": region,
                 },
             )
 
-        if country != "ES":
+        if curriculum != "ES":
             region = None
 
         database.update_child(
@@ -978,6 +985,7 @@ def edit_child(child_id: int):
             grade=grade,
             country=country,
             region=region,
+            curriculum=curriculum,
         )
         flash(i18n.t("flash_child_updated", g.lang), "success")
         return redirect(url_for("dashboard"))
@@ -987,6 +995,7 @@ def edit_child(child_id: int):
         "birth_date": child.get("birth_date") or "",
         "grade": child["grade"],
         "country": child["country"],
+        "curriculum": child.get("curriculum", child.get("country", "HU")),
         "region": child.get("region") or "",
     }
     return render_template("edit_child.html", child=child, form=form)
@@ -1049,9 +1058,9 @@ def select_tasks(child_id: int):
         abort(404)
 
     grade_num = parse_grade(child["grade"])
+    child_curr = child.get("curriculum") or child.get("country", "HU")
 
-    # Mindig g.lang alapján dönt, nem country alapján
-    if g.lang == "hu":
+    if child_curr == "HU":
         subject_options = get_hu_subjects_for_grade(grade_num)
         curriculum = {
             "subjects": [o["label"] for o in subject_options],
@@ -1059,38 +1068,30 @@ def select_tasks(child_id: int):
             "grade": grade_num,
         }
     else:
-        region = child["region"] if child["country"] == "ES" else None
+        region = child.get("region") or "base"
         try:
             curriculum, subject_options = get_subject_options_for_ui(
-                child["country"], child["grade"], region, g.lang
+                child_curr, child["grade"], region, g.lang
             )
-            # If no subjects returned and child is ES, fall back to HU subjects
-            if not subject_options and child["country"] == "ES":
-                logger.warning(
-                    "select_tasks: get_subject_options_for_ui returned empty for ES child %s, "
-                    "falling back to HU subjects",
-                    child_id,
-                )
-                subject_options = get_hu_subjects_for_grade(grade_num)
-                curriculum = {
-                    "subjects": [o["label"] for o in subject_options],
-                    "source": "fallback_hu",
-                    "grade": grade_num,
-                }
         except Exception as exc:
-            logger.warning(
-                "select_tasks: get_subject_options_for_ui failed for child %s: %s, "
-                "falling back to HU subjects",
+            logger.error(
+                "select_tasks: get_subject_options_for_ui failed for child %s: %s",
                 child_id, exc,
             )
-            curriculum = {"subjects": []}
-            subject_options = get_hu_subjects_for_grade(grade_num)
-            if subject_options:
-                curriculum = {
-                    "subjects": [o["label"] for o in subject_options],
-                    "source": "fallback_hu_exc",
-                    "grade": grade_num,
-                }
+            curriculum = {"subjects": [], "source": "error"}
+            subject_options = []
+
+        if not subject_options:
+            logger.error(
+                "select_tasks: no subjects loaded for child %s curriculum=%s grade=%s",
+                child_id, child_curr, grade_num,
+            )
+            flash(
+                i18n.t("flash_subjects_load_failed", g.lang)
+                if hasattr(i18n, "t")
+                else "Nem sikerült betölteni a tantárgyakat.",
+                "error",
+            )
 
     effective_age = _child_effective_age(child)
     chat_profile = _chat_interaction_profile(effective_age)
@@ -2089,7 +2090,8 @@ def _chat_subject_label(
     if g.lang == "hu":
         subject_label = hu_1_4_label_from_value(subject_file)
     else:
-        subject_label = subject_ui_label(subject_file, g.lang, child["country"])
+        child_curr = child.get("curriculum") or child.get("country", "HU")
+        subject_label = subject_ui_label(subject_file, g.lang, child_curr)
     subject_label = chat_curriculum.get("subject_name", subject_label)
     lang = _normalize_chat_language(language)
     if lang == "angol":

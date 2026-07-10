@@ -603,9 +603,9 @@ def is_hu_1_4_grade(grade: str | int) -> bool:
     return 1 <= grade_num <= 4
 
 
-def uses_hu_1_4_curriculum(country: str, grade: str | int) -> bool:
+def uses_hu_1_4_curriculum(curriculum: str, grade: str | int) -> bool:
     """HU 1–4: fájlnév-alapú tantárgylista + helyi JSON tanterv."""
-    return (country or "").upper() == "HU" and is_hu_1_4_grade(grade)
+    return (curriculum or "").upper() == "HU" and is_hu_1_4_grade(grade)
 
 
 def hu_1_4_label_from_value(value: str) -> str:
@@ -1062,9 +1062,9 @@ def _is_spanish_subject_name(name: str) -> bool:
     return _normalize_key(name) in _SPANISH_SUBJECT_KEYS
 
 
-def _ciencias_visible_in_ui(country: str, ui_lang: str) -> bool:
-    """Ciencias de la Naturaleza / Sociales – csak ES ország + spanyol UI."""
-    return country.upper() == "ES" and ui_lang == "es"
+def _ciencias_visible_in_ui(curriculum: str, ui_lang: str) -> bool:
+    """Ciencias de la Naturaleza / Sociales – csak ES tanterv + spanyol UI."""
+    return curriculum.upper() == "ES" and ui_lang == "es"
 
 
 def _sanitize_hu_subjects(subjects: list[str], grade: int) -> list[str]:
@@ -1112,14 +1112,14 @@ def _sanitize_hu_subjects(subjects: list[str], grade: int) -> list[str]:
     return ordered
 
 
-def subject_ui_label(canonical: str, ui_lang: str, country: str) -> str:
+def subject_ui_label(canonical: str, ui_lang: str, curriculum: str) -> str:
     """Tantárgy megjelenítési neve a UI nyelve szerint (HU / ES)."""
-    country = country.upper()
+    curriculum = curriculum.upper()
     if ui_lang == "es":
-        if country == "HU":
+        if curriculum == "HU":
             return _HU_SUBJECT_UI_ES.get(canonical, canonical)
         return canonical
-    if country == "HU":
+    if curriculum == "HU":
         return canonical
     label = _ES_SUBJECT_UI_HU.get(canonical, canonical)
     if label in _ES_ONLY_HU_UI_LABELS:
@@ -1128,42 +1128,42 @@ def subject_ui_label(canonical: str, ui_lang: str, country: str) -> str:
 
 
 def get_subject_options_for_ui(
-    country: str,
+    curriculum: str,
     grade: str | int,
     region: str | None,
     ui_lang: str,
 ) -> tuple[dict[str, Any], list[dict[str, str]]]:
     """Tanterv + legördülő opciók: value=tantervi név, label=UI nyelv."""
-    country = country.upper()
+    curriculum = curriculum.upper()
     grade_num = parse_grade(grade)
 
     # HU 1–4: kizárólag hardcoded lista – semmi más logika nem írhatja felül
-    if country == "HU" and 1 <= grade_num <= 4:
+    if curriculum == "HU" and 1 <= grade_num <= 4:
         options = get_hu_1_4_subjects()
         profile: dict[str, Any] = {
             "subjects": [o["label"] for o in options],
             "source": "hardcoded",
             "fetched_at": _now_iso(),
-            "country": country,
+            "curriculum": curriculum,
             "grade": grade_num,
             "region": None,
         }
         return profile, options
 
-    profile = get_subjects_for_profile(country, grade, region)
+    profile = get_subjects_for_profile(curriculum, grade, region)
     options: list[dict[str, str]] = []
     for canonical in profile["subjects"]:
-        if country == "HU":
+        if curriculum == "HU":
             if _is_spanish_subject_name(canonical) or _is_aggregate_subject_name(
                 canonical
             ):
                 continue
         if canonical in _ES_CIENCIAS_CANONICAL and not _ciencias_visible_in_ui(
-            country, ui_lang
+            curriculum, ui_lang
         ):
             continue
-        label = subject_ui_label(canonical, ui_lang, country)
-        if country == "HU" and (
+        label = subject_ui_label(canonical, ui_lang, curriculum)
+        if curriculum == "HU" and (
             label in _FORBIDDEN_HU_LABELS
             or label == "Spanyol nyelv és irodalom"
         ):
@@ -1681,20 +1681,20 @@ def get_hu_curriculum_context(
 
 
 def get_curriculum_for_child(
-    country: str,
+    curriculum: str,
     grade: str | int,
     region: str | None = None,
     *,
     subject: str | None = None,
 ) -> dict[str, Any]:
     """Tantervi kontextus gyerekprofilhoz – tantárgy-lista + (HU) JSON témakörök."""
-    base = get_subjects_for_profile(country, grade, region)
+    base = get_subjects_for_profile(curriculum, grade, region)
     grade_num = base["grade"]
     result: dict[str, Any] = dict(base)
 
-    if country.upper() != "HU" or not subject:
+    if curriculum.upper() != "HU" or not subject:
         # LOMLOE spanyol tanterv kontextus
-        if country.upper() == "ES" and subject and subject in ES_LOE_FILES:
+        if curriculum.upper() == "ES" and subject and subject in ES_LOE_FILES:
             loe = get_loe_curriculum_for_chat(subject, grade_num)
             result["subject_context"] = {
                 "found": True,
@@ -1752,15 +1752,15 @@ def _is_spanish_subject_list(subjects: list[str]) -> bool:
 
 
 def get_subjects_for_profile(
-    country: str,
+    curriculum: str,
     grade: str | int,
     region: str | None = None,
 ) -> dict[str, Any]:
-    """Ország-specifikus tantárgy-lista – HU: magyar, ES: spanyol (nem UI nyelv!)."""
-    country = country.upper()
+    """Tanterv-specifikus tantárgy-lista – HU: magyar, ES: spanyol (nem UI nyelv!)."""
+    curriculum = curriculum.upper()
     grade_num = parse_grade(grade)
 
-    if country == "HU":
+    if curriculum == "HU":
         subjects: list[str] = []
         source = "fallback"
         if 1 <= grade_num <= 8:
@@ -1779,12 +1779,12 @@ def get_subjects_for_profile(
             "subjects": subjects,
             "source": source,
             "fetched_at": _now_iso() if source == "json" else None,
-            "country": country,
+            "curriculum": curriculum,
             "grade": grade_num,
             "region": None,
         }
 
-    if country == "ES":
+    if curriculum == "ES":
         # LOMLOE tantárgyak spanyol gyerekeknek
         subjects = get_loe_subject_keys()
         if subjects:
@@ -1792,7 +1792,7 @@ def get_subjects_for_profile(
                 "subjects": subjects,
                 "source": "loe_json",
                 "fetched_at": _now_iso(),
-                "country": country,
+                "curriculum": curriculum,
                 "grade": grade_num,
                 "region": region,
             }
@@ -1803,18 +1803,18 @@ def get_subjects_for_profile(
             str(ES_LOE_DIR), region,
         )
         if region:
-            return get_subjects(country, grade_num, region)
+            return get_subjects(curriculum, grade_num, region)
         # Nincs region → nincs tantárgy lista (hibaüzenet helyett üres lista)
         return {
             "subjects": [],
             "source": "loe_missing",
             "fetched_at": _now_iso(),
-            "country": country,
+            "curriculum": curriculum,
             "grade": grade_num,
             "region": None,
         }
 
-    raise ValueError(f"Ismeretlen ország: {country}")
+    raise ValueError(f"Ismeretlen tanterv: {curriculum}")
 
 
 # ---------------------------------------------------------------------------
