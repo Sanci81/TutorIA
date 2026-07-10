@@ -852,6 +852,18 @@ def _parse_birth_date_form(raw: str) -> date | None:
     return born
 
 
+def _validate_grade_for_country(country: str, grade: int) -> str | None:
+    """Visszaad egy hibaüzenetet, ha az osztály nem érvényes az adott országban."""
+    c = (country or "").strip().lower()
+    is_spain = c in ("es", "españa", "espana", "spanyolország")
+    max_grade = 6 if is_spain else 8
+    if grade < 1 or grade > max_grade:
+        if is_spain:
+            return "A spanyol tanterv 1–6. osztályig érhető el (Educación Primaria)."
+        return "A magyar tanterv 1–8. osztályig érhető el."
+    return None
+
+
 @app.route("/children/add", methods=["GET", "POST"])
 @login_required
 def add_child():
@@ -873,6 +885,15 @@ def add_child():
         if country == "ES" and not region:
             flash(i18n.t("flash_region_required", g.lang), "error")
             errors = True
+
+        try:
+            grade_int = int(grade)
+            err = _validate_grade_for_country(country, grade_int)
+            if err:
+                flash(err, "error")
+                errors = True
+        except (ValueError, TypeError):
+            pass  # already caught by the not grade check
 
         if errors:
             return render_template(
@@ -923,6 +944,15 @@ def edit_child(child_id: int):
         if country == "ES" and not region:
             flash(i18n.t("flash_region_required", g.lang), "error")
             errors = True
+
+        try:
+            grade_int = int(grade)
+            err = _validate_grade_for_country(country, grade_int)
+            if err:
+                flash(err, "error")
+                errors = True
+        except (ValueError, TypeError):
+            pass  # already caught by the not grade check
 
         if errors:
             return render_template(
@@ -1034,9 +1064,33 @@ def select_tasks(child_id: int):
             curriculum, subject_options = get_subject_options_for_ui(
                 child["country"], child["grade"], region, g.lang
             )
-        except Exception:
+            # If no subjects returned and child is ES, fall back to HU subjects
+            if not subject_options and child["country"] == "ES":
+                logger.warning(
+                    "select_tasks: get_subject_options_for_ui returned empty for ES child %s, "
+                    "falling back to HU subjects",
+                    child_id,
+                )
+                subject_options = get_hu_subjects_for_grade(grade_num)
+                curriculum = {
+                    "subjects": [o["label"] for o in subject_options],
+                    "source": "fallback_hu",
+                    "grade": grade_num,
+                }
+        except Exception as exc:
+            logger.warning(
+                "select_tasks: get_subject_options_for_ui failed for child %s: %s, "
+                "falling back to HU subjects",
+                child_id, exc,
+            )
             curriculum = {"subjects": []}
-            subject_options = []
+            subject_options = get_hu_subjects_for_grade(grade_num)
+            if subject_options:
+                curriculum = {
+                    "subjects": [o["label"] for o in subject_options],
+                    "source": "fallback_hu_exc",
+                    "grade": grade_num,
+                }
 
     effective_age = _child_effective_age(child)
     chat_profile = _chat_interaction_profile(effective_age)
@@ -1246,7 +1300,28 @@ def _chat_load_curriculum(
     subject_file: str, grade: str | int, *, language: str | None = None
 ) -> dict:
     """Kerettanterv kizárólag helyi JSON-ból (sidebar topic_catalog is innen)."""
-    return get_curriculum_for_chat(subject_file, grade, language=language)
+    import os as _os
+    import sys as _sys
+
+    result = get_curriculum_for_chat(subject_file, grade, language=language)
+    logger.warning(
+        "CURRICULUM_DEBUG _chat_load_curriculum: subject_file=%r grade=%s language=%s "
+        "found=%s content_len=%s topic_catalog_len=%s file=%s cwd=%s path=%s",
+        subject_file,
+        grade,
+        language,
+        result.get("found"),
+        len(result.get("content") or ""),
+        len(result.get("topic_catalog") or []),
+        result.get("file"),
+        _os.getcwd(),
+        [
+            str(p)
+            for p in _sys.path
+            if "TutorIA" in str(p) or "curriculum" in str(p).lower()
+        ],
+    )
+    return result
 
 
 _CHAT_LANGUAGES = frozenset({"angol", "nemet", "spanyol"})
@@ -2122,6 +2197,15 @@ def child_chat(child_id: int):
     chat_curriculum = _chat_load_curriculum(
         subject, child["grade"], language=language or None
     )
+    logger.warning(
+        "CHILD_CHAT CURRICULUM CHECK: subject=%r child_grade=%s language=%s "
+        "found=%s content_len=%s",
+        subject,
+        child["grade"],
+        language,
+        chat_curriculum.get("found"),
+        len(chat_curriculum.get("content") or ""),
+    )
     if not chat_curriculum.get("found") or not chat_curriculum.get("content"):
         flash(
             "Ehhez a tantárgyhoz nem található kerettanterv JSON. Válassz másik tantárgyat.",
@@ -2144,10 +2228,29 @@ def child_chat(child_id: int):
     is_foreign = is_elo_idegen_subject(subject) or bool(language)
     progress_subject = _chat_progress_subject(subject, language)
 
+    logger.warning(
+        "PROGRESS_KEY: child_id=%s progress_subject=%r subject=%r language=%r is_foreign=%s",
+        child_id,
+        progress_subject,
+        subject,
+        language,
+        is_foreign,
+    )
     progress = database.get_or_create_child_progress(
         child_id,
         progress_subject,
         last_position=catalog[0]["name"] if catalog else None,
+    )
+    logger.warning(
+        "PROGRESS_LOADED: child_id=%s progress_subject=%r level=%s xp=%s coins=%s "
+        "topics_completed=%s streak_days=%s",
+        child_id,
+        progress_subject,
+        progress.get("level"),
+        progress.get("xp"),
+        progress.get("coins"),
+        len(progress.get("topics_completed") or []),
+        progress.get("streak_days"),
     )
     scores = database.get_topic_scores(child_id, progress_subject, grade_num)
 
@@ -2446,6 +2549,13 @@ def child_chat_progress(child_id: int):
     )
     catalog = chat_curriculum.get("topic_catalog") or []
     progress_subject = _chat_progress_subject(subject, language)
+    logger.warning(
+        "PROGRESS_KEY api/progress: child_id=%s progress_subject=%r subject=%r language=%r",
+        child_id,
+        progress_subject,
+        subject,
+        language,
+    )
     progress = database.get_or_create_child_progress(child_id, progress_subject)
     scores = database.get_topic_scores(child_id, progress_subject, grade_num)
     current_topic_id = _resolve_current_topic_id(catalog, progress, scores)

@@ -22,7 +22,10 @@
                 </div>
                 <div class="field">
                     <label for="grade">{{ t('label_child_grade') }}</label>
-                    <input type="text" id="grade" name="grade" value="{{ form.get('grade', '') }}" required>
+                    <select id="grade" name="grade" required data-current="{{ form.get('grade', '') }}">
+                        <option value="">{{ t('select_placeholder') }}</option>
+                    </select>
+                    <p class="form-hint" id="grade-hint"></p>
                 </div>
             </div>
 
@@ -69,5 +72,35 @@
 {% block scripts %}
 <script>
     initCountryRegionToggle();
+    (function () {
+        var countrySel = document.getElementById('country');
+        var gradeSel   = document.getElementById('grade');
+        var gradeHint  = document.getElementById('grade-hint');
+        var currentGrade = gradeSel.dataset.current || '';
+
+        function isSpain(v) {
+            v = (v || '').trim().toLowerCase();
+            return v === 'es' || v === 'españa' || v === 'espana' || v === 'spanyolország';
+        }
+
+        function rebuildGrades() {
+            var max = isSpain(countrySel.value) ? 6 : 8;
+            var hint = isSpain(countrySel.value)
+                ? '1–6. osztály (Educación Primaria)'
+                : '1–8. osztály (általános iskola)';
+            gradeSel.innerHTML = '<option value="">{{ t('select_placeholder') }}</option>';
+            for (var i = 1; i <= max; i++) {
+                var opt = document.createElement('option');
+                opt.value = String(i);
+                opt.textContent = i + '. osztály';
+                if (String(i) === String(currentGrade)) opt.selected = true;
+                gradeSel.appendChild(opt);
+            }
+            gradeHint.textContent = hint;
+        }
+
+        countrySel.addEventListener('change', rebuildGrades);
+        rebuildGrades();
+    })();
 </script>
 {% endblock %}
