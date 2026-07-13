@@ -621,6 +621,26 @@ def update_child(
         db.close()
 
 
+def update_child_curriculum(
+    child_id: int,
+    parent_id: int,
+    curriculum: str,
+) -> bool:
+    """Gyerek tanterv oszlopának frissítése (kapcsoló állításakor)."""
+    db = _session()
+    try:
+        child = db.scalar(
+            select(Child).where(Child.id == child_id, Child.parent_id == parent_id)
+        )
+        if not child:
+            return False
+        child.curriculum = curriculum
+        db.commit()
+        return True
+    finally:
+        db.close()
+
+
 def get_children_for_parent(parent_id: int) -> list[dict[str, Any]]:
     db = _session()
     try:

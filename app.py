@@ -82,10 +82,12 @@ def load_language():
 
 @app.context_processor
 def inject_helpers():
-    """Sablonokban elérhetővé teszi a fordítót és a nyelvi adatokat."""
+    """Sablonokban elérhetővé teszi a fordítót, a nyelvi adatokat, és az aktív tantervet."""
+    active_curriculum = "ES" if g.lang == "es" else "HU"
     return {
         "t": lambda key: i18n.t(key, g.lang),
         "lang": g.lang,
+        "active_curriculum": active_curriculum,
         "languages": i18n.LANGUAGES,
         "region_name": lambda code: i18n.region_name(code, g.lang),
         "spanish_regions": i18n.SPANISH_REGIONS,
@@ -96,8 +98,16 @@ def inject_helpers():
 def set_language(lang_code):
     if lang_code in i18n.LANGUAGES:
         session["lang"] = lang_code
-    # Visszairányítás az előző oldalra, vagy a főoldalra
-    return redirect(request.referrer or url_for("index"))
+        # Gyerekenkénti emlékezés: ha van kiválasztott gyerek, mentsük el a tantervet
+        child_id = session.get("chat_child_id")
+        if child_id and session.get("parent_id"):
+            curriculum = "ES" if lang_code == "es" else "HU"
+            try:
+                database.update_child_curriculum(child_id, session["parent_id"], curriculum)
+            except Exception:
+                pass  # nem kritikus, ha nem sikerül
+    next_url = request.args.get("next") or request.referrer
+    return redirect(next_url or url_for("index"))
 
 
 # ---------------------------------------------------------------------------
@@ -170,9 +180,14 @@ def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
     )
 
 
+def _active_curriculum() -> str:
+    """Az aktív tanterv a felső nyelvkapcsoló alapján ('HU' vagy 'ES')."""
+    return "ES" if g.lang == "es" else "HU"
+
+
 def _curriculum_for_child(child: dict, *, subject: str | None = None) -> dict:
-    """Tanterv a gyerek profiljához; HU esetén JSON témakörökkel."""
-    child_curr = child.get("curriculum") or child.get("country", "HU")
+    """Tanterv a kapcsoló alapján; HU esetén JSON témakörökkel."""
+    child_curr = _active_curriculum()
     region = child.get("region") if child_curr == "ES" else None
     if child_curr == "HU" and subject:
         return get_curriculum_for_child(
@@ -455,7 +470,7 @@ def _generate_practice_tasks_bundle(
         if subject not in idegen_files:
             language = None
     else:
-        child_curr = child.get("curriculum") or child.get("country", "HU")
+        child_curr = _active_curriculum()
         region = child.get("region") if child_curr == "ES" else None
         try:
             available = get_subjects_for_profile(
@@ -869,12 +884,12 @@ def _validate_grade_for_curriculum(curriculum: str, grade: int) -> str | None:
 @app.route("/children/add", methods=["GET", "POST"])
 @login_required
 def add_child():
+    active_curriculum = "ES" if g.lang == "es" else "HU"
     if request.method == "POST":
         name = (request.form.get("name") or "").strip()
         birth_date_raw = request.form.get("birth_date") or ""
         grade = (request.form.get("grade") or "").strip()
         country = request.form.get("country") or ""
-        curriculum = request.form.get("curriculum") or ""
         region = request.form.get("region") or None
 
         errors = False
@@ -882,15 +897,15 @@ def add_child():
         if not birth_date:
             errors = True
 
-        if not name or country not in ("ES", "HU") or curriculum not in ("HU", "ES") or not grade:
+        if not name or country not in ("ES", "HU") or not grade:
             errors = True
 
-        if curriculum == "ES":
-            region = "base"
+        if country == "ES":
+            region = region or "base"
 
         try:
             grade_int = int(grade)
-            err = _validate_grade_for_curriculum(curriculum, grade_int)
+            err = _validate_grade_for_curriculum(active_curriculum, grade_int)
             if err:
                 flash(err, "error")
                 errors = True
@@ -905,24 +920,21 @@ def add_child():
                     "birth_date": birth_date_raw,
                     "grade": grade,
                     "country": country,
-                    "curriculum": curriculum,
                     "region": region,
                 },
             )
 
-        if curriculum != "ES":
+        if country != "ES":
             region = None
 
         database.create_child(
             session["parent_id"], name, birth_date, grade, country, region,
-            curriculum=curriculum,
+            curriculum=active_curriculum,
         )
         flash(i18n.t("flash_child_added", g.lang), "success")
         return redirect(url_for("dashboard"))
 
-    # GET: alapértelmezett curriculum a felületi nyelv alapján
-    default_curriculum = "ES" if g.lang == "es" else "HU"
-    return render_template("add_child.html", form={"curriculum": default_curriculum})
+    return render_template("add_child.html", form={})
 
 
 @app.route("/children/<int:child_id>/edit", methods=["GET", "POST"])
@@ -931,13 +943,13 @@ def edit_child(child_id: int):
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
+    active_curriculum = "ES" if g.lang == "es" else "HU"
 
     if request.method == "POST":
         name = (request.form.get("name") or "").strip()
         birth_date_raw = request.form.get("birth_date") or ""
         grade = (request.form.get("grade") or "").strip()
         country = request.form.get("country") or ""
-        curriculum = request.form.get("curriculum") or ""
         region = request.form.get("region") or None
 
         errors = False
@@ -945,15 +957,15 @@ def edit_child(child_id: int):
         if not birth_date:
             errors = True
 
-        if not name or country not in ("ES", "HU") or curriculum not in ("HU", "ES") or not grade:
+        if not name or country not in ("ES", "HU") or not grade:
             errors = True
 
-        if curriculum == "ES":
-            region = "base"
+        if country == "ES":
+            region = region or "base"
 
         try:
             grade_int = int(grade)
-            err = _validate_grade_for_curriculum(curriculum, grade_int)
+            err = _validate_grade_for_curriculum(active_curriculum, grade_int)
             if err:
                 flash(err, "error")
                 errors = True
@@ -969,12 +981,11 @@ def edit_child(child_id: int):
                     "birth_date": birth_date_raw,
                     "grade": grade,
                     "country": country,
-                    "curriculum": curriculum,
                     "region": region,
                 },
             )
 
-        if curriculum != "ES":
+        if country != "ES":
             region = None
 
         database.update_child(
@@ -985,7 +996,7 @@ def edit_child(child_id: int):
             grade=grade,
             country=country,
             region=region,
-            curriculum=curriculum,
+            curriculum=active_curriculum,
         )
         flash(i18n.t("flash_child_updated", g.lang), "success")
         return redirect(url_for("dashboard"))
@@ -995,7 +1006,6 @@ def edit_child(child_id: int):
         "birth_date": child.get("birth_date") or "",
         "grade": child["grade"],
         "country": child["country"],
-        "curriculum": child.get("curriculum", child.get("country", "HU")),
         "region": child.get("region") or "",
     }
     return render_template("edit_child.html", child=child, form=form)
@@ -1057,8 +1067,17 @@ def select_tasks(child_id: int):
     if not child:
         abort(404)
 
+    # Emlékezés: ha a gyerek mentett tanterve eltér a kapcsolótól, állítsuk át
+    saved_curr = child.get("curriculum")
+    expected_lang = "es" if saved_curr == "ES" else ("hu" if saved_curr == "HU" else None)
+    if expected_lang and expected_lang != g.lang:
+        return redirect(
+            url_for("set_language", lang_code=expected_lang,
+                    next=url_for("select_tasks", child_id=child_id))
+        )
+
     grade_num = parse_grade(child["grade"])
-    child_curr = child.get("curriculum") or child.get("country", "HU")
+    child_curr = _active_curriculum()
 
     if child_curr == "HU":
         subject_options = get_hu_subjects_for_grade(grade_num)
@@ -1822,6 +1841,13 @@ EBBEN A LECKÉBEN TANULANDÓ SZAVAK (csak ezeket tanítsd és jelöld VOCAB mark
 {chr(10).join(f'- {szo}' for szo in szokincs)}
 Minden fenti szót tanítanod kell ebben a leckében. Ha a gyerek kérdez róluk, mindig add meg a <VOCAB> markert!
 """
+    elif lang == "spanyol":
+        # Spanyol tanterv — spanyol nyelvű oktatás (nem idegen nyelv, hanem anyanyelvi tantárgy ES tanterv esetén)
+        prompt += """- Spanyol tanterv – MINDIG spanyolul tanítsd és kommunikálj.
+- Ha a gyerek spanyolul ír/beszél, spanyolul válaszolj.
+- Ha a gyerek magyarul ír/beszél, spanyolul válaszolj és segíts megérteni a jelentését.
+- A tanítás nyelve KIZÁRÓLAG spanyol – ne válts magyarra!
+"""
     else:
         prompt += f"""- Magyar tantárgy – MINDIG magyarul tanítsd és kommunikálj.
 - FIGYELJ a magyar nyelvtani helyességre! Gyakori hibák amiket KERÜLJ:
@@ -1859,7 +1885,7 @@ EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>magyar={lang}</VOCAB> markereket minden �
 def _call_ai_for_quiz(
     *, grade: int, topic_name: str, topic_text: str, age: int,
     ora_szam: int, all_ora_szamok: list[int], szokincs: list | None = None,
-    language: str | None = None,
+    language: str | None = None, teaching_language: str | None = None,
 ) -> list[dict[str, Any]]:
     api_key = _openai_api_key()
     if not api_key:
@@ -1956,6 +1982,31 @@ def _call_ai_for_quiz(
         )
         model = "gpt-4o"
         temperature = 0.3
+    elif teaching_language == "spanyol":
+        # Spanyol tanterv — spanyol nyelvű kvíz (nem idegen nyelv óra)
+        system = (
+            "Eres un generador de pruebas para niños españoles de primaria.\n"
+            f"ALUMNO: {age} años, {grade}º de primaria.\n\n"
+            "NIVEL DE DIFICULTAD SEGÚN EL CURSO:\n"
+            "- 1º: números hasta 20, sumas/restas de un paso\n"
+            "- 2º: números hasta 100, sumas/restas, multiplicación simple\n"
+            "- 3º: números hasta 1000, multiplicación, división\n"
+            "- 4º: números hasta 10000, las 4 operaciones, problemas de varios pasos\n"
+            f"El alumno está en {grade}º.\n\n"
+            "REGLAS:\n"
+            "- Problemas prácticos que el alumno resuelve calculando\n"
+            "- Usa conceptos del texto curricular\n"
+            "- NO copies ejemplos de estas instrucciones\n"
+            "- TODAS las preguntas y respuestas en ESPAÑOL\n\n"
+            f"TEXTO CURRICULAR:\n{material}\n\n"
+            f"Genera exactamente {q_count} preguntas de opción múltiple, 3 opciones cada una, 1 correcta. "
+            "ALEATORIZA la posición de la respuesta correcta — NO uses siempre el índice 0.\n"
+            'Devuelve SOLO este JSON: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
+            "CRÍTICO: Cada opción debe ser una respuesta completa en español, nunca una sola letra."
+        )
+        model = "gpt-4o-mini"
+        temperature = 0.5
+        lang_display = "Spanish"
     else:
         system = (
             "You are a curriculum-based quiz generator for Hungarian schoolchildren.\n"
@@ -2090,7 +2141,7 @@ def _chat_subject_label(
     if g.lang == "hu":
         subject_label = hu_1_4_label_from_value(subject_file)
     else:
-        child_curr = child.get("curriculum") or child.get("country", "HU")
+        child_curr = _active_curriculum()
         subject_label = subject_ui_label(subject_file, g.lang, child_curr)
     subject_label = chat_curriculum.get("subject_name", subject_label)
     lang = _normalize_chat_language(language)
@@ -2149,6 +2200,17 @@ def child_chat(child_id: int):
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
+
+    # Emlékezés: ha a gyerek mentett tanterve eltér a kapcsolótól, állítsuk át
+    saved_curr = child.get("curriculum")
+    expected_lang = "es" if saved_curr == "ES" else ("hu" if saved_curr == "HU" else None)
+    if expected_lang and expected_lang != g.lang:
+        return redirect(
+            url_for("set_language", lang_code=expected_lang,
+                    next=url_for("child_chat", child_id=child_id, **dict(request.args)))
+        )
+
+    active_curriculum = _active_curriculum()
 
     logger.warning(
         "CHILD_CHAT DEBUG: request.args=%s request.form=%s session_subject=%s session_language=%s",
@@ -2730,6 +2792,7 @@ def child_chat_test_generate(child_id: int):
             all_ora_szamok=all_ora_szamok,
             szokincs=topic_szokincs,
             language=language or None,
+            teaching_language=chat_curriculum.get("language"),
         )
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
