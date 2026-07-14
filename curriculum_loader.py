@@ -1354,6 +1354,42 @@ def extract_topic_catalog(data: dict[str, Any], grade: int | str) -> list[dict[s
     ]
 
 
+def extract_loe_topic_catalog(
+    data: dict[str, Any], grade: int | str
+) -> list[dict[str, Any]]:
+    """Spanyol (LOMLOE) témakör-katalógus a ciklus temakorok tömbjéből.
+
+    Ugyanaz a szerkezet, mint az extract_topic_catalog (magyar) kimenete:
+    id, name, text, index, ora_szam.
+    """
+    grade_num = parse_grade(grade)
+    cycle = loe_cycle_for_grade(grade_num)
+    if not cycle:
+        return []
+    ciklusok = data.get("ciklusok", {})
+    if not isinstance(ciklusok, dict):
+        return []
+    cval = ciklusok.get(cycle)
+    if not isinstance(cval, dict):
+        return []
+    temakorok = cval.get("temakorok") or []
+    if not isinstance(temakorok, list):
+        return []
+    catalog: list[dict[str, Any]] = []
+    for idx, item in enumerate(temakorok):
+        if isinstance(item, dict) and item.get("nev"):
+            catalog.append(
+                {
+                    "id": f"t{idx}",
+                    "name": str(item["nev"]),
+                    "text": str(item.get("teljes_szoveg", "")),
+                    "index": idx,
+                    "ora_szam": 0,
+                }
+            )
+    return catalog
+
+
 def get_topic_from_catalog(
     catalog: list[dict[str, Any]], topic_id: str
 ) -> dict[str, Any] | None:
@@ -1462,12 +1498,19 @@ def get_curriculum_for_chat(
             loe.get("subject_name", "?"),
         )
         if loe.get("curriculum_body"):
+            loe_catalog = extract_loe_topic_catalog(
+                loe.get("data", {}), grade_num
+            )
+            logger.warning(
+                "get_curriculum_for_chat LOE branch: topic_catalog_len=%s",
+                len(loe_catalog),
+            )
             return {
                 "found": True,
                 "content": loe["curriculum_body"],
                 "topics": ["LOMLOE tananyag"],
                 "topics_detail": {},
-                "topic_catalog": [],
+                "topic_catalog": loe_catalog,
                 "file": ES_LOE_FILES[subject_file],
                 "subject_name": loe.get("subject_name", subject_file),
                 "data": loe.get("data", {}),
