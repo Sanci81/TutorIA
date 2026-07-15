@@ -185,6 +185,29 @@ def _active_curriculum() -> str:
     return "ES" if g.lang == "es" else "HU"
 
 
+def _sync_switch_on_child_change(child: dict) -> None:
+    """Emlékezés CSAK gyerekváltáskor.
+
+    - Beállítja az aktív gyereket a session-ben (set_language innen tudja).
+    - Ha a kiválasztott gyerek MEGVÁLTOZOTT az előzőhöz képest, a felső
+      kapcsolót a gyerek mentett curriculum-jára állítja.
+    - Ugyanannál a gyereknél NEM nyúl a kapcsolóhoz, így a kézi váltást
+      semmi nem rántja vissza.
+    """
+    child_id = child.get("id")
+    session["chat_child_id"] = child_id
+    if session.get("last_child_id") == child_id:
+        return
+    session["last_child_id"] = child_id
+    saved = child.get("curriculum")
+    if saved == "ES":
+        session["lang"] = "es"
+        g.lang = "es"
+    elif saved == "HU":
+        session["lang"] = "hu"
+        g.lang = "hu"
+
+
 def _curriculum_for_child(child: dict, *, subject: str | None = None) -> dict:
     """Tanterv a kapcsoló alapján; HU esetén JSON témakörökkel."""
     child_curr = _active_curriculum()
@@ -1074,17 +1097,12 @@ def select_tasks(child_id: int):
     if not child:
         abort(404)
 
-    # Emlékezés: ha a gyerek mentett tanterve eltér a kapcsolótól, állítsuk át
-    saved_curr = child.get("curriculum")
-    expected_lang = "es" if saved_curr == "ES" else ("hu" if saved_curr == "HU" else None)
-    if expected_lang and expected_lang != g.lang:
-        return redirect(
-            url_for("set_language", lang_code=expected_lang,
-                    next=url_for("select_tasks", child_id=child_id))
-        )
+    # Emlékezés CSAK gyerekváltáskor – oldalbetöltés nem kényszeríti a kapcsolót.
+    _sync_switch_on_child_change(child)
 
     grade_num = parse_grade(child["grade"])
     child_curr = _active_curriculum()
+    notice = None
 
     if child_curr == "HU":
         subject_options = get_hu_subjects_for_grade(grade_num)
@@ -1093,6 +1111,19 @@ def select_tasks(child_id: int):
             "source": "json",
             "grade": grade_num,
         }
+    elif grade_num > 6:
+        # ES (LOMLOE) csak 1–6. osztály (Educación Primaria) – kezelt állapot,
+        # nem hiba: barátságos üzenet, a kapcsoló továbbra is működik.
+        logger.warning(
+            "select_tasks: ES curriculum de grade %s > 6 (child %s) – "
+            "nincs Educación Primaria tananyag, kezelt állapot.",
+            grade_num, child_id,
+        )
+        notice = i18n.t("es_primary_only_notice", g.lang).format(
+            name=child["name"], grade=grade_num
+        )
+        curriculum = {"subjects": [], "source": "es_out_of_range"}
+        subject_options = []
     else:
         region = child.get("region") or "base"
         try:
@@ -1127,6 +1158,7 @@ def select_tasks(child_id: int):
         child=child,
         subject_options=subject_options,
         curriculum=curriculum,
+        notice=notice,
         effective_age=effective_age,
         chat_profile=chat_profile,
         elo_idegen_file=(
@@ -2221,14 +2253,8 @@ def child_chat(child_id: int):
     if not child:
         abort(404)
 
-    # Emlékezés: ha a gyerek mentett tanterve eltér a kapcsolótól, állítsuk át
-    saved_curr = child.get("curriculum")
-    expected_lang = "es" if saved_curr == "ES" else ("hu" if saved_curr == "HU" else None)
-    if expected_lang and expected_lang != g.lang:
-        return redirect(
-            url_for("set_language", lang_code=expected_lang,
-                    next=url_for("child_chat", child_id=child_id, **dict(request.args)))
-        )
+    # Emlékezés CSAK gyerekváltáskor – oldalbetöltés nem kényszeríti a kapcsolót.
+    _sync_switch_on_child_change(child)
 
     active_curriculum = _active_curriculum()
 

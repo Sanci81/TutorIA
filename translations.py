@@ -204,6 +204,12 @@ TRANSLATIONS = {
         "hu": "Kérlek, válassz nyelvet (angol, német vagy spanyol).",
         "es": "Por favor, elige un idioma (inglés o alemán).",
     },
+    "es_primary_only_notice": {
+        "hu": "A spanyol tanterv (Educación Primaria) csak 1–6. osztályig érhető el. "
+              "{name} {grade}. osztályos, ezért itt nincs elérhető spanyol tananyag.",
+        "es": "El currículo español (Educación Primaria) solo llega hasta 6.º. "
+              "{name} está en {grade}.º, así que no hay contenido disponible.",
+    },
     "label_language": {"hu": "Nyelv", "es": "Idioma"},
     "language_angol": {"hu": "Angol", "es": "Inglés"},
     "language_nemet": {"hu": "Német", "es": "Alemán"},
