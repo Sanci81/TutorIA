@@ -77,7 +77,8 @@
                         <option value="">{{ t('select_placeholder') }}</option>
                         <option value="angol">{{ t('language_angol') }}</option>
                         <option value="nemet">{{ t('language_nemet') }}</option>
-                        <option value="spanyol">{{ 'Spanyol' }}</option>
+                        <option value="spanyol" data-curr="HU">{{ 'Spanyol' }}</option>
+                        <option value="francia" data-curr="ES">{{ 'Francia' }}</option>
                     </select>
                 </div>
 
@@ -142,6 +143,23 @@ document.addEventListener('DOMContentLoaded', function () {
     var langDiv = document.getElementById('language-selector');
     var langSelect = document.getElementById('language-select');
     var eloFile = {{ elo_idegen_file|tojson }};
+    var activeCurriculum = {{ active_curriculum|tojson }};
+
+    // A nyelv-opciók szűrése tanterv szerint: HU-nál Spanyol, ES-nél Francia.
+    function applyLangCurriculum() {
+        if (!langSelect) return;
+        var opts = langSelect.options;
+        for (var i = 0; i < opts.length; i++) {
+            var oc = opts[i].getAttribute('data-curr');
+            if (!oc) continue; // mindig látható opció (Angol, Német)
+            var visible = (oc === activeCurriculum);
+            opts[i].hidden = !visible;
+            opts[i].disabled = !visible;
+            if (!visible && langSelect.value === opts[i].value) {
+                langSelect.value = '';
+            }
+        }
+    }
     var chatBase = {{ url_for('child_chat', child_id=child['id'])|tojson }};
     var taskActions = document.getElementById('task-actions');
     var taskChatAlt = document.getElementById('task-chat-alt');
@@ -154,6 +172,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!subjectSelect) return false;
         var val = subjectSelect.value;
         var text = subjectSelect.options[subjectSelect.selectedIndex].text;
+        // ES (LOMLOE) tanterv: a 'extranjera' tantárgy az idegen nyelv.
+        if (activeCurriculum === 'ES') {
+            return val === 'extranjera';
+        }
         return val === eloFile || val.indexOf('Elo_idegen') !== -1 || text === 'Idegen nyelv';
     }
 
@@ -211,6 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    applyLangCurriculum();
     if (subjectSelect) {
         subjectSelect.addEventListener('change', function () {
             updateLanguageSelector();

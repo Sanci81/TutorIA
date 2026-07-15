@@ -481,7 +481,14 @@ def _generate_practice_tasks_bundle(
         if available and subject not in available:
             flash(i18n.t("flash_subject_required", g.lang), "error")
             return None
-        language = None
+        # ES 'extranjera' (idegen nyelv): a kiválasztott célnyelv megmarad,
+        # minden más ES tantárgynál nincs nyelv.
+        if subject == "extranjera":
+            if language not in ("angol", "nemet", "francia"):
+                flash(i18n.t("flash_language_required", g.lang), "error")
+                return None
+        else:
+            language = None
 
     subject_display = hu_1_4_label_from_value(subject)
     curriculum = _curriculum_for_child(child, subject=subject)
@@ -1344,11 +1351,12 @@ def _chat_load_curriculum(
     return result
 
 
-_CHAT_LANGUAGES = frozenset({"angol", "nemet", "spanyol"})
+_CHAT_LANGUAGES = frozenset({"angol", "nemet", "spanyol", "francia"})
 _CHAT_LANGUAGE_DISPLAY = {
     "angol": "Angol",
     "nemet": "Német",
     "spanyol": "Spanyol",
+    "francia": "Francia",
 }
 
 
@@ -1892,7 +1900,11 @@ def _call_ai_for_quiz(
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
 
     max_ora = max(all_ora_szamok) if all_ora_szamok else 1
-    q_count = max(8, min(15, round(8 + (ora_szam / max_ora) * 7)))
+    if not max_ora or max_ora <= 0:
+        # Spanyol (LOMLOE) témaköröknek nincs óraszáma – ésszerű alapérték.
+        q_count = 10
+    else:
+        q_count = max(8, min(15, round(8 + (ora_szam / max_ora) * 7)))
     material = (topic_text or topic_name)[:10000]
 
     is_foreign_language = szokincs is not None or bool(language and language.strip())
@@ -1938,11 +1950,13 @@ def _call_ai_for_quiz(
             "spanyol": "SPANISH",
             "angol": "ENGLISH", 
             "nemet": "GERMAN",
+            "francia": "FRENCH",
         }.get(target_language.lower(), "SPANISH")
         lang_display = {
             "spanyol": "Spanish",
             "angol": "English",
             "nemet": "German",
+            "francia": "French",
         }.get(target_language.lower(), "Spanish")
         
         system = (
@@ -2227,6 +2241,7 @@ def child_chat(child_id: int):
     is_foreign = (
         is_elo_idegen_subject(subject_raw)
         or subject_raw.lower() in ("angol", "nemet", "spanyol", "idegen nyelv", "élő idegen nyelv")
+        or subject_raw.lower() == "extranjera"  # ES (LOMLOE) idegen nyelv
     )
     if not is_foreign:
         session.pop("language", None)
@@ -2242,7 +2257,7 @@ def child_chat(child_id: int):
 
     # Language: explicit request.args → session fallback (csak idegen nyelvnél)
     explicit_language = (request.args.get("language") or "").strip().lower()
-    is_foreign_subj = is_elo_idegen_subject(subject)
+    is_foreign_subj = is_elo_idegen_subject(subject) or subject.lower() == "extranjera"
     if not explicit_language:
         if is_foreign_subj:
             language = session.get("language", "")

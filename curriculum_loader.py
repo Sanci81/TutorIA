@@ -1505,6 +1505,13 @@ def get_curriculum_for_chat(
                 "get_curriculum_for_chat LOE branch: topic_catalog_len=%s",
                 len(loe_catalog),
             )
+            # A 'extranjera' (idegen nyelv) tantárgynál a tanított nyelv a
+            # kiválasztott célnyelv (angol/német/francia), nem a spanyol.
+            loe_language = "spanyol"
+            if subject_file == "extranjera" and effective_language in (
+                "angol", "nemet", "francia"
+            ):
+                loe_language = effective_language
             return {
                 "found": True,
                 "content": loe["curriculum_body"],
@@ -1514,7 +1521,7 @@ def get_curriculum_for_chat(
                 "file": ES_LOE_FILES[subject_file],
                 "subject_name": loe.get("subject_name", subject_file),
                 "data": loe.get("data", {}),
-                "language": "spanyol",
+                "language": loe_language,
             }
         logger.warning("get_curriculum_for_chat LOE branch: curriculum_body was EMPTY, falling through to HU path")
 
@@ -1828,8 +1835,9 @@ def get_subjects_for_profile(
         }
 
     if curriculum == "ES":
-        # LOMLOE tantárgyak spanyol gyerekeknek
-        subjects = get_loe_subject_keys()
+        # LOMLOE tantárgyak spanyol gyerekeknek – évfolyamra szűrve
+        # (pl. 'valores' csak 5-6. osztályban / 3_ciclo létezik a BOE szerint).
+        subjects = [s["value"] for s in get_loe_subjects_for_grade(grade_num)]
         if subjects:
             return {
                 "subjects": subjects,
