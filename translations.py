@@ -262,6 +262,107 @@ TRANSLATIONS = {
         "es": "Contraseña cambiada correctamente. Ya puedes iniciar sesión.",
     },
 
+    # --- chat oldal + teszt ablak ---
+    "chat_topics_title": {"hu": "Témakörök", "es": "Temas"},
+    "chat_topics_done_suffix": {"hu": "témakör kész", "es": "temas completados"},
+    "chat_average_label": {"hu": "Átlagod", "es": "Tu media"},
+    "chat_now_learning": {"hu": "🎯 Most ezt tanulod", "es": "🎯 Ahora estás aprendiendo"},
+    "chat_minutes_suffix": {"hu": "perc", "es": "min"},
+    "chat_level_fmt": {"hu": "{n}. szint", "es": "Nivel {n}"},
+    "chat_streak_fmt": {"hu": "🔥 {n} napos sorozat!", "es": "🔥 {n} días seguidos!"},
+    "chat_test_start": {"hu": "⭐ Szintfelmérő teszt", "es": "⭐ Test de nivel"},
+    "chat_test_start_short": {"hu": "Teszt indítása ✏️", "es": "Empezar test ✏️"},
+    "chat_test_generating": {"hu": "Generálás... ⏳", "es": "Generando... ⏳"},
+    "chat_voice_switch_chat": {"hu": "← Inkább írok", "es": "← Prefiero escribir"},
+    "chat_mode_voice": {"hu": "🎙️ Hangos mód", "es": "🎙️ Modo voz"},
+    "chat_mode_chat": {"hu": "💬 Chat mód", "es": "💬 Modo chat"},
+    "chat_vocab_title": {"hu": "Szójegyzék", "es": "Vocabulario"},
+    "chat_vocab_empty": {
+        "hu": "Még nincs szó – tanulás közben töltődik fel.",
+        "es": "Aún no hay palabras: se irán añadiendo mientras aprendes.",
+    },
+    "chat_input_label": {"hu": "Üzenet", "es": "Mensaje"},
+    "chat_input_placeholder": {"hu": "Írd ide az üzeneted…", "es": "Escribe tu mensaje…"},
+    "chat_send": {"hu": "Küldés", "es": "Enviar"},
+    "chat_voice_status_idle": {"hu": "Nyomd meg és beszélj! 🎙️", "es": "¡Pulsa y habla! 🎙️"},
+    "chat_voice_listening": {"hu": "Figyelek... 👂", "es": "Te escucho... 👂"},
+    "chat_voice_processing": {"hu": "Mindjárt mondom... 💭", "es": "Un momento... 💭"},
+    "chat_voice_unsupported": {
+        "hu": "A böngésződ nem támogatja a hangfelvételt.",
+        "es": "Tu navegador no admite la grabación de voz.",
+    },
+    "chat_voice_try_text": {"hu": "Próbáld a szöveges chatet", "es": "Prueba el chat de texto"},
+    "chat_voice_mic_permission": {
+        "hu": "Kérjük engedélyezd a mikrofon használatát!",
+        "es": "¡Permite el uso del micrófono, por favor!",
+    },
+    "chat_err_no_reply": {
+        "hu": "Sajnos most nem tudok válaszolni. 😊",
+        "es": "Lo siento, ahora no puedo responder. 😊",
+    },
+    "chat_err_network": {
+        "hu": "Hálózati hiba – próbáld újra!",
+        "es": "Error de red: ¡inténtalo de nuevo!",
+    },
+    "chat_err_not_understood": {
+        "hu": "Nem értettem – próbáld újra! 🙂",
+        "es": "No te he entendido: ¡inténtalo de nuevo! 🙂",
+    },
+    "chat_think_1": {"hu": "Gondolkodom... 🤔", "es": "Estoy pensando... 🤔"},
+    "chat_think_2": {"hu": "Mindjárt kész... ✍️", "es": "Casi listo... ✍️"},
+    "chat_think_3": {"hu": "Összeszedem a választ... 📚", "es": "Preparo la respuesta... 📚"},
+    "chat_think_4": {"hu": "Még egy pillanat... ⭐", "es": "Un momento más... ⭐"},
+    "chat_replay_title": {"hu": "Hallgasd meg újra", "es": "Escuchar de nuevo"},
+    "chat_mic_label": {"hu": "Mikrofon", "es": "Micrófono"},
+    # --- teszt ablak ---
+    "test_title": {"hu": "Teszt", "es": "Test"},
+    "test_title_fmt": {"hu": "Teszt: {topic}", "es": "Test: {topic}"},
+    "test_close": {"hu": "Bezárás", "es": "Cerrar"},
+    "quiz_submit": {"hu": "Beküldés", "es": "Enviar"},
+    "quiz_answer_placeholder": {"hu": "Írd ide a válaszod...", "es": "Escribe tu respuesta..."},
+    "quiz_create_failed": {
+        "hu": "Nem sikerült a tesztet létrehozni.",
+        "es": "No se pudo crear el test.",
+    },
+    "quiz_advance": {"hu": "Továbblépek", "es": "Continuar"},
+    "quiz_practice_more": {"hu": "Még gyakorlok", "es": "Practicar más"},
+    "quiz_retry": {"hu": "Újra", "es": "Reintentar"},
+    "quiz_next_fmt": {"hu": "➡️ Tovább: {topic}", "es": "➡️ Siguiente: {topic}"},
+    "quiz_next_hint": {
+        "hu": "Kattints a gombra a következő témakörre lépéshez.",
+        "es": "Pulsa el botón para pasar al siguiente tema.",
+    },
+    "quiz_all_done": {
+        "hu": "Minden témakört teljesítettél ebben a tantárgyban! 🎉",
+        "es": "¡Has completado todos los temas de esta asignatura! 🎉",
+    },
+    "quiz_review_current_hint": {
+        "hu": "Kattints a gombra, ha újra át szeretnéd nézni a témát.",
+        "es": "Pulsa el botón si quieres repasar el tema.",
+    },
+    "quiz_try_again_fmt": {"hu": "Próbáld újra! {score}%", "es": "¡Inténtalo de nuevo! {score}%"},
+    "quiz_attempts_left_fmt": {
+        "hu": "Még {n} próbálkozásod van. Tanulj még {time} és próbálhatsz újra!",
+        "es": "Te quedan {n} intentos. ¡Estudia {time} más y vuelve a intentarlo!",
+    },
+    "quiz_study_more_fmt": {
+        "hu": "Tanulj még {time} és utána próbálhatsz újra!",
+        "es": "¡Estudia {time} más y luego vuelve a intentarlo!",
+    },
+    "quiz_study_60_retry": {
+        "hu": "Tanulj még 60 percet és újra próbálhatod!",
+        "es": "¡Estudia 60 minutos más y vuelve a intentarlo!",
+    },
+    "time_about_hours_fmt": {"hu": "kb. {h} órát", "es": "unas {h} horas"},
+    "time_hours_minutes_fmt": {"hu": "{h} órát {m} percet", "es": "{h} horas {m} minutos"},
+    "time_minutes_fmt": {"hu": "{m} percet", "es": "{m} minutos"},
+    # --- teszt eredmény: hibalista ---
+    "review_title": {"hu": "Eredmények áttekintése", "es": "Resumen de resultados"},
+    "review_your_answer": {"hu": "A te válaszod", "es": "Tu respuesta"},
+    "review_correct_answer": {"hu": "Helyes válasz", "es": "Respuesta correcta"},
+    "review_no_answer": {"hu": "(nincs válasz)", "es": "(sin respuesta)"},
+    "review_explanation": {"hu": "Magyarázat", "es": "Explicación"},
+
     # --- lábléc ---
     "footer_text": {
         "hu": "TutorIA — Tanulás, személyre szabva.",

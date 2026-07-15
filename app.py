@@ -1894,6 +1894,7 @@ def _call_ai_for_quiz(
     *, grade: int, topic_name: str, topic_text: str, age: int,
     ora_szam: int, all_ora_szamok: list[int], szokincs: list | None = None,
     language: str | None = None, teaching_language: str | None = None,
+    text_len: int | None = None, avg_text_len: float | None = None,
 ) -> list[dict[str, Any]]:
     api_key = _openai_api_key()
     if not api_key:
@@ -1901,8 +1902,13 @@ def _call_ai_for_quiz(
 
     max_ora = max(all_ora_szamok) if all_ora_szamok else 1
     if not max_ora or max_ora <= 0:
-        # Spanyol (LOMLOE) témaköröknek nincs óraszáma – ésszerű alapérték.
-        q_count = 10
+        # Nincs óraszám (pl. spanyol LOMLOE): a témakör szöveghossza az arány
+        # alapja – hosszabb témakör = több tananyag = több kérdés.
+        if avg_text_len and avg_text_len > 0:
+            this_len = text_len if text_len else len(topic_text or topic_name)
+            q_count = max(10, min(15, round(10 + (this_len / avg_text_len - 1) * 5)))
+        else:
+            q_count = 10
     else:
         q_count = max(8, min(15, round(8 + (ora_szam / max_ora) * 7)))
     material = (topic_text or topic_name)[:10000]
@@ -2794,6 +2800,10 @@ def child_chat_test_generate(child_id: int):
 
     try:
         all_ora_szamok = [t.get("ora_szam", 0) for t in catalog]
+        # Szöveghossz-alapú arányosítás (ES, ahol nincs óraszám):
+        text_lens = [len(t.get("text", "") or "") for t in catalog]
+        avg_text_len = (sum(text_lens) / len(text_lens)) if text_lens else 0
+        this_text_len = len(topic.get("text", "") or "")
         # Ha van language (idegen nyelv), szokincs-ot átadjuk még ha None is
         # A _call_ai_for_quiz is_foreign_language = szokincs is not None helyett
         # language alapján döntjük el hogy idegen nyelvű-e a teszt
@@ -2808,6 +2818,8 @@ def child_chat_test_generate(child_id: int):
             szokincs=topic_szokincs,
             language=language or None,
             teaching_language=chat_curriculum.get("language"),
+            text_len=this_text_len,
+            avg_text_len=avg_text_len,
         )
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
@@ -2839,17 +2851,54 @@ def child_chat_test_submit(child_id: int):
 
     correct = 0
     total = len(questions)
+    review: list[dict[str, Any]] = []
     for i, q in enumerate(questions):
+        q_type = q.get("type", "mc")
+        user_ans = answers[i] if i < len(answers) else None
+        is_correct = False
+        user_display = ""
+        correct_display = ""
         try:
-            q_type = q.get("type", "mc")
             if q_type == "mc":
-                if int(answers[i]) == int(q.get("correct", -1)):
+                options = q.get("options") or []
+                # helyes válasz szövege
+                try:
+                    correct_idx = int(q.get("correct", -1))
+                    if 0 <= correct_idx < len(options):
+                        correct_display = str(options[correct_idx])
+                except (TypeError, ValueError):
+                    correct_idx = -1
+                # a gyerek válasza szövegként
+                try:
+                    user_idx = int(user_ans)
+                    if 0 <= user_idx < len(options):
+                        user_display = str(options[user_idx])
+                except (TypeError, ValueError):
+                    user_idx = -1
+                if user_idx != -1 and user_idx == correct_idx:
+                    is_correct = True
                     correct += 1
             elif q_type in ("fill", "sent"):
-                if answers[i] is not None and str(answers[i]).strip().lower() == str(q.get("answer", "")).strip().lower():
+                correct_display = str(q.get("answer", ""))
+                user_display = "" if user_ans is None else str(user_ans)
+                if user_ans is not None and str(user_ans).strip().lower() == str(q.get("answer", "")).strip().lower():
+                    is_correct = True
                     correct += 1
         except (IndexError, TypeError, ValueError):
             pass
+        review.append({
+            "q": q.get("q", ""),
+            "type": q_type,
+            "is_correct": is_correct,
+            "user_answer": user_display,
+            "correct_answer": correct_display,
+            "explanation": (
+                q.get("explanation")
+                or q.get("magyarazat")
+                or q.get("explicacion")
+                or ""
+            ),
+        })
     score = int(round(100 * correct / total)) if total else 0
 
     chat_curriculum = _chat_load_curriculum(
@@ -3066,6 +3115,7 @@ def child_chat_test_submit(child_id: int):
             "next_topic_name": next_topic["name"] if next_topic else None,
             "congrats_message": congrats_message,
             "sidebar": sidebar,
+            "review": review,
             "xp": new_xp,
             "game_level": new_game_level,
             "coins": new_coins,

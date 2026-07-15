@@ -4,13 +4,13 @@
 
 {% block content %}
 <section class="chat-layout{% if chat_mode == 'voice' %} chat-layout-voice{% endif %}" id="chat-page">
-    <button type="button" class="chat-sidebar-toggle" id="sidebar-toggle" aria-label="Témakörök">☰</button>
+    <button type="button" class="chat-sidebar-toggle" id="sidebar-toggle" aria-label="{{ t('chat_topics_title') }}">☰</button>
 
     <aside class="topic-sidebar" id="topic-sidebar">
         <div class="topic-sidebar-card">
-            <h2 class="topic-sidebar-title">Témakörök</h2>
+            <h2 class="topic-sidebar-title">{{ t('chat_topics_title') }}</h2>
             <p class="topic-sidebar-summary" id="topic-summary">
-                {{ sidebar.completed_count }} / {{ sidebar.total_count }} témakör kész
+                {{ sidebar.completed_count }} / {{ sidebar.total_count }} {{ t('chat_topics_done_suffix') }}
             </p>
             <div class="topic-sidebar-progress">
                 <div class="topic-sidebar-progress-fill" id="sidebar-progress-fill"
@@ -48,7 +48,7 @@
                 {% endfor %}
             </ul>
             <p class="topic-sidebar-avg" id="topic-avg">
-                Átlagod: {{ sidebar.average_score }}%
+                {{ t('chat_average_label') }}: {{ sidebar.average_score }}%
             </p>
         </div>
     </aside>
@@ -57,14 +57,14 @@
         <header class="chat-header chat-header-playful">
             <div class="chat-header-topbar">
                 {% if chat_mode == 'voice' and show_chat_switch %}
-                <a class="voice-switch-chat" href="{{ chat_switch_url }}">← Inkább írok</a>
+                <a class="voice-switch-chat" href="{{ chat_switch_url }}">{{ t('chat_voice_switch_chat') }}</a>
                 {% else %}
                 <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
                 {% endif %}
                 {% if chat_mode == 'voice' %}
-                    <a class="chat-mode-toggle chat-mode-voice" href="{{ chat_switch_url if show_chat_switch else '#' }}">🎙️ Hangos mód</a>
+                    <a class="chat-mode-toggle chat-mode-voice" href="{{ chat_switch_url if show_chat_switch else '#' }}">{{ t('chat_mode_voice') }}</a>
                 {% elif chat_mode == 'chat' %}
-                    <span class="chat-mode-toggle chat-mode-chat">💬 Chat mód</span>
+                    <span class="chat-mode-toggle chat-mode-chat">{{ t('chat_mode_chat') }}</span>
                 {% endif %}
             </div>
 
@@ -79,25 +79,25 @@
 
             {% if not placement_mode %}
             <div class="chat-topic-card chat-topic-card-playful">
-                <span class="chat-topic-card-label">🎯 Most ezt tanulod</span>
+                <span class="chat-topic-card-label">{{ t('chat_now_learning') }}</span>
                 <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
             </div>
             {% endif %}
 
             <div class="chat-mini-stats">
-                <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> perc</span>
-                <span class="chat-mini-stat">🏆 <span id="level-display">{{ progress.get('game_level', 1) }}</span>. szint</span>
+                <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> {{ t('chat_minutes_suffix') }}</span>
+                <span class="chat-mini-stat">🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
             </div>
             {% if streak_days and streak_days > 0 %}
             <div class="chat-streak-bar" id="streak-bar">
-                🔥 <span id="streak-display">{{ streak_days }}</span> napos sorozat!
+                {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
             </div>
             {% endif %}
 
             <div class="chat-header-actions">
                 {% if show_early_test %}
                 <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
-                    ⭐ Szintfelmérő teszt
+                    {{ t('chat_test_start') }}
                 </button>
                 {% endif %}
             </div>
@@ -125,13 +125,13 @@
         <input type="hidden" id="chat-topic-id" value="{{ current_topic_id }}">
 
         <div class="voice-panel" id="voice-panel">
-            <p class="voice-status" id="voice-status">Nyomd meg és beszélj! 🎙️</p>
-            <button type="button" class="voice-mic-btn" id="voice-mic-btn" aria-label="Mikrofon">
+            <p class="voice-status" id="voice-status">{{ t('chat_voice_status_idle') }}</p>
+            <button type="button" class="voice-mic-btn" id="voice-mic-btn" aria-label="{{ t('chat_mic_label') }}">
                 <span class="voice-mic-icon" aria-hidden="true">🎙️</span>
             </button>
             <p class="voice-unsupported" id="voice-unsupported" hidden>
-                A böngésződ nem támogatja a hangfelvételt.
-                <a href="{{ chat_switch_url if show_chat_switch else url_for('select_tasks', child_id=child['id']) }}">Próbáld a szöveges chatet</a>.
+                {{ t('chat_voice_unsupported') }}
+                <a href="{{ chat_switch_url if show_chat_switch else url_for('select_tasks', child_id=child['id']) }}">{{ t('chat_voice_try_text') }}</a>.
             </p>
         </div>
         {% else %}
@@ -141,16 +141,16 @@
             <input type="hidden" id="chat-language" value="{{ language }}">
             <input type="hidden" id="chat-topic-id" value="{{ current_topic_id }}">
             <input type="hidden" id="chat-mode" value="chat">
-            <label class="visually-hidden" for="chat-input">Üzenet</label>
-            <textarea id="chat-input" rows="2" placeholder="Írd ide az üzeneted…" required></textarea>
-            <button type="submit" class="btn btn-primary chat-send-btn" id="chat-send-btn">Küldés</button>
+            <label class="visually-hidden" for="chat-input">{{ t('chat_input_label') }}</label>
+            <textarea id="chat-input" rows="2" placeholder="{{ t('chat_input_placeholder') }}" required></textarea>
+            <button type="submit" class="btn btn-primary chat-send-btn" id="chat-send-btn">{{ t('chat_send') }}</button>
         </form>
         {% endif %}
     </div>
 
     {% if is_foreign_language and language %}
     <aside class="chat-sidebar chat-sidebar-vocab">
-        <h2 class="chat-sidebar-title">Szójegyzék</h2>
+        <h2 class="chat-sidebar-title">{{ t('chat_vocab_title') }}</h2>
         <p class="chat-vocab-lang">{{ language|display_language }}</p>
         <ul class="chat-vocab-list" id="vocab-list">
             {% for w in vocabulary %}
@@ -162,7 +162,7 @@
             {% endfor %}
         </ul>
         <p class="chat-vocab-empty" id="vocab-empty" {% if vocabulary %}hidden{% endif %}>
-            Még nincs szó – tanulás közben töltődik fel.
+            {{ t('chat_vocab_empty') }}
         </p>
     </aside>
     {% endif %}
@@ -170,8 +170,8 @@
 
 <div class="test-overlay" id="test-overlay" hidden>
     <div class="test-modal">
-        <button type="button" class="test-close" id="test-close" aria-label="Bezárás">×</button>
-        <h3 class="test-title" id="test-title">Teszt</h3>
+        <button type="button" class="test-close" id="test-close" aria-label="{{ t('test_close') }}">×</button>
+        <h3 class="test-title" id="test-title">{{ t('test_title') }}</h3>
         <div id="test-body"></div>
         <div id="test-result" hidden></div>
     </div>
@@ -195,6 +195,57 @@
     var chatMode = {{ chat_mode|tojson }};
     var transcribeUrl = {{ url_for('api_voice_transcribe')|tojson }};
     var speakUrl = {{ url_for('api_voice_speak')|tojson }};
+
+    // Feliratok az aktív tanterv nyelvén (HU/ES) – a t() az aktív g.lang alapján ad vissza.
+    var L = {
+        topicsDoneSuffix: {{ t('chat_topics_done_suffix')|tojson }},
+        averageLabel: {{ t('chat_average_label')|tojson }},
+        levelFmt: {{ t('chat_level_fmt')|tojson }},
+        testStartShort: {{ t('chat_test_start_short')|tojson }},
+        testGenerating: {{ t('chat_test_generating')|tojson }},
+        testTitle: {{ t('test_title')|tojson }},
+        testTitleFmt: {{ t('test_title_fmt')|tojson }},
+        quizSubmit: {{ t('quiz_submit')|tojson }},
+        quizAnswerPlaceholder: {{ t('quiz_answer_placeholder')|tojson }},
+        quizCreateFailed: {{ t('quiz_create_failed')|tojson }},
+        quizAdvance: {{ t('quiz_advance')|tojson }},
+        quizPracticeMore: {{ t('quiz_practice_more')|tojson }},
+        quizRetry: {{ t('quiz_retry')|tojson }},
+        quizNextFmt: {{ t('quiz_next_fmt')|tojson }},
+        quizNextHint: {{ t('quiz_next_hint')|tojson }},
+        quizAllDone: {{ t('quiz_all_done')|tojson }},
+        quizTryAgainFmt: {{ t('quiz_try_again_fmt')|tojson }},
+        quizAttemptsLeftFmt: {{ t('quiz_attempts_left_fmt')|tojson }},
+        quizStudyMoreFmt: {{ t('quiz_study_more_fmt')|tojson }},
+        quizStudy60Retry: {{ t('quiz_study_60_retry')|tojson }},
+        timeAboutHoursFmt: {{ t('time_about_hours_fmt')|tojson }},
+        timeHoursMinutesFmt: {{ t('time_hours_minutes_fmt')|tojson }},
+        timeMinutesFmt: {{ t('time_minutes_fmt')|tojson }},
+        reviewTitle: {{ t('review_title')|tojson }},
+        reviewYourAnswer: {{ t('review_your_answer')|tojson }},
+        reviewCorrectAnswer: {{ t('review_correct_answer')|tojson }},
+        reviewNoAnswer: {{ t('review_no_answer')|tojson }},
+        reviewExplanation: {{ t('review_explanation')|tojson }},
+        errNoReply: {{ t('chat_err_no_reply')|tojson }},
+        errNetwork: {{ t('chat_err_network')|tojson }},
+        errNotUnderstood: {{ t('chat_err_not_understood')|tojson }},
+        voiceStatusIdle: {{ t('chat_voice_status_idle')|tojson }},
+        voiceListening: {{ t('chat_voice_listening')|tojson }},
+        voiceProcessing: {{ t('chat_voice_processing')|tojson }},
+        voiceMicPermission: {{ t('chat_voice_mic_permission')|tojson }},
+        replayTitle: {{ t('chat_replay_title')|tojson }},
+        think: [
+            {{ t('chat_think_1')|tojson }},
+            {{ t('chat_think_2')|tojson }},
+            {{ t('chat_think_3')|tojson }},
+            {{ t('chat_think_4')|tojson }}
+        ]
+    };
+    function fmt(tpl, vars) {
+        return String(tpl).replace(/\{(\w+)\}/g, function (_, k) {
+            return (vars && vars[k] !== undefined) ? vars[k] : '';
+        });
+    }
 
     var form = document.getElementById('chat-form');
     var input = document.getElementById('chat-input');
@@ -310,7 +361,7 @@
         var replayBtn = document.createElement('button');
         replayBtn.className = 'bubble-replay-btn';
         replayBtn.innerHTML = '🔊';
-        replayBtn.title = 'Hallgasd meg újra';
+        replayBtn.title = L.replayTitle;
         replayBtn.setAttribute('data-text', text);
         replayBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -356,7 +407,7 @@
             var replayBtn = document.createElement('button');
             replayBtn.className = 'bubble-replay-btn';
             replayBtn.innerHTML = '🔊';
-            replayBtn.title = 'Hallgasd meg újra';
+            replayBtn.title = L.replayTitle;
             replayBtn.setAttribute('data-text', text);
             replayBtn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -414,12 +465,7 @@
             });
     }
 
-    var thinkingMessages = [
-        'Gondolkodom... 🤔',
-        'Mindjárt kész... ✍️',
-        'Összeszedem a választ... 📚',
-        'Még egy pillanat... ⭐'
-    ];
+    var thinkingMessages = L.think;
     var thinkingTimer = null;
     var thinkingIndex = 0;
 
@@ -463,8 +509,8 @@
     function renderSidebar(sidebar) {
         if (!sidebar || !sidebarList) return;
         document.getElementById('topic-summary').textContent =
-            sidebar.completed_count + ' / ' + sidebar.total_count + ' témakör kész';
-        document.getElementById('topic-avg').textContent = 'Átlagod: ' + sidebar.average_score + '%';
+            sidebar.completed_count + ' / ' + sidebar.total_count + ' ' + L.topicsDoneSuffix;
+        document.getElementById('topic-avg').textContent = L.averageLabel + ': ' + sidebar.average_score + '%';
         var pct = sidebar.total_count ? (100 * sidebar.completed_count / sidebar.total_count) : 0;
         document.getElementById('sidebar-progress-fill').style.width = pct + '%';
 
@@ -595,7 +641,7 @@
             .then(function (res) {
                 setLoading(false);
                 if (!res.ok) {
-                    appendBubble('assistant', 'Sajnos most nem tudok válaszolni. 😊');
+                    appendBubble('assistant', L.errNoReply);
                     return;
                 }
                 console.log('Teljes backend válasz:', res.data);
@@ -626,7 +672,7 @@
             })
             .catch(function () {
                 setLoading(false);
-                appendBubble('assistant', 'Hálózati hiba – próbáld újra!');
+                appendBubble('assistant', L.errNetwork);
             });
     }
 
@@ -647,7 +693,7 @@
         if (q.type === "fill" || q.type === "sent") {
             return '<div class="quiz-question" data-index="' + index + '" data-type="' + q.type + '" data-answer="' + escapeAttr(q.answer) + '">' +
                 '<p class="question-text">' + (index + 1) + '. ' + escapeHtml(q.q) + '</p>' +
-                '<input type="text" class="fill-answer-input" placeholder="Írd ide a válaszod..." autocomplete="off">' +
+                '<input type="text" class="fill-answer-input" placeholder="' + escapeAttr(L.quizAnswerPlaceholder) + '" autocomplete="off">' +
                 '</div>';
         }
         // MC (multiple choice) — existing logic unchanged
@@ -673,12 +719,12 @@
         quizAnswers = new Array(questions.length).fill(null);
         testResult.hidden = true;
         testBody.hidden = false;
-        testTitle.textContent = 'Teszt: ' + topicName;
+        testTitle.textContent = fmt(L.testTitleFmt, { topic: topicName });
         var html = '';
         questions.forEach(function (q, qi) {
             html += renderQuestion(q, qi);
         });
-        html += '<button type="button" class="btn btn-primary btn-quiz-submit" id="quiz-submit">Beküldés</button>';
+        html += '<button type="button" class="btn btn-primary btn-quiz-submit" id="quiz-submit">' + escapeHtml(L.quizSubmit) + '</button>';
         testBody.innerHTML = html;
         testOverlay.hidden = false;
         document.getElementById('quiz-submit').addEventListener('click', submitQuiz);
@@ -714,6 +760,7 @@
                 testBody.hidden = true;
                 testResult.hidden = false;
                 var d = res.data;
+                var reviewHtml = buildReviewHtml(d.review);
                 if (d.passed) {
                     var congratsHtml = '';
                     if (d.congrats_message) {
@@ -724,9 +771,9 @@
                         // Phase 2 pass — offer choice
                         testResult.innerHTML = congratsHtml +
                             '<div class="result-box result-pass">✓ ' + escapeHtml(d.topic_name) +
-                            ' — ' + d.score + '%</div>' +
-                            '<button type="button" class="btn btn-primary" id="quiz-advance" style="margin:4px">Továbblépek</button>' +
-                            '<button type="button" class="btn btn-outline" id="quiz-practice" style="margin:4px">Még gyakorlok</button>';
+                            ' — ' + d.score + '%</div>' + reviewHtml +
+                            '<button type="button" class="btn btn-primary" id="quiz-advance" style="margin:4px">' + escapeHtml(L.quizAdvance) + '</button>' +
+                            '<button type="button" class="btn btn-outline" id="quiz-practice" style="margin:4px">' + escapeHtml(L.quizPracticeMore) + '</button>';
                         document.getElementById('quiz-advance').addEventListener('click', function () {
                             var nextBtn = document.querySelector('.sidebar-item:not(.sidebar-item-passed) .sidebar-item-link');
                             if (nextBtn) nextBtn.click();
@@ -742,31 +789,29 @@
                         if (nextTopicId) {
                             testResult.innerHTML = congratsHtml +
                                 '<button type="button" class="result-box result-pass" data-topic-id="' + nextTopicId +
-                                '" data-topic-name="' + escapeAttr(nextTopicName) + '">➡️ Tovább: ' + escapeHtml(nextTopicName) +
-                                '</button><p class="result-hint">Kattints a gombra a következő témakörre lépéshez.</p>';
+                                '" data-topic-name="' + escapeAttr(nextTopicName) + '">' + escapeHtml(fmt(L.quizNextFmt, { topic: nextTopicName })) +
+                                '</button><p class="result-hint">' + escapeHtml(L.quizNextHint) + '</p>' + reviewHtml;
                         } else {
                             testResult.innerHTML = congratsHtml +
                                 '<div class="result-box result-pass">✓ ' + escapeHtml(d.topic_name) + ' — ' + d.score + '%</div>' +
-                                '<p class="result-hint">Minden témakört teljesítettél ebben a tantárgyban! 🎉</p>';
+                                '<p class="result-hint">' + escapeHtml(L.quizAllDone) + '</p>' + reviewHtml;
                         }
                     }
                 } else {
                     var failMsg = '';
                     if (d.phase === 1) {
                         if (d.attempts_remaining > 0) {
-                            failMsg = '<p class="result-hint">Még ' + d.attempts_remaining + ' próbálkozásod van. Tanulj még ' +
-                                formatMinutes(d.minutes_needed) + ' és próbálhatsz újra!</p>';
+                            failMsg = '<p class="result-hint">' + escapeHtml(fmt(L.quizAttemptsLeftFmt, { n: d.attempts_remaining, time: formatMinutes(d.minutes_needed) })) + '</p>';
                         } else {
-                            failMsg = '<p class="result-hint">Tanulj még ' + formatMinutes(d.minutes_needed) +
-                                ' és utána próbálhatsz újra!</p>';
+                            failMsg = '<p class="result-hint">' + escapeHtml(fmt(L.quizStudyMoreFmt, { time: formatMinutes(d.minutes_needed) })) + '</p>';
                         }
                     } else {
-                        failMsg = '<p class="result-hint">Tanulj még 60 percet és újra próbálhatod!</p>';
+                        failMsg = '<p class="result-hint">' + escapeHtml(L.quizStudy60Retry) + '</p>';
                     }
                     testResult.innerHTML =
-                        '<div class="result-box result-fail">Próbáld újra! ' + d.score + '%</div>' +
-                        failMsg +
-                        (d.can_retry ? '<button type="button" class="btn btn-primary" id="quiz-retry">Újra</button>' : '');
+                        '<div class="result-box result-fail">' + escapeHtml(fmt(L.quizTryAgainFmt, { score: d.score })) + '</div>' +
+                        failMsg + reviewHtml +
+                        (d.can_retry ? '<button type="button" class="btn btn-primary" id="quiz-retry">' + escapeHtml(L.quizRetry) + '</button>' : '');
                     if (d.can_retry) {
                         document.getElementById('quiz-retry').addEventListener('click', startTest);
                     }
@@ -802,10 +847,38 @@
         if (mins >= 60) {
             var h = Math.floor(mins / 60);
             var m = mins % 60;
-            if (m === 0) return 'kb. ' + h + ' órát';
-            return h + ' órát ' + m + ' percet';
+            if (m === 0) return fmt(L.timeAboutHoursFmt, { h: h });
+            return fmt(L.timeHoursMinutesFmt, { h: h, m: m });
         }
-        return mins + ' percet';
+        return fmt(L.timeMinutesFmt, { m: mins });
+    }
+
+    function buildReviewHtml(review) {
+        if (!review || !review.length) return '';
+        var html = '<div class="quiz-review"><h4 class="quiz-review-title">' +
+            escapeHtml(L.reviewTitle) + '</h4>';
+        review.forEach(function (r, i) {
+            var cls = r.is_correct ? 'quiz-review-item correct' : 'quiz-review-item incorrect';
+            var mark = r.is_correct ? '✅' : '❌';
+            html += '<div class="' + cls + '">' +
+                '<p class="quiz-review-q">' + mark + ' ' + (i + 1) + '. ' + escapeHtml(r.q || '') + '</p>';
+            var userAns = (r.user_answer !== undefined && r.user_answer !== null && String(r.user_answer) !== '')
+                ? escapeHtml(String(r.user_answer)) : escapeHtml(L.reviewNoAnswer);
+            var userCls = r.is_correct ? 'quiz-review-user-correct' : 'quiz-review-user-wrong';
+            html += '<p class="quiz-review-answer ' + userCls + '">' +
+                escapeHtml(L.reviewYourAnswer) + ': ' + userAns + '</p>';
+            if (!r.is_correct && r.correct_answer !== undefined && r.correct_answer !== null && String(r.correct_answer) !== '') {
+                html += '<p class="quiz-review-answer quiz-review-correct">' +
+                    escapeHtml(L.reviewCorrectAnswer) + ': ' + escapeHtml(String(r.correct_answer)) + '</p>';
+            }
+            if (r.explanation) {
+                html += '<p class="quiz-review-explanation">' +
+                    escapeHtml(L.reviewExplanation) + ': ' + escapeHtml(String(r.explanation)) + '</p>';
+            }
+            html += '</div>';
+        });
+        html += '</div>';
+        return html;
     }
 
     function getChatLanguage() {
@@ -815,7 +888,7 @@
 
     function startTest() {
         closeTestModal();
-        if (btnTest) { btnTest.disabled = true; btnTest.textContent = 'Generálás... ⏳'; }
+        if (btnTest) { btnTest.disabled = true; btnTest.textContent = L.testGenerating; }
         fetch(testGenUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -827,17 +900,17 @@
         })
             .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
             .then(function (res) {
-                if (btnTest) { btnTest.disabled = false; btnTest.textContent = 'Teszt indítása ✏️'; }
+                if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
                 if (!res.ok || !res.data.questions || !res.data.questions.length) {
-                    alert('Nem sikerült a tesztet létrehozni.');
+                    alert(L.quizCreateFailed);
                     return;
                 }
                 showQuiz(res.data.questions, res.data.topic_name || currentTopicName);
                 if (res.data.ora_szam) currentOraSzam = res.data.ora_szam;
             })
             .catch(function () {
-                if (btnTest) { btnTest.disabled = false; btnTest.textContent = 'Teszt indítása ✏️'; }
-                alert('Hálózati hiba.');
+                if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
+                alert(L.errNetwork);
             });
     }
 
@@ -893,15 +966,15 @@
             voiceMicBtn.classList.remove('recording', 'disabled');
             if (state === 'recording') {
                 voiceMicBtn.classList.add('recording');
-                voiceStatus.textContent = 'Figyelek... 👂';
+                voiceStatus.textContent = L.voiceListening;
             } else if (state === 'processing') {
                 voiceMicBtn.classList.add('disabled');
-                voiceStatus.textContent = 'Mindjárt mondom... 💭';
+                voiceStatus.textContent = L.voiceProcessing;
             } else if (state === 'speaking') {
                 voiceMicBtn.classList.add('disabled');
-                voiceStatus.textContent = 'Mindjárt mondom... 💭';
+                voiceStatus.textContent = L.voiceProcessing;
             } else {
-                voiceStatus.textContent = 'Nyomd meg és beszélj! 🎙️';
+                voiceStatus.textContent = L.voiceStatusIdle;
             }
             voiceMicBtn.disabled = state === 'processing' || state === 'speaking';
         }
@@ -934,7 +1007,7 @@
                     typing.hidden = true;
                     stopThinkingMessages();
                     if (!res.ok) {
-                        appendBubble('assistant', 'Sajnos most nem tudok válaszolni. 😊');
+                        appendBubble('assistant', L.errNoReply);
                         setVoiceUi('idle');
                         return;
                     }
@@ -973,7 +1046,7 @@
                 .catch(function () {
                     typing.hidden = true;
                     stopThinkingMessages();
-                    appendBubble('assistant', 'Hálózati hiba – próbáld újra!');
+                    appendBubble('assistant', L.errNetwork);
                     setVoiceUi('idle');
                 });
         }
@@ -994,14 +1067,14 @@
                 .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
                     if (!res.ok || !res.data.text) {
-                        appendBubble('assistant', 'Nem értettem – próbáld újra! 🙂');
+                        appendBubble('assistant', L.errNotUnderstood);
                         setVoiceUi('idle');
                         return;
                     }
                     return sendVoiceChat(res.data.text.trim());
                 })
                 .catch(function () {
-                    appendBubble('assistant', 'Hálózati hiba – próbáld újra!');
+                    appendBubble('assistant', L.errNetwork);
                     setVoiceUi('idle');
                 });
         }
@@ -1044,7 +1117,7 @@
                     setVoiceUi('recording');
                 })
                 .catch(function () {
-                    alert('Kérjük engedélyezd a mikrofon használatát!');
+                    alert(L.voiceMicPermission);
                     setVoiceUi('idle');
                 });
         }
