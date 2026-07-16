@@ -126,6 +126,8 @@ TRANSLATIONS = {
         "es": "Perfil actualizado.",
     },
     "label_child_grade": {"hu": "Osztály", "es": "Curso"},
+    "label_child_grade_hu": {"hu": "Osztály (magyar tanterv)", "es": "Curso (currículo húngaro)"},
+    "label_child_grade_es": {"hu": "Osztály (spanyol tanterv)", "es": "Curso (currículo español)"},
     "label_country": {"hu": "Ország", "es": "País"},
     "label_region": {"hu": "Autonóm közösség", "es": "Comunidad autónoma"},
     "country_es": {"hu": "Spanyolország", "es": "España"},
@@ -383,6 +385,30 @@ TRANSLATIONS = {
               "Írd meg, miben segíthetek, vagy válaszolj az utolsó kérdésemre!",
         "es": "¡Hola {name}! 👋 Seguimos con {subject}. "
               "Dime en qué puedo ayudarte o responde a mi última pregunta.",
+    },
+
+    # --- select_tasks oldal ---
+    "grade_label": {"hu": "osztály", "es": "curso"},
+    "learning_time_toggle": {"hu": "⏱️ Tanulási idő", "es": "⏱️ Tiempo de estudio"},
+    "time_today": {"hu": "ma", "es": "hoy"},
+    "time_this_week": {"hu": "e héten", "es": "esta semana"},
+    "time_total": {"hu": "összesen", "es": "total"},
+    "btn_practice_tasks": {"hu": "📝 Gyakorló feladatok", "es": "📝 Ejercicios de práctica"},
+    "btn_ai_chat": {"hu": "💬 AI tanulás és beszélgetés (chat)", "es": "💬 Estudio y conversación con IA (chat)"},
+    "btn_ai_voice": {"hu": "🎙️ AI tanulás és beszélgetés (hangos)", "es": "🎙️ Estudio y conversación con IA (voz)"},
+    "link_writing_alt": {"hu": "vagy inkább írok ✍️", "es": "o mejor escribo ✍️"},
+    "link_chat_alt": {"hu": "💬 Inkább chatelünk", "es": "💬 Mejor chateamos"},
+    "language_spanyol": {"hu": "Spanyol", "es": "Español"},
+    "language_francia": {"hu": "Francia", "es": "Francés"},
+
+    # --- automatikus osztálylépés ---
+    "grade_promotion": {
+        "hu": "Gratulálok! Mostantól a {grade}. osztály anyagát tanulod! 🎉",
+        "es": "¡Enhorabuena! ¡Ahora estudias el contenido de {grade}.º curso! 🎉",
+    },
+    "grade_all_done": {
+        "hu": "Gratulálok! Minden tananyagot teljesítettél ebben a tantervben! 🏆",
+        "es": "¡Enhorabuena! ¡Has completado todo el contenido de este currículo! 🏆",
     },
 
     # --- lábléc ---

@@ -185,6 +185,46 @@ def _active_curriculum() -> str:
     return "ES" if g.lang == "es" else "HU"
 
 
+def _active_grade(child: dict) -> int:
+    """Az aktív tantervhez tartozó osztály a gyerek profiljából."""
+    if _active_curriculum() == "ES":
+        return child.get("grade_es") or 1
+    return child.get("grade_hu") or 1
+
+
+def _active_grade_str(child: dict) -> str:
+    return str(_active_grade(child))
+
+
+def _all_grade_topics_completed(child_id: int, parent_id: int, grade_num: int, curriculum: str) -> bool:
+    """True, ha ebben a tantervben és osztályban MINDEN tantárgy MINDEN témaköre teljesítve van."""
+    from curriculum_loader import get_subjects_for_profile
+
+    curr = (curriculum or "").upper()
+    profile = get_subjects_for_profile(curr, grade_num)
+    subjects = profile.get("subjects", [])
+    if not subjects:
+        return False
+
+    for subj in subjects:
+        # Témakör katalógus betöltése
+        chat_curr = _chat_load_curriculum(subj, grade_num)
+        catalog = chat_curr.get("topic_catalog") or []
+        if not catalog:
+            continue
+
+        # Progress kulcs: tantárgy név (idegen nyelvi language nélkül az ellenőrzéshez)
+        progress_subject = _chat_progress_subject(subj, None)
+        scores = database.get_topic_scores(child_id, progress_subject, grade_num)
+
+        for t in catalog:
+            ts = scores.get(t["id"]) or {}
+            if not ts.get("passed"):
+                return False
+
+    return True
+
+
 def _sync_switch_on_child_change(child: dict) -> None:
     """Emlékezés CSAK gyerekváltáskor.
 
@@ -212,11 +252,12 @@ def _curriculum_for_child(child: dict, *, subject: str | None = None) -> dict:
     """Tanterv a kapcsoló alapján; HU esetén JSON témakörökkel."""
     child_curr = _active_curriculum()
     region = child.get("region") if child_curr == "ES" else None
+    grade_str = _active_grade_str(child)
     if child_curr == "HU" and subject:
         return get_curriculum_for_child(
-            child_curr, child["grade"], region, subject=subject
+            child_curr, grade_str, region, subject=subject
         )
-    return get_subjects_for_profile(child_curr, child["grade"], region)
+    return get_subjects_for_profile(child_curr, grade_str, region)
 
 
 def _build_task_generation_prompt(
@@ -243,14 +284,14 @@ def _build_task_generation_prompt(
             summary = summary[:2500] + "\n..."
         topic_block = (
             f"\nHivatalos tantervi témakörök ({ctx.get('subject', subject_line)}, "
-            f"{curriculum.get('grade', child['grade'])}. évfolyam):\n{summary}\n"
+            f"{curriculum.get('grade', _active_grade_str(child))}. évfolyam):\n{summary}\n"
         )
 
     child_age = _child_effective_age(child)
     if lang == "es":
         prompt = (
             f"Genera 3 ejercicios de práctica para un/a niño/a de {child_age} años, "
-            f"curso {child['grade']}, ubicación {location}.\n"
+            f"curso {_active_grade_str(child)}, ubicación {location}.\n"
             f"Tema / asignatura: {subject_line}\n"
             f"Asignaturas del currículo oficial: {', '.join(subjects)}\n"
         )
@@ -264,7 +305,7 @@ def _build_task_generation_prompt(
 
     prompt = (
         f"Készíts 3 gyakorló feladatot egy {child_age} éves gyereknek, "
-        f"{child['grade']}. osztály, helyszín: {location}.\n"
+        f"{_active_grade_str(child)}. osztály, helyszín: {location}.\n"
         f"Tantárgy: {subject_line}\n"
         f"Hivatalos tantervi tantárgyak: {', '.join(subjects)}\n"
     )
@@ -480,7 +521,7 @@ def _generate_practice_tasks_bundle(
         flash(i18n.t("flash_subject_required", g.lang), "error")
         return None
 
-    grade_num = parse_grade(child["grade"])
+    grade_num = _active_grade(child)
     if g.lang == "hu":
         allowed_files = {o["value"] for o in get_hu_subjects_for_grade(grade_num)}
         if subject not in allowed_files:
@@ -497,7 +538,7 @@ def _generate_practice_tasks_bundle(
         region = child.get("region") if child_curr == "ES" else None
         try:
             available = get_subjects_for_profile(
-                child_curr, child["grade"], region
+                child_curr, _active_grade_str(child), region
             ).get("subjects", [])
         except Exception:
             available = []
@@ -535,7 +576,7 @@ def _generate_practice_tasks_bundle(
 
     # Teljes kerettanterv szöveg a feladat promptba (get_curriculum_for_chat).
     curriculum_chat = (
-        get_curriculum_for_chat(subject, child["grade"], language=language)
+        get_curriculum_for_chat(subject, _active_grade_str(child), language=language)
         if child_curr == "HU"
         else None
     )
@@ -565,7 +606,7 @@ def _generate_practice_tasks_bundle(
     curriculum["content"] = curriculum_text
     logger.info(
         "FINAL curriculum_text len=%d grade=%s subject=%s language=%s",
-        len(curriculum_text), child["grade"], subject, language,
+        len(curriculum_text), _active_grade_str(child), subject, language,
     )
 
     if is_elo_idegen_subject(subject):
@@ -676,7 +717,7 @@ def _call_ai_check_task_answer(
             "Responde SOLO con JSON válido."
         )
         user_msg = (
-            f"Alumno: {child['name']}, {age} años, curso {child['grade']}.\n"
+            f"Alumno: {child['name']}, {age} años, curso {_active_grade_str(child)}.\n"
             f"Ejercicio: {question}\n"
             f"Solución de referencia (profesor): {reference}\n"
             f"Respuesta del alumno: {user_answer}\n\n"
@@ -691,7 +732,7 @@ def _call_ai_check_task_answer(
             "A tanuló válaszát értékeled. Válaszolj KIZÁRÓLAG érvényes JSON-nal."
         )
         user_msg = (
-            f"Tanuló: {child['name']}, {age} éves, {child['grade']}. osztály.\n"
+            f"Tanuló: {child['name']}, {age} éves, {_active_grade_str(child)}. osztály.\n"
             f"Feladat: {question}\n"
             f"Helyes megoldás (tanári referencia): {reference}\n"
             f"Tanuló válasza: {user_answer}\n\n"
@@ -918,7 +959,8 @@ def add_child():
     if request.method == "POST":
         name = (request.form.get("name") or "").strip()
         birth_date_raw = request.form.get("birth_date") or ""
-        grade = (request.form.get("grade") or "").strip()
+        grade_hu_raw = (request.form.get("grade_hu") or "").strip()
+        grade_es_raw = (request.form.get("grade_es") or "").strip()
         country = request.form.get("country") or ""
         region = request.form.get("region") or None
 
@@ -927,20 +969,29 @@ def add_child():
         if not birth_date:
             errors = True
 
-        if not name or country not in ("ES", "HU") or not grade:
+        if not name or country not in ("ES", "HU") or not grade_hu_raw or not grade_es_raw:
             errors = True
 
         if country == "ES":
             region = region or "base"
 
+        grade_hu = None
+        grade_es = None
         try:
-            grade_int = int(grade)
-            err = _validate_grade_for_curriculum(active_curriculum, grade_int)
-            if err:
-                flash(err, "error")
+            grade_hu = int(grade_hu_raw)
+            if not 1 <= grade_hu <= 8:
                 errors = True
         except (ValueError, TypeError):
-            pass  # already caught by the not grade check
+            errors = True
+        try:
+            grade_es = int(grade_es_raw)
+            if not 1 <= grade_es <= 6:
+                errors = True
+        except (ValueError, TypeError):
+            errors = True
+
+        # A régi grade mezőt compat miatt a HU osztályra állítjuk
+        grade = grade_hu_raw if grade_hu is not None else ""
 
         if errors:
             return render_template(
@@ -949,6 +1000,8 @@ def add_child():
                     "name": name,
                     "birth_date": birth_date_raw,
                     "grade": grade,
+                    "grade_hu": grade_hu_raw,
+                    "grade_es": grade_es_raw,
                     "country": country,
                     "region": region,
                 },
@@ -960,6 +1013,7 @@ def add_child():
         database.create_child(
             session["parent_id"], name, birth_date, grade, country, region,
             curriculum=active_curriculum,
+            grade_hu=grade_hu, grade_es=grade_es,
         )
         flash(i18n.t("flash_child_added", g.lang), "success")
         return redirect(url_for("dashboard"))
@@ -978,7 +1032,8 @@ def edit_child(child_id: int):
     if request.method == "POST":
         name = (request.form.get("name") or "").strip()
         birth_date_raw = request.form.get("birth_date") or ""
-        grade = (request.form.get("grade") or "").strip()
+        grade_hu_raw = (request.form.get("grade_hu") or "").strip()
+        grade_es_raw = (request.form.get("grade_es") or "").strip()
         country = request.form.get("country") or ""
         region = request.form.get("region") or None
 
@@ -987,20 +1042,28 @@ def edit_child(child_id: int):
         if not birth_date:
             errors = True
 
-        if not name or country not in ("ES", "HU") or not grade:
+        if not name or country not in ("ES", "HU") or not grade_hu_raw or not grade_es_raw:
             errors = True
 
         if country == "ES":
             region = region or "base"
 
+        grade_hu_val = None
+        grade_es_val = None
         try:
-            grade_int = int(grade)
-            err = _validate_grade_for_curriculum(active_curriculum, grade_int)
-            if err:
-                flash(err, "error")
+            grade_hu_val = int(grade_hu_raw)
+            if not 1 <= grade_hu_val <= 8:
                 errors = True
         except (ValueError, TypeError):
-            pass  # already caught by the not grade check
+            errors = True
+        try:
+            grade_es_val = int(grade_es_raw)
+            if not 1 <= grade_es_val <= 6:
+                errors = True
+        except (ValueError, TypeError):
+            errors = True
+
+        grade = grade_hu_raw if grade_hu_val is not None else ""
 
         if errors:
             return render_template(
@@ -1010,6 +1073,8 @@ def edit_child(child_id: int):
                     "name": name,
                     "birth_date": birth_date_raw,
                     "grade": grade,
+                    "grade_hu": grade_hu_raw,
+                    "grade_es": grade_es_raw,
                     "country": country,
                     "region": region,
                 },
@@ -1027,6 +1092,8 @@ def edit_child(child_id: int):
             country=country,
             region=region,
             curriculum=active_curriculum,
+            grade_hu=grade_hu_val,
+            grade_es=grade_es_val,
         )
         flash(i18n.t("flash_child_updated", g.lang), "success")
         return redirect(url_for("dashboard"))
@@ -1035,6 +1102,8 @@ def edit_child(child_id: int):
         "name": child["name"],
         "birth_date": child.get("birth_date") or "",
         "grade": child["grade"],
+        "grade_hu": child.get("grade_hu", ""),
+        "grade_es": child.get("grade_es", ""),
         "country": child["country"],
         "region": child.get("region") or "",
     }
@@ -1100,7 +1169,7 @@ def select_tasks(child_id: int):
     # Emlékezés CSAK gyerekváltáskor – oldalbetöltés nem kényszeríti a kapcsolót.
     _sync_switch_on_child_change(child)
 
-    grade_num = parse_grade(child["grade"])
+    grade_num = _active_grade(child)
     child_curr = _active_curriculum()
     notice = None
 
@@ -1128,7 +1197,7 @@ def select_tasks(child_id: int):
         region = child.get("region") or "base"
         try:
             curriculum, subject_options = get_subject_options_for_ui(
-                child_curr, child["grade"], region, g.lang
+                child_curr, _active_grade_str(child), region, g.lang
             )
         except Exception as exc:
             logger.error(
@@ -1431,7 +1500,7 @@ def _chat_bind_flask_session(
 
 
 def _chat_grade_num(child: dict) -> int:
-    return parse_grade(child["grade"])
+    return _active_grade(child)
 
 
 def _build_topic_sidebar(
@@ -2303,13 +2372,13 @@ def child_chat(child_id: int):
     chat_mode = _normalize_chat_mode(request.args.get("mode"), chat_profile)
 
     chat_curriculum = _chat_load_curriculum(
-        subject, child["grade"], language=language or None
+        subject, _active_grade_str(child), language=language or None
     )
     logger.warning(
         "CHILD_CHAT CURRICULUM CHECK: subject=%r child_grade=%s language=%s "
         "found=%s content_len=%s",
         subject,
-        child["grade"],
+        _active_grade_str(child),
         language,
         chat_curriculum.get("found"),
         len(chat_curriculum.get("content") or ""),
@@ -2507,7 +2576,7 @@ def child_chat_send(child_id: int):
         return jsonify({"error": "invalid_session"}), 403
 
     chat_curriculum = _chat_load_curriculum(
-        subject, child["grade"], language=language or None
+        subject, _active_grade_str(child), language=language or None
     )
     if not chat_curriculum.get("found") or not chat_curriculum.get("content"):
         return jsonify({"error": "curriculum_not_found"}), 400
@@ -2667,7 +2736,7 @@ def child_chat_progress(child_id: int):
         return jsonify({"error": "subject_required"}), 400
     grade_num = _chat_grade_num(child)
     chat_curriculum = _chat_load_curriculum(
-        subject, child["grade"], language=language or None
+        subject, _active_grade_str(child), language=language or None
     )
     catalog = chat_curriculum.get("topic_catalog") or []
     progress_subject = _chat_progress_subject(subject, language)
@@ -2828,7 +2897,7 @@ def child_chat_test_generate(child_id: int):
         return jsonify({"error": "subject_and_topic_required"}), 400
 
     chat_curriculum = _chat_load_curriculum(
-        subject, child["grade"], language=language or None
+        subject, _active_grade_str(child), language=language or None
     )
     catalog = chat_curriculum.get("topic_catalog") or []
     topic = get_topic_from_catalog(catalog, topic_id)
@@ -2939,7 +3008,7 @@ def child_chat_test_submit(child_id: int):
     score = int(round(100 * correct / total)) if total else 0
 
     chat_curriculum = _chat_load_curriculum(
-        subject, child["grade"], language=language or None
+        subject, _active_grade_str(child), language=language or None
     )
     catalog = chat_curriculum.get("topic_catalog") or []
     topic = get_topic_from_catalog(catalog, topic_id)
@@ -3110,7 +3179,7 @@ def child_chat_test_submit(child_id: int):
                 age = _child_effective_age(child)
                 congrats_prompt = (
                     f"Te egy kedves, lelkesítő AI tanár vagy. A gyerek ({child['name']}, "
-                    f"{age} éves, {child['grade']}. osztályos) épp 100%-os eredményt ért el "
+                    f"{age} éves, {_active_grade_str(child)}. osztályos) épp 100%-os eredményt ért el "
                     f"a(z) „{topic_name}” témakör tesztjén.\n\n"
                     f"GRATULÁLJ neki nagyon lelkesen, korának megfelelő stílusban!\n"
                     f"{age} éves gyereknek:\n"
@@ -3129,6 +3198,27 @@ def child_chat_test_submit(child_id: int):
             except Exception:
                 logger.exception("Gratuláció generálás hiba")
                 congrats_message = None
+
+        # Automatikus osztálylépés: minden témakör teljesítve ebben az osztályban?
+        grade_promotion = None
+        if passed:
+            active_curr = _active_curriculum()
+            if _all_grade_topics_completed(child_id, session["parent_id"], grade_num, active_curr):
+                child_curr = database.promote_child_grade(
+                    child_id, session["parent_id"], active_curr
+                )
+                if child_curr:
+                    new_grade = (
+                        child_curr.get("grade_es") if active_curr == "ES"
+                        else child_curr.get("grade_hu")
+                    )
+                    max_limit = 6 if active_curr == "ES" else 8
+                    if new_grade is not None and new_grade >= max_limit:
+                        grade_promotion = i18n.t("grade_all_done", g.lang)
+                    elif new_grade is not None:
+                        grade_promotion = i18n.t("grade_promotion", g.lang).format(
+                            grade=new_grade
+                        )
 
     scores = database.get_topic_scores(child_id, progress_subject, grade_num)
     progress = database.get_or_create_child_progress(child_id, progress_subject)
@@ -3157,6 +3247,7 @@ def child_chat_test_submit(child_id: int):
             "game_level": new_game_level,
             "coins": new_coins,
             "topic_done": passed,
+            "grade_promotion": grade_promotion,
         }
     )
 

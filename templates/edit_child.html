@@ -20,12 +20,26 @@
                     <input type="date" id="birth_date" name="birth_date"
                            value="{{ form.get('birth_date', '') }}" required>
                 </div>
+            </div>
+
+            <div class="field-row">
                 <div class="field">
-                    <label for="grade">{{ t('label_child_grade') }}</label>
-                    <select id="grade" name="grade" required data-current="{{ child.get('grade', '') }}">
+                    <label for="grade_hu">{{ t('label_child_grade_hu') }}</label>
+                    <select id="grade_hu" name="grade_hu" required data-current="{{ form.get('grade_hu', child.get('grade_hu', '')) }}">
                         <option value="">{{ t('select_placeholder') }}</option>
+                        {% for i in range(1, 9) %}
+                            <option value="{{ i }}" {{ 'selected' if form.get('grade_hu', child.get('grade_hu'))|string == i|string else '' }}>{{ i }}. {{ t('grade_label') }}</option>
+                        {% endfor %}
                     </select>
-                    <p class="form-hint" id="grade-hint"></p>
+                </div>
+                <div class="field">
+                    <label for="grade_es">{{ t('label_child_grade_es') }}</label>
+                    <select id="grade_es" name="grade_es" required data-current="{{ form.get('grade_es', child.get('grade_es', '')) }}">
+                        <option value="">{{ t('select_placeholder') }}</option>
+                        {% for i in range(1, 7) %}
+                            <option value="{{ i }}" {{ 'selected' if form.get('grade_es', child.get('grade_es'))|string == i|string else '' }}>{{ i }}. {{ t('grade_label') }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
@@ -45,7 +59,7 @@
             </div>
 
             <!-- Régióválasztó elrejtve: castellano mindenhol érthető.
-                 Andalúz tananyag bevezetésekor visszakapcsolható. -->
+                 Andalúz tananyag bevezetésekeor visszakapcsolható. -->
             <div class="field" id="region-field" hidden>
                 <label for="region">{{ t('label_region') }}</label>
                 <select id="region" name="region">
@@ -73,33 +87,5 @@
 {% block scripts %}
 <script>
     initCountryRegionToggle();
-    (function () {
-        var gradeSel     = document.getElementById('grade');
-        var gradeHint    = document.getElementById('grade-hint');
-        var currentGrade = gradeSel.dataset.current || '';
-        var activeCurr   = '{{ lang }}' === 'es' ? 'ES' : 'HU';
-
-        function isSpain() {
-            return activeCurr === 'ES';
-        }
-
-        function rebuildGrades() {
-            var max  = isSpain() ? 6 : 8;
-            var hint = isSpain()
-                ? '1–6. osztály (Educación Primaria)'
-                : '1–8. osztály (általános iskola)';
-            gradeSel.innerHTML = '<option value="">{{ t('select_placeholder') }}</option>';
-            for (var i = 1; i <= max; i++) {
-                var opt = document.createElement('option');
-                opt.value = String(i);
-                opt.textContent = i + '. osztály';
-                if (String(i) === String(currentGrade)) opt.selected = true;
-                gradeSel.appendChild(opt);
-            }
-            gradeHint.textContent = hint;
-        }
-
-        rebuildGrades();
-    })();
 </script>
 {% endblock %}

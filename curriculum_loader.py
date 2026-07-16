@@ -905,6 +905,7 @@ def _display_subject_name(raw: str) -> str:
         "honesnepismeret": "Hon- és népismeret",
         "termeszettudomany": "Természettudomány",
         "dramaesszinhaz": "Dráma és színház",
+        "kozossegineveles": "Közösségi nevelés",
     }
     return aliases.get(key, raw)
 

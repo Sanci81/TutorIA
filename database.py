@@ -112,6 +112,8 @@ class Child(Base):
     birth_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     age: Mapped[int | None] = mapped_column(Integer, nullable=True)
     grade: Mapped[str] = mapped_column(String(50), nullable=False)
+    grade_hu: Mapped[int] = mapped_column(Integer, nullable=True)
+    grade_es: Mapped[int] = mapped_column(Integer, nullable=True)
     country: Mapped[str] = mapped_column(String(2), nullable=False)
     curriculum: Mapped[str] = mapped_column(String(2), nullable=False, default="HU")
     region: Mapped[str | None] = mapped_column(String(10))
@@ -335,6 +337,18 @@ def compute_child_age(
 def _child_dict(child: Child) -> dict[str, Any]:
     bd = child.birth_date
     age_val = compute_child_age(birth_date=bd, age_legacy=child.age)
+    grade_hu = child.grade_hu
+    grade_es = child.grade_es
+    if grade_hu is None:
+        try:
+            grade_hu = int(child.grade)
+        except (ValueError, TypeError):
+            grade_hu = 1
+    if grade_es is None:
+        try:
+            grade_es = min(int(child.grade), 6)
+        except (ValueError, TypeError):
+            grade_es = 1
     return {
         "id": child.id,
         "parent_id": child.parent_id,
@@ -342,6 +356,8 @@ def _child_dict(child: Child) -> dict[str, Any]:
         "birth_date": bd.isoformat() if bd else None,
         "age": age_val,
         "grade": child.grade,
+        "grade_hu": grade_hu,
+        "grade_es": grade_es,
         "country": child.country,
         "curriculum": getattr(child, "curriculum", child.country) or child.country,
         "region": child.region,
@@ -364,6 +380,30 @@ def init_db() -> None:
     ensure_child_progress_extra_columns()
     ensure_topic_scores_extra_columns()
     ensure_children_curriculum_column()
+    ensure_children_grade_columns()
+
+
+def ensure_children_grade_columns() -> None:
+    """grade_hu / grade_es oszlopok hozzáadása + backfill a régi grade-ből."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    stmts = (
+        "ALTER TABLE children ADD COLUMN IF NOT EXISTS grade_hu INTEGER",
+        "ALTER TABLE children ADD COLUMN IF NOT EXISTS grade_es INTEGER",
+        "UPDATE children SET grade_hu = CAST(grade AS INTEGER) WHERE grade_hu IS NULL",
+        "UPDATE children SET grade_es = LEAST(CAST(grade AS INTEGER), 6) WHERE grade_es IS NULL",
+    )
+    for stmt in stmts:
+        try:
+            with engine.begin() as conn:
+                conn.execute(text(stmt))
+        except Exception as exc:
+            logger.warning(
+                "ensure_children_grade_columns: kihagyva (%s): %s",
+                exc.__class__.__name__,
+                stmt,
+            )
 
 
 def ensure_children_curriculum_column() -> None:
@@ -565,15 +605,32 @@ def create_child(
     country: str,
     region: str | None,
     curriculum: str = "HU",
+    *,
+    grade_hu: int | None = None,
+    grade_es: int | None = None,
 ) -> int:
     db = _session()
     try:
+        g_hu = grade_hu
+        if g_hu is None:
+            try:
+                g_hu = int(grade)
+            except (ValueError, TypeError):
+                g_hu = 1
+        g_es = grade_es
+        if g_es is None:
+            try:
+                g_es = min(int(grade), 6)
+            except (ValueError, TypeError):
+                g_es = 1
         child = Child(
             parent_id=parent_id,
             name=name.strip(),
             birth_date=birth_date,
             age=child_age_from_birth(birth_date),
             grade=grade.strip(),
+            grade_hu=g_hu,
+            grade_es=g_es,
             country=country,
             curriculum=curriculum,
             region=region,
@@ -596,6 +653,8 @@ def update_child(
     country: str,
     region: str | None,
     curriculum: str = "HU",
+    grade_hu: int | None = None,
+    grade_es: int | None = None,
 ) -> bool:
     """Gyerek profil szerkesztése – csak a megadott szülő gyerekéhez."""
     db = _session()
@@ -612,6 +671,10 @@ def update_child(
         child.birth_date = birth_date
         child.age = child_age_from_birth(birth_date)
         child.grade = grade.strip()
+        if grade_hu is not None:
+            child.grade_hu = grade_hu
+        if grade_es is not None:
+            child.grade_es = grade_es
         child.country = country
         child.curriculum = curriculum
         child.region = region
@@ -662,6 +725,38 @@ def get_child_by_id(child_id: int, parent_id: int) -> dict[str, Any] | None:
             select(Child).where(Child.id == child_id, Child.parent_id == parent_id)
         )
         return _child_dict(child) if child else None
+    finally:
+        db.close()
+
+
+def promote_child_grade(child_id: int, parent_id: int, curriculum: str) -> dict[str, Any] | None:
+    """Automatikus osztálylépés egy tantervben (grade_hu++ vagy grade_es++).
+    Visszaadja a frissített child dict-et, vagy None-t ha nem található."""
+    db = _session()
+    try:
+        child = db.scalar(
+            select(Child).where(Child.id == child_id, Child.parent_id == parent_id)
+        )
+        if not child:
+            return None
+        curr = (curriculum or "").upper()
+        if curr == "ES":
+            old = child.grade_es or 1
+            new = min(old + 1, 6)
+            child.grade_es = new
+            if str(child.grade) == str(old):
+                child.grade = str(new)
+            child.curriculum = "ES"
+        else:
+            old = child.grade_hu or 1
+            new = min(old + 1, 8)
+            child.grade_hu = new
+            if str(child.grade) == str(old):
+                child.grade = str(new)
+            child.curriculum = "HU"
+        db.commit()
+        db.refresh(child)
+        return _child_dict(child)
     finally:
         db.close()
 

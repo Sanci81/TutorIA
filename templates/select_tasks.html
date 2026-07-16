@@ -15,7 +15,7 @@
             </p>
             <p class="select-tasks-meta">
                 {% if child['grade'] %}
-                    {{ child['grade'] }}. osztály / {{ child['age'] }} {{ t('years_old') }}
+                    {{ child['grade'] }}. {{ t('grade_label') }} / {{ child['age'] }} {{ t('years_old') }}
                 {% else %}
                     {{ child['age'] }} {{ t('years_old') }}
                 {% endif %}
@@ -27,7 +27,7 @@
         {% if learning_summary %}
         <div class="learning-time-section">
             <button type="button" class="learning-time-toggle" id="learning-time-toggle" aria-expanded="false">
-                <span class="learning-time-toggle-label">⏱️ Tanulási idő</span>
+                <span class="learning-time-toggle-label">{{ t('learning_time_toggle') }}</span>
                 <span class="learning-time-toggle-arrow" id="learning-time-arrow">▼</span>
             </button>
             <div class="learning-time-grid learning-time-grid-playful{% if learning_summary|length > 10 %} learning-time-grid-compact{% endif %}" id="learning-time-grid" hidden>
@@ -40,15 +40,15 @@
                     <div class="lt-card-times">
                         <div class="lt-time-box lt-time-today">
                             <span class="lt-time-value">{{ item.today }}p</span>
-                            <span class="lt-time-label">ma</span>
+                            <span class="lt-time-label">{{ t('time_today') }}</span>
                         </div>
                         <div class="lt-time-box">
                             <span class="lt-time-value">{{ item.week }}p</span>
-                            <span class="lt-time-label">e héten</span>
+                            <span class="lt-time-label">{{ t('time_this_week') }}</span>
                         </div>
                         <div class="lt-time-box">
                             <span class="lt-time-value">{{ item.total }}p</span>
-                            <span class="lt-time-label">összesen</span>
+                            <span class="lt-time-label">{{ t('time_total') }}</span>
                         </div>
                     </div>
                 </div>
@@ -77,26 +77,26 @@
                         <option value="">{{ t('select_placeholder') }}</option>
                         <option value="angol">{{ t('language_angol') }}</option>
                         <option value="nemet">{{ t('language_nemet') }}</option>
-                        <option value="spanyol" data-curr="HU">{{ 'Spanyol' }}</option>
-                        <option value="francia" data-curr="ES">{{ 'Francia' }}</option>
+                        <option value="spanyol" data-curr="HU">{{ t('language_spanyol') }}</option>
+                        <option value="francia" data-curr="ES">{{ t('language_francia') }}</option>
                     </select>
                 </div>
 
                 <div class="task-actions" id="task-actions" hidden>
                     <button type="submit" class="btn-task-practice" id="generate-btn">
-                        📝 Gyakorló feladatok
+                        {{ t('btn_practice_tasks') }}
                     </button>
 
                     {% if chat_profile == 'both' %}
                     <a class="btn-ai-chat" id="ai-chat-link" href="#" hidden>
-                        💬 AI tanulás és beszélgetés (chat)
+                        {{ t('btn_ai_chat') }}
                     </a>
                     <a class="btn-ai-voice" id="ai-voice-link" href="#" hidden>
-                        🎙️ AI tanulás és beszélgetés (hangos)
+                        {{ t('btn_ai_voice') }}
                     </a>
                     {% else %}
                     <a class="btn-ai-voice" id="ai-voice-link" href="#" hidden>
-                        🎙️ AI tanulás és beszélgetés (hangos)
+                        {{ t('btn_ai_voice') }}
                     </a>
                     {% endif %}
                 </div>
@@ -104,11 +104,11 @@
                 {% if chat_profile == 'voice_default' %}
                 <div class="task-chat-alt" id="task-chat-alt" hidden>
                     <button type="button" class="task-alt-link" id="show-chat-alt">
-                        vagy inkább írok ✍️
+                        {{ t('link_writing_alt') }}
                     </button>
                     <div class="task-chat-alt-reveal" id="chat-alt-reveal" hidden>
                         <a class="btn-ai-chat" id="ai-chat-link" href="#">
-                            💬 Inkább chatelünk
+                            {{ t('link_chat_alt') }}
                         </a>
                     </div>
                 </div>
