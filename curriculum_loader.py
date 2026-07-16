@@ -982,7 +982,7 @@ def _build_hu_json_index() -> dict[tuple[int, int, int], list[tuple[Path, str, s
                     continue
                 slug, file_lo, file_hi = match.group(1), int(match.group(2)), int(match.group(3))
                 slug = _normalize_filename_slug(slug)
-                dedupe_key = (slug.casefold(), file_lo, file_hi)
+                dedupe_key = (slug.casefold(), grade_lo, grade_hi)
                 if dedupe_key in seen:
                     continue
                 seen.add(dedupe_key)

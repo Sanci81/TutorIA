@@ -3062,7 +3062,7 @@ def child_chat_test_submit(child_id: int):
             attempts_remaining = 0
             minutes_needed = 0
         else:
-            minutes_needed = max(0, total_req_minutes - topic_learning_minutes)
+            minutes_needed = 60
             if new_attempts < 3:
                 can_retry = True
                 attempts_remaining = 3 - new_attempts
@@ -3093,6 +3093,7 @@ def child_chat_test_submit(child_id: int):
     new_game_level = cur_progress.get("game_level", 1)
     new_coins = cur_progress.get("coins", 0)
     next_topic = None
+    grade_promotion = None
 
     if passed:
         current_level = cur_progress.get("level", 0)
@@ -3203,25 +3204,23 @@ def child_chat_test_submit(child_id: int):
                 congrats_message = None
 
         # Automatikus osztálylépés: minden témakör teljesítve ebben az osztályban?
-        grade_promotion = None
-        if passed:
-            active_curr = _active_curriculum()
-            if _all_grade_topics_completed(child_id, session["parent_id"], grade_num, active_curr):
-                child_curr = database.promote_child_grade(
-                    child_id, session["parent_id"], active_curr
+        active_curr = _active_curriculum()
+        if _all_grade_topics_completed(child_id, session["parent_id"], grade_num, active_curr):
+            child_curr = database.promote_child_grade(
+                child_id, session["parent_id"], active_curr
+            )
+            if child_curr:
+                new_grade = (
+                    child_curr.get("grade_es") if active_curr == "ES"
+                    else child_curr.get("grade_hu")
                 )
-                if child_curr:
-                    new_grade = (
-                        child_curr.get("grade_es") if active_curr == "ES"
-                        else child_curr.get("grade_hu")
+                max_limit = 6 if active_curr == "ES" else 8
+                if new_grade is not None and new_grade >= max_limit:
+                    grade_promotion = i18n.t("grade_all_done", g.lang)
+                elif new_grade is not None:
+                    grade_promotion = i18n.t("grade_promotion", g.lang).format(
+                        grade=new_grade
                     )
-                    max_limit = 6 if active_curr == "ES" else 8
-                    if new_grade is not None and new_grade >= max_limit:
-                        grade_promotion = i18n.t("grade_all_done", g.lang)
-                    elif new_grade is not None:
-                        grade_promotion = i18n.t("grade_promotion", g.lang).format(
-                            grade=new_grade
-                        )
 
     scores = database.get_topic_scores(child_id, progress_subject, grade_num)
     progress = database.get_or_create_child_progress(child_id, progress_subject)
