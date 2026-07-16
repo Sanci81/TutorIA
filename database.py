@@ -1531,6 +1531,24 @@ def get_topic_learning_minutes(child_id: int, subject: str, topic_id: str) -> fl
         db.close()
 
 
+def get_topic_learning_minutes_since(
+    child_id: int, subject: str, topic_id: str, since_dt: datetime
+) -> float:
+    """Visszaadja a témakörben `since_dt` utáni tanulási perceket."""
+    db = _session()
+    try:
+        q = select(ChildLearningTime).where(
+            ChildLearningTime.child_id == child_id,
+            ChildLearningTime.subject == subject,
+            ChildLearningTime.topic_id == topic_id,
+            ChildLearningTime.session_start >= since_dt,
+        )
+        rows = db.scalars(q).all()
+        return round(sum(r.minutes for r in rows), 1)
+    finally:
+        db.close()
+
+
 def get_incomplete_learning_sessions(child_id: int) -> list[dict[str, Any]]:
     """Megnyitott (session_end IS NULL) session-ök, időtúllépés kezeléshez."""
     db = _session()

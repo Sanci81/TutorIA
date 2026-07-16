@@ -364,6 +364,21 @@ TRANSLATIONS = {
     "time_about_hours_fmt": {"hu": "kb. {h} órát", "es": "unas {h} horas"},
     "time_hours_minutes_fmt": {"hu": "{h} órát {m} percet", "es": "{h} horas {m} minutos"},
     "time_minutes_fmt": {"hu": "{m} percet", "es": "{m} minutos"},
+    # --- teszt generálás kapu (szerver-oldali kikényszerítés) ---
+    "test_gate_attempts_exhausted": {
+        "hu": "Már háromszor próbálkoztál ezzel a szintfelmérővel. "
+             "Tanuld végig a leckét, és a végén jön a leckezáró — ott újra "
+             "megmutathatod, mit tudsz! 💪",
+        "es": "Ya lo has intentado tres veces con esta evaluación inicial. "
+             "¡Estudia la lección completa y al final tendrás la prueba de "
+             "cierre, donde podrás demostrar lo que sabes! 💪",
+    },
+    "test_gate_study_more": {
+        "hu": "Mielőtt újra próbálod, tanulj még kb. {minutes} percet ebben "
+             "a témakörben! 📚",
+        "es": "Antes de volver a intentarlo, ¡estudia unos {minutes} minutos "
+             "más en este tema! 📚",
+    },
     # --- teszt eredmény: hibalista ---
     "review_title": {"hu": "Eredmények áttekintése", "es": "Resumen de resultados"},
     "review_your_answer": {"hu": "A te válaszod", "es": "Tu respuesta"},

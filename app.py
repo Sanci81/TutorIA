@@ -1361,6 +1361,9 @@ def check_task_answer(child_id: int):
 
 TOPIC_PASS_THRESHOLD = 70
 
+# Ennyi percet kell tanulni a témakörben két teszt-próbálkozás között.
+TEST_RETRY_STUDY_MINUTES = 60
+
 _CHAT_PROFILE_VOICE_ONLY = "voice_only"
 _CHAT_PROFILE_VOICE_DEFAULT = "voice_default"
 _CHAT_PROFILE_BOTH = "both"
@@ -2906,6 +2909,50 @@ def child_chat_test_generate(child_id: int):
     topic = get_topic_from_catalog(catalog, topic_id)
     if not topic:
         return jsonify({"error": "topic_not_found"}), 404
+
+    # ── Gate: próbálkozás- és tanulás-korlátozás szerver oldalon ────────
+    progress_subject = _chat_progress_subject(subject, language or None)
+    grade_num = _chat_grade_num(child)
+    ora_szam = topic.get("ora_szam", 0)
+    total_req_minutes = ora_szam * 60
+    topic_learning_minutes = database.get_topic_learning_minutes(
+        child_id, progress_subject, topic_id
+    )
+
+    existing = database.get_topic_score(child_id, progress_subject, grade_num, topic_id)
+    if existing and existing.get("passed"):
+        pass  # gyakorlás — mindig engedélyezett
+    else:
+        topic_attempts = existing.get("topic_attempts", 0) if existing else 0
+        phase = 1 if topic_learning_minutes < total_req_minutes else 2
+
+        if phase == 1 and topic_attempts >= 3:
+            return jsonify({
+                "ok": False,
+                "reason": "attempts_exhausted",
+                "message": i18n.t("test_gate_attempts_exhausted", g.lang),
+            }), 200
+
+        if existing and existing.get("completed_at"):
+            try:
+                last_test_dt = datetime.fromisoformat(existing["completed_at"])
+            except (ValueError, TypeError):
+                last_test_dt = None
+            if last_test_dt:
+                learned_since = database.get_topic_learning_minutes_since(
+                    child_id, progress_subject, topic_id,
+                    last_test_dt,
+                )
+                if learned_since < TEST_RETRY_STUDY_MINUTES:
+                    need = TEST_RETRY_STUDY_MINUTES - int(learned_since)
+                    return jsonify({
+                        "ok": False,
+                        "reason": "study_more",
+                        "minutes_needed": need,
+                        "message": i18n.t("test_gate_study_more", g.lang).format(
+                            minutes=need
+                        ),
+                    }), 200
 
     try:
         all_ora_szamok = [t.get("ora_szam", 0) for t in catalog]
