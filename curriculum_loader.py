@@ -841,7 +841,7 @@ _HU_JSON_DIR_CANDIDATES: dict[str, tuple[str, ...]] = {
     "1-4": ("hu_kerettanterv_1_4_TELJES", "hu_kerettanterv_1_4"),
     "5-8": ("hu_kerettanterv_5_8_TELJES",),
 }
-_HU_FILENAME_RE = re.compile(r"^(.+)_(\d+)_(\d+)\.json$", re.IGNORECASE)
+_HU_FILENAME_RE = re.compile(r"^(.+)[_-](\d+)[_-](\d+)\.json$", re.IGNORECASE)
 _HU_AGGREGATE_PREFIX = "hu_kerettanterv_"
 
 # Csak ezek jelenhetnek meg HU 1–4 feladatválasztóban (JSON fájlokkal párosítva)
@@ -887,6 +887,8 @@ def _normalize_key(value: str) -> str:
 
 
 def _display_subject_name(raw: str) -> str:
+    # Strip grade range suffix from filenames (e.g., "Tortenelem_5_8.json" -> "Tortenelem")
+    raw = re.sub(r'[-_]\d+[-_]\d+\.json$', '', raw, flags=re.IGNORECASE)
     key = _normalize_key(raw)
     for slug, display in _HU_DOCX_SUBJECTS.items():
         if key in (_normalize_key(slug), _normalize_key(display)):
@@ -950,6 +952,13 @@ def _load_hu_json(path: Path) -> dict[str, Any]:
     return _json_file_cache[key]
 
 
+def _hu_sort_key(path: Path) -> tuple[int, str]:
+    """Rendezési kulcs: kötőjeles fájlok előbb (új, ékezetes), majd ABC."""
+    name = path.name.casefold()
+    prefers_hyphen = 0 if "-" in Path(name).stem.split("_")[-1] else 1
+    return (prefers_hyphen, name)
+
+
 def _build_hu_json_index() -> dict[tuple[int, int, int], list[tuple[Path, str, str]]]:
     """Index: (grade_lo, grade_hi, grade) -> [(path, slug, display_name), ...]."""
     global _hu_json_index
@@ -965,7 +974,7 @@ def _build_hu_json_index() -> dict[tuple[int, int, int], list[tuple[Path, str, s
             directory = _PROJECT_ROOT / dir_name
             if not directory.is_dir():
                 continue
-            for path in directory.glob("*.json"):
+            for path in sorted(directory.glob("*.json"), key=_hu_sort_key):
                 if _is_hu_aggregate_json(path):
                     continue
                 match = _HU_FILENAME_RE.match(path.name)
@@ -1608,8 +1617,8 @@ def get_curriculum_for_chat(
         content = format_curriculum_for_grade(data, grade_num)
         subject_name = (
             data.get("nyelv")
-            or data.get("meta", {}).get("tantargy")
-            or raw.get("meta", {}).get("tantargy", "")
+            or _display_subject_name(data.get("meta", {}).get("tantargy", ""))
+            or _display_subject_name(raw.get("meta", {}).get("tantargy", ""))
             or display_label
         )
         if effective_language == "angol":

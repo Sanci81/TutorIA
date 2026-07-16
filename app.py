@@ -38,6 +38,7 @@ import translations as i18n
 from curriculum_loader import (
     ELO_IDEGEN_NYELV_1_4_FILE,
     ELO_IDEGEN_NYELV_5_8_FILE,
+    _display_subject_name,
     foreign_language_prompt_block,
     get_curriculum_for_chat,
     get_curriculum_for_child,
@@ -554,7 +555,7 @@ def _generate_practice_tasks_bundle(
         else:
             language = None
 
-    subject_display = hu_1_4_label_from_value(subject)
+    subject_display = _display_subject_name(subject)
     curriculum = _curriculum_for_child(child, subject=subject)
     subject_ctx = curriculum.get("subject_context") or {}
     if child_curr == "HU":
@@ -2259,7 +2260,7 @@ def _chat_subject_label(
     language: str | None = None,
 ) -> str:
     if g.lang == "hu":
-        subject_label = hu_1_4_label_from_value(subject_file)
+        subject_label = _display_subject_name(subject_file)
     else:
         child_curr = _active_curriculum()
         subject_label = subject_ui_label(subject_file, g.lang, child_curr)
