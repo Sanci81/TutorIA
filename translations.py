@@ -389,6 +389,7 @@ TRANSLATIONS = {
 
     # --- select_tasks oldal ---
     "grade_label": {"hu": "osztály", "es": "curso"},
+    "grade_display_fmt": {"hu": "{grade}. osztály", "es": "{grade}.º curso"},
     "learning_time_toggle": {"hu": "⏱️ Tanulási idő", "es": "⏱️ Tiempo de estudio"},
     "time_today": {"hu": "ma", "es": "hoy"},
     "time_this_week": {"hu": "e héten", "es": "esta semana"},

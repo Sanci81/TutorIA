@@ -15,7 +15,7 @@
             </p>
             <p class="select-tasks-meta">
                 {% if child['grade'] %}
-                    {{ child['grade'] }}. {{ t('grade_label') }} / {{ child['age'] }} {{ t('years_old') }}
+                    {{ t('grade_display_fmt').format(grade=active_grade) }} / {{ child['age'] }} {{ t('years_old') }}
                 {% else %}
                     {{ child['age'] }} {{ t('years_old') }}
                 {% endif %}

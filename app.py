@@ -923,6 +923,7 @@ def dashboard():
                 child["is_birthday"] = False
         else:
             child["is_birthday"] = False
+        child["_active_grade"] = _active_grade(child)
     return render_template("dashboard.html", parent=parent, children=children)
 
 
@@ -1225,6 +1226,7 @@ def select_tasks(child_id: int):
     return render_template(
         "select_tasks.html",
         child=child,
+        active_grade=_active_grade(child),
         subject_options=subject_options,
         curriculum=curriculum,
         notice=notice,
