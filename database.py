@@ -910,6 +910,24 @@ def add_chat_message(session_id: int, role: str, content: str) -> dict[str, Any]
         db.close()
 
 
+def replace_first_assistant_message(session_id: int, new_content: str) -> bool:
+    """Lecseréli a session első assistant üzenetének tartalmát (pl. üdvözlő nyelvének javítása)."""
+    db = _session()
+    try:
+        msg = db.scalar(
+            select(ChatMessage)
+            .where(ChatMessage.session_id == session_id, ChatMessage.role == "assistant")
+            .order_by(ChatMessage.created_at.asc())
+        )
+        if msg is not None:
+            msg.content = new_content.strip()
+            db.commit()
+            return True
+        return False
+    finally:
+        db.close()
+
+
 def get_child_progress(child_id: int, subject: str) -> dict[str, Any] | None:
     db = _session()
     try:

@@ -2169,17 +2169,14 @@ def _call_ai_for_chat(
 
 
 def _chat_initial_assistant_message(
-    child_name: str, subject_label: str, *, placement: bool
+    child_name: str, subject_label: str, *, placement: bool, lang: str = "hu"
 ) -> str:
     if placement:
-        return (
-            f"Szia {child_name}! 🌟 Én vagyok a {subject_label} AI tanárod. "
-            "Először egy rövid játékos felmérést csinálunk, hogy tudjam, "
-            "honnan induljunk. Kész vagy az első kérdésre?"
+        return i18n.t("chat_welcome_placement", lang).format(
+            name=child_name, subject=subject_label
         )
-    return (
-        f"Szia {child_name}! 👋 Folytatjuk a {subject_label} tanulást. "
-        "Írd meg, miben segíthetek, vagy válaszolj az utolsó kérdésemre!"
+    return i18n.t("chat_welcome_continue", lang).format(
+        name=child_name, subject=subject_label
     )
 
 
@@ -2405,13 +2402,27 @@ def child_chat(child_id: int):
 
     messages = database.get_chat_messages(chat_session["id"], limit=20)
     placement_mode = progress.get("level", 0) == 0
+    active_curr = _active_curriculum()      # "HU" vagy "ES"
 
     if not messages:
         welcome = _chat_initial_assistant_message(
-            child["name"], subject_label, placement=placement_mode
+            child["name"], subject_label, placement=placement_mode,
+            lang="es" if active_curr == "ES" else "hu",
         )
         database.add_chat_message(chat_session["id"], "assistant", welcome)
         messages = database.get_chat_messages(chat_session["id"], limit=20)
+    elif active_curr == "ES" and messages:
+        first_assistant = next(
+            (m for m in messages if m["role"] == "assistant"), None
+        )
+        if first_assistant and ("Szia" in first_assistant["content"]):
+            welcome = _chat_initial_assistant_message(
+                child["name"], subject_label, placement=placement_mode, lang="es"
+            )
+            database.replace_first_assistant_message(
+                chat_session["id"], welcome
+            )
+            messages = database.get_chat_messages(chat_session["id"], limit=20)
 
     vocabulary = []
     if is_foreign and language:

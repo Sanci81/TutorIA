@@ -369,6 +369,22 @@ TRANSLATIONS = {
     "review_no_answer": {"hu": "(nincs válasz)", "es": "(sin respuesta)"},
     "review_explanation": {"hu": "Magyarázat", "es": "Explicación"},
 
+    # --- chat üdvözlő üzenetek ---
+    "chat_welcome_placement": {
+        "hu": "Szia {name}! 🌟 Én vagyok a {subject} AI tanárod. "
+              "Először egy rövid játékos felmérést csinálunk, hogy tudjam, "
+              "honnan induljunk. Kész vagy az első kérdésre?",
+        "es": "¡Hola {name}! 🌟 Soy tu profe de {subject}. "
+              "Primero haremos una prueba corta y divertida para saber por dónde empezar. "
+              "¿Preparado para la primera pregunta?",
+    },
+    "chat_welcome_continue": {
+        "hu": "Szia {name}! 👋 Folytatjuk a {subject} tanulást. "
+              "Írd meg, miben segíthetek, vagy válaszolj az utolsó kérdésemre!",
+        "es": "¡Hola {name}! 👋 Seguimos con {subject}. "
+              "Dime en qué puedo ayudarte o responde a mi última pregunta.",
+    },
+
     # --- lábléc ---
     "footer_text": {
         "hu": "TutorIA — Tanulás, személyre szabva.",
