@@ -63,43 +63,43 @@
         "angol": [
           {
             "nev": "Hello & Goodbye – Saludos y despedidas",
-            "teljes_szoveg": "Aprendemos a saludar y despedirnos en inglés: hello, goodbye, how are you. El niño practica las primeras palabras y gestos de cortesía.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño saluda, se despide y pregunta cómo está alguien en inglés con confianza. VOCABULARIO (enséñalo todo con pronunciación): \"hello\", \"hi\", \"goodbye\", \"bye\", \"good morning\", \"good afternoon\", \"good evening\", \"good night\", \"see you\", \"please\", \"thank you\", \"you're welcome\". FRASES MODELO (practica cada una en contexto): \"Hello! How are you?\" – \"I'm fine, thank you\" / \"Not bad\" / \"I'm tired\". \"What's your name?\" – \"My name is Anna\". \"Nice to meet you\". \"Good morning, teacher!\". GRAMÁTICA: diferencia entre saludo formal (\"good morning\") e informal (\"hi\"); entonación ascendente en preguntas. Todavía sin conjugación. ACTIVIDADES: (1) juego de saludos por turnos; (2) role-play de llegar a clase y saludar; (3) despedidas al final del día. Repite hasta que salga natural. AL TERMINAR el niño sabe saludar, preguntar cómo estás y despedirse en frases completas."
           },
           {
             "nev": "Sounds & Letters – Sonidos y letras",
-            "teljes_szoveg": "Conocemos el abecedario inglés, practicamos el deletreo de nombres y aprendemos los primeros sonidos propios del inglés.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño conoce el alfabeto inglés, distingue sus sonidos y deletrea palabras cortas. VOCABULARIO: las 26 letras A–Z; palabras de ejemplo por sonido: \"apple\", \"ball\", \"cat\", \"dog\", \"egg\", \"fish\", \"sun\", \"hat\". FRASES MODELO: \"How do you spell it?\" – \"It's C-A-T\". \"What letter is this?\". GRAMÁTICA: —. PUNTOS CLAVE: algunas letras suenan MUY distinto que en español — \"h\" se aspira, \"j\" suena como \"y\" fuerte, \"w\" no existe en español, \"th\" es un sonido nuevo (\"the\", \"three\"). Practica estos sonidos con cuidado. ACTIVIDADES: (1) cantar la canción del alfabeto; (2) deletrear el propio nombre; (3) juego de sonidos; (4) deletrear palabras cortas. AL TERMINAR el niño reconoce las 26 letras, canta el alfabeto y deletrea su nombre."
           },
           {
             "nev": "This is me – Me presento",
-            "teljes_szoveg": "Aprendemos a presentarnos con name, age. Gramática: I am, you are. Practicamos My name is…, I am 7 years old.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño se presenta y da información personal básica. VOCABULARIO: \"name\", \"age\", números 1–10, \"boy\", \"girl\", \"years old\". FRASES MODELO: \"My name is Peter\". \"I am seven years old\" / \"I am seven\". \"I am a boy\" / \"I am a girl\". \"How old are you?\" – \"I am eight\". GRAMÁTICA: el verbo \"to be\" en 1ª y 2ª persona — \"I am\", \"you are\". Enséñalo dentro de frases reales: \"I am Anna\", \"You are my friend\". ACTIVIDADES: (1) cada niño se presenta con nombre y edad; (2) el profesor pregunta y el niño responde con frase completa; (3) presentar a un muñeco (\"This is Tom. He is six.\"). AL TERMINAR el niño se presenta con nombre y edad usando \"I am...\"."
           },
           {
             "nev": "My family – Mi familia",
-            "teljes_szoveg": "Ampliamos vocabulario de la familia: mother, father, brother, sister, grandparents. Gramática: this is my…, plural -s.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño nombra a los miembros de la familia y habla de ellos. VOCABULARIO: \"mother/mum\", \"father/dad\", \"brother\", \"sister\", \"grandmother/grandma\", \"grandfather/grandpa\", \"baby\", \"family\". FRASES MODELO (mete el vocabulario en frases): \"This is my mum\". \"I have one brother and two sisters\". \"My dad is tall\". \"Who is this?\" – \"This is my grandma\". GRAMÁTICA: \"this is my...\"; el plural con -s (\"one brother\", \"two brothers\"). ACTIVIDADES: (1) describir una foto de su familia con \"This is my...\"; (2) contar cuántos hermanos tiene; (3) juego de memoria. AL TERMINAR el niño presenta a su familia y usa el plural con -s."
           },
           {
             "nev": "Colours & Numbers – Colores y números",
-            "teljes_szoveg": "Aprendemos los colores y los números del 1 al 20. Gramática: How many? y there is / there are para describir.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño nombra colores, cuenta hasta 20 y combina ambos en frases. VOCABULARIO: \"red\", \"blue\", \"green\", \"yellow\", \"black\", \"white\", \"pink\", \"orange\", \"purple\", \"brown\", \"grey\"; números 1–20. FRASES MODELO (combina color + objeto + número): \"What colour is it?\" – \"It's blue\". \"How many apples?\" – \"There are five\". \"I have three red pens\". \"The sky is blue\". GRAMÁTICA: \"there is\" (singular) frente a \"there are\" (plural); ORDEN adjetivo+sustantivo — el color va ANTES del objeto (\"a red car\", NO \"a car red\"). Insiste en este punto. ACTIVIDADES: (1) contar objetos del aula y decir su color; (2) juego \"I spy something blue\"; (3) dictado de números. AL TERMINAR el niño cuenta hasta 20, nombra 8+ colores y forma frases como \"There are three green books\"."
           },
           {
             "nev": "My things – Mis cosas",
-            "teljes_szoveg": "Vocabulario de objetos escolares y del hogar: pencil, book, table, bed. Gramática: a/an y this/that para señalar.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño nombra objetos escolares y del hogar y pregunta qué son. VOCABULARIO: \"book\", \"pen\", \"pencil\", \"rubber\", \"bag\", \"ruler\", \"table\", \"chair\", \"door\", \"window\", \"box\", \"apple\", \"orange\". FRASES MODELO: \"What's this?\" – \"It's a pen\". \"This is my book\". \"That is a chair\". \"Is it a pencil?\" – \"Yes, it is\" / \"No, it isn't\". GRAMÁTICA: artículos \"a\"/\"an\" — \"an\" antes de sonido vocálico (\"a book\" pero \"an apple\"); \"this\" (cerca)/\"that\" (lejos). ACTIVIDADES: (1) señalar objetos y preguntar \"What's this?\"; (2) adivinar el objeto escondido; (3) clasificar palabras según \"a\"/\"an\". AL TERMINAR el niño nombra objetos comunes y elige \"a\"/\"an\" correctamente."
           },
           {
             "nev": "Animals – Animales",
-            "teljes_szoveg": "Aprendemos los nombres de mascotas y animales salvajes: dog, cat, lion, elephant. Gramática: I like / I have.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño nombra animales y expresa lo que le gusta y lo que tiene. VOCABULARIO: domésticos — \"dog\", \"cat\", \"bird\", \"fish\", \"rabbit\", \"hamster\"; salvajes — \"lion\", \"elephant\", \"monkey\", \"bear\", \"tiger\", \"giraffe\". FRASES MODELO: \"I like dogs\". \"I don't like spiders\". \"I have a cat\". \"Do you like lions?\" – \"Yes, I do\" / \"No, I don't\". \"The elephant is big\". GRAMÁTICA: \"I like\"/\"I don't like\"; \"I have\"; pregunta \"Do you like...?\" con respuesta corta. ACTIVIDADES: (1) decir qué animales le gustan y cuáles tiene; (2) imitar sonidos y nombrarlos en inglés; (3) clasificar en domésticos y salvajes. AL TERMINAR el niño nombra 8+ animales y dice qué le gusta con \"I like\"."
           },
           {
             "nev": "Let's talk! – ¡A hablar!",
-            "teljes_szoveg": "Primeros diálogos breves en inglés: preguntas what/who/where y respuestas cortas. El niño construye sus primeras conversaciones.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño combina todo lo aprendido en un diálogo sencillo. VOCABULARIO: repaso de las lecciones 1–7. FRASES MODELO — preguntas con interrogativos: \"What's your name?\", \"How old are you?\", \"Who is this?\", \"Where is the cat?\", \"What colour is it?\", \"How many?\". GRAMÁTICA: interrogativos \"what\", \"who\", \"where\", \"how many\"; unir frases con \"and\" (\"I have a cat AND a dog\"). ACTIVIDADES: (1) mini-conversación guiada — saludar, presentarse, hablar de la familia, colores y animales, y despedirse; (2) el profesor hace de amigo nuevo; (3) role-play en el parque. AL TERMINAR el niño mantiene un diálogo corto usando todo lo del ciclo."
           }
         ],
         "nemet": [],
@@ -129,43 +129,43 @@
         "angol": [
           {
             "nev": "Sounds & Spelling – Sonidos y ortografía",
-            "teljes_szoveg": "Profundizamos en la pronunciación y el deletreo en inglés. El niño reconoce sonidos complejos y mejora su ortografía.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño mejora la pronunciación y la ortografía inglesas. VOCABULARIO: \"three\", \"the\", \"this\", \"think\" (th); \"ship\", \"chair\", \"cheese\" (sh/ch); \"night\", \"light\", \"eight\" (letras mudas). FRASES MODELO: \"How do you spell 'house'?\" – \"H-O-U-S-E\". GRAMÁTICA: —. PUNTOS CLAVE: en inglés la escritura y el sonido no coinciden como en español; hay letras mudas (\"know\", \"write\") y combinaciones (th, sh, ch). ACTIVIDADES: (1) dictado de palabras; (2) juego de rimas; (3) clasificar por sonido inicial. AL TERMINAR el niño deletrea palabras comunes y pronuncia th/sh/ch mejor."
           },
           {
             "nev": "Daily Routines – Mi día a día",
-            "teljes_szoveg": "Describimos las rutinas diarias: I get up, I go to school, I have lunch. Gramática: present simple en primera persona.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño describe su rutina diaria. VOCABULARIO: \"get up\", \"wash\", \"have breakfast\", \"go to school\", \"have lunch\", \"play\", \"do homework\", \"have dinner\", \"go to bed\"; \"morning\", \"afternoon\", \"evening\", \"night\"; \"o'clock\". FRASES MODELO: \"I get up at seven o'clock\". \"I go to school in the morning\". \"What time do you get up?\". GRAMÁTICA: present simple en 1ª persona para hábitos — \"I get up\", \"I go\", \"I play\"; pregunta \"What time...?\". ACTIVIDADES: (1) contar su día de la mañana a la noche; (2) ordenar acciones; (3) reloj de cartón. AL TERMINAR el niño describe su rutina con present simple."
           },
           {
             "nev": "Food & Drinks – Comida y bebida",
-            "teljes_szoveg": "Ampliamos vocabulario de alimentos y bebidas: bread, milk, apple, chicken. Gramática: I like / I don't like, do you like…?",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño nombra comidas y bebidas y expresa preferencias. VOCABULARIO: \"bread\", \"milk\", \"water\", \"juice\", \"apple\", \"banana\", \"rice\", \"chicken\", \"fish\", \"cheese\", \"egg\", \"chocolate\", \"cake\". FRASES MODELO: \"I like pizza\". \"I don't like fish\". \"Do you like milk?\" – \"Yes, I do\". \"I want an apple, please\". GRAMÁTICA: \"I like\"/\"I don't like\"; \"Do you like...?\" con respuesta corta; \"I want... please\" para pedir. ACTIVIDADES: (1) role-play en un restaurante; (2) hacer un menú favorito; (3) clasificar comida sana/no sana. AL TERMINAR el niño pide comida educadamente y dice qué le gusta."
           },
           {
             "nev": "My Town – Mi ciudad",
-            "teljes_szoveg": "Aprendemos lugares de la ciudad: school, park, supermarket, hospital. Gramática: there is / there are y preposiciones in/on/under.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño describe lugares de su ciudad y da indicaciones. VOCABULARIO: \"school\", \"park\", \"shop\", \"house\", \"hospital\", \"street\", \"square\", \"library\", \"supermarket\"; \"in\", \"on\", \"under\", \"next to\", \"behind\". FRASES MODELO: \"There is a park near my house\". \"The shop is next to the school\". \"Where is the library?\" – \"It's on Main Street\". GRAMÁTICA: \"there is\"/\"there are\"; preposiciones de lugar. ACTIVIDADES: (1) dibujar y describir un mapa del barrio; (2) juego \"¿dónde está?\"; (3) dar indicaciones. AL TERMINAR el niño describe su ciudad con \"there is/are\" y preposiciones."
           },
           {
             "nev": "Clothes & Weather – Ropa y tiempo",
-            "teljes_szoveg": "Vocabulario de ropa: T-shirt, trousers, jacket; y del tiempo: sunny, rainy, cold. Gramática: it's + adjetivo, wearing.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño nombra ropa, describe el tiempo y relaciona ambos. VOCABULARIO: \"shirt\", \"t-shirt\", \"trousers\", \"dress\", \"shoes\", \"hat\", \"coat\", \"socks\"; \"sunny\", \"rainy\", \"cloudy\", \"windy\", \"hot\", \"cold\", \"snow\". FRASES MODELO: \"It's sunny today\". \"I'm wearing a red t-shirt\". \"It's cold, put on your coat\". \"What's the weather like?\" – \"It's rainy\". GRAMÁTICA: \"it's + adjetivo\" para el tiempo; present continuous para ropa — \"I am wearing...\". ACTIVIDADES: (1) describir qué lleva hoy; (2) vestir a un muñeco según el tiempo; (3) parte meteorológico. AL TERMINAR el niño describe el tiempo y su ropa."
           },
           {
             "nev": "Hobbies – Aficiones",
-            "teljes_szoveg": "Hablamos de tiempo libre y deportes: I play football, I like reading. Gramática: can/can't y present continuous básico.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño habla de sus aficiones y de lo que sabe hacer. VOCABULARIO: \"football\", \"basketball\", \"swimming\", \"dancing\", \"drawing\", \"reading\", \"singing\", \"cycling\", \"playing\". FRASES MODELO: \"I like playing football\". \"I can swim\". \"I can't ride a bike\". \"Can you dance?\" – \"Yes, I can\"/\"No, I can't\". GRAMÁTICA: \"can\"/\"can't\" para habilidad; present continuous (\"I am playing\"). ACTIVIDADES: (1) decir qué sabe y qué no sabe hacer; (2) mímica de aficiones; (3) encuesta \"Can you...?\". AL TERMINAR el niño expresa habilidades con \"can/can't\"."
           },
           {
             "nev": "Describing People – Describir personas",
-            "teljes_szoveg": "Aprendemos a describir el físico y el carácter: tall, short, funny, kind. Gramática: have got y adjetivos.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño describe el aspecto y el carácter de las personas. VOCABULARIO: \"tall\", \"short\", \"big\", \"small\", \"happy\", \"sad\", \"kind\", \"funny\"; \"hair\", \"eyes\". FRASES MODELO: \"He is tall\". \"She has got long hair\". \"My friend has got blue eyes\". \"He is funny and kind\". GRAMÁTICA: \"have got\"/\"has got\" para aspecto; adjetivos antes del sustantivo (\"long hair\", NO \"hair long\"). ACTIVIDADES: (1) describir a un compañero y adivinar; (2) dibujar y describir un monstruo; (3) describir a un personaje. AL TERMINAR el niño describe personas con \"has got\" y adjetivos."
           },
           {
             "nev": "Let's Chat! – ¡A charlar!",
-            "teljes_szoveg": "Diálogos más largos con preguntas y respuestas cortas. El niño participa en conversaciones guiadas sobre temas familiares.",
-            "javasolt_oraszam": 15
+            "javasolt_oraszam": 15,
+            "teljes_szoveg": "OBJETIVO: el niño mantiene una conversación más larga. VOCABULARIO: repaso de rutinas, comida, ciudad, ropa, aficiones y descripciones. FRASES MODELO: \"What do you do in the morning?\", \"What's your favourite food?\", \"Can you swim?\", \"What's the weather like?\". GRAMÁTICA: repaso de present simple, \"can\", \"have got\", \"there is/are\"; unir ideas con \"and\", \"but\", \"because\". ACTIVIDADES: (1) entrevista profesor–niño; (2) contar un día completo; (3) role-play de conocer a alguien. AL TERMINAR el niño sostiene un diálogo de varios turnos."
           }
         ],
         "nemet": [],
@@ -195,43 +195,43 @@
         "angol": [
           {
             "nev": "Reading & Writing – Leer y escribir",
-            "teljes_szoveg": "Desarrollamos la comprensión lectora y la expresión escrita con textos breves y sencillos. El niño aprende a redactar párrafos cortos.",
-            "javasolt_oraszam": 16
+            "javasolt_oraszam": 16,
+            "teljes_szoveg": "OBJETIVO: el niño lee textos cortos y escribe frases y párrafos sencillos. VOCABULARIO: \"first\", \"then\", \"next\", \"finally\"; \"story\", \"letter\", \"message\". FRASES MODELO: \"First I get up, then I have breakfast\". \"Dear friend, ...\". GRAMÁTICA: mayúscula al inicio y punto al final; orden sujeto+verbo+objeto; conectores de secuencia. ACTIVIDADES: (1) leer un cuento corto y contestar; (2) escribir una postal; (3) ordenar frases. AL TERMINAR el niño lee un texto sencillo y escribe un párrafo con conectores."
           },
           {
             "nev": "Last Weekend – El fin de semana pasado",
-            "teljes_szoveg": "Narramos eventos pasados: what did you do? I went, I played, I visited. Gramática: past simple (went, did, was/were).",
-            "javasolt_oraszam": 16
+            "javasolt_oraszam": 16,
+            "teljes_szoveg": "OBJETIVO: el niño habla de acciones pasadas. VOCABULARIO: \"went\", \"played\", \"watched\", \"ate\", \"saw\", \"was\", \"were\", \"did\", \"had\"; \"yesterday\", \"last weekend\", \"last week\". FRASES MODELO: \"I went to the park yesterday\". \"I played football\". \"Did you watch TV?\" – \"Yes, I did\"/\"No, I didn't\". GRAMÁTICA: past simple — regulares con -ed e irregulares (\"go→went\", \"eat→ate\"); \"was\"/\"were\"; \"did\"/\"didn't\". Punto nuevo e importante. ACTIVIDADES: (1) contar el fin de semana; (2) tarjetas presente↔pasado; (3) preguntar qué hizo ayer. AL TERMINAR el niño narra hechos pasados con past simple."
           },
           {
             "nev": "Future Plans – Planes de futuro",
-            "teljes_szoveg": "Hablamos del futuro: I am going to visit, I will travel. Gramática: going to y will para expresar planes y predicciones.",
-            "javasolt_oraszam": 16
+            "javasolt_oraszam": 16,
+            "teljes_szoveg": "OBJETIVO: el niño habla de planes e intenciones. VOCABULARIO: \"tomorrow\", \"next week\", \"holidays\", \"weekend\". FRASES MODELO: \"I am going to visit my grandma\". \"We will go to the beach\". \"What are you going to do tomorrow?\". GRAMÁTICA: \"going to\" para planes y \"will\" para predicciones. ACTIVIDADES: (1) contar planes del fin de semana; (2) predecir el tiempo de mañana; (3) lista de propósitos. AL TERMINAR el niño expresa planes con \"going to\" y predicciones con \"will\"."
           },
           {
             "nev": "Around the World – Por el mundo",
-            "teljes_szoveg": "Conocemos países, culturas y tradiciones del mundo. Comparaciones: Spain is bigger than Portugal. Gramática: comparativos y superlativos.",
-            "javasolt_oraszam": 16
+            "javasolt_oraszam": 16,
+            "teljes_szoveg": "OBJETIVO: el niño habla de países y compara lugares. VOCABULARIO: \"Spain\", \"England\", \"France\", \"Germany\", \"Italy\", \"the USA\"; \"Spanish\", \"English\", \"French\"; \"country\", \"city\", \"language\", \"flag\". FRASES MODELO: \"I am from Spain\". \"London is bigger than my town\". \"English is more difficult than Spanish\". GRAMÁTICA: comparativos — -er (\"bigger\") y \"more\" (\"more difficult\"); \"than\". ACTIVIDADES: (1) presentar un país; (2) comparar dos ciudades; (3) juego de banderas. AL TERMINAR el niño compara lugares con comparativos."
           },
           {
             "nev": "Health & Body – Salud y cuerpo",
-            "teljes_szoveg": "Vocabulario del cuerpo humano y la salud: headache, fever, doctor. Gramática: should/shouldn't y must para dar consejos.",
-            "javasolt_oraszam": 16
+            "javasolt_oraszam": 16,
+            "teljes_szoveg": "OBJETIVO: el niño nombra partes del cuerpo, habla de salud y da consejos. VOCABULARIO: \"head\", \"arm\", \"leg\", \"hand\", \"foot\", \"eye\", \"ear\", \"nose\", \"mouth\", \"tooth\", \"stomach\"; \"doctor\", \"medicine\", \"healthy\". FRASES MODELO: \"I have a headache\". \"My leg hurts\". \"You should rest\". \"You shouldn't eat too much sugar\". GRAMÁTICA: \"should\"/\"shouldn't\" para consejos; \"must\" para obligación. ACTIVIDADES: (1) nombrar partes del cuerpo; (2) role-play médico–paciente; (3) dar consejos sanos. AL TERMINAR el niño nombra el cuerpo y da consejos con \"should\"."
           },
           {
             "nev": "Stories & Feelings – Historias y sentimientos",
-            "teljes_szoveg": "Leemos y contamos pequeñas historias, expresamos sentimientos: happy, sad, excited. Gramática: because, when, and/but para conectar ideas.",
-            "javasolt_oraszam": 16
+            "javasolt_oraszam": 16,
+            "teljes_szoveg": "OBJETIVO: el niño cuenta historias y expresa emociones. VOCABULARIO: \"happy\", \"sad\", \"angry\", \"scared\", \"excited\", \"tired\", \"bored\"; \"once upon a time\", \"the end\". FRASES MODELO: \"I am happy because it's my birthday\". \"She was scared when she saw the dog\". \"Once upon a time there was a princess\". GRAMÁTICA: conectores \"because\", \"when\", \"and\", \"but\", \"so\"; pasado en la narración. ACTIVIDADES: (1) contar una historia con principio, medio y final; (2) decir por qué se siente así; (3) inventar un cuento. AL TERMINAR el niño narra una historia breve con \"because\" y \"when\"."
           },
           {
             "nev": "Technology & Media – Tecnología",
-            "teljes_szoveg": "Exploramos el mundo digital: computer, internet, email. Gramática: present perfect básico (have you ever…?).",
-            "javasolt_oraszam": 16
+            "javasolt_oraszam": 16,
+            "teljes_szoveg": "OBJETIVO: el niño habla de tecnología con uso seguro. VOCABULARIO: \"computer\", \"phone\", \"tablet\", \"internet\", \"video\", \"game\", \"email\", \"website\", \"message\". FRASES MODELO: \"Have you ever played this game?\" – \"Yes, I have\"/\"No, I haven't\". \"I have watched that video\". GRAMÁTICA: present perfect para experiencias — \"Have you ever...?\", \"I have played/watched\". SEGURIDAD: recuerda no compartir datos personales en internet. ACTIVIDADES: (1) hablar de juegos favoritos; (2) encuesta \"Have you ever...?\"; (3) normas de uso seguro. AL TERMINAR el niño habla de experiencias con present perfect."
           },
           {
             "nev": "Let's Discuss! – ¡A debatir!",
-            "teljes_szoveg": "Expresamos opiniones y argumentamos de forma sencilla: I think, I agree, I disagree. El niño participa en debates guiados.",
-            "javasolt_oraszam": 16
+            "javasolt_oraszam": 16,
+            "teljes_szoveg": "OBJETIVO: el niño da su opinión y participa en una conversación real. VOCABULARIO: \"I think\", \"I agree\", \"I don't agree\", \"in my opinion\", \"maybe\", \"because\". FRASES MODELO: \"I think football is fun\". \"In my opinion, reading is better than TV\". \"I agree with you\". \"I don't agree, because...\". GRAMÁTICA: repaso general — presente, pasado, futuro, comparativos, conectores; expresiones de opinión. ACTIVIDADES: (1) mini-debate sobre un tema sencillo; (2) dar y justificar una opinión con \"because\"; (3) entrevista final que repasa el curso. AL TERMINAR el niño expresa y justifica una opinión y mantiene una conversación."
           }
         ],
         "nemet": [],
