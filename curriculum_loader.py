@@ -1371,12 +1371,16 @@ def extract_topic_catalog(data: dict[str, Any], grade: int | str) -> list[dict[s
 
 
 def extract_loe_topic_catalog(
-    data: dict[str, Any], grade: int | str
+    data: dict[str, Any], grade: int | str, *, language: str | None = None,
 ) -> list[dict[str, Any]]:
     """Spanyol (LOMLOE) témakör-katalógus a ciklus temakorok tömbjéből.
 
     Ugyanaz a szerkezet, mint az extract_topic_catalog (magyar) kimenete:
     id, name, text, index, ora_szam.
+
+    Ha a language paraméter meg van adva (pl. "angol") és a ciklusban
+    létezik temakorok_by_lang[language] nem üres lista, akkor azt
+    használja a közös temakorok helyett (nyelvspecifikus leckék).
     """
     grade_num = parse_grade(grade)
     cycle = loe_cycle_for_grade(grade_num)
@@ -1388,7 +1392,17 @@ def extract_loe_topic_catalog(
     cval = ciklusok.get(cycle)
     if not isinstance(cval, dict):
         return []
-    temakorok = cval.get("temakorok") or []
+
+    # Nyelvspecifikus leckék (pl. extranjera + angol):
+    lang_specific: list[dict[str, Any]] | None = None
+    if language:
+        by_lang = cval.get("temakorok_by_lang", {})
+        if isinstance(by_lang, dict):
+            candidates = by_lang.get(language)
+            if isinstance(candidates, list) and len(candidates) > 0:
+                lang_specific = candidates
+
+    temakorok = lang_specific if lang_specific is not None else (cval.get("temakorok") or [])
     if not isinstance(temakorok, list):
         return []
     catalog: list[dict[str, Any]] = []
@@ -1518,7 +1532,7 @@ def get_curriculum_for_chat(
         )
         if loe.get("curriculum_body"):
             loe_catalog = extract_loe_topic_catalog(
-                loe.get("data", {}), grade_num
+                loe.get("data", {}), grade_num, language=effective_language,
             )
             logger.warning(
                 "get_curriculum_for_chat LOE branch: topic_catalog_len=%s",
