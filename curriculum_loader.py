@@ -541,6 +541,12 @@ def _resolve_hu_subject_file(
             "language": "nemet",
             "label": "Német",
         }
+    elif key in ("francia",):
+        result = {
+            "file": _elo_idegen_filename_for_grade(grade_num),
+            "language": "francia",
+            "label": "Francia",
+        }
     elif key in ("spanyol",):
         result = {
             "file": SPANYOL_1_4_FILE if band_1_4 else SPANYOL_5_8_FILE,
@@ -1388,13 +1394,16 @@ def extract_loe_topic_catalog(
     catalog: list[dict[str, Any]] = []
     for idx, item in enumerate(temakorok):
         if isinstance(item, dict) and item.get("nev"):
+            raw = str(item.get("javasolt_oraszam", "0"))
+            m = re.search(r"\d+", raw)
+            ora_szam = int(m.group()) if m else 0
             catalog.append(
                 {
                     "id": f"t{idx}",
                     "name": str(item["nev"]),
                     "text": str(item.get("teljes_szoveg", "")),
                     "index": idx,
-                    "ora_szam": 0,
+                    "ora_szam": ora_szam,
                 }
             )
     return catalog
@@ -1625,6 +1634,8 @@ def get_curriculum_for_chat(
             subject_name = "Angol"
         elif effective_language == "nemet":
             subject_name = "Német"
+        elif effective_language == "francia":
+            subject_name = "Francia"
         elif effective_language == "spanyol":
             subject_name = "Spanyol"
         logger.warning(

@@ -1629,6 +1629,7 @@ def _whisper_transcribe(
         "spanyol": "es",
         "angol": "en",
         "német": "de",
+        "francia": "fr",
         "hu": "hu",
     }
     whisper_lang = lang_map.get(language, "hu")
@@ -1637,6 +1638,7 @@ def _whisper_transcribe(
         "es": "Magyar és spanyol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, agua, kenyér, pan, alma, manzana, hola, szia.",
         "en": "Magyar és angol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, water, kenyér, bread, apple, alma, hello, szia.",
         "de": "Magyar és német kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, Wasser, kenyér, Brot, Apfel, alma, hallo, szia.",
+        "fr": "Magyar és francia kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, eau, kenyér, pain, pomme, alma, bonjour, szia.",
         "hu": "Magyar gyerek beszél. Iskolai szavak: igen, nem, nem tudom, víz, alma, kutya, cica, egy, kettő, három.",
     }
     whisper_prompt = prompts.get(whisper_lang, prompts["hu"])
@@ -2343,7 +2345,7 @@ def child_chat(child_id: int):
     ).strip()
     is_foreign = (
         is_elo_idegen_subject(subject_raw)
-        or subject_raw.lower() in ("angol", "nemet", "spanyol", "idegen nyelv", "élő idegen nyelv")
+        or subject_raw.lower() in ("angol", "nemet", "francia", "spanyol", "idegen nyelv", "élő idegen nyelv")
         or subject_raw.lower() == "extranjera"  # ES (LOMLOE) idegen nyelv
     )
     if not is_foreign:
