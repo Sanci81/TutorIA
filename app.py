@@ -1460,10 +1460,10 @@ def _chat_load_curriculum(
 
 _CHAT_LANGUAGES = frozenset({"angol", "nemet", "spanyol", "francia"})
 _CHAT_LANGUAGE_DISPLAY = {
-    "angol": "Angol",
-    "nemet": "Német",
-    "spanyol": "Spanyol",
-    "francia": "Francia",
+    "angol":   {"hu": "Angol",   "es": "Inglés"},
+    "nemet":   {"hu": "Német",   "es": "Alemán"},
+    "spanyol": {"hu": "Spanyol", "es": "Español"},
+    "francia": {"hu": "Francia", "es": "Francés"},
 }
 
 
@@ -1473,10 +1473,13 @@ def _normalize_chat_language(language: str | None) -> str:
 
 
 def _display_language_name(language: str | None) -> str:
-    """nemet → Német, angol → Angol, spanyol → Spanyol (Jinja2 filter)."""
-    return _CHAT_LANGUAGE_DISPLAY.get(
-        (language or "").strip().lower(), (language or "").capitalize()
-    )
+    """nemet → Német / Alemán, angol → Angol / Inglés (g.lang szerint)."""
+    slug = (language or "").strip().lower()
+    entry = _CHAT_LANGUAGE_DISPLAY.get(slug)
+    if entry:
+        ui_lang = g.get("lang", "hu") if g else "hu"
+        return entry.get(ui_lang, entry.get("hu", slug))
+    return (language or "").capitalize()
 
 
 @app.template_filter("display_language")
@@ -2269,12 +2272,8 @@ def _chat_subject_label(
         subject_label = subject_ui_label(subject_file, g.lang, child_curr)
     subject_label = chat_curriculum.get("subject_name", subject_label)
     lang = _normalize_chat_language(language)
-    if lang == "angol":
-        return "Angol"
-    if lang == "nemet":
-        return "Német"
-    if lang == "spanyol":
-        return "Spanyol"
+    if lang in _CHAT_LANGUAGES:
+        return _display_language_name(lang)
     return subject_label
 
 
