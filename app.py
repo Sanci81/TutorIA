@@ -1885,6 +1885,11 @@ def _build_chat_system_prompt(
         "NINCS BETÖLTÖTT KERETTANTERV – kérd a szülőtől a tananyag betöltését."
     )
     lang = _normalize_chat_language(teaching_language)
+    active_curr = _active_curriculum()   # "HU" vagy "ES"
+    es_curriculum = active_curr == "ES"
+    # A magyarázat nyelve az aktív tantervből (nem g.lang-ból):
+    # HU tanterv → magyar, ES tanterv → spanyol.
+    expl_lang = "spanyolul" if es_curriculum else "magyarul"
 
     prompt = _child_safety_block() + f"""Te egy kedves, türelmes, lelkesítő AI tanár vagy.
 Tanítványod: {child["name"]}, {age} éves, {grade}. osztályos.
@@ -1902,13 +1907,19 @@ FONTOS SZABÁLYOK – MINDIG tartsd be:
    - Ha a gyerek teljesen offtopic kérdést tesz fel (pl. "hol vehetek játékot?", "mit főzzek?"): mondd kedvesen: "Erre most nem tudok válaszolni, de szívesen segítek a tanulásban! Folytassuk ott, ahol abbahagytuk." – majd folytasd a tanítást.
    - SOHA ne mondd hogy "Azt majd később tanuljuk!" – ez túl rideg, és lehet nem is tanulják mert nem a tantárgyhoz kapcsolódik.
 6. A {grade}. osztály a kerettanterv adott blokkjának egy konkrét éve — a fenti BLOKK-POZÍCIÓ alapján tanítsd, ne adj alacsonyabb blokkba tartozó feladatokat.
-7. MAGYAR NYELVŰSÉG: Minden mondatod nyelvtanilag helyes magyar legyen.
+"""
+
+    # A magyar nyelvűségi szabály csak HU tanterv esetén érvényes
+    if not es_curriculum:
+        prompt += """7. MAGYAR NYELVŰSÉG: Minden mondatod nyelvtanilag helyes magyar legyen.
    - Ügyelj a toldalékok pontos használatára (-ba/-be, -ban/-ben, -ra/-re, -ról/-ről, -nál/-nél, -ból/-ből stb.)
    - Tartsd be a magánhangzó-harmóniát (pl. házban, nem házben)
    - Kerüld a tükörfordításból adódó angolos szerkezeteket
    - A számoknál és mértékegységeknél is használj helyes egyeztetést
 
-TANÍTÁSI MÓDSZER – ÚGY taníts, mint egy igazi tanár az osztályteremben!
+"""
+
+    prompt += f"""TANÍTÁSI MÓDSZER – ÚGY taníts, mint egy igazi tanár az osztályteremben!
 
 ALAPSZABÁLY: A tanításod 80%-a MAGYARÁZAT, 20%-a KÉRDÉS. NE kérdezz folyton!
 
@@ -1944,20 +1955,22 @@ NYELVHASZNÁLAT:
 """
 
     if is_foreign_language and lang:
-        prompt += f"""- Ez idegen nyelv óra ({lang}). Magyarul magyarázz, de a tanított szavakat {lang}ul add meg.
+        native_lang = "spanyolul" if es_curriculum else "magyarul"
+        native_label = "spanyol" if es_curriculum else "magyar"
+        prompt += f"""- Ez idegen nyelv óra ({lang}). {expl_lang.capitalize()} magyarázz, de a tanított szavakat {lang}ul add meg.
 - Ha a gyerek {lang}ul ír/beszél, te is {lang}ul válaszolj.
-- Ha a gyerek magyarul ír/beszél, te is magyarul válaszolj.
-- SOHA ne állítsd hogy idegen nyelven mondott valamit, ha magyarul mondta!
+- Ha a gyerek {native_lang} ír/beszél, te is {native_lang} válaszolj.
+- SOHA ne állítsd hogy idegen nyelven mondott valamit, ha {native_lang} mondta!
 
 ⚠️ SZÓJEGYZÉK SZABÁLY — KÖTELEZŐ, KIVÉTEL NÉLKÜL:
 Minden egyes új {lang} szó tanításakor a válaszod VÉGÉRE írd oda ezt a markert:
-<VOCAB>magyar_szó={lang}_szó</VOCAB>
+<VOCAB>{native_label}_szó={lang}_szó</VOCAB>
 Példák:
-- ha "libro" szót tanítod → <VOCAB>könyv=libro</VOCAB>
-- ha "perro" szót tanítod → <VOCAB>kutya=perro</VOCAB>
-- ha "agua" szót tanítod → <VOCAB>víz=agua</VOCAB>
+{"- ha \"libro\" szót tanítod → <VOCAB>könyv=libro</VOCAB>" if not es_curriculum else "- ha \"apple\" szót tanítod → <VOCAB>manzana=apple</VOCAB>"}
+{"- ha \"perro\" szót tanítod → <VOCAB>kutya=perro</VOCAB>" if not es_curriculum else "- ha \"dog\" szót tanítod → <VOCAB>perro=dog</VOCAB>"}
+{"- ha \"agua\" szót tanítod → <VOCAB>víz=agua</VOCAB>" if not es_curriculum else "- ha \"water\" szót tanítod → <VOCAB>agua=water</VOCAB>"}
 Ha egy válaszban 3 új szót tanítasz, mindháromhoz kell marker:
-<VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB><VOCAB>szilva=ciruela</VOCAB>
+{"<VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB><VOCAB>szilva=ciruela</VOCAB>" if not es_curriculum else "<VOCAB>manzana=apple</VOCAB><VOCAB>pera=pear</VOCAB><VOCAB>ciruela=plum</VOCAB>"}
 Ez MINDEN válaszban KÖTELEZŐ ahol új szót tanítasz. Kihagyni TILOS!
 """
         if szokincs:
@@ -2001,7 +2014,7 @@ Jelenlegi témakör: {current_topic}
 
     if is_foreign_language and lang:
         prompt += f"""
-EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>magyar={lang}</VOCAB> markereket minden új szónál!
+EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket minden új szónál!
 """
 
     return prompt
