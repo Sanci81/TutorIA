@@ -63,7 +63,9 @@
                 {% endif %}
                 {% if chat_mode == 'voice' %}
                     <a class="chat-mode-toggle chat-mode-voice" href="{{ chat_switch_url if show_chat_switch else '#' }}">{{ t('chat_mode_voice') }}</a>
-                {% elif chat_mode == 'chat' %}
+                {% elif show_chat_switch %}
+                    <a class="chat-mode-toggle chat-mode-chat" href="{{ voice_switch_url }}">{{ t('chat_mode_chat') }}</a>
+                {% else %}
                     <span class="chat-mode-toggle chat-mode-chat">{{ t('chat_mode_chat') }}</span>
                 {% endif %}
             </div>

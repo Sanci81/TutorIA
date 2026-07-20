@@ -907,26 +907,28 @@ def get_or_create_chat_session(
     language: str = "",
     topic_id: str = "",
     curriculum_position: dict | None = None,
+    force_new: bool = False,
 ) -> dict[str, Any]:
     lang_key = (language or "").strip().lower()
     tpid = topic_id.strip() if topic_id else ""
     db = _session()
     try:
-        row = db.scalar(
-            select(ChatSession)
-            .where(
-                ChatSession.child_id == child_id,
-                ChatSession.subject == subject,
-                ChatSession.language == lang_key,
-                ChatSession.topic_id == tpid,
+        if not force_new:
+            row = db.scalar(
+                select(ChatSession)
+                .where(
+                    ChatSession.child_id == child_id,
+                    ChatSession.subject == subject,
+                    ChatSession.language == lang_key,
+                    ChatSession.topic_id == tpid,
+                )
+                .order_by(ChatSession.created_at.desc())
             )
-            .order_by(ChatSession.created_at.desc())
-        )
-        if row:
-            if curriculum_position and row.curriculum_position != curriculum_position:
-                row.curriculum_position = curriculum_position
-                db.commit()
-            return _chat_session_dict(row)
+            if row:
+                if curriculum_position and row.curriculum_position != curriculum_position:
+                    row.curriculum_position = curriculum_position
+                    db.commit()
+                return _chat_session_dict(row)
 
         row = ChatSession(
             child_id=child_id,

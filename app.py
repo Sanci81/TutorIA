@@ -1600,10 +1600,17 @@ def _resolve_current_topic_id(
     return catalog[0]["id"]
 
 
-def _topic_teaching_prompt_block(topic: dict | None) -> str:
+def _topic_teaching_prompt_block(topic: dict | None, *, es_curriculum: bool = False) -> str:
     if not topic:
         return ""
     text = (topic.get("text") or "")[:12000]
+    if es_curriculum:
+        return (
+            f"\n\nAhora estáis en el siguiente tema: {topic.get('name', '')}.\n"
+            f"Contenido curricular del tema:\n{text}\n"
+            "Enséñale al niño paso a paso a partir de este contenido, "
+            "y ofrécele el test cuando creas que está preparado (o si el niño lo pide).\n"
+        )
     return (
         f"\n\nMost a következő témán vagytok: {topic.get('name', '')}.\n"
         f"Témakör tananyaga (kerettanterv):\n{text}\n"
@@ -1891,6 +1898,116 @@ def _build_chat_system_prompt(
     # HU tanterv → magyar, ES tanterv → spanyol.
     expl_lang = "spanyolul" if es_curriculum else "magyarul"
 
+    # ── ES tanterv + idegen nyelv óra → TELJES prompt spanyolul ──
+    if es_curriculum and is_foreign_language and lang:
+        native_lang = "spanyolul"
+        native_label = "spanyol"
+        prompt = _child_safety_block() + f"""Eres un profesor de IA amable, paciente y motivador.
+Tu alumno: {child["name"]}, {age} años, {grade}º curso.
+Asignatura: {subject_label}
+Tema actual: {current_topic}
+
+REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
+1. Enseña SOLO a partir del contenido curricular de abajo. Nada más.
+2. NUNCA uses formato: ni ###, ni **, ni nombres de pasos numerados (ej. PROHIBIDO: "1. PRESENTACIÓN:").
+3. Habla con un tono natural, cercano y humano. Frases cortas. Sí puedes usar emojis. 😊
+4. Si responde bien: felicítale. Si responde mal: ayúdale con pistas, no des la respuesta directamente.
+5. El tema actual es el foco principal, pero SÉ FLEXIBLE:
+   - Si el niño hace una pregunta relacionada con el tema: responde brevemente, de forma útil.
+   - Si el niño hace una pregunta de tipo intelectual/escolar pero fuera del temario (ej. "¿qué significa esta palabra?", "¿cómo se escribe?"): responde en 1-2 frases y luego vuelve al tema.
+   - Si el niño hace una pregunta completamente fuera de tema (ej. "¿dónde puedo comprar un juguete?", "¿qué cocino?"): di amablemente: "Ahora no puedo responder a eso, ¡pero estaré encantado de ayudarte con el estudio! Sigamos donde lo dejamos." – y continúa enseñando.
+   - NUNCA digas "Eso lo aprenderemos más tarde" – es demasiado frío y puede que ni siquiera lo estudien porque no está relacionado con la asignatura.
+6. El {grade}º curso es un año concreto del bloque curricular correspondiente — enseña según la POSICIÓN DE BLOQUE indicada arriba, no des tareas de bloques inferiores.
+7. CORRECCIÓN GRAMATICAL ESPAÑOLA: Todas tus frases deben ser en español gramaticalmente correcto.
+   - Usa un lenguaje natural, como hablaría un profesor español nativo.
+   - Evita estructuras calcadas de otros idiomas.
+   - Revisa mentalmente cada frase antes de escribirla: debe sonar natural y correcta.
+
+MÉTODO DE ENSEÑANZA – ¡Enseña como un profesor de verdad en el aula!
+
+REGLA BÁSICA: Tu enseñanza es 80% EXPLICACIÓN, 20% PREGUNTAS. ¡NO preguntes constantemente!
+
+PRIMER MENSAJE DE UN TEMA NUEVO (empieza siempre así):
+1. Saluda al niño y dile QUÉ vais a aprender hoy (1 frase).
+2. Enseña 3-4 cosas nuevas A LA VEZ (palabra / regla / concepto – según lo que contenga el currículo).
+3. Explica CADA cosa nueva: qué significa, cómo se usa.
+4. Para CADA cosa nueva, da 1 FRASE DE EJEMPLO realista.
+5. SOLO AL FINAL haz UNA sola pregunta sencilla sobre el material nuevo.
+
+MENSAJES SIGUIENTES:
+- Si respondió bien: felicítale, luego enseña otras 2-3 cosas igual (explicación + ejemplo), y solo pregunta al final.
+- Si respondió mal: vuelve a explicarlo con OTRAS palabras, da un nuevo ejemplo, y solo después vuelve a preguntar.
+- ¡NUNCA preguntes algo que no hayas enseñado antes!
+- ¡NUNCA preguntes 2 veces seguidas sobre lo mismo – sigue enseñando!
+
+EJEMPLO DE CÓMO EMPEZAR UN TEMA NUEVO (inglés "School objects – Objetos escolares"):
+"¡Hola! Hoy vamos a aprender los nombres de los objetos escolares en inglés. 📚
+
+Primero aprendemos 4 palabras importantes:
+- book = libro. Por ejemplo: 'I have a book' (Tengo un libro).
+- pencil = lápiz. Por ejemplo: 'My pencil is blue' (Mi lápiz es azul).
+- backpack = mochila. Por ejemplo: 'The backpack is big' (La mochila es grande).
+- desk = escritorio. Por ejemplo: 'The book is on the desk' (El libro está en el escritorio).
+
+Fíjate: en inglés no hay género como en español, decimos 'a' o 'the' para todos los objetos.
+
+¡Ahora te toca a ti! ¿Cómo se dice 'libro' en inglés?"
+
+ESTE es el estilo modelo para TODAS las asignaturas y TODOS los temas.
+
+USO DE IDIOMAS:
+- Esto es una clase de idioma extranjero ({lang}). Explica en español, pero da las palabras enseñadas en {lang}.
+- Si el niño escribe/habla en {lang}, tú también respondes en {lang}.
+- Si el niño escribe/habla en español, tú también respondes en español.
+- ¡NUNCA digas que dijo algo en otro idioma si lo dijo en español!
+
+⚠️ REGLA DE VOCABULARIO — OBLIGATORIA, SIN EXCEPCIONES:
+Cada vez que enseñes una nueva palabra en {lang}, escribe al FINAL de tu respuesta este marcador:
+<VOCAB>palabra_español=palabra_{lang}</VOCAB>
+Ejemplos:
+{"- si enseñas la palabra \"libro\" → <VOCAB>libro=book</VOCAB>" if lang == "angol" and not es_curriculum else "- si enseñas \"apple\" → <VOCAB>manzana=apple</VOCAB>"}
+{"- si enseñas \"perro\" → <VOCAB>perro=dog</VOCAB>" if lang == "angol" and not es_curriculum else "- si enseñas \"dog\" → <VOCAB>perro=dog</VOCAB>"}
+{"- si enseñas \"agua\" → <VOCAB>agua=water</VOCAB>" if lang == "angol" and not es_curriculum else "- si enseñas \"water\" → <VOCAB>agua=water</VOCAB>"}
+Si en una respuesta enseñas 3 palabras nuevas, necesitas 3 marcadores:
+<VOCAB>manzana=apple</VOCAB><VOCAB>pera=pear</VOCAB><VOCAB>ciruela=plum</VOCAB>
+¡Esto es OBLIGATORIO en CADA respuesta donde enseñes una palabra nueva! ¡PROHIBIDO omitirlo!
+"""
+        if szokincs:
+            prompt += f"""
+PALABRAS A ENSEÑAR EN ESTA LECCIÓN (enseña solo estas y márcalas con VOCAB):
+{chr(10).join(f'- {szo}' for szo in szokincs)}
+Debes enseñar todas las palabras anteriores en esta lección. ¡Si el niño pregunta por ellas, incluye siempre el marcador <VOCAB>!
+"""
+
+        prompt += f"""
+POSICIÓN DE BLOQUE EN EL CURRÍCULO (OBLIGATORIO tenerlo en cuenta):
+{_grade_block_context(grade)}
+
+CONTENIDO CURRICULAR ({grade}º curso, {current_topic}):
+{curriculum_body}
+
+Tema actual: {current_topic}
+"""
+
+        if completed_topics:
+            prompt += f"Temas ya completados: {', '.join(completed_topics)}\n"
+
+        if level == 0:
+            prompt += (
+                "\nMODO EVALUACIÓN DE NIVEL: Haz 5 preguntas divertidas del material, "
+                "luego indica: <LEVEL:X> (X=1-5).\n"
+            )
+
+        prompt += (
+            "\nSi un tema está claramente completado (oculto): <TOPIC_COMPLETE>\n"
+        )
+
+        prompt += f"""
+RECORDATORIO: ¡No olvides los marcadores <VOCAB>palabra_español=palabra_{lang}</VOCAB> para cada palabra nueva!
+"""
+        return prompt
+
+    # ── HU tanterv vagy ES tanterv nem-idegennyelv tantárgy → magyar prompt ──
     prompt = _child_safety_block() + f"""Te egy kedves, türelmes, lelkesítő AI tanár vagy.
 Tanítványod: {child["name"]}, {age} éves, {grade}. osztályos.
 Tantárgy: {subject_label}
@@ -2266,6 +2383,35 @@ def _call_ai_for_chat(
     return (response.choices[0].message.content or "").strip()
 
 
+# ── Magyar szöveg detektáló ──────────────────────────────────────────────────
+# Segítségével kiszűrjük a régi session-ökből a magyar history-t, amikor
+# ES tanterv + idegen nyelv óra alatt spanyolul kellene válaszolnia az AI-nak.
+# A magyar history elnyomná a spanyol rendszerpromptot (az AI a history nyelvét
+# követi), ezért ilyenkor üres history-t használunk a generáláshoz.
+_HU_DETECT_WORDS: set[str] = {
+    "hogy", "akkor", "most", "itt", "ott", "persze", "ugye", "kérlek",
+    "szia", "sziasztok", "vagyok", "leszek", "tudom", "tudod", "bizony",
+    "tetszik", "szerintem", "nekem", "neked", "vele", "róla", "rólad",
+    "belőle", "miatt", "miattam", "egyáltalán", "természetesen",
+}
+
+
+def _messages_have_hungarian(
+    messages: list[dict[str, str]], *, min_hits: int = 3
+) -> bool:
+    """Visszaadja True-t, ha bármelyik assistant üzenet magyar nyelvűnek tűnik."""
+    if not messages:
+        return False
+    for msg in messages:
+        if msg.get("role") != "assistant":
+            continue
+        content = (msg.get("content") or "").lower()
+        hits = sum(1 for w in _HU_DETECT_WORDS if w in content)
+        if hits >= min_hits:
+            return True
+    return False
+
+
 def _chat_initial_assistant_message(
     child_name: str, subject_label: str, *, placement: bool, lang: str = "hu"
 ) -> str:
@@ -2498,6 +2644,25 @@ def child_chat(child_id: int):
     )
 
     messages = database.get_chat_messages(chat_session["id"], limit=20)
+
+    # ── ES tanterv + idegen nyelv + régi magyar history → friss session ──
+    # A régi magyar üzenetek a spanyol rendszerpromptot elnyomnák.
+    # Új session-t indítunk, hogy tiszta lappal kezdjen az AI.
+    if active_curriculum == "ES" and is_foreign and language and _messages_have_hungarian(messages):
+        logger.warning(
+            "child_chat: Hungarian history in ES foreign lang session %s "
+            "(child=%s, lang=%s), forcing fresh session",
+            chat_session["id"], child_id, language,
+        )
+        chat_session = database.get_or_create_chat_session(
+            child_id,
+            subject,
+            language=language,
+            topic_id=current_topic_id,
+            force_new=True,
+        )
+        messages = []
+
     placement_mode = progress.get("level", 0) == 0
     active_curr = _active_curriculum()      # "HU" vagy "ES"
 
@@ -2533,6 +2698,11 @@ def child_chat(child_id: int):
         chat_switch_params["language"] = language
     chat_switch_url = url_for("child_chat", **chat_switch_params)
 
+    voice_switch_params = {"child_id": child_id, "subject": subject, "mode": "voice"}
+    if language:
+        voice_switch_params["language"] = language
+    voice_switch_url = url_for("child_chat", **voice_switch_params)
+
     learning_today = database.get_learning_time_today(child_id, subject)
     attempts = progress.get("early_placement_attempts", 0)
     if attempts < 3:
@@ -2563,6 +2733,7 @@ def child_chat(child_id: int):
         chat_profile=chat_profile,
         effective_age=effective_age,
         chat_switch_url=chat_switch_url,
+        voice_switch_url=voice_switch_url,
         show_chat_switch=chat_profile != _CHAT_PROFILE_VOICE_ONLY,
         learning_today=learning_today,
         show_early_test=show_early_test,
@@ -2662,11 +2833,23 @@ def child_chat_send(child_id: int):
         teaching_language=teaching_language,
         szokincs=current_topic_item.get("szokincs") if is_foreign and current_topic_item else None,
     )
-    system_prompt += _topic_teaching_prompt_block(current_topic_item)
+    system_prompt += _topic_teaching_prompt_block(current_topic_item, es_curriculum=_active_curriculum() == "ES")
     if chat_mode == "voice":
         system_prompt += _voice_mode_prompt_block(_child_effective_age(child))
 
     history = database.get_chat_messages(session_id, limit=20)
+
+    # ── ES tanterv + idegen nyelv + régi magyar history → üres history a generáláshoz ──
+    # A magyar history elnyomná a spanyol rendszerpromptot, mert az AI a history
+    # nyelvét követi. Ilyenkor a DB session marad (nem törlünk), de a generáláshoz
+    # nem adjuk oda a régi magyar üzeneteket.
+    if _active_curriculum() == "ES" and is_foreign and language and _messages_have_hungarian(history):
+        logger.warning(
+            "child_chat_send: Hungarian history detected in ES foreign lang "
+            "session %s (child=%s, lang=%s), filtering history for generation",
+            session_id, child_id, language,
+        )
+        history = []
     database.add_chat_message(session_id, "user", user_text)
 
     try:
