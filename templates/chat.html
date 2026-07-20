@@ -218,6 +218,7 @@
         quizAttemptsLeftFmt: {{ t('quiz_attempts_left_fmt')|tojson }},
         quizStudyMoreFmt: {{ t('quiz_study_more_fmt')|tojson }},
         quizStudy60Retry: {{ t('quiz_study_60_retry')|tojson }},
+        gateRetryHint: {{ t('gate_retry_hint')|tojson }},
         timeAboutHoursFmt: {{ t('time_about_hours_fmt')|tojson }},
         timeHoursMinutesFmt: {{ t('time_hours_minutes_fmt')|tojson }},
         timeMinutesFmt: {{ t('time_minutes_fmt')|tojson }},
@@ -902,11 +903,26 @@
             .then(function (res) {
                 if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
                 if (res.data && res.data.ok === false) {
-                    alert(res.data.message || L.quizCreateFailed);
+                    var resultBoxClass = (res.data.reason === 'attempts_exhausted')
+                        ? 'result-box result-fail'
+                        : 'result-box result-pass';
+                    testBody.hidden = true;
+                    testResult.hidden = false;
+                    testResult.innerHTML =
+                        '<div class="' + resultBoxClass + '">' +
+                        escapeHtml(res.data.message) + '</div>' +
+                        '<p class="result-hint">' +
+                        escapeHtml(L.gateRetryHint) + '</p>';
+                    testOverlay.hidden = false;
                     return;
                 }
                 if (!res.ok || !res.data.questions || !res.data.questions.length) {
-                    alert(L.quizCreateFailed);
+                    testBody.hidden = true;
+                    testResult.hidden = false;
+                    testResult.innerHTML =
+                        '<div class="result-box result-fail">' +
+                        escapeHtml(L.quizCreateFailed) + '</div>';
+                    testOverlay.hidden = false;
                     return;
                 }
                 showQuiz(res.data.questions, res.data.topic_name || currentTopicName);
@@ -914,7 +930,12 @@
             })
             .catch(function () {
                 if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
-                alert(L.errNetwork);
+                testBody.hidden = true;
+                testResult.hidden = false;
+                testResult.innerHTML =
+                    '<div class="result-box result-fail">' +
+                    escapeHtml(L.errNetwork) + '</div>';
+                testOverlay.hidden = false;
             });
     }
 

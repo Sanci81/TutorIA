@@ -1472,12 +1472,17 @@ def _normalize_chat_language(language: str | None) -> str:
     return lang if lang in _CHAT_LANGUAGES else ""
 
 
-def _display_language_name(language: str | None) -> str:
-    """nemet → Német / Alemán, angol → Angol / Inglés (g.lang szerint)."""
+def _display_language_name(language: str | None, *, ui_lang: str | None = None) -> str:
+    """nemet → Német / Alemán, angol → Angol / Inglés.
+
+    ui_lang explicit megadása esetén azt használja (pl. "hu" / "es"),
+    egyébként g.lang-ból számolja (fallback: "hu").
+    """
     slug = (language or "").strip().lower()
     entry = _CHAT_LANGUAGE_DISPLAY.get(slug)
     if entry:
-        ui_lang = g.get("lang", "hu") if g else "hu"
+        if ui_lang is None:
+            ui_lang = g.get("lang", "hu") if g else "hu"
         return entry.get(ui_lang, entry.get("hu", slug))
     return (language or "").capitalize()
 
@@ -2267,15 +2272,18 @@ def _chat_subject_label(
     *,
     language: str | None = None,
 ) -> str:
+    child_curr = _active_curriculum()
     if g.lang == "hu":
         subject_label = _display_subject_name(subject_file)
     else:
-        child_curr = _active_curriculum()
         subject_label = subject_ui_label(subject_file, g.lang, child_curr)
     subject_label = chat_curriculum.get("subject_name", subject_label)
     lang = _normalize_chat_language(language)
     if lang in _CHAT_LANGUAGES:
-        return _display_language_name(lang)
+        # Az aktív tantervből (ES/HU) származtatjuk a megjelenítési nyelvet,
+        # NEM g.lang-ból, így az üdvözlés és a fejléc mindig egyezik.
+        ui_lang = "es" if child_curr == "ES" else "hu"
+        return _display_language_name(lang, ui_lang=ui_lang)
     return subject_label
 
 
@@ -2487,18 +2495,21 @@ def child_chat(child_id: int):
         )
         database.add_chat_message(chat_session["id"], "assistant", welcome)
         messages = database.get_chat_messages(chat_session["id"], limit=20)
-    elif active_curr == "ES" and messages:
+    elif messages:
         first_assistant = next(
             (m for m in messages if m["role"] == "assistant"), None
         )
-        if first_assistant and ("Szia" in first_assistant["content"]):
-            welcome = _chat_initial_assistant_message(
-                child["name"], subject_label, placement=placement_mode, lang="es"
+        if first_assistant:
+            welcome_expected = _chat_initial_assistant_message(
+                child["name"], subject_label, placement=placement_mode,
+                lang="es" if active_curr == "ES" else "hu",
             )
-            database.replace_first_assistant_message(
-                chat_session["id"], welcome
-            )
-            messages = database.get_chat_messages(chat_session["id"], limit=20)
+            stored = first_assistant["content"].strip()
+            if stored != welcome_expected.strip():
+                database.replace_first_assistant_message(
+                    chat_session["id"], welcome_expected
+                )
+                messages = database.get_chat_messages(chat_session["id"], limit=20)
 
     vocabulary = []
     if is_foreign and language:

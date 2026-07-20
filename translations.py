@@ -368,16 +368,20 @@ TRANSLATIONS = {
     "test_gate_attempts_exhausted": {
         "hu": "Már háromszor próbálkoztál ezzel a szintfelmérővel. "
              "Tanuld végig a leckét, és a végén jön a leckezáró — ott újra "
-             "megmutathatod, mit tudsz! 💪",
+             "megmutathatod, mit tudsz!",
         "es": "Ya lo has intentado tres veces con esta evaluación inicial. "
-             "¡Estudia la lección completa y al final tendrás la prueba de "
-             "cierre, donde podrás demostrar lo que sabes! 💪",
+             "Estudia la lección completa y al final tendrás la prueba de "
+             "cierre, donde podrás demostrar lo que sabes!",
     },
     "test_gate_study_more": {
         "hu": "Mielőtt újra próbálod, tanulj még kb. {minutes} percet ebben "
-             "a témakörben! 📚",
-        "es": "Antes de volver a intentarlo, ¡estudia unos {minutes} minutos "
-             "más en este tema! 📚",
+             "a témakörben!",
+        "es": "Antes de volver a intentarlo, estudia unos {minutes} minutos "
+             "mas en este tema!",
+    },
+    "gate_retry_hint": {
+        "hu": "Zárd be ezt az ablakot, tanulj, és térj vissza később!",
+        "es": "Cierra esta ventana, estudia y vuelve mas tarde!",
     },
     # --- teszt eredmény: hibalista ---
     "review_title": {"hu": "Eredmények áttekintése", "es": "Resumen de resultados"},
