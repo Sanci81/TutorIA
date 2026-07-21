@@ -1673,7 +1673,7 @@ def _whisper_transcribe(
     buf = io.BytesIO(audio_bytes)
     buf.name = filename if "." in filename else f"{filename}.webm"
     transcription = client.audio.transcriptions.create(
-        model="whisper-1",
+        model="gpt-4o-mini-transcribe",
         file=buf,
         prompt=whisper_prompt,
     )
