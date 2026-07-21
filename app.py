@@ -1493,10 +1493,11 @@ def display_language_filter(value: str) -> str:
 
 
 def _chat_progress_subject(subject: str, language: str | None) -> str:
-    """Haladás / teszt pontok: tantárgy + nyelv külön scope."""
+    """Haladás / teszt pontok: tantárgy + nyelv + TANTERV külön scope."""
     subj = (subject or "").strip()
     lang = _normalize_chat_language(language)
-    return f"{subj}::{lang}" if lang else subj
+    base = f"{subj}::{lang}" if lang else subj
+    return f"{base}@{_active_curriculum()}"
 
 
 def _chat_bind_flask_session(
@@ -1630,7 +1631,8 @@ Ne tegyél fel egyszerre több kérdést.
 
 
 def _whisper_transcribe(
-    audio_bytes: bytes, filename: str = "audio.webm", language: str = "hu"
+    audio_bytes: bytes, filename: str = "audio.webm", language: str = "hu",
+    frame: str = "hu",
 ) -> str:
     api_key = _openai_api_key()
     if not api_key:
@@ -1646,14 +1648,26 @@ def _whisper_transcribe(
     }
     whisper_lang = lang_map.get(language, "hu")
 
-    prompts = {
-        "es": "Magyar és spanyol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, agua, kenyér, pan, alma, manzana, hola, szia.",
-        "en": "Magyar és angol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, water, kenyér, bread, apple, alma, hello, szia.",
-        "de": "Magyar és német kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, Wasser, kenyér, Brot, Apfel, alma, hallo, szia.",
-        "fr": "Magyar és francia kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, eau, kenyér, pain, pomme, alma, bonjour, szia.",
-        "hu": "Magyar gyerek beszél. Iskolai szavak: igen, nem, nem tudom, víz, alma, kutya, cica, egy, kettő, három.",
+    prompts_by_frame = {
+        "hu": {
+            "es": "Magyar és spanyol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, agua, kenyér, pan, alma, manzana, hola, szia.",
+            "en": "Magyar és angol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, water, kenyér, bread, apple, alma, hello, szia.",
+            "de": "Magyar és német kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, Wasser, kenyér, Brot, Apfel, alma, hallo, szia.",
+            "fr": "Magyar és francia kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, eau, kenyér, pain, pomme, alma, bonjour, szia.",
+            "hu": "Magyar gyerek beszél. Iskolai szavak: igen, nem, nem tudom, víz, alma, kutya, cica, egy, kettő, három.",
+        },
+        "es": {
+            "en": "Un niño hispanohablante practica inglés. Habla en español con algunas palabras en inglés. Ejemplos: sí, no, no sé, hola, agua, water, pan, bread, manzana, apple, this, that, yes, no.",
+            "de": "Un niño hispanohablante practica alemán. Habla en español con algunas palabras en alemán. Ejemplos: sí, no, no sé, hola, agua, Wasser, pan, Brot, manzana, Apfel, ja, nein.",
+            "fr": "Un niño hispanohablante practica francés. Habla en español con algunas palabras en francés. Ejemplos: sí, no, no sé, hola, agua, eau, pan, pain, manzana, pomme, oui, non.",
+            "es": "Un niño habla en español. Palabras escolares: sí, no, no sé, agua, manzana, perro, gato, uno, dos, tres.",
+        },
     }
-    whisper_prompt = prompts.get(whisper_lang, prompts["hu"])
+    frame_prompts = prompts_by_frame.get(frame, prompts_by_frame["hu"])
+    whisper_prompt = frame_prompts.get(
+        whisper_lang,
+        frame_prompts.get("es" if frame == "es" else "hu"),
+    )
 
     client = _openai_client(api_key, request_timeout=60.0)
     buf = io.BytesIO(audio_bytes)
@@ -1670,7 +1684,9 @@ def _whisper_transcribe(
         "www.", "http", "♪", "[ silence ]", "[silence]"
     )
     if any(h in result.lower() for h in _WHISPER_HALLUCINATIONS):
+        print(f"[VOICE-DEBUG] frame={frame!r} whisper_lang={whisper_lang!r} raw={result!r} (hallucination filtered)", flush=True)
         return ""
+    print(f"[VOICE-DEBUG] frame={frame!r} whisper_lang={whisper_lang!r} raw={result!r}", flush=True)
     return result
 
 
@@ -1937,6 +1953,7 @@ PRIMER MENSAJE DE UN TEMA NUEVO (empieza siempre así):
 MENSAJES SIGUIENTES:
 - Si respondió bien: felicítale, luego enseña otras 2-3 cosas igual (explicación + ejemplo), y solo pregunta al final.
 - Si respondió mal: vuelve a explicarlo con OTRAS palabras, da un nuevo ejemplo, y solo después vuelve a preguntar.
+- Entrada de voz poco fiable: si la transcripción parece ininteligible, sin sentido o no guarda relación con la pregunta, NO la evalúes como respuesta incorrecta. Pide con amabilidad que lo repita, por ejemplo: «No te he entendido bien, ¿puedes repetirlo?».
 - ¡NUNCA preguntes algo que no hayas enseñado antes!
 - ¡NUNCA preguntes 2 veces seguidas sobre lo mismo – sigue enseñando!
 
@@ -2740,6 +2757,7 @@ def child_chat(child_id: int):
         progress=progress,
         coins=progress.get("coins", 0),
         streak_days=progress.get("streak_days", 0),
+        active_curriculum=active_curriculum,
     )
 
 
@@ -3520,8 +3538,11 @@ def api_voice_transcribe():
     if len(audio_bytes) < 1000:
         return jsonify({"error": "audio_too_short"}), 400
     language = (request.form.get("language") or "hu").strip().lower()
+    frame = (request.form.get("frame") or "hu").strip().lower()
+    if frame not in ("hu", "es"):
+        frame = "hu"
     try:
-        text = _whisper_transcribe(audio_bytes, upload.filename, language=language)
+        text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame)
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
     except Exception as exc:
