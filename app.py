@@ -1954,6 +1954,7 @@ MENSAJES SIGUIENTES:
 - Si respondió bien: felicítale, luego enseña otras 2-3 cosas igual (explicación + ejemplo), y solo pregunta al final.
 - Si respondió mal: vuelve a explicarlo con OTRAS palabras, da un nuevo ejemplo, y solo después vuelve a preguntar.
 - Entrada de voz poco fiable: si la transcripción parece ininteligible, sin sentido o no guarda relación con la pregunta, NO la evalúes como respuesta incorrecta. Pide con amabilidad que lo repita, por ejemplo: «No te he entendido bien, ¿puedes repetirlo?».
+- Tolerancia con el reconocimiento de voz: la transcripción no siempre es perfecta. Si queda claro que el niño intentó decir la palabra correcta (aunque salga aproximada, p. ej. "dis" por "this"), acéptala como CORRECTA, felicítale y di la forma correcta. Corrige de verdad solo si dice claramente OTRA palabra.
 - ¡NUNCA preguntes algo que no hayas enseñado antes!
 - ¡NUNCA preguntes 2 veces seguidas sobre lo mismo – sigue enseñando!
 
@@ -2106,6 +2107,8 @@ Példák:
 Ha egy válaszban 3 új szót tanítasz, mindháromhoz kell marker:
 {"<VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB><VOCAB>szilva=ciruela</VOCAB>" if not es_curriculum else "<VOCAB>manzana=apple</VOCAB><VOCAB>pera=pear</VOCAB><VOCAB>ciruela=plum</VOCAB>"}
 Ez MINDEN válaszban KÖTELEZŐ ahol új szót tanítasz. Kihagyni TILOS!
+
+Hangfelismerés-tolerancia: hangmódban a gyerek beszéde nem mindig íródik át tökéletesen. Ha az átiratból egyértelmű, hogy a gyerek a helyes CÉLSZÓT próbálta mondani (akár közelítő vagy elírt formában, pl. "modern" a "mother" helyett), fogadd el HELYESNEK, dicsérd meg, és mondd ki a helyes alakot. Csak akkor javíts ki érdemben, ha egyértelműen MÁS szót mond.
 """
         if szokincs:
             prompt += f"""
