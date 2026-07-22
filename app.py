@@ -1648,25 +1648,10 @@ def _whisper_transcribe(
     }
     whisper_lang = lang_map.get(language, "hu")
 
-    prompts_by_frame = {
-        "hu": {
-            "es": "Magyar és spanyol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, agua, kenyér, pan, alma, manzana, hola, szia.",
-            "en": "Magyar és angol kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, water, kenyér, bread, apple, alma, hello, szia.",
-            "de": "Magyar és német kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, Wasser, kenyér, Brot, Apfel, alma, hallo, szia.",
-            "fr": "Magyar és francia kevert beszéd. Gyerek tanul. Szavak: igen, nem, nem tudom, víz, eau, kenyér, pain, pomme, alma, bonjour, szia.",
-            "hu": "Magyar gyerek beszél. Iskolai szavak: igen, nem, nem tudom, víz, alma, kutya, cica, egy, kettő, három.",
-        },
-        "es": {
-            "en": "Un niño hispanohablante practica inglés. Habla en español con algunas palabras en inglés. Ejemplos: sí, no, no sé, hola, agua, water, pan, bread, manzana, apple, this, that, yes, no.",
-            "de": "Un niño hispanohablante practica alemán. Habla en español con algunas palabras en alemán. Ejemplos: sí, no, no sé, hola, agua, Wasser, pan, Brot, manzana, Apfel, ja, nein.",
-            "fr": "Un niño hispanohablante practica francés. Habla en español con algunas palabras en francés. Ejemplos: sí, no, no sé, hola, agua, eau, pan, pain, manzana, pomme, oui, non.",
-            "es": "Un niño habla en español. Palabras escolares: sí, no, no sé, agua, manzana, perro, gato, uno, dos, tres.",
-        },
-    }
-    frame_prompts = prompts_by_frame.get(frame, prompts_by_frame["hu"])
-    whisper_prompt = frame_prompts.get(
-        whisper_lang,
-        frame_prompts.get("es" if frame == "es" else "hu"),
+    whisper_prompt = (
+        "Transcribe exactly what the child says, word for word. "
+        "The child may mix languages. Do not add, complete or invent words. "
+        "If there is no clear speech, return nothing."
     )
 
     client = _openai_client(api_key, request_timeout=60.0)
@@ -1678,6 +1663,12 @@ def _whisper_transcribe(
         prompt=whisper_prompt,
     )
     result = (transcription.text or "").strip()
+    _ECHO_WORDS = {"igen", "nem", "nem tudom", "víz", "water", "kenyér", "bread",
+                   "apple", "alma", "hello", "szia", "transcribe", "child", "says"}
+    _words = [w.strip(".,!?").lower() for w in result.split() if w.strip(".,!?")]
+    if len(_words) >= 4 and sum(1 for w in _words if w in _ECHO_WORDS) >= len(_words) * 0.8:
+        print(f"[VOICE-DEBUG] prompt-echo eldobva: {result!r}", flush=True)
+        return ""
     _WHISPER_HALLUCINATIONS = (
         "amara.org", "subtítulos realizados", "feliratok készítője",
         "translated by", "transcribed by", "iratkozz fel",
@@ -2882,6 +2873,7 @@ def child_chat_send(child_id: int):
         return jsonify({"error": "chat_failed", "detail": str(exc)}), 500
 
     reply, topic_done, level_set, vocab_pairs = _parse_chat_markers(raw_reply)
+    print(f"[VOCAB-DEBUG] is_foreign={is_foreign!r} language={language!r} pairs={vocab_pairs!r}", flush=True)
     database.add_chat_message(session_id, "assistant", reply)
 
     if is_foreign and language and vocab_pairs:
