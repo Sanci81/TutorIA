@@ -1949,6 +1949,7 @@ MENSAJES SIGUIENTES:
 - Tolerancia con el reconocimiento de voz: la transcripción no siempre es perfecta. Si queda claro que el niño intentó decir la palabra correcta (aunque salga aproximada, p. ej. "dis" por "this"), acéptala como CORRECTA, felicítale y di la forma correcta. Corrige de verdad solo si dice claramente OTRA palabra.
 - ¡NUNCA preguntes algo que no hayas enseñado antes!
 - ¡NUNCA preguntes 2 veces seguidas sobre lo mismo – sigue enseñando!
+- Tú diriges la clase, no el niño. En CADA respuesta ENSEÑA: di cuál es el siguiente paso, presenta 1-3 palabras o expresiones nuevas con una frase de ejemplo, y solo DESPUÉS haz una pregunta basada en ello. NUNCA preguntes al niño qué quiere aprender, y no encadenes preguntas sin enseñar.
 
 EJEMPLO DE CÓMO EMPEZAR UN TEMA NUEVO (inglés "School objects – Objetos escolares"):
 "¡Hola! Hoy vamos a aprender los nombres de los objetos escolares en inglés. 📚
@@ -2101,6 +2102,8 @@ Ha egy válaszban 3 új szót tanítasz, mindháromhoz kell marker:
 Ez MINDEN válaszban KÖTELEZŐ ahol új szót tanítasz. Kihagyni TILOS!
 
 Hangfelismerés-tolerancia: hangmódban a gyerek beszéde nem mindig íródik át tökéletesen. Ha az átiratból egyértelmű, hogy a gyerek a helyes CÉLSZÓT próbálta mondani (akár közelítő vagy elírt formában, pl. "modern" a "mother" helyett), fogadd el HELYESNEK, dicsérd meg, és mondd ki a helyes alakot. Csak akkor javíts ki érdemben, ha egyértelműen MÁS szót mond.
+
+Te vezeted az órát, nem a gyerek. Minden válaszodban TANÍTS: mondd meg, mi a következő lépés, mutass be 1-3 új szót vagy kifejezést példamondattal, és csak UTÁNA kérdezz egyet, ami arra épül. SOHA ne kérdezd meg a gyerektől, hogy mit szeretne tanulni, és ne csak kérdezgess egymás után — a kérdés a tanítást követi, nem helyettesíti.
 """
         if szokincs:
             prompt += f"""
@@ -2876,9 +2879,25 @@ def child_chat_send(child_id: int):
     reply, topic_done, level_set, vocab_pairs = _parse_chat_markers(raw_reply)
     marker_count = len(vocab_pairs)
     # ── Jelölőtől független tartalék: ha nincs VOCAB marker, de a témakör
-    #     szokincs-listájának célnyelvi szavai előfordulnak a válaszban ──
+    #     szokincs-listájának vagy VOCABULARIO szakaszának szavai előfordulnak
+    #     a válaszban ──
     if not vocab_pairs and is_foreign and language and current_topic_item:
         szokincs = current_topic_item.get("szokincs")
+        if not szokincs:
+            # BOE-alapú leckék (ES LOMLOE Extranjera): a VOCABULARIO szakaszból
+            # olvassuk ki a célnyelvi szavakat
+            text = current_topic_item.get("text", "")
+            m = re.search(r"VOCABULARIO\b[^:]*:\s*(.+)", text, re.IGNORECASE)
+            if m:
+                # "hello", "hi", "goodbye" → lista
+                raw_vocab = m.group(1)
+                szokincs = [
+                    w.strip().strip("'\"") for w in re.findall(
+                        r'"([^"]+)"|\'([^\']+)\'', raw_vocab
+                    )
+                ]
+                szokincs = [w[0] or w[1] for w in szokincs if w[0] or w[1]]
+                szokincs = list(dict.fromkeys(szokincs))  # egyedi, sorrend megtartva
         if szokincs:
             for szo_par in szokincs:
                 native, foreign = None, None
@@ -2889,6 +2908,11 @@ def child_chat_send(child_id: int):
                 elif isinstance(szo_par, dict):
                     native = szo_par.get("magyar") or szo_par.get("native", "")
                     foreign = szo_par.get("idegen") or szo_par.get("foreign", "")
+                elif isinstance(szo_par, str):
+                    # ES LOMLOE VOCABULARIO: csak célnyelvi szó,
+                    # (célnyelvi_szó, célnyelvi_szó) párt készítünk
+                    foreign = szo_par.strip()
+                    native = foreign
                 if native and foreign:
                     pattern = re.compile(r"\b" + re.escape(foreign) + r"\b", re.IGNORECASE)
                     if pattern.search(reply):
