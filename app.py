@@ -2873,7 +2873,7 @@ def child_chat_send(child_id: int):
         return jsonify({"error": "chat_failed", "detail": str(exc)}), 500
 
     reply, topic_done, level_set, vocab_pairs = _parse_chat_markers(raw_reply)
-    print(f"[VOCAB-DEBUG] is_foreign={is_foreign!r} language={language!r} pairs={vocab_pairs!r}", flush=True)
+    print(f"[VOCAB-DEBUG] is_foreign={is_foreign!r} language={language!r} pairs={vocab_pairs!r} tail={raw_reply[-250:]!r}", flush=True)
     database.add_chat_message(session_id, "assistant", reply)
 
     if is_foreign and language and vocab_pairs:
