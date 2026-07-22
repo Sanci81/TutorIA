@@ -2016,6 +2016,16 @@ Tema actual: {current_topic}
         prompt += f"""
 RECORDATORIO: ¡No olvides los marcadores <VOCAB>palabra_español=palabra_{lang}</VOCAB> para cada palabra nueva!
 """
+
+        prompt += f"""
+=== LAS 3 REGLAS MÁS IMPORTANTES (cúmplelas siempre) ===
+1. ENSEÑA, no preguntes sin más: en cada respuesta di qué viene ahora, presenta 1-3 palabras
+   o expresiones nuevas con una frase de ejemplo, y solo después haz UNA pregunta. Nunca
+   preguntes al niño qué quiere aprender.
+2. Por cada palabra nueva, al final de tu respuesta: <VOCAB>palabra_español=palabra_idioma</VOCAB>
+3. Sé tolerante con el reconocimiento de voz: si el niño claramente intentó decir la palabra
+   correcta, acéptala, felicítale y di la forma correcta.
+"""
         return prompt
 
     # ── HU tanterv vagy ES tanterv nem-idegennyelv tantárgy → magyar prompt ──
@@ -2147,6 +2157,14 @@ Jelenlegi témakör: {current_topic}
     if is_foreign_language and lang:
         prompt += f"""
 EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket minden új szónál!
+
+=== A 3 LEGFONTOSABB SZABÁLY (ezeket mindig tartsd be) ===
+1. TANÍTS, ne kérdezgess: minden válaszban mondd meg, mi következik, mutass be 1-3 új szót
+   vagy kifejezést példamondattal, és csak ezután tegyél fel EGY kérdést. Soha ne kérdezd
+   meg a gyerektől, hogy mit szeretne tanulni.
+2. Minden új szónál a válaszod végére: <VOCAB>magyar_szó=idegen_szó</VOCAB>
+3. Hangfelismerésnél légy megengedő: ha a gyerek nyilvánvalóan a jó szót próbálta mondani,
+   fogadd el helyesnek, dicsérd meg, és mondd ki a helyes alakot.
 """
 
     return prompt
