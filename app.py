@@ -436,7 +436,7 @@ KERETTANTERV ({grade_num}. osztály, {subject_label}):
     try:
         client = _openai_client(api_key, request_timeout=90.0)
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4.1-mini",
             response_format={"type": "json_object"},
             messages=[
                 {
@@ -745,7 +745,7 @@ def _call_ai_check_task_answer(
 
     client = _openai_client(api_key, request_timeout=45.0)
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4.1-mini",
         response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": system},
@@ -780,7 +780,7 @@ def test_openai():
 
         client = _openai_client(api_key, request_timeout=30.0)
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4.1-mini",
             messages=[{"role": "user", "content": "Say hello in one word."}],
             max_tokens=10,
         )
@@ -2286,7 +2286,7 @@ def _call_ai_for_quiz(
             'Devuelve SOLO este JSON: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
             "CRÍTICO: Cada opción debe ser una respuesta completa en español, nunca una sola letra."
         )
-        model = "gpt-4o-mini"
+        model = "gpt-4.1-mini"
         temperature = 0.5
         lang_display = "Spanish"
     else:
@@ -2309,7 +2309,7 @@ def _call_ai_for_quiz(
             'Return ONLY this JSON: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
             "CRITICAL: Every option must be a full meaningful Hungarian answer, never single letters."
         )
-        model = "gpt-4o-mini"
+        model = "gpt-4.1-mini"
         temperature = 0.5
 
     client = _openai_client(api_key, request_timeout=60.0)
@@ -2391,7 +2391,7 @@ def _call_ai_for_chat(
 
     client = _openai_client(api_key, request_timeout=60.0)
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-4.1-mini",
         messages=messages,
         temperature=0.7,
     )
@@ -2913,7 +2913,7 @@ def child_chat_send(child_id: int):
                     # (célnyelvi_szó, célnyelvi_szó) párt készítünk
                     foreign = szo_par.strip()
                     native = foreign
-                if native and foreign:
+                if native and foreign and native.strip().lower() != foreign.strip().lower():
                     pattern = re.compile(r"\b" + re.escape(foreign) + r"\b", re.IGNORECASE)
                     if pattern.search(reply):
                         vocab_pairs.append((native, foreign))
