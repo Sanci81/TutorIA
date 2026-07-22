@@ -1406,7 +1406,8 @@ def _normalize_chat_mode(mode: str | None, profile: str) -> str:
 _CHAT_MARKER_TOPIC = re.compile(r"<TOPIC_COMPLETE>", re.IGNORECASE)
 _CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
 _CHAT_MARKER_VOCAB = re.compile(
-    r"<VOCAB>\s*([^=]+?)\s*=\s*([^<]+?)\s*</VOCAB>", re.IGNORECASE
+    r"[<\[]\s*VOCAB\s*[>\]]\s*([^=\n<\[]+?)\s*=\s*([^<\[\n]+?)\s*(?:[<\[]\s*/\s*VOCAB\s*[>\]]|$)",
+    re.IGNORECASE | re.MULTILINE,
 )
 
 
@@ -2873,7 +2874,27 @@ def child_chat_send(child_id: int):
         return jsonify({"error": "chat_failed", "detail": str(exc)}), 500
 
     reply, topic_done, level_set, vocab_pairs = _parse_chat_markers(raw_reply)
-    print(f"[VOCAB-DEBUG] is_foreign={is_foreign!r} language={language!r} pairs={vocab_pairs!r} tail={raw_reply[-250:]!r}", flush=True)
+    marker_count = len(vocab_pairs)
+    # ── Jelölőtől független tartalék: ha nincs VOCAB marker, de a témakör
+    #     szokincs-listájának célnyelvi szavai előfordulnak a válaszban ──
+    if not vocab_pairs and is_foreign and language and current_topic_item:
+        szokincs = current_topic_item.get("szokincs")
+        if szokincs:
+            for szo_par in szokincs:
+                native, foreign = None, None
+                if isinstance(szo_par, str) and "=" in szo_par:
+                    parts = szo_par.split("=", 1)
+                    if len(parts) == 2:
+                        native, foreign = parts[0].strip(), parts[1].strip()
+                elif isinstance(szo_par, dict):
+                    native = szo_par.get("magyar") or szo_par.get("native", "")
+                    foreign = szo_par.get("idegen") or szo_par.get("foreign", "")
+                if native and foreign:
+                    pattern = re.compile(r"\b" + re.escape(foreign) + r"\b", re.IGNORECASE)
+                    if pattern.search(reply):
+                        vocab_pairs.append((native, foreign))
+    fallback_count = len(vocab_pairs) - marker_count
+    print(f"[VOCAB-DEBUG] is_foreign={is_foreign!r} language={language!r} pairs_marker={marker_count} pairs_fallback={fallback_count} pairs={vocab_pairs!r} tail={raw_reply[-250:]!r}", flush=True)
     database.add_chat_message(session_id, "assistant", reply)
 
     if is_foreign and language and vocab_pairs:
