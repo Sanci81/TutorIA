@@ -3870,10 +3870,10 @@ def api_voice_transcribe():
     if frame not in ("hu", "es"):
         frame = "hu"
     _foreign = language in ("angol", "német", "francia", "spanyol")
-    force_lang = None if _foreign else ("es" if frame == "es" else "hu")
+    force_lang = "es" if frame == "es" else "hu"
 
     hint_words: list[str] | None = None
-    if _foreign and not force_lang:
+    if _foreign:
         subject = (request.form.get("subject") or session.get("chat_subject") or "").strip()
         child_id_str = (request.form.get("child_id") or str(session.get("chat_child_id", ""))).strip()
         if subject and child_id_str:
