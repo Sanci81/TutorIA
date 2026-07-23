@@ -1631,6 +1631,54 @@ def get_curriculum_for_chat(
         [str(p) for p in candidates],
     )
 
+    # ── Évfolyam-szűrés a fájlnévben lévő tartomány alapján ──────────────
+    grade_candidates: list[Path] = []
+    for path in candidates:
+        m = _HU_FILENAME_RE.match(path.name)
+        if m:
+            try:
+                lo = int(m.group(2))
+                hi = int(m.group(3))
+                if lo <= grade_num <= hi:
+                    grade_candidates.append(path)
+            except (ValueError, IndexError):
+                grade_candidates.append(path)  # parse error → keep
+        else:
+            grade_candidates.append(path)  # no grade range in name → keep
+
+    logger.warning(
+        "get_curriculum_for_chat CANDIDATES grade-filtered: count=%s paths=%s",
+        len(grade_candidates),
+        [str(p) for p in grade_candidates],
+    )
+
+    if grade_candidates:
+        usable_in_grade = False
+        for path in grade_candidates:
+            try:
+                raw = _load_hu_json(path)
+                data = _curriculum_data_for_language(raw, effective_language)
+                content = format_curriculum_for_grade(data, grade_num)
+                catalog = extract_topic_catalog(data, grade_num)
+                if content or catalog:
+                    usable_in_grade = True
+                    break
+            except Exception:
+                pass
+
+        if usable_in_grade:
+            candidates = grade_candidates
+        else:
+            logger.warning(
+                "GRADE_FALLBACK: nincs %s. évfolyamhoz való fájl, marad: %s",
+                grade_num, [str(p) for p in candidates],
+            )
+    else:
+        logger.warning(
+            "GRADE_FALLBACK: nincs %s. évfolyamhoz való fájl, marad: %s",
+            grade_num, [str(p) for p in candidates],
+        )
+
     for path in candidates:
         raw = _load_hu_json(path)
         # angol/német/spanyol: nyelvek.* ág (pl. 5–8 JSON), nem a nyers raw
