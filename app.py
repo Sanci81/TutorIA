@@ -2148,6 +2148,15 @@ El reconocimiento de voz confunde a menudo la pronunciación no nativa. Si recib
   Lo mismo vale para cualquier otra palabra de sonido parecido.
   Marca error SOLO si la transcripción es una palabra de significado totalmente distinto
   (p. ej. "dog" en lugar de "tree"). En caso de duda, acéptala.
+
+=== BUENA PREGUNTA ===
+- NUNCA hagas una pregunta que ya contenga la respuesta o que se pueda contestar repitiendo
+  las palabras de la pregunta. Mal ejemplo: "¿Qué palabra significa algo sin vida: vivo o
+  sin vida?"
+- Pregunta siempre por algo CONCRETO que el niño deba recordar o decidir. Buen ejemplo:
+  "¿La piedra está viva o no?" / "¡Dime un ser vivo del jardín!"
+- Una sola pregunta por respuesta, en una frase corta.
+- La pregunta debe basarse en lo que acabas de enseñar.
 """
         return prompt
 
@@ -2325,6 +2334,15 @@ A beszédfelismerő rendszeresen félrehallja a nem anyanyelvi kiejtést. Ha egy
 Ne mondd, hogy "Mit jelent az angol flower?" — ez magyartalan.
   Helyesen: "Magyarul mit jelent a flower?" vagy "Mit jelent a flower?"
   Az idegen szót mindig magyar mondatba illesztve kérdezd, természetes szórenddel.
+
+=== JÓ KÉRDÉS ===
+- SOHA ne tegyél fel olyan kérdést, amelyben benne van a válasz, vagy amelyre a szavak
+  ismétlésével válaszolni lehet. Rossz példa: "Melyik szó jelent élettelen dolgot: élő
+  vagy élettelen?"
+- A kérdés mindig KONKRÉT dologra kérdezzen rá, amit a gyereknek fel kell idéznie vagy
+  el kell döntenie. Jó példa: "A kő élő vagy élettelen?" / "Mondj egy élőlényt a kertből!"
+- Egyszerre EGY kérdést tegyél fel, rövid mondatban.
+- A kérdés arra épüljön, amit épp most tanítottál.
 """
 
     prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
@@ -2336,6 +2354,15 @@ Ne mondd, hogy "Mit jelent az angol flower?" — ez magyartalan.
    a legegyszerűbb anyaggal.
 3. A magyarázat és a példák csak olyan tudást használjanak, ami a tananyagban eddig
    szerepelt — ne építs olyan szabályra, amit még nem tanultatok.
+
+=== JÓ KÉRDÉS ===
+- SOHA ne tegyél fel olyan kérdést, amelyben benne van a válasz, vagy amelyre a szavak
+  ismétlésével válaszolni lehet. Rossz példa: "Melyik szó jelent élettelen dolgot: élő
+  vagy élettelen?"
+- A kérdés mindig KONKRÉT dologra kérdezzen rá, amit a gyereknek fel kell idéznie vagy
+  el kell döntenie. Jó példa: "A kő élő vagy élettelen?" / "Mondj egy élőlényt a kertből!"
+- Egyszerre EGY kérdést tegyél fel, rövid mondatban.
+- A kérdés arra épüljön, amit épp most tanítottál.
 """
 
     return prompt
