@@ -2902,103 +2902,106 @@ def child_chat_send(child_id: int):
     #     szokincs-listájának vagy VOCABULARIO szakaszának szavai előfordulnak
     #     a válaszban ──
     if not vocab_pairs and is_foreign and language and current_topic_item:
-        szokincs = current_topic_item.get("szokincs")
-        if not szokincs:
-            # BOE-alapú leckék (ES LOMLOE Extranjera): a VOCABULARIO szakaszból
-            # olvassuk ki a célnyelvi szavakat
-            text = current_topic_item.get("text", "")
-            m = re.search(r"VOCABULARIO\b[^:]*:\s*(.+)", text, re.IGNORECASE)
-            if m:
-                # "hello", "hi", "goodbye" → lista
-                raw_vocab = m.group(1)
-                szokincs = [
-                    w.strip().strip("'\"") for w in re.findall(
-                        r'"([^"]+)"|\'([^\']+)\'', raw_vocab
-                    )
-                ]
-                szokincs = [w[0] or w[1] for w in szokincs if w[0] or w[1]]
-                szokincs = list(dict.fromkeys(szokincs))  # egyedi, sorrend megtartva
-        if szokincs:
-            word_only: list[str] = []
-            for szo_par in szokincs:
-                native, foreign = None, None
-                if isinstance(szo_par, str) and "=" in szo_par:
-                    parts = szo_par.split("=", 1)
-                    if len(parts) == 2:
-                        native, foreign = parts[0].strip(), parts[1].strip()
-                elif isinstance(szo_par, dict):
-                    native = szo_par.get("magyar") or szo_par.get("native", "")
-                    foreign = szo_par.get("idegen") or szo_par.get("foreign", "")
-                elif isinstance(szo_par, str):
-                    # ES LOMLOE VOCABULARIO: csak célnyelvi szó → fordítás a reply-ből
-                    word_only.append(szo_par.strip())
-                    continue
-                if native and foreign and native.strip().lower() != foreign.strip().lower():
-                    pattern = re.compile(r"\b" + re.escape(foreign) + r"\b", re.IGNORECASE)
-                    if pattern.search(reply):
-                        vocab_pairs.append((native, foreign))
-                        fallback_count += 1
-            # ── Reply-ből fordítás kinyerése (ES LOMLOE VOCABULARIO szavakhoz) ──
-            for w in word_only:
-                w_re = re.compile(r"\b" + re.escape(w) + r"\b", re.IGNORECASE)
-                for m_w in w_re.finditer(reply):
-                    s = max(0, m_w.start() - 80)
-                    e = min(len(reply), m_w.end() + 80)
-                    ctx = reply[s:e]
-                    translation: str | None = None
-                    # "w" azt jelenti, hogy "T"
-                    mm = re.search(
-                        r'\b' + re.escape(w) + r'\b\s+azt\s+jelenti[,:]?\s+hogy\s+["\']([^"\']{1,50})["\']',
-                        ctx, re.IGNORECASE)
-                    if mm:
-                        translation = mm.group(1).strip()
-                    # "w" jelentése "T"
-                    if not translation:
+        try:
+            szokincs = current_topic_item.get("szokincs")
+            if not szokincs:
+                # BOE-alapú leckék (ES LOMLOE Extranjera): a VOCABULARIO szakaszból
+                # olvassuk ki a célnyelvi szavakat
+                text = current_topic_item.get("text", "")
+                m = re.search(r"VOCABULARIO\b[^:]*:\s*(.+)", text, re.IGNORECASE)
+                if m:
+                    # "hello", "hi", "goodbye" → lista
+                    raw_vocab = m.group(1)
+                    words = []
+                    for m2 in re.findall(r'"([^"]+)"|\'([^\']+)\'', raw_vocab):
+                        s = m2[0] if isinstance(m2, tuple) else m2
+                        s = s.strip().strip("'\"")
+                        if s:
+                            words.append(s)
+                    szokincs = list(dict.fromkeys(words))  # egyedi, sorrend megtartva
+            if szokincs:
+                word_only: list[str] = []
+                for szo_par in szokincs:
+                    native, foreign = None, None
+                    if isinstance(szo_par, str) and "=" in szo_par:
+                        parts = szo_par.split("=", 1)
+                        if len(parts) == 2:
+                            native, foreign = parts[0].strip(), parts[1].strip()
+                    elif isinstance(szo_par, dict):
+                        native = szo_par.get("magyar") or szo_par.get("native", "")
+                        foreign = szo_par.get("idegen") or szo_par.get("foreign", "")
+                    elif isinstance(szo_par, str):
+                        # ES LOMLOE VOCABULARIO: csak célnyelvi szó → fordítás a reply-ből
+                        word_only.append(szo_par.strip())
+                        continue
+                    if native and foreign and native.strip().lower() != foreign.strip().lower():
+                        pattern = re.compile(r"\b" + re.escape(foreign) + r"\b", re.IGNORECASE)
+                        if pattern.search(reply):
+                            vocab_pairs.append((native, foreign))
+                            fallback_count += 1
+                # ── Reply-ből fordítás kinyerése (ES LOMLOE VOCABULARIO szavakhoz) ──
+                for w in word_only:
+                    w_re = re.compile(r"\b" + re.escape(w) + r"\b", re.IGNORECASE)
+                    for m_w in w_re.finditer(reply):
+                        s = max(0, m_w.start() - 80)
+                        e = min(len(reply), m_w.end() + 80)
+                        ctx = reply[s:e]
+                        translation: str | None = None
+                        # "w" azt jelenti, hogy "T"
                         mm = re.search(
-                            r'\b' + re.escape(w) + r'\b\s+jelentése\s+["\']([^"\']{1,50})["\']',
+                            r'\b' + re.escape(w) + r'\b\s+azt\s+jelenti[,:]?\s+hogy\s+["\']([^"\']{1,50})["\']',
                             ctx, re.IGNORECASE)
                         if mm:
                             translation = mm.group(1).strip()
-                    # "w" = T
-                    if not translation:
-                        mm = re.search(
-                            r'\b' + re.escape(w) + r'\b\s*=\s*([^\s,.;]{1,50})',
-                            ctx, re.IGNORECASE)
-                        if mm:
-                            translation = mm.group(1).strip()
-                    # "w" ("T")  vagy  "w" (T)
-                    if not translation:
-                        mm = re.search(
-                            r'\b' + re.escape(w) + r'\b\s*\(\s*["\']?([^"\')\]]{1,50})["\']?\s*\)',
-                            ctx, re.IGNORECASE)
-                        if mm:
-                            translation = mm.group(1).strip()
-                    # "w" significa "T"
-                    if not translation:
-                        mm = re.search(
-                            r'\b' + re.escape(w) + r'\b\s+significa\s+["\']([^"\']{1,50})["\']',
-                            ctx, re.IGNORECASE)
-                        if mm:
-                            translation = mm.group(1).strip()
-                    # "w" quiere decir "T"
-                    if not translation:
-                        mm = re.search(
-                            r'\b' + re.escape(w) + r'\b\s+quiere\s+decir\s+["\']([^"\']{1,50})["\']',
-                            ctx, re.IGNORECASE)
-                        if mm:
-                            translation = mm.group(1).strip()
-                    # Fordított: "T" angolul/németül/franciául/spanyolul "w"
-                    # vagy  "T" en inglés/alemán/francés/español es "w"
-                    if not translation:
-                        mm = re.search(
-                            r'["\']([^"\']{1,50})["\']\s+(?:angolul|németül|franciául|spanyolul|en inglés|en alemán|en francés|en español es)\s+["\']' + re.escape(w) + r'["\']',
-                            ctx, re.IGNORECASE)
-                        if mm:
-                            translation = mm.group(1).strip()
-                    if translation and translation.lower() != w.lower():
-                        vocab_pairs.append((translation, w))
-                        reply_count += 1
-                        break  # első találat elég
+                        # "w" jelentése "T"
+                        if not translation:
+                            mm = re.search(
+                                r'\b' + re.escape(w) + r'\b\s+jelentése\s+["\']([^"\']{1,50})["\']',
+                                ctx, re.IGNORECASE)
+                            if mm:
+                                translation = mm.group(1).strip()
+                        # "w" = T
+                        if not translation:
+                            mm = re.search(
+                                r'\b' + re.escape(w) + r'\b\s*=\s*([^\s,.;]{1,50})',
+                                ctx, re.IGNORECASE)
+                            if mm:
+                                translation = mm.group(1).strip()
+                        # "w" ("T")  vagy  "w" (T)
+                        if not translation:
+                            mm = re.search(
+                                r'\b' + re.escape(w) + r'\b\s*\(\s*["\']?([^"\')\]]{1,50})["\']?\s*\)',
+                                ctx, re.IGNORECASE)
+                            if mm:
+                                translation = mm.group(1).strip()
+                        # "w" significa "T"
+                        if not translation:
+                            mm = re.search(
+                                r'\b' + re.escape(w) + r'\b\s+significa\s+["\']([^"\']{1,50})["\']',
+                                ctx, re.IGNORECASE)
+                            if mm:
+                                translation = mm.group(1).strip()
+                        # "w" quiere decir "T"
+                        if not translation:
+                            mm = re.search(
+                                r'\b' + re.escape(w) + r'\b\s+quiere\s+decir\s+["\']([^"\']{1,50})["\']',
+                                ctx, re.IGNORECASE)
+                            if mm:
+                                translation = mm.group(1).strip()
+                        # Fordított: "T" angolul/németül/franciául/spanyolul "w"
+                        # vagy  "T" en inglés/alemán/francés/español es "w"
+                        if not translation:
+                            mm = re.search(
+                                r'["\']([^"\']{1,50})["\']\s+(?:angolul|németül|franciául|spanyolul|en inglés|en alemán|en francés|en español es)\s+["\']' + re.escape(w) + r'["\']',
+                                ctx, re.IGNORECASE)
+                            if mm:
+                                translation = mm.group(1).strip()
+                        if translation and translation.lower() != w.lower():
+                            vocab_pairs.append((translation, w))
+                            reply_count += 1
+                            break  # első találat elég
+        except Exception as e:
+            print(f"[VOCAB-FALLBACK] hiba: {e}", flush=True)
     print(f"[VOCAB-DEBUG] is_foreign={is_foreign!r} language={language!r} pairs_marker={marker_count} pairs_fallback={fallback_count} pairs_reply={reply_count} pairs={vocab_pairs!r} tail={raw_reply[-250:]!r}", flush=True)
     database.add_chat_message(session_id, "assistant", reply)
 
