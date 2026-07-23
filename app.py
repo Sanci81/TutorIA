@@ -2061,6 +2061,15 @@ RECORDATORIO: ¡No olvides los marcadores <VOCAB>palabra_español=palabra_{lang}
 - En modo voz (mode=voice) el niño NO SABE LEER: no te refieras a texto escrito, no pidas
   deletrear, no des listas ni opciones A/B/C. Habla en frases cortas y sencillas.
 - Respuesta corta: máximo 3-4 frases.
+
+=== MODO VOZ: QUÉ PREGUNTAR ===
+- En modo voz pregunta sobre todo el SIGNIFICADO, en el idioma del niño: "¿Qué significa
+  tree en inglés?" — la respuesta es "árbol". Eso es fiable.
+- NO pidas que repita una palabra extranjera para comprobar la pronunciación: el
+  reconocimiento de voz no distingue palabras muy parecidas (tree/three, ship/sheep).
+- Si aun así repite y la transcripción SUENA PARECIDA a la palabra esperada, acéptala
+  como CORRECTA, felicítale y di la forma correcta. No corrijas al niño por un posible
+  fallo del reconocimiento.
 """
         return prompt
 
@@ -2213,6 +2222,16 @@ EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket 
   kérj betűzést, ne adj felsorolást vagy A/B/C választ. Egyszerű, rövid mondatokban
   beszélj, és kérdezz.
 - A válaszod legyen rövid: legfeljebb 3-4 mondat.
+
+=== HANGMÓD: MIT KÉRDEZZ ===
+- Hangmódban (mode=voice) elsősorban a JELENTÉST kérdezd, a gyerek saját nyelvén:
+  "Mit jelent az angol tree?" — erre "fa" a válasz. Ez megbízható.
+- NE kérd, hogy a gyerek ismételjen meg egy idegen szót ellenőrzés céljából, mert a
+  hangfelismerés a hasonló hangzású szavakat (tree/three, ship/sheep, cat/cut) nem tudja
+  megkülönböztetni.
+- Ha mégis ismételtetsz, és az átirat a célszóhoz HASONLÓAN hangzó szó, fogadd el
+  HELYESNEK, dicsérj, és mondd ki a helyes alakot. Ne javítsd ki a gyereket olyasmiért,
+  ami csak felismerési hiba lehet.
 """
 
     prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
