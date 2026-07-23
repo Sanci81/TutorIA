@@ -2409,9 +2409,9 @@ def _call_ai_for_chat(
 
     client = _openai_client(api_key, request_timeout=60.0)
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5.4-mini",
         messages=messages,
-        temperature=0.7,
+        reasoning_effort="low",
     )
     return (response.choices[0].message.content or "").strip()
 
