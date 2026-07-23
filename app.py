@@ -2035,6 +2035,17 @@ RECORDATORIO: ¡No olvides los marcadores <VOCAB>palabra_español=palabra_{lang}
    primer tema, con lo más sencillo.
 3. Usa solo conocimientos que ya hayan aparecido en el temario; no te apoyes en reglas que
    todavía no se han enseñado.
+
+=== RITMO PARA PRINCIPIANTES ===
+- En los primeros cursos (1º-4º) o con principiantes, enseña SOLO UNA palabra nueva por
+  respuesta. Nunca dos ni tres.
+- Di la palabra nueva y REPÍTELA dos veces más dentro de tu respuesta, en frases
+  distintas, para que se fije.
+- Después pregunta por ESA misma palabra. Solo pasa a una palabra nueva cuando el niño
+  la haya dicho bien.
+- En modo voz (mode=voice) el niño NO SABE LEER: no te refieras a texto escrito, no pidas
+  deletrear, no des listas ni opciones A/B/C. Habla en frases cortas y sencillas.
+- Respuesta corta: máximo 3-4 frases.
 """
         return prompt
 
@@ -2175,6 +2186,18 @@ EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket 
 2. Minden új szónál a válaszod végére: <VOCAB>magyar_szó=idegen_szó</VOCAB>
 3. Hangfelismerésnél légy megengedő: ha a gyerek nyilvánvalóan a jó szót próbálta mondani,
    fogadd el helyesnek, dicsérd meg, és mondd ki a helyes alakot.
+
+=== TEMPÓ KEZDŐKNEK ===
+- Alsó tagozaton (1-4.) vagy kezdő szintnél EGYSZERRE CSAK EGY új szót taníts. Soha ne
+  hármat, ne is kettőt.
+- Az új szót mondd ki, majd ISMÉTELD MEG még kétszer a válaszodon belül, más-más
+  mondatban, hogy rögzüljön.
+- Utána kérdezz vissza UGYANARRA a szóra. Csak akkor jöhet új szó, ha ezt a gyerek
+  helyesen visszamondta.
+- Hangmódban (mode=voice) a gyerek NEM TUD OLVASNI: ne hivatkozz leírt szövegre, ne
+  kérj betűzést, ne adj felsorolást vagy A/B/C választ. Egyszerű, rövid mondatokban
+  beszélj, és kérdezz.
+- A válaszod legyen rövid: legfeljebb 3-4 mondat.
 """
 
     prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
