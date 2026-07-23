@@ -124,6 +124,7 @@
         <input type="hidden" id="chat-subject" value="{{ subject }}">
         <input type="hidden" id="chat-session-id" value="{{ session_id }}">
         <input type="hidden" id="chat-language" value="{{ language or '' }}">
+        <input type="hidden" id="chat-frame" value="{{ 'es' if active_curriculum == 'ES' else 'hu' }}">
         <input type="hidden" id="chat-topic-id" value="{{ current_topic_id }}">
 
         <div class="voice-panel" id="voice-panel">
@@ -995,15 +996,12 @@
                 voiceMicBtn.classList.add('recording');
                 voiceStatus.textContent = L.voiceListening;
             } else if (state === 'processing') {
-                voiceMicBtn.classList.add('disabled');
                 voiceStatus.textContent = L.voiceProcessing;
             } else if (state === 'speaking') {
-                voiceMicBtn.classList.add('disabled');
                 voiceStatus.textContent = L.voiceProcessing;
             } else {
                 voiceStatus.textContent = L.voiceStatusIdle;
             }
-            voiceMicBtn.disabled = state === 'processing' || state === 'speaking';
         }
 
         function getHidden(id) {
@@ -1062,6 +1060,7 @@
                     if (res.data.sidebar) renderSidebar(res.data.sidebar);
                     updateVocabulary(res.data.vocabulary, res.data.current_topic);
                     updateGamification(res.data.xp, res.data.game_level, res.data.coins);
+                    setVoiceUi('idle');
                     if (!reply.trim()) {
                         setVoiceUi('idle');
                         return;
@@ -1090,6 +1089,10 @@
             if (chatLang && chatLang.value) {
                 fd.append('language', chatLang.value);
             }
+            var chatFrame = document.getElementById('chat-frame');
+            if (chatFrame && chatFrame.value) {
+                fd.append('frame', chatFrame.value);
+            }
             fetch(transcribeUrl, { method: 'POST', body: fd })
                 .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
@@ -1113,7 +1116,12 @@
         }
 
         function startRecording() {
-            if (voiceState !== 'idle') return;
+            if (voiceState === 'recording') return;
+            if (currentAudio) {
+                currentAudio.pause();
+                URL.revokeObjectURL(currentAudio.src);
+                currentAudio = null;
+            }
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(function (stream) {
                     mediaStream = stream;
