@@ -3918,6 +3918,49 @@ def api_voice_transcribe():
         except Exception:
             pass
 
+    if _foreign:
+        # ── Dupla átírás: tanterv nyelve + tanult nyelv ──
+        target_lang_map = {"angol": "en", "német": "de", "francia": "fr", "spanyol": "es"}
+        target_lang_code = target_lang_map.get(language)
+
+        text_native = ""
+        text_target = ""
+        try:
+            text_native = _whisper_transcribe(
+                audio_bytes, upload.filename, language=language, frame=frame,
+                force_language=force_lang, hint_words=hint_words, context_text=context_text,
+            )
+        except Exception:
+            pass
+        if target_lang_code:
+            try:
+                text_target = _whisper_transcribe(
+                    audio_bytes, upload.filename, language=language, frame=frame,
+                    force_language=target_lang_code, hint_words=hint_words, context_text=context_text,
+                )
+            except Exception:
+                pass
+
+        # Választás: ha target tartalmaz hint szót, native nem → target, egyébként native
+        chosen = "native"
+        text = text_native
+        if text_target and hint_words:
+            hint_lower = {w.lower() for w in hint_words}
+            def _contains_hint(t: str) -> bool:
+                t_words = {w.strip(".,!?:;¿¡-\"'").lower() for w in t.split()}
+                return bool(t_words & hint_lower)
+            if _contains_hint(text_target) and not _contains_hint(text_native):
+                chosen = "target"
+                text = text_target
+        if not text:
+            text = text_target or text_native
+
+        print(f"[VOICE-DEBUG] native={text_native!r} target={text_target!r} chosen={chosen!r}", flush=True)
+
+        if not text:
+            return jsonify({"error": "empty_transcript"}), 400
+        return jsonify({"text": text})
+
     try:
         text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame, force_language=force_lang, hint_words=hint_words, context_text=context_text)
     except NotImplementedError:
