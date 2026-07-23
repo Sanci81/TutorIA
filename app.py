@@ -117,7 +117,7 @@ def set_language(lang_code):
         session.pop("chat_subject", None)
         session.pop("language", None)
         session.pop("subject", None)
-        return redirect(url_for("child_chat", child_id=child_id))
+        return redirect(url_for("select_tasks", child_id=child_id))
 
     next_url = request.args.get("next") or request.referrer
     return redirect(next_url or url_for("index"))
