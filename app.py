@@ -2082,6 +2082,16 @@ RECORDATORIO: ¡No olvides los marcadores <VOCAB>palabra_español=palabra_{lang}
 - Si aun así repite y la transcripción SUENA PARECIDA a la palabra esperada, acéptala
   como CORRECTA, felicítale y di la forma correcta. No corrijas al niño por un posible
   fallo del reconocimiento.
+
+=== ERRORES TÍPICOS DEL RECONOCIMIENTO — ACÉPTALOS ===
+El reconocimiento de voz confunde a menudo la pronunciación no nativa. Si recibes una
+  transcripción así y sabes por la conversación QUÉ palabra esperabas, dala por CORRECTA,
+  felicita y di la forma correcta. Pares típicos:
+  tree ↔ three / free ; four ↔ for / fore ; two ↔ too / to ; six ↔ sicks ;
+  ship ↔ sheep ; cat ↔ cut ; think ↔ sink / fink ; this ↔ dis / diss.
+  Lo mismo vale para cualquier otra palabra de sonido parecido.
+  Marca error SOLO si la transcripción es una palabra de significado totalmente distinto
+  (p. ej. "dog" en lugar de "tree"). En caso de duda, acéptala.
 """
         return prompt
 
@@ -2244,6 +2254,16 @@ EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket 
 - Ha mégis ismételtetsz, és az átirat a célszóhoz HASONLÓAN hangzó szó, fogadd el
   HELYESNEK, dicsérj, és mondd ki a helyes alakot. Ne javítsd ki a gyereket olyasmiért,
   ami csak felismerési hiba lehet.
+
+=== TIPIKUS FÉLREHALLÁSOK — FOGADD EL ===
+A beszédfelismerő rendszeresen félrehallja a nem anyanyelvi kiejtést. Ha egy ilyen
+  átiratot kapsz, és a beszélgetésből tudod, MELYIK szót várod, akkor tekintsd HELYESNEK,
+  dicsérj, és mondd ki a helyes alakot. Tipikus párok:
+  tree ↔ three / free ; four ↔ for / fore ; two ↔ too / to ; six ↔ sicks ;
+  ship ↔ sheep ; cat ↔ cut ; think ↔ sink / fink ; this ↔ dis / diss.
+  Ugyanez érvényes minden más, hangzásában közeli szóra is.
+  CSAK akkor jelöld hibásnak, ha az átirat egy TELJESEN MÁS jelentésű szó (pl. "tree"
+  helyett "dog"). Ha bizonytalan vagy, inkább fogadd el, és ismételtesd meg kedvesen.
 """
 
     prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
