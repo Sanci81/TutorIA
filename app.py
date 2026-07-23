@@ -3941,21 +3941,35 @@ def api_voice_transcribe():
             except Exception:
                 pass
 
-        # Választás: ha target tartalmaz hint szót, native nem → target, egyébként native
+        # Választás: bővített szólista (hint_words + context_text szavai >3 karakter)
         chosen = "native"
+        matched_word = None
         text = text_native
-        if text_target and hint_words:
-            hint_lower = {w.lower() for w in hint_words}
-            def _contains_hint(t: str) -> bool:
-                t_words = {w.strip(".,!?:;¿¡-\"'").lower() for w in t.split()}
-                return bool(t_words & hint_lower)
-            if _contains_hint(text_target) and not _contains_hint(text_native):
-                chosen = "target"
-                text = text_target
+        if text_target:
+            expanded = set()
+            if hint_words:
+                expanded.update(w.lower() for w in hint_words)
+            if context_text:
+                expanded.update(
+                    w.strip(".,!?:;¿¡-\"'").lower()
+                    for w in context_text.split()
+                    if len(w.strip(".,!?:;¿¡-\"'")) > 3
+                )
+            if expanded:
+                def _contains_expanded(t: str) -> str | None:
+                    t_words = {w.strip(".,!?:;¿¡-\"'").lower() for w in t.split()}
+                    overlap = t_words & expanded
+                    return next(iter(overlap)) if overlap else None
+                m_target = _contains_expanded(text_target)
+                m_native = _contains_expanded(text_native)
+                if m_target and not m_native:
+                    chosen = "target"
+                    matched_word = m_target
+                    text = text_target
         if not text:
             text = text_target or text_native
 
-        print(f"[VOICE-DEBUG] native={text_native!r} target={text_target!r} chosen={chosen!r}", flush=True)
+        print(f"[VOICE-DEBUG] native={text_native!r} target={text_target!r} chosen={chosen!r} matched={matched_word!r}", flush=True)
 
         if not text:
             return jsonify({"error": "empty_transcript"}), 400
