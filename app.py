@@ -1643,9 +1643,57 @@ Ne tegyél fel egyszerre több kérdést.
 """
 
 
+def _get_topic_hint_words(child_id: int, subject: str, language: str | None) -> list[str] | None:
+    """Aktuális témakör célnyelvi szólistája transzkripciós támpontnak."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        return None
+    grade_num = _chat_grade_num(child)
+    chat_curriculum = _chat_load_curriculum(subject, str(grade_num), language=language or None)
+    catalog = chat_curriculum.get("topic_catalog") or []
+    if not catalog:
+        return None
+    progress_subject = _chat_progress_subject(subject, language)
+    progress = database.get_or_create_child_progress(child_id, progress_subject)
+    scores = database.get_topic_scores(child_id, progress_subject, grade_num)
+    current_topic_id = _resolve_current_topic_id(catalog, progress, scores)
+    topic_item = get_topic_from_catalog(catalog, current_topic_id)
+    if not topic_item:
+        return None
+
+    words: list[str] = []
+    szokincs = topic_item.get("szokincs")
+    if szokincs:
+        for szo_par in szokincs:
+            foreign = None
+            if isinstance(szo_par, str) and "=" in szo_par:
+                parts = szo_par.split("=", 1)
+                if len(parts) == 2:
+                    foreign = parts[1].strip()
+            elif isinstance(szo_par, dict):
+                foreign = szo_par.get("idegen") or szo_par.get("foreign", "")
+            elif isinstance(szo_par, str):
+                foreign = szo_par.strip()
+            if foreign:
+                words.append(foreign)
+    else:
+        text = topic_item.get("text", "")
+        m = re.search(r"VOCABULARIO\b[^:]*:\s*(.+)", text, re.IGNORECASE)
+        if m:
+            raw_vocab = m.group(1)
+            for m2 in re.findall(r'"([^"]+)"|\'([^\']+)\'', raw_vocab):
+                s = m2[0] if isinstance(m2, tuple) else m2
+                s = s.strip().strip("'\"")
+                if s:
+                    words.append(s)
+
+    return words if words else None
+
+
 def _whisper_transcribe(
     audio_bytes: bytes, filename: str = "audio.webm", language: str = "hu",
     frame: str = "hu", force_language: str | None = None,
+    hint_words: list[str] | None = None,
 ) -> str:
     api_key = _openai_api_key()
     if not api_key:
@@ -1677,6 +1725,8 @@ def _whisper_transcribe(
             "The child may mix languages. Do not add, complete or invent words. "
             "If there is no clear speech, return nothing."
         )
+        if hint_words and not force_language:
+            whisper_prompt += " Possible words: " + ", ".join(hint_words[:30])
 
     client = _openai_client(api_key, request_timeout=60.0)
     buf = io.BytesIO(audio_bytes)
@@ -1693,6 +1743,8 @@ def _whisper_transcribe(
     result = (transcription.text or "").strip()
     _ECHO_WORDS = {"igen", "nem", "nem tudom", "víz", "water", "kenyér", "bread",
                    "apple", "alma", "hello", "szia", "transcribe", "child", "says"}
+    if hint_words:
+        _ECHO_WORDS.update(w.lower() for w in hint_words)
     _words = [w.strip(".,!?").lower() for w in result.split() if w.strip(".,!?")]
     if len(_words) >= 4 and sum(1 for w in _words if w in _ECHO_WORDS) >= len(_words) * 0.8:
         print(f"[VOICE-DEBUG] prompt-echo eldobva: {result!r}", flush=True)
@@ -1703,9 +1755,13 @@ def _whisper_transcribe(
         "www.", "http", "♪", "[ silence ]", "[silence]"
     )
     if any(h in result.lower() for h in _WHISPER_HALLUCINATIONS):
-        print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} raw={result!r} (hallucination filtered)", flush=True)
+        print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} hint_count={len(hint_words or [])} raw={result!r} (hallucination filtered)", flush=True)
         return ""
-    print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} raw={result!r}", flush=True)
+    print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} hint_count={len(hint_words or [])} raw={result!r}", flush=True)
+    stripped = result.strip(".,!?;:¿¡- \t\"'")
+    if len(stripped) <= 2:
+        print(f"[VOICE-DEBUG] too_short discarded: {result!r}", flush=True)
+        return ""
     return result
 
 
@@ -3782,8 +3838,20 @@ def api_voice_transcribe():
         frame = "hu"
     _foreign = language in ("angol", "német", "francia", "spanyol")
     force_lang = None if _foreign else ("es" if frame == "es" else "hu")
+
+    hint_words: list[str] | None = None
+    if _foreign and not force_lang:
+        subject = (request.form.get("subject") or session.get("chat_subject") or "").strip()
+        child_id_str = (request.form.get("child_id") or str(session.get("chat_child_id", ""))).strip()
+        if subject and child_id_str:
+            try:
+                child_id = int(child_id_str)
+                hint_words = _get_topic_hint_words(child_id, subject, language)
+            except Exception:
+                pass
+
     try:
-        text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame, force_language=force_lang)
+        text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame, force_language=force_lang, hint_words=hint_words)
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
     except Exception as exc:
