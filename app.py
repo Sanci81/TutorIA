@@ -7,6 +7,7 @@ Funkciók (1. fázis):
   - Kétnyelvű felület (magyar / spanyol) nyelvváltóval
 """
 
+import base64
 import difflib
 import json
 import logging
@@ -1689,6 +1690,62 @@ def _get_topic_hint_words(child_id: int, subject: str, language: str | None) -> 
                     words.append(s)
 
     return words if words else None
+
+
+def _transcribe_via_chat(
+    audio_bytes: bytes, filename: str, native_lang: str, target_lang: str,
+    hint_words: list[str] | None = None, context_text: str | None = None,
+) -> str | None:
+    """Elsődleges átírás: hangot értő chat-modell (gpt-5.4-mini). None = hiba."""
+    api_key = _openai_api_key()
+    if not api_key:
+        return None
+    try:
+        ext = os.path.splitext(filename)[1].lstrip(".").lower()
+        fmt = ext if ext in ("webm", "wav", "mp3", "mp4", "m4a", "ogg") else "webm"
+        b64 = base64.b64encode(audio_bytes).decode("ascii")
+
+        if native_lang == "hu":
+            system = (
+                "A feladatod a hangfelvétel SZÓ SZERINTI átírása. A beszélő gyerek magyarul beszél, "
+                "de idegen (angol/német/francia/spanyol) szavakat kever a mondatba.\n"
+                "1. A magyar szavakat helyes magyar helyesírással írd.\n"
+                "2. Az idegen szavakat KIZÁRÓLAG helyes idegen helyesírással írd (pl. 'water', 'tree'), "
+                "akkor is, ha a gyerek magyaros akcentussal ejti.\n"
+                "3. SOHA ne írj idegen szót fonetikusan magyarul ('vóter', 'trí', 'grassz').\n"
+                "4. Csak az átiratot add vissza, semmi mást."
+            )
+        else:
+            system = (
+                "Tu tarea es transcribir LITERALMENTE la grabación de audio. El niño habla en español, "
+                "pero mezcla palabras extranjeras (inglés/alemán/francés).\n"
+                "1. Escribe las palabras en español con ortografía correcta.\n"
+                "2. Las palabras extranjeras SOLO con ortografía extranjera correcta (ej. 'water', 'tree'), "
+                "incluso si el niño las pronuncia con acento español.\n"
+                "3. NUNCA escribas una palabra extranjera con ortografía fonética española.\n"
+                "4. Devuelve solo la transcripción, nada más."
+            )
+
+        if hint_words:
+            system += f"\nVárható szavak a leckéből: {', '.join(hint_words[:20])}"
+        if context_text:
+            system += f"\nAz előző tanári üzenet: {context_text}"
+
+        client = _openai_client(api_key, request_timeout=60.0)
+        response = client.chat.completions.create(
+            model="gpt-5.4-mini",
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": [{"type": "input_audio", "input_audio": {"data": b64, "format": fmt}}]},
+            ],
+        )
+        text = response.choices[0].message.content
+        if text:
+            return text.strip()
+        return None
+    except Exception as exc:
+        logger.warning("_transcribe_via_chat failed: %s", exc)
+        return None
 
 
 def _whisper_transcribe(
@@ -3920,64 +3977,84 @@ def api_voice_transcribe():
             pass
 
     if _foreign:
-        # ── Dupla átírás: tanterv nyelve + tanult nyelv ──
-        target_lang_map = {"angol": "en", "német": "de", "francia": "fr", "spanyol": "es"}
-        target_lang_code = target_lang_map.get(language)
+        # ── Elsődleges út: hangot értő chat-modell ──
+        route = "merge"
+        error_line = ""
+        native_lang = force_lang  # "hu" vagy "es"
+        target_lang_code_map = {"angol": "en", "német": "de", "francia": "fr", "spanyol": "es"}
+        target_lang_code = target_lang_code_map.get(language)
 
         text_native = ""
         text_target = ""
+        merged = ""
+
         try:
-            text_native = _whisper_transcribe(
-                audio_bytes, upload.filename, language=language, frame=frame,
-                force_language=force_lang, hint_words=hint_words, context_text=context_text,
+            chat_text = _transcribe_via_chat(
+                audio_bytes, upload.filename, native_lang=native_lang, target_lang=language,
+                hint_words=hint_words, context_text=context_text,
             )
-        except Exception:
-            pass
-        if target_lang_code:
+        except Exception as exc:
+            chat_text = None
+            error_line = str(exc).split("\n")[0]
+        else:
+            if chat_text:
+                route = "chat"
+                text = chat_text
+        if not chat_text:
+            if not error_line:
+                error_line = "(chat_failed)"
+            # ── Tartalék: dupla átírás + összefésülés ──
             try:
-                text_target = _whisper_transcribe(
+                text_native = _whisper_transcribe(
                     audio_bytes, upload.filename, language=language, frame=frame,
-                    force_language=target_lang_code, hint_words=hint_words, context_text=context_text,
+                    force_language=force_lang, hint_words=hint_words, context_text=context_text,
                 )
             except Exception:
                 pass
-
-        # ── Szavankénti összefésülés difflib SequenceMatcher-rel ──
-        text = text_native or text_target
-        merged = text_native or text_target
-        if text_native and text_target:
-            native_words, target_words = text_native.split(), text_target.split()
-            expanded = set()
-            if hint_words:
-                expanded.update(w.lower() for w in hint_words)
-            if context_text:
-                expanded.update(
-                    w.strip(".,!?:;¿¡-\"'").lower()
-                    for w in context_text.split()
-                    if len(w.strip(".,!?:;¿¡-\"'")) > 3
-                )
-            sm = difflib.SequenceMatcher(
-                a=[w.lower() for w in native_words],
-                b=[w.lower() for w in target_words],
-            )
-            result_words: list[str] = []
-            for tag, i1, i2, j1, j2 in sm.get_opcodes():
-                if tag == "equal":
-                    result_words.extend(native_words[i1:i2])
-                elif tag in ("replace", "insert", "delete"):
-                    seg_target = target_words[j1:j2]
-                    has_hint = expanded and any(
-                        w.strip(".,!?:;¿¡-\"'").lower() in expanded
-                        for w in seg_target
+            if target_lang_code:
+                try:
+                    text_target = _whisper_transcribe(
+                        audio_bytes, upload.filename, language=language, frame=frame,
+                        force_language=target_lang_code, hint_words=hint_words, context_text=context_text,
                     )
-                    if has_hint:
-                        result_words.extend(target_words[j1:j2])
-                    else:
-                        result_words.extend(native_words[i1:i2])
-            merged = " ".join(result_words)
-            text = merged
+                except Exception:
+                    pass
 
-        print(f"[VOICE-DEBUG] native={text_native!r} target={text_target!r} merged={merged!r}", flush=True)
+            text = text_native or text_target
+            merged = text_native or text_target
+            if text_native and text_target:
+                native_words, target_words = text_native.split(), text_target.split()
+                expanded = set()
+                if hint_words:
+                    expanded.update(w.lower() for w in hint_words)
+                if context_text:
+                    expanded.update(
+                        w.strip(".,!?:;¿¡-\"'").lower()
+                        for w in context_text.split()
+                        if len(w.strip(".,!?:;¿¡-\"'")) > 3
+                    )
+                sm = difflib.SequenceMatcher(
+                    a=[w.lower() for w in native_words],
+                    b=[w.lower() for w in target_words],
+                )
+                result_words: list[str] = []
+                for tag, i1, i2, j1, j2 in sm.get_opcodes():
+                    if tag == "equal":
+                        result_words.extend(native_words[i1:i2])
+                    elif tag in ("replace", "insert", "delete"):
+                        seg_target = target_words[j1:j2]
+                        has_hint = expanded and any(
+                            w.strip(".,!?:;¿¡-\"'").lower() in expanded
+                            for w in seg_target
+                        )
+                        if has_hint:
+                            result_words.extend(target_words[j1:j2])
+                        else:
+                            result_words.extend(native_words[i1:i2])
+                merged = " ".join(result_words)
+                text = merged
+
+        print(f"[VOICE-DEBUG] native={text_native!r} target={text_target!r} merged={merged!r} route={route!r} error={error_line!r}", flush=True)
 
         if not text:
             return jsonify({"error": "empty_transcript"}), 400
