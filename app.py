@@ -2157,6 +2157,8 @@ El reconocimiento de voz confunde a menudo la pronunciación no nativa. Si recib
   "¿La piedra está viva o no?" / "¡Dime un ser vivo del jardín!"
 - Una sola pregunta por respuesta, en una frase corta.
 - La pregunta debe basarse en lo que acabas de enseñar.
+- En preguntas de opción múltiple, las opciones deben ser cosas o palabras reales
+  (p. ej. "piedra" o "perro"), no las propiedades mismas (p. ej. "vivo" o "sin vida").
 """
         return prompt
 
@@ -2343,6 +2345,8 @@ Ne mondd, hogy "Mit jelent az angol flower?" — ez magyartalan.
   el kell döntenie. Jó példa: "A kő élő vagy élettelen?" / "Mondj egy élőlényt a kertből!"
 - Egyszerre EGY kérdést tegyél fel, rövid mondatban.
 - A kérdés arra épüljön, amit épp most tanítottál.
+- Feleletválasztósnál az opciók valódi dolgok vagy szavak legyenek (pl. "kő" vagy
+  "kutya"), ne maguk a tulajdonságok (pl. "élő" vagy "élettelen").
 """
 
     prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
@@ -2363,6 +2367,8 @@ Ne mondd, hogy "Mit jelent az angol flower?" — ez magyartalan.
   el kell döntenie. Jó példa: "A kő élő vagy élettelen?" / "Mondj egy élőlényt a kertből!"
 - Egyszerre EGY kérdést tegyél fel, rövid mondatban.
 - A kérdés arra épüljön, amit épp most tanítottál.
+- Feleletválasztósnál az opciók valódi dolgok vagy szavak legyenek (pl. "kő" vagy
+  "kutya"), ne maguk a tulajdonságok (pl. "élő" vagy "élettelen").
 """
 
     return prompt
