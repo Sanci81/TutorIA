@@ -113,11 +113,11 @@ def set_language(lang_code):
     child_id = session.get("chat_child_id")
 
     if old_curriculum != new_curriculum and child_id:
-        # Tanterv váltás → töröljük a chat session kulcsokat és irányítsunk a tantárgyválasztóra
+        # Tanterv váltás → töröljük a chat session kulcsokat és irányítsunk a dashboardra
         session.pop("chat_subject", None)
         session.pop("language", None)
         session.pop("subject", None)
-        return redirect(url_for("select_tasks", child_id=child_id))
+        return redirect(url_for("dashboard"))
 
     next_url = request.args.get("next") or request.referrer
     return redirect(next_url or url_for("index"))
@@ -2264,6 +2264,11 @@ A beszédfelismerő rendszeresen félrehallja a nem anyanyelvi kiejtést. Ha egy
   Ugyanez érvényes minden más, hangzásában közeli szóra is.
   CSAK akkor jelöld hibásnak, ha az átirat egy TELJESEN MÁS jelentésű szó (pl. "tree"
   helyett "dog"). Ha bizonytalan vagy, inkább fogadd el, és ismételtesd meg kedvesen.
+
+=== MAGYAROS MEGFOGALMAZÁS ===
+Ne mondd, hogy "Mit jelent az angol flower?" — ez magyartalan.
+  Helyesen: "Magyarul mit jelent a flower?" vagy "Mit jelent a flower?"
+  Az idegen szót mindig magyar mondatba illesztve kérdezd, természetes szórenddel.
 """
 
     prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
