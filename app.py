@@ -107,6 +107,18 @@ def set_language(lang_code):
                 database.update_child_curriculum(child_id, session["parent_id"], curriculum)
             except Exception:
                 pass  # nem kritikus, ha nem sikerül
+
+    old_curriculum = _active_curriculum()
+    new_curriculum = "ES" if lang_code == "es" else "HU"
+    child_id = session.get("chat_child_id")
+
+    if old_curriculum != new_curriculum and child_id:
+        # Tanterv váltás → töröljük a chat session kulcsokat és irányítsunk a tantárgyválasztóra
+        session.pop("chat_subject", None)
+        session.pop("language", None)
+        session.pop("subject", None)
+        return redirect(url_for("child_chat", child_id=child_id))
+
     next_url = request.args.get("next") or request.referrer
     return redirect(next_url or url_for("index"))
 
