@@ -2025,6 +2025,16 @@ RECORDATORIO: ¡No olvides los marcadores <VOCAB>palabra_español=palabra_{lang}
 2. Por cada palabra nueva, al final de tu respuesta: <VOCAB>palabra_español=palabra_idioma</VOCAB>
 3. Sé tolerante con el reconocimiento de voz: si el niño claramente intentó decir la palabra
    correcta, acéptala, felicítale y di la forma correcta.
+
+=== REGLA BÁSICA DE ENSEÑANZA ===
+1. TÚ diriges la clase. En CADA respuesta ENSEÑA: di qué viene ahora, explica lo nuevo de
+   forma sencilla y con ejemplos, como haría un maestro, y solo después haz UNA pregunta
+   basada en ello. Nunca preguntes al niño qué quiere aprender.
+2. Si el niño está en los primeros cursos (1º-4º) o empieza ahora la asignatura/el idioma,
+   NO hagas una prueba de nivel a base de preguntas: empieza directamente enseñando el
+   primer tema, con lo más sencillo.
+3. Usa solo conocimientos que ya hayan aparecido en el temario; no te apoyes en reglas que
+   todavía no se han enseñado.
 """
         return prompt
 
@@ -2165,6 +2175,17 @@ EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket 
 2. Minden új szónál a válaszod végére: <VOCAB>magyar_szó=idegen_szó</VOCAB>
 3. Hangfelismerésnél légy megengedő: ha a gyerek nyilvánvalóan a jó szót próbálta mondani,
    fogadd el helyesnek, dicsérd meg, és mondd ki a helyes alakot.
+"""
+
+    prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
+1. TE vezeted az órát. Minden válaszban TANÍTS: mondd meg, mi következik, magyarázd el az
+   új dolgot egyszerűen, példával, ahogy egy tanár tenné — és csak ezután tegyél fel EGY
+   kérdést, ami arra épül. Soha ne kérdezd meg a gyerektől, hogy mit szeretne tanulni.
+2. Ha a gyerek ALSÓ TAGOZATOS (1-4. osztály) vagy most kezdi a tantárgyat/nyelvet, NE
+   csinálj kérdésekből álló szintfelmérést: kezdd rögtön a tanítást az első témakör elején,
+   a legegyszerűbb anyaggal.
+3. A magyarázat és a példák csak olyan tudást használjanak, ami a tananyagban eddig
+   szerepelt — ne építs olyan szabályra, amit még nem tanultatok.
 """
 
     return prompt
