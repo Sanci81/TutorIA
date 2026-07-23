@@ -1649,11 +1649,22 @@ def _whisper_transcribe(
     }
     whisper_lang = lang_map.get(language, "hu")
 
-    whisper_prompt = (
-        "Transcribe exactly what the child says, word for word. "
-        "The child may mix languages. Do not add, complete or invent words. "
-        "If there is no clear speech, return nothing."
-    )
+    if force_language == "hu":
+        whisper_prompt = (
+            "Magyar nyelvű gyerek beszél. Írd le pontosan, szó szerint, amit mond. "
+            "Ne egészítsd ki és ne találj ki szavakat. Ha nincs érthető beszéd, ne írj semmit."
+        )
+    elif force_language == "es":
+        whisper_prompt = (
+            "Habla un niño en español. Transcribe exactamente, palabra por palabra, lo que dice. "
+            "No añadas ni inventes palabras. Si no hay habla clara, no escribas nada."
+        )
+    else:
+        whisper_prompt = (
+            "Transcribe exactly what the child says, word for word. "
+            "The child may mix languages. Do not add, complete or invent words. "
+            "If there is no clear speech, return nothing."
+        )
 
     client = _openai_client(api_key, request_timeout=60.0)
     buf = io.BytesIO(audio_bytes)
@@ -1665,6 +1676,7 @@ def _whisper_transcribe(
     }
     if force_language:
         create_kwargs["language"] = force_language
+        create_kwargs["temperature"] = 0
     transcription = client.audio.transcriptions.create(**create_kwargs)
     result = (transcription.text or "").strip()
     _ECHO_WORDS = {"igen", "nem", "nem tudom", "víz", "water", "kenyér", "bread",
