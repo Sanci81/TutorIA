@@ -1694,6 +1694,7 @@ def _whisper_transcribe(
     audio_bytes: bytes, filename: str = "audio.webm", language: str = "hu",
     frame: str = "hu", force_language: str | None = None,
     hint_words: list[str] | None = None,
+    context_text: str | None = None,
 ) -> str:
     api_key = _openai_api_key()
     if not api_key:
@@ -1728,6 +1729,9 @@ def _whisper_transcribe(
         if hint_words and not force_language:
             whisper_prompt += " Possible words: " + ", ".join(hint_words[:30])
 
+    if context_text:
+        whisper_prompt += " Context: " + context_text[-200:]
+
     client = _openai_client(api_key, request_timeout=60.0)
     buf = io.BytesIO(audio_bytes)
     buf.name = filename if "." in filename else f"{filename}.webm"
@@ -1745,6 +1749,9 @@ def _whisper_transcribe(
                    "apple", "alma", "hello", "szia", "transcribe", "child", "says"}
     if hint_words:
         _ECHO_WORDS.update(w.lower() for w in hint_words)
+    if context_text:
+        _ctx_words = [w.strip(".,!?:;¿¡- \t\"'").lower() for w in context_text.split() if w.strip(".,!?:;¿¡- \t\"'")]
+        _ECHO_WORDS.update(_ctx_words)
     _words = [w.strip(".,!?").lower() for w in result.split() if w.strip(".,!?")]
     if len(_words) >= 4 and sum(1 for w in _words if w in _ECHO_WORDS) >= len(_words) * 0.8:
         print(f"[VOICE-DEBUG] prompt-echo eldobva: {result!r}", flush=True)
@@ -1755,9 +1762,9 @@ def _whisper_transcribe(
         "www.", "http", "♪", "[ silence ]", "[silence]"
     )
     if any(h in result.lower() for h in _WHISPER_HALLUCINATIONS):
-        print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} hint_count={len(hint_words or [])} raw={result!r} (hallucination filtered)", flush=True)
+        print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} hint_count={len(hint_words or [])} ctx_len={len(context_text or '')} raw={result!r} (hallucination filtered)", flush=True)
         return ""
-    print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} hint_count={len(hint_words or [])} raw={result!r}", flush=True)
+    print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} hint_count={len(hint_words or [])} ctx_len={len(context_text or '')} raw={result!r}", flush=True)
     stripped = result.strip(".,!?;:¿¡- \t\"'")
     if len(stripped) <= 1:
         print(f"[VOICE-DEBUG] too_short discarded: {result!r}", flush=True)
@@ -3883,8 +3890,24 @@ def api_voice_transcribe():
             except Exception:
                 pass
 
+    context_text: str | None = None
+    subject_ctx = (request.form.get("subject") or session.get("chat_subject") or "").strip()
+    child_id_ctx = (request.form.get("child_id") or str(session.get("chat_child_id", ""))).strip()
+    if subject_ctx and child_id_ctx:
+        try:
+            cid = int(child_id_ctx)
+            chat_session = database.get_or_create_chat_session(cid, subject_ctx, language=language)
+            if chat_session:
+                messages = database.get_chat_messages(chat_session["id"], limit=5)
+                for msg in reversed(messages):
+                    if msg.get("role") == "assistant":
+                        context_text = msg.get("text", "")
+                        break
+        except Exception:
+            pass
+
     try:
-        text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame, force_language=force_lang, hint_words=hint_words)
+        text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame, force_language=force_lang, hint_words=hint_words, context_text=context_text)
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
     except Exception as exc:
