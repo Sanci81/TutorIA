@@ -2166,6 +2166,12 @@ El reconocimiento de voz confunde a menudo la pronunciación no nativa. Si recib
 - La pregunta debe basarse en lo que acabas de enseñar.
 - En preguntas de opción múltiple, las opciones deben ser cosas o palabras reales
   (p. ej. "piedra" o "perro"), no las propiedades mismas (p. ej. "vivo" o "sin vida").
+
+=== MODO VOZ: RESPUESTA CORTA ===
+- En modo voz pregunta siempre de forma que se pueda responder con UNA SOLA PALABRA EN
+  ESPAÑOL. Bien: "¿Qué significa tree? ¡Dilo con una palabra!" → respuesta: "árbol"
+- Pide al niño que diga solo esa palabra, no una frase entera.
+- No pidas respuestas que mezclen español con la lengua extranjera.
 """
         return prompt
 
@@ -2354,6 +2360,12 @@ Ne mondd, hogy "Mit jelent az angol flower?" — ez magyartalan.
 - A kérdés arra épüljön, amit épp most tanítottál.
 - Feleletválasztósnál az opciók valódi dolgok vagy szavak legyenek (pl. "kő" vagy
   "kutya"), ne maguk a tulajdonságok (pl. "élő" vagy "élettelen").
+
+=== HANGMÓD: RÖVID VÁLASZ ===
+- Hangmódban mindig úgy kérdezz, hogy EGYETLEN MAGYAR SZÓVAL lehessen válaszolni.
+  Jó: "Mit jelent a tree? Mondd egy szóval!" → várt válasz: "fa"
+- Kérd is meg a gyereket, hogy csak azt az egy szót mondja, ne egész mondatot.
+- Ne kérj olyan választ, amiben magyar és idegen szó keveredik.
 """
 
     prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
