@@ -7,6 +7,7 @@ Funkciók (1. fázis):
   - Kétnyelvű felület (magyar / spanyol) nyelvváltóval
 """
 
+import difflib
 import json
 import logging
 import os
@@ -3941,11 +3942,11 @@ def api_voice_transcribe():
             except Exception:
                 pass
 
-        # Választás: bővített szólista (hint_words + context_text szavai >3 karakter)
-        chosen = "native"
-        matched_word = None
-        text = text_native
-        if text_target:
+        # ── Szavankénti összefésülés difflib SequenceMatcher-rel ──
+        text = text_native or text_target
+        merged = text_native or text_target
+        if text_native and text_target:
+            native_words, target_words = text_native.split(), text_target.split()
             expanded = set()
             if hint_words:
                 expanded.update(w.lower() for w in hint_words)
@@ -3955,21 +3956,28 @@ def api_voice_transcribe():
                     for w in context_text.split()
                     if len(w.strip(".,!?:;¿¡-\"'")) > 3
                 )
-            if expanded:
-                def _contains_expanded(t: str) -> str | None:
-                    t_words = {w.strip(".,!?:;¿¡-\"'").lower() for w in t.split()}
-                    overlap = t_words & expanded
-                    return next(iter(overlap)) if overlap else None
-                m_target = _contains_expanded(text_target)
-                m_native = _contains_expanded(text_native)
-                if m_target and not m_native:
-                    chosen = "target"
-                    matched_word = m_target
-                    text = text_target
-        if not text:
-            text = text_target or text_native
+            sm = difflib.SequenceMatcher(
+                a=[w.lower() for w in native_words],
+                b=[w.lower() for w in target_words],
+            )
+            result_words: list[str] = []
+            for tag, i1, i2, j1, j2 in sm.get_opcodes():
+                if tag == "equal":
+                    result_words.extend(native_words[i1:i2])
+                elif tag in ("replace", "insert", "delete"):
+                    seg_target = target_words[j1:j2]
+                    has_hint = expanded and any(
+                        w.strip(".,!?:;¿¡-\"'").lower() in expanded
+                        for w in seg_target
+                    )
+                    if has_hint:
+                        result_words.extend(target_words[j1:j2])
+                    else:
+                        result_words.extend(native_words[i1:i2])
+            merged = " ".join(result_words)
+            text = merged
 
-        print(f"[VOICE-DEBUG] native={text_native!r} target={text_target!r} chosen={chosen!r} matched={matched_word!r}", flush=True)
+        print(f"[VOICE-DEBUG] native={text_native!r} target={text_target!r} merged={merged!r}", flush=True)
 
         if not text:
             return jsonify({"error": "empty_transcript"}), 400
