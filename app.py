@@ -1759,7 +1759,7 @@ def _whisper_transcribe(
         return ""
     print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} hint_count={len(hint_words or [])} raw={result!r}", flush=True)
     stripped = result.strip(".,!?;:¿¡- \t\"'")
-    if len(stripped) <= 2:
+    if len(stripped) <= 1:
         print(f"[VOICE-DEBUG] too_short discarded: {result!r}", flush=True)
         return ""
     return result
