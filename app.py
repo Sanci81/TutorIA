@@ -1633,7 +1633,7 @@ Ne tegyél fel egyszerre több kérdést.
 
 def _whisper_transcribe(
     audio_bytes: bytes, filename: str = "audio.webm", language: str = "hu",
-    frame: str = "hu",
+    frame: str = "hu", force_language: str | None = None,
 ) -> str:
     api_key = _openai_api_key()
     if not api_key:
@@ -1658,11 +1658,14 @@ def _whisper_transcribe(
     client = _openai_client(api_key, request_timeout=60.0)
     buf = io.BytesIO(audio_bytes)
     buf.name = filename if "." in filename else f"{filename}.webm"
-    transcription = client.audio.transcriptions.create(
-        model="gpt-4o-mini-transcribe",
-        file=buf,
-        prompt=whisper_prompt,
-    )
+    create_kwargs: dict = {
+        "model": "gpt-4o-mini-transcribe",
+        "file": buf,
+        "prompt": whisper_prompt,
+    }
+    if force_language:
+        create_kwargs["language"] = force_language
+    transcription = client.audio.transcriptions.create(**create_kwargs)
     result = (transcription.text or "").strip()
     _ECHO_WORDS = {"igen", "nem", "nem tudom", "víz", "water", "kenyér", "bread",
                    "apple", "alma", "hello", "szia", "transcribe", "child", "says"}
@@ -1676,9 +1679,9 @@ def _whisper_transcribe(
         "www.", "http", "♪", "[ silence ]", "[silence]"
     )
     if any(h in result.lower() for h in _WHISPER_HALLUCINATIONS):
-        print(f"[VOICE-DEBUG] frame={frame!r} whisper_lang={whisper_lang!r} raw={result!r} (hallucination filtered)", flush=True)
+        print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} raw={result!r} (hallucination filtered)", flush=True)
         return ""
-    print(f"[VOICE-DEBUG] frame={frame!r} whisper_lang={whisper_lang!r} raw={result!r}", flush=True)
+    print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_language!r} raw={result!r}", flush=True)
     return result
 
 
@@ -3709,8 +3712,10 @@ def api_voice_transcribe():
     frame = (request.form.get("frame") or "hu").strip().lower()
     if frame not in ("hu", "es"):
         frame = "hu"
+    _foreign = language in ("angol", "német", "francia", "spanyol")
+    force_lang = None if _foreign else ("es" if frame == "es" else "hu")
     try:
-        text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame)
+        text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame, force_language=force_lang)
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
     except Exception as exc:
