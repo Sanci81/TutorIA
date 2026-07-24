@@ -151,6 +151,7 @@ class ChatSession(Base):
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
     language: Mapped[str] = mapped_column(String(20), nullable=False, default="")
     topic_id: Mapped[str] = mapped_column(String(100), nullable=False, default="")
+    grade: Mapped[int | None] = mapped_column(Integer, nullable=True, default=None)
     curriculum_position: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
@@ -183,6 +184,8 @@ class Vocabulary(Base):
         UniqueConstraint(
             "child_id",
             "subject",
+            "language",
+            "topic_id",
             "word_native",
             "word_foreign",
             name="uq_vocab_child_subject_words",
@@ -195,6 +198,7 @@ class Vocabulary(Base):
     )
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
     language: Mapped[str] = mapped_column(String(20), nullable=False, default="")
+    topic_id: Mapped[str | None] = mapped_column(String(100), nullable=True, default=None)
     word_native: Mapped[str] = mapped_column(String(255), nullable=False)
     word_foreign: Mapped[str] = mapped_column(String(255), nullable=False)
     learned_at: Mapped[datetime] = mapped_column(
@@ -865,6 +869,7 @@ def _chat_session_dict(row: ChatSession) -> dict[str, Any]:
         "subject": row.subject,
         "language": row.language or "",
         "topic_id": row.topic_id or "",
+        "grade": row.grade,
         "curriculum_position": row.curriculum_position or {},
         "created_at": row.created_at,
     }
@@ -906,6 +911,7 @@ def get_or_create_chat_session(
     *,
     language: str = "",
     topic_id: str = "",
+    grade: int | None = None,
     curriculum_position: dict | None = None,
     force_new: bool = False,
 ) -> dict[str, Any]:
@@ -914,7 +920,7 @@ def get_or_create_chat_session(
     db = _session()
     try:
         if not force_new:
-            row = db.scalar(
+            stmt = (
                 select(ChatSession)
                 .where(
                     ChatSession.child_id == child_id,
@@ -924,6 +930,9 @@ def get_or_create_chat_session(
                 )
                 .order_by(ChatSession.created_at.desc())
             )
+            if grade is not None:
+                stmt = stmt.where(ChatSession.grade == grade)
+            row = db.scalar(stmt)
             if row:
                 if curriculum_position and row.curriculum_position != curriculum_position:
                     row.curriculum_position = curriculum_position
@@ -935,6 +944,7 @@ def get_or_create_chat_session(
             subject=subject,
             language=lang_key,
             topic_id=tpid,
+            grade=grade,
             curriculum_position=curriculum_position or {},
         )
         db.add(row)
@@ -1271,6 +1281,7 @@ def _vocabulary_dict(row: Vocabulary) -> dict[str, Any]:
         "child_id": row.child_id,
         "subject": row.subject,
         "language": row.language,
+        "topic_id": row.topic_id,
         "word_native": row.word_native,
         "word_foreign": row.word_foreign,
         "learned_at": row.learned_at,
@@ -1282,6 +1293,7 @@ def get_vocabulary(
     subject: str,
     *,
     language: str | None = None,
+    topic_id: str | None = None,
 ) -> list[dict[str, Any]]:
     db = _session()
     try:
@@ -1291,6 +1303,8 @@ def get_vocabulary(
         )
         if language:
             stmt = stmt.where(Vocabulary.language == language)
+        if topic_id is not None:
+            stmt = stmt.where(Vocabulary.topic_id == topic_id)
         rows = db.scalars(
             stmt.order_by(Vocabulary.word_native.asc())
         ).all()
@@ -1306,6 +1320,7 @@ def add_vocabulary_word(
     language: str,
     word_native: str,
     word_foreign: str,
+    topic_id: str | None = None,
 ) -> dict[str, Any] | None:
     """Új szó hozzáadása – None ha már létezik."""
     native = word_native.strip()
@@ -1319,6 +1334,8 @@ def add_vocabulary_word(
             select(Vocabulary).where(
                 Vocabulary.child_id == child_id,
                 Vocabulary.subject == subject,
+                Vocabulary.language == (language or "").strip().lower(),
+                Vocabulary.topic_id == topic_id,
                 Vocabulary.word_native == native,
                 Vocabulary.word_foreign == foreign,
             )
@@ -1330,6 +1347,7 @@ def add_vocabulary_word(
             child_id=child_id,
             subject=subject,
             language=(language or "").strip().lower(),
+            topic_id=topic_id,
             word_native=native,
             word_foreign=foreign,
         )

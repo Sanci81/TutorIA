@@ -2765,6 +2765,8 @@ def _chat_save_vocabulary(
     subject: str,
     language: str,
     vocab_pairs: list[tuple[str, str]],
+    *,
+    topic_id: str | None = None,
 ) -> list[dict]:
     added: list[dict] = []
     for native, foreign in vocab_pairs:
@@ -2774,6 +2776,7 @@ def _chat_save_vocabulary(
             language=language,
             word_native=native,
             word_foreign=foreign,
+            topic_id=topic_id,
         )
         if row:
             added.append(row)
@@ -2790,11 +2793,12 @@ def child_vocabulary(child_id: int):
 
     subject = (request.args.get("subject") or "").strip()
     language = (request.args.get("language") or "").strip().lower()
+    topic_id = (request.args.get("topic_id") or "").strip() or None
     if not subject:
         return jsonify({"words": []})
 
     words = database.get_vocabulary(
-        child_id, subject, language=language or None
+        child_id, subject, language=language or None, topic_id=topic_id
     )
     return jsonify({"words": words})
 
@@ -2951,6 +2955,7 @@ def child_chat(child_id: int):
         subject,
         language=language,
         topic_id=current_topic_id,
+        grade=_chat_grade_num(child),
         curriculum_position={
             "current_topic": current_topic,
             "current_topic_id": current_topic_id,
@@ -2973,6 +2978,7 @@ def child_chat(child_id: int):
             subject,
             language=language,
             topic_id=current_topic_id,
+            grade=_chat_grade_num(child),
             force_new=True,
         )
         messages = []
@@ -3005,7 +3011,7 @@ def child_chat(child_id: int):
 
     vocabulary = []
     if is_foreign and language:
-        vocabulary = database.get_vocabulary(child_id, subject, language=language)
+        vocabulary = database.get_vocabulary(child_id, subject, language=language, topic_id=current_topic_id)
 
     chat_switch_params = {"child_id": child_id, "subject": subject, "mode": "chat"}
     if language:
@@ -3287,7 +3293,7 @@ def child_chat_send(child_id: int):
     database.add_chat_message(session_id, "assistant", reply)
 
     if is_foreign and language and vocab_pairs:
-        _chat_save_vocabulary(child_id, subject, language, vocab_pairs)
+        _chat_save_vocabulary(child_id, subject, language, vocab_pairs, topic_id=current_topic_id)
 
     completed = list(progress.get("topics_completed") or [])
     last_pos = progress.get("last_position")
@@ -3338,7 +3344,7 @@ def child_chat_send(child_id: int):
     )
     vocabulary = []
     if is_foreign and language:
-        vocabulary = database.get_vocabulary(child_id, subject, language=language)
+        vocabulary = database.get_vocabulary(child_id, subject, language=language, topic_id=current_topic_id)
 
     return jsonify(
         {
@@ -3801,6 +3807,7 @@ def child_chat_test_submit(child_id: int):
                                 language=language,
                                 word_native=native,
                                 word_foreign=foreign,
+                                topic_id=topic_id,
                             )
                 elif isinstance(szo_par, dict):
                     native = szo_par.get("magyar") or szo_par.get("native", "")
@@ -3811,6 +3818,7 @@ def child_chat_test_submit(child_id: int):
                             language=language,
                             word_native=native,
                             word_foreign=foreign,
+                            topic_id=topic_id,
                         )
 
         completed_names = [
@@ -3872,7 +3880,7 @@ def child_chat_test_submit(child_id: int):
                     f"Ne használj ###, **, {{ }} formázást."
                 )
                 chat_session = database.get_or_create_chat_session(
-                    child_id, subject, language=language, topic_id=topic_id
+                    child_id, subject, language=language, topic_id=topic_id, grade=_chat_grade_num(child)
                 )
                 reply = _call_ai_for_chat(congrats_prompt, [], "")
                 database.add_chat_message(chat_session["id"], "assistant", reply)
