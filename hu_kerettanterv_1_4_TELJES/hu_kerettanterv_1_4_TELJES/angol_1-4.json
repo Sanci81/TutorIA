@@ -1,0 +1,155 @@
+{
+  "meta": {
+    "tantargy": "Angol",
+    "tantargy_tipus": "élő idegen nyelv",
+    "evfolyam": "1-4",
+    "evfolyamok": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "forras": "Saját felépítés – NAT 'élő idegen nyelv' témakörök + KER/CEFR (Pre-A1→A1)",
+    "megjegyzes": "A NAT az élő idegen nyelvet 4. évfolyamtól írja elő, ezért az 1-3. évfolyam anyaga extra, korai nyelvi alapozás. A magyarázat nyelve magyar, a célnyelv angol. Az AI ebből olvassa ki, hogy az adott osztályban mit tanítson."
+  },
+  "teljes_szoveg": "ANGOL mint élő idegen nyelv – 1-4. évfolyam.\n\nAz angol az első idegen nyelv az alsó tagozaton. A NAT az élő idegen nyelvet 4. évfolyamtól írja elő, ezért az 1-3. évfolyam anyaga extra, korai nyelvi alapozás. A tanítás magyarul folyik, az angol szavak ebbe ágyazódnak.\n\nAz 1-2. évfolyamon minden szóban zajlik, olvasás és írás nélkül; a 3-4. évfolyamon óvatosan megjelenik a szófelismerő olvasás és a rövid szavak másolása. A gyerek soha nem kap nyelvtani szabályt, csak kész fordulatokat utánoz.\n\nSzintprogresszió: 1-2. o. Pre-A1 (szóbeli, játékos) · 3-4. o. Pre-A1→A1 (írás-olvasás bevezetése).\n\nTémakörök: Greetings – Köszönés és bemutatkozás, Numbers 1–10 – Számok, Colours – Színek, My family – A családom, Animals – Állatok, My body – A testem, School – Az iskola, Food – Étkezés, My home – Az otthonom, Clothes – Ruhák, Weather and days – Időjárás és napok, My day – A napirendem.",
+  "bevezeto": "Az alsó tagozatos angol nyelvtanulás célja nem a nyelvtan megtanítása, hanem az, hogy a gyerek megszeresse a nyelvet, megszokja a hangzását, és bátran megszólaljon. A tanítás magyarul folyik, az angol szavak ebbe ágyazódnak. Az 1-2. évfolyamon minden szóban zajlik, olvasás és írás nélkül; a 3-4. évfolyamon óvatosan megjelenik a szófelismerő olvasás és a rövid szavak másolása. A gyerek soha nem kap nyelvtani szabályt, csak kész fordulatokat utánoz.",
+  "evfolyam_blokkok": {
+    "1-2": {
+      "evfolyamok": [1, 2],
+      "cefr_szint": "Pre-A1 (szóbeli alapozás, olvasás-írás nélkül)",
+      "leiras": "Az 1-2. évfolyamon az angol tanítása kizárólag szóban, hallás után történik. A gyerek dalokból, mondókákból, játékokból sajátítja el az első szavakat. Nem írunk és nem olvasunk angolul, és nem magyarázunk nyelvtani szabályt.",
+      "temakorok": [
+        {
+          "nev": "Greetings – Köszönés és bemutatkozás",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek köszön angolul, megmondja a nevét, és válaszol egy egyszerű kérdésre.",
+          "szokincs": ["hello", "hi", "goodbye", "bye", "good morning", "please", "thank you", "yes", "no", "my name is…", "what's your name?"],
+          "nyelvtan": ["rögzült fordulatok utánzása (nincs szabálymagyarázat)"],
+          "kommunikacios_szandekok": ["köszönés érkezéskor és távozáskor", "saját név megmondása", "udvariasság (kérlek/köszönöm)"],
+          "javasolt_tevekenysegek": ["köszönő dal", "báb-párbeszéd", "névkör labdával"],
+          "teljes_szoveg": "Témakör: Greetings – Köszönés és bemutatkozás\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek köszön angolul, megmondja a nevét, és válaszol egy egyszerű kérdésre.\nSzókincs (példák): hello, hi, goodbye, bye, good morning, please, thank you, yes, no, my name is…, what's your name?\nNyelvtani fókusz: rögzült fordulatok utánzása (nincs szabálymagyarázat)\nKommunikációs szándékok: köszönés érkezéskor és távozáskor; saját név megmondása; udvariasság (kérlek/köszönöm)\nJavasolt tevékenységek: köszönő dal; báb-párbeszéd; névkör labdával"
+        },
+        {
+          "nev": "Numbers 1–10 – Számok",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek elszámol angolul tízig, és megmondja, hány darab van valamiből.",
+          "szokincs": ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "how many?"],
+          "nyelvtan": ["számnevek önálló használata", "a how many kérdés utánzása"],
+          "kommunikacios_szandekok": ["mennyiség megnevezése", "életkor megmondása (I'm seven.)", "számmal válaszolni"],
+          "javasolt_tevekenysegek": ["számolás ujjakon és tapssal", "ugrálós számolás", "kártyajáték képekkel"],
+          "teljes_szoveg": "Témakör: Numbers 1–10 – Számok\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek elszámol angolul tízig, és megmondja, hány darab van valamiből.\nSzókincs (példák): one, two, three, four, five, six, seven, eight, nine, ten, how many?\nNyelvtani fókusz: számnevek önálló használata; a how many kérdés utánzása\nKommunikációs szándékok: mennyiség megnevezése; életkor megmondása (I'm seven.); számmal válaszolni\nJavasolt tevékenységek: számolás ujjakon és tapssal; ugrálós számolás; kártyajáték képekkel"
+        },
+        {
+          "nev": "Colours – Színek",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek megnevezi a fő színeket, és megmondja, milyen színű egy tárgy.",
+          "szokincs": ["red", "blue", "yellow", "green", "black", "white", "orange", "pink", "brown", "what colour is it?"],
+          "nyelvtan": ["It is + szín rögzült fordulatként"],
+          "kommunikacios_szandekok": ["tárgy színének megnevezése", "kedvenc szín kifejezése", "színek felismerése"],
+          "javasolt_tevekenysegek": ["színkereső séta", "festés diktálásra", "Simon says színekkel"],
+          "teljes_szoveg": "Témakör: Colours – Színek\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a fő színeket, és megmondja, milyen színű egy tárgy.\nSzókincs (példák): red, blue, yellow, green, black, white, orange, pink, brown, what colour is it?\nNyelvtani fókusz: It is + szín rögzült fordulatként\nKommunikációs szándékok: tárgy színének megnevezése; kedvenc szín kifejezése; színek felismerése\nJavasolt tevékenységek: színkereső séta; festés diktálásra; Simon says színekkel"
+        },
+        {
+          "nev": "My family – A családom",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek bemutatja a családtagjait egyszerű fordulattal.",
+          "szokincs": ["mum", "dad", "brother", "sister", "grandma", "grandpa", "baby", "family", "this is my…"],
+          "nyelvtan": ["This is my + családtag rögzült fordulatként"],
+          "kommunikacios_szandekok": ["családtagok megnevezése", "bemutatás", "kérdésre egyszavas válasz"],
+          "javasolt_tevekenysegek": ["családrajz bemutatása", "fényképalbum", "báb-család szerepjáték"],
+          "teljes_szoveg": "Témakör: My family – A családom\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek bemutatja a családtagjait egyszerű fordulattal.\nSzókincs (példák): mum, dad, brother, sister, grandma, grandpa, baby, family, this is my…\nNyelvtani fókusz: This is my + családtag rögzült fordulatként\nKommunikációs szándékok: családtagok megnevezése; bemutatás; kérdésre egyszavas válasz\nJavasolt tevékenységek: családrajz bemutatása; fényképalbum; báb-család szerepjáték"
+        },
+        {
+          "nev": "Animals – Állatok",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek megnevezi a gyakori állatokat, és kifejezi, melyiket szereti.",
+          "szokincs": ["dog", "cat", "bird", "fish", "horse", "cow", "rabbit", "mouse", "I like…"],
+          "nyelvtan": ["It's a + állat és I like + állat rögzült fordulatként"],
+          "kommunikacios_szandekok": ["állat megnevezése", "tetszés kifejezése", "felismerés hang vagy kép alapján"],
+          "javasolt_tevekenysegek": ["állathang-találós", "mozgásutánzás", "memóriakártya"],
+          "teljes_szoveg": "Témakör: Animals – Állatok\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a gyakori állatokat, és kifejezi, melyiket szereti.\nSzókincs (példák): dog, cat, bird, fish, horse, cow, rabbit, mouse, I like…\nNyelvtani fókusz: It's a + állat és I like + állat rögzült fordulatként\nKommunikációs szándékok: állat megnevezése; tetszés kifejezése; felismerés hang vagy kép alapján\nJavasolt tevékenységek: állathang-találós; mozgásutánzás; memóriakártya"
+        },
+        {
+          "nev": "My body – A testem",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek megnevezi a fő testrészeket, és követi az egyszerű utasításokat.",
+          "szokincs": ["head", "hand", "foot", "eye", "ear", "nose", "mouth", "hair", "touch your…"],
+          "nyelvtan": ["egyes és többes alak utánzása (eye – eyes)", "felszólítás megértése"],
+          "kommunikacios_szandekok": ["testrész megnevezése", "utasítás követése", "mutatással válaszolni"],
+          "javasolt_tevekenysegek": ["Head, shoulders, knees and toes dal", "tükörjáték", "rajzolás diktálásra"],
+          "teljes_szoveg": "Témakör: My body – A testem\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a fő testrészeket, és követi az egyszerű utasításokat.\nSzókincs (példák): head, hand, foot, eye, ear, nose, mouth, hair, touch your…\nNyelvtani fókusz: egyes és többes alak utánzása (eye – eyes); felszólítás megértése\nKommunikációs szándékok: testrész megnevezése; utasítás követése; mutatással válaszolni\nJavasolt tevékenységek: Head, shoulders, knees and toes dal; tükörjáték; rajzolás diktálásra"
+        }
+      ],
+      "teljes_szoveg": "1–2. évfolyam (CEFR/KER: Pre-A1 (szóbeli alapozás, olvasás-írás nélkül))\n\nAz 1-2. évfolyamon az angol tanítása kizárólag szóban, hallás után történik. A gyerek dalokból, mondókákból, játékokból sajátítja el az első szavakat. Nem írunk és nem olvasunk angolul, és nem magyarázunk nyelvtani szabályt.\n\n\nTémakör: Greetings – Köszönés és bemutatkozás\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek köszön angolul, megmondja a nevét, és válaszol egy egyszerű kérdésre.\nSzókincs (példák): hello, hi, goodbye, bye, good morning, please, thank you, yes, no, my name is…, what's your name?\nNyelvtani fókusz: rögzült fordulatok utánzása (nincs szabálymagyarázat)\nKommunikációs szándékok: köszönés érkezéskor és távozáskor; saját név megmondása; udvariasság (kérlek/köszönöm)\nJavasolt tevékenységek: köszönő dal; báb-párbeszéd; névkör labdával\n\nTémakör: Numbers 1–10 – Számok\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek elszámol angolul tízig, és megmondja, hány darab van valamiből.\nSzókincs (példák): one, two, three, four, five, six, seven, eight, nine, ten, how many?\nNyelvtani fókusz: számnevek önálló használata; a how many kérdés utánzása\nKommunikációs szándékok: mennyiség megnevezése; életkor megmondása (I'm seven.); számmal válaszolni\nJavasolt tevékenységek: számolás ujjakon és tapssal; ugrálós számolás; kártyajáték képekkel\n\nTémakör: Colours – Színek\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a fő színeket, és megmondja, milyen színű egy tárgy.\nSzókincs (példák): red, blue, yellow, green, black, white, orange, pink, brown, what colour is it?\nNyelvtani fókusz: It is + szín rögzült fordulatként\nKommunikációs szándékok: tárgy színének megnevezése; kedvenc szín kifejezése; színek felismerése\nJavasolt tevékenységek: színkereső séta; festés diktálásra; Simon says színekkel\n\nTémakör: My family – A családom\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek bemutatja a családtagjait egyszerű fordulattal.\nSzókincs (példák): mum, dad, brother, sister, grandma, grandpa, baby, family, this is my…\nNyelvtani fókusz: This is my + családtag rögzült fordulatként\nKommunikációs szándékok: családtagok megnevezése; bemutatás; kérdésre egyszavas válasz\nJavasolt tevékenységek: családrajz bemutatása; fényképalbum; báb-család szerepjáték\n\nTémakör: Animals – Állatok\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a gyakori állatokat, és kifejezi, melyiket szereti.\nSzókincs (példák): dog, cat, bird, fish, horse, cow, rabbit, mouse, I like…\nNyelvtani fókusz: It's a + állat és I like + állat rögzült fordulatként\nKommunikációs szándékok: állat megnevezése; tetszés kifejezése; felismerés hang vagy kép alapján\nJavasolt tevékenységek: állathang-találós; mozgásutánzás; memóriakártya\n\nTémakör: My body – A testem\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a fő testrészeket, és követi az egyszerű utasításokat.\nSzókincs (példák): head, hand, foot, eye, ear, nose, mouth, hair, touch your…\nNyelvtani fókusz: egyes és többes alak utánzása (eye – eyes); felszólítás megértése\nKommunikációs szándékok: testrész megnevezése; utasítás követése; mutatással válaszolni\nJavasolt tevékenységek: Head, shoulders, knees and toes dal; tükörjáték; rajzolás diktálásra"
+    },
+    "3-4": {
+      "evfolyamok": [3, 4],
+      "cefr_szint": "Pre-A1 → A1 (az írás-olvasás óvatos bevezetése)",
+      "leiras": "A 3-4. évfolyamon megjelenik a szófelismerő olvasás: a gyerek felismeri az ismert szavak leírt alakját, és rövid szavakat lemásol. A hangsúly továbbra is a beszéden van. Megjelennek az első egyszerű szerkezetek (I have…, I like…, It's…), de kész fordulatként.",
+      "temakorok": [
+        {
+          "nev": "School – Az iskola",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek megnevezi az iskolai tárgyakat, és elmondja, mi van nála.",
+          "szokincs": ["school", "teacher", "book", "pen", "pencil", "bag", "desk", "chair", "I have a…"],
+          "nyelvtan": ["határozatlan névelő: a / an", "I have a + tárgy"],
+          "kommunikacios_szandekok": ["tárgy megnevezése", "birtoklás kifejezése", "kérés az órán"],
+          "javasolt_tevekenysegek": ["tolltartó-bemutató", "tantermi tárgyak keresése", "szókártya-párosítás"],
+          "teljes_szoveg": "Témakör: School – Az iskola\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi az iskolai tárgyakat, és elmondja, mi van nála.\nSzókincs (példák): school, teacher, book, pen, pencil, bag, desk, chair, I have a…\nNyelvtani fókusz: határozatlan névelő: a / an; I have a + tárgy\nKommunikációs szándékok: tárgy megnevezése; birtoklás kifejezése; kérés az órán\nJavasolt tevékenységek: tolltartó-bemutató; tantermi tárgyak keresése; szókártya-párosítás"
+        },
+        {
+          "nev": "Food – Étkezés",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek megnevezi a gyakori ételeket, és kifejezi, mit szeret és mit nem.",
+          "szokincs": ["bread", "milk", "water", "apple", "banana", "cheese", "egg", "I like…", "I don't like…"],
+          "nyelvtan": ["tetszés és nemtetszés: I like / I don't like", "többes alak (apples)"],
+          "kommunikacios_szandekok": ["étel megnevezése", "ízlés kifejezése", "udvarias kérés"],
+          "javasolt_tevekenysegek": ["reggeli-szerepjáték", "szeretem/nem szeretem kör", "bevásárlólista"],
+          "teljes_szoveg": "Témakör: Food – Étkezés\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a gyakori ételeket, és kifejezi, mit szeret és mit nem.\nSzókincs (példák): bread, milk, water, apple, banana, cheese, egg, I like…, I don't like…\nNyelvtani fókusz: tetszés és nemtetszés: I like / I don't like; többes alak (apples)\nKommunikációs szándékok: étel megnevezése; ízlés kifejezése; udvarias kérés\nJavasolt tevékenységek: reggeli-szerepjáték; szeretem/nem szeretem kör; bevásárlólista"
+        },
+        {
+          "nev": "My home – Az otthonom",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek megnevezi a helyiségeket és bútorokat, és megmondja, hol van valami.",
+          "szokincs": ["house", "room", "kitchen", "bathroom", "bed", "table", "door", "window", "in", "on"],
+          "nyelvtan": ["egyszerű helyviszonyok: in, on", "Where is…? kérdés megértése"],
+          "kommunikacios_szandekok": ["helyiség és bútor megnevezése", "hely megadása", "kérdés feltevése"],
+          "javasolt_tevekenysegek": ["szobarajz felcímkézése", "Where is the cat? játék", "makett bemutatása"],
+          "teljes_szoveg": "Témakör: My home – Az otthonom\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a helyiségeket és bútorokat, és megmondja, hol van valami.\nSzókincs (példák): house, room, kitchen, bathroom, bed, table, door, window, in, on\nNyelvtani fókusz: egyszerű helyviszonyok: in, on; Where is…? kérdés megértése\nKommunikációs szándékok: helyiség és bútor megnevezése; hely megadása; kérdés feltevése\nJavasolt tevékenységek: szobarajz felcímkézése; Where is the cat? játék; makett bemutatása"
+        },
+        {
+          "nev": "Clothes – Ruhák",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek megnevezi a ruhadarabokat, és elmondja, mi van rajta.",
+          "szokincs": ["T-shirt", "trousers", "shoes", "dress", "hat", "jacket", "socks", "I'm wearing…"],
+          "nyelvtan": ["I'm wearing + ruhadarab rögzült fordulatként", "páros ruhák többes alakja"],
+          "kommunikacios_szandekok": ["ruhadarab megnevezése", "saját öltözék leírása", "időjáráshoz illő ruha"],
+          "javasolt_tevekenysegek": ["öltöztetős papírbaba", "divatbemutató", "időjárás-ruha párosítás"],
+          "teljes_szoveg": "Témakör: Clothes – Ruhák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a ruhadarabokat, és elmondja, mi van rajta.\nSzókincs (példák): T-shirt, trousers, shoes, dress, hat, jacket, socks, I'm wearing…\nNyelvtani fókusz: I'm wearing + ruhadarab rögzült fordulatként; páros ruhák többes alakja\nKommunikációs szándékok: ruhadarab megnevezése; saját öltözék leírása; időjáráshoz illő ruha\nJavasolt tevékenységek: öltöztetős papírbaba; divatbemutató; időjárás-ruha párosítás"
+        },
+        {
+          "nev": "Weather and days – Időjárás és napok",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek elmondja, milyen az idő, és megnevezi a hét napjait.",
+          "szokincs": ["sunny", "rainy", "cloudy", "windy", "hot", "cold", "Monday", "Tuesday", "Sunday", "what's the weather like?"],
+          "nyelvtan": ["It's + időjárás szerkezet", "a hét napjai nagybetűvel"],
+          "kommunikacios_szandekok": ["időjárás leírása", "nap megnevezése", "kérdés az időjárásról"],
+          "javasolt_tevekenysegek": ["időjárás-naptár", "hét napjai dal", "piktogram-készítés"],
+          "teljes_szoveg": "Témakör: Weather and days – Időjárás és napok\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek elmondja, milyen az idő, és megnevezi a hét napjait.\nSzókincs (példák): sunny, rainy, cloudy, windy, hot, cold, Monday, Tuesday, Sunday, what's the weather like?\nNyelvtani fókusz: It's + időjárás szerkezet; a hét napjai nagybetűvel\nKommunikációs szándékok: időjárás leírása; nap megnevezése; kérdés az időjárásról\nJavasolt tevékenységek: időjárás-naptár; hét napjai dal; piktogram-készítés"
+        },
+        {
+          "nev": "My day – A napirendem",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek három-négy egyszerű mondatban elmeséli a napját.",
+          "szokincs": ["get up", "wash", "eat", "go to school", "play", "read", "sleep", "morning", "evening"],
+          "nyelvtan": ["egyszerű jelen idő E/1 (I get up…)", "and és then kötőszó"],
+          "kommunikacios_szandekok": ["napi tevékenység megnevezése", "napszak megadása", "3-4 mondatos beszéd"],
+          "javasolt_tevekenysegek": ["napirend-képsor sorba rendezése", "napirendi mim", "saját nap elmesélése"],
+          "teljes_szoveg": "Témakör: My day – A napirendem\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek három-négy egyszerű mondatban elmeséli a napját.\nSzókincs (példák): get up, wash, eat, go to school, play, read, sleep, morning, evening\nNyelvtani fókusz: egyszerű jelen idő E/1 (I get up…); and és then kötőszó\nKommunikációs szándékok: napi tevékenység megnevezése; napszak megadása; 3-4 mondatos beszéd\nJavasolt tevékenységek: napirend-képsor sorba rendezése; napirendi mim; saját nap elmesélése"
+        }
+      ],
+      "teljes_szoveg": "3–4. évfolyam (CEFR/KER: Pre-A1 → A1 (az írás-olvasás óvatos bevezetése))\n\nA 3-4. évfolyamon megjelenik a szófelismerő olvasás: a gyerek felismeri az ismert szavak leírt alakját, és rövid szavakat lemásol. A hangsúly továbbra is a beszéden van. Megjelennek az első egyszerű szerkezetek (I have…, I like…, It's…), de kész fordulatként.\n\n\nTémakör: School – Az iskola\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi az iskolai tárgyakat, és elmondja, mi van nála.\nSzókincs (példák): school, teacher, book, pen, pencil, bag, desk, chair, I have a…\nNyelvtani fókusz: határozatlan névelő: a / an; I have a + tárgy\nKommunikációs szándékok: tárgy megnevezése; birtoklás kifejezése; kérés az órán\nJavasolt tevékenységek: tolltartó-bemutató; tantermi tárgyak keresése; szókártya-párosítás\n\nTémakör: Food – Étkezés\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a gyakori ételeket, és kifejezi, mit szeret és mit nem.\nSzókincs (példák): bread, milk, water, apple, banana, cheese, egg, I like…, I don't like…\nNyelvtani fókusz: tetszés és nemtetszés: I like / I don't like; többes alak (apples)\nKommunikációs szándékok: étel megnevezése; ízlés kifejezése; udvarias kérés\nJavasolt tevékenységek: reggeli-szerepjáték; szeretem/nem szeretem kör; bevásárlólista\n\nTémakör: My home – Az otthonom\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a helyiségeket és bútorokat, és megmondja, hol van valami.\nSzókincs (példák): house, room, kitchen, bathroom, bed, table, door, window, in, on\nNyelvtani fókusz: egyszerű helyviszonyok: in, on; Where is…? kérdés megértése\nKommunikációs szándékok: helyiség és bútor megnevezése; hely megadása; kérdés feltevése\nJavasolt tevékenységek: szobarajz felcímkézése; Where is the cat? játék; makett bemutatása\n\nTémakör: Clothes – Ruhák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a ruhadarabokat, és elmondja, mi van rajta.\nSzókincs (példák): T-shirt, trousers, shoes, dress, hat, jacket, socks, I'm wearing…\nNyelvtani fókusz: I'm wearing + ruhadarab rögzült fordulatként; páros ruhák többes alakja\nKommunikációs szándékok: ruhadarab megnevezése; saját öltözék leírása; időjáráshoz illő ruha\nJavasolt tevékenységek: öltöztetős papírbaba; divatbemutató; időjárás-ruha párosítás\n\nTémakör: Weather and days – Időjárás és napok\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek elmondja, milyen az idő, és megnevezi a hét napjait.\nSzókincs (példák): sunny, rainy, cloudy, windy, hot, cold, Monday, Tuesday, Sunday, what's the weather like?\nNyelvtani fókusz: It's + időjárás szerkezet; a hét napjai nagybetűvel\nKommunikációs szándékok: időjárás leírása; nap megnevezése; kérdés az időjárásról\nJavasolt tevékenységek: időjárás-naptár; hét napjai dal; piktogram-készítés\n\nTémakör: My day – A napirendem\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek három-négy egyszerű mondatban elmeséli a napját.\nSzókincs (példák): get up, wash, eat, go to school, play, read, sleep, morning, evening\nNyelvtani fókusz: egyszerű jelen idő E/1 (I get up…); and és then kötőszó\nKommunikációs szándékok: napi tevékenység megnevezése; napszak megadása; 3-4 mondatos beszéd\nJavasolt tevékenységek: napirend-képsor sorba rendezése; napirendi mim; saját nap elmesélése"
+    }
+  }
+}
