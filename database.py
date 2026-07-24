@@ -385,6 +385,8 @@ def init_db() -> None:
     ensure_topic_scores_extra_columns()
     ensure_children_curriculum_column()
     ensure_children_grade_columns()
+    ensure_vocabulary_topic_id_column()
+    ensure_chat_sessions_grade_column()
 
 
 def ensure_children_grade_columns() -> None:
@@ -431,6 +433,61 @@ def ensure_children_curriculum_column() -> None:
                 exc.__class__.__name__,
                 stmt,
             )
+
+
+def ensure_vocabulary_topic_id_column() -> None:
+    """vocabulary.topic_id oszlop + új unique constraint (child_id, subject, language, topic_id, word_native, word_foreign)."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    try:
+        with engine.begin() as conn:
+            conn.execute(
+                text(
+                    "ALTER TABLE vocabulary ADD COLUMN IF NOT EXISTS "
+                    "topic_id VARCHAR(100)"
+                )
+            )
+            # Régi constraint eldobása, új létrehozása
+            conn.execute(
+                text(
+                    "ALTER TABLE vocabulary DROP CONSTRAINT IF EXISTS "
+                    "uq_vocab_child_subject_words"
+                )
+            )
+            conn.execute(
+                text(
+                    "ALTER TABLE vocabulary ADD CONSTRAINT uq_vocab_child_subject_words "
+                    "UNIQUE (child_id, subject, language, topic_id, word_native, word_foreign)"
+                )
+            )
+    except Exception as exc:
+        logger.warning(
+            "ensure_vocabulary_topic_id_column: kihagyva (%s): %s",
+            exc.__class__.__name__,
+            exc,
+        )
+
+
+def ensure_chat_sessions_grade_column() -> None:
+    """chat_sessions.grade oszlop hozzáadása (évfolyam szerinti session szétválasztás)."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    try:
+        with engine.begin() as conn:
+            conn.execute(
+                text(
+                    "ALTER TABLE chat_sessions ADD COLUMN IF NOT EXISTS "
+                    "grade INTEGER"
+                )
+            )
+    except Exception as exc:
+        logger.warning(
+            "ensure_chat_sessions_grade_column: kihagyva (%s): %s",
+            exc.__class__.__name__,
+            exc,
+        )
 
 
 def ensure_children_birth_date_column() -> None:
