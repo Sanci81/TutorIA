@@ -3943,9 +3943,7 @@ def api_voice_transcribe():
     if len(audio_bytes) < 1000:
         return jsonify({"error": "audio_too_short"}), 400
     language = (request.form.get("language") or "hu").strip().lower()
-    frame = (request.form.get("frame") or "hu").strip().lower()
-    if frame not in ("hu", "es"):
-        frame = "hu"
+    frame = "es" if _active_curriculum() == "ES" else "hu"
     _foreign = language in ("angol", "német", "francia", "spanyol")
     force_lang = "es" if frame == "es" else "hu"
 
@@ -4054,7 +4052,7 @@ def api_voice_transcribe():
                 merged = " ".join(result_words)
                 text = merged
 
-        print(f"[VOICE-DEBUG] native={text_native!r} target={text_target!r} merged={merged!r} route={route!r} error={error_line!r}", flush=True)
+        print(f"[VOICE-DEBUG] frame={frame!r} force_lang={force_lang!r} native={text_native!r} target={text_target!r} merged={merged!r} route={route!r} error={error_line!r}", flush=True)
 
         if not text:
             return jsonify({"error": "empty_transcript"}), 400
