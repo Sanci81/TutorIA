@@ -2456,6 +2456,7 @@ def _call_ai_for_quiz(
     ora_szam: int, all_ora_szamok: list[int], szokincs: list | None = None,
     language: str | None = None, teaching_language: str | None = None,
     text_len: int | None = None, avg_text_len: float | None = None,
+    history: list[dict[str, Any]] | None = None,
 ) -> list[dict[str, Any]]:
     api_key = _openai_api_key()
     if not api_key:
@@ -2475,6 +2476,55 @@ def _call_ai_for_quiz(
     material = (topic_text or topic_name)[:10000]
 
     is_foreign_language = szokincs is not None or bool(language and language.strip())
+
+    # ── Diák korábbi eredményeinek összefoglalója ──────────────────────
+    _history_block = ""
+    if history:
+        passed_count = sum(1 for h in history if h.get("passed"))
+        total_count = len(history)
+        avg_score = (
+            round(sum(h.get("score", 0) for h in history) / total_count)
+            if total_count
+            else 0
+        )
+        failed_topics = [
+            h.get("topic_name", h.get("topic_id", "?"))
+            for h in history
+            if not h.get("passed")
+        ]
+        _history_block = (
+            f"STUDENT HISTORY: {total_count} topics tested, {passed_count} passed "
+            f"(average score: {avg_score}%). "
+        )
+        if failed_topics:
+            _history_block += (
+                f"Topics the student found difficult: {', '.join(failed_topics)}. "
+            )
+        _history_block += "\n"
+
+    _adapt_block_en = (
+        "\nADAPT THE TEST TO THE STUDENT'S LEVEL:\n"
+        "- If the student has been doing well, you may ask more challenging questions\n"
+        "- If the student struggled with certain topics, include simpler review questions\n"
+        "- Vary the difficulty: mix easy recall questions with harder application questions\n"
+        "- Keep the total number of questions as specified above\n"
+    )
+    _adapt_block_es = (
+        "\nADAPTA LA PRUEBA AL NIVEL DEL ALUMNO:\n"
+        "- Si le ha ido bien, puedes hacer preguntas más difíciles\n"
+        "- Si tuvo dificultades en ciertos temas, incluye preguntas de repaso más sencillas\n"
+        "- Varía la dificultad: mezcla preguntas fáciles de recuerdo con otras más difíciles de aplicación\n"
+        "- Mantén el número total de preguntas indicado arriba\n"
+    )
+    _adapt_block_hu = (
+        "\nA DIÁK EDDIGI EREDMÉNYEI EBBEN A TANTÁRGYBAN:\n"
+        f"{_history_block}"
+        "IGAZÍTSD A TESZTET A DIÁK SZINTJÉHEZ:\n"
+        "- Ha a diák eddig jól teljesített és magabiztos, tehetsz fel nehezebb, mélyebb kérdéseket is\n"
+        "- Ha a diák bizonyos témákban gyengébb volt, azokból egyszerűbb, alapozó kérdéseket tegyél fel\n"
+        "- Legyen változatos a nehézség: keverj könnyű felidézős és nehezebb alkalmazós kérdéseket\n"
+        "- A kérdések száma maradjon a fent megadott\n\n"
+    )
 
     if grade <= 2:
         mc_ratio, fill_ratio = 1.0, 0.0
@@ -2532,7 +2582,8 @@ def _call_ai_for_quiz(
             f"Student: {age} years old, grade {grade}.\n\n"
             f"{source_block}\n\n"
             f"{source_rule}\n\n"
-            "CRITICAL RULES FOR QUESTION QUALITY:\n"
+            + (_history_block + _adapt_block_en if _history_block else "")
+            + "CRITICAL RULES FOR QUESTION QUALITY:\n"
             "- EVERY question (including fill-in and sentence) MUST have EXACTLY ONE correct answer\n"
             "- GOOD question types:\n"
             f"  * 'What is the {lang_display} word for [Hungarian word]?'\n"
@@ -2568,7 +2619,8 @@ def _call_ai_for_quiz(
         system = (
             "Eres un generador de pruebas para niños españoles de primaria.\n"
             f"ALUMNO: {age} años, {grade}º de primaria.\n\n"
-            "NIVEL DE DIFICULTAD SEGÚN EL CURSO:\n"
+            + (_history_block + _adapt_block_es if _history_block else "")
+            + "NIVEL DE DIFICULTAD SEGÚN EL CURSO:\n"
             "- 1º: números hasta 20, sumas/restas de un paso\n"
             "- 2º: números hasta 100, sumas/restas, multiplicación simple\n"
             "- 3º: números hasta 1000, multiplicación, división\n"
@@ -2603,7 +2655,8 @@ def _call_ai_for_quiz(
             "- Use concepts from the curriculum text\n"
             "- Do NOT copy examples from these instructions\n\n"
             f"CURRICULUM TEXT:\n{material}\n\n"
-            f"Generate exactly {q_count} multiple choice questions, 3 options each, 1 correct. RANDOMIZE the correct answer position — do NOT always use index 0.\n"
+            + (_adapt_block_hu if _history_block else "")
+            + f"Generate exactly {q_count} multiple choice questions, 3 options each, 1 correct. RANDOMIZE the correct answer position — do NOT always use index 0.\n"
             "ALL text in HUNGARIAN.\n"
             'Return ONLY this JSON: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
             "CRITICAL: Every option must be a full meaningful Hungarian answer, never single letters."
@@ -3601,6 +3654,7 @@ def child_chat_test_generate(child_id: int):
         # A _call_ai_for_quiz is_foreign_language = szokincs is not None helyett
         # language alapján döntjük el hogy idegen nyelvű-e a teszt
         topic_szokincs = topic.get("szokincs") if language and language.strip() else None
+        history = database.get_child_topic_history(child_id, progress_subject, grade_num)
         questions = _call_ai_for_quiz(
             grade=_chat_grade_num(child),
             topic_name=topic["name"],
@@ -3613,6 +3667,7 @@ def child_chat_test_generate(child_id: int):
             teaching_language=chat_curriculum.get("language"),
             text_len=this_text_len,
             avg_text_len=avg_text_len,
+            history=history,
         )
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501

@@ -1264,6 +1264,27 @@ def get_topic_scores(
         db.close()
 
 
+def get_child_topic_history(
+    child_id: int, subject: str, grade: int
+) -> list[dict[str, Any]]:
+    """A diák eddigi témakör-eredményei (szűrve child_id + subject + grade).
+    completed_at szerint rendezve. Üres lista, ha nincs adat."""
+    db = _session()
+    try:
+        rows = db.scalars(
+            select(ChildTopicScore)
+            .where(
+                ChildTopicScore.child_id == child_id,
+                ChildTopicScore.subject == subject,
+                ChildTopicScore.grade == grade,
+            )
+            .order_by(ChildTopicScore.completed_at.asc().nullsfirst())
+        ).all()
+        return [_topic_score_dict(r) for r in rows]
+    finally:
+        db.close()
+
+
 def get_topic_score(child_id: int, subject: str, grade: int, topic_id: str) -> dict[str, Any] | None:
     """Egyetlen témakör score dictje, vagy None ha nincs még eredmény."""
     db = _session()
