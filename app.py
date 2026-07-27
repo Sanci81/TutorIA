@@ -2555,11 +2555,25 @@ def _call_ai_for_quiz(
         if sent_count > 0:
             type_lines.append(f'- {sent_count} SENTENCE COMPLETION: {{"type":"sent","q":"El niño ___ en el parque.","answer":"juega"}}')
 
-        difficulty = (
-            "simple vocabulary, very short sentences" if grade <= 4
-            else "intermediate phrases and structures" if grade <= 6
-            else "complex sentences and grammar"
-        )
+        if grade <= 4:
+            difficulty = (
+                "simple vocabulary (everyday basic words), present tense only, "
+                "very short sentences (3-5 words)"
+            )
+        elif grade <= 6:
+            difficulty = (
+                "5th-6th grade level: simple present tense, everyday/basic vocabulary "
+                "(family, school, animals, colors, numbers, daily routine), "
+                "short clear sentences"
+            )
+        else:
+            difficulty = (
+                "7th-8th grade level: past tense and more complex sentence structures, "
+                "broader and more abstract vocabulary (feelings, opinions, future plans, "
+                "hobbies, school subjects, travel). This is an OLDER student — do NOT use "
+                "grade 1-4 level words like 'uncle'/'garden'/'apple', use vocabulary and "
+                "grammar appropriate for a 13-14 year old"
+            )
 
         # Nyelv meghatározása: szokincs vagy language alapján
         target_language = language or "spanyol"
@@ -2610,6 +2624,36 @@ def _call_ai_for_quiz(
             q_example_1 = "'Mit jelent magyarul, hogy \"sol\"?' (opciók magyarul: eső / nap / hó)"
             q_example_2 = f"'Hogy mondják {target_lang_name_in_q_lang}, hogy \"hétfő\"?' (opciók {target_lang_name_in_q_lang})"
 
+        # FILL/SENT: a mondat a CÉLNYELVEN legyen (nyelvtudást mér), csak a rövid
+        # utasítás lehet a tanterv nyelvén. Nyelvenkénti minta a jó/rossz mondatokhoz.
+        fill_instruction = "Completa:" if _active_curriculum() == "ES" else "Egészítsd ki:"
+        _fill_sent_examples = {
+            "angol": {
+                "good1": ("The birds are flying in the ___.", "sky"),
+                "good2": ("I ___ to school every day.", "go"),
+                "bad": ("I like to eat ___.", "many foods fit (candy, pizza, fruit...)"),
+            },
+            "nemet": {
+                "good1": ("Die Vögel fliegen am ___.", "Himmel"),
+                "good2": ("Ich ___ jeden Tag in die Schule.", "gehe"),
+                "bad": ("Ich möchte ___ essen.", "many foods fit"),
+            },
+            "francia": {
+                "good1": ("Les oiseaux volent dans le ___.", "ciel"),
+                "good2": ("Je ___ à l'école tous les jours.", "vais"),
+                "bad": ("Je veux manger ___.", "many foods fit"),
+            },
+            "spanyol": {
+                "good1": ("Me gusta el ___ de naranja.", "zumo"),
+                "good2": ("El ___ es un animal que dice guau.", "perro"),
+                "bad": ("El niño quiere beber ___.", "water, milk, juice all fit"),
+            },
+        }.get(target_language.lower(), {
+            "good1": ("Me gusta el ___ de naranja.", "zumo"),
+            "good2": ("El ___ es un animal que dice guau.", "perro"),
+            "bad": ("El niño quiere beber ___.", "water, milk, juice all fit"),
+        })
+
         system = (
             f"WRITE ALL QUESTION TEXT AND EXPLANATIONS IN {q_lang_upper}. "
             f"Only the foreign words being tested and the answer options stay in {lang_upper}.\n\n"
@@ -2621,23 +2665,37 @@ def _call_ai_for_quiz(
             + (_history_block + _adapt_block_en if _history_block else "")
             + "CRITICAL RULES FOR QUESTION QUALITY:\n"
             "- EVERY question (including fill-in and sentence) MUST have EXACTLY ONE correct answer\n"
-            f"- The QUESTION text and any explanation MUST be written in {q_lang_display} "
-            f"(the curriculum language), NOT in {lang_display}.\n"
-            f"- The foreign word being asked about and the answer options/answers stay in {lang_display}.\n"
-            f"- When the question text NAMES the target language itself, ALWAYS write that "
+            f"- TYPE \"mc\" ONLY: the question text (\"q\") and any explanation MUST be written "
+            f"in {q_lang_display} (the curriculum language), NOT in {lang_display}. Only the "
+            f"foreign word being asked about and the answer options stay in {lang_display}.\n"
+            f"- When the mc question text NAMES the target language itself, ALWAYS write that "
             f"name correctly in {q_lang_display} (the question's own language) — e.g. "
             f"{lang_name_rule_example}. NEVER mix languages in the language name itself "
             "(e.g. NEVER 'spanishul' or 'englishül').\n"
-            "- GOOD question types:\n"
+            f"- TYPE \"fill\" and \"sent\" ONLY: the ENTIRE sentence in \"q\" (including the "
+            f"blank ___ and the missing word in \"answer\") MUST be written COMPLETELY in "
+            f"{lang_display} — this tests real language skill, NOT translation. NEVER write "
+            f"a fill/sent sentence entirely (or even partly) in {q_lang_display}. You MAY "
+            f"optionally prepend a short instruction word in {q_lang_display} before the "
+            f"sentence (e.g. \"{fill_instruction}\"), but the sentence itself must be 100% "
+            f"in {lang_display}.\n"
+            "- GOOD mc question types:\n"
             f"  * {q_example_1}\n"
             f"  * {q_example_2}\n"
             f"  * 'Which {lang_display} word means [concept described in {q_lang_display}]?'\n"
-            "- For FILL-IN and SENTENCE questions:\n"
+            f"- GOOD fill/sent question types (sentence 100% in {lang_display}):\n"
+            f"  * \"{fill_instruction} {_fill_sent_examples['good1'][0]}\" "
+            f"(answer: \"{_fill_sent_examples['good1'][1]}\")\n"
+            f"  * \"{fill_instruction} {_fill_sent_examples['good2'][0]}\" "
+            f"(answer: \"{_fill_sent_examples['good2'][1]}\")\n"
+            "- BAD fill/sent question types (NEVER do this):\n"
+            f"  * A sentence written entirely in {q_lang_display} with just one "
+            f"{lang_display} word inserted (e.g. a Hungarian/Spanish sentence with a "
+            f"foreign word dropped in) — FORBIDDEN, the whole sentence must be "
+            f"{lang_display}\n"
+            f"  * \"{fill_instruction} {_fill_sent_examples['bad'][0]}\" "
+            f"({_fill_sent_examples['bad'][1]} — FORBIDDEN, ambiguous)\n"
             "  * The sentence MUST have only ONE possible correct word\n"
-            f"  * GOOD example: 'Me gusta el ___ de naranja' (only 'zumo' fits = orange juice)\n"
-            f"  * GOOD example: 'El ___ es un animal que dice guau' (only 'perro' fits = dog says woof)\n"
-            "  * BAD example: 'El niño quiere beber ___' (water, milk, juice all fit — FORBIDDEN)\n"
-            "  * BAD example: 'Me gusta comer ___' (many foods fit — FORBIDDEN)\n"
             "  * The sentence context MUST make only ONE word correct (use specific clues)\n"
             "- BAD question types (NEVER use these):\n"
             "  * Opinion questions ('What is your favorite...?')\n"
@@ -2648,9 +2706,12 @@ def _call_ai_for_quiz(
             "QUESTION TYPES:\n" + "\n".join(type_lines) + "\n\n"
             "RULES:\n"
             "- NEVER put the answer inside the question\n"
-            f"- Question text (\"q\") in {q_lang_display}; answer options/answers in {lang_display}.\n"
-            "- mc: options array has exactly 3 items, correct is 0, 1 or 2 — RANDOMIZE the correct position, do NOT always put the correct answer first (index 0). Use index 0, 1, and 2 roughly equally across questions.\n"
-            "- fill/sent: answer is a string, options field is omitted\n"
+            f"- mc: question text (\"q\") in {q_lang_display}; answer options in {lang_display}. "
+            "options array has exactly 3 items, correct is 0, 1 or 2 — RANDOMIZE the correct "
+            "position, do NOT always put the correct answer first (index 0). Use index 0, 1, "
+            "and 2 roughly equally across questions.\n"
+            f"- fill/sent: the ENTIRE sentence (\"q\") and the \"answer\" are 100% in "
+            f"{lang_display} (see rules above) — answer is a string, options field is omitted\n"
             f"- Difficulty: {difficulty}\n\n"
             f"Generate exactly {q_count} questions total.\n"
             'Return ONLY this JSON: {"questions": [...]}'
