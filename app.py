@@ -2245,6 +2245,9 @@ a su curso.
 Si el alumno no conoce una palabra básica, complétala brevemente, pero después vuelve
 inmediatamente a tu propio nivel.
 """
+        print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
+              f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
+              f"len={len(prompt)}", flush=True)
         return prompt
 
     # ── HU tanterv vagy ES tanterv nem-idegennyelv tantárgy → magyar prompt ──
@@ -2474,6 +2477,9 @@ saját szintjére.
   "kutya"), ne maguk a tulajdonságok (pl. "élő" vagy "élettelen").
 """
 
+    print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
+          f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
+          f"len={len(prompt)}", flush=True)
     return prompt
 
 
@@ -3361,6 +3367,7 @@ def child_chat_send(child_id: int):
         history = []
     database.add_chat_message(session_id, "user", user_text)
 
+    print(f"[HIST-DEBUG] history_len={len(history)}", flush=True)
     try:
         raw_reply = _call_ai_for_chat(system_prompt, history, user_text)
     except NotImplementedError:
