@@ -2580,13 +2580,35 @@ def _call_ai_for_quiz(
         # ES→spanyol); csak a kérdezett idegen szó / a válasz maradjon a célnyelven.
         q_lang_display = "Spanish" if _active_curriculum() == "ES" else "Hungarian"
         q_lang_upper = "SPANISH" if _active_curriculum() == "ES" else "HUNGARIAN"
+        # A célnyelv NEVE a kérdés nyelvén (nem az angol "Spanish"/"English" szó!) —
+        # _display_language_name a kerettanterv nyelvén (hu/es) adja a helyes nevet.
+        if _active_curriculum() == "ES":
+            target_lang_name_in_q_lang = "en " + _display_language_name(
+                target_language, ui_lang="es"
+            ).lower()
+            lang_name_rule_example = (
+                "'en inglés', 'en alemán', 'en francés', 'en español'"
+            )
+        else:
+            # Magyarban a nyelv neve toldalékos alakban jelenik meg a kérdésben
+            # (angolul / németül / franciául / spanyolul) — nem puszta "+ul" rag.
+            target_lang_name_in_q_lang = {
+                "angol": "angolul",
+                "nemet": "németül",
+                "spanyol": "spanyolul",
+                "francia": "franciául",
+            }.get(target_language.lower(), "spanyolul")
+            lang_name_rule_example = (
+                "'angolul', 'németül', 'franciául', 'spanyolul'"
+            )
         # Példa a helyes kérdésfelépítésre a tanterv nyelvén.
+        # (target_lang_name_in_q_lang ES esetén már tartalmazza az "en " elöljárót.)
         if _active_curriculum() == "ES":
             q_example_1 = "'¿Qué significa en español \"sol\"?' (opciones en español: lluvia / sol / nieve)"
-            q_example_2 = f"'¿Cómo se dice en {lang_display} \"lunes\"?' (opciones en {lang_display})"
+            q_example_2 = f"'¿Cómo se dice {target_lang_name_in_q_lang} \"lunes\"?' (opciones {target_lang_name_in_q_lang})"
         else:
             q_example_1 = "'Mit jelent magyarul, hogy \"sol\"?' (opciók magyarul: eső / nap / hó)"
-            q_example_2 = f"'Hogy mondják {lang_display.lower()}ul, hogy \"hétfő\"?' (opciók {lang_display.lower()}ul)"
+            q_example_2 = f"'Hogy mondják {target_lang_name_in_q_lang}, hogy \"hétfő\"?' (opciók {target_lang_name_in_q_lang})"
 
         system = (
             f"WRITE ALL QUESTION TEXT AND EXPLANATIONS IN {q_lang_upper}. "
@@ -2602,6 +2624,10 @@ def _call_ai_for_quiz(
             f"- The QUESTION text and any explanation MUST be written in {q_lang_display} "
             f"(the curriculum language), NOT in {lang_display}.\n"
             f"- The foreign word being asked about and the answer options/answers stay in {lang_display}.\n"
+            f"- When the question text NAMES the target language itself, ALWAYS write that "
+            f"name correctly in {q_lang_display} (the question's own language) — e.g. "
+            f"{lang_name_rule_example}. NEVER mix languages in the language name itself "
+            "(e.g. NEVER 'spanishul' or 'englishül').\n"
             "- GOOD question types:\n"
             f"  * {q_example_1}\n"
             f"  * {q_example_2}\n"
