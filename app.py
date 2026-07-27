@@ -2230,6 +2230,20 @@ El reconocimiento de voz confunde a menudo la pronunciación no nativa. Si recib
   ESPAÑOL. Bien: "¿Qué significa tree? ¡Dilo con una palabra!" → respuesta: "árbol"
 - Pide al niño que diga solo esa palabra, no una frase entera.
 - No pidas respuestas que mezclen español con la lengua extranjera.
+
+=== NIVEL ADECUADO AL CURSO ===
+El curso del alumno: {grade}º. Adapta a esto LO QUE enseñas:
+- 1º-4º curso: palabras básicas (familia, animales, colores, números), frases hechas,
+  sin explicación gramatical.
+- 5º-6º curso: presente simple, temas cotidianos, formación de frases cortas.
+- 7º-8º curso: pasado y futuro, frases más complejas, vocabulario más abstracto
+  (opinión, sentimientos, planes, viajes, escuela, aficiones), pequeños discursos
+  con coherencia.
+NUNCA enseñes un nivel inferior al curso del alumno: a un alumno de 7º-8º NO le
+expliques palabras básicas (p. ej. 'family', 'dog', 'garden'), sino material adecuado
+a su curso.
+Si el alumno no conoce una palabra básica, complétala brevemente, pero después vuelve
+inmediatamente a tu propio nivel.
 """
         return prompt
 
@@ -2424,6 +2438,18 @@ Ne mondd, hogy "Mit jelent az angol flower?" — ez magyartalan.
   Jó: "Mit jelent a tree? Mondd egy szóval!" → várt válasz: "fa"
 - Kérd is meg a gyereket, hogy csak azt az egy szót mondja, ne egész mondatot.
 - Ne kérj olyan választ, amiben magyar és idegen szó keveredik.
+
+=== ÉVFOLYAMHOZ ILLŐ SZINT ===
+A diák évfolyama: {grade}. Ehhez igazítsd, MIT tanítasz:
+- 1-4. évfolyam: alapszavak (család, állatok, színek, számok), kész fordulatok, nincs
+  nyelvtani magyarázat.
+- 5-6. évfolyam: egyszerű jelen idő, mindennapi témák, rövid mondatok alkotása.
+- 7-8. évfolyam: múlt idő és jövő idő, összetettebb mondatok, elvontabb szókincs
+  (vélemény, érzések, tervek, utazás, iskola, hobbi), rövid összefüggő beszéd.
+SOHA ne taníts a diák évfolyama alatti szintet: egy 7-8. osztályosnak NE alapszavakat
+magyarázz (pl. 'family', 'dog', 'garden'), hanem az évfolyamához illő anyagot.
+Ha a diák egy alapszót nem tud, röviden pótold, de utána azonnal lépj vissza a
+saját szintjére.
 """
 
     prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
