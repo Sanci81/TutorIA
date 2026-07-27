@@ -2576,19 +2576,36 @@ def _call_ai_for_quiz(
             "francia": "French",
         }.get(target_language.lower(), "Spanish")
         
+        # A kérdés szövege és a magyarázat a TANTERV nyelvén legyen (HU→magyar,
+        # ES→spanyol); csak a kérdezett idegen szó / a válasz maradjon a célnyelven.
+        q_lang_display = "Spanish" if _active_curriculum() == "ES" else "Hungarian"
+        q_lang_upper = "SPANISH" if _active_curriculum() == "ES" else "HUNGARIAN"
+        # Példa a helyes kérdésfelépítésre a tanterv nyelvén.
+        if _active_curriculum() == "ES":
+            q_example_1 = "'¿Qué significa en español \"sol\"?' (opciones en español: lluvia / sol / nieve)"
+            q_example_2 = f"'¿Cómo se dice en {lang_display} \"lunes\"?' (opciones en {lang_display})"
+        else:
+            q_example_1 = "'Mit jelent magyarul, hogy \"sol\"?' (opciók magyarul: eső / nap / hó)"
+            q_example_2 = f"'Hogy mondják {lang_display.lower()}ul, hogy \"hétfő\"?' (opciók {lang_display.lower()}ul)"
+
         system = (
-            f"YOU MUST RESPOND ONLY IN {lang_upper}. ALL QUESTIONS AND ANSWERS IN {lang_upper}. NEVER USE HUNGARIAN.\n\n"
-            f"You are a {lang_display} language vocabulary quiz generator.\n"
+            f"WRITE ALL QUESTION TEXT AND EXPLANATIONS IN {q_lang_upper}. "
+            f"Only the foreign words being tested and the answer options stay in {lang_upper}.\n\n"
+            f"You are a {lang_display} language vocabulary quiz generator for students "
+            f"whose curriculum language is {q_lang_display}.\n"
             f"Student: {age} years old, grade {grade}.\n\n"
             f"{source_block}\n\n"
             f"{source_rule}\n\n"
             + (_history_block + _adapt_block_en if _history_block else "")
             + "CRITICAL RULES FOR QUESTION QUALITY:\n"
             "- EVERY question (including fill-in and sentence) MUST have EXACTLY ONE correct answer\n"
+            f"- The QUESTION text and any explanation MUST be written in {q_lang_display} "
+            f"(the curriculum language), NOT in {lang_display}.\n"
+            f"- The foreign word being asked about and the answer options/answers stay in {lang_display}.\n"
             "- GOOD question types:\n"
-            f"  * 'What is the {lang_display} word for [Hungarian word]?'\n"
-            f"  * 'What does [foreign word] mean in Hungarian?'\n"
-            f"  * 'Which word means [concept] in {lang_display}?'\n"
+            f"  * {q_example_1}\n"
+            f"  * {q_example_2}\n"
+            f"  * 'Which {lang_display} word means [concept described in {q_lang_display}]?'\n"
             "- For FILL-IN and SENTENCE questions:\n"
             "  * The sentence MUST have only ONE possible correct word\n"
             f"  * GOOD example: 'Me gusta el ___ de naranja' (only 'zumo' fits = orange juice)\n"
@@ -2605,7 +2622,7 @@ def _call_ai_for_quiz(
             "QUESTION TYPES:\n" + "\n".join(type_lines) + "\n\n"
             "RULES:\n"
             "- NEVER put the answer inside the question\n"
-            "- ALL text (questions, options, answers) MUST be in " + lang_display + "\n"
+            f"- Question text (\"q\") in {q_lang_display}; answer options/answers in {lang_display}.\n"
             "- mc: options array has exactly 3 items, correct is 0, 1 or 2 — RANDOMIZE the correct position, do NOT always put the correct answer first (index 0). Use index 0, 1, and 2 roughly equally across questions.\n"
             "- fill/sent: answer is a string, options field is omitted\n"
             f"- Difficulty: {difficulty}\n\n"
@@ -2674,7 +2691,12 @@ def _call_ai_for_quiz(
                 {"role": "system", "content": system},
                 {"role": "user", "content": (
                     f"Generate {q_count} questions and return valid JSON. "
-                    f"Language: {lang_display if is_foreign_language else 'Hungarian'}. "
+                    + (
+                        f"Question text language: {q_lang_display}; "
+                        f"answers/target words language: {lang_display}. "
+                        if is_foreign_language
+                        else "Language: Hungarian. "
+                    )
                     + extra_user_note
                 )},
             ],

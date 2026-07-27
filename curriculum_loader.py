@@ -60,9 +60,9 @@ _HU_DOCX_SUBJECTS: dict[str, str] = {
     "Matematika": "Matematika",
     "Etika": "Etika",
     "Kornyezetismeret": "Környezetismeret",
-    "elo_idegen_nyelv_A_egyben": "Első élő idegen nyelv",
-    "elo_idegen_nyelv_F_egyben": "Első élő idegen nyelv",
-    "elo_idegen_nyelv": "Első élő idegen nyelv",
+    "elo_idegen_nyelv_A_egyben": "Idegen nyelv",
+    "elo_idegen_nyelv_F_egyben": "Idegen nyelv",
+    "elo_idegen_nyelv": "Idegen nyelv",
     "Enek-zene": "Ének-zene",
     "Vizualis_kultura": "Vizuális kultúra",
     "Technika_es_tervezes": "Technika és tervezés",
@@ -197,7 +197,7 @@ _HU_1_4_SUBJECT_MAP: dict[str, str] = {
 }
 
 ELO_IDEGEN_NYELV_1_4_FILE = "Elo_idegen_nyelv_1_4.json"
-ELO_IDEGEN_NYELV_5_8_FILE = "Elo_idegen_nyelv_5_8.json"
+ELO_IDEGEN_NYELV_5_8_FILE = "elo_idegen_nyelv_5-8.json"
 ELO_IDEGEN_NYELV_5_8_ALT = "elo_idegen_nyelv_5-8.json"
 SPANYOL_1_4_FILE = "spanyol_1-4.json"
 SPANYOL_5_8_FILE = "spanyol_5-8.json"
@@ -906,7 +906,7 @@ def _display_subject_name(raw: str) -> str:
         "vizualiskultura": "Vizuális kultúra",
         "kornyezetismeret": "Környezetismeret",
         "idegennyelv": "Idegen nyelv",
-        "eloidegennyelv": "Első élő idegen nyelv",
+        "eloidegennyelv": "Idegen nyelv",
         "technikaestervezes": "Technika és tervezés",
         "testneveles": "Testnevelés",
         "tortenelem": "Történelem",
