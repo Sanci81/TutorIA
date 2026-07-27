@@ -202,6 +202,7 @@ ELO_IDEGEN_NYELV_5_8_ALT = "elo_idegen_nyelv_5-8.json"
 SPANYOL_1_4_FILE = "spanyol_1-4.json"
 SPANYOL_5_8_FILE = "spanyol_5-8.json"
 ANGOL_1_4_FILE = "angol_1-4.json"
+ANGOL_5_8_FILE = "angol_5-8.json"
 
 # ── LOMLOE spanyol nemzeti tanterv (BOE-A-2022-3296) ──────────────────────
 ES_LOE_DIR: Path = Path(__file__).parent / "es_kerettanterv"
@@ -1606,6 +1607,10 @@ def get_curriculum_for_chat(
     if effective_language == "angol" and is_hu_1_4_grade(grade_num):
         en_path = _hu_1_4_path_from_filename(ANGOL_1_4_FILE)
         if en_path and en_path not in candidates:
+            candidates.insert(0, en_path)
+    elif effective_language == "angol" and 5 <= grade_num <= 8:
+        en_path = root / "hu_kerettanterv_5_8_TELJES" / ANGOL_5_8_FILE
+        if en_path.is_file() and en_path not in candidates:
             candidates.insert(0, en_path)
 
     def _has_new_structure(path: Path) -> bool:

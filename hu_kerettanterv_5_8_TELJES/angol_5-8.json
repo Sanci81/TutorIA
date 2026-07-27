@@ -1,0 +1,1310 @@
+{
+  "meta": {
+    "tantargy": "Angol",
+    "tantargy_tipus": "élő idegen nyelv",
+    "evfolyam": "5-8",
+    "evfolyamok": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "forras": "NAT 2020 kerettanterv + Oktatás 2030 hivatalos mintatanterv (Angol mint első idegen nyelv, 5-6. és 7-8. évfolyam)",
+    "megjegyzes": "Az évfolyamonkénti nyelvi elemek, struktúrák és az óraszámok a hivatalos mintatantervből származnak. A hivatalos témakör-kategóriák minden évfolyamon azonosak, ezért a leckéket konkrét, évfolyamonként eltérő címekkel bontottuk le; minden lecke tartalmazza, melyik hivatalos témakörhöz tartozik. A magyarázat nyelve magyar, a célnyelv angol."
+  },
+  "bevezeto": "Az 5-8. évfolyam angol tananyaga a hivatalos mintatanterv évfolyamonkénti nyelvtani követelményeire épül, és a 8. évfolyam végére A2 szintre juttatja a tanulót (6. évfolyam végén A1). Minden évfolyam 102 órás, a leckék óraszáma a hivatalos témakör-óraszámokból származik.",
+  "teljes_szoveg": "ANGOL mint élő idegen nyelv – 5-8. évfolyam.\n\nAz 5-8. évfolyam angol tananyaga a hivatalos mintatanterv évfolyamonkénti nyelvtani követelményeire épül, és a 8. évfolyam végére A2 szintre juttatja a tanulót (6. évfolyam végén A1). Minden évfolyam 102 órás, a leckék óraszáma a hivatalos témakör-óraszámokból származik.\n\n5. évfolyam – A1 felé – tudatos nyelvtan kezdete\nAz 5. évfolyamon a 4. osztályos szóbeli alapokra épül a tudatos nyelvhasználat: megjelenik a létige és az egyszerű jelen idő teljes rendszere, a birtoklás és a folyamatos jelen. Az írott szöveg fokozatosan jelenik meg. Hivatalos alapóraszám: 102 óra.\nTémakörök: All about me – Bemutatkozás és személyes adatok; My family and our home – Család és otthon; Animals and nature around us – Állatok és a természet; My school day – Iskolai nap; What's happening now? – Ami éppen történik; Numbers and quantity – Számok és mennyiség; Life in Britain – Élet Nagy-Britanniában; English around us – Az angol nyelv körülöttünk; News and everyday life – Hírek és mindennapok; Sharing what I know – Amit megosztok.\n\n6. évfolyam – A1 – múlt idő és összehasonlítás\nA 6. évfolyam végére a tanuló eléri a KER szerinti A1 szintet. Megjelenik a múlt idő (was/were, Past Simple), a melléknévfokozás, a going to jövő idő és a can/must. Hivatalos alapóraszám: 102 óra.\nTémakörök: Where were you? – Hol voltál?; My holiday story – A nyaralásom; An unforgettable day – Egy felejthetetlen nap; Shopping and quantity – Vásárlás és mennyiség; Comparing things – Összehasonlítás; Dates and celebrations – Dátumok és ünnepek; Rules and abilities – Szabályok és képességek; My plans for the future – Terveim; How I learn English – Hogyan tanulok angolul; Sharing knowledge – Tudásmegosztás.\n\n7. évfolyam – A2 felé – befejezett jelen és összetettebb szerkezetek\nA 7. évfolyamon megjelenik a befejezett jelen (Present Perfect), a will jövő idő, a hosszabb melléknevek fokozása és a függő beszéd jelen időben. Az osztálytermi vonatkozások súlya csökken. Hivatalos alapóraszám: 102 óra.\nTémakörök: What have you done? – Mit csináltál eddig?; My home and my things – Otthonom és a tárgyaim; Nature and protecting it – A természet és védelme; Plans and promises – Tervek és ígéretek; Rules and prohibitions – Szabályok és tiltás; How long...? – Mennyi ideje?; Countries and their culture – Országok és kultúrájuk; News and opinions – Hírek és vélemények; Films, books and free time – Filmek, könyvek, szabadidő; Learning and sharing – Tanulás és tudásmegosztás.\n\n8. évfolyam – A2 – árnyalt kifejezés, feltétel és függő beszéd\nA 8. évfolyam végére a tanuló eléri a KER szerinti A2 szintet. Megjelennek a birtokos névmások, az already/yet/just, a feltételes mondat, a tanácsadás és a függő beszéd. Hivatalos alapóraszám: 102 óra.\nTémakörök: Just, already, yet – Ami már megtörtént; Whose is it? – Kié ez?; Our environment and its future – Környezetünk és jövője; Advice and obligations – Tanács és kötelezettség; Asking politely – Udvarias kérés; The best and the most – A legjobb és a leg...; What did they say? – Mit mondtak?; Hopes and certainty – Remény és bizonyosság; Entertainment and my opinion – Szórakozás és a véleményem; Preparing for the future – Felkészülés a jövőre.\n",
+  "evfolyam_blokkok": {
+    "5": {
+      "evfolyamok": [
+        5
+      ],
+      "cefr_szint": "A1 felé – tudatos nyelvtan kezdete",
+      "leiras": "Az 5. évfolyamon a 4. osztályos szóbeli alapokra épül a tudatos nyelvhasználat: megjelenik a létige és az egyszerű jelen idő teljes rendszere, a birtoklás és a folyamatos jelen. Az írott szöveg fokozatosan jelenik meg. Hivatalos alapóraszám: 102 óra.",
+      "temakorok": [
+        {
+          "nev": "All about me – Bemutatkozás és személyes adatok",
+          "javasolt_oraszam": 11,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló bemutatkozik, adatokat ad meg és kérdez.",
+          "szokincs": [
+            "name",
+            "age",
+            "country",
+            "nationality",
+            "favourite",
+            "spell",
+            "address",
+            "birthday"
+          ],
+          "nyelvtan": [
+            "létige: to be teljes ragozása (I'm, you are, is he...?)",
+            "kérdőszavak: who, when, where, what, how",
+            "igenlő és nemleges rövid válasz (Yes, I am. No, I'm not.)"
+          ],
+          "kommunikacios_szandekok": [
+            "bemutatkozás",
+            "személyes adat megadása és kérdezése",
+            "betűzés kérése (Can you spell it?)"
+          ],
+          "javasolt_tevekenysegek": [
+            "adatlap kitöltése párban",
+            "interjú osztálytárssal",
+            "névbetűző játék"
+          ],
+          "teljes_szoveg": "Témakör: All about me – Bemutatkozás és személyes adatok\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló bemutatkozik, adatokat ad meg és kérdez.\nSzókincs (példák): name, age, country, nationality, favourite, spell, address, birthday\nNyelvtani fókusz: létige: to be teljes ragozása (I'm, you are, is he...?); kérdőszavak: who, when, where, what, how; igenlő és nemleges rövid válasz (Yes, I am. No, I'm not.)\nKommunikációs szándékok: bemutatkozás; személyes adat megadása és kérdezése; betűzés kérése (Can you spell it?)\nJavasolt tevékenységek: adatlap kitöltése párban; interjú osztálytárssal; névbetűző játék\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "My family and our home – Család és otthon",
+          "javasolt_oraszam": 11,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló bemutatja a családját és leírja az otthonát.",
+          "szokincs": [
+            "parents",
+            "cousin",
+            "relatives",
+            "furniture",
+            "appliance",
+            "upstairs",
+            "garden",
+            "flat"
+          ],
+          "nyelvtan": [
+            "birtoklás: birtokos névmások (my, your, his/her) és 's genitive (Joe's brother)",
+            "there is / there are",
+            "helyhatározók: in, on, under, next to, between, opposite"
+          ],
+          "kommunikacios_szandekok": [
+            "családtag bemutatása",
+            "birtoklás kifejezése",
+            "tárgy helyének megadása"
+          ],
+          "javasolt_tevekenysegek": [
+            "családfa készítése és bemutatása",
+            "üres szoba berendezése",
+            "Kié ez? játék"
+          ],
+          "teljes_szoveg": "Témakör: My family and our home – Család és otthon\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló bemutatja a családját és leírja az otthonát.\nSzókincs (példák): parents, cousin, relatives, furniture, appliance, upstairs, garden, flat\nNyelvtani fókusz: birtoklás: birtokos névmások (my, your, his/her) és 's genitive (Joe's brother); there is / there are; helyhatározók: in, on, under, next to, between, opposite\nKommunikációs szándékok: családtag bemutatása; birtoklás kifejezése; tárgy helyének megadása\nJavasolt tevékenységek: családfa készítése és bemutatása; üres szoba berendezése; Kié ez? játék\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Animals and nature around us – Állatok és a természet",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló leír állatokat és természeti jelenségeket.",
+          "szokincs": [
+            "wild animal",
+            "pet",
+            "plant",
+            "forest",
+            "river",
+            "weather",
+            "cloud",
+            "natural phenomena"
+          ],
+          "nyelvtan": [
+            "egyes és többes szám, rendhagyó alakok: dog-dogs, child-children",
+            "névelők: a, an, the",
+            "mutató névmások: this, that, these, those"
+          ],
+          "kommunikacios_szandekok": [
+            "állat megnevezése és leírása",
+            "természeti jelenség megnevezése",
+            "kérdezés: What is it like?"
+          ],
+          "javasolt_tevekenysegek": [
+            "állatkártya készítése",
+            "kutatás: meddig élnek az állatok",
+            "természetfotó leírása"
+          ],
+          "teljes_szoveg": "Témakör: Animals and nature around us – Állatok és a természet\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló leír állatokat és természeti jelenségeket.\nSzókincs (példák): wild animal, pet, plant, forest, river, weather, cloud, natural phenomena\nNyelvtani fókusz: egyes és többes szám, rendhagyó alakok: dog-dogs, child-children; névelők: a, an, the; mutató névmások: this, that, these, those\nKommunikációs szándékok: állat megnevezése és leírása; természeti jelenség megnevezése; kérdezés: What is it like?\nJavasolt tevékenységek: állatkártya készítése; kutatás: meddig élnek az állatok; természetfotó leírása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "My school day – Iskolai nap",
+          "javasolt_oraszam": 18,
+          "kerettantervi_temakor": "Topics concerning classroom activities",
+          "cefr_cel": "A tanuló elmondja a napirendjét és az iskolai szokásait.",
+          "szokincs": [
+            "subject",
+            "timetable",
+            "break",
+            "school staff",
+            "homework",
+            "canteen",
+            "term",
+            "classroom"
+          ],
+          "nyelvtan": [
+            "egyszerű jelen idő (Present Simple) minden személyben",
+            "kérdés és tagadás: do / does",
+            "gyakoriság: always, often, sometimes, never",
+            "időpontok: at 5 o'clock, on Monday, It's quarter to eight."
+          ],
+          "kommunikacios_szandekok": [
+            "napirend elmondása",
+            "órarend ismertetése",
+            "szokások összehasonlítása"
+          ],
+          "javasolt_tevekenysegek": [
+            "órárend készítése angolul",
+            "napirendi mini-prezentáció",
+            "iskolai szabályok plakát"
+          ],
+          "teljes_szoveg": "Témakör: My school day – Iskolai nap\nJavasolt óraszám: 18 óra\nHivatalos kerettantervi témakör: Topics concerning classroom activities\nKommunikációs / fejlesztési cél: A tanuló elmondja a napirendjét és az iskolai szokásait.\nSzókincs (példák): subject, timetable, break, school staff, homework, canteen, term, classroom\nNyelvtani fókusz: egyszerű jelen idő (Present Simple) minden személyben; kérdés és tagadás: do / does; gyakoriság: always, often, sometimes, never; időpontok: at 5 o'clock, on Monday, It's quarter to eight.\nKommunikációs szándékok: napirend elmondása; órarend ismertetése; szokások összehasonlítása\nJavasolt tevékenységek: órárend készítése angolul; napirendi mini-prezentáció; iskolai szabályok plakát\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "What's happening now? – Ami éppen történik",
+          "javasolt_oraszam": 11,
+          "kerettantervi_temakor": "Entertainment and playful learning",
+          "cefr_cel": "A tanuló leírja, mi történik éppen, és utasításokat ad.",
+          "szokincs": [
+            "play",
+            "run",
+            "wear",
+            "carry",
+            "look at",
+            "listen",
+            "sit",
+            "stand"
+          ],
+          "nyelvtan": [
+            "folyamatos jelen (Present Continuous): I'm leaving. Why is she crying?",
+            "felszólító mód: Come here. Don't shout."
+          ],
+          "kommunikacios_szandekok": [
+            "aktuális cselekvés leírása",
+            "utasítás adása és megértése",
+            "képleírás"
+          ],
+          "javasolt_tevekenysegek": [
+            "mimjáték folyamatos jelennel",
+            "Simon says",
+            "képleírás versenyben"
+          ],
+          "teljes_szoveg": "Témakör: What's happening now? – Ami éppen történik\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Entertainment and playful learning\nKommunikációs / fejlesztési cél: A tanuló leírja, mi történik éppen, és utasításokat ad.\nSzókincs (példák): play, run, wear, carry, look at, listen, sit, stand\nNyelvtani fókusz: folyamatos jelen (Present Continuous): I'm leaving. Why is she crying?; felszólító mód: Come here. Don't shout.\nKommunikációs szándékok: aktuális cselekvés leírása; utasítás adása és megértése; képleírás\nJavasolt tevékenységek: mimjáték folyamatos jelennel; Simon says; képleírás versenyben\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Numbers and quantity – Számok és mennyiség",
+          "javasolt_oraszam": 6,
+          "kerettantervi_temakor": "Cross-curricular topics and activities",
+          "cefr_cel": "A tanuló mennyiségeket fejez ki és számol angolul.",
+          "szokincs": [
+            "hundred",
+            "a lot of",
+            "few",
+            "how many",
+            "some",
+            "any",
+            "half",
+            "pair"
+          ],
+          "nyelvtan": [
+            "számok: one, two ... hundred",
+            "megszámlálható főnevek: How many CDs have you got? a lot of / few",
+            "some / any használata",
+            "határozatlan névmások: somebody, anybody, nobody, everybody"
+          ],
+          "kommunikacios_szandekok": [
+            "mennyiség megadása",
+            "kérdezés a mennyiségről",
+            "becslés"
+          ],
+          "javasolt_tevekenysegek": [
+            "osztálystatisztika készítése",
+            "számolós társasjáték",
+            "mérési feladat angolul"
+          ],
+          "teljes_szoveg": "Témakör: Numbers and quantity – Számok és mennyiség\nJavasolt óraszám: 6 óra\nHivatalos kerettantervi témakör: Cross-curricular topics and activities\nKommunikációs / fejlesztési cél: A tanuló mennyiségeket fejez ki és számol angolul.\nSzókincs (példák): hundred, a lot of, few, how many, some, any, half, pair\nNyelvtani fókusz: számok: one, two ... hundred; megszámlálható főnevek: How many CDs have you got? a lot of / few; some / any használata; határozatlan névmások: somebody, anybody, nobody, everybody\nKommunikációs szándékok: mennyiség megadása; kérdezés a mennyiségről; becslés\nJavasolt tevékenységek: osztálystatisztika készítése; számolós társasjáték; mérési feladat angolul\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Life in Britain – Élet Nagy-Britanniában",
+          "javasolt_oraszam": 12,
+          "kerettantervi_temakor": "Intercultural topics",
+          "cefr_cel": "A tanuló megismeri a célnyelvi ország mindennapjait.",
+          "szokincs": [
+            "the United Kingdom",
+            "typical",
+            "tradition",
+            "celebrate",
+            "tea time",
+            "uniform",
+            "double-decker",
+            "castle"
+          ],
+          "nyelvtan": [
+            "kötőszavak: and, or, but, because",
+            "névmások: I, he, they, me, him, them"
+          ],
+          "kommunikacios_szandekok": [
+            "kulturális szokás bemutatása",
+            "összehasonlítás a saját országgal",
+            "érdeklődés kifejezése"
+          ],
+          "javasolt_tevekenysegek": [
+            "angol iskola és a miénk összehasonlítása",
+            "plakát: hazánk és az Egyesült Királyság",
+            "angol ünnep megszervezése"
+          ],
+          "teljes_szoveg": "Témakör: Life in Britain – Élet Nagy-Britanniában\nJavasolt óraszám: 12 óra\nHivatalos kerettantervi témakör: Intercultural topics\nKommunikációs / fejlesztési cél: A tanuló megismeri a célnyelvi ország mindennapjait.\nSzókincs (példák): the United Kingdom, typical, tradition, celebrate, tea time, uniform, double-decker, castle\nNyelvtani fókusz: kötőszavak: and, or, but, because; névmások: I, he, they, me, him, them\nKommunikációs szándékok: kulturális szokás bemutatása; összehasonlítás a saját országgal; érdeklődés kifejezése\nJavasolt tevékenységek: angol iskola és a miénk összehasonlítása; plakát: hazánk és az Egyesült Királyság; angol ünnep megszervezése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "English around us – Az angol nyelv körülöttünk",
+          "javasolt_oraszam": 6,
+          "kerettantervi_temakor": "English and language learning",
+          "cefr_cel": "A tanuló felismeri az angol nyelv sajátosságait és tanulási módszereket próbál ki.",
+          "szokincs": [
+            "language",
+            "pronounce",
+            "spelling",
+            "translate",
+            "dictionary",
+            "practise",
+            "repeat",
+            "meaning"
+          ],
+          "nyelvtan": [
+            "az angol betű- és jelkészlet alkalmazása",
+            "kiejtési és helyesírási különbségek felismerése"
+          ],
+          "kommunikacios_szandekok": [
+            "kiejtés utánzása",
+            "nem értés jelzése (I don't understand.)",
+            "ismétléskérés"
+          ],
+          "javasolt_tevekenysegek": [
+            "popzenehallgatás gapfill munkalappal",
+            "running dictation",
+            "keresztrejtvény készítése"
+          ],
+          "teljes_szoveg": "Témakör: English around us – Az angol nyelv körülöttünk\nJavasolt óraszám: 6 óra\nHivatalos kerettantervi témakör: English and language learning\nKommunikációs / fejlesztési cél: A tanuló felismeri az angol nyelv sajátosságait és tanulási módszereket próbál ki.\nSzókincs (példák): language, pronounce, spelling, translate, dictionary, practise, repeat, meaning\nNyelvtani fókusz: az angol betű- és jelkészlet alkalmazása; kiejtési és helyesírási különbségek felismerése\nKommunikációs szándékok: kiejtés utánzása; nem értés jelzése (I don't understand.); ismétléskérés\nJavasolt tevékenységek: popzenehallgatás gapfill munkalappal; running dictation; keresztrejtvény készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "News and everyday life – Hírek és mindennapok",
+          "javasolt_oraszam": 9,
+          "kerettantervi_temakor": "Current topics / Public matters",
+          "cefr_cel": "A tanuló egyszerű híreket ért meg és tájékozódik a közéletben.",
+          "szokincs": [
+            "news",
+            "weather forecast",
+            "ticket",
+            "brochure",
+            "restaurant",
+            "direction",
+            "museum",
+            "event"
+          ],
+          "nyelvtan": [
+            "egyszerű jelen és folyamatos jelen együtt hírekben",
+            "útbaigazítás fordulatai"
+          ],
+          "kommunikacios_szandekok": [
+            "útbaigazítás kérése és adása",
+            "hír értelmezése",
+            "információkérés"
+          ],
+          "javasolt_tevekenysegek": [
+            "időjárásjelentés készítése",
+            "térkép a környékről",
+            "interjú híres emberrel"
+          ],
+          "teljes_szoveg": "Témakör: News and everyday life – Hírek és mindennapok\nJavasolt óraszám: 9 óra\nHivatalos kerettantervi témakör: Current topics / Public matters\nKommunikációs / fejlesztési cél: A tanuló egyszerű híreket ért meg és tájékozódik a közéletben.\nSzókincs (példák): news, weather forecast, ticket, brochure, restaurant, direction, museum, event\nNyelvtani fókusz: egyszerű jelen és folyamatos jelen együtt hírekben; útbaigazítás fordulatai\nKommunikációs szándékok: útbaigazítás kérése és adása; hír értelmezése; információkérés\nJavasolt tevékenységek: időjárásjelentés készítése; térkép a környékről; interjú híres emberrel\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Sharing what I know – Amit megosztok",
+          "javasolt_oraszam": 8,
+          "kerettantervi_temakor": "Gaining and sharing knowledge",
+          "cefr_cel": "A tanuló egyszerű információt oszt meg angolul.",
+          "szokincs": [
+            "information",
+            "note",
+            "project",
+            "present",
+            "poster",
+            "topic",
+            "research",
+            "share"
+          ],
+          "nyelvtan": [
+            "jegyzetelés kulcsszavakkal",
+            "egyszerű mondatok összekapcsolása"
+          ],
+          "kommunikacios_szandekok": [
+            "információ megosztása",
+            "rövid bemutató tartása",
+            "jegyzet készítése"
+          ],
+          "javasolt_tevekenysegek": [
+            "poszter az aktuális tananyaghoz",
+            "csoportchat angolul",
+            "prezentáció"
+          ],
+          "teljes_szoveg": "Témakör: Sharing what I know – Amit megosztok\nJavasolt óraszám: 8 óra\nHivatalos kerettantervi témakör: Gaining and sharing knowledge\nKommunikációs / fejlesztési cél: A tanuló egyszerű információt oszt meg angolul.\nSzókincs (példák): information, note, project, present, poster, topic, research, share\nNyelvtani fókusz: jegyzetelés kulcsszavakkal; egyszerű mondatok összekapcsolása\nKommunikációs szándékok: információ megosztása; rövid bemutató tartása; jegyzet készítése\nJavasolt tevékenységek: poszter az aktuális tananyaghoz; csoportchat angolul; prezentáció\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        }
+      ],
+      "teljes_szoveg": "5. évfolyam – A1 felé – tudatos nyelvtan kezdete\nAz 5. évfolyamon a 4. osztályos szóbeli alapokra épül a tudatos nyelvhasználat: megjelenik a létige és az egyszerű jelen idő teljes rendszere, a birtoklás és a folyamatos jelen. Az írott szöveg fokozatosan jelenik meg. Hivatalos alapóraszám: 102 óra.\nTémakörök: All about me – Bemutatkozás és személyes adatok; My family and our home – Család és otthon; Animals and nature around us – Állatok és a természet; My school day – Iskolai nap; What's happening now? – Ami éppen történik; Numbers and quantity – Számok és mennyiség; Life in Britain – Élet Nagy-Britanniában; English around us – Az angol nyelv körülöttünk; News and everyday life – Hírek és mindennapok; Sharing what I know – Amit megosztok."
+    },
+    "6": {
+      "evfolyamok": [
+        6
+      ],
+      "cefr_szint": "A1 – múlt idő és összehasonlítás",
+      "leiras": "A 6. évfolyam végére a tanuló eléri a KER szerinti A1 szintet. Megjelenik a múlt idő (was/were, Past Simple), a melléknévfokozás, a going to jövő idő és a can/must. Hivatalos alapóraszám: 102 óra.",
+      "temakorok": [
+        {
+          "nev": "Where were you? – Hol voltál?",
+          "javasolt_oraszam": 11,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló elmondja, hol volt és milyen volt valami a múltban.",
+          "szokincs": [
+            "yesterday",
+            "last week",
+            "ago",
+            "then",
+            "born",
+            "childhood",
+            "old",
+            "young"
+          ],
+          "nyelvtan": [
+            "múlt idejű létige: was / were",
+            "there was / there were",
+            "kérdés és tagadás: Were you...? I wasn't..."
+          ],
+          "kommunikacios_szandekok": [
+            "múltbeli állapot leírása",
+            "kérdezés a múltról",
+            "régi fénykép bemutatása"
+          ],
+          "javasolt_tevekenysegek": [
+            "Hol voltál tegnap? körkérdés",
+            "régi és mai fotó összehasonlítása",
+            "időszalag készítése"
+          ],
+          "teljes_szoveg": "Témakör: Where were you? – Hol voltál?\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló elmondja, hol volt és milyen volt valami a múltban.\nSzókincs (példák): yesterday, last week, ago, then, born, childhood, old, young\nNyelvtani fókusz: múlt idejű létige: was / were; there was / there were; kérdés és tagadás: Were you...? I wasn't...\nKommunikációs szándékok: múltbeli állapot leírása; kérdezés a múltról; régi fénykép bemutatása\nJavasolt tevékenységek: Hol voltál tegnap? körkérdés; régi és mai fotó összehasonlítása; időszalag készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "My holiday story – A nyaralásom",
+          "javasolt_oraszam": 11,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló beszámol egy utazásról múlt időben.",
+          "szokincs": [
+            "travel",
+            "suitcase",
+            "hotel",
+            "journey",
+            "souvenir",
+            "abroad",
+            "beach",
+            "visit"
+          ],
+          "nyelvtan": [
+            "múlt idő szabályos igékkel: Past Simple (-ed)",
+            "a -ed kiejtése: /t/, /d/, /ɪd/"
+          ],
+          "kommunikacios_szandekok": [
+            "utazás elmesélése",
+            "élmény értékelése",
+            "kérdezés a nyaralásról"
+          ],
+          "javasolt_tevekenysegek": [
+            "képeslap írása",
+            "nyaralási napló",
+            "utazási iroda szerepjáték"
+          ],
+          "teljes_szoveg": "Témakör: My holiday story – A nyaralásom\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló beszámol egy utazásról múlt időben.\nSzókincs (példák): travel, suitcase, hotel, journey, souvenir, abroad, beach, visit\nNyelvtani fókusz: múlt idő szabályos igékkel: Past Simple (-ed); a -ed kiejtése: /t/, /d/, /ɪd/\nKommunikációs szándékok: utazás elmesélése; élmény értékelése; kérdezés a nyaralásról\nJavasolt tevékenységek: képeslap írása; nyaralási napló; utazási iroda szerepjáték\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "An unforgettable day – Egy felejthetetlen nap",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló történetet mesél rendhagyó igékkel.",
+          "szokincs": [
+            "happen",
+            "remember",
+            "forget",
+            "amazing",
+            "terrible",
+            "suddenly",
+            "meet",
+            "lose"
+          ],
+          "nyelvtan": [
+            "rendhagyó igék múlt ideje: go-went, see-saw, eat-ate, have-had",
+            "kérdés és tagadás múltban: did / didn't"
+          ],
+          "kommunikacios_szandekok": [
+            "történetmesélés",
+            "érzelmek kifejezése",
+            "kérdezés a részletekről"
+          ],
+          "javasolt_tevekenysegek": [
+            "igekártya-memória",
+            "közös történetlánc",
+            "levél egy élményről"
+          ],
+          "teljes_szoveg": "Témakör: An unforgettable day – Egy felejthetetlen nap\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló történetet mesél rendhagyó igékkel.\nSzókincs (példák): happen, remember, forget, amazing, terrible, suddenly, meet, lose\nNyelvtani fókusz: rendhagyó igék múlt ideje: go-went, see-saw, eat-ate, have-had; kérdés és tagadás múltban: did / didn't\nKommunikációs szándékok: történetmesélés; érzelmek kifejezése; kérdezés a részletekről\nJavasolt tevékenységek: igekártya-memória; közös történetlánc; levél egy élményről\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Shopping and quantity – Vásárlás és mennyiség",
+          "javasolt_oraszam": 12,
+          "kerettantervi_temakor": "Topics concerning classroom activities",
+          "cefr_cel": "A tanuló vásárol és mennyiségeket fejez ki.",
+          "szokincs": [
+            "shop assistant",
+            "size",
+            "price",
+            "receipt",
+            "cheap",
+            "expensive",
+            "money",
+            "change"
+          ],
+          "nyelvtan": [
+            "megszámlálhatatlan főnevek: How much money have you got? a lot of / little",
+            "much és many szembeállítása"
+          ],
+          "kommunikacios_szandekok": [
+            "vásárlási párbeszéd",
+            "ár kérdezése",
+            "udvarias kérés"
+          ],
+          "javasolt_tevekenysegek": [
+            "boltos szerepjáték",
+            "bevásárlólista",
+            "árösszehasonlítás"
+          ],
+          "teljes_szoveg": "Témakör: Shopping and quantity – Vásárlás és mennyiség\nJavasolt óraszám: 12 óra\nHivatalos kerettantervi témakör: Topics concerning classroom activities\nKommunikációs / fejlesztési cél: A tanuló vásárol és mennyiségeket fejez ki.\nSzókincs (példák): shop assistant, size, price, receipt, cheap, expensive, money, change\nNyelvtani fókusz: megszámlálhatatlan főnevek: How much money have you got? a lot of / little; much és many szembeállítása\nKommunikációs szándékok: vásárlási párbeszéd; ár kérdezése; udvarias kérés\nJavasolt tevékenységek: boltos szerepjáték; bevásárlólista; árösszehasonlítás\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Comparing things – Összehasonlítás",
+          "javasolt_oraszam": 15,
+          "kerettantervi_temakor": "Intercultural topics",
+          "cefr_cel": "A tanuló összehasonlít dolgokat, országokat, szokásokat.",
+          "szokincs": [
+            "bigger",
+            "better",
+            "worse",
+            "the same as",
+            "different",
+            "population",
+            "capital",
+            "culture"
+          ],
+          "nyelvtan": [
+            "rövid melléknevek fokozása: Tom's younger than Sue.",
+            "felsőfok: Mary is the prettiest girl.",
+            "rendhagyó fokozás: good/better/best, bad/worse/worst"
+          ],
+          "kommunikacios_szandekok": [
+            "összehasonlítás",
+            "erős vélemény kifejezése",
+            "adatok összevetése"
+          ],
+          "javasolt_tevekenysegek": [
+            "hazánk és az Egyesült Királyság számokban",
+            "rekordkvíz",
+            "osztály-rekordok gyűjtése"
+          ],
+          "teljes_szoveg": "Témakör: Comparing things – Összehasonlítás\nJavasolt óraszám: 15 óra\nHivatalos kerettantervi témakör: Intercultural topics\nKommunikációs / fejlesztési cél: A tanuló összehasonlít dolgokat, országokat, szokásokat.\nSzókincs (példák): bigger, better, worse, the same as, different, population, capital, culture\nNyelvtani fókusz: rövid melléknevek fokozása: Tom's younger than Sue.; felsőfok: Mary is the prettiest girl.; rendhagyó fokozás: good/better/best, bad/worse/worst\nKommunikációs szándékok: összehasonlítás; erős vélemény kifejezése; adatok összevetése\nJavasolt tevékenységek: hazánk és az Egyesült Királyság számokban; rekordkvíz; osztály-rekordok gyűjtése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Dates and celebrations – Dátumok és ünnepek",
+          "javasolt_oraszam": 9,
+          "kerettantervi_temakor": "Current topics",
+          "cefr_cel": "A tanuló dátumokat mond és ünnepekről beszél.",
+          "szokincs": [
+            "first",
+            "second",
+            "third",
+            "date",
+            "anniversary",
+            "invitation",
+            "guest",
+            "gift"
+          ],
+          "nyelvtan": [
+            "sorszámnevek: first, second, third...",
+            "dátumok: in 1997, in July, on 4th July",
+            "gyakoriság: once/twice a week, every day"
+          ],
+          "kommunikacios_szandekok": [
+            "dátum kimondása",
+            "meghívás és arra reagálás",
+            "program egyeztetése"
+          ],
+          "javasolt_tevekenysegek": [
+            "ünnepnaptár készítése",
+            "meghívó írása",
+            "híres évfordulók kvíz"
+          ],
+          "teljes_szoveg": "Témakör: Dates and celebrations – Dátumok és ünnepek\nJavasolt óraszám: 9 óra\nHivatalos kerettantervi témakör: Current topics\nKommunikációs / fejlesztési cél: A tanuló dátumokat mond és ünnepekről beszél.\nSzókincs (példák): first, second, third, date, anniversary, invitation, guest, gift\nNyelvtani fókusz: sorszámnevek: first, second, third...; dátumok: in 1997, in July, on 4th July; gyakoriság: once/twice a week, every day\nKommunikációs szándékok: dátum kimondása; meghívás és arra reagálás; program egyeztetése\nJavasolt tevékenységek: ünnepnaptár készítése; meghívó írása; híres évfordulók kvíz\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Rules and abilities – Szabályok és képességek",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Public matters / Cross-curricular topics and activities",
+          "cefr_cel": "A tanuló szabályokat fogalmaz meg és képességekről beszél.",
+          "szokincs": [
+            "rule",
+            "allowed",
+            "forbidden",
+            "able",
+            "skill",
+            "careful",
+            "safety",
+            "sign"
+          ],
+          "nyelvtan": [
+            "modalitás: can / can't (képesség)",
+            "modalitás: must (kötelesség)"
+          ],
+          "kommunikacios_szandekok": [
+            "képesség kifejezése",
+            "szabály megfogalmazása",
+            "tiltás megértése"
+          ],
+          "javasolt_tevekenysegek": [
+            "osztályszabályzat angolul",
+            "Ki mit tud? kérdőív",
+            "közlekedési táblák angolul"
+          ],
+          "teljes_szoveg": "Témakör: Rules and abilities – Szabályok és képességek\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Public matters / Cross-curricular topics and activities\nKommunikációs / fejlesztési cél: A tanuló szabályokat fogalmaz meg és képességekről beszél.\nSzókincs (példák): rule, allowed, forbidden, able, skill, careful, safety, sign\nNyelvtani fókusz: modalitás: can / can't (képesség); modalitás: must (kötelesség)\nKommunikációs szándékok: képesség kifejezése; szabály megfogalmazása; tiltás megértése\nJavasolt tevékenységek: osztályszabályzat angolul; Ki mit tud? kérdőív; közlekedési táblák angolul\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "My plans for the future – Terveim",
+          "javasolt_oraszam": 11,
+          "kerettantervi_temakor": "Entertainment and playful learning",
+          "cefr_cel": "A tanuló terveket fogalmaz meg.",
+          "szokincs": [
+            "plan",
+            "decide",
+            "arrange",
+            "hope",
+            "next summer",
+            "future",
+            "dream",
+            "free time"
+          ],
+          "nyelvtan": [
+            "jövő idejűség: be going to (I'm going to be a doctor. It's going to rain.)"
+          ],
+          "kommunikacios_szandekok": [
+            "terv megfogalmazása",
+            "javaslat és arra reagálás",
+            "jóslás"
+          ],
+          "javasolt_tevekenysegek": [
+            "hétvégi terv naptár",
+            "osztálykirándulás tervezése",
+            "kedvenc szórakozásom bemutatása"
+          ],
+          "teljes_szoveg": "Témakör: My plans for the future – Terveim\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Entertainment and playful learning\nKommunikációs / fejlesztési cél: A tanuló terveket fogalmaz meg.\nSzókincs (példák): plan, decide, arrange, hope, next summer, future, dream, free time\nNyelvtani fókusz: jövő idejűség: be going to (I'm going to be a doctor. It's going to rain.)\nKommunikációs szándékok: terv megfogalmazása; javaslat és arra reagálás; jóslás\nJavasolt tevékenységek: hétvégi terv naptár; osztálykirándulás tervezése; kedvenc szórakozásom bemutatása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "How I learn English – Hogyan tanulok angolul",
+          "javasolt_oraszam": 6,
+          "kerettantervi_temakor": "English and language learning",
+          "cefr_cel": "A tanuló tanulási stratégiákat ismer meg és alkalmaz.",
+          "szokincs": [
+            "strategy",
+            "memorise",
+            "revise",
+            "mistake",
+            "improve",
+            "progress",
+            "goal",
+            "habit"
+          ],
+          "nyelvtan": [
+            "nyelvtanulási stratégiák szókincse",
+            "önértékelő fordulatok"
+          ],
+          "kommunikacios_szandekok": [
+            "haladás értékelése",
+            "segítségkérés",
+            "cél megfogalmazása"
+          ],
+          "javasolt_tevekenysegek": [
+            "szótanulási technikák kipróbálása",
+            "nyelvtanulási kérdőív",
+            "könnyített olvasmány beszámolóval"
+          ],
+          "teljes_szoveg": "Témakör: How I learn English – Hogyan tanulok angolul\nJavasolt óraszám: 6 óra\nHivatalos kerettantervi témakör: English and language learning\nKommunikációs / fejlesztési cél: A tanuló tanulási stratégiákat ismer meg és alkalmaz.\nSzókincs (példák): strategy, memorise, revise, mistake, improve, progress, goal, habit\nNyelvtani fókusz: nyelvtanulási stratégiák szókincse; önértékelő fordulatok\nKommunikációs szándékok: haladás értékelése; segítségkérés; cél megfogalmazása\nJavasolt tevékenységek: szótanulási technikák kipróbálása; nyelvtanulási kérdőív; könnyített olvasmány beszámolóval\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Sharing knowledge – Tudásmegosztás",
+          "javasolt_oraszam": 7,
+          "kerettantervi_temakor": "Gaining and sharing knowledge",
+          "cefr_cel": "A tanuló önállóan gyűjt és megoszt információt angolul.",
+          "szokincs": [
+            "research",
+            "source",
+            "summary",
+            "explain",
+            "report",
+            "fact",
+            "opinion",
+            "detail"
+          ],
+          "nyelvtan": [
+            "jegyzet írott szöveg alapján",
+            "összefoglalás egyszerű mondatokkal"
+          ],
+          "kommunikacios_szandekok": [
+            "információ megosztása",
+            "rövid beszámoló",
+            "kérdezés a részletekről"
+          ],
+          "javasolt_tevekenysegek": [
+            "internetes kutatómunka",
+            "prezentáció",
+            "scrapbook készítése"
+          ],
+          "teljes_szoveg": "Témakör: Sharing knowledge – Tudásmegosztás\nJavasolt óraszám: 7 óra\nHivatalos kerettantervi témakör: Gaining and sharing knowledge\nKommunikációs / fejlesztési cél: A tanuló önállóan gyűjt és megoszt információt angolul.\nSzókincs (példák): research, source, summary, explain, report, fact, opinion, detail\nNyelvtani fókusz: jegyzet írott szöveg alapján; összefoglalás egyszerű mondatokkal\nKommunikációs szándékok: információ megosztása; rövid beszámoló; kérdezés a részletekről\nJavasolt tevékenységek: internetes kutatómunka; prezentáció; scrapbook készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        }
+      ],
+      "teljes_szoveg": "6. évfolyam – A1 – múlt idő és összehasonlítás\nA 6. évfolyam végére a tanuló eléri a KER szerinti A1 szintet. Megjelenik a múlt idő (was/were, Past Simple), a melléknévfokozás, a going to jövő idő és a can/must. Hivatalos alapóraszám: 102 óra.\nTémakörök: Where were you? – Hol voltál?; My holiday story – A nyaralásom; An unforgettable day – Egy felejthetetlen nap; Shopping and quantity – Vásárlás és mennyiség; Comparing things – Összehasonlítás; Dates and celebrations – Dátumok és ünnepek; Rules and abilities – Szabályok és képességek; My plans for the future – Terveim; How I learn English – Hogyan tanulok angolul; Sharing knowledge – Tudásmegosztás."
+    },
+    "7": {
+      "evfolyamok": [
+        7
+      ],
+      "cefr_szint": "A2 felé – befejezett jelen és összetettebb szerkezetek",
+      "leiras": "A 7. évfolyamon megjelenik a befejezett jelen (Present Perfect), a will jövő idő, a hosszabb melléknevek fokozása és a függő beszéd jelen időben. Az osztálytermi vonatkozások súlya csökken. Hivatalos alapóraszám: 102 óra.",
+      "temakorok": [
+        {
+          "nev": "What have you done? – Mit csináltál eddig?",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló élettapasztalatairól és befejezett cselekvésekről beszél.",
+          "szokincs": [
+            "ever",
+            "never",
+            "already",
+            "experience",
+            "finish",
+            "tidy",
+            "achieve",
+            "so far"
+          ],
+          "nyelvtan": [
+            "Present Perfect Simple: Have you done your room? I haven't finished it yet.",
+            "ever / never használata"
+          ],
+          "kommunikacios_szandekok": [
+            "élettapasztalat kifejezése",
+            "kérdezés: Have you ever...?",
+            "eredmény bemutatása"
+          ],
+          "javasolt_tevekenysegek": [
+            "Have you ever...? osztálykörkérdés",
+            "élménylista készítése",
+            "interjú osztálytárssal"
+          ],
+          "teljes_szoveg": "Témakör: What have you done? – Mit csináltál eddig?\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló élettapasztalatairól és befejezett cselekvésekről beszél.\nSzókincs (példák): ever, never, already, experience, finish, tidy, achieve, so far\nNyelvtani fókusz: Present Perfect Simple: Have you done your room? I haven't finished it yet.; ever / never használata\nKommunikációs szándékok: élettapasztalat kifejezése; kérdezés: Have you ever...?; eredmény bemutatása\nJavasolt tevékenységek: Have you ever...? osztálykörkérdés; élménylista készítése; interjú osztálytárssal\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "My home and my things – Otthonom és a tárgyaim",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló részletesen leírja az otthonát és a tárgyait.",
+          "szokincs": [
+            "furnishing",
+            "appliance",
+            "made of",
+            "used for",
+            "comfortable",
+            "modern",
+            "tool",
+            "object"
+          ],
+          "nyelvtan": [
+            "birtoklás múlt időben: had (I didn't have many friends at school.)",
+            "birtoklás jövő időben: will have (At 25 I will have a car.)",
+            "It's made of... / It's used for..."
+          ],
+          "kommunikacios_szandekok": [
+            "tárgy jellemzése",
+            "birtoklás múltban és jövőben",
+            "összehasonlítás régen és most"
+          ],
+          "javasolt_tevekenysegek": [
+            "üres lakás berendezése csoportban",
+            "kedvenc tárgyam bemutatása",
+            "régi és mai eszközök"
+          ],
+          "teljes_szoveg": "Témakör: My home and my things – Otthonom és a tárgyaim\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló részletesen leírja az otthonát és a tárgyait.\nSzókincs (példák): furnishing, appliance, made of, used for, comfortable, modern, tool, object\nNyelvtani fókusz: birtoklás múlt időben: had (I didn't have many friends at school.); birtoklás jövő időben: will have (At 25 I will have a car.); It's made of... / It's used for...\nKommunikációs szándékok: tárgy jellemzése; birtoklás múltban és jövőben; összehasonlítás régen és most\nJavasolt tevékenységek: üres lakás berendezése csoportban; kedvenc tárgyam bemutatása; régi és mai eszközök\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Nature and protecting it – A természet és védelme",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló a természetről és a környezetvédelemről beszél.",
+          "szokincs": [
+            "nature protection",
+            "pollution",
+            "settlement",
+            "species",
+            "endangered",
+            "recycle",
+            "waste",
+            "litter"
+          ],
+          "nyelvtan": [
+            "hosszabb melléknevek fokozása: more beautiful, more dangerous",
+            "összehasonlítás: than, as ... as"
+          ],
+          "kommunikacios_szandekok": [
+            "probléma megfogalmazása",
+            "összehasonlítás",
+            "javaslat megfogalmazása"
+          ],
+          "javasolt_tevekenysegek": [
+            "kérdőív a környezetvédelemről",
+            "kutatás: környezetszennyezés",
+            "plakát: Környezetünk védelme"
+          ],
+          "teljes_szoveg": "Témakör: Nature and protecting it – A természet és védelme\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló a természetről és a környezetvédelemről beszél.\nSzókincs (példák): nature protection, pollution, settlement, species, endangered, recycle, waste, litter\nNyelvtani fókusz: hosszabb melléknevek fokozása: more beautiful, more dangerous; összehasonlítás: than, as ... as\nKommunikációs szándékok: probléma megfogalmazása; összehasonlítás; javaslat megfogalmazása\nJavasolt tevékenységek: kérdőív a környezetvédelemről; kutatás: környezetszennyezés; plakát: Környezetünk védelme\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Plans and promises – Tervek és ígéretek",
+          "javasolt_oraszam": 12,
+          "kerettantervi_temakor": "Topics concerning classroom activities",
+          "cefr_cel": "A tanuló ígéretet tesz és jövőbeli terveket fogalmaz meg.",
+          "szokincs": [
+            "promise",
+            "decide",
+            "choose",
+            "secondary school",
+            "exam",
+            "career",
+            "succeed",
+            "result"
+          ],
+          "nyelvtan": [
+            "jövő idejűség: will (When will you be fourteen? I'll help you.)",
+            "időtartam: How long? (How long were you in Spain? For one month.)"
+          ],
+          "kommunikacios_szandekok": [
+            "ígéret kifejezése",
+            "jóslás a jövőről",
+            "időtartam megadása"
+          ],
+          "javasolt_tevekenysegek": [
+            "Milyen leszek 10 év múlva?",
+            "fordított tanóra: óratervezés",
+            "iskolarendszerek összehasonlítása"
+          ],
+          "teljes_szoveg": "Témakör: Plans and promises – Tervek és ígéretek\nJavasolt óraszám: 12 óra\nHivatalos kerettantervi témakör: Topics concerning classroom activities\nKommunikációs / fejlesztési cél: A tanuló ígéretet tesz és jövőbeli terveket fogalmaz meg.\nSzókincs (példák): promise, decide, choose, secondary school, exam, career, succeed, result\nNyelvtani fókusz: jövő idejűség: will (When will you be fourteen? I'll help you.); időtartam: How long? (How long were you in Spain? For one month.)\nKommunikációs szándékok: ígéret kifejezése; jóslás a jövőről; időtartam megadása\nJavasolt tevékenységek: Milyen leszek 10 év múlva?; fordított tanóra: óratervezés; iskolarendszerek összehasonlítása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Rules and prohibitions – Szabályok és tiltás",
+          "javasolt_oraszam": 6,
+          "kerettantervi_temakor": "Public matters",
+          "cefr_cel": "A tanuló szabályokat és tiltásokat ért meg és fogalmaz meg.",
+          "szokincs": [
+            "forbidden",
+            "allowed",
+            "warning",
+            "public",
+            "service",
+            "guide",
+            "entrance",
+            "form"
+          ],
+          "nyelvtan": [
+            "modalitás: mustn't (You mustn't smoke here.)",
+            "have to / don't have to"
+          ],
+          "kommunikacios_szandekok": [
+            "tiltás kifejezése",
+            "szabály megértése",
+            "információkérés hivatalos helyzetben"
+          ],
+          "javasolt_tevekenysegek": [
+            "szerepjáték utazási irodában",
+            "útikönyv készítése",
+            "közterületi táblák angolul"
+          ],
+          "teljes_szoveg": "Témakör: Rules and prohibitions – Szabályok és tiltás\nJavasolt óraszám: 6 óra\nHivatalos kerettantervi témakör: Public matters\nKommunikációs / fejlesztési cél: A tanuló szabályokat és tiltásokat ért meg és fogalmaz meg.\nSzókincs (példák): forbidden, allowed, warning, public, service, guide, entrance, form\nNyelvtani fókusz: modalitás: mustn't (You mustn't smoke here.); have to / don't have to\nKommunikációs szándékok: tiltás kifejezése; szabály megértése; információkérés hivatalos helyzetben\nJavasolt tevékenységek: szerepjáték utazási irodában; útikönyv készítése; közterületi táblák angolul\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "How long...? – Mennyi ideje?",
+          "javasolt_oraszam": 7,
+          "kerettantervi_temakor": "Cross-curricular topics and activities",
+          "cefr_cel": "A tanuló időtartamot fejez ki más tantárgyi tartalmakhoz kötve.",
+          "szokincs": [
+            "century",
+            "period",
+            "last",
+            "since",
+            "during",
+            "history",
+            "invention",
+            "discover"
+          ],
+          "nyelvtan": [
+            "időtartam kifejezése: How long? For / Since",
+            "számadatok más tantárgyakból angolul"
+          ],
+          "kommunikacios_szandekok": [
+            "időtartam megadása",
+            "történelmi adat bemutatása",
+            "összefüggés magyarázata"
+          ],
+          "javasolt_tevekenysegek": [
+            "híres tudós élete",
+            "könnyített irodalmi mű feldolgozása",
+            "idővonal más tantárgyból"
+          ],
+          "teljes_szoveg": "Témakör: How long...? – Mennyi ideje?\nJavasolt óraszám: 7 óra\nHivatalos kerettantervi témakör: Cross-curricular topics and activities\nKommunikációs / fejlesztési cél: A tanuló időtartamot fejez ki más tantárgyi tartalmakhoz kötve.\nSzókincs (példák): century, period, last, since, during, history, invention, discover\nNyelvtani fókusz: időtartam kifejezése: How long? For / Since; számadatok más tantárgyakból angolul\nKommunikációs szándékok: időtartam megadása; történelmi adat bemutatása; összefüggés magyarázata\nJavasolt tevékenységek: híres tudós élete; könnyített irodalmi mű feldolgozása; idővonal más tantárgyból\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Countries and their culture – Országok és kultúrájuk",
+          "javasolt_oraszam": 12,
+          "kerettantervi_temakor": "Intercultural topics",
+          "cefr_cel": "A tanuló bemutat országokat és visszaadja mások szavait.",
+          "szokincs": [
+            "custom",
+            "landmark",
+            "currency",
+            "region",
+            "typical dish",
+            "habit",
+            "greeting",
+            "holiday"
+          ],
+          "nyelvtan": [
+            "függő beszéd jelen időben: He says he is tired.",
+            "országnevek és a the használata"
+          ],
+          "kommunikacios_szandekok": [
+            "kulturális szokás bemutatása",
+            "mások szavainak visszaadása",
+            "összehasonlítás"
+          ],
+          "javasolt_tevekenysegek": [
+            "Egyesült Királyság és Magyarország összehasonlítása",
+            "Christmas Party szervezése",
+            "dokumentumfilm feldolgozása"
+          ],
+          "teljes_szoveg": "Témakör: Countries and their culture – Országok és kultúrájuk\nJavasolt óraszám: 12 óra\nHivatalos kerettantervi témakör: Intercultural topics\nKommunikációs / fejlesztési cél: A tanuló bemutat országokat és visszaadja mások szavait.\nSzókincs (példák): custom, landmark, currency, region, typical dish, habit, greeting, holiday\nNyelvtani fókusz: függő beszéd jelen időben: He says he is tired.; országnevek és a the használata\nKommunikációs szándékok: kulturális szokás bemutatása; mások szavainak visszaadása; összehasonlítás\nJavasolt tevékenységek: Egyesült Királyság és Magyarország összehasonlítása; Christmas Party szervezése; dokumentumfilm feldolgozása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "News and opinions – Hírek és vélemények",
+          "javasolt_oraszam": 6,
+          "kerettantervi_temakor": "Current topics",
+          "cefr_cel": "A tanuló véleményt formál aktuális hírekről.",
+          "szokincs": [
+            "headline",
+            "article",
+            "report",
+            "event",
+            "agree",
+            "disagree",
+            "point of view",
+            "true"
+          ],
+          "nyelvtan": [
+            "véleménykérés és reagálás: Do you agree? In my opinion...",
+            "egyetértés és egyet nem értés"
+          ],
+          "kommunikacios_szandekok": [
+            "vélemény kifejezése",
+            "egyetértés és cáfolat",
+            "hír összefoglalása"
+          ],
+          "javasolt_tevekenysegek": [
+            "szalagcím-párosítás",
+            "iskolai híradó készítése",
+            "talkshow szerepjáték"
+          ],
+          "teljes_szoveg": "Témakör: News and opinions – Hírek és vélemények\nJavasolt óraszám: 6 óra\nHivatalos kerettantervi témakör: Current topics\nKommunikációs / fejlesztési cél: A tanuló véleményt formál aktuális hírekről.\nSzókincs (példák): headline, article, report, event, agree, disagree, point of view, true\nNyelvtani fókusz: véleménykérés és reagálás: Do you agree? In my opinion...; egyetértés és egyet nem értés\nKommunikációs szándékok: vélemény kifejezése; egyetértés és cáfolat; hír összefoglalása\nJavasolt tevékenységek: szalagcím-párosítás; iskolai híradó készítése; talkshow szerepjáték\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Films, books and free time – Filmek, könyvek, szabadidő",
+          "javasolt_oraszam": 13,
+          "kerettantervi_temakor": "Entertainment",
+          "cefr_cel": "A tanuló ajánl és véleményez kulturális alkotásokat.",
+          "szokincs": [
+            "novel",
+            "character",
+            "plot",
+            "director",
+            "review",
+            "recommend",
+            "chapter",
+            "scene"
+          ],
+          "nyelvtan": [
+            "dicséret és kritika: It's great. It's boring.",
+            "egymást követő események: First... then... finally..."
+          ],
+          "kommunikacios_szandekok": [
+            "ajánlás megfogalmazása",
+            "cselekmény összefoglalása",
+            "élmény elmesélése"
+          ],
+          "javasolt_tevekenysegek": [
+            "filmkritika írása",
+            "könnyített olvasmány feldolgozása",
+            "e-mailezés angolul"
+          ],
+          "teljes_szoveg": "Témakör: Films, books and free time – Filmek, könyvek, szabadidő\nJavasolt óraszám: 13 óra\nHivatalos kerettantervi témakör: Entertainment\nKommunikációs / fejlesztési cél: A tanuló ajánl és véleményez kulturális alkotásokat.\nSzókincs (példák): novel, character, plot, director, review, recommend, chapter, scene\nNyelvtani fókusz: dicséret és kritika: It's great. It's boring.; egymást követő események: First... then... finally...\nKommunikációs szándékok: ajánlás megfogalmazása; cselekmény összefoglalása; élmény elmesélése\nJavasolt tevékenységek: filmkritika írása; könnyített olvasmány feldolgozása; e-mailezés angolul\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Learning and sharing – Tanulás és tudásmegosztás",
+          "javasolt_oraszam": 16,
+          "kerettantervi_temakor": "English and language learning / Gaining and sharing knowledge",
+          "cefr_cel": "A tanuló tudatosan tanul és megosztja a tudását.",
+          "szokincs": [
+            "dictionary",
+            "strategy",
+            "correct",
+            "notice",
+            "summarise",
+            "presentation",
+            "source",
+            "explain"
+          ],
+          "nyelvtan": [
+            "magyarázatkérés: Sorry, what does that mean?",
+            "lassabb beszéd kérése: Could you speak more slowly?"
+          ],
+          "kommunikacios_szandekok": [
+            "magyarázatkérés",
+            "hiba javítása",
+            "kiselőadás tartása"
+          ],
+          "javasolt_tevekenysegek": [
+            "osztálykönyvtár könnyített olvasmányokból",
+            "betűzésverseny",
+            "internetes kutatómunka és prezentáció"
+          ],
+          "teljes_szoveg": "Témakör: Learning and sharing – Tanulás és tudásmegosztás\nJavasolt óraszám: 16 óra\nHivatalos kerettantervi témakör: English and language learning / Gaining and sharing knowledge\nKommunikációs / fejlesztési cél: A tanuló tudatosan tanul és megosztja a tudását.\nSzókincs (példák): dictionary, strategy, correct, notice, summarise, presentation, source, explain\nNyelvtani fókusz: magyarázatkérés: Sorry, what does that mean?; lassabb beszéd kérése: Could you speak more slowly?\nKommunikációs szándékok: magyarázatkérés; hiba javítása; kiselőadás tartása\nJavasolt tevékenységek: osztálykönyvtár könnyített olvasmányokból; betűzésverseny; internetes kutatómunka és prezentáció\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        }
+      ],
+      "teljes_szoveg": "7. évfolyam – A2 felé – befejezett jelen és összetettebb szerkezetek\nA 7. évfolyamon megjelenik a befejezett jelen (Present Perfect), a will jövő idő, a hosszabb melléknevek fokozása és a függő beszéd jelen időben. Az osztálytermi vonatkozások súlya csökken. Hivatalos alapóraszám: 102 óra.\nTémakörök: What have you done? – Mit csináltál eddig?; My home and my things – Otthonom és a tárgyaim; Nature and protecting it – A természet és védelme; Plans and promises – Tervek és ígéretek; Rules and prohibitions – Szabályok és tiltás; How long...? – Mennyi ideje?; Countries and their culture – Országok és kultúrájuk; News and opinions – Hírek és vélemények; Films, books and free time – Filmek, könyvek, szabadidő; Learning and sharing – Tanulás és tudásmegosztás."
+    },
+    "8": {
+      "evfolyamok": [
+        8
+      ],
+      "cefr_szint": "A2 – árnyalt kifejezés, feltétel és függő beszéd",
+      "leiras": "A 8. évfolyam végére a tanuló eléri a KER szerinti A2 szintet. Megjelennek a birtokos névmások, az already/yet/just, a feltételes mondat, a tanácsadás és a függő beszéd. Hivatalos alapóraszám: 102 óra.",
+      "temakorok": [
+        {
+          "nev": "Just, already, yet – Ami már megtörtént",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló friss eseményekről és eredményekről számol be.",
+          "szokincs": [
+            "already",
+            "yet",
+            "just",
+            "recently",
+            "achievement",
+            "proud",
+            "finish",
+            "arrive"
+          ],
+          "nyelvtan": [
+            "időbeli viszonyok: already, yet, just (I have already read it. He hasn't finished it yet.)",
+            "Present Perfect és Past Simple együtt"
+          ],
+          "kommunikacios_szandekok": [
+            "friss esemény elmesélése",
+            "eredmény bemutatása",
+            "kérdezés: Have you ... yet?"
+          ],
+          "javasolt_tevekenysegek": [
+            "Eddigi eredményeim poszter",
+            "havi napló",
+            "interjú osztálytárssal"
+          ],
+          "teljes_szoveg": "Témakör: Just, already, yet – Ami már megtörtént\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló friss eseményekről és eredményekről számol be.\nSzókincs (példák): already, yet, just, recently, achievement, proud, finish, arrive\nNyelvtani fókusz: időbeli viszonyok: already, yet, just (I have already read it. He hasn't finished it yet.); Present Perfect és Past Simple együtt\nKommunikációs szándékok: friss esemény elmesélése; eredmény bemutatása; kérdezés: Have you ... yet?\nJavasolt tevékenységek: Eddigi eredményeim poszter; havi napló; interjú osztálytárssal\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Whose is it? – Kié ez?",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló birtoklást fejez ki és tárgyakról beszél.",
+          "szokincs": [
+            "mine",
+            "yours",
+            "ours",
+            "theirs",
+            "belong",
+            "borrow",
+            "lend",
+            "own"
+          ],
+          "nyelvtan": [
+            "birtokos névmások: mine, yours, his, hers, its, ours, theirs",
+            "birtokos névmások és birtokos jelzők szembeállítása (my - mine)"
+          ],
+          "kommunikacios_szandekok": [
+            "birtoklás kifejezése",
+            "kérés és kölcsönkérés",
+            "tulajdon tisztázása"
+          ],
+          "javasolt_tevekenysegek": [
+            "Kié ez? osztályjáték",
+            "tárgyak leírása és azonosítása",
+            "szerepjáték: elveszett tárgy"
+          ],
+          "teljes_szoveg": "Témakör: Whose is it? – Kié ez?\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló birtoklást fejez ki és tárgyakról beszél.\nSzókincs (példák): mine, yours, ours, theirs, belong, borrow, lend, own\nNyelvtani fókusz: birtokos névmások: mine, yours, his, hers, its, ours, theirs; birtokos névmások és birtokos jelzők szembeállítása (my - mine)\nKommunikációs szándékok: birtoklás kifejezése; kérés és kölcsönkérés; tulajdon tisztázása\nJavasolt tevékenységek: Kié ez? osztályjáték; tárgyak leírása és azonosítása; szerepjáték: elveszett tárgy\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Our environment and its future – Környezetünk és jövője",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Personal topics and topics concerning immediate environment and nature",
+          "cefr_cel": "A tanuló feltételes mondatokkal beszél a jövőről.",
+          "szokincs": [
+            "sustainability",
+            "energy",
+            "climate",
+            "protect",
+            "damage",
+            "solution",
+            "future",
+            "effect"
+          ],
+          "nyelvtan": [
+            "feltételesség kifejezése: We'll stay at home if it rains.",
+            "következmény kifejezése"
+          ],
+          "kommunikacios_szandekok": [
+            "feltétel megfogalmazása",
+            "következmény kifejezése",
+            "javaslat"
+          ],
+          "javasolt_tevekenysegek": [
+            "plakát: Környezetünk védelme okos eszközökkel",
+            "kutatás: időjárási katasztrófák",
+            "vitafórum"
+          ],
+          "teljes_szoveg": "Témakör: Our environment and its future – Környezetünk és jövője\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Personal topics and topics concerning immediate environment and nature\nKommunikációs / fejlesztési cél: A tanuló feltételes mondatokkal beszél a jövőről.\nSzókincs (példák): sustainability, energy, climate, protect, damage, solution, future, effect\nNyelvtani fókusz: feltételesség kifejezése: We'll stay at home if it rains.; következmény kifejezése\nKommunikációs szándékok: feltétel megfogalmazása; következmény kifejezése; javaslat\nJavasolt tevékenységek: plakát: Környezetünk védelme okos eszközökkel; kutatás: időjárási katasztrófák; vitafórum\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Advice and obligations – Tanács és kötelezettség",
+          "javasolt_oraszam": 11,
+          "kerettantervi_temakor": "Topics concerning classroom activities",
+          "cefr_cel": "A tanuló tanácsot ad és kötelezettségről beszél.",
+          "szokincs": [
+            "advice",
+            "suggest",
+            "duty",
+            "responsible",
+            "deadline",
+            "effort",
+            "prepare",
+            "professional orientation"
+          ],
+          "nyelvtan": [
+            "modalitás: should / shouldn't (You should ask her.)",
+            "modalitás: have to (Did you have to be there?)"
+          ],
+          "kommunikacios_szandekok": [
+            "tanácsadás",
+            "kötelezettség kifejezése",
+            "döntés indoklása"
+          ],
+          "javasolt_tevekenysegek": [
+            "Milyen az ideális nyelvtanár? kérdőív",
+            "továbbtanulási terv",
+            "fordított tanóra"
+          ],
+          "teljes_szoveg": "Témakör: Advice and obligations – Tanács és kötelezettség\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Topics concerning classroom activities\nKommunikációs / fejlesztési cél: A tanuló tanácsot ad és kötelezettségről beszél.\nSzókincs (példák): advice, suggest, duty, responsible, deadline, effort, prepare, professional orientation\nNyelvtani fókusz: modalitás: should / shouldn't (You should ask her.); modalitás: have to (Did you have to be there?)\nKommunikációs szándékok: tanácsadás; kötelezettség kifejezése; döntés indoklása\nJavasolt tevékenységek: Milyen az ideális nyelvtanár? kérdőív; továbbtanulási terv; fordított tanóra\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Asking politely – Udvarias kérés",
+          "javasolt_oraszam": 6,
+          "kerettantervi_temakor": "Public matters",
+          "cefr_cel": "A tanuló udvariasan kér engedélyt és javasol.",
+          "szokincs": [
+            "permission",
+            "polite",
+            "request",
+            "offer",
+            "apply",
+            "booking",
+            "complaint",
+            "service"
+          ],
+          "nyelvtan": [
+            "engedélykérés: Can / Could / May I join you?",
+            "felszólító mód T/1: Let's go."
+          ],
+          "kommunikacios_szandekok": [
+            "engedélykérés",
+            "javaslattétel",
+            "udvarias reagálás"
+          ],
+          "javasolt_tevekenysegek": [
+            "szerepjáték: étterem, szálloda",
+            "panaszlevél írása",
+            "útikönyv készítése"
+          ],
+          "teljes_szoveg": "Témakör: Asking politely – Udvarias kérés\nJavasolt óraszám: 6 óra\nHivatalos kerettantervi témakör: Public matters\nKommunikációs / fejlesztési cél: A tanuló udvariasan kér engedélyt és javasol.\nSzókincs (példák): permission, polite, request, offer, apply, booking, complaint, service\nNyelvtani fókusz: engedélykérés: Can / Could / May I join you?; felszólító mód T/1: Let's go.\nKommunikációs szándékok: engedélykérés; javaslattétel; udvarias reagálás\nJavasolt tevékenységek: szerepjáték: étterem, szálloda; panaszlevél írása; útikönyv készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "The best and the most – A legjobb és a leg...",
+          "javasolt_oraszam": 8,
+          "kerettantervi_temakor": "Cross-curricular topics and activities",
+          "cefr_cel": "A tanuló felsőfokkal jellemez és összehasonlít.",
+          "szokincs": [
+            "intelligent",
+            "expensive",
+            "important",
+            "interesting",
+            "valuable",
+            "famous",
+            "record",
+            "achievement"
+          ],
+          "nyelvtan": [
+            "hosszabb melléknevek felsőfoka: She is the most intelligent of all.",
+            "összehasonlítás más tantárgyi tartalmakkal"
+          ],
+          "kommunikacios_szandekok": [
+            "kiemelés és rangsorolás",
+            "összehasonlítás",
+            "érvelés adatokkal"
+          ],
+          "javasolt_tevekenysegek": [
+            "híres tudós vagy király élete",
+            "vaktérképes feladat",
+            "tantárgyi társasjáték"
+          ],
+          "teljes_szoveg": "Témakör: The best and the most – A legjobb és a leg...\nJavasolt óraszám: 8 óra\nHivatalos kerettantervi témakör: Cross-curricular topics and activities\nKommunikációs / fejlesztési cél: A tanuló felsőfokkal jellemez és összehasonlít.\nSzókincs (példák): intelligent, expensive, important, interesting, valuable, famous, record, achievement\nNyelvtani fókusz: hosszabb melléknevek felsőfoka: She is the most intelligent of all.; összehasonlítás más tantárgyi tartalmakkal\nKommunikációs szándékok: kiemelés és rangsorolás; összehasonlítás; érvelés adatokkal\nJavasolt tevékenységek: híres tudós vagy király élete; vaktérképes feladat; tantárgyi társasjáték\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "What did they say? – Mit mondtak?",
+          "javasolt_oraszam": 13,
+          "kerettantervi_temakor": "Intercultural topics",
+          "cefr_cel": "A tanuló visszaadja mások szavait és kultúrákat hasonlít össze.",
+          "szokincs": [
+            "mention",
+            "explain",
+            "claim",
+            "behaviour",
+            "difference",
+            "similar",
+            "tradition",
+            "custom"
+          ],
+          "nyelvtan": [
+            "függő beszéd jelen időben: I don't know where he lives. Tell him to stop it.",
+            "közvetett kérdés"
+          ],
+          "kommunikacios_szandekok": [
+            "mások szavainak visszaadása",
+            "udvarias, közvetett kérdés",
+            "kulturális különbség magyarázata"
+          ],
+          "javasolt_tevekenysegek": [
+            "viselkedésbeli különbségek a két kultúrában",
+            "dokumentumfilm elemzése",
+            "Valentine's Day szervezése"
+          ],
+          "teljes_szoveg": "Témakör: What did they say? – Mit mondtak?\nJavasolt óraszám: 13 óra\nHivatalos kerettantervi témakör: Intercultural topics\nKommunikációs / fejlesztési cél: A tanuló visszaadja mások szavait és kultúrákat hasonlít össze.\nSzókincs (példák): mention, explain, claim, behaviour, difference, similar, tradition, custom\nNyelvtani fókusz: függő beszéd jelen időben: I don't know where he lives. Tell him to stop it.; közvetett kérdés\nKommunikációs szándékok: mások szavainak visszaadása; udvarias, közvetett kérdés; kulturális különbség magyarázata\nJavasolt tevékenységek: viselkedésbeli különbségek a két kultúrában; dokumentumfilm elemzése; Valentine's Day szervezése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Hopes and certainty – Remény és bizonyosság",
+          "javasolt_oraszam": 7,
+          "kerettantervi_temakor": "Current topics",
+          "cefr_cel": "A tanuló reményt, lehetőséget és bizonyosságot fejez ki.",
+          "szokincs": [
+            "hope",
+            "probably",
+            "certainly",
+            "maybe",
+            "promise",
+            "expect",
+            "surprise",
+            "likely"
+          ],
+          "nyelvtan": [
+            "lehetőség kifejezése: It may rain. She might visit us.",
+            "remény: I am looking forward to... I hope...",
+            "bizonyosság: They will probably come."
+          ],
+          "kommunikacios_szandekok": [
+            "remény kifejezése",
+            "bizonytalanság jelzése",
+            "ígéret"
+          ],
+          "javasolt_tevekenysegek": [
+            "talkshow aktuális témában",
+            "jóslás a jövő évre",
+            "hírek elemzése"
+          ],
+          "teljes_szoveg": "Témakör: Hopes and certainty – Remény és bizonyosság\nJavasolt óraszám: 7 óra\nHivatalos kerettantervi témakör: Current topics\nKommunikációs / fejlesztési cél: A tanuló reményt, lehetőséget és bizonyosságot fejez ki.\nSzókincs (példák): hope, probably, certainly, maybe, promise, expect, surprise, likely\nNyelvtani fókusz: lehetőség kifejezése: It may rain. She might visit us.; remény: I am looking forward to... I hope...; bizonyosság: They will probably come.\nKommunikációs szándékok: remény kifejezése; bizonytalanság jelzése; ígéret\nJavasolt tevékenységek: talkshow aktuális témában; jóslás a jövő évre; hírek elemzése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Entertainment and my opinion – Szórakozás és a véleményem",
+          "javasolt_oraszam": 10,
+          "kerettantervi_temakor": "Entertainment",
+          "cefr_cel": "A tanuló indokolt véleményt fogalmaz meg a kultúráról.",
+          "szokincs": [
+            "however",
+            "although",
+            "advantage",
+            "disadvantage",
+            "reason",
+            "enjoyable",
+            "boring",
+            "review"
+          ],
+          "nyelvtan": [
+            "további kötőszavak: however, although",
+            "elégedettség és elégedetlenség: I'm quite pleased with... It's not good enough."
+          ],
+          "kommunikacios_szandekok": [
+            "vélemény indoklása",
+            "elégedettség kifejezése",
+            "ellenérv elfogadása"
+          ],
+          "javasolt_tevekenysegek": [
+            "dalszöveg feldolgozása",
+            "blog írása angolul",
+            "kedvenc kulturális élményem"
+          ],
+          "teljes_szoveg": "Témakör: Entertainment and my opinion – Szórakozás és a véleményem\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Entertainment\nKommunikációs / fejlesztési cél: A tanuló indokolt véleményt fogalmaz meg a kultúráról.\nSzókincs (példák): however, although, advantage, disadvantage, reason, enjoyable, boring, review\nNyelvtani fókusz: további kötőszavak: however, although; elégedettség és elégedetlenség: I'm quite pleased with... It's not good enough.\nKommunikációs szándékok: vélemény indoklása; elégedettség kifejezése; ellenérv elfogadása\nJavasolt tevékenységek: dalszöveg feldolgozása; blog írása angolul; kedvenc kulturális élményem\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        },
+        {
+          "nev": "Preparing for the future – Felkészülés a jövőre",
+          "javasolt_oraszam": 17,
+          "kerettantervi_temakor": "English and language learning / Gaining and sharing knowledge",
+          "cefr_cel": "A tanuló önállóan fejleszti a nyelvtudását és megosztja azt.",
+          "szokincs": [
+            "target",
+            "self-study",
+            "correct",
+            "progress",
+            "presentation",
+            "note",
+            "research",
+            "share"
+          ],
+          "nyelvtan": [
+            "ismeretlen szó jelentésének kikövetkeztetése szövegkörnyezetből",
+            "hibajavítás és önértékelés fordulatai"
+          ],
+          "kommunikacios_szandekok": [
+            "cél kitűzése",
+            "hiba észrevétele és javítása",
+            "kiselőadás tartása"
+          ],
+          "javasolt_tevekenysegek": [
+            "szótanulási technikák",
+            "filmnézés angolul feliratozással",
+            "prezentáció választott témából"
+          ],
+          "teljes_szoveg": "Témakör: Preparing for the future – Felkészülés a jövőre\nJavasolt óraszám: 17 óra\nHivatalos kerettantervi témakör: English and language learning / Gaining and sharing knowledge\nKommunikációs / fejlesztési cél: A tanuló önállóan fejleszti a nyelvtudását és megosztja azt.\nSzókincs (példák): target, self-study, correct, progress, presentation, note, research, share\nNyelvtani fókusz: ismeretlen szó jelentésének kikövetkeztetése szövegkörnyezetből; hibajavítás és önértékelés fordulatai\nKommunikációs szándékok: cél kitűzése; hiba észrevétele és javítása; kiselőadás tartása\nJavasolt tevékenységek: szótanulási technikák; filmnézés angolul feliratozással; prezentáció választott témából\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+        }
+      ],
+      "teljes_szoveg": "8. évfolyam – A2 – árnyalt kifejezés, feltétel és függő beszéd\nA 8. évfolyam végére a tanuló eléri a KER szerinti A2 szintet. Megjelennek a birtokos névmások, az already/yet/just, a feltételes mondat, a tanácsadás és a függő beszéd. Hivatalos alapóraszám: 102 óra.\nTémakörök: Just, already, yet – Ami már megtörtént; Whose is it? – Kié ez?; Our environment and its future – Környezetünk és jövője; Advice and obligations – Tanács és kötelezettség; Asking politely – Udvarias kérés; The best and the most – A legjobb és a leg...; What did they say? – Mit mondtak?; Hopes and certainty – Remény és bizonyosság; Entertainment and my opinion – Szórakozás és a véleményem; Preparing for the future – Felkészülés a jövőre."
+    }
+  }
+}
