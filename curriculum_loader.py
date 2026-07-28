@@ -204,6 +204,11 @@ SPANYOL_5_8_FILE = "spanyol_5-8.json"
 ANGOL_1_4_FILE = "angol_1-4.json"
 ANGOL_5_8_FILE = "angol_5-8.json"
 
+# Nyelvspecifikus fájlok — NEM önálló tantárgyak, kizárandók a tantárgylistából
+_LANGUAGE_SPECIFIC_FILES: frozenset[str] = frozenset(
+    {ANGOL_1_4_FILE, ANGOL_5_8_FILE, SPANYOL_1_4_FILE}
+)
+
 # ── LOMLOE spanyol nemzeti tanterv (BOE-A-2022-3296) ──────────────────────
 ES_LOE_DIR: Path = Path(__file__).parent / "es_kerettanterv"
 ES_LOE_FILES: dict[str, str] = {
@@ -985,6 +990,8 @@ def _build_hu_json_index() -> dict[tuple[int, int, int], list[tuple[Path, str, s
             for path in sorted(directory.glob("*.json"), key=_hu_sort_key):
                 if _is_hu_aggregate_json(path):
                     continue
+                if path.name in _LANGUAGE_SPECIFIC_FILES:
+                    continue
                 match = _HU_FILENAME_RE.match(path.name)
                 if not match:
                     continue
@@ -1595,22 +1602,32 @@ def get_curriculum_for_chat(
             if alt.is_file() and alt not in candidates:
                 candidates.insert(0, alt)
 
+    # ── Nyelvspecifikus fájlok (spanyol_*/angol_*) kényszerítése ──
+    # A pontozás (_score_path) a nyelvek-struktúrás általános fájlt
+    # (elo_idegen_nyelv_*-*.json) preferálná, mert abban van nyelvek.angol ág,
+    # a nyelvspecifikus fájlban nincs nyelvek kulcs. Ezt felül kell írni:
+    # a nyelvspecifikus fájlnak mindig elsőnek KELL maradnia.
+    _forced_paths: set[Path] = set()
     if effective_language == "spanyol" and is_hu_1_4_grade(grade_num):
         sp_path = _hu_1_4_path_from_filename(SPANYOL_1_4_FILE)
         if sp_path and sp_path not in candidates:
+            _forced_paths.add(sp_path)
             candidates.insert(0, sp_path)
     elif effective_language == "spanyol" and grade_num >= 5:
         sp_path = root / "hu_kerettanterv_5_8_TELJES" / SPANYOL_5_8_FILE
         if sp_path.is_file() and sp_path not in candidates:
+            _forced_paths.add(sp_path)
             candidates.insert(0, sp_path)
 
     if effective_language == "angol" and is_hu_1_4_grade(grade_num):
         en_path = _hu_1_4_path_from_filename(ANGOL_1_4_FILE)
         if en_path and en_path not in candidates:
+            _forced_paths.add(en_path)
             candidates.insert(0, en_path)
     elif effective_language == "angol" and 5 <= grade_num <= 8:
         en_path = root / "hu_kerettanterv_5_8_TELJES" / ANGOL_5_8_FILE
         if en_path.is_file() and en_path not in candidates:
+            _forced_paths.add(en_path)
             candidates.insert(0, en_path)
 
     def _has_new_structure(path: Path) -> bool:
@@ -1635,6 +1652,13 @@ def get_curriculum_for_chat(
         )
 
     candidates.sort(key=_score_path)
+
+    # A kényszerített nyelvspecifikus fájlok vissza a lista elejére
+    # (a _score_path alacsonyabbra pontozhatta őket, de elsőbbséget kell élvezzenek)
+    for fp in sorted(_forced_paths, key=str):
+        if fp in candidates:
+            candidates.remove(fp)
+            candidates.insert(0, fp)
 
     logger.warning(
         "get_curriculum_for_chat CANDIDATES: count=%s paths=%s",
