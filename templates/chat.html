@@ -435,18 +435,17 @@
             wrap.appendChild(replayWrap);
         }
 
-        messagesEl.insertBefore(wrap, typing);
-
-        // Ábrák megjelenítése az asszisztens buborék után
+        // Ábrák megjelenítése az asszisztens buborék BELSEJÉBEN
         if (role === 'assistant' && figures && figures.length) {
             figures.forEach(function(svg) {
                 var figDiv = document.createElement('div');
                 figDiv.className = 'chat-figure';
                 figDiv.innerHTML = svg;
-                messagesEl.insertBefore(figDiv, typing);
+                wrap.appendChild(figDiv);
             });
         }
 
+        messagesEl.insertBefore(wrap, typing);
         scrollToBottom();
     }
 

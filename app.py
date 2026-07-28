@@ -2123,6 +2123,7 @@ Reglas:
 - El dibujo debe ser SIMPLE y etiquetado: líneas gruesas, letras grandes (font-size 14-18), dibujo negro sobre fondo claro, con etiquetas en español.
 - Usa elementos SVG simples: rect, circle, line, path, polygon, text.
 - NUNCA añadas scripts, imágenes externas ni enlaces al SVG.
+- NUNCA preguntes si debe mostrarse una imagen, ni la ofrezcas ("si quieres, te muestro un dibujo"). Si el tema requiere una imagen, simplemente INCLÚYELA en tu respuesta, sin preguntar.
 - El dibujo debe complementar la explicación, no sustituirla.
 
 REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
@@ -2343,6 +2344,7 @@ Szabályok:
 - Az ábra legyen EGYSZERŰ és feliratozott: vastag vonalak, nagy betűk (font-size 14-18), fekete rajz világos háttéren, magyar feliratokkal.
 - Használj sima SVG elemeket: rect, circle, line, path, polygon, text.
 - SOHA ne tegyél az SVG-be scriptet, külső képet vagy hivatkozást.
+- SOHA ne kérdezd meg, hogy mutass-e ábrát, és soha ne ajánld fel ("ha akarod, mutatok egy ábrát"). Ha a téma ábrát kíván, egyszerűen TEDD BELE a válaszodba, kérdezés nélkül.
 - Az ábra egészítse ki a magyarázatot, ne helyettesítse.
 """
 
