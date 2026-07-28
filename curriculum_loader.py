@@ -83,8 +83,8 @@ _HU_DOCX_SUBJECTS: dict[str, str] = {
 _HU_GRADE_RULES_LOWER: dict[str, tuple[int, int]] = {
     "Környezetismeret": (3, 4),
     "Digitális kultúra": (3, 4),
-    "Idegen nyelv": (4, 4),
-    "Első élő idegen nyelv": (4, 4),
+    "Idegen nyelv": (1, 4),
+    "Első élő idegen nyelv": (1, 4),
 }
 
 _HU_GRADE_RULES_UPPER: dict[str, tuple[int, int]] = {
@@ -94,7 +94,7 @@ _HU_GRADE_RULES_UPPER: dict[str, tuple[int, int]] = {
     "Fizika": (7, 8),
     "Biológia": (7, 8),
     "Földrajz": (7, 8),
-    "Dráma és színház": (7, 8),
+    "Dráma és színház": (5, 8),
     "Állampolgári ismeretek": (8, 8),
 }
 
@@ -417,6 +417,15 @@ def get_hu_1_4_subjects() -> list[dict[str, str]]:
     ]
 
 
+def _hu_1_4_subject_dicts_filtered(allowed_labels: set[str]) -> list[dict[str, str]]:
+    """1-4 tantárgyválasztó szűrése engedélyezett címkékre, eredeti sorrendben."""
+    result: list[dict[str, str]] = []
+    for label, filename in _HU_1_4_SUBJECT_MAP.items():
+        if label in allowed_labels:
+            result.append({"label": label, "value": filename})
+    return result
+
+
 def get_hu_5_8_subjects(grade: int) -> list[dict[str, str]]:
     """HU 5–8 tantárgyválasztó – helyi JSON fájlokból (grade szerint szűrve)."""
     grade_num = parse_grade(grade)
@@ -445,6 +454,9 @@ def get_hu_5_8_subjects(grade: int) -> list[dict[str, str]]:
         if idegen_path.is_file():
             options.append({"label": "Idegen nyelv", "value": ELO_IDEGEN_NYELV_5_8_FILE})
             options.sort(key=lambda o: o["label"].casefold())
+
+    # Évfolyam-kapuzás a hivatalos kerettanterv szerint
+    options = [o for o in options if _hu_json_applies_to_grade(o["label"], grade_num, "5-8")]
     return options
 
 
@@ -599,10 +611,11 @@ def _curriculum_data_for_language(
 
 
 def get_hu_subjects_for_grade(grade: int) -> list[dict[str, str]]:
-    """HU tantárgylista évfolyam szerint (1–4 fix, 5–8 index)."""
+    """HU tantárgylista évfolyam szerint (1–4 és 5–8 kapuzással)."""
     grade_num = parse_grade(grade)
     if is_hu_1_4_grade(grade_num):
-        return get_hu_1_4_subjects()
+        allowed = set(list_hu_subjects_1_4(grade_num))
+        return _hu_1_4_subject_dicts_filtered(allowed)
     if 5 <= grade_num <= 8:
         return get_hu_5_8_subjects(grade_num)
     return []
@@ -1077,10 +1090,15 @@ def _hu_json_search_paths(filename: str, grade: int) -> list[Path]:
 
 
 def list_hu_subjects_1_4(grade: int) -> list[str]:
-    """1–4. évfolyam: mind a 10 hardcoded tantárgy (megjelenítési nevek)."""
+    """1–4. évfolyam: tantárgyak évfolyam-kapuzással."""
     if not 1 <= grade <= 4:
         return []
-    return [entry["label"] for entry in get_hu_1_4_subjects()]
+    result: list[str] = []
+    for entry in get_hu_1_4_subjects():
+        label = entry["label"]
+        if _hu_json_applies_to_grade(label, grade, "1-4"):
+            result.append(label)
+    return result
 
 
 def _is_spanish_subject_name(name: str) -> bool:
