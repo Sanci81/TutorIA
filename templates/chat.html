@@ -436,12 +436,30 @@
         }
 
         // Ábrák megjelenítése az asszisztens buborék BELSEJÉBEN
+        // A ZÖLD buborék a .chat-bubble-inner (inner) elem – ide fűzzük a figurát,
+        // NEM a külső .chat-bubble (wrap) sorhoz, különben a buborék MELLÉ kerül.
         if (role === 'assistant' && figures && figures.length) {
             figures.forEach(function(svg) {
                 var figDiv = document.createElement('div');
                 figDiv.className = 'chat-figure';
                 figDiv.innerHTML = svg;
-                wrap.appendChild(figDiv);
+                // Inline méretezés – biztos ami biztos (régi cache-elt CSS ellen is)
+                figDiv.style.maxWidth = "320px";
+                figDiv.style.width = "100%";
+                figDiv.style.margin = "8px auto";
+                figDiv.style.background = "#fff";
+                figDiv.style.borderRadius = "8px";
+                figDiv.style.padding = "8px";
+                var svgEl = figDiv.querySelector("svg");
+                if (svgEl) {
+                    svgEl.setAttribute("width", "100%");
+                    svgEl.removeAttribute("height");
+                    svgEl.style.width = "100%";
+                    svgEl.style.maxWidth = "100%";
+                    svgEl.style.height = "auto";
+                    svgEl.style.display = "block";
+                }
+                inner.appendChild(figDiv);
             });
         }
 
