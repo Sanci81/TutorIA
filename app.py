@@ -2091,6 +2091,10 @@ def _build_chat_system_prompt(
     curriculum_body = curriculum_json_content or (
         "NINCS BETÖLTÖTT KERETTANTERV – kérd a szülőtől a tananyag betöltését."
     )
+    if len(curriculum_body) > 8000:
+        curriculum_body = curriculum_body[:8000] + (
+            "\n[A tananyag további része a témakörökben található.]"
+        )
     lang = _normalize_chat_language(teaching_language)
     active_curr = _active_curriculum()   # "HU" vagy "ES"
     es_curriculum = active_curr == "ES"
@@ -2106,6 +2110,19 @@ def _build_chat_system_prompt(
 Tu alumno: {child["name"]}, {age} años, {grade}º curso.
 Asignatura: {subject_label}
 Tema actual: {current_topic}
+
+=== ILUSTRACIONES ===
+Si un concepto se entiende mejor con una IMAGEN, dibuja una. Añade la imagen al final de tu respuesta así:
+<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">...</svg></ABRA>
+Por ejemplo, si enseñas el perímetro de un rectángulo, añade al final:
+<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="none" stroke="black" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
+Reglas:
+- SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
+- NO dibujes lo que se puede explicar con texto, y NO dibujes en cada respuesta.
+- El dibujo debe ser SIMPLE y etiquetado: líneas gruesas, letras grandes (font-size 14-18), dibujo negro sobre fondo claro, con etiquetas en español.
+- Usa elementos SVG simples: rect, circle, line, path, polygon, text.
+- NUNCA añadas scripts, imágenes externas ni enlaces al SVG.
+- El dibujo debe complementar la explicación, no sustituirla.
 
 REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
 1. Enseña SOLO a partir del contenido curricular de abajo. Nada más.
@@ -2288,17 +2305,6 @@ expliques palabras básicas (p. ej. 'family', 'dog', 'garden'), sino material ad
 a su curso.
 Si el alumno no conoce una palabra básica, complétala brevemente, pero después vuelve
 inmediatamente a tu propio nivel.
-
-=== ILUSTRACIONES ===
-Si un concepto se entiende mejor con una IMAGEN, dibuja una. Añade la imagen al final de tu respuesta así:
-<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">...</svg></ABRA>
-Reglas:
-- SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
-- NO dibujes lo que se puede explicar con texto, y NO dibujes en cada respuesta.
-- El dibujo debe ser SIMPLE y etiquetado: líneas gruesas, letras grandes (font-size 14-18), dibujo negro sobre fondo claro, con etiquetas en español.
-- Usa elementos SVG simples: rect, circle, line, path, polygon, text.
-- NUNCA añadas scripts, imágenes externas ni enlaces al SVG.
-- El dibujo debe complementar la explicación, no sustituirla.
 """
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
@@ -2322,6 +2328,20 @@ FONTOS SZABÁLYOK – MINDIG tartsd be:
    - Ha a gyerek teljesen offtopic kérdést tesz fel (pl. "hol vehetek játékot?", "mit főzzek?"): mondd kedvesen: "Erre most nem tudok válaszolni, de szívesen segítek a tanulásban! Folytassuk ott, ahol abbahagytuk." – majd folytasd a tanítást.
    - SOHA ne mondd hogy "Azt majd később tanuljuk!" – ez túl rideg, és lehet nem is tanulják mert nem a tantárgyhoz kapcsolódik.
 6. A {grade}. osztály a kerettanterv adott blokkjának egy konkrét éve — a fenti BLOKK-POZÍCIÓ alapján tanítsd, ne adj alacsonyabb blokkba tartozó feladatokat.
+"""
+
+    prompt += """=== SZEMLÉLTETÉS ===
+Ha egy fogalom ÁBRÁVAL érthetőbb, rajzolj egyet. Az ábrát a válaszod végén add meg így:
+<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">...</svg></ABRA>
+Például, ha a téglalap kerületét tanítod, a válaszod végére tedd:
+<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="none" stroke="black" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
+Szabályok:
+- CSAK ott rajzolj, ahol tényleg segít: geometria (idom oldalakkal, jelölésekkel), számegyenes, halmazábra, fizikai ábra (erők, áramkör), kémiai szerkezet, kottavonal hangjegyekkel, idővonal történelemhez, egyszerű térképvázlat, diagram.
+- NE rajzolj olyat, amit szöveggel is el lehet mondani, és NE rajzolj minden válaszban.
+- Az ábra legyen EGYSZERŰ és feliratozott: vastag vonalak, nagy betűk (font-size 14-18), fekete rajz világos háttéren, magyar feliratokkal.
+- Használj sima SVG elemeket: rect, circle, line, path, polygon, text.
+- SOHA ne tegyél az SVG-be scriptet, külső képet vagy hivatkozást.
+- Az ábra egészítse ki a magyarázatot, ne helyettesítse.
 """
 
     # A magyar nyelvűségi szabály csak HU tanterv esetén érvényes
@@ -2530,17 +2550,6 @@ saját szintjére.
 - A kérdés arra épüljön, amit épp most tanítottál.
 - Feleletválasztósnál az opciók valódi dolgok vagy szavak legyenek (pl. "kő" vagy
   "kutya"), ne maguk a tulajdonságok (pl. "élő" vagy "élettelen").
-
-=== SZEMLÉLTETÉS ===
-Ha egy fogalom ÁBRÁVAL érthetőbb, rajzolj egyet. Az ábrát a válaszod végén add meg így:
-<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">...</svg></ABRA>
-Szabályok:
-- CSAK ott rajzolj, ahol tényleg segít: geometria (idom oldalakkal, jelölésekkel), számegyenes, halmazábra, fizikai ábra (erők, áramkör), kémiai szerkezet, kottavonal hangjegyekkel, idővonal történelemhez, egyszerű térképvázlat, diagram.
-- NE rajzolj olyat, amit szöveggel is el lehet mondani, és NE rajzolj minden válaszban.
-- Az ábra legyen EGYSZERŰ és feliratozott: vastag vonalak, nagy betűk (font-size 14-18), fekete rajz világos háttéren, magyar feliratokkal.
-- Használj sima SVG elemeket: rect, circle, line, path, polygon, text.
-- SOHA ne tegyél az SVG-be scriptet, külső képet vagy hivatkozást.
-- Az ábra egészítse ki a magyarázatot, ne helyettesítse.
 """
 
     print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
