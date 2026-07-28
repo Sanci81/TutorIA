@@ -2118,7 +2118,8 @@ Por ejemplo, si enseñas el perímetro de un rectángulo, añade al final:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="none" stroke="black" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Reglas:
 - SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
-- NO dibujes lo que se puede explicar con texto, y NO dibujes en cada respuesta.
+- DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas, líneas de tiempo o mapas. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
+- En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El dibujo debe ser SIMPLE y etiquetado: líneas gruesas, letras grandes (font-size 14-18), dibujo negro sobre fondo claro, con etiquetas en español.
 - Usa elementos SVG simples: rect, circle, line, path, polygon, text.
 - NUNCA añadas scripts, imágenes externas ni enlaces al SVG.
@@ -2337,7 +2338,8 @@ Például, ha a téglalap kerületét tanítod, a válaszod végére tedd:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="none" stroke="black" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Szabályok:
 - CSAK ott rajzolj, ahol tényleg segít: geometria (idom oldalakkal, jelölésekkel), számegyenes, halmazábra, fizikai ábra (erők, áramkör), kémiai szerkezet, kottavonal hangjegyekkel, idővonal történelemhez, egyszerű térképvázlat, diagram.
-- NE rajzolj olyat, amit szöveggel is el lehet mondani, és NE rajzolj minden válaszban.
+- KÖTELEZŐ ábrát rajzolnod, ha geometriai alakzatról, mértékegységről, számegyenesről, halmazról, áramkörről, kémiai szerkezetről, kottáról, idővonalról vagy térképről tanítasz. Ilyenkor mindig legyen ábra, akkor is, ha szöveggel is elmondható.
+- Egyéb esetben csak akkor rajzolj, ha tényleg segít, és ne minden válaszban.
 - Az ábra legyen EGYSZERŰ és feliratozott: vastag vonalak, nagy betűk (font-size 14-18), fekete rajz világos háttéren, magyar feliratokkal.
 - Használj sima SVG elemeket: rect, circle, line, path, polygon, text.
 - SOHA ne tegyél az SVG-be scriptet, külső képet vagy hivatkozást.
