@@ -3448,6 +3448,8 @@ def child_chat_send(child_id: int):
         clean_svg = _sanitize_svg(s)
         if clean_svg:
             figures.append(clean_svg)
+    print(f"[SVG-DEBUG] raw={len(raw_svgs)} tisztitott={len(figures)} "
+          f"tail={raw_reply[-300:]!r}", flush=True)
     marker_count = len(vocab_pairs)
     fallback_count = 0
     reply_count = 0
