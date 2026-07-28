@@ -1869,6 +1869,21 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
     align-items: center;
     min-width: 4rem;
 }
+.chat-figure {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    background: var(--white, #fff);
+    border-radius: 0.75rem;
+    overflow-x: auto;
+}
+.chat-figure svg {
+    max-width: 100%;
+    height: auto;
+}
 .typing-dot {
     width: 10px;
     height: 10px;

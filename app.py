@@ -1421,12 +1421,17 @@ _CHAT_MARKER_TOPIC = re.compile(r"<TOPIC_COMPLETE>", re.IGNORECASE)
 _CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
 _CHAT_MARKER_VOCAB = re.compile(
     r"[<\[]\s*VOCAB\s*[>\]]\s*([^=\n<\[]+?)\s*=\s*([^<\[\n]+?)\s*(?:[<\[]\s*/\s*VOCAB\s*[>\]]|$)",
-    re.IGNORECASE | re.MULTILINE,
+     re.IGNORECASE | re.MULTILINE,
+)
+
+_CHAT_MARKER_SVG = re.compile(
+    r"<ABRA>\s*(<svg\b.*?</svg>)\s*</ABRA>",
+    re.IGNORECASE | re.DOTALL,
 )
 
 
-def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[str, str]]]:
-    """Belső jelölők eltávolítása; topic, level, szójegyzék párok."""
+def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[str, str]], list[str]]:
+    """Belső jelölők eltávolítása; topic, level, szójegyzék párok, SVG ábrák."""
     level_val: int | None = None
     level_match = _CHAT_MARKER_LEVEL.search(text)
     if level_match:
@@ -1438,11 +1443,50 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
         if n and f:
             vocab_pairs.append((n, f))
 
+    svg_list: list[str] = []
+    for svg in _CHAT_MARKER_SVG.findall(text):
+        s = svg.strip()
+        if s:
+            svg_list.append(s)
+
     clean = _CHAT_MARKER_TOPIC.sub("", text)
     clean = _CHAT_MARKER_LEVEL.sub("", clean)
-    clean = _CHAT_MARKER_VOCAB.sub("", clean).strip()
+    clean = _CHAT_MARKER_VOCAB.sub("", clean)
+    clean = _CHAT_MARKER_SVG.sub("", clean).strip()
     topic_done = bool(_CHAT_MARKER_TOPIC.search(text))
-    return clean, topic_done, level_val, vocab_pairs
+    return clean, topic_done, level_val, vocab_pairs, svg_list
+
+
+def _sanitize_svg(svg: str) -> str | None:
+    """Biztonsági SVG tisztítás: scriptek, eseménykezelők, külső hivatkozások eltávolítása."""
+    import re as _re
+    # <script> elemek és tartalmuk eltávolítása
+    svg = _re.sub(r"<script\b[^>]*>.*?</script>", "", svg, flags=_re.IGNORECASE | _re.DOTALL)
+    # on* attribútumok eltávolítása (onclick, onload, onerror, ...)
+    svg = _re.sub(r'\s+on\w+\s*=\s*"[^"]*"', "", svg, flags=_re.IGNORECASE)
+    svg = _re.sub(r"\s+on\w+\s*=\s*'[^']*'", "", svg, flags=_re.IGNORECASE)
+    # <foreignObject>, <iframe>, <image> elemek eltávolítása
+    svg = _re.sub(
+        r"<(foreignObject|iframe|image)\b[^>]*>.*?</\1>",
+        "", svg, flags=_re.IGNORECASE | _re.DOTALL,
+    )
+    svg = _re.sub(
+        r"<(foreignObject|iframe|image)\b[^>]*/>",
+        "", svg, flags=_re.IGNORECASE,
+    )
+    # href / xlink:href attribútumok, amik nem "#"-tel kezdődnek
+    svg = _re.sub(
+        r'\s+(?:xlink:)?href\s*=\s*"(?!\#)[^"]*"',
+        "", svg, flags=_re.IGNORECASE,
+    )
+    svg = _re.sub(
+        r"\s+(?:xlink:)?href\s*=\s*'(?!\#)[^']*'",
+        "", svg, flags=_re.IGNORECASE,
+    )
+    svg = svg.strip()
+    if not svg.lower().startswith("<svg") or len(svg) > 20000:
+        return None
+    return svg
 
 
 def _chat_load_curriculum(
@@ -2244,6 +2288,17 @@ expliques palabras básicas (p. ej. 'family', 'dog', 'garden'), sino material ad
 a su curso.
 Si el alumno no conoce una palabra básica, complétala brevemente, pero después vuelve
 inmediatamente a tu propio nivel.
+
+=== ILUSTRACIONES ===
+Si un concepto se entiende mejor con una IMAGEN, dibuja una. Añade la imagen al final de tu respuesta así:
+<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">...</svg></ABRA>
+Reglas:
+- SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
+- NO dibujes lo que se puede explicar con texto, y NO dibujes en cada respuesta.
+- El dibujo debe ser SIMPLE y etiquetado: líneas gruesas, letras grandes (font-size 14-18), dibujo negro sobre fondo claro, con etiquetas en español.
+- Usa elementos SVG simples: rect, circle, line, path, polygon, text.
+- NUNCA añadas scripts, imágenes externas ni enlaces al SVG.
+- El dibujo debe complementar la explicación, no sustituirla.
 """
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
@@ -2475,6 +2530,17 @@ saját szintjére.
 - A kérdés arra épüljön, amit épp most tanítottál.
 - Feleletválasztósnál az opciók valódi dolgok vagy szavak legyenek (pl. "kő" vagy
   "kutya"), ne maguk a tulajdonságok (pl. "élő" vagy "élettelen").
+
+=== SZEMLÉLTETÉS ===
+Ha egy fogalom ÁBRÁVAL érthetőbb, rajzolj egyet. Az ábrát a válaszod végén add meg így:
+<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">...</svg></ABRA>
+Szabályok:
+- CSAK ott rajzolj, ahol tényleg segít: geometria (idom oldalakkal, jelölésekkel), számegyenes, halmazábra, fizikai ábra (erők, áramkör), kémiai szerkezet, kottavonal hangjegyekkel, idővonal történelemhez, egyszerű térképvázlat, diagram.
+- NE rajzolj olyat, amit szöveggel is el lehet mondani, és NE rajzolj minden válaszban.
+- Az ábra legyen EGYSZERŰ és feliratozott: vastag vonalak, nagy betűk (font-size 14-18), fekete rajz világos háttéren, magyar feliratokkal.
+- Használj sima SVG elemeket: rect, circle, line, path, polygon, text.
+- SOHA ne tegyél az SVG-be scriptet, külső képet vagy hivatkozást.
+- Az ábra egészítse ki a magyarázatot, ne helyettesítse.
 """
 
     print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
@@ -3376,7 +3442,12 @@ def child_chat_send(child_id: int):
         logger.exception("Chat AI hiba (child_id=%s): %s", child_id, exc)
         return jsonify({"error": "chat_failed", "detail": str(exc)}), 500
 
-    reply, topic_done, level_set, vocab_pairs = _parse_chat_markers(raw_reply)
+    reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
+    figures: list[str] = []
+    for s in raw_svgs:
+        clean_svg = _sanitize_svg(s)
+        if clean_svg:
+            figures.append(clean_svg)
     marker_count = len(vocab_pairs)
     fallback_count = 0
     reply_count = 0
@@ -3556,6 +3627,7 @@ def child_chat_send(child_id: int):
             "xp": progress.get("xp", 0),
             "game_level": progress.get("game_level", 1),
             "topic_done": topic_done,
+            "figures": figures,
         }
     )
 

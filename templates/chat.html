@@ -396,7 +396,7 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
-    function appendBubble(role, text) {
+    function appendBubble(role, text, figures) {
         var wrap = document.createElement('div');
         wrap.className = 'chat-bubble chat-bubble-' + role;
         if (chatMode === 'voice' && role === 'assistant') {
@@ -436,6 +436,17 @@
         }
 
         messagesEl.insertBefore(wrap, typing);
+
+        // Ábrák megjelenítése az asszisztens buborék után
+        if (role === 'assistant' && figures && figures.length) {
+            figures.forEach(function(svg) {
+                var figDiv = document.createElement('div');
+                figDiv.className = 'chat-figure';
+                figDiv.innerHTML = svg;
+                messagesEl.insertBefore(figDiv, typing);
+            });
+        }
+
         scrollToBottom();
     }
 
@@ -660,7 +671,7 @@
                         });
                     }, 200);
                 }
-                appendBubble('assistant', aiMessage);
+                appendBubble('assistant', aiMessage, res.data.figures);
                 if (res.data.current_topic_id) {
                     currentTopicId = res.data.current_topic_id;
                     if (topicIdInput) topicIdInput.value = currentTopicId;
@@ -1048,7 +1059,7 @@
                             });
                         }, 200);
                     }
-                    appendBubble('assistant', reply);
+                    appendBubble('assistant', reply, res.data.figures);
                     if (res.data.current_topic_id) {
                         currentTopicId = res.data.current_topic_id;
                         var tid = document.getElementById('chat-topic-id');
