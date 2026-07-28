@@ -98,6 +98,20 @@ _HU_GRADE_RULES_UPPER: dict[str, tuple[int, int]] = {
     "Állampolgári ismeretek": (8, 8),
 }
 
+# Spirális tantárgyak — ezeknél a témakörök minden évben visszatérnek,
+# NEM szabad szétosztani a sáv-blokkok témaköreit évfolyamok között.
+_SPIRAL_SUBJECT_DISPLAY_NAMES: frozenset[str] = frozenset(
+    {
+        "Testnevelés",
+        "Ének-zene",
+        "Vizuális kultúra",
+        "Etika",
+        "Dráma és színház",
+        "Közösségi nevelés",
+        "Hon- és népismeret",
+    }
+)
+
 # UI nyelv szerinti tantárgy-feliratok (value = tantervi név, label = UI nyelv)
 _HU_SUBJECT_UI_ES: dict[str, str] = {
     "Magyar nyelv és irodalom": "Lengua y literatura húngaras",
@@ -1332,6 +1346,82 @@ def _hu_evfolyam_blokk_for_grade(
     return None
 
 
+def _is_spiral_subject(data: dict[str, Any], raw_data: dict[str, Any] | None = None) -> bool:
+    """Ellenőrzi, hogy a tantárgy spirális-e (a témakörök minden évben visszatérnek)."""
+    tantargy = (raw_data or data).get("meta", {}).get("tantargy", "")
+    if not tantargy:
+        return False
+    return tantargy in _SPIRAL_SUBJECT_DISPLAY_NAMES
+
+
+def _split_band_topics_for_grade(
+    blokk: dict[str, Any], grade_num: int
+) -> list[dict[str, Any]]:
+    """Sáv-blokk témaköreinek szétosztása évfolyamok között óraszám-arányosan.
+
+    Ha a blokk evfolyamok listája EGY évfolyamot tartalmaz, a teljes listát adja
+    vissza. Több évfolyam esetén a javasolt_oraszam szerint súlyozva osztja szét,
+    óraszám híján egyenletesen darabszám szerint.
+    """
+    evfolyamok: list[int] = blokk.get("evfolyamok") or []
+    temakorok: list[dict[str, Any]] = blokk.get("temakorok") or []
+
+    if not temakorok:
+        return temakorok
+    if len(evfolyamok) <= 1 or grade_num not in evfolyamok:
+        return temakorok
+
+    # Óraszámok kigyűjtése témakörönként
+    ora_list: list[int] = []
+    for item in temakorok:
+        if isinstance(item, dict) and item.get("nev"):
+            raw = str(item.get("javasolt_oraszam", "0"))
+            m = re.search(r"\d+", raw)
+            ora_list.append(int(m.group()) if m else 0)
+        else:
+            ora_list.append(0)
+
+    total_ora = sum(ora_list)
+    num_grades = len(evfolyamok)
+    grade_idx = evfolyamok.index(grade_num)
+
+    if total_ora == 0:
+        # Nincs óraszám → egyenletes darabszám szerinti osztás
+        per_grade = len(temakorok) // num_grades
+        remainder = len(temakorok) % num_grades
+        start = grade_idx * per_grade + min(grade_idx, remainder)
+        end = start + per_grade + (1 if grade_idx < remainder else 0)
+        return temakorok[start:end]
+
+    # Óraszám-arányos osztás: határok kumulált óraszám alapján
+    target_per_grade = total_ora / num_grades
+    cum = 0
+    # boundaries[i] = kumulált óraszám az i-edik téma ELŐTT
+    boundaries = [0]
+    for ora in ora_list:
+        cum += ora
+        boundaries.append(cum)
+
+    start_target = grade_idx * target_per_grade
+    end_target = (grade_idx + 1) * target_per_grade
+
+    # start_idx: első téma, aminek a vége túllóg a start_target-en
+    start_idx = 0
+    for i in range(len(ora_list)):
+        if boundaries[i + 1] > start_target:
+            start_idx = i
+            break
+
+    # end_idx: első téma, aminek a kezdete >= end_target
+    end_idx = len(ora_list)
+    for i in range(len(ora_list)):
+        if boundaries[i] >= end_target:
+            end_idx = i
+            break
+
+    return temakorok[start_idx:end_idx]
+
+
 def extract_hu_grade_topics(data: dict[str, Any], grade: int) -> dict[str, list[str]]:
     """Évfolyam-specifikus témakörök kinyerése egy tantárgy JSON-ból."""
     blokk = _hu_evfolyam_blokk_for_grade(data, grade)
@@ -1366,13 +1456,18 @@ def curriculum_topic_names(topics: dict[str, list[str]]) -> list[str]:
     return list(topics.keys())
 
 
-def extract_topic_catalog(data: dict[str, Any], grade: int | str) -> list[dict[str, Any]]:
+def extract_topic_catalog(
+    data: dict[str, Any], grade: int | str, *, raw_data: dict[str, Any] | None = None
+) -> list[dict[str, Any]]:
     """Témakör lista chat sidebarhoz: id, name, text, index, ora_szam."""
     grade_num = parse_grade(grade)
     blokk = _hu_evfolyam_blokk_for_grade(data, grade_num)
     if blokk:
         catalog: list[dict[str, Any]] = []
         temakorok = blokk.get("temakorok") or []
+        # Spirális tantárgyak: minden téma minden évben visszatér → ne osszuk szét
+        if not _is_spiral_subject(data, raw_data):
+            temakorok = _split_band_topics_for_grade(blokk, grade_num)
         if isinstance(temakorok, list):
             for idx, item in enumerate(temakorok):
                 if isinstance(item, dict) and item.get("nev"):
@@ -1712,7 +1807,7 @@ def get_curriculum_for_chat(
                 raw = _load_hu_json(path)
                 data = _curriculum_data_for_language(raw, effective_language)
                 content = format_curriculum_for_grade(data, grade_num)
-                catalog = extract_topic_catalog(data, grade_num)
+                catalog = extract_topic_catalog(data, grade_num, raw_data=raw)
                 if content or catalog:
                     usable_in_grade = True
                     break
@@ -1737,7 +1832,7 @@ def get_curriculum_for_chat(
         # angol/német/spanyol: nyelvek.* ág (pl. 5–8 JSON), nem a nyers raw
         data = _curriculum_data_for_language(raw, effective_language)
         topics = extract_hu_grade_topics(data, grade_num)
-        catalog = extract_topic_catalog(data, grade_num)
+        catalog = extract_topic_catalog(data, grade_num, raw_data=raw)
         content = format_curriculum_for_grade(data, grade_num)
         subject_name = (
             data.get("nyelv")
