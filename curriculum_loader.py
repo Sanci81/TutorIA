@@ -206,7 +206,7 @@ ANGOL_5_8_FILE = "angol_5-8.json"
 
 # Nyelvspecifikus fájlok — NEM önálló tantárgyak, kizárandók a tantárgylistából
 _LANGUAGE_SPECIFIC_FILES: frozenset[str] = frozenset(
-    {ANGOL_1_4_FILE, ANGOL_5_8_FILE, SPANYOL_1_4_FILE}
+    {ANGOL_1_4_FILE, ANGOL_5_8_FILE, SPANYOL_1_4_FILE, SPANYOL_5_8_FILE}
 )
 
 # ── LOMLOE spanyol nemzeti tanterv (BOE-A-2022-3296) ──────────────────────
