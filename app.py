@@ -2125,6 +2125,12 @@ Reglas:
 - NUNCA añadas scripts, imágenes externas ni enlaces al SVG.
 - NUNCA preguntes si debe mostrarse una imagen, ni la ofrezcas ("si quieres, te muestro un dibujo"). Si el tema requiere una imagen, simplemente INCLÚYELA en tu respuesta, sin preguntar.
 - El dibujo debe complementar la explicación, no sustituirla.
+- El área de dibujo debe ser viewBox="0 0 320 220" y DEJA un margen de 30 píxeles en cada lado, para que las etiquetas no se salgan.
+- Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- Las etiquetas: font-size="16" fill="#222" text-anchor="middle", y colócalas SIEMPRE FUERA de la figura, al menos a 12 píxeles de distancia.
+- Las proporciones de la figura deben ser realistas: un rectángulo de 6 cm × 3 cm debe ser el doble de ancho que de alto.
+- Si marcas medidas, escribe también el valor junto a la letra (p. ej. "a = 6 cm").
+- Usa un dibujo claro y limpio: sin decoración innecesaria, sin sombras ni degradados.
 
 REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
 1. Enseña SOLO a partir del contenido curricular de abajo. Nada más.
@@ -2346,6 +2352,12 @@ Szabályok:
 - SOHA ne tegyél az SVG-be scriptet, külső képet vagy hivatkozást.
 - SOHA ne kérdezd meg, hogy mutass-e ábrát, és soha ne ajánld fel ("ha akarod, mutatok egy ábrát"). Ha a téma ábrát kíván, egyszerűen TEDD BELE a válaszodba, kérdezés nélkül.
 - Az ábra egészítse ki a magyarázatot, ne helyettesítse.
+- Az ábra rajzterülete legyen viewBox="0 0 320 220", és HAGYJ 30 pixel margót minden oldalon, hogy a feliratok ne lógjanak ki.
+- A vonalak: stroke="#222" stroke-width="3", kitöltés nélkül (fill="none").
+- A feliratok: font-size="16" fill="#222" text-anchor="middle", és MINDIG az alakzaton KÍVÜL, tőle legalább 12 pixelre helyezd el őket.
+- Az alakzat arányai legyenek valósághűek: egy 6 cm × 3 cm-es téglalap kétszer olyan széles legyen, mint amilyen magas.
+- Ha méreteket is jelölsz, írd ki az értéket is a betűjel mellé (pl. "a = 6 cm").
+- Használj világos, letisztult rajzot: felesleges díszítés, árnyék, gradiens nélkül.
 """
 
     # A magyar nyelvűségi szabály csak HU tanterv esetén érvényes
