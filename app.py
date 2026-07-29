@@ -2131,6 +2131,16 @@ Reglas:
 - Las proporciones de la figura deben ser realistas: un rectángulo de 6 cm × 3 cm debe ser el doble de ancho que de alto.
 - Si marcas medidas, escribe también el valor junto a la letra (p. ej. "a = 6 cm").
 - Usa un dibujo claro y limpio: sin decoración innecesaria, sin sombras ni degradados.
+- NUNCA escribas una FÓRMULA o texto resumen dentro o encima de la figura, donde pueda solaparse con el dibujo. Si muestras una fórmula, colócala en la PARTE INFERIOR de la imagen, en una línea aparte, al menos 20 píxeles por debajo de la figura.
+- NO repitas la misma etiqueta varias veces. En una figura regular (cuadrado, cubo) BASTA marcar UN lado, no todos.
+- Dos etiquetas NUNCA deben solaparse: deja al menos 20 píxeles de distancia entre ellas.
+- Si la imagen también incluye una fórmula, usa viewBox="0 0 320 260".
+- La imagen debe EXPLICAR, no solo ilustrar. Dibuja siempre lo que ayude a comprender:
+  * para el área de superficie, la RED del cuerpo (caras desplegadas), no el cuerpo 3D
+  * para el volumen, la imagen 3D del cuerpo con las aristas marcadas
+  * para el perímetro, la figura plana con los lados medidos resaltados
+  * para las fracciones, una figura dividida con la parte coloreada
+- Dibuja una figura TRIDIMENSIONAL (3D) solo si el propio tema trata de cuerpos; en temas planos usa siempre un dibujo plano.
 
 REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
 1. Enseña SOLO a partir del contenido curricular de abajo. Nada más.
@@ -2358,6 +2368,16 @@ Szabályok:
 - Az alakzat arányai legyenek valósághűek: egy 6 cm × 3 cm-es téglalap kétszer olyan széles legyen, mint amilyen magas.
 - Ha méreteket is jelölsz, írd ki az értéket is a betűjel mellé (pl. "a = 6 cm").
 - Használj világos, letisztult rajzot: felesleges díszítés, árnyék, gradiens nélkül.
+- KÉPLETET vagy összefoglaló szöveget SOHA ne írj az alakzat belsejébe vagy fölé, ahol átfedheti a rajzot. Ha képletet is mutatsz, az az ábra ALJÁRA kerüljön, külön sorba, az alakzat alatt legalább 20 pixellel.
+- Ugyanazt a feliratot NE ismételd meg többször. Egy szabályos alakzatnál (négyzet, kocka) ELÉG EGY oldalt megjelölni, nem mindegyiket.
+- Két felirat SOHA ne fedje egymást: hagyj közöttük legalább 20 pixel távolságot.
+- Ha képlet is van az ábrán, használj viewBox="0 0 320 260"-t.
+- Az ábra MAGYARÁZZON, ne csak illusztráljon. Mindig azt rajzold, ami a megértést segíti:
+  * felszín számításánál a test HÁLÓJÁT (kiterített lapokat), nem a térbeli testet
+  * térfogatnál a test térbeli képét az élek megjelölésével
+  * kerületnél a síkidomot, a mért oldalak kiemelésével
+  * törtnél felosztott alakzatot, a rész beszínezésével
+- TÉRBELI (3D) ábrát csak akkor rajzolj, ha maga a tananyag a testekről szól; sík témánál mindig síkbeli rajzot használj.
 """
 
     # A magyar nyelvűségi szabály csak HU tanterv esetén érvényes
