@@ -112,6 +112,14 @@ _SPIRAL_SUBJECT_DISPLAY_NAMES: frozenset[str] = frozenset(
     }
 )
 
+_LOE_SPIRAL_SUBJECT_NAMES: frozenset[str] = frozenset(
+    {
+        "Educación Física",
+        "Educación Artística",
+        "Educación en Valores Cívicos y Éticos",
+    }
+)
+
 # UI nyelv szerinti tantárgy-feliratok (value = tantervi név, label = UI nyelv)
 _HU_SUBJECT_UI_ES: dict[str, str] = {
     "Magyar nyelv és irodalom": "Lengua y literatura húngaras",
@@ -1354,6 +1362,81 @@ def _is_spiral_subject(data: dict[str, Any], raw_data: dict[str, Any] | None = N
     return tantargy in _SPIRAL_SUBJECT_DISPLAY_NAMES
 
 
+def _is_loe_spiral_subject(data: dict[str, Any]) -> bool:
+    """Ellenőrzi, hogy a LOMLOE tantárgy spirális-e."""
+    tantargy = data.get("meta", {}).get("tantargy", "")
+    return tantargy in _LOE_SPIRAL_SUBJECT_NAMES
+
+
+def _loe_cycle_grade_range(cycle: str) -> tuple[int, int] | None:
+    """Visszaadja a LOMLOE ciklus első és utolsó évfolyamát."""
+    _CYCLES = {"1_ciclo": (1, 2), "2_ciclo": (3, 4), "3_ciclo": (5, 6)}
+    return _CYCLES.get(cycle)
+
+
+def _split_loe_topics_for_grade(
+    temakorok: list[dict[str, Any]],
+    grade_num: int,
+    *,
+    first_grade: int,
+    last_grade: int,
+) -> list[dict[str, Any]]:
+    """LOMLOE ciklus témaköreinek szétosztása évfolyamok között óraszám-arányosan.
+
+    Ugyanaz a logika, mint a magyar _split_band_topics_for_grade, de közvetlenül
+    témakör-listával dolgozik (a ciklus első és utolsó évfolyama paraméter).
+    """
+    if not temakorok:
+        return temakorok
+    evfolyamok = list(range(first_grade, last_grade + 1))
+    if len(evfolyamok) <= 1 or grade_num not in evfolyamok:
+        return temakorok
+
+    ora_list: list[int] = []
+    for item in temakorok:
+        if isinstance(item, dict) and item.get("nev"):
+            raw = str(item.get("javasolt_oraszam", "0"))
+            m = re.search(r"\d+", raw)
+            ora_list.append(int(m.group()) if m else 0)
+        else:
+            ora_list.append(0)
+
+    total_ora = sum(ora_list)
+    num_grades = len(evfolyamok)
+    grade_idx = evfolyamok.index(grade_num)
+
+    if total_ora == 0:
+        per_grade = len(temakorok) // num_grades
+        remainder = len(temakorok) % num_grades
+        start = grade_idx * per_grade + min(grade_idx, remainder)
+        end = start + per_grade + (1 if grade_idx < remainder else 0)
+        return temakorok[start:end]
+
+    target_per_grade = total_ora / num_grades
+    cum = 0
+    boundaries = [0]
+    for ora in ora_list:
+        cum += ora
+        boundaries.append(cum)
+
+    start_target = grade_idx * target_per_grade
+    end_target = (grade_idx + 1) * target_per_grade
+
+    start_idx = 0
+    for i in range(len(ora_list)):
+        if boundaries[i + 1] > start_target:
+            start_idx = i
+            break
+
+    end_idx = len(ora_list)
+    for i in range(len(ora_list)):
+        if boundaries[i] >= end_target:
+            end_idx = i
+            break
+
+    return temakorok[start_idx:end_idx]
+
+
 def _split_band_topics_for_grade(
     blokk: dict[str, Any], grade_num: int
 ) -> list[dict[str, Any]]:
@@ -1527,6 +1610,17 @@ def extract_loe_topic_catalog(
     temakorok = lang_specific if lang_specific is not None else (cval.get("temakorok") or [])
     if not isinstance(temakorok, list):
         return []
+
+    # Ciklus témaköreinek szétosztása évfolyamok között
+    # (kivéve spirális tantárgyak: Educación Física, Artística, Valores)
+    if not _is_loe_spiral_subject(data):
+        cycle_range = _loe_cycle_grade_range(cycle)
+        if cycle_range:
+            temakorok = _split_loe_topics_for_grade(
+                temakorok, grade_num,
+                first_grade=cycle_range[0], last_grade=cycle_range[1],
+            )
+
     catalog: list[dict[str, Any]] = []
     for idx, item in enumerate(temakorok):
         if isinstance(item, dict) and item.get("nev"):
