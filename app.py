@@ -3002,7 +3002,12 @@ def _call_ai_for_chat(
     messages: list[dict[str, str]] = [{"role": "system", "content": system_prompt}]
     for msg in history:
         if msg["role"] in ("user", "assistant"):
-            messages.append({"role": msg["role"], "content": msg["content"]})
+            content = msg["content"]
+            # Az SVG ábrákat tartalmazó <ABRA> blokkok eltávolítása az AI-nak
+            # küldött előzményből – token-megtakarítás céljából.
+            if msg["role"] == "assistant":
+                content = _CHAT_MARKER_SVG.sub("", content).strip()
+            messages.append({"role": msg["role"], "content": content})
     messages.append({"role": "user", "content": user_message})
 
     client = _openai_client(api_key, request_timeout=60.0)
@@ -3378,6 +3383,24 @@ def child_chat(child_id: int):
         learning_total = database.get_learning_time_total(child_id, subject)
         show_early_test = learning_total >= 60
 
+    # Ábrák kinyerése a régi asszisztens üzenetekből (DB-ből betöltött előzmény).
+    # Az ABRA blokkokat eltávolítjuk a szövegből, az SVG-ket sanitizáljuk,
+    # és üzenetenként egy "figures" listában adjuk át a template-nek.
+    for msg in messages:
+        if msg.get("role") != "assistant":
+            continue
+        content = msg.get("content") or ""
+        svg_matches = _CHAT_MARKER_SVG.findall(content)
+        if svg_matches:
+            clean_content = _CHAT_MARKER_SVG.sub("", content).strip()
+            msg["content"] = clean_content
+            figs: list[str] = []
+            for s in svg_matches:
+                clean_svg = _sanitize_svg(s)
+                if clean_svg:
+                    figs.append(clean_svg)
+            msg["figures"] = figs
+
     return render_template(
         "chat.html",
         child=child,
@@ -3655,7 +3678,14 @@ def child_chat_send(child_id: int):
         except Exception as e:
             print(f"[VOCAB-FALLBACK] hiba: {e}", flush=True)
     print(f"[VOCAB-DEBUG] is_foreign={is_foreign!r} language={language!r} pairs_marker={marker_count} pairs_fallback={fallback_count} pairs_reply={reply_count} pairs={vocab_pairs!r} tail={raw_reply[-250:]!r}", flush=True)
-    database.add_chat_message(session_id, "assistant", reply)
+
+    # Visszatesszük az ABRA blokkokat a mentett szöveg végére, hogy az ábrák
+    # megmaradjanak a chat-előzményben (oldal-újratöltés / tantervváltás után is).
+    # A frontendnek küldött reply és figures VÁLTOZATLAN.
+    db_reply = reply
+    if raw_svgs:
+        db_reply = reply + "\n\n" + "".join(f"<ABRA>{s}</ABRA>" for s in raw_svgs)
+    database.add_chat_message(session_id, "assistant", db_reply)
 
     if is_foreign and language and vocab_pairs:
         _chat_save_vocabulary(child_id, subject, language, vocab_pairs, topic_id=current_topic_id)

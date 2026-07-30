@@ -108,7 +108,13 @@
         <div class="chat-messages" id="chat-messages" aria-live="polite">
             {% for msg in messages %}
                 <div class="chat-bubble chat-bubble-{{ msg['role'] }}">
-                    <div class="chat-bubble-inner">{{ msg['content'] }}</div>
+                    <div class="chat-bubble-inner">{{ msg['content'] }}
+                    {% if msg['role'] == 'assistant' and msg.get('figures') %}
+                        {% for svg in msg['figures'] %}
+                            <div class="chat-figure" style="max-width:320px;width:100%;margin:8px auto;background:#fff;border-radius:8px;padding:8px;">{{ svg | safe }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    </div>
                 </div>
             {% endfor %}
             <div class="chat-bubble chat-bubble-assistant chat-typing" id="typing-indicator" hidden>
@@ -390,6 +396,16 @@
             replayWrap.appendChild(replayBtn);
             wrap.appendChild(replayWrap);
         }
+    });
+
+    // SVG ábrák átméretezése a régi (betöltött) asszisztens üzeneteknél
+    document.querySelectorAll('.chat-figure svg').forEach(function(svgEl) {
+        svgEl.setAttribute('width', '100%');
+        svgEl.removeAttribute('height');
+        svgEl.style.width = '100%';
+        svgEl.style.maxWidth = '100%';
+        svgEl.style.height = 'auto';
+        svgEl.style.display = 'block';
     });
 
     function scrollToBottom() {
