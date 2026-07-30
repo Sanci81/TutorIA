@@ -2141,6 +2141,8 @@ Reglas:
   * para el perímetro, la figura plana con los lados medidos resaltados
   * para las fracciones, una figura dividida con la parte coloreada
 - Dibuja una figura TRIDIMENSIONAL (3D) solo si el propio tema trata de cuerpos; en temas planos usa siempre un dibujo plano.
+- Para las etiquetas en el lado IZQUIERDO de la figura, usa text-anchor=\"end\" y coloca la coordenada x al menos 12 píxeles a la IZQUIERDA del borde izquierdo. Para el lado derecho, text-anchor=\"start\", al menos 12 píxeles a la DERECHA del borde derecho. text-anchor=\"middle\" SOLO para etiquetas arriba o abajo.
+- Si la etiqueta es larga (p. ej. \"b = 3 cm\"), deja al menos 70 píxeles de margen en los bordes izquierdo y derecho del área de dibujo para que el texto quepa: no empieces la figura antes de x=70.
 
 REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
 1. Enseña SOLO a partir del contenido curricular de abajo. Nada más.
@@ -2378,6 +2380,8 @@ Szabályok:
   * kerületnél a síkidomot, a mért oldalak kiemelésével
   * törtnél felosztott alakzatot, a rész beszínezésével
 - TÉRBELI (3D) ábrát csak akkor rajzolj, ha maga a tananyag a testekről szól; sík témánál mindig síkbeli rajzot használj.
+- Az alakzat BAL oldalára írt felirathoz használj text-anchor=\"end\" értéket, és tedd az x koordinátát az alakzat bal szélétől legalább 12 pixellel BALRA. A jobb oldali felirathoz text-anchor=\"start\", az alakzat jobb szélétől legalább 12 pixellel jobbra. A text-anchor=\"middle\" CSAK a felül és alul elhelyezett feliratokhoz való.
+- Ha a felirat hosszú (pl. \"b = 3 cm\"), a rajzterület bal és jobb szélén hagyj legalább 70 pixel helyet, hogy a szöveg elférjen: az alakzatot ne kezdd x=70-nél előbb.
 """
 
     # A magyar nyelvűségi szabály csak HU tanterv esetén érvényes
