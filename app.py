@@ -2120,17 +2120,17 @@ Reglas:
 - SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
 - DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas, líneas de tiempo o mapas. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
+- El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
+- Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- Las etiquetas: font-size="16" fill="#222" text-anchor="middle", y colócalas SIEMPRE FUERA de la figura, a al menos 12 píxeles de distancia.
+- Las proporciones de las figuras deben ser realistas: un rectángulo de 6 cm × 3 cm debe ser el doble de ancho que de alto.
+- Si indicas medidas, escribe el valor junto a la letra (ej. "a = 6 cm").
+- Usa un dibujo claro y limpio: sin decoración innecesaria, sombras ni gradientes.
 - El dibujo debe ser SIMPLE y etiquetado: líneas gruesas, letras grandes (font-size 14-18), dibujo negro sobre fondo claro, con etiquetas en español.
 - Usa elementos SVG simples: rect, circle, line, path, polygon, text.
 - NUNCA añadas scripts, imágenes externas ni enlaces al SVG.
 - NUNCA preguntes si debe mostrarse una imagen, ni la ofrezcas ("si quieres, te muestro un dibujo"). Si el tema requiere una imagen, simplemente INCLÚYELA en tu respuesta, sin preguntar.
 - El dibujo debe complementar la explicación, no sustituirla.
-- El área de dibujo debe ser viewBox="0 0 320 220" y DEJA un margen de 30 píxeles en cada lado, para que las etiquetas no se salgan.
-- Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
-- Las etiquetas: font-size="16" fill="#222" text-anchor="middle", y colócalas SIEMPRE FUERA de la figura, al menos a 12 píxeles de distancia.
-- Las proporciones de la figura deben ser realistas: un rectángulo de 6 cm × 3 cm debe ser el doble de ancho que de alto.
-- Si marcas medidas, escribe también el valor junto a la letra (p. ej. "a = 6 cm").
-- Usa un dibujo claro y limpio: sin decoración innecesaria, sin sombras ni degradados.
 - NUNCA escribas una FÓRMULA o texto resumen dentro o encima de la figura, donde pueda solaparse con el dibujo. Si muestras una fórmula, colócala en la PARTE INFERIOR de la imagen, en una línea aparte, al menos 20 píxeles por debajo de la figura.
 - NO repitas la misma etiqueta varias veces. En una figura regular (cuadrado, cubo) BASTA marcar UN lado, no todos.
 - Dos etiquetas NUNCA deben solaparse: deja al menos 20 píxeles de distancia entre ellas.
@@ -2357,17 +2357,17 @@ Szabályok:
 - CSAK ott rajzolj, ahol tényleg segít: geometria (idom oldalakkal, jelölésekkel), számegyenes, halmazábra, fizikai ábra (erők, áramkör), kémiai szerkezet, kottavonal hangjegyekkel, idővonal történelemhez, egyszerű térképvázlat, diagram.
 - KÖTELEZŐ ábrát rajzolnod, ha geometriai alakzatról, mértékegységről, számegyenesről, halmazról, áramkörről, kémiai szerkezetről, kottáról, idővonalról vagy térképről tanítasz. Ilyenkor mindig legyen ábra, akkor is, ha szöveggel is elmondható.
 - Egyéb esetben csak akkor rajzolj, ha tényleg segít, és ne minden válaszban.
-- Az ábra legyen EGYSZERŰ és feliratozott: vastag vonalak, nagy betűk (font-size 14-18), fekete rajz világos háttéren, magyar feliratokkal.
-- Használj sima SVG elemeket: rect, circle, line, path, polygon, text.
-- SOHA ne tegyél az SVG-be scriptet, külső képet vagy hivatkozást.
-- SOHA ne kérdezd meg, hogy mutass-e ábrát, és soha ne ajánld fel ("ha akarod, mutatok egy ábrát"). Ha a téma ábrát kíván, egyszerűen TEDD BELE a válaszodba, kérdezés nélkül.
-- Az ábra egészítse ki a magyarázatot, ne helyettesítse.
 - Az ábra rajzterülete legyen viewBox="0 0 320 220", és HAGYJ 30 pixel margót minden oldalon, hogy a feliratok ne lógjanak ki.
 - A vonalak: stroke="#222" stroke-width="3", kitöltés nélkül (fill="none").
 - A feliratok: font-size="16" fill="#222" text-anchor="middle", és MINDIG az alakzaton KÍVÜL, tőle legalább 12 pixelre helyezd el őket.
 - Az alakzat arányai legyenek valósághűek: egy 6 cm × 3 cm-es téglalap kétszer olyan széles legyen, mint amilyen magas.
 - Ha méreteket is jelölsz, írd ki az értéket is a betűjel mellé (pl. "a = 6 cm").
 - Használj világos, letisztult rajzot: felesleges díszítés, árnyék, gradiens nélkül.
+- Az ábra legyen EGYSZERŰ és feliratozott: vastag vonalak, nagy betűk (font-size 14-18), fekete rajz világos háttéren, magyar feliratokkal.
+- Használj sima SVG elemeket: rect, circle, line, path, polygon, text.
+- SOHA ne tegyél az SVG-be scriptet, külső képet vagy hivatkozást.
+- SOHA ne kérdezd meg, hogy mutass-e ábrát, és soha ne ajánld fel ("ha akarod, mutatok egy ábrát"). Ha a téma ábrát kíván, egyszerűen TEDD BELE a válaszodba, kérdezés nélkül.
+- Az ábra egészítse ki a magyarázatot, ne helyettesítse.
 - KÉPLETET vagy összefoglaló szöveget SOHA ne írj az alakzat belsejébe vagy fölé, ahol átfedheti a rajzot. Ha képletet is mutatsz, az az ábra ALJÁRA kerüljön, külön sorba, az alakzat alatt legalább 20 pixellel.
 - Ugyanazt a feliratot NE ismételd meg többször. Egy szabályos alakzatnál (négyzet, kocka) ELÉG EGY oldalt megjelölni, nem mindegyiket.
 - Két felirat SOHA ne fedje egymást: hagyj közöttük legalább 20 pixel távolságot.
@@ -2600,10 +2600,15 @@ def _call_ai_for_quiz(
     language: str | None = None, teaching_language: str | None = None,
     text_len: int | None = None, avg_text_len: float | None = None,
     history: list[dict[str, Any]] | None = None,
+    curriculum: str | None = None,
 ) -> list[dict[str, Any]]:
     api_key = _openai_api_key()
     if not api_key:
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
+
+    # Az AKTÍV TANTERV dőnti el a kvíz nyelvét a nem-nyelvi tantárgyaknál.
+    # Ha a hívó nem adja meg, kérés-kontextusban az _active_curriculum() a mérvadó.
+    active_curr = (curriculum or _active_curriculum() or "HU").upper()
 
     max_ora = max(all_ora_szamok) if all_ora_szamok else 1
     if not max_ora or max_ora <= 0:
@@ -2861,8 +2866,11 @@ def _call_ai_for_quiz(
         )
         model = "gpt-4o"
         temperature = 0.3
-    elif teaching_language == "spanyol":
-        # Spanyol tanterv — spanyol nyelvű kvíz (nem idegen nyelv óra)
+    elif active_curr == "ES":
+        # Spanyol tanterv — spanyol nyelvű kvíz (NEM idegen nyelv óra).
+        # A feltétel az AKTÍV TANTERV (ES), NEM a teaching_language: így a
+        # nem-nyelvi tantárgyak (Matematika, Educación artística, ...) is a
+        # spanyol ágra futnak ES tanterven.
         system = (
             "Eres un generador de pruebas para niños españoles de primaria.\n"
             f"ALUMNO: {age} años, {grade}º de primaria.\n\n"
@@ -2925,7 +2933,11 @@ def _call_ai_for_quiz(
                         f"Question text language: {q_lang_display}; "
                         f"answers/target words language: {lang_display}. "
                         if is_foreign_language
-                        else "Language: Hungarian. "
+                        else (
+                            "Language: Spanish. "
+                            if active_curr == "ES"
+                            else "Language: Hungarian. "
+                        )
                     )
                     + extra_user_note
                 )},
@@ -3029,6 +3041,22 @@ def _messages_have_hungarian(
         if hits >= min_hits:
             return True
     return False
+
+
+def _session_curriculum(chat_session: dict) -> str | None:
+    """A chat session MELYIK tantervhez tartozik ('HU' / 'ES').
+
+    A session sor (child_id, subject, language, topic_id, grade) kulcsa NEM
+    tartalmazza a tantervet, ezért a létrehozáskor a curriculum_position JSON
+    'curriculum' mezőjébe bélyegezzük. Visszaolvasva innen tudjuk, hogy a
+    session a jelenlegi vagy a MÁSIK tantervhez kötődik.
+
+    Régi (bélyeg nélküli) session-öknél None-t ad — ilyenkor a history nyelve
+    (_messages_have_hungarian) a tartalék döntési alap.
+    """
+    pos = (chat_session or {}).get("curriculum_position") or {}
+    curr = (pos.get("curriculum") or "").strip().upper()
+    return curr if curr in ("HU", "ES") else None
 
 
 def _chat_initial_assistant_message(
@@ -3264,19 +3292,28 @@ def child_chat(child_id: int):
         curriculum_position={
             "current_topic": current_topic,
             "current_topic_id": current_topic_id,
+            "curriculum": active_curriculum,
         },
     )
 
     messages = database.get_chat_messages(chat_session["id"], limit=20)
 
-    # ── ES tanterv + idegen nyelv + régi magyar history → friss session ──
-    # A régi magyar üzenetek a spanyol rendszerpromptot elnyomnák.
-    # Új session-t indítunk, hogy tiszta lappal kezdjen az AI.
-    if active_curriculum == "ES" and is_foreign and language and _messages_have_hungarian(messages):
+    # ── MÁSIK tantervű session + idegen nyelv + régi magyar history → friss session ──
+    # CSAK akkor ürítünk, ha a session TÉNYLEG a másik tantervhez tartozik
+    # (a curriculum_position 'curriculum' bélyeg alapján). Ha a session már a
+    # jelenlegi tantervhez van kötve (HU→ES→HU váltás után is), az előzmény
+    # MEGMARAD. Régi (bélyeg nélküli) session-öknél a magyar-detektor a tartalék.
+    _sess_curr = _session_curriculum(chat_session)
+    _belongs_to_other = (
+        _sess_curr is not None and _sess_curr != active_curriculum
+    ) or (
+        _sess_curr is None and _messages_have_hungarian(messages)
+    )
+    if active_curriculum == "ES" and is_foreign and language and _belongs_to_other:
         logger.warning(
-            "child_chat: Hungarian history in ES foreign lang session %s "
-            "(child=%s, lang=%s), forcing fresh session",
-            chat_session["id"], child_id, language,
+            "child_chat: other-curriculum (sess_curr=%s) history in ES foreign "
+            "lang session %s (child=%s, lang=%s), forcing fresh session",
+            _sess_curr, chat_session["id"], child_id, language,
         )
         chat_session = database.get_or_create_chat_session(
             child_id,
@@ -3284,6 +3321,11 @@ def child_chat(child_id: int):
             language=language,
             topic_id=current_topic_id,
             grade=_chat_grade_num(child),
+            curriculum_position={
+                "current_topic": current_topic,
+                "current_topic_id": current_topic_id,
+                "curriculum": active_curriculum,
+            },
             force_new=True,
         )
         messages = []
@@ -3398,9 +3440,10 @@ def child_chat_send(child_id: int):
     except (TypeError, ValueError):
         return jsonify({"error": "invalid_session"}), 400
 
-    if not database.get_chat_session_for_child(
+    chat_session_row = database.get_chat_session_for_child(
         session_id, child_id, subject, language=language
-    ):
+    )
+    if not chat_session_row:
         return jsonify({"error": "invalid_session"}), 403
 
     chat_curriculum = _chat_load_curriculum(
@@ -3465,15 +3508,24 @@ def child_chat_send(child_id: int):
 
     history = database.get_chat_messages(session_id, limit=20)
 
-    # ── ES tanterv + idegen nyelv + régi magyar history → üres history a generáláshoz ──
-    # A magyar history elnyomná a spanyol rendszerpromptot, mert az AI a history
-    # nyelvét követi. Ilyenkor a DB session marad (nem törlünk), de a generáláshoz
-    # nem adjuk oda a régi magyar üzeneteket.
-    if _active_curriculum() == "ES" and is_foreign and language and _messages_have_hungarian(history):
+    # ── MÁSIK tantervű session + idegen nyelv + régi magyar history → üres history ──
+    # CSAK akkor szűrjük a history-t, ha a session TÉNYLEG a másik tantervhez
+    # tartozik (a curriculum_position 'curriculum' bélyeg alapján). Ha a session
+    # már a jelenlegi tantervhez van kötve (HU→ES→HU váltás után), az előzmény
+    # MEGMARAD. Régi (bélyeg nélküli) session-öknél a magyar-detektor a tartalék.
+    _active_curr_send = _active_curriculum()
+    _sess_curr_send = _session_curriculum(chat_session_row)
+    _belongs_to_other_send = (
+        _sess_curr_send is not None and _sess_curr_send != _active_curr_send
+    ) or (
+        _sess_curr_send is None and _messages_have_hungarian(history)
+    )
+    if _active_curr_send == "ES" and is_foreign and language and _belongs_to_other_send:
         logger.warning(
-            "child_chat_send: Hungarian history detected in ES foreign lang "
-            "session %s (child=%s, lang=%s), filtering history for generation",
-            session_id, child_id, language,
+            "child_chat_send: other-curriculum (sess_curr=%s) history detected "
+            "in ES foreign lang session %s (child=%s, lang=%s), filtering history "
+            "for generation",
+            _sess_curr_send, session_id, child_id, language,
         )
         history = []
     database.add_chat_message(session_id, "user", user_text)
@@ -3929,6 +3981,7 @@ def child_chat_test_generate(child_id: int):
             text_len=this_text_len,
             avg_text_len=avg_text_len,
             history=history,
+            curriculum=_active_curriculum(),
         )
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
