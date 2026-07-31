@@ -602,14 +602,14 @@ def _resolve_hu_subject_file(
         }
     elif is_elo_idegen_subject(raw):
         result = {"file": raw, "language": None, "label": raw}
-    elif raw in HU_1_4_SUBJECT_FILES:
+    elif raw in HU_1_4_SUBJECT_FILES and band_1_4:
         result = {"file": raw, "language": None, "label": hu_1_4_label_from_value(raw)}
-    elif raw in _HU_1_4_SUBJECT_MAP:
+    elif raw in _HU_1_4_SUBJECT_MAP and band_1_4:
         filename = _HU_1_4_SUBJECT_MAP[raw]
         result = {"file": filename, "language": None, "label": raw}
     else:
         for label, filename in _HU_1_4_SUBJECT_MAP.items():
-            if raw == label or raw == filename:
+            if band_1_4 and (raw == label or raw == filename):
                 result = {"file": filename, "language": None, "label": label}
                 break
 
@@ -1374,6 +1374,51 @@ def _loe_cycle_grade_range(cycle: str) -> tuple[int, int] | None:
     return _CYCLES.get(cycle)
 
 
+def _exclusive_split_ranges(
+    ora_list: list[int], num_grades: int
+) -> list[tuple[int, int]]:
+    """KIZÁRÓ (átfedésmentes) [start, end) index-tartományok évfolyamonként.
+
+    Algoritmus:
+      - cél-óraszám évfolyamonként = összóra / évfolyamszám
+      - a témakörökön sorrendben haladva halmozzuk az órákat
+      - amikor az aktuális évfolyam halmozott óraszáma ELÉRTE vagy MEGHALADTA
+        a célt, a KÖVETKEZŐ témakör már a következő évfolyamé
+      - az utolsó évfolyam kapja a maradékot
+
+    Garantálja: a tartományok uniója [0, len(ora_list)), átfedés nélkül.
+    """
+    n = len(ora_list)
+    if num_grades <= 1:
+        return [(0, n)]
+    total_ora = sum(ora_list)
+    if total_ora == 0:
+        # Nincs óraszám → egyenletes darabszám szerinti, szintén kizáró osztás
+        per_grade = n // num_grades
+        remainder = n % num_grades
+        ranges: list[tuple[int, int]] = []
+        start = 0
+        for gi in range(num_grades):
+            size = per_grade + (1 if gi < remainder else 0)
+            ranges.append((start, start + size))
+            start += size
+        return ranges
+
+    target = total_ora / num_grades
+    ranges = []
+    start = 0
+    cum = 0
+    for i, ora in enumerate(ora_list):
+        cum += ora
+        # Ha már van következő évfolyam ÉS az aktuális évfolyam halmozott
+        # óraszáma elérte a célt → itt zárul az évfolyam szelete.
+        if len(ranges) < num_grades - 1 and cum >= target * (len(ranges) + 1):
+            ranges.append((start, i + 1))
+            start = i + 1
+    ranges.append((start, n))  # utolsó évfolyam: a maradék
+    return ranges
+
+
 def _split_loe_topics_for_grade(
     temakorok: list[dict[str, Any]],
     grade_num: int,
@@ -1381,10 +1426,12 @@ def _split_loe_topics_for_grade(
     first_grade: int,
     last_grade: int,
 ) -> list[dict[str, Any]]:
-    """LOMLOE ciklus témaköreinek szétosztása évfolyamok között óraszám-arányosan.
+    """LOMLOE ciklus témaköreinek KIZÁRÓ szétosztása évfolyamok között.
 
     Ugyanaz a logika, mint a magyar _split_band_topics_for_grade, de közvetlenül
     témakör-listával dolgozik (a ciklus első és utolsó évfolyama paraméter).
+    Minden témakör PONTOSAN egy évfolyamhoz kerül: a szétosztott listák uniója
+    az eredeti lista, ismétlődés nélkül.
     """
     if not temakorok:
         return temakorok
@@ -1401,50 +1448,22 @@ def _split_loe_topics_for_grade(
         else:
             ora_list.append(0)
 
-    total_ora = sum(ora_list)
-    num_grades = len(evfolyamok)
     grade_idx = evfolyamok.index(grade_num)
-
-    if total_ora == 0:
-        per_grade = len(temakorok) // num_grades
-        remainder = len(temakorok) % num_grades
-        start = grade_idx * per_grade + min(grade_idx, remainder)
-        end = start + per_grade + (1 if grade_idx < remainder else 0)
-        return temakorok[start:end]
-
-    target_per_grade = total_ora / num_grades
-    cum = 0
-    boundaries = [0]
-    for ora in ora_list:
-        cum += ora
-        boundaries.append(cum)
-
-    start_target = grade_idx * target_per_grade
-    end_target = (grade_idx + 1) * target_per_grade
-
-    start_idx = 0
-    for i in range(len(ora_list)):
-        if boundaries[i + 1] > start_target:
-            start_idx = i
-            break
-
-    end_idx = len(ora_list)
-    for i in range(len(ora_list)):
-        if boundaries[i] >= end_target:
-            end_idx = i
-            break
-
-    return temakorok[start_idx:end_idx]
+    ranges = _exclusive_split_ranges(ora_list, len(evfolyamok))
+    start, end = ranges[grade_idx]
+    return temakorok[start:end]
 
 
 def _split_band_topics_for_grade(
     blokk: dict[str, Any], grade_num: int
 ) -> list[dict[str, Any]]:
-    """Sáv-blokk témaköreinek szétosztása évfolyamok között óraszám-arányosan.
+    """Sáv-blokk témaköreinek KIZÁRÓ szétosztása évfolyamok között.
 
     Ha a blokk evfolyamok listája EGY évfolyamot tartalmaz, a teljes listát adja
-    vissza. Több évfolyam esetén a javasolt_oraszam szerint súlyozva osztja szét,
-    óraszám híján egyenletesen darabszám szerint.
+    vissza. Több évfolyam esetén a javasolt_oraszam szerint halmozva osztja szét
+    úgy, hogy minden témakör PONTOSAN egy évfolyamhoz kerüljön (a szétosztott
+    listák uniója az eredeti lista, ismétlődés nélkül). Óraszám híján
+    egyenletesen, darabszám szerint oszt.
     """
     evfolyamok: list[int] = blokk.get("evfolyamok") or []
     temakorok: list[dict[str, Any]] = blokk.get("temakorok") or []
@@ -1464,45 +1483,10 @@ def _split_band_topics_for_grade(
         else:
             ora_list.append(0)
 
-    total_ora = sum(ora_list)
-    num_grades = len(evfolyamok)
     grade_idx = evfolyamok.index(grade_num)
-
-    if total_ora == 0:
-        # Nincs óraszám → egyenletes darabszám szerinti osztás
-        per_grade = len(temakorok) // num_grades
-        remainder = len(temakorok) % num_grades
-        start = grade_idx * per_grade + min(grade_idx, remainder)
-        end = start + per_grade + (1 if grade_idx < remainder else 0)
-        return temakorok[start:end]
-
-    # Óraszám-arányos osztás: határok kumulált óraszám alapján
-    target_per_grade = total_ora / num_grades
-    cum = 0
-    # boundaries[i] = kumulált óraszám az i-edik téma ELŐTT
-    boundaries = [0]
-    for ora in ora_list:
-        cum += ora
-        boundaries.append(cum)
-
-    start_target = grade_idx * target_per_grade
-    end_target = (grade_idx + 1) * target_per_grade
-
-    # start_idx: első téma, aminek a vége túllóg a start_target-en
-    start_idx = 0
-    for i in range(len(ora_list)):
-        if boundaries[i + 1] > start_target:
-            start_idx = i
-            break
-
-    # end_idx: első téma, aminek a kezdete >= end_target
-    end_idx = len(ora_list)
-    for i in range(len(ora_list)):
-        if boundaries[i] >= end_target:
-            end_idx = i
-            break
-
-    return temakorok[start_idx:end_idx]
+    ranges = _exclusive_split_ranges(ora_list, len(evfolyamok))
+    start, end = ranges[grade_idx]
+    return temakorok[start:end]
 
 
 def extract_hu_grade_topics(data: dict[str, Any], grade: int) -> dict[str, list[str]]:
