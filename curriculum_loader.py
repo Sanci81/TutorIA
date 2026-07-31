@@ -622,6 +622,18 @@ def _curriculum_data_for_language(
 ) -> dict[str, Any]:
     """Élő idegen nyelv JSON: angol / német ág kiválasztása a nyelvek blokkból."""
     if not language:
+        # Nincs nyelv megadva (pl. "Idegen nyelv" → nincs konkrét nyelv).
+        # Próbáljuk az "angol" ágat, ha nincs, az első elérhető nyelvet.
+        nyelvek = data.get("nyelvek")
+        if isinstance(nyelvek, dict) and nyelvek:
+            for default in ("angol",):
+                if default in nyelvek and isinstance(nyelvek[default], dict):
+                    return nyelvek[default]
+            # Első elérhető nyelv
+            first = next(iter(nyelvek))
+            branch = nyelvek[first]
+            if isinstance(branch, dict):
+                return branch
         return data
     lang = (language or "").strip().lower()
     nyelvek = data.get("nyelvek")
@@ -1935,6 +1947,14 @@ def get_curriculum_for_chat(
             bool(content or catalog),
             subject_name,
         )
+        # Évfolyam-kapuzás: ha a tantárgy nem engedélyezett ezen az évfolyamon
+        # (pl. Állampolgári ismeretek csak 8.-ban), ugorjuk át a jelöltet.
+        if grade_num >= 5 and not _hu_json_applies_to_grade(subject_name, grade_num, "5-8"):
+            logger.warning(
+                "get_curriculum_for_chat CANDIDATE SKIP: %s not allowed for grade %s",
+                subject_name, grade_num,
+            )
+            continue
         if content or catalog:
             return {
                 "found": True,
