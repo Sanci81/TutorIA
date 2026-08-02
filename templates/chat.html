@@ -695,6 +695,9 @@
                     return;
                 }
                 console.log('Teljes backend válasz:', res.data);
+                if (res.data.session_id) {
+                    document.getElementById('chat-session-id').value = res.data.session_id;
+                }
                 var aiMessage = res.data.reply || '';
                 if (res.data.topic_done) {
                     setTimeout(function () {
@@ -870,6 +873,7 @@
                 if (d.congrats_message) {
                     appendBubble('assistant', d.congrats_message);
                 }
+                if (d.vocabulary) updateVocabulary(d.vocabulary, d.topic_name);
                 updateGamification(d.xp, d.game_level, d.coins);
                 if (d.topic_done) {
                     setTimeout(function () {
@@ -1087,6 +1091,10 @@
                         return;
                     }
                     console.log('Teljes backend válasz:', res.data);
+                    var sessInput = document.getElementById('chat-session-id');
+                    if (res.data.session_id && sessInput) {
+                        sessInput.value = res.data.session_id;
+                    }
                     var reply = res.data.reply || '';
                     if (res.data.topic_done) {
                         setTimeout(function () {
@@ -1242,6 +1250,7 @@
                     }
                     var d = res.data;
                     if (d.sidebar) renderSidebar(d.sidebar);
+                    if (d.vocabulary) updateVocabulary(d.vocabulary, d.topic_name);
                     updateGamification(d.xp, d.game_level, d.coins);
                     if (d.topic_done) {
                         setTimeout(function () {
@@ -1380,6 +1389,22 @@
             });
             voiceMicBtn.addEventListener('touchcancel', stopRecording);
         }
+
+        // Belépéskor olvassuk fel a legutolsó (üdvözlő) asszisztens üzenetet,
+        // hogy egy nem-olvasó gyerek is értse, mi történik. Ha a böngésző
+        // letiltja az automatikus lejátszást, maradjunk csendben.
+        (function playWelcomeMessage() {
+            var assistantBubbles = messagesEl.querySelectorAll('.chat-bubble-assistant:not(.chat-typing)');
+            if (!assistantBubbles.length) return;
+            var lastBubble = assistantBubbles[assistantBubbles.length - 1];
+            var innerEl = lastBubble.querySelector('.chat-bubble-inner');
+            if (!innerEl) return;
+            var clone = innerEl.cloneNode(true);
+            clone.querySelectorAll('.chat-figure').forEach(function (f) { f.remove(); });
+            var welcomeText = (clone.textContent || '').trim();
+            if (!welcomeText) return;
+            playTts(welcomeText).catch(function () {});
+        })();
     }
 
     scrollToBottom();

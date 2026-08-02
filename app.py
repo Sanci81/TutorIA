@@ -3793,6 +3793,26 @@ def child_chat_send(child_id: int):
     current_topic_item = get_topic_from_catalog(catalog, current_topic_id)
     current_topic = current_topic_item["name"] if current_topic_item else ""
 
+    # Ha a témakör időközben megváltozott (pl. teszt teljesítése után a
+    # kliens oldal-újratöltés nélkül lépett tovább a következő témakörre),
+    # ne folytassuk a RÉGI témakör beszélgetését a régi session-ben – a
+    # session-kulcs témakörönkénti, ezért a témakörhöz tartozó saját
+    # (meglévő vagy friss) chat-session-t kell használni.
+    if current_topic_id and current_topic_id != (chat_session_row.get("topic_id") or ""):
+        chat_session_row = database.get_or_create_chat_session(
+            child_id,
+            subject,
+            language=language,
+            topic_id=current_topic_id,
+            grade=grade_num,
+            curriculum_position={
+                "current_topic": current_topic,
+                "current_topic_id": current_topic_id,
+                "curriculum": _active_curriculum(),
+            },
+        )
+        session_id = chat_session_row["id"]
+
     system_prompt = _build_chat_system_prompt(
         child,
         subject_label=subject_label,
@@ -4027,6 +4047,7 @@ def child_chat_send(child_id: int):
     return jsonify(
         {
             "reply": reply,
+            "session_id": session_id,
             "progress_pct": progress_pct,
             "current_topic": current_topic,
             "current_topic_id": current_topic_id,
@@ -4767,6 +4788,16 @@ def child_chat_test_submit(child_id: int):
         catalog, scores, current_topic_id, level=progress.get("level", 0),
     )
 
+    # A szójegyzék témakörönként van tárolva: a KÉPZETT témakör (topic_id, ami
+    # alól most vizsgáztunk) szavait kérdezzük le, NE az időközben már a
+    # következő témakörre lépett current_topic_id-t — különben a teszt sikeres
+    # teljesítése után a témakör szavai eltűnnének a panelről.
+    vocabulary = []
+    if language:
+        vocabulary = database.get_vocabulary(
+            child_id, subject, language=language, topic_id=topic_id
+        )
+
     # ── Szóbeli teszt hibáinak összefoglalója (felolvasáshoz) ──
     voice_feedback = None
     if is_oral and review:
@@ -4805,6 +4836,7 @@ def child_chat_test_submit(child_id: int):
             "topic_done": passed,
             "grade_promotion": grade_promotion,
             "voice_feedback": voice_feedback,
+            "vocabulary": vocabulary,
         }
     )
 
