@@ -1255,8 +1255,13 @@
                     }
                     var message = buildVoiceResultMessage(d);
                     appendBubble('assistant', message);
+                    var fullSpeech = message;
+                    if (d.voice_feedback) {
+                        appendBubble('assistant', d.voice_feedback);
+                        fullSpeech += ' ' + d.voice_feedback;
+                    }
                     setVoiceUi('speaking');
-                    playTts(message)
+                    playTts(fullSpeech)
                         .then(function () { setVoiceUi('idle'); })
                         .catch(function () { setVoiceUi('idle'); });
                 })

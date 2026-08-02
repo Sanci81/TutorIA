@@ -2761,6 +2761,7 @@ def _call_ai_for_quiz(
     text_len: int | None = None, avg_text_len: float | None = None,
     history: list[dict[str, Any]] | None = None,
     curriculum: str | None = None,
+    oral: bool = False,
 ) -> list[dict[str, Any]]:
     api_key = _openai_api_key()
     if not api_key:
@@ -2785,7 +2786,123 @@ def _call_ai_for_quiz(
 
     is_foreign_language = szokincs is not None or bool(language and language.strip())
 
-    # ── Diák korábbi eredményeinek összefoglalója ──────────────────────
+    # ── SZÓBELI TESZT (oral=True): nem-olvasó 6 éves gyerekeknek ──
+    # Teljesen külön prompt-ág: csak fill típusú, egyszavas válaszos
+    # kérdések, legfeljebb 5, sem MC sem mondatkiegészítés.
+    if oral:
+        q_count = 5
+
+        if is_foreign_language:
+            target_language = language or "spanyol"
+            lang_display = {
+                "spanyol": "Spanish", "angol": "English",
+                "nemet": "German", "francia": "French",
+            }.get(target_language.lower(), "Spanish")
+            q_lang = "SPANISH" if _active_curriculum() == "ES" else "HUNGARIAN"
+            q_lang_display = "Spanish" if _active_curriculum() == "ES" else "Hungarian"
+            if _active_curriculum() == "ES":
+                oral_rule = (
+                    "ESTOY HACIENDO UN EXAMEN ORAL para un niño de 6 años que NO SABE LEER.\n"
+                    "- SOLO haz preguntas que se puedan contestar con UNA SOLA PALABRA.\n"
+                    "- NO des opciones (A/B/C), porque el niño no las ve.\n"
+                    "- NO uses frases para completar (___), porque no puede leerlas.\n"
+                    "- La pregunta debe ser corta, simple y fácil de entender al oírla.\n"
+                    "- TODAS las preguntas son type=\"fill\", con la respuesta correcta de UNA palabra en \"answer\".\n"
+                    "- Ejemplo de buena pregunta: '¿Cómo se dice en inglés \"zapato\"?' (respuesta: shoe)\n"
+                    "- Máximo 5 preguntas.\n"
+                )
+            else:
+                oral_rule = (
+                    "Ez SZÓBELI teszt egy 6 éves gyereknek, aki NEM TUD OLVASNI.\n"
+                    "- CSAK olyan kérdést tegyél fel, amire EGYETLEN SZÓVAL lehet válaszolni.\n"
+                    "- NE adj válaszlehetőségeket (A/B/C), mert a gyerek nem látja őket.\n"
+                    "- NE használj kiegészítendő mondatot (___), mert azt nem tudja elolvasni.\n"
+                    "- A kérdés legyen rövid, egyszerű, hallás után is érthető.\n"
+                    "- Minden kérdés type=\"fill\" legyen, az `answer` mezőben az egyszavas helyes válasszal.\n"
+                    "- Példa jó kérdésre: 'Hogy mondják angolul, hogy cipő?' (válasz: shoes)\n"
+                    "- Legfeljebb 5 kérdést adj.\n"
+                )
+            source_block = f"VOCABULARY LIST (use ONLY these words): {', '.join(szokincs)}" if szokincs else f"TOPIC CONTENT:\n{material}"
+            system = (
+                f"WRITE ALL QUESTION TEXT IN {q_lang}.\n"
+                f"You are a {lang_display} oral quiz generator for a 6-year-old.\n\n"
+                f"{source_block}\n\n"
+                f"{oral_rule}\n"
+                f"Return ONLY: {{\"questions\": [{{\"type\":\"fill\",\"q\":\"...\",\"answer\":\"oneword\"}}]}}"
+            )
+            model = "gpt-4o-mini"
+            temperature = 0.3
+        elif active_curr == "ES":
+            oral_rule = (
+                "ESTOY HACIENDO UN EXAMEN ORAL para un niño español de 6 años que NO SABE LEER.\n"
+                "- SOLO haz preguntas que se puedan contestar con UNA SOLA PALABRA.\n"
+                "- NO des opciones (A/B/C), porque el niño no las ve.\n"
+                "- NO uses frases para completar (___), porque no puede leerlas.\n"
+                "- La pregunta debe ser corta, simple y fácil de entender al oírla.\n"
+                "- TODAS las preguntas son type=\"fill\", con la respuesta correcta de UNA palabra en \"answer\".\n"
+                "- Ejemplo de buena pregunta: '¿Cuántas patas tiene un perro?' (respuesta: cuatro)\n"
+                "- Máximo 5 preguntas.\n"
+            )
+            system = (
+                "Eres un generador de exámenes orales para niños españoles de 6 años.\n"
+                f"ALUMNO: {age} años, {grade}º de primaria.\n\n"
+                f"{oral_rule}\n"
+                f"TEXTO CURRICULAR:\n{material}\n\n"
+                'Devuelve SOLO: {"questions": [{"type":"fill","q":"...","answer":"oneword"}]}'
+            )
+            model = "gpt-4o-mini"
+            temperature = 0.5
+        else:
+            oral_rule = (
+                "Ez SZÓBELI teszt egy 6 éves gyereknek, aki NEM TUD OLVASNI.\n"
+                "- CSAK olyan kérdést tegyél fel, amire EGYETLEN SZÓVAL lehet válaszolni.\n"
+                "- NE adj válaszlehetőségeket (A/B/C), mert a gyerek nem látja őket.\n"
+                "- NE használj kiegészítendő mondatot (___), mert azt nem tudja elolvasni.\n"
+                "- A kérdés legyen rövid, egyszerű, hallás után is érthető.\n"
+                "- Minden kérdés type=\"fill\" legyen, az `answer` mezőben az egyszavas helyes válasszal.\n"
+                "- Példa jó kérdésre: 'Hány lába van a kutyának?' (válasz: négy)\n"
+                "- Legfeljebb 5 kérdést adj.\n"
+            )
+            system = (
+                "You are an oral quiz generator for a 6-year-old Hungarian child.\n"
+                f"CHILD: {age} years old, grade {grade}.\n\n"
+                f"CURRICULUM TEXT:\n{material}\n\n"
+                f"{oral_rule}\n"
+                "ALL text in HUNGARIAN.\n"
+                'Return ONLY: {"questions": [{"type":"fill","q":"...","answer":"oneword"}]}'
+            )
+            model = "gpt-4o-mini"
+            temperature = 0.5
+
+        client = _openai_client(api_key, request_timeout=60.0)
+
+        def _oral_request() -> list:
+            resp = client.chat.completions.create(
+                model=model,
+                response_format={"type": "json_object"},
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": "Generate 5 questions and return valid JSON."},
+                ],
+                temperature=temperature,
+            )
+            raw = resp.choices[0].message.content or "{}"
+            payload = json.loads(raw)
+            return payload.get("questions", payload if isinstance(payload, list) else [])
+
+        def _oral_normalize(questions: list) -> list:
+            result = []
+            for q in questions:
+                if not isinstance(q, dict) or not q.get("q"):
+                    continue
+                if not q.get("answer"):
+                    continue
+                result.append({"type": "fill", "q": q["q"], "answer": str(q["answer"]), "options": []})
+            return result
+
+        return _oral_normalize(_oral_request())[:q_count]
+
+    # ── Írásbeli teszt meglévő ágai kezdődnek itt ──
     _history_block = ""
     if history:
         passed_count = sum(1 for h in history if h.get("passed"))
@@ -4124,6 +4241,88 @@ def _oral_answers_match(user_text: str, correct_text: str) -> bool:
     return c in u or u in c
 
 
+def _evaluate_oral_answers(
+    questions: list[dict[str, Any]], answers: list[str], *, curriculum: str,
+) -> list[bool]:
+    """AI-alapú fonetikus értékelés szóbeli tesztválaszokhoz.
+
+    A hangfelismerés fonetikusan írja le a helyes szót (pl. "Súsz" = shoes,
+    "Na drág" = nadrág, "Sucks" = socks). Az AI dönti el, hogy a gyerek
+    valóban a helyes szót mondta-e. Hiba esetén visszaesés: _oral_answers_match.
+    """
+    api_key = _openai_api_key()
+    if not api_key:
+        return [_oral_answers_match(
+            str(answers[i] if i < len(answers) else ""),
+            str(q.get("answer", q.get("correct_answer", ""))),
+        ) for i, q in enumerate(questions)]
+
+    active_curr = (curriculum or "HU").upper()
+    if active_curr == "ES":
+        items = []
+        for i, q in enumerate(questions):
+            correct_ans = q.get("answer", q.get("correct_answer", ""))
+            transcript = str(answers[i]) if i < len(answers) else ""
+            items.append(
+                f"Q{i + 1}: \"{q.get('q', '')}\" | "
+                f"Respuesta correcta: \"{correct_ans}\" | "
+                f"El niño dijo: \"{transcript}\""
+            )
+        prompt = (
+            "Evalúa las respuestas de un niño de 6 años en un examen oral.\n"
+            "La voz del niño fue transcrita por un reconocedor de voz, que a menudo "
+            "escribe las palabras fonéticamente (ej. \"Súsz\" = \"shoes\", "
+            "\"Na drág\" = \"nadrág\", \"Sucks\" = \"socks\").\n"
+            "Si la transcripción SUENA como la respuesta correcta (misma pronunciación "
+            "aproximada, aunque la escritura sea distinta), acéptala como CORRECTA.\n"
+            "Solo márcala como incorrecta si el niño dijo claramente OTRA palabra.\n\n"
+            + "\n".join(items) + "\n\n"
+            "Devuelve SOLO un JSON: {\"resultados\": [true, false, true, ...]} — "
+            "un booleano por cada pregunta en el mismo orden."
+        )
+    else:
+        items = []
+        for i, q in enumerate(questions):
+            correct_ans = q.get("answer", q.get("correct_answer", ""))
+            transcript = str(answers[i]) if i < len(answers) else ""
+            items.append(
+                f"Q{i + 1}: \"{q.get('q', '')}\" | "
+                f"Helyes válasz: \"{correct_ans}\" | "
+                f"A gyerek azt mondta: \"{transcript}\""
+            )
+        prompt = (
+            "Értékeld egy 6 éves gyerek szóbeli tesztjének válaszait.\n"
+            "A gyerek beszédét egy hangfelismerő írta le, ami gyakran fonetikusan "
+            "rögzíti a szavakat (pl. \"Súsz\" = shoes, \"Na drág\" = nadrág, "
+            "\"Sucks\" = socks, \"Close\" = clothes, \"Jackit\" = jacket).\n"
+            "Ha az átirat HANGZÁSA megegyezik a helyes válasszal (közelítő kiejtés, "
+            "még ha az írásmód eltér is), fogadd el HELYESNEK.\n"
+            "Csak akkor jelöld hibásnak, ha egyértelműen MÁS szót mondott.\n\n"
+            + "\n".join(items) + "\n\n"
+            "Csak ezt a JSON-t add vissza: {\"eredmenyek\": [true, false, true, ...]} — "
+            "minden kérdéshez egy boolean, ugyanabban a sorrendben."
+        )
+
+    try:
+        client = _openai_client(api_key, request_timeout=30.0)
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            response_format={"type": "json_object"},
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.0,
+        )
+        raw = resp.choices[0].message.content or "{}"
+        payload = json.loads(raw)
+        results = payload.get("resultados") or payload.get("eredmenyek") or []
+        return [bool(r) for r in results[:len(questions)]]
+    except Exception:
+        logger.exception("Oral answer AI evaluation failed, falling back to text match")
+        return [_oral_answers_match(
+            str(answers[i] if i < len(answers) else ""),
+            str(q.get("answer", q.get("correct_answer", ""))),
+        ) for i, q in enumerate(questions)]
+
+
 @app.route("/children/<int:child_id>/chat/test/generate", methods=["POST"])
 @login_required
 def child_chat_test_generate(child_id: int):
@@ -4202,6 +4401,8 @@ def child_chat_test_generate(child_id: int):
         # language alapján döntjük el hogy idegen nyelvű-e a teszt
         topic_szokincs = topic.get("szokincs") if language and language.strip() else None
         history = database.get_child_topic_history(child_id, progress_subject, grade_num)
+        effective_age = _child_effective_age(child)
+        oral = _chat_interaction_profile(effective_age) == _CHAT_PROFILE_VOICE_ONLY
         questions = _call_ai_for_quiz(
             grade=_chat_grade_num(child),
             topic_name=topic["name"],
@@ -4216,6 +4417,7 @@ def child_chat_test_generate(child_id: int):
             avg_text_len=avg_text_len,
             history=history,
             curriculum=_active_curriculum(),
+            oral=oral,
         )
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
@@ -4251,6 +4453,16 @@ def child_chat_test_submit(child_id: int):
     correct = 0
     total = len(questions)
     review: list[dict[str, Any]] = []
+
+    # Szóbeli teszt: AI-alapú fonetikus értékelés (visszaesés: _oral_answers_match)
+    oral_results: list[bool] = []
+    if is_oral:
+        try:
+            oral_results = _evaluate_oral_answers(
+                questions, answers, curriculum=_active_curriculum())
+        except Exception:
+            logger.exception("_evaluate_oral_answers failed completely")
+
     for i, q in enumerate(questions):
         q_type = q.get("type", "mc")
         user_ans = answers[i] if i < len(answers) else None
@@ -4268,11 +4480,11 @@ def child_chat_test_submit(child_id: int):
                 except (TypeError, ValueError):
                     correct_idx = -1
                 if is_oral:
-                    # Szóbeli válasz: a gyerek a válasz SZÖVEGÉT mondta ki
-                    # (nem indexet), ezért megengedő szöveg-egyezést nézünk.
+                    # Szóbeli válasz: AI alapján (vagy visszaesésként _oral_answers_match)
                     user_display = "" if user_ans is None else str(user_ans)
-                    if user_display and correct_display and _oral_answers_match(user_display, correct_display):
-                        is_correct = True
+                    correct_display = str(q.get("answer", q.get("correct_answer", "")))
+                    is_correct = oral_results[i] if i < len(oral_results) else False
+                    if is_correct:
                         correct += 1
                 else:
                     # a gyerek válasza szövegként
@@ -4289,9 +4501,10 @@ def child_chat_test_submit(child_id: int):
                 correct_display = str(q.get("answer", ""))
                 user_display = "" if user_ans is None else str(user_ans)
                 if is_oral:
-                    if user_display and _oral_answers_match(user_display, correct_display):
-                        is_correct = True
-                        correct += 1
+                    if user_display and correct_display:
+                        is_correct = oral_results[i] if i < len(oral_results) else False
+                        if is_correct:
+                            correct += 1
                 elif user_ans is not None and str(user_ans).strip().lower() == str(q.get("answer", "")).strip().lower():
                     is_correct = True
                     correct += 1
@@ -4548,6 +4761,22 @@ def child_chat_test_submit(child_id: int):
         catalog, scores, current_topic_id, level=progress.get("level", 0),
     )
 
+    # ── Szóbeli teszt hibáinak összefoglalója (felolvasáshoz) ──
+    voice_feedback = None
+    if is_oral and review:
+        wrong = [r for r in review if not r["is_correct"]]
+        if wrong:
+            if _active_curriculum() == "ES":
+                parts = ["Veamos las respuestas que fallaron:"]
+                for r in wrong[:3]:
+                    parts.append(f"Pregunta: {r['q']} — La respuesta correcta era: {r['correct_answer']}.")
+                voice_feedback = " ".join(parts)
+            else:
+                parts = ["Nézzük meg, hol hibáztál:"]
+                for r in wrong[:3]:
+                    parts.append(f"Kérdés: {r['q']} — A helyes válasz: {r['correct_answer']}.")
+                voice_feedback = " ".join(parts)
+
     return jsonify(
         {
             "score": score,
@@ -4569,6 +4798,7 @@ def child_chat_test_submit(child_id: int):
             "coins": new_coins,
             "topic_done": passed,
             "grade_promotion": grade_promotion,
+            "voice_feedback": voice_feedback,
         }
     )
 
