@@ -101,18 +101,6 @@
                     {% endif %}
                 </div>
 
-                {% if chat_profile == 'voice_default' %}
-                <div class="task-chat-alt" id="task-chat-alt" hidden>
-                    <button type="button" class="task-alt-link" id="show-chat-alt">
-                        {{ t('link_writing_alt') }}
-                    </button>
-                    <div class="task-chat-alt-reveal" id="chat-alt-reveal" hidden>
-                        <a class="btn-ai-chat" id="ai-chat-link" href="#">
-                            {{ t('link_chat_alt') }}
-                        </a>
-                    </div>
-                </div>
-                {% endif %}
 
                 <div class="form-actions select-tasks-cancel">
                     <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">{{ t('btn_cancel') }}</a>

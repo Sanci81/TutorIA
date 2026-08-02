@@ -1237,7 +1237,7 @@ def select_tasks(child_id: int):
             )
 
     effective_age = _child_effective_age(child)
-    chat_profile = _chat_interaction_profile(effective_age)
+    chat_profile = _chat_interaction_profile(effective_age, _active_grade(child))
 
     return render_template(
         "select_tasks.html",
@@ -1380,7 +1380,6 @@ TOPIC_PASS_THRESHOLD = 70
 TEST_RETRY_STUDY_MINUTES = 60
 
 _CHAT_PROFILE_VOICE_ONLY = "voice_only"
-_CHAT_PROFILE_VOICE_DEFAULT = "voice_default"
 _CHAT_PROFILE_BOTH = "both"
 
 
@@ -1400,11 +1399,12 @@ def _child_effective_age(child: dict) -> int:
     return child.get("age") or (parse_grade(child.get("grade", 1)) + 5)
 
 
-def _chat_interaction_profile(effective_age: int) -> str:
-    if effective_age <= 6:
+def _chat_interaction_profile(effective_age: int, grade_num: int) -> str:
+    # Az olvasás első osztályban tanulódik: aki magasabb évfolyamon van,
+    # tud olvasni; aki idősebb, szintén. Csak a legfiatalabb elsősöknél
+    # kényszerítjük a hangmódot.
+    if grade_num == 1 and effective_age <= 7:
         return _CHAT_PROFILE_VOICE_ONLY
-    if effective_age == 7:
-        return _CHAT_PROFILE_VOICE_DEFAULT
     return _CHAT_PROFILE_BOTH
 
 
@@ -1412,8 +1412,6 @@ def _normalize_chat_mode(mode: str | None, profile: str) -> str:
     requested = (mode or "").strip().lower()
     if profile == _CHAT_PROFILE_VOICE_ONLY:
         return "voice"
-    if profile == _CHAT_PROFILE_VOICE_DEFAULT:
-        return "chat" if requested == "chat" else "voice"
     if requested == "voice":
         return "voice"
     return "chat"
@@ -2807,8 +2805,10 @@ def _call_ai_for_quiz(
                     "- NO des opciones (A/B/C), porque el niño no las ve.\n"
                     "- NO uses frases para completar (___), porque no puede leerlas.\n"
                     "- La pregunta debe ser corta, simple y fácil de entender al oírla.\n"
-                    "- TODAS las preguntas son type=\"fill\", con la respuesta correcta de UNA palabra en \"answer\".\n"
-                    "- Ejemplo de buena pregunta: '¿Cómo se dice en inglés \"zapato\"?' (respuesta: shoe)\n"
+                    "- TODAS las preguntas son type=\"fill\", con la respuesta correcta en \"answer\".\n"
+                    "- LAS PREGUNTAS DEBEN BASARSE EXCLUSIVAMENTE en el contenido del tema de arriba. NUNCA hagas preguntas de conocimiento general que no aparezcan en el temario.\n"
+                    "- EJEMPLO de buena pregunta (basada en el temario): si el tema es 'animales', pregunta: '¿Cómo se dice en inglés \"perro\"?' (respuesta: dog)\n"
+                    "- IMPORTANTE: el campo \"answer\" debe contener SIEMPRE la respuesta COMPLETA y CORRECTA a la pregunta. Si la pregunta es sobre una frase entera (ej. '¿Cómo se dice en inglés \"mi nombre es\"?'), el answer debe ser la frase completa ('my name is'), NO una sola palabra de ella. Comprueba que tu answer realmente responde a la pregunta antes de entregarla.\n"
                     "- Máximo 5 preguntas.\n"
                 )
             else:
@@ -2818,8 +2818,10 @@ def _call_ai_for_quiz(
                     "- NE adj válaszlehetőségeket (A/B/C), mert a gyerek nem látja őket.\n"
                     "- NE használj kiegészítendő mondatot (___), mert azt nem tudja elolvasni.\n"
                     "- A kérdés legyen rövid, egyszerű, hallás után is érthető.\n"
-                    "- Minden kérdés type=\"fill\" legyen, az `answer` mezőben az egyszavas helyes válasszal.\n"
-                    "- Példa jó kérdésre: 'Hogy mondják angolul, hogy cipő?' (válasz: shoes)\n"
+                    "- Minden kérdés type=\"fill\" legyen, az `answer` mezőben a helyes válasszal.\n"
+                    "- A KÉRDÉSEK KIZÁRÓLAG a fenti témakör anyagából származzanak. SOHA ne kérdezz általános tudáskérdéseket, amik nincsenek a tananyagban.\n"
+                    "- JÓ PÉLDA (témakörhöz kötött): ha a témakör 'állatok', kérdezd: 'Hogy mondják angolul, hogy kutya?' (válasz: dog)\n"
+                    "- FONTOS: az `answer` mező mindig a kérdésre adott TELJES, HELYES választ tartalmazza. Ha a kérdés egy kifejezésre vonatkozik (pl. 'Hogy mondják angolul, hogy mi a neved?'), az answer a teljes kifejezés legyen ('What is your name?'), NE egyetlen szó belőle. Csak olyan kérdést tegyél fel, amelyre a te answer meződ a HELYES válasz — ellenőrizd magad, mielőtt kiadod a kérdést.\n"
                     "- Legfeljebb 5 kérdést adj.\n"
                 )
             source_block = f"VOCABULARY LIST (use ONLY these words): {', '.join(szokincs)}" if szokincs else f"TOPIC CONTENT:\n{material}"
@@ -2839,8 +2841,10 @@ def _call_ai_for_quiz(
                 "- NO des opciones (A/B/C), porque el niño no las ve.\n"
                 "- NO uses frases para completar (___), porque no puede leerlas.\n"
                 "- La pregunta debe ser corta, simple y fácil de entender al oírla.\n"
-                "- TODAS las preguntas son type=\"fill\", con la respuesta correcta de UNA palabra en \"answer\".\n"
-                "- Ejemplo de buena pregunta: '¿Cuántas patas tiene un perro?' (respuesta: cuatro)\n"
+                "- TODAS las preguntas son type=\"fill\", con la respuesta correcta en \"answer\".\n"
+                "- LAS PREGUNTAS DEBEN BASARSE EXCLUSIVAMENTE en el TEXTO CURRICULAR de arriba. NUNCA hagas preguntas de conocimiento general. Si el tema es \"animales\", pregunta cuántas patas tiene un perro (respuesta: cuatro) — NO preguntes de qué color es el cielo.\n"
+                "- EJEMPLO de buena pregunta basada en el temario: '¿Cuántas patas tiene un perro?' (respuesta: cuatro)\n"
+                "- IMPORTANTE: el campo \"answer\" debe contener SIEMPRE la respuesta COMPLETA y CORRECTA a la pregunta. Comprueba que tu answer realmente responde a la pregunta antes de entregarla.\n"
                 "- Máximo 5 preguntas.\n"
             )
             system = (
@@ -2859,8 +2863,10 @@ def _call_ai_for_quiz(
                 "- NE adj válaszlehetőségeket (A/B/C), mert a gyerek nem látja őket.\n"
                 "- NE használj kiegészítendő mondatot (___), mert azt nem tudja elolvasni.\n"
                 "- A kérdés legyen rövid, egyszerű, hallás után is érthető.\n"
-                "- Minden kérdés type=\"fill\" legyen, az `answer` mezőben az egyszavas helyes válasszal.\n"
-                "- Példa jó kérdésre: 'Hány lába van a kutyának?' (válasz: négy)\n"
+                "- Minden kérdés type=\"fill\" legyen, az `answer` mezőben a helyes válasszal.\n"
+                "- A KÉRDÉSEK KIZÁRÓLAG a fenti CURRICULUM TEXT anyagából származzanak. SOHA ne kérdezz általános tudáskérdéseket. Ha a tananyag 'állatok', kérdezd, hány lába van a kutyának (válasz: négy) — NE kérdezd, milyen színű az ég.\n"
+                "- Példa JÓ, TÉMAKÖRHÖZ KÖTÖTT kérdésre: 'Hány lába van a kutyának?' (válasz: négy)\n"
+                "- FONTOS: az `answer` mező mindig a kérdésre adott TELJES, HELYES választ tartalmazza. Ha a kérdés egy kifejezésre vonatkozik, az answer a teljes kifejezés legyen, NE egyetlen szó belőle. Csak olyan kérdést tegyél fel, amelyre a te answer meződ a HELYES válasz — ellenőrizd magad, mielőtt kiadod a kérdést.\n"
                 "- Legfeljebb 5 kérdést adj.\n"
             )
             system = (
@@ -3475,7 +3481,7 @@ def child_chat(child_id: int):
     session["subject"] = subject
 
     effective_age = _child_effective_age(child)
-    chat_profile = _chat_interaction_profile(effective_age)
+    chat_profile = _chat_interaction_profile(effective_age, _active_grade(child))
     chat_mode = _normalize_chat_mode(request.args.get("mode"), chat_profile)
 
     chat_curriculum = _chat_load_curriculum(
@@ -3729,7 +3735,7 @@ def child_chat_send(child_id: int):
     focus_topic = (data.get("focus_topic") or "").strip()
     topic_id = (data.get("topic_id") or "").strip()
     req_mode = (data.get("mode") or request.form.get("mode") or "").strip().lower()
-    chat_profile = _chat_interaction_profile(_child_effective_age(child))
+    chat_profile = _chat_interaction_profile(_child_effective_age(child), _chat_grade_num(child))
     chat_mode = _normalize_chat_mode(req_mode or None, chat_profile)
 
     if not user_text or not subject:
@@ -4402,7 +4408,7 @@ def child_chat_test_generate(child_id: int):
         topic_szokincs = topic.get("szokincs") if language and language.strip() else None
         history = database.get_child_topic_history(child_id, progress_subject, grade_num)
         effective_age = _child_effective_age(child)
-        oral = _chat_interaction_profile(effective_age) == _CHAT_PROFILE_VOICE_ONLY
+        oral = _chat_interaction_profile(effective_age, grade_num) == _CHAT_PROFILE_VOICE_ONLY
         questions = _call_ai_for_quiz(
             grade=_chat_grade_num(child),
             topic_name=topic["name"],
