@@ -1391,43 +1391,31 @@ def _exclusive_split_ranges(
 ) -> list[tuple[int, int]]:
     """KIZÁRÓ (átfedésmentes) [start, end) index-tartományok évfolyamonként.
 
-    Algoritmus:
-      - cél-óraszám évfolyamonként = összóra / évfolyamszám
-      - a témakörökön sorrendben haladva halmozzuk az órákat
-      - amikor az aktuális évfolyam halmozott óraszáma ELÉRTE vagy MEGHALADTA
-        a célt, a KÖVETKEZŐ témakör már a következő évfolyamé
-      - az utolsó évfolyam kapja a maradékot
+    SZIGORÚAN INDEX-ALAPÚ szétosztás: minden témakör indexe alapján PONTOSAN
+    egy évfolyamhoz kerül. NEM óraszám-határ metszés alapján, hanem a témakörök
+    sorszáma (pozíciója) dönti el, melyik évfolyamé.
 
-    Garantálja: a tartományok uniója [0, len(ora_list)), átfedés nélkül.
+    Algoritmus (egyenletes, darabszám szerinti, kizáró felosztás):
+      - per_grade = n // num_grades, remainder = n % num_grades
+      - az első `remainder` évfolyam 1-gyel több témakört kap
+      - a tartományok egymást KIZÁRJÁK: [0,s1), [s1,s2), ..., [s_{k-1}, n)
+
+    Garantálja: a tartományok uniója PONTOSAN [0, n), átfedés és kihagyás
+    nélkül — így minden témakör pontosan egy évfolyamhoz tartozik.
+    (Az ora_list paramétert az aláíráskompatibilitás miatt megtartjuk.)
     """
     n = len(ora_list)
     if num_grades <= 1:
         return [(0, n)]
-    total_ora = sum(ora_list)
-    if total_ora == 0:
-        # Nincs óraszám → egyenletes darabszám szerinti, szintén kizáró osztás
-        per_grade = n // num_grades
-        remainder = n % num_grades
-        ranges: list[tuple[int, int]] = []
-        start = 0
-        for gi in range(num_grades):
-            size = per_grade + (1 if gi < remainder else 0)
-            ranges.append((start, start + size))
-            start += size
-        return ranges
-
-    target = total_ora / num_grades
-    ranges = []
+    # Egyenletes, darabszám szerinti, SZIGORÚAN kizáró felosztás index alapján
+    per_grade = n // num_grades
+    remainder = n % num_grades
+    ranges: list[tuple[int, int]] = []
     start = 0
-    cum = 0
-    for i, ora in enumerate(ora_list):
-        cum += ora
-        # Ha már van következő évfolyam ÉS az aktuális évfolyam halmozott
-        # óraszáma elérte a célt → itt zárul az évfolyam szelete.
-        if len(ranges) < num_grades - 1 and cum >= target * (len(ranges) + 1):
-            ranges.append((start, i + 1))
-            start = i + 1
-    ranges.append((start, n))  # utolsó évfolyam: a maradék
+    for gi in range(num_grades):
+        size = per_grade + (1 if gi < remainder else 0)
+        ranges.append((start, start + size))
+        start += size
     return ranges
 
 
