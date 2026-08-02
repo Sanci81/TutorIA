@@ -4425,18 +4425,33 @@ def child_chat_test_submit(child_id: int):
         if score == 100:
             try:
                 age = _child_effective_age(child)
-                congrats_prompt = (
-                    f"Te egy kedves, lelkesítő AI tanár vagy. A gyerek ({child['name']}, "
-                    f"{age} éves, {_active_grade_str(child)}. osztályos) épp 100%-os eredményt ért el "
-                    f"a(z) „{topic_name}” témakör tesztjén.\n\n"
-                    f"GRATULÁLJ neki nagyon lelkesen, korának megfelelő stílusban!\n"
-                    f"{age} éves gyereknek:\n"
-                    f"- Rövid, lelkes mondatok\n"
-                    f"- Emojik használata\n"
-                    f"- Jelezd, hogy továbbléptek a következő témakörre\n"
-                    f"- A következő témakör: {next_topic['name'] if next_topic else 'nincs'}\n"
-                    f"Ne használj ###, **, {{ }} formázást."
-                )
+                grade_str = _active_grade_str(child)
+                if _active_curriculum() == "ES":
+                    congrats_prompt = (
+                        f"Eres un profesor de IA amable y motivador. El niño ({child['name']}, "
+                        f"{age} años, {grade_str}.º curso) acaba de obtener un 100 % en el "
+                        f"examen del tema „{topic_name}”.\n\n"
+                        f"¡FELICÍTALE con mucho entusiasmo, en un estilo adecuado para su edad!\n"
+                        f"Para un niño de {age} años:\n"
+                        f"- Frases cortas y entusiastas\n"
+                        f"- Usa emojis\n"
+                        f"- Indica que han pasado al siguiente tema\n"
+                        f"- Siguiente tema: {next_topic['name'] if next_topic else 'ninguno'}\n"
+                        f"No uses formato ###, **, {{ }}."
+                    )
+                else:
+                    congrats_prompt = (
+                        f"Te egy kedves, lelkesítő AI tanár vagy. A gyerek ({child['name']}, "
+                        f"{age} éves, {grade_str}. osztályos) épp 100%-os eredményt ért el "
+                        f"a(z) „{topic_name}” témakör tesztjén.\n\n"
+                        f"GRATULÁLJ neki nagyon lelkesen, korának megfelelő stílusban!\n"
+                        f"{age} éves gyereknek:\n"
+                        f"- Rövid, lelkes mondatok\n"
+                        f"- Emojik használata\n"
+                        f"- Jelezd, hogy továbbléptek a következő témakörre\n"
+                        f"- A következő témakör: {next_topic['name'] if next_topic else 'nincs'}\n"
+                        f"Ne használj ###, **, {{ }} formázást."
+                    )
                 chat_session = database.get_or_create_chat_session(
                     child_id, subject, language=language, topic_id=topic_id, grade=_chat_grade_num(child)
                 )
