@@ -192,6 +192,7 @@ _HU_EXCLUDED_SUBJECT_KEYS = frozenset(
     {
         "kozossegieneveles",
         "kozossegineveles",
+        "elsoeloidegennyelv",   # régi fájlnév, nem valódi tantárgy (→ Idegen nyelv)
     }
 )
 
@@ -466,6 +467,8 @@ def get_hu_5_8_subjects(grade: int) -> list[dict[str, str]]:
         options.append({"label": label, "value": path.name})
 
     options.sort(key=lambda o: o["label"].casefold())
+    # Kizárt tantárgyak szűrése (pl. "Első élő idegen nyelv" → régi fájlnév)
+    options = [o for o in options if _normalize_key(o["label"]) not in _HU_EXCLUDED_SUBJECT_KEYS]
     has_idegen = any(
         o["value"] == ELO_IDEGEN_NYELV_5_8_FILE
         or "idegen" in o["label"].casefold()
@@ -639,6 +642,16 @@ def _curriculum_data_for_language(
     nyelvek = data.get("nyelvek")
     if isinstance(nyelvek, dict) and lang in nyelvek:
         branch = nyelvek[lang]
+        if isinstance(branch, dict):
+            return branch
+    # A kért nyelvhez nincs ág (pl. "francia") → visszaesés "angol"-ra,
+    # vagy az első elérhető nyelvre, hogy a lista ne legyen üres.
+    if isinstance(nyelvek, dict) and nyelvek:
+        for default in ("angol",):
+            if default in nyelvek and isinstance(nyelvek[default], dict):
+                return nyelvek[default]
+        first = next(iter(nyelvek))
+        branch = nyelvek[first]
         if isinstance(branch, dict):
             return branch
     return data
@@ -1181,6 +1194,8 @@ def _sanitize_hu_subjects(subjects: list[str], grade: int) -> list[str]:
 
     ordered: list[str] = []
     for subj in _hu_fallback(grade):
+        if _normalize_key(subj) in _HU_EXCLUDED_SUBJECT_KEYS:
+            continue
         if subj not in ordered:
             ordered.append(subj)
     for subj in cleaned:
@@ -1328,6 +1343,13 @@ def _hu_evfolyam_blokk_for_grade(
     blocks = data.get("evfolyam_blokkok", {})
     if not isinstance(blocks, dict):
         return None
+
+    # Gyűjtsük össze az összes blokk által lefedett évfolyamokat
+    all_covered: set[int] = set()
+    for blokk in blocks.values():
+        if isinstance(blokk, dict):
+            all_covered.update(blokk.get("evfolyamok") or [])
+
     best_with_topics: dict[str, Any] | None = None
     best_span = 999
     for _key, blokk in blocks.items():
@@ -1341,29 +1363,46 @@ def _hu_evfolyam_blokk_for_grade(
             if span < best_span:
                 best_span = span
                 best_with_topics = blokk
-    if best_with_topics:
-        return best_with_topics
-    for _key, blokk in blocks.items():
-        if not isinstance(blokk, dict):
-            continue
-        if grade_num in blokk.get("evfolyamok", []):
-            return blokk
-    # Pl. 1–4. évfolyam egyetlen „4” blokkban – legközelebbi blokk temakorokkal
-    best: dict[str, Any] | None = None
-    best_hi = -1
-    for blokk in blocks.values():
-        if not isinstance(blokk, dict) or not blokk.get("temakorok"):
-            continue
-        evs = blokk.get("evfolyamok") or []
-        if evs and max(evs) <= grade_num and max(evs) > best_hi:
-            best_hi = max(evs)
-            best = blokk
-    if best:
-        return best
-    for blokk in blocks.values():
-        if isinstance(blokk, dict) and blokk.get("temakorok"):
-            return blokk
-    return None
+
+    # Ha nincs találat, de az évfolyam felette van az utolsó blokknak,
+    # vagy alatta van az elsőnek → fallback a legközelebbi blokkra.
+    if not best_with_topics:
+        for _key, blokk in blocks.items():
+            if not isinstance(blokk, dict):
+                continue
+            if grade_num in blokk.get("evfolyamok", []):
+                best_with_topics = blokk
+                break
+    if not best_with_topics:
+        # Legközelebbi blokk temakorokkal, ami max(evs) <= grade_num
+        best_hi = -1
+        for blokk in blocks.values():
+            if not isinstance(blokk, dict) or not blokk.get("temakorok"):
+                continue
+            evs = blokk.get("evfolyamok") or []
+            if evs and max(evs) <= grade_num and max(evs) > best_hi:
+                best_hi = max(evs)
+                best_with_topics = blokk
+    if not best_with_topics:
+        # Bármelyik blokk, amiben van temakorok
+        for blokk in blocks.values():
+            if isinstance(blokk, dict) and blokk.get("temakorok"):
+                best_with_topics = blokk
+                break
+
+    if not best_with_topics:
+        return None
+
+    # Normalizálás: ha nincs olyan blokk, ami lefedné az első évfolyamokat
+    # (pl. csak "3-4" vagy "4" blokk létezik), a visszaadott blokk
+    # évfolyam-tartományát bővítsük ki, hogy a témakör-szétosztás
+    # minden évfolyam között igazságosan működjön.
+    # Csak az 1–4-es sávra (nem az 5–8-asra, ahol a minimum 5 helyes).
+    evs = best_with_topics.get("evfolyamok") or []
+    if evs and min(evs) > 1 and 1 not in all_covered and min(evs) <= 4:
+        expanded = list(range(1, max(evs) + 1))
+        return {**best_with_topics, "evfolyamok": expanded}
+    return best_with_topics
 
 
 def _is_spiral_subject(data: dict[str, Any], raw_data: dict[str, Any] | None = None) -> bool:
@@ -1471,7 +1510,13 @@ def _split_band_topics_for_grade(
     if not temakorok:
         return temakorok
     if len(evfolyamok) <= 1 or grade_num not in evfolyamok:
-        return temakorok
+        # Ha az évfolyam a blokk legkisebb évfolyamánál ALACSONYABB,
+        # akkor a blokk tartalma az első évfolyamtól idáig oszlik el
+        # (pl. csak "3-4" vagy "4" blokk van, de 1. évfolyamot kérdeztünk).
+        if evfolyamok and grade_num < min(evfolyamok):
+            evfolyamok = list(range(1, max(evfolyamok) + 1))
+        else:
+            return temakorok
 
     # Óraszámok kigyűjtése témakörönként
     ora_list: list[int] = []
