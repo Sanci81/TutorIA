@@ -202,6 +202,8 @@
     var currentTopicName = {{ current_topic|tojson }};
     var currentOraSzam = 0;
     var chatMode = {{ chat_mode|tojson }};
+    var chatProfile = {{ chat_profile|tojson }};
+    var isVoiceOnlyTest = (chatProfile === 'voice_only' && chatMode === 'voice');
     var transcribeUrl = {{ url_for('api_voice_transcribe')|tojson }};
     var speakUrl = {{ url_for('api_voice_speak')|tojson }};
 
@@ -935,6 +937,10 @@
     }
 
     function startTest() {
+        if (isVoiceOnlyTest && typeof startVoiceTest === 'function') {
+            startVoiceTest();
+            return;
+        }
         closeTestModal();
         if (btnTest) { btnTest.disabled = true; btnTest.textContent = L.testGenerating; }
         fetch(testGenUrl, {
@@ -1145,11 +1151,157 @@
                         setVoiceUi('idle');
                         return;
                     }
-                    return sendVoiceChat(res.data.text.trim());
+                    var text = res.data.text.trim();
+                    if (voiceTestActive) {
+                        return handleVoiceTestAnswer(text);
+                    }
+                    return sendVoiceChat(text);
                 })
                 .catch(function () {
                     appendBubble('assistant', L.errNetwork);
                     setVoiceUi('idle');
+                });
+        }
+
+        /* ---------- Szóbeli (hangos) teszt: nem-olvasó gyerekeknek ---------- */
+        /* A teszt itt NEM modalban, hanem a chat-beszélgetésben zajlik:      */
+        /* minden kérdést az asszisztens felolvas (TTS), a gyerek szóban      */
+        /* válaszol a meglévő mikrofon-felvétel úton.                         */
+        var voiceTestActive = false;
+        var voiceTestQuestions = [];
+        var voiceTestAnswers = [];
+        var voiceTestIndex = 0;
+        var voiceTestOraSzam = 0;
+
+        function buildVoiceQuestionText(q, index) {
+            var text = (index + 1) + '. ' + q.q;
+            if (q.type === 'mc' && q.options && q.options.length) {
+                text += ' ' + q.options.join(', ');
+            }
+            return text;
+        }
+
+        function askVoiceTestQuestion() {
+            if (voiceTestIndex >= voiceTestQuestions.length) {
+                finishVoiceTest();
+                return;
+            }
+            var text = buildVoiceQuestionText(voiceTestQuestions[voiceTestIndex], voiceTestIndex);
+            appendBubble('assistant', text);
+            setVoiceUi('speaking');
+            playTts(text)
+                .then(function () { setVoiceUi('idle'); })
+                .catch(function () { setVoiceUi('idle'); });
+        }
+
+        function handleVoiceTestAnswer(text) {
+            appendBubble('user', text);
+            voiceTestAnswers[voiceTestIndex] = text;
+            voiceTestIndex += 1;
+            setVoiceUi('idle');
+            askVoiceTestQuestion();
+        }
+
+        function buildVoiceResultMessage(d) {
+            if (d.congrats_message) return d.congrats_message;
+            if (d.passed) {
+                if (d.next_topic_name) return fmt(L.quizNextFmt, { topic: d.next_topic_name });
+                return L.quizAllDone;
+            }
+            if (d.phase === 1) {
+                if (d.attempts_remaining > 0) {
+                    return fmt(L.quizAttemptsLeftFmt, { n: d.attempts_remaining, time: formatMinutes(d.minutes_needed) });
+                }
+                return fmt(L.quizStudyMoreFmt, { time: formatMinutes(d.minutes_needed) });
+            }
+            return L.quizStudy60Retry;
+        }
+
+        function finishVoiceTest() {
+            setVoiceUi('processing');
+            fetch(testSubmitUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    subject: subject,
+                    topic_id: currentTopicId,
+                    questions: voiceTestQuestions,
+                    answers: voiceTestAnswers,
+                    language: getChatLanguage(),
+                    ora_szam: voiceTestOraSzam,
+                    oral: true
+                })
+            })
+                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (res) {
+                    voiceTestActive = false;
+                    if (!res.ok) {
+                        appendBubble('assistant', L.errNoReply);
+                        setVoiceUi('idle');
+                        return;
+                    }
+                    var d = res.data;
+                    if (d.sidebar) renderSidebar(d.sidebar);
+                    updateGamification(d.xp, d.game_level, d.coins);
+                    if (d.topic_done) {
+                        setTimeout(function () {
+                            confetti({
+                                particleCount: 150,
+                                spread: 100,
+                                origin: { y: 0.6 },
+                                colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+                            });
+                        }, 200);
+                    }
+                    var message = buildVoiceResultMessage(d);
+                    appendBubble('assistant', message);
+                    setVoiceUi('speaking');
+                    playTts(message)
+                        .then(function () { setVoiceUi('idle'); })
+                        .catch(function () { setVoiceUi('idle'); });
+                })
+                .catch(function () {
+                    voiceTestActive = false;
+                    appendBubble('assistant', L.errNetwork);
+                    setVoiceUi('idle');
+                });
+        }
+
+        function startVoiceTest() {
+            if (btnTest) { btnTest.disabled = true; btnTest.textContent = L.testGenerating; }
+            fetch(testGenUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    subject: subject,
+                    topic_id: currentTopicId,
+                    language: getChatLanguage()
+                })
+            })
+                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (res) {
+                    if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
+                    if (res.data && res.data.ok === false) {
+                        var msg = res.data.message || L.quizCreateFailed;
+                        appendBubble('assistant', msg);
+                        playTts(msg).catch(function () {});
+                        return;
+                    }
+                    if (!res.ok || !res.data.questions || !res.data.questions.length) {
+                        appendBubble('assistant', L.quizCreateFailed);
+                        playTts(L.quizCreateFailed).catch(function () {});
+                        return;
+                    }
+                    voiceTestQuestions = res.data.questions;
+                    voiceTestAnswers = new Array(voiceTestQuestions.length).fill(null);
+                    voiceTestIndex = 0;
+                    voiceTestOraSzam = res.data.ora_szam || 0;
+                    voiceTestActive = true;
+                    askVoiceTestQuestion();
+                })
+                .catch(function () {
+                    if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
+                    appendBubble('assistant', L.errNetwork);
                 });
         }
 

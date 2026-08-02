@@ -15,6 +15,7 @@ import os
 import random
 import re
 import traceback
+import unicodedata
 from datetime import date, datetime, timezone, timedelta
 from functools import wraps
 from typing import Any
@@ -4079,6 +4080,50 @@ def api_select_skin():
     )
 
 
+# --- Szóbeli (hangos) teszt válasz-értékelés: megengedő összehasonlítás ---
+# A hangfelismerés nem tökéletes, ezért a szóbeli (oral) ágon a válaszokat
+# enyhébben kell értékelni, mint az írásbeli teszt szigorú egyezésénél.
+_ORAL_NUMBER_WORDS = {
+    # magyar
+    "nulla": "0", "egy": "1", "kettő": "2", "ketto": "2", "két": "2", "ket": "2",
+    "három": "3", "harom": "3", "négy": "4", "negy": "4", "öt": "5", "ot": "5",
+    "hat": "6", "hét": "7", "het": "7", "nyolc": "8", "kilenc": "9",
+    "tíz": "10", "tiz": "10", "tizenegy": "11", "tizenkettő": "12", "tizenketto": "12",
+    "tizenhárom": "13", "tizenharom": "13", "tizennégy": "14", "tizennegy": "14",
+    "tizenöt": "15", "tizenot": "15", "tizenhat": "16", "tizenhét": "17", "tizenhet": "17",
+    "tizennyolc": "18", "tizenkilenc": "19", "húsz": "20", "husz": "20",
+    # spanyol
+    "cero": "0", "uno": "1", "una": "1", "dos": "2", "tres": "3", "cuatro": "4",
+    "cinco": "5", "seis": "6", "siete": "7", "ocho": "8", "nueve": "9", "diez": "10",
+    "once": "11", "doce": "12", "trece": "13", "catorce": "14", "quince": "15",
+    "dieciseis": "16", "diecisiete": "17", "dieciocho": "18", "diecinueve": "19",
+    "veinte": "20",
+}
+
+
+def _normalize_oral_text(text: str) -> str:
+    """Kisbetűsítés, ékezetek és írásjelek eltávolítása, számnevek → számjegy."""
+    s = unicodedata.normalize("NFD", str(text or ""))
+    s = "".join(ch for ch in s if unicodedata.category(ch) != "Mn")
+    s = s.lower().strip()
+    s = re.sub(r"[^\w\s]", " ", s)
+    s = re.sub(r"\s+", " ", s).strip()
+    words = [_ORAL_NUMBER_WORDS.get(w, w) for w in s.split(" ") if w]
+    return " ".join(words)
+
+
+def _oral_answers_match(user_text: str, correct_text: str) -> bool:
+    """Megengedő egyezés-vizsgálat szóbeli válaszokhoz (hangfelismerés-tolerancia)."""
+    u = _normalize_oral_text(user_text)
+    c = _normalize_oral_text(correct_text)
+    if not u or not c:
+        return False
+    if u == c:
+        return True
+    # ha a válasz TARTALMAZZA a helyes választ (vagy fordítva), elfogadjuk
+    return c in u or u in c
+
+
 @app.route("/children/<int:child_id>/chat/test/generate", methods=["POST"])
 @login_required
 def child_chat_test_generate(child_id: int):
@@ -4195,6 +4240,9 @@ def child_chat_test_submit(child_id: int):
     )
     answers = data.get("answers") or []
     questions = data.get("questions") or []
+    # Szóbeli (hangos) teszt jelzése: a gyerek beszélt válaszokat adott, amiket
+    # a hangfelismerés torzíthat — ilyenkor megengedőbb az összehasonlítás.
+    is_oral = bool(data.get("oral"))
 
     if not subject or not topic_id or not questions:
         return jsonify({"error": "invalid_payload"}), 400
@@ -4219,20 +4267,32 @@ def child_chat_test_submit(child_id: int):
                         correct_display = str(options[correct_idx])
                 except (TypeError, ValueError):
                     correct_idx = -1
-                # a gyerek válasza szövegként
-                try:
-                    user_idx = int(user_ans)
-                    if 0 <= user_idx < len(options):
-                        user_display = str(options[user_idx])
-                except (TypeError, ValueError):
-                    user_idx = -1
-                if user_idx != -1 and user_idx == correct_idx:
-                    is_correct = True
-                    correct += 1
+                if is_oral:
+                    # Szóbeli válasz: a gyerek a válasz SZÖVEGÉT mondta ki
+                    # (nem indexet), ezért megengedő szöveg-egyezést nézünk.
+                    user_display = "" if user_ans is None else str(user_ans)
+                    if user_display and correct_display and _oral_answers_match(user_display, correct_display):
+                        is_correct = True
+                        correct += 1
+                else:
+                    # a gyerek válasza szövegként
+                    try:
+                        user_idx = int(user_ans)
+                        if 0 <= user_idx < len(options):
+                            user_display = str(options[user_idx])
+                    except (TypeError, ValueError):
+                        user_idx = -1
+                    if user_idx != -1 and user_idx == correct_idx:
+                        is_correct = True
+                        correct += 1
             elif q_type in ("fill", "sent"):
                 correct_display = str(q.get("answer", ""))
                 user_display = "" if user_ans is None else str(user_ans)
-                if user_ans is not None and str(user_ans).strip().lower() == str(q.get("answer", "")).strip().lower():
+                if is_oral:
+                    if user_display and _oral_answers_match(user_display, correct_display):
+                        is_correct = True
+                        correct += 1
+                elif user_ans is not None and str(user_ans).strip().lower() == str(q.get("answer", "")).strip().lower():
                     is_correct = True
                     correct += 1
         except (IndexError, TypeError, ValueError):
