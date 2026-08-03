@@ -400,10 +400,12 @@ TRANSLATIONS = {
               "¿Preparado para la primera pregunta?",
     },
     "chat_welcome_continue": {
-        "hu": "Szia {name}! 👋 Folytatjuk a {subject} tanulást. "
-              "Írd meg, miben segíthetek, vagy válaszolj az utolsó kérdésemre!",
-        "es": "¡Hola {name}! 👋 Seguimos con {subject}. "
-              "Dime en qué puedo ayudarte o responde a mi última pregunta.",
+        "hu": "Szia {name}! 👋 Folytatjuk a {subject} tanulást — "
+              "most itt tartunk: {topic}. Most azonnal folytatom a tanítást "
+              "ezzel az anyagrésszel, figyelj jól!",
+        "es": "¡Hola {name}! 👋 Seguimos con {subject} — "
+              "ahora estamos aquí: {topic}. Sigo enseñándote enseguida "
+              "con esta parte de la materia, ¡presta atención!",
     },
 
     # --- select_tasks oldal ---

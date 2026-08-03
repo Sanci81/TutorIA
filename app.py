@@ -2801,6 +2801,7 @@ def _call_ai_for_quiz(
             if _active_curriculum() == "ES":
                 oral_rule = (
                     "ESTOY HACIENDO UN EXAMEN ORAL para un niño de 6 años que NO SABE LEER.\n"
+                    "- Cada pregunta debe ser una frase COMPLETA y comprensible por sí sola. NUNCA hagas una pregunta truncada (ej. '¿Cuántas?'). El niño solo ESCUCHA la pregunta, no la ve — por eso la pregunta debe incluir todo lo necesario para responder. Mal ejemplo: '¿Cuántas?' — Buen ejemplo: '¿Cuántas patas tiene un perro?'. Antes de dar una pregunta, comprueba: ¿la entiende un niño de 6 años si solo la ESCUCHA?\n"
                     "- SOLO haz preguntas que se puedan contestar con UNA SOLA PALABRA.\n"
                     "- NO des opciones (A/B/C), porque el niño no las ve.\n"
                     "- NO uses frases para completar (___), porque no puede leerlas.\n"
@@ -2814,6 +2815,7 @@ def _call_ai_for_quiz(
             else:
                 oral_rule = (
                     "Ez SZÓBELI teszt egy 6 éves gyereknek, aki NEM TUD OLVASNI.\n"
+                    "- Minden kérdés legyen TELJES, önmagában érthető mondat. SOHA ne adj csonka kérdést (pl. 'Hány?'). A gyerek csak HALLJA a kérdést, nem látja — ezért a kérdésnek tartalmaznia kell mindent, ami a válaszhoz kell. Rossz példa: 'Hány?' — Jó példa: 'Hány lába van egy kutyának?'. Mielőtt kiadsz egy kérdést, ellenőrizd: megérti-e egy 6 éves, ha csak HALLJA?\n"
                     "- CSAK olyan kérdést tegyél fel, amire EGYETLEN SZÓVAL lehet válaszolni.\n"
                     "- NE adj válaszlehetőségeket (A/B/C), mert a gyerek nem látja őket.\n"
                     "- NE használj kiegészítendő mondatot (___), mert azt nem tudja elolvasni.\n"
@@ -2837,6 +2839,7 @@ def _call_ai_for_quiz(
         elif active_curr == "ES":
             oral_rule = (
                 "ESTOY HACIENDO UN EXAMEN ORAL para un niño español de 6 años que NO SABE LEER.\n"
+                "- Cada pregunta debe ser una frase COMPLETA y comprensible por sí sola. NUNCA hagas una pregunta truncada (ej. '¿Cuántas?'). El niño solo ESCUCHA la pregunta, no la ve — por eso la pregunta debe incluir todo lo necesario para responder. Mal ejemplo: '¿Cuántas?' — Buen ejemplo: '¿Cuántas patas tiene un perro?'. Antes de dar una pregunta, comprueba: ¿la entiende un niño de 6 años si solo la ESCUCHA?\n"
                 "- SOLO haz preguntas que se puedan contestar con UNA SOLA PALABRA.\n"
                 "- NO des opciones (A/B/C), porque el niño no las ve.\n"
                 "- NO uses frases para completar (___), porque no puede leerlas.\n"
@@ -2859,6 +2862,7 @@ def _call_ai_for_quiz(
         else:
             oral_rule = (
                 "Ez SZÓBELI teszt egy 6 éves gyereknek, aki NEM TUD OLVASNI.\n"
+                "- Minden kérdés legyen TELJES, önmagában érthető mondat. SOHA ne adj csonka kérdést (pl. 'Hány?'). A gyerek csak HALLJA a kérdést, nem látja — ezért a kérdésnek tartalmaznia kell mindent, ami a válaszhoz kell. Rossz példa: 'Hány?' — Jó példa: 'Hány lába van egy kutyának?'. Mielőtt kiadsz egy kérdést, ellenőrizd: megérti-e egy 6 éves, ha csak HALLJA?\n"
                 "- CSAK olyan kérdést tegyél fel, amire EGYETLEN SZÓVAL lehet válaszolni.\n"
                 "- NE adj válaszlehetőségeket (A/B/C), mert a gyerek nem látja őket.\n"
                 "- NE használj kiegészítendő mondatot (___), mert azt nem tudja elolvasni.\n"
@@ -3348,14 +3352,15 @@ def _session_curriculum(chat_session: dict) -> str | None:
 
 
 def _chat_initial_assistant_message(
-    child_name: str, subject_label: str, *, placement: bool, lang: str = "hu"
+    child_name: str, subject_label: str, *, placement: bool, lang: str = "hu",
+    topic: str = "",
 ) -> str:
     if placement:
         return i18n.t("chat_welcome_placement", lang).format(
             name=child_name, subject=subject_label
         )
     return i18n.t("chat_welcome_continue", lang).format(
-        name=child_name, subject=subject_label
+        name=child_name, subject=subject_label, topic=topic or subject_label
     )
 
 
@@ -3625,6 +3630,7 @@ def child_chat(child_id: int):
         welcome = _chat_initial_assistant_message(
             child["name"], subject_label, placement=placement_mode,
             lang="es" if active_curr == "ES" else "hu",
+            topic=current_topic,
         )
         database.add_chat_message(chat_session["id"], "assistant", welcome)
         messages = database.get_chat_messages(chat_session["id"], limit=20)
@@ -3636,6 +3642,7 @@ def child_chat(child_id: int):
             welcome_expected = _chat_initial_assistant_message(
                 child["name"], subject_label, placement=placement_mode,
                 lang="es" if active_curr == "ES" else "hu",
+                topic=current_topic,
             )
             stored = first_assistant["content"].strip()
             if stored != welcome_expected.strip():
