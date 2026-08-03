@@ -4660,6 +4660,7 @@ def child_chat_test_submit(child_id: int):
         # Automatikus szójegyzék feltöltés: ha a témakörnek van szokincs listája,
         # az összes szó bekerül a szójegyzékbe (akkor is ha a gyerek nem chatelt)
         if language and topic and topic.get("szokincs"):
+            simple_words: list[str] = []
             for szo_par in topic["szokincs"]:
                 # A szokincs lista elemei "magyar=idegen" formátumban vannak
                 if isinstance(szo_par, str) and "=" in szo_par:
@@ -4685,6 +4686,56 @@ def child_chat_test_submit(child_id: int):
                             word_foreign=foreign,
                             topic_id=topic_id,
                         )
+                elif isinstance(szo_par, str):
+                    w = szo_par.strip()
+                    # Nem szó jellegűek kihagyása: "…"-ra végződik vagy 3 szónál hosszabb
+                    if w and not w.endswith("…") and len(w.split()) <= 3:
+                        if w.lower() not in {sw.lower() for sw in simple_words}:
+                            simple_words.append(w)
+
+            # Harmadik ág: egyszerű egynyelvű szólista → AI-fordítással párok
+            if simple_words:
+                try:
+                    api_key = _openai_api_key()
+                    if api_key:
+                        source_lang = _display_language_name(language, ui_lang="hu")
+                        native_lang = "spanyol" if _active_curriculum() == "ES" else "magyar"
+                        prompt = (
+                            f"Fordítsd le a következő {source_lang} szavakat {native_lang}ra. "
+                            f"Csak a fordításokat add vissza, JSON formátumban: "
+                            f'{{"forditasok": ["...", "...", ...]}} '
+                            f"ugyanabban a sorrendben, ugyanannyi elemmel.\n\nSZAVAK:\n"
+                            + json.dumps(simple_words, ensure_ascii=False)
+                        )
+                        client = _openai_client(api_key, request_timeout=15.0)
+                        resp = client.chat.completions.create(
+                            model="gpt-4o-mini",
+                            response_format={"type": "json_object"},
+                            messages=[{"role": "user", "content": prompt}],
+                            temperature=0.0,
+                        )
+                        raw = resp.choices[0].message.content or "{}"
+                        payload = json.loads(raw)
+                        translations = payload.get("forditasok") or []
+                        if len(translations) == len(simple_words):
+                            for native_word, foreign_word in zip(translations, simple_words):
+                                nw, fw = str(native_word).strip(), foreign_word.strip()
+                                if nw and fw:
+                                    database.add_vocabulary_word(
+                                        child_id, subject,
+                                        language=language,
+                                        word_native=nw,
+                                        word_foreign=fw,
+                                        topic_id=topic_id,
+                                    )
+                        else:
+                            logger.warning(
+                                "Vocab AI translation count mismatch: "
+                                "words=%d translations=%d",
+                                len(simple_words), len(translations),
+                            )
+                except Exception:
+                    logger.exception("Vocab AI translation failed")
 
         completed_names = [
             t["name"]
