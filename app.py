@@ -4671,6 +4671,8 @@ def child_chat_test_submit(child_id: int):
     # FÜGGETLENÜL attól, hogy a teszt sikeres volt-e. Ezért ez a blokk MINDEN
     # teszt beküldés után lefut (a `passed` értékétől függetlenül), míg az XP,
     # coin és témakör-feloldás továbbra is csak siker esetén jár.
+    print(f"[VOCAB-TEST] language={language!r} topic_id={topic_id!r} "
+          f"szokincs={topic.get('szokincs') if topic else None!r}", flush=True)
     if language and topic and topic.get("szokincs"):
         simple_words: list[str] = []
         for szo_par in topic["szokincs"]:
