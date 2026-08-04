@@ -1,0 +1,412 @@
+{
+  "meta": {
+    "tantargy": "Német",
+    "tantargy_tipus": "élő idegen nyelv",
+    "evfolyam": "1-4",
+    "evfolyamok": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "forras": "Saját felépítés – NAT 'élő idegen nyelv' témakörök + KER/CEFR (Pre-A1→A1)",
+    "megjegyzes": "A NAT az élő idegen nyelvet 4. évfolyamtól írja elő, és nyelvfüggetlen témaköröket ad; ez a tananyag ezekhez rendel konkrét német szókincset és nyelvtani progressziót. A magyarázat nyelve magyar, a célnyelv német."
+  },
+  "teljes_szoveg": "NÉMET mint élő idegen nyelv – 1-4. évfolyam.\n\nA NAT az élő idegen nyelvet 4. évfolyamtól írja elő, ezért az 1-3. évfolyam anyaga extra, korai nyelvi alapozás. A tanítás magyarul folyik, a német szavak ebbe ágyazódnak.\n\nAz 1-2. évfolyamon minden szóban zajlik, olvasás és írás nélkül; a 3-4. évfolyamon óvatosan megjelenik a szófelismerő olvasás. A gyerek soha nem kap nyelvtani szabályt, csak kész fordulatokat utánoz.\n\nSzintprogresszió: 1-2. o. Pre-A1 (szóbeli, játékos) · 3-4. o. Pre-A1→A1 (írás-olvasás bevezetése).\n\nTémakörök: Begrüßung – Köszönés és bemutatkozás, Zahlen 1–10 – Számok, Farben – Színek, Meine Familie – A családom, Tiere – Állatok, Mein Körper – A testem, Die Schule – Az iskola, Essen und Trinken – Étkezés, Mein Zuhause – Az otthonom, Kleidung – Ruhák, Wetter und Tage – Időjárás és napok, Mein Tag – A napirendem.",
+  "bevezeto": "Az alsó tagozatos német nyelvtanulás célja, hogy a gyerek megszeresse a nyelvet, megszokja a hangzását, és bátran megszólaljon. A tanítás magyarul folyik, a német szavak ebbe ágyazódnak. Az 1-2. évfolyamon minden szóban zajlik, olvasás és írás nélkül; a 3-4. évfolyamon megjelenik a szófelismerő olvasás. Nyelvtani szabályt nem magyarázunk, csak kész fordulatokat utánoztatunk.",
+  "evfolyam_blokkok": {
+    "1-2": {
+      "evfolyamok": [
+        1,
+        2
+      ],
+      "cefr_szint": "Pre-A1 (szóbeli alapozás, olvasás-írás nélkül)",
+      "leiras": "Az 1-2. évfolyamon a német tanítása kizárólag szóban, hallás után történik. A gyerek dalokból, mondókákból, játékokból sajátítja el az első szavakat.",
+      "temakorok": [
+        {
+          "nev": "Begrüßung – Köszönés és bemutatkozás",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek köszön németül és megmondja a nevét.",
+          "szokincs": [
+            "hallo",
+            "tschüss",
+            "guten Morgen",
+            "guten Tag",
+            "bitte",
+            "danke",
+            "ja",
+            "nein",
+            "ich heiße…",
+            "wie heißt du?"
+          ],
+          "nyelvtan": [
+            "a sein ige egyes szám 1-2. személye (ich bin, du bist)",
+            "rögzült fordulatok utánzása"
+          ],
+          "kommunikacios_szandekok": [
+            "köszönés",
+            "saját név megmondása",
+            "udvariasság"
+          ],
+          "javasolt_tevekenysegek": [
+            "köszönő dal",
+            "báb-párbeszéd",
+            "névkör labdával"
+          ],
+          "teljes_szoveg": "Témakör: Begrüßung – Köszönés és bemutatkozás\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek köszön németül és megmondja a nevét.\nSzókincs (példák): hallo, tschüss, guten Morgen, guten Tag, bitte, danke, ja, nein, ich heiße…, wie heißt du?\nNyelvtani fókusz: a sein ige egyes szám 1-2. személye (ich bin, du bist); rögzült fordulatok utánzása\nKommunikációs szándékok: köszönés; saját név megmondása; udvariasság\nJavasolt tevékenységek: köszönő dal; báb-párbeszéd; névkör labdával"
+        },
+        {
+          "nev": "Zahlen 1–10 – Számok",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek elszámol németül tízig.",
+          "szokincs": [
+            "eins",
+            "zwei",
+            "drei",
+            "vier",
+            "fünf",
+            "sechs",
+            "sieben",
+            "acht",
+            "neun",
+            "zehn",
+            "wie viele?"
+          ],
+          "nyelvtan": [
+            "számnevek önálló használata",
+            "a wie viele? kérdés utánzása"
+          ],
+          "kommunikacios_szandekok": [
+            "mennyiség megnevezése",
+            "életkor megmondása (ich bin sieben)",
+            "számmal válaszolni"
+          ],
+          "javasolt_tevekenysegek": [
+            "számolás ujjakon",
+            "ugrálós számolás",
+            "kártyajáték képekkel"
+          ],
+          "teljes_szoveg": "Témakör: Zahlen 1–10 – Számok\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek elszámol németül tízig.\nSzókincs (példák): eins, zwei, drei, vier, fünf, sechs, sieben, acht, neun, zehn, wie viele?\nNyelvtani fókusz: számnevek önálló használata; a wie viele? kérdés utánzása\nKommunikációs szándékok: mennyiség megnevezése; életkor megmondása (ich bin sieben); számmal válaszolni\nJavasolt tevékenységek: számolás ujjakon; ugrálós számolás; kártyajáték képekkel"
+        },
+        {
+          "nev": "Farben – Színek",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek megnevezi a fő színeket.",
+          "szokincs": [
+            "rot",
+            "blau",
+            "gelb",
+            "grün",
+            "schwarz",
+            "weiß",
+            "orange",
+            "rosa",
+            "braun",
+            "welche Farbe?"
+          ],
+          "nyelvtan": [
+            "\\u201eEs ist + szín\" rögzült fordulatként",
+            "melléknév állítmányi helyzetben"
+          ],
+          "kommunikacios_szandekok": [
+            "tárgy színének megnevezése",
+            "kedvenc szín kifejezése"
+          ],
+          "javasolt_tevekenysegek": [
+            "színkereső séta",
+            "festés diktálásra",
+            "színes memóriajáték"
+          ],
+          "teljes_szoveg": "Témakör: Farben – Színek\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a fő színeket.\nSzókincs (példák): rot, blau, gelb, grün, schwarz, weiß, orange, rosa, braun, welche Farbe?\nNyelvtani fókusz: \\u201eEs ist + szín\" rögzült fordulatként; melléknév állítmányi helyzetben\nKommunikációs szándékok: tárgy színének megnevezése; kedvenc szín kifejezése\nJavasolt tevékenységek: színkereső séta; festés diktálásra; színes memóriajáték"
+        },
+        {
+          "nev": "Meine Familie – A családom",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek bemutatja a családtagjait.",
+          "szokincs": [
+            "Mama",
+            "Papa",
+            "Bruder",
+            "Schwester",
+            "Oma",
+            "Opa",
+            "Baby",
+            "Familie",
+            "das ist mein…"
+          ],
+          "nyelvtan": [
+            "birtokos névelő: mein / meine",
+            "das ist + főnév"
+          ],
+          "kommunikacios_szandekok": [
+            "családtag bemutatása",
+            "birtoklás kifejezése"
+          ],
+          "javasolt_tevekenysegek": [
+            "családrajz bemutatása",
+            "fényképalbum",
+            "báb-család"
+          ],
+          "teljes_szoveg": "Témakör: Meine Familie – A családom\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek bemutatja a családtagjait.\nSzókincs (példák): Mama, Papa, Bruder, Schwester, Oma, Opa, Baby, Familie, das ist mein…\nNyelvtani fókusz: birtokos névelő: mein / meine; das ist + főnév\nKommunikációs szándékok: családtag bemutatása; birtoklás kifejezése\nJavasolt tevékenységek: családrajz bemutatása; fényképalbum; báb-család"
+        },
+        {
+          "nev": "Tiere – Állatok",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek megnevezi a gyakori állatokat.",
+          "szokincs": [
+            "Hund",
+            "Katze",
+            "Vogel",
+            "Fisch",
+            "Pferd",
+            "Kuh",
+            "Hase",
+            "Maus",
+            "ich mag…"
+          ],
+          "nyelvtan": [
+            "ich mag + főnév rögzült fordulatként",
+            "a főnevek nagybetűs írása"
+          ],
+          "kommunikacios_szandekok": [
+            "állat megnevezése",
+            "tetszés kifejezése"
+          ],
+          "javasolt_tevekenysegek": [
+            "állathang-találós",
+            "mozgásutánzás",
+            "memóriakártya"
+          ],
+          "teljes_szoveg": "Témakör: Tiere – Állatok\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a gyakori állatokat.\nSzókincs (példák): Hund, Katze, Vogel, Fisch, Pferd, Kuh, Hase, Maus, ich mag…\nNyelvtani fókusz: ich mag + főnév rögzült fordulatként; a főnevek nagybetűs írása\nKommunikációs szándékok: állat megnevezése; tetszés kifejezése\nJavasolt tevékenységek: állathang-találós; mozgásutánzás; memóriakártya"
+        },
+        {
+          "nev": "Mein Körper – A testem",
+          "javasolt_oraszam": 10,
+          "cefr_cel": "A gyerek megnevezi a fő testrészeket.",
+          "szokincs": [
+            "Kopf",
+            "Hand",
+            "Fuß",
+            "Auge",
+            "Ohr",
+            "Nase",
+            "Mund",
+            "Haare",
+            "zeig mir…"
+          ],
+          "nyelvtan": [
+            "határozott névelő: der / die / das",
+            "felszólítás megértése (zeig mir…)"
+          ],
+          "kommunikacios_szandekok": [
+            "testrész megnevezése",
+            "utasítás követése"
+          ],
+          "javasolt_tevekenysegek": [
+            "Kopf, Schultern, Knie und Zeh dal",
+            "tükörjáték",
+            "rajzolás diktálásra"
+          ],
+          "teljes_szoveg": "Témakör: Mein Körper – A testem\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a fő testrészeket.\nSzókincs (példák): Kopf, Hand, Fuß, Auge, Ohr, Nase, Mund, Haare, zeig mir…\nNyelvtani fókusz: határozott névelő: der / die / das; felszólítás megértése (zeig mir…)\nKommunikációs szándékok: testrész megnevezése; utasítás követése\nJavasolt tevékenységek: Kopf, Schultern, Knie und Zeh dal; tükörjáték; rajzolás diktálásra"
+        }
+      ],
+      "teljes_szoveg": "1–2. évfolyam (CEFR/KER: Pre-A1 (szóbeli alapozás, olvasás-írás nélkül))\n\nAz 1-2. évfolyamon a német tanítása kizárólag szóban, hallás után történik. A gyerek dalokból, mondókákból, játékokból sajátítja el az első szavakat.\n\n\nTémakör: Begrüßung – Köszönés és bemutatkozás\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek köszön németül és megmondja a nevét.\nSzókincs (példák): hallo, tschüss, guten Morgen, guten Tag, bitte, danke, ja, nein, ich heiße…, wie heißt du?\nNyelvtani fókusz: a sein ige egyes szám 1-2. személye (ich bin, du bist); rögzült fordulatok utánzása\nKommunikációs szándékok: köszönés; saját név megmondása; udvariasság\nJavasolt tevékenységek: köszönő dal; báb-párbeszéd; névkör labdával\n\nTémakör: Zahlen 1–10 – Számok\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek elszámol németül tízig.\nSzókincs (példák): eins, zwei, drei, vier, fünf, sechs, sieben, acht, neun, zehn, wie viele?\nNyelvtani fókusz: számnevek önálló használata; a wie viele? kérdés utánzása\nKommunikációs szándékok: mennyiség megnevezése; életkor megmondása (ich bin sieben); számmal válaszolni\nJavasolt tevékenységek: számolás ujjakon; ugrálós számolás; kártyajáték képekkel\n\nTémakör: Farben – Színek\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a fő színeket.\nSzókincs (példák): rot, blau, gelb, grün, schwarz, weiß, orange, rosa, braun, welche Farbe?\nNyelvtani fókusz: \\u201eEs ist + szín\" rögzült fordulatként; melléknév állítmányi helyzetben\nKommunikációs szándékok: tárgy színének megnevezése; kedvenc szín kifejezése\nJavasolt tevékenységek: színkereső séta; festés diktálásra; színes memóriajáték\n\nTémakör: Meine Familie – A családom\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek bemutatja a családtagjait.\nSzókincs (példák): Mama, Papa, Bruder, Schwester, Oma, Opa, Baby, Familie, das ist mein…\nNyelvtani fókusz: birtokos névelő: mein / meine; das ist + főnév\nKommunikációs szándékok: családtag bemutatása; birtoklás kifejezése\nJavasolt tevékenységek: családrajz bemutatása; fényképalbum; báb-család\n\nTémakör: Tiere – Állatok\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a gyakori állatokat.\nSzókincs (példák): Hund, Katze, Vogel, Fisch, Pferd, Kuh, Hase, Maus, ich mag…\nNyelvtani fókusz: ich mag + főnév rögzült fordulatként; a főnevek nagybetűs írása\nKommunikációs szándékok: állat megnevezése; tetszés kifejezése\nJavasolt tevékenységek: állathang-találós; mozgásutánzás; memóriakártya\n\nTémakör: Mein Körper – A testem\nJavasolt óraszám: 10 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a fő testrészeket.\nSzókincs (példák): Kopf, Hand, Fuß, Auge, Ohr, Nase, Mund, Haare, zeig mir…\nNyelvtani fókusz: határozott névelő: der / die / das; felszólítás megértése (zeig mir…)\nKommunikációs szándékok: testrész megnevezése; utasítás követése\nJavasolt tevékenységek: Kopf, Schultern, Knie und Zeh dal; tükörjáték; rajzolás diktálásra"
+    },
+    "3-4": {
+      "evfolyamok": [
+        3,
+        4
+      ],
+      "cefr_szint": "Pre-A1 → A1 (az írás-olvasás óvatos bevezetése)",
+      "leiras": "A 3-4. évfolyamon megjelenik a szófelismerő olvasás: a gyerek felismeri az ismert szavak leírt alakját, és rövid szavakat lemásol. A hangsúly továbbra is a beszéden van.",
+      "temakorok": [
+        {
+          "nev": "Die Schule – Az iskola",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek megnevezi az iskolai tárgyakat.",
+          "szokincs": [
+            "Schule",
+            "Lehrer",
+            "Buch",
+            "Stift",
+            "Bleistift",
+            "Tasche",
+            "Tisch",
+            "Stuhl",
+            "ich habe…"
+          ],
+          "nyelvtan": [
+            "határozatlan névelő: ein / eine",
+            "a haben ige (ich habe, du hast)"
+          ],
+          "kommunikacios_szandekok": [
+            "tárgy megnevezése",
+            "birtoklás kifejezése",
+            "kérés az órán"
+          ],
+          "javasolt_tevekenysegek": [
+            "tolltartó-bemutató",
+            "tantermi tárgyak keresése",
+            "szókártya-párosítás"
+          ],
+          "teljes_szoveg": "Témakör: Die Schule – Az iskola\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi az iskolai tárgyakat.\nSzókincs (példák): Schule, Lehrer, Buch, Stift, Bleistift, Tasche, Tisch, Stuhl, ich habe…\nNyelvtani fókusz: határozatlan névelő: ein / eine; a haben ige (ich habe, du hast)\nKommunikációs szándékok: tárgy megnevezése; birtoklás kifejezése; kérés az órán\nJavasolt tevékenységek: tolltartó-bemutató; tantermi tárgyak keresése; szókártya-párosítás"
+        },
+        {
+          "nev": "Essen und Trinken – Étkezés",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek megnevezi a gyakori ételeket és kifejezi, mit szeret.",
+          "szokincs": [
+            "Brot",
+            "Milch",
+            "Wasser",
+            "Apfel",
+            "Banane",
+            "Käse",
+            "Ei",
+            "ich mag",
+            "ich mag nicht"
+          ],
+          "nyelvtan": [
+            "tetszés és nemtetszés: ich mag / ich mag nicht",
+            "főnevek névelővel"
+          ],
+          "kommunikacios_szandekok": [
+            "étel megnevezése",
+            "ízlés kifejezése",
+            "udvarias kérés"
+          ],
+          "javasolt_tevekenysegek": [
+            "reggeli-szerepjáték",
+            "szeretem/nem szeretem kör",
+            "bevásárlólista"
+          ],
+          "teljes_szoveg": "Témakör: Essen und Trinken – Étkezés\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a gyakori ételeket és kifejezi, mit szeret.\nSzókincs (példák): Brot, Milch, Wasser, Apfel, Banane, Käse, Ei, ich mag, ich mag nicht\nNyelvtani fókusz: tetszés és nemtetszés: ich mag / ich mag nicht; főnevek névelővel\nKommunikációs szándékok: étel megnevezése; ízlés kifejezése; udvarias kérés\nJavasolt tevékenységek: reggeli-szerepjáték; szeretem/nem szeretem kör; bevásárlólista"
+        },
+        {
+          "nev": "Mein Zuhause – Az otthonom",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek leírja a lakását és megmondja, hol van valami.",
+          "szokincs": [
+            "Haus",
+            "Zimmer",
+            "Küche",
+            "Bad",
+            "Bett",
+            "Tisch",
+            "Tür",
+            "Fenster",
+            "in",
+            "auf"
+          ],
+          "nyelvtan": [
+            "egyszerű helyhatározók: in, auf",
+            "wo ist…? kérdés megértése"
+          ],
+          "kommunikacios_szandekok": [
+            "helyiség megnevezése",
+            "hely megadása",
+            "kérdés feltevése"
+          ],
+          "javasolt_tevekenysegek": [
+            "szobarajz felcímkézése",
+            "Wo ist die Katze? játék",
+            "makett"
+          ],
+          "teljes_szoveg": "Témakör: Mein Zuhause – Az otthonom\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek leírja a lakását és megmondja, hol van valami.\nSzókincs (példák): Haus, Zimmer, Küche, Bad, Bett, Tisch, Tür, Fenster, in, auf\nNyelvtani fókusz: egyszerű helyhatározók: in, auf; wo ist…? kérdés megértése\nKommunikációs szándékok: helyiség megnevezése; hely megadása; kérdés feltevése\nJavasolt tevékenységek: szobarajz felcímkézése; Wo ist die Katze? játék; makett"
+        },
+        {
+          "nev": "Kleidung – Ruhák",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek megnevezi a ruhadarabokat.",
+          "szokincs": [
+            "T-Shirt",
+            "Hose",
+            "Schuhe",
+            "Kleid",
+            "Mütze",
+            "Jacke",
+            "Socken",
+            "ich trage…"
+          ],
+          "nyelvtan": [
+            "ich trage + főnév rögzült fordulatként",
+            "többes szám (Schuhe, Socken)"
+          ],
+          "kommunikacios_szandekok": [
+            "ruhadarab megnevezése",
+            "saját öltözék leírása"
+          ],
+          "javasolt_tevekenysegek": [
+            "öltöztetős papírbaba",
+            "divatbemutató",
+            "időjárás-ruha párosítás"
+          ],
+          "teljes_szoveg": "Témakör: Kleidung – Ruhák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a ruhadarabokat.\nSzókincs (példák): T-Shirt, Hose, Schuhe, Kleid, Mütze, Jacke, Socken, ich trage…\nNyelvtani fókusz: ich trage + főnév rögzült fordulatként; többes szám (Schuhe, Socken)\nKommunikációs szándékok: ruhadarab megnevezése; saját öltözék leírása\nJavasolt tevékenységek: öltöztetős papírbaba; divatbemutató; időjárás-ruha párosítás"
+        },
+        {
+          "nev": "Wetter und Tage – Időjárás és napok",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek elmondja, milyen az idő.",
+          "szokincs": [
+            "sonnig",
+            "regnerisch",
+            "wolkig",
+            "windig",
+            "heiß",
+            "kalt",
+            "Montag",
+            "Dienstag",
+            "Sonntag",
+            "wie ist das Wetter?"
+          ],
+          "nyelvtan": [
+            "\\u201eEs ist + időjárás\" szerkezet",
+            "a hét napjai nagybetűvel, am Montag"
+          ],
+          "kommunikacios_szandekok": [
+            "időjárás leírása",
+            "nap megnevezése"
+          ],
+          "javasolt_tevekenysegek": [
+            "időjárás-naptár",
+            "napok dala",
+            "piktogram-készítés"
+          ],
+          "teljes_szoveg": "Témakör: Wetter und Tage – Időjárás és napok\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek elmondja, milyen az idő.\nSzókincs (példák): sonnig, regnerisch, wolkig, windig, heiß, kalt, Montag, Dienstag, Sonntag, wie ist das Wetter?\nNyelvtani fókusz: \\u201eEs ist + időjárás\" szerkezet; a hét napjai nagybetűvel, am Montag\nKommunikációs szándékok: időjárás leírása; nap megnevezése\nJavasolt tevékenységek: időjárás-naptár; napok dala; piktogram-készítés"
+        },
+        {
+          "nev": "Mein Tag – A napirendem",
+          "javasolt_oraszam": 12,
+          "cefr_cel": "A gyerek három-négy mondatban elmeséli a napját.",
+          "szokincs": [
+            "aufstehen",
+            "waschen",
+            "essen",
+            "zur Schule gehen",
+            "spielen",
+            "lesen",
+            "schlafen",
+            "Morgen",
+            "Abend"
+          ],
+          "nyelvtan": [
+            "egyszerű jelen idő E/1",
+            "elváló igekötő (aufstehen → ich stehe auf)",
+            "und kötőszó"
+          ],
+          "kommunikacios_szandekok": [
+            "napi tevékenység megnevezése",
+            "napszak megadása"
+          ],
+          "javasolt_tevekenysegek": [
+            "napirend-képsor sorba rendezése",
+            "napirendi mim",
+            "saját nap elmesélése"
+          ],
+          "teljes_szoveg": "Témakör: Mein Tag – A napirendem\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek három-négy mondatban elmeséli a napját.\nSzókincs (példák): aufstehen, waschen, essen, zur Schule gehen, spielen, lesen, schlafen, Morgen, Abend\nNyelvtani fókusz: egyszerű jelen idő E/1; elváló igekötő (aufstehen → ich stehe auf); und kötőszó\nKommunikációs szándékok: napi tevékenység megnevezése; napszak megadása\nJavasolt tevékenységek: napirend-képsor sorba rendezése; napirendi mim; saját nap elmesélése"
+        }
+      ],
+      "teljes_szoveg": "3–4. évfolyam (CEFR/KER: Pre-A1 → A1 (az írás-olvasás óvatos bevezetése))\n\nA 3-4. évfolyamon megjelenik a szófelismerő olvasás: a gyerek felismeri az ismert szavak leírt alakját, és rövid szavakat lemásol. A hangsúly továbbra is a beszéden van.\n\n\nTémakör: Die Schule – Az iskola\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi az iskolai tárgyakat.\nSzókincs (példák): Schule, Lehrer, Buch, Stift, Bleistift, Tasche, Tisch, Stuhl, ich habe…\nNyelvtani fókusz: határozatlan névelő: ein / eine; a haben ige (ich habe, du hast)\nKommunikációs szándékok: tárgy megnevezése; birtoklás kifejezése; kérés az órán\nJavasolt tevékenységek: tolltartó-bemutató; tantermi tárgyak keresése; szókártya-párosítás\n\nTémakör: Essen und Trinken – Étkezés\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a gyakori ételeket és kifejezi, mit szeret.\nSzókincs (példák): Brot, Milch, Wasser, Apfel, Banane, Käse, Ei, ich mag, ich mag nicht\nNyelvtani fókusz: tetszés és nemtetszés: ich mag / ich mag nicht; főnevek névelővel\nKommunikációs szándékok: étel megnevezése; ízlés kifejezése; udvarias kérés\nJavasolt tevékenységek: reggeli-szerepjáték; szeretem/nem szeretem kör; bevásárlólista\n\nTémakör: Mein Zuhause – Az otthonom\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek leírja a lakását és megmondja, hol van valami.\nSzókincs (példák): Haus, Zimmer, Küche, Bad, Bett, Tisch, Tür, Fenster, in, auf\nNyelvtani fókusz: egyszerű helyhatározók: in, auf; wo ist…? kérdés megértése\nKommunikációs szándékok: helyiség megnevezése; hely megadása; kérdés feltevése\nJavasolt tevékenységek: szobarajz felcímkézése; Wo ist die Katze? játék; makett\n\nTémakör: Kleidung – Ruhák\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek megnevezi a ruhadarabokat.\nSzókincs (példák): T-Shirt, Hose, Schuhe, Kleid, Mütze, Jacke, Socken, ich trage…\nNyelvtani fókusz: ich trage + főnév rögzült fordulatként; többes szám (Schuhe, Socken)\nKommunikációs szándékok: ruhadarab megnevezése; saját öltözék leírása\nJavasolt tevékenységek: öltöztetős papírbaba; divatbemutató; időjárás-ruha párosítás\n\nTémakör: Wetter und Tage – Időjárás és napok\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek elmondja, milyen az idő.\nSzókincs (példák): sonnig, regnerisch, wolkig, windig, heiß, kalt, Montag, Dienstag, Sonntag, wie ist das Wetter?\nNyelvtani fókusz: \\u201eEs ist + időjárás\" szerkezet; a hét napjai nagybetűvel, am Montag\nKommunikációs szándékok: időjárás leírása; nap megnevezése\nJavasolt tevékenységek: időjárás-naptár; napok dala; piktogram-készítés\n\nTémakör: Mein Tag – A napirendem\nJavasolt óraszám: 12 óra\nKommunikációs / fejlesztési cél: A gyerek három-négy mondatban elmeséli a napját.\nSzókincs (példák): aufstehen, waschen, essen, zur Schule gehen, spielen, lesen, schlafen, Morgen, Abend\nNyelvtani fókusz: egyszerű jelen idő E/1; elváló igekötő (aufstehen → ich stehe auf); und kötőszó\nKommunikációs szándékok: napi tevékenység megnevezése; napszak megadása\nJavasolt tevékenységek: napirend-képsor sorba rendezése; napirendi mim; saját nap elmesélése"
+    }
+  }
+}

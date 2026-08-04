@@ -226,10 +226,11 @@ SPANYOL_1_4_FILE = "spanyol_1-4.json"
 SPANYOL_5_8_FILE = "spanyol_5-8.json"
 ANGOL_1_4_FILE = "angol_1-4.json"
 ANGOL_5_8_FILE = "angol_5-8.json"
+NEMET_1_4_FILE = "nemet_1-4.json"
 
 # Nyelvspecifikus fájlok — NEM önálló tantárgyak, kizárandók a tantárgylistából
 _LANGUAGE_SPECIFIC_FILES: frozenset[str] = frozenset(
-    {ANGOL_1_4_FILE, ANGOL_5_8_FILE, SPANYOL_1_4_FILE, SPANYOL_5_8_FILE}
+    {ANGOL_1_4_FILE, ANGOL_5_8_FILE, SPANYOL_1_4_FILE, SPANYOL_5_8_FILE, NEMET_1_4_FILE}
 )
 
 # ── LOMLOE spanyol nemzeti tanterv (BOE-A-2022-3296) ──────────────────────
@@ -1107,7 +1108,7 @@ def _hu_1_4_json_path(slug: str) -> Path | None:
 
 def _hu_1_4_path_from_filename(filename: str) -> Path | None:
     """Hardcoded JSON fájlnév → teljes elérési út (hu_kerettanterv_1_4_TELJES)."""
-    if filename not in HU_1_4_SUBJECT_FILES and filename not in (SPANYOL_1_4_FILE, ANGOL_1_4_FILE):
+    if filename not in HU_1_4_SUBJECT_FILES and filename not in (SPANYOL_1_4_FILE, ANGOL_1_4_FILE, NEMET_1_4_FILE):
         return None
     for candidate in _hu_1_4_path_candidates(filename):
         if candidate.is_file() and not _is_hu_aggregate_json(candidate):
@@ -1835,6 +1836,12 @@ def get_curriculum_for_chat(
         if en_path.is_file() and en_path not in candidates:
             _forced_paths.add(en_path)
             candidates.insert(0, en_path)
+
+    if effective_language == "nemet" and is_hu_1_4_grade(grade_num):
+        de_path = _hu_1_4_path_from_filename(NEMET_1_4_FILE)
+        if de_path and de_path not in candidates:
+            _forced_paths.add(de_path)
+            candidates.insert(0, de_path)
 
     def _has_new_structure(path: Path) -> bool:
         try:
