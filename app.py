@@ -2324,6 +2324,16 @@ expliques palabras básicas (p. ej. 'family', 'dog', 'garden'), sino material ad
 a su curso.
 Si el alumno no conoce una palabra básica, complétala brevemente, pero después vuelve
 inmediatamente a tu propio nivel.
+
+=== TOLERANCIA AL RECONOCIMIENTO DE VOZ ===
+En modo voz, la voz del niño la transcribe una máquina y a menudo la distorsiona — también
+las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beintidós» por
+«veintidós», «sínko» por «cinco», «ola» por «hola».
+- Si la transcripción SUENA IGUAL a la respuesta correcta, acéptala como CORRECTA,
+  felicítale y di la forma correcta claramente.
+- NUNCA digas «¡Casi!» si el niño realmente respondió bien — es un fallo de la máquina,
+  no del niño.
+- Solo márcalo como error si el SIGNIFICADO de la respuesta es claramente OTRO.
 """
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
@@ -2478,6 +2488,16 @@ Tema actual: {current_topic}
 - La pregunta debe basarse en lo que acabas de enseñar.
 - En preguntas de opción múltiple, las opciones deben ser cosas o palabras reales
   (p. ej. "piedra" o "perro"), no las propiedades mismas (p. ej. "vivo" o "sin vida").
+
+=== TOLERANCIA AL RECONOCIMIENTO DE VOZ ===
+En modo voz, la voz del niño la transcribe una máquina y a menudo la distorsiona — también
+las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beintidós» por
+«veintidós», «sínko» por «cinco», «ola» por «hola».
+- Si la transcripción SUENA IGUAL a la respuesta correcta, acéptala como CORRECTA,
+  felicítale y di la forma correcta claramente.
+- NUNCA digas «¡Casi!» si el niño realmente respondió bien — es un fallo de la máquina,
+  no del niño.
+- Solo márcalo como error si el SIGNIFICADO de la respuesta es claramente OTRO.
 """
 
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
@@ -2722,6 +2742,16 @@ SOHA ne taníts a diák évfolyama alatti szintet: egy 7-8. osztályosnak NE ala
 magyarázz (pl. 'family', 'dog', 'garden'), hanem az évfolyamához illő anyagot.
 Ha a diák egy alapszót nem tud, röviden pótold, de utána azonnal lépj vissza a
 saját szintjére.
+
+=== HANGFELISMERÉS-TOLERANCIA ===
+Hangmódban a gyerek beszédét egy gép írja le, és gyakran torzítja — a MAGYAR válaszokat is,
+nem csak az idegen szavakat. Példák: 'Iszak' vagy 'Visszat' a 'viszlát' helyett,
+'Na drág' a 'nadrág' helyett, 'Har mint kettő' a 'harminckettő' helyett.
+- Ha az átirat HANGZÁSRA megegyezik a helyes válasszal, fogadd el HELYESNEK, dicsérd meg,
+  és mondd ki tisztán a helyes alakot.
+- SOHA ne mondd azt, hogy 'Majdnem!', ha a gyerek valójában jól válaszolt — az a gép
+  hibája, nem a gyereké.
+- Csak akkor jelezd hibásnak, ha egyértelműen MÁS a válasz jelentése.
 """
 
     prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
@@ -2744,6 +2774,16 @@ saját szintjére.
 - A kérdés arra épüljön, amit épp most tanítottál.
 - Feleletválasztósnál az opciók valódi dolgok vagy szavak legyenek (pl. "kő" vagy
   "kutya"), ne maguk a tulajdonságok (pl. "élő" vagy "élettelen").
+
+=== HANGFELISMERÉS-TOLERANCIA ===
+Hangmódban a gyerek beszédét egy gép írja le, és gyakran torzítja — a MAGYAR válaszokat is,
+nem csak az idegen szavakat. Példák: 'Iszak' vagy 'Visszat' a 'viszlát' helyett,
+'Na drág' a 'nadrág' helyett, 'Har mint kettő' a 'harminckettő' helyett.
+- Ha az átirat HANGZÁSRA megegyezik a helyes válasszal, fogadd el HELYESNEK, dicsérd meg,
+  és mondd ki tisztán a helyes alakot.
+- SOHA ne mondd azt, hogy 'Majdnem!', ha a gyerek valójában jól válaszolt — az a gép
+  hibája, nem a gyereké.
+- Csak akkor jelezd hibásnak, ha egyértelműen MÁS a válasz jelentése.
 """
 
     print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
