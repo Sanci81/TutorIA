@@ -1879,12 +1879,38 @@ def _openai_tts_speak(text: str) -> bytes:
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
     client = _openai_client(api_key, request_timeout=60.0)
     text = text.replace("**", "").replace("##", "").replace("- ", "")
-    response = client.audio.speech.create(
-        model="tts-1",
-        voice="nova",
-        input=text[:4096],
-    )
-    return response.content
+    active_curr = (_active_curriculum() or "HU").upper()
+    if active_curr == "ES":
+        instructions = (
+            "Habla con pronunciación española natural, despacio y con claridad, "
+            "como si hablaras a un niño pequeño. Haz una pausa breve entre las frases. "
+            "Si aparece una palabra en otro idioma, pronúnciala correctamente en ese "
+            "idioma, con claridad y despacio."
+        )
+    else:
+        instructions = (
+            "Beszélj természetes magyar kiejtéssel, lassan és tagoltan, ahogy egy "
+            "kisgyerekhez beszélnél. Tarts rövid szünetet a mondatok között. Ha idegen "
+            "nyelvű szó szerepel a szövegben, azt az adott nyelv helyes kiejtésével "
+            "mondd ki, tisztán és lassan."
+        )
+    try:
+        response = client.audio.speech.create(
+            model="gpt-4o-mini-tts",
+            voice="coral",
+            input=text[:4096],
+            instructions=instructions,
+            speed=0.9,
+        )
+        return response.content
+    except Exception as exc:
+        print(f"[TTS-DEBUG] gpt-4o-mini-tts hiba, fallback tts-1/nova: {exc!r}", flush=True)
+        response = client.audio.speech.create(
+            model="tts-1",
+            voice="nova",
+            input=text[:4096],
+        )
+        return response.content
 
 
 def _chat_progress_percent(progress: dict, all_topics: list[str]) -> int:
