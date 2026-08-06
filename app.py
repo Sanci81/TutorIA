@@ -16,6 +16,8 @@ import random
 import re
 import traceback
 import unicodedata
+import urllib.request
+import xml.sax.saxutils as _xml_escape_mod
 from datetime import date, datetime, timezone, timedelta
 from functools import wraps
 from typing import Any
@@ -58,6 +60,10 @@ from curriculum_loader import (
 from database import RESET_TOKEN_HOURS
 
 logger = logging.getLogger(__name__)
+
+# Azure Speech TTS hangok (könnyen cserélhetők)
+AZURE_VOICE_HU = "hu-HU-NoemiNeural"
+AZURE_VOICE_ES = "es-ES-ElviraNeural"
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-insecure-key")
@@ -1871,6 +1877,50 @@ def _whisper_transcribe(
         print(f"[VOICE-DEBUG] too_short discarded: {result!r}", flush=True)
         return ""
     return result
+
+
+def _azure_tts_speak(text: str) -> bytes | None:
+    """Azure Speech TTS → mp3 bytes, vagy None hiba/hiányzó config esetén."""
+    try:
+        key = (os.environ.get("AZURE_SPEECH_KEY") or "").strip()
+        region = (os.environ.get("AZURE_SPEECH_REGION") or "").strip()
+        if not key or not region:
+            return None
+        active_curr = (_active_curriculum() or "HU").upper()
+        if active_curr == "ES":
+            lang = "es-ES"
+            voice = AZURE_VOICE_ES
+        else:
+            lang = "hu-HU"
+            voice = AZURE_VOICE_HU
+        cleaned = text.replace("**", "").replace("##", "").replace("- ", "")[:4096]
+        escaped = _xml_escape_mod.escape(cleaned)
+        ssml = (
+            f'<speak version="1.0" xml:lang="{lang}">'
+            f'<voice name="{voice}">'
+            f'<prosody rate="-10%">{escaped}</prosody>'
+            f'</voice></speak>'
+        )
+        url = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1"
+        req = urllib.request.Request(
+            url,
+            data=ssml.encode("utf-8"),
+            headers={
+                "Ocp-Apim-Subscription-Key": key,
+                "Content-Type": "application/ssml+xml",
+                "X-Microsoft-OutputFormat": "audio-24khz-48kbitrate-mono-mp3",
+                "User-Agent": "TutorIA",
+            },
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = resp.read()
+        if not data:
+            return None
+        return data
+    except Exception as exc:
+        print(f"[TTS-DEBUG] azure hiba: {exc!r}", flush=True)
+        return None
 
 
 def _openai_tts_speak(text: str) -> bytes:
@@ -5170,6 +5220,11 @@ def api_voice_speak():
     text = (data.get("text") or "").strip()
     if not text:
         return jsonify({"error": "no_text"}), 400
+    audio_bytes = _azure_tts_speak(text)
+    if audio_bytes is not None:
+        print("[TTS-DEBUG] route=azure", flush=True)
+        return Response(audio_bytes, mimetype="audio/mpeg")
+    print("[TTS-DEBUG] route=openai", flush=True)
     try:
         audio_bytes = _openai_tts_speak(text)
     except NotImplementedError:
