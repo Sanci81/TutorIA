@@ -3821,6 +3821,42 @@ def child_chat(child_id: int):
                 )
                 messages = database.get_chat_messages(chat_session["id"], limit=20)
 
+        if len(messages) <= 1 and not placement_mode:
+            try:
+                api_key = _openai_api_key()
+                if api_key:
+                    system_prompt = _build_chat_system_prompt(
+                        child,
+                        subject_label=subject_label,
+                        current_topic=current_topic,
+                        curriculum_json_content=chat_curriculum.get("content", ""),
+                        completed_topics=progress.get("topics_completed") or [],
+                        level=progress.get("level", 0),
+                        is_foreign_language=is_foreign,
+                        teaching_language=language if is_foreign else None,
+                    )
+                    trigger = (
+                        "Kezdd el a tanítást — egy rövid köszöntés után azonnal "
+                        "mutass be 1-3 szót vagy egy fogalmat a témakörből, "
+                        "példával, a TANÍTÁSI ALAPSZABÁLY szerint."
+                        if active_curr != "ES"
+                        else "Empieza la clase — después de un saludo breve, "
+                        "enseña enseguida 1-3 palabras o un concepto del tema, "
+                        "con ejemplos, según la REGLA BÁSICA DE ENSEÑANZA."
+                    )
+                    teaching_response = _call_ai_for_chat(
+                        system_prompt,
+                        [],
+                        trigger,
+                    )
+                    if teaching_response:
+                        database.add_chat_message(
+                            chat_session["id"], "assistant", teaching_response
+                        )
+            except Exception:
+                pass
+            messages = database.get_chat_messages(chat_session["id"], limit=20)
+
     vocabulary = []
     if is_foreign and language:
         vocabulary = database.get_vocabulary(child_id, subject, language=language, topic_id=current_topic_id)
