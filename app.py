@@ -1884,15 +1884,21 @@ def _openai_tts_speak(text: str) -> bytes:
         instructions = (
             "Habla con pronunciación española natural, despacio y con claridad, "
             "como si hablaras a un niño pequeño. Haz una pausa breve entre las frases. "
-            "Si aparece una palabra en otro idioma, pronúnciala correctamente en ese "
-            "idioma, con claridad y despacio."
+            "MUY IMPORTANTE: si aparece una palabra en otro idioma (inglés, alemán, "
+            "francés), pronúnciala SIEMPRE con la pronunciación propia de ese idioma, "
+            "nunca en español. Por ejemplo, la palabra inglesa 'the' pronúnciala "
+            "en inglés, no como 'de' en español."
         )
     else:
         instructions = (
-            "Beszélj természetes magyar kiejtéssel, lassan és tagoltan, ahogy egy "
-            "kisgyerekhez beszélnél. Tarts rövid szünetet a mondatok között. Ha idegen "
-            "nyelvű szó szerepel a szövegben, azt az adott nyelv helyes kiejtésével "
-            "mondd ki, tisztán és lassan."
+            "Beszélj természetes magyar kiejtéssel, nyugodt, meleg, barátságos "
+            "hangon, ahogy egy tanár beszél egy kisgyerekhez. Ne legyél gépies. "
+            "Tarts rövid szünetet a mondatok között. "
+            "NAGYON FONTOS: ha a szövegben idegen nyelvű szó szerepel (angol, "
+            "német, francia, spanyol), azt MINDIG az adott nyelv SAJÁT kiejtésével "
+            "mondd ki, ne magyarosan. Például a spanyol 'hola' szót 'ola'-nak ejtsd, "
+            "a néma h nélkül; az angol 'the' szót angolosan; a német 'tschüss' szót "
+            "németesen."
         )
     try:
         response = client.audio.speech.create(
@@ -3709,6 +3715,44 @@ def child_chat(child_id: int):
             topic=current_topic,
         )
         database.add_chat_message(chat_session["id"], "assistant", welcome)
+
+        # Visszatérő felhasználónál (placement_mode=False): az üdvözlés után
+        # az AI azonnal generáljon tanítási tartalmat, hogy ne álljon meg a chat.
+        if not placement_mode:
+            try:
+                api_key = _openai_api_key()
+                if api_key:
+                    system_prompt = _build_chat_system_prompt(
+                        child,
+                        subject_label=subject_label,
+                        current_topic=current_topic,
+                        curriculum_json_content=chat_curriculum.get("content", ""),
+                        completed_topics=progress.get("topics_completed") or [],
+                        level=progress.get("level", 0),
+                        is_foreign_language=is_foreign,
+                        teaching_language=language if is_foreign else None,
+                    )
+                    trigger = (
+                        "Kezdd el a tanítást — egy rövid köszöntés után azonnal "
+                        "mutass be 1-3 szót vagy egy fogalmat a témakörből, "
+                        "példával, a TANÍTÁSI ALAPSZABÁLY szerint."
+                        if active_curr != "ES"
+                        else "Empieza la clase — después de un saludo breve, "
+                        "enseña enseguida 1-3 palabras o un concepto del tema, "
+                        "con ejemplos, según la REGLA BÁSICA DE ENSEÑANZA."
+                    )
+                    teaching_response = _call_ai_for_chat(
+                        system_prompt,
+                        [],
+                        trigger,
+                    )
+                    if teaching_response:
+                        database.add_chat_message(
+                            chat_session["id"], "assistant", teaching_response
+                        )
+            except Exception:
+                pass
+
         messages = database.get_chat_messages(chat_session["id"], limit=20)
     elif messages:
         first_assistant = next(

@@ -401,11 +401,9 @@ TRANSLATIONS = {
     },
     "chat_welcome_continue": {
         "hu": "Szia {name}! 👋 Folytatjuk a {subject} tanulást — "
-              "most itt tartunk: {topic}. Most azonnal folytatom a tanítást "
-              "ezzel az anyagrésszel, figyelj jól!",
+              "most itt tartunk: {topic}.",
         "es": "¡Hola {name}! 👋 Seguimos con {subject} — "
-              "ahora estamos aquí: {topic}. Sigo enseñándote enseguida "
-              "con esta parte de la materia, ¡presta atención!",
+              "ahora estamos aquí: {topic}.",
     },
 
     # --- select_tasks oldal ---
