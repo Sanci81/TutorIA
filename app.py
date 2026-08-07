@@ -65,6 +65,27 @@ logger = logging.getLogger(__name__)
 AZURE_VOICE_HU = "hu-HU-NoemiNeural"
 AZURE_VOICE_ES = "es-ES-ElviraNeural"
 
+# Emoji és egyéb piktogramok kiszűrése a TTS-nek küldött szövegből – a
+# chat-buborékban maradjon az emoji (vizuálisan jó), csak a hangos felolvasásból
+# maradjon ki, mert a TTS motorok néha megpróbálják "kimondani" (pl. "csillag").
+_TTS_EMOJI_RE = re.compile(
+    "["
+    "\U0001F300-\U0001FAFF"  # symbols & pictographs (ide tartozik a legtöbb emoji)
+    "\U00002600-\U000026FF"  # misc symbols (pl. ☀ ☂)
+    "\U00002700-\U000027BF"  # dingbats (pl. ✂ ✈)
+    "\U0001F1E6-\U0001F1FF"  # regionális jelzők (zászlók)
+    "\U00002B00-\U00002BFF"  # nyilak/csillagok egy része (pl. ⭐)
+    "\U0000FE0F"              # variation selector-16 (emoji-stílus jelző)
+    "\U0000200D"              # zero width joiner (összetett emojikhoz)
+    "]+",
+    flags=re.UNICODE,
+)
+
+
+def _strip_emoji_for_tts(text: str) -> str:
+    """Emoji eltávolítása a felolvasandó szövegből (a chatben megmarad)."""
+    return _TTS_EMOJI_RE.sub("", text)
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-insecure-key")
 
@@ -1852,6 +1873,23 @@ def _whisper_transcribe(
         create_kwargs["temperature"] = 0
     transcription = client.audio.transcriptions.create(**create_kwargs)
     result = (transcription.text or "").strip()
+
+    # ── DIREKT prompt-visszhang szűrő ──
+    def _norm_for_echo(s: str) -> str:
+        return " ".join(
+            "".join(ch for ch in s.lower() if ch.isalnum() or ch.isspace()).split()
+        )
+
+    _norm_result = _norm_for_echo(result)
+    _norm_prompt = _norm_for_echo(whisper_prompt)
+    if _norm_result and (
+        _norm_result in _norm_prompt
+        or _norm_prompt in _norm_result
+        or difflib.SequenceMatcher(None, _norm_result, _norm_prompt).ratio() > 0.6
+    ):
+        print(f"[VOICE-DEBUG] prompt-echo (direkt) eldobva: {result!r}", flush=True)
+        return ""
+
     _ECHO_WORDS = {"igen", "nem", "nem tudom", "víz", "water", "kenyér", "bread",
                    "apple", "alma", "hello", "szia", "transcribe", "child", "says"}
     if hint_words:
@@ -1893,7 +1931,8 @@ def _azure_tts_speak(text: str) -> bytes | None:
         else:
             lang = "hu-HU"
             voice = AZURE_VOICE_HU
-        cleaned = text.replace("**", "").replace("##", "").replace("- ", "")[:4096]
+        cleaned = text.replace("**", "").replace("##", "").replace("- ", "")
+        cleaned = _strip_emoji_for_tts(cleaned)[:4096]
         escaped = _xml_escape_mod.escape(cleaned)
         ssml = (
             f'<speak version="1.0" xml:lang="{lang}">'
@@ -1929,6 +1968,7 @@ def _openai_tts_speak(text: str) -> bytes:
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
     client = _openai_client(api_key, request_timeout=60.0)
     text = text.replace("**", "").replace("##", "").replace("- ", "")
+    text = _strip_emoji_for_tts(text)
     active_curr = (_active_curriculum() or "HU").upper()
     if active_curr == "ES":
         instructions = (
@@ -3300,6 +3340,25 @@ def _call_ai_for_quiz(
             "- 3º: números hasta 1000, multiplicación, división\n"
             "- 4º: números hasta 10000, las 4 operaciones, problemas de varios pasos\n"
             f"El alumno está en {grade}º.\n\n"
+            "=== REGLA MÁS IMPORTANTE: EL CURRÍCULO NO ES MATERIAL PARA EL NIÑO ===\n"
+            "El texto curricular de abajo está escrito PARA EL MAESTRO, no para el niño.\n"
+            "Contiene términos metodológicos (p. ej. 'análisis', 'desarrollo de la\n"
+            "percepción auditiva', 'competencia comunicativa', 'comprensión lectora').\n"
+            "EL NIÑO NUNCA HA OÍDO ESTAS PALABRAS Y NO TIENE QUE SABERLAS.\n"
+            "- NUNCA preguntes por el NOMBRE de un concepto curricular o metodológico.\n"
+            "  PROHIBIDO: '¿Cómo se llama la actividad de separar palabras en sonidos?'\n"
+            "  PROHIBIDO: '¿Qué percepción hay que desarrollar para comprender el habla?'\n"
+            "- EN SU LUGAR pregunta lo que el niño REALMENTE SABE Y HACE:\n"
+            "  BIEN: '¿Cuántas sílabas tiene la palabra manzana?' (respuesta: tres)\n"
+            "  BIEN: '¿Con qué sonido empieza la palabra perro?' (respuesta: p)\n"
+            "  BIEN: '¿Cómo saludas a tu maestra por la mañana?' (respuesta: ¡Buenos días!)\n"
+            "- La pregunta debe medir la destreza PROPIA del niño: con palabras, números\n"
+            "  y ejemplos concretos, nunca con conceptos teóricos.\n"
+            f"- El lenguaje de la pregunta debe ser tan simple que un niño de {age} años\n"
+            "  lo entienda solo. Frase corta, palabras cotidianas.\n"
+            "- ANTES de dar una pregunta, pregúntate: '¿Un niño de "
+            f"{grade}º puede contestar esto con lo que HA HECHO EN CLASE?' Si la respuesta\n"
+            "  no es un sí claro, deséchala y escribe otra.\n\n"
             "REGLAS:\n"
             "- Problemas prácticos que el alumno resuelve calculando\n"
             "- Usa conceptos del texto curricular\n"
@@ -3324,6 +3383,27 @@ def _call_ai_for_quiz(
             "- Grade 3: numbers up to 1000, multiplication, division\n"
             "- Grade 4: numbers up to 10000, all four operations, multi-step problems\n"
             f"This child is grade {grade}.\n\n"
+            "=== LEGFONTOSABB SZABÁLY: A KERETTANTERV NEM TANANYAG ===\n"
+            "A lenti tanterv-szöveg a TANÁRNAK szól, nem a gyereknek. Módszertani\n"
+            "szakkifejezéseket tartalmaz (pl. 'analízis', 'hallásfejlesztés',\n"
+            "'kommunikációs szabályok', 'szövegértés fejlesztése', 'kompetencia').\n"
+            "EZEKET A SZAVAKAT A GYEREK SOHA NEM HALLOTTA ÉS NEM IS KELL TUDNIA.\n"
+            "- SOHA ne kérdezz rá tantervi/módszertani fogalom NEVÉRE.\n"
+            "  TILOS: 'Mi a neve annak a tevékenységnek, amikor szavakat hangokra bontunk?'\n"
+            "         (a gyerek nem tudja, hogy ezt 'analízisnek' hívják)\n"
+            "  TILOS: 'Milyen érzékelés fejlesztésére van szükség a beszédértéshez?'\n"
+            "  TILOS: 'Milyen szabályokat alkalmazunk a beszélgetés során?'\n"
+            "- HELYETTE azt kérdezd, amit a gyerek TÉNYLEGESEN TUD ÉS CSINÁL:\n"
+            "  JÓ: 'Hány szótagból áll ez a szó: alma?' (válasz: kettő)\n"
+            "  JÓ: 'Melyik hanggal kezdődik a kutya szó?' (válasz: k)\n"
+            "  JÓ: 'Hogyan köszönsz a tanító néninek reggel?' (válasz: Jó reggelt!)\n"
+            "- A kérdés a gyerek SAJÁT tudását és készségét mérje: konkrét szavakkal,\n"
+            "  számokkal, példákkal dolgozzon, ne elméleti fogalmakkal.\n"
+            "- A kérdés nyelve legyen olyan egyszerű, hogy egy "
+            f"{age} éves gyerek egyedül is megértse. Rövid mondat, hétköznapi szavak.\n"
+            "- MIELŐTT kiadsz egy kérdést, tedd fel magadnak: 'Ezt egy "
+            f"{grade}. osztályos gyerek meg tudja válaszolni abból, amit az ISKOLÁBAN "
+            "CSINÁLT?' Ha a válasz nem egyértelmű igen, dobd el és írj másikat.\n\n"
             "RULES:\n"
             "- Practical problems the child solves by calculating\n"
             "- Use concepts from the curriculum text\n"
@@ -3766,9 +3846,9 @@ def child_chat(child_id: int):
         )
         database.add_chat_message(chat_session["id"], "assistant", welcome)
 
-        # Visszatérő felhasználónál (placement_mode=False): az üdvözlés után
-        # az AI azonnal generáljon tanítási tartalmat, hogy ne álljon meg a chat.
-        if not placement_mode:
+        # Az üdvözlés után az AI azonnal generáljon tanítási tartalmat
+        # (placement módban is — a chatben nincs külön felmérő).
+        if True:
             try:
                 api_key = _openai_api_key()
                 if api_key:
@@ -3821,7 +3901,10 @@ def child_chat(child_id: int):
                 )
                 messages = database.get_chat_messages(chat_session["id"], limit=20)
 
-        if len(messages) <= 1 and not placement_mode:
+        # Meglévő session, de MÉG NEM történt valódi tanítás (csak az üdvözlő
+        # üzenet van benne) — a lecke ismételt megnyitásakor is induljon el a
+        # tanítás, ugyanúgy mint vadonatúj session esetén.
+        if len(messages) <= 1:
             try:
                 api_key = _openai_api_key()
                 if api_key:
@@ -3853,9 +3936,9 @@ def child_chat(child_id: int):
                         database.add_chat_message(
                             chat_session["id"], "assistant", teaching_response
                         )
+                        messages = database.get_chat_messages(chat_session["id"], limit=20)
             except Exception:
                 pass
-            messages = database.get_chat_messages(chat_session["id"], limit=20)
 
     vocabulary = []
     if is_foreign and language:

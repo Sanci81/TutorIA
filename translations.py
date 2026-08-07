@@ -393,11 +393,9 @@ TRANSLATIONS = {
     # --- chat üdvözlő üzenetek ---
     "chat_welcome_placement": {
         "hu": "Szia {name}! 🌟 Én vagyok a {subject} AI tanárod. "
-              "Először egy rövid játékos felmérést csinálunk, hogy tudjam, "
-              "honnan induljunk. Kész vagy az első kérdésre?",
+              "Kezdjük is el a tanulást!",
         "es": "¡Hola {name}! 🌟 Soy tu profe de {subject}. "
-              "Primero haremos una prueba corta y divertida para saber por dónde empezar. "
-              "¿Preparado para la primera pregunta?",
+              "¡Empecemos a aprender!",
     },
     "chat_welcome_continue": {
         "hu": "Szia {name}! 👋 Folytatjuk a {subject} tanulást — "
