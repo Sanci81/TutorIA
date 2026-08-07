@@ -227,10 +227,12 @@ SPANYOL_5_8_FILE = "spanyol_5-8.json"
 ANGOL_1_4_FILE = "angol_1-4.json"
 ANGOL_5_8_FILE = "angol_5-8.json"
 NEMET_1_4_FILE = "nemet_1-4.json"
+NEMET_5_8_FILE = "nemet_5-8.json"
 
 # Nyelvspecifikus fájlok — NEM önálló tantárgyak, kizárandók a tantárgylistából
 _LANGUAGE_SPECIFIC_FILES: frozenset[str] = frozenset(
-    {ANGOL_1_4_FILE, ANGOL_5_8_FILE, SPANYOL_1_4_FILE, SPANYOL_5_8_FILE, NEMET_1_4_FILE}
+    {ANGOL_1_4_FILE, ANGOL_5_8_FILE, SPANYOL_1_4_FILE, SPANYOL_5_8_FILE,
+     NEMET_1_4_FILE, NEMET_5_8_FILE}
 )
 
 # ── LOMLOE spanyol nemzeti tanterv (BOE-A-2022-3296) ──────────────────────
@@ -1840,6 +1842,11 @@ def get_curriculum_for_chat(
     if effective_language == "nemet" and is_hu_1_4_grade(grade_num):
         de_path = _hu_1_4_path_from_filename(NEMET_1_4_FILE)
         if de_path and de_path not in candidates:
+            _forced_paths.add(de_path)
+            candidates.insert(0, de_path)
+    elif effective_language == "nemet" and 5 <= grade_num <= 8:
+        de_path = root / "hu_kerettanterv_5_8_TELJES" / NEMET_5_8_FILE
+        if de_path.is_file() and de_path not in candidates:
             _forced_paths.add(de_path)
             candidates.insert(0, de_path)
 

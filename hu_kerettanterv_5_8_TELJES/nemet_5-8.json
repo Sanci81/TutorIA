@@ -1,0 +1,1419 @@
+{
+ "meta": {
+  "tantargy": "Német",
+  "tantargy_tipus": "élő idegen nyelv",
+  "evfolyam": "5-8",
+  "evfolyamok": [
+   5,
+   6,
+   7,
+   8
+  ],
+  "forras": "NAT 2020 kerettanterv (élő idegen nyelv) + KER/CEFR A1–B1 progresszió",
+  "megjegyzes": "A hivatalos kerettantervi témakör-kategóriák minden évfolyamon azonosak, ezért a leckéket konkrét, évfolyamonként eltérő címekkel bontottuk le; minden lecke tartalmazza, melyik hivatalos témakörhöz tartozik. Évfolyamonként 10 lecke, összesen 102 óra, ami megfelel a heti 3 órás óraszámnak. A magyarázat nyelve magyar, a célnyelv német."
+ },
+ "bevezeto": "A felső tagozatos német nyelvtanulás célja, hogy a tanuló a hétköznapi helyzetekben önállóan megszólaljon, és fokozatosan összetettebb mondatokat építsen. Az 5-6. évfolyamon a jelen és a múlt idő, a főnevek neme és az esetek alapozása történik; a 7-8. évfolyamon a mellékmondatok, a fokozás, a feltételes mód és a szenvedő szerkezet teszi árnyalttá a kifejezést. A nyelvtant mindig helyzetbe ágyazva tanítjuk, nem szabályként.",
+ "teljes_szoveg": "Német 5-8. évfolyam – leckék évfolyamonként\n\n5. évfolyam: Hallo! Ich stelle mich vor – Bemutatkozás és személyes adatok; Meine Familie und ich – A családom; Zahlen, Alter und Geburtstag – Számok, életkor, születésnap; In der Schule – Az iskolában; Mein Zuhause – Az otthonom; Essen und Trinken – Étel és ital; Tiere und Haustiere – Állatok és háziállatok; Farben, Kleidung und Aussehen – Színek, ruhák, külső; Mein Tagesablauf – A napirendem; Freizeit und Hobbys – Szabadidő és hobbik\n6. évfolyam: Wo warst du? – Hol voltál? (múlt idő); Was hast du gemacht? – Mit csináltál? (Perfekt); Ich kann, ich muss – Módbeli segédigék; Der Körper und beim Arzt – A test és az orvosnál; Einkaufen und Geld – Vásárlás és pénz; In der Stadt – A városban, útbaigazítás; Wetter und Jahreszeiten – Időjárás és évszakok; Feste und Feiertage – Ünnepek; Reisen und Verkehrsmittel – Utazás és közlekedés; Meine Woche und Termine – A hetem és az időpontjaim\n7. évfolyam: Als ich klein war – Amikor kicsi voltam (Präteritum); Was möchtest du werden? – Foglalkozások és tervek; Weil, dass, wenn – Miért? Mellékmondatok; Wo? Wohin? – Helyet és irányt jelölő elöljárók; Medien und Internet – Média és internet; Sport und Gesundheit – Sport és egészség; Umwelt und Natur – Környezet és természet; Freundschaft und Gefühle – Barátság és érzelmek; Deutschsprachige Länder – Németül beszélő országok; Größer, am größten – Összehasonlítás és fokozás\n8. évfolyam: Wenn ich Zeit hätte – Ha lenne időm (Konjunktiv II); Der Mann, der… – Vonatkozói mellékmondatok; Es wird gemacht – Szenvedő szerkezet; Schule und Zukunftspläne – Iskola és jövőtervek; Wohnen in der Stadt und auf dem Land – Város és vidék; Kultur: Musik, Film und Bücher – Kultúra; Arbeit und Praktikum – Munka és gyakorlat; Probleme und Ratschläge – Gondok és tanácsok; Feste und Geschichte im deutschsprachigen Raum – Ünnepek és történelem; Rund um die Welt – Utazási tervek és tapasztalatok",
+ "evfolyam_blokkok": {
+  "5": {
+   "evfolyamok": [
+    5
+   ],
+   "cefr_szint": "A1 – kezdő szint alapozása",
+   "leiras": "Az 5. évfolyamon a német nyelv alapjait rakjuk le: bemutatkozás, közvetlen környezet, jelen idő, a főnevek neme és a tárgyeset. A tanítás magyarul folyik, a célnyelv német.",
+   "temakorok": [
+    {
+     "nev": "Hallo! Ich stelle mich vor – Bemutatkozás és személyes adatok",
+     "javasolt_oraszam": 11,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló bemutatkozik, megadja és megkérdezi a személyes adatait.",
+     "szokincs": [
+      "heißen",
+      "wohnen",
+      "kommen aus",
+      "das Land",
+      "die Stadt",
+      "die Sprache",
+      "buchstabieren",
+      "die Adresse",
+      "willkommen",
+      "sich vorstellen"
+     ],
+     "nyelvtan": [
+      "a sein és heißen ige teljes ragozása",
+      "kérdőszavak: wer, wie, wo, woher, was",
+      "egyenes szórend és a KATI-kérdés (Wie heißt du?)"
+     ],
+     "kommunikacios_szandekok": [
+      "bemutatkozás",
+      "személyes adat megadása és kérdezése",
+      "betűzés kérése (Kannst du das buchstabieren?)"
+     ],
+     "javasolt_tevekenysegek": [
+      "adatlap kitöltése párban",
+      "interjú osztálytárssal",
+      "névbetűző játék a német ábécével"
+     ],
+     "teljes_szoveg": "Témakör: Hallo! Ich stelle mich vor – Bemutatkozás és személyes adatok\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló bemutatkozik, megadja és megkérdezi a személyes adatait.\nSzókincs (példák): heißen, wohnen, kommen aus, das Land, die Stadt, die Sprache, buchstabieren, die Adresse, willkommen, sich vorstellen\nNyelvtani fókusz: a sein és heißen ige teljes ragozása; kérdőszavak: wer, wie, wo, woher, was; egyenes szórend és a KATI-kérdés (Wie heißt du?)\nKommunikációs szándékok: bemutatkozás; személyes adat megadása és kérdezése; betűzés kérése (Kannst du das buchstabieren?)\nJavasolt tevékenységek: adatlap kitöltése párban; interjú osztálytárssal; névbetűző játék a német ábécével\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Meine Familie und ich – A családom",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló bemutatja a családtagjait és beszél a rokoni kapcsolatokról.",
+     "szokincs": [
+      "die Eltern",
+      "der Bruder",
+      "die Schwester",
+      "die Großmutter",
+      "der Großvater",
+      "die Tante",
+      "der Onkel",
+      "verheiratet",
+      "die Geschwister",
+      "zusammen"
+     ],
+     "nyelvtan": [
+      "birtokos névelő: mein, dein, sein, ihr",
+      "a haben ige ragozása",
+      "a főnevek neme és a der/die/das használata"
+     ],
+     "kommunikacios_szandekok": [
+      "családtag bemutatása",
+      "birtoklás kifejezése",
+      "kérdezés más családjáról"
+     ],
+     "javasolt_tevekenysegek": [
+      "családfa készítése és bemutatása",
+      "fényképleírás párban",
+      "Ki kicsoda? kitalálós játék"
+     ],
+     "teljes_szoveg": "Témakör: Meine Familie und ich – A családom\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló bemutatja a családtagjait és beszél a rokoni kapcsolatokról.\nSzókincs (példák): die Eltern, der Bruder, die Schwester, die Großmutter, der Großvater, die Tante, der Onkel, verheiratet, die Geschwister, zusammen\nNyelvtani fókusz: birtokos névelő: mein, dein, sein, ihr; a haben ige ragozása; a főnevek neme és a der/die/das használata\nKommunikációs szándékok: családtag bemutatása; birtoklás kifejezése; kérdezés más családjáról\nJavasolt tevékenységek: családfa készítése és bemutatása; fényképleírás párban; Ki kicsoda? kitalálós játék\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Zahlen, Alter und Geburtstag – Számok, életkor, születésnap",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló elszámol százig, megmondja a korát és a születésnapját.",
+     "szokincs": [
+      "die Zahl",
+      "zählen",
+      "das Alter",
+      "der Geburtstag",
+      "der Monat",
+      "das Datum",
+      "wie viele",
+      "der Januar",
+      "der Juli",
+      "erste"
+     ],
+     "nyelvtan": [
+      "tőszámnevek 1–100",
+      "sorszámnevek és a dátum (am dritten Mai)",
+      "a hónapok nevei nagybetűvel"
+     ],
+     "kommunikacios_szandekok": [
+      "életkor megadása",
+      "születésnap megnevezése",
+      "mennyiség kérdezése (Wie viele?)"
+     ],
+     "javasolt_tevekenysegek": [
+      "születésnap-naptár készítése az osztálynak",
+      "számos bingó",
+      "dátumdiktálás párban"
+     ],
+     "teljes_szoveg": "Témakör: Zahlen, Alter und Geburtstag – Számok, életkor, születésnap\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló elszámol százig, megmondja a korát és a születésnapját.\nSzókincs (példák): die Zahl, zählen, das Alter, der Geburtstag, der Monat, das Datum, wie viele, der Januar, der Juli, erste\nNyelvtani fókusz: tőszámnevek 1–100; sorszámnevek és a dátum (am dritten Mai); a hónapok nevei nagybetűvel\nKommunikációs szándékok: életkor megadása; születésnap megnevezése; mennyiség kérdezése (Wie viele?)\nJavasolt tevékenységek: születésnap-naptár készítése az osztálynak; számos bingó; dátumdiktálás párban\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "In der Schule – Az iskolában",
+     "javasolt_oraszam": 11,
+     "kerettantervi_temakor": "Themen und Situationen im Bereich der unmittelbaren Umgebung",
+     "cefr_cel": "A tanuló megnevezi az iskolai tárgyakat, tantárgyakat és beszél az órarendjéről.",
+     "szokincs": [
+      "das Klassenzimmer",
+      "die Tafel",
+      "das Heft",
+      "der Stundenplan",
+      "das Fach",
+      "die Pause",
+      "der Lehrer",
+      "die Note",
+      "schwierig",
+      "Lieblings-"
+     ],
+     "nyelvtan": [
+      "határozatlan névelő: ein/eine és tagadása: kein/keine",
+      "tárgyeset (Akkusativ): den, die, das",
+      "szabályos igék jelen idejű ragozása"
+     ],
+     "kommunikacios_szandekok": [
+      "tanszer megnevezése",
+      "tantárgyról való véleményalkotás",
+      "kérés és engedélykérés az órán"
+     ],
+     "javasolt_tevekenysegek": [
+      "saját órarend elkészítése németül",
+      "tolltartó-bemutató",
+      "tantárgy-tetszés kördiagram az osztályról"
+     ],
+     "teljes_szoveg": "Témakör: In der Schule – Az iskolában\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló megnevezi az iskolai tárgyakat, tantárgyakat és beszél az órarendjéről.\nSzókincs (példák): das Klassenzimmer, die Tafel, das Heft, der Stundenplan, das Fach, die Pause, der Lehrer, die Note, schwierig, Lieblings-\nNyelvtani fókusz: határozatlan névelő: ein/eine és tagadása: kein/keine; tárgyeset (Akkusativ): den, die, das; szabályos igék jelen idejű ragozása\nKommunikációs szándékok: tanszer megnevezése; tantárgyról való véleményalkotás; kérés és engedélykérés az órán\nJavasolt tevékenységek: saját órarend elkészítése németül; tolltartó-bemutató; tantárgy-tetszés kördiagram az osztályról\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Mein Zuhause – Az otthonom",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im Bereich der unmittelbaren Umgebung",
+     "cefr_cel": "A tanuló leírja a lakását és megmondja, hol vannak a tárgyak.",
+     "szokincs": [
+      "die Wohnung",
+      "das Zimmer",
+      "die Küche",
+      "das Badezimmer",
+      "der Schrank",
+      "das Sofa",
+      "der Teppich",
+      "gemütlich",
+      "oben",
+      "neben"
+     ],
+     "nyelvtan": [
+      "helyhatározó elöljárók részes esettel: in, auf, unter, neben",
+      "es gibt + tárgyeset",
+      "a wo? kérdés"
+     ],
+     "kommunikacios_szandekok": [
+      "helyiség megnevezése",
+      "tárgy helyének megadása",
+      "lakás bemutatása"
+     ],
+     "javasolt_tevekenysegek": [
+      "alaprajz rajzolása és felcímkézése",
+      "Wo ist die Katze? kereső játék",
+      "álomszoba bemutatása"
+     ],
+     "teljes_szoveg": "Témakör: Mein Zuhause – Az otthonom\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló leírja a lakását és megmondja, hol vannak a tárgyak.\nSzókincs (példák): die Wohnung, das Zimmer, die Küche, das Badezimmer, der Schrank, das Sofa, der Teppich, gemütlich, oben, neben\nNyelvtani fókusz: helyhatározó elöljárók részes esettel: in, auf, unter, neben; es gibt + tárgyeset; a wo? kérdés\nKommunikációs szándékok: helyiség megnevezése; tárgy helyének megadása; lakás bemutatása\nJavasolt tevékenységek: alaprajz rajzolása és felcímkézése; Wo ist die Katze? kereső játék; álomszoba bemutatása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Essen und Trinken – Étel és ital",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló megnevezi az ételeket, kifejezi az ízlését és rendel.",
+     "szokincs": [
+      "das Frühstück",
+      "das Brot",
+      "der Käse",
+      "das Obst",
+      "das Gemüse",
+      "der Saft",
+      "schmecken",
+      "hungrig",
+      "bestellen",
+      "die Rechnung"
+     ],
+     "nyelvtan": [
+      "mögen és möchten használata",
+      "tagadás: nicht és kein megkülönböztetése",
+      "többes szám képzése (-e, -er, -n, -s)"
+     ],
+     "kommunikacios_szandekok": [
+      "ízlés kifejezése",
+      "étel rendelése",
+      "udvarias kérés"
+     ],
+     "javasolt_tevekenysegek": [
+      "étterem-szerepjáték",
+      "reggeli-tányér összeállítása",
+      "kedvenc ételek szavazása"
+     ],
+     "teljes_szoveg": "Témakör: Essen und Trinken – Étel és ital\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló megnevezi az ételeket, kifejezi az ízlését és rendel.\nSzókincs (példák): das Frühstück, das Brot, der Käse, das Obst, das Gemüse, der Saft, schmecken, hungrig, bestellen, die Rechnung\nNyelvtani fókusz: mögen és möchten használata; tagadás: nicht és kein megkülönböztetése; többes szám képzése (-e, -er, -n, -s)\nKommunikációs szándékok: ízlés kifejezése; étel rendelése; udvarias kérés\nJavasolt tevékenységek: étterem-szerepjáték; reggeli-tányér összeállítása; kedvenc ételek szavazása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Tiere und Haustiere – Állatok és háziállatok",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im Bereich der Umwelt",
+     "cefr_cel": "A tanuló leírja az állatokat és beszél a saját háziállatáról.",
+     "szokincs": [
+      "das Haustier",
+      "der Hund",
+      "die Katze",
+      "das Pferd",
+      "der Vogel",
+      "der Bauernhof",
+      "füttern",
+      "gefährlich",
+      "das Fell",
+      "wild"
+     ],
+     "nyelvtan": [
+      "személyes névmások tárgyesetben: mich, dich, ihn, sie, es",
+      "melléknevek állítmányi helyzetben",
+      "a können ige bevezetése"
+     ],
+     "kommunikacios_szandekok": [
+      "állat leírása",
+      "tetszés és nemtetszés kifejezése",
+      "állat képességéről beszélés"
+     ],
+     "javasolt_tevekenysegek": [
+      "állatposzter készítése",
+      "Ki vagyok én? kitalálós játék",
+      "állatkerti körséta leírása"
+     ],
+     "teljes_szoveg": "Témakör: Tiere und Haustiere – Állatok és háziállatok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der Umwelt\nKommunikációs / fejlesztési cél: A tanuló leírja az állatokat és beszél a saját háziállatáról.\nSzókincs (példák): das Haustier, der Hund, die Katze, das Pferd, der Vogel, der Bauernhof, füttern, gefährlich, das Fell, wild\nNyelvtani fókusz: személyes névmások tárgyesetben: mich, dich, ihn, sie, es; melléknevek állítmányi helyzetben; a können ige bevezetése\nKommunikációs szándékok: állat leírása; tetszés és nemtetszés kifejezése; állat képességéről beszélés\nJavasolt tevékenységek: állatposzter készítése; Ki vagyok én? kitalálós játék; állatkerti körséta leírása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Farben, Kleidung und Aussehen – Színek, ruhák, külső",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló leírja a ruháját és egy másik ember külsejét.",
+     "szokincs": [
+      "die Kleidung",
+      "die Hose",
+      "das Hemd",
+      "der Mantel",
+      "die Schuhe",
+      "tragen",
+      "die Farbe",
+      "blond",
+      "groß",
+      "aussehen"
+     ],
+     "nyelvtan": [
+      "melléknév főnév előtt: alapszabály",
+      "tragen tőhangváltós ige (du trägst)",
+      "színek mint melléknevek"
+     ],
+     "kommunikacios_szandekok": [
+      "öltözék leírása",
+      "személy leírása külső alapján",
+      "vásárlási kérdés (Was kostet...?)"
+     ],
+     "javasolt_tevekenysegek": [
+      "divatbemutató szóban",
+      "személyleírás alapján rajzolás",
+      "öltöztetős párosjáték"
+     ],
+     "teljes_szoveg": "Témakör: Farben, Kleidung und Aussehen – Színek, ruhák, külső\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló leírja a ruháját és egy másik ember külsejét.\nSzókincs (példák): die Kleidung, die Hose, das Hemd, der Mantel, die Schuhe, tragen, die Farbe, blond, groß, aussehen\nNyelvtani fókusz: melléknév főnév előtt: alapszabály; tragen tőhangváltós ige (du trägst); színek mint melléknevek\nKommunikációs szándékok: öltözék leírása; személy leírása külső alapján; vásárlási kérdés (Was kostet...?)\nJavasolt tevékenységek: divatbemutató szóban; személyleírás alapján rajzolás; öltöztetős párosjáték\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Mein Tagesablauf – A napirendem",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló elmeséli a napját és megmondja az időt.",
+     "szokincs": [
+      "aufstehen",
+      "frühstücken",
+      "anfangen",
+      "die Uhrzeit",
+      "halb",
+      "Viertel",
+      "der Vormittag",
+      "müde",
+      "immer",
+      "selten"
+     ],
+     "nyelvtan": [
+      "elváló igekötős igék (ich stehe auf)",
+      "időpont megadása: um, gegen, halb acht",
+      "gyakoriságot kifejező határozók"
+     ],
+     "kommunikacios_szandekok": [
+      "napi tevékenység elmesélése",
+      "időpont megadása és kérdezése",
+      "szokások kifejezése"
+     ],
+     "javasolt_tevekenysegek": [
+      "napirend-idővonal készítése",
+      "óra-diktálás párban",
+      "napirendi mim"
+     ],
+     "teljes_szoveg": "Témakör: Mein Tagesablauf – A napirendem\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló elmeséli a napját és megmondja az időt.\nSzókincs (példák): aufstehen, frühstücken, anfangen, die Uhrzeit, halb, Viertel, der Vormittag, müde, immer, selten\nNyelvtani fókusz: elváló igekötős igék (ich stehe auf); időpont megadása: um, gegen, halb acht; gyakoriságot kifejező határozók\nKommunikációs szándékok: napi tevékenység elmesélése; időpont megadása és kérdezése; szokások kifejezése\nJavasolt tevékenységek: napirend-idővonal készítése; óra-diktálás párban; napirendi mim\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Freizeit und Hobbys – Szabadidő és hobbik",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Freizeit, Unterhaltung",
+     "cefr_cel": "A tanuló beszél a szabadidejéről és megbeszél egy programot.",
+     "szokincs": [
+      "die Freizeit",
+      "das Hobby",
+      "spielen",
+      "schwimmen",
+      "Fahrrad fahren",
+      "sammeln",
+      "gern",
+      "zusammen",
+      "das Treffen",
+      "Lust haben"
+     ],
+     "nyelvtan": [
+      "gern / lieber a tetszés fokozására",
+      "a spielen és fahren igék használata",
+      "felszólító mód egyes szám 2. személyben (Komm!)"
+     ],
+     "kommunikacios_szandekok": [
+      "hobbi bemutatása",
+      "közös program javaslása",
+      "meghívás elfogadása és visszautasítása"
+     ],
+     "javasolt_tevekenysegek": [
+      "hobbi-körkérdés az osztályban",
+      "hétvégi program tervezése párban",
+      "pantomim a hobbikról"
+     ],
+     "teljes_szoveg": "Témakör: Freizeit und Hobbys – Szabadidő és hobbik\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Freizeit, Unterhaltung\nKommunikációs / fejlesztési cél: A tanuló beszél a szabadidejéről és megbeszél egy programot.\nSzókincs (példák): die Freizeit, das Hobby, spielen, schwimmen, Fahrrad fahren, sammeln, gern, zusammen, das Treffen, Lust haben\nNyelvtani fókusz: gern / lieber a tetszés fokozására; a spielen és fahren igék használata; felszólító mód egyes szám 2. személyben (Komm!)\nKommunikációs szándékok: hobbi bemutatása; közös program javaslása; meghívás elfogadása és visszautasítása\nJavasolt tevékenységek: hobbi-körkérdés az osztályban; hétvégi program tervezése párban; pantomim a hobbikról\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    }
+   ],
+   "teljes_szoveg": "5. évfolyam – A1 – kezdő szint alapozása\nAz 5. évfolyamon a német nyelv alapjait rakjuk le: bemutatkozás, közvetlen környezet, jelen idő, a főnevek neme és a tárgyeset. A tanítás magyarul folyik, a célnyelv német.\n\nTémakör: Hallo! Ich stelle mich vor – Bemutatkozás és személyes adatok\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló bemutatkozik, megadja és megkérdezi a személyes adatait.\nSzókincs (példák): heißen, wohnen, kommen aus, das Land, die Stadt, die Sprache, buchstabieren, die Adresse, willkommen, sich vorstellen\nNyelvtani fókusz: a sein és heißen ige teljes ragozása; kérdőszavak: wer, wie, wo, woher, was; egyenes szórend és a KATI-kérdés (Wie heißt du?)\nKommunikációs szándékok: bemutatkozás; személyes adat megadása és kérdezése; betűzés kérése (Kannst du das buchstabieren?)\nJavasolt tevékenységek: adatlap kitöltése párban; interjú osztálytárssal; névbetűző játék a német ábécével\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Meine Familie und ich – A családom\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló bemutatja a családtagjait és beszél a rokoni kapcsolatokról.\nSzókincs (példák): die Eltern, der Bruder, die Schwester, die Großmutter, der Großvater, die Tante, der Onkel, verheiratet, die Geschwister, zusammen\nNyelvtani fókusz: birtokos névelő: mein, dein, sein, ihr; a haben ige ragozása; a főnevek neme és a der/die/das használata\nKommunikációs szándékok: családtag bemutatása; birtoklás kifejezése; kérdezés más családjáról\nJavasolt tevékenységek: családfa készítése és bemutatása; fényképleírás párban; Ki kicsoda? kitalálós játék\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Zahlen, Alter und Geburtstag – Számok, életkor, születésnap\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló elszámol százig, megmondja a korát és a születésnapját.\nSzókincs (példák): die Zahl, zählen, das Alter, der Geburtstag, der Monat, das Datum, wie viele, der Januar, der Juli, erste\nNyelvtani fókusz: tőszámnevek 1–100; sorszámnevek és a dátum (am dritten Mai); a hónapok nevei nagybetűvel\nKommunikációs szándékok: életkor megadása; születésnap megnevezése; mennyiség kérdezése (Wie viele?)\nJavasolt tevékenységek: születésnap-naptár készítése az osztálynak; számos bingó; dátumdiktálás párban\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: In der Schule – Az iskolában\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló megnevezi az iskolai tárgyakat, tantárgyakat és beszél az órarendjéről.\nSzókincs (példák): das Klassenzimmer, die Tafel, das Heft, der Stundenplan, das Fach, die Pause, der Lehrer, die Note, schwierig, Lieblings-\nNyelvtani fókusz: határozatlan névelő: ein/eine és tagadása: kein/keine; tárgyeset (Akkusativ): den, die, das; szabályos igék jelen idejű ragozása\nKommunikációs szándékok: tanszer megnevezése; tantárgyról való véleményalkotás; kérés és engedélykérés az órán\nJavasolt tevékenységek: saját órarend elkészítése németül; tolltartó-bemutató; tantárgy-tetszés kördiagram az osztályról\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Mein Zuhause – Az otthonom\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló leírja a lakását és megmondja, hol vannak a tárgyak.\nSzókincs (példák): die Wohnung, das Zimmer, die Küche, das Badezimmer, der Schrank, das Sofa, der Teppich, gemütlich, oben, neben\nNyelvtani fókusz: helyhatározó elöljárók részes esettel: in, auf, unter, neben; es gibt + tárgyeset; a wo? kérdés\nKommunikációs szándékok: helyiség megnevezése; tárgy helyének megadása; lakás bemutatása\nJavasolt tevékenységek: alaprajz rajzolása és felcímkézése; Wo ist die Katze? kereső játék; álomszoba bemutatása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Essen und Trinken – Étel és ital\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló megnevezi az ételeket, kifejezi az ízlését és rendel.\nSzókincs (példák): das Frühstück, das Brot, der Käse, das Obst, das Gemüse, der Saft, schmecken, hungrig, bestellen, die Rechnung\nNyelvtani fókusz: mögen és möchten használata; tagadás: nicht és kein megkülönböztetése; többes szám képzése (-e, -er, -n, -s)\nKommunikációs szándékok: ízlés kifejezése; étel rendelése; udvarias kérés\nJavasolt tevékenységek: étterem-szerepjáték; reggeli-tányér összeállítása; kedvenc ételek szavazása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Tiere und Haustiere – Állatok és háziállatok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der Umwelt\nKommunikációs / fejlesztési cél: A tanuló leírja az állatokat és beszél a saját háziállatáról.\nSzókincs (példák): das Haustier, der Hund, die Katze, das Pferd, der Vogel, der Bauernhof, füttern, gefährlich, das Fell, wild\nNyelvtani fókusz: személyes névmások tárgyesetben: mich, dich, ihn, sie, es; melléknevek állítmányi helyzetben; a können ige bevezetése\nKommunikációs szándékok: állat leírása; tetszés és nemtetszés kifejezése; állat képességéről beszélés\nJavasolt tevékenységek: állatposzter készítése; Ki vagyok én? kitalálós játék; állatkerti körséta leírása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Farben, Kleidung und Aussehen – Színek, ruhák, külső\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló leírja a ruháját és egy másik ember külsejét.\nSzókincs (példák): die Kleidung, die Hose, das Hemd, der Mantel, die Schuhe, tragen, die Farbe, blond, groß, aussehen\nNyelvtani fókusz: melléknév főnév előtt: alapszabály; tragen tőhangváltós ige (du trägst); színek mint melléknevek\nKommunikációs szándékok: öltözék leírása; személy leírása külső alapján; vásárlási kérdés (Was kostet...?)\nJavasolt tevékenységek: divatbemutató szóban; személyleírás alapján rajzolás; öltöztetős párosjáték\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Mein Tagesablauf – A napirendem\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló elmeséli a napját és megmondja az időt.\nSzókincs (példák): aufstehen, frühstücken, anfangen, die Uhrzeit, halb, Viertel, der Vormittag, müde, immer, selten\nNyelvtani fókusz: elváló igekötős igék (ich stehe auf); időpont megadása: um, gegen, halb acht; gyakoriságot kifejező határozók\nKommunikációs szándékok: napi tevékenység elmesélése; időpont megadása és kérdezése; szokások kifejezése\nJavasolt tevékenységek: napirend-idővonal készítése; óra-diktálás párban; napirendi mim\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Freizeit und Hobbys – Szabadidő és hobbik\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Freizeit, Unterhaltung\nKommunikációs / fejlesztési cél: A tanuló beszél a szabadidejéről és megbeszél egy programot.\nSzókincs (példák): die Freizeit, das Hobby, spielen, schwimmen, Fahrrad fahren, sammeln, gern, zusammen, das Treffen, Lust haben\nNyelvtani fókusz: gern / lieber a tetszés fokozására; a spielen és fahren igék használata; felszólító mód egyes szám 2. személyben (Komm!)\nKommunikációs szándékok: hobbi bemutatása; közös program javaslása; meghívás elfogadása és visszautasítása\nJavasolt tevékenységek: hobbi-körkérdés az osztályban; hétvégi program tervezése párban; pantomim a hobbikról\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+  },
+  "6": {
+   "evfolyamok": [
+    6
+   ],
+   "cefr_szint": "A1 – biztos alapok, a múlt idő bevezetése",
+   "leiras": "A 6. évfolyamon megjelenik a múlt idő (Perfekt és a war/hatte alakok), a módbeli segédigék és a részes eset, a témák pedig kilépnek a közvetlen környezetből a város és az utazás felé.",
+   "temakorok": [
+    {
+     "nev": "Wo warst du? – Hol voltál? (múlt idő)",
+     "javasolt_oraszam": 11,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló elmondja, hol volt és mije volt.",
+     "szokincs": [
+      "gestern",
+      "letzte Woche",
+      "damals",
+      "der Urlaub",
+      "zu Hause",
+      "krank",
+      "langweilig",
+      "spannend",
+      "plötzlich",
+      "danach"
+     ],
+     "nyelvtan": [
+      "a sein és haben elbeszélő múltja: war, hatte",
+      "időhatározók a mondat elején (fordított szórend)",
+      "a wann? kérdés"
+     ],
+     "kommunikacios_szandekok": [
+      "múltbeli helyszín megnevezése",
+      "élmény elmesélése",
+      "kérdezés valakinek a múltjáról"
+     ],
+     "javasolt_tevekenysegek": [
+      "hétvégi élménybeszámoló",
+      "képsor sorba rendezése",
+      "interjú a szünidőről"
+     ],
+     "teljes_szoveg": "Témakör: Wo warst du? – Hol voltál? (múlt idő)\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló elmondja, hol volt és mije volt.\nSzókincs (példák): gestern, letzte Woche, damals, der Urlaub, zu Hause, krank, langweilig, spannend, plötzlich, danach\nNyelvtani fókusz: a sein és haben elbeszélő múltja: war, hatte; időhatározók a mondat elején (fordított szórend); a wann? kérdés\nKommunikációs szándékok: múltbeli helyszín megnevezése; élmény elmesélése; kérdezés valakinek a múltjáról\nJavasolt tevékenységek: hétvégi élménybeszámoló; képsor sorba rendezése; interjú a szünidőről\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Was hast du gemacht? – Mit csináltál? (Perfekt)",
+     "javasolt_oraszam": 11,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló beszámol befejezett cselekvésekről.",
+     "szokincs": [
+      "machen",
+      "besuchen",
+      "fahren",
+      "bleiben",
+      "passieren",
+      "erzählen",
+      "zuerst",
+      "dann",
+      "endlich",
+      "letztes Jahr"
+     ],
+     "nyelvtan": [
+      "Perfekt haben segédigével (ich habe gespielt)",
+      "Perfekt sein segédigével (ich bin gefahren)",
+      "a mondatkeret: a Partizip a mondat végén"
+     ],
+     "kommunikacios_szandekok": [
+      "befejezett cselekvés elmesélése",
+      "történet időrendben",
+      "rákérdezés részletekre"
+     ],
+     "javasolt_tevekenysegek": [
+      "képregény szövegezése",
+      "napló-bejegyzés írása",
+      "történetlánc az osztályban"
+     ],
+     "teljes_szoveg": "Témakör: Was hast du gemacht? – Mit csináltál? (Perfekt)\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló beszámol befejezett cselekvésekről.\nSzókincs (példák): machen, besuchen, fahren, bleiben, passieren, erzählen, zuerst, dann, endlich, letztes Jahr\nNyelvtani fókusz: Perfekt haben segédigével (ich habe gespielt); Perfekt sein segédigével (ich bin gefahren); a mondatkeret: a Partizip a mondat végén\nKommunikációs szándékok: befejezett cselekvés elmesélése; történet időrendben; rákérdezés részletekre\nJavasolt tevékenységek: képregény szövegezése; napló-bejegyzés írása; történetlánc az osztályban\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Ich kann, ich muss – Módbeli segédigék",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im Bereich der unmittelbaren Umgebung",
+     "cefr_cel": "A tanuló kifejezi, mit tud, mit kell és mit szabad tennie.",
+     "szokincs": [
+      "können",
+      "müssen",
+      "dürfen",
+      "wollen",
+      "sollen",
+      "die Regel",
+      "erlaubt",
+      "verboten",
+      "helfen",
+      "die Aufgabe"
+     ],
+     "nyelvtan": [
+      "a módbeli segédigék ragozása",
+      "mondatkeret: a főnévi igenév a mondat végén",
+      "tiltás kifejezése: nicht dürfen"
+     ],
+     "kommunikacios_szandekok": [
+      "képesség kifejezése",
+      "kötelezettség és tiltás kifejezése",
+      "engedélykérés"
+     ],
+     "javasolt_tevekenysegek": [
+      "osztályszabályzat készítése németül",
+      "Mit tudsz jól? körkérdés",
+      "szabály-plakát rajzolása"
+     ],
+     "teljes_szoveg": "Témakör: Ich kann, ich muss – Módbeli segédigék\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló kifejezi, mit tud, mit kell és mit szabad tennie.\nSzókincs (példák): können, müssen, dürfen, wollen, sollen, die Regel, erlaubt, verboten, helfen, die Aufgabe\nNyelvtani fókusz: a módbeli segédigék ragozása; mondatkeret: a főnévi igenév a mondat végén; tiltás kifejezése: nicht dürfen\nKommunikációs szándékok: képesség kifejezése; kötelezettség és tiltás kifejezése; engedélykérés\nJavasolt tevékenységek: osztályszabályzat készítése németül; Mit tudsz jól? körkérdés; szabály-plakát rajzolása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Der Körper und beim Arzt – A test és az orvosnál",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló megnevezi a testrészeket és elmondja, mi fáj neki.",
+     "szokincs": [
+      "der Kopf",
+      "der Bauch",
+      "der Hals",
+      "das Bein",
+      "wehtun",
+      "die Schmerzen",
+      "der Arzt",
+      "die Medizin",
+      "sich fühlen",
+      "gesund"
+     ],
+     "nyelvtan": [
+      "részes eset (Dativ) a fájdalomnál: mir tut der Kopf weh",
+      "visszaható igék bevezetése: sich fühlen",
+      "birtokos névelő részes esetben"
+     ],
+     "kommunikacios_szandekok": [
+      "panasz elmondása",
+      "tanács kérése és adása",
+      "állapot kifejezése"
+     ],
+     "javasolt_tevekenysegek": [
+      "orvos-beteg szerepjáték",
+      "testrész-diktálás rajzolással",
+      "egészségtanácsok plakátja"
+     ],
+     "teljes_szoveg": "Témakör: Der Körper und beim Arzt – A test és az orvosnál\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló megnevezi a testrészeket és elmondja, mi fáj neki.\nSzókincs (példák): der Kopf, der Bauch, der Hals, das Bein, wehtun, die Schmerzen, der Arzt, die Medizin, sich fühlen, gesund\nNyelvtani fókusz: részes eset (Dativ) a fájdalomnál: mir tut der Kopf weh; visszaható igék bevezetése: sich fühlen; birtokos névelő részes esetben\nKommunikációs szándékok: panasz elmondása; tanács kérése és adása; állapot kifejezése\nJavasolt tevékenységek: orvos-beteg szerepjáték; testrész-diktálás rajzolással; egészségtanácsok plakátja\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Einkaufen und Geld – Vásárlás és pénz",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Öffentliches Leben, Dienstleistungen",
+     "cefr_cel": "A tanuló vásárol, árat kérdez és összehasonlít.",
+     "szokincs": [
+      "der Supermarkt",
+      "die Kasse",
+      "der Preis",
+      "kosten",
+      "teuer",
+      "billig",
+      "das Kilo",
+      "die Packung",
+      "bezahlen",
+      "der Kunde"
+     ],
+     "nyelvtan": [
+      "részes eset elöljárókkal: mit, bei, zu",
+      "mennyiségek és mértékegységek",
+      "a kérdés: Wie viel kostet...?"
+     ],
+     "kommunikacios_szandekok": [
+      "ár kérdezése",
+      "mennyiség megadása",
+      "udvarias vásárlói párbeszéd"
+     ],
+     "javasolt_tevekenysegek": [
+      "bolti szerepjáték",
+      "bevásárlólista összeállítása",
+      "árösszehasonlító feladat"
+     ],
+     "teljes_szoveg": "Témakör: Einkaufen und Geld – Vásárlás és pénz\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Öffentliches Leben, Dienstleistungen\nKommunikációs / fejlesztési cél: A tanuló vásárol, árat kérdez és összehasonlít.\nSzókincs (példák): der Supermarkt, die Kasse, der Preis, kosten, teuer, billig, das Kilo, die Packung, bezahlen, der Kunde\nNyelvtani fókusz: részes eset elöljárókkal: mit, bei, zu; mennyiségek és mértékegységek; a kérdés: Wie viel kostet...?\nKommunikációs szándékok: ár kérdezése; mennyiség megadása; udvarias vásárlói párbeszéd\nJavasolt tevékenységek: bolti szerepjáték; bevásárlólista összeállítása; árösszehasonlító feladat\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "In der Stadt – A városban, útbaigazítás",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Öffentliches Leben, Dienstleistungen",
+     "cefr_cel": "A tanuló útbaigazítást kér és ad a városban.",
+     "szokincs": [
+      "die Straße",
+      "der Platz",
+      "die Kreuzung",
+      "geradeaus",
+      "links",
+      "rechts",
+      "die Ampel",
+      "gegenüber",
+      "der Bahnhof",
+      "die Post"
+     ],
+     "nyelvtan": [
+      "irányt jelölő elöljárók: zu, nach, in",
+      "felszólító mód udvarias alakja (Gehen Sie...)",
+      "a wohin? kérdés"
+     ],
+     "kommunikacios_szandekok": [
+      "útbaigazítás kérése",
+      "útvonal leírása",
+      "hely megnevezése a városban"
+     ],
+     "javasolt_tevekenysegek": [
+      "térképes útvonalkeresés párban",
+      "saját városrész bemutatása",
+      "útbaigazító párbeszéd felvétele"
+     ],
+     "teljes_szoveg": "Témakör: In der Stadt – A városban, útbaigazítás\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Öffentliches Leben, Dienstleistungen\nKommunikációs / fejlesztési cél: A tanuló útbaigazítást kér és ad a városban.\nSzókincs (példák): die Straße, der Platz, die Kreuzung, geradeaus, links, rechts, die Ampel, gegenüber, der Bahnhof, die Post\nNyelvtani fókusz: irányt jelölő elöljárók: zu, nach, in; felszólító mód udvarias alakja (Gehen Sie...); a wohin? kérdés\nKommunikációs szándékok: útbaigazítás kérése; útvonal leírása; hely megnevezése a városban\nJavasolt tevékenységek: térképes útvonalkeresés párban; saját városrész bemutatása; útbaigazító párbeszéd felvétele\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Wetter und Jahreszeiten – Időjárás és évszakok",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im Bereich der Umwelt",
+     "cefr_cel": "A tanuló leírja az időjárást és összehasonlítja az évszakokat.",
+     "szokincs": [
+      "das Wetter",
+      "die Sonne",
+      "der Regen",
+      "der Schnee",
+      "der Wind",
+      "die Jahreszeit",
+      "der Frühling",
+      "der Herbst",
+      "der Grad",
+      "sich ändern"
+     ],
+     "nyelvtan": [
+      "személytelen szerkezetek: es regnet, es ist kalt",
+      "melléknevek középfoka: wärmer als",
+      "az als használata összehasonlításban"
+     ],
+     "kommunikacios_szandekok": [
+      "időjárás leírása",
+      "előrejelzés megfogalmazása",
+      "évszakok összehasonlítása"
+     ],
+     "javasolt_tevekenysegek": [
+      "időjárás-jelentés előadása",
+      "évszak-plakát",
+      "időjárási napló egy hétig"
+     ],
+     "teljes_szoveg": "Témakör: Wetter und Jahreszeiten – Időjárás és évszakok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der Umwelt\nKommunikációs / fejlesztési cél: A tanuló leírja az időjárást és összehasonlítja az évszakokat.\nSzókincs (példák): das Wetter, die Sonne, der Regen, der Schnee, der Wind, die Jahreszeit, der Frühling, der Herbst, der Grad, sich ändern\nNyelvtani fókusz: személytelen szerkezetek: es regnet, es ist kalt; melléknevek középfoka: wärmer als; az als használata összehasonlításban\nKommunikációs szándékok: időjárás leírása; előrejelzés megfogalmazása; évszakok összehasonlítása\nJavasolt tevékenységek: időjárás-jelentés előadása; évszak-plakát; időjárási napló egy hétig\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Feste und Feiertage – Ünnepek",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Interkulturelle und landeskundliche Themen",
+     "cefr_cel": "A tanuló bemutat egy német és egy magyar ünnepet.",
+     "szokincs": [
+      "das Fest",
+      "Weihnachten",
+      "Ostern",
+      "der Adventskranz",
+      "schenken",
+      "feiern",
+      "die Tradition",
+      "der Brauch",
+      "einladen",
+      "die Einladung"
+     ],
+     "nyelvtan": [
+      "részes eset a részeshatározónál: Ich schenke meiner Mutter...",
+      "időhatározók: am, im, um",
+      "meghívás formái"
+     ],
+     "kommunikacios_szandekok": [
+      "ünnep bemutatása",
+      "meghívás megfogalmazása",
+      "hagyomány összehasonlítása"
+     ],
+     "javasolt_tevekenysegek": [
+      "ünnepi képeslap írása",
+      "magyar és német ünnep összevetése",
+      "adventi naptár készítése"
+     ],
+     "teljes_szoveg": "Témakör: Feste und Feiertage – Ünnepek\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Interkulturelle und landeskundliche Themen\nKommunikációs / fejlesztési cél: A tanuló bemutat egy német és egy magyar ünnepet.\nSzókincs (példák): das Fest, Weihnachten, Ostern, der Adventskranz, schenken, feiern, die Tradition, der Brauch, einladen, die Einladung\nNyelvtani fókusz: részes eset a részeshatározónál: Ich schenke meiner Mutter...; időhatározók: am, im, um; meghívás formái\nKommunikációs szándékok: ünnep bemutatása; meghívás megfogalmazása; hagyomány összehasonlítása\nJavasolt tevékenységek: ünnepi képeslap írása; magyar és német ünnep összevetése; adventi naptár készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Reisen und Verkehrsmittel – Utazás és közlekedés",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Reisen und Urlaub",
+     "cefr_cel": "A tanuló megtervez egy utazást és jegyet vált.",
+     "szokincs": [
+      "die Reise",
+      "der Zug",
+      "das Flugzeug",
+      "die Fahrkarte",
+      "abfahren",
+      "ankommen",
+      "der Koffer",
+      "die Unterkunft",
+      "umsteigen",
+      "die Verspätung"
+     ],
+     "nyelvtan": [
+      "elváló igekötős igék Perfektben (ist abgefahren)",
+      "elöljárók az utazásnál: mit dem Zug, nach Berlin",
+      "menetrend olvasása"
+     ],
+     "kommunikacios_szandekok": [
+      "jegyvásárlás",
+      "útiterv ismertetése",
+      "információ kérése a menetrendről"
+     ],
+     "javasolt_tevekenysegek": [
+      "pályaudvari szerepjáték",
+      "osztálykirándulás megtervezése",
+      "menetrend-olvasó feladat"
+     ],
+     "teljes_szoveg": "Témakör: Reisen und Verkehrsmittel – Utazás és közlekedés\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Reisen und Urlaub\nKommunikációs / fejlesztési cél: A tanuló megtervez egy utazást és jegyet vált.\nSzókincs (példák): die Reise, der Zug, das Flugzeug, die Fahrkarte, abfahren, ankommen, der Koffer, die Unterkunft, umsteigen, die Verspätung\nNyelvtani fókusz: elváló igekötős igék Perfektben (ist abgefahren); elöljárók az utazásnál: mit dem Zug, nach Berlin; menetrend olvasása\nKommunikációs szándékok: jegyvásárlás; útiterv ismertetése; információ kérése a menetrendről\nJavasolt tevékenységek: pályaudvari szerepjáték; osztálykirándulás megtervezése; menetrend-olvasó feladat\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Meine Woche und Termine – A hetem és az időpontjaim",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló megbeszél egy időpontot és leírja a hetét.",
+     "szokincs": [
+      "der Termin",
+      "die Woche",
+      "der Kalender",
+      "frei haben",
+      "ausmachen",
+      "absagen",
+      "vorschlagen",
+      "beschäftigt",
+      "am Wochenende",
+      "leider"
+     ],
+     "nyelvtan": [
+      "idő- és helyhatározók sorrendje a mondatban",
+      "a szórend fordítása időhatározó után",
+      "kérdés: Hast du am Montag Zeit?"
+     ],
+     "kommunikacios_szandekok": [
+      "időpont-egyeztetés",
+      "lemondás udvariasan",
+      "heti program leírása"
+     ],
+     "javasolt_tevekenysegek": [
+      "telefonos időpont-egyeztetés párban",
+      "heti naptár kitöltése",
+      "program-ütköztető feladat"
+     ],
+     "teljes_szoveg": "Témakör: Meine Woche und Termine – A hetem és az időpontjaim\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló megbeszél egy időpontot és leírja a hetét.\nSzókincs (példák): der Termin, die Woche, der Kalender, frei haben, ausmachen, absagen, vorschlagen, beschäftigt, am Wochenende, leider\nNyelvtani fókusz: idő- és helyhatározók sorrendje a mondatban; a szórend fordítása időhatározó után; kérdés: Hast du am Montag Zeit?\nKommunikációs szándékok: időpont-egyeztetés; lemondás udvariasan; heti program leírása\nJavasolt tevékenységek: telefonos időpont-egyeztetés párban; heti naptár kitöltése; program-ütköztető feladat\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    }
+   ],
+   "teljes_szoveg": "6. évfolyam – A1 – biztos alapok, a múlt idő bevezetése\nA 6. évfolyamon megjelenik a múlt idő (Perfekt és a war/hatte alakok), a módbeli segédigék és a részes eset, a témák pedig kilépnek a közvetlen környezetből a város és az utazás felé.\n\nTémakör: Wo warst du? – Hol voltál? (múlt idő)\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló elmondja, hol volt és mije volt.\nSzókincs (példák): gestern, letzte Woche, damals, der Urlaub, zu Hause, krank, langweilig, spannend, plötzlich, danach\nNyelvtani fókusz: a sein és haben elbeszélő múltja: war, hatte; időhatározók a mondat elején (fordított szórend); a wann? kérdés\nKommunikációs szándékok: múltbeli helyszín megnevezése; élmény elmesélése; kérdezés valakinek a múltjáról\nJavasolt tevékenységek: hétvégi élménybeszámoló; képsor sorba rendezése; interjú a szünidőről\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Was hast du gemacht? – Mit csináltál? (Perfekt)\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló beszámol befejezett cselekvésekről.\nSzókincs (példák): machen, besuchen, fahren, bleiben, passieren, erzählen, zuerst, dann, endlich, letztes Jahr\nNyelvtani fókusz: Perfekt haben segédigével (ich habe gespielt); Perfekt sein segédigével (ich bin gefahren); a mondatkeret: a Partizip a mondat végén\nKommunikációs szándékok: befejezett cselekvés elmesélése; történet időrendben; rákérdezés részletekre\nJavasolt tevékenységek: képregény szövegezése; napló-bejegyzés írása; történetlánc az osztályban\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Ich kann, ich muss – Módbeli segédigék\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló kifejezi, mit tud, mit kell és mit szabad tennie.\nSzókincs (példák): können, müssen, dürfen, wollen, sollen, die Regel, erlaubt, verboten, helfen, die Aufgabe\nNyelvtani fókusz: a módbeli segédigék ragozása; mondatkeret: a főnévi igenév a mondat végén; tiltás kifejezése: nicht dürfen\nKommunikációs szándékok: képesség kifejezése; kötelezettség és tiltás kifejezése; engedélykérés\nJavasolt tevékenységek: osztályszabályzat készítése németül; Mit tudsz jól? körkérdés; szabály-plakát rajzolása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Der Körper und beim Arzt – A test és az orvosnál\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló megnevezi a testrészeket és elmondja, mi fáj neki.\nSzókincs (példák): der Kopf, der Bauch, der Hals, das Bein, wehtun, die Schmerzen, der Arzt, die Medizin, sich fühlen, gesund\nNyelvtani fókusz: részes eset (Dativ) a fájdalomnál: mir tut der Kopf weh; visszaható igék bevezetése: sich fühlen; birtokos névelő részes esetben\nKommunikációs szándékok: panasz elmondása; tanács kérése és adása; állapot kifejezése\nJavasolt tevékenységek: orvos-beteg szerepjáték; testrész-diktálás rajzolással; egészségtanácsok plakátja\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Einkaufen und Geld – Vásárlás és pénz\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Öffentliches Leben, Dienstleistungen\nKommunikációs / fejlesztési cél: A tanuló vásárol, árat kérdez és összehasonlít.\nSzókincs (példák): der Supermarkt, die Kasse, der Preis, kosten, teuer, billig, das Kilo, die Packung, bezahlen, der Kunde\nNyelvtani fókusz: részes eset elöljárókkal: mit, bei, zu; mennyiségek és mértékegységek; a kérdés: Wie viel kostet...?\nKommunikációs szándékok: ár kérdezése; mennyiség megadása; udvarias vásárlói párbeszéd\nJavasolt tevékenységek: bolti szerepjáték; bevásárlólista összeállítása; árösszehasonlító feladat\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: In der Stadt – A városban, útbaigazítás\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Öffentliches Leben, Dienstleistungen\nKommunikációs / fejlesztési cél: A tanuló útbaigazítást kér és ad a városban.\nSzókincs (példák): die Straße, der Platz, die Kreuzung, geradeaus, links, rechts, die Ampel, gegenüber, der Bahnhof, die Post\nNyelvtani fókusz: irányt jelölő elöljárók: zu, nach, in; felszólító mód udvarias alakja (Gehen Sie...); a wohin? kérdés\nKommunikációs szándékok: útbaigazítás kérése; útvonal leírása; hely megnevezése a városban\nJavasolt tevékenységek: térképes útvonalkeresés párban; saját városrész bemutatása; útbaigazító párbeszéd felvétele\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Wetter und Jahreszeiten – Időjárás és évszakok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der Umwelt\nKommunikációs / fejlesztési cél: A tanuló leírja az időjárást és összehasonlítja az évszakokat.\nSzókincs (példák): das Wetter, die Sonne, der Regen, der Schnee, der Wind, die Jahreszeit, der Frühling, der Herbst, der Grad, sich ändern\nNyelvtani fókusz: személytelen szerkezetek: es regnet, es ist kalt; melléknevek középfoka: wärmer als; az als használata összehasonlításban\nKommunikációs szándékok: időjárás leírása; előrejelzés megfogalmazása; évszakok összehasonlítása\nJavasolt tevékenységek: időjárás-jelentés előadása; évszak-plakát; időjárási napló egy hétig\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Feste und Feiertage – Ünnepek\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Interkulturelle und landeskundliche Themen\nKommunikációs / fejlesztési cél: A tanuló bemutat egy német és egy magyar ünnepet.\nSzókincs (példák): das Fest, Weihnachten, Ostern, der Adventskranz, schenken, feiern, die Tradition, der Brauch, einladen, die Einladung\nNyelvtani fókusz: részes eset a részeshatározónál: Ich schenke meiner Mutter...; időhatározók: am, im, um; meghívás formái\nKommunikációs szándékok: ünnep bemutatása; meghívás megfogalmazása; hagyomány összehasonlítása\nJavasolt tevékenységek: ünnepi képeslap írása; magyar és német ünnep összevetése; adventi naptár készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Reisen und Verkehrsmittel – Utazás és közlekedés\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Reisen und Urlaub\nKommunikációs / fejlesztési cél: A tanuló megtervez egy utazást és jegyet vált.\nSzókincs (példák): die Reise, der Zug, das Flugzeug, die Fahrkarte, abfahren, ankommen, der Koffer, die Unterkunft, umsteigen, die Verspätung\nNyelvtani fókusz: elváló igekötős igék Perfektben (ist abgefahren); elöljárók az utazásnál: mit dem Zug, nach Berlin; menetrend olvasása\nKommunikációs szándékok: jegyvásárlás; útiterv ismertetése; információ kérése a menetrendről\nJavasolt tevékenységek: pályaudvari szerepjáték; osztálykirándulás megtervezése; menetrend-olvasó feladat\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Meine Woche und Termine – A hetem és az időpontjaim\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló megbeszél egy időpontot és leírja a hetét.\nSzókincs (példák): der Termin, die Woche, der Kalender, frei haben, ausmachen, absagen, vorschlagen, beschäftigt, am Wochenende, leider\nNyelvtani fókusz: idő- és helyhatározók sorrendje a mondatban; a szórend fordítása időhatározó után; kérdés: Hast du am Montag Zeit?\nKommunikációs szándékok: időpont-egyeztetés; lemondás udvariasan; heti program leírása\nJavasolt tevékenységek: telefonos időpont-egyeztetés párban; heti naptár kitöltése; program-ütköztető feladat\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+  },
+  "7": {
+   "evfolyamok": [
+    7
+   ],
+   "cefr_szint": "A2 – önálló nyelvhasználat felé",
+   "leiras": "A 7. évfolyamon az elbeszélő múlt, a mellékmondatok és a fokozás kerül középpontba, a témák elvontabbak lesznek: média, környezet, barátság, országismeret.",
+   "temakorok": [
+    {
+     "nev": "Als ich klein war – Amikor kicsi voltam (Präteritum)",
+     "javasolt_oraszam": 11,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló összefüggően mesél a gyerekkoráról elbeszélő múltban.",
+     "szokincs": [
+      "die Kindheit",
+      "früher",
+      "damals",
+      "der Kindergarten",
+      "sich erinnern",
+      "das Erlebnis",
+      "die Erinnerung",
+      "aufwachsen",
+      "typisch",
+      "inzwischen"
+     ],
+     "nyelvtan": [
+      "gyakori igék elbeszélő múltja: ging, kam, sah, machte",
+      "als kötőszó egyszeri múltbeli eseményre (KATI-szórend)",
+      "a Perfekt és a Präteritum használatának különbsége"
+     ],
+     "kommunikacios_szandekok": [
+      "gyerekkori emlék elmesélése",
+      "szokások összevetése régen és most",
+      "kérdezés valakinek a múltjáról"
+     ],
+     "javasolt_tevekenysegek": [
+      "gyerekkori fénykép bemutatása",
+      "Régen–most összehasonlító táblázat",
+      "emlékmesélő kör"
+     ],
+     "teljes_szoveg": "Témakör: Als ich klein war – Amikor kicsi voltam (Präteritum)\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló összefüggően mesél a gyerekkoráról elbeszélő múltban.\nSzókincs (példák): die Kindheit, früher, damals, der Kindergarten, sich erinnern, das Erlebnis, die Erinnerung, aufwachsen, typisch, inzwischen\nNyelvtani fókusz: gyakori igék elbeszélő múltja: ging, kam, sah, machte; als kötőszó egyszeri múltbeli eseményre (KATI-szórend); a Perfekt és a Präteritum használatának különbsége\nKommunikációs szándékok: gyerekkori emlék elmesélése; szokások összevetése régen és most; kérdezés valakinek a múltjáról\nJavasolt tevékenységek: gyerekkori fénykép bemutatása; Régen–most összehasonlító táblázat; emlékmesélő kör\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Was möchtest du werden? – Foglalkozások és tervek",
+     "javasolt_oraszam": 11,
+     "kerettantervi_temakor": "Fächerübergreifende Themen und Situationen",
+     "cefr_cel": "A tanuló beszél a foglalkozásokról és a saját terveiről.",
+     "szokincs": [
+      "der Beruf",
+      "der Arzt",
+      "die Ingenieurin",
+      "verdienen",
+      "die Ausbildung",
+      "die Zukunft",
+      "sich bewerben",
+      "die Erfahrung",
+      "selbstständig",
+      "der Traumberuf"
+     ],
+     "nyelvtan": [
+      "jövő idő: werden + Infinitiv",
+      "foglalkozásnevek nőnemű alakja (-in)",
+      "névelő nélküli használat: Er ist Lehrer"
+     ],
+     "kommunikacios_szandekok": [
+      "foglalkozás bemutatása",
+      "jövőbeli terv kifejezése",
+      "érvelés egy szakma mellett"
+     ],
+     "javasolt_tevekenysegek": [
+      "foglalkozás-kisfilm forgatókönyve",
+      "Mi leszek? körkérdés",
+      "álláshirdetés elemzése"
+     ],
+     "teljes_szoveg": "Témakör: Was möchtest du werden? – Foglalkozások és tervek\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló beszél a foglalkozásokról és a saját terveiről.\nSzókincs (példák): der Beruf, der Arzt, die Ingenieurin, verdienen, die Ausbildung, die Zukunft, sich bewerben, die Erfahrung, selbstständig, der Traumberuf\nNyelvtani fókusz: jövő idő: werden + Infinitiv; foglalkozásnevek nőnemű alakja (-in); névelő nélküli használat: Er ist Lehrer\nKommunikációs szándékok: foglalkozás bemutatása; jövőbeli terv kifejezése; érvelés egy szakma mellett\nJavasolt tevékenységek: foglalkozás-kisfilm forgatókönyve; Mi leszek? körkérdés; álláshirdetés elemzése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Weil, dass, wenn – Miért? Mellékmondatok",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Fächerübergreifende Themen und Situationen",
+     "cefr_cel": "A tanuló megindokolja a véleményét összetett mondatokkal.",
+     "szokincs": [
+      "der Grund",
+      "die Meinung",
+      "glauben",
+      "denken",
+      "deshalb",
+      "trotzdem",
+      "obwohl",
+      "wichtig",
+      "der Vorteil",
+      "der Nachteil"
+     ],
+     "nyelvtan": [
+      "KATI-szórend: az ige a mellékmondat végén",
+      "weil, dass, wenn, obwohl kötőszavak",
+      "deshalb és trotzdem szórendje"
+     ],
+     "kommunikacios_szandekok": [
+      "indoklás",
+      "vélemény kifejtése",
+      "egyetértés és egyet nem értés"
+     ],
+     "javasolt_tevekenysegek": [
+      "vitakör egyszerű témákról",
+      "érv–ellenérv táblázat",
+      "mondatlánc kötőszavakkal"
+     ],
+     "teljes_szoveg": "Témakör: Weil, dass, wenn – Miért? Mellékmondatok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló megindokolja a véleményét összetett mondatokkal.\nSzókincs (példák): der Grund, die Meinung, glauben, denken, deshalb, trotzdem, obwohl, wichtig, der Vorteil, der Nachteil\nNyelvtani fókusz: KATI-szórend: az ige a mellékmondat végén; weil, dass, wenn, obwohl kötőszavak; deshalb és trotzdem szórendje\nKommunikációs szándékok: indoklás; vélemény kifejtése; egyetértés és egyet nem értés\nJavasolt tevékenységek: vitakör egyszerű témákról; érv–ellenérv táblázat; mondatlánc kötőszavakkal\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Wo? Wohin? – Helyet és irányt jelölő elöljárók",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im Bereich der unmittelbaren Umgebung",
+     "cefr_cel": "A tanuló pontosan megadja, hol van valami és hová megy.",
+     "szokincs": [
+      "stellen",
+      "legen",
+      "hängen",
+      "stehen",
+      "liegen",
+      "zwischen",
+      "hinter",
+      "vor",
+      "über",
+      "unter"
+     ],
+     "nyelvtan": [
+      "Wechselpräpositionen: Dativ a wo?, Akkusativ a wohin? kérdésre",
+      "az állapot- és mozgásigék párjai (stehen/stellen)",
+      "elöljárós összevonások: im, ins, am, ans"
+     ],
+     "kommunikacios_szandekok": [
+      "tárgy helyének pontos megadása",
+      "cselekvés irányának leírása",
+      "utasítás adása elhelyezésre"
+     ],
+     "javasolt_tevekenysegek": [
+      "szobaberendezés diktálás alapján",
+      "két kép különbségeinek leírása",
+      "tárgy-elhelyező páros feladat"
+     ],
+     "teljes_szoveg": "Témakör: Wo? Wohin? – Helyet és irányt jelölő elöljárók\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló pontosan megadja, hol van valami és hová megy.\nSzókincs (példák): stellen, legen, hängen, stehen, liegen, zwischen, hinter, vor, über, unter\nNyelvtani fókusz: Wechselpräpositionen: Dativ a wo?, Akkusativ a wohin? kérdésre; az állapot- és mozgásigék párjai (stehen/stellen); elöljárós összevonások: im, ins, am, ans\nKommunikációs szándékok: tárgy helyének pontos megadása; cselekvés irányának leírása; utasítás adása elhelyezésre\nJavasolt tevékenységek: szobaberendezés diktálás alapján; két kép különbségeinek leírása; tárgy-elhelyező páros feladat\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Medien und Internet – Média és internet",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Aktuelle Themen",
+     "cefr_cel": "A tanuló beszél a médiahasználatáról és annak veszélyeiről.",
+     "szokincs": [
+      "das Handy",
+      "die App",
+      "die Nachricht",
+      "hochladen",
+      "das Passwort",
+      "die Werbung",
+      "der Nutzer",
+      "süchtig",
+      "die Sicherheit",
+      "das soziale Netzwerk"
+     ],
+     "nyelvtan": [
+      "visszaható igék tárgyesettel: sich informieren über",
+      "elöljárós vonzatos igék: sich interessieren für",
+      "um … zu szerkezet"
+     ],
+     "kommunikacios_szandekok": [
+      "szokások leírása",
+      "veszélyre figyelmeztetés",
+      "tanács adása"
+     ],
+     "javasolt_tevekenysegek": [
+      "képernyőidő-felmérés az osztályban",
+      "biztonsági szabályok plakátja",
+      "média-napló egy hétig"
+     ],
+     "teljes_szoveg": "Témakör: Medien und Internet – Média és internet\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Aktuelle Themen\nKommunikációs / fejlesztési cél: A tanuló beszél a médiahasználatáról és annak veszélyeiről.\nSzókincs (példák): das Handy, die App, die Nachricht, hochladen, das Passwort, die Werbung, der Nutzer, süchtig, die Sicherheit, das soziale Netzwerk\nNyelvtani fókusz: visszaható igék tárgyesettel: sich informieren über; elöljárós vonzatos igék: sich interessieren für; um … zu szerkezet\nKommunikációs szándékok: szokások leírása; veszélyre figyelmeztetés; tanács adása\nJavasolt tevékenységek: képernyőidő-felmérés az osztályban; biztonsági szabályok plakátja; média-napló egy hétig\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Sport und Gesundheit – Sport és egészség",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló beszél a sportról és az egészséges életmódról.",
+     "szokincs": [
+      "die Mannschaft",
+      "trainieren",
+      "der Wettkampf",
+      "gewinnen",
+      "verlieren",
+      "die Bewegung",
+      "sich ernähren",
+      "das Training",
+      "der Verein",
+      "fit"
+     ],
+     "nyelvtan": [
+      "visszaható igék részes esettel",
+      "határozói bővítmények sorrendje",
+      "gyakoriságot kifejező szerkezetek: einmal in der Woche"
+     ],
+     "kommunikacios_szandekok": [
+      "sportág bemutatása",
+      "szokás leírása",
+      "tanács az egészséges életmódhoz"
+     ],
+     "javasolt_tevekenysegek": [
+      "sportriport készítése",
+      "edzésterv összeállítása",
+      "egészséges nap tervezése"
+     ],
+     "teljes_szoveg": "Témakör: Sport und Gesundheit – Sport és egészség\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló beszél a sportról és az egészséges életmódról.\nSzókincs (példák): die Mannschaft, trainieren, der Wettkampf, gewinnen, verlieren, die Bewegung, sich ernähren, das Training, der Verein, fit\nNyelvtani fókusz: visszaható igék részes esettel; határozói bővítmények sorrendje; gyakoriságot kifejező szerkezetek: einmal in der Woche\nKommunikációs szándékok: sportág bemutatása; szokás leírása; tanács az egészséges életmódhoz\nJavasolt tevékenységek: sportriport készítése; edzésterv összeállítása; egészséges nap tervezése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Umwelt und Natur – Környezet és természet",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im Bereich der Umwelt",
+     "cefr_cel": "A tanuló beszél a környezetvédelemről és javaslatokat tesz.",
+     "szokincs": [
+      "die Umwelt",
+      "der Müll",
+      "trennen",
+      "der Abfall",
+      "schützen",
+      "die Verschmutzung",
+      "sparen",
+      "erneuerbar",
+      "das Klima",
+      "die Verantwortung"
+     ],
+     "nyelvtan": [
+      "um … zu és damit célhatározói szerkezetek",
+      "man általános alany",
+      "sollte a javaslatokhoz"
+     ],
+     "kommunikacios_szandekok": [
+      "probléma leírása",
+      "javaslat megfogalmazása",
+      "felszólítás cselekvésre"
+     ],
+     "javasolt_tevekenysegek": [
+      "osztály-környezetvédelmi kampány",
+      "szelektív gyűjtés plakátja",
+      "energiatakarékossági ötletbörze"
+     ],
+     "teljes_szoveg": "Témakör: Umwelt und Natur – Környezet és természet\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der Umwelt\nKommunikációs / fejlesztési cél: A tanuló beszél a környezetvédelemről és javaslatokat tesz.\nSzókincs (példák): die Umwelt, der Müll, trennen, der Abfall, schützen, die Verschmutzung, sparen, erneuerbar, das Klima, die Verantwortung\nNyelvtani fókusz: um … zu és damit célhatározói szerkezetek; man általános alany; sollte a javaslatokhoz\nKommunikációs szándékok: probléma leírása; javaslat megfogalmazása; felszólítás cselekvésre\nJavasolt tevékenységek: osztály-környezetvédelmi kampány; szelektív gyűjtés plakátja; energiatakarékossági ötletbörze\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Freundschaft und Gefühle – Barátság és érzelmek",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló beszél a barátságról és kifejezi az érzéseit.",
+     "szokincs": [
+      "die Freundschaft",
+      "sich streiten",
+      "sich vertragen",
+      "vertrauen",
+      "ehrlich",
+      "eifersüchtig",
+      "sich freuen",
+      "traurig",
+      "der Streit",
+      "die Entschuldigung"
+     ],
+     "nyelvtan": [
+      "visszaható igék elöljárós vonzattal: sich freuen über/auf",
+      "személyes névmások részes és tárgyesetben együtt",
+      "bocsánatkérés formái"
+     ],
+     "kommunikacios_szandekok": [
+      "érzés kifejezése",
+      "konfliktus leírása",
+      "bocsánatkérés és megbékélés"
+     ],
+     "javasolt_tevekenysegek": [
+      "barátságról szóló rövid történet",
+      "tanácsadó levél megírása",
+      "érzelemkártyás szerepjáték"
+     ],
+     "teljes_szoveg": "Témakör: Freundschaft und Gefühle – Barátság és érzelmek\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló beszél a barátságról és kifejezi az érzéseit.\nSzókincs (példák): die Freundschaft, sich streiten, sich vertragen, vertrauen, ehrlich, eifersüchtig, sich freuen, traurig, der Streit, die Entschuldigung\nNyelvtani fókusz: visszaható igék elöljárós vonzattal: sich freuen über/auf; személyes névmások részes és tárgyesetben együtt; bocsánatkérés formái\nKommunikációs szándékok: érzés kifejezése; konfliktus leírása; bocsánatkérés és megbékélés\nJavasolt tevékenységek: barátságról szóló rövid történet; tanácsadó levél megírása; érzelemkártyás szerepjáték\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Deutschsprachige Länder – Németül beszélő országok",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Interkulturelle und landeskundliche Themen",
+     "cefr_cel": "A tanuló bemutatja Németországot, Ausztriát és Svájcot.",
+     "szokincs": [
+      "das Bundesland",
+      "die Hauptstadt",
+      "die Grenze",
+      "die Bevölkerung",
+      "die Sehenswürdigkeit",
+      "der Dialekt",
+      "die Alpen",
+      "berühmt",
+      "der Unterschied",
+      "das Nachbarland"
+     ],
+     "nyelvtan": [
+      "országnevek névelővel és anélkül",
+      "helyhatározó elöljárók országnevekkel: in, nach, aus",
+      "passzív bevezetése ismertetőkben"
+     ],
+     "kommunikacios_szandekok": [
+      "ország bemutatása",
+      "összehasonlítás Magyarországgal",
+      "tájékozódás térképen"
+     ],
+     "javasolt_tevekenysegek": [
+      "országismertető plakát",
+      "virtuális városnézés bemutatása",
+      "kvíz a három országról"
+     ],
+     "teljes_szoveg": "Témakör: Deutschsprachige Länder – Németül beszélő országok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Interkulturelle und landeskundliche Themen\nKommunikációs / fejlesztési cél: A tanuló bemutatja Németországot, Ausztriát és Svájcot.\nSzókincs (példák): das Bundesland, die Hauptstadt, die Grenze, die Bevölkerung, die Sehenswürdigkeit, der Dialekt, die Alpen, berühmt, der Unterschied, das Nachbarland\nNyelvtani fókusz: országnevek névelővel és anélkül; helyhatározó elöljárók országnevekkel: in, nach, aus; passzív bevezetése ismertetőkben\nKommunikációs szándékok: ország bemutatása; összehasonlítás Magyarországgal; tájékozódás térképen\nJavasolt tevékenységek: országismertető plakát; virtuális városnézés bemutatása; kvíz a három országról\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Größer, am größten – Összehasonlítás és fokozás",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Fächerübergreifende Themen und Situationen",
+     "cefr_cel": "A tanuló összehasonlít dolgokat és a legjobbat választja ki.",
+     "szokincs": [
+      "vergleichen",
+      "der Unterschied",
+      "ähnlich",
+      "genauso",
+      "am besten",
+      "am meisten",
+      "der Rekord",
+      "hoch",
+      "lang",
+      "beliebt"
+     ],
+     "nyelvtan": [
+      "melléknevek fokozása: alap-, közép- és felsőfok",
+      "rendhagyó fokozás: gut–besser–am besten",
+      "so … wie és als szerkezetek"
+     ],
+     "kommunikacios_szandekok": [
+      "összehasonlítás",
+      "kiemelés és rangsorolás",
+      "preferencia indoklása"
+     ],
+     "javasolt_tevekenysegek": [
+      "rekordok kvíz",
+      "két város összehasonlítása",
+      "osztálystatisztika készítése"
+     ],
+     "teljes_szoveg": "Témakör: Größer, am größten – Összehasonlítás és fokozás\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló összehasonlít dolgokat és a legjobbat választja ki.\nSzókincs (példák): vergleichen, der Unterschied, ähnlich, genauso, am besten, am meisten, der Rekord, hoch, lang, beliebt\nNyelvtani fókusz: melléknevek fokozása: alap-, közép- és felsőfok; rendhagyó fokozás: gut–besser–am besten; so … wie és als szerkezetek\nKommunikációs szándékok: összehasonlítás; kiemelés és rangsorolás; preferencia indoklása\nJavasolt tevékenységek: rekordok kvíz; két város összehasonlítása; osztálystatisztika készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    }
+   ],
+   "teljes_szoveg": "7. évfolyam – A2 – önálló nyelvhasználat felé\nA 7. évfolyamon az elbeszélő múlt, a mellékmondatok és a fokozás kerül középpontba, a témák elvontabbak lesznek: média, környezet, barátság, országismeret.\n\nTémakör: Als ich klein war – Amikor kicsi voltam (Präteritum)\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló összefüggően mesél a gyerekkoráról elbeszélő múltban.\nSzókincs (példák): die Kindheit, früher, damals, der Kindergarten, sich erinnern, das Erlebnis, die Erinnerung, aufwachsen, typisch, inzwischen\nNyelvtani fókusz: gyakori igék elbeszélő múltja: ging, kam, sah, machte; als kötőszó egyszeri múltbeli eseményre (KATI-szórend); a Perfekt és a Präteritum használatának különbsége\nKommunikációs szándékok: gyerekkori emlék elmesélése; szokások összevetése régen és most; kérdezés valakinek a múltjáról\nJavasolt tevékenységek: gyerekkori fénykép bemutatása; Régen–most összehasonlító táblázat; emlékmesélő kör\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Was möchtest du werden? – Foglalkozások és tervek\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló beszél a foglalkozásokról és a saját terveiről.\nSzókincs (példák): der Beruf, der Arzt, die Ingenieurin, verdienen, die Ausbildung, die Zukunft, sich bewerben, die Erfahrung, selbstständig, der Traumberuf\nNyelvtani fókusz: jövő idő: werden + Infinitiv; foglalkozásnevek nőnemű alakja (-in); névelő nélküli használat: Er ist Lehrer\nKommunikációs szándékok: foglalkozás bemutatása; jövőbeli terv kifejezése; érvelés egy szakma mellett\nJavasolt tevékenységek: foglalkozás-kisfilm forgatókönyve; Mi leszek? körkérdés; álláshirdetés elemzése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Weil, dass, wenn – Miért? Mellékmondatok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló megindokolja a véleményét összetett mondatokkal.\nSzókincs (példák): der Grund, die Meinung, glauben, denken, deshalb, trotzdem, obwohl, wichtig, der Vorteil, der Nachteil\nNyelvtani fókusz: KATI-szórend: az ige a mellékmondat végén; weil, dass, wenn, obwohl kötőszavak; deshalb és trotzdem szórendje\nKommunikációs szándékok: indoklás; vélemény kifejtése; egyetértés és egyet nem értés\nJavasolt tevékenységek: vitakör egyszerű témákról; érv–ellenérv táblázat; mondatlánc kötőszavakkal\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Wo? Wohin? – Helyet és irányt jelölő elöljárók\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló pontosan megadja, hol van valami és hová megy.\nSzókincs (példák): stellen, legen, hängen, stehen, liegen, zwischen, hinter, vor, über, unter\nNyelvtani fókusz: Wechselpräpositionen: Dativ a wo?, Akkusativ a wohin? kérdésre; az állapot- és mozgásigék párjai (stehen/stellen); elöljárós összevonások: im, ins, am, ans\nKommunikációs szándékok: tárgy helyének pontos megadása; cselekvés irányának leírása; utasítás adása elhelyezésre\nJavasolt tevékenységek: szobaberendezés diktálás alapján; két kép különbségeinek leírása; tárgy-elhelyező páros feladat\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Medien und Internet – Média és internet\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Aktuelle Themen\nKommunikációs / fejlesztési cél: A tanuló beszél a médiahasználatáról és annak veszélyeiről.\nSzókincs (példák): das Handy, die App, die Nachricht, hochladen, das Passwort, die Werbung, der Nutzer, süchtig, die Sicherheit, das soziale Netzwerk\nNyelvtani fókusz: visszaható igék tárgyesettel: sich informieren über; elöljárós vonzatos igék: sich interessieren für; um … zu szerkezet\nKommunikációs szándékok: szokások leírása; veszélyre figyelmeztetés; tanács adása\nJavasolt tevékenységek: képernyőidő-felmérés az osztályban; biztonsági szabályok plakátja; média-napló egy hétig\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Sport und Gesundheit – Sport és egészség\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló beszél a sportról és az egészséges életmódról.\nSzókincs (példák): die Mannschaft, trainieren, der Wettkampf, gewinnen, verlieren, die Bewegung, sich ernähren, das Training, der Verein, fit\nNyelvtani fókusz: visszaható igék részes esettel; határozói bővítmények sorrendje; gyakoriságot kifejező szerkezetek: einmal in der Woche\nKommunikációs szándékok: sportág bemutatása; szokás leírása; tanács az egészséges életmódhoz\nJavasolt tevékenységek: sportriport készítése; edzésterv összeállítása; egészséges nap tervezése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Umwelt und Natur – Környezet és természet\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der Umwelt\nKommunikációs / fejlesztési cél: A tanuló beszél a környezetvédelemről és javaslatokat tesz.\nSzókincs (példák): die Umwelt, der Müll, trennen, der Abfall, schützen, die Verschmutzung, sparen, erneuerbar, das Klima, die Verantwortung\nNyelvtani fókusz: um … zu és damit célhatározói szerkezetek; man általános alany; sollte a javaslatokhoz\nKommunikációs szándékok: probléma leírása; javaslat megfogalmazása; felszólítás cselekvésre\nJavasolt tevékenységek: osztály-környezetvédelmi kampány; szelektív gyűjtés plakátja; energiatakarékossági ötletbörze\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Freundschaft und Gefühle – Barátság és érzelmek\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló beszél a barátságról és kifejezi az érzéseit.\nSzókincs (példák): die Freundschaft, sich streiten, sich vertragen, vertrauen, ehrlich, eifersüchtig, sich freuen, traurig, der Streit, die Entschuldigung\nNyelvtani fókusz: visszaható igék elöljárós vonzattal: sich freuen über/auf; személyes névmások részes és tárgyesetben együtt; bocsánatkérés formái\nKommunikációs szándékok: érzés kifejezése; konfliktus leírása; bocsánatkérés és megbékélés\nJavasolt tevékenységek: barátságról szóló rövid történet; tanácsadó levél megírása; érzelemkártyás szerepjáték\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Deutschsprachige Länder – Németül beszélő országok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Interkulturelle und landeskundliche Themen\nKommunikációs / fejlesztési cél: A tanuló bemutatja Németországot, Ausztriát és Svájcot.\nSzókincs (példák): das Bundesland, die Hauptstadt, die Grenze, die Bevölkerung, die Sehenswürdigkeit, der Dialekt, die Alpen, berühmt, der Unterschied, das Nachbarland\nNyelvtani fókusz: országnevek névelővel és anélkül; helyhatározó elöljárók országnevekkel: in, nach, aus; passzív bevezetése ismertetőkben\nKommunikációs szándékok: ország bemutatása; összehasonlítás Magyarországgal; tájékozódás térképen\nJavasolt tevékenységek: országismertető plakát; virtuális városnézés bemutatása; kvíz a három országról\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Größer, am größten – Összehasonlítás és fokozás\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló összehasonlít dolgokat és a legjobbat választja ki.\nSzókincs (példák): vergleichen, der Unterschied, ähnlich, genauso, am besten, am meisten, der Rekord, hoch, lang, beliebt\nNyelvtani fókusz: melléknevek fokozása: alap-, közép- és felsőfok; rendhagyó fokozás: gut–besser–am besten; so … wie és als szerkezetek\nKommunikációs szándékok: összehasonlítás; kiemelés és rangsorolás; preferencia indoklása\nJavasolt tevékenységek: rekordok kvíz; két város összehasonlítása; osztálystatisztika készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+  },
+  "8": {
+   "evfolyamok": [
+    8
+   ],
+   "cefr_szint": "A2 → B1 – összetett nyelvi szerkezetek",
+   "leiras": "A 8. évfolyamon a feltételes mód, a vonatkozói mellékmondatok és a szenvedő szerkezet teszi lehetővé az árnyalt véleménynyilvánítást és a hosszabb összefüggő szöveget.",
+   "temakorok": [
+    {
+     "nev": "Wenn ich Zeit hätte – Ha lenne időm (Konjunktiv II)",
+     "javasolt_oraszam": 11,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló feltételes helyzeteket fogalmaz meg és udvariasan kér.",
+     "szokincs": [
+      "hätte",
+      "wäre",
+      "würde",
+      "könnte",
+      "der Wunsch",
+      "sich wünschen",
+      "vorstellen",
+      "die Möglichkeit",
+      "eigentlich",
+      "vielleicht"
+     ],
+     "nyelvtan": [
+      "Konjunktiv II: wäre, hätte, würde + Infinitiv",
+      "feltételes mellékmondat wenn kötőszóval",
+      "udvarias kérés: Könnten Sie…?"
+     ],
+     "kommunikacios_szandekok": [
+      "kívánság kifejezése",
+      "udvarias kérés",
+      "feltételezés megfogalmazása"
+     ],
+     "javasolt_tevekenysegek": [
+      "Mit tennél, ha…? körkérdés",
+      "udvarias kérések gyűjtése",
+      "álomnap leírása"
+     ],
+     "teljes_szoveg": "Témakör: Wenn ich Zeit hätte – Ha lenne időm (Konjunktiv II)\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló feltételes helyzeteket fogalmaz meg és udvariasan kér.\nSzókincs (példák): hätte, wäre, würde, könnte, der Wunsch, sich wünschen, vorstellen, die Möglichkeit, eigentlich, vielleicht\nNyelvtani fókusz: Konjunktiv II: wäre, hätte, würde + Infinitiv; feltételes mellékmondat wenn kötőszóval; udvarias kérés: Könnten Sie…?\nKommunikációs szándékok: kívánság kifejezése; udvarias kérés; feltételezés megfogalmazása\nJavasolt tevékenységek: Mit tennél, ha…? körkérdés; udvarias kérések gyűjtése; álomnap leírása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Der Mann, der… – Vonatkozói mellékmondatok",
+     "javasolt_oraszam": 11,
+     "kerettantervi_temakor": "Fächerübergreifende Themen und Situationen",
+     "cefr_cel": "A tanuló pontosan körülír személyeket és tárgyakat.",
+     "szokincs": [
+      "beschreiben",
+      "genau",
+      "das Gerät",
+      "der Gegenstand",
+      "benutzen",
+      "nützlich",
+      "derjenige",
+      "bekannt",
+      "erfinden",
+      "die Erfindung"
+     ],
+     "nyelvtan": [
+      "vonatkozó névmások alany- és tárgyesetben: der, die, das, den",
+      "a vonatkozói mellékmondat szórendje",
+      "vonatkozó névmás elöljáróval"
+     ],
+     "kommunikacios_szandekok": [
+      "személy és tárgy körülírása",
+      "meghatározás megfogalmazása",
+      "kitalálós kérdés feltevése"
+     ],
+     "javasolt_tevekenysegek": [
+      "Mi ez? körülíró játék",
+      "találmányok bemutatása",
+      "definíciós kártyák készítése"
+     ],
+     "teljes_szoveg": "Témakör: Der Mann, der… – Vonatkozói mellékmondatok\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló pontosan körülír személyeket és tárgyakat.\nSzókincs (példák): beschreiben, genau, das Gerät, der Gegenstand, benutzen, nützlich, derjenige, bekannt, erfinden, die Erfindung\nNyelvtani fókusz: vonatkozó névmások alany- és tárgyesetben: der, die, das, den; a vonatkozói mellékmondat szórendje; vonatkozó névmás elöljáróval\nKommunikációs szándékok: személy és tárgy körülírása; meghatározás megfogalmazása; kitalálós kérdés feltevése\nJavasolt tevékenységek: Mi ez? körülíró játék; találmányok bemutatása; definíciós kártyák készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Es wird gemacht – Szenvedő szerkezet",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Fächerübergreifende Themen und Situationen",
+     "cefr_cel": "A tanuló leír folyamatokat, ahol a cselekvő nem fontos.",
+     "szokincs": [
+      "herstellen",
+      "produzieren",
+      "der Prozess",
+      "der Schritt",
+      "das Material",
+      "verwendet",
+      "entwickeln",
+      "die Fabrik",
+      "danach",
+      "schließlich"
+     ],
+     "nyelvtan": [
+      "szenvedő szerkezet jelen időben: werden + Partizip II",
+      "von és durch a cselekvő megnevezésére",
+      "folyamatleírás sorrendi kötőszavakkal"
+     ],
+     "kommunikacios_szandekok": [
+      "folyamat leírása",
+      "gyártás bemutatása",
+      "sorrend kifejezése"
+     ],
+     "javasolt_tevekenysegek": [
+      "egy termék útjának bemutatása",
+      "recept átírása szenvedő szerkezetbe",
+      "folyamatábra szövegezése"
+     ],
+     "teljes_szoveg": "Témakör: Es wird gemacht – Szenvedő szerkezet\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló leír folyamatokat, ahol a cselekvő nem fontos.\nSzókincs (példák): herstellen, produzieren, der Prozess, der Schritt, das Material, verwendet, entwickeln, die Fabrik, danach, schließlich\nNyelvtani fókusz: szenvedő szerkezet jelen időben: werden + Partizip II; von és durch a cselekvő megnevezésére; folyamatleírás sorrendi kötőszavakkal\nKommunikációs szándékok: folyamat leírása; gyártás bemutatása; sorrend kifejezése\nJavasolt tevékenységek: egy termék útjának bemutatása; recept átírása szenvedő szerkezetbe; folyamatábra szövegezése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Schule und Zukunftspläne – Iskola és jövőtervek",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló beszél a továbbtanulásról és a céljairól.",
+     "szokincs": [
+      "das Gymnasium",
+      "die Prüfung",
+      "bestehen",
+      "das Zeugnis",
+      "sich entscheiden",
+      "das Ziel",
+      "die Chance",
+      "der Druck",
+      "erfolgreich",
+      "die Bewerbung"
+     ],
+     "nyelvtan": [
+      "függő kérdés: ob és kérdőszavas mellékmondat",
+      "jövő idő és a Präsens jövő értelmű használata",
+      "zu + Infinitiv szerkezet"
+     ],
+     "kommunikacios_szandekok": [
+      "terv kifejtése",
+      "döntés indoklása",
+      "bizonytalanság kifejezése"
+     ],
+     "javasolt_tevekenysegek": [
+      "továbbtanulási terv bemutatása",
+      "interjú egy idősebb diákkal",
+      "célkitűzés-plakát"
+     ],
+     "teljes_szoveg": "Témakör: Schule und Zukunftspläne – Iskola és jövőtervek\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló beszél a továbbtanulásról és a céljairól.\nSzókincs (példák): das Gymnasium, die Prüfung, bestehen, das Zeugnis, sich entscheiden, das Ziel, die Chance, der Druck, erfolgreich, die Bewerbung\nNyelvtani fókusz: függő kérdés: ob és kérdőszavas mellékmondat; jövő idő és a Präsens jövő értelmű használata; zu + Infinitiv szerkezet\nKommunikációs szándékok: terv kifejtése; döntés indoklása; bizonytalanság kifejezése\nJavasolt tevékenységek: továbbtanulási terv bemutatása; interjú egy idősebb diákkal; célkitűzés-plakát\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Wohnen in der Stadt und auf dem Land – Város és vidék",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im Bereich der unmittelbaren Umgebung",
+     "cefr_cel": "A tanuló összehasonlítja a városi és a vidéki életet.",
+     "szokincs": [
+      "die Großstadt",
+      "das Dorf",
+      "die Miete",
+      "der Lärm",
+      "die Ruhe",
+      "der Verkehr",
+      "die Umgebung",
+      "umziehen",
+      "die Nachbarschaft",
+      "das Angebot"
+     ],
+     "nyelvtan": [
+      "birtokos eset (Genitiv) alapjai",
+      "melléknévragozás határozott névelő után",
+      "érvelő szerkezetek: einerseits – andererseits"
+     ],
+     "kommunikacios_szandekok": [
+      "előny és hátrány felsorolása",
+      "összehasonlítás",
+      "saját preferencia indoklása"
+     ],
+     "javasolt_tevekenysegek": [
+      "város–vidék vita",
+      "álomlakóhely bemutatása",
+      "lakáshirdetés írása"
+     ],
+     "teljes_szoveg": "Témakör: Wohnen in der Stadt und auf dem Land – Város és vidék\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló összehasonlítja a városi és a vidéki életet.\nSzókincs (példák): die Großstadt, das Dorf, die Miete, der Lärm, die Ruhe, der Verkehr, die Umgebung, umziehen, die Nachbarschaft, das Angebot\nNyelvtani fókusz: birtokos eset (Genitiv) alapjai; melléknévragozás határozott névelő után; érvelő szerkezetek: einerseits – andererseits\nKommunikációs szándékok: előny és hátrány felsorolása; összehasonlítás; saját preferencia indoklása\nJavasolt tevékenységek: város–vidék vita; álomlakóhely bemutatása; lakáshirdetés írása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Kultur: Musik, Film und Bücher – Kultúra",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Freizeit, Unterhaltung",
+     "cefr_cel": "A tanuló véleményt mond kulturális élményekről.",
+     "szokincs": [
+      "der Roman",
+      "die Handlung",
+      "der Schauspieler",
+      "die Rolle",
+      "empfehlen",
+      "die Kritik",
+      "spannend",
+      "langweilig",
+      "der Auftritt",
+      "das Publikum"
+     ],
+     "nyelvtan": [
+      "melléknévragozás határozatlan névelő után",
+      "véleményt kifejező szerkezetek: Ich finde, dass…",
+      "ajánlás: Ich würde … empfehlen"
+     ],
+     "kommunikacios_szandekok": [
+      "élmény összefoglalása",
+      "vélemény és értékelés",
+      "ajánlás megfogalmazása"
+     ],
+     "javasolt_tevekenysegek": [
+      "könyv- vagy filmajánló írása",
+      "osztálytoplista készítése",
+      "rövid kritika előadása"
+     ],
+     "teljes_szoveg": "Témakör: Kultur: Musik, Film und Bücher – Kultúra\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Freizeit, Unterhaltung\nKommunikációs / fejlesztési cél: A tanuló véleményt mond kulturális élményekről.\nSzókincs (példák): der Roman, die Handlung, der Schauspieler, die Rolle, empfehlen, die Kritik, spannend, langweilig, der Auftritt, das Publikum\nNyelvtani fókusz: melléknévragozás határozatlan névelő után; véleményt kifejező szerkezetek: Ich finde, dass…; ajánlás: Ich würde … empfehlen\nKommunikációs szándékok: élmény összefoglalása; vélemény és értékelés; ajánlás megfogalmazása\nJavasolt tevékenységek: könyv- vagy filmajánló írása; osztálytoplista készítése; rövid kritika előadása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Arbeit und Praktikum – Munka és gyakorlat",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Öffentliches Leben, Dienstleistungen",
+     "cefr_cel": "A tanuló bemutatkozik munkahelyi helyzetben.",
+     "szokincs": [
+      "das Praktikum",
+      "der Lebenslauf",
+      "die Stelle",
+      "der Kollege",
+      "die Aufgabe",
+      "pünktlich",
+      "zuverlässig",
+      "die Fähigkeit",
+      "der Chef",
+      "das Gehalt"
+     ],
+     "nyelvtan": [
+      "udvarias formák és a Sie-forma következetes használata",
+      "függő kérdés a hivatalos levélben",
+      "Partizip melléknévként"
+     ],
+     "kommunikacios_szandekok": [
+      "önéletrajzi adatok megadása",
+      "erősségek bemutatása",
+      "hivatalos kérdés megfogalmazása"
+     ],
+     "javasolt_tevekenysegek": [
+      "egyszerű német önéletrajz",
+      "állásinterjú-szerepjáték",
+      "jelentkezési levél vázlata"
+     ],
+     "teljes_szoveg": "Témakör: Arbeit und Praktikum – Munka és gyakorlat\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Öffentliches Leben, Dienstleistungen\nKommunikációs / fejlesztési cél: A tanuló bemutatkozik munkahelyi helyzetben.\nSzókincs (példák): das Praktikum, der Lebenslauf, die Stelle, der Kollege, die Aufgabe, pünktlich, zuverlässig, die Fähigkeit, der Chef, das Gehalt\nNyelvtani fókusz: udvarias formák és a Sie-forma következetes használata; függő kérdés a hivatalos levélben; Partizip melléknévként\nKommunikációs szándékok: önéletrajzi adatok megadása; erősségek bemutatása; hivatalos kérdés megfogalmazása\nJavasolt tevékenységek: egyszerű német önéletrajz; állásinterjú-szerepjáték; jelentkezési levél vázlata\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Probleme und Ratschläge – Gondok és tanácsok",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Themen und Situationen im persönlichen Bereich",
+     "cefr_cel": "A tanuló meghallgat egy problémát és tanácsot ad rá.",
+     "szokincs": [
+      "das Problem",
+      "die Lösung",
+      "der Rat",
+      "raten",
+      "sollte",
+      "müsste",
+      "sich Sorgen machen",
+      "helfen",
+      "die Unterstützung",
+      "versuchen"
+     ],
+     "nyelvtan": [
+      "sollte és müsste tanácsadásra",
+      "feltételes mód udvarias javaslatban",
+      "imperatívusz és alternatívái"
+     ],
+     "kommunikacios_szandekok": [
+      "probléma megfogalmazása",
+      "tanács adása",
+      "együttérzés kifejezése"
+     ],
+     "javasolt_tevekenysegek": [
+      "tanácsadó rovat írása",
+      "problémakártyás szerepjáték",
+      "megoldásötlet-börze"
+     ],
+     "teljes_szoveg": "Témakör: Probleme und Ratschläge – Gondok és tanácsok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló meghallgat egy problémát és tanácsot ad rá.\nSzókincs (példák): das Problem, die Lösung, der Rat, raten, sollte, müsste, sich Sorgen machen, helfen, die Unterstützung, versuchen\nNyelvtani fókusz: sollte és müsste tanácsadásra; feltételes mód udvarias javaslatban; imperatívusz és alternatívái\nKommunikációs szándékok: probléma megfogalmazása; tanács adása; együttérzés kifejezése\nJavasolt tevékenységek: tanácsadó rovat írása; problémakártyás szerepjáték; megoldásötlet-börze\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Feste und Geschichte im deutschsprachigen Raum – Ünnepek és történelem",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Interkulturelle und landeskundliche Themen",
+     "cefr_cel": "A tanuló bemutat egy német nyelvterületi ünnepet vagy eseményet.",
+     "szokincs": [
+      "das Ereignis",
+      "die Mauer",
+      "die Wiedervereinigung",
+      "der Feiertag",
+      "das Oktoberfest",
+      "die Geschichte",
+      "der Jahrestag",
+      "erinnern an",
+      "die Bedeutung",
+      "damals"
+     ],
+     "nyelvtan": [
+      "múlt idejű szenvedő szerkezet",
+      "időhatározói mellékmondat: als és nachdem",
+      "évszámok és korszakok megnevezése"
+     ],
+     "kommunikacios_szandekok": [
+      "esemény ismertetése",
+      "időrend kifejezése",
+      "jelentőség megfogalmazása"
+     ],
+     "javasolt_tevekenysegek": [
+      "idővonal készítése",
+      "ünnep bemutatása kiselőadásban",
+      "magyar–német párhuzamok keresése"
+     ],
+     "teljes_szoveg": "Témakör: Feste und Geschichte im deutschsprachigen Raum – Ünnepek és történelem\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Interkulturelle und landeskundliche Themen\nKommunikációs / fejlesztési cél: A tanuló bemutat egy német nyelvterületi ünnepet vagy eseményet.\nSzókincs (példák): das Ereignis, die Mauer, die Wiedervereinigung, der Feiertag, das Oktoberfest, die Geschichte, der Jahrestag, erinnern an, die Bedeutung, damals\nNyelvtani fókusz: múlt idejű szenvedő szerkezet; időhatározói mellékmondat: als és nachdem; évszámok és korszakok megnevezése\nKommunikációs szándékok: esemény ismertetése; időrend kifejezése; jelentőség megfogalmazása\nJavasolt tevékenységek: idővonal készítése; ünnep bemutatása kiselőadásban; magyar–német párhuzamok keresése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    },
+    {
+     "nev": "Rund um die Welt – Utazási tervek és tapasztalatok",
+     "javasolt_oraszam": 10,
+     "kerettantervi_temakor": "Reisen und Urlaub",
+     "cefr_cel": "A tanuló megtervez egy utat és beszámol egy útról.",
+     "szokincs": [
+      "die Reiseroute",
+      "buchen",
+      "die Unterkunft",
+      "die Grenze",
+      "der Reisepass",
+      "besichtigen",
+      "die Erfahrung",
+      "empfehlenswert",
+      "die Rückreise",
+      "unterwegs"
+     ],
+     "nyelvtan": [
+      "összetett múlt és jövő idő együttes használata",
+      "elöljárós vonzatos igék az utazás témakörében",
+      "hosszabb szövegek kötőelemei"
+     ],
+     "kommunikacios_szandekok": [
+      "útiterv bemutatása",
+      "élménybeszámoló",
+      "ajánlás úti célról"
+     ],
+     "javasolt_tevekenysegek": [
+      "osztálykirándulás megtervezése költségvetéssel",
+      "útinapló írása",
+      "úti célok ajánlása egymásnak"
+     ],
+     "teljes_szoveg": "Témakör: Rund um die Welt – Utazási tervek és tapasztalatok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Reisen und Urlaub\nKommunikációs / fejlesztési cél: A tanuló megtervez egy utat és beszámol egy útról.\nSzókincs (példák): die Reiseroute, buchen, die Unterkunft, die Grenze, der Reisepass, besichtigen, die Erfahrung, empfehlenswert, die Rückreise, unterwegs\nNyelvtani fókusz: összetett múlt és jövő idő együttes használata; elöljárós vonzatos igék az utazás témakörében; hosszabb szövegek kötőelemei\nKommunikációs szándékok: útiterv bemutatása; élménybeszámoló; ajánlás úti célról\nJavasolt tevékenységek: osztálykirándulás megtervezése költségvetéssel; útinapló írása; úti célok ajánlása egymásnak\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+    }
+   ],
+   "teljes_szoveg": "8. évfolyam – A2 → B1 – összetett nyelvi szerkezetek\nA 8. évfolyamon a feltételes mód, a vonatkozói mellékmondatok és a szenvedő szerkezet teszi lehetővé az árnyalt véleménynyilvánítást és a hosszabb összefüggő szöveget.\n\nTémakör: Wenn ich Zeit hätte – Ha lenne időm (Konjunktiv II)\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló feltételes helyzeteket fogalmaz meg és udvariasan kér.\nSzókincs (példák): hätte, wäre, würde, könnte, der Wunsch, sich wünschen, vorstellen, die Möglichkeit, eigentlich, vielleicht\nNyelvtani fókusz: Konjunktiv II: wäre, hätte, würde + Infinitiv; feltételes mellékmondat wenn kötőszóval; udvarias kérés: Könnten Sie…?\nKommunikációs szándékok: kívánság kifejezése; udvarias kérés; feltételezés megfogalmazása\nJavasolt tevékenységek: Mit tennél, ha…? körkérdés; udvarias kérések gyűjtése; álomnap leírása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Der Mann, der… – Vonatkozói mellékmondatok\nJavasolt óraszám: 11 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló pontosan körülír személyeket és tárgyakat.\nSzókincs (példák): beschreiben, genau, das Gerät, der Gegenstand, benutzen, nützlich, derjenige, bekannt, erfinden, die Erfindung\nNyelvtani fókusz: vonatkozó névmások alany- és tárgyesetben: der, die, das, den; a vonatkozói mellékmondat szórendje; vonatkozó névmás elöljáróval\nKommunikációs szándékok: személy és tárgy körülírása; meghatározás megfogalmazása; kitalálós kérdés feltevése\nJavasolt tevékenységek: Mi ez? körülíró játék; találmányok bemutatása; definíciós kártyák készítése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Es wird gemacht – Szenvedő szerkezet\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Fächerübergreifende Themen und Situationen\nKommunikációs / fejlesztési cél: A tanuló leír folyamatokat, ahol a cselekvő nem fontos.\nSzókincs (példák): herstellen, produzieren, der Prozess, der Schritt, das Material, verwendet, entwickeln, die Fabrik, danach, schließlich\nNyelvtani fókusz: szenvedő szerkezet jelen időben: werden + Partizip II; von és durch a cselekvő megnevezésére; folyamatleírás sorrendi kötőszavakkal\nKommunikációs szándékok: folyamat leírása; gyártás bemutatása; sorrend kifejezése\nJavasolt tevékenységek: egy termék útjának bemutatása; recept átírása szenvedő szerkezetbe; folyamatábra szövegezése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Schule und Zukunftspläne – Iskola és jövőtervek\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló beszél a továbbtanulásról és a céljairól.\nSzókincs (példák): das Gymnasium, die Prüfung, bestehen, das Zeugnis, sich entscheiden, das Ziel, die Chance, der Druck, erfolgreich, die Bewerbung\nNyelvtani fókusz: függő kérdés: ob és kérdőszavas mellékmondat; jövő idő és a Präsens jövő értelmű használata; zu + Infinitiv szerkezet\nKommunikációs szándékok: terv kifejtése; döntés indoklása; bizonytalanság kifejezése\nJavasolt tevékenységek: továbbtanulási terv bemutatása; interjú egy idősebb diákkal; célkitűzés-plakát\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Wohnen in der Stadt und auf dem Land – Város és vidék\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im Bereich der unmittelbaren Umgebung\nKommunikációs / fejlesztési cél: A tanuló összehasonlítja a városi és a vidéki életet.\nSzókincs (példák): die Großstadt, das Dorf, die Miete, der Lärm, die Ruhe, der Verkehr, die Umgebung, umziehen, die Nachbarschaft, das Angebot\nNyelvtani fókusz: birtokos eset (Genitiv) alapjai; melléknévragozás határozott névelő után; érvelő szerkezetek: einerseits – andererseits\nKommunikációs szándékok: előny és hátrány felsorolása; összehasonlítás; saját preferencia indoklása\nJavasolt tevékenységek: város–vidék vita; álomlakóhely bemutatása; lakáshirdetés írása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Kultur: Musik, Film und Bücher – Kultúra\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Freizeit, Unterhaltung\nKommunikációs / fejlesztési cél: A tanuló véleményt mond kulturális élményekről.\nSzókincs (példák): der Roman, die Handlung, der Schauspieler, die Rolle, empfehlen, die Kritik, spannend, langweilig, der Auftritt, das Publikum\nNyelvtani fókusz: melléknévragozás határozatlan névelő után; véleményt kifejező szerkezetek: Ich finde, dass…; ajánlás: Ich würde … empfehlen\nKommunikációs szándékok: élmény összefoglalása; vélemény és értékelés; ajánlás megfogalmazása\nJavasolt tevékenységek: könyv- vagy filmajánló írása; osztálytoplista készítése; rövid kritika előadása\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Arbeit und Praktikum – Munka és gyakorlat\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Öffentliches Leben, Dienstleistungen\nKommunikációs / fejlesztési cél: A tanuló bemutatkozik munkahelyi helyzetben.\nSzókincs (példák): das Praktikum, der Lebenslauf, die Stelle, der Kollege, die Aufgabe, pünktlich, zuverlässig, die Fähigkeit, der Chef, das Gehalt\nNyelvtani fókusz: udvarias formák és a Sie-forma következetes használata; függő kérdés a hivatalos levélben; Partizip melléknévként\nKommunikációs szándékok: önéletrajzi adatok megadása; erősségek bemutatása; hivatalos kérdés megfogalmazása\nJavasolt tevékenységek: egyszerű német önéletrajz; állásinterjú-szerepjáték; jelentkezési levél vázlata\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Probleme und Ratschläge – Gondok és tanácsok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Themen und Situationen im persönlichen Bereich\nKommunikációs / fejlesztési cél: A tanuló meghallgat egy problémát és tanácsot ad rá.\nSzókincs (példák): das Problem, die Lösung, der Rat, raten, sollte, müsste, sich Sorgen machen, helfen, die Unterstützung, versuchen\nNyelvtani fókusz: sollte és müsste tanácsadásra; feltételes mód udvarias javaslatban; imperatívusz és alternatívái\nKommunikációs szándékok: probléma megfogalmazása; tanács adása; együttérzés kifejezése\nJavasolt tevékenységek: tanácsadó rovat írása; problémakártyás szerepjáték; megoldásötlet-börze\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Feste und Geschichte im deutschsprachigen Raum – Ünnepek és történelem\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Interkulturelle und landeskundliche Themen\nKommunikációs / fejlesztési cél: A tanuló bemutat egy német nyelvterületi ünnepet vagy eseményet.\nSzókincs (példák): das Ereignis, die Mauer, die Wiedervereinigung, der Feiertag, das Oktoberfest, die Geschichte, der Jahrestag, erinnern an, die Bedeutung, damals\nNyelvtani fókusz: múlt idejű szenvedő szerkezet; időhatározói mellékmondat: als és nachdem; évszámok és korszakok megnevezése\nKommunikációs szándékok: esemény ismertetése; időrend kifejezése; jelentőség megfogalmazása\nJavasolt tevékenységek: idővonal készítése; ünnep bemutatása kiselőadásban; magyar–német párhuzamok keresése\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el.\n\nTémakör: Rund um die Welt – Utazási tervek és tapasztalatok\nJavasolt óraszám: 10 óra\nHivatalos kerettantervi témakör: Reisen und Urlaub\nKommunikációs / fejlesztési cél: A tanuló megtervez egy utat és beszámol egy útról.\nSzókincs (példák): die Reiseroute, buchen, die Unterkunft, die Grenze, der Reisepass, besichtigen, die Erfahrung, empfehlenswert, die Rückreise, unterwegs\nNyelvtani fókusz: összetett múlt és jövő idő együttes használata; elöljárós vonzatos igék az utazás témakörében; hosszabb szövegek kötőelemei\nKommunikációs szándékok: útiterv bemutatása; élménybeszámoló; ajánlás úti célról\nJavasolt tevékenységek: osztálykirándulás megtervezése költségvetéssel; útinapló írása; úti célok ajánlása egymásnak\nA tanár a példákat és tevékenységeket a gyerek érdeklődéséhez igazíthatja, de a fenti szókincstől és nyelvtani fókusztól nem tér el."
+  }
+ }
+}
