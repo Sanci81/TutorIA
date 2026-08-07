@@ -390,11 +390,28 @@ TRANSLATIONS = {
     "review_no_answer": {"hu": "(nincs válasz)", "es": "(sin respuesta)"},
     "review_explanation": {"hu": "Magyarázat", "es": "Explicación"},
 
+    # --- tanár hangja / neve (profil szerkesztése) ---
+    "label_teacher_voice": {"hu": "A tanár hangja", "es": "La voz del profe"},
+    "help_teacher_voice": {
+        "hu": "Válaszd ki, milyen hangon szólaljon meg a tanár. "
+              "A tanár neve a hanghoz tartozik, és bármikor módosítható.",
+        "es": "Elige con qué voz habla el profe. El nombre del profe va con la voz "
+              "y puede cambiarse en cualquier momento.",
+    },
+    "label_teacher_voice_hu": {
+        "hu": "Magyar tanterv", "es": "Currículo húngaro",
+    },
+    "label_teacher_voice_es": {
+        "hu": "Spanyol tanterv", "es": "Currículo español",
+    },
+    "voice_female": {"hu": "Női hang", "es": "Voz femenina"},
+    "voice_male": {"hu": "Férfi hang", "es": "Voz masculina"},
+
     # --- chat üdvözlő üzenetek ---
     "chat_welcome_placement": {
-        "hu": "Szia {name}! 🌟 Én vagyok a {subject} AI tanárod. "
+        "hu": "Szia {name}! 🌟 {teacher} vagyok, a {subject} tanárod. "
               "Kezdjük is el a tanulást!",
-        "es": "¡Hola {name}! 🌟 Soy tu profe de {subject}. "
+        "es": "¡Hola {name}! 🌟 Soy {teacher}, tu profe de {subject}. "
               "¡Empecemos a aprender!",
     },
     "chat_welcome_continue": {

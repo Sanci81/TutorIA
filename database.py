@@ -117,6 +117,10 @@ class Child(Base):
     country: Mapped[str] = mapped_column(String(2), nullable=False)
     curriculum: Mapped[str] = mapped_column(String(2), nullable=False, default="HU")
     region: Mapped[str | None] = mapped_column(String(10))
+    # A tanár hangja tantervenként: "female" vagy "male".
+    # A tanár NEVE ebből származik (lásd app.py TEACHER_PROFILES).
+    voice_gender_hu: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    voice_gender_es: Mapped[str | None] = mapped_column(String(10), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -365,6 +369,8 @@ def _child_dict(child: Child) -> dict[str, Any]:
         "country": child.country,
         "curriculum": getattr(child, "curriculum", child.country) or child.country,
         "region": child.region,
+        "voice_gender_hu": getattr(child, "voice_gender_hu", None) or "female",
+        "voice_gender_es": getattr(child, "voice_gender_es", None) or "female",
         "created_at": child.created_at,
         "needs_birth_date": bd is None,
     }
@@ -387,6 +393,30 @@ def init_db() -> None:
     ensure_children_grade_columns()
     ensure_vocabulary_topic_id_column()
     ensure_chat_sessions_grade_column()
+    ensure_children_voice_columns()
+
+
+def ensure_children_voice_columns() -> None:
+    """voice_gender_hu / voice_gender_es oszlopok (tanár hangja tantervenként)."""
+    from sqlalchemy import text
+
+    engine = _get_engine()
+    stmts = (
+        "ALTER TABLE children ADD COLUMN IF NOT EXISTS "
+        "voice_gender_hu VARCHAR(10)",
+        "ALTER TABLE children ADD COLUMN IF NOT EXISTS "
+        "voice_gender_es VARCHAR(10)",
+        "UPDATE children SET voice_gender_hu = 'female' WHERE voice_gender_hu IS NULL",
+        "UPDATE children SET voice_gender_es = 'female' WHERE voice_gender_es IS NULL",
+    )
+    for stmt in stmts:
+        try:
+            with engine.begin() as conn:
+                conn.execute(text(stmt))
+        except Exception as exc:
+            logger.warning(
+                "ensure_children_voice_columns: kihagyva (%s): %s", stmt, exc
+            )
 
 
 def ensure_children_grade_columns() -> None:
@@ -716,6 +746,8 @@ def update_child(
     curriculum: str = "HU",
     grade_hu: int | None = None,
     grade_es: int | None = None,
+    voice_gender_hu: str | None = None,
+    voice_gender_es: str | None = None,
 ) -> bool:
     """Gyerek profil szerkesztése – csak a megadott szülő gyerekéhez."""
     db = _session()
@@ -739,6 +771,10 @@ def update_child(
         child.country = country
         child.curriculum = curriculum
         child.region = region
+        if voice_gender_hu in ("female", "male"):
+            child.voice_gender_hu = voice_gender_hu
+        if voice_gender_es in ("female", "male"):
+            child.voice_gender_es = voice_gender_es
         db.commit()
         return True
     finally:

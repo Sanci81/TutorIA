@@ -14,6 +14,37 @@
                 <input type="text" id="name" name="name" value="{{ form.get('name', '') }}" required>
             </div>
 
+            <fieldset class="field" style="border:1px solid #e2e2e2;border-radius:10px;padding:12px 14px;margin-bottom:16px;">
+                <legend style="padding:0 6px;font-weight:600;">{{ t('label_teacher_voice') }}</legend>
+                <p style="margin:0 0 10px;font-size:0.9em;opacity:0.75;">{{ t('help_teacher_voice') }}</p>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="voice_gender_hu">{{ t('label_teacher_voice_hu') }}</label>
+                        <select id="voice_gender_hu" name="voice_gender_hu">
+                            {% for gkey in ['female', 'male'] %}
+                                <option value="{{ gkey }}"
+                                    {{ 'selected' if form.get('voice_gender_hu', 'female') == gkey else '' }}>
+                                    {{ t('voice_female') if gkey == 'female' else t('voice_male') }}
+                                    — {{ teacher_profiles['HU'][gkey]['name'] }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="voice_gender_es">{{ t('label_teacher_voice_es') }}</label>
+                        <select id="voice_gender_es" name="voice_gender_es">
+                            {% for gkey in ['female', 'male'] %}
+                                <option value="{{ gkey }}"
+                                    {{ 'selected' if form.get('voice_gender_es', 'female') == gkey else '' }}>
+                                    {{ t('voice_female') if gkey == 'female' else t('voice_male') }}
+                                    — {{ teacher_profiles['ES'][gkey]['name'] }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+
             <div class="field-row">
                 <div class="field">
                     <label for="birth_date">{{ t('label_child_birth_date') }}</label>

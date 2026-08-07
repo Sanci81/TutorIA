@@ -65,6 +65,39 @@ logger = logging.getLogger(__name__)
 AZURE_VOICE_HU = "hu-HU-NoemiNeural"
 AZURE_VOICE_ES = "es-ES-ElviraNeural"
 
+# A tanár hangja + neve tantervenként és nemenként. A név a hanghoz tartozik,
+# a szülő a profilban csak a hang nemét választja ki (női/férfi).
+TEACHER_PROFILES = {
+    "HU": {
+        "female": {"voice": "hu-HU-NoemiNeural", "name": "Noémi"},
+        "male": {"voice": "hu-HU-TamasNeural", "name": "Tamás"},
+    },
+    "ES": {
+        "female": {"voice": "es-ES-ElviraNeural", "name": "Elvira"},
+        "male": {"voice": "es-ES-AlvaroNeural", "name": "Álvaro"},
+    },
+}
+
+
+def _teacher_name_for_prompt(child: dict | None) -> str:
+    """A tanár neve az aktív tantervben – a rendszerprompthoz."""
+    try:
+        return _teacher_profile(child, _active_curriculum())["name"]
+    except Exception:
+        return ""
+
+
+def _teacher_profile(child: dict | None, curriculum: str) -> dict:
+    """A gyerekhez tartozó tanár (hang + név) az adott tantervben."""
+    curr = (curriculum or "HU").upper()
+    if curr not in TEACHER_PROFILES:
+        curr = "HU"
+    key = "voice_gender_es" if curr == "ES" else "voice_gender_hu"
+    gender = (child or {}).get(key) or "female"
+    if gender not in ("female", "male"):
+        gender = "female"
+    return TEACHER_PROFILES[curr][gender]
+
 # Emoji és egyéb piktogramok kiszűrése a TTS-nek küldött szövegből – a
 # chat-buborékban maradjon az emoji (vizuálisan jó), csak a hangos felolvasásból
 # maradjon ki, mert a TTS motorok néha megpróbálják "kimondani" (pl. "csillag").
@@ -1080,6 +1113,12 @@ def edit_child(child_id: int):
         grade_es_raw = (request.form.get("grade_es") or "").strip()
         country = request.form.get("country") or ""
         region = request.form.get("region") or None
+        voice_hu = (request.form.get("voice_gender_hu") or "female").strip()
+        voice_es = (request.form.get("voice_gender_es") or "female").strip()
+        if voice_hu not in ("female", "male"):
+            voice_hu = "female"
+        if voice_es not in ("female", "male"):
+            voice_es = "female"
 
         errors = False
         birth_date = _parse_birth_date_form(birth_date_raw)
@@ -1121,7 +1160,10 @@ def edit_child(child_id: int):
                     "grade_es": grade_es_raw,
                     "country": country,
                     "region": region,
+                    "voice_gender_hu": voice_hu,
+                    "voice_gender_es": voice_es,
                 },
+                teacher_profiles=TEACHER_PROFILES,
             )
 
         if country != "ES":
@@ -1138,7 +1180,12 @@ def edit_child(child_id: int):
             curriculum=active_curriculum,
             grade_hu=grade_hu_val,
             grade_es=grade_es_val,
+            voice_gender_hu=voice_hu,
+            voice_gender_es=voice_es,
         )
+        # A hangválasztás azonnal érvényesüljön a következő felolvasásnál is.
+        session.pop("tts_voice", None)
+        session.pop("teacher_name", None)
         flash(i18n.t("flash_child_updated", g.lang), "success")
         return redirect(url_for("dashboard"))
 
@@ -1150,8 +1197,13 @@ def edit_child(child_id: int):
         "grade_es": child.get("grade_es", ""),
         "country": child["country"],
         "region": child.get("region") or "",
+        "voice_gender_hu": child.get("voice_gender_hu") or "female",
+        "voice_gender_es": child.get("voice_gender_es") or "female",
     }
-    return render_template("edit_child.html", child=child, form=form)
+    return render_template(
+        "edit_child.html", child=child, form=form,
+        teacher_profiles=TEACHER_PROFILES,
+    )
 
 
 _SUBJECT_ICONS: dict[str, str] = {
@@ -1875,6 +1927,10 @@ def _whisper_transcribe(
     result = (transcription.text or "").strip()
 
     # ── DIREKT prompt-visszhang szűrő ──
+    # A gpt-4o-mini-transcribe néha SZÓ SZERINT visszaadja a neki küldött
+    # utasítást ("Magyar nyelvű gyerek beszél. Írd le pontosan..."). A lenti
+    # gyakoriság-alapú szűrő ezt nem fogja meg, mert az utasítás szavai nincsenek
+    # az _ECHO_WORDS halmazban. Ezért közvetlenül a prompthoz hasonlítjuk.
     def _norm_for_echo(s: str) -> str:
         return " ".join(
             "".join(ch for ch in s.lower() if ch.isalnum() or ch.isspace()).split()
@@ -1931,6 +1987,11 @@ def _azure_tts_speak(text: str) -> bytes | None:
         else:
             lang = "hu-HU"
             voice = AZURE_VOICE_HU
+        # A szülő által a profilban választott hang (a chat oldal betöltésekor
+        # kerül a Flask session-be) felülírja az alapértelmezettet.
+        chosen = (session.get("tts_voice") or "").strip()
+        if chosen:
+            voice = chosen
         cleaned = text.replace("**", "").replace("##", "").replace("- ", "")
         cleaned = _strip_emoji_for_tts(cleaned)[:4096]
         escaped = _xml_escape_mod.escape(cleaned)
@@ -2159,10 +2220,19 @@ def _update_streak(child_id: int, progress_subject: str) -> dict:
     return progress
 
 
-def _child_safety_block() -> str:
+def _child_safety_block(teacher_name: str = "") -> str:
     """Gyermekvédelmi szabályok – a G7 'safety by design' elv alapján.
-    A system prompt LEGELEJÉN, a legmagasabb prioritással."""
-    return """GYERMEKVÉDELEM – EZ FELÜLÍR MINDEN MÁS SZABÁLYT, MINDIG tartsd be:
+    A system prompt LEGELEJÉN, a legmagasabb prioritással.
+    Ha meg van adva, a tanár NEVE is ide kerül, hogy minden prompt-ágban hasson."""
+    intro = ""
+    if teacher_name:
+        intro = (
+            f"A NEVED: {teacher_name}. Ha bemutatkozol vagy magadra utalsz, MINDIG "
+            f"ezt a nevet használd. SOHA ne mondd magadról, hogy 'AI tanár' vagy "
+            f"'mesterséges intelligencia' — te {teacher_name} vagy, a gyerek tanára. "
+            f"Ne mutatkozz be újra minden üzenetben, csak a beszélgetés elején.\n\n"
+        )
+    return intro + """GYERMEKVÉDELEM – EZ FELÜLÍR MINDEN MÁS SZABÁLYT, MINDIG tartsd be:
 
 Egy gyerekkel beszélgetsz. A biztonsága a legfontosabb.
 
@@ -2227,7 +2297,7 @@ def _build_chat_system_prompt(
     if es_curriculum and is_foreign_language and lang:
         native_lang = "spanyolul"
         native_label = "spanyol"
-        prompt = _child_safety_block() + f"""Eres un profesor de IA amable, paciente y motivador.
+        prompt = _child_safety_block(_teacher_name_for_prompt(child)) + f"""Eres un profesor de IA amable, paciente y motivador.
 Tu alumno: {child["name"]}, {age} años, {grade}º curso.
 Asignatura: {subject_label}
 Tema actual: {current_topic}
@@ -2464,7 +2534,7 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
 
     # ── ES tanterv, NEM-idegennyelvi tantárgy → TELJES prompt spanyolul ──
     if es_curriculum and not is_foreign_language:
-        prompt = _child_safety_block() + f"""Eres un profesor de IA amable, paciente y motivador.
+        prompt = _child_safety_block(_teacher_name_for_prompt(child)) + f"""Eres un profesor de IA amable, paciente y motivador.
 Tu alumno: {child["name"]}, {age} años, {grade}º curso.
 Asignatura: {subject_label}
 Tema actual: {current_topic}
@@ -2628,7 +2698,7 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
         return prompt
 
     # ── HU tanterv (nem-idegennyelv tantárgy) → magyar prompt ──
-    prompt = _child_safety_block() + f"""Te egy kedves, türelmes, lelkesítő AI tanár vagy.
+    prompt = _child_safety_block(_teacher_name_for_prompt(child)) + f"""Te egy kedves, türelmes, lelkesítő AI tanár vagy.
 Tanítványod: {child["name"]}, {age} éves, {grade}. osztályos.
 Tantárgy: {subject_label}
 Aktuális témakör: {current_topic}
@@ -2994,7 +3064,13 @@ def _call_ai_for_quiz(
                 f"You are a {lang_display} oral quiz generator for a 6-year-old.\n\n"
                 f"{source_block}\n\n"
                 f"{oral_rule}\n"
-                f"Return ONLY: {{\"questions\": [{{\"type\":\"fill\",\"q\":\"...\",\"answer\":\"oneword\"}}]}}"
+                f"- Add a short \"explanation\" field to every question, written in "
+                f"{q_lang_display} (the question's own language, NEVER in {lang_display}): ONE "
+                f"sentence saying why that answer is correct. Max 200 characters.\n"
+                f"The \"q\" and \"explanation\" fields are in {q_lang_display}; only the "
+                f"\"answer\" field is in {lang_display}.\n"
+                f"Return ONLY: {{\"questions\": [{{\"type\":\"fill\",\"q\":\"...\","
+                f"\"answer\":\"...\",\"explanation\":\"...\"}}]}}"
             )
             model = "gpt-4o-mini"
             temperature = 0.3
@@ -3010,6 +3086,26 @@ def _call_ai_for_quiz(
                 "- LAS PREGUNTAS DEBEN BASARSE EXCLUSIVAMENTE en el TEXTO CURRICULAR de arriba. NUNCA hagas preguntas de conocimiento general. Si el tema es \"animales\", pregunta cuántas patas tiene un perro (respuesta: cuatro) — NO preguntes de qué color es el cielo.\n"
                 "- EJEMPLO de buena pregunta basada en el temario: '¿Cuántas patas tiene un perro?' (respuesta: cuatro)\n"
                 "- IMPORTANTE: el campo \"answer\" debe contener SIEMPRE la respuesta COMPLETA y CORRECTA a la pregunta. Comprueba que tu answer realmente responde a la pregunta antes de entregarla.\n"
+                "- EL IDIOMA DE LA PREGUNTA Y DE LA RESPUESTA ES EXCLUSIVAMENTE EL ESPAÑOL. "
+                "NUNCA escribas una palabra inglesa en el campo \"answer\". "
+                "MAL: \"forty\" — BIEN: \"cuarenta y dos\".\n"
+                "- CADA PREGUNTA DEBE TENER UNA ÚNICA RESPUESTA OBJETIVAMENTE CORRECTA, que se "
+                "pueda contar o saber. PROHIBIDAS las preguntas vagas o indeterminadas. "
+                "MAL: '¿Cuántas partes del cuerpo tiene una persona?' (no hay una única respuesta) — "
+                "BIEN: '¿Cuántas patas tiene un gato?' (respuesta: cuatro). Antes de dar una "
+                "pregunta, pregúntate: ¿de verdad tiene EXACTAMENTE UNA respuesta correcta?\n"
+                "=== EL CURRÍCULO NO ES MATERIAL PARA EL NIÑO ===\n"
+                "El texto curricular está escrito PARA EL MAESTRO. Contiene términos "
+                "metodológicos (p. ej. 'análisis', 'competencia comunicativa') que el niño "
+                "NUNCA ha oído. NUNCA preguntes por el NOMBRE de un concepto así. "
+                "PROHIBIDO: '¿Cómo se llama separar palabras en sonidos?'. "
+                "EN SU LUGAR pregunta lo que el niño realmente sabe y hace: "
+                "'¿Cuántas sílabas tiene la palabra manzana?' (respuesta: tres).\n"
+                "- Añade a cada pregunta un campo \"explanation\" breve EN ESPAÑOL: UNA frase que "
+                "explique POR QUÉ esa es la respuesta correcta. Si una enumeración es corta y "
+                "ayuda de verdad, enumérala (p. ej. 'El gato tiene cuatro patas: dos delanteras "
+                "y dos traseras.'). Si la enumeración sería larga, NO la hagas, solo explica "
+                "brevemente. Máximo 200 caracteres.\n"
                 "- Máximo 5 preguntas.\n"
             )
             system = (
@@ -3017,7 +3113,9 @@ def _call_ai_for_quiz(
                 f"ALUMNO: {age} años, {grade}º de primaria.\n\n"
                 f"{oral_rule}\n"
                 f"TEXTO CURRICULAR:\n{material}\n\n"
-                'Devuelve SOLO: {"questions": [{"type":"fill","q":"...","answer":"oneword"}]}'
+                "TODO EL TEXTO (pregunta, respuesta, explicación) EN ESPAÑOL.\n"
+                'Devuelve SOLO: {"questions": [{"type":"fill","q":"¿Cuántas patas tiene un gato?",'
+                '"answer":"cuatro","explanation":"El gato tiene cuatro patas: dos delanteras y dos traseras."}]}'
             )
             model = "gpt-4o-mini"
             temperature = 0.5
@@ -3033,6 +3131,26 @@ def _call_ai_for_quiz(
                 "- A KÉRDÉSEK KIZÁRÓLAG a fenti CURRICULUM TEXT anyagából származzanak. SOHA ne kérdezz általános tudáskérdéseket. Ha a tananyag 'állatok', kérdezd, hány lába van a kutyának (válasz: négy) — NE kérdezd, milyen színű az ég.\n"
                 "- Példa JÓ, TÉMAKÖRHÖZ KÖTÖTT kérdésre: 'Hány lába van a kutyának?' (válasz: négy)\n"
                 "- FONTOS: az `answer` mező mindig a kérdésre adott TELJES, HELYES választ tartalmazza. Ha a kérdés egy kifejezésre vonatkozik, az answer a teljes kifejezés legyen, NE egyetlen szó belőle. Csak olyan kérdést tegyél fel, amelyre a te answer meződ a HELYES válasz — ellenőrizd magad, mielőtt kiadod a kérdést.\n"
+                "- A KÉRDÉS ÉS A VÁLASZ NYELVE KIZÁRÓLAG MAGYAR. Az `answer` mezőbe SOHA "
+                "ne írj angol szót vagy angol számnevet. ROSSZ: \"forty\" — JÓ: \"negyvenkettő\".\n"
+                "- A KÉRDÉSNEK EGYETLEN, OBJEKTÍVEN HELYES VÁLASZA LEGYEN, amit meg lehet "
+                "számolni vagy tudni. TILOS a bizonytalan, meghatározatlan kérdés. "
+                "ROSSZ: 'Hány testrésze van az embernek?' (erre nincs egyetlen jó válasz) — "
+                "JÓ: 'Hány lába van egy macskának?' (válasz: négy). Mielőtt kiadsz egy "
+                "kérdést, kérdezd meg magadtól: tényleg PONTOSAN EGY helyes válasz van rá?\n"
+                "=== A KERETTANTERV NEM TANANYAG ===\n"
+                "A fenti tanterv-szöveg a TANÁRNAK szól. Módszertani szakkifejezéseket "
+                "tartalmaz (pl. 'analízis', 'hallásfejlesztés', 'kompetencia'), amiket a "
+                "gyerek SOHA nem hallott. SOHA ne kérdezz rá ilyen fogalom NEVÉRE. "
+                "TILOS: 'Mi a neve annak, amikor szavakat hangokra bontunk?'. "
+                "HELYETTE azt kérdezd, amit a gyerek ténylegesen tud és csinál: "
+                "'Hány szótagból áll ez a szó: alma?' (válasz: kettő), "
+                "'Melyik hanggal kezdődik a kutya szó?' (válasz: k).\n"
+                "- Minden kérdéshez adj egy rövid `explanation` mezőt is MAGYARUL: EGY mondat, "
+                "ami megmondja, MIÉRT az a helyes válasz. Ha a felsorolás rövid és tényleg "
+                "segít, sorold fel (pl. 'A macskának négy lába van: két első és két hátsó.'). "
+                "Ha a felsorolás hosszú lenne (pl. az ábécé összes hangja), NE sorold fel, "
+                "csak magyarázd el röviden. Legfeljebb 200 karakter.\n"
                 "- Legfeljebb 5 kérdést adj.\n"
             )
             system = (
@@ -3040,8 +3158,9 @@ def _call_ai_for_quiz(
                 f"CHILD: {age} years old, grade {grade}.\n\n"
                 f"CURRICULUM TEXT:\n{material}\n\n"
                 f"{oral_rule}\n"
-                "ALL text in HUNGARIAN.\n"
-                'Return ONLY: {"questions": [{"type":"fill","q":"...","answer":"oneword"}]}'
+                "MINDEN SZÖVEG (kérdés, válasz, magyarázat) MAGYARUL legyen.\n"
+                'Return ONLY: {"questions": [{"type":"fill","q":"Hány lába van egy macskának?",'
+                '"answer":"négy","explanation":"A macskának négy lába van: két első és két hátsó."}]}'
             )
             model = "gpt-4o-mini"
             temperature = 0.5
@@ -3069,7 +3188,11 @@ def _call_ai_for_quiz(
                     continue
                 if not q.get("answer"):
                     continue
-                result.append({"type": "fill", "q": q["q"], "answer": str(q["answer"]), "options": []})
+                item = {"type": "fill", "q": q["q"], "answer": str(q["answer"]), "options": []}
+                expl = (q.get("explanation") or q.get("magyarazat") or "").strip()
+                if expl:
+                    item["explanation"] = expl[:200]
+                result.append(item)
             return result
 
         return _oral_normalize(_oral_request())[:q_count]
@@ -3565,14 +3688,15 @@ def _session_curriculum(chat_session: dict) -> str | None:
 
 def _chat_initial_assistant_message(
     child_name: str, subject_label: str, *, placement: bool, lang: str = "hu",
-    topic: str = "",
+    topic: str = "", teacher: str = "",
 ) -> str:
     if placement:
         return i18n.t("chat_welcome_placement", lang).format(
-            name=child_name, subject=subject_label
+            name=child_name, subject=subject_label, teacher=teacher
         )
     return i18n.t("chat_welcome_continue", lang).format(
-        name=child_name, subject=subject_label, topic=topic or subject_label
+        name=child_name, subject=subject_label, topic=topic or subject_label,
+        teacher=teacher,
     )
 
 
@@ -3838,16 +3962,24 @@ def child_chat(child_id: int):
     placement_mode = progress.get("level", 0) == 0
     active_curr = _active_curriculum()      # "HU" vagy "ES"
 
+    # A tanár hangja + neve a profilból → session, hogy a TTS végpont
+    # (api_voice_speak) is tudja, melyik hangon szólaljon meg.
+    teacher = _teacher_profile(child, active_curr)
+    session["tts_voice"] = teacher["voice"]
+    session["teacher_name"] = teacher["name"]
+
     if not messages:
         welcome = _chat_initial_assistant_message(
             child["name"], subject_label, placement=placement_mode,
             lang="es" if active_curr == "ES" else "hu",
-            topic=current_topic,
+            topic=current_topic, teacher=teacher["name"],
         )
         database.add_chat_message(chat_session["id"], "assistant", welcome)
 
-        # Az üdvözlés után az AI azonnal generáljon tanítási tartalmat
-        # (placement módban is — a chatben nincs külön felmérő).
+        # Az üdvözlés után az AI azonnal generáljon tanítási tartalmat, hogy ne
+        # álljon meg a chat. Placement módban is: a chatben NEM futtatunk külön
+        # kvízt (a felmérő a külön teszt-gombon keresztül érhető el), ezért ott is
+        # rögtön a tanítás indul.
         if True:
             try:
                 api_key = _openai_api_key()
@@ -5158,12 +5290,20 @@ def child_chat_test_submit(child_id: int):
             if _active_curriculum() == "ES":
                 parts = ["Veamos las respuestas que fallaron:"]
                 for r in wrong[:3]:
-                    parts.append(f"Pregunta: {r['q']} — La respuesta correcta era: {r['correct_answer']}.")
+                    parts.append(
+                        f"Pregunta: {r['q']} — La respuesta correcta era: {r['correct_answer']}."
+                    )
+                    if r.get("explanation"):
+                        parts.append(str(r["explanation"]))
                 voice_feedback = " ".join(parts)
             else:
                 parts = ["Nézzük meg, hol hibáztál:"]
                 for r in wrong[:3]:
-                    parts.append(f"Kérdés: {r['q']} — A helyes válasz: {r['correct_answer']}.")
+                    parts.append(
+                        f"Kérdés: {r['q']} — A helyes válasz: {r['correct_answer']}."
+                    )
+                    if r.get("explanation"):
+                        parts.append(str(r["explanation"]))
                 voice_feedback = " ".join(parts)
 
     return jsonify(
