@@ -1394,16 +1394,28 @@
         // hogy egy nem-olvasó gyerek is értse, mi történik. Ha a böngésző
         // letiltja az automatikus lejátszást, maradjunk csendben.
         (function playWelcomeMessage() {
-            var assistantBubbles = messagesEl.querySelectorAll('.chat-bubble-assistant:not(.chat-typing)');
-            if (!assistantBubbles.length) return;
-            var lastBubble = assistantBubbles[assistantBubbles.length - 1];
-            var innerEl = lastBubble.querySelector('.chat-bubble-inner');
-            if (!innerEl) return;
-            var clone = innerEl.cloneNode(true);
-            clone.querySelectorAll('.chat-figure').forEach(function (f) { f.remove(); });
-            var welcomeText = (clone.textContent || '').trim();
-            if (!welcomeText) return;
-            playTts(welcomeText).catch(function () {});
+            // A lecke elején KÉT asszisztens-üzenet van egymás után: a bemutatkozó
+            // köszönés és az első tanítás. Mindkettőt fel kell olvasni, ezért a
+            // végéről visszafelé összeszedjük az egymást követő asszisztens
+            // buborékokat az utolsó gyerek-üzenetig (beszélgetés közben ez
+            // értelemszerűen csak a legfrissebb választ jelenti).
+            var allBubbles = messagesEl.querySelectorAll(
+                '.chat-bubble-assistant:not(.chat-typing), .chat-bubble-user'
+            );
+            if (!allBubbles.length) return;
+            var texts = [];
+            for (var i = allBubbles.length - 1; i >= 0; i--) {
+                var b = allBubbles[i];
+                if (!b.classList.contains('chat-bubble-assistant')) break;
+                var innerEl = b.querySelector('.chat-bubble-inner');
+                if (!innerEl) continue;
+                var clone = innerEl.cloneNode(true);
+                clone.querySelectorAll('.chat-figure').forEach(function (f) { f.remove(); });
+                var t = (clone.textContent || '').trim();
+                if (t) texts.unshift(t);
+            }
+            if (!texts.length) return;
+            playTts(texts.join(' ')).catch(function () {});
         })();
     }
 
