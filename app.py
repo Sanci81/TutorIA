@@ -1000,6 +1000,9 @@ def dashboard():
         else:
             child["is_birthday"] = False
         child["_active_grade"] = _active_grade(child)
+        # A kiválasztott tanár neve az aktív tantervben – hogy a szülő a
+        # vezérlőpulton is lássa, ne kelljen a profilba belépnie.
+        child["_teacher_name"] = _teacher_profile(child, _active_curriculum())["name"]
     return render_template("dashboard.html", parent=parent, children=children)
 
 
@@ -1164,6 +1167,7 @@ def edit_child(child_id: int):
                     "voice_gender_es": voice_es,
                 },
                 teacher_profiles=TEACHER_PROFILES,
+                active_curriculum=active_curriculum,
             )
 
         if country != "ES":
@@ -1203,6 +1207,7 @@ def edit_child(child_id: int):
     return render_template(
         "edit_child.html", child=child, form=form,
         teacher_profiles=TEACHER_PROFILES,
+        active_curriculum=active_curriculum,
     )
 
 
@@ -4024,7 +4029,7 @@ def child_chat(child_id: int):
             welcome_expected = _chat_initial_assistant_message(
                 child["name"], subject_label, placement=placement_mode,
                 lang="es" if active_curr == "ES" else "hu",
-                topic=current_topic,
+                topic=current_topic, teacher=teacher["name"],
             )
             stored = first_assistant["content"].strip()
             if stored != welcome_expected.strip():

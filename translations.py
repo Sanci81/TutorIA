@@ -404,6 +404,12 @@ TRANSLATIONS = {
     "label_teacher_voice_es": {
         "hu": "Spanyol tanterv", "es": "Currículo español",
     },
+    "label_teacher_voice_current": {
+        "hu": "Hang és tanár", "es": "Voz y profe",
+    },
+    "dashboard_teacher_fmt": {
+        "hu": "Tanár: {teacher}", "es": "Profe: {teacher}",
+    },
     "voice_female": {"hu": "Női hang", "es": "Voz femenina"},
     "voice_male": {"hu": "Férfi hang", "es": "Voz masculina"},
 
