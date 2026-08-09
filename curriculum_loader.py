@@ -1385,8 +1385,19 @@ def _hu_evfolyam_blokk_for_grade(
 
 
 def _is_spiral_subject(data: dict[str, Any], raw_data: dict[str, Any] | None = None) -> bool:
-    """Ellenőrzi, hogy a tantárgy spirális-e (a témakörök minden évben visszatérnek)."""
-    tantargy = (raw_data or data).get("meta", {}).get("tantargy", "")
+    """Ellenőrzi, hogy a tantárgy spirális-e (a témakörök minden évben visszatérnek).
+
+    Két forrásból dolgozik:
+      1. a tantárgy neve szerepel a _SPIRAL_SUBJECT_DISPLAY_NAMES halmazban, VAGY
+      2. a fájl `meta.spiralis` mezője igaz.
+    A második azért kell, mert egy tantárgy lehet spirális az egyik évfolyam-
+    sávban és sorrendi a másikban (pl. Technika és tervezés 1-4 vs. 5-8),
+    ezért a névalapú lista önmagában nem elég pontos.
+    """
+    meta = (raw_data or data).get("meta", {}) or {}
+    if meta.get("spiralis") is True:
+        return True
+    tantargy = meta.get("tantargy", "")
     if not tantargy:
         return False
     return tantargy in _SPIRAL_SUBJECT_DISPLAY_NAMES
