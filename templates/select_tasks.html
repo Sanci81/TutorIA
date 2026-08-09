@@ -83,9 +83,9 @@
                 </div>
 
                 <div class="task-actions" id="task-actions" hidden>
-                    <button type="submit" class="btn-task-practice" id="generate-btn">
-                        {{ t('btn_practice_tasks') }}
-                    </button>
+                    {# A „Gyakorló feladatok” gombot kivettük: a gyerek a chatben
+                       úgyis tanul és gyakorol, a külön feladatgenerálás fölösleges.
+                       A generate_tasks útvonal a kódban marad, ha később kellene. #}
 
                     {% if chat_profile == 'both' %}
                     <a class="btn-ai-chat" id="ai-chat-link" href="#" hidden>

@@ -150,11 +150,11 @@ TRANSLATIONS = {
     "years_old": {"hu": "éves", "es": "años"},
 
     # --- feladatgenerálás ---
-    "btn_generate_tasks": {"hu": "Feladatok generálása", "es": "Generar ejercicios"},
-    "select_tasks_title": {"hu": "Feladatok generálása", "es": "Generar ejercicios"},
+    "btn_generate_tasks": {"hu": "Tanulás indítása", "es": "Empezar a aprender"},
+    "select_tasks_title": {"hu": "Tanulás indítása", "es": "Empezar a aprender"},
     "select_tasks_subtitle": {
-        "hu": "Válassz tantárgyat {name} számára, majd kattints a generálás gombra.",
-        "es": "Elige una asignatura para {name} y pulsa generar.",
+        "hu": "Válassz tantárgyat {name} számára, majd indítsd el a tanulást.",
+        "es": "Elige una asignatura para {name} y empieza a aprender.",
     },
     "label_subject": {"hu": "Tantárgy", "es": "Asignatura"},
     "btn_generate_now": {"hu": "Generálás ✨", "es": "Generar ✨"},

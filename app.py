@@ -2025,6 +2025,37 @@ def _remember_fl_words(text: str) -> None:
         pass
 
 
+_TOPIC_WORDS_RE = re.compile(
+    r"(?:Szókincs\s*\(példák\)|Szókincs|Kulcsfogalmak|VOCABULARIO[^:]*|Vocabulario)\s*:\s*(.+)",
+    re.IGNORECASE,
+)
+
+
+def _topic_foreign_words(topic_item: dict | None) -> list[str]:
+    """A lecke tanítandó szavai a témakör szövegéből.
+
+    FONTOS: a topic_catalog elemei NEM tartalmaznak `szokincs` mezőt (csak id,
+    name, text, index, ora_szam), ezért a szavakat a `text` mezőből kell
+    kiolvasni. Emiatt volt korábban MINDIG üres a felolvasás szólistája.
+    """
+    if not topic_item:
+        return []
+    text = topic_item.get("text") or topic_item.get("teljes_szoveg") or ""
+    words: list[str] = []
+    for line in text.splitlines():
+        m = _TOPIC_WORDS_RE.match(line.strip())
+        if not m:
+            continue
+        for raw in re.split(r"[,;]", m.group(1)):
+            w = raw.strip().strip('"\u201c\u201d\u00ab\u00bb.\u2026')
+            # a magyarázó zárójeles részt levágjuk
+            w = re.sub(r"\s*\(.*?\)\s*", " ", w).strip()
+            if 2 <= len(w) <= 40:
+                words.append(w)
+    # sorrendtartó egyedivé tétel
+    return list(dict.fromkeys(words))[:150]
+
+
 def _azure_target_voice() -> str | None:
     """A tanított idegen nyelv anyanyelvi hangja, ha idegen nyelvi lecke fut."""
     lang = (session.get("tts_foreign_lang") or "").strip().lower()
@@ -4232,15 +4263,22 @@ def child_chat(child_id: int):
     # felolvasás az idegen szavakat anyanyelvi hangon mondja ki.
     if is_foreign and language:
         session["tts_foreign_lang"] = _normalize_chat_language(language)
-        _fw: list[str] = []
         _topic_item = get_topic_from_catalog(catalog, current_topic_id)
-        if _topic_item:
-            for _w in (_topic_item.get("szokincs") or []):
-                if isinstance(_w, str):
-                    _fw.append(_w)
-                elif isinstance(_w, dict):
-                    _fw.append(str(_w.get("szo") or _w.get("word") or ""))
-        session["tts_foreign_words"] = [w for w in dict.fromkeys(_fw) if w][:120]
+        _fw = _topic_foreign_words(_topic_item)
+        # a szójegyzékben már megtanult szavak is anyanyelvi hangot kapnak
+        # (közvetlenül az adatbázisból – a `vocabulary` változó csak lentebb áll elő)
+        try:
+            for _row in database.get_vocabulary(
+                child_id, subject, language=language, topic_id=current_topic_id
+            ) or []:
+                _wf = (_row.get("word_foreign") or "").strip()
+                if _wf:
+                    _fw.append(_wf)
+        except Exception:
+            pass
+        session["tts_foreign_words"] = [w for w in dict.fromkeys(_fw) if w][:150]
+        print(f"[TTS-DEBUG] lecke szolista: {len(session['tts_foreign_words'])} szo "
+              f"({session['tts_foreign_words'][:6]})", flush=True)
     else:
         session.pop("tts_foreign_lang", None)
         session.pop("tts_foreign_words", None)
