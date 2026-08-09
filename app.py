@@ -1507,6 +1507,10 @@ _CHAT_MARKER_VOCAB = re.compile(
      re.IGNORECASE | re.MULTILINE,
 )
 
+# Idegen szó jelölő: <FL:de>Wasser</FL> — a felolvasásnál anyanyelvi hangot kap,
+# a chatben csak a szó látszik, a jelölő nem.
+_CHAT_MARKER_FL = re.compile(r"<\s*FL:([a-z]{2})\s*>(.*?)<\s*/\s*FL\s*>", re.IGNORECASE | re.DOTALL)
+
 _CHAT_MARKER_SVG = re.compile(
     r"<ABRA>\s*(<svg\b.*?</svg>)\s*</ABRA>",
     re.IGNORECASE | re.DOTALL,
@@ -1532,7 +1536,9 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
         if s:
             svg_list.append(s)
 
-    clean = _CHAT_MARKER_TOPIC.sub("", text)
+    # Az <FL:xx>szó</FL> jelölőből csak a jelölés tűnik el, a SZÓ marad.
+    clean = _CHAT_MARKER_FL.sub(lambda m: m.group(2), text)
+    clean = _CHAT_MARKER_TOPIC.sub("", clean)
     clean = _CHAT_MARKER_LEVEL.sub("", clean)
     clean = _CHAT_MARKER_VOCAB.sub("", clean)
     clean = _CHAT_MARKER_SVG.sub("", clean).strip()
@@ -1979,12 +1985,44 @@ def _whisper_transcribe(
 
 
 # Anyanyelvi Azure hangok a TANÍTOTT idegen nyelvekhez (nem, mint a tanár hangja).
+# Nyelvkód (az <FL:xx> jelölőből) -> Azure anyanyelvi hang, nemenként.
+FL_CODE_VOICES = {
+    "en": {"female": "en-GB-SoniaNeural",  "male": "en-GB-RyanNeural"},
+    "de": {"female": "de-DE-KatjaNeural",  "male": "de-DE-ConradNeural"},
+    "es": {"female": "es-ES-ElviraNeural", "male": "es-ES-AlvaroNeural"},
+    "fr": {"female": "fr-FR-DeniseNeural", "male": "fr-FR-HenriNeural"},
+    "la": {"female": "it-IT-ElsaNeural",   "male": "it-IT-DiegoNeural"},
+}
+
 AZURE_TARGET_VOICES = {
     "angol":   {"female": "en-GB-SoniaNeural",  "male": "en-GB-RyanNeural"},
     "nemet":   {"female": "de-DE-KatjaNeural",  "male": "de-DE-ConradNeural"},
     "spanyol": {"female": "es-ES-ElviraNeural", "male": "es-ES-AlvaroNeural"},
     "francia": {"female": "fr-FR-DeniseNeural", "male": "fr-FR-HenriNeural"},
 }
+
+
+def _remember_fl_words(text: str) -> None:
+    """Az <FL:xx>szó</FL> jelölőkből szó→nyelvkód térkép a session-be.
+
+    A jelölő a megjelenített szövegből kikerül, ezért a felolvasásnak innen kell
+    megtudnia, mely szavakat kell anyanyelvi hangon kimondani. A lista a legutóbbi
+    tanári üzenetre vonatkozik — régi üzenet újrajátszásakor ezért előfordulhat,
+    hogy egy közben elfelejtett szó magyar hangon szólal meg.
+    """
+    try:
+        pairs = _CHAT_MARKER_FL.findall(text or "")
+        if not pairs:
+            return
+        current = dict(session.get("tts_fl_words") or {})
+        for code, word in pairs:
+            w = (word or "").strip()
+            if w:
+                current[w] = (code or "").lower()
+        # ne nőjön korlátlanul
+        session["tts_fl_words"] = dict(list(current.items())[-150:])
+    except Exception:
+        pass
 
 
 def _azure_target_voice() -> str | None:
@@ -1998,44 +2036,58 @@ def _azure_target_voice() -> str | None:
     return AZURE_TARGET_VOICES[lang][gender]
 
 
-def _tts_split_foreign(text: str) -> list[tuple[str, bool]]:
-    """Szétvágja a szöveget (részlet, idegen-e) párokra a lecke szókincse alapján.
+def _tts_split_foreign(text: str) -> list[tuple[str, str | None]]:
+    """(részlet, hang) párokra vágja a szöveget; a hang None = a tanár hangja.
 
-    A lecke tanítandó szavai a session-ben vannak (a chat oldal betöltésekor
-    kerülnek oda). Csak ezeket mondatjuk anyanyelvi hangon — pont azokat,
-    amiket a gyereknek helyesen kell hallania.
+    Két forrásból tudja, mi idegen szó:
+      1. az <FL:xx> jelölők, amiket a tutor tesz ki (MINDEN tantárgyban) —
+         ezek a chat szövegéből már ki vannak szedve, ezért a szó->nyelvkód
+         párokat a chat oldal a Flask session-be menti;
+      2. az idegen nyelvi lecke saját szókincse (a régi, bevált út).
     """
-    words = session.get("tts_foreign_words") or []
-    if not words or not text:
-        return [(text, False)]
-    # Hosszabb kifejezések előre, hogy a többszavas találat nyerjen.
-    uniq = sorted({w.strip() for w in words if w and len(w.strip()) >= 2},
-                  key=len, reverse=True)[:120]
+    gender = (session.get("tts_voice_gender") or "female").strip().lower()
+    if gender not in ("female", "male"):
+        gender = "female"
+
+    word_voice: dict[str, str] = {}
+    for w, code in (session.get("tts_fl_words") or {}).items():
+        v = FL_CODE_VOICES.get((code or "").lower(), {}).get(gender)
+        if w and v:
+            word_voice[w] = v
+    lesson_voice = _azure_target_voice()
+    if lesson_voice:
+        for w in (session.get("tts_foreign_words") or []):
+            if w and w.strip():
+                word_voice.setdefault(w.strip(), lesson_voice)
+
+    if not word_voice or not text:
+        return [(text, None)]
+    uniq = sorted({w for w in word_voice if len(w) >= 2}, key=len, reverse=True)[:150]
     if not uniq:
-        return [(text, False)]
-    pattern = "|".join(re.escape(w) for w in uniq)
+        return [(text, None)]
     try:
-        rx = re.compile(rf"(?<!\w)({pattern})(?!\w)", re.IGNORECASE | re.UNICODE)
+        rx = re.compile(rf"(?<!\w)({'|'.join(re.escape(w) for w in uniq)})(?!\w)",
+                        re.IGNORECASE | re.UNICODE)
     except re.error:
-        return [(text, False)]
-    out: list[tuple[str, bool]] = []
+        return [(text, None)]
+    lookup = {w.lower(): v for w, v in word_voice.items()}
+    out: list[tuple[str, str | None]] = []
     pos = 0
     for m in rx.finditer(text):
         if m.start() > pos:
-            out.append((text[pos:m.start()], False))
-        out.append((m.group(0), True))
+            out.append((text[pos:m.start()], None))
+        out.append((m.group(0), lookup.get(m.group(0).lower())))
         pos = m.end()
     if pos < len(text):
-        out.append((text[pos:], False))
-    # Üres/whitespace darabok összevonása a szomszédjukkal
-    merged: list[tuple[str, bool]] = []
-    for seg, fl in out:
+        out.append((text[pos:], None))
+    merged: list[tuple[str, str | None]] = []
+    for seg, v in out:
         if not seg.strip():
             if merged:
                 merged[-1] = (merged[-1][0] + seg, merged[-1][1])
             continue
-        merged.append((seg, fl))
-    return merged or [(text, False)]
+        merged.append((seg, v))
+    return merged or [(text, None)]
 
 
 def _azure_tts_speak(text: str) -> bytes | None:
@@ -2064,19 +2116,17 @@ def _azure_tts_speak(text: str) -> bytes | None:
         # Noémi/Tamás/Elvira nem ilyen — ezért egy SSML-en belül több <voice>
         # elemet használunk, ami egyetlen kéréssel megoldja a váltást.
         segments = _tts_split_foreign(cleaned)
-        target_voice = _azure_target_voice()
-        if target_voice and len(segments) > 1:
+        if len(segments) > 1:
             parts = []
-            for seg_text, is_foreign in segments:
-                v = target_voice if is_foreign else voice
+            for seg_text, seg_voice in segments:
+                v = seg_voice or voice
                 parts.append(
                     f'<voice name="{v}">'
                     f'<prosody rate="-10%">{_xml_escape_mod.escape(seg_text)}</prosody>'
                     f'</voice>'
                 )
             ssml = f'<speak version="1.0" xml:lang="{lang}">' + "".join(parts) + "</speak>"
-            print(f"[TTS-DEBUG] tobbnyelvu ssml: {len(segments)} szegmens, "
-                  f"celhang={target_voice}", flush=True)
+            print(f"[TTS-DEBUG] tobbnyelvu ssml: {len(segments)} szegmens", flush=True)
         else:
             escaped = _xml_escape_mod.escape(cleaned)
             ssml = (
@@ -3131,7 +3181,27 @@ nem csak az idegen szavakat. Példák: 'Iszak' vagy 'Visszat' a 'viszlát' helye
 - Csak akkor jelezd hibásnak, ha egyértelműen MÁS a válasz jelentése.
 """
 
-    prompt += """=== TANÍTÁSI ALAPSZABÁLY ===
+    prompt += """=== MAGYAR NYELVHELYESSÉG (a gyerek ebből tanul!) ===
+A szövegeidet egy gyerek olvassa és hallja, ezért a magyar nyelvhelyesség KÖTELEZŐ.
+- Ügyelj a névelőkre és a ragokra. ROSSZ: „Ma az fogjuk gyakorolni…” — JÓ: „Ma AZT fogjuk gyakorolni…”.
+- A mutató névmás ragozott alakja: azt, ezt, abban, ebben — ne hagyd el a ragot.
+- Használd a helyes szakkifejezést. ROSSZ: „északi félgömb” — JÓ: „északi FÉLTEKE”
+  (a félgömb mértani test, a Föld felét féltekének hívjuk).
+- Mielőtt kiadod a választ, olvasd át: helyes-e magyarul, természetesen hangzik-e
+  kimondva. Ha egy mondat döcög, fogalmazd újra.
+
+=== IDEGEN SZAVAK JELÖLÉSE (a helyes kiejtéshez) ===
+Ha a válaszodban IDEGEN NYELVŰ szó vagy kifejezés szerepel — bármelyik tantárgyban,
+nem csak nyelvórán —, tedd köré ezt a jelölést, hogy a felolvasás a szó saját
+nyelvén, helyesen ejtse ki:
+<FL:nyelvkód>idegen szó</FL>
+A nyelvkód: en (angol), de (német), es (spanyol), fr (francia), la (latin).
+Példák: A <FL:en>software</FL> szó azt jelenti… / Ez a <FL:de>Wasser</FL>. /
+A <FL:es>hola</FL> köszönést jelent.
+Csak a TÉNYLEGESEN idegen szót jelöld, a magyar mondatot ne. A meghonosodott
+magyar szavakat (pl. sport, iskola, telefon) NE jelöld.
+
+=== TANÍTÁSI ALAPSZABÁLY ===
 1. TE vezeted az órát. Minden válaszban TANÍTS: mondd meg, mi következik, magyarázd el az
    új dolgot egyszerűen, példával, ahogy egy tanár tenné — és csak ezután tegyél fel EGY
    kérdést, ami arra épül. Soha ne kérdezd meg a gyerektől, hogy mit szeretne tanulni.
@@ -4221,6 +4291,7 @@ def child_chat(child_id: int):
                         # <LEVEL:n>, <ABRA>) itt is ki kell szedni, különben
                         # nyersen megjelennek a buborékban, és a szójegyzék sem
                         # töltődik – a child_chat_send útvonal ugyanezt teszi.
+                        _remember_fl_words(teaching_response)
                         clean_teaching, _td, _lvl, _vocab, _svgs = _parse_chat_markers(
                             teaching_response
                         )
@@ -4294,6 +4365,7 @@ def child_chat(child_id: int):
                         # <LEVEL:n>, <ABRA>) itt is ki kell szedni, különben
                         # nyersen megjelennek a buborékban, és a szójegyzék sem
                         # töltődik – a child_chat_send útvonal ugyanezt teszi.
+                        _remember_fl_words(teaching_response)
                         clean_teaching, _td, _lvl, _vocab, _svgs = _parse_chat_markers(
                             teaching_response
                         )
@@ -4352,6 +4424,18 @@ def child_chat(child_id: int):
                 if clean_svg:
                     figs.append(clean_svg)
             msg["figures"] = figs
+        # VÉDŐHÁLÓ: a KORÁBBAN elmentett üzenetekben még ott lehetnek a belső
+        # jelölők (<VOCAB>, <TOPIC_COMPLETE>, <LEVEL:n>), mert a mentés akkori
+        # útvonala nem szűrte őket. Megjelenítéskor mindig kitisztítjuk, így a
+        # régi beszélgetések is helyesen látszanak.
+        raw = msg.get("content") or ""
+        up = raw.upper()
+        if "VOCAB" in up or "TOPIC_COMPLETE" in up or "<LEVEL" in up:
+            cleaned = _CHAT_MARKER_TOPIC.sub("", raw)
+            cleaned = _CHAT_MARKER_LEVEL.sub("", cleaned)
+            cleaned = _CHAT_MARKER_VOCAB.sub("", cleaned).strip()
+            if cleaned:
+                msg["content"] = cleaned
 
     return render_template(
         "chat.html",
@@ -4535,6 +4619,7 @@ def child_chat_send(child_id: int):
         logger.exception("Chat AI hiba (child_id=%s): %s", child_id, exc)
         return jsonify({"error": "chat_failed", "detail": str(exc)}), 500
 
+    _remember_fl_words(raw_reply)
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:

@@ -56,17 +56,18 @@
     <div class="chat-main">
         <header class="chat-header chat-header-playful">
             <div class="chat-header-topbar">
-                {% if chat_mode == 'voice' and show_chat_switch %}
-                <a class="voice-switch-chat" href="{{ chat_switch_url }}">{{ t('chat_voice_switch_chat') }}</a>
-                {% else %}
+                {# Bal oldalt MINDIG a visszalépés, jobb oldalt EGYETLEN váltógomb,
+                   ami azt írja ki, HOVÁ visz — nem azt, hol vagyunk éppen.
+                   Korábban hangos módban a bal és a jobb oldali gomb is a chatbe
+                   vitt, a felirat pedig az aktuális módot mutatta: ez zavaró volt,
+                   és chat módból nem volt egyértelmű a visszaút. #}
                 <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
-                {% endif %}
-                {% if chat_mode == 'voice' %}
-                    <a class="chat-mode-toggle chat-mode-voice" href="{{ chat_switch_url if show_chat_switch else '#' }}">{{ t('chat_mode_voice') }}</a>
-                {% elif show_chat_switch %}
-                    <a class="chat-mode-toggle chat-mode-chat" href="{{ voice_switch_url }}">{{ t('chat_mode_chat') }}</a>
+                {% if not show_chat_switch %}
+                    <span class="chat-mode-toggle chat-mode-voice">{{ t('chat_mode_voice') }}</span>
+                {% elif chat_mode == 'voice' %}
+                    <a class="chat-mode-toggle chat-mode-chat" href="{{ chat_switch_url }}">{{ t('chat_mode_chat') }}</a>
                 {% else %}
-                    <span class="chat-mode-toggle chat-mode-chat">{{ t('chat_mode_chat') }}</span>
+                    <a class="chat-mode-toggle chat-mode-voice" href="{{ voice_switch_url }}">{{ t('chat_mode_voice') }}</a>
                 {% endif %}
             </div>
 
