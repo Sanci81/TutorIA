@@ -1991,7 +1991,9 @@ FL_CODE_VOICES = {
     "de": {"female": "de-DE-KatjaNeural",  "male": "de-DE-ConradNeural"},
     "es": {"female": "es-ES-ElviraNeural", "male": "es-ES-AlvaroNeural"},
     "fr": {"female": "fr-FR-DeniseNeural", "male": "fr-FR-HenriNeural"},
+    "it": {"female": "it-IT-ElsaNeural",   "male": "it-IT-DiegoNeural"},
     "la": {"female": "it-IT-ElsaNeural",   "male": "it-IT-DiegoNeural"},
+    "hu": {"female": "hu-HU-NoemiNeural",  "male": "hu-HU-TamasNeural"},
 }
 
 AZURE_TARGET_VOICES = {
@@ -2478,7 +2480,7 @@ def _update_streak(child_id: int, progress_subject: str) -> dict:
     return progress
 
 
-def _child_safety_block(teacher_name: str = "") -> str:
+def _child_safety_block(teacher_name: str = "", *, es: bool = False) -> str:
     """Gyermekvédelmi szabályok – a G7 'safety by design' elv alapján.
     A system prompt LEGELEJÉN, a legmagasabb prioritással.
     Ha meg van adva, a tanár NEVE is ide kerül, hogy minden prompt-ágban hasson."""
@@ -2490,7 +2492,43 @@ def _child_safety_block(teacher_name: str = "") -> str:
             f"'mesterséges intelligencia' — te {teacher_name} vagy, a gyerek tanára. "
             f"Ne mutatkozz be újra minden üzenetben, csak a beszélgetés elején.\n\n"
         )
-    return intro + """GYERMEKVÉDELEM – EZ FELÜLÍR MINDEN MÁS SZABÁLYT, MINDIG tartsd be:
+    fl_hu = """
+=== IDEGEN SZÓ = JELÖLD MEG (a helyes kiejtéshez) ===
+A felolvasó hang MAGYAR, ezért minden szót magyar szabály szerint olvas ki.
+Ha egy idegen szót nem jelölsz meg, a gyerek HELYTELEN kiejtést hall.
+Ezért MINDEN idegen eredetű szót, nevet és helynevet így kell jelölnöd:
+<FL:nyelvkód>szó</FL>   — nyelvkódok: en, de, es, fr, it, la
+Ez NEM csak nyelvórára vonatkozik, hanem MINDEN tantárgyra:
+- Személynevek: <FL:en>Shakespeare</FL>, <FL:de>Goethe</FL>, <FL:es>Cervantes</FL>,
+  <FL:fr>Napoleon</FL>, <FL:it>Leonardo da Vinci</FL>
+- Földrajzi nevek: <FL:fr>Bordeaux</FL>, <FL:de>München</FL>, <FL:en>Chicago</FL>,
+  <FL:es>Sevilla</FL>
+- Szakszavak és idegen kifejezések: <FL:en>software</FL>, <FL:la>homo sapiens</FL>
+- Tanított szavak nyelvórán: <FL:de>Wasser</FL>, <FL:en>water</FL>
+A jelölés a gyereknek NEM látszik, csak a szó — a jelölés a kiejtést vezérli.
+Ha bizonytalan vagy a szó eredetében, akkor is jelöld meg a legvalószínűbb
+nyelvvel; a jelöletlen idegen szó a rosszabb hiba.
+A már magyarrá vált szavakat (sport, iskola, telefon, tévé) NE jelöld.
+
+"""
+    fl_es = """
+=== PALABRA EXTRANJERA = MÁRCALA (para la pronunciación correcta) ===
+La voz que lee es ESPAÑOLA, así que lee todo con reglas españolas.
+Si no marcas una palabra extranjera, el niño oirá una pronunciación INCORRECTA.
+Por eso marca SIEMPRE toda palabra, nombre o topónimo extranjero así:
+<FL:código>palabra</FL>   — códigos: en, de, fr, it, la, hu
+No es solo para las clases de idioma, sino para TODAS las asignaturas:
+- Nombres propios: <FL:en>Shakespeare</FL>, <FL:de>Goethe</FL>, <FL:fr>Napoleón</FL>,
+  <FL:it>Leonardo da Vinci</FL>
+- Topónimos: <FL:fr>Bordeaux</FL>, <FL:de>München</FL>, <FL:en>Chicago</FL>
+- Términos y extranjerismos: <FL:en>software</FL>, <FL:la>homo sapiens</FL>
+- Palabras enseñadas en clase de idioma: <FL:de>Wasser</FL>, <FL:en>water</FL>
+La marca NO se ve en el chat, solo la palabra: sirve para la pronunciación.
+Si dudas del origen, márcala igualmente con el idioma más probable; peor error
+es dejarla sin marcar. NO marques palabras ya asimiladas al español.
+
+"""
+    return intro + (fl_es if es else fl_hu) + """GYERMEKVÉDELEM – EZ FELÜLÍR MINDEN MÁS SZABÁLYT, MINDIG tartsd be:
 
 Egy gyerekkel beszélgetsz. A biztonsága a legfontosabb.
 
@@ -2560,7 +2598,7 @@ def _build_chat_system_prompt(
     if es_curriculum and is_foreign_language and lang:
         native_lang = "spanyolul"
         native_label = "spanyol"
-        prompt = _child_safety_block(_teacher_name_for_prompt(child)) + f"""Eres un profesor de IA amable, paciente y motivador.
+        prompt = _child_safety_block(_teacher_name_for_prompt(child), es=True) + f"""Eres un profesor de IA amable, paciente y motivador.
 Tu alumno: {child["name"]}, {age} años, {grade}º curso.
 Asignatura: {subject_label}
 Tema actual: {current_topic}
@@ -2798,7 +2836,7 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
 
     # ── ES tanterv, NEM-idegennyelvi tantárgy → TELJES prompt spanyolul ──
     if es_curriculum and not is_foreign_language:
-        prompt = _child_safety_block(_teacher_name_for_prompt(child)) + f"""Eres un profesor de IA amable, paciente y motivador.
+        prompt = _child_safety_block(_teacher_name_for_prompt(child), es=True) + f"""Eres un profesor de IA amable, paciente y motivador.
 Tu alumno: {child["name"]}, {age} años, {grade}º curso.
 Asignatura: {subject_label}
 Tema actual: {current_topic}
@@ -3220,17 +3258,6 @@ A szövegeidet egy gyerek olvassa és hallja, ezért a magyar nyelvhelyesség K�
   (a félgömb mértani test, a Föld felét féltekének hívjuk).
 - Mielőtt kiadod a választ, olvasd át: helyes-e magyarul, természetesen hangzik-e
   kimondva. Ha egy mondat döcög, fogalmazd újra.
-
-=== IDEGEN SZAVAK JELÖLÉSE (a helyes kiejtéshez) ===
-Ha a válaszodban IDEGEN NYELVŰ szó vagy kifejezés szerepel — bármelyik tantárgyban,
-nem csak nyelvórán —, tedd köré ezt a jelölést, hogy a felolvasás a szó saját
-nyelvén, helyesen ejtse ki:
-<FL:nyelvkód>idegen szó</FL>
-A nyelvkód: en (angol), de (német), es (spanyol), fr (francia), la (latin).
-Példák: A <FL:en>software</FL> szó azt jelenti… / Ez a <FL:de>Wasser</FL>. /
-A <FL:es>hola</FL> köszönést jelent.
-Csak a TÉNYLEGESEN idegen szót jelöld, a magyar mondatot ne. A meghonosodott
-magyar szavakat (pl. sport, iskola, telefon) NE jelöld.
 
 === TANÍTÁSI ALAPSZABÁLY ===
 1. TE vezeted az órát. Minden válaszban TANÍTS: mondd meg, mi következik, magyarázd el az
@@ -4468,8 +4495,9 @@ def child_chat(child_id: int):
         # régi beszélgetések is helyesen látszanak.
         raw = msg.get("content") or ""
         up = raw.upper()
-        if "VOCAB" in up or "TOPIC_COMPLETE" in up or "<LEVEL" in up:
-            cleaned = _CHAT_MARKER_TOPIC.sub("", raw)
+        if "VOCAB" in up or "TOPIC_COMPLETE" in up or "<LEVEL" in up or "<FL:" in up:
+            cleaned = _CHAT_MARKER_FL.sub(lambda m: m.group(2), raw)
+            cleaned = _CHAT_MARKER_TOPIC.sub("", cleaned)
             cleaned = _CHAT_MARKER_LEVEL.sub("", cleaned)
             cleaned = _CHAT_MARKER_VOCAB.sub("", cleaned).strip()
             if cleaned:
