@@ -2058,6 +2058,68 @@ def _topic_foreign_words(topic_item: dict | None) -> list[str]:
     return list(dict.fromkeys(words))[:150]
 
 
+# A felolvasás előtt egy KÜLÖN, olcsó AI-hívás megkeresi az idegen szavakat.
+# Ez azért kell, mert a fő rendszerprompt több tízezer karakter, és egy ott
+# elhelyezett jelölési szabályra nem lehet biztosan támaszkodni. Így a kiejtés
+# NEM függ attól, hogy a tutor kitette-e a jelölést: neveket, helyneveket és
+# szakszavakat is felismer.
+_FOREIGN_DETECT_CACHE: dict[str, dict[str, str]] = {}
+
+
+def _detect_foreign_words(text: str, base_lang: str) -> dict[str, str]:
+    """{szó: nyelvkód} az idegen eredetű szavakra. Hiba esetén üres dict."""
+    text = (text or "").strip()
+    if len(text) < 3:
+        return {}
+    key = f"{base_lang}|{hash(text)}"
+    if key in _FOREIGN_DETECT_CACHE:
+        return _FOREIGN_DETECT_CACHE[key]
+    try:
+        api_key = _openai_api_key()
+        if not api_key:
+            return {}
+        base_name = "spanyol" if base_lang == "es" else "magyar"
+        client = _openai_client(api_key, request_timeout=15.0)
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            response_format={"type": "json_object"},
+            messages=[
+                {"role": "system", "content": (
+                    f"A szöveg {base_name} nyelvű, és egy felolvasó programnak "
+                    f"készül elő. Keresd meg benne az IDEGEN EREDETŰ szavakat, "
+                    f"amiket NEM {base_name} kiejtéssel kell kimondani: idegen "
+                    f"személyneveket (Shakespeare, Goethe), idegen földrajzi "
+                    f"neveket (Bordeaux, München, Chicago), idegen szakszavakat "
+                    f"és idegen nyelvórai szavakat.\n"
+                    f"NE vedd fel: a {base_name} szavakat, a {base_name} "
+                    f"tulajdonneveket (pl. Budapest, Petőfi, Sevilla spanyolul), "
+                    f"és a már meghonosodott jövevényszavakat (sport, telefon).\n"
+                    'Válasz KIZÁRÓLAG ilyen JSON: {"words":[{"w":"Shakespeare",'
+                    '"lang":"en"},{"w":"Bordeaux","lang":"fr"}]}\n'
+                    "A lang mező: en, de, es, fr, it, la, hu. Ha nincs ilyen szó, "
+                    'üres lista: {"words":[]}'
+                )},
+                {"role": "user", "content": text[:2000]},
+            ],
+            temperature=0,
+        )
+        payload = json.loads(resp.choices[0].message.content or "{}")
+        out: dict[str, str] = {}
+        for item in (payload.get("words") or [])[:60]:
+            w = str(item.get("w") or "").strip()
+            lg = str(item.get("lang") or "").strip().lower()
+            if w and len(w) >= 2 and lg in FL_CODE_VOICES and w in text:
+                out[w] = lg
+        if len(_FOREIGN_DETECT_CACHE) > 400:
+            _FOREIGN_DETECT_CACHE.clear()
+        _FOREIGN_DETECT_CACHE[key] = out
+        print(f"[TTS-DEBUG] idegen szo felismeres: {out}", flush=True)
+        return out
+    except Exception as exc:
+        print(f"[TTS-DEBUG] idegen szo felismeres hiba: {exc!r}", flush=True)
+        return {}
+
+
 def _azure_target_voice() -> str | None:
     """A tanított idegen nyelv anyanyelvi hangja, ha idegen nyelvi lecke fut."""
     lang = (session.get("tts_foreign_lang") or "").strip().lower()
@@ -5872,6 +5934,16 @@ def api_voice_speak():
     text = (data.get("text") or "").strip()
     if not text:
         return jsonify({"error": "no_text"}), 400
+    # Idegen szavak felismerése a felolvasás előtt — így NEM a fő prompton múlik.
+    try:
+        _base = "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu"
+        _found = _detect_foreign_words(text, _base)
+        if _found:
+            _acc = dict(session.get("tts_fl_words") or {})
+            _acc.update(_found)
+            session["tts_fl_words"] = dict(list(_acc.items())[-150:])
+    except Exception:
+        pass
     audio_bytes = _azure_tts_speak(text)
     if audio_bytes is not None:
         print("[TTS-DEBUG] route=azure", flush=True)
