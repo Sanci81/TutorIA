@@ -1978,6 +1978,66 @@ def _whisper_transcribe(
     return result
 
 
+# Anyanyelvi Azure hangok a TANÍTOTT idegen nyelvekhez (nem, mint a tanár hangja).
+AZURE_TARGET_VOICES = {
+    "angol":   {"female": "en-GB-SoniaNeural",  "male": "en-GB-RyanNeural"},
+    "nemet":   {"female": "de-DE-KatjaNeural",  "male": "de-DE-ConradNeural"},
+    "spanyol": {"female": "es-ES-ElviraNeural", "male": "es-ES-AlvaroNeural"},
+    "francia": {"female": "fr-FR-DeniseNeural", "male": "fr-FR-HenriNeural"},
+}
+
+
+def _azure_target_voice() -> str | None:
+    """A tanított idegen nyelv anyanyelvi hangja, ha idegen nyelvi lecke fut."""
+    lang = (session.get("tts_foreign_lang") or "").strip().lower()
+    if lang not in AZURE_TARGET_VOICES:
+        return None
+    gender = (session.get("tts_voice_gender") or "female").strip().lower()
+    if gender not in ("female", "male"):
+        gender = "female"
+    return AZURE_TARGET_VOICES[lang][gender]
+
+
+def _tts_split_foreign(text: str) -> list[tuple[str, bool]]:
+    """Szétvágja a szöveget (részlet, idegen-e) párokra a lecke szókincse alapján.
+
+    A lecke tanítandó szavai a session-ben vannak (a chat oldal betöltésekor
+    kerülnek oda). Csak ezeket mondatjuk anyanyelvi hangon — pont azokat,
+    amiket a gyereknek helyesen kell hallania.
+    """
+    words = session.get("tts_foreign_words") or []
+    if not words or not text:
+        return [(text, False)]
+    # Hosszabb kifejezések előre, hogy a többszavas találat nyerjen.
+    uniq = sorted({w.strip() for w in words if w and len(w.strip()) >= 2},
+                  key=len, reverse=True)[:120]
+    if not uniq:
+        return [(text, False)]
+    pattern = "|".join(re.escape(w) for w in uniq)
+    try:
+        rx = re.compile(rf"(?<!\w)({pattern})(?!\w)", re.IGNORECASE | re.UNICODE)
+    except re.error:
+        return [(text, False)]
+    out: list[tuple[str, bool]] = []
+    pos = 0
+    for m in rx.finditer(text):
+        if m.start() > pos:
+            out.append((text[pos:m.start()], False))
+        out.append((m.group(0), True))
+        pos = m.end()
+    if pos < len(text):
+        out.append((text[pos:], False))
+    # Üres/whitespace darabok összevonása a szomszédjukkal
+    merged: list[tuple[str, bool]] = []
+    for seg, fl in out:
+        if not seg.strip():
+            if merged:
+                merged[-1] = (merged[-1][0] + seg, merged[-1][1])
+            continue
+        merged.append((seg, fl))
+    return merged or [(text, False)]
+
+
 def _azure_tts_speak(text: str) -> bytes | None:
     """Azure Speech TTS → mp3 bytes, vagy None hiba/hiányzó config esetén."""
     try:
@@ -1999,13 +2059,32 @@ def _azure_tts_speak(text: str) -> bytes | None:
             voice = chosen
         cleaned = text.replace("**", "").replace("##", "").replace("- ", "")
         cleaned = _strip_emoji_for_tts(cleaned)[:4096]
-        escaped = _xml_escape_mod.escape(cleaned)
-        ssml = (
-            f'<speak version="1.0" xml:lang="{lang}">'
-            f'<voice name="{voice}">'
-            f'<prosody rate="-10%">{escaped}</prosody>'
-            f'</voice></speak>'
-        )
+        # Az idegen nyelvi szavakat SAJÁT anyanyelvi hanggal mondatjuk ki.
+        # Az Azure <lang xml:lang> eleme csak többnyelvű hangoknál működik, a
+        # Noémi/Tamás/Elvira nem ilyen — ezért egy SSML-en belül több <voice>
+        # elemet használunk, ami egyetlen kéréssel megoldja a váltást.
+        segments = _tts_split_foreign(cleaned)
+        target_voice = _azure_target_voice()
+        if target_voice and len(segments) > 1:
+            parts = []
+            for seg_text, is_foreign in segments:
+                v = target_voice if is_foreign else voice
+                parts.append(
+                    f'<voice name="{v}">'
+                    f'<prosody rate="-10%">{_xml_escape_mod.escape(seg_text)}</prosody>'
+                    f'</voice>'
+                )
+            ssml = f'<speak version="1.0" xml:lang="{lang}">' + "".join(parts) + "</speak>"
+            print(f"[TTS-DEBUG] tobbnyelvu ssml: {len(segments)} szegmens, "
+                  f"celhang={target_voice}", flush=True)
+        else:
+            escaped = _xml_escape_mod.escape(cleaned)
+            ssml = (
+                f'<speak version="1.0" xml:lang="{lang}">'
+                f'<voice name="{voice}">'
+                f'<prosody rate="-10%">{escaped}</prosody>'
+                f'</voice></speak>'
+            )
         url = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1"
         req = urllib.request.Request(
             url,
@@ -3972,6 +4051,26 @@ def child_chat(child_id: int):
     teacher = _teacher_profile(child, active_curr)
     session["tts_voice"] = teacher["voice"]
     session["teacher_name"] = teacher["name"]
+    session["tts_voice_gender"] = (
+        (child.get("voice_gender_es") if active_curr == "ES" else child.get("voice_gender_hu"))
+        or "female"
+    )
+    # Idegen nyelvi leckénél a tanított nyelv és a lecke szókincse, hogy a
+    # felolvasás az idegen szavakat anyanyelvi hangon mondja ki.
+    if is_foreign and language:
+        session["tts_foreign_lang"] = _normalize_chat_language(language)
+        _fw: list[str] = []
+        _topic_item = get_topic_from_catalog(catalog, current_topic_id)
+        if _topic_item:
+            for _w in (_topic_item.get("szokincs") or []):
+                if isinstance(_w, str):
+                    _fw.append(_w)
+                elif isinstance(_w, dict):
+                    _fw.append(str(_w.get("szo") or _w.get("word") or ""))
+        session["tts_foreign_words"] = [w for w in dict.fromkeys(_fw) if w][:120]
+    else:
+        session.pop("tts_foreign_lang", None)
+        session.pop("tts_foreign_words", None)
 
     if not messages:
         welcome = _chat_initial_assistant_message(
@@ -4014,8 +4113,24 @@ def child_chat(child_id: int):
                         trigger,
                     )
                     if teaching_response:
+                        # FONTOS: a belső jelölőket (<VOCAB>, <TOPIC_COMPLETE>,
+                        # <LEVEL:n>, <ABRA>) itt is ki kell szedni, különben
+                        # nyersen megjelennek a buborékban, és a szójegyzék sem
+                        # töltődik – a child_chat_send útvonal ugyanezt teszi.
+                        clean_teaching, _td, _lvl, _vocab, _svgs = _parse_chat_markers(
+                            teaching_response
+                        )
+                        if _vocab and is_foreign and language:
+                            try:
+                                _chat_save_vocabulary(
+                                    child_id, subject, language, _vocab,
+                                    topic_id=current_topic_id,
+                                )
+                            except Exception:
+                                pass
                         database.add_chat_message(
-                            chat_session["id"], "assistant", teaching_response
+                            chat_session["id"], "assistant",
+                            clean_teaching or teaching_response,
                         )
             except Exception:
                 pass
@@ -4070,8 +4185,24 @@ def child_chat(child_id: int):
                         trigger,
                     )
                     if teaching_response:
+                        # FONTOS: a belső jelölőket (<VOCAB>, <TOPIC_COMPLETE>,
+                        # <LEVEL:n>, <ABRA>) itt is ki kell szedni, különben
+                        # nyersen megjelennek a buborékban, és a szójegyzék sem
+                        # töltődik – a child_chat_send útvonal ugyanezt teszi.
+                        clean_teaching, _td, _lvl, _vocab, _svgs = _parse_chat_markers(
+                            teaching_response
+                        )
+                        if _vocab and is_foreign and language:
+                            try:
+                                _chat_save_vocabulary(
+                                    child_id, subject, language, _vocab,
+                                    topic_id=current_topic_id,
+                                )
+                            except Exception:
+                                pass
                         database.add_chat_message(
-                            chat_session["id"], "assistant", teaching_response
+                            chat_session["id"], "assistant",
+                            clean_teaching or teaching_response,
                         )
                         messages = database.get_chat_messages(chat_session["id"], limit=20)
             except Exception:
