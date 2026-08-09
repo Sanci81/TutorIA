@@ -2085,19 +2085,26 @@ def _detect_foreign_words(text: str, base_lang: str) -> dict[str, str]:
             response_format={"type": "json_object"},
             messages=[
                 {"role": "system", "content": (
-                    f"A szöveg {base_name} nyelvű, és egy felolvasó programnak "
-                    f"készül elő. Keresd meg benne az IDEGEN EREDETŰ szavakat, "
-                    f"amiket NEM {base_name} kiejtéssel kell kimondani: idegen "
-                    f"személyneveket (Shakespeare, Goethe), idegen földrajzi "
-                    f"neveket (Bordeaux, München, Chicago), idegen szakszavakat "
-                    f"és idegen nyelvórai szavakat.\n"
-                    f"NE vedd fel: a {base_name} szavakat, a {base_name} "
-                    f"tulajdonneveket (pl. Budapest, Petőfi, Sevilla spanyolul), "
-                    f"és a már meghonosodott jövevényszavakat (sport, telefon).\n"
-                    'Válasz KIZÁRÓLAG ilyen JSON: {"words":[{"w":"Shakespeare",'
-                    '"lang":"en"},{"w":"Bordeaux","lang":"fr"}]}\n'
-                    "A lang mező: en, de, es, fr, it, la, hu. Ha nincs ilyen szó, "
-                    'üres lista: {"words":[]}'
+                    f"A szöveg alapnyelve {base_name}, és egy felolvasó programnak "
+                    f"készül elő. Keresd meg benne MINDEN olyan ÖSSZEFÜGGŐ RÉSZLETET, "
+                    f"amit NEM {base_name} kiejtéssel kell kimondani.\n"
+                    f"NAGYON FONTOS: ha egy TELJES MONDAT vagy KIFEJEZÉS idegen nyelvű, "
+                    f"azt EGYBEN add vissza, ne szavanként! Például a "
+                    f"\"Mondd utánam: I have a dog. Ez azt jelenti...\" szövegben a "
+                    f"részlet: \"I have a dog\" — nem külön az \"I\", a \"have\" és a "
+                    f"\"dog\".\n"
+                    f"Egyetlen idegen szónál a TOLDALÉK NÉLKÜLI alakot add vissza: "
+                    f"\"Münchenben\" → \"München\"; \"Shakespeare-t\" → \"Shakespeare\".\n"
+                    f"Ide tartoznak: idegen mondatok és kifejezések, idegen "
+                    f"személynevek, idegen földrajzi nevek, idegen szakszavak.\n"
+                    f"NE vedd fel: a {base_name} szöveget, a {base_name} "
+                    f"tulajdonneveket (pl. Budapest, Petőfi), és a meghonosodott "
+                    f"jövevényszavakat (sport, telefon).\n"
+                    "A részletet PONTOSAN úgy add vissza, ahogy a szövegben áll.\n"
+                    'Válasz KIZÁRÓLAG ilyen JSON: {"segments":[{"t":"I have a dog",'
+                    '"lang":"en"},{"t":"München","lang":"de"}]}\n'
+                    "A lang mező: en, de, es, fr, it, la, hu. Ha nincs ilyen részlet, "
+                    'üres lista: {"segments":[]}'
                 )},
                 {"role": "user", "content": text[:2000]},
             ],
@@ -2105,9 +2112,13 @@ def _detect_foreign_words(text: str, base_lang: str) -> dict[str, str]:
         )
         payload = json.loads(resp.choices[0].message.content or "{}")
         out: dict[str, str] = {}
-        for item in (payload.get("words") or [])[:60]:
-            w = str(item.get("w") or "").strip()
+        items = payload.get("segments") or payload.get("words") or []
+        for item in items[:60]:
+            w = str(item.get("t") or item.get("w") or "").strip(" .,;:!?\"'")
             lg = str(item.get("lang") or "").strip().lower()
+            # Egybetűs találatot NEM fogadunk el önállóan: az "a" és az "I"
+            # a magyar szövegben is előfordul, és mindent elrontana. Ezek úgyis
+            # a hosszabb idegen mondat részeként jönnek vissza.
             if w and len(w) >= 2 and lg in FL_CODE_VOICES and w in text:
                 out[w] = lg
         if len(_FOREIGN_DETECT_CACHE) > 400:
@@ -2160,9 +2171,22 @@ def _tts_split_foreign(text: str) -> list[tuple[str, str | None]]:
     uniq = sorted({w for w in word_voice if len(w) >= 2}, key=len, reverse=True)[:150]
     if not uniq:
         return [(text, None)]
+    # A magyar (és a spanyol) toldalékol: „Münchenben”, „Shakespeare-t”,
+    # „Bordeaux-ból”. A szótő után ezért NEM követelünk szóhatárt, ha a szó
+    # elég hosszú (>=4 betű) ahhoz, hogy a véletlen egyezés kizárt legyen —
+    # a toldalék így külön, ANYANYELVI hangon szólal meg, a szótő idegenül.
+    phrases = [w for w in uniq if " " in w]              # teljes idegen mondat/kifejezés
+    loose = [w for w in uniq if " " not in w and len(w) >= 4]  # toldalékolható szótő
+    strict = [w for w in uniq if " " not in w and len(w) < 4]  # rövid szó: szigorú határ
+    alts = []
+    if phrases:
+        alts.append(rf"(?:{'|'.join(re.escape(w) for w in phrases)})")
+    if loose:
+        alts.append(rf"(?<!\w)(?:{'|'.join(re.escape(w) for w in loose)})")
+    if strict:
+        alts.append(rf"(?<!\w)(?:{'|'.join(re.escape(w) for w in strict)})(?!\w)")
     try:
-        rx = re.compile(rf"(?<!\w)({'|'.join(re.escape(w) for w in uniq)})(?!\w)",
-                        re.IGNORECASE | re.UNICODE)
+        rx = re.compile("(" + "|".join(alts) + ")", re.IGNORECASE | re.UNICODE)
     except re.error:
         return [(text, None)]
     lookup = {w.lower(): v for w, v in word_voice.items()}
