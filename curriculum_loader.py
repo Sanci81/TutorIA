@@ -1995,6 +1995,11 @@ def get_curriculum_for_chat(
                 "subject_name": subject_name,
                 "data": data,
                 "language": effective_language,
+                # Spirális tantárgynál a leckenevek évről évre visszatérnek,
+                # ezért nem több lecke kell, hanem évfolyamonként mélyebb
+                # tartalom — az app ebből tudja, hogy ilyenkor a promptba
+                # évfolyam-specifikus mélységet kell tennie.
+                "spiralis": _is_spiral_subject(data, raw_data=raw),
             }
 
     logger.warning(

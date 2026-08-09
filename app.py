@@ -2203,6 +2203,99 @@ def _age_specific_rules(age: int) -> str:
     return "\n".join(lines)
 
 
+_SPIRAL_DEPTH: dict[str, dict[int, str]] = {
+    "Testnevelés": {
+        1: "alapmozgások, játékos utánzás, egyszerű szabályjátékok",
+        2: "mozgáskombinációk, kis csapatjátékok, egyszerű ügyességi feladatok",
+        3: "sportági alapmozgások, szabálykövetés, egyszerű technikák",
+        4: "sportági technikák gyakorlása, csapatjáték taktikai alapokkal",
+        5: "sportági technikák pontosítása, önálló bemelegítés, edzettség fogalma",
+        6: "taktikai gondolkodás, versenyhelyzetek, saját teljesítmény mérése",
+        7: "összetett technikák, edzéselvek, tudatos terhelés és regeneráció",
+        8: "önálló edzéstervezés, élettani ismeretek, sportolói életmód",
+    },
+    "Etika": {
+        1: "én és a társaim, egyszerű helyzetek jó és rossz döntései",
+        2: "barátság, segítés, a szabályok szerepe a közösségben",
+        3: "érzelmek felismerése, felelősség a saját tetteinkért",
+        4: "igazságosság, konfliktus és megbékélés a mindennapokban",
+        5: "önismeret, kortárscsoport hatása, közösségi szerepek",
+        6: "értékek ütközése, döntési helyzetek mérlegelése",
+        7: "erkölcsi dilemmák elemzése, felelősség másokért és a környezetért",
+        8: "világnézetek, társadalmi kérdések, saját álláspont megindoklása",
+    },
+    "Vizuális kultúra": {
+        1: "spontán ábrázolás, színek és formák felfedezése",
+        2: "egyszerű kompozíció, mesék és élmények megjelenítése",
+        3: "arányok, térbeliség kezdetei, anyagok kipróbálása",
+        4: "tudatos kompozíció, tervezés a megvalósítás előtt",
+        5: "látvány utáni ábrázolás, művészeti korszakok megismerése",
+        6: "színtan és formatan tudatos alkalmazása, műelemzés",
+        7: "perspektíva, tervezőgrafika, kortárs művészet",
+        8: "önálló alkotói koncepció, média- és mozgóképi kifejezés",
+    },
+    "Ének-zene": {
+        1: "gyermekdalok, egyenletes lüktetés, hangos-halk",
+        2: "dallamsorok, ritmusértékek, egyszerű ritmuskíséret",
+        3: "kottakép alapjai, hangközök hallás utáni felismerése",
+        4: "többszólamúság kezdetei, hangszerek megismerése",
+    },
+    "Dráma és színház": {
+        5: "szabályjátékok, ritmus- és térjátékok, egyszerű szerepjáték",
+        6: "helyzetgyakorlatok, karakterépítés, improvizáció",
+        7: "jelenetépítés, konfliktus és dramaturgia, színházi műfajok",
+        8: "önálló jelenetalkotás, rendezői és nézői szempont, előadáselemzés",
+    },
+    "Hon- és népismeret": {
+        5: "a saját család és lakóhely felfedezése, gyűjtőmunka",
+        6: "a hagyományos falusi élet rendje és munkái",
+        7: "néprajzi tájak összehasonlítása, jelentések és szimbólumok",
+        8: "nemzeti összetartozás, a hagyomány szerepe a mai életben",
+    },
+    "Technika és tervezés": {
+        1: "biztonságos anyaghasználat, egyszerű hajtogatás és ragasztás",
+        2: "több anyagfajta összehasonlítása, egyszerű szerelés",
+        3: "tervrajz alapján készítés, mérés és pontosság",
+        4: "önálló tervezés, anyagválasztás indoklása, együttműködés",
+    },
+}
+
+
+def _spiral_depth_block(subject_label: str, grade: int) -> str:
+    """Évfolyam-specifikus mélység a SPIRÁLIS tantárgyakhoz.
+
+    Ezeknél a leckenevek évről évre visszatérnek (ez a kerettanterv szándéka),
+    ezért nem a lecke CÍME, hanem a tanítás MÉLYSÉGE különbözteti meg az
+    évfolyamokat. E nélkül a tutor ugyanazt tanítaná egy elsősnek és egy
+    negyedikesnek.
+    """
+    by_grade = _SPIRAL_DEPTH.get(subject_label or "")
+    if not by_grade:
+        return ""
+    here = by_grade.get(grade)
+    if not here:
+        return ""
+    earlier = [f"{g}. o.: {t}" for g, t in sorted(by_grade.items()) if g < grade]
+    block = (
+        "\n=== ÉVFOLYAM SZERINTI MÉLYSÉG (SPIRÁLIS TANTÁRGY) ===\n"
+        f"Ebben a tantárgyban a témakörök MINDEN évfolyamon visszatérnek — ez így "
+        f"helyes, a kerettanterv szándéka. Az évfolyamokat nem a téma CÍME, hanem a "
+        f"feldolgozás MÉLYSÉGE különbözteti meg.\n"
+        f"A {grade}. osztályban ezen a szinten kell tanítani: {here}.\n"
+    )
+    if earlier:
+        block += (
+            "A korábbi évfolyamok anyagát a gyerek MÁR ELVÉGEZTE, ezért azon a "
+            "szinten TILOS tanítani: " + "; ".join(earlier) + ".\n"
+        )
+    block += (
+        "Ha a témakör címe ugyanaz, mint tavaly, akkor is ÚJ tartalmat adj: új "
+        "példákat, összetettebb feladatot, mélyebb magyarázatot. SOHA ne ismételd "
+        "meg szó szerint az előző évfolyam anyagát.\n"
+    )
+    return block
+
+
 def _grade_block_context(grade: int) -> str:
     """NAT 2020 kerettanterv blokk-pozíció — hol van a gyerek a spirális építkezésben."""
     if 1 <= grade <= 2:
@@ -2360,9 +2453,14 @@ def _build_chat_system_prompt(
     is_foreign_language: bool,
     teaching_language: str | None = None,
     szokincs: list | None = None,
+    spiralis: bool = False,
 ) -> str:
     age = _child_effective_age(child)
     grade = int(_chat_grade_num(child))
+    # Spirális tantárgynál (Testnevelés, Etika, Vizuális kultúra, Ének-zene,
+    # Dráma, Hon- és népismeret, alsós Technika) a leckenevek évről évre
+    # visszatérnek, ezért évfolyam-specifikus MÉLYSÉGET írunk elő.
+    _spiral_block = _spiral_depth_block(subject_label, grade) if spiralis else ""
     curriculum_body = curriculum_json_content or (
         "NINCS BETÖLTÖTT KERETTANTERV – kérd a szülőtől a tananyag betöltését."
     )
@@ -2611,6 +2709,7 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
   no del niño.
 - Solo márcalo como error si el SIGNIFICADO de la respuesta es claramente OTRO.
 """
+        prompt += _spiral_block
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
               f"len={len(prompt)}", flush=True)
@@ -2775,6 +2874,8 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
   no del niño.
 - Solo márcalo como error si el SIGNIFICADO de la respuesta es claramente OTRO.
 """
+
+        prompt += _spiral_block
 
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'NIVEL ADECUADO' in prompt} "
@@ -3061,6 +3162,8 @@ nem csak az idegen szavakat. Példák: 'Iszak' vagy 'Visszat' a 'viszlát' helye
   hibája, nem a gyereké.
 - Csak akkor jelezd hibásnak, ha egyértelműen MÁS a válasz jelentése.
 """
+
+    prompt += _spiral_block
 
     print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
           f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
@@ -4097,6 +4200,7 @@ def child_chat(child_id: int):
                         level=progress.get("level", 0),
                         is_foreign_language=is_foreign,
                         teaching_language=language if is_foreign else None,
+                        spiralis=bool(chat_curriculum.get("spiralis")),
                     )
                     trigger = (
                         "Kezdd el a tanítást — egy rövid köszöntés után azonnal "
@@ -4169,6 +4273,7 @@ def child_chat(child_id: int):
                         level=progress.get("level", 0),
                         is_foreign_language=is_foreign,
                         teaching_language=language if is_foreign else None,
+                        spiralis=bool(chat_curriculum.get("spiralis")),
                     )
                     trigger = (
                         "Kezdd el a tanítást — egy rövid köszöntés után azonnal "
@@ -4391,6 +4496,7 @@ def child_chat_send(child_id: int):
         is_foreign_language=is_foreign,
         teaching_language=teaching_language,
         szokincs=current_topic_item.get("szokincs") if is_foreign and current_topic_item else None,
+        spiralis=bool(chat_curriculum.get("spiralis")),
     )
     system_prompt += _topic_teaching_prompt_block(current_topic_item, es_curriculum=_active_curriculum() == "ES")
     if chat_mode == "voice":
