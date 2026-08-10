@@ -64,127 +64,187 @@
     "angol": [
      {
       "nev": "Hello & Goodbye – Saludos y despedidas",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño saluda, se despide y pregunta cómo está alguien en inglés con confianza. VOCABULARIO (enséñalo todo con pronunciación): \"hello\", \"hi\", \"goodbye\", \"bye\", \"good morning\", \"good afternoon\", \"good evening\", \"good night\", \"see you\", \"please\", \"thank you\", \"you're welcome\". FRASES MODELO (practica cada una en contexto): \"Hello! How are you?\" – \"I'm fine, thank you\" / \"Not bad\" / \"I'm tired\". \"What's your name?\" – \"My name is Anna\". \"Nice to meet you\". \"Good morning, teacher!\". GRAMÁTICA: diferencia entre saludo formal (\"good morning\") e informal (\"hi\"); entonación ascendente en preguntas. Todavía sin conjugación. ACTIVIDADES: (1) juego de saludos por turnos; (2) role-play de llegar a clase y saludar; (3) despedidas al final del día. Repite hasta que salga natural. AL TERMINAR el niño sabe saludar, preguntar cómo estás y despedirse en frases completas."
      },
      {
       "nev": "Sounds & Letters – Sonidos y letras",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño conoce el alfabeto inglés, distingue sus sonidos y deletrea palabras cortas. VOCABULARIO: las 26 letras A–Z; palabras de ejemplo por sonido: \"apple\", \"ball\", \"cat\", \"dog\", \"egg\", \"fish\", \"sun\", \"hat\". FRASES MODELO: \"How do you spell it?\" – \"It's C-A-T\". \"What letter is this?\". GRAMÁTICA: —. PUNTOS CLAVE: algunas letras suenan MUY distinto que en español — \"h\" se aspira, \"j\" suena como \"y\" fuerte, \"w\" no existe en español, \"th\" es un sonido nuevo (\"the\", \"three\"). Practica estos sonidos con cuidado. ACTIVIDADES: (1) cantar la canción del alfabeto; (2) deletrear el propio nombre; (3) juego de sonidos; (4) deletrear palabras cortas. AL TERMINAR el niño reconoce las 26 letras, canta el alfabeto y deletrea su nombre."
      },
      {
       "nev": "This is me – Me presento",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño se presenta y da información personal básica. VOCABULARIO: \"name\", \"age\", números 1–10, \"boy\", \"girl\", \"years old\". FRASES MODELO: \"My name is Peter\". \"I am seven years old\" / \"I am seven\". \"I am a boy\" / \"I am a girl\". \"How old are you?\" – \"I am eight\". GRAMÁTICA: el verbo \"to be\" en 1ª y 2ª persona — \"I am\", \"you are\". Enséñalo dentro de frases reales: \"I am Anna\", \"You are my friend\". ACTIVIDADES: (1) cada niño se presenta con nombre y edad; (2) el profesor pregunta y el niño responde con frase completa; (3) presentar a un muñeco (\"This is Tom. He is six.\"). AL TERMINAR el niño se presenta con nombre y edad usando \"I am...\"."
      },
      {
       "nev": "My family – Mi familia",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra a los miembros de la familia y habla de ellos. VOCABULARIO: \"mother/mum\", \"father/dad\", \"brother\", \"sister\", \"grandmother/grandma\", \"grandfather/grandpa\", \"baby\", \"family\". FRASES MODELO (mete el vocabulario en frases): \"This is my mum\". \"I have one brother and two sisters\". \"My dad is tall\". \"Who is this?\" – \"This is my grandma\". GRAMÁTICA: \"this is my...\"; el plural con -s (\"one brother\", \"two brothers\"). ACTIVIDADES: (1) describir una foto de su familia con \"This is my...\"; (2) contar cuántos hermanos tiene; (3) juego de memoria. AL TERMINAR el niño presenta a su familia y usa el plural con -s."
      },
      {
       "nev": "Colours & Numbers – Colores y números",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra colores, cuenta hasta 20 y combina ambos en frases. VOCABULARIO: \"red\", \"blue\", \"green\", \"yellow\", \"black\", \"white\", \"pink\", \"orange\", \"purple\", \"brown\", \"grey\"; números 1–20. FRASES MODELO (combina color + objeto + número): \"What colour is it?\" – \"It's blue\". \"How many apples?\" – \"There are five\". \"I have three red pens\". \"The sky is blue\". GRAMÁTICA: \"there is\" (singular) frente a \"there are\" (plural); ORDEN adjetivo+sustantivo — el color va ANTES del objeto (\"a red car\", NO \"a car red\"). Insiste en este punto. ACTIVIDADES: (1) contar objetos del aula y decir su color; (2) juego \"I spy something blue\"; (3) dictado de números. AL TERMINAR el niño cuenta hasta 20, nombra 8+ colores y forma frases como \"There are three green books\"."
      },
      {
       "nev": "My things – Mis cosas",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra objetos escolares y del hogar y pregunta qué son. VOCABULARIO: \"book\", \"pen\", \"pencil\", \"rubber\", \"bag\", \"ruler\", \"table\", \"chair\", \"door\", \"window\", \"box\", \"apple\", \"orange\". FRASES MODELO: \"What's this?\" – \"It's a pen\". \"This is my book\". \"That is a chair\". \"Is it a pencil?\" – \"Yes, it is\" / \"No, it isn't\". GRAMÁTICA: artículos \"a\"/\"an\" — \"an\" antes de sonido vocálico (\"a book\" pero \"an apple\"); \"this\" (cerca)/\"that\" (lejos). ACTIVIDADES: (1) señalar objetos y preguntar \"What's this?\"; (2) adivinar el objeto escondido; (3) clasificar palabras según \"a\"/\"an\". AL TERMINAR el niño nombra objetos comunes y elige \"a\"/\"an\" correctamente."
      },
      {
       "nev": "Animals – Animales",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra animales y expresa lo que le gusta y lo que tiene. VOCABULARIO: domésticos — \"dog\", \"cat\", \"bird\", \"fish\", \"rabbit\", \"hamster\"; salvajes — \"lion\", \"elephant\", \"monkey\", \"bear\", \"tiger\", \"giraffe\". FRASES MODELO: \"I like dogs\". \"I don't like spiders\". \"I have a cat\". \"Do you like lions?\" – \"Yes, I do\" / \"No, I don't\". \"The elephant is big\". GRAMÁTICA: \"I like\"/\"I don't like\"; \"I have\"; pregunta \"Do you like...?\" con respuesta corta. ACTIVIDADES: (1) decir qué animales le gustan y cuáles tiene; (2) imitar sonidos y nombrarlos en inglés; (3) clasificar en domésticos y salvajes. AL TERMINAR el niño nombra 8+ animales y dice qué le gusta con \"I like\"."
      },
      {
       "nev": "Let's talk! – ¡A hablar!",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño combina todo lo aprendido en un diálogo sencillo. VOCABULARIO: repaso de las lecciones 1–7. FRASES MODELO — preguntas con interrogativos: \"What's your name?\", \"How old are you?\", \"Who is this?\", \"Where is the cat?\", \"What colour is it?\", \"How many?\". GRAMÁTICA: interrogativos \"what\", \"who\", \"where\", \"how many\"; unir frases con \"and\" (\"I have a cat AND a dog\"). ACTIVIDADES: (1) mini-conversación guiada — saludar, presentarse, hablar de la familia, colores y animales, y despedirse; (2) el profesor hace de amigo nuevo; (3) role-play en el parque. AL TERMINAR el niño mantiene un diálogo corto usando todo lo del ciclo."
+     },
+     {
+      "nev": "My Body – Mi cuerpo",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra las partes del cuerpo y sigue instrucciones. VOCABULARIO: \"head\", \"hair\", \"eyes\", \"ears\", \"nose\", \"mouth\", \"hand\", \"arm\", \"leg\", \"foot\". FRASES MODELO: \"Touch your nose!\". \"This is my hand\". \"How many fingers?\" - \"Ten\". GRAMÁTICA: imperativo para instrucciones (touch, show); posesivo my/your; plural irregular foot-feet. ACTIVIDADES: (1) canción Head, shoulders, knees and toes; (2) juego de Simon says; (3) dibujar un monstruo siguiendo instrucciones. AL TERMINAR el niño nombra diez partes del cuerpo y obedece instrucciones sencillas."
+     },
+     {
+      "nev": "My House – Mi casa",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra las habitaciones y dice dónde está algo. VOCABULARIO: \"house\", \"room\", \"kitchen\", \"bathroom\", \"bedroom\", \"door\", \"window\", \"table\", \"bed\", \"in\", \"on\", \"under\". FRASES MODELO: \"This is my bedroom\". \"Where is the cat?\" - \"It is under the table\". GRAMÁTICA: preposiciones de lugar in/on/under; there is / there are; artículo the. ACTIVIDADES: (1) dibujar y etiquetar la casa; (2) juego de esconder un objeto; (3) describir la habitación propia. AL TERMINAR el niño describe su casa con cinco frases."
+     },
+     {
+      "nev": "Food I Like – La comida que me gusta",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra alimentos y expresa gustos. VOCABULARIO: \"bread\", \"milk\", \"water\", \"apple\", \"banana\", \"cheese\", \"egg\", \"juice\", \"yummy\". FRASES MODELO: \"I like apples\". \"I do not like milk\". \"Do you like bananas?\" - \"Yes, I do\". GRAMÁTICA: I like / I do not like; pregunta con do you; respuesta corta. ACTIVIDADES: (1) encuesta de comidas de la clase; (2) desayuno de juguete; (3) mural de me gusta y no me gusta. AL TERMINAR el niño expresa gustos alimentarios en frases completas."
+     },
+     {
+      "nev": "Days and Weather – Los días y el tiempo",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra los días y describe el tiempo. VOCABULARIO: \"Monday\", \"Friday\", \"Sunday\", \"today\", \"sunny\", \"rainy\", \"cloudy\", \"windy\", \"hot\", \"cold\". FRASES MODELO: \"Today is Monday\". \"It is sunny today\". \"What is the weather like?\". GRAMÁTICA: estructura impersonal it is + tiempo; días con mayúscula; today y tomorrow. ACTIVIDADES: (1) calendario del tiempo del aula; (2) canción de los días; (3) parte meteorológico diario. AL TERMINAR el niño dice el día y describe el tiempo."
      }
     ],
     "nemet": [
      {
       "nev": "Hallo & Tschüss – Saludos y despedidas",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño saluda, se despide y pregunta cómo está alguien en alemán con confianza. VOCABULARIO (enséñalo todo con pronunciación): \"hallo\", \"hi\", \"tschüss\", \"auf Wiedersehen\", \"guten Morgen\", \"guten Tag\", \"guten Abend\", \"gute Nacht\", \"bis bald\", \"bitte\", \"danke\", \"gern geschehen\". FRASES MODELO (practica cada una en contexto): \"Hallo! Wie geht es dir?\" – \"Mir geht es gut, danke\" / \"Nicht schlecht\" / \"Ich bin müde\". \"Wie heißt du?\" – \"Ich heiße Anna\". \"Freut mich!\". \"Guten Morgen, Frau Meier!\". GRAMÁTICA: diferencia entre saludo formal (\"guten Tag\") e informal (\"hallo\"); la \"ch\" y la \"ei\" alemanas; entonación ascendente en preguntas. Todavía sin conjugación completa. ACTIVIDADES: (1) juego de saludos por turnos; (2) role-play de llegar a clase; (3) despedidas al final del día. Repite hasta que salga natural. AL TERMINAR el niño sabe saludar, preguntar cómo estás y despedirse en frases completas."
      },
      {
       "nev": "Laute & Buchstaben – Sonidos y letras",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño reconoce los sonidos propios del alemán y deletrea su nombre. VOCABULARIO: el alfabeto alemán, \"buchstabieren\", \"der Buchstabe\", \"das Wort\", \"hören\", \"sprechen\", \"wiederholen\", \"langsam\", \"noch einmal\". FRASES MODELO: \"Wie schreibt man das?\" – \"B-A-U-M\". \"Kannst du das buchstabieren?\". \"Noch einmal, bitte\". GRAMÁTICA: los sonidos \"ä, ö, ü\" y la \"ß\"; \"sch\", \"ch\" y \"z\"; los sustantivos se escriben con mayúscula. ACTIVIDADES: (1) canción del alfabeto; (2) deletrear el propio nombre; (3) juego de sonidos: ¿qué palabra oigo? AL TERMINAR el niño distingue los sonidos alemanes básicos y deletrea palabras cortas."
      },
      {
       "nev": "Das bin ich – Me presento",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño se presenta y dice su nombre, su edad y de dónde es. VOCABULARIO: \"ich heiße\", \"ich bin\", \"ich wohne in\", \"das Land\", \"die Stadt\", \"alt\", \"das Jahr\", \"wie alt\", \"woher\", \"wo\". FRASES MODELO: \"Ich heiße Marta und ich bin acht Jahre alt\". \"Ich wohne in Madrid\". \"Woher kommst du?\" – \"Ich komme aus Spanien\". GRAMÁTICA: el verbo \"sein\" (ich bin, du bist); el verbo \"heißen\"; las preguntas con \"wie\", \"wo\", \"woher\". ACTIVIDADES: (1) rueda de presentaciones; (2) ficha personal; (3) entrevista a un compañero. AL TERMINAR el niño se presenta con tres o cuatro frases seguidas."
      },
      {
       "nev": "Meine Familie – Mi familia",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño presenta a los miembros de su familia. VOCABULARIO: \"die Familie\", \"die Mutter\", \"der Vater\", \"der Bruder\", \"die Schwester\", \"die Oma\", \"der Opa\", \"das Baby\", \"die Geschwister\", \"lieb\". FRASES MODELO: \"Das ist meine Mutter\". \"Ich habe einen Bruder und zwei Schwestern\". \"Meine Oma heißt Eva\". GRAMÁTICA: los artículos \"der / die / das\"; el posesivo \"mein / meine\"; el verbo \"haben\" (ich habe, du hast). ACTIVIDADES: (1) presentar un árbol genealógico; (2) describir una foto de familia; (3) juego de adivinar el parentesco. AL TERMINAR el niño presenta a cuatro o cinco familiares con frases completas."
      },
      {
       "nev": "Farben & Zahlen – Colores y números",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra los colores y cuenta hasta veinte. VOCABULARIO: \"rot\", \"blau\", \"gelb\", \"grün\", \"schwarz\", \"weiß\", \"braun\", \"eins\" … \"zwanzig\", \"die Farbe\", \"die Zahl\", \"wie viele\". FRASES MODELO: \"Welche Farbe ist das?\" – \"Das ist rot\". \"Wie viele Stifte hast du?\" – \"Ich habe fünf Stifte\". GRAMÁTICA: el adjetivo como predicado (\"Es ist blau\"); los numerales; el plural que se oye (\"Stift – Stifte\"). ACTIVIDADES: (1) búsqueda de colores en el aula; (2) bingo de números; (3) dictado de colores para pintar. AL TERMINAR el niño nombra los colores y cuenta hasta veinte sin ayuda."
      },
      {
       "nev": "Meine Sachen – Mis cosas",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra los objetos del aula y de su mochila. VOCABULARIO: \"die Tasche\", \"das Buch\", \"der Stift\", \"das Heft\", \"die Schere\", \"der Tisch\", \"der Stuhl\", \"die Tür\", \"das Fenster\", \"die Tafel\". FRASES MODELO: \"Was ist das?\" – \"Das ist ein Buch\". \"Ich habe einen Stift\". \"Wo ist meine Tasche?\". GRAMÁTICA: el artículo indeterminado \"ein / eine\"; el acusativo básico (\"einen Stift\"); la pregunta \"was\" y \"wo\". ACTIVIDADES: (1) vaciar la mochila y nombrar; (2) juego de \"Simon sagt\"; (3) buscar objetos por el aula. AL TERMINAR el niño nombra diez objetos escolares y pide alguno de ellos."
      },
      {
       "nev": "Tiere – Animales",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra animales y dice cuáles le gustan. VOCABULARIO: \"der Hund\", \"die Katze\", \"der Vogel\", \"der Fisch\", \"das Pferd\", \"die Kuh\", \"der Hase\", \"die Maus\", \"groß\", \"klein\". FRASES MODELO: \"Ich mag Katzen\". \"Der Hund ist groß\". \"Hast du ein Haustier?\" – \"Ja, ich habe einen Hund\". GRAMÁTICA: \"ich mag\" + sustantivo; adjetivo como predicado; respuesta corta \"ja / nein\". ACTIVIDADES: (1) adivinar animales por su sonido; (2) imitar movimientos; (3) póster del animal favorito. AL TERMINAR el niño nombra ocho animales y expresa preferencia."
      },
      {
       "nev": "Lass uns sprechen! – ¡A hablar!",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño mantiene un diálogo corto uniendo todo lo aprendido en el ciclo. VOCABULARIO: repaso de saludos, familia, colores, números, objetos y animales. FRASES MODELO: \"Hallo! Wie heißt du?\" – \"Ich heiße Luis. Und du?\". \"Wie alt bist du?\" – \"Ich bin sieben\". \"Das ist meine Familie\". GRAMÁTICA: repaso de \"sein\" y \"haben\"; orden de la frase afirmativa; preguntas con \"wie\", \"wo\", \"was\". ACTIVIDADES: (1) diálogo por parejas con tarjetas; (2) presentación de un compañero; (3) pequeña obra de teatro con títeres. AL TERMINAR el niño mantiene un diálogo de seis a ocho intervenciones."
+     },
+     {
+      "nev": "Mein Körper – Mi cuerpo",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra las partes del cuerpo y sigue instrucciones. VOCABULARIO: \"der Kopf\", \"die Haare\", \"die Augen\", \"die Ohren\", \"die Nase\", \"der Mund\", \"die Hand\", \"der Arm\", \"das Bein\", \"der Fuß\". FRASES MODELO: \"Zeig mir deine Nase!\". \"Das ist meine Hand\". \"Wie viele Finger?\" - \"Zehn\". GRAMÁTICA: imperativo (zeig); posesivos mein y dein; artículos der/die/das con partes del cuerpo. ACTIVIDADES: (1) canción Kopf, Schultern, Knie und Zeh; (2) juego de Simon sagt; (3) dibujar un monstruo siguiendo instrucciones. AL TERMINAR el niño nombra diez partes del cuerpo y obedece instrucciones."
+     },
+     {
+      "nev": "Mein Haus – Mi casa",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra las habitaciones y dice dónde está algo. VOCABULARIO: \"das Haus\", \"das Zimmer\", \"die Küche\", \"das Bad\", \"das Schlafzimmer\", \"die Tür\", \"das Fenster\", \"der Tisch\", \"das Bett\", \"in\", \"auf\", \"unter\". FRASES MODELO: \"Das ist mein Zimmer\". \"Wo ist die Katze?\" - \"Sie ist unter dem Tisch\". GRAMÁTICA: preposiciones de lugar con dativo (in, auf, unter); es gibt; artículo definido. ACTIVIDADES: (1) dibujar y etiquetar la casa; (2) juego de esconder un objeto; (3) describir la propia habitación. AL TERMINAR el niño describe su casa con cinco frases."
+     },
+     {
+      "nev": "Essen, das ich mag – La comida que me gusta",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra alimentos y expresa gustos. VOCABULARIO: \"das Brot\", \"die Milch\", \"das Wasser\", \"der Apfel\", \"die Banane\", \"der Käse\", \"das Ei\", \"der Saft\", \"lecker\". FRASES MODELO: \"Ich mag Äpfel\". \"Ich mag keine Milch\". \"Magst du Bananen?\" - \"Ja, gern\". GRAMÁTICA: ich mag y su negación; kein frente a nicht; pregunta con inversión. ACTIVIDADES: (1) encuesta de comidas; (2) desayuno de juguete; (3) mural de gustos. AL TERMINAR el niño expresa gustos alimentarios en frases completas."
+     },
+     {
+      "nev": "Wochentage und Wetter – Los días y el tiempo",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra los días y describe el tiempo. VOCABULARIO: \"Montag\", \"Freitag\", \"Sonntag\", \"heute\", \"sonnig\", \"regnerisch\", \"wolkig\", \"windig\", \"heiß\", \"kalt\". FRASES MODELO: \"Heute ist Montag\". \"Es ist sonnig\". \"Wie ist das Wetter?\". GRAMÁTICA: estructura impersonal es ist; los días con mayúscula; heute y morgen. ACTIVIDADES: (1) calendario del tiempo; (2) canción de los días; (3) parte meteorológico diario. AL TERMINAR el niño dice el día y describe el tiempo."
      }
     ],
     "francia": [
      {
       "nev": "Bonjour & Au revoir – Saludos y despedidas",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño saluda, se despide y pregunta cómo está alguien en francés con confianza. VOCABULARIO (enséñalo todo con pronunciación): \"bonjour\", \"salut\", \"au revoir\", \"bonsoir\", \"bonne nuit\", \"à bientôt\", \"s'il te plaît\", \"merci\", \"de rien\", \"pardon\", \"oui\", \"non\". FRASES MODELO: \"Bonjour ! Ça va ?\" – \"Ça va bien, merci\" / \"Comme ci comme ça\". \"Comment tu t'appelles ?\" – \"Je m'appelle Anna\". \"Enchanté !\". GRAMÁTICA: diferencia entre \"bonjour\" (formal) y \"salut\" (informal); la \"r\" francesa y las nasales \"on\", \"an\"; las letras finales que no se pronuncian. ACTIVIDADES: (1) rueda de saludos; (2) role-play de llegar a clase; (3) despedidas al final del día. AL TERMINAR el niño saluda, pregunta cómo estás y se despide en frases completas."
      },
      {
       "nev": "Sons & Lettres – Sonidos y letras",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño reconoce los sonidos propios del francés y deletrea su nombre. VOCABULARIO: el alfabeto francés, \"épeler\", \"la lettre\", \"le mot\", \"écouter\", \"répéter\", \"lentement\", \"encore\", \"l'accent\". FRASES MODELO: \"Comment ça s'écrit ?\" – \"A-N-N-A\". \"Tu peux épeler ?\". \"Encore une fois, s'il te plaît\". GRAMÁTICA: los acentos (é, è, ê) y la cedilla (ç); los sonidos \"ou\", \"eu\", \"in\"; las consonantes finales mudas. ACTIVIDADES: (1) canción del alfabeto; (2) deletrear el propio nombre; (3) juego de sonidos: ¿qué palabra oigo? AL TERMINAR el niño distingue los sonidos franceses básicos y deletrea palabras cortas."
      },
      {
       "nev": "C'est moi – Me presento",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño se presenta y dice su nombre, su edad y de dónde es. VOCABULARIO: \"je m'appelle\", \"j'ai … ans\", \"j'habite à\", \"le pays\", \"la ville\", \"quel âge\", \"d'où\", \"où\". FRASES MODELO: \"Je m'appelle Marta et j'ai huit ans\". \"J'habite à Madrid\". \"Tu viens d'où ?\" – \"Je viens d'Espagne\". GRAMÁTICA: el verbo \"être\" (je suis, tu es); el verbo \"avoir\" para la edad (\"j'ai huit ans\", no \"je suis\"); las preguntas con \"comment\", \"où\", \"quel\". ACTIVIDADES: (1) rueda de presentaciones; (2) ficha personal; (3) entrevista a un compañero. AL TERMINAR el niño se presenta con tres o cuatro frases seguidas."
      },
      {
       "nev": "Ma famille – Mi familia",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño presenta a los miembros de su familia. VOCABULARIO: \"la famille\", \"la mère\", \"le père\", \"le frère\", \"la sœur\", \"la grand-mère\", \"le grand-père\", \"le bébé\", \"les parents\", \"gentil\". FRASES MODELO: \"Voici ma mère\". \"J'ai un frère et deux sœurs\". \"Ma grand-mère s'appelle Ève\". GRAMÁTICA: los artículos \"le / la / les\"; los posesivos \"mon / ma / mes\"; el verbo \"avoir\" (j'ai, tu as). ACTIVIDADES: (1) presentar un árbol genealógico; (2) describir una foto de familia; (3) juego de adivinar el parentesco. AL TERMINAR el niño presenta a cuatro o cinco familiares con frases completas."
      },
      {
       "nev": "Couleurs & Nombres – Colores y números",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra los colores y cuenta hasta veinte. VOCABULARIO: \"rouge\", \"bleu\", \"jaune\", \"vert\", \"noir\", \"blanc\", \"marron\", \"un\" … \"vingt\", \"la couleur\", \"combien\". FRASES MODELO: \"C'est de quelle couleur ?\" – \"C'est rouge\". \"Combien de crayons tu as ?\" – \"J'ai cinq crayons\". GRAMÁTICA: el adjetivo de color detrás del sustantivo (\"un crayon rouge\"); la concordancia básica (\"verte\"); los numerales. ACTIVIDADES: (1) búsqueda de colores en el aula; (2) bingo de números; (3) dictado de colores para pintar. AL TERMINAR el niño nombra los colores y cuenta hasta veinte sin ayuda."
      },
      {
       "nev": "Mes affaires – Mis cosas",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra los objetos del aula y de su mochila. VOCABULARIO: \"le sac\", \"le livre\", \"le crayon\", \"le cahier\", \"les ciseaux\", \"la table\", \"la chaise\", \"la porte\", \"la fenêtre\", \"le tableau\". FRASES MODELO: \"Qu'est-ce que c'est ?\" – \"C'est un livre\". \"J'ai un crayon\". \"Où est mon sac ?\". GRAMÁTICA: los artículos indeterminados \"un / une / des\"; la pregunta \"qu'est-ce que c'est ?\"; el plural con \"-s\" que no se oye. ACTIVIDADES: (1) vaciar la mochila y nombrar; (2) juego de \"Jacques a dit\"; (3) buscar objetos por el aula. AL TERMINAR el niño nombra diez objetos escolares y pide alguno de ellos."
      },
      {
       "nev": "Les animaux – Animales",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra animales y dice cuáles le gustan. VOCABULARIO: \"le chien\", \"le chat\", \"l'oiseau\", \"le poisson\", \"le cheval\", \"la vache\", \"le lapin\", \"la souris\", \"grand\", \"petit\". FRASES MODELO: \"J'aime les chats\". \"Le chien est grand\". \"Tu as un animal ?\" – \"Oui, j'ai un chien\". GRAMÁTICA: \"j'aime\" + artículo definido plural; el adjetivo detrás del sustantivo; la respuesta corta \"oui / non\". ACTIVIDADES: (1) adivinar animales por su sonido; (2) imitar movimientos; (3) póster del animal favorito. AL TERMINAR el niño nombra ocho animales y expresa preferencia."
      },
      {
       "nev": "On parle ! – ¡A hablar!",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño mantiene un diálogo corto uniendo todo lo aprendido en el ciclo. VOCABULARIO: repaso de saludos, familia, colores, números, objetos y animales. FRASES MODELO: \"Salut ! Comment tu t'appelles ?\" – \"Je m'appelle Luis. Et toi ?\". \"Quel âge as-tu ?\" – \"J'ai sept ans\". \"Voici ma famille\". GRAMÁTICA: repaso de \"être\" y \"avoir\"; el orden de la frase afirmativa; las preguntas con entonación. ACTIVIDADES: (1) diálogo por parejas con tarjetas; (2) presentación de un compañero; (3) pequeña obra con títeres. AL TERMINAR el niño mantiene un diálogo de seis a ocho intervenciones."
+     },
+     {
+      "nev": "Mon corps – Mi cuerpo",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra las partes del cuerpo y sigue instrucciones. VOCABULARIO: \"la tête\", \"les cheveux\", \"les yeux\", \"les oreilles\", \"le nez\", \"la bouche\", \"la main\", \"le bras\", \"la jambe\", \"le pied\". FRASES MODELO: \"Montre-moi ton nez !\". \"C est ma main\". \"Combien de doigts ?\" - \"Dix\". GRAMÁTICA: imperativo (montre); posesivos mon, ma, mes; plural con artículo les. ACTIVIDADES: (1) canción de las partes del cuerpo; (2) juego de Jacques a dit; (3) dibujar un monstruo siguiendo instrucciones. AL TERMINAR el niño nombra diez partes del cuerpo y obedece instrucciones."
+     },
+     {
+      "nev": "Ma maison – Mi casa",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra las habitaciones y dice dónde está algo. VOCABULARIO: \"la maison\", \"la chambre\", \"la cuisine\", \"la salle de bains\", \"la porte\", \"la fenêtre\", \"la table\", \"le lit\", \"dans\", \"sur\", \"sous\". FRASES MODELO: \"C est ma chambre\". \"Où est le chat ?\" - \"Il est sous la table\". GRAMÁTICA: preposiciones dans, sur, sous; il y a; artículos definidos. ACTIVIDADES: (1) dibujar y etiquetar la casa; (2) juego de esconder un objeto; (3) describir la propia habitación. AL TERMINAR el niño describe su casa con cinco frases."
+     },
+     {
+      "nev": "La nourriture que j aime – La comida que me gusta",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra alimentos y expresa gustos. VOCABULARIO: \"le pain\", \"le lait\", \"l eau\", \"la pomme\", \"la banane\", \"le fromage\", \"l œuf\", \"le jus\", \"délicieux\". FRASES MODELO: \"J aime les pommes\". \"Je n aime pas le lait\". \"Tu aimes les bananes ?\" - \"Oui\". GRAMÁTICA: j aime y je n aime pas con artículo definido; negación ne pas; pregunta por entonación. ACTIVIDADES: (1) encuesta de comidas; (2) desayuno de juguete; (3) mural de gustos. AL TERMINAR el niño expresa gustos alimentarios en frases completas."
+     },
+     {
+      "nev": "Les jours et le temps – Los días y el tiempo",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño nombra los días y describe el tiempo. VOCABULARIO: \"lundi\", \"vendredi\", \"dimanche\", \"aujourd hui\", \"il fait beau\", \"il pleut\", \"il fait froid\", \"il fait chaud\", \"nuageux\". FRASES MODELO: \"Aujourd hui, c est lundi\". \"Il fait beau\". \"Quel temps fait-il ?\". GRAMÁTICA: expresiones impersonales il fait y il pleut; días en minúscula; aujourd hui y demain. ACTIVIDADES: (1) calendario del tiempo; (2) canción de los días; (3) parte meteorológico diario. AL TERMINAR el niño dice el día y describe el tiempo."
      }
     ]
    }
@@ -212,127 +272,187 @@
     "angol": [
      {
       "nev": "Sounds & Spelling – Sonidos y ortografía",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño mejora la pronunciación y la ortografía inglesas. VOCABULARIO: \"three\", \"the\", \"this\", \"think\" (th); \"ship\", \"chair\", \"cheese\" (sh/ch); \"night\", \"light\", \"eight\" (letras mudas). FRASES MODELO: \"How do you spell 'house'?\" – \"H-O-U-S-E\". GRAMÁTICA: —. PUNTOS CLAVE: en inglés la escritura y el sonido no coinciden como en español; hay letras mudas (\"know\", \"write\") y combinaciones (th, sh, ch). ACTIVIDADES: (1) dictado de palabras; (2) juego de rimas; (3) clasificar por sonido inicial. AL TERMINAR el niño deletrea palabras comunes y pronuncia th/sh/ch mejor."
      },
      {
       "nev": "Daily Routines – Mi día a día",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño describe su rutina diaria. VOCABULARIO: \"get up\", \"wash\", \"have breakfast\", \"go to school\", \"have lunch\", \"play\", \"do homework\", \"have dinner\", \"go to bed\"; \"morning\", \"afternoon\", \"evening\", \"night\"; \"o'clock\". FRASES MODELO: \"I get up at seven o'clock\". \"I go to school in the morning\". \"What time do you get up?\". GRAMÁTICA: present simple en 1ª persona para hábitos — \"I get up\", \"I go\", \"I play\"; pregunta \"What time...?\". ACTIVIDADES: (1) contar su día de la mañana a la noche; (2) ordenar acciones; (3) reloj de cartón. AL TERMINAR el niño describe su rutina con present simple."
      },
      {
       "nev": "Food & Drinks – Comida y bebida",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra comidas y bebidas y expresa preferencias. VOCABULARIO: \"bread\", \"milk\", \"water\", \"juice\", \"apple\", \"banana\", \"rice\", \"chicken\", \"fish\", \"cheese\", \"egg\", \"chocolate\", \"cake\". FRASES MODELO: \"I like pizza\". \"I don't like fish\". \"Do you like milk?\" – \"Yes, I do\". \"I want an apple, please\". GRAMÁTICA: \"I like\"/\"I don't like\"; \"Do you like...?\" con respuesta corta; \"I want... please\" para pedir. ACTIVIDADES: (1) role-play en un restaurante; (2) hacer un menú favorito; (3) clasificar comida sana/no sana. AL TERMINAR el niño pide comida educadamente y dice qué le gusta."
      },
      {
       "nev": "My Town – Mi ciudad",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño describe lugares de su ciudad y da indicaciones. VOCABULARIO: \"school\", \"park\", \"shop\", \"house\", \"hospital\", \"street\", \"square\", \"library\", \"supermarket\"; \"in\", \"on\", \"under\", \"next to\", \"behind\". FRASES MODELO: \"There is a park near my house\". \"The shop is next to the school\". \"Where is the library?\" – \"It's on Main Street\". GRAMÁTICA: \"there is\"/\"there are\"; preposiciones de lugar. ACTIVIDADES: (1) dibujar y describir un mapa del barrio; (2) juego \"¿dónde está?\"; (3) dar indicaciones. AL TERMINAR el niño describe su ciudad con \"there is/are\" y preposiciones."
      },
      {
       "nev": "Clothes & Weather – Ropa y tiempo",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra ropa, describe el tiempo y relaciona ambos. VOCABULARIO: \"shirt\", \"t-shirt\", \"trousers\", \"dress\", \"shoes\", \"hat\", \"coat\", \"socks\"; \"sunny\", \"rainy\", \"cloudy\", \"windy\", \"hot\", \"cold\", \"snow\". FRASES MODELO: \"It's sunny today\". \"I'm wearing a red t-shirt\". \"It's cold, put on your coat\". \"What's the weather like?\" – \"It's rainy\". GRAMÁTICA: \"it's + adjetivo\" para el tiempo; present continuous para ropa — \"I am wearing...\". ACTIVIDADES: (1) describir qué lleva hoy; (2) vestir a un muñeco según el tiempo; (3) parte meteorológico. AL TERMINAR el niño describe el tiempo y su ropa."
      },
      {
       "nev": "Hobbies – Aficiones",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño habla de sus aficiones y de lo que sabe hacer. VOCABULARIO: \"football\", \"basketball\", \"swimming\", \"dancing\", \"drawing\", \"reading\", \"singing\", \"cycling\", \"playing\". FRASES MODELO: \"I like playing football\". \"I can swim\". \"I can't ride a bike\". \"Can you dance?\" – \"Yes, I can\"/\"No, I can't\". GRAMÁTICA: \"can\"/\"can't\" para habilidad; present continuous (\"I am playing\"). ACTIVIDADES: (1) decir qué sabe y qué no sabe hacer; (2) mímica de aficiones; (3) encuesta \"Can you...?\". AL TERMINAR el niño expresa habilidades con \"can/can't\"."
      },
      {
       "nev": "Describing People – Describir personas",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño describe el aspecto y el carácter de las personas. VOCABULARIO: \"tall\", \"short\", \"big\", \"small\", \"happy\", \"sad\", \"kind\", \"funny\"; \"hair\", \"eyes\". FRASES MODELO: \"He is tall\". \"She has got long hair\". \"My friend has got blue eyes\". \"He is funny and kind\". GRAMÁTICA: \"have got\"/\"has got\" para aspecto; adjetivos antes del sustantivo (\"long hair\", NO \"hair long\"). ACTIVIDADES: (1) describir a un compañero y adivinar; (2) dibujar y describir un monstruo; (3) describir a un personaje. AL TERMINAR el niño describe personas con \"has got\" y adjetivos."
      },
      {
       "nev": "Let's Chat! – ¡A charlar!",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño mantiene una conversación más larga. VOCABULARIO: repaso de rutinas, comida, ciudad, ropa, aficiones y descripciones. FRASES MODELO: \"What do you do in the morning?\", \"What's your favourite food?\", \"Can you swim?\", \"What's the weather like?\". GRAMÁTICA: repaso de present simple, \"can\", \"have got\", \"there is/are\"; unir ideas con \"and\", \"but\", \"because\". ACTIVIDADES: (1) entrevista profesor–niño; (2) contar un día completo; (3) role-play de conocer a alguien. AL TERMINAR el niño sostiene un diálogo de varios turnos."
+     },
+     {
+      "nev": "At School – En el colegio",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño habla de su colegio, sus asignaturas y su horario. VOCABULARIO: \"school\", \"classroom\", \"teacher\", \"subject\", \"maths\", \"English\", \"break\", \"timetable\", \"homework\", \"playground\". FRASES MODELO: \"I have maths on Monday\". \"My favourite subject is art\". \"When do you have English?\". GRAMÁTICA: presente simple con rutinas; preposiciones de tiempo on y at; adjetivo posesivo my. ACTIVIDADES: (1) escribir el propio horario en inglés; (2) encuesta de asignaturas favoritas; (3) recorrido guiado por el colegio. AL TERMINAR el niño describe su día escolar con seis frases."
+     },
+     {
+      "nev": "Shopping – De compras",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño compra algo y pregunta el precio. VOCABULARIO: \"shop\", \"money\", \"buy\", \"price\", \"how much\", \"cheap\", \"expensive\", \"bag\", \"pay\", \"change\". FRASES MODELO: \"How much is it?\" - \"It is five euros\". \"Can I have a bag, please?\". \"Here you are\". GRAMÁTICA: how much para el precio; can I have para pedir con cortesía; there is y there are en la tienda. ACTIVIDADES: (1) tienda de clase con precios; (2) lista de la compra; (3) diálogo grabado de compra. AL TERMINAR el niño realiza una compra sencilla en inglés."
+     },
+     {
+      "nev": "How Do You Feel? – ¿Cómo te sientes?",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño expresa cómo se siente y pregunta a los demás. VOCABULARIO: \"happy\", \"sad\", \"angry\", \"tired\", \"scared\", \"excited\", \"hungry\", \"thirsty\", \"feel\", \"because\". FRASES MODELO: \"I am happy today\". \"Why are you sad?\" - \"Because I lost my pen\". \"How do you feel?\". GRAMÁTICA: verbo to be con adjetivos de emoción; pregunta why y respuesta con because. ACTIVIDADES: (1) ruleta de emociones; (2) diario de sentimientos; (3) role-play de consolar a un amigo. AL TERMINAR el niño expresa emociones y las justifica."
+     },
+     {
+      "nev": "Animals and Nature – Animales y naturaleza",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño describe animales y su entorno natural. VOCABULARIO: \"forest\", \"river\", \"mountain\", \"tree\", \"flower\", \"wild animal\", \"farm animal\", \"live\", \"eat\", \"protect\". FRASES MODELO: \"Lions live in Africa\". \"Bears eat fish\". \"We must protect nature\". GRAMÁTICA: presente simple en tercera persona con -s; adverbios de lugar; must para la obligación. ACTIVIDADES: (1) ficha de un animal; (2) mural del bosque; (3) campaña de cuidado de la naturaleza. AL TERMINAR el niño describe un animal y su hábitat con cinco frases."
      }
     ],
     "nemet": [
      {
       "nev": "Laute & Rechtschreibung – Sonidos y ortografía",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño lee palabras conocidas y escribe palabras cortas correctamente. VOCABULARIO: \"lesen\", \"schreiben\", \"das Wort\", \"der Satz\", \"der Punkt\", \"das Fragezeichen\", \"groß\", \"klein\", \"richtig\", \"falsch\". FRASES MODELO: \"Wie schreibt man das?\". \"Ist das richtig?\". \"Lies bitte laut\". GRAMÁTICA: todos los sustantivos con mayúscula; la \"ß\" frente a \"ss\"; los diptongos \"ei\", \"ie\", \"eu\". ACTIVIDADES: (1) dictado de palabras cortas; (2) juego de buscar el error; (3) copiar y leer frases. AL TERMINAR el niño escribe veinte palabras conocidas sin faltas graves."
      },
      {
       "nev": "Mein Tag – Mi día a día",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño cuenta su rutina diaria y dice la hora. VOCABULARIO: \"aufstehen\", \"frühstücken\", \"zur Schule gehen\", \"spielen\", \"essen\", \"schlafen\", \"die Uhr\", \"halb\", \"der Morgen\", \"der Abend\". FRASES MODELO: \"Ich stehe um sieben Uhr auf\". \"Um halb neun gehe ich zur Schule\". \"Wann isst du zu Mittag?\". GRAMÁTICA: los verbos separables (\"aufstehen → ich stehe auf\"); la hora con \"um\"; el orden invertido tras el complemento de tiempo. ACTIVIDADES: (1) línea del tiempo del día; (2) dictado de horas; (3) mímica de la rutina. AL TERMINAR el niño describe su día con seis frases seguidas."
      },
      {
       "nev": "Essen & Trinken – Comida y bebida",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra alimentos, expresa gustos y pide en un restaurante. VOCABULARIO: \"das Brot\", \"die Milch\", \"das Wasser\", \"der Apfel\", \"der Käse\", \"das Ei\", \"der Saft\", \"hungrig\", \"durstig\", \"bestellen\". FRASES MODELO: \"Ich mag Käse, aber ich mag keine Milch\". \"Was möchtest du?\" – \"Ich möchte einen Apfel, bitte\". \"Die Rechnung, bitte\". GRAMÁTICA: \"mögen\" y \"möchten\"; la negación \"nicht\" frente a \"kein\"; el acusativo con el artículo. ACTIVIDADES: (1) role-play de restaurante; (2) lista de la compra; (3) encuesta de comidas favoritas. AL TERMINAR el niño pide comida y expresa gustos y disgustos."
      },
      {
       "nev": "Meine Stadt – Mi ciudad",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño describe su ciudad y pide indicaciones. VOCABULARIO: \"die Stadt\", \"die Straße\", \"der Park\", \"das Geschäft\", \"die Schule\", \"der Bahnhof\", \"links\", \"rechts\", \"geradeaus\", \"die Ampel\". FRASES MODELO: \"Wo ist der Bahnhof?\" – \"Geh geradeaus und dann links\". \"In meiner Stadt gibt es einen Park\". GRAMÁTICA: la estructura \"es gibt\" + acusativo; el imperativo (\"geh\", \"nimm\"); las preposiciones \"in\", \"neben\", \"gegenüber\". ACTIVIDADES: (1) dar indicaciones con un plano; (2) describir el propio barrio; (3) juego de encontrar el lugar. AL TERMINAR el niño pide y da indicaciones sencillas."
      },
      {
       "nev": "Kleidung & Wetter – Ropa y tiempo",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño describe el tiempo y lo que lleva puesto. VOCABULARIO: \"die Hose\", \"das T-Shirt\", \"die Jacke\", \"die Schuhe\", \"die Mütze\", \"sonnig\", \"regnerisch\", \"kalt\", \"heiß\", \"der Schnee\". FRASES MODELO: \"Heute ist es kalt, ich trage eine Jacke\". \"Wie ist das Wetter?\" – \"Es regnet\". GRAMÁTICA: la estructura impersonal \"es ist / es regnet\"; el verbo \"tragen\" (du trägst); el adjetivo antepuesto en su forma básica. ACTIVIDADES: (1) parte meteorológico; (2) vestir a un muñeco según el tiempo; (3) diario del tiempo durante una semana. AL TERMINAR el niño describe el tiempo y su ropa en cinco frases."
      },
      {
       "nev": "Hobbys – Aficiones",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño habla de lo que le gusta hacer y propone un plan. VOCABULARIO: \"das Hobby\", \"Fußball spielen\", \"schwimmen\", \"lesen\", \"malen\", \"tanzen\", \"Rad fahren\", \"gern\", \"zusammen\", \"Lust haben\". FRASES MODELO: \"Ich spiele gern Fußball\". \"Hast du Lust, ins Kino zu gehen?\" – \"Ja, gern!\". GRAMÁTICA: \"gern\" y \"lieber\" para expresar preferencia; los verbos \"spielen\" y \"fahren\"; la propuesta con \"Lass uns…\". ACTIVIDADES: (1) encuesta de aficiones; (2) planear el fin de semana por parejas; (3) mímica de hobbies. AL TERMINAR el niño habla de sus aficiones y acepta o rechaza una propuesta."
      },
      {
       "nev": "Personen beschreiben – Describir personas",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño describe el aspecto y el carácter de una persona. VOCABULARIO: \"groß\", \"klein\", \"blond\", \"dunkel\", \"die Haare\", \"die Augen\", \"nett\", \"lustig\", \"ruhig\", \"aussehen\". FRASES MODELO: \"Meine Schwester ist klein und hat blonde Haare\". \"Er ist sehr nett\". GRAMÁTICA: el adjetivo delante del sustantivo; el verbo \"haben\" para describir; la conjunción \"und\" y \"aber\". ACTIVIDADES: (1) dibujar según una descripción; (2) adivinar quién es; (3) describir a un personaje famoso. AL TERMINAR el niño describe a una persona con cinco o seis frases."
      },
      {
       "nev": "Lass uns plaudern! – ¡A charlar!",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño mantiene una conversación sobre los temas del ciclo. VOCABULARIO: repaso de rutina, comida, ciudad, ropa, tiempo, aficiones y descripción. FRASES MODELO: \"Was machst du gern am Wochenende?\". \"Wie ist das Wetter heute?\". \"Erzähl mir von deiner Familie\". GRAMÁTICA: repaso de verbos separables, \"mögen/möchten\", \"es gibt\" e imperativo. ACTIVIDADES: (1) conversación guiada por tarjetas; (2) presentación de un tema del ciclo; (3) juego de preguntas encadenadas. AL TERMINAR el niño conversa durante dos o tres minutos sin bloquearse."
+     },
+     {
+      "nev": "In der Schule – En el colegio",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño habla de su colegio, sus asignaturas y su horario. VOCABULARIO: \"die Schule\", \"das Klassenzimmer\", \"der Lehrer\", \"das Fach\", \"Mathe\", \"Deutsch\", \"die Pause\", \"der Stundenplan\", \"die Hausaufgabe\", \"der Schulhof\". FRASES MODELO: \"Am Montag habe ich Mathe\". \"Mein Lieblingsfach ist Kunst\". \"Wann hast du Deutsch?\". GRAMÁTICA: presente con rutinas; preposición am con días; orden invertido tras el complemento de tiempo. ACTIVIDADES: (1) escribir el horario en alemán; (2) encuesta de asignaturas favoritas; (3) recorrido por el colegio. AL TERMINAR el niño describe su día escolar con seis frases."
+     },
+     {
+      "nev": "Einkaufen – De compras",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño compra algo y pregunta el precio. VOCABULARIO: \"das Geschäft\", \"das Geld\", \"kaufen\", \"der Preis\", \"wie viel\", \"billig\", \"teuer\", \"die Tüte\", \"bezahlen\", \"das Wechselgeld\". FRASES MODELO: \"Wie viel kostet das?\" - \"Fünf Euro\". \"Ich möchte eine Tüte, bitte\". \"Bitte schön\". GRAMÁTICA: wie viel kostet; ich möchte para pedir con cortesía; acusativo con el artículo. ACTIVIDADES: (1) tienda de clase con precios; (2) lista de la compra; (3) diálogo grabado. AL TERMINAR el niño realiza una compra sencilla en alemán."
+     },
+     {
+      "nev": "Wie fühlst du dich? – ¿Cómo te sientes?",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño expresa cómo se siente y pregunta a los demás. VOCABULARIO: \"froh\", \"traurig\", \"wütend\", \"müde\", \"ängstlich\", \"aufgeregt\", \"hungrig\", \"durstig\", \"sich fühlen\", \"weil\". FRASES MODELO: \"Ich bin heute froh\". \"Warum bist du traurig?\" - \"Weil ich meinen Stift verloren habe\". GRAMÁTICA: sein con adjetivos de emoción; warum y weil con verbo al final. ACTIVIDADES: (1) ruleta de emociones; (2) diario de sentimientos; (3) role-play de consolar a un amigo. AL TERMINAR el niño expresa emociones y las justifica."
+     },
+     {
+      "nev": "Tiere und Natur – Animales y naturaleza",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño describe animales y su entorno natural. VOCABULARIO: \"der Wald\", \"der Fluss\", \"der Berg\", \"der Baum\", \"die Blume\", \"das Wildtier\", \"das Haustier\", \"leben\", \"fressen\", \"schützen\". FRASES MODELO: \"Löwen leben in Afrika\". \"Bären fressen Fisch\". \"Wir müssen die Natur schützen\". GRAMÁTICA: presente en tercera persona; preposiciones de lugar; müssen para la obligación. ACTIVIDADES: (1) ficha de un animal; (2) mural del bosque; (3) campaña de cuidado de la naturaleza. AL TERMINAR el niño describe un animal y su hábitat con cinco frases."
      }
     ],
     "francia": [
      {
       "nev": "Sons & Orthographe – Sonidos y ortografía",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño lee palabras conocidas y escribe palabras cortas correctamente. VOCABULARIO: \"lire\", \"écrire\", \"le mot\", \"la phrase\", \"le point\", \"la question\", \"juste\", \"faux\", \"l'accent\", \"la majuscule\". FRASES MODELO: \"Comment ça s'écrit ?\". \"C'est juste ?\". \"Lis à haute voix, s'il te plaît\". GRAMÁTICA: los acentos y su efecto en la pronunciación; \"é\" frente a \"è\"; las terminaciones mudas \"-e\", \"-s\", \"-ent\". ACTIVIDADES: (1) dictado de palabras cortas; (2) juego de buscar el error; (3) copiar y leer frases. AL TERMINAR el niño escribe veinte palabras conocidas sin faltas graves."
      },
      {
       "nev": "Ma journée – Mi día a día",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño cuenta su rutina diaria y dice la hora. VOCABULARIO: \"se lever\", \"prendre le petit-déjeuner\", \"aller à l'école\", \"jouer\", \"manger\", \"dormir\", \"l'heure\", \"et demie\", \"le matin\", \"le soir\". FRASES MODELO: \"Je me lève à sept heures\". \"À huit heures et demie, je vais à l'école\". \"Tu manges à quelle heure ?\". GRAMÁTICA: los verbos reflexivos (\"je me lève\"); la hora con \"à\"; el verbo irregular \"aller\". ACTIVIDADES: (1) línea del tiempo del día; (2) dictado de horas; (3) mímica de la rutina. AL TERMINAR el niño describe su día con seis frases seguidas."
      },
      {
       "nev": "Manger & Boire – Comida y bebida",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño nombra alimentos, expresa gustos y pide en un restaurante. VOCABULARIO: \"le pain\", \"le lait\", \"l'eau\", \"la pomme\", \"le fromage\", \"l'œuf\", \"le jus\", \"avoir faim\", \"avoir soif\", \"commander\". FRASES MODELO: \"J'aime le fromage mais je n'aime pas le lait\". \"Vous désirez ?\" – \"Je voudrais une pomme, s'il vous plaît\". \"L'addition, s'il vous plaît\". GRAMÁTICA: la negación \"ne … pas\"; el partitivo \"du / de la / des\"; \"je voudrais\" para pedir con cortesía. ACTIVIDADES: (1) role-play de restaurante; (2) lista de la compra; (3) encuesta de comidas favoritas. AL TERMINAR el niño pide comida y expresa gustos y disgustos."
      },
      {
       "nev": "Ma ville – Mi ciudad",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño describe su ciudad y pide indicaciones. VOCABULARIO: \"la ville\", \"la rue\", \"le parc\", \"le magasin\", \"l'école\", \"la gare\", \"à gauche\", \"à droite\", \"tout droit\", \"le feu\". FRASES MODELO: \"Où est la gare ?\" – \"Va tout droit puis à gauche\". \"Dans ma ville, il y a un parc\". GRAMÁTICA: la estructura \"il y a\"; el imperativo (\"va\", \"prends\", \"tourne\"); las preposiciones \"à\", \"dans\", \"en face de\". ACTIVIDADES: (1) dar indicaciones con un plano; (2) describir el propio barrio; (3) juego de encontrar el lugar. AL TERMINAR el niño pide y da indicaciones sencillas."
      },
      {
       "nev": "Vêtements & Temps – Ropa y tiempo",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño describe el tiempo y lo que lleva puesto. VOCABULARIO: \"le pantalon\", \"le tee-shirt\", \"la veste\", \"les chaussures\", \"le bonnet\", \"il fait beau\", \"il pleut\", \"il fait froid\", \"il fait chaud\", \"la neige\". FRASES MODELO: \"Aujourd'hui il fait froid, je porte une veste\". \"Quel temps fait-il ?\" – \"Il pleut\". GRAMÁTICA: las expresiones impersonales \"il fait / il pleut / il neige\"; el verbo \"porter\"; la concordancia del adjetivo. ACTIVIDADES: (1) parte meteorológico; (2) vestir a un muñeco según el tiempo; (3) diario del tiempo durante una semana. AL TERMINAR el niño describe el tiempo y su ropa en cinco frases."
      },
      {
       "nev": "Les loisirs – Aficiones",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño habla de lo que le gusta hacer y propone un plan. VOCABULARIO: \"le loisir\", \"jouer au foot\", \"nager\", \"lire\", \"dessiner\", \"danser\", \"faire du vélo\", \"aimer\", \"ensemble\", \"avoir envie de\". FRASES MODELO: \"J'aime jouer au foot\". \"Tu as envie d'aller au cinéma ?\" – \"Oui, avec plaisir !\". GRAMÁTICA: \"jouer à\" frente a \"faire de\"; \"aimer\" + infinitivo; la propuesta con \"on va…\". ACTIVIDADES: (1) encuesta de aficiones; (2) planear el fin de semana por parejas; (3) mímica de aficiones. AL TERMINAR el niño habla de sus aficiones y acepta o rechaza una propuesta."
      },
      {
       "nev": "Décrire quelqu'un – Describir personas",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño describe el aspecto y el carácter de una persona. VOCABULARIO: \"grand\", \"petit\", \"blond\", \"brun\", \"les cheveux\", \"les yeux\", \"gentil\", \"drôle\", \"calme\", \"avoir l'air\". FRASES MODELO: \"Ma sœur est petite et elle a les cheveux blonds\". \"Il est très gentil\". GRAMÁTICA: la concordancia del adjetivo en femenino y plural; \"avoir\" para describir (\"il a les yeux bleus\"); \"et\" y \"mais\". ACTIVIDADES: (1) dibujar según una descripción; (2) adivinar quién es; (3) describir a un personaje famoso. AL TERMINAR el niño describe a una persona con cinco o seis frases."
      },
      {
       "nev": "On bavarde ! – ¡A charlar!",
-      "javasolt_oraszam": 15,
+      "javasolt_oraszam": 10,
       "teljes_szoveg": "OBJETIVO: el niño mantiene una conversación sobre los temas del ciclo. VOCABULARIO: repaso de rutina, comida, ciudad, ropa, tiempo, aficiones y descripción. FRASES MODELO: \"Qu'est-ce que tu aimes faire le week-end ?\". \"Quel temps fait-il aujourd'hui ?\". \"Parle-moi de ta famille\". GRAMÁTICA: repaso de verbos reflexivos, negación, \"il y a\" e imperativo. ACTIVIDADES: (1) conversación guiada por tarjetas; (2) presentación de un tema del ciclo; (3) juego de preguntas encadenadas. AL TERMINAR el niño conversa durante dos o tres minutos sin bloquearse."
+     },
+     {
+      "nev": "À l école – En el colegio",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño habla de su colegio, sus asignaturas y su horario. VOCABULARIO: \"l école\", \"la classe\", \"le maître\", \"la matière\", \"les maths\", \"le français\", \"la récréation\", \"l emploi du temps\", \"les devoirs\", \"la cour\". FRASES MODELO: \"Le lundi, j ai maths\". \"Ma matière préférée, c est le dessin\". \"Tu as français quand ?\". GRAMÁTICA: presente con rutinas; artículo con los días para lo habitual; posesivos ma y mon. ACTIVIDADES: (1) escribir el horario en francés; (2) encuesta de asignaturas favoritas; (3) recorrido por el colegio. AL TERMINAR el niño describe su día escolar con seis frases."
+     },
+     {
+      "nev": "Faire les courses – De compras",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño compra algo y pregunta el precio. VOCABULARIO: \"le magasin\", \"l argent\", \"acheter\", \"le prix\", \"combien\", \"pas cher\", \"cher\", \"le sac\", \"payer\", \"la monnaie\". FRASES MODELO: \"C est combien ?\" - \"Cinq euros\". \"Je voudrais un sac, s il vous plaît\". \"Voilà\". GRAMÁTICA: c est combien; je voudrais para pedir con cortesía; artículos partitivos. ACTIVIDADES: (1) tienda de clase con precios; (2) lista de la compra; (3) diálogo grabado. AL TERMINAR el niño realiza una compra sencilla en francés."
+     },
+     {
+      "nev": "Comment ça va ? – ¿Cómo te sientes?",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño expresa cómo se siente y pregunta a los demás. VOCABULARIO: \"content\", \"triste\", \"fâché\", \"fatigué\", \"peur\", \"excité\", \"faim\", \"soif\", \"se sentir\", \"parce que\". FRASES MODELO: \"Je suis content aujourd hui\". \"Pourquoi tu es triste ?\" - \"Parce que j ai perdu mon stylo\". GRAMÁTICA: être con adjetivos de emoción y su concordancia; pourquoi y parce que. ACTIVIDADES: (1) ruleta de emociones; (2) diario de sentimientos; (3) role-play de consolar a un amigo. AL TERMINAR el niño expresa emociones y las justifica."
+     },
+     {
+      "nev": "Les animaux et la nature – Animales y naturaleza",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el niño describe animales y su entorno natural. VOCABULARIO: \"la forêt\", \"la rivière\", \"la montagne\", \"l arbre\", \"la fleur\", \"un animal sauvage\", \"un animal de la ferme\", \"vivre\", \"manger\", \"protéger\". FRASES MODELO: \"Les lions vivent en Afrique\". \"Les ours mangent du poisson\". \"Il faut protéger la nature\". GRAMÁTICA: presente de verbos frecuentes; preposiciones de lugar con países; il faut para la obligación. ACTIVIDADES: (1) ficha de un animal; (2) mural del bosque; (3) campaña de cuidado de la naturaleza. AL TERMINAR el niño describe un animal y su hábitat con cinco frases."
      }
     ]
    }
@@ -360,127 +480,187 @@
     "angol": [
      {
       "nev": "Reading & Writing – Leer y escribir",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño lee textos cortos y escribe frases y párrafos sencillos. VOCABULARIO: \"first\", \"then\", \"next\", \"finally\"; \"story\", \"letter\", \"message\". FRASES MODELO: \"First I get up, then I have breakfast\". \"Dear friend, ...\". GRAMÁTICA: mayúscula al inicio y punto al final; orden sujeto+verbo+objeto; conectores de secuencia. ACTIVIDADES: (1) leer un cuento corto y contestar; (2) escribir una postal; (3) ordenar frases. AL TERMINAR el niño lee un texto sencillo y escribe un párrafo con conectores."
      },
      {
       "nev": "Last Weekend – El fin de semana pasado",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla de acciones pasadas. VOCABULARIO: \"went\", \"played\", \"watched\", \"ate\", \"saw\", \"was\", \"were\", \"did\", \"had\"; \"yesterday\", \"last weekend\", \"last week\". FRASES MODELO: \"I went to the park yesterday\". \"I played football\". \"Did you watch TV?\" – \"Yes, I did\"/\"No, I didn't\". GRAMÁTICA: past simple — regulares con -ed e irregulares (\"go→went\", \"eat→ate\"); \"was\"/\"were\"; \"did\"/\"didn't\". Punto nuevo e importante. ACTIVIDADES: (1) contar el fin de semana; (2) tarjetas presente↔pasado; (3) preguntar qué hizo ayer. AL TERMINAR el niño narra hechos pasados con past simple."
      },
      {
       "nev": "Future Plans – Planes de futuro",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla de planes e intenciones. VOCABULARIO: \"tomorrow\", \"next week\", \"holidays\", \"weekend\". FRASES MODELO: \"I am going to visit my grandma\". \"We will go to the beach\". \"What are you going to do tomorrow?\". GRAMÁTICA: \"going to\" para planes y \"will\" para predicciones. ACTIVIDADES: (1) contar planes del fin de semana; (2) predecir el tiempo de mañana; (3) lista de propósitos. AL TERMINAR el niño expresa planes con \"going to\" y predicciones con \"will\"."
      },
      {
       "nev": "Around the World – Por el mundo",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla de países y compara lugares. VOCABULARIO: \"Spain\", \"England\", \"France\", \"Germany\", \"Italy\", \"the USA\"; \"Spanish\", \"English\", \"French\"; \"country\", \"city\", \"language\", \"flag\". FRASES MODELO: \"I am from Spain\". \"London is bigger than my town\". \"English is more difficult than Spanish\". GRAMÁTICA: comparativos — -er (\"bigger\") y \"more\" (\"more difficult\"); \"than\". ACTIVIDADES: (1) presentar un país; (2) comparar dos ciudades; (3) juego de banderas. AL TERMINAR el niño compara lugares con comparativos."
      },
      {
       "nev": "Health & Body – Salud y cuerpo",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño nombra partes del cuerpo, habla de salud y da consejos. VOCABULARIO: \"head\", \"arm\", \"leg\", \"hand\", \"foot\", \"eye\", \"ear\", \"nose\", \"mouth\", \"tooth\", \"stomach\"; \"doctor\", \"medicine\", \"healthy\". FRASES MODELO: \"I have a headache\". \"My leg hurts\". \"You should rest\". \"You shouldn't eat too much sugar\". GRAMÁTICA: \"should\"/\"shouldn't\" para consejos; \"must\" para obligación. ACTIVIDADES: (1) nombrar partes del cuerpo; (2) role-play médico–paciente; (3) dar consejos sanos. AL TERMINAR el niño nombra el cuerpo y da consejos con \"should\"."
      },
      {
       "nev": "Stories & Feelings – Historias y sentimientos",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño cuenta historias y expresa emociones. VOCABULARIO: \"happy\", \"sad\", \"angry\", \"scared\", \"excited\", \"tired\", \"bored\"; \"once upon a time\", \"the end\". FRASES MODELO: \"I am happy because it's my birthday\". \"She was scared when she saw the dog\". \"Once upon a time there was a princess\". GRAMÁTICA: conectores \"because\", \"when\", \"and\", \"but\", \"so\"; pasado en la narración. ACTIVIDADES: (1) contar una historia con principio, medio y final; (2) decir por qué se siente así; (3) inventar un cuento. AL TERMINAR el niño narra una historia breve con \"because\" y \"when\"."
      },
      {
       "nev": "Technology & Media – Tecnología",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla de tecnología con uso seguro. VOCABULARIO: \"computer\", \"phone\", \"tablet\", \"internet\", \"video\", \"game\", \"email\", \"website\", \"message\". FRASES MODELO: \"Have you ever played this game?\" – \"Yes, I have\"/\"No, I haven't\". \"I have watched that video\". GRAMÁTICA: present perfect para experiencias — \"Have you ever...?\", \"I have played/watched\". SEGURIDAD: recuerda no compartir datos personales en internet. ACTIVIDADES: (1) hablar de juegos favoritos; (2) encuesta \"Have you ever...?\"; (3) normas de uso seguro. AL TERMINAR el niño habla de experiencias con present perfect."
      },
      {
       "nev": "Let's Discuss! – ¡A debatir!",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño da su opinión y participa en una conversación real. VOCABULARIO: \"I think\", \"I agree\", \"I don't agree\", \"in my opinion\", \"maybe\", \"because\". FRASES MODELO: \"I think football is fun\". \"In my opinion, reading is better than TV\". \"I agree with you\". \"I don't agree, because...\". GRAMÁTICA: repaso general — presente, pasado, futuro, comparativos, conectores; expresiones de opinión. ACTIVIDADES: (1) mini-debate sobre un tema sencillo; (2) dar y justificar una opinión con \"because\"; (3) entrevista final que repasa el curso. AL TERMINAR el niño expresa y justifica una opinión y mantiene una conversación."
+     },
+     {
+      "nev": "Sports and Free Time – Deporte y tiempo libre",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno habla de deportes y organiza un plan. VOCABULARIO: \"team\", \"match\", \"win\", \"lose\", \"train\", \"club\", \"score\", \"player\", \"practise\", \"join\". FRASES MODELO: \"I play football twice a week\". \"My team won the match\". \"Do you want to join us?\". GRAMÁTICA: adverbios de frecuencia; pasado simple de verbos frecuentes; want to + infinitivo. ACTIVIDADES: (1) encuesta deportiva de la clase; (2) crónica de un partido; (3) organizar un torneo de aula. AL TERMINAR el alumno habla de su deporte y propone un plan."
+     },
+     {
+      "nev": "Festivals and Traditions – Fiestas y tradiciones",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno presenta una fiesta y la compara con las de su país. VOCABULARIO: \"festival\", \"tradition\", \"celebrate\", \"costume\", \"parade\", \"gift\", \"decorate\", \"custom\", \"holiday\", \"typical\". FRASES MODELO: \"In Britain people celebrate Bonfire Night\". \"We usually decorate the house\". \"It is similar to our festival\". GRAMÁTICA: presente simple para costumbres; comparación con similar to y different from; adverbios usually y always. ACTIVIDADES: (1) presentación de una fiesta anglosajona; (2) comparación con una fiesta española; (3) calendario intercultural. AL TERMINAR el alumno presenta una fiesta con seis u ocho frases."
+     },
+     {
+      "nev": "Travelling: Asking and Buying – De viaje",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno se desenvuelve en situaciones de viaje. VOCABULARIO: \"ticket\", \"platform\", \"departure\", \"arrival\", \"luggage\", \"book a room\", \"menu\", \"order\", \"bill\", \"excuse me\". FRASES MODELO: \"Two tickets to London, please\". \"What time does the train leave?\". \"Could I have the bill, please?\". GRAMÁTICA: preguntas con auxiliar do y does; could para peticiones formales; presente para horarios. ACTIVIDADES: (1) role-play en la estación; (2) reservar un hotel por escrito; (3) pedir en un restaurante. AL TERMINAR el alumno resuelve tres situaciones de viaje."
+     },
+     {
+      "nev": "School Subjects and Studying – Las asignaturas y el estudio",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno habla de sus estudios y de cómo aprende. VOCABULARIO: \"subject\", \"mark\", \"exam\", \"revise\", \"notes\", \"project\", \"deadline\", \"improve\", \"difficult\", \"useful\". FRASES MODELO: \"I am good at science but bad at art\". \"I have to revise for the exam\". \"This project is due on Friday\". GRAMÁTICA: good at y bad at; have to para la obligación; futuro con going to para planes. ACTIVIDADES: (1) plan de estudio semanal en inglés; (2) consejos para estudiar mejor; (3) entrevista sobre hábitos de estudio. AL TERMINAR el alumno describe sus estudios y sus planes."
      }
     ],
     "nemet": [
      {
       "nev": "Lesen & Schreiben – Leer y escribir",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño lee un texto corto y escribe un mensaje sencillo. VOCABULARIO: \"der Text\", \"die Geschichte\", \"die Nachricht\", \"die E-Mail\", \"verstehen\", \"erklären\", \"die Bedeutung\", \"der Absatz\", \"die Frage\", \"die Antwort\". FRASES MODELO: \"Ich habe den Text gelesen\". \"Was bedeutet dieses Wort?\". \"Ich schreibe dir eine Nachricht\". GRAMÁTICA: el orden de la frase con complementos; los conectores \"und\", \"aber\", \"denn\", \"oder\"; el uso de \"man\". ACTIVIDADES: (1) leer un texto y responder preguntas; (2) escribir una postal; (3) resumir una historia en cinco frases. AL TERMINAR el niño lee un texto de diez líneas y escribe un mensaje coherente."
      },
      {
       "nev": "Letztes Wochenende – El fin de semana pasado",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño cuenta lo que hizo en pasado. VOCABULARIO: \"gestern\", \"letztes Wochenende\", \"besuchen\", \"spielen\", \"fahren\", \"sehen\", \"essen\", \"bleiben\", \"dann\", \"danach\". FRASES MODELO: \"Am Samstag habe ich Fußball gespielt\". \"Ich bin ins Kino gegangen\". \"Wo warst du?\" – \"Ich war zu Hause\". GRAMÁTICA: el Perfekt con \"haben\" y con \"sein\"; los participios irregulares más frecuentes; \"war\" y \"hatte\". ACTIVIDADES: (1) contar el fin de semana; (2) ordenar una historia en pasado; (3) escribir un diario. AL TERMINAR el niño narra en pasado con seis u ocho frases."
      },
      {
       "nev": "Zukunftspläne – Planes de futuro",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla de sus planes y de lo que quiere ser. VOCABULARIO: \"der Plan\", \"die Zukunft\", \"der Beruf\", \"werden\", \"lernen\", \"reisen\", \"hoffen\", \"vielleicht\", \"später\", \"der Traum\". FRASES MODELO: \"Nächstes Jahr werde ich Deutsch lernen\". \"Ich möchte Ärztin werden\". \"Was willst du später machen?\". GRAMÁTICA: el futuro con \"werden\" + infinitivo; \"wollen\" y \"möchten\"; el complemento de tiempo al principio de la frase. ACTIVIDADES: (1) presentar el plan del verano; (2) entrevista sobre el futuro; (3) póster \"mi profesión soñada\". AL TERMINAR el niño expresa planes y deseos con claridad."
      },
      {
       "nev": "Rund um die Welt – Por el mundo",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla de países, viajes y de los países germanoparlantes. VOCABULARIO: \"das Land\", \"die Hauptstadt\", \"reisen\", \"das Flugzeug\", \"der Zug\", \"die Grenze\", \"die Sehenswürdigkeit\", \"Deutschland\", \"Österreich\", \"die Schweiz\". FRASES MODELO: \"Ich möchte nach Wien fahren\". \"Berlin ist die Hauptstadt von Deutschland\". \"Wie kommt man dorthin?\". GRAMÁTICA: las preposiciones con países y ciudades (\"nach\", \"in\", \"aus\"); \"mit dem Zug\"; el comparativo \"größer als\". ACTIVIDADES: (1) presentar un país germanoparlante; (2) planear un viaje; (3) comparar dos ciudades. AL TERMINAR el niño presenta un país y describe un viaje."
      },
      {
       "nev": "Gesundheit & Körper – Salud y cuerpo",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño nombra las partes del cuerpo y explica qué le duele. VOCABULARIO: \"der Kopf\", \"der Bauch\", \"der Hals\", \"das Bein\", \"wehtun\", \"krank\", \"gesund\", \"der Arzt\", \"die Medizin\", \"sich fühlen\". FRASES MODELO: \"Mir tut der Kopf weh\". \"Ich fühle mich nicht gut\". \"Du solltest schlafen\". GRAMÁTICA: el dativo con \"wehtun\"; los verbos reflexivos (\"sich fühlen\"); el consejo con \"sollte\". ACTIVIDADES: (1) role-play médico y paciente; (2) cartel de hábitos saludables; (3) dictado de partes del cuerpo. AL TERMINAR el niño explica un malestar y pide o da un consejo."
      },
      {
       "nev": "Geschichten & Gefühle – Historias y sentimientos",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño cuenta una historia y expresa sus sentimientos. VOCABULARIO: \"die Geschichte\", \"froh\", \"traurig\", \"wütend\", \"aufgeregt\", \"sich freuen\", \"sich ärgern\", \"plötzlich\", \"endlich\", \"zum Schluss\". FRASES MODELO: \"Ich war sehr froh, weil wir gewonnen haben\". \"Plötzlich hörte ich ein Geräusch\". GRAMÁTICA: la conjunción \"weil\" con verbo al final; los conectores narrativos; los verbos reflexivos de sentimiento. ACTIVIDADES: (1) contar una anécdota; (2) inventar una historia por parejas; (3) tarjetas de emociones. AL TERMINAR el niño narra una historia corta explicando cómo se sintió."
      },
      {
       "nev": "Technik & Medien – Tecnología y medios",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla del uso de la tecnología y de sus riesgos. VOCABULARIO: \"das Handy\", \"der Computer\", \"das Internet\", \"die App\", \"die Nachricht\", \"hochladen\", \"das Passwort\", \"sicher\", \"die Werbung\", \"süchtig\". FRASES MODELO: \"Ich benutze mein Handy jeden Tag\". \"Man sollte kein Passwort weitergeben\". \"Zu viel Bildschirmzeit ist nicht gut\". GRAMÁTICA: el sujeto impersonal \"man\"; \"sollte\" para el consejo; la estructura \"um … zu\". ACTIVIDADES: (1) encuesta de tiempo de pantalla; (2) cartel de seguridad en la red; (3) debate sobre los móviles en clase. AL TERMINAR el niño opina sobre la tecnología con argumentos."
      },
      {
       "nev": "Lass uns diskutieren! – ¡A debatir!",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño defiende una opinión y escucha la del otro. VOCABULARIO: \"die Meinung\", \"ich denke\", \"ich glaube\", \"meiner Meinung nach\", \"einverstanden\", \"der Grund\", \"der Vorteil\", \"der Nachteil\", \"trotzdem\", \"deshalb\". FRASES MODELO: \"Meiner Meinung nach ist das gut, weil…\". \"Da bin ich nicht einverstanden\". \"Was denkst du?\". GRAMÁTICA: \"weil\" y \"dass\" con verbo al final; \"deshalb\" y \"trotzdem\" y su orden; repaso general del ciclo. ACTIVIDADES: (1) debate sobre un tema cercano; (2) tabla de ventajas y desventajas; (3) presentación de una opinión. AL TERMINAR el niño argumenta una opinión con dos o tres razones."
+     },
+     {
+      "nev": "Sport und Freizeit – Deporte y tiempo libre",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno habla de deportes y organiza un plan. VOCABULARIO: \"die Mannschaft\", \"das Spiel\", \"gewinnen\", \"verlieren\", \"trainieren\", \"der Verein\", \"das Tor\", \"der Spieler\", \"üben\", \"mitmachen\". FRASES MODELO: \"Ich spiele zweimal pro Woche Fußball\". \"Meine Mannschaft hat gewonnen\". \"Willst du mitmachen?\". GRAMÁTICA: adverbios de frecuencia; Perfekt de verbos frecuentes; wollen + infinitivo. ACTIVIDADES: (1) encuesta deportiva; (2) crónica de un partido; (3) organizar un torneo de aula. AL TERMINAR el alumno habla de su deporte y propone un plan."
+     },
+     {
+      "nev": "Feste und Traditionen – Fiestas y tradiciones",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno presenta una fiesta y la compara con las de su país. VOCABULARIO: \"das Fest\", \"die Tradition\", \"feiern\", \"das Kostüm\", \"der Umzug\", \"das Geschenk\", \"schmücken\", \"der Brauch\", \"der Feiertag\", \"typisch\". FRASES MODELO: \"In Deutschland feiert man Karneval\". \"Wir schmücken das Haus\". \"Das ist ähnlich wie bei uns\". GRAMÁTICA: presente con man para costumbres; comparación con ähnlich wie y anders als; adverbios de frecuencia. ACTIVIDADES: (1) presentación de una fiesta alemana; (2) comparación con una fiesta española; (3) calendario intercultural. AL TERMINAR el alumno presenta una fiesta con seis u ocho frases."
+     },
+     {
+      "nev": "Unterwegs: fragen und kaufen – De viaje",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno se desenvuelve en situaciones de viaje. VOCABULARIO: \"die Fahrkarte\", \"das Gleis\", \"die Abfahrt\", \"die Ankunft\", \"das Gepäck\", \"ein Zimmer buchen\", \"die Speisekarte\", \"bestellen\", \"die Rechnung\", \"Entschuldigung\". FRASES MODELO: \"Zwei Fahrkarten nach Berlin, bitte\". \"Wann fährt der Zug ab?\". \"Die Rechnung, bitte\". GRAMÁTICA: verbos separables en preguntas; Konjunktiv de cortesía könnte; presente para horarios. ACTIVIDADES: (1) role-play en la estación; (2) reservar un hotel por escrito; (3) pedir en un restaurante. AL TERMINAR el alumno resuelve tres situaciones de viaje."
+     },
+     {
+      "nev": "Schulfächer und Lernen – Las asignaturas y el estudio",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno habla de sus estudios y de cómo aprende. VOCABULARIO: \"das Fach\", \"die Note\", \"die Prüfung\", \"wiederholen\", \"die Notizen\", \"das Projekt\", \"die Frist\", \"verbessern\", \"schwierig\", \"nützlich\". FRASES MODELO: \"Ich bin gut in Naturwissenschaften, aber schlecht in Kunst\". \"Ich muss für die Prüfung lernen\". \"Das Projekt ist am Freitag fällig\". GRAMÁTICA: gut in y schlecht in; müssen para la obligación; futuro con werden. ACTIVIDADES: (1) plan de estudio semanal; (2) consejos para estudiar mejor; (3) entrevista sobre hábitos de estudio. AL TERMINAR el alumno describe sus estudios y sus planes."
      }
     ],
     "francia": [
      {
       "nev": "Lire & Écrire – Leer y escribir",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño lee un texto corto y escribe un mensaje sencillo. VOCABULARIO: \"le texte\", \"l'histoire\", \"le message\", \"le courriel\", \"comprendre\", \"expliquer\", \"le sens\", \"le paragraphe\", \"la question\", \"la réponse\". FRASES MODELO: \"J'ai lu le texte\". \"Qu'est-ce que ça veut dire ?\". \"Je t'écris un message\". GRAMÁTICA: el orden de la frase con complementos; los conectores \"et\", \"mais\", \"parce que\", \"ou\"; el pronombre \"on\". ACTIVIDADES: (1) leer un texto y responder preguntas; (2) escribir una postal; (3) resumir una historia en cinco frases. AL TERMINAR el niño lee un texto de diez líneas y escribe un mensaje coherente."
      },
      {
       "nev": "Le week-end dernier – El fin de semana pasado",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño cuenta lo que hizo en pasado. VOCABULARIO: \"hier\", \"le week-end dernier\", \"visiter\", \"jouer\", \"aller\", \"voir\", \"manger\", \"rester\", \"puis\", \"après\". FRASES MODELO: \"Samedi, j'ai joué au foot\". \"Je suis allé au cinéma\". \"Où étais-tu ?\" – \"J'étais à la maison\". GRAMÁTICA: el passé composé con \"avoir\" y con \"être\"; los participios irregulares frecuentes; \"j'étais\" y \"j'avais\". ACTIVIDADES: (1) contar el fin de semana; (2) ordenar una historia en pasado; (3) escribir un diario. AL TERMINAR el niño narra en pasado con seis u ocho frases."
      },
      {
       "nev": "Projets d'avenir – Planes de futuro",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla de sus planes y de lo que quiere ser. VOCABULARIO: \"le projet\", \"l'avenir\", \"le métier\", \"devenir\", \"apprendre\", \"voyager\", \"espérer\", \"peut-être\", \"plus tard\", \"le rêve\". FRASES MODELO: \"L'année prochaine, je vais apprendre le français\". \"Je voudrais devenir médecin\". \"Tu veux faire quoi plus tard ?\". GRAMÁTICA: el futuro próximo \"aller\" + infinitivo; \"vouloir\" y \"je voudrais\"; el complemento de tiempo al principio. ACTIVIDADES: (1) presentar el plan del verano; (2) entrevista sobre el futuro; (3) póster \"mi profesión soñada\". AL TERMINAR el niño expresa planes y deseos con claridad."
      },
      {
       "nev": "Autour du monde – Por el mundo",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla de países, viajes y de los países francófonos. VOCABULARIO: \"le pays\", \"la capitale\", \"voyager\", \"l'avion\", \"le train\", \"la frontière\", \"le monument\", \"la France\", \"la Belgique\", \"le Canada\". FRASES MODELO: \"Je voudrais aller à Paris\". \"Paris est la capitale de la France\". \"Comment on y va ?\". GRAMÁTICA: las preposiciones con países (\"en France\", \"au Canada\", \"à Paris\"); \"en train\", \"en avion\"; el comparativo \"plus grand que\". ACTIVIDADES: (1) presentar un país francófono; (2) planear un viaje; (3) comparar dos ciudades. AL TERMINAR el niño presenta un país y describe un viaje."
      },
      {
       "nev": "Santé & Corps – Salud y cuerpo",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño nombra las partes del cuerpo y explica qué le duele. VOCABULARIO: \"la tête\", \"le ventre\", \"la gorge\", \"la jambe\", \"avoir mal\", \"malade\", \"en bonne santé\", \"le médecin\", \"le médicament\", \"se sentir\". FRASES MODELO: \"J'ai mal à la tête\". \"Je ne me sens pas bien\". \"Tu devrais dormir\". GRAMÁTICA: la estructura \"avoir mal à\"; los verbos reflexivos (\"se sentir\"); el consejo con \"tu devrais\". ACTIVIDADES: (1) role-play médico y paciente; (2) cartel de hábitos saludables; (3) dictado de partes del cuerpo. AL TERMINAR el niño explica un malestar y pide o da un consejo."
      },
      {
       "nev": "Histoires & Sentiments – Historias y sentimientos",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño cuenta una historia y expresa sus sentimientos. VOCABULARIO: \"l'histoire\", \"content\", \"triste\", \"fâché\", \"surpris\", \"avoir peur\", \"être fier\", \"soudain\", \"enfin\", \"à la fin\". FRASES MODELO: \"J'étais très content parce que nous avons gagné\". \"Soudain, j'ai entendu un bruit\". GRAMÁTICA: \"parce que\" para la causa; el contraste entre passé composé e imparfait; los conectores narrativos. ACTIVIDADES: (1) contar una anécdota; (2) inventar una historia por parejas; (3) tarjetas de emociones. AL TERMINAR el niño narra una historia corta explicando cómo se sintió."
      },
      {
       "nev": "Technologie & Médias – Tecnología y medios",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño habla del uso de la tecnología y de sus riesgos. VOCABULARIO: \"le portable\", \"l'ordinateur\", \"Internet\", \"l'application\", \"le message\", \"télécharger\", \"le mot de passe\", \"sûr\", \"la publicité\", \"accro\". FRASES MODELO: \"J'utilise mon portable tous les jours\". \"On ne doit pas donner son mot de passe\". \"Trop d'écran, ce n'est pas bon\". GRAMÁTICA: el pronombre impersonal \"on\"; \"devoir\" para la obligación; la estructura \"pour + infinitivo\". ACTIVIDADES: (1) encuesta de tiempo de pantalla; (2) cartel de seguridad en la red; (3) debate sobre los móviles en clase. AL TERMINAR el niño opina sobre la tecnología con argumentos."
      },
      {
       "nev": "On discute ! – ¡A debatir!",
-      "javasolt_oraszam": 16,
+      "javasolt_oraszam": 11,
       "teljes_szoveg": "OBJETIVO: el niño defiende una opinión y escucha la del otro. VOCABULARIO: \"l'avis\", \"je pense\", \"je crois\", \"à mon avis\", \"d'accord\", \"la raison\", \"l'avantage\", \"l'inconvénient\", \"pourtant\", \"donc\". FRASES MODELO: \"À mon avis c'est bien, parce que…\". \"Je ne suis pas d'accord\". \"Et toi, qu'est-ce que tu en penses ?\". GRAMÁTICA: \"parce que\" y \"donc\"; la negación completa; repaso general del ciclo. ACTIVIDADES: (1) debate sobre un tema cercano; (2) tabla de ventajas e inconvenientes; (3) presentación de una opinión. AL TERMINAR el niño argumenta una opinión con dos o tres razones."
+     },
+     {
+      "nev": "Le sport et les loisirs – Deporte y tiempo libre",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno habla de deportes y organiza un plan. VOCABULARIO: \"l équipe\", \"le match\", \"gagner\", \"perdre\", \"s entraîner\", \"le club\", \"le but\", \"le joueur\", \"s exercer\", \"participer\". FRASES MODELO: \"Je joue au foot deux fois par semaine\". \"Mon équipe a gagné le match\". \"Tu veux venir avec nous ?\". GRAMÁTICA: adverbios de frecuencia; passé composé de verbos frecuentes; vouloir + infinitivo. ACTIVIDADES: (1) encuesta deportiva; (2) crónica de un partido; (3) organizar un torneo de aula. AL TERMINAR el alumno habla de su deporte y propone un plan."
+     },
+     {
+      "nev": "Fêtes et traditions – Fiestas y tradiciones",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno presenta una fiesta y la compara con las de su país. VOCABULARIO: \"la fête\", \"la tradition\", \"fêter\", \"le costume\", \"le défilé\", \"le cadeau\", \"décorer\", \"la coutume\", \"le jour férié\", \"typique\". FRASES MODELO: \"En France, on fête le 14 juillet\". \"On décore la maison\". \"C est comme chez nous\". GRAMÁTICA: presente con on para costumbres; comparación con comme y différent de; adverbios de frecuencia. ACTIVIDADES: (1) presentación de una fiesta francesa; (2) comparación con una fiesta española; (3) calendario intercultural. AL TERMINAR el alumno presenta una fiesta con seis u ocho frases."
+     },
+     {
+      "nev": "En voyage : demander et acheter – De viaje",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno se desenvuelve en situaciones de viaje. VOCABULARIO: \"le billet\", \"le quai\", \"le départ\", \"l arrivée\", \"les bagages\", \"réserver une chambre\", \"la carte\", \"commander\", \"l addition\", \"excusez-moi\". FRASES MODELO: \"Deux billets pour Paris, s il vous plaît\". \"Le train part à quelle heure ?\". \"L addition, s il vous plaît\". GRAMÁTICA: preguntas con est-ce que y por inversión; conditionnel de cortesía je voudrais; presente para horarios. ACTIVIDADES: (1) role-play en la estación; (2) reservar un hotel por escrito; (3) pedir en un restaurante. AL TERMINAR el alumno resuelve tres situaciones de viaje."
+     },
+     {
+      "nev": "Les matières et les études – Las asignaturas y el estudio",
+      "javasolt_oraszam": 10,
+      "teljes_szoveg": "OBJETIVO: el alumno habla de sus estudios y de cómo aprende. VOCABULARIO: \"la matière\", \"la note\", \"l examen\", \"réviser\", \"les notes\", \"le projet\", \"la date limite\", \"améliorer\", \"difficile\", \"utile\". FRASES MODELO: \"Je suis bon en sciences mais mauvais en dessin\". \"Je dois réviser pour l examen\". \"Le projet est pour vendredi\". GRAMÁTICA: être bon en y mauvais en; devoir para la obligación; futur proche para planes. ACTIVIDADES: (1) plan de estudio semanal; (2) consejos para estudiar mejor; (3) entrevista sobre hábitos de estudio. AL TERMINAR el alumno describe sus estudios y sus planes."
      }
     ]
    }
