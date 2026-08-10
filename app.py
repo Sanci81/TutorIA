@@ -115,9 +115,23 @@ _TTS_EMOJI_RE = re.compile(
 )
 
 
+# A kiegészítendő mondatok vonalait ("I ___ finished my homework") a felolvasó
+# szó szerint kimondaná ("underscore underscore"). Ezért a vonalak helyére egy
+# jelzőkaraktert teszünk, amiből az SSML-ben rövid SZÜNET lesz.
+_TTS_BLANK_SENTINEL = "\u0001"
+_TTS_BLANK_RE = re.compile(r"[_\u2013\u2014-]{2,}|\.{3,}")
+
+
 def _strip_emoji_for_tts(text: str) -> str:
-    """Emoji eltávolítása a felolvasandó szövegből (a chatben megmarad)."""
-    return _TTS_EMOJI_RE.sub("", text)
+    """Emoji eltávolítása + a kitöltendő vonalak szünetté alakítása."""
+    out = _TTS_EMOJI_RE.sub("", text)
+    return _TTS_BLANK_RE.sub(_TTS_BLANK_SENTINEL, out)
+
+
+def _ssml_escape(text: str) -> str:
+    """XML-escape, a szünet-jelzőt pedig valódi SSML szünetre cseréli."""
+    escaped = _xml_escape_mod.escape(text)
+    return escaped.replace(_TTS_BLANK_SENTINEL, '<break time="450ms"/>')
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-insecure-key")
@@ -2117,10 +2131,15 @@ def _mark_foreign_segments(text: str, base_lang: str) -> str | None:
                     f"<FL:en>Shakespeare</FL>-t.\n"
                     f"4. Jelöld az idegen személyneveket, földrajzi neveket és "
                     f"szakszavakat is, minden tantárgyban.\n"
-                    f"5. NE jelöld a {base_name} szavakat, a {base_name} "
+                    f"5. A RÖVID szavakat is jelöld, ha az idegen mondat "
+                    f"részei vagy idegen nyelvórai szavak: has, is, I, a, the, "
+                    f"der, die, el, la. Egy kihagyott rövid szó a mondat közepén "
+                    f"{base_name}osan hangzik el, ami rosszabb, mint ha egyben "
+                    f"jelölnéd az egészet.\n"
+                    f"6. NE jelöld a {base_name} szavakat, a {base_name} "
                     f"tulajdonneveket (Budapest, Petőfi) és a meghonosodott "
                     f"jövevényszavakat (sport, telefon).\n"
-                    f"6. Ha nincs idegen rész, add vissza a szöveget változatlanul.\n"
+                    f"7. Ha nincs idegen rész, add vissza a szöveget változatlanul.\n"
                     f"Csak a szöveget add vissza, semmi mást."
                 )},
                 {"role": "user", "content": text[:3000]},
@@ -2369,7 +2388,7 @@ def _azure_tts_speak(text: str) -> bytes | None:
             if len(_segs) > 1:
                 _parts = [
                     f'<voice name="{v or voice}">'
-                    f'<prosody rate="-10%">{_xml_escape_mod.escape(t)}</prosody>'
+                    f'<prosody rate="-10%">{_ssml_escape(t)}</prosody>'
                     f'</voice>'
                     for t, v in _segs
                 ]
@@ -2388,13 +2407,13 @@ def _azure_tts_speak(text: str) -> bytes | None:
                 v = seg_voice or voice
                 parts.append(
                     f'<voice name="{v}">'
-                    f'<prosody rate="-10%">{_xml_escape_mod.escape(seg_text)}</prosody>'
+                    f'<prosody rate="-10%">{_ssml_escape(seg_text)}</prosody>'
                     f'</voice>'
                 )
             ssml = f'<speak version="1.0" xml:lang="{lang}">' + "".join(parts) + "</speak>"
             print(f"[TTS-DEBUG] tobbnyelvu ssml: {len(segments)} szegmens", flush=True)
         else:
-            escaped = _xml_escape_mod.escape(cleaned)
+            escaped = _ssml_escape(cleaned)
             ssml = (
                 f'<speak version="1.0" xml:lang="{lang}">'
                 f'<voice name="{voice}">'
@@ -4234,17 +4253,33 @@ def _session_curriculum(chat_session: dict) -> str | None:
     return curr if curr in ("HU", "ES") else None
 
 
+_HU_VOWELS = "aáeéiíoóöőuúüű"
+
+
+def _hu_article(word: str) -> str:
+    """„a” vagy „az” — magánhangzóval kezdődő szó előtt „az”.
+
+    Enélkül „a Angol tanárod” lett volna „az Angol tanárod” helyett; ez a
+    Ének-zene, Etika, Élő idegen nyelv és Állampolgári ismeretek tantárgyakat
+    is érintette.
+    """
+    w = (word or "").strip()
+    return "az" if w and w[0].lower() in _HU_VOWELS else "a"
+
+
 def _chat_initial_assistant_message(
     child_name: str, subject_label: str, *, placement: bool, lang: str = "hu",
     topic: str = "", teacher: str = "",
 ) -> str:
+    article = _hu_article(subject_label)
     if placement:
         return i18n.t("chat_welcome_placement", lang).format(
-            name=child_name, subject=subject_label, teacher=teacher
+            name=child_name, subject=subject_label, teacher=teacher,
+            article=article,
         )
     return i18n.t("chat_welcome_continue", lang).format(
         name=child_name, subject=subject_label, topic=topic or subject_label,
-        teacher=teacher,
+        teacher=teacher, article=article,
     )
 
 

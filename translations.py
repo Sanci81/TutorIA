@@ -415,13 +415,13 @@ TRANSLATIONS = {
 
     # --- chat üdvözlő üzenetek ---
     "chat_welcome_placement": {
-        "hu": "Szia {name}! 🌟 {teacher} vagyok, a {subject} tanárod. "
+        "hu": "Szia {name}! 🌟 {teacher} vagyok, {article} {subject} tanárod. "
               "Kezdjük is el a tanulást!",
         "es": "¡Hola {name}! 🌟 Soy {teacher}, tu profe de {subject}. "
               "¡Empecemos a aprender!",
     },
     "chat_welcome_continue": {
-        "hu": "Szia {name}! 👋 Folytatjuk a {subject} tanulást — "
+        "hu": "Szia {name}! 👋 Folytatjuk {article} {subject} tanulást — "
               "most itt tartunk: {topic}.",
         "es": "¡Hola {name}! 👋 Seguimos con {subject} — "
               "ahora estamos aquí: {topic}.",
