@@ -1588,6 +1588,23 @@ def extract_topic_catalog(
     ]
 
 
+def _loe_catalog_from_list(items: list) -> list[dict[str, Any]]:
+    """Témakör-lista → katalógus (id, name, text, index, ora_szam)."""
+    catalog: list[dict[str, Any]] = []
+    for idx, item in enumerate(items):
+        if isinstance(item, dict) and item.get("nev"):
+            raw = str(item.get("javasolt_oraszam", "0"))
+            m = re.search(r"\d+", raw)
+            catalog.append({
+                "id": f"t{idx}",
+                "name": str(item["nev"]),
+                "text": str(item.get("teljes_szoveg") or ""),
+                "index": idx,
+                "ora_szam": int(m.group()) if m else 0,
+            })
+    return catalog
+
+
 def extract_loe_topic_catalog(
     data: dict[str, Any], grade: int | str, *, language: str | None = None,
 ) -> list[dict[str, Any]]:
@@ -1619,6 +1636,18 @@ def extract_loe_topic_catalog(
             candidates = by_lang.get(language)
             if isinstance(candidates, list) and len(candidates) > 0:
                 lang_specific = candidates
+
+    # ÉVFOLYAMONKÉNTI leckék, ha vannak (temakorok_by_grade["3"] stb.).
+    # Ez a magyar oldal évfolyam-blokkjainak a spanyol megfelelője: a LOMLOE
+    # „saberes básicos” blokkjai kompetenciaterületek, nem leckék, ezért a nagy
+    # blokkokat konkrét, évfolyamhoz kötött leckékre bontjuk. Ha van ilyen
+    # lista, azt használjuk, és NEM osztjuk szét a ciklus témaköreit.
+    by_grade = cval.get("temakorok_by_grade")
+    if lang_specific is None and isinstance(by_grade, dict):
+        per_grade = by_grade.get(str(grade_num)) or by_grade.get(grade_num)
+        if isinstance(per_grade, list) and per_grade:
+            catalog_src = per_grade
+            return _loe_catalog_from_list(catalog_src)
 
     temakorok = lang_specific if lang_specific is not None else (cval.get("temakorok") or [])
     if not isinstance(temakorok, list):
