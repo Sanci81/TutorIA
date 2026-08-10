@@ -3508,6 +3508,9 @@ A szövegeidet egy gyerek olvassa és hallja, ezért a magyar nyelvhelyesség K�
 - A mutató névmás ragozott alakja: azt, ezt, abban, ebben — ne hagyd el a ragot.
 - Használd a helyes szakkifejezést. ROSSZ: „északi félgömb” — JÓ: „északi FÉLTEKE”
   (a félgömb mértani test, a Föld felét féltekének hívjuk).
+- Fogalmazz ÉLŐ, gyerekbarát magyarsággal. Kerüld a nehézkes, szó szerint
+  fordított körülírásokat. ROSSZ: „arról, amit már megtettél eddig” —
+  JÓ: „arról, ami már megtörtént” vagy „a befejezett dolgokról”.
 - Mielőtt kiadod a választ, olvasd át: helyes-e magyarul, természetesen hangzik-e
   kimondva. Ha egy mondat döcög, fogalmazd újra.
 
@@ -4606,13 +4609,17 @@ def child_chat(child_id: int):
                         spiralis=bool(chat_curriculum.get("spiralis")),
                     )
                     trigger = (
-                        "Kezdd el a tanítást — egy rövid köszöntés után azonnal "
-                        "mutass be 1-3 szót vagy egy fogalmat a témakörből, "
-                        "példával, a TANÍTÁSI ALAPSZABÁLY szerint."
+                        "NE köszönj és NE mutatkozz be — a gyerek az előző "
+                        "üzenetben már kapott köszöntést, a második köszönés "
+                        "furcsán hat. Kezdd RÖGTÖN a tanítással: mondd el, mit "
+                        "tanulunk ma, majd mutass be 1-3 szót vagy egy fogalmat "
+                        "a témakörből, példával, a TANÍTÁSI ALAPSZABÁLY szerint."
                         if active_curr != "ES"
-                        else "Empieza la clase — después de un saludo breve, "
-                        "enseña enseguida 1-3 palabras o un concepto del tema, "
-                        "con ejemplos, según la REGLA BÁSICA DE ENSEÑANZA."
+                        else "NO saludes ni te presentes — el niño ya recibió un "
+                        "saludo en el mensaje anterior y saludar dos veces suena "
+                        "raro. Empieza DIRECTAMENTE con la clase: di qué vamos a "
+                        "aprender hoy y enseña 1-3 palabras o un concepto del "
+                        "tema, con ejemplos, según la REGLA BÁSICA DE ENSEÑANZA."
                     )
                     teaching_response = _call_ai_for_chat(
                         system_prompt,
@@ -4680,13 +4687,17 @@ def child_chat(child_id: int):
                         spiralis=bool(chat_curriculum.get("spiralis")),
                     )
                     trigger = (
-                        "Kezdd el a tanítást — egy rövid köszöntés után azonnal "
-                        "mutass be 1-3 szót vagy egy fogalmat a témakörből, "
-                        "példával, a TANÍTÁSI ALAPSZABÁLY szerint."
+                        "NE köszönj és NE mutatkozz be — a gyerek az előző "
+                        "üzenetben már kapott köszöntést, a második köszönés "
+                        "furcsán hat. Kezdd RÖGTÖN a tanítással: mondd el, mit "
+                        "tanulunk ma, majd mutass be 1-3 szót vagy egy fogalmat "
+                        "a témakörből, példával, a TANÍTÁSI ALAPSZABÁLY szerint."
                         if active_curr != "ES"
-                        else "Empieza la clase — después de un saludo breve, "
-                        "enseña enseguida 1-3 palabras o un concepto del tema, "
-                        "con ejemplos, según la REGLA BÁSICA DE ENSEÑANZA."
+                        else "NO saludes ni te presentes — el niño ya recibió un "
+                        "saludo en el mensaje anterior y saludar dos veces suena "
+                        "raro. Empieza DIRECTAMENTE con la clase: di qué vamos a "
+                        "aprender hoy y enseña 1-3 palabras o un concepto del "
+                        "tema, con ejemplos, según la REGLA BÁSICA DE ENSEÑANZA."
                     )
                     teaching_response = _call_ai_for_chat(
                         system_prompt,
