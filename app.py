@@ -2587,6 +2587,27 @@ _SPIRAL_DEPTH: dict[str, dict[int, str]] = {
         7: "néprajzi tájak összehasonlítása, jelentések és szimbólumok",
         8: "nemzeti összetartozás, a hagyomány szerepe a mai életben",
     },
+    # ── SPANYOL (LOMLOE) spirális tantárgyak ──
+    "Educación Física": {
+        1: "juego motor, esquema corporal, desplazamientos básicos",
+        2: "coordinación, juegos cooperativos, higiene postural",
+        3: "habilidades motrices combinadas, reglas de juego, calentamiento",
+        4: "iniciación deportiva, táctica sencilla, hábitos saludables",
+        5: "técnica deportiva, autoevaluación de la condición física, juego limpio",
+        6: "autonomía en la práctica, planificación del esfuerzo, vida activa",
+    },
+    "Educación Artística": {
+        1: "exploración libre del color, la forma y el sonido",
+        2: "composición sencilla, ritmo y pulso, obras cercanas",
+        3: "proporción y textura, lenguaje musical básico, análisis guiado",
+        4: "intención expresiva, técnicas mixtas, patrimonio artístico",
+        5: "estilos y épocas, proyecto artístico propio, crítica razonada",
+        6: "lenguaje audiovisual, creación con intención, valoración estética",
+    },
+    "Educación en Valores Cívicos y Éticos": {
+        5: "autoconocimiento, empatía, normas y convivencia",
+        6: "dilemas éticos, derechos humanos, compromiso social y ambiental",
+    },
     "Technika és tervezés": {
         1: "biztonságos anyaghasználat, egyszerű hajtogatás és ragasztás",
         2: "több anyagfajta összehasonlítása, egyszerű szerelés",
@@ -2596,7 +2617,7 @@ _SPIRAL_DEPTH: dict[str, dict[int, str]] = {
 }
 
 
-def _spiral_depth_block(subject_label: str, grade: int) -> str:
+def _spiral_depth_block(subject_label: str, grade: int, *, es: bool = False) -> str:
     """Évfolyam-specifikus mélység a SPIRÁLIS tantárgyakhoz.
 
     Ezeknél a leckenevek évről évre visszatérnek (ez a kerettanterv szándéka),
@@ -2610,7 +2631,25 @@ def _spiral_depth_block(subject_label: str, grade: int) -> str:
     here = by_grade.get(grade)
     if not here:
         return ""
-    earlier = [f"{g}. o.: {t}" for g, t in sorted(by_grade.items()) if g < grade]
+    earlier = [f"{g}º: {t}" if es else f"{g}. o.: {t}"
+               for g, t in sorted(by_grade.items()) if g < grade]
+    if es:
+        block = (
+            "\n=== NIVEL SEGÚN EL CURSO (ASIGNATURA EN ESPIRAL) ===\n"
+            "En esta asignatura los bloques VUELVEN cada curso — así lo prevé el "
+            "currículo. Lo que distingue a los cursos no es el TÍTULO del tema, "
+            "sino la PROFUNDIDAD del tratamiento.\n"
+            f"En {grade}º hay que enseñar a este nivel: {here}.\n"
+        )
+        if earlier:
+            block += ("El alumno YA HA CURSADO los niveles anteriores, así que está "
+                      "PROHIBIDO enseñar en ese nivel: " + "; ".join(earlier) + ".\n")
+        block += (
+            "Aunque el título del tema sea el mismo que el año pasado, da contenido "
+            "NUEVO: ejemplos nuevos, tareas más complejas, explicación más profunda. "
+            "NUNCA repitas literalmente lo del curso anterior.\n"
+        )
+        return block
     block = (
         "\n=== ÉVFOLYAM SZERINTI MÉLYSÉG (SPIRÁLIS TANTÁRGY) ===\n"
         f"Ebben a tantárgyban a témakörök MINDEN évfolyamon visszatérnek — ez így "
@@ -2831,7 +2870,11 @@ def _build_chat_system_prompt(
     # Spirális tantárgynál (Testnevelés, Etika, Vizuális kultúra, Ének-zene,
     # Dráma, Hon- és népismeret, alsós Technika) a leckenevek évről évre
     # visszatérnek, ezért évfolyam-specifikus MÉLYSÉGET írunk elő.
-    _spiral_block = _spiral_depth_block(subject_label, grade) if spiralis else ""
+    _spiral_block = (
+        _spiral_depth_block(subject_label, grade,
+                            es=(_active_curriculum() or "HU").upper() == "ES")
+        if spiralis else ""
+    )
     curriculum_body = curriculum_json_content or (
         "NINCS BETÖLTÖTT KERETTANTERV – kérd a szülőtől a tananyag betöltését."
     )
