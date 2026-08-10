@@ -2058,6 +2058,113 @@ def _topic_foreign_words(topic_item: dict | None) -> list[str]:
     return list(dict.fromkeys(words))[:150]
 
 
+# ── A LEGMEGBÍZHATÓBB ÚT: a modell magát a SZÖVEGET adja vissza jelölésekkel ──
+# A korábbi megoldás szólistát kért, amit utána vissza kellett keresni a
+# szövegben — ez bukott a magyar toldalékokon, az egybetűs szavakon és a
+# központozáson. Ha viszont a modell a TELJES szöveget adja vissza a jelölőkkel
+# a helyükön, nincs mit visszakeresni: a darabolás egyértelmű.
+_FL_MARKUP_CACHE: dict[str, str] = {}
+
+
+def _norm_for_compare(t: str) -> str:
+    return " ".join((t or "").split())
+
+
+def _mark_foreign_segments(text: str, base_lang: str) -> str | None:
+    """A szöveg <FL:xx> jelölésekkel, vagy None ha nem sikerült megbízhatóan.
+
+    Biztonsági ellenőrzés: a jelölők eltávolítása után PONTOSAN az eredeti
+    szöveget kell visszakapnunk. Ha a modell bármit átírt, eldobjuk az eredményt
+    és marad a régi (szólistás) út.
+    """
+    text = (text or "").strip()
+    if len(text) < 3:
+        return None
+    key = f"{base_lang}|{hash(text)}"
+    if key in _FL_MARKUP_CACHE:
+        return _FL_MARKUP_CACHE[key] or None
+    try:
+        api_key = _openai_api_key()
+        if not api_key:
+            return None
+        base_name = "spanyol" if base_lang == "es" else "magyar"
+        hint = ""
+        lesson_lang = (session.get("tts_foreign_lang") or "").strip().lower()
+        _HINT = {"angol": "angol", "nemet": "német", "spanyol": "spanyol",
+                 "francia": "francia"}
+        if lesson_lang in _HINT:
+            hint = (f"Ez egy {_HINT[lesson_lang]} nyelvóra szövege, tehát az idegen "
+                    f"részek szinte biztosan {_HINT[lesson_lang]} nyelvűek.\n")
+        client = _openai_client(api_key, request_timeout=25.0)
+        resp = client.chat.completions.create(
+            model="gpt-5.4-mini",
+            reasoning_effort="low",
+            messages=[
+                {"role": "system", "content": (
+                    f"Feladat: felolvasás előkészítése. A szöveg alapnyelve {base_name}.\n"
+                    f"{hint}"
+                    f"Add vissza PONTOSAN UGYANAZT a szöveget, változtatás nélkül, de "
+                    f"tedd <FL:nyelvkód> és </FL> jelölések közé MINDEN olyan részt, "
+                    f"amit NEM {base_name} kiejtéssel kell kimondani.\n"
+                    f"Nyelvkódok: en, de, es, fr, it, la.\n"
+                    f"SZABÁLYOK:\n"
+                    f"1. Egy betűt se írj át, ne told, ne hagyj ki semmit. Csak a "
+                    f"jelölőket szúrod be. A központozás maradjon a helyén.\n"
+                    f"2. Ha egy TELJES idegen mondat vagy kifejezés szerepel, azt EGYBEN "
+                    f"jelöld, ne szavanként: <FL:en>I have a dog</FL>.\n"
+                    f"3. Egyetlen idegen szónál CSAK a szótövet jelöld, a {base_name} "
+                    f"toldalékot hagyd kívül: <FL:de>München</FL>ben, "
+                    f"<FL:en>Shakespeare</FL>-t.\n"
+                    f"4. Jelöld az idegen személyneveket, földrajzi neveket és "
+                    f"szakszavakat is, minden tantárgyban.\n"
+                    f"5. NE jelöld a {base_name} szavakat, a {base_name} "
+                    f"tulajdonneveket (Budapest, Petőfi) és a meghonosodott "
+                    f"jövevényszavakat (sport, telefon).\n"
+                    f"6. Ha nincs idegen rész, add vissza a szöveget változatlanul.\n"
+                    f"Csak a szöveget add vissza, semmi mást."
+                )},
+                {"role": "user", "content": text[:3000]},
+            ],
+        )
+        marked = (resp.choices[0].message.content or "").strip()
+        stripped = _CHAT_MARKER_FL.sub(lambda m: m.group(2), marked)
+        if _norm_for_compare(stripped) != _norm_for_compare(text[:3000]):
+            print("[TTS-DEBUG] jeloles ELDOBVA (a szoveg megvaltozott)", flush=True)
+            _FL_MARKUP_CACHE[key] = ""
+            return None
+        if len(_FL_MARKUP_CACHE) > 400:
+            _FL_MARKUP_CACHE.clear()
+        _FL_MARKUP_CACHE[key] = marked
+        n = len(_CHAT_MARKER_FL.findall(marked))
+        print(f"[TTS-DEBUG] jeloles OK: {n} idegen reszlet", flush=True)
+        return marked
+    except Exception as exc:
+        print(f"[TTS-DEBUG] jeloles hiba: {exc!r}", flush=True)
+        return None
+
+
+def _segments_from_marked(marked: str, gender: str) -> list[tuple[str, str | None]]:
+    """A jelölt szövegből (részlet, hang) párok — visszakeresés nélkül."""
+    out: list[tuple[str, str | None]] = []
+    pos = 0
+    for m in _CHAT_MARKER_FL.finditer(marked):
+        if m.start() > pos:
+            out.append((marked[pos:m.start()], None))
+        voice = FL_CODE_VOICES.get((m.group(1) or "").lower(), {}).get(gender)
+        out.append((m.group(2), voice))
+        pos = m.end()
+    if pos < len(marked):
+        out.append((marked[pos:], None))
+    merged: list[tuple[str, str | None]] = []
+    for seg, v in out:
+        if not seg.strip():
+            if merged:
+                merged[-1] = (merged[-1][0] + seg, merged[-1][1])
+            continue
+        merged.append((seg, v))
+    return merged
+
+
 # A felolvasás előtt egy KÜLÖN, olcsó AI-hívás megkeresi az idegen szavakat.
 # Ez azért kell, mert a fő rendszerprompt több tízezer karakter, és egy ott
 # elhelyezett jelölési szabályra nem lehet biztosan támaszkodni. Így a kiejtés
@@ -2209,6 +2316,25 @@ def _tts_split_foreign(text: str) -> list[tuple[str, str | None]]:
     return merged or [(text, None)]
 
 
+def _azure_post(region: str, key: str, ssml: str) -> bytes | None:
+    """SSML → mp3 bytes az Azure REST végponton."""
+    url = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1"
+    req = urllib.request.Request(
+        url,
+        data=ssml.encode("utf-8"),
+        headers={
+            "Ocp-Apim-Subscription-Key": key,
+            "Content-Type": "application/ssml+xml",
+            "X-Microsoft-OutputFormat": "audio-24khz-48kbitrate-mono-mp3",
+            "User-Agent": "TutorIA",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        data = resp.read()
+    return data or None
+
+
 def _azure_tts_speak(text: str) -> bytes | None:
     """Azure Speech TTS → mp3 bytes, vagy None hiba/hiányzó config esetén."""
     try:
@@ -2230,6 +2356,27 @@ def _azure_tts_speak(text: str) -> bytes | None:
             voice = chosen
         cleaned = text.replace("**", "").replace("##", "").replace("- ", "")
         cleaned = _strip_emoji_for_tts(cleaned)[:4096]
+        # ELSŐ (legmegbízhatóbb) út: a modell magán a szövegen jelöli meg az
+        # idegen részeket, így nincs visszakeresés — nincs toldalék- vagy
+        # központozás-gond. Ha ez nem sikerül, marad a régi, szólistás út.
+        _gender = (session.get("tts_voice_gender") or "female").strip().lower()
+        if _gender not in ("female", "male"):
+            _gender = "female"
+        _base = "es" if active_curr == "ES" else "hu"
+        _marked = _mark_foreign_segments(cleaned, _base)
+        if _marked:
+            _segs = _segments_from_marked(_marked, _gender)
+            if len(_segs) > 1:
+                _parts = [
+                    f'<voice name="{v or voice}">'
+                    f'<prosody rate="-10%">{_xml_escape_mod.escape(t)}</prosody>'
+                    f'</voice>'
+                    for t, v in _segs
+                ]
+                ssml = (f'<speak version="1.0" xml:lang="{lang}">'
+                        + "".join(_parts) + "</speak>")
+                print(f"[TTS-DEBUG] jelolt ssml: {len(_segs)} szegmens", flush=True)
+                return _azure_post(region, key, ssml)
         # Az idegen nyelvi szavakat SAJÁT anyanyelvi hanggal mondatjuk ki.
         # Az Azure <lang xml:lang> eleme csak többnyelvű hangoknál működik, a
         # Noémi/Tamás/Elvira nem ilyen — ezért egy SSML-en belül több <voice>
