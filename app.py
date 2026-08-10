@@ -9,6 +9,7 @@ Funkciók (1. fázis):
 
 import base64
 import difflib
+import hashlib
 import json
 import logging
 import os
@@ -1526,9 +1527,14 @@ _CHAT_MARKER_VOCAB = re.compile(
 _CHAT_MARKER_FL = re.compile(r"<\s*FL:([a-z]{2})\s*>(.*?)<\s*/\s*FL\s*>", re.IGNORECASE | re.DOTALL)
 
 _CHAT_MARKER_SVG = re.compile(
-    r"<ABRA>\s*(<svg\b.*?</svg>)\s*</ABRA>",
+    r"<\s*ABRA\s*>\s*(.*?)\s*<\s*/\s*ABRA\s*>",
     re.IGNORECASE | re.DOTALL,
 )
+
+# Az AI néha elfelejti az <ABRA> keretet, és csupaszon (vagy ```svg blokkban)
+# adja vissza a rajzot. Ezt is fogadjuk el, különben az ábra elveszne.
+_BARE_SVG_RE = re.compile(r"<svg\b.*?</svg\s*>", re.IGNORECASE | re.DOTALL)
+_EMPTY_FENCE_RE = re.compile(r"^\s*`{3,}[a-zA-Z]*\s*$", re.MULTILINE)
 
 
 def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[str, str]], list[str]]:
@@ -1547,15 +1553,25 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     svg_list: list[str] = []
     for svg in _CHAT_MARKER_SVG.findall(text):
         s = svg.strip()
-        if s:
-            svg_list.append(s)
+        # A keret belsejéből is csak a valódi SVG-t vesszük ki (az AI néha
+        # ```svg kódblokkba csomagolja).
+        m_in = _BARE_SVG_RE.search(s)
+        if m_in:
+            svg_list.append(m_in.group(0).strip())
+    # Tartalék: <ABRA> keret nélküli, csupasz SVG a válasz szövegében.
+    for m_bare in _BARE_SVG_RE.finditer(_CHAT_MARKER_SVG.sub("", text)):
+        svg_list.append(m_bare.group(0).strip())
 
     # Az <FL:xx>szó</FL> jelölőből csak a jelölés tűnik el, a SZÓ marad.
     clean = _CHAT_MARKER_FL.sub(lambda m: m.group(2), text)
     clean = _CHAT_MARKER_TOPIC.sub("", clean)
     clean = _CHAT_MARKER_LEVEL.sub("", clean)
     clean = _CHAT_MARKER_VOCAB.sub("", clean)
-    clean = _CHAT_MARKER_SVG.sub("", clean).strip()
+    clean = _CHAT_MARKER_SVG.sub("", clean)
+    clean = _BARE_SVG_RE.sub("", clean)
+    # A rajz körüli üres ```svg / ``` sorok eltakarítása
+    clean = _EMPTY_FENCE_RE.sub("", clean)
+    clean = re.sub(r"\n{3,}", "\n\n", clean).strip()
     topic_done = bool(_CHAT_MARKER_TOPIC.search(text))
     return clean, topic_done, level_val, vocab_pairs, svg_list
 
@@ -1590,6 +1606,176 @@ def _sanitize_svg(svg: str) -> str | None:
     if not svg.lower().startswith("<svg") or len(svg) > 20000:
         return None
     return svg
+
+
+# ── Ábra: kikényszerített második kör ────────────────────────────────────────
+# A fő tanári prompt több tízezer karakter, ezért az <ABRA> szabály gyakran
+# elsikkad, és a válaszban nincs rajz. Ha a tanított szöveg egyértelműen
+# ábrát kíván, egy KÜLÖN, rövid hívással kérjük be az SVG-t. Ugyanaz a
+# módszer, ami az idegen szavak kiejtésénél is bevált: nem a nagy prompton
+# múlik, hanem egy dedikált, rövid kérésen.
+
+_ABRA_TRIGGER_WORDS: tuple[str, ...] = (
+    # magyar
+    "kerület", "terület", "felszín", "térfogat", "téglalap", "négyzet",
+    "háromszög", "sokszög", "körvonal", "körlap", "körcikk", "sugár",
+    "átmérő", "derékszög", "hegyesszög", "tompaszög", "szögfelező",
+    "számegyenes", "halmazábra", "tört", "tizedes", "koordináta",
+    "áramkör", "izzó", "mágnes", "vektor", "molekula", "vegyjel",
+    "vegyület", "kémiai kötés", "kotta", "hangjegy", "vonalrendszer",
+    "idővonal", "időszalag", "térkép", "kontinens", "égtáj",
+    "vízkörforgás", "táplálékl", "diagram", "grafikon", "oszlopdiagram",
+    "kocka", "gúla", "henger", "gömb", "hasáb", "szimmetri", "tükrözés",
+    # spanyol
+    "perímetro", "área", "superficie", "volumen", "rectángulo", "cuadrado",
+    "triángulo", "polígono", "circunferencia", "radio", "diámetro",
+    "ángulo", "recta numérica", "conjunto", "fracción", "decimal",
+    "coordenada", "circuito", "imán", "molécula", "enlace químico",
+    "pentagrama", "línea del tiempo", "mapa", "continente", "diagrama",
+    "gráfico", "cubo", "cilindro", "esfera", "prisma",
+    "pirámide", "simetría",
+)
+
+# A pótló hívást csak érdemi tanítási szövegre indítjuk el – egy rövid
+# dicséretre ("Ügyes vagy!") ne menjen el fölösleges kérés.
+_ABRA_MIN_CHARS = 200
+
+_ILLUSTRATION_CACHE: dict[str, str] = {}
+
+_ABRA_RULES_HU = (
+    "Te egy oktatási illusztrátor vagy. Megkapod a szöveget, amit a tanár "
+    "épp elmagyarázott egy általános iskolás gyereknek.\n"
+    "Ha a fogalom RAJZZAL sokkal érthetőbb, adj vissza EGYETLEN SVG-t. "
+    "Ha nem kell rajz, add vissza pontosan ezt: NINCS\n"
+    "Az SVG szabályai:\n"
+    '- <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">-vel kezdődjön '
+    "és </svg>-vel végződjön. SEMMI szöveg előtte vagy utána, ``` sem.\n"
+    "- Csak rect, circle, line, path, polygon, text elem. Script, külső kép, "
+    "hivatkozás SOHA.\n"
+    '- Vonalak: stroke="#222" stroke-width="3" fill="none".\n'
+    '- Feliratok: font-size="16" fill="#222", MINDIG az alakzaton KÍVÜL, tőle '
+    "legalább 12 pixelre; minden oldalon 30 pixel margó.\n"
+    '- Bal oldali felirat: text-anchor="end"; jobb oldali: text-anchor="start"; '
+    'felül/alul: text-anchor="middle". Két felirat ne fedje egymást.\n'
+    "- Az arányok legyenek valósághűek (6 cm × 3 cm téglalap kétszer olyan "
+    "széles, mint magas).\n"
+    "- Az ábra MAGYARÁZZON: felszínnél a test HÁLÓJÁT, térfogatnál a térbeli "
+    "testet, kerületnél a síkidomot a mért oldalakkal, törtnél felosztott, "
+    "beszínezett alakzatot rajzolj.\n"
+    "- Feliratok MAGYARUL, rövidek. Díszítés, árnyék, gradiens nélkül.\n"
+    '- Ha képlet is kell, az az ábra ALJÁRA kerüljön külön sorba, viewBox="0 0 320 260".'
+)
+
+_ABRA_RULES_ES = (
+    "Eres un ilustrador didáctico. Recibes el texto que un profesor acaba de "
+    "explicar a un niño de primaria.\n"
+    "Si el concepto se entiende MUCHO mejor con un dibujo, devuelve UN ÚNICO "
+    "SVG. Si no hace falta dibujo, devuelve exactamente: NINGUNO\n"
+    "Reglas del SVG:\n"
+    '- Empieza por <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"> '
+    "y termina por </svg>. NADA de texto antes o después, sin ```.\n"
+    "- Solo rect, circle, line, path, polygon, text. Nunca script, imagen "
+    "externa ni enlaces.\n"
+    '- Trazos: stroke="#222" stroke-width="3" fill="none".\n'
+    '- Etiquetas: font-size="16" fill="#222", SIEMPRE FUERA de la figura, a 12 px '
+    "como mínimo; margen de 30 px por cada lado.\n"
+    '- Etiqueta a la izquierda: text-anchor="end"; a la derecha: text-anchor="start"; '
+    'arriba/abajo: text-anchor="middle". Dos etiquetas nunca se solapan.\n'
+    "- Proporciones realistas (un rectángulo de 6 cm × 3 cm es el doble de ancho "
+    "que de alto).\n"
+    "- El dibujo debe EXPLICAR: para la superficie, el DESARROLLO plano del "
+    "cuerpo; para el volumen, el cuerpo en 3D; para el perímetro, la figura "
+    "plana con los lados medidos; para las fracciones, una figura dividida y "
+    "coloreada.\n"
+    "- Textos del dibujo EN ESPAÑOL, cortos. Sin decoración, sombras ni gradientes.\n"
+    '- Si hace falta una fórmula, va abajo del todo en línea aparte, viewBox="0 0 320 260".'
+)
+
+
+def _needs_illustration(text: str) -> bool:
+    """Igaz, ha a szöveg olyan fogalmat tanít, amit rajzzal kell megmutatni."""
+    low = (text or "").strip().lower()
+    if len(low) < _ABRA_MIN_CHARS:
+        return False
+    return any(w in low for w in _ABRA_TRIGGER_WORDS)
+
+
+def _generate_illustration(
+    reply_text: str,
+    subject_label: str,
+    topic: str,
+    *,
+    es: bool = False,
+) -> str | None:
+    """Külön, rövid AI-hívással kér egy SVG ábrát a most tanított szöveghez."""
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    snippet = (reply_text or "").strip()[:1500]
+    if not snippet:
+        return None
+
+    key = hashlib.sha1(
+        ("es" if es else "hu").encode("utf-8")
+        + b"|"
+        + (subject_label or "").encode("utf-8")
+        + b"|"
+        + snippet.encode("utf-8")
+    ).hexdigest()
+    if key in _ILLUSTRATION_CACHE:
+        return _ILLUSTRATION_CACHE[key] or None
+
+    system = _ABRA_RULES_ES if es else _ABRA_RULES_HU
+    try:
+        client = _openai_client(api_key, request_timeout=45.0)
+        resp = client.chat.completions.create(
+            model="gpt-5.4-mini",
+            reasoning_effort="low",
+            messages=[
+                {"role": "system", "content": system},
+                {
+                    "role": "user",
+                    "content": f"{subject_label} – {topic}\n\n{snippet}",
+                },
+            ],
+        )
+        out = (resp.choices[0].message.content or "").strip()
+    except Exception as exc:
+        print(f"[ABRA-DEBUG] masodik kor hiba: {exc}", flush=True)
+        return None
+
+    match = _BARE_SVG_RE.search(out)
+    svg = _sanitize_svg(match.group(0)) if match else None
+    if len(_ILLUSTRATION_CACHE) > 400:
+        _ILLUSTRATION_CACHE.clear()
+    _ILLUSTRATION_CACHE[key] = svg or ""
+    print(
+        f"[ABRA-DEBUG] masodik kor: {'ABRA' if svg else 'nincs'} "
+        f"(valasz {len(out)} karakter)",
+        flush=True,
+    )
+    return svg
+
+
+def _ensure_illustration(
+    figures: list[str],
+    reply_text: str,
+    subject_label: str,
+    topic: str,
+    *,
+    es: bool = False,
+) -> str | None:
+    """Ha nincs ábra, de a szöveg megkívánja, pótoljuk. A pótolt SVG-t adja vissza."""
+    if figures or not _needs_illustration(reply_text):
+        return None
+    try:
+        extra = _generate_illustration(reply_text, subject_label, topic, es=es)
+    except Exception as exc:
+        print(f"[ABRA-DEBUG] potlas hiba: {exc}", flush=True)
+        return None
+    if extra:
+        figures.append(extra)
+    return extra
 
 
 def _chat_load_curriculum(
@@ -4686,9 +4872,25 @@ def child_chat(child_id: int):
                                 )
                             except Exception:
                                 pass
+                        # ÁBRA: ha az AI nem rajzolt, de a téma megkívánja,
+                        # külön hívással pótoljuk. Az SVG-t <ABRA> keretben az
+                        # üzenet végére mentjük, így újratöltés után is látszik.
+                        _store = clean_teaching or teaching_response
+                        _figs: list[str] = []
+                        for _s in _svgs:
+                            _cs = _sanitize_svg(_s)
+                            if _cs:
+                                _figs.append(_cs)
+                        _ensure_illustration(
+                            _figs, _store, subject_label, current_topic,
+                            es=(active_curr or "HU").upper() == "ES",
+                        )
+                        if _figs:
+                            _store = _store + "\n\n" + "".join(
+                                f"<ABRA>{_f}</ABRA>" for _f in _figs
+                            )
                         database.add_chat_message(
-                            chat_session["id"], "assistant",
-                            clean_teaching or teaching_response,
+                            chat_session["id"], "assistant", _store,
                         )
             except Exception:
                 pass
@@ -4764,9 +4966,25 @@ def child_chat(child_id: int):
                                 )
                             except Exception:
                                 pass
+                        # ÁBRA: ha az AI nem rajzolt, de a téma megkívánja,
+                        # külön hívással pótoljuk. Az SVG-t <ABRA> keretben az
+                        # üzenet végére mentjük, így újratöltés után is látszik.
+                        _store = clean_teaching or teaching_response
+                        _figs: list[str] = []
+                        for _s in _svgs:
+                            _cs = _sanitize_svg(_s)
+                            if _cs:
+                                _figs.append(_cs)
+                        _ensure_illustration(
+                            _figs, _store, subject_label, current_topic,
+                            es=(active_curr or "HU").upper() == "ES",
+                        )
+                        if _figs:
+                            _store = _store + "\n\n" + "".join(
+                                f"<ABRA>{_f}</ABRA>" for _f in _figs
+                            )
                         database.add_chat_message(
-                            chat_session["id"], "assistant",
-                            clean_teaching or teaching_response,
+                            chat_session["id"], "assistant", _store,
                         )
                         messages = database.get_chat_messages(chat_session["id"], limit=20)
             except Exception:
@@ -5016,6 +5234,13 @@ def child_chat_send(child_id: int):
             figures.append(clean_svg)
     print(f"[SVG-DEBUG] raw={len(raw_svgs)} tisztitott={len(figures)} "
           f"tail={raw_reply[-300:]!r}", flush=True)
+    # Ha az AI kihagyta az ábrát, de a téma megkívánja, külön hívással pótoljuk.
+    _extra_svg = _ensure_illustration(
+        figures, reply, subject_label, current_topic,
+        es=(_active_curriculum() or "HU").upper() == "ES",
+    )
+    if _extra_svg:
+        raw_svgs.append(_extra_svg)
     marker_count = len(vocab_pairs)
     fallback_count = 0
     reply_count = 0
