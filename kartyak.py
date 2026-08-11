@@ -66,7 +66,7 @@ KARTYAK: list[dict] = [
         "teny": 'A jegyzetfüzetei ma is sugároznak. Ólomdobozban őrzik őket Párizsban, és aki bele akar nézni, előbb alá kell írnia, hogy a kockázatot maga vállalja.',
         "erdekesseg": 'Négy éven át hét tonna kőzetet főzött ki egy huzatos fészerben, hogy a végén egy tized gramm rádium maradjon a kezében.',
         "idezet": 'Az életben semmitől sem kell félni, csak meg kell érteni.',
-        "prompt": 'Marie Curie working in her 1900s laboratory, standing at a wooden bench holding a dropper over a large glass flask, shelves of glass bottles and apparatus behind her in the shadows, the liquid inside the flask glowing from within with a cold green-white radioactive light, gaunt careworn face with high forehead, dark chestnut hair waved and pinned up loosely, plain black high-necked long-sleeved dress of the 1900s with a small white collar',
+        "prompt": 'a large glass flask on a laboratory bench with the liquid inside glowing from within with a cold green-white light, Marie Curie leaning over it holding a dropper, gaunt careworn face with a high forehead, dark chestnut hair waved and pinned up loosely, plain black high-necked long-sleeved dress of the 1900s with a small white collar, shelves of glass bottles and apparatus in the shadows behind her',
     },
     {
         "id": "hu_kemia_7_mengyelejev",
@@ -81,7 +81,8 @@ KARTYAK: list[dict] = [
         "teny": 'Három elem helyét üresen hagyta a táblázatban, és megjósolta a tulajdonságaikat. Mindhármat megtalálták még az élete során, pontosan olyannak, amilyennek leírta.',
         "erdekesseg": 'Azt állította, hogy a rendszer álmában állt össze a fejében, és ébredés után egyetlen papírra leírta az egészet.',
         "idezet": 'A tudomány munka, nem szórakozás.',
-        "prompt": 'Dmitri Mendeleev in his study at night, long wild grey hair and a very long full grey beard, leaning over a huge hand-drawn table of elements spread across the desk, oil lamp casting warm light, some squares on the table left empty and faintly glowing, dark 19th-century russian academic coat',
+        "prompt": 'a huge hand-drawn periodic table on a large sheet of paper covering the whole desk, a grid of ruled squares filled with element symbols, three squares left empty and glowing faintly golden, Dmitri Mendeleev leaning over it with one hand flat on the paper, long wild grey hair and a very long full grey beard, deep-set intense eyes looking straight at the viewer, dark 19th-century Russian academic coat, an oil lamp on the corner of the desk, no church, no castle',
+
     },
     {
         "id": "hu_kemia_7_lavoisier",
@@ -96,7 +97,7 @@ KARTYAK: list[dict] = [
         "teny": 'Mindent lemért, grammra pontosan. Ezzel bizonyította be, hogy az égés nem elvesz valamit az anyagból, hanem hozzáad – az oxigént.',
         "erdekesseg": 'A francia forradalom idején kivégezték. A kortársa azt mondta: egy pillanat kellett a fej levágásához, és száz év kell majd egy hasonlóhoz.',
         "idezet": 'Semmi sem vész el, semmi sem keletkezik, minden átalakul.',
-        "prompt": 'Antoine Lavoisier in an elegant 18th-century French laboratory, powdered wig and deep blue silk coat, carefully placing a weight on a large brass balance scale, glass retorts and bell jars around him, candlelight and the pale glow of a chemical reaction, ledgers of measurements open on the table',
+        "prompt": 'a large brass balance scale in the centre of the image with a tiny weight being placed on the pan, Antoine Lavoisier behind it in a powdered wig and deep blue silk coat, glass retorts and bell jars around him, an open ledger of measurements on the table, candlelight in an elegant 18th-century French laboratory',
     },
     {
         "id": "hu_kemia_7_arrhenius",
@@ -111,7 +112,7 @@ KARTYAK: list[dict] = [
         "teny": 'A doktori dolgozatára a legrosszabb elfogadható osztályzatot kapta, mert a bírálók képtelenségnek tartották. Ugyanezért a munkáért kapott később Nobel-díjat.',
         "erdekesseg": 'Elsőként számolta ki, hogy a levegőbe kerülő szén-dioxid felmelegítheti a Földet – 1896-ban.',
         "idezet": 'Aki új utat tör, annak elsőként a gúnyt kell kibírnia.',
-        "prompt": 'Svante Arrhenius in a late 19th-century laboratory, neat short hair and moustache, holding up a beaker of clear solution with two electrodes dipped in it, faint blue sparks of current between them, glass jars and a voltaic pile on the bench, cool blue-white light',
+        "prompt": 'a beaker of clear solution held up to the light with two metal electrodes dipped into it and faint blue sparks crossing between them, Svante Arrhenius holding it, neat short hair and moustache, dark late-19th-century suit, a voltaic pile and glass jars on the bench, cool blue-white glow',
     },
     {
         "id": "hu_fizika_7_newton",
@@ -126,7 +127,7 @@ KARTYAK: list[dict] = [
         "teny": 'A pestisjárvány miatt bezárt az egyeteme, és hazaküldték a falujába. Az ott töltött két év alatt találta ki a gravitációt, a színek elméletét és a differenciálszámítást.',
         "erdekesseg": 'Élete második felében a királyi pénzverde vezetője lett, és személyesen járta a londoni kocsmákat pénzhamisítók után nyomozva.',
         "idezet": 'Ha távolabbra láttam, azért volt, mert óriások vállán álltam.',
-        "prompt": 'Isaac Newton at night in his study at Woolsthorpe, long flowing auburn-grey curled hair, deep crimson 17th-century coat with a white cravat, one hand outstretched as a red apple falls past the open window, beyond the window a huge pale moon on the same curved path, candlelight and warm amber rim light',
+        "prompt": 'a single red apple frozen in mid-fall in the centre of the image, Isaac Newton beneath it with one hand outstretched, long flowing auburn-grey curled hair to the shoulders, deep crimson 17th-century coat with a white cravat, an autumn orchard at dusk behind him and a huge pale moon on the same curved path, warm amber rim light',
     },
     {
         "id": "hu_fizika_7_galilei",
@@ -141,7 +142,7 @@ KARTYAK: list[dict] = [
         "teny": 'Elsőként fordította az ég felé a távcsövet, és négy holdat talált a Jupiter körül. Ezek voltak az első égitestek, amelyekről kiderült, hogy nem a Föld körül keringenek.',
         "erdekesseg": 'Élete utolsó nyolc évét házi őrizetben töltötte, és vakon, diktálva fejezte be legfontosabb könyvét a mozgásról.',
         "idezet": 'És mégis mozog.',
-        "prompt": "Galileo Galilei in a Renaissance study, balding head and full grey beard, dark scholar's robe, rolling a bronze ball down a long inclined wooden ramp while holding a water clock, a brass telescope leaning against the wall, night sky with Jupiter and four small moons visible through the arched window",
+        "prompt": "a long inclined wooden ramp across the foreground with a bronze ball rolling down it, Galileo Galilei crouching beside it holding a water clock, balding head and full grey beard, dark scholar's robe, a brass telescope leaning against the wall, night sky with Jupiter and four small moons through an arched window",
     },
     {
         "id": "hu_fizika_7_watt",
@@ -156,7 +157,7 @@ KARTYAK: list[dict] = [
         "teny": 'A teljesítmény mértékegységét, a wattot róla nevezték el. Minden villanykörtén és minden töltőn az ő neve áll.',
         "erdekesseg": 'A javítás ötlete séta közben jutott eszébe egy vasárnap délután, egy glasgow-i park füvén.',
         "idezet": 'Nem tudok másra gondolni, csak erre a gépre.',
-        "prompt": 'James Watt in a Scottish workshop, long grey hair tied back, plain brown coat with rolled sleeves, adjusting a brass valve on a huge steam engine, white steam billowing and backlit, iron gears and a heavy flywheel behind him, warm amber furnace glow',
+        "prompt": 'a huge steam engine filling the background with white steam billowing and backlit, James Watt in front of it adjusting a brass valve, long grey hair tied back, plain brown coat with rolled sleeves, iron gears and a heavy flywheel, warm amber furnace glow in a Scottish workshop',
     },
     {
         "id": "hu_matemati_7_bolyai",
@@ -171,7 +172,7 @@ KARTYAK: list[dict] = [
         "teny": 'Az egész új geometriát huszonnégy oldalon írta le. Ez a rövid függelék az apja könyve mögött jelent meg, és megváltoztatta a matematikát.',
         "erdekesseg": 'Kiváló hegedűs és vívó volt. A hagyomány szerint egyszer tizenhárom tisztet hívott ki egymás után, és a szünetekben hegedült.',
         "idezet": 'Semmiből egy új, más világot teremtettem.',
-        "prompt": 'Janos Bolyai, a young 19th-century Hungarian hussar officer and mathematician, short dark hair, clean-shaven determined face, dark blue hussar jacket with gold braid frogging, standing before a dark wall covered in glowing chalk-drawn hyperbolic curves and parallel lines that bend towards each other, a brass drawing compass in his hand, cool indigo light',
+        "prompt": 'a dark wall covered in glowing chalk-drawn hyperbolic curves and parallel lines bending towards each other, Janos Bolyai standing before it holding a brass drawing compass, a young 19th-century Hungarian hussar officer, short dark hair, clean-shaven determined face, dark blue hussar jacket with gold braid frogging across the chest, cool indigo light',
     },
     {
         "id": "hu_matemati_7_euklidesz",
@@ -186,7 +187,7 @@ KARTYAK: list[dict] = [
         "teny": 'A könyve, az Elemek, több mint kétezer évig volt tankönyv. A Biblia után ez a legtöbbször kiadott könyv a világon.',
         "erdekesseg": 'Amikor a király rövidebb utat kért a tanuláshoz, azt felelte neki: a geometriához nem vezet királyi út.',
         "idezet": 'A geometriához nem vezet királyi út.',
-        "prompt": 'Euclid of Alexandria, an ancient Greek scholar with a short white beard and simple cream linen robe, kneeling and drawing geometric figures with a compass in a tray of fine sand, papyrus scrolls stacked beside him, warm Mediterranean sunlight from a stone colonnade, faint glowing geometric constructions in the air',
+        "prompt": 'a wide tray of fine sand in the foreground with precise geometric figures drawn into it by a compass, Euclid of Alexandria kneeling over it, short white beard and simple cream linen robe, papyrus scrolls stacked beside him, faint glowing geometric constructions rising in the air, warm Mediterranean sunlight through a stone colonnade',
     },
     {
         "id": "hu_matemati_7_pitagorasz",
@@ -201,7 +202,7 @@ KARTYAK: list[dict] = [
         "teny": 'A tanítványai titkos közösséget alkottak, és azt hitték, minden a számokból áll. Amikor kiderült, hogy a négyzet átlója nem írható fel törtként, a felfedezést titokban akarták tartani.',
         "erdekesseg": 'Az iskolájában a nők ugyanúgy taníthattak, mint a férfiak – ami akkoriban szinte példátlan volt.',
         "idezet": 'Minden szám.',
-        "prompt": 'Pythagoras, an ancient Greek philosopher with a long dark beard and white draped robe, standing on a stone terrace at dawn, tracing a large glowing right-angled triangle in the air with squares of light growing from each side, the sea and columns behind him, golden sunrise light',
+        "prompt": 'a large glowing right-angled triangle drawn in the air with a square of light growing out of each of its three sides, Pythagoras standing beside it with one hand raised, long dark beard and white draped robe, a stone terrace with columns and the sea behind, golden sunrise light',
     },
     {
         "id": "hu_biologia_7_darwin",
@@ -216,7 +217,7 @@ KARTYAK: list[dict] = [
         "teny": 'A Galápagos-szigeteken apró pintyeket gyűjtött. A csőrük szigetenként más volt – ebből jött rá, hogy a fajok változnak.',
         "erdekesseg": 'Húsz évig ült a kész elméletén, mielőtt kiadta volna. Csak akkor szánta rá magát, amikor egy másik kutató ugyanarra jutott.',
         "idezet": 'Nem a legerősebb marad fenn, hanem aki a legjobban alkalmazkodik.',
-        "prompt": 'Charles Darwin as an older man, bald high forehead and very long white beard, standing on a rocky Galapagos shore with a small finch perched on his outstretched hand, giant tortoises and volcanic rock behind him, the sailing ship Beagle anchored on the horizon, warm green and gold light',
+        "prompt": 'a small brown finch perched on an outstretched hand in the foreground, Charles Darwin behind it, bald high forehead and very long white beard, dark victorian coat, giant tortoises and black volcanic rock on a Galapagos shore, the sailing ship Beagle anchored on the horizon, warm green and gold light',
     },
     {
         "id": "hu_biologia_7_linne",
@@ -231,7 +232,7 @@ KARTYAK: list[dict] = [
         "teny": 'Több mint hétezer növényt és négyezer állatot nevezett el. A saját magának adott név: Homo sapiens, vagyis a bölcs ember.',
         "erdekesseg": 'A tanítványait a világ minden tájára kiküldte gyűjteni. Tizenhét indult el, és csak tíz tért vissza élve.',
         "idezet": 'Isten teremtett, Linné rendszerezett.',
-        "prompt": 'Carl Linnaeus in an 18th-century botanical garden, shoulder-length light hair and simple dark green coat, holding a pressed plant specimen and a quill, wooden cabinets of labelled drawers behind him, exotic flowers and butterflies around, soft green sunlight through leaves',
+        "prompt": 'an open wooden specimen cabinet of small labelled drawers with pressed plants pinned inside, Carl Linnaeus in front of it holding a specimen sheet and a quill, shoulder-length light hair and a simple dark green coat, exotic flowers and butterflies around him, soft green sunlight through leaves in an 18th-century botanical garden',
     },
     {
         "id": "hu_biologia_7_szentgyorgyi",
@@ -246,7 +247,7 @@ KARTYAK: list[dict] = [
         "teny": 'A döntő kísérlethez kilónyi C-vitamint vont ki – szegedi paprikából. A világ akkori teljes készletét ő állította elő.',
         "erdekesseg": 'A második világháború alatt titkos béketárgyalást vállalt Isztambulban, és Hitler személyesen adott parancsot az elfogatására.',
         "idezet": 'A felfedezés abból áll, hogy meglátjuk, amit mindenki lát, és közben arra gondolunk, amire még senki.',
-        "prompt": 'Albert Szent-Gyorgyi in a 1930s laboratory, short dark hair and round glasses, holding up a test tube of pale crystals with a pile of red paprika peppers on the bench beside him, microscope and glass flasks around, warm amber light, faint scientific diagrams on the wall',
+        "prompt": 'a pile of bright red paprika peppers on a laboratory bench beside a test tube of pale white crystals held up to the light, Albert Szent-Gyorgyi holding the tube, short dark hair and round glasses, white lab coat over a 1930s suit, microscope and glass flasks around, warm amber light',
     },
     {
         "id": "hu_foldrajz_7_kolumbusz",
@@ -261,7 +262,7 @@ KARTYAK: list[dict] = [
         "teny": 'Rosszul számolta ki a Föld méretét – sokkal kisebbnek hitte. Ha jól számol, el sem indul, mert reménytelennek látta volna az utat.',
         "erdekesseg": 'Élete végéig meg volt győződve róla, hogy Ázsiában járt. Sosem tudta meg, hogy egy új kontinenst talált.',
         "idezet": 'Következtem a tengert, és a tenger vezetett.',
-        "prompt": 'Christopher Columbus on the deck of a wooden caravel at dawn, weathered face and shoulder-length greying hair, red velvet cap and coat, holding a brass astrolabe and an unrolled sea chart flapping in the wind, billowing sails and open ocean, unknown coastline just appearing on the horizon',
+        "prompt": "an unrolled sea chart flapping in the wind across the foreground with a brass astrolabe resting on it, Christopher Columbus at the ship's rail behind it, weathered face and shoulder-length greying hair, red velvet cap and coat, billowing sails, open ocean and an unknown coastline just appearing on the horizon at dawn",
     },
     {
         "id": "hu_foldrajz_7_koroscsoma",
@@ -276,7 +277,7 @@ KARTYAK: list[dict] = [
         "teny": 'Éveket töltött jéghideg kolostorcellákban, napi néhány csésze vajas tea mellett, kéziratok fölé hajolva.',
         "erdekesseg": 'Japánban buddhista szentként tisztelik. A világ első nyugati tibetológusa lett egy magyar székely fiúból.',
         "idezet": 'Elindultam, hogy megkeressem a nemzetem bölcsőjét.',
-        "prompt": 'Sandor Korosi Csoma, a lone 19th-century Hungarian scholar-traveller in a snowy Himalayan monastery cell, gaunt bearded face, worn dark travelling coat and blanket, writing by butter-lamp light into a huge handwritten dictionary, Tibetan manuscripts stacked around, freezing blue light from a small stone window',
+        "prompt": 'a huge handwritten Tibetan-Hungarian dictionary open on a low table lit by a single butter lamp, Sandor Korosi Csoma bent over it writing, gaunt bearded face, worn dark travelling coat and blanket, Tibetan manuscripts stacked around, freezing blue light from a small stone window of a Himalayan monastery cell',
     },
     {
         "id": "hu_tortenel_7_szechenyi",
@@ -291,7 +292,7 @@ KARTYAK: list[dict] = [
         "teny": 'A Lánchíd megépítése előtt Pest és Buda között télen sokszor hetekig nem lehetett átkelni a jégzajlás miatt.',
         "erdekesseg": 'Ő szabályoztatta a Tiszát és a Dunát, és ő hozatta az első lóversenyt is – mert a lótenyésztést is fel akarta emelni.',
         "idezet": 'Magyarország nem volt, hanem lesz.',
-        "prompt": 'Istvan Szechenyi, a 19th-century Hungarian nobleman with dark hair and full sideburns, elegant dark tailcoat and white cravat, standing on a riverbank at golden hour with the Chain Bridge of Budapest half-built behind him, scaffolding and stone lions, a steamboat on the Danube, warm golden light',
+        "prompt": 'the half-built Chain Bridge of Budapest filling the background with scaffolding and stone lions, Istvan Szechenyi standing on the riverbank in front of it, dark hair and full sideburns, elegant dark tailcoat with a high white collar and cravat, a steamboat on the Danube, warm golden hour light',
     },
     {
         "id": "hu_tortenel_7_semmelweis",
@@ -306,7 +307,7 @@ KARTYAK: list[dict] = [
         "teny": 'A klinikáján a halálozás tíz százalékról egy alá esett, miután klóros vízzel kezdték mosni a kezüket.',
         "erdekesseg": 'A kortársai kinevették és elüldözték. Csak halála után igazolta a tudomány, hogy végig igaza volt.',
         "idezet": 'Ha valaki megérti, mit tettem, annak nem az én nevemre kell emlékeznie, hanem a kézmosásra.',
-        "prompt": 'Ignaz Semmelweis in a 19th-century hospital corridor, dark receding hair and side whiskers, dark frock coat with sleeves rolled up, washing his hands in a basin of chlorinated water, a row of white hospital beds softly lit behind him, cool clean light with a warm lamp in the distance',
+        "prompt": 'a white basin of chlorinated water in the foreground with hands being washed in it, Ignaz Semmelweis above it with his sleeves rolled up, dark receding hair and side whiskers, dark frock coat, a long row of white hospital beds softly lit behind him, cool clean light with one warm lamp in the distance',
     },
     {
         "id": "hu_tortenel_7_marconi",
@@ -321,7 +322,7 @@ KARTYAK: list[dict] = [
         "teny": 'A Titanic utasainak egy részét az ő rádiója mentette meg: a segélykérést egy másik hajó fogta, és odaért.',
         "erdekesseg": 'A saját padlásán kezdte kísérletezni, tizenévesen. Az olasz posta elutasította az ötletét, ezért Angliába ment.',
         "idezet": 'A rádióhullámok mindenütt ott vannak, csak hallani kell őket.',
-        "prompt": 'Guglielmo Marconi in a coastal wireless station, neat dark hair and moustache, formal early-1900s suit, hand on a brass telegraph key with sparks jumping in a coil beside him, tall antenna mast visible through the window against a stormy sea, blue-white electric glow',
+        "prompt": 'a brass telegraph key on a table with bright electric sparks jumping across a coil beside it, Guglielmo Marconi with his hand on the key, neat dark hair and moustache, formal early-1900s suit, a tall antenna mast through the window against a stormy sea, blue-white electric glow',
     },
     {
         "id": "hu_magyar_n_7_petofi",
@@ -336,7 +337,7 @@ KARTYAK: list[dict] = [
         "teny": '1848. március 15-én a Nemzeti dalt a Pilvax kávéház előtt szavalta el, és aznap estére az egész város énekelte.',
         "erdekesseg": 'Vándorszínész, katona és házitanító is volt, mielőtt költőként befutott. Huszonhat évesen tűnt el a segesvári csatában.',
         "idezet": 'Talpra magyar, hí a haza!',
-        "prompt": 'Sandor Petofi, a young 19th-century Hungarian poet with dark wavy hair and a small beard, open-collared white shirt and dark coat, standing on the stone steps of a café in front of a crowd, arm raised mid-speech, a printed sheet of poetry in his fist, cockades and flags, dramatic overcast March light',
+        "prompt": 'a printed sheet of poetry held up in a raised fist above a crowd, Sandor Petofi below it on the stone steps of a cafe mid-speech, young 19th-century Hungarian poet with dark wavy hair and a small beard, open-collared white shirt and dark coat, cockades and flags in the crowd, dramatic overcast March light',
     },
     {
         "id": "hu_magyar_n_7_arany",
@@ -351,7 +352,7 @@ KARTYAK: list[dict] = [
         "teny": 'A balladáiban sosem mondja ki, mi történt – az olvasónak kell rájönnie. Ezért hívják a magyar ballada mesterének.',
         "erdekesseg": 'Barátja, Petőfi halála után évekig szinte semmit nem írt. A gyász hallgatásba fordult nála.',
         "idezet": 'Ki nem tud írni, olvasni sem tud igazán.',
-        "prompt": "Janos Arany, a 19th-century Hungarian poet with a receding hairline and neat beard, dark scholar's coat, sitting alone at a candlelit desk in a quiet room, quill paused above a half-written page, shadows of the ballad's characters faintly suggested in the darkness behind him, muted warm light",
+        "prompt": "a half-written page under a paused quill on a candlelit desk, Janos Arany sitting behind it deep in thought, receding hairline and neat beard, dark scholar's coat, the shadowy figures of his ballad's characters faintly suggested in the darkness behind him, muted warm light in a quiet room",
     },
     {
         "id": "hu_enek_zen_7_bach",
@@ -366,7 +367,7 @@ KARTYAK: list[dict] = [
         "teny": 'Húsz gyermeke született, és közben minden vasárnapra új művet írt a templomnak. Több mint ezer műve maradt fenn.',
         "erdekesseg": 'Fiatalon négyszáz kilométert gyalogolt, hogy meghallgathasson egy híres orgonistát.',
         "idezet": 'A cél nem más, mint Isten dicsősége és a lélek felüdülése.',
-        "prompt": "Johann Sebastian Bach at a great baroque church organ, curled grey wig and dark cantor's coat, hands on the keys and head turned slightly, towering gilded organ pipes rising into shadow, candlelight on the manuscript, a choir of boys faintly visible below, warm gold and deep brown",
+        "prompt": "towering gilded organ pipes rising into shadow above a baroque church organ console, Johann Sebastian Bach seated at the keys with his head turned slightly towards the viewer, curled grey wig and dark cantor's coat, candlelight on the open manuscript, a choir of boys faintly visible below, warm gold and deep brown",
     },
     {
         "id": "hu_enek_zen_7_beethoven",
@@ -381,7 +382,7 @@ KARTYAK: list[dict] = [
         "teny": 'A legnagyobb műveit már süketen írta. A hangokat csak a fejében hallotta.',
         "erdekesseg": 'A IX. szimfónia bemutatóján háttal állt a közönségnek. Egy énekesnő fordította meg, hogy lássa a tapsot, amit nem hallott.',
         "idezet": 'A zene magasabb kinyilatkoztatás, mint minden bölcsesség.',
-        "prompt": "Ludwig van Beethoven at a battered piano in a cluttered Vienna room, wild grey hair and intense scowling face, dark coat, one hand pressed flat on the piano's wooden body to feel the vibration, scattered manuscript pages on the floor, stormy grey light from a tall window",
+        "prompt": 'an open piano with scattered manuscript pages spilling onto the floor around it, Ludwig van Beethoven leaning over it with one hand pressed flat on the wooden case to feel the vibration, wild grey hair and an intense scowling face, dark coat, stormy grey light from a tall window in a cluttered Vienna room',
     },
     {
         "id": "hu_enek_zen_7_bartok",
@@ -396,7 +397,7 @@ KARTYAK: list[dict] = [
         "teny": 'Több mint tízezer dallamot gyűjtött össze Magyarországon, Romániában, Szlovákiában, sőt Észak-Afrikában is.',
         "erdekesseg": 'Az öreg parasztasszonyok eleinte féltek a fonográf tölcsérétől, és nem akartak beleénekelni.',
         "idezet": 'A falusi zene a legtisztább forrás.',
-        "prompt": 'Bela Bartok in a Hungarian village at the turn of the century, dark hair and sharp features, plain travelling suit, crouching beside a brass phonograph horn while an old woman in a headscarf sings into it, whitewashed cottage wall and dirt yard, warm late afternoon light',
+        "prompt": 'a large brass phonograph horn on a wooden stand in the foreground, an old woman in a headscarf singing into it, Bela Bartok crouching beside it writing down the melody, dark hair and sharp features, plain travelling suit, whitewashed cottage wall and dirt yard of a Hungarian village, warm late afternoon light',
     },
     {
         "id": "hu_digitali_7_neumann",
@@ -411,7 +412,7 @@ KARTYAK: list[dict] = [
         "teny": 'A ma használt számítógépek felépítését máig róla nevezik: Neumann-architektúra.',
         "erdekesseg": 'Hatéves korában fejben osztott össze nyolcjegyű számokat, és szó szerint memorizált egész könyveket.',
         "idezet": 'Ha valaki nem hiszi, hogy a matematika egyszerű, az csak azért van, mert nem érti, milyen bonyolult az élet.',
-        "prompt": 'John von Neumann in a 1940s computer hall, neat dark hair and round friendly face, immaculate grey three-piece suit, standing before a room-sized computer of glowing vacuum tubes and cables, holding a punched card, soft cyan glow and warm ceiling lamps',
+        "prompt": 'a room-sized computer of glowing vacuum tubes and cables filling the background, John von Neumann in front of it holding a punched card, neat dark hair and a round friendly face, immaculate grey three-piece suit, soft cyan glow and warm ceiling lamps in a 1940s computer hall',
     },
     {
         "id": "hu_digitali_7_lovelace",
@@ -426,7 +427,7 @@ KARTYAK: list[dict] = [
         "teny": 'Ő ismerte fel elsőként, hogy a gép nemcsak számolni tud majd, hanem zenét is szerkeszthet, ha a hangokat számokká alakítjuk.',
         "erdekesseg": 'Az édesapja Byron, a híres költő volt. Az édesanyja kifejezetten matematikára taníttatta, nehogy költő legyen belőle.',
         "idezet": 'A gép csak azt teheti, amit megparancsolunk neki.',
-        "prompt": 'Ada Lovelace in a Victorian drawing room, dark hair in a braided updo, elegant blue-grey gown, seated at a desk covered in handwritten tables of numbers, a brass mechanical calculating engine of gears and wheels beside her, candlelight and cool daylight mixing',
+        "prompt": 'a brass mechanical calculating engine of gears and wheels on a desk covered in handwritten tables of numbers, Ada Lovelace seated beside it with one hand on the page, dark hair in a braided updo, elegant blue-grey Victorian gown, candlelight and cool daylight mixing in a drawing room',
     },
     {
         "id": "hu_digitali_7_turing",
@@ -441,7 +442,7 @@ KARTYAK: list[dict] = [
         "teny": 'A második világháborúban feltörte a német Enigma kódot. A történészek szerint ezzel évekkel rövidítette meg a háborút.',
         "erdekesseg": 'Hosszútávfutó volt, olyan jó, hogy majdnem bekerült az olimpiai válogatottba. Néha kilométereket futott a megbeszélésekre.',
         "idezet": 'Néha azok érnek el elképzelhetetlent, akiktől senki nem várja.',
-        "prompt": 'Alan Turing in a wartime code-breaking hut, tousled dark hair and tweed jacket, hunched over a huge rotating drum machine of wheels and wiring, paper tape and cipher sheets scattered, dim green desk lamp and the glow of rotating dials, cold British winter light from a small window',
+        "prompt": 'a huge rotating code-breaking machine of wheels and wiring filling the background, Alan Turing in front of it holding a strip of paper tape, tousled dark hair and a tweed jacket, cipher sheets scattered on the desk, a dim green desk lamp and the glow of rotating dials in a wartime hut',
     },
 ]
 
