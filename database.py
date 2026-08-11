@@ -298,6 +298,30 @@ class ChildProgress(Base):
     )
 
 
+class ChildCard(Base):
+    """Megszerzett tudáskártya (gyerek + kártya azonosító).
+
+    A kártyák tartalma a kartyak.py-ban van, ide csak az azonosító kerül.
+    A `darab` a duplikátumokat számolja: az első megszerzés 1, minden további
+    ugyanabból a lapból növeli.
+    """
+
+    __tablename__ = "child_cards"
+    __table_args__ = (
+        UniqueConstraint("child_id", "card_id", name="uq_child_card"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id", ondelete="CASCADE"), nullable=False
+    )
+    card_id: Mapped[str] = mapped_column(String(120), nullable=False)
+    darab: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    szerezve: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+
 # ---------------------------------------------------------------------------
 # Segédek
 # ---------------------------------------------------------------------------
@@ -394,6 +418,7 @@ def init_db() -> None:
     ensure_vocabulary_topic_id_column()
     ensure_chat_sessions_grade_column()
     ensure_children_voice_columns()
+    ensure_child_cards_table()
 
 
 def ensure_children_voice_columns() -> None:
@@ -1714,3 +1739,68 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     init_db()
     print("PostgreSQL táblák inicializálva.")
+
+
+# ---------------------------------------------------------------------------
+# Tudáskártyák
+# ---------------------------------------------------------------------------
+
+
+def ensure_child_cards_table() -> None:
+    """Biztosítja, hogy a child_cards tábla létezik."""
+    ChildCard.__table__.create(bind=_get_engine(), checkfirst=True)
+
+
+def add_child_card(child_id: int, card_id: str) -> dict[str, Any]:
+    """Kártya jóváírása.
+
+    Visszaad: {"uj": True/False, "darab": n}
+    Ha a gyereknek már megvolt a lap, csak a darabszám nő – a hívó ebből
+    tudja, hogy duplikátumért érmét kell adnia.
+    """
+    db = _session()
+    try:
+        row = db.scalars(
+            select(ChildCard).where(
+                ChildCard.child_id == child_id,
+                ChildCard.card_id == card_id,
+            )
+        ).first()
+        if row is None:
+            row = ChildCard(child_id=child_id, card_id=card_id, darab=1)
+            db.add(row)
+            db.commit()
+            return {"uj": True, "darab": 1}
+        row.darab = (row.darab or 1) + 1
+        db.commit()
+        return {"uj": False, "darab": row.darab}
+    finally:
+        db.close()
+
+
+def get_child_cards(child_id: int) -> dict[str, dict[str, Any]]:
+    """card_id -> {"darab": n, "szerezve": datetime}"""
+    db = _session()
+    try:
+        rows = db.scalars(
+            select(ChildCard).where(ChildCard.child_id == child_id)
+        ).all()
+        return {
+            r.card_id: {"darab": r.darab or 1, "szerezve": r.szerezve}
+            for r in rows
+        }
+    finally:
+        db.close()
+
+
+def count_child_cards(child_id: int) -> int:
+    """Hány KÜLÖNBÖZŐ lapja van a gyereknek."""
+    db = _session()
+    try:
+        return len(
+            db.scalars(
+                select(ChildCard.card_id).where(ChildCard.child_id == child_id)
+            ).all()
+        )
+    finally:
+        db.close()

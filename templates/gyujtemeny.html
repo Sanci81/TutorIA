@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Tudáskártyák · {{ child['name'] }}{% endblock %}
+
+{% block content %}
+<style>
+  .gy-fejlec{display:flex;justify-content:space-between;align-items:center;gap:16px;
+    flex-wrap:wrap;margin-bottom:6px;}
+  .gy-fejlec h1{font-size:1.7rem;margin:0;}
+  .gy-fejlec .alcim{opacity:.65;font-size:.92rem;}
+  .gy-merce{min-width:230px;}
+  .gy-merce .sav{height:12px;border-radius:999px;background:rgba(0,0,0,.12);overflow:hidden;}
+  .gy-merce .sav i{display:block;height:100%;border-radius:999px;
+    background:linear-gradient(90deg,#e8a33c,#ffe08a);}
+  .gy-merce .szam{font-size:.85rem;font-weight:800;margin-bottom:5px;text-align:right;}
+
+  .gy-szakasz{margin-top:30px;}
+  .gy-cim{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .gy-cim .pont{width:14px;height:14px;border-radius:50%;flex:0 0 auto;}
+  .gy-cim h2{font-size:1.1rem;margin:0;}
+  .gy-cim .db{font-size:.8rem;opacity:.6;font-weight:700;}
+
+  .gy-racs{display:grid;grid-template-columns:repeat(auto-fill,minmax(184px,1fr));gap:16px;}
+
+  .lap{border-radius:13px;padding:7px;position:relative;transition:transform .16s;
+    box-shadow:0 10px 24px rgba(0,0,0,.3);}
+  .lap.van{background:linear-gradient(150deg,#fff2bd,#e8b544 30%,#fffdf2 48%,#c99424);}
+  .lap.nincs{background:linear-gradient(150deg,#c9ccd4,#9aa0ad 40%,#7f8593);}
+  .lap.van:hover{transform:translateY(-6px) scale(1.03);}
+  .lap-belso{background:#fbf8f0;border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,.25);}
+  .lap.nincs .lap-belso{background:#e6e7ea;}
+
+  .lap-fej{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;padding:7px 9px 4px;}
+  .lap-nev{font-size:.92rem;font-weight:900;line-height:1.05;color:#16121f;}
+  .lap.nincs .lap-nev{color:#8b8f99;}
+  .lap-ero{font-size:1.15rem;font-weight:900;color:#16121f;line-height:1;white-space:nowrap;}
+  .lap.nincs .lap-ero{color:#8b8f99;}
+
+  .lap-kep{margin:0 9px;border:3px solid #d3ab4e;border-radius:3px;aspect-ratio:1/1;
+    overflow:hidden;background:#111a33;position:relative;}
+  .lap.nincs .lap-kep{border-color:#a8adb8;}
+  .lap-kep img{width:100%;height:100%;object-fit:cover;display:block;}
+  .lap-kep .nincskep{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:2.4rem;color:rgba(255,255,255,.28);font-weight:900;}
+  .lap.nincs .lap-kep img{filter:grayscale(1) brightness(.35);}
+
+  .lap-csillag{position:absolute;top:5px;right:7px;background:rgba(0,0,0,.6);color:#ffd76a;
+    font-size:.66rem;letter-spacing:1.6px;padding:2px 6px;border-radius:5px;z-index:2;}
+  .lap-lecke{font-size:.68rem;font-weight:700;opacity:.6;padding:5px 9px 0;line-height:1.25;}
+  .lap-leiras{font-size:.72rem;line-height:1.4;padding:4px 9px 8px;color:#2b2735;}
+  .lap.nincs .lap-leiras{color:#9298a3;font-style:italic;}
+  .lap-alj{display:flex;justify-content:space-between;font-size:.64rem;font-weight:800;
+    opacity:.55;padding:0 9px 7px;}
+  .lap-dupla{position:absolute;left:7px;top:5px;background:#2f8f60;color:#fff;font-size:.62rem;
+    font-weight:900;padding:2px 6px;border-radius:5px;z-index:2;}
+
+  .gy-ures{text-align:center;padding:44px 20px;opacity:.7;}
+  .gy-ures .ikon{font-size:2.6rem;margin-bottom:10px;}
+</style>
+
+<section class="gy-fejlec">
+  <div>
+    <h1>Tudáskártyák</h1>
+    <p class="alcim">{{ child['name'] }} gyűjteménye — minden befejezett lecke hozhat egy lapot.</p>
+  </div>
+  <div class="gy-merce">
+    <div class="szam">{{ meglevo }} / {{ osszes }} lap &nbsp;·&nbsp; {{ szazalek }}%</div>
+    <div class="sav"><i style="width: {{ szazalek }}%"></i></div>
+  </div>
+</section>
+
+{% if not csoportok %}
+  <div class="gy-ures">
+    <div class="ikon">🃏</div>
+    <p>Ehhez a tantervhez még nincsenek kártyák.</p>
+  </div>
+{% endif %}
+
+{% for kulcs, cs in csoportok.items() %}
+  <section class="gy-szakasz">
+    <div class="gy-cim">
+      <span class="pont" style="background: {{ cs['szin'] }}"></span>
+      <h2>{{ kulcs }}</h2>
+      <span class="db">{{ cs['lapok'] | selectattr('van') | list | length }} / {{ cs['lapok'] | length }}</span>
+    </div>
+
+    <div class="gy-racs">
+      {% for l in cs['lapok'] %}
+        <article class="lap {{ 'van' if l['van'] else 'nincs' }}">
+          {% if l['van'] and l['darab'] > 1 %}
+            <span class="lap-dupla">×{{ l['darab'] }}</span>
+          {% endif %}
+          <span class="lap-csillag">{{ l['csillag'] }}</span>
+          <div class="lap-belso">
+            <div class="lap-fej">
+              <span class="lap-nev">{{ l['nev'] if l['van'] else '???' }}</span>
+              <span class="lap-ero">{{ l['ero'] if l['van'] else '—' }}</span>
+            </div>
+            <div class="lap-kep">
+              {% if l['van'] %}
+                <img src="{{ l['kep_url'] }}" alt="{{ l['nev'] }}"
+                     onerror="this.style.display='none';this.parentNode.querySelector('.nincskep').style.display='flex';">
+                <span class="nincskep" style="display:none">?</span>
+              {% else %}
+                <span class="nincskep">?</span>
+              {% endif %}
+            </div>
+            <div class="lap-lecke">{{ l['lecke'] }}</div>
+            <div class="lap-leiras">
+              {% if l['van'] %}{{ l['leiras'] }}{% else %}Fejezd be ezt a leckét, és megszerzed.{% endif %}
+            </div>
+            <div class="lap-alj">
+              <span>{{ l['ritkasag_cimke'] }}</span>
+              <span>{{ l['targy'] }}</span>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+{% endfor %}
+
+<div style="margin-top:34px;">
+  <a class="btn btn-ghost" href="{{ url_for('dashboard') }}">Vissza</a>
+</div>
+{% endblock %}

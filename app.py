@@ -40,6 +40,7 @@ import resend
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import database
+import kartyak
 import translations as i18n
 from curriculum_loader import (
     ELO_IDEGEN_NYELV_1_4_FILE,
@@ -5381,6 +5382,43 @@ def child_chat_send(child_id: int):
         new_xp += 50
         new_game_level = (new_xp // 200) + 1
 
+    # ── TUDÁSKÁRTYA: a befejezett leckéhez tartozó lapok jóváírása ──
+    # A kártyák katalógusa a kartyak.py-ban van; egy lecke 0, 1 vagy több
+    # lapot adhat. A duplikátum nem vész el: érmét ér helyette.
+    uj_kartyak: list[dict] = []
+    dupla_ermek = 0
+    if topic_done:
+        try:
+            _oldal = "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu"
+            for _k in kartyak.kartyak_leckehez(
+                _oldal, subject_label, grade_num, current_topic
+            ):
+                _r = database.add_child_card(child_id, _k["id"])
+                if _r.get("uj"):
+                    uj_kartyak.append({
+                        "id": _k["id"],
+                        "nev": _k["nev"],
+                        "alnev": _k.get("alnev", ""),
+                        "becenev": _k.get("becenev", ""),
+                        "leiras": _k.get("leiras", ""),
+                        "ero": _k.get("ero", 0),
+                        "ritkasag": _k.get("ritkasag", "gyakori"),
+                        "csillag": kartyak.RITKASAG.get(
+                            _k.get("ritkasag", "gyakori"), {}
+                        ).get("csillag", "★"),
+                        "szin": kartyak.targy_szin(_k["targy"]),
+                        "kep": url_for("static", filename=kartyak.kep_utvonal(_k)),
+                        "targy": _k["targy"],
+                        "lecke": _k["lecke"],
+                    })
+                else:
+                    dupla_ermek += 25
+            if uj_kartyak or dupla_ermek:
+                print(f"[KARTYA] child={child_id} lecke={current_topic!r} "
+                      f"uj={len(uj_kartyak)} dupla_erme={dupla_ermek}", flush=True)
+        except Exception as _exc:
+            print(f"[KARTYA] hiba: {_exc}", flush=True)
+
     progress = database.update_child_progress(
         child_id,
         progress_subject,
@@ -5389,6 +5427,7 @@ def child_chat_send(child_id: int):
         level=level,
         xp=new_xp,
         game_level=new_game_level,
+        coins=(progress.get("coins", 0) + dupla_ermek) if dupla_ermek else None,
     )
 
     database.update_chat_session_position(
@@ -5429,7 +5468,55 @@ def child_chat_send(child_id: int):
             "game_level": progress.get("game_level", 1),
             "topic_done": topic_done,
             "figures": figures,
+            "uj_kartyak": uj_kartyak,
+            "dupla_ermek": dupla_ermek,
+            "coins": progress.get("coins", 0),
         }
+    )
+
+
+@app.route("/children/<int:child_id>/gyujtemeny")
+@login_required
+def child_collection(child_id: int):
+    """Tudáskártya-gyűjtemény: ami megvan, és ami még hiányzik."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    oldal = "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu"
+    megvan = database.get_child_cards(child_id)
+
+    # tantárgy -> évfolyam -> lapok
+    csoportok: dict[str, dict] = {}
+    for k in kartyak.osszes_kartya(oldal):
+        kulcs = f"{k['targy']} · {k['evfolyam']}. osztály"
+        cs = csoportok.setdefault(kulcs, {
+            "targy": k["targy"],
+            "evfolyam": k["evfolyam"],
+            "szin": kartyak.targy_szin(k["targy"]),
+            "lapok": [],
+        })
+        van = k["id"] in megvan
+        cs["lapok"].append({
+            **k,
+            "van": van,
+            "darab": megvan.get(k["id"], {}).get("darab", 0),
+            "csillag": kartyak.RITKASAG.get(k["ritkasag"], {}).get("csillag", "★"),
+            "ritkasag_cimke": kartyak.RITKASAG.get(k["ritkasag"], {}).get("cimke", ""),
+            "kep_url": url_for("static", filename=kartyak.kep_utvonal(k)),
+            "szin": kartyak.targy_szin(k["targy"]),
+        })
+
+    osszes = sum(len(c["lapok"]) for c in csoportok.values())
+    meglevo = sum(1 for c in csoportok.values() for l in c["lapok"] if l["van"])
+
+    return render_template(
+        "gyujtemeny.html",
+        child=child,
+        csoportok=csoportok,
+        osszes=osszes,
+        meglevo=meglevo,
+        szazalek=int(100 * meglevo / osszes) if osszes else 0,
     )
 
 
