@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Tutoria Kartya Muhely",
+  "schemaVersion": 1,
+  "description": "TutorIA kártyaműhely – Leonardo beállítások, közös stílus- és tiltóprompt, kész személypromptok másolható formában, és élő kártyaelőnézet négyzetes képmezővel, amibe rá lehet húzni a legenerált képet.",
+  "mcpTools": [],
+  "mcpServerNames": []
+}
+</script>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TutorIA – Kártyaműhely</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+  background:radial-gradient(circle at 50% 0%,#26305c 0%,#141a33 45%,#080a14 100%);
+  color:#e8e8f0;min-height:100vh;padding:26px 18px 70px;}
+h1{font-size:1.55rem;margin-bottom:5px;}
+.sub{opacity:.7;font-size:.92rem;max-width:900px;line-height:1.55;margin-bottom:22px;}
+.wrap{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start;max-width:1240px;}
+.col-l{flex:1 1 520px;min-width:340px;}
+.col-r{flex:0 0 auto;position:sticky;top:20px;}
+
+h2{font-size:1.05rem;margin:22px 0 8px;color:#ffd76a;}
+.box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+.box p{font-size:.88rem;line-height:1.6;opacity:.85;}
+.box p+p{margin-top:9px;}
+code{background:rgba(0,0,0,.4);padding:2px 6px;border-radius:4px;font-size:.85em;}
+
+.prompt{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.13);border-radius:9px;
+  padding:11px 13px;margin-bottom:10px;font-size:.8rem;line-height:1.5;position:relative;}
+.prompt .lbl{font-weight:800;color:#ffd76a;font-size:.82rem;display:block;margin-bottom:5px;}
+.prompt .txt{font-family:"Consolas",monospace;opacity:.88;word-break:break-word;white-space:pre-wrap;}
+.copy{position:absolute;top:9px;right:9px;border:none;cursor:pointer;font-family:inherit;
+  font-size:.72rem;font-weight:800;padding:5px 11px;border-radius:999px;
+  background:linear-gradient(180deg,#ffe08a,#e8a33c);color:#1a1430;}
+.copy:hover{filter:brightness(1.08);}
+.copy.ok{background:linear-gradient(180deg,#9ff0c8,#2f8f60);color:#0d2018;}
+
+.neg{border-color:rgba(255,120,120,.35);}
+.neg .lbl{color:#ff9b9b;}
+
+/* ── DROP ZÓNA ── */
+#drop{border:2px dashed rgba(255,255,255,.28);border-radius:12px;padding:22px;text-align:center;
+  font-size:.88rem;opacity:.8;cursor:pointer;margin-bottom:16px;transition:.2s;}
+#drop.hot{border-color:#ffd76a;background:rgba(255,215,106,.1);opacity:1;}
+select,input[type=text],input[type=number],textarea{
+  width:100%;padding:8px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.2);
+  background:rgba(0,0,0,.35);color:#e8e8f0;font-family:inherit;font-size:.85rem;margin-bottom:9px;}
+textarea{min-height:64px;resize:vertical;}
+label{font-size:.76rem;opacity:.65;display:block;margin-bottom:3px;font-weight:700;}
+.row{display:flex;gap:9px;}
+.row>div{flex:1;}
+
+/* ══ KÁRTYA (5:7, a mintádhoz igazítva) ══ */
+.tc{width:340px;height:548px;border-radius:15px;padding:8px;position:relative;
+  background:var(--edge);box-shadow:0 20px 50px rgba(0,0,0,.65);}
+.tc.rare{--edge:linear-gradient(150deg,#fff2bd,#e8b544 28%,#fffdf2 46%,#d99b2c 62%,#a8720f);}
+.tc.norm{--edge:linear-gradient(150deg,#f2f2f4,#b9bcc4 30%,#ffffff 47%,#9fa3ad 64%,#7d818a);}
+.tc-in{height:100%;border-radius:9px;background:var(--bg);border:1px solid rgba(0,0,0,.35);
+  padding:7px 8px 6px;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.tc.nincs-holo .tc-in::after{display:none !important;}
+.tc.rare .tc-in::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+  background:linear-gradient(112deg,transparent 36%,rgba(255,255,255,.4) 48%,transparent 59%);
+  mix-blend-mode:screen;animation:holo 3.6s infinite;}
+@keyframes holo{0%{transform:translateX(-65%)}55%{transform:translateX(65%)}100%{transform:translateX(65%)}}
+
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:2px 3px 4px;}
+.hdr .stg{font-size:8px;font-weight:800;letter-spacing:.6px;opacity:.6;text-transform:uppercase;}
+.hdr .nm{font-size:23px;font-weight:900;line-height:.98;letter-spacing:-.5px;color:#15121c;}
+.hdr .rt{display:flex;align-items:center;gap:5px;padding-top:6px;}
+.hdr .rt i{font-style:normal;font-size:8.5px;font-weight:800;opacity:.55;}
+.hdr .rt b{font-size:22px;font-weight:900;color:#15121c;line-height:1;}
+.orb{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:14px;background:var(--orb);border:2px solid rgba(255,255,255,.7);
+  box-shadow:inset 0 -3px 5px rgba(0,0,0,.35),0 1px 3px rgba(0,0,0,.45);}
+
+.who{font-size:9px;font-weight:700;opacity:.62;padding:0 3px 5px;letter-spacing:.2px;}
+
+.art{border:5px solid #d3ab4e;border-radius:2px;background:#0e1424;position:relative;
+  aspect-ratio:1/1;overflow:hidden;box-shadow:inset 0 0 20px rgba(0,0,0,.5);}
+.tc.norm .art{border-color:#b0b4bd;}
+.art img{width:100%;height:100%;display:block;
+  object-fit:var(--fit,contain);object-position:center var(--posy,50%);
+  transform:scale(var(--zoom,1));transform-origin:center var(--posy,50%);}
+.art .empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:6px;color:#8fa0c8;font-size:11px;text-align:center;padding:16px;}
+.art .empty b{font-size:30px;opacity:.4;}
+.illus{font-size:6.5px;opacity:.5;text-align:right;padding:2px 3px 0;}
+
+.ribbon{display:flex;align-items:center;gap:7px;margin-top:4px;}
+.ribbon .tag{background:linear-gradient(180deg,#d84a4a,#a82323);color:#fff;font-size:8px;
+  font-weight:900;letter-spacing:.6px;padding:3px 8px;border-radius:3px;white-space:nowrap;
+  box-shadow:0 1px 3px rgba(0,0,0,.4);}
+.ribbon .cost{display:flex;gap:2px;}
+.ribbon .cost i{width:15px;height:15px;border-radius:50%;background:var(--orb);display:block;
+  border:1.3px solid rgba(255,255,255,.7);box-shadow:inset 0 -1px 3px rgba(0,0,0,.3);}
+.ribbon .mv{flex:1;font-size:14px;font-weight:900;color:#15121c;line-height:1;}
+.ribbon .dmg{font-size:19px;font-weight:900;color:#15121c;}
+.desc{font-size:10px;line-height:1.4;color:#241f2e;padding:5px 3px 0;}
+
+.bars{margin-top:auto;padding-top:5px;}
+.bar1{display:flex;justify-content:space-between;gap:6px;font-size:7.5px;font-weight:700;
+  color:#241f2e;border-top:1.5px solid rgba(0,0,0,.3);padding-top:4px;}
+.bar1 span{opacity:.55;}
+.flav{font-size:8px;font-style:italic;opacity:.68;color:#241f2e;padding:4px 3px 3px;line-height:1.35;}
+.setl{display:flex;justify-content:space-between;font-size:7.5px;font-weight:800;opacity:.55;
+  color:#241f2e;padding:0 3px;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<h1>Kártyaműhely</h1>
+<p class="sub">Bal oldalon a Leonardo-beállítások és a kész promptok másolható formában. Jobb oldalon élő kártya: húzd rá a Leonardóból letöltött képet, és rögtön látod, hogy néz ki keretben. A szövegeket a kód írja, nem a képgenerátor — ezért lesz minden betű hibátlan.</p>
+
+<div class="wrap">
+<div class="col-l">
+
+  <div class="box">
+    <p><b>A legfontosabb szabály:</b> a Leonardo CSAK a portrét rajzolja. Semmi keret, semmi felirat, semmi szám. Ezért van a tiltólistán a „text", „letters", „frame", „card border". A kártyát utána a program rakja össze.</p>
+    <p>Így a nevet, a leckét, a képességszöveget bármikor átírhatod – a képhez hozzá se kell nyúlni.</p>
+  </div>
+
+  <h2>Leonardo beállítások</h2>
+  <div class="box">
+    <p><b>Modell:</b> <b>Leonardo Lightning</b> – ez van a listádban, és tökéletesen megfelel. Anime modellt SOHA: az minden nőalakot ezüsthajú, nagy szemű lánnyá alakít, akkor is, ha mást írsz be.</p><p><b>A többi beállítás:</b> Prompt Enhance <b>Off</b> (ez a legfontosabb – bekapcsolva átírja a promptot), Style <b>Dynamic</b>, Contrast <b>High</b>, Generation Mode <b>Fast</b>, méret <b>1:1 / 960×960</b>. A Platform Elements és a Your Elements maradjon üresen.</p><p><b>A többi 59 képhez:</b> a nyertes képnél válaszd a <b>Use as reference → Style Reference</b> lehetőséget. Csak azt, semmi mást – a Character Reference mindenkit Curie-re hasonlítana, a Content/Depth/Edge/Pose pedig ugyanazt a beállítást másolná mind a hatvan lapra.</p>
+    <p><b>Képarány:</b> <b>1:1 négyzet</b> (1024 × 1024). A kártya képmezője is négyzet, így semmi nem vágódik le a hajból vagy a válláról. Az Einstein-képed pont ilyen volt – ezért illeszkedik tökéletesen.</p>
+    <p><b>Alchemy:</b> be. <b>Prompt Magic:</b> be. <b>Képek száma:</b> 4 – mindig a legjobbat választod ki.</p>
+    <p><b>Fontos:</b> ha egy arc nem hasonlít, tedd be az Image Guidance mezőbe egy valódi fényképét vagy festményét alacsony (0,2–0,35) erősséggel. Így megtartja a hasonlóságot, de a stílus a tiéd marad.</p>
+  </div>
+
+  <h2>Közös stílus – NEM kell külön másolni</h2>
+  <div class="prompt">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">STÍLUS (állandó) — CSAK TÁJÉKOZTATÁSUL, már benne van minden kártya promptjában</span>
+    <span class="txt" id="p-style">trading card game character art, semi-realistic painted digital illustration, waist-up three-quarter portrait, subject centered and facing the viewer, warm confident expression, dramatic rim lighting from behind, rich saturated colors, clean crisp rendering, detailed face and eyes, period-accurate historical clothing, symbolic background related to their field, soft glowing particles, painterly brushwork, square composition, the whole head and all of the hair fully inside the frame with generous margin, nothing cropped, head in the upper half</span>
+  </div>
+
+  <div class="prompt neg">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">TILTÓLISTA (Negative prompt – mindig ugyanez)</span>
+    <span class="txt" id="p-neg">text, letters, words, typography, caption, watermark, signature, artist signature, handwriting, logo, emblem, star, symbol, numbers, frame, border, card layout, UI elements, anime, manga, cartoon, chibi, cel shading, huge sparkling eyes, silver or pastel hair, cute idol face, fashion model, modern makeup, lipstick, jewellery, hair ribbon, unrealistically young, unrealistically pretty, generic beautiful face, multiple people, crowd, cropped head, out of frame, deformed hands, extra fingers, extra limbs, blurry, low quality, jpeg artifacts</span>
+  </div>
+
+
+  <h2>A győztes recept — ez van eldöntve</h2>
+  <div class="box" style="border-color:rgba(120,230,170,.45);background:rgba(120,230,170,.08);">
+    <p><b>A Curie-teszt lezárult.</b> A nyertes a laborjelenet: az alak a munkája közben, a saját
+    eszközével, mögötte mélység és háttér. Az alábbi váz szerint készül mind a hatvan prompt –
+    a kapcsos zárójeles részeket személyenként én töltöm ki.</p>
+  </div>
+  <div class="prompt">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">VÁZ — minden kártyához ez, személyre szabott behelyettesítéssel</span>
+    <span class="txt">dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, {SZEMELY} working in {HELYSZIN}, {CSELEKVES}, {HATTER}, {FENY} lighting the face and hands, wide awestruck eyes and slightly parted lips, wonder not anger, {ARC}, {RUHA}, deep {ARNYEK} shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark</span>
+  </div>
+  <div class="box">
+    <p><b>Két hiba, amit tanultunk.</b> A „glow bursting from the flask” hatására a modell LÁNGOT
+    tett a lombik tetejére – ezért szerepel most külön, hogy a fény belülről jöjjön, és hogy
+    <code>NO flame, no fire, no candle</code>. A tiltószavakat pedig a prompt VÉGÉBE is beírjuk,
+    mert auto módban nincs külön Negative Prompt mező.</p>
+  </div>
+
+  <h2>Stílusirányok – ELDÖNTVE, csak emlékeztetőül</h2>
+  <div class="box">
+    <p>A mostani Curie-kép azért nem elég jó, mert <b>portré</b>: valaki áll és néz. A gyűjthető
+    kártyák egy PILLANATOT mutatnak — a figura csinál valamit, van mozgás és energia.
+    Az alábbi három irány ezt oldja meg másképp. Ezt a hármat teszteltük le; a nyertes az A lett, a fenti recept ebből született. Itt hagyom őket, ha később mégis váltani akarnál.</p>
+    <p>A másolás gomb a teljes promptot adja: irány + Curie. A tiltólista változatlan marad.</p>
+  </div>
+
+  <div class="prompt" data-full="dynamic trading card hero art, a decisive moment of discovery, three-quarter action pose, low heroic camera angle, the subject caught mid-gesture and leaning into the light, strong dramatic key light with deep shadows, glowing energy swirling around their hands and their invention, sparks and drifting light motes, bold saturated colours, high contrast, painterly digital illustration, cinematic depth, the whole figure and head inside a square frame with margin, Marie Curie in her laboratory at the instant the radium salt begins to glow, she leans over the flask with a fierce exhausted stare, one hand shielding her eyes, fierce green-white light bursting upward from the flask and lighting her face from below, dark chestnut hair in a low bun coming loose, plain black high-necked dress of the 1900s, glass vessels around her catching the glare">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">A · HŐSPILLANAT — a felfedezés pillanata, mozgással és fénnyel</span>
+    <span class="txt">dynamic trading card hero art, a decisive moment of discovery, three-quarter action pose, low heroic camera angle, the subject caught mid-gesture and leaning into the light, strong dramatic key light with deep shadows, glowing energy swirling around their hands and their invention, sparks and drifting light motes, bold saturated colours, high contrast, painterly digital illustration, cinematic depth, the whole figure and head inside a square frame with margin</span>
+  </div>
+  <div class="prompt" data-full="bold graphic poster art for a collectible card, stylised flat illustration with thick clean shapes, limited palette of three strong colours plus deep black, a large simple emblem of their field filling the background behind the figure, screen-print look, crisp geometric composition, confident heroic stance, square format with generous margin, no fine detail, no photo texture, Marie Curie holding a flask aloft, plain black high-necked dress, hair in a low bun, a huge stylised atom symbol filling the background, palette of deep teal, cream and luminous green">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">B · GRAFIKUS PLAKÁT — letisztult, erős formák, három szín</span>
+    <span class="txt">bold graphic poster art for a collectible card, stylised flat illustration with thick clean shapes, limited palette of three strong colours plus deep black, a large simple emblem of their field filling the background behind the figure, screen-print look, crisp geometric composition, confident heroic stance, square format with generous margin, no fine detail, no photo texture</span>
+  </div>
+  <div class="prompt" data-full="epic fantasy trading card art, the historical figure reimagined as a heroic guardian of their field, flowing period clothing with a hint of magic, their tool or discovery glowing like an enchanted artifact in their hands, swirling light and floating symbols around them, dramatic backlight and volcanic contrast, storybook grandeur, rich jewel colours, painterly digital illustration, square composition, full figure and head inside the frame, Marie Curie as the keeper of a glowing element, holding a crystal flask of radiant green light that spills between her fingers, plain black high-necked dress of the 1900s with a long dark coat, hair in a low bun, luminous particles and faint element symbols orbiting her, a dark vaulted laboratory behind">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">C · MESÉS HŐS — kalandos, varázslatos, ragyogó tárggyal</span>
+    <span class="txt">epic fantasy trading card art, the historical figure reimagined as a heroic guardian of their field, flowing period clothing with a hint of magic, their tool or discovery glowing like an enchanted artifact in their hands, swirling light and floating symbols around them, dramatic backlight and volcanic contrast, storybook grandeur, rich jewel colours, painterly digital illustration, square composition, full figure and head inside the frame</span>
+  </div>
+
+  <div class="box">
+    <p><b>Mit várj tőlük.</b> Az <b>A</b> a leginkább „igazi kártya”, viszont a legnehezebb
+    egyformán tartani hatvan képen át. A <b>B</b> a legbiztosabb: gyorsan generálódik, sosem
+    lesz csúnya, az arc pontossága nem is számít, és hatvan lapon is egységes marad – viszont
+    kevésbé látványos. A <b>C</b> fogja meg legjobban a gyerekeket, de a legkevésbé komoly.</p>
+    <p>Az én tippem: <b>A</b> a ritka és legendás lapokra, <b>B</b> a gyakoriakra. Így a ritka
+    kártya ránézésre is más – és pont ettől lesz értékes.</p>
+  </div>
+
+  <h2>A 26 kártya prompt­jai – 7. osztály</h2>
+  <div class="box" style="border-color:rgba(120,230,170,.45);background:rgba(120,230,170,.08);"><p><b>Mind a 26 hetedikes kártya, a győztes recept szerint.</b> Kattints egy promptra, és a jobb oldali kártya átvált arra a személyre. Generálás után húzd rá a képet a kártyára, aztán a „Mentés képként” gomb már a HELYES fájlnéven tölti le.</p></div>
+  <div id="plist"></div>
+
+  <h2>Fájlnevek</h2>
+  <div class="box">
+    <p>Mentsd a képeket ezzel a névvel, és a program magától megtalálja őket:</p>
+    <p><code>static/kartyak/hu/fizika_7_einstein.png</code><br>
+       <code>static/kartyak/hu/kemia_7_curie.png</code><br>
+       <code>static/kartyak/es/lengua_5_cervantes.png</code></p>
+    <p>Vagyis: <code>tantárgy_évfolyam_vezetéknév.png</code>, kisbetűvel, ékezet nélkül. A spanyol oldal külön mappába.</p>
+  </div>
+
+  <h2>Ha valami elrontódott</h2>
+  <div class="box">
+    <p><b>Betűk vagy keret került a képre:</b> a tiltólista hiányzott, vagy a modell mégis írt. Vágd le, vagy generáld újra – ne próbáld javítani.</p>
+    <p><b>Nem hasonlít az arc:</b> ez a leggyakoribb baj – a modell alapból egy általános szép arcot rajzol. Két dolog segít, együtt a legjobban. Egy: írd le magát az ARCOT is szavakkal – állkapocs, homlok, orr, ajak, tekintet –, ne csak a hajat és a ruhát. Kettő: tedd be a valódi fényképét az <b>Image Guidance</b> mezőbe 0,25–0,4 erősséggel. Ez utóbbi hozza a tényleges hasonlóságot, a stílus közben a tiéd marad.</p><p><b>Aláírás, csillag vagy firka került a képre:</b> a modell néha „szignózza” a művét. A tiltólistán rajta van, de ha mégis megjelenik, generáld újra – egy-két próba után tiszta lesz.</p>
+    <p><b>Rossz kéz, furcsa ujjak:</b> a Leonardo Canvas eszközében jelöld ki a kezet és generáld újra csak azt a részt. Vagy egyszerűbb: írd a promptba, hogy a keze ne látszódjon („hands out of frame").</p>
+    <p><b>Túl sötét vagy fakó:</b> a kártyakeret ezt felnagyítja. Kérj erősebb megvilágítást: „strong key light on the face".</p>
+  </div>
+
+</div>
+
+<div class="col-r">
+  <div id="drop">📥 Húzd ide a Leonardo-képet<br><span style="font-size:.78rem;opacity:.7">vagy kattints és válaszd ki</span></div>
+  <input type="file" id="file" accept="image/*" style="display:none">
+
+  <div style="width:340px;margin-bottom:12px;background:rgba(255,255,255,.05);
+              border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 13px;">
+    <label>Kép igazítása</label>
+    <div class="row" style="align-items:center;">
+      <div style="flex:0 0 auto;">
+        <button class="copy" style="position:static;" id="fitBtn">Teljes kép</button>
+      </div>
+      <div><label style="margin-top:2px;">Nagyítás</label>
+        <input type="range" id="zoom" min="100" max="220" value="100" style="width:100%;padding:0;"></div>
+      <div><label style="margin-top:2px;">Függőleges</label>
+        <input type="range" id="posy" min="0" max="100" value="50" style="width:100%;padding:0;"></div>
+    </div>
+    <p style="font-size:.72rem;opacity:.6;line-height:1.45;margin-top:4px;">
+      „Teljes kép” = semmi nem vágódik le. „Kitöltés” = kitölti a keretet, de a széle levágódhat.</p>
+  </div>
+
+  <div class="tc rare" id="card">
+    <div class="tc-in" style="--bg:linear-gradient(165deg,#fdf6e3,#f0dfb4);--orb:radial-gradient(circle at 35% 30%,#ffd76a,#d88a1f)">
+      <div class="hdr">
+        <div><div class="stg" id="v-stg">Fizika · 7. osztály</div><div class="nm" id="v-nm">Albert Einstein</div></div>
+        <div class="rt"><i>TUDÁS</i><b id="v-hp">480</b><span class="orb" id="v-orb">⚛</span></div>
+      </div>
+      <div class="who" id="v-who">fizikus · 1879 – 1955 · német</div>
+      <div class="art" id="v-art">
+        <div class="empty"><b>🖼️</b>Ide jön a Leonardo-kép<br>(3:4 álló)</div>
+      </div>
+      <div class="illus">Illus. Leonardo AI · TutorIA</div>
+      <div class="ribbon">
+        <span class="tag">KÉPESSÉG</span>
+        <span class="cost"><i></i><i></i><i></i></span>
+        <span class="mv" id="v-mv">Relativitás</span>
+        <span class="dmg" id="v-dmg">400</span>
+      </div>
+      <div class="desc" id="v-desc">Rájött, hogy az idő nem mindenkinek telik egyformán, és hogy a tömeg energiává alakulhat. Ebből lett az atomkorszak.</div>
+      <div class="bars">
+        <div class="bar1"><div id="v-b1">Lecke · Energia és tömeg</div><div id="v-b2">★★★ legendás</div></div>
+        <div class="flav" id="v-fl">„A képzelet fontosabb, mint a tudás."</div>
+        <div class="setl"><span id="v-s1">TutorIA · 7. osztály</span><span id="v-s2">012/60</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width:340px;display:flex;gap:8px;margin-top:14px;">
+    <button class="copy" style="position:static;flex:1;padding:10px;" id="valtoKeret">Keret: ARANY</button>
+    <button class="copy" style="position:static;flex:1;padding:10px;" id="dlWeb">Kártya mentése</button>
+    <button class="copy" style="position:static;flex:1;padding:10px;" id="dlPrint">Nyomdai méret (pólóhoz)</button>
+  </div>
+  <div id="dlStat" style="width:340px;font-size:.75rem;opacity:.6;margin-top:6px;min-height:16px;"></div>
+
+  <div style="width:340px;margin-top:16px;">
+    <label>Kártya kiválasztása</label>
+    <select id="pick"></select>
+    <div class="row">
+      <div><label>Név</label><input type="text" id="i-nm"></div>
+      <div><label>Tudás</label><input type="number" id="i-hp"></div>
+    </div>
+    <label>Alcím</label><input type="text" id="i-who">
+    <div class="row">
+      <div><label>Képesség</label><input type="text" id="i-mv"></div>
+      <div><label>Erő</label><input type="text" id="i-dmg"></div>
+    </div>
+    <label>Leírás</label><textarea id="i-desc"></textarea>
+    <label>Idézet</label><input type="text" id="i-fl">
+  </div>
+</div>
+</div>
+
+<script>
+const STYLE = document.getElementById('p-style').textContent.trim();
+
+const PEOPLE = [
+ {
+  "id": "kemia_7_curie",
+  "nm": "Marie Curie",
+  "stg": "Kémia · 7. osztály",
+  "who": "fizikus és kémikus · 1867–1934",
+  "hp": 450,
+  "orb": "★",
+  "rare": true,
+  "mv": "Rádiumsugárzás",
+  "dmg": "380",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Két új elemet talált – a polóniumot és a rádiumot –, és ő az egyetlen ember, aki két különböző tudományban kapott Nobel-díjat.",
+  "fl": "„Az életben semmitől sem kell félni, csak meg kell érteni.”",
+  "b1": "Lecke · Az atom felépítése",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a large glass flask on a laboratory bench with the liquid inside glowing from within with a cold green-white light, Marie Curie leaning over it holding a dropper, gaunt careworn face with a high forehead, dark chestnut hair waved and pinned up loosely, plain black high-necked long-sleeved dress of the 1900s with a small white collar, shelves of glass bottles and apparatus in the shadows behind her, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "kemia_7_curie"
+ },
+ {
+  "id": "kemia_7_mengyelejev",
+  "nm": "Mengyelejev",
+  "stg": "Kémia · 7. osztály",
+  "who": "kémikus · 1834–1907",
+  "hp": 310,
+  "orb": "★",
+  "rare": false,
+  "mv": "Periódusos rendszer",
+  "dmg": "250",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Sorba rakta az összes ismert elemet, és üresen hagyta a helyét azoknak, amelyeket még meg sem találtak.",
+  "fl": "„A tudomány munka, nem szórakozás.”",
+  "b1": "Lecke · A periódusos rendszer és a vegyjelek",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a huge hand-drawn periodic table on a large sheet of paper covering the whole desk, a grid of ruled squares filled with element symbols, three squares left empty and glowing faintly golden, Dmitri Mendeleev leaning over it with one hand flat on the paper, long wild grey hair and a very long full grey beard, deep-set intense eyes looking straight at the viewer, dark 19th-century Russian academic coat, an oil lamp on the corner of the desk, no church, no castle, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "kemia_7_mengyelejev"
+ },
+ {
+  "id": "kemia_7_lavoisier",
+  "nm": "Antoine Lavoisier",
+  "stg": "Kémia · 7. osztály",
+  "who": "kémikus · 1743–1794",
+  "hp": 300,
+  "orb": "★",
+  "rare": false,
+  "mv": "Anyagmegmaradás",
+  "dmg": "240",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Ő mondta ki, hogy az anyag nem vész el: ami a reakció előtt megvolt, az utána is megvan, csak más alakban.",
+  "fl": "„Semmi sem vész el, semmi sem keletkezik, minden átalakul.”",
+  "b1": "Lecke · Tiszta anyagok: elemek és vegyületek",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a large brass balance scale in the centre of the image with a tiny weight being placed on the pan, Antoine Lavoisier behind it in a powdered wig and deep blue silk coat, glass retorts and bell jars around him, an open ledger of measurements on the table, candlelight in an elegant 18th-century French laboratory, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "kemia_7_lavoisier"
+ },
+ {
+  "id": "kemia_7_arrhenius",
+  "nm": "Svante Arrhenius",
+  "stg": "Kémia · 7. osztály",
+  "who": "kémikus · 1859–1927",
+  "hp": 200,
+  "orb": "★",
+  "rare": false,
+  "mv": "Ionok az oldatban",
+  "dmg": "160",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Ő magyarázta meg, mi történik, amikor a só feloldódik a vízben: az anyag apró töltött részecskékre esik szét.",
+  "fl": "„Aki új utat tör, annak elsőként a gúnyt kell kibírnia.”",
+  "b1": "Lecke · Oldatok: oldódás, oldhatóság, töménység",
+  "b2": "★ gyakori",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a beaker of clear solution held up to the light with two metal electrodes dipped into it and faint blue sparks crossing between them, Svante Arrhenius holding it, a large stout heavy-built Swedish chemist of about fifty-five, NOT young and NOT slim, a broad heavy jowly face with full cheeks and a double chin and a thick neck, BALD on top of the head with a completely bare high domed crown, hair only in a short band above the ears and at the back of the head, a very large drooping walrus moustache that hangs over and hides the mouth completely, no beard, NO glasses, a black late-19th-century frock coat over a white shirt with a black bow tie, a voltaic pile and glass jars on the bench, cool blue-white glow, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "kemia_7_arrhenius"
+ },
+ {
+  "id": "fizika_7_newton",
+  "nm": "Isaac Newton",
+  "stg": "Fizika · 7. osztály",
+  "who": "fizikus és matematikus · 1643–1727",
+  "hp": 430,
+  "orb": "★",
+  "rare": true,
+  "mv": "Gravitáció",
+  "dmg": "360",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Három törvénybe sűrítette az egész mozgást, és megmutatta, hogy ugyanaz az erő ejti le az almát, ami a Holdat pályán tartja.",
+  "fl": "„Ha távolabbra láttam, azért volt, mert óriások vállán álltam.”",
+  "b1": "Lecke · Lendület és egyensúly",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a single red apple frozen in mid-fall in the centre of the image, Isaac Newton beneath it with one hand outstretched, long flowing auburn-grey curled hair to the shoulders, deep crimson 17th-century coat with a white cravat, an autumn orchard at dusk behind him and a huge pale moon on the same curved path, warm amber rim light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "fizika_7_newton"
+ },
+ {
+  "id": "fizika_7_galilei",
+  "nm": "Galileo Galilei",
+  "stg": "Fizika · 7. osztály",
+  "who": "csillagász és fizikus · 1564–1642",
+  "hp": 330,
+  "orb": "★",
+  "rare": false,
+  "mv": "Szabadesés",
+  "dmg": "270",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Kimérte, hogyan gyorsul a leguruló golyó, és rájött, hogy a nehéz meg a könnyű test ugyanúgy esik.",
+  "fl": "„És mégis mozog.”",
+  "b1": "Lecke · Mozgás közlekedés és sportolás közben",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a long inclined wooden ramp across the foreground with a bronze ball rolling down it, Galileo Galilei crouching beside it holding a water clock, balding head and full grey beard, dark scholar's robe, a brass telescope leaning against the wall, night sky with Jupiter and four small moons through an arched window, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "fizika_7_galilei"
+ },
+ {
+  "id": "fizika_7_watt",
+  "nm": "James Watt",
+  "stg": "Fizika · 7. osztály",
+  "who": "mérnök · 1736–1819",
+  "hp": 320,
+  "orb": "★",
+  "rare": false,
+  "mv": "Gőzgép",
+  "dmg": "260",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Úgy javította meg a gőzgépet, hogy az végre gazdaságos lett – ezzel indult el az ipari forradalom.",
+  "fl": "„Nem tudok másra gondolni, csak erre a gépre.”",
+  "b1": "Lecke · Az energia",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a huge steam engine filling the background with white steam billowing and backlit, James Watt in front of it adjusting a brass valve, long grey hair tied back, plain brown coat with rolled sleeves, iron gears and a heavy flywheel, warm amber furnace glow in a Scottish workshop, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "fizika_7_watt"
+ },
+ {
+  "id": "matemati_7_bolyai",
+  "nm": "Bolyai János",
+  "stg": "Matematika · 7. osztály",
+  "who": "matematikus · 1802–1860",
+  "hp": 440,
+  "orb": "★",
+  "rare": true,
+  "mv": "Új geometria",
+  "dmg": "370",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Kitalált egy geometriát, ahol a párhuzamosok mégis találkozhatnak. Kétezer év után ő mondta ki, hogy a tér másmilyen is lehet.",
+  "fl": "„Semmiből egy új, más világot teremtettem.”",
+  "b1": "Lecke · Halmazok, számhalmazok",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a dark wall covered in glowing chalk-drawn hyperbolic curves and parallel lines bending towards each other, Janos Bolyai standing before it holding a brass drawing compass, a young 19th-century Hungarian hussar officer, short dark hair, clean-shaven determined face, dark blue hussar jacket with gold braid frogging across the chest, cool indigo light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "matemati_7_bolyai"
+ },
+ {
+  "id": "matemati_7_euklidesz",
+  "nm": "Euklidész",
+  "stg": "Matematika · 7. osztály",
+  "who": "matematikus · kb. i. e. 300",
+  "hp": 330,
+  "orb": "★",
+  "rare": false,
+  "mv": "Bizonyítás",
+  "dmg": "270",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Öt egyszerű alapszabályból vezette le az egész geometriát. Ezt a módszert – állítás, bizonyítás, következmény – azóta is így tanítjuk.",
+  "fl": "„A geometriához nem vezet királyi út.”",
+  "b1": "Lecke · Matematikai logika, kombinatorika, gráfok",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a wide tray of fine sand in the foreground with precise geometric figures drawn into it by a compass, Euclid of Alexandria kneeling over it, short white beard and simple cream linen robe, papyrus scrolls stacked beside him, faint glowing geometric constructions rising in the air, warm Mediterranean sunlight through a stone colonnade, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "matemati_7_euklidesz"
+ },
+ {
+  "id": "matemati_7_pitagorasz",
+  "nm": "Pitagorasz",
+  "stg": "Matematika · 7. osztály",
+  "who": "matematikus · kb. i. e. 570–495",
+  "hp": 340,
+  "orb": "★",
+  "rare": false,
+  "mv": "Pitagorasz-tétel",
+  "dmg": "280",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Ő mondta ki, hogy a derékszögű háromszögben a két rövidebb oldal négyzetének összege pont a leghosszabbé.",
+  "fl": "„Minden szám.”",
+  "b1": "Lecke · Számelméleti ismeretek, hatvány, négyzetgyök",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a large glowing right-angled triangle drawn in the air with a square of light growing out of each of its three sides, Pythagoras standing beside it with one hand raised, long dark beard and white draped robe, a stone terrace with columns and the sea behind, golden sunrise light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "matemati_7_pitagorasz"
+ },
+ {
+  "id": "biologia_7_darwin",
+  "nm": "Charles Darwin",
+  "stg": "Biológia · 7. osztály",
+  "who": "természettudós · 1809–1882",
+  "hp": 420,
+  "orb": "★",
+  "rare": true,
+  "mv": "Természetes kiválasztódás",
+  "dmg": "350",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Öt évig hajózott a világ körül, és megértette: az él tovább, aki jobban alkalmazkodik. Ebből lett az egész mai biológia alapja.",
+  "fl": "„Nem a legerősebb marad fenn, hanem aki a legjobban alkalmazkodik.”",
+  "b1": "Lecke · Az élővilág fejlődése",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a small brown finch perched on an outstretched hand in the foreground, Charles Darwin behind it, bald high forehead and very long white beard, dark victorian coat, giant tortoises and black volcanic rock on a Galapagos shore, the sailing ship Beagle anchored on the horizon, warm green and gold light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "biologia_7_darwin"
+ },
+ {
+  "id": "biologia_7_linne",
+  "nm": "Carl Linné",
+  "stg": "Biológia · 7. osztály",
+  "who": "botanikus · 1707–1778",
+  "hp": 210,
+  "orb": "★",
+  "rare": false,
+  "mv": "Rendszertan",
+  "dmg": "170",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Ő találta ki, hogy minden élőlénynek két nevet adjunk – nemzetség és faj –, és így ma is nevezzük őket.",
+  "fl": "„Isten teremtett, Linné rendszerezett.”",
+  "b1": "Lecke · Az élővilág országai",
+  "b2": "★ gyakori",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, an open wooden specimen cabinet of small labelled drawers with pressed plants pinned inside, Carl Linnaeus in front of it holding a specimen sheet and a quill, shoulder-length light hair and a simple dark green coat, exotic flowers and butterflies around him, soft green sunlight through leaves in an 18th-century botanical garden, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "biologia_7_linne"
+ },
+ {
+  "id": "biologia_7_szentgyorgyi",
+  "nm": "Szent-Györgyi Albert",
+  "stg": "Biológia · 7. osztály",
+  "who": "biokémikus · 1893–1986",
+  "hp": 350,
+  "orb": "★",
+  "rare": false,
+  "mv": "C-vitamin",
+  "dmg": "290",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Ő fedezte fel a C-vitamint, és ezért kapott Nobel-díjat – az egyetlen magyar, aki itthon végzett munkáért kapta.",
+  "fl": "„A felfedezés abból áll, hogy meglátjuk, amit mindenki lát, és közben arra gondolunk, amire még senki.”",
+  "b1": "Lecke · A természeti értékek védelme",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a pile of bright red paprika peppers on a laboratory bench beside a test tube of pale white crystals held up to the light, Albert Szent-Gyorgyi holding the tube, short dark hair and round glasses, white lab coat over a 1930s suit, microscope and glass flasks around, warm amber light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "biologia_7_szentgyorgyi"
+ },
+ {
+  "id": "foldrajz_7_kolumbusz",
+  "nm": "Kolumbusz Kristóf",
+  "stg": "Földrajz · 7. osztály",
+  "who": "hajós · 1451–1506",
+  "hp": 320,
+  "orb": "★",
+  "rare": false,
+  "mv": "Nyugati út",
+  "dmg": "260",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Indiába akart eljutni nyugat felé, és közben egy addig ismeretlen földrészbe ütközött.",
+  "fl": "„Következtem a tengert, és a tenger vezetett.”",
+  "b1": "Lecke · Tájékozódás a térképen – fokhálózat és méretarány",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, an unrolled sea chart flapping in the wind across the foreground with a brass astrolabe resting on it, Christopher Columbus at the ship's rail behind it, weathered face and shoulder-length greying hair, red velvet cap and coat, billowing sails, open ocean and an unknown coastline just appearing on the horizon at dawn, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "foldrajz_7_kolumbusz"
+ },
+ {
+  "id": "foldrajz_7_koroscsoma",
+  "nm": "Kőrösi Csoma Sándor",
+  "stg": "Földrajz · 7. osztály",
+  "who": "nyelvtudós · 1784–1842",
+  "hp": 340,
+  "orb": "★",
+  "rare": false,
+  "mv": "A szótár",
+  "dmg": "280",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Gyalog indult el Ázsiába, hogy megkeresse a magyarok őshazáját. Nem találta meg – de közben megírta a világ első tibeti szótárát.",
+  "fl": "„Elindultam, hogy megkeressem a nemzetem bölcsőjét.”",
+  "b1": "Lecke · A Kárpát-medence tájai és népei",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a huge handwritten Tibetan-Hungarian dictionary open on a low table lit by a single butter lamp, Sandor Korosi Csoma bent over it writing, gaunt bearded face, worn dark travelling coat and blanket, Tibetan manuscripts stacked around, freezing blue light from a small stone window of a Himalayan monastery cell, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "foldrajz_7_koroscsoma"
+ },
+ {
+  "id": "tortenel_7_szechenyi",
+  "nm": "Széchenyi István",
+  "stg": "Történelem · 7. osztály",
+  "who": "reformer · 1791–1860",
+  "hp": 410,
+  "orb": "★",
+  "rare": true,
+  "mv": "A legnagyobb magyar",
+  "dmg": "340",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Egyévi jövedelmét ajánlotta fel a Tudományos Akadémiára, és nekiállt hidat, gőzhajót és vasutat építeni az országnak.",
+  "fl": "„Magyarország nem volt, hanem lesz.”",
+  "b1": "Lecke · A dualizmus kora: felzárkózás Európához",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, the half-built Chain Bridge of Budapest filling the background with scaffolding and stone lions, Istvan Szechenyi standing on the riverbank in front of it, dark hair and full sideburns, elegant dark tailcoat with a high white collar and cravat, a steamboat on the Danube, warm golden hour light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "tortenel_7_szechenyi"
+ },
+ {
+  "id": "tortenel_7_semmelweis",
+  "nm": "Semmelweis Ignác",
+  "stg": "Történelem · 7. osztály",
+  "who": "orvos · 1818–1865",
+  "hp": 400,
+  "orb": "★",
+  "rare": true,
+  "mv": "Kézmosás",
+  "dmg": "330",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Rájött, hogy az orvosok viszik át a fertőzést a betegekre, és bevezette a kézmosást. Ezzel évente több ezer anya életét mentette meg.",
+  "fl": "„Ha valaki megérti, mit tettem, annak nem az én nevemre kell emlékeznie, hanem a kézmosásra.”",
+  "b1": "Lecke · A modern kor születése",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a white basin of chlorinated water in the foreground with hands being washed in it, Ignaz Semmelweis above it with his sleeves rolled up, dark receding hair and side whiskers, dark frock coat, a long row of white hospital beds softly lit behind him, cool clean light with one warm lamp in the distance, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "tortenel_7_semmelweis"
+ },
+ {
+  "id": "tortenel_7_marconi",
+  "nm": "Guglielmo Marconi",
+  "stg": "Történelem · 7. osztály",
+  "who": "feltaláló · 1874–1937",
+  "hp": 330,
+  "orb": "★",
+  "rare": false,
+  "mv": "Rádióhullám",
+  "dmg": "270",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Elsőként küldött üzenetet vezeték nélkül az óceánon át. Innentől a hír gyorsabban ért célba, mint a hajó.",
+  "fl": "„A rádióhullámok mindenütt ott vannak, csak hallani kell őket.”",
+  "b1": "Lecke · Az első világháború és következményei",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a brass telegraph key on a table with bright electric sparks jumping across a coil beside it, Guglielmo Marconi with his hand on the key, neat dark hair and moustache, formal early-1900s suit, a tall antenna mast through the window against a stormy sea, blue-white electric glow, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "tortenel_7_marconi"
+ },
+ {
+  "id": "magyar_n_7_petofi",
+  "nm": "Petőfi Sándor",
+  "stg": "Magyar nyelv és irodalom · 7. osztály",
+  "who": "költő · 1823–1849",
+  "hp": 420,
+  "orb": "★",
+  "rare": true,
+  "mv": "Nemzeti dal",
+  "dmg": "350",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Huszonöt évesen írt verse egy egész forradalmat indított el. Egyszerű, tiszta magyar nyelven írt, ezért érti ma is mindenki.",
+  "fl": "„Talpra magyar, hí a haza!”",
+  "b1": "Lecke · I. Korok és portrék",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a printed sheet of poetry held up in a raised fist above a crowd, Sandor Petofi below it on the stone steps of a cafe mid-speech, young 19th-century Hungarian poet with dark wavy hair and a small beard, open-collared white shirt and dark coat, cockades and flags in the crowd, dramatic overcast March light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "magyar_n_7_petofi"
+ },
+ {
+  "id": "magyar_n_7_arany",
+  "nm": "Arany János",
+  "stg": "Magyar nyelv és irodalom · 7. osztály",
+  "who": "költő · 1817–1882",
+  "hp": 340,
+  "orb": "★",
+  "rare": false,
+  "mv": "A ballada",
+  "dmg": "280",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Olyan verseket írt, amelyek úgy húznak, mint egy krimi: kevés szóval, sejtetve mesél el egy egész tragédiát.",
+  "fl": "„Ki nem tud írni, olvasni sem tud igazán.”",
+  "b1": "Lecke · II. Magyar vagy világirodalmi ifjúsági regény",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a half-written page under a paused quill on a candlelit desk, Janos Arany sitting behind it deep in thought, receding hairline and neat beard, dark scholar's coat, the shadowy figures of his ballad's characters faintly suggested in the darkness behind him, muted warm light in a quiet room, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "magyar_n_7_arany"
+ },
+ {
+  "id": "enek_zen_7_bach",
+  "nm": "Johann Sebastian Bach",
+  "stg": "Ének-zene · 7. osztály",
+  "who": "zeneszerző · 1685–1750",
+  "hp": 410,
+  "orb": "★",
+  "rare": true,
+  "mv": "Fúga",
+  "dmg": "340",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "A barokk zene csúcsa. Úgy építette a szólamokat egymásra, mint egy matematikus – mégis gyönyörű.",
+  "fl": "„A cél nem más, mint Isten dicsősége és a lélek felüdülése.”",
+  "b1": "Lecke · A barokk zene",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, towering gilded organ pipes rising into shadow above a baroque church organ console, Johann Sebastian Bach seated at the keys with his head turned slightly towards the viewer, curled grey wig and dark cantor's coat, candlelight on the open manuscript, a choir of boys faintly visible below, warm gold and deep brown, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "enek_zen_7_bach"
+ },
+ {
+  "id": "enek_zen_7_beethoven",
+  "nm": "Ludwig van Beethoven",
+  "stg": "Ének-zene · 7. osztály",
+  "who": "zeneszerző · 1770–1827",
+  "hp": 430,
+  "orb": "★",
+  "rare": true,
+  "mv": "Kilencedik",
+  "dmg": "360",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Kiszélesítette a szimfóniát, és beleírta az emberi szabadság gondolatát. A IX. szimfónia zárótétele ma az Európai Unió himnusza.",
+  "fl": "„A zene magasabb kinyilatkoztatás, mint minden bölcsesség.”",
+  "b1": "Lecke · Beethoven és a szimfónia",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, an open piano with scattered manuscript pages spilling onto the floor around it, Ludwig van Beethoven leaning over it with one hand pressed flat on the wooden case to feel the vibration, wild grey hair and an intense scowling face, dark coat, stormy grey light from a tall window in a cluttered Vienna room, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "enek_zen_7_beethoven"
+ },
+ {
+  "id": "enek_zen_7_bartok",
+  "nm": "Bartók Béla",
+  "stg": "Ének-zene · 7. osztály",
+  "who": "zeneszerző · 1881–1945",
+  "hp": 350,
+  "orb": "★",
+  "rare": false,
+  "mv": "Népdalgyűjtés",
+  "dmg": "290",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Fonográffal járta a falvakat, és több ezer népdalt mentett meg. Ezekből épített olyan zenét, amit az egész világ játszik.",
+  "fl": "„A falusi zene a legtisztább forrás.”",
+  "b1": "Lecke · Műdalok és kórusművek",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a large brass phonograph horn on a wooden stand in the foreground, an old woman in a headscarf singing into it, Bela Bartok crouching beside it writing down the melody, dark hair and sharp features, plain travelling suit, whitewashed cottage wall and dirt yard of a Hungarian village, warm late afternoon light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "enek_zen_7_bartok"
+ },
+ {
+  "id": "digitali_7_neumann",
+  "nm": "Neumann János",
+  "stg": "Digitális kultúra · 7. osztály",
+  "who": "matematikus · 1903–1957",
+  "hp": 440,
+  "orb": "★",
+  "rare": true,
+  "mv": "Tárolt program",
+  "dmg": "370",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Ő találta ki, hogy a gép ne csak az adatokat, hanem magát a programot is a memóriájában tárolja. Minden mai számítógép így működik.",
+  "fl": "„Ha valaki nem hiszi, hogy a matematika egyszerű, az csak azért van, mert nem érti, milyen bonyolult az élet.”",
+  "b1": "Lecke · Algoritmus tervezése és leírása",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a room-sized computer of glowing vacuum tubes and cables filling the background, John von Neumann in front of it holding a punched card, neat dark hair and a round friendly face, immaculate grey three-piece suit, soft cyan glow and warm ceiling lamps in a 1940s computer hall, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "digitali_7_neumann"
+ },
+ {
+  "id": "digitali_7_lovelace",
+  "nm": "Ada Lovelace",
+  "stg": "Digitális kultúra · 7. osztály",
+  "who": "matematikus · 1815–1852",
+  "hp": 400,
+  "orb": "★",
+  "rare": true,
+  "mv": "Az első program",
+  "dmg": "330",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Száz évvel a számítógépek előtt leírta, hogyan lehet egy gépnek lépésről lépésre utasítást adni. Ő volt a világ első programozója.",
+  "fl": "„A gép csak azt teheti, amit megparancsolunk neki.”",
+  "b1": "Lecke · Vezérlési szerkezetek: szekvencia, elágazás, ciklus",
+  "b2": "★★★ nagyon ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a brass mechanical calculating engine of gears and wheels on a desk covered in handwritten tables of numbers, Ada Lovelace seated beside it with one hand on the page, dark hair in a braided updo, elegant blue-grey Victorian gown, candlelight and cool daylight mixing in a drawing room, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "digitali_7_lovelace"
+ },
+ {
+  "id": "digitali_7_turing",
+  "nm": "Alan Turing",
+  "stg": "Digitális kultúra · 7. osztály",
+  "who": "matematikus · 1912–1954",
+  "hp": 360,
+  "orb": "★",
+  "rare": false,
+  "mv": "Kódfejtés",
+  "dmg": "300",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Ő fogalmazta meg, mit jelent egyáltalán, hogy egy gép mit jelent „számolni”, és ő tette fel a kérdést: gondolkodhat-e egy gép?",
+  "fl": "„Néha azok érnek el elképzelhetetlent, akiktől senki nem várja.”",
+  "b1": "Lecke · Robot érzékelőkkel",
+  "b2": "★★ ritka",
+  "s2": "",
+  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a huge rotating code-breaking machine of wheels and wiring filling the background, Alan Turing in front of it holding a strip of paper tape, tousled dark hair and a tweed jacket, cipher sheets scattered on the desk, a dim green desk lamp and the glow of rotating dials in a wartime hut, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "fajl": "digitali_7_turing"
+ }
+];
+
+
+
+
+
+/* ── promptlista ── */
+const plist=document.getElementById('plist');
+PEOPLE.forEach((p,i)=>{
+  const d=document.createElement('div');
+  d.className='prompt';
+  d.innerHTML=`<button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">${String(i+1).padStart(2,'0')} · ${p.nm} — ${p.stg}</span>
+    <span class="txt">${p.p}</span>
+    <span class="txt" style="opacity:.5;display:block;margin-top:5px;">
+      mentsd: static/kartyak/hu/${p.fajl}.png</span>`;
+  d.dataset.full = p.p;   // = a kijelzett szöveg, betűre
+  d.addEventListener('click',ev=>{ if(ev.target.tagName!=='BUTTON'){ pick.value=i; show(i); } });
+  d.style.cursor='pointer';
+  plist.appendChild(d);
+});
+
+function cp(btn){
+  const box=btn.parentElement;
+  const t=box.dataset.full || box.querySelector('.txt').textContent.trim();
+  navigator.clipboard.writeText(t).then(()=>{
+    btn.textContent='Kimásolva ✓'; btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Másolás';btn.classList.remove('ok');},1500);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);
+    ta.select();document.execCommand('copy');ta.remove();
+    btn.textContent='Kimásolva ✓'; btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Másolás';btn.classList.remove('ok');},1500);
+  });
+}
+
+/* ── kártya kitöltése ── */
+const pick=document.getElementById('pick');
+PEOPLE.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.nm;pick.appendChild(o);});
+const card=document.getElementById('card');
+const F={nm:'v-nm',hp:'v-hp',who:'v-who',mv:'v-mv',dmg:'v-dmg',desc:'v-desc',fl:'v-fl',
+         stg:'v-stg',b1:'v-b1',b2:'v-b2',s2:'v-s2',orb:'v-orb'};
+function show(i){
+  const p=PEOPLE[i];
+  for(const k in F) document.getElementById(F[k]).textContent = p[k]!==undefined?p[k]:'';
+  const inn=card.querySelector('.tc-in');
+  inn.style.setProperty('--bg',p.bg); inn.style.setProperty('--orb',p.oc);
+  card.className='tc '+(p.rare?'rare':'norm');
+  document.getElementById('i-nm').value=p.nm;
+  document.getElementById('i-hp').value=p.hp;
+  document.getElementById('i-who').value=p.who;
+  document.getElementById('i-mv').value=p.mv;
+  document.getElementById('i-dmg').value=p.dmg;
+  document.getElementById('i-desc').value=p.desc;
+  document.getElementById('i-fl').value=p.fl;
+}
+pick.addEventListener('change',()=>show(pick.value));
+[['i-nm','v-nm'],['i-hp','v-hp'],['i-who','v-who'],['i-mv','v-mv'],
+ ['i-dmg','v-dmg'],['i-desc','v-desc'],['i-fl','v-fl']].forEach(([a,b])=>{
+  document.getElementById(a).addEventListener('input',e=>{
+    document.getElementById(b).textContent=e.target.value;});
+});
+show(0);
+
+/* ── kép betöltése ── */
+const drop=document.getElementById('drop'), file=document.getElementById('file');
+drop.addEventListener('click',()=>file.click());
+file.addEventListener('change',e=>{ if(e.target.files[0]) load(e.target.files[0]); });
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{
+  e.preventDefault();drop.classList.add('hot');}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{
+  e.preventDefault();drop.classList.remove('hot');}));
+drop.addEventListener('drop',e=>{ const f=e.dataTransfer.files[0]; if(f) load(f); });
+document.addEventListener('drop',e=>e.preventDefault());
+document.addEventListener('dragover',e=>e.preventDefault());
+function load(f){
+  const r=new FileReader();
+  r.onload=()=>{ document.getElementById('v-art').innerHTML=`<img src="${r.result}" alt="">`; };
+  r.readAsDataURL(f);
+}
+
+/* ── kép igazítása ── */
+const art=document.getElementById('v-art');
+const fitBtn=document.getElementById('fitBtn');
+let fitCover=false;
+fitBtn.addEventListener('click',()=>{
+  fitCover=!fitCover;
+  art.style.setProperty('--fit', fitCover?'cover':'contain');
+  fitBtn.textContent = fitCover?'Kitöltés':'Teljes kép';
+});
+document.getElementById('zoom').addEventListener('input',e=>{
+  art.style.setProperty('--zoom',(e.target.value/100).toFixed(2));});
+document.getElementById('posy').addEventListener('input',e=>{
+  art.style.setProperty('--posy',e.target.value+'%');});
+art.style.setProperty('--fit','contain');
+
+/* ── kártya mentése képként ─────────────────────────────── */
+const stat=document.getElementById('dlStat');
+function fajlnev(){
+  const n=document.getElementById('v-nm').textContent.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_')
+    .replace(/^_|_$/g,'');
+  return 'tutoria_kartya_'+(n||'kartya');
+}
+async function mentes(scale, utotag){
+  if(typeof html2canvas==='undefined'){
+    stat.textContent='A mentéshez internet kell (a html2canvas könyvtár nem töltődött be).';
+    return;
+  }
+  const kartya=document.getElementById('card');
+  stat.textContent='Készítés… ('+Math.round(340*scale)+' × '+Math.round(548*scale)+' képpont)';
+  kartya.classList.add('nincs-holo');           // a csillogás félremenne a képen
+  try{
+    const c=await html2canvas(kartya,{scale:scale,backgroundColor:null,useCORS:true,logging:false});
+    const a=document.createElement('a');
+    const _p=PEOPLE[pick.value];
+    a.download=(_p&&_p.fajl?_p.fajl:fajlnev())+'_kartya'+(aranyKeret?'_arany':'')+utotag+'.png';
+    a.href=c.toDataURL('image/png');
+    a.click();
+    stat.textContent='Kész: '+a.download+'  ('+c.width+' × '+c.height+' képpont)';
+  }catch(e){
+    stat.textContent='Nem sikerült: '+e.message;
+  }finally{
+    kartya.classList.remove('nincs-holo');
+  }
+}
+document.getElementById('dlWeb').addEventListener('click',()=>mentes(3,''));
+document.getElementById('dlPrint').addEventListener('click',()=>mentes(9,'_nyomdai'));
+
+/* ── sima / arany keret kapcsolo ── */
+let aranyKeret = true;
+const vk=document.getElementById('valtoKeret');
+function keretFrissit(){
+  vk.textContent='Keret: '+(aranyKeret?'ARANY':'SIMA');
+  card.classList.toggle('rare', aranyKeret);
+  card.classList.toggle('norm', !aranyKeret);
+}
+vk.addEventListener('click',()=>{aranyKeret=!aranyKeret;keretFrissit();});
+const _regiShow=show;
+show=function(i){_regiShow(i);keretFrissit();};
+keretFrissit();
+</script>
+</body>
+</html>
