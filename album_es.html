@@ -1,0 +1,377 @@
+<!DOCTYPE html><html lang="hu"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – Gyűjtőalbum</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;
+ background:radial-gradient(circle at 50% 0%,#22284d,#141830 45%,#080a16);color:#e8e8f0;
+ padding:18px 14px 60px}
+.top{max-width:1140px;margin:0 auto 12px;display:flex;justify-content:space-between;
+ align-items:center;gap:14px;flex-wrap:wrap}
+h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
+.prog{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+ border-radius:999px;padding:7px 16px;font-size:.85rem;font-weight:700}.prog b{color:#f0c869}
+.album{max-width:1140px;margin:0 auto;background:linear-gradient(160deg,#26305e,#38457f 45%,#1c2348);
+ border-radius:9px;padding:12px;box-shadow:0 26px 64px rgba(0,0,0,.75),inset 0 0 0 3px rgba(240,200,105,.28)}
+.lap{border-radius:5px;min-height:640px;position:relative;overflow:hidden;color:#1b1a24}
+
+.borito,.hatso{display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:14px;padding:34px;color:#fff;background:linear-gradient(165deg,#2b3568,#3d4a8c 48%,#1e2650)}
+.meh{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;width:100%;max-width:700px}
+.hx{aspect-ratio:1/1.12;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+ overflow:hidden;background:#0e1430;display:flex;align-items:center;justify-content:center}
+.hx img{width:100%;height:100%;object-fit:cover}.hx span{color:rgba(240,200,105,.45);font-weight:900}
+.focim{font-size:2.6rem;font-weight:900;letter-spacing:2px;
+ background:linear-gradient(180deg,#fff6d8,#f0c869 55%,#c99424);-webkit-background-clip:text;
+ background-clip:text;color:transparent}
+.kicsi{font-size:.75rem;letter-spacing:5px;color:#f0c869;font-weight:800}
+
+.szakasz{display:flex;flex-direction:column;padding:0;color:#fff}
+.szfej{padding:28px 32px 16px;position:relative}
+.szfej h2{font-size:3.2rem;font-weight:900;letter-spacing:-1.6px;line-height:.92}
+.szfej .db{position:absolute;top:28px;right:32px;background:rgba(0,0,0,.3);
+ border:2px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 14px;text-align:center}
+.szfej .db b{display:block;font-size:1.6rem;font-weight:900;line-height:1}
+.szfej .db span{font-size:.6rem;letter-spacing:1.5px;opacity:.8}
+.arcsor{flex:1;background:rgba(0,0,0,.18);padding:18px 32px 24px;display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:13px;align-content:start}
+.arc{text-align:center}
+.arc .ker{aspect-ratio:1/1.1;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+ overflow:hidden;background:#0e1430;margin-bottom:5px;position:relative}
+.arc .ker img{width:100%;height:100%;object-fit:cover}
+.arc .ker.hianyzik img{filter:grayscale(1) brightness(.3)}
+.arc .n{font-size:.72rem;font-weight:800}.arc .l{font-size:.6rem;opacity:.6}
+
+.szemely{background:#f6f3ea;padding:0}
+.sz-tag{background:var(--fo);color:#fff;font-size:.65rem;font-weight:900;letter-spacing:1.4px;
+ padding:5px 15px;border-radius:0 0 8px 8px;position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:4}
+.sz-fejlec{padding:20px 26px 0}
+.sz-nev{font-size:2.9rem;font-weight:900;letter-spacing:-1.5px;line-height:.9;color:#1b2350}
+.sz-alnev{font-size:.84rem;font-weight:700;margin-top:3px}
+.sz-torzs{display:grid;grid-template-columns:1fr 292px;gap:18px;padding:12px 26px 22px}
+.sz-bal{position:relative;min-height:420px;display:flex;flex-direction:column}
+.sz-kep{position:relative;margin-top:16px;aspect-ratio:16/11;border-radius:10px;overflow:hidden;
+ box-shadow:0 16px 36px rgba(0,0,0,.26);background:#101830}
+.sz-kep img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block;background:#101830}
+.sz-kep .nincs{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.32);font-size:.9rem;text-align:center;padding:20px}
+.becenev{position:absolute;left:-8px;top:-6px;z-index:3;background:var(--fo);color:#fff;
+ padding:9px 18px 10px 14px;border-radius:4px;box-shadow:0 7px 18px rgba(0,0,0,.34);
+ transform:rotate(-2deg);max-width:250px}
+.becenev b{display:block;font-size:1.1rem;font-weight:900;line-height:1}
+.becenev span{display:block;font-size:.71rem;line-height:1.35;margin-top:4px}
+.dobozok{position:absolute;left:8px;right:8px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:7px}
+.doboz{background:#f0c869;border-radius:4px;padding:8px 12px;box-shadow:0 5px 14px rgba(0,0,0,.32);transform:rotate(-.8deg)}
+.doboz.kek{background:#1b2350;color:#fff;transform:rotate(.8deg)}
+.doboz b{display:block;font-size:.63rem;font-weight:900;letter-spacing:1.2px;margin-bottom:2px;opacity:.75}
+.doboz span{font-size:.77rem;line-height:1.4}
+.sz-jobb{display:flex;flex-direction:column;gap:12px}
+.adatlap{border:2px solid #1b2350;border-radius:6px;overflow:hidden;background:#fff}
+.adatlap .fej{background:#1b2350;color:#f0c869;font-size:.63rem;font-weight:900;
+ letter-spacing:1.6px;text-align:center;padding:5px}
+.adatlap table{width:100%;border-collapse:collapse;font-size:.74rem}
+.adatlap td{padding:5px 9px;border-bottom:1px solid #d9d4c5}
+.adatlap td:first-child{font-weight:800;color:#5a5a6e;width:44%}
+.adatlap tr:last-child td{border-bottom:none}
+.helyek{display:flex;gap:11px}
+.hely{flex:1;border:2px dashed #b9a98a;border-radius:7px;background:#ece5d5;aspect-ratio:1/1.35;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;
+ text-align:center;position:relative;transition:.18s;overflow:hidden}
+.hely .szam{position:absolute;top:4px;left:6px;font-size:.65rem;font-weight:900;opacity:.4}
+.hely .fajta{position:absolute;top:4px;right:6px;font-size:.57rem;font-weight:900;color:#8a7f68}
+.hely .lecke{font-size:.66rem;font-weight:700;opacity:.6;line-height:1.25}
+.hely .q{font-size:1.5rem;opacity:.26}
+.hely.arany{border-color:#d8b355;background:linear-gradient(150deg,#f6e7bd,#e8d29a)}
+.hely.rahuz{border-color:#2f8f60;background:#dff3e6;transform:scale(1.05)}
+.hely.rossz{border-color:#c0392b;background:#fadcd8;animation:r .35s}
+@keyframes r{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.hely.kesz{border:2px solid #d8b355;background:#fff;padding:0}
+.hely.kesz img{width:100%;height:100%;object-fit:contain;background:#ece5d5}
+.idezet{font-size:.74rem;font-style:italic;color:#4a4a5c;line-height:1.45;
+ border-left:3px solid var(--fo);padding-left:9px}
+
+.checklist{background:#f6f3ea;padding:22px 26px;overflow:auto}
+.checklist h2{font-size:2.4rem;font-weight:900;color:#1b2350;letter-spacing:-1.3px}
+.clsz{font-size:.66rem;font-weight:900;letter-spacing:1.7px;color:#fff;background:#1b2350;
+ display:inline-block;padding:4px 12px;border-radius:4px;margin:14px 0 8px}
+.clracs{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
+.cl .k{aspect-ratio:1/1.28;background:#1b2350;border-radius:3px;overflow:hidden;
+ display:flex;align-items:center;justify-content:center}
+.cl .k img{width:100%;height:100%;object-fit:cover}
+.cl .k span{color:rgba(255,255,255,.3);font-size:1.1rem;font-weight:900}
+.cl .sav{display:flex;align-items:center;gap:4px;background:#c9a23c;border-radius:0 0 3px 3px;padding:2px 4px}
+.cl.van .sav{background:#2f8f60}
+.cl .box{width:11px;height:11px;background:#fff;border-radius:2px;display:flex;
+ align-items:center;justify-content:center;font-size:.58rem;color:#2f8f60;font-weight:900}
+.cl .n{font-size:.62rem;font-weight:900;color:#3a2f10}.cl.van .n{color:#fff}
+
+.lapozo{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px auto 0;max-width:1140px}
+.oldalszam{font-size:.78rem;opacity:.5;font-weight:800}
+.gomb{border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:.85rem;
+ padding:9px 20px;border-radius:999px;background:linear-gradient(180deg,#ffe08a,#e8a33c);color:#1a1430}
+.gomb:disabled{opacity:.3;cursor:default}
+.gomb.halvany{background:rgba(255,255,255,.12);color:#e8e8f0}
+.kez{max-width:1140px;margin:16px auto 0;background:rgba(255,255,255,.05);
+ border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:13px 16px}
+.kez h4{font-size:.92rem;color:#f0c869}.kez p{font-size:.78rem;opacity:.6;margin-bottom:10px}
+.pakli{display:flex;gap:10px;flex-wrap:wrap}
+.mini{width:86px;border-radius:7px;overflow:hidden;cursor:grab;border:2px solid #d8b355;background:#fff;
+ box-shadow:0 6px 16px rgba(0,0,0,.5);transition:.15s}
+.mini:hover{transform:translateY(-5px) scale(1.05)}
+.mini img{width:100%;aspect-ratio:340/548;object-fit:cover;display:block;background:#101830}
+.mini .c{font-size:.57rem;font-weight:800;color:#22202a;padding:3px;text-align:center;line-height:1.15}
+.uzenet{margin-top:8px;font-size:.85rem;min-height:20px;font-weight:600}
+.uzenet.jo{color:#9ff0c8}.uzenet.baj{color:#ffb3b3}
+
+.sz-tag{white-space:nowrap;font-size:.6rem;letter-spacing:1.1px;max-width:92%;overflow:hidden;text-overflow:ellipsis}
+.sz-fejlec{padding-top:32px}
+</style></head><body>
+
+<div class="top">
+ <div><h1>TutorIA – Álbum de cromos</h1>
+   <div class="sub">Las imágenes salen de la carpeta static/kartyak/es. Arrastra cada cromo a su hueco.</div></div>
+ <div class="prog">Pegados: <b id="db">0</b> / <span id="ossz"></span></div>
+</div>
+<div class="album"><div class="lap" id="lap"></div></div>
+<div class="lapozo">
+ <button class="gomb halvany" id="elore">‹ Anterior</button>
+ <span class="oldalszam" id="oldalszam"></span>
+ <button class="gomb" id="hatra">Siguiente ›</button>
+</div>
+<div class="kez"><h4>Tus cromos</h4>
+ <p>Busca en qué página y en qué hueco va cada uno. El cromo normal al hueco normal, el dorado al dorado.</p>
+ <div class="pakli" id="pakli"></div><div class="uzenet" id="uzenet"></div></div>
+
+<script>
+/* ── HÁTTÉRMINTA ────────────────────────────────────────────────────────────
+   Minden személy mögé a SAJÁT jelképeiből szórunk halvány mintát.
+   Vektor, nulla képgenerálás. A szín a tantárgy színe.
+*/
+const MOTIVUM = {
+  fiola:   {p:"M38,16 H62 M44,16 V38 L29,68 q-5,12 8,12 H63 q13,0 8,-12 L56,38 V16 M33,58 H67"},
+  atom:    {p:"M50,50 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0 M50,50 m-38,0 a38,16 0 1,0 76,0 a38,16 0 1,0 -76,0 M20,31 a38,16 0 1,0 60,38 a38,16 0 1,0 -60,-38 M80,31 a38,16 0 1,1 -60,38 a38,16 0 1,1 60,-38"},
+  tabla:   {p:"M12,26 H88 M12,44 H88 M12,62 H88 M12,80 H88 M12,26 V80 M30,26 V80 M48,26 V80 M66,26 V80 M88,26 V80"},
+  neuron:  {p:"M50,50 m-11,0 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0 M50,39 V14 M44,42 L20,24 M56,42 L80,24 M41,57 L16,70 M59,57 L84,70 M50,61 V88 M20,24 L10,14 M20,24 L14,32 M80,24 L90,14 M84,70 L92,78"},
+  level:   {p:"M50,12 C20,34 20,70 50,88 C80,70 80,34 50,12 Z M50,12 V88 M50,42 L32,32 M50,42 L68,32 M50,62 L34,52 M50,62 L66,52"},
+  kristaly:{p:"M50,10 L78,30 L70,74 L50,90 L30,74 L22,30 Z M50,10 V90 M22,30 L50,44 L78,30 M30,74 L50,60 L70,74"},
+  hullam:  {p:"M8,38 q12,-12 24,0 t24,0 t24,0 t12,0 M8,56 q12,-12 24,0 t24,0 t24,0 t12,0 M8,74 q12,-12 24,0 t24,0 t24,0 t12,0"},
+  magnes:  {p:"M28,84 V44 a22,22 0 0 1 44,0 V84 M28,68 H46 M54,68 H72 M28,84 H46 M54,84 H72"},
+  fogas:   {p:"M50,50 m-16,0 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0 M50,50 m-30,0 a30,30 0 1,0 60,0 a30,30 0 1,0 -60,0 M50,14 V26 M50,74 V86 M14,50 H26 M74,50 H86 M24,24 L33,33 M67,67 L76,76 M76,24 L67,33 M33,67 L24,76"},
+  iranytu: {p:"M50,50 m-34,0 a34,34 0 1,0 68,0 a34,34 0 1,0 -68,0 M50,16 L58,42 L84,50 L58,58 L50,84 L42,58 L16,50 L42,42 Z"},
+  konyv:   {p:"M50,26 C36,18 22,18 12,22 V78 C22,74 36,74 50,82 C64,74 78,74 88,78 V22 C78,18 64,18 50,26 Z M50,26 V82"},
+  toll:    {p:"M84,14 C56,18 30,40 20,72 L14,88 L30,82 C62,72 82,44 84,14 Z M84,14 L34,66 M52,32 L60,44 M40,46 L48,58 M30,60 L38,70"},
+  asztro:  {p:"M50,50 m-36,0 a36,36 0 1,0 72,0 a36,36 0 1,0 -72,0 M50,50 m-22,0 a22,22 0 1,0 44,0 a22,22 0 1,0 -44,0 M14,50 H86 M50,14 V86 M25,25 L75,75 M75,25 L25,75"},
+  kvadrans:{p:"M18,84 V22 L84,84 Z M18,22 A62,62 0 0 1 84,84 M32,72 A40,40 0 0 1 50,40 M18,84 L84,22"},
+  szarny:  {p:"M12,72 C26,34 56,12 90,12 C82,34 66,52 44,62 M12,72 C30,60 46,50 62,32 M24,64 C34,50 44,40 58,30 M36,58 C46,46 54,38 66,26"},
+  geo:     {p:"M50,14 L86,80 H14 Z M22,32 H78 V88 H22 Z M50,50 m-20,0 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0"},
+  paletta: {p:"M50,16 C22,16 10,36 14,56 C18,76 40,86 56,80 C64,77 60,68 66,64 C74,58 88,66 90,50 C92,30 76,16 50,16 Z M32,38 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M52,30 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M70,40 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M30,60 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"},
+  ecset:   {p:"M76,10 L90,24 L44,70 L26,76 L32,58 Z M32,58 L44,70 M26,76 L14,90 M20,54 L46,80"},
+  nap:     {p:"M50,50 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0 M50,8 V22 M50,78 V92 M8,50 H22 M78,50 H92 M20,20 L30,30 M70,70 L80,80 M80,20 L70,30 M30,70 L20,80"},
+  hangjegy:{p:"M38,74 m-14,6 a14,10 0 1,0 28,0 a14,10 0 1,0 -28,0 M52,80 V16 C66,20 80,28 88,40 C80,26 66,20 52,24"},
+  gitar:   {p:"M50,40 m-16,0 a16,14 0 1,0 32,0 a16,14 0 1,0 -32,0 M50,72 m-22,0 a22,20 0 1,0 44,0 a22,20 0 1,0 -44,0 M34,40 h32 M50,26 V6 M42,10 H58 M50,54 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0"},
+  babér:   {p:"M50,88 C22,72 14,44 22,16 C40,22 50,44 50,88 M50,88 C78,72 86,44 78,16 C60,22 50,44 50,88 M30,34 L18,28 M36,50 L24,46 M42,66 L30,64 M70,34 L82,28 M64,50 L76,46 M58,66 L70,64"},
+  utvonal: {p:"M10,80 C30,80 26,52 46,52 C66,52 62,24 86,24 M86,24 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 M10,80 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M46,52 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0"},
+  korona:  {p:"M14,72 L20,28 L36,48 L50,20 L64,48 L80,28 L86,72 Z M14,84 H86 M20,28 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M80,28 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M50,20 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0"},
+  maszk:   {p:"M18,24 H82 C82,64 68,86 50,86 C32,86 18,64 18,24 Z M32,44 q8,-8 16,0 M56,44 q8,-8 16,0 M36,64 q14,10 28,0"},
+  sorok:   {p:"M14,22 H86 M14,36 H70 M14,50 H86 M14,64 H62 M14,78 H78"},
+  hajo:    {p:"M12,72 H88 L78,86 H22 Z M50,72 V10 M50,16 L80,30 L50,40 M50,44 L74,56 L50,64 M50,10 L26,26 L50,34"},
+  W:       {t:"W"},
+  x2:      {t:"x²"},
+  Aa:      {t:"Aa"},
+};
+
+/* melyik személyhez melyik jelkép */
+const SZEMELY_MOTIVUM = {
+  /* ES */
+  cajal:["neuron","atom"], mutis:["level","konyv"], elhuyar:["kristaly","W"],
+  peral:["hullam","fogas"], cabrera:["magnes","atom"], torres:["fogas","tabla"],
+  elcano:["iranytu","hajo"], alfonsox:["korona","konyv"], lascasas:["konyv","sorok"],
+  juarismi:["x2","geo"], azarquiel:["asztro","iranytu"], jorgejuan:["kvadrans","asztro"],
+  hipatia:["geo","asztro"], firnas:["szarny","hullam"], cervantes:["toll","konyv"],
+  nebrija:["Aa","sorok"], lorca:["maszk","hangjegy"], rosalia:["sorok","level"],
+  sorjuana:["konyv","toll"], velazquez:["paletta","ecset"], goya:["ecset","maszk"],
+  sorolla:["nap","ecset"], falla:["hangjegy","gitar"], albeniz:["gitar","hangjegy"],
+  coubertin:["babér","nap"], battuta:["utvonal","iranytu"],
+  /* HU */
+  curie:["atom","fiola"], mengyelejev:["tabla","fiola"], lavoisier:["fiola","kvadrans"],
+  arrhenius:["fiola","atom"], newton:["nap","geo"], galilei:["asztro","nap"],
+  watt:["fogas","hullam"], bolyai:["geo","asztro"], euklidesz:["geo","x2"],
+  pitagorasz:["geo","x2"], darwin:["level","hajo"], linne:["level","konyv"],
+  szentgyorgyi:["fiola","level"], kolumbusz:["hajo","iranytu"], korosicsoma:["utvonal","konyv"],
+  szechenyi:["hajo","fogas"], semmelweis:["fiola","neuron"], marconi:["hullam","fogas"],
+  petofi:["toll","sorok"], arany:["toll","sorok"], bach:["hangjegy","korona"],
+  beethoven:["hangjegy","sorok"], bartok:["hangjegy","gitar"],
+  neumann:["tabla","fogas"], lovelace:["fogas","tabla"], turing:["tabla","x2"],
+};
+
+/* determinisztikus véletlen, hogy minden újratöltéskor ugyanaz legyen */
+function _mag(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
+  return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%100000)/100000;};}
+
+function mintaHatter(k, w, h){
+  const azon=(k.kep||k.id).split('_').pop();
+  const nevek=SZEMELY_MOTIVUM[azon]||["konyv","sorok"];
+  const r=_mag(azon), szin=k.szin||"#3f6fd8";
+  let g="";
+  /* rácsba szórjuk, hogy egyenletesen fedje az oldalt, de ne legyen szabályos */
+  const OSZ=7, SOR=5, cw=w/OSZ, ch=h/SOR;
+  for(let i=0;i<OSZ*SOR;i++){
+    const m=MOTIVUM[nevek[i%nevek.length]]; if(!m) continue;
+    const x=(i%OSZ)*cw+cw*(0.15+r()*0.7),
+          y=Math.floor(i/OSZ)*ch+ch*(0.15+r()*0.7),
+          s=(0.55+r()*1.25), rot=Math.round(-38+r()*76),
+          o=(0.075+r()*0.085).toFixed(3);
+    if(m.t){
+      g+=`<text x="${x.toFixed(0)}" y="${y.toFixed(0)}" font-family="Georgia,serif"
+           font-size="${(46*s).toFixed(0)}" font-weight="700" fill="${szin}"
+           opacity="${o}" transform="rotate(${rot} ${x.toFixed(0)} ${y.toFixed(0)})">${m.t}</text>`;
+    } else {
+      g+=`<g transform="translate(${(x-50*s).toFixed(0)},${(y-50*s).toFixed(0)}) scale(${s.toFixed(2)}) rotate(${rot} 50 50)"
+           fill="none" stroke="${szin}" stroke-width="${(3.4/s).toFixed(2)}"
+           stroke-linecap="round" stroke-linejoin="round" opacity="${o}"><path d="${m.p}"/></g>`;
+    }
+  }
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${g}</svg>`;
+  return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+}
+
+const K = [{"id": "es_medio_3_cajal", "kep": "medio_3_cajal", "nev": "Santiago Ramón y Cajal", "alnev": "médico e investigador · 1852–1934", "targy": "Conocimiento del Medio Natural, Social y Cultural", "rovid": "CONOCIMIENTO DEL MEDIO", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Iniciación en la actividad científica", "becenev": "EL DIBUJANTE DEL CEREBRO", "leiras": "Demostró que el cerebro no es una red continua, sino millones de células separadas que se hablan entre sí. Por eso recibió el Premio Nobel en 1906.", "teny": "Dibujó a mano miles de láminas de neuronas mientras miraba por el microscopio. Todavía hoy se usan en las facultades de medicina de todo el mundo.", "erd": "De niño quería ser pintor y su padre no se lo permitió. Al final fue su mano de dibujante la que le hizo famoso.", "idezet": "Todo hombre puede ser, si se lo propone, escultor de su propio cerebro.", "mtip": "idezet", "ero": 450, "kepesseg": "Neuronas", "kepero": 380, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#2f8f60"}, {"id": "es_medio_2_mutis", "kep": "medio_2_mutis", "nev": "José Celestino Mutis", "alnev": "médico y botánico · 1732–1808", "targy": "Conocimiento del Medio Natural, Social y Cultural", "rovid": "CONOCIMIENTO DEL MEDIO", "ciclo": "2.º CICLO · 3.º–4.º", "ciklus": 2, "lecke": "La vida en nuestro planeta", "becenev": "EL CAZADOR DE PLANTAS", "leiras": "Dirigió durante treinta años una expedición que recorrió las selvas del Nuevo Reino de Granada para dibujar y describir cada planta que encontraba.", "teny": "Su expedición dejó miles de láminas botánicas pintadas a mano, muchas con colores fabricados a partir de las propias plantas.", "erd": "Montó una escuela de pintores del lugar solo para retratar flores: llegaron a trabajar decenas de artistas a la vez.", "idezet": "Treinta años dibujando una selva entera, hoja por hoja.", "mtip": "jelmondat", "ero": 320, "kepesseg": "Expedición botánica", "kepero": 260, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#2f8f60"}, {"id": "es_medio_3_elhuyar", "kep": "medio_3_elhuyar", "nev": "Fausto Elhuyar", "alnev": "químico y mineralogista · 1755–1833", "targy": "Conocimiento del Medio Natural, Social y Cultural", "rovid": "CONOCIMIENTO DEL MEDIO", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Materia, fuerzas y energía", "becenev": "EL QUE SACÓ UN METAL DE LA PIEDRA", "leiras": "Junto a su hermano Juan José consiguió aislar por primera vez el wolframio, el metal que aguanta más calor sin fundirse.", "teny": "Lo lograron en 1783, en Bergara. Es el único elemento químico aislado por primera vez en España.", "erd": "El wolframio se funde a más de tres mil cuatrocientos grados. Por eso durante cien años fue el hilo que brillaba dentro de las bombillas.", "idezet": "1783, Bergara: de una piedra oscura salió el metal más duro de fundir.", "mtip": "jelmondat", "ero": 400, "kepesseg": "Wolframio", "kepero": 330, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#2f8f60"}, {"id": "es_medio_3_peral", "kep": "medio_3_peral", "nev": "Isaac Peral", "alnev": "marino e ingeniero · 1851–1895", "targy": "Conocimiento del Medio Natural, Social y Cultural", "rovid": "CONOCIMIENTO DEL MEDIO", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Materia, fuerzas y energía", "becenev": "EL QUE BAJÓ AL FONDO", "leiras": "Construyó un submarino movido solo por electricidad, capaz de navegar sumergido, orientarse y lanzar un torpedo.", "teny": "Se botó en Cádiz en 1888 y funcionó. Aun así, la Marina acabó cancelando el proyecto y el submarino quedó abandonado en el puerto.", "erd": "Para saber dónde estaba bajo el agua inventó un aparato propio que le permitía ver la superficie sin salir a ella.", "idezet": "Funcionaba. Y aun así lo dejaron en el muelle.", "mtip": "jelmondat", "ero": 340, "kepesseg": "Submarino eléctrico", "kepero": 280, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#2f8f60"}, {"id": "es_medio_3_cabrera", "kep": "medio_3_cabrera", "nev": "Blas Cabrera", "alnev": "físico · 1878–1945", "targy": "Conocimiento del Medio Natural, Social y Cultural", "rovid": "CONOCIMIENTO DEL MEDIO", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Materia, fuerzas y energía", "becenev": "EL QUE MIDIÓ LO INVISIBLE", "leiras": "Midió con una precisión enorme cómo responden los materiales al imán, y sus datos se usaron en laboratorios de toda Europa.", "teny": "Fue el físico español más reconocido de su tiempo y formó parte del comité internacional que decide cuánto mide un metro y cuánto pesa un kilo.", "erd": "Cuando Einstein visitó España en 1923, fue Blas Cabrera quien le acompañó y quien tradujo sus conferencias.", "idezet": "Lo que no se puede ver, se puede medir.", "mtip": "jelmondat", "ero": 330, "kepesseg": "Magnetismo", "kepero": 270, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#2f8f60"}, {"id": "es_medio_3_torres", "kep": "medio_3_torres", "nev": "Leonardo Torres Quevedo", "alnev": "ingeniero e inventor · 1852–1936", "targy": "Conocimiento del Medio Natural, Social y Cultural", "rovid": "CONOCIMIENTO DEL MEDIO", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Proyectos de diseño y pensamiento computacional", "becenev": "EL PADRE DE LOS AUTÓMATAS", "leiras": "Construyó máquinas que decidían solas qué hacer, mucho antes de que existieran los ordenadores. También inventó el mando a distancia.", "teny": "En 1912 presentó El Ajedrecista, una máquina que jugaba de verdad un final de ajedrez contra una persona y ganaba siempre, sin que nadie la manejara.", "erd": "Diseñó el teleférico que cruza el remolino del Niágara. Se abrió en 1916 y más de cien años después sigue llevando pasajeros.", "idezet": "Una máquina que piensa el final de la partida, en 1912.", "mtip": "jelmondat", "ero": 440, "kepesseg": "Automática", "kepero": 370, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#2f8f60"}, {"id": "es_medio_3_elcano", "kep": "medio_3_elcano", "nev": "Juan Sebastián Elcano", "alnev": "marino · 1476–1526", "targy": "Conocimiento del Medio Natural, Social y Cultural", "rovid": "CONOCIMIENTO DEL MEDIO", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Sociedades en el tiempo", "becenev": "EL PRIMERO EN DAR LA VUELTA", "leiras": "Completó el primer viaje alrededor de la Tierra. Salió con cinco barcos y volvió con uno solo, tres años después.", "teny": "De los más de doscientos hombres que salieron, apenas dieciocho regresaron a bordo de la nao Victoria en 1522.", "erd": "El emperador le concedió un escudo con un globo terráqueo y una frase en latín: Primus circumdedisti me, «el primero que me rodeaste».", "idezet": "Primus circumdedisti me.", "mtip": "idezet", "ero": 480, "kepesseg": "La primera vuelta al mundo", "kepero": 400, "ritkasag": "legendas", "csillag": "★★★★", "cimke": "legendaria", "szin": "#2f8f60"}, {"id": "es_medio_3_alfonsox", "kep": "medio_3_alfonsox", "nev": "Alfonso X el Sabio", "alnev": "rey y erudito · 1221–1284", "targy": "Conocimiento del Medio Natural, Social y Cultural", "rovid": "CONOCIMIENTO DEL MEDIO", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Sociedades en el tiempo", "becenev": "EL REY QUE HIZO LIBROS", "leiras": "Reunió en Toledo a sabios cristianos, musulmanes y judíos para traducir juntos los libros de ciencia que había en árabe, hebreo y latín.", "teny": "Ordenó que los libros del reino se escribieran en castellano y no en latín. Por eso el castellano se convirtió en lengua de estudio y no solo de calle.", "erd": "Mandó calcular unas tablas del movimiento de los astros tan buenas que en Europa se usaron durante casi trescientos años.", "idezet": "Que se escriba en la lengua que la gente entiende.", "mtip": "jelmondat", "ero": 420, "kepesseg": "La Escuela de Traductores", "kepero": 350, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#2f8f60"}, {"id": "es_medio_3_lascasas", "kep": "medio_3_lascasas", "nev": "Bartolomé de las Casas", "alnev": "fraile y cronista · 1484–1566", "targy": "Conocimiento del Medio Natural, Social y Cultural", "rovid": "CONOCIMIENTO DEL MEDIO", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Alfabetización cívica", "becenev": "LA VOZ QUE NO CALLÓ", "leiras": "Vio de cerca cómo se trataba a los pueblos indígenas de América y dedicó el resto de su vida a denunciarlo delante del rey.", "teny": "Escribió un libro entero, la Brevísima relación, contando lo que había visto. Se tradujo por toda Europa y provocó un escándalo enorme.", "erd": "Al principio él mismo tuvo tierras y trabajadores a su cargo. Renunció a todo cuando entendió que aquello no podía defenderse.", "idezet": "Todos son hombres, y todos tienen los mismos derechos.", "mtip": "jelmondat", "ero": 330, "kepesseg": "La denuncia", "kepero": 270, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#2f8f60"}, {"id": "es_matematicas_3_juarismi", "kep": "matematicas_3_juarismi", "nev": "Al-Juarismi", "alnev": "matemático · h. 780–850", "targy": "Matemáticas", "rovid": "MATEMÁTICAS", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Sentido algebraico", "becenev": "EL ORIGEN DE LA PALABRA", "leiras": "Escribió el libro que enseñó a resolver problemas con incógnitas, es decir, con letras en lugar de números conocidos.", "teny": "De su libro salió la palabra álgebra, y de su propio nombre salió la palabra algoritmo. Las dos se usan hoy en todo el mundo.", "erd": "También explicó cómo escribir los números con las cifras del 0 al 9 que usamos hoy, en lugar de con letras romanas.", "idezet": "Del título de un libro salió el álgebra; de un nombre, el algoritmo.", "mtip": "jelmondat", "ero": 470, "kepesseg": "Álgebra", "kepero": 390, "ritkasag": "legendas", "csillag": "★★★★", "cimke": "legendaria", "szin": "#3f6fd8"}, {"id": "es_matematicas_3_azarquiel", "kep": "matematicas_3_azarquiel", "nev": "Azarquiel", "alnev": "astrónomo de Toledo · 1029–1087", "targy": "Matemáticas", "rovid": "MATEMÁTICAS", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Sentido de la medida", "becenev": "EL RELOJERO DE LAS ESTRELLAS", "leiras": "Construyó un astrolabio que servía en cualquier lugar del mundo, no solo en la ciudad para la que estaba hecho.", "teny": "Sus tablas del movimiento de los astros, calculadas en Toledo, se copiaron y se usaron por toda Europa durante siglos.", "erd": "Empezó como artesano fabricando instrumentos para otros astrónomos. Aprendió mirándolos trabajar, hasta que los superó.", "idezet": "Un instrumento que funciona en cualquier punto de la Tierra.", "mtip": "jelmondat", "ero": 410, "kepesseg": "La azafea", "kepero": 340, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#3f6fd8"}, {"id": "es_matematicas_3_jorgejuan", "kep": "matematicas_3_jorgejuan", "nev": "Jorge Juan", "alnev": "marino y científico · 1713–1773", "targy": "Matemáticas", "rovid": "MATEMÁTICAS", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Sentido de la medida", "becenev": "EL QUE MIDIÓ LA TIERRA", "leiras": "Viajó hasta el ecuador para medir cuánto mide un grado del meridiano y averiguar así la forma exacta de la Tierra.", "teny": "La expedición duró casi diez años. El resultado confirmó que la Tierra no es una bola perfecta: está achatada por los polos.", "erd": "En aquel viaje él y su compañero Antonio de Ulloa describieron por primera vez para la ciencia europea un metal nuevo: el platino.", "idezet": "Casi diez años de viaje para medir un solo grado.", "mtip": "jelmondat", "ero": 340, "kepesseg": "El meridiano", "kepero": 280, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#3f6fd8"}, {"id": "es_matematicas_3_hipatia", "kep": "matematicas_3_hipatia", "nev": "Hipatia de Alejandría", "alnev": "matemática y astrónoma · h. 355–415", "targy": "Matemáticas", "rovid": "MATEMÁTICAS", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Sentido espacial", "becenev": "LA MAESTRA DE ALEJANDRÍA", "leiras": "Enseñaba matemáticas y astronomía en Alejandría, y alumnos de todo el Mediterráneo viajaban hasta allí para escucharla.", "teny": "Preparó ediciones comentadas de los grandes libros de matemáticas de su época para que se pudieran seguir estudiando.", "erd": "Un alumno suyo le escribió cartas pidiéndole instrucciones para construir instrumentos de medida. Esas cartas se conservan.", "idezet": "Enseñó cuando casi ninguna mujer podía hacerlo.", "mtip": "jelmondat", "ero": 400, "kepesseg": "Astrolabio", "kepero": 330, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#3f6fd8"}, {"id": "es_matematicas_2_firnas", "kep": "matematicas_2_firnas", "nev": "Abbás Ibn Firnás", "alnev": "inventor de Córdoba · 810–887", "targy": "Matemáticas", "rovid": "MATEMÁTICAS", "ciclo": "2.º CICLO · 3.º–4.º", "ciklus": 2, "lecke": "Sentido espacial", "becenev": "EL QUE QUISO VOLAR", "leiras": "Se fabricó unas alas y se lanzó desde una altura para intentar volar. Planeó un rato de verdad, aunque el aterrizaje salió mal.", "teny": "Cuenta la tradición que él mismo dijo después que le había faltado una cola, porque los pájaros frenan con ella al posarse.", "erd": "También montó en su casa una sala que imitaba el cielo, con estrellas, nubes y hasta truenos, para enseñar astronomía.", "idezet": "Le faltó la cola, no las ganas.", "mtip": "jelmondat", "ero": 330, "kepesseg": "El vuelo", "kepero": 270, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#3f6fd8"}, {"id": "es_lengua_3_cervantes", "kep": "lengua_3_cervantes", "nev": "Miguel de Cervantes", "alnev": "escritor · 1547–1616", "targy": "Lengua Castellana y Literatura", "rovid": "LENGUA Y LITERATURA", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Educación literaria", "becenev": "EL INVENTOR DE LA NOVELA", "leiras": "Escribió Don Quijote, el libro más traducido del mundo después de la Biblia, y con él inventó la novela tal como la leemos hoy.", "teny": "Estuvo cinco años cautivo en Argel. Intentó escaparse cuatro veces y nunca delató a ninguno de sus compañeros.", "erd": "Perdió el uso de la mano izquierda en la batalla de Lepanto. Decía que la había perdido «para mayor gloria de la derecha».", "idezet": "La libertad, Sancho, es uno de los más preciosos dones que a los hombres dieron los cielos.", "mtip": "idezet", "ero": 480, "kepesseg": "Don Quijote", "kepero": 400, "ritkasag": "legendas", "csillag": "★★★★", "cimke": "legendaria", "szin": "#b4353f"}, {"id": "es_lengua_3_nebrija", "kep": "lengua_3_nebrija", "nev": "Elio Antonio de Nebrija", "alnev": "gramático · 1444–1522", "targy": "Lengua Castellana y Literatura", "rovid": "LENGUA Y LITERATURA", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Las lenguas y sus hablantes", "becenev": "EL QUE PUSO REGLAS", "leiras": "Escribió las primeras reglas del castellano: cómo se ordenan las palabras, cómo se escriben, por qué una frase suena bien.", "teny": "Su Gramática se publicó en 1492 y fue la primera gramática escrita de una lengua europea moderna. Hasta entonces solo se hacía con el latín.", "erd": "Cuando le preguntaron para qué servía aquello, contestó que la lengua siempre había acompañado al poder de un reino.", "idezet": "Siempre la lengua fue compañera del imperio.", "mtip": "idezet", "ero": 420, "kepesseg": "La gramática", "kepero": 350, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#b4353f"}, {"id": "es_lengua_3_lorca", "kep": "lengua_3_lorca", "nev": "Federico García Lorca", "alnev": "poeta y dramaturgo · 1898–1936", "targy": "Lengua Castellana y Literatura", "rovid": "LENGUA Y LITERATURA", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Educación literaria", "becenev": "EL QUE LLEVÓ EL TEATRO AL PUEBLO", "leiras": "Escribió poemas y obras de teatro con el ritmo del habla popular andaluza, y consiguió que sonaran modernos y antiguos a la vez.", "teny": "Montó un teatro ambulante, La Barraca, y se recorrió los pueblos de España en camión representando obras clásicas gratis.", "erd": "Era muy buen pianista. Antes de dedicarse a escribir, recogió y armonizó canciones populares antiguas para que no se perdieran.", "idezet": "El teatro es la poesía que se levanta del libro y se hace humana.", "mtip": "idezet", "ero": 410, "kepesseg": "La Barraca", "kepero": 340, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#b4353f"}, {"id": "es_lengua_2_rosalia", "kep": "lengua_2_rosalia", "nev": "Rosalía de Castro", "alnev": "poeta · 1837–1885", "targy": "Lengua Castellana y Literatura", "rovid": "LENGUA Y LITERATURA", "ciclo": "2.º CICLO · 3.º–4.º", "ciklus": 2, "lecke": "Educación literaria", "becenev": "LA VOZ DE GALICIA", "leiras": "Escribió poemas en gallego cuando casi nadie publicaba en esa lengua, y consiguió que volviera a considerarse una lengua de literatura.", "teny": "Su libro Cantares gallegos se publicó el 17 de mayo de 1863. Por eso Galicia celebra cada 17 de mayo el Día das Letras Galegas.", "erd": "Escribió mucho sobre los que se marchaban a trabajar fuera y sobre los que se quedaban esperando en el pueblo.", "idezet": "Adiós ríos, adiós fontes.", "mtip": "idezet", "ero": 330, "kepesseg": "Cantares gallegos", "kepero": 270, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#b4353f"}, {"id": "es_lengua_3_sorjuana", "kep": "lengua_3_sorjuana", "nev": "Sor Juana Inés de la Cruz", "alnev": "poeta y pensadora · 1648–1695", "targy": "Lengua Castellana y Literatura", "rovid": "LENGUA Y LITERATURA", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Educación literaria", "becenev": "LA DÉCIMA MUSA", "leiras": "Fue la escritora más admirada de su tiempo en toda América y España, y defendió por escrito que las mujeres tenían derecho a estudiar.", "teny": "Reunió en su celda una biblioteca de miles de libros, además de instrumentos musicales y aparatos científicos.", "erd": "De niña pidió que la vistieran de chico para poder entrar en la universidad, porque a las chicas no se les permitía.", "idezet": "Hombres necios que acusáis a la mujer sin razón.", "mtip": "idezet", "ero": 400, "kepesseg": "La biblioteca", "kepero": 330, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#b4353f"}, {"id": "es_artistica_3_velazquez", "kep": "artistica_3_velazquez", "nev": "Diego Velázquez", "alnev": "pintor · 1599–1660", "targy": "Educación Artística", "rovid": "EDUCACIÓN ARTÍSTICA", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Artes plásticas, visuales y audiovisuales", "becenev": "EL PINTOR DEL REY", "leiras": "Pintó la luz y el aire como nadie lo había hecho antes: de cerca son manchas sueltas, y de lejos parece una fotografía.", "teny": "En Las Meninas se pintó a sí mismo trabajando dentro del propio cuadro, mirando de frente al que lo está mirando.", "erd": "Fue pintor del rey durante casi cuarenta años, y buena parte de su trabajo consistía en organizar las salas y las fiestas del palacio.", "idezet": "De cerca, manchas. De lejos, el aire.", "mtip": "jelmondat", "ero": 470, "kepesseg": "Las Meninas", "kepero": 390, "ritkasag": "legendas", "csillag": "★★★★", "cimke": "legendaria", "szin": "#c94a8a"}, {"id": "es_artistica_3_goya", "kep": "artistica_3_goya", "nev": "Francisco de Goya", "alnev": "pintor y grabador · 1746–1828", "targy": "Educación Artística", "rovid": "EDUCACIÓN ARTÍSTICA", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Artes plásticas, visuales y audiovisuales", "becenev": "EL QUE PINTÓ LO QUE VIO", "leiras": "Empezó pintando fiestas alegres para la corte y acabó pintando la guerra y el miedo tal como eran, sin adornarlos.", "teny": "Una enfermedad le dejó sordo a los cuarenta y seis años. A partir de ahí su pintura se volvió mucho más oscura y mucho más libre.", "erd": "Ya mayor pintó una serie de cuadros directamente sobre las paredes de su casa, sin encargo y sin pensar en venderlos.", "idezet": "El sueño de la razón produce monstruos.", "mtip": "idezet", "ero": 430, "kepesseg": "Pinturas negras", "kepero": 360, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#c94a8a"}, {"id": "es_artistica_2_sorolla", "kep": "artistica_2_sorolla", "nev": "Joaquín Sorolla", "alnev": "pintor · 1863–1923", "targy": "Educación Artística", "rovid": "EDUCACIÓN ARTÍSTICA", "ciclo": "2.º CICLO · 3.º–4.º", "ciklus": 2, "lecke": "Artes plásticas, visuales y audiovisuales", "becenev": "EL PINTOR DE LA LUZ", "leiras": "Sacó el caballete a la playa y pintó al aire libre el sol sobre el agua, la ropa mojada y la arena caliente.", "teny": "Pasó ocho años pintando catorce paneles enormes con escenas de todas las regiones de España, y viajó a cada una para pintarla allí mismo.", "erd": "Pintaba muy rápido y de pie, porque decía que la luz cambia y no espera a nadie.", "idezet": "La luz cambia mientras la miras: hay que pintar deprisa.", "mtip": "jelmondat", "ero": 340, "kepesseg": "La luz", "kepero": 280, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#c94a8a"}, {"id": "es_artistica_3_falla", "kep": "artistica_3_falla", "nev": "Manuel de Falla", "alnev": "compositor · 1876–1946", "targy": "Educación Artística", "rovid": "EDUCACIÓN ARTÍSTICA", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Música y artes escénicas y performativas", "becenev": "EL QUE ESCRIBIÓ EL FUEGO", "leiras": "Convirtió el flamenco y la música popular andaluza en música de orquesta, sin quitarle la fuerza que tenía.", "teny": "Su Danza ritual del fuego, de El amor brujo, es una de las piezas españolas más tocadas del mundo.", "erd": "Organizó en Granada, junto con Lorca, un concurso para rescatar el cante jondo antiguo antes de que se perdiera.", "idezet": "La música popular no se copia: se escucha y se sigue.", "mtip": "jelmondat", "ero": 350, "kepesseg": "El amor brujo", "kepero": 290, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#c94a8a"}, {"id": "es_artistica_2_albeniz", "kep": "artistica_2_albeniz", "nev": "Isaac Albéniz", "alnev": "compositor y pianista · 1860–1909", "targy": "Educación Artística", "rovid": "EDUCACIÓN ARTÍSTICA", "ciclo": "2.º CICLO · 3.º–4.º", "ciklus": 2, "lecke": "Música y artes escénicas y performativas", "becenev": "EL NIÑO DEL PIANO", "leiras": "Escribió para piano piezas que suenan a guitarra española, a fiesta y a calle, y que hoy tocan pianistas de todo el mundo.", "teny": "Su obra Iberia son doce piezas tan difíciles que él mismo dudó de si alguien podría tocarlas.", "erd": "Era un niño prodigio y daba conciertos siendo muy pequeño. De mayor le encantaba contar historias exageradas sobre sus viajes de infancia.", "idezet": "Doce piezas que casi nadie podía tocar.", "mtip": "jelmondat", "ero": 320, "kepesseg": "Iberia", "kepero": 260, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#c94a8a"}, {"id": "es_efisica_3_coubertin", "kep": "efisica_3_coubertin", "nev": "Pierre de Coubertin", "alnev": "pedagogo · 1863–1937", "targy": "Educación Física", "rovid": "EDUCACIÓN FÍSICA", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Manifestaciones de la cultura motriz", "becenev": "EL QUE VOLVIÓ A ENCENDER LA LLAMA", "leiras": "Convenció a media Europa de recuperar los Juegos Olímpicos después de mil quinientos años sin celebrarse.", "teny": "Los primeros Juegos modernos se celebraron en Atenas en 1896, dos años después de que él fundara el Comité Olímpico Internacional.", "erd": "Hizo famosa la frase de que lo importante no es ganar sino participar, aunque no fue él quien la dijo primero: la escuchó en un sermón.", "idezet": "Lo importante no es ganar, sino participar.", "mtip": "idezet", "ero": 330, "kepesseg": "Los Juegos", "kepero": 270, "ritkasag": "ritka", "csillag": "★★", "cimke": "poco común", "szin": "#c9782a"}, {"id": "es_extranjera_3_battuta", "kep": "extranjera_3_battuta", "nev": "Ibn Battuta", "alnev": "viajero y cronista · 1304–1368", "targy": "Lengua Extranjera", "rovid": "LENGUA EXTRANJERA", "ciclo": "3.er CICLO · 5.º–6.º", "ciklus": 3, "lecke": "Interculturalidad", "becenev": "EL QUE NO PARABA", "leiras": "Se pasó veintinueve años viajando y recorrió unos ciento veinte mil kilómetros, mucho más que ningún otro viajero de su época.", "teny": "A la vuelta le dictó todo a un escribano. Ese libro, la Rihla, cuenta cómo se comía, se rezaba y se hablaba en decenas de países.", "erd": "Salió de casa a los veintiún años pensando en hacer un solo viaje. Volvió con el pelo gris.", "idezet": "Salí solo, sin compañero de viaje y sin caravana.", "mtip": "idezet", "ero": 400, "kepesseg": "La Rihla", "kepero": 330, "ritkasag": "nagyon_ritka", "csillag": "★★★", "cimke": "rara", "szin": "#1f8f9e"}];
+const TARGYAK = ["Conocimiento del Medio Natural, Social y Cultural", "Matemáticas", "Lengua Castellana y Literatura", "Educación Artística", "Educación Física", "Lengua Extranjera"];
+const BE = {};
+const KEPUT = k => BE[k.kep] || ("static/kartyak/es/" + k.kep + ".png");
+const KARTYAUT = (k,arany) => BE[k.kep+(arany?"_kartya_arany":"_kartya")] || BE[k.kep+"_kartya"]
+  || ("static/kartyak/es/" + k.kep + (arany?"_kartya_arany.png":"_kartya.png"));
+const HIBAKEP = 'onerror="this.style.visibility=\'hidden\'"';
+
+let sorszam=1;
+K.forEach(k=>{ k.hely1=sorszam++; k.hely2=sorszam++; });
+
+const OLDALAK=[{t:"borito"}];
+TARGYAK.forEach(t=>{
+  const cs=K.filter(x=>x.targy===t);
+  OLDALAK.push({t:"szakasz",targy:t,tagok:cs});
+  cs.forEach(k=>OLDALAK.push({t:"szemely",k}));
+});
+OLDALAK.push({t:"checklist"},{t:"hatso"});
+
+let PAKLI=K.map(k=>[{id:k.id+"_a",k:k,hova:k.hely1,arany:false},
+                    {id:k.id+"_b",k:k,hova:k.hely2,arany:true}]).flat();
+const MIND=PAKLI.slice();
+const beragasztva=new Set();
+let oldal=0;
+document.getElementById('ossz').textContent=K.length*2;
+const lap=document.getElementById('lap'), uzenet=document.getElementById('uzenet');
+
+function helyHTML(k,n,arany){
+  if(beragasztva.has(n))
+    return `<div class="hely kesz"><img src="${KARTYAUT(k,arany)}" ${HIBAKEP}></div>`;
+  return `<div class="hely ${arany?'arany':''}" data-n="${n}">
+    <span class="szam">${n}</span><span class="fajta">${arany?'ORO':'normal'}</span>
+    <span class="q">?</span><span class="lecke">${k.lecke}</span></div>`;
+}
+function rajzol(){
+  const o=OLDALAK[oldal]; lap.style.background="";
+  if(o.t==="borito"){
+    lap.className="lap borito";
+    lap.innerHTML=`<div class="kicsi">ÁLBUM OFICIAL</div>
+      <div class="meh">${K.slice(0,14).map(k=>`<div class="hx"><img src="${KEPUT(k)}" ${HIBAKEP}></div>`).join('')}</div>
+      <div class="focim">CARTAS DEL SABER</div>
+      <div class="kicsi">1.º–6.º DE PRIMARIA · ${K.length} PERSONAJES · ${K.length*2} CROMOS</div>`;
+  } else if(o.t==="szakasz"){
+    lap.className="lap szakasz";
+    lap.style.background=`linear-gradient(150deg,${o.tagok[0].szin},#141a3c)`;
+    lap.innerHTML=`<div class="szfej"><h2>${o.targy.toUpperCase()}</h2>
+       <div class="kicsi" style="margin-top:6px">${o.tagok.length} PERSONAJES</div>
+       <div class="db"><b>${o.tagok.length*2}</b><span>CROMOS</span></div></div>
+      <div class="arcsor">${o.tagok.map(k=>{
+        const van=beragasztva.has(k.hely1)||beragasztva.has(k.hely2);
+        return `<div class="arc"><div class="ker ${van?'':'hianyzik'}">
+          <img src="${KEPUT(k)}" ${HIBAKEP}></div>
+          <div class="n">${k.nev}</div><div class="l">${k.lecke}</div></div>`;}).join('')}</div>`;
+  } else if(o.t==="szemely"){
+    const k=o.k; lap.className="lap szemely";
+    lap.style.backgroundImage=mintaHatter(k,1100,760);
+    lap.style.backgroundSize="cover";
+    lap.style.backgroundRepeat="no-repeat";
+    lap.innerHTML=`
+     <div class="sz-tag" style="background:${k.szin}">${k.rovid} · ${k.ciclo}</div>
+     <div class="sz-fejlec"><div class="sz-nev">${k.nev}</div>
+       <div class="sz-alnev" style="color:${k.szin}">${k.alnev}</div></div>
+     <div class="sz-torzs" style="--fo:${k.szin}">
+      <div class="sz-bal">
+       <div class="sz-kep"><img src="${KEPUT(k)}" ${HIBAKEP}>
+         <span class="nincs">todavía no hay retrato en la carpeta:<br>static/kartyak/es/${k.kep}.png</span></div>
+       <div class="becenev" style="background:${k.szin}"><b>${k.becenev}</b><span>${k.leiras}</span></div>
+       <div class="dobozok">
+        <div class="doboz"><b>EL DATO</b><span>${k.teny}</span></div>
+        <div class="doboz kek"><b>LO QUE CASI NADIE SABE</b><span>${k.erd}</span></div></div>
+      </div>
+      <div class="sz-jobb">
+       <div class="adatlap"><div class="fej">FICHA</div><table>
+         <tr><td>Área</td><td>${k.targy}</td></tr>
+         <tr><td>Vivió</td><td>${k.alnev.split('· ')[1]||''}</td></tr>
+         <tr><td>Habilidad</td><td>${k.kepesseg}</td></tr>
+         <tr><td>Fuerza</td><td>${k.ero}</td></tr>
+         <tr><td>Rareza</td><td>${k.csillag} ${k.cimke}</td></tr>
+         <tr><td>Tema</td><td>${k.lecke}</td></tr></table></div>
+       <div class="helyek">${helyHTML(k,k.hely1,false)}${helyHTML(k,k.hely2,true)}</div>
+       <div class="idezet">${k.mtip==="idezet"?("«"+k.idezet+"»"):k.idezet}</div>
+      </div></div>`;
+    kotesek();
+  } else if(o.t==="checklist"){
+    lap.className="lap checklist";
+    let h=`<h2>CHECKLIST</h2>`;
+    TARGYAK.forEach(t=>{
+      h+=`<div class="clsz">${t.toUpperCase()}</div><div class="clracs">`;
+      K.filter(x=>x.targy===t).forEach(k=>{
+        [[k.hely1,''],[k.hely2,' ★']].forEach(([n,cs])=>{
+          const van=beragasztva.has(n);
+          h+=`<div class="cl ${van?'van':''}"><div class="k">${van
+            ?`<img src="${KEPUT(k)}" ${HIBAKEP}>`:'<span>?</span>'}</div>
+            <div class="sav"><span class="box">${van?'✓':''}</span>
+            <span class="n">${n}${cs}</span></div></div>`;});});
+      h+=`</div>`;});
+    lap.innerHTML=h;
+  } else {
+    lap.className="lap hatso";
+    lap.innerHTML=`<div class="focim" style="font-size:1.8rem">APRENDE · COLECCIONA · RECUERDA</div>
+      <div style="max-width:460px;text-align:center;line-height:1.7">
+      Quien complete todos los cursos y consiga todos los cromos
+      podrá tener este álbum también impreso.</div>`;
+  }
+  document.getElementById('oldalszam').textContent=`${oldal+1} / ${OLDALAK.length}`;
+  document.getElementById('elore').disabled=oldal===0;
+  document.getElementById('hatra').disabled=oldal===OLDALAK.length-1;
+  document.getElementById('db').textContent=beragasztva.size;
+}
+function kotesek(){
+  lap.querySelectorAll('.hely[data-n]').forEach(h=>{
+    h.addEventListener('dragover',e=>{e.preventDefault();h.classList.add('rahuz');});
+    h.addEventListener('dragleave',()=>h.classList.remove('rahuz'));
+    h.addEventListener('drop',e=>{e.preventDefault();h.classList.remove('rahuz');
+      const id=e.dataTransfer.getData('text/plain');
+      const c=PAKLI.find(x=>x.id===id); if(!c) return;
+      if(Number(h.dataset.n)===c.hova){
+        beragasztva.add(c.hova); PAKLI=PAKLI.filter(x=>x.id!==id);
+        uzenet.className='uzenet jo';
+        uzenet.textContent=`¡Conseguido! ${c.k.nev}${c.arany?' (dorado)':''} ya está en su sitio.`;
+        rajzol(); pakli();
+      } else {
+        h.classList.add('rossz'); setTimeout(()=>h.classList.remove('rossz'),400);
+        uzenet.className='uzenet baj';
+        uzenet.textContent='Ahí no va. ¿En qué área y en qué tema lo estudiaste?';
+      }});});
+}
+function pakli(){
+  const p=document.getElementById('pakli');
+  if(!PAKLI.length){p.innerHTML='<div style="opacity:.5;padding:18px">Has pegado todos los cromos.</div>';return;}
+  p.innerHTML=PAKLI.slice(0,40).map(c=>`<div class="mini" draggable="true" data-id="${c.id}">
+     <img src="${KARTYAUT(c.k,c.arany)}" ${HIBAKEP}><div class="c">${c.k.nev}${c.arany?' ★':''}</div></div>`).join('');
+  p.querySelectorAll('.mini').forEach(m=>m.addEventListener('dragstart',e=>{
+    e.dataTransfer.setData('text/plain',m.dataset.id);
+    uzenet.className='uzenet';uzenet.textContent='';}));
+}
+document.getElementById('elore').addEventListener('click',()=>{if(oldal>0){oldal--;rajzol();}});
+document.getElementById('hatra').addEventListener('click',()=>{if(oldal<OLDALAK.length-1){oldal++;rajzol();}});
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>e.preventDefault());
+rajzol(); pakli();
+</script></body></html>

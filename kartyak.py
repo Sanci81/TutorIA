@@ -455,6 +455,20 @@ def _norm(s: str) -> str:
     return "".join(c for c in s if unicodedata.category(c) != "Mn").strip()
 
 
+def _evfolyam_egyezik(k: dict, evfolyam) -> bool:
+    """Igaz, ha a kártya ehhez az évfolyamhoz tartozik.
+
+    A magyar kártyák egyetlen évfolyamhoz kötődnek. A spanyol tanterv
+    ciklusokban gondolkodik (1-2., 3-4., 5-6.), ezért ott az "evfolyamok"
+    lista dönt, ha van.
+    """
+    ev = int(evfolyam or 0)
+    lista = k.get("evfolyamok")
+    if lista:
+        return ev in [int(x) for x in lista]
+    return int(k.get("evfolyam") or 0) == ev
+
+
 def kartya_by_id(kartya_id: str) -> dict | None:
     for k in KARTYAK:
         if k["id"] == kartya_id:
@@ -476,7 +490,7 @@ def kartyak_leckehez(
     t = _norm(targy)
     talalt = []
     for k in KARTYAK:
-        if k["oldal"] != oldal or int(k["evfolyam"]) != int(evfolyam or 0):
+        if k["oldal"] != oldal or not _evfolyam_egyezik(k, evfolyam):
             continue
         if _norm(k["targy"]) not in t and t not in _norm(k["targy"]):
             continue
@@ -496,7 +510,7 @@ def kartyak_targyhoz(oldal: str, targy: str, evfolyam: int) -> list[dict]:
     return [
         k for k in KARTYAK
         if k["oldal"] == oldal
-        and int(k["evfolyam"]) == int(evfolyam or 0)
+        and _evfolyam_egyezik(k, evfolyam)
         and (_norm(k["targy"]) in t or t in _norm(k["targy"]))
     ]
 
@@ -522,3 +536,15 @@ def teljes_prompt(k: dict) -> str:
 def kep_utvonal(k: dict) -> str:
     """A kártyakép relatív útvonala a static mappán belül."""
     return f"kartyak/{k['oldal']}/{k['kep']}.png"
+
+
+# ── spanyol oldal ───────────────────────────────────────────────────────────
+# A LOMLOE (1–6. Primaria) névsora külön fájlban van, hogy ez a fájl
+# kezelhető maradjon. Ha a fájl bármiért hiányzik, a magyar oldal működik tovább.
+try:
+    from kartyak_es import KARTYAK_ES
+except ImportError:  # pragma: no cover
+    KARTYAK_ES = []
+else:
+    _meglevo = {k["id"] for k in KARTYAK}
+    KARTYAK.extend(k for k in KARTYAK_ES if k["id"] not in _meglevo)
