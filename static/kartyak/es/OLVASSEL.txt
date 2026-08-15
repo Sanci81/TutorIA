@@ -1,0 +1,28 @@
+TutorIA – kártyaképek
+=====================
+
+Ide kerülnek a Leonardóval (vagy a kartya_kepek.py szkripttel) készített
+portrék. CSAK a kép: keret, felirat és szám nélkül. A kártyalapot – nevet,
+tudáspontot, képességszöveget, sorszámot – az app rajzolja rá futás közben,
+ezért lesz minden betű hibátlan magyar, és ezért írható át bármikor anélkül,
+hogy a képhez hozzá kellene nyúlni.
+
+FÁJLNÉV
+    tantargy_evfolyam_vezeteknev.png
+    kisbetűvel, ékezet nélkül
+
+    static/kartyak/hu/fizika_7_newton.png
+    static/kartyak/hu/matematika_7_bolyai.png
+    static/kartyak/es/lengua_5_cervantes.png
+
+    hu = magyar tanterv, es = spanyol tanterv (külön névsor, nem fordítás)
+
+KÉPARÁNY
+    1:1 négyzet, 1024 x 1024. A kártya képmezője is négyzet, így semmi
+    nem vágódik le a hajból vagy a vállból.
+
+SZABÁLYOK
+    - Élő emberről NEM készül kártya, írásos engedély nélkül soha.
+    - Kerüljük azokat, akiknek a hagyatéka aktívan licenceli az arcképét.
+    - A kártya kinézete a sajátunk: se Pokélabda, se Pokémon logó vagy
+      betűtípus, se a keretük pontos másolata.

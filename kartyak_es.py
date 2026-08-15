@@ -9,6 +9,7 @@ Bekötés a kartyak.py végén:
 KARTYAK_ES: list[dict] = [
     {
         "id": "es_medio_3_cajal",
+        "sorszam": 1,
         "oldal": "es",
         "targy": "Conocimiento del Medio Natural, Social y Cultural",
         "ciklus": 3,
@@ -31,10 +32,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "De niño quería ser pintor y su padre no se lo permitió. Al final fue su mano de dibujante la que le hizo famoso.",
         "idezet": "Todo hombre puede ser, si se lo propone, escultor de su propio cerebro.",
         "idezet_tipus": "idezet",
-        "prompt": "a brass microscope on a wooden desk with a glass slide under it, and beside it Santiago Ramon y Cajal seated in his study, the person's face fully visible and unobstructed, the microscope beside him not covering the face, balding head with a short grey beard and deep-set intense eyes, dark late-19th-century jacket and waistcoat, his own ink drawings of branching neurons pinned on the wall behind him and spread on the desk, warm lamplight and deep shadow"
+        "prompt": "Santiago Ramon y Cajal, balding head, short grey beard, deep-set intense eyes, dark late-19th-century jacket and waistcoat. Seated at his desk with one eye at a brass microscope, his own ink drawings of branching neurons pinned on the wall and spread across the desk. Warm lamplight and deep shadow."
     },
     {
         "id": "es_medio_2_mutis",
+        "sorszam": 2,
         "oldal": "es",
         "targy": "Conocimiento del Medio Natural, Social y Cultural",
         "ciklus": 2,
@@ -57,10 +59,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Montó una escuela de pintores del lugar solo para retratar flores: llegaron a trabajar decenas de artistas a la vez.",
         "idezet": "Treinta años dibujando una selva entera, hoja por hoja.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a large open botanical folio with a hand-painted flower plate on a table, and beside it Jose Celestino Mutis standing in a colonial study, the person's face fully visible and unobstructed, the folio beside him not covering the face, powdered white hair and a calm lined face, dark 18th-century coat, pressed plants and glass jars around him, an open window showing green tropical forest, warm daylight"
+        "prompt": "Jose Celestino Mutis, powdered white hair, calm lined face, dark 18th-century coat. Studying a large open botanical folio of hand-painted flower plates on a table, pressed plants and glass jars around him, an open window showing green tropical forest. Warm daylight."
     },
     {
         "id": "es_medio_3_elhuyar",
+        "sorszam": 3,
         "oldal": "es",
         "targy": "Conocimiento del Medio Natural, Social y Cultural",
         "ciklus": 3,
@@ -83,10 +86,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "El wolframio se funde a más de tres mil cuatrocientos grados. Por eso durante cien años fue el hilo que brillaba dentro de las bombillas.",
         "idezet": "1783, Bergara: de una piedra oscura salió el metal más duro de fundir.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a dark chunk of wolframite ore and a glowing crucible on a stone furnace bench, and beside them Fausto Elhuyar in an 18th-century laboratory, the person's face fully visible and unobstructed, the crucible beside him not covering the face, tied-back powdered hair and a young serious face, dark coat with rolled sleeves and a leather apron, bellows and assay balances around him, orange furnace glow against cold stone walls"
+        "prompt": "Fausto Elhuyar, young serious face, tied-back powdered hair, dark coat with rolled sleeves and a leather apron. Lifting a glowing crucible from a stone furnace beside a dark chunk of wolframite ore, bellows and assay balances around him. Orange furnace glow against cold stone walls."
     },
     {
         "id": "es_medio_3_peral",
+        "sorszam": 4,
         "oldal": "es",
         "targy": "Conocimiento del Medio Natural, Social y Cultural",
         "ciklus": 3,
@@ -109,10 +113,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Para saber dónde estaba bajo el agua inventó un aparato propio que le permitía ver la superficie sin salir a ella.",
         "idezet": "Funcionaba. Y aun así lo dejaron en el muelle.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a riveted iron submarine hull with a small conning tower floating at a stone dock, and beside it Isaac Peral standing on the quay, the person's face fully visible and unobstructed, the submarine behind him not covering the face, dark hair and a full dark beard, 19th-century Spanish naval officer uniform with braid, coiled ropes and gas lamps on the dock, grey Atlantic dawn light"
+        "prompt": "Isaac Peral, dark hair, full dark beard, 19th-century Spanish naval officer uniform with braid. Standing on a stone quay beside a riveted iron submarine with a small conning tower floating in the water, coiled ropes and gas lamps on the dock. Grey Atlantic dawn light."
     },
     {
         "id": "es_medio_3_cabrera",
+        "sorszam": 5,
         "oldal": "es",
         "targy": "Conocimiento del Medio Natural, Social y Cultural",
         "ciklus": 3,
@@ -135,10 +140,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Cuando Einstein visitó España en 1923, fue Blas Cabrera quien le acompañó y quien tradujo sus conferencias.",
         "idezet": "Lo que no se puede ver, se puede medir.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a large brass electromagnet with copper coils on a laboratory bench, and beside it Blas Cabrera in an early-20th-century physics laboratory, the person's face fully visible and unobstructed, the electromagnet beside him not covering the face, short dark hair, round glasses and a neat moustache, dark three-piece suit, galvanometers and mirror scales around him, cool blue-white light"
+        "prompt": "Blas Cabrera, short dark hair, round glasses, neat moustache, dark three-piece suit. Adjusting a large brass electromagnet with copper coils on a laboratory bench, galvanometers and mirror scales around him. Cool blue-white light in an early-20th-century physics laboratory."
     },
     {
         "id": "es_medio_3_torres",
+        "sorszam": 6,
         "oldal": "es",
         "targy": "Conocimiento del Medio Natural, Social y Cultural",
         "ciklus": 3,
@@ -161,10 +167,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Diseñó el teleférico que cruza el remolino del Niágara. Se abrió en 1916 y más de cien años después sigue llevando pasajeros.",
         "idezet": "Una máquina que piensa el final de la partida, en 1912.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a wooden chess automaton cabinet with a chessboard on top and exposed brass gears inside, and beside it Leonardo Torres Quevedo in his workshop, the person's face fully visible and unobstructed, the automaton beside him not covering the face, white hair and a thick white moustache, dark early-1900s suit, technical drawings and cable-car models on the walls, warm workshop light"
+        "prompt": "Leonardo Torres Quevedo, white hair, thick white moustache, dark early-1900s suit. Standing beside a wooden chess automaton cabinet with a chessboard on top and exposed brass gears inside, technical drawings and cable-car models on the walls. Warm workshop light."
     },
     {
         "id": "es_medio_3_elcano",
+        "sorszam": 7,
         "oldal": "es",
         "targy": "Conocimiento del Medio Natural, Social y Cultural",
         "ciklus": 3,
@@ -187,10 +194,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "El emperador le concedió un escudo con un globo terráqueo y una frase en latín: Primus circumdedisti me, «el primero que me rodeaste».",
         "idezet": "Primus circumdedisti me.",
         "idezet_tipus": "idezet",
-        "prompt": "a battered wooden caravel with torn sails and a large brass globe on the deck rail, and beside them Juan Sebastian Elcano standing at the ship's side, the person's face fully visible and unobstructed, the globe beside him not covering the face, weathered sunburnt face with a short dark beard, 16th-century sailor's coat and cap, ropes and empty water barrels, open ocean and low golden light"
+        "prompt": "Juan Sebastian Elcano, weathered sunburnt face, short dark beard, 16th-century sailor's coat and cap. On the deck of a battered wooden caravel with torn sails, a large brass globe on the rail beside him, ropes and empty water barrels. Open ocean and low golden light."
     },
     {
         "id": "es_medio_3_alfonsox",
+        "sorszam": 8,
         "oldal": "es",
         "targy": "Conocimiento del Medio Natural, Social y Cultural",
         "ciklus": 3,
@@ -213,10 +221,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Mandó calcular unas tablas del movimiento de los astros tan buenas que en Europa se usaron durante casi trescientos años.",
         "idezet": "Que se escriba en la lengua que la gente entiende.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a great illuminated manuscript open on a lectern with gold letters and star charts, and beside it Alfonso X seated in a medieval scriptorium, the person's face fully visible and unobstructed, the manuscript beside him not covering the face, a crowned middle-aged king with a trimmed beard, rich red and gold medieval robes, scribes of different cultures working at desks behind him, warm candlelight on stone arches"
+        "prompt": "Alfonso X, crowned middle-aged king, trimmed beard, rich red and gold medieval robes. Seated in a scriptorium before a great illuminated manuscript on a lectern, gold letters and star charts on the page, scribes of different cultures working at desks behind him. Warm candlelight on stone arches."
     },
     {
         "id": "es_medio_3_lascasas",
+        "sorszam": 9,
         "oldal": "es",
         "targy": "Conocimiento del Medio Natural, Social y Cultural",
         "ciklus": 3,
@@ -239,10 +248,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Al principio él mismo tuvo tierras y trabajadores a su cargo. Renunció a todo cuando entendió que aquello no podía defenderse.",
         "idezet": "Todos son hombres, y todos tienen los mismos derechos.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a heavy open chronicle with a quill resting on the page and a wooden crucifix beside it on a table, and beside them Bartolome de las Casas standing in a bare colonial room, the person's face fully visible and unobstructed, the book beside him not covering the face, an elderly gaunt face with white beard and tonsure, plain grey Dominican habit, a barred window with harsh tropical light outside, sober muted colours"
+        "prompt": "Bartolome de las Casas, elderly gaunt face, white beard, tonsure, plain grey Dominican habit. Standing at a table with a heavy open chronicle and a quill resting on the page, a barred window with harsh tropical light outside. Sober muted colours."
     },
     {
         "id": "es_matematicas_3_juarismi",
+        "sorszam": 10,
         "oldal": "es",
         "targy": "Matemáticas",
         "ciklus": 3,
@@ -265,10 +275,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "También explicó cómo escribir los números con las cifras del 0 al 9 que usamos hoy, en lugar de con letras romanas.",
         "idezet": "Del título de un libro salió el álgebra; de un nombre, el algoritmo.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a large open manuscript covered in Arabic geometric diagrams and calculations on a low table, and beside it Al-Khwarizmi seated on cushions in a 9th-century house of wisdom, the person's face fully visible and unobstructed, the manuscript beside him not covering the face, a dignified bearded scholar in a green and cream robe and turban, shelves of scrolls and an astrolabe, warm desert daylight through a carved screen"
+        "prompt": "Al-Khwarizmi, dignified bearded scholar in a green and cream robe and turban. Seated on cushions before a large open manuscript covered in Arabic geometric diagrams and calculations, shelves of scrolls and an astrolabe beside him. Warm desert daylight through a carved screen."
     },
     {
         "id": "es_matematicas_3_azarquiel",
+        "sorszam": 11,
         "oldal": "es",
         "targy": "Matemáticas",
         "ciklus": 3,
@@ -291,10 +302,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Empezó como artesano fabricando instrumentos para otros astrónomos. Aprendió mirándolos trabajar, hasta que los superó.",
         "idezet": "Un instrumento que funciona en cualquier punto de la Tierra.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a large engraved brass astrolabe held upright on a stone parapet, and beside it Azarquiel standing on a rooftop terrace in medieval Toledo at night, the person's face fully visible and unobstructed, the astrolabe beside him not covering the face, a bearded man in an ochre robe and turban, engraving tools and charts on the parapet, the star-filled sky and dark city roofs behind, deep blue and warm lamp light"
+        "prompt": "Azarquiel, bearded man in an ochre robe and turban. Holding a large engraved brass astrolabe upright on the stone parapet of a rooftop terrace in medieval Toledo at night, engraving tools and charts beside him. Star-filled sky, dark city roofs, deep blue and warm lamp light."
     },
     {
         "id": "es_matematicas_3_jorgejuan",
+        "sorszam": 12,
         "oldal": "es",
         "targy": "Matemáticas",
         "ciklus": 3,
@@ -317,10 +329,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "En aquel viaje él y su compañero Antonio de Ulloa describieron por primera vez para la ciencia europea un metal nuevo: el platino.",
         "idezet": "Casi diez años de viaje para medir un solo grado.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a large brass quadrant instrument on a tripod pointing at the sky, and beside it Jorge Juan standing on a high Andean ridge, the person's face fully visible and unobstructed, the instrument beside him not covering the face, a young officer in an 18th-century Spanish naval coat and tricorn hat, measuring chains and a survey notebook, snow-capped mountains and thin cold air, clear pale light"
+        "prompt": "Jorge Juan, young officer in an 18th-century Spanish naval coat and tricorn hat. Sighting through a large brass quadrant on a tripod on a high Andean ridge, measuring chains and a survey notebook beside him. Snow-capped mountains, clear pale light."
     },
     {
         "id": "es_matematicas_3_hipatia",
+        "sorszam": 13,
         "oldal": "es",
         "targy": "Matemáticas",
         "ciklus": 3,
@@ -343,10 +356,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Un alumno suyo le escribió cartas pidiéndole instrucciones para construir instrumentos de medida. Esas cartas se conservan.",
         "idezet": "Enseñó cuando casi ninguna mujer podía hacerlo.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a bronze astrolabe and rolled papyrus scrolls on a marble table, and beside them Hypatia standing in a sunlit Alexandrian hall, the person's face fully visible and unobstructed, the astrolabe beside her not covering the face, a calm woman with dark hair gathered under a pale headband, simple white and blue draped robes, columns and geometric figures drawn on a wax board, bright Mediterranean light"
+        "prompt": "Hypatia of Alexandria, calm woman with dark hair gathered under a pale headband, simple white and blue draped robes. Holding a bronze astrolabe over a marble table of papyrus scrolls, geometric figures drawn on a wax board beside her, columns behind. Bright Mediterranean light."
     },
     {
         "id": "es_matematicas_2_firnas",
+        "sorszam": 14,
         "oldal": "es",
         "targy": "Matemáticas",
         "ciklus": 2,
@@ -369,10 +383,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "También montó en su casa una sala que imitaba el cielo, con estrellas, nubes y hasta truenos, para enseñar astronomía.",
         "idezet": "Le faltó la cola, no las ganas.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a large pair of feathered wooden wings strapped to a wooden frame on a stone rooftop, and beside them Abbas Ibn Firnas standing at the edge, the person's face fully visible and unobstructed, the wings beside him not covering the face, an older bearded man in a light ochre robe and turban, the city of Cordoba and the river far below, warm morning light and a strong wind"
+        "prompt": "Abbas Ibn Firnas, older bearded man in a light ochre robe and turban. Standing at the edge of a stone rooftop with a large pair of feathered wooden wings strapped to a frame beside him, the city of Cordoba and the river far below. Warm morning light and a strong wind."
     },
     {
         "id": "es_lengua_3_cervantes",
+        "sorszam": 15,
         "oldal": "es",
         "targy": "Lengua Castellana y Literatura",
         "ciklus": 3,
@@ -395,10 +410,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Perdió el uso de la mano izquierda en la batalla de Lepanto. Decía que la había perdido «para mayor gloria de la derecha».",
         "idezet": "La libertad, Sancho, es uno de los más preciosos dones que a los hombres dieron los cielos.",
         "idezet_tipus": "idezet",
-        "prompt": "a stack of quarto books and a quill in an inkwell on a worn wooden table, and beside them Miguel de Cervantes seated in a bare 17th-century room, the person's face fully visible and unobstructed, the books beside him not covering the face, a lean older face with a pointed grey beard and high forehead, dark doublet with a white ruff collar, his left hand resting still in his lap, candlelight and deep shadow"
+        "prompt": "Miguel de Cervantes, lean older face, pointed grey beard, high forehead, dark doublet with a white ruff collar. Seated at a worn wooden table with a stack of books and a quill in an inkwell, his left hand resting still in his lap. Candlelight and deep shadow in a bare 17th-century room."
     },
     {
         "id": "es_lengua_3_nebrija",
+        "sorszam": 16,
         "oldal": "es",
         "targy": "Lengua Castellana y Literatura",
         "ciklus": 3,
@@ -421,10 +437,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Cuando le preguntaron para qué servía aquello, contestó que la lengua siempre había acompañado al poder de un reino.",
         "idezet": "Siempre la lengua fue compañera del imperio.",
         "idezet_tipus": "idezet",
-        "prompt": "a printed grammar book open on a lectern with a printing press behind it, and beside them Elio Antonio de Nebrija standing in a 15th-century print shop, the person's face fully visible and unobstructed, the book beside him not covering the face, an older scholar with a lined face and dark scholar's cap and gown, trays of metal type and freshly printed sheets hanging to dry, warm lamplight"
+        "prompt": "Elio Antonio de Nebrija, older scholar, lined face, dark scholar's cap and gown. Standing at a lectern with a printed grammar book open on it, a printing press behind him, trays of metal type and freshly printed sheets hanging to dry. Warm lamplight."
     },
     {
         "id": "es_lengua_3_lorca",
+        "sorszam": 17,
         "oldal": "es",
         "targy": "Lengua Castellana y Literatura",
         "ciklus": 3,
@@ -447,10 +464,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Era muy buen pianista. Antes de dedicarse a escribir, recogió y armonizó canciones populares antiguas para que no se perdieran.",
         "idezet": "El teatro es la poesía que se levanta del libro y se hace humana.",
         "idezet_tipus": "idezet",
-        "prompt": "a small wooden travelling stage on the back of an old truck with painted backdrops and a guitar leaning against it, and beside them Federico Garcia Lorca standing in a village square, the person's face fully visible and unobstructed, the stage behind him not covering the face, a young man with dark hair and thick eyebrows and a broad open face, plain blue workman's overall over a shirt, villagers gathering, bright dusty Castilian afternoon light"
+        "prompt": "Federico Garcia Lorca, young man, dark hair, thick eyebrows, broad open face, plain blue workman's overall over a shirt. Beside a small wooden travelling stage on the back of an old truck with painted backdrops and a guitar leaning against it, villagers gathering in a village square. Bright dusty afternoon light."
     },
     {
         "id": "es_lengua_2_rosalia",
+        "sorszam": 18,
         "oldal": "es",
         "targy": "Lengua Castellana y Literatura",
         "ciklus": 2,
@@ -473,10 +491,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Escribió mucho sobre los que se marchaban a trabajar fuera y sobre los que se quedaban esperando en el pueblo.",
         "idezet": "Adiós ríos, adiós fontes.",
         "idezet_tipus": "idezet",
-        "prompt": "an open handwritten poetry notebook and a black shawl on a stone windowsill, and beside them Rosalia de Castro seated by the window of a Galician stone house, the person's face fully visible and unobstructed, the notebook beside her not covering the face, a serious young woman with dark hair parted in the middle, dark 19th-century dress with a lace collar, green rainy hills and a granary visible outside, soft grey northern light"
+        "prompt": "Rosalia de Castro, serious young woman, dark hair parted in the middle, dark 19th-century dress with a lace collar. Seated by the window of a Galician stone house with an open handwritten poetry notebook and a black shawl on the sill, green rainy hills outside. Soft grey northern light."
     },
     {
         "id": "es_lengua_3_sorjuana",
+        "sorszam": 19,
         "oldal": "es",
         "targy": "Lengua Castellana y Literatura",
         "ciklus": 3,
@@ -499,10 +518,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "De niña pidió que la vistieran de chico para poder entrar en la universidad, porque a las chicas no se les permitía.",
         "idezet": "Hombres necios que acusáis a la mujer sin razón.",
         "idezet_tipus": "idezet",
-        "prompt": "tall shelves of leather books, a globe and an open manuscript on a writing desk, and beside them Sor Juana Ines de la Cruz seated in her convent study, the person's face fully visible and unobstructed, the books beside her not covering the face, a young woman with a calm direct gaze in a white nun's habit with a large round medallion on the chest and a black veil, quill in hand, warm candlelight on colonial tiled walls"
+        "prompt": "Sor Juana Ines de la Cruz, young woman with a calm direct gaze, white nun's habit with a large round medallion on the chest and a black veil. Seated at a writing desk with a quill, tall shelves of leather books and a globe behind her. Warm candlelight on colonial tiled walls."
     },
     {
         "id": "es_artistica_3_velazquez",
+        "sorszam": 20,
         "oldal": "es",
         "targy": "Educación Artística",
         "ciklus": 3,
@@ -525,10 +545,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Fue pintor del rey durante casi cuarenta años, y buena parte de su trabajo consistía en organizar las salas y las fiestas del palacio.",
         "idezet": "De cerca, manchas. De lejos, el aire.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a huge canvas on a wooden easel with a loaded palette and long brushes in the foreground, and beside them Diego Velazquez standing in a high palace room, the person's face fully visible and unobstructed, the canvas beside him not covering the face, dark curled hair and an upturned moustache, black 17th-century doublet with a white collar, tall shadowed room with a distant mirror, cool silvery daylight"
+        "prompt": "Diego Velazquez, dark curled hair, upturned moustache, black 17th-century doublet with a white collar. Standing before a huge canvas on a wooden easel with a loaded palette and long brushes in hand, a tall shadowed palace room with a distant mirror. Cool silvery daylight."
     },
     {
         "id": "es_artistica_3_goya",
+        "sorszam": 21,
         "oldal": "es",
         "targy": "Educación Artística",
         "ciklus": 3,
@@ -551,10 +572,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Ya mayor pintó una serie de cuadros directamente sobre las paredes de su casa, sin encargo y sin pensar en venderlos.",
         "idezet": "El sueño de la razón produce monstruos.",
         "idezet_tipus": "idezet",
-        "prompt": "a copper etching plate and a burin on a workbench beside a wall half-covered with a dark unfinished mural, and beside them Francisco de Goya standing in his house, the person's face fully visible and unobstructed, the plate beside him not covering the face, an older man with wild grey hair and heavy brows and a stubborn stare, dark coat with a loose neckcloth, oil lamp light and deep brown shadow"
+        "prompt": "Francisco de Goya, older man, wild grey hair, heavy brows, stubborn stare, dark coat with a loose neckcloth. At a workbench with a copper etching plate and a burin, beside a wall half-covered with a dark unfinished mural. Oil lamp light and deep brown shadow."
     },
     {
         "id": "es_artistica_2_sorolla",
+        "sorszam": 22,
         "oldal": "es",
         "targy": "Educación Artística",
         "ciklus": 2,
@@ -577,10 +599,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Pintaba muy rápido y de pie, porque decía que la luz cambia y no espera a nadie.",
         "idezet": "La luz cambia mientras la miras: hay que pintar deprisa.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a wooden easel planted in wet sand with a bright half-finished beach painting on it and a palette of white and blue, and beside them Joaquin Sorolla standing on the shore, the person's face fully visible and unobstructed, the easel beside him not covering the face, a middle-aged man with a dark moustache and a straw hat, white shirt with rolled sleeves, sea foam and children's shapes in the distance, dazzling Mediterranean midday light"
+        "prompt": "Joaquin Sorolla, middle-aged man, dark moustache, straw hat, white shirt with rolled sleeves. Painting at a wooden easel planted in wet sand, a bright half-finished beach painting on it and a palette of white and blue in his hand, sea foam and children in the distance. Dazzling Mediterranean midday light."
     },
     {
         "id": "es_artistica_3_falla",
+        "sorszam": 23,
         "oldal": "es",
         "targy": "Educación Artística",
         "ciklus": 3,
@@ -603,10 +626,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Organizó en Granada, junto con Lorca, un concurso para rescatar el cante jondo antiguo antes de que se perdiera.",
         "idezet": "La música popular no se copia: se escucha y se sigue.",
         "idezet_tipus": "jelmondat",
-        "prompt": "a hand-written orchestral score on a piano music stand with a guitar leaning against the piano, and beside them Manuel de Falla seated at the keyboard in a Granada house, the person's face fully visible and unobstructed, the piano beside him not covering the face, a small thin man with a bald head and sharp features and a dark suit, whitewashed walls and a window onto a garden with cypresses, warm southern evening light"
+        "prompt": "Manuel de Falla, small thin man, bald head, sharp features, dark suit. Seated at a piano in a Granada house with a hand-written orchestral score on the music stand and a guitar leaning against the instrument, whitewashed walls and a window onto a garden with cypresses. Warm southern evening light."
     },
     {
         "id": "es_artistica_2_albeniz",
+        "sorszam": 24,
         "oldal": "es",
         "targy": "Educación Artística",
         "ciklus": 2,
@@ -629,10 +653,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Era un niño prodigio y daba conciertos siendo muy pequeño. De mayor le encantaba contar historias exageradas sobre sus viajes de infancia.",
         "idezet": "Doce piezas que casi nadie podía tocar.",
         "idezet_tipus": "jelmondat",
-        "prompt": "an open grand piano with hand-written sheet music on the stand and a Spanish guitar propped against its leg, and beside them Isaac Albeniz seated at the keys, the person's face fully visible and unobstructed, the piano beside him not covering the face, a stout man with a thick dark moustache and a genial face, dark late-19th-century suit, a warm room with heavy curtains, golden lamplight"
+        "prompt": "Isaac Albeniz, stout man, thick dark moustache, genial face, dark late-19th-century suit. Seated at an open grand piano with hand-written sheet music on the stand and a Spanish guitar propped against its leg, heavy curtains behind him. Golden lamplight."
     },
     {
         "id": "es_efisica_3_coubertin",
+        "sorszam": 25,
         "oldal": "es",
         "targy": "Educación Física",
         "ciklus": 3,
@@ -655,10 +680,11 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Hizo famosa la frase de que lo importante no es ganar sino participar, aunque no fue él quien la dijo primero: la escuchó en un sermón.",
         "idezet": "Lo importante no es ganar, sino participar.",
         "idezet_tipus": "idezet",
-        "prompt": "a laurel wreath and an unrolled olympic charter on a stone bench in front of ancient stadium ruins, and beside them Pierre de Coubertin standing in Olympia, the person's face fully visible and unobstructed, the wreath beside him not covering the face, a small man with a very large dark moustache and a formal 1890s suit and hat, marble columns and dry grass, clear Greek morning light"
+        "prompt": "Pierre de Coubertin, small man with a very large dark moustache, formal 1890s suit and hat. Standing in Olympia before ancient stadium ruins with a laurel wreath and an unrolled olympic charter on a stone bench beside him, marble columns and dry grass. Clear Greek morning light."
     },
     {
         "id": "es_extranjera_3_battuta",
+        "sorszam": 26,
         "oldal": "es",
         "targy": "Lengua Extranjera",
         "ciklus": 3,
@@ -681,6 +707,6 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Salió de casa a los veintiún años pensando en hacer un solo viaje. Volvió con el pelo gris.",
         "idezet": "Salí solo, sin compañero de viaje y sin caravana.",
         "idezet_tipus": "idezet",
-        "prompt": "a worn leather travel satchel, a rolled map and a walking staff resting against a stone wall, and beside them Ibn Battuta standing at a caravanserai gate, the person's face fully visible and unobstructed, the satchel beside him not covering the face, a bearded traveller in a dusty cream robe and turban, camels and a busy market street behind him, warm dusty afternoon light"
+        "prompt": "Ibn Battuta, bearded traveller in a dusty cream robe and turban. Standing at a caravanserai gate beside a worn leather travel satchel, a rolled map and a walking staff resting against the stone wall, camels and a busy market street behind him. Warm dusty afternoon light."
     }
 ]

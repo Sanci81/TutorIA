@@ -131,14 +131,14 @@ label{font-size:.76rem;opacity:.65;display:block;margin-bottom:3px;font-weight:7
     <p><b>Modell:</b> <b>Leonardo Lightning</b> – ez van a listádban, és tökéletesen megfelel. Anime modellt SOHA: az minden nőalakot ezüsthajú, nagy szemű lánnyá alakít, akkor is, ha mást írsz be.</p><p><b>A többi beállítás:</b> Prompt Enhance <b>Off</b> (ez a legfontosabb – bekapcsolva átírja a promptot), Style <b>Dynamic</b>, Contrast <b>High</b>, Generation Mode <b>Fast</b>, méret <b>1:1 / 960×960</b>. A Platform Elements és a Your Elements maradjon üresen.</p><p><b>A többi 59 képhez:</b> a nyertes képnél válaszd a <b>Use as reference → Style Reference</b> lehetőséget. Csak azt, semmi mást – a Character Reference mindenkit Curie-re hasonlítana, a Content/Depth/Edge/Pose pedig ugyanazt a beállítást másolná mind a hatvan lapra.</p>
     <p><b>Képarány:</b> <b>1:1 négyzet</b> (1024 × 1024). A kártya képmezője is négyzet, így semmi nem vágódik le a hajból vagy a válláról. Az Einstein-képed pont ilyen volt – ezért illeszkedik tökéletesen.</p>
     <p><b>Alchemy:</b> be. <b>Prompt Magic:</b> be. <b>Képek száma:</b> 4 – mindig a legjobbat választod ki.</p>
-    <p><b>Fontos:</b> ha egy arc nem hasonlít, tedd be az Image Guidance mezőbe egy valódi fényképét vagy festményét alacsony (0,2–0,35) erősséggel. Így megtartja a hasonlóságot, de a stílus a tiéd marad.</p>
+    <p><b>Fontos:</b> ha egy arc nem hasonlít, kattints a prompt sáv bal oldalán az <b>Image Guidance</b> ikonra, tölts fel róla egy valódi fényképet vagy festményt, a típusa legyen <b>Character Reference</b>, az erőssége <b>Low</b>. Így megtartja a hasonlóságot, de a stílus a tiéd marad. Fontos, hogy mindig az ADOTT ember saját képét töltsd fel — egy közös referenciakép mindenkit egyformává tenne.</p>
   </div>
 
   <h2>Közös stílus – NEM kell külön másolni</h2>
   <div class="prompt">
     <button class="copy" onclick="cp(this)">Másolás</button>
     <span class="lbl">STÍLUS (állandó) — CSAK TÁJÉKOZTATÁSUL, már benne van minden kártya promptjában</span>
-    <span class="txt" id="p-style">trading card game character art, semi-realistic painted digital illustration, waist-up three-quarter portrait, subject centered and facing the viewer, warm confident expression, dramatic rim lighting from behind, rich saturated colors, clean crisp rendering, detailed face and eyes, period-accurate historical clothing, symbolic background related to their field, soft glowing particles, painterly brushwork, square composition, the whole head and all of the hair fully inside the frame with generous margin, nothing cropped, head in the upper half</span>
+    <span class="txt" id="p-style">dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows</span>
   </div>
 
   <div class="prompt neg">
@@ -314,7 +314,7 @@ const PEOPLE = [
   "b1": "Lecke · Az atom felépítése",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a large glass flask on a laboratory bench with the liquid inside glowing from within with a cold green-white light, Marie Curie leaning over it holding a dropper, gaunt careworn face with a high forehead, dark chestnut hair waved and pinned up loosely, plain black high-necked long-sleeved dress of the 1900s with a small white collar, shelves of glass bottles and apparatus in the shadows behind her, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Marie Curie, gaunt careworn face, dark chestnut hair pinned up, dark navy 1900s dress with a small white collar. Leaning over a laboratory bench, holding a glass dropper above a large glass flask, the liquid inside glowing with cold green-white light. Shelves of glass bottles in a dark laboratory.",
   "fajl": "kemia_7_curie"
  },
  {
@@ -334,7 +334,7 @@ const PEOPLE = [
   "b1": "Lecke · A periódusos rendszer és a vegyjelek",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a huge hand-drawn periodic table on a large sheet of paper covering the whole desk, a grid of ruled squares filled with element symbols, three squares left empty and glowing faintly golden, Dmitri Mendeleev leaning over it with one hand flat on the paper, long wild grey hair and a very long full grey beard, deep-set intense eyes looking straight at the viewer, dark 19th-century Russian academic coat, an oil lamp on the corner of the desk, no church, no castle, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Dmitri Mendeleev, elderly, long wild grey hair, very long full grey beard, dark Russian academic coat. Leaning over a huge hand-drawn periodic table covering the desk, ruled squares filled with element symbols, three squares empty and glowing gold. Oil lamp, dark study at night.",
   "fajl": "kemia_7_mengyelejev"
  },
  {
@@ -354,7 +354,7 @@ const PEOPLE = [
   "b1": "Lecke · Tiszta anyagok: elemek és vegyületek",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a large brass balance scale in the centre of the image with a tiny weight being placed on the pan, Antoine Lavoisier behind it in a powdered wig and deep blue silk coat, glass retorts and bell jars around him, an open ledger of measurements on the table, candlelight in an elegant 18th-century French laboratory, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Antoine Lavoisier, powdered white wig, deep blue silk coat. Placing a tiny weight on a large brass balance scale, glass retorts and bell jars around him, an open ledger of measurements on the table. Candlelit elegant 18th-century French laboratory.",
   "fajl": "kemia_7_lavoisier"
  },
  {
@@ -374,7 +374,7 @@ const PEOPLE = [
   "b1": "Lecke · Oldatok: oldódás, oldhatóság, töménység",
   "b2": "★ gyakori",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a beaker of clear solution held up to the light with two metal electrodes dipped into it and faint blue sparks crossing between them, Svante Arrhenius holding it, a large stout heavy-built Swedish chemist of about fifty-five, NOT young and NOT slim, a broad heavy jowly face with full cheeks and a double chin and a thick neck, BALD on top of the head with a completely bare high domed crown, hair only in a short band above the ears and at the back of the head, a very large drooping walrus moustache that hangs over and hides the mouth completely, no beard, NO glasses, a black late-19th-century frock coat over a white shirt with a black bow tie, a voltaic pile and glass jars on the bench, cool blue-white glow, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Svante Arrhenius, elderly stout heavy-set Swedish chemist, broad jowly face, double chin, thick neck, high domed forehead, dark hair combed back, thick dark moustache, black three-piece suit with a black bow tie. Holding up a beaker of clear solution with two electrodes dipped in it, blue electric sparks crossing between them. Voltaic pile and glass jars, cool blue-white glow.",
   "fajl": "kemia_7_arrhenius"
  },
  {
@@ -394,7 +394,7 @@ const PEOPLE = [
   "b1": "Lecke · Lendület és egyensúly",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a single red apple frozen in mid-fall in the centre of the image, Isaac Newton beneath it with one hand outstretched, long flowing auburn-grey curled hair to the shoulders, deep crimson 17th-century coat with a white cravat, an autumn orchard at dusk behind him and a huge pale moon on the same curved path, warm amber rim light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Isaac Newton, long flowing auburn-grey curls to the shoulders, deep crimson 17th-century coat with a white cravat. Standing in an autumn orchard at dusk, one hand outstretched as a red apple falls past him, a huge pale moon riding the same curved path in the sky. Warm amber rim light.",
   "fajl": "fizika_7_newton"
  },
  {
@@ -414,7 +414,7 @@ const PEOPLE = [
   "b1": "Lecke · Mozgás közlekedés és sportolás közben",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a long inclined wooden ramp across the foreground with a bronze ball rolling down it, Galileo Galilei crouching beside it holding a water clock, balding head and full grey beard, dark scholar's robe, a brass telescope leaning against the wall, night sky with Jupiter and four small moons through an arched window, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Galileo Galilei, elderly, balding head, full grey beard, dark scholar's robe. Crouching beside a long inclined wooden ramp with a bronze ball rolling down it, a water clock in his hand. A brass telescope against the wall, night sky with Jupiter and four small moons through an arched window.",
   "fajl": "fizika_7_galilei"
  },
  {
@@ -434,7 +434,7 @@ const PEOPLE = [
   "b1": "Lecke · Az energia",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a huge steam engine filling the background with white steam billowing and backlit, James Watt in front of it adjusting a brass valve, long grey hair tied back, plain brown coat with rolled sleeves, iron gears and a heavy flywheel, warm amber furnace glow in a Scottish workshop, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, James Watt, long grey hair tied back, plain brown coat with rolled sleeves. Adjusting a brass valve on a huge steam engine, white steam billowing and backlit, iron gears and a heavy flywheel behind him. Warm amber furnace glow in a Scottish workshop.",
   "fajl": "fizika_7_watt"
  },
  {
@@ -454,7 +454,7 @@ const PEOPLE = [
   "b1": "Lecke · Halmazok, számhalmazok",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a dark wall covered in glowing chalk-drawn hyperbolic curves and parallel lines bending towards each other, Janos Bolyai standing before it holding a brass drawing compass, a young 19th-century Hungarian hussar officer, short dark hair, clean-shaven determined face, dark blue hussar jacket with gold braid frogging across the chest, cool indigo light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Janos Bolyai, young Hungarian hussar officer, blue eyes, long narrow face, short dark hair, clean-shaven, dark blue hussar jacket with gold braid frogging. Holding a brass drawing compass before a dark wall covered in glowing chalk-drawn hyperbolic curves and bending parallel lines. Cool indigo light.",
   "fajl": "matemati_7_bolyai"
  },
  {
@@ -474,7 +474,7 @@ const PEOPLE = [
   "b1": "Lecke · Matematikai logika, kombinatorika, gráfok",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a wide tray of fine sand in the foreground with precise geometric figures drawn into it by a compass, Euclid of Alexandria kneeling over it, short white beard and simple cream linen robe, papyrus scrolls stacked beside him, faint glowing geometric constructions rising in the air, warm Mediterranean sunlight through a stone colonnade, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Euclid of Alexandria, elderly, short white beard, simple cream linen robe. Kneeling over a wide tray of fine sand, drawing precise geometric figures into it with a compass, papyrus scrolls stacked beside him, faint glowing constructions rising in the air. Warm Mediterranean sunlight through a stone colonnade.",
   "fajl": "matemati_7_euklidesz"
  },
  {
@@ -494,7 +494,7 @@ const PEOPLE = [
   "b1": "Lecke · Számelméleti ismeretek, hatvány, négyzetgyök",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a large glowing right-angled triangle drawn in the air with a square of light growing out of each of its three sides, Pythagoras standing beside it with one hand raised, long dark beard and white draped robe, a stone terrace with columns and the sea behind, golden sunrise light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Pythagoras, long dark beard, dressed entirely in white with a golden wreath on his head. One hand raised beside a large glowing right-angled triangle, a square of light growing out of each of its three sides. Stone terrace with columns, the sea behind, golden sunrise light.",
   "fajl": "matemati_7_pitagorasz"
  },
  {
@@ -514,7 +514,7 @@ const PEOPLE = [
   "b1": "Lecke · Az élővilág fejlődése",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a small brown finch perched on an outstretched hand in the foreground, Charles Darwin behind it, bald high forehead and very long white beard, dark victorian coat, giant tortoises and black volcanic rock on a Galapagos shore, the sailing ship Beagle anchored on the horizon, warm green and gold light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Charles Darwin, elderly, bald high forehead, very long white beard, dark Victorian coat. A small brown finch perched on his outstretched hand, giant tortoises and black volcanic rock on a Galapagos shore, the sailing ship Beagle anchored on the horizon. Warm green and gold light.",
   "fajl": "biologia_7_darwin"
  },
  {
@@ -534,7 +534,7 @@ const PEOPLE = [
   "b1": "Lecke · Az élővilág országai",
   "b2": "★ gyakori",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, an open wooden specimen cabinet of small labelled drawers with pressed plants pinned inside, Carl Linnaeus in front of it holding a specimen sheet and a quill, shoulder-length light hair and a simple dark green coat, exotic flowers and butterflies around him, soft green sunlight through leaves in an 18th-century botanical garden, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Carl Linnaeus, shoulder-length light hair, simple dark green coat. Holding a specimen sheet and a quill before an open wooden cabinet of small labelled drawers filled with pressed plants, exotic flowers and butterflies around him. Soft green sunlight through leaves in an 18th-century botanical garden.",
   "fajl": "biologia_7_linne"
  },
  {
@@ -554,7 +554,7 @@ const PEOPLE = [
   "b1": "Lecke · A természeti értékek védelme",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a pile of bright red paprika peppers on a laboratory bench beside a test tube of pale white crystals held up to the light, Albert Szent-Gyorgyi holding the tube, short dark hair and round glasses, white lab coat over a 1930s suit, microscope and glass flasks around, warm amber light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Albert Szent-Gyorgyi, short dark hair, round glasses, white lab coat over a 1930s suit. Holding a test tube of pale white crystals up to the light beside a pile of bright red paprika peppers on a laboratory bench, microscope and glass flasks around him. Warm amber light.",
   "fajl": "biologia_7_szentgyorgyi"
  },
  {
@@ -574,7 +574,7 @@ const PEOPLE = [
   "b1": "Lecke · Tájékozódás a térképen – fokhálózat és méretarány",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, an unrolled sea chart flapping in the wind across the foreground with a brass astrolabe resting on it, Christopher Columbus at the ship's rail behind it, weathered face and shoulder-length greying hair, red velvet cap and coat, billowing sails, open ocean and an unknown coastline just appearing on the horizon at dawn, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Christopher Columbus, tall and strongly built, ruddy freckled face, aquiline nose, clear blue eyes, shoulder-length white hair, red velvet cap and coat. At the ship's rail above an unrolled sea chart with a brass astrolabe resting on it, billowing sails, an unknown coastline appearing on the horizon at dawn.",
   "fajl": "foldrajz_7_kolumbusz"
  },
  {
@@ -594,7 +594,7 @@ const PEOPLE = [
   "b1": "Lecke · A Kárpát-medence tájai és népei",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a huge handwritten Tibetan-Hungarian dictionary open on a low table lit by a single butter lamp, Sandor Korosi Csoma bent over it writing, gaunt bearded face, worn dark travelling coat and blanket, Tibetan manuscripts stacked around, freezing blue light from a small stone window of a Himalayan monastery cell, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Sandor Korosi Csoma, gaunt bearded face, worn dark travelling coat and blanket. Bent over a huge handwritten Tibetan-Hungarian dictionary on a low table, writing by a single butter lamp, Tibetan manuscripts stacked around him. Freezing blue light from a small stone window of a Himalayan monastery cell.",
   "fajl": "foldrajz_7_koroscsoma"
  },
  {
@@ -614,7 +614,7 @@ const PEOPLE = [
   "b1": "Lecke · A dualizmus kora: felzárkózás Európához",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, the half-built Chain Bridge of Budapest filling the background with scaffolding and stone lions, Istvan Szechenyi standing on the riverbank in front of it, dark hair and full sideburns, elegant dark tailcoat with a high white collar and cravat, a steamboat on the Danube, warm golden hour light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Istvan Szechenyi, dark hair, full sideburns, elegant dark tailcoat with a high white collar and cravat. Standing on the riverbank before the half-built Chain Bridge of Budapest, scaffolding and stone lions behind him, a steamboat on the Danube. Warm golden hour light.",
   "fajl": "tortenel_7_szechenyi"
  },
  {
@@ -634,7 +634,7 @@ const PEOPLE = [
   "b1": "Lecke · A modern kor születése",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a white basin of chlorinated water in the foreground with hands being washed in it, Ignaz Semmelweis above it with his sleeves rolled up, dark receding hair and side whiskers, dark frock coat, a long row of white hospital beds softly lit behind him, cool clean light with one warm lamp in the distance, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Ignaz Semmelweis, dark receding hair, side whiskers, dark frock coat with sleeves rolled up. Washing his hands in a white basin of chlorinated lime solution, a long row of white hospital beds softly lit behind him. Cool clean light with one warm lamp in the distance.",
   "fajl": "tortenel_7_semmelweis"
  },
  {
@@ -654,7 +654,7 @@ const PEOPLE = [
   "b1": "Lecke · Az első világháború és következményei",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a brass telegraph key on a table with bright electric sparks jumping across a coil beside it, Guglielmo Marconi with his hand on the key, neat dark hair and moustache, formal early-1900s suit, a tall antenna mast through the window against a stormy sea, blue-white electric glow, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Guglielmo Marconi, neat dark hair and moustache, formal early-1900s suit. Hand on a brass telegraph key, bright electric sparks jumping across a coil beside it, a tall antenna mast through the window against a stormy sea. Blue-white electric glow.",
   "fajl": "tortenel_7_marconi"
  },
  {
@@ -674,7 +674,7 @@ const PEOPLE = [
   "b1": "Lecke · I. Korok és portrék",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a printed sheet of poetry held up in a raised fist above a crowd, Sandor Petofi below it on the stone steps of a cafe mid-speech, young 19th-century Hungarian poet with dark wavy hair and a small beard, open-collared white shirt and dark coat, cockades and flags in the crowd, dramatic overcast March light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Sandor Petofi, young poet, dark wavy hair, small beard, open-collared white shirt and dark coat. On the stone steps of a cafe mid-speech, a printed sheet of poetry raised in his fist above a crowd of cockades and flags. Dramatic overcast March light.",
   "fajl": "magyar_n_7_petofi"
  },
  {
@@ -694,7 +694,7 @@ const PEOPLE = [
   "b1": "Lecke · II. Magyar vagy világirodalmi ifjúsági regény",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a half-written page under a paused quill on a candlelit desk, Janos Arany sitting behind it deep in thought, receding hairline and neat beard, dark scholar's coat, the shadowy figures of his ballad's characters faintly suggested in the darkness behind him, muted warm light in a quiet room, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Janos Arany, receding hairline, neat beard, dark scholar's coat. Sitting at a candlelit desk, a quill paused above a half-written page, the shadowy figures of his ballad faintly suggested in the darkness behind him. Muted warm light in a quiet room.",
   "fajl": "magyar_n_7_arany"
  },
  {
@@ -714,7 +714,7 @@ const PEOPLE = [
   "b1": "Lecke · A barokk zene",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, towering gilded organ pipes rising into shadow above a baroque church organ console, Johann Sebastian Bach seated at the keys with his head turned slightly towards the viewer, curled grey wig and dark cantor's coat, candlelight on the open manuscript, a choir of boys faintly visible below, warm gold and deep brown, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Johann Sebastian Bach, curled grey wig, dark cantor's coat. Seated at a baroque church organ with his hands on the keys, towering gilded organ pipes rising into shadow, candlelight on the open manuscript, a boys' choir faintly visible below. Warm gold and deep brown.",
   "fajl": "enek_zen_7_bach"
  },
  {
@@ -734,7 +734,7 @@ const PEOPLE = [
   "b1": "Lecke · Beethoven és a szimfónia",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, an open piano with scattered manuscript pages spilling onto the floor around it, Ludwig van Beethoven leaning over it with one hand pressed flat on the wooden case to feel the vibration, wild grey hair and an intense scowling face, dark coat, stormy grey light from a tall window in a cluttered Vienna room, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Ludwig van Beethoven, wild grey hair, intense scowling face, dark coat. Leaning over an open piano with one hand pressed flat on the wooden case to feel the vibration, manuscript pages scattered across the floor. Stormy grey light from a tall window in a cluttered Vienna room.",
   "fajl": "enek_zen_7_beethoven"
  },
  {
@@ -754,7 +754,7 @@ const PEOPLE = [
   "b1": "Lecke · Műdalok és kórusművek",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a large brass phonograph horn on a wooden stand in the foreground, an old woman in a headscarf singing into it, Bela Bartok crouching beside it writing down the melody, dark hair and sharp features, plain travelling suit, whitewashed cottage wall and dirt yard of a Hungarian village, warm late afternoon light, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Bela Bartok, dark hair, sharp features, plain travelling suit. Crouching beside a large brass phonograph horn and writing down a melody while an old woman in a headscarf sings into it. Whitewashed cottage wall and dirt yard of a Hungarian village, warm late afternoon light.",
   "fajl": "enek_zen_7_bartok"
  },
  {
@@ -774,7 +774,7 @@ const PEOPLE = [
   "b1": "Lecke · Algoritmus tervezése és leírása",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a room-sized computer of glowing vacuum tubes and cables filling the background, John von Neumann in front of it holding a punched card, neat dark hair and a round friendly face, immaculate grey three-piece suit, soft cyan glow and warm ceiling lamps in a 1940s computer hall, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, John von Neumann, neat dark hair, round friendly face, immaculate grey three-piece suit. Holding a punched card before a room-sized computer of glowing vacuum tubes and cables. Soft cyan glow and warm ceiling lamps in a 1940s computer hall.",
   "fajl": "digitali_7_neumann"
  },
  {
@@ -794,7 +794,7 @@ const PEOPLE = [
   "b1": "Lecke · Vezérlési szerkezetek: szekvencia, elágazás, ciklus",
   "b2": "★★★ nagyon ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a brass mechanical calculating engine of gears and wheels on a desk covered in handwritten tables of numbers, Ada Lovelace seated beside it with one hand on the page, dark hair in a braided updo, elegant blue-grey Victorian gown, candlelight and cool daylight mixing in a drawing room, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Ada Lovelace, dark hair in a braided updo, elegant blue-grey Victorian gown. Seated at a desk covered in handwritten tables of numbers with one hand on the page, a brass mechanical calculating engine of gears and wheels beside her. Candlelight and cool daylight mixing in a drawing room.",
   "fajl": "digitali_7_lovelace"
  },
  {
@@ -814,7 +814,7 @@ const PEOPLE = [
   "b1": "Lecke · Robot érzékelőkkel",
   "b2": "★★ ritka",
   "s2": "",
-  "p": "dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, wide awestruck eyes and slightly parted lips, wonder not anger, the light falling on the face and hands, deep shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark, no flame unless described, a huge rotating code-breaking machine of wheels and wiring filling the background, Alan Turing in front of it holding a strip of paper tape, tousled dark hair and a tweed jacket, cipher sheets scattered on the desk, a dim green desk lamp and the glow of rotating dials in a wartime hut, the face of the person fully visible and unobstructed, the object beside them not covering the face",
+  "p": "dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Alan Turing, tousled dark hair, tweed jacket. Holding a strip of paper tape before a huge rotating code-breaking machine of wheels and wiring, cipher sheets scattered on the desk. Dim green desk lamp and the glow of rotating dials in a wartime hut.",
   "fajl": "digitali_7_turing"
  }
 ];

@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="hu"><head><meta charset="utf-8">
+<title>TutorIA – referenciaképek és promptok</title><style>
+*{box-sizing:border-box}body{margin:0;background:#0b0f22;color:#e9e4d6;
+ font-family:system-ui,Segoe UI,sans-serif;padding:28px 22px 70px}
+h1{font-size:1.5rem;margin:0 0 4px}
+.be{opacity:.75;max-width:880px;line-height:1.65;margin:0 0 8px;font-size:.94rem}
+.doboz{background:rgba(240,200,105,.09);border:1px solid rgba(240,200,105,.3);
+ border-radius:12px;padding:16px 18px;margin:18px 0 14px;max-width:920px;line-height:1.65}
+.doboz b{color:#f0c869}
+.doboz.zold{background:rgba(47,143,96,.13);border-color:rgba(47,143,96,.45)}
+.doboz.zold b{color:#7fe0ab}
+table{border-collapse:collapse;width:100%;max-width:1180px;margin-top:14px}
+td{border-bottom:1px solid rgba(255,255,255,.09);padding:12px 10px;vertical-align:top}
+.sz{opacity:.4;font-weight:800;width:34px}
+.t{font-size:.78rem;opacity:.55;margin-top:2px}
+.f{font-size:.72rem;opacity:.4;font-family:ui-monospace,monospace;margin-top:3px}
+.cimke{display:inline-block;font-size:.62rem;font-weight:900;letter-spacing:1.3px;
+ padding:3px 9px;border-radius:5px;color:#fff}
+.m{font-size:.83rem;opacity:.8;margin-top:6px;line-height:1.55;max-width:470px}
+.l{margin-top:6px;font-size:.83rem}
+a{color:#7fc4ff}.nincs{opacity:.5;font-style:italic;font-size:.83rem}
+.cp{background:#1d2547;color:#e9e4d6;border:1px solid rgba(240,200,105,.4);
+ border-radius:8px;padding:7px 13px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.cp:hover{background:#28325e}.cp.ok{background:#2f8f60;border-color:#2f8f60}
+.szo{font-size:.68rem;opacity:.4;margin-top:5px;text-align:center}
+</style></head><body>
+<h1>Referenciaképek és promptok — mind a 26 emberhez</h1>
+<p class="be">Minden prompt átírva a Leonardo Lightning szabályai szerint.</p>
+
+<div class="doboz zold">
+<b>Mi változott mind a 26 promptban:</b><br>
+<b>1. Kikerült minden tagadás.</b> A képgeneráló nem érti a „NOT" és „NO" szavakat — csak a
+kulcsszót látja meg, és pontosan azt rajzolja, amit megtiltottál. A „NOT young" helyett most
+„elderly" áll, a „no beard" helyett „clean-shaven".<br>
+<b>2. A prompt 156 szóról 70 köré rövidült.</b> A modell az első húsz-harminc szóra figyel a
+legjobban; a végére írt utasításokat elfelejti. Ezért tűnt el a Curie-lombikból a hideg
+zöldesfehér fény.<br>
+<b>3. Minden kártyán látszik, mivel foglalkozott.</b> Mengyelejevnél a periódusos táblázat,
+Curie-nél a világító lombik, Watt-nál a gőzgép, Bartóknál a fonográf.<br>
+<b>4. A sorrend mindenhol ugyanaz:</b> stílus → a személy (pozitív szavakkal) → a tárgy és a
+cselekvés → fény és háttér.
+</div>
+
+<div class="doboz">
+<b>A referenciakép csak az arcért van.</b> A jelenetet, a tárgyat és a fényt a prompt adja —
+ezért nem lesz belőle unalmas műtermi portré. Nyisd meg a linket, mentsd le az arcképet, és
+tedd be az Image Guidance-be alacsony erősséggel.
+</div>
+
+<table><tbody>
+    <tr>
+      <td class="sz">1</td>
+      <td><b>Marie Curie</b><div class="t">Kémia</div>
+          <div class="f">kemia_7_curie.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fénykép, kb. 1920. A laborruhája sötétkék volt – ugyanaz, amiben esküdött.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Marie_Curie" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Marie Curie, gaunt careworn face, dark chestnut hair pinned up, dark navy 1900s dress with a small white collar. Leaning over a laboratory bench, holding a glass dropper above a large glass flask, the liquid inside glowing with cold green-white light. Shelves of glass bottles in a dark laboratory.">Prompt másolása</button>
+          <div class="szo">76 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">2</td>
+      <td><b>Mengyelejev</b><div class="t">Kémia</div>
+          <div class="f">kemia_7_mengyelejev.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fényképek. A Wikipédia szócikke nem ír le arcot; a fotó dönt.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Dmitrij_Ivanovics_Mengyelejev" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Dmitri Mendeleev, elderly, long wild grey hair, very long full grey beard, dark Russian academic coat. Leaning over a huge hand-drawn periodic table covering the desk, ruled squares filled with element symbols, three squares empty and glowing gold. Oil lamp, dark study at night.">Prompt másolása</button>
+          <div class="szo">71 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">3</td>
+      <td><b>Antoine Lavoisier</b><div class="t">Kémia</div>
+          <div class="f">kemia_7_lavoisier.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Jacques-Louis David festménye, 1788, a feleségével együtt – ÉLETÉBEN készült. Ezt használd.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Antoine_Laurent_de_Lavoisier" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Antoine Lavoisier, powdered white wig, deep blue silk coat. Placing a tiny weight on a large brass balance scale, glass retorts and bell jars around him, an open ledger of measurements on the table. Candlelit elegant 18th-century French laboratory.">Prompt másolása</button>
+          <div class="szo">66 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">4</td>
+      <td><b>Svante Arrhenius</b><div class="t">Kémia</div>
+          <div class="f">kemia_7_arrhenius.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fényképek. Kopasz fejtető, rozmárbajusz, csokornyakkendő.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Svante_Arrhenius" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Svante Arrhenius, elderly stout heavy-set Swedish chemist, broad jowly face, double chin, thick neck, high domed forehead, dark hair combed back, thick dark moustache, black three-piece suit with a black bow tie. Holding up a beaker of clear solution with two electrodes dipped in it, blue electric sparks crossing between them. Voltaic pile and glass jars, cool blue-white glow.">Prompt másolása</button>
+          <div class="szo">86 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">5</td>
+      <td><b>Isaac Newton</b><div class="t">Fizika</div>
+          <div class="f">fizika_7_newton.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Korabeli festmények; a szócikk nem ír le arcot. A halotti maszkja is fennmaradt.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Isaac_Newton" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Isaac Newton, long flowing auburn-grey curls to the shoulders, deep crimson 17th-century coat with a white cravat. Standing in an autumn orchard at dusk, one hand outstretched as a red apple falls past him, a huge pale moon riding the same curved path in the sky. Warm amber rim light.">Prompt másolása</button>
+          <div class="szo">77 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">6</td>
+      <td><b>Galileo Galilei</b><div class="t">Fizika</div>
+          <div class="f">fizika_7_galilei.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">A szócikk képe „Portré, kb. 1640”.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Galileo_Galilei" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Galileo Galilei, elderly, balding head, full grey beard, dark scholar's robe. Crouching beside a long inclined wooden ramp with a bronze ball rolling down it, a water clock in his hand. A brass telescope against the wall, night sky with Jupiter and four small moons through an arched window.">Prompt másolása</button>
+          <div class="szo">76 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">7</td>
+      <td><b>James Watt</b><div class="t">Fizika</div>
+          <div class="f">fizika_7_watt.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Korabeli portrék.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/James_Watt" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, James Watt, long grey hair tied back, plain brown coat with rolled sleeves. Adjusting a brass valve on a huge steam engine, white steam billowing and backlit, iron gears and a heavy flywheel behind him. Warm amber furnace glow in a Scottish workshop.">Prompt másolása</button>
+          <div class="szo">70 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">8</td>
+      <td><b>Bolyai János</b><div class="t">Matematika</div>
+          <div class="f">matemati_7_bolyai.png</div></td>
+      <td><span class="cimke" style="background:#b4353f">NINCS HITELES KÉP</span>
+          <div class="m">NINCS hiteles kép. Az útlevele szerint középtermetű, kék szemű, hosszúkás arcú – ezt írtam be a promptba.</div><div class="l"><span class="nincs">nincs mit feltölteni — nem létezik hiteles kép</span></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Janos Bolyai, young Hungarian hussar officer, blue eyes, long narrow face, short dark hair, clean-shaven, dark blue hussar jacket with gold braid frogging. Holding a brass drawing compass before a dark wall covered in glowing chalk-drawn hyperbolic curves and bending parallel lines. Cool indigo light.">Prompt másolása</button>
+          <div class="szo">72 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">9</td>
+      <td><b>Euklidész</b><div class="t">Matematika</div>
+          <div class="f">matemati_7_euklidesz.png</div></td>
+      <td><span class="cimke" style="background:#b4353f">NINCS HITELES KÉP</span>
+          <div class="m">NINCS hiteles kép, és leírás sem maradt fenn. Itt szabad a kezed.</div><div class="l"><span class="nincs">nincs mit feltölteni — nem létezik hiteles kép</span></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Euclid of Alexandria, elderly, short white beard, simple cream linen robe. Kneeling over a wide tray of fine sand, drawing precise geometric figures into it with a compass, papyrus scrolls stacked beside him, faint glowing constructions rising in the air. Warm Mediterranean sunlight through a stone colonnade.">Prompt másolása</button>
+          <div class="szo">74 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">10</td>
+      <td><b>Pitagorasz</b><div class="t">Matematika</div>
+          <div class="f">matemati_7_pitagorasz.png</div></td>
+      <td><span class="cimke" style="background:#b4353f">NINCS HITELES KÉP</span>
+          <div class="m">NINCS hiteles kép. Az ókori beszámolók szerint tetőtől talpig fehérben járt, arany koszorúval – ez most benne van a promptban.</div><div class="l"><span class="nincs">nincs mit feltölteni — nem létezik hiteles kép</span></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Pythagoras, long dark beard, dressed entirely in white with a golden wreath on his head. One hand raised beside a large glowing right-angled triangle, a square of light growing out of each of its three sides. Stone terrace with columns, the sea behind, golden sunrise light.">Prompt másolása</button>
+          <div class="szo">73 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">11</td>
+      <td><b>Charles Darwin</b><div class="t">Biológia</div>
+          <div class="f">biologia_7_darwin.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">A szócikk képe kb. 1854-ből való, ott még BOROTVÁLT. A szakállt 1862-ben növesztette. A kártyán a szakállas, idős Darwin van.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Charles_Darwin" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Charles Darwin, elderly, bald high forehead, very long white beard, dark Victorian coat. A small brown finch perched on his outstretched hand, giant tortoises and black volcanic rock on a Galapagos shore, the sailing ship Beagle anchored on the horizon. Warm green and gold light.">Prompt másolása</button>
+          <div class="szo">72 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">12</td>
+      <td><b>Carl Linné</b><div class="t">Biológia</div>
+          <div class="f">biologia_7_linne.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Alexander Roslin festménye, 1775, életében készült. 1753 után szinte mindig a Sarkcsillag-rend jelvényével ábrázolták.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Carl_von_Linné" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Carl Linnaeus, shoulder-length light hair, simple dark green coat. Holding a specimen sheet and a quill before an open wooden cabinet of small labelled drawers filled with pressed plants, exotic flowers and butterflies around him. Soft green sunlight through leaves in an 18th-century botanical garden.">Prompt másolása</button>
+          <div class="szo">72 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">13</td>
+      <td><b>Szent-Györgyi Albert</b><div class="t">Biológia</div>
+          <div class="f">biologia_7_szentgyorgyi.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fénykép, kb. 1950, ekkor 57 éves volt.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Szent-Györgyi_Albert" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Albert Szent-Gyorgyi, short dark hair, round glasses, white lab coat over a 1930s suit. Holding a test tube of pale white crystals up to the light beside a pile of bright red paprika peppers on a laboratory bench, microscope and glass flasks around him. Warm amber light.">Prompt másolása</button>
+          <div class="szo">74 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">14</td>
+      <td><b>Kolumbusz Kristóf</b><div class="t">Földrajz</div>
+          <div class="f">foldrajz_7_kolumbusz.png</div></td>
+      <td><span class="cimke" style="background:#b4353f">NINCS HITELES KÉP</span>
+          <div class="m">NINCS életében készült kép. A fia és Las Casas leírása szerint magas, erős, sasorrú, világos kék szemű, vöröses-szeplős bőrű, a haja fiatalon vörös volt és harmincévesen már fehér – ez most benne van a promptban.</div><div class="l"><span class="nincs">nincs mit feltölteni — nem létezik hiteles kép</span></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Christopher Columbus, tall and strongly built, ruddy freckled face, aquiline nose, clear blue eyes, shoulder-length white hair, red velvet cap and coat. At the ship's rail above an unrolled sea chart with a brass astrolabe resting on it, billowing sails, an unknown coastline appearing on the horizon at dawn.">Prompt másolása</button>
+          <div class="szo">76 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">15</td>
+      <td><b>Kőrösi Csoma Sándor</b><div class="t">Földrajz</div>
+          <div class="f">foldrajz_7_koroscsoma.png</div></td>
+      <td><span class="cimke" style="background:#c9782a">BIZONYTALAN</span>
+          <div class="m">Egyetlen festmény (Schoefft), emlékezetből. Bizonytalan.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Kőrösi_Csoma_Sándor" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Sandor Korosi Csoma, gaunt bearded face, worn dark travelling coat and blanket. Bent over a huge handwritten Tibetan-Hungarian dictionary on a low table, writing by a single butter lamp, Tibetan manuscripts stacked around him. Freezing blue light from a small stone window of a Himalayan monastery cell.">Prompt másolása</button>
+          <div class="szo">74 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">16</td>
+      <td><b>Széchenyi István</b><div class="t">Történelem</div>
+          <div class="f">tortenel_7_szechenyi.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Korabeli portrék és fénykép is.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Széchenyi_István" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Istvan Szechenyi, dark hair, full sideburns, elegant dark tailcoat with a high white collar and cravat. Standing on the riverbank before the half-built Chain Bridge of Budapest, scaffolding and stone lions behind him, a steamboat on the Danube. Warm golden hour light.">Prompt másolása</button>
+          <div class="szo">69 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">17</td>
+      <td><b>Semmelweis Ignác</b><div class="t">Történelem</div>
+          <div class="f">tortenel_7_semmelweis.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fényképek. A klórmeszes kézmosást 1847-ben vezette be – a prompt most klórmész-oldatot ír, nem klóros vizet.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Semmelweis_Ignác" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Ignaz Semmelweis, dark receding hair, side whiskers, dark frock coat with sleeves rolled up. Washing his hands in a white basin of chlorinated lime solution, a long row of white hospital beds softly lit behind him. Cool clean light with one warm lamp in the distance.">Prompt másolása</button>
+          <div class="szo">73 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">18</td>
+      <td><b>Guglielmo Marconi</b><div class="t">Történelem</div>
+          <div class="f">tortenel_7_marconi.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fényképek.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Guglielmo_Marconi" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Guglielmo Marconi, neat dark hair and moustache, formal early-1900s suit. Hand on a brass telegraph key, bright electric sparks jumping across a coil beside it, a tall antenna mast through the window against a stormy sea. Blue-white electric glow.">Prompt másolása</button>
+          <div class="szo">66 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">19</td>
+      <td><b>Petőfi Sándor</b><div class="t">Magyar nyelv és irodalom</div>
+          <div class="f">magyar_n_7_petofi.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Barabás Miklós életében rajzolta; a dagerrotípia vitatott.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Petőfi_Sándor" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Sandor Petofi, young poet, dark wavy hair, small beard, open-collared white shirt and dark coat. On the stone steps of a cafe mid-speech, a printed sheet of poetry raised in his fist above a crowd of cockades and flags. Dramatic overcast March light.">Prompt másolása</button>
+          <div class="szo">70 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">20</td>
+      <td><b>Arany János</b><div class="t">Magyar nyelv és irodalom</div>
+          <div class="f">magyar_n_7_arany.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fényképek.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Arany_János" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Janos Arany, receding hairline, neat beard, dark scholar's coat. Sitting at a candlelit desk, a quill paused above a half-written page, the shadowy figures of his ballad faintly suggested in the darkness behind him. Muted warm light in a quiet room.">Prompt másolása</button>
+          <div class="szo">68 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">21</td>
+      <td><b>Johann Sebastian Bach</b><div class="t">Ének-zene</div>
+          <div class="f">enek_zen_7_bach.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Haussmann festménye, 1746, életében készült.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Johann_Sebastian_Bach" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Johann Sebastian Bach, curled grey wig, dark cantor's coat. Seated at a baroque church organ with his hands on the keys, towering gilded organ pipes rising into shadow, candlelight on the open manuscript, a boys' choir faintly visible below. Warm gold and deep brown.">Prompt másolása</button>
+          <div class="szo">71 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">22</td>
+      <td><b>Ludwig van Beethoven</b><div class="t">Ének-zene</div>
+          <div class="f">enek_zen_7_beethoven.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Több korabeli festmény.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Ludwig_van_Beethoven" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Ludwig van Beethoven, wild grey hair, intense scowling face, dark coat. Leaning over an open piano with one hand pressed flat on the wooden case to feel the vibration, manuscript pages scattered across the floor. Stormy grey light from a tall window in a cluttered Vienna room.">Prompt másolása</button>
+          <div class="szo">74 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">23</td>
+      <td><b>Bartók Béla</b><div class="t">Ének-zene</div>
+          <div class="f">enek_zen_7_bartok.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fényképek, köztük a fonográfos gyűjtőútról.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Bartók_Béla" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Bela Bartok, dark hair, sharp features, plain travelling suit. Crouching beside a large brass phonograph horn and writing down a melody while an old woman in a headscarf sings into it. Whitewashed cottage wall and dirt yard of a Hungarian village, warm late afternoon light.">Prompt másolása</button>
+          <div class="szo">72 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">24</td>
+      <td><b>Neumann János</b><div class="t">Digitális kultúra</div>
+          <div class="f">digitali_7_neumann.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fényképek.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Neumann_János" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, John von Neumann, neat dark hair, round friendly face, immaculate grey three-piece suit. Holding a punched card before a room-sized computer of glowing vacuum tubes and cables. Soft cyan glow and warm ceiling lamps in a 1940s computer hall.">Prompt másolása</button>
+          <div class="szo">66 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">25</td>
+      <td><b>Ada Lovelace</b><div class="t">Digitális kultúra</div>
+          <div class="f">digitali_7_lovelace.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Korabeli festmények és egy dagerrotípia.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Ada_Lovelace" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Ada Lovelace, dark hair in a braided updo, elegant blue-grey Victorian gown. Seated at a desk covered in handwritten tables of numbers with one hand on the page, a brass mechanical calculating engine of gears and wheels beside her. Candlelight and cool daylight mixing in a drawing room.">Prompt másolása</button>
+          <div class="szo">75 szó</div></td>
+    </tr>
+    <tr>
+      <td class="sz">26</td>
+      <td><b>Alan Turing</b><div class="t">Digitális kultúra</div>
+          <div class="f">digitali_7_turing.png</div></td>
+      <td><span class="cimke" style="background:#2f8f60">VAN HITELES KÉP</span>
+          <div class="m">Fényképek.</div><div class="l"><a href="https://hu.wikipedia.org/wiki/Alan_Turing" target="_blank">Wikipédia — mentsd le az arcképét</a></div></td>
+      <td><button class="cp" data-p="dynamic trading card hero art, painterly digital illustration, waist-up portrait, edge to edge full bleed, no frame, high contrast, bold saturated colours, warm rim light, deep shadows, Alan Turing, tousled dark hair, tweed jacket. Holding a strip of paper tape before a huge rotating code-breaking machine of wheels and wiring, cipher sheets scattered on the desk. Dim green desk lamp and the glow of rotating dials in a wartime hut.">Prompt másolása</button>
+          <div class="szo">70 szó</div></td>
+    </tr></tbody></table>
+<script>
+document.querySelectorAll('.cp').forEach(b=>b.addEventListener('click',()=>{
+  navigator.clipboard.writeText(b.dataset.p).then(()=>{
+    const r=b.textContent; b.textContent='Másolva ✓'; b.classList.add('ok');
+    setTimeout(()=>{b.textContent=r;b.classList.remove('ok');},1400);});
+}));
+</script></body></html>
