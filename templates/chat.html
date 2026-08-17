@@ -228,6 +228,7 @@
         quizAllDone: {{ t('quiz_all_done')|tojson }},
         quizTryAgainFmt: {{ t('quiz_try_again_fmt')|tojson }},
         quizAttemptsLeftFmt: {{ t('quiz_attempts_left_fmt')|tojson }},
+        quizAttemptsLeftNowFmt: {{ t('quiz_attempts_left_now_fmt')|tojson }},
         quizStudyMoreFmt: {{ t('quiz_study_more_fmt')|tojson }},
         quizStudy60Retry: {{ t('quiz_study_60_retry')|tojson }},
         gateRetryHint: {{ t('gate_retry_hint')|tojson }},
@@ -855,7 +856,12 @@
                     var failMsg = '';
                     if (d.phase === 1) {
                         if (d.attempts_remaining > 0) {
-                            failMsg = '<p class="result-hint">' + escapeHtml(fmt(L.quizAttemptsLeftFmt, { n: d.attempts_remaining, time: formatMinutes(d.minutes_needed) })) + '</p>';
+                            /* Ha nincs várakozás (0 perc), ne írjuk ki, hogy
+                               tanulnia kell – rögtön újrapróbálhatja. */
+                            var hatra = d.minutes_needed > 0
+                                ? fmt(L.quizAttemptsLeftFmt, { n: d.attempts_remaining, time: formatMinutes(d.minutes_needed) })
+                                : fmt(L.quizAttemptsLeftNowFmt, { n: d.attempts_remaining });
+                            failMsg = '<p class="result-hint">' + escapeHtml(hatra) + '</p>';
                         } else {
                             failMsg = '<p class="result-hint">' + escapeHtml(fmt(L.quizStudyMoreFmt, { time: formatMinutes(d.minutes_needed) })) + '</p>';
                         }
@@ -1219,7 +1225,9 @@
             }
             if (d.phase === 1) {
                 if (d.attempts_remaining > 0) {
-                    return fmt(L.quizAttemptsLeftFmt, { n: d.attempts_remaining, time: formatMinutes(d.minutes_needed) });
+                    return d.minutes_needed > 0
+                        ? fmt(L.quizAttemptsLeftFmt, { n: d.attempts_remaining, time: formatMinutes(d.minutes_needed) })
+                        : fmt(L.quizAttemptsLeftNowFmt, { n: d.attempts_remaining });
                 }
                 return fmt(L.quizStudyMoreFmt, { time: formatMinutes(d.minutes_needed) });
             }

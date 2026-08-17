@@ -262,6 +262,9 @@ class ChildTopicScore(Base):
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     topic_attempts: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     topic_learning_minutes: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    # Hányszor kapott már PONTOT ebből a témakörből. Ebből tudjuk, hogy a
+    # mostani sikeres teszt az első teljesítés-e, vagy már ismétlés.
+    pont_jutalom: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
 class ChildProgress(Base):
@@ -295,6 +298,33 @@ class ChildProgress(Base):
     )
     active_skin: Mapped[str] = mapped_column(
         String(100), nullable=False, default="default"
+    )
+
+
+class ChildWallet(Base):
+    """A gyerek pénztárcája – gyerekenként EGY sor.
+
+    A child_progress tantárgyanként külön sor, ezért a tasakra költhető
+    pont nem oda való: azt a gyerek egészére kell gyűjteni.
+
+    pont          – elkölthető, ebből vesz tasakot
+    osszes_pont   – amennyit valaha szerzett (csak statisztika, sosem csökken)
+    erme          – duplikátumokból jön, később cserére lesz jó
+    ingyen_tasak  – három azonos ritkaságú duplikátum egy ingyen tasakot ad
+    """
+
+    __tablename__ = "child_wallet"
+
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id", ondelete="CASCADE"), primary_key=True
+    )
+    pont: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    osszes_pont: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    erme: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    ingyen_tasak: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    tasak_szam: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
 
@@ -419,6 +449,7 @@ def init_db() -> None:
     ensure_chat_sessions_grade_column()
     ensure_children_voice_columns()
     ensure_child_cards_table()
+    ensure_child_wallet_table()
 
 
 def ensure_children_voice_columns() -> None:
@@ -658,6 +689,12 @@ def ensure_topic_scores_extra_columns() -> None:
             text(
                 "ALTER TABLE child_topic_scores ADD COLUMN IF NOT EXISTS "
                 "topic_learning_minutes FLOAT NOT NULL DEFAULT 0.0"
+            )
+        )
+        conn.execute(
+            text(
+                "ALTER TABLE child_topic_scores ADD COLUMN IF NOT EXISTS "
+                "pont_jutalom INTEGER NOT NULL DEFAULT 0"
             )
         )
 
@@ -1304,7 +1341,35 @@ def _topic_score_dict(row: ChildTopicScore) -> dict[str, Any]:
         "completed_at": row.completed_at.isoformat() if row.completed_at else None,
         "topic_attempts": row.topic_attempts,
         "topic_learning_minutes": row.topic_learning_minutes,
+        "pont_jutalom": getattr(row, "pont_jutalom", 0) or 0,
     }
+
+
+def bump_topic_reward(child_id: int, subject: str, grade: int,
+                      topic_id: str) -> int:
+    """Megjelöli, hogy ebből a témakörből most pont járt.
+
+    Visszaadja, hogy a NÖVELÉS ELŐTT hányszor kapott már pontot – ebből
+    tudja a hívó, hogy ez az első teljesítés (0) vagy már ismétlés.
+    """
+    db = _session()
+    try:
+        row = db.scalar(
+            select(ChildTopicScore).where(
+                ChildTopicScore.child_id == child_id,
+                ChildTopicScore.subject == subject,
+                ChildTopicScore.grade == grade,
+                ChildTopicScore.topic_id == topic_id,
+            )
+        )
+        if row is None:
+            return 0
+        elozo = row.pont_jutalom or 0
+        row.pont_jutalom = elozo + 1
+        db.commit()
+        return elozo
+    finally:
+        db.close()
 
 
 def get_topic_scores(
@@ -1774,6 +1839,122 @@ def add_child_card(child_id: int, card_id: str) -> dict[str, Any]:
         row.darab = (row.darab or 1) + 1
         db.commit()
         return {"uj": False, "darab": row.darab}
+    finally:
+        db.close()
+
+
+# ══ pénztárca ═══════════════════════════════════════════════════════════════
+def ensure_child_wallet_table() -> None:
+    """Biztosítja, hogy a child_wallet tábla létezik."""
+    ChildWallet.__table__.create(bind=_get_engine(), checkfirst=True)
+
+
+def _wallet_row(db, child_id: int) -> "ChildWallet":
+    row = db.get(ChildWallet, child_id)
+    if row is None:
+        row = ChildWallet(child_id=child_id)
+        db.add(row)
+        db.flush()
+    return row
+
+
+def get_wallet(child_id: int) -> dict[str, Any]:
+    """{"pont": n, "osszes_pont": n, "erme": n, "ingyen_tasak": n, "tasak_szam": n}"""
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        db.commit()
+        return {
+            "pont": r.pont or 0,
+            "osszes_pont": r.osszes_pont or 0,
+            "erme": r.erme or 0,
+            "ingyen_tasak": r.ingyen_tasak or 0,
+            "tasak_szam": r.tasak_szam or 0,
+        }
+    finally:
+        db.close()
+
+
+def add_points(child_id: int, mennyi: int) -> dict[str, Any]:
+    """Pont jóváírása. Negatív értéket nem fogad el – a levonás a spend_points."""
+    if mennyi <= 0:
+        return get_wallet(child_id)
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        r.pont = (r.pont or 0) + mennyi
+        r.osszes_pont = (r.osszes_pont or 0) + mennyi
+        db.commit()
+        return {"pont": r.pont, "osszes_pont": r.osszes_pont,
+                "erme": r.erme or 0, "ingyen_tasak": r.ingyen_tasak or 0,
+                "tasak_szam": r.tasak_szam or 0}
+    finally:
+        db.close()
+
+
+def spend_points(child_id: int, mennyi: int) -> bool:
+    """Levonás. False, ha nincs elég – ilyenkor semmit nem változtat."""
+    if mennyi <= 0:
+        return True
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        if (r.pont or 0) < mennyi:
+            db.commit()
+            return False
+        r.pont = (r.pont or 0) - mennyi
+        db.commit()
+        return True
+    finally:
+        db.close()
+
+
+def add_coins_wallet(child_id: int, mennyi: int) -> int:
+    """Érme jóváírása duplikátumért. Visszaadja az új egyenleget."""
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        r.erme = (r.erme or 0) + max(0, mennyi)
+        db.commit()
+        return r.erme
+    finally:
+        db.close()
+
+
+def add_free_pack(child_id: int, mennyi: int = 1) -> int:
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        r.ingyen_tasak = (r.ingyen_tasak or 0) + max(0, mennyi)
+        db.commit()
+        return r.ingyen_tasak
+    finally:
+        db.close()
+
+
+def use_free_pack(child_id: int) -> bool:
+    """Ingyen tasak beváltása. False, ha nincs."""
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        if (r.ingyen_tasak or 0) < 1:
+            db.commit()
+            return False
+        r.ingyen_tasak -= 1
+        db.commit()
+        return True
+    finally:
+        db.close()
+
+
+def bump_pack_counter(child_id: int) -> int:
+    """A kibontott tasakok száma – ebből lesz a tasak sorszáma a bontáskor."""
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        r.tasak_szam = (r.tasak_szam or 0) + 1
+        db.commit()
+        return r.tasak_szam
     finally:
         db.close()
 

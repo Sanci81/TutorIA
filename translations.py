@@ -353,6 +353,11 @@ TRANSLATIONS = {
         "hu": "Még {n} próbálkozásod van. Tanulj még {time} és próbálhatsz újra!",
         "es": "Te quedan {n} intentos. ¡Estudia {time} más y vuelve a intentarlo!",
     },
+    # Amíg van a három esélyből, NEM kell várni – ilyenkor ez a szöveg megy.
+    "quiz_attempts_left_now_fmt": {
+        "hu": "Még {n} próbálkozásod van. Nézd át a hibákat, és próbáld újra!",
+        "es": "Te quedan {n} intentos. ¡Repasa los fallos y vuelve a intentarlo!",
+    },
     "quiz_study_more_fmt": {
         "hu": "Tanulj még {time} és utána próbálhatsz újra!",
         "es": "¡Estudia {time} más y luego vuelve a intentarlo!",

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – Bolt és tasakbontás</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:"Segoe UI",system-ui,sans-serif;color:#e9e4d6;min-height:100vh;
+    background:radial-gradient(circle at 50% -10%,#26305e,#141830 45%,#080a16);
+    padding:22px 16px 60px}
+  .fej{max-width:960px;margin:0 auto 20px;display:flex;justify-content:space-between;
+    align-items:center;gap:14px;flex-wrap:wrap}
+  .fej h1{font-size:1.35rem;letter-spacing:.3px}
+  .fej .alcim{opacity:.6;font-size:.85rem;margin-top:3px}
+  .egyenleg{display:flex;gap:10px;flex-wrap:wrap}
+  .zseton{background:rgba(255,255,255,.07);border:1px solid rgba(240,200,105,.32);
+    border-radius:999px;padding:8px 16px;font-size:.9rem;font-weight:700;white-space:nowrap}
+  .zseton b{color:#f0c869;font-size:1.05rem;margin-right:5px}
+
+  /* ── BOLT ─────────────────────────────────────────────── */
+  .bolt{max-width:960px;margin:0 auto;display:grid;gap:16px;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .tasak{background:linear-gradient(160deg,#2b3568,#1c2348);border-radius:16px;padding:20px 18px;
+    border:1px solid rgba(240,200,105,.28);display:flex;flex-direction:column;gap:12px;
+    position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s}
+  .tasak:hover{transform:translateY(-4px);box-shadow:0 16px 38px rgba(0,0,0,.5)}
+  .tasak.szegeny{opacity:.5}
+  .tasak .cim{font-size:1.15rem;font-weight:900;letter-spacing:.4px}
+  .tasak .db{font-size:.78rem;color:#f0c869;font-weight:800;letter-spacing:1.6px}
+  .tasak .le{font-size:.85rem;opacity:.75;line-height:1.5;flex:1}
+  .tasak .gar{font-size:.76rem;background:rgba(240,200,105,.16);border:1px solid rgba(240,200,105,.4);
+    border-radius:8px;padding:7px 10px;line-height:1.45}
+  .vesz{border:0;border-radius:10px;padding:12px;font-size:.95rem;font-weight:900;cursor:pointer;
+    background:linear-gradient(150deg,#f0c869,#c99424);color:#241d06;transition:filter .15s}
+  .vesz:hover{filter:brightness(1.08)}
+  .vesz:disabled{background:#39406b;color:#8890b5;cursor:not-allowed}
+  .tasak .ar{display:flex;align-items:baseline;gap:6px}
+  .tasak .ar b{font-size:1.7rem;color:#f0c869}
+  .tasak .ar span{font-size:.8rem;opacity:.65}
+
+  /* ── BONTÁS ───────────────────────────────────────────── */
+  .fedes{position:fixed;inset:0;background:rgba(6,9,22,.94);z-index:50;
+    display:none;align-items:center;justify-content:center;flex-direction:column;gap:22px;padding:20px}
+  .fedes.nyit{display:flex}
+  .utasitas{font-size:.95rem;opacity:.75;letter-spacing:.3px;text-align:center}
+
+  .csomag{width:230px;height:320px;border-radius:18px;cursor:pointer;position:relative;
+    background:linear-gradient(155deg,#3d4a8c,#232b57 55%,#161c3c);
+    border:2px solid rgba(240,200,105,.5);box-shadow:0 22px 60px rgba(0,0,0,.7);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    overflow:hidden;animation:leb 2.6s ease-in-out infinite}
+  @keyframes leb{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
+  .csomag::after{content:"";position:absolute;top:-60%;left:-40%;width:60%;height:220%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
+    transform:rotate(18deg);animation:csill 2.8s linear infinite}
+  @keyframes csill{0%{left:-40%}100%{left:120%}}
+  .csomag .jel{font-family:Georgia,serif;font-size:2rem;font-weight:900;color:#f4ecd8}
+  .csomag .jel span{color:#f0c869}
+  .csomag .mit{font-size:.72rem;letter-spacing:3.4px;color:#f0c869;font-weight:800}
+  .csomag.szakad{animation:szak .5s ease-in forwards}
+  @keyframes szak{0%{transform:scale(1)}40%{transform:scale(1.1) rotate(-3deg)}
+    100%{transform:scale(.2) rotate(8deg);opacity:0}}
+
+  .lapsor{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;perspective:1400px}
+  .lap{width:190px;aspect-ratio:340/548;position:relative;cursor:pointer;
+    transform-style:preserve-3d;transition:transform .55s cubic-bezier(.3,1.3,.5,1)}
+  .lap.fordul{transform:rotateY(180deg)}
+  .lap .oldal{position:absolute;inset:0;backface-visibility:hidden;border-radius:11px;
+    overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.6)}
+  .lap .hatlap{background:linear-gradient(155deg,#3d4a8c,#1c2348);
+    border:2px solid rgba(240,200,105,.45);display:flex;align-items:center;justify-content:center}
+  .lap .hatlap b{font-family:Georgia,serif;font-size:1.5rem;color:#f4ecd8}
+  .lap .hatlap b span{color:#f0c869}
+  .lap .elolap{transform:rotateY(180deg);background:#101830}
+  .lap .elolap img{width:100%;height:100%;object-fit:contain;display:block}
+  /* A címke a megfordított lap GYEREKE, ezért vele együtt tükröződne, és a
+     szöveg visszafelé látszana. Ezért visszaforgatjuk. */
+  .lap.fordul .cimke{transform:rotateY(180deg)}
+  .lap .cimke{position:absolute;bottom:-26px;left:0;right:0;text-align:center;font-size:.78rem;
+    font-weight:800;opacity:0;transition:opacity .3s}
+  .lap.fordul .cimke{opacity:1}
+  .lap .cimke.uj{color:#7fe0ab}
+  .lap .cimke.dupla{color:#f0c869}
+  .lap.ritka.fordul .elolap{box-shadow:0 0 0 3px #f0c869,0 0 46px 10px rgba(240,200,105,.55)}
+  .lap.ritka.fordul{animation:raz .45s 2}
+  @keyframes raz{0%,100%{transform:rotateY(180deg)}
+    25%{transform:rotateY(180deg) translateX(-5px)}75%{transform:rotateY(180deg) translateX(5px)}}
+
+  .osszegzo{background:rgba(255,255,255,.06);border:1px solid rgba(240,200,105,.3);
+    border-radius:14px;padding:16px 22px;text-align:center;line-height:1.7;display:none;max-width:440px}
+  .osszegzo.lat{display:block}
+  .osszegzo b{color:#f0c869}
+  .zar{border:0;border-radius:10px;padding:12px 26px;font-size:.95rem;font-weight:900;
+    cursor:pointer;background:linear-gradient(150deg,#f0c869,#c99424);color:#241d06;display:none}
+  .zar.lat{display:inline-block}
+</style>
+</head>
+<body>
+
+<div class="fej">
+  <div>
+    <h1 id="t-cim">Tasakbolt</h1>
+    <div class="alcim" id="t-alcim">A pontjaidat tasakra váltod, a tasakból lapok jönnek.</div>
+  </div>
+  <div class="egyenleg">
+    <div class="zseton"><b id="e-pont">0</b><span id="t-pont">pont</span></div>
+    <div class="zseton"><b id="e-erme">0</b><span id="t-erme">érme</span></div>
+    <div class="zseton"><b id="e-lap">0</b><span id="t-lap">lapod van</span></div>
+  </div>
+</div>
+
+<div class="bolt" id="bolt"></div>
+
+<div class="fedes" id="fedes">
+  <div class="utasitas" id="utasitas"></div>
+  <div class="csomag" id="csomag">
+    <div class="jel">Tutor<span>IA</span></div>
+    <div class="mit" id="csomag-mit">TASAK</div>
+  </div>
+  <div class="lapsor" id="lapsor"></div>
+  <div class="osszegzo" id="osszegzo"></div>
+  <button class="zar" id="zar">Az albumba</button>
+</div>
+
+<script>
+/* Ezt a blokkot ÉLESBEN a Flask tölti ki. Ha a fájlt közvetlenül nyitod meg a
+   böngészőből, ez a három sor hibás marad – az nem baj: külön <script> blokk,
+   csak ez dől el, és lentebb a próbaadat lép a helyére. */
+window.ADAT = {{ adat|tojson }};
+window.VASARLAS_URL = "{{ vasarlas_url }}";
+window.ALBUM_URL = "{{ album_url }}";
+</script>
+
+<script>
+/* ────────────────────────────────────────────────────────────────────────────
+   Az ADAT-ot élesben a szerver tölti ki. Itt próbaadat van, hogy az egész
+   végigjátszható legyen böngészőből is.
+   ──────────────────────────────────────────────────────────────────────────── */
+const ADAT = window.ADAT || {
+  pont: 620, erme: 50, lapok: 3,
+  tasakok: [
+    {id:"egy",   nev:"Egy lap",   ar:100, meret:1, garancia:null,
+     leiras:"Egy véletlen lap. Bármi lehet."},
+    {id:"ketto", nev:"Két lap",   ar:180, meret:2, garancia:null,
+     leiras:"Két lap, olcsóbban, mintha külön vennéd."},
+    {id:"harom", nev:"Három lap", ar:250, meret:3, garancia:"ritka",
+     leiras:"Három lap, és az utolsó garantáltan ritka vagy jobb."},
+  ],
+  /* próbahúzás – élesben a szerver adja vissza vásárláskor */
+  proba: [
+    {nev:"Marie Curie",  kep:"static/kartyak/hu/kemia_7_curie_kartya.png",
+     ritkasag:"nagyon_ritka", uj:true},
+    {nev:"Mengyelejev",  kep:"static/kartyak/hu/kemia_7_mengyelejev_kartya.png",
+     ritkasag:"ritka", uj:false},
+    {nev:"Marie Curie",  kep:"static/kartyak/hu/kemia_7_curie_kartya.png",
+     ritkasag:"nagyon_ritka", uj:false},
+  ],
+};
+
+const RITKA = new Set(["nagyon_ritka","legendas"]);
+const $ = id => document.getElementById(id);
+const DUPLA = ADAT.dupla_erme || 25;
+
+/* ── két nyelv ──────────────────────────────────────────────────────────── */
+const SZOVEG = {
+  hu: {
+    cim:"Tasakbolt",
+    alcim:"A pontjaidat tasakra váltod, a tasakból lapok jönnek.",
+    pont:"pont", erme:"érme", lap:"lapod van",
+    lapdb:m=>`${m} LAP`,
+    garancia:g=>`Az utolsó lap garantáltan <b>${g==='ritka'?'ritka':'nagyon ritka'}</b> vagy jobb.`,
+    arjel:t=>`pont · ${Math.round(t.ar/t.meret)} pont/lap`,
+    vesz:"Megveszem", hianyzik:n=>`Még ${n} pont kell`,
+    szakitsd:"Koppints a tasakra, hogy felszakítsd",
+    forditsd:"Fordítsd meg a lapokat",
+    uj:"ÚJ LAP", dupla:n=>`már megvolt · +${n} érme`,
+    ossz:(uj,dup,erme)=>`<b>${uj}</b> új lap került a gyűjteményedbe.` +
+      (dup ? `<br><b>${dup}</b> már megvolt — ${erme} érmét kaptál értük.` : ``),
+    album:"Az albumba",
+    ures:"Még nincs kész kártya ezen az oldalon.",
+  },
+  es: {
+    cim:"Tienda de sobres",
+    alcim:"Cambias tus puntos por sobres, y de los sobres salen cromos.",
+    pont:"puntos", erme:"monedas", lap:"cromos tienes",
+    lapdb:m=>`${m} ${m===1?'CROMO':'CROMOS'}`,
+    garancia:g=>`El último cromo es <b>${g==='ritka'?'raro':'muy raro'}</b> o mejor, garantizado.`,
+    arjel:t=>`puntos · ${Math.round(t.ar/t.meret)} por cromo`,
+    vesz:"Comprar", hianyzik:n=>`Te faltan ${n} puntos`,
+    szakitsd:"Toca el sobre para abrirlo",
+    forditsd:"Da la vuelta a los cromos",
+    uj:"NUEVO", dupla:n=>`repetido · +${n} monedas`,
+    ossz:(uj,dup,erme)=>`<b>${uj}</b> cromos nuevos en tu colección.` +
+      (dup ? `<br><b>${dup}</b> repetidos — has ganado ${erme} monedas.` : ``),
+    album:"Al álbum",
+    ures:"Todavía no hay cromos listos en este lado.",
+  },
+};
+const T = SZOVEG[(ADAT.nyelv || "hu")] || SZOVEG.hu;
+
+document.documentElement.lang = ADAT.nyelv || "hu";
+$("t-cim").textContent   = T.cim;
+$("t-alcim").textContent = T.alcim;
+$("t-pont").textContent  = T.pont;
+$("t-erme").textContent  = T.erme;
+$("t-lap").textContent   = T.lap;
+$("zar").textContent     = T.album;
+
+let allapot = {pont:ADAT.pont, erme:ADAT.erme, lapok:ADAT.lapok};
+
+function egyenleg(){
+  $("e-pont").textContent = allapot.pont;
+  $("e-erme").textContent = allapot.erme;
+  $("e-lap").textContent  = allapot.lapok;
+  boltRajz();
+}
+
+function boltRajz(){
+  $("bolt").innerHTML = ADAT.tasakok.map(t => {
+    const telik = allapot.pont >= t.ar;
+    return `<div class="tasak ${telik?'':'szegeny'}">
+      <div class="db">${T.lapdb(t.meret)}</div>
+      <div class="cim">${t.nev}</div>
+      <div class="le">${t.leiras}</div>
+      ${t.garancia ? `<div class="gar">${T.garancia(t.garancia)}</div>` : ``}
+      <div class="ar"><b>${t.ar}</b><span>${T.arjel(t)}</span></div>
+      <button class="vesz" data-id="${t.id}" ${telik?'':'disabled'}>
+        ${telik ? T.vesz : T.hianyzik(t.ar - allapot.pont)}</button>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.vesz').forEach(b =>
+    b.addEventListener('click', () => vasarol(b.dataset.id)));
+}
+
+/* ── vásárlás ───────────────────────────────────────────────────────────── */
+async function vasarol(tasakId){
+  const t = ADAT.tasakok.find(x => x.id === tasakId);
+  if (!t || allapot.pont < t.ar) return;
+
+  let lapok;
+  if (window.VASARLAS_URL) {                    // éles: a szerver húz
+    let v;
+    try {
+      v = await fetch(window.VASARLAS_URL, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({tasak: tasakId})
+      }).then(r => r.json());
+    } catch (e) { alert(String(e)); return; }
+    if (!v || v.hiba) { alert((v && v.hiba) || 'hiba'); return; }
+    lapok = v.lapok || [];
+    if (!lapok.length) { alert(T.ures); return; }
+    // A szerver a duplikátum-érmét MÁR jóváírta. A lapok megfordításakor a
+    // képernyőn ismét felfut az érme, ezért itt a bontás ELŐTTI egyenlegről
+    // indulunk – így a végén pont a szerver szerinti szám látszik.
+    allapot.pont  = v.pont;
+    allapot.erme  = ('erme_elotte'  in v) ? v.erme_elotte  : v.erme;
+    allapot.lapok = ('lapok_elotte' in v) ? v.lapok_elotte : allapot.lapok;
+  } else {                                      // próba a böngészőben
+    lapok = ADAT.proba.slice(0, t.meret);
+    allapot.pont -= t.ar;
+  }
+  egyenleg();
+  bontas(t, lapok);
+}
+
+/* ── a bontás ───────────────────────────────────────────────────────────── */
+function bontas(t, lapok){
+  $("csomag-mit").textContent = t.nev.toUpperCase();
+  $("lapsor").innerHTML = "";
+  $("osszegzo").className = "osszegzo";
+  $("zar").className = "zar";
+  $("utasitas").textContent = T.szakitsd;
+  const cs = $("csomag");
+  cs.className = "csomag";
+  cs.style.display = "";
+  $("fedes").classList.add("nyit");
+
+  cs.onclick = () => {
+    cs.className = "csomag szakad";
+    setTimeout(() => { cs.style.display = "none"; lapokKi(lapok); }, 480);
+  };
+}
+
+function lapokKi(lapok){
+  $("utasitas").textContent = T.forditsd;
+  $("lapsor").innerHTML = lapok.map((l, i) => `
+    <div class="lap ${RITKA.has(l.ritkasag)?'ritka':''}" data-i="${i}">
+      <div class="oldal hatlap"><b>Tutor<span>IA</span></b></div>
+      <div class="oldal elolap"><img src="${l.kep}" alt="${l.nev}"></div>
+      <div class="cimke ${l.uj?'uj':'dupla'}">${l.uj ? T.uj : T.dupla(DUPLA)}</div>
+    </div>`).join('');
+
+  let hatra = lapok.length;
+  document.querySelectorAll('.lap').forEach(el => {
+    el.addEventListener('click', () => {
+      if (el.classList.contains('fordul')) return;
+      el.classList.add('fordul');
+      const l = lapok[Number(el.dataset.i)];
+      if (l.uj) allapot.lapok++; else allapot.erme += DUPLA;
+      egyenleg();
+      if (--hatra === 0) setTimeout(() => vege(lapok), 700);
+    }, {once:false});
+  });
+}
+
+function vege(lapok){
+  const uj = lapok.filter(l => l.uj).length;
+  const dup = lapok.length - uj;
+  $("utasitas").textContent = "";
+  $("osszegzo").innerHTML = T.ossz(uj, dup, dup * DUPLA);
+  $("osszegzo").className = "osszegzo lat";
+  $("zar").className = "zar lat";
+}
+
+$("zar").addEventListener('click', () => {
+  $("fedes").classList.remove("nyit");
+  if (window.ALBUM_URL) location.href = window.ALBUM_URL;
+});
+
+egyenleg();
+</script>
+</body>
+</html>

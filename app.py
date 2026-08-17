@@ -39,8 +39,11 @@ from flask import (
 import resend
 from werkzeug.security import check_password_hash, generate_password_hash
 
+import abra
 import database
 import kartyak
+import pontok
+import tasak
 import translations as i18n
 from curriculum_loader import (
     ELO_IDEGEN_NYELV_1_4_FILE,
@@ -1606,7 +1609,10 @@ def _sanitize_svg(svg: str) -> str | None:
     svg = svg.strip()
     if not svg.lower().startswith("<svg") or len(svg) > 20000:
         return None
-    return svg
+    # Biztonságilag rendben – most jön a TARTALMI ellenőrzés: fekete kocka,
+    # egymásra csúszó feliratok, kilógó szöveg. Az abra.javit vagy megjavítja,
+    # vagy None-t ad: jobb, ha nincs rajz, mint ha zavaros van.
+    return abra.javit(svg)
 
 
 # ── Ábra: kikényszerített második kör ────────────────────────────────────────
@@ -1654,6 +1660,12 @@ _ABRA_RULES_HU = (
     "- Csak rect, circle, line, path, polygon, text elem. Script, külső kép, "
     "hivatkozás SOHA.\n"
     '- Vonalak: stroke="#222" stroke-width="3" fill="none".\n'
+    '- A fill="none" KÖTELEZŐ minden rect, circle, ellipse, polygon és path '
+    "elemen. Ha kimarad, a böngésző feketére tölti, és tömör fekete folt lesz "
+    "a rajz helyén.\n"
+    "- Ha a fogalom absztrakt (valószínűség, véletlen, nyelvtani fogalom) és "
+    "nem tudsz olyan rajzot adni, ami MÉR vagy MEGMUTAT valami valóságosat, "
+    "add vissza azt, hogy NINCS. A kitalált ikon rosszabb, mint a semmi.\n"
     '- Feliratok: font-size="16" fill="#222", MINDIG az alakzaton KÍVÜL, tőle '
     "legalább 12 pixelre; minden oldalon 30 pixel margó.\n"
     '- Bal oldali felirat: text-anchor="end"; jobb oldali: text-anchor="start"; '
@@ -1678,6 +1690,11 @@ _ABRA_RULES_ES = (
     "- Solo rect, circle, line, path, polygon, text. Nunca script, imagen "
     "externa ni enlaces.\n"
     '- Trazos: stroke="#222" stroke-width="3" fill="none".\n'
+    '- fill="none" es OBLIGATORIO en cada rect, circle, ellipse, polygon y '
+    "path. Si falta, el navegador lo rellena de negro y sale una mancha.\n"
+    "- Si el concepto es abstracto (probabilidad, azar, gramática) y no puedes "
+    "hacer un dibujo que MIDA o MUESTRE algo real, devuelve NINGUNO. Un icono "
+    "inventado es peor que nada.\n"
     '- Etiquetas: font-size="16" fill="#222", SIEMPRE FUERA de la figura, a 12 px '
     "como mínimo; margen de 30 px por cada lado.\n"
     '- Etiqueta a la izquierda: text-anchor="end"; a la derecha: text-anchor="start"; '
@@ -3096,6 +3113,8 @@ Reglas:
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- OBLIGATORIO escribir fill="none" en CADA rect, circle, ellipse, polygon y path. Si lo olvidas, el navegador lo rellena de NEGRO y sale una mancha negra en vez del dibujo. Sin excepción.
+- Si el concepto es ABSTRACTO (probabilidad, azar, conceptos gramaticales, sentimientos) y no puedes hacer un dibujo que MIDA o MUESTRE algo real, NO dibujes nada. Un icono inventado (un sol, un árbol, una cara) confunde al niño más que la ausencia de dibujo.
 - Las etiquetas: font-size="16" fill="#222" text-anchor="middle", y colócalas SIEMPRE FUERA de la figura, a al menos 12 píxeles de distancia.
 - Las proporciones de las figuras deben ser realistas: un rectángulo de 6 cm × 3 cm debe ser el doble de ancho que de alto.
 - Si indicas medidas, escribe el valor junto a la letra (ej. "a = 6 cm").
@@ -3334,6 +3353,8 @@ Reglas:
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- OBLIGATORIO escribir fill="none" en CADA rect, circle, ellipse, polygon y path. Si lo olvidas, el navegador lo rellena de NEGRO y sale una mancha negra en vez del dibujo. Sin excepción.
+- Si el concepto es ABSTRACTO (probabilidad, azar, conceptos gramaticales, sentimientos) y no puedes hacer un dibujo que MIDA o MUESTRE algo real, NO dibujes nada. Un icono inventado (un sol, un árbol, una cara) confunde al niño más que la ausencia de dibujo.
 - Las etiquetas: font-size="16" fill="#222" text-anchor="middle", y colócalas SIEMPRE FUERA de la figura, a al menos 12 píxeles de distancia.
 - Las proporciones de las figuras deben ser realistas: un rectángulo de 6 cm × 3 cm debe ser el doble de ancho que de alto.
 - Si indicas medidas, escribe el valor junto a la letra (ej. "a = 6 cm").
@@ -3513,6 +3534,8 @@ Szabályok:
 - Egyéb esetben csak akkor rajzolj, ha tényleg segít, és ne minden válaszban.
 - Az ábra rajzterülete legyen viewBox="0 0 320 220", és HAGYJ 30 pixel margót minden oldalon, hogy a feliratok ne lógjanak ki.
 - A vonalak: stroke="#222" stroke-width="3", kitöltés nélkül (fill="none").
+- KÖTELEZŐ kiírnod a fill="none"-t MINDEN rect, circle, ellipse, polygon és path elemre. Ha kihagyod, a böngésző FEKETÉRE tölti ki, és a rajz helyén tömör fekete folt lesz. Kivétel nincs.
+- Ha a fogalom ABSZTRAKT (valószínűség, véletlen, nyelvtani fogalom, érzelem), és nem tudsz olyan rajzot adni, ami MÉR vagy MEGMUTAT valami valóságosat, akkor NE rajzolj semmit. A kitalált ikon (nap, fa, arc) jobban összezavarja a gyereket, mint ha nincs ábra.
 - A feliratok: font-size="16" fill="#222" text-anchor="middle", és MINDIG az alakzaton KÍVÜL, tőle legalább 12 pixelre helyezd el őket.
 - Az alakzat arányai legyenek valósághűek: egy 6 cm × 3 cm-es téglalap kétszer olyan széles legyen, mint amilyen magas.
 - Ha méreteket is jelölsz, írd ki az értéket is a betűjel mellé (pl. "a = 6 cm").
@@ -5382,12 +5405,54 @@ def child_chat_send(child_id: int):
         new_xp += 50
         new_game_level = (new_xp // 200) + 1
 
+    # ── PONT: a befejezett leckéért és a lezárult szintfelmérőért ──────
+    # A pont a bolt fizetőeszköze. Kártyát a gyerek NEM közvetlenül a
+    # leckéből kap, hanem a boltban vett tasakból – így nem az évfolyam
+    # dönti el, mit gyűjthet, és a gyűjtés hosszú távon kitart.
+    pont_esemenyek: list[dict] = []
+    _pont_nyelv = "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu"
+
+    def _pont_jar(fajta: str, mennyi: int) -> None:
+        if mennyi <= 0:
+            return
+        try:
+            database.add_points(child_id, mennyi)
+            pont_esemenyek.append({
+                "fajta": fajta,
+                "pont": mennyi,
+                "szoveg": pontok.indoklas(fajta, mennyi, _pont_nyelv),
+            })
+            print(f"[PONT] child={child_id} {fajta} +{mennyi}", flush=True)
+        except Exception as _exc:
+            print(f"[PONT] hiba ({fajta}): {_exc}", flush=True)
+
+    if topic_done:
+        _mar_volt = bool(
+            current_topic
+            and current_topic in (progress.get("topics_completed") or [])
+        )
+        _pont_jar("lecke_ismetles" if _mar_volt else "lecke",
+                  pontok.lecke_pont(_mar_volt))
+
+    # A szintfelmérő akkor zárult le, ha a szint most állt át 0-ról.
+    if (
+        level_set is not None
+        and int(progress.get("level", 0) or 0) == 0
+        and int(level_set or 0) > 0
+    ):
+        _pont_jar(
+            "szintfelmero",
+            pontok.szintfelmero_pont(
+                int(progress.get("early_placement_attempts") or 0) + 1
+            ),
+        )
+
     # ── TUDÁSKÁRTYA: a befejezett leckéhez tartozó lapok jóváírása ──
-    # A kártyák katalógusa a kartyak.py-ban van; egy lecke 0, 1 vagy több
-    # lapot adhat. A duplikátum nem vész el: érmét ér helyette.
+    # RÉGI működés. A tasak.KARTYA_LECKEBOL kapcsolóval visszakapcsolható,
+    # de alapból ki van kapcsolva: a lapok most a boltból jönnek.
     uj_kartyak: list[dict] = []
     dupla_ermek = 0
-    if topic_done:
+    if topic_done and tasak.KARTYA_LECKEBOL:
         try:
             _oldal = "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu"
             for _k in kartyak.kartyak_leckehez(
@@ -5471,6 +5536,8 @@ def child_chat_send(child_id: int):
             "uj_kartyak": uj_kartyak,
             "dupla_ermek": dupla_ermek,
             "coins": progress.get("coins", 0),
+            "pont_esemenyek": pont_esemenyek,
+            "penztarca": database.get_wallet(child_id),
         }
     )
 
@@ -5844,14 +5911,18 @@ def child_chat_test_generate(child_id: int):
         topic_attempts = existing.get("topic_attempts", 0) if existing else 0
         phase = 1 if topic_learning_minutes < total_req_minutes else 2
 
-        if phase == 1 and topic_attempts >= 3:
-            return jsonify({
-                "ok": False,
-                "reason": "attempts_exhausted",
-                "message": i18n.t("test_gate_attempts_exhausted", g.lang),
-            }), 200
+        # Az ELSŐ HÁROM próbálkozás egymás után megy, várakozás nélkül.
+        # Csak ha ezek elfogytak, akkor kell tanulni a következő esélyért –
+        # de akkor is jár egy újabb esély óránként, tehát a gyerek soha nem
+        # ragad be véglegesen egy témakörnél.
+        #
+        # Korábban ez a tanulási várakozás MINDEN bukott teszt után életbe
+        # lépett, függetlenül attól, maradt-e még próbálkozás. Emiatt a 2. és
+        # 3. esélyhez sosem lehetett eljutni: egy hiba után azonnal jött az
+        # egy óra. Ezért nézzük meg előbb, hogy jár-e még próbálkozás.
+        varakozas_kell = (phase == 2) or (topic_attempts >= 3)
 
-        if existing and existing.get("completed_at"):
+        if varakozas_kell and existing and existing.get("completed_at"):
             try:
                 last_test_dt = datetime.fromisoformat(existing["completed_at"])
             except (ValueError, TypeError):
@@ -6058,24 +6129,27 @@ def child_chat_test_submit(child_id: int):
             can_retry = False
             attempts_remaining = 0
             minutes_needed = 0
+        elif new_attempts < 3:
+            # Van még a három esélyből – AZONNAL újrapróbálhatja. Itt
+            # szándékosan 0 a várakozás: a tanulási idő csak akkor jön,
+            # ha mindhárom próbálkozás elfogyott.
+            can_retry = True
+            attempts_remaining = 3 - new_attempts
+            minutes_needed = 0
         else:
-            minutes_needed = 60
-            if new_attempts < 3:
-                can_retry = True
-                attempts_remaining = 3 - new_attempts
-                minutes_needed = max(60, minutes_needed)
-            else:
-                can_retry = False
-                attempts_remaining = 0
+            # Elfogyott a három esély: egy óra tanulás, utána egy új próba.
+            can_retry = False
+            attempts_remaining = 0
+            minutes_needed = TEST_RETRY_STUDY_MINUTES
     else:
         if passed:
             can_retry = False
             attempts_remaining = 0
             minutes_needed = 0
         else:
-            can_retry = True
-            attempts_remaining = -1
-            minutes_needed = 60
+            can_retry = False
+            attempts_remaining = 0
+            minutes_needed = TEST_RETRY_STUDY_MINUTES
 
     logger.warning(
         "TEST_DEBUG phase=%s passed=%s score=%s threshold=%s "
@@ -6104,6 +6178,35 @@ def child_chat_test_submit(child_id: int):
         new_coins = cur_progress.get("coins", 0) + 100
         if score == 100:
             new_coins += 50
+
+    # ── PONT a tesztért ────────────────────────────────────────────────
+    # Az első sikeres teljesítés ér a legtöbbet; az ismétlés jóval kevesebbet,
+    # hogy ugyanazt a tesztet ne lehessen pontgyárként használni.
+    pont_esemenyek: list[dict] = []
+    if passed:
+        try:
+            _elozo = database.bump_topic_reward(
+                child_id, progress_subject, grade_num, topic_id
+            )
+            _mar_teljesitve = _elozo > 0
+            _p = pontok.teszt_pont(score, _mar_teljesitve, _elozo - 1)
+            if _p:
+                database.add_points(child_id, _p)
+                _fajta = (
+                    "teszt_ismetles" if _mar_teljesitve
+                    else ("teszt_kivalo" if score >= pontok.TESZT_HATAR_KIVALO
+                          else "teszt")
+                )
+                _nyelv = "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu"
+                pont_esemenyek.append({
+                    "fajta": _fajta,
+                    "pont": _p,
+                    "szoveg": pontok.indoklas(_fajta, _p, _nyelv),
+                })
+                print(f"[PONT] child={child_id} teszt={score}% "
+                      f"ismetles={_elozo} +{_p}", flush=True)
+        except Exception as _exc:
+            print(f"[PONT] teszt hiba: {_exc}", flush=True)
 
     # Automatikus szójegyzék feltöltés: a témakör szavai a témakörhöz tartoznak,
     # FÜGGETLENÜL attól, hogy a teszt sikeres volt-e. Ezért ez a blokk MINDEN
@@ -6356,6 +6459,8 @@ def child_chat_test_submit(child_id: int):
             "grade_promotion": grade_promotion,
             "voice_feedback": voice_feedback,
             "vocabulary": vocabulary,
+            "pont_esemenyek": pont_esemenyek,
+            "penztarca": database.get_wallet(child_id),
         }
     )
 
@@ -6677,6 +6782,161 @@ def api_learning_early_placement_start():
     database.increment_early_placement_attempts(child_id, subject)
 
     return jsonify({"ok": True, "early_placement_attempts": attempts})
+
+
+# ── Tasakbolt: pont → tasak → kártya ────────────────────────────────────────
+# A gyerek a tanulásért pontot kap (pontok.py). A pontból tasakot vesz, a
+# tasakból véletlen lapok jönnek (tasak.py). A húzás FÜGGETLEN az évfolyamtól:
+# egy elsős is húzhat nyolcadikos lapot, különben az album sosem telne meg.
+
+
+def _kartya_oldal() -> str:
+    """Melyik oldal (hu / es) kártyái tartoznak az aktív tantervhez."""
+    return "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu"
+
+
+def _kartya_json(k: dict, uj: bool) -> dict:
+    """Egy lap a tasakbontó képernyőnek."""
+    ritkasag = k.get("ritkasag", "gyakori")
+    return {
+        "id": k["id"],
+        "nev": k.get("nev", ""),
+        "alnev": k.get("alnev", ""),
+        "becenev": k.get("becenev", ""),
+        "targy": k.get("targy", ""),
+        "ero": k.get("ero", 0),
+        "ritkasag": ritkasag,
+        "csillag": kartyak.RITKASAG.get(ritkasag, {}).get("csillag", "★"),
+        "szin": kartyak.targy_szin(k.get("targy", "")),
+        # A KÉSZ lap, nem a portré – ezt fordítja meg a gyerek a bontáskor.
+        "kep": url_for("static", filename=kartyak.kartya_utvonal(k)),
+        "uj": bool(uj),
+    }
+
+
+def _bolt_tasakok(es: bool) -> list[dict]:
+    """A bolt kínálata az aktív nyelven."""
+    return [
+        {
+            "id": t["id"],
+            "nev": t["nev_es"] if es else t["nev"],
+            "ar": t["ar"],
+            "meret": t["meret"],
+            "garancia": t.get("garancia"),
+            "leiras": t["leiras_es"] if es else t["leiras"],
+        }
+        for t in tasak.TASAKOK
+    ]
+
+
+@app.route("/children/<int:child_id>/bolt")
+@login_required
+def child_shop(child_id: int):
+    """A tasakbolt képernyője."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    oldal = _kartya_oldal()
+    penztarca = database.get_wallet(child_id)
+    megvan = database.get_child_cards(child_id)
+    allapot = tasak.allapot(oldal, megvan.keys())
+
+    return render_template(
+        "tasakbontas.html",
+        child=child,
+        adat={
+            "nyelv": oldal,
+            "pont": penztarca["pont"],
+            "erme": penztarca["erme"],
+            "lapok": allapot["megvan"],
+            "kesz": allapot["kesz"],
+            "osszes": allapot["osszes"],
+            "ingyen_tasak": penztarca["ingyen_tasak"],
+            "dupla_erme": tasak.DUPLA_ERME,
+            "tasakok": _bolt_tasakok(oldal == "es"),
+        },
+        vasarlas_url=url_for("child_shop_buy", child_id=child_id),
+        album_url=url_for("child_collection", child_id=child_id),
+    )
+
+
+@app.route("/children/<int:child_id>/bolt/vasarlas", methods=["POST"])
+@login_required
+def child_shop_buy(child_id: int):
+    """Tasak vásárlása: a levonás és a húzás EGY kérésben, egy irányban."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    data = request.get_json(silent=True) or {}
+    t = tasak.tasak_by_id((data.get("tasak") or "").strip())
+    if not t:
+        return jsonify({"hiba": "Nincs ilyen tasak."}), 400
+
+    oldal = _kartya_oldal()
+    es = oldal == "es"
+
+    if not tasak.kesz_kartyak(oldal):
+        return jsonify({"hiba": (
+            "Todavía no hay cromos listos en este lado." if es
+            else "Még nincs kész kártya ezen az oldalon."
+        )}), 400
+
+    # Fizetés: vagy ingyen tasakból, vagy pontból. A spend_points csak akkor
+    # von le, ha van elég – így nem lehet mínuszba menni.
+    ingyenbol = bool(data.get("ingyen")) and t["id"] == tasak.INGYEN_TASAK
+    if ingyenbol:
+        if not database.use_free_pack(child_id):
+            return jsonify({"hiba": (
+                "No tienes sobres gratis." if es else "Nincs ingyen tasakod."
+            )}), 400
+    elif not database.spend_points(child_id, int(t["ar"])):
+        hiany = int(t["ar"]) - database.get_wallet(child_id)["pont"]
+        return jsonify({"hiba": (
+            f"Te faltan {hiany} puntos." if es else f"Még {hiany} pont kell."
+        )}), 400
+
+    megvan = database.get_child_cards(child_id)
+    elotte = tasak.allapot(oldal, megvan.keys())
+    erme_elotte = database.get_wallet(child_id)["erme"]
+
+    huzott = tasak.huzas(oldal, megvan.keys(), t["id"])
+
+    # Az „új-e” kérdést az adatbázis dönti el, nem a memóriabeli pillanatkép –
+    # így az egy tasakon belüli két azonos lap közül a második is duplikátum.
+    ki: list[dict] = []
+    erme_ossz = 0
+    duplak: dict[str, int] = {}
+    for k in huzott:
+        uj = bool(database.add_child_card(child_id, k["id"]).get("uj"))
+        if not uj:
+            erme_ossz += tasak.DUPLA_ERME
+            r = k.get("ritkasag", "gyakori")
+            duplak[r] = duplak.get(r, 0) + 1
+        ki.append(_kartya_json(k, uj))
+
+    if erme_ossz:
+        database.add_coins_wallet(child_id, erme_ossz)
+    ingyen_jar = sum(n // tasak.DUPLA_HATAR for n in duplak.values())
+    if ingyen_jar:
+        database.add_free_pack(child_id, ingyen_jar)
+    tasak_szam = database.bump_pack_counter(child_id)
+
+    penz = database.get_wallet(child_id)
+    print(f"[TASAK] child={child_id} tasak={t['id']} #{tasak_szam} "
+          f"lapok={len(ki)} uj={sum(1 for x in ki if x['uj'])} "
+          f"erme=+{erme_ossz} pont={penz['pont']}", flush=True)
+
+    return jsonify({
+        "lapok": ki,
+        "pont": penz["pont"],
+        "erme": penz["erme"],
+        "erme_elotte": erme_elotte,
+        "lapok_elotte": elotte["megvan"],
+        "ingyen_tasak": penz["ingyen_tasak"],
+        "tasak_szam": tasak_szam,
+    })
 
 
 if __name__ == "__main__":
