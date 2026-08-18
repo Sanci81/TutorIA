@@ -33,6 +33,7 @@ from sqlalchemy import (
     UniqueConstraint,
     create_engine,
     delete,
+    func,
     select,
 )
 from sqlalchemy.exc import IntegrityError
@@ -267,6 +268,31 @@ class ChildTopicScore(Base):
     pont_jutalom: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
+class ChildUsage(Base):
+    """Napi fogyasztás gyerekenként – ebből derül ki a VALÓDI költség.
+
+    Enélkül minden árazás tipp. Három dolgot mérünk, mert ez a három kerül
+    pénzbe: a felolvasott karakterek (Azure/OpenAI hang), a felismert hang
+    másodpercei, és az AI beszélgetés tokenjei.
+    """
+
+    __tablename__ = "child_usage"
+    __table_args__ = (
+        UniqueConstraint("child_id", "nap", name="uq_child_usage_nap"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    child_id: Mapped[int] = mapped_column(
+        ForeignKey("children.id", ondelete="CASCADE"), nullable=False
+    )
+    nap: Mapped[date] = mapped_column(Date, nullable=False)
+    tts_karakter: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    hang_mp: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    be_token: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    ki_token: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    kerés: Mapped[int] = mapped_column("keres", Integer, nullable=False, default=0)
+
+
 class ChildProgress(Base):
     __tablename__ = "child_progress"
 
@@ -323,6 +349,12 @@ class ChildWallet(Base):
     erme: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     ingyen_tasak: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     tasak_szam: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # Kinézetek: melyik az aktív, és melyeket oldotta már fel ("alap,szivek").
+    kinezet: Mapped[str] = mapped_column(String(32), nullable=False, default="alap")
+    kinezetek: Mapped[str] = mapped_column(Text, nullable=False, default="alap")
+    # Egyszeri átvezetés: a régi, tantárgyankénti coins összegét egyszer
+    # hozzáadjuk az érméhez, hogy a gyereknek ne tűnjön el, amit összegyűjtött.
+    regi_erme_atvezetve: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
@@ -347,6 +379,9 @@ class ChildCard(Base):
     )
     card_id: Mapped[str] = mapped_column(String(120), nullable=False)
     darab: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    # Beragasztotta-e már az albumba. A megszerzés és a beragasztás két külön
+    # dolog: a Panini-élmény fele az, hogy a gyerek maga teszi a helyére.
+    beragasztva: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     szerezve: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -450,6 +485,7 @@ def init_db() -> None:
     ensure_children_voice_columns()
     ensure_child_cards_table()
     ensure_child_wallet_table()
+    ensure_child_usage_table()
 
 
 def ensure_children_voice_columns() -> None:
@@ -1812,8 +1848,14 @@ if __name__ == "__main__":
 
 
 def ensure_child_cards_table() -> None:
-    """Biztosítja, hogy a child_cards tábla létezik."""
+    """Biztosítja, hogy a child_cards tábla létezik, a beragasztva oszloppal."""
+    from sqlalchemy import text
+
     ChildCard.__table__.create(bind=_get_engine(), checkfirst=True)
+    with _get_engine().begin() as conn:
+        conn.execute(text(
+            "ALTER TABLE child_cards ADD COLUMN IF NOT EXISTS "
+            "beragasztva BOOLEAN NOT NULL DEFAULT FALSE"))
 
 
 def add_child_card(child_id: int, card_id: str) -> dict[str, Any]:
@@ -1845,8 +1887,71 @@ def add_child_card(child_id: int, card_id: str) -> dict[str, Any]:
 
 # ══ pénztárca ═══════════════════════════════════════════════════════════════
 def ensure_child_wallet_table() -> None:
-    """Biztosítja, hogy a child_wallet tábla létezik."""
+    """Biztosítja, hogy a child_wallet tábla létezik, a kinézet-oszlopokkal."""
+    from sqlalchemy import text
+
     ChildWallet.__table__.create(bind=_get_engine(), checkfirst=True)
+    engine = _get_engine()
+    with engine.begin() as conn:
+        for oszlop in (
+            "kinezet VARCHAR(32) NOT NULL DEFAULT 'alap'",
+            "kinezetek TEXT NOT NULL DEFAULT 'alap'",
+            "regi_erme_atvezetve BOOLEAN NOT NULL DEFAULT FALSE",
+        ):
+            conn.execute(text(
+                f"ALTER TABLE child_wallet ADD COLUMN IF NOT EXISTS {oszlop}"))
+
+
+def ensure_child_usage_table() -> None:
+    """Biztosítja, hogy a child_usage tábla létezik."""
+    ChildUsage.__table__.create(bind=_get_engine(), checkfirst=True)
+
+
+def add_usage(child_id: int, *, tts_karakter: int = 0, hang_mp: float = 0.0,
+              be_token: int = 0, ki_token: int = 0, keres: int = 1) -> None:
+    """Fogyasztás hozzáadása a mai naphoz. Hibára NEM dob: a mérés soha ne
+    akadályozza meg a gyereket a tanulásban."""
+    if not child_id:
+        return
+    try:
+        db = _session()
+        try:
+            ma = datetime.now(timezone.utc).date()
+            row = db.scalar(select(ChildUsage).where(
+                ChildUsage.child_id == child_id, ChildUsage.nap == ma))
+            if row is None:
+                row = ChildUsage(child_id=child_id, nap=ma)
+                db.add(row)
+                db.flush()
+            row.tts_karakter = (row.tts_karakter or 0) + max(0, int(tts_karakter))
+            row.hang_mp = (row.hang_mp or 0.0) + max(0.0, float(hang_mp))
+            row.be_token = (row.be_token or 0) + max(0, int(be_token))
+            row.ki_token = (row.ki_token or 0) + max(0, int(ki_token))
+            row.kerés = (row.kerés or 0) + max(0, int(keres))
+            db.commit()
+        finally:
+            db.close()
+    except Exception:
+        logger.warning("add_usage sikertelen", exc_info=True)
+
+
+def get_usage(child_id: int | None = None, napok: int = 30) -> list[dict[str, Any]]:
+    """Az elmúlt N nap fogyasztása. child_id nélkül minden gyerekre."""
+    db = _session()
+    try:
+        hatar = datetime.now(timezone.utc).date() - timedelta(days=max(1, napok))
+        q = select(ChildUsage).where(ChildUsage.nap >= hatar)
+        if child_id:
+            q = q.where(ChildUsage.child_id == child_id)
+        rows = db.scalars(q.order_by(ChildUsage.nap.desc())).all()
+        return [{
+            "child_id": r.child_id, "nap": r.nap.isoformat(),
+            "tts_karakter": r.tts_karakter or 0, "hang_mp": r.hang_mp or 0.0,
+            "be_token": r.be_token or 0, "ki_token": r.ki_token or 0,
+            "keres": r.kerés or 0,
+        } for r in rows]
+    finally:
+        db.close()
 
 
 def _wallet_row(db, child_id: int) -> "ChildWallet":
@@ -1855,11 +1960,26 @@ def _wallet_row(db, child_id: int) -> "ChildWallet":
         row = ChildWallet(child_id=child_id)
         db.add(row)
         db.flush()
+    # Egyszeri átvezetés: a régi, tantárgyankénti `coins` összege ide kerül,
+    # hogy a gyereknek ne tűnjön el, amit korábban összegyűjtött. Minden
+    # pénztárca-hozzáférésnél lefut egyszer, aztán a jelző lezárja.
+    if not (row.regi_erme_atvezetve or False):
+        regi = db.scalar(
+            select(func.coalesce(func.sum(ChildProgress.coins), 0))
+            .where(ChildProgress.child_id == child_id)
+        ) or 0
+        row.erme = (row.erme or 0) + int(regi)
+        row.regi_erme_atvezetve = True
+        db.flush()
     return row
 
 
 def get_wallet(child_id: int) -> dict[str, Any]:
-    """{"pont": n, "osszes_pont": n, "erme": n, "ingyen_tasak": n, "tasak_szam": n}"""
+    """A gyerek pénztárcája. Egy érme van az egész alkalmazásban: ez.
+
+    Első olvasáskor egyszer átvezeti ide a régi, tantárgyankénti `coins`
+    összeget, hogy a gyereknek ne tűnjön el, amit korábban összegyűjtött.
+    """
     db = _session()
     try:
         r = _wallet_row(db, child_id)
@@ -1870,7 +1990,57 @@ def get_wallet(child_id: int) -> dict[str, Any]:
             "erme": r.erme or 0,
             "ingyen_tasak": r.ingyen_tasak or 0,
             "tasak_szam": r.tasak_szam or 0,
+            "kinezet": r.kinezet or "alap",
+            "kinezetek": r.kinezetek or "alap",
         }
+    finally:
+        db.close()
+
+
+def spend_coins_wallet(child_id: int, mennyi: int) -> bool:
+    """Érme levonása. False, ha nincs elég – ilyenkor semmit nem változtat."""
+    if mennyi <= 0:
+        return True
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        if (r.erme or 0) < mennyi:
+            db.commit()
+            return False
+        r.erme = (r.erme or 0) - mennyi
+        db.commit()
+        return True
+    finally:
+        db.close()
+
+
+def unlock_kinezet(child_id: int, kinezet_id: str) -> str:
+    """Kinézet feloldása. Visszaadja a feloldottak új listáját."""
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        meglevo = [s.strip() for s in (r.kinezetek or "alap").split(",") if s.strip()]
+        if kinezet_id not in meglevo:
+            meglevo.append(kinezet_id)
+        r.kinezetek = ",".join(meglevo)
+        db.commit()
+        return r.kinezetek
+    finally:
+        db.close()
+
+
+def set_kinezet(child_id: int, kinezet_id: str) -> bool:
+    """Aktív kinézet beállítása. False, ha nincs feloldva."""
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        meglevo = [s.strip() for s in (r.kinezetek or "alap").split(",") if s.strip()]
+        if kinezet_id not in meglevo:
+            db.commit()
+            return False
+        r.kinezet = kinezet_id
+        db.commit()
+        return True
     finally:
         db.close()
 
@@ -1967,9 +2137,31 @@ def get_child_cards(child_id: int) -> dict[str, dict[str, Any]]:
             select(ChildCard).where(ChildCard.child_id == child_id)
         ).all()
         return {
-            r.card_id: {"darab": r.darab or 1, "szerezve": r.szerezve}
+            r.card_id: {"darab": r.darab or 1, "szerezve": r.szerezve,
+                        "beragasztva": bool(getattr(r, "beragasztva", False))}
             for r in rows
         }
+    finally:
+        db.close()
+
+
+def beragaszt(child_id: int, card_id: str) -> bool:
+    """A gyerek beragasztotta a lapot az albumba.
+
+    False, ha nincs is meg neki – így a böngészőből nem lehet olyan lapot
+    beragasztani, amit nem szerzett meg.
+    """
+    db = _session()
+    try:
+        row = db.scalars(select(ChildCard).where(
+            ChildCard.child_id == child_id,
+            ChildCard.card_id == card_id,
+        )).first()
+        if row is None:
+            return False
+        row.beragasztva = True
+        db.commit()
+        return True
     finally:
         db.close()
 

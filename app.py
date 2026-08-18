@@ -4444,7 +4444,8 @@ def _call_ai_for_quiz(
 
 
 def _call_ai_for_chat(
-    system_prompt: str, history: list[dict[str, str]], user_message: str
+    system_prompt: str, history: list[dict[str, str]], user_message: str,
+    child_id: int | None = None,
 ) -> str:
     api_key = _openai_api_key()
     if not api_key:
@@ -4467,6 +4468,18 @@ def _call_ai_for_chat(
         messages=messages,
         reasoning_effort="low",
     )
+    # MÉRÉS: a beszélgetés tokenjei. A rendszerprompt több tízezer karakter,
+    # ezért a BEmenet a nagyobb tétel – jó tudni, mennyibe kerül valójában.
+    try:
+        _u = getattr(response, "usage", None)
+        if child_id and _u:
+            database.add_usage(
+                int(child_id),
+                be_token=getattr(_u, "prompt_tokens", 0) or 0,
+                ki_token=getattr(_u, "completion_tokens", 0) or 0,
+            )
+    except Exception:
+        pass
     return (response.choices[0].message.content or "").strip()
 
 
@@ -5108,6 +5121,7 @@ def child_chat(child_id: int):
         kinezet_hatter=kinezet.hatter(_penztarca.get("kinezet")),
         kinezet_url=url_for("child_looks", child_id=child_id),
         bolt_url=url_for("child_shop", child_id=child_id),
+        album_url=url_for("child_album", child_id=child_id),
         streak_days=progress.get("streak_days", 0),
         active_curriculum=active_curriculum,
     )
@@ -5255,7 +5269,8 @@ def child_chat_send(child_id: int):
 
     print(f"[HIST-DEBUG] history_len={len(history)}", flush=True)
     try:
-        raw_reply = _call_ai_for_chat(system_prompt, history, user_text)
+        raw_reply = _call_ai_for_chat(system_prompt, history, user_text,
+                                     child_id=child_id)
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
     except Exception as exc:
@@ -6492,6 +6507,17 @@ def api_voice_transcribe():
     if len(audio_bytes) < 1000:
         return jsonify({"error": "audio_too_short"}), 400
     language = (request.form.get("language") or "hu").strip().lower()
+
+    # MÉRÉS: a beszédfelismerés percre megy. A hossz becslése a fájlméretből
+    # történik (a böngésző kb. 24 kB/mp-es webm-et küld) – nem pontos, de a
+    # nagyságrendhez elég, és nem kell hozzá hangfájlt feldolgozni.
+    try:
+        _cid = (request.form.get("child_id") or str(session.get("chat_child_id", ""))).strip()
+        if _cid:
+            database.add_usage(int(_cid), hang_mp=len(audio_bytes) / 24000.0)
+    except Exception:
+        pass
+
     frame = "es" if _active_curriculum() == "ES" else "hu"
     _foreign = language in ("angol", "német", "francia", "spanyol")
     force_lang = "es" if frame == "es" else "hu"
@@ -6637,6 +6663,15 @@ def api_voice_speak():
             session["tts_fl_words"] = dict(list(_acc.items())[-150:])
     except Exception:
         pass
+    # MÉRÉS: a felolvasás karakterre megy. Ez a hangos mód legdrágább tétele,
+    # ezért itt gyűjtjük, gyerekenként – enélkül az árazás csak tipp.
+    try:
+        _cid = data.get("child_id") or session.get("chat_child_id")
+        if _cid:
+            database.add_usage(int(_cid), tts_karakter=len(text))
+    except Exception:
+        pass
+
     audio_bytes = _azure_tts_speak(text)
     if audio_bytes is not None:
         print("[TTS-DEBUG] route=azure", flush=True)
@@ -6822,7 +6857,8 @@ def _kartya_json(k: dict, uj: bool) -> dict:
         "csillag": kartyak.RITKASAG.get(ritkasag, {}).get("csillag", "★"),
         "szin": kartyak.targy_szin(k.get("targy", "")),
         # A KÉSZ lap, nem a portré – ezt fordítja meg a gyerek a bontáskor.
-        "kep": url_for("static", filename=kartyak.kartya_utvonal(k)),
+        "kep": url_for("static", filename=kartyak.kartya_utvonal(k, k.get("arany", False))),
+        "arany": bool(k.get("arany", False)),
         "uj": bool(uj),
     }
 
@@ -6926,7 +6962,9 @@ def child_shop_buy(child_id: int):
     erme_ossz = 0
     duplak: dict[str, int] = {}
     for k in huzott:
-        uj = bool(database.add_child_card(child_id, k["id"]).get("uj"))
+        # Az arany külön gyűjthető darab, ezért külön azonosítón tároljuk.
+        _tarolt = tasak.kartya_azonosito(k, k.get("arany", False))
+        uj = bool(database.add_child_card(child_id, _tarolt).get("uj"))
         if not uj:
             erme_ossz += tasak.DUPLA_ERME
             r = k.get("ritkasag", "gyakori")
@@ -7062,6 +7100,124 @@ def child_looks_select(child_id: int):
     if not database.set_kinezet(child_id, keresett):
         return jsonify({"hiba": "Ez a kinézet még nincs feloldva."}), 400
     return jsonify({"ok": True, "aktiv": keresett})
+
+
+# ── A gyűjtőalbum ───────────────────────────────────────────────────────────
+# Eddig az album különálló fájl volt a projekt gyökerében, beégetett
+# kártyalistával és 293 KB-nyi beágyazott képpel — az alkalmazásból nem
+# lehetett elérni. Innentől rendes aloldal: a lapok az adatbázisból jönnek,
+# és a beragasztás megmarad.
+
+
+def _album_kartya(k: dict) -> dict:
+    """Egy kártya az album sablonjának. Csak az kell, amit a lap megjelenít."""
+    return {
+        "id": k["id"], "sorszam": k.get("sorszam", 0), "kep": k["kep"],
+        "nev": k.get("nev", ""), "alnev": k.get("alnev", ""),
+        "targy": k.get("targy", ""), "evf": k.get("evfolyam", 0),
+        "lecke": k.get("lecke", ""), "becenev": k.get("becenev", ""),
+        "leiras": k.get("leiras", ""), "teny": k.get("teny", ""),
+        "erd": k.get("erdekesseg", ""), "idezet": k.get("idezet", ""),
+        "ero": k.get("ero", 0), "kepesseg": k.get("kepesseg", ""),
+        "kepero": k.get("kepesseg_ero", 0),
+        "ritkasag": k.get("ritkasag", "gyakori"),
+        "csillag": kartyak.RITKASAG.get(k.get("ritkasag", "gyakori"), {}).get("csillag", "★"),
+        "cimke": kartyak.RITKASAG.get(k.get("ritkasag", "gyakori"), {}).get("cimke", ""),
+        "szin": kartyak.targy_szin(k.get("targy", "")),
+    }
+
+
+@app.route("/children/<int:child_id>/album")
+@login_required
+def child_album(child_id: int):
+    """A gyűjtőalbum: helyek, borító, és a gyerek saját lapjai."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    oldal = _kartya_oldal()
+    katalogus = kartyak.osszes_kartya(oldal)
+    index = {k["id"]: k for k in katalogus}
+    megvan = database.get_child_cards(child_id)
+
+    kezben: list[dict] = []          # amit megszerzett, de még nem ragasztott be
+    beragasztva: list[int] = []      # a már elfoglalt helyek száma
+    for tarolt, adat in megvan.items():
+        arany = tarolt.endswith(tasak.ARANY_JEL)
+        alap = tarolt[: -len(tasak.ARANY_JEL)] if arany else tarolt
+        k = index.get(alap)
+        if not k:
+            continue                 # másik oldal lapja, vagy törölt kártya
+        n = int(k.get("sorszam") or 0)
+        hely = n * 2 if arany else n * 2 - 1
+        if adat.get("beragasztva"):
+            beragasztva.append(hely)
+        else:
+            kezben.append({"tarolt": tarolt, "kartya_id": alap, "arany": arany})
+
+    return render_template(
+        "album.html",
+        child=child,
+        adat={
+            "kartyak": [_album_kartya(k) for k in katalogus],
+            "kezben": kezben,
+            "beragasztva": beragasztva,
+            "kepgyoker": url_for("static", filename=f"kartyak/{oldal}/"),
+            "hatterek": url_for("static", filename="kartyak/hatterek/"),
+        },
+        beragaszt_url=url_for("child_album_place", child_id=child_id),
+    )
+
+
+@app.route("/children/<int:child_id>/album/beragaszt", methods=["POST"])
+@login_required
+def child_album_place(child_id: int):
+    """Egy lap beragasztása. A szerver ellenőrzi, hogy tényleg megvan-e."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+    tarolt = ((request.get_json(silent=True) or {}).get("lap") or "").strip()
+    if not tarolt or not database.beragaszt(child_id, tarolt):
+        return jsonify({"hiba": "Ez a lap nincs meg."}), 400
+    return jsonify({"ok": True})
+
+
+# ── Mibe kerül egy gyerek ───────────────────────────────────────────────────
+# A hangos mód a legdrágább üzemmód: minden felolvasott karakter és minden
+# felismert másodperc pénz. Enélkül az árazás tipp – ez a lap méri.
+
+
+@app.route("/koltseg")
+@login_required
+def cost_report():
+    """A szülő saját gyerekeinek valódi API-fogyasztása és becsült költsége."""
+    parent_id = session["parent_id"]
+    gyerekek = database.get_children_for_parent(parent_id)
+    sajat = {c["id"]: c["name"] for c in gyerekek}
+
+    napok = max(1, min(365, int(request.args.get("napok", 30) or 30)))
+    sorok = [u for u in database.get_usage(napok=napok) if u["child_id"] in sajat]
+
+    ossz: dict[int, dict] = {}
+    for u in sorok:
+        a = ossz.setdefault(u["child_id"], {
+            "nev": sajat[u["child_id"]], "tts_karakter": 0, "hang_mp": 0.0,
+            "be_token": 0, "ki_token": 0, "napok": 0})
+        a["tts_karakter"] += u["tts_karakter"]
+        a["hang_mp"] += u["hang_mp"]
+        a["be_token"] += u["be_token"]
+        a["ki_token"] += u["ki_token"]
+        a["napok"] += 1
+
+    return render_template(
+        "koltseg.html",
+        napok=napok,
+        gyerekek=list(ossz.values()),
+        # Egységárak dollárban, a szolgáltatók közzétett listaárai szerint.
+        # A lapon átírhatók: ha kedvezményes csomagod lesz, itt állítod.
+        arak={"tts_1m": 16.0, "hang_perc": 0.006,
+              "be_1m": 0.25, "ki_1m": 2.0, "eur_usd": 0.92},
+    )
 
 
 if __name__ == "__main__":

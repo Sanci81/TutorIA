@@ -1,0 +1,590 @@
+<!DOCTYPE html><html lang="hu"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – Gyűjtőalbum</title><style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;
+ background:radial-gradient(circle at 50% 0%,#22284d,#141830 45%,#080a16);color:#e8e8f0;
+ padding:18px 14px 60px}
+.top{max-width:1140px;margin:0 auto 12px;display:flex;justify-content:space-between;
+ align-items:center;gap:14px;flex-wrap:wrap}
+h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
+.prog{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
+ border-radius:999px;padding:7px 16px;font-size:.85rem;font-weight:700}.prog b{color:#f0c869}
+.album{max-width:1140px;margin:0 auto;background:linear-gradient(160deg,#26305e,#38457f 45%,#1c2348);
+ border-radius:9px;padding:12px;box-shadow:0 26px 64px rgba(0,0,0,.75),inset 0 0 0 3px rgba(240,200,105,.28)}
+.lap{border-radius:5px;min-height:640px;position:relative;overflow:hidden;color:#1b1a24}
+
+.borito,.hatso{display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:14px;padding:34px;color:#fff;background:linear-gradient(165deg,#2b3568,#3d4a8c 48%,#1e2650)}
+.meh{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;width:100%;max-width:700px}
+.hx{aspect-ratio:1/1.12;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+ overflow:hidden;background:#0e1430;display:flex;align-items:center;justify-content:center}
+.hx img{width:100%;height:100%;object-fit:cover}.hx span{color:rgba(240,200,105,.45);font-weight:900}
+.focim{font-size:2.6rem;font-weight:900;letter-spacing:2px;
+ background:linear-gradient(180deg,#fff6d8,#f0c869 55%,#c99424);-webkit-background-clip:text;
+ background-clip:text;color:transparent}
+.kicsi{font-size:.75rem;letter-spacing:5px;color:#f0c869;font-weight:800}
+
+.szakasz{display:flex;flex-direction:column;padding:0;color:#fff}
+.szfej{padding:28px 32px 16px;position:relative}
+.szfej h2{font-size:3.2rem;font-weight:900;letter-spacing:-1.6px;line-height:.92}
+.szfej .db{position:absolute;top:28px;right:32px;background:rgba(0,0,0,.3);
+ border:2px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 14px;text-align:center}
+.szfej .db b{display:block;font-size:1.6rem;font-weight:900;line-height:1}
+.szfej .db span{font-size:.6rem;letter-spacing:1.5px;opacity:.8}
+.arcsor{flex:1;background:rgba(0,0,0,.18);padding:18px 32px 24px;display:grid;
+ grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:13px;align-content:start}
+.arc{text-align:center}
+.arc .ker{aspect-ratio:1/1.1;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+ overflow:hidden;background:#0e1430;margin-bottom:5px;position:relative}
+.arc .ker img{width:100%;height:100%;object-fit:cover}
+.arc .ker.hianyzik img{filter:grayscale(1) brightness(.3)}
+.arc .n{font-size:.72rem;font-weight:800}.arc .l{font-size:.6rem;opacity:.6}
+
+.szemely{background:#f6f3ea;padding:0}
+.sz-tag{background:var(--fo);color:#fff;font-size:.65rem;font-weight:900;letter-spacing:1.4px;
+ padding:5px 15px;border-radius:0 0 8px 8px;position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:4}
+.sz-fejlec{padding:20px 26px 0}
+.sz-nev{font-size:2.9rem;font-weight:900;letter-spacing:-1.5px;line-height:.9;color:#1b2350}
+.sz-alnev{font-size:.84rem;font-weight:700;margin-top:3px}
+.sz-torzs{display:grid;grid-template-columns:1fr 292px;gap:18px;padding:12px 26px 22px}
+.sz-bal{position:relative;min-height:420px;display:flex;flex-direction:column}
+.sz-kep{position:relative;margin-top:16px;aspect-ratio:16/11;border-radius:10px;overflow:hidden;
+ box-shadow:0 16px 36px rgba(0,0,0,.26);background:#101830}
+.sz-kep img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block;background:#101830}
+.sz-kep .nincs{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.32);font-size:.9rem;text-align:center;padding:20px}
+.becenev{position:absolute;left:-8px;top:-6px;z-index:3;background:var(--fo);color:#fff;
+ padding:9px 18px 10px 14px;border-radius:4px;box-shadow:0 7px 18px rgba(0,0,0,.34);
+ transform:rotate(-2deg);max-width:250px}
+.becenev b{display:block;font-size:1.1rem;font-weight:900;line-height:1}
+.becenev span{display:block;font-size:.71rem;line-height:1.35;margin-top:4px}
+.dobozok{position:absolute;left:8px;right:8px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:7px}
+.doboz{background:#f0c869;border-radius:4px;padding:8px 12px;box-shadow:0 5px 14px rgba(0,0,0,.32);transform:rotate(-.8deg)}
+.doboz.kek{background:#1b2350;color:#fff;transform:rotate(.8deg)}
+.doboz b{display:block;font-size:.63rem;font-weight:900;letter-spacing:1.2px;margin-bottom:2px;opacity:.75}
+.doboz span{font-size:.77rem;line-height:1.4}
+.sz-jobb{display:flex;flex-direction:column;gap:12px}
+.adatlap{border:2px solid #1b2350;border-radius:6px;overflow:hidden;background:#fff}
+.adatlap .fej{background:#1b2350;color:#f0c869;font-size:.63rem;font-weight:900;
+ letter-spacing:1.6px;text-align:center;padding:5px}
+.adatlap table{width:100%;border-collapse:collapse;font-size:.74rem}
+.adatlap td{padding:5px 9px;border-bottom:1px solid #d9d4c5}
+.adatlap td:first-child{font-weight:800;color:#5a5a6e;width:44%}
+.adatlap tr:last-child td{border-bottom:none}
+.helyek{display:flex;gap:11px}
+.hely{flex:1;border:2px dashed #b9a98a;border-radius:7px;background:#ece5d5;aspect-ratio:1/1.35;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;
+ text-align:center;position:relative;transition:.18s;overflow:hidden}
+.hely .szam{position:absolute;top:4px;left:6px;font-size:.65rem;font-weight:900;opacity:.4}
+.hely .fajta{position:absolute;top:4px;right:6px;font-size:.57rem;font-weight:900;color:#8a7f68}
+.hely .lecke{font-size:.66rem;font-weight:700;opacity:.6;line-height:1.25}
+.hely .q{font-size:1.5rem;opacity:.26}
+.hely.arany{border-color:#d8b355;background:linear-gradient(150deg,#f6e7bd,#e8d29a)}
+.hely.rahuz{border-color:#2f8f60;background:#dff3e6;transform:scale(1.05)}
+.hely.rossz{border-color:#c0392b;background:#fadcd8;animation:r .35s}
+@keyframes r{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.hely.kesz{border:2px solid #d8b355;background:#fff;padding:0}
+.hely.kesz img{width:100%;height:100%;object-fit:contain;background:#ece5d5}
+.idezet{font-size:.74rem;font-style:italic;color:#4a4a5c;line-height:1.45;
+ border-left:3px solid var(--fo);padding-left:9px}
+
+.checklist{background:#f6f3ea;padding:22px 26px;overflow:auto}
+.checklist h2{font-size:2.4rem;font-weight:900;color:#1b2350;letter-spacing:-1.3px}
+.clsz{font-size:.66rem;font-weight:900;letter-spacing:1.7px;color:#fff;background:#1b2350;
+ display:inline-block;padding:4px 12px;border-radius:4px;margin:14px 0 8px}
+.clracs{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
+.cl .k{aspect-ratio:1/1.28;background:#1b2350;border-radius:3px;overflow:hidden;
+ display:flex;align-items:center;justify-content:center}
+.cl .k img{width:100%;height:100%;object-fit:cover}
+.cl .k span{color:rgba(255,255,255,.3);font-size:1.1rem;font-weight:900}
+.cl .sav{display:flex;align-items:center;gap:4px;background:#c9a23c;border-radius:0 0 3px 3px;padding:2px 4px}
+.cl.van .sav{background:#2f8f60}
+.cl .box{width:11px;height:11px;background:#fff;border-radius:2px;display:flex;
+ align-items:center;justify-content:center;font-size:.58rem;color:#2f8f60;font-weight:900}
+.cl .n{font-size:.62rem;font-weight:900;color:#3a2f10}.cl.van .n{color:#fff}
+
+.lapozo{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px auto 0;max-width:1140px}
+.oldalszam{font-size:.78rem;opacity:.5;font-weight:800}
+.gomb{border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:.85rem;
+ padding:9px 20px;border-radius:999px;background:linear-gradient(180deg,#ffe08a,#e8a33c);color:#1a1430}
+.gomb:disabled{opacity:.3;cursor:default}
+.gomb.halvany{background:rgba(255,255,255,.12);color:#e8e8f0}
+.kez{max-width:1140px;margin:16px auto 0;background:rgba(255,255,255,.05);
+ border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:13px 16px}
+.kez h4{font-size:.92rem;color:#f0c869}.kez p{font-size:.78rem;opacity:.6;margin-bottom:10px}
+.pakli{display:flex;gap:10px;flex-wrap:wrap}
+.mini{width:86px;border-radius:7px;overflow:hidden;cursor:grab;border:2px solid #d8b355;background:#fff;
+ box-shadow:0 6px 16px rgba(0,0,0,.5);transition:.15s}
+.mini:hover{transform:translateY(-5px) scale(1.05)}
+.mini img{width:100%;aspect-ratio:340/548;object-fit:cover;display:block;background:#101830}
+.mini .c{font-size:.57rem;font-weight:800;color:#22202a;padding:3px;text-align:center;line-height:1.15}
+.uzenet{margin-top:8px;font-size:.85rem;min-height:20px;font-weight:600}
+.uzenet.jo{color:#9ff0c8}.uzenet.baj{color:#ffb3b3}
+
+.borito,.hatso{background-size:cover!important;background-position:center!important;
+ background-repeat:no-repeat!important;position:relative;overflow:hidden}
+.bo-arny{position:absolute;inset:0;z-index:0;
+ background:radial-gradient(ellipse at 50% 36%,rgba(0,0,0,0) 26%,rgba(6,9,22,.86) 100%)}
+.bo-tart{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;
+ gap:13px;width:100%;max-width:760px}
+.bo-cimer{width:116px;height:auto;filter:drop-shadow(0 10px 24px rgba(0,0,0,.65))}
+.bo-nev{font-family:Georgia,serif;font-size:2.45rem;font-weight:900;color:#f4ecd8;
+ letter-spacing:-1px;line-height:1}
+.bo-nev span{color:#f0c869}
+.bo-vonal{display:flex;align-items:center;gap:13px;width:100%;max-width:440px}
+.bo-vonal i{flex:1;height:1px;background:linear-gradient(90deg,transparent,#d9a94a,transparent)}
+.bo-vonal b{font-size:.63rem;letter-spacing:4.4px;color:#e8c877;font-weight:800;white-space:nowrap}
+.bo-also{display:flex;align-items:center;gap:17px;font-size:.66rem;letter-spacing:2.4px;
+ color:#cfd6ee;opacity:.9}
+.bo-also b{color:#f0c869;font-size:1.05rem;margin-right:6px}
+.bo-also i{width:5px;height:5px;border-radius:50%;background:#d9a94a;opacity:.7}
+.bo-motto{font-size:.66rem;letter-spacing:5px;color:#d9a94a;font-weight:800}
+.ha-szoveg{max-width:470px;text-align:center;line-height:1.75;color:#dfe4f5;font-size:.95rem}
+.ha-vonal{width:100%;max-width:430px;margin-top:8px}
+.ha-vonal span{font-size:.63rem;letter-spacing:3.2px;color:#e8c877;font-weight:800}
+.ha-vonal i{display:block;height:1px;background:#d9a94a;opacity:.55;margin-top:24px}
+.ha-jel .bo-cimer{width:84px;opacity:.92}
+
+/* ── a helyek jelölése ────────────────────────────────────────────────────
+   Piros szaggatott = ide még nem került lap. Zöld = megvan.
+   A hely arányát a kártyáéhoz igazítjuk (340×548), hogy a lap kitöltse. */
+.hely{aspect-ratio:340/548!important;border:2px dashed #c0392b!important;
+      background:#f6e8e6!important}
+.hely.arany{border-color:#c0392b!important;
+      background:linear-gradient(150deg,#f9ece2,#f2ded0)!important}
+.hely .fajta{color:#a4564c!important}
+.hely.kesz{border:0!important;background:transparent!important;padding:0!important;overflow:visible!important;position:relative}
+.hely.kesz img{width:100%!important;height:100%!important;object-fit:contain!important;display:block;background:transparent}
+.hely.rahuz{border-color:#2f8f60!important;background:#e6f5ec!important}
+.hely.tiltott{cursor:not-allowed!important;opacity:.45}
+.hely.rossz{border-color:#c0392b!important;background:#fadcd8!important}
+
+/* ── a pakli lapjai összetéveszthetetlenek legyenek ──────────────────────
+   Ezüst keret = sima lap, arany keret + sarokcímke = arany lap. */
+.mini{position:relative;border:2px solid #9aa0ad!important}
+.mini.aranylap{border:3px solid #d8b355!important;
+  box-shadow:0 0 0 2px rgba(246,231,189,.85),0 6px 18px rgba(0,0,0,.55)!important}
+.mini .cimke{position:absolute;top:4px;left:4px;z-index:2;font-size:.72rem;font-weight:900;
+  min-width:20px;text-align:center;padding:2px 6px;border-radius:5px;color:#1b1a24;
+  background:#f0c869;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.hely .fajta{display:none!important}
+.hely .szam{font-size:1.5rem!important;opacity:.55!important;top:8px!important;left:10px!important;
+  color:#a4564c!important}
+</style></head><body>
+
+<div class="top">
+ <div><h1>TutorIA – Gyűjtőalbum</h1>
+   <div class="sub">Húzd a lapjaidat a saját helyükre. A sima lap a sima helyre, az arany az aranyra.</div></div>
+ <div class="prog">Beragasztva: <b id="db">0</b> / <span id="ossz"></span></div>
+</div>
+<div class="album"><div class="lap" id="lap"></div></div>
+<div class="lapozo">
+ <button class="gomb halvany" id="elore">‹ Előző</button>
+ <span class="oldalszam" id="oldalszam"></span>
+ <button class="gomb" id="hatra">Következő ›</button>
+</div>
+<div class="kez"><h4>A kártyáid</h4>
+ <p>Keresd meg, melyik oldalra és melyik helyre valók. A sima lap a sima helyre, az arany az aranyra.</p>
+ <div class="pakli" id="pakli"></div><div class="uzenet" id="uzenet"></div></div>
+
+<script>
+/* Ezt a blokkot a Flask tölti ki. Fájlból megnyitva hibás marad – külön
+   <script>, ezért csak ez dől el, és az album üresen, de hibátlanul jelenik meg. */
+window.ADAT = {{ adat|tojson }};
+window.BERAGASZT_URL = "{{ beragaszt_url }}";
+</script>
+
+<script>
+const ADAT = window.ADAT || {kartyak:[], kezben:[], beragasztva:[], kepgyoker:"static/kartyak/hu/"};
+const UZ_KEPBETOLTVE = "Kép betöltve a(z) {n}. helyre.";
+const T = {"hivatalos": "HIVATALOS GYŰJTŐALBUM", "focim": "TUDÁSKÁRTYÁK", "szemely": " SZEMÉLY", "lap": " LAP", "targy": " TANTÁRGY", "motto": "TANULJ · GYŰJTS · GYŐZZ", "zaro": "Minden lap egy emberé, aki egyszer valamit először értett meg. Aki mind a nyolc évet végigjárja és minden lapot megszerez, annak ez az album nyomtatva is a sajátja lehet.", "tulajdonos": "EZ AZ ALBUM A KÖVETKEZŐ TULAJDONA:"};
+/* ── HÁTTÉRMINTA ────────────────────────────────────────────────────────────
+   Minden személy mögé a SAJÁT jelképeiből szórunk halvány mintát.
+   Vektor, nulla képgenerálás. A szín a tantárgy színe.
+*/
+const MOTIVUM = {
+  fiola:   {p:"M38,16 H62 M44,16 V38 L29,68 q-5,12 8,12 H63 q13,0 8,-12 L56,38 V16 M33,58 H67"},
+  atom:    {p:"M50,50 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0 M50,50 m-38,0 a38,16 0 1,0 76,0 a38,16 0 1,0 -76,0 M20,31 a38,16 0 1,0 60,38 a38,16 0 1,0 -60,-38 M80,31 a38,16 0 1,1 -60,38 a38,16 0 1,1 60,-38"},
+  tabla:   {p:"M12,26 H88 M12,44 H88 M12,62 H88 M12,80 H88 M12,26 V80 M30,26 V80 M48,26 V80 M66,26 V80 M88,26 V80"},
+  neuron:  {p:"M50,50 m-11,0 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0 M50,39 V14 M44,42 L20,24 M56,42 L80,24 M41,57 L16,70 M59,57 L84,70 M50,61 V88 M20,24 L10,14 M20,24 L14,32 M80,24 L90,14 M84,70 L92,78"},
+  level:   {p:"M50,12 C20,34 20,70 50,88 C80,70 80,34 50,12 Z M50,12 V88 M50,42 L32,32 M50,42 L68,32 M50,62 L34,52 M50,62 L66,52"},
+  kristaly:{p:"M50,10 L78,30 L70,74 L50,90 L30,74 L22,30 Z M50,10 V90 M22,30 L50,44 L78,30 M30,74 L50,60 L70,74"},
+  hullam:  {p:"M8,38 q12,-12 24,0 t24,0 t24,0 t12,0 M8,56 q12,-12 24,0 t24,0 t24,0 t12,0 M8,74 q12,-12 24,0 t24,0 t24,0 t12,0"},
+  magnes:  {p:"M28,84 V44 a22,22 0 0 1 44,0 V84 M28,68 H46 M54,68 H72 M28,84 H46 M54,84 H72"},
+  fogas:   {p:"M50,50 m-16,0 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0 M50,50 m-30,0 a30,30 0 1,0 60,0 a30,30 0 1,0 -60,0 M50,14 V26 M50,74 V86 M14,50 H26 M74,50 H86 M24,24 L33,33 M67,67 L76,76 M76,24 L67,33 M33,67 L24,76"},
+  iranytu: {p:"M50,50 m-34,0 a34,34 0 1,0 68,0 a34,34 0 1,0 -68,0 M50,16 L58,42 L84,50 L58,58 L50,84 L42,58 L16,50 L42,42 Z"},
+  konyv:   {p:"M50,26 C36,18 22,18 12,22 V78 C22,74 36,74 50,82 C64,74 78,74 88,78 V22 C78,18 64,18 50,26 Z M50,26 V82"},
+  toll:    {p:"M84,14 C56,18 30,40 20,72 L14,88 L30,82 C62,72 82,44 84,14 Z M84,14 L34,66 M52,32 L60,44 M40,46 L48,58 M30,60 L38,70"},
+  asztro:  {p:"M50,50 m-36,0 a36,36 0 1,0 72,0 a36,36 0 1,0 -72,0 M50,50 m-22,0 a22,22 0 1,0 44,0 a22,22 0 1,0 -44,0 M14,50 H86 M50,14 V86 M25,25 L75,75 M75,25 L25,75"},
+  kvadrans:{p:"M18,84 V22 L84,84 Z M18,22 A62,62 0 0 1 84,84 M32,72 A40,40 0 0 1 50,40 M18,84 L84,22"},
+  szarny:  {p:"M12,72 C26,34 56,12 90,12 C82,34 66,52 44,62 M12,72 C30,60 46,50 62,32 M24,64 C34,50 44,40 58,30 M36,58 C46,46 54,38 66,26"},
+  geo:     {p:"M50,14 L86,80 H14 Z M22,32 H78 V88 H22 Z M50,50 m-20,0 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0"},
+  paletta: {p:"M50,16 C22,16 10,36 14,56 C18,76 40,86 56,80 C64,77 60,68 66,64 C74,58 88,66 90,50 C92,30 76,16 50,16 Z M32,38 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M52,30 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M70,40 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M30,60 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"},
+  ecset:   {p:"M76,10 L90,24 L44,70 L26,76 L32,58 Z M32,58 L44,70 M26,76 L14,90 M20,54 L46,80"},
+  nap:     {p:"M50,50 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0 M50,8 V22 M50,78 V92 M8,50 H22 M78,50 H92 M20,20 L30,30 M70,70 L80,80 M80,20 L70,30 M30,70 L20,80"},
+  hangjegy:{p:"M38,74 m-14,6 a14,10 0 1,0 28,0 a14,10 0 1,0 -28,0 M52,80 V16 C66,20 80,28 88,40 C80,26 66,20 52,24"},
+  gitar:   {p:"M50,40 m-16,0 a16,14 0 1,0 32,0 a16,14 0 1,0 -32,0 M50,72 m-22,0 a22,20 0 1,0 44,0 a22,20 0 1,0 -44,0 M34,40 h32 M50,26 V6 M42,10 H58 M50,54 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0"},
+  babér:   {p:"M50,88 C22,72 14,44 22,16 C40,22 50,44 50,88 M50,88 C78,72 86,44 78,16 C60,22 50,44 50,88 M30,34 L18,28 M36,50 L24,46 M42,66 L30,64 M70,34 L82,28 M64,50 L76,46 M58,66 L70,64"},
+  utvonal: {p:"M10,80 C30,80 26,52 46,52 C66,52 62,24 86,24 M86,24 m-7,0 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 M10,80 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0 M46,52 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0"},
+  korona:  {p:"M14,72 L20,28 L36,48 L50,20 L64,48 L80,28 L86,72 Z M14,84 H86 M20,28 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M80,28 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M50,20 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0"},
+  maszk:   {p:"M18,24 H82 C82,64 68,86 50,86 C32,86 18,64 18,24 Z M32,44 q8,-8 16,0 M56,44 q8,-8 16,0 M36,64 q14,10 28,0"},
+  sorok:   {p:"M14,22 H86 M14,36 H70 M14,50 H86 M14,64 H62 M14,78 H78"},
+  hajo:    {p:"M12,72 H88 L78,86 H22 Z M50,72 V10 M50,16 L80,30 L50,40 M50,44 L74,56 L50,64 M50,10 L26,26 L50,34"},
+  W:       {t:"W"},
+  x2:      {t:"x²"},
+  Aa:      {t:"Aa"},
+};
+
+/* melyik személyhez melyik jelkép */
+const SZEMELY_MOTIVUM = {
+  /* ES */
+  cajal:["neuron","atom"], mutis:["level","konyv"], elhuyar:["kristaly","W"],
+  peral:["hullam","fogas"], cabrera:["magnes","atom"], torres:["fogas","tabla"],
+  elcano:["iranytu","hajo"], alfonsox:["korona","konyv"], lascasas:["konyv","sorok"],
+  juarismi:["x2","geo"], azarquiel:["asztro","iranytu"], jorgejuan:["kvadrans","asztro"],
+  hipatia:["geo","asztro"], firnas:["szarny","hullam"], cervantes:["toll","konyv"],
+  nebrija:["Aa","sorok"], lorca:["maszk","hangjegy"], rosalia:["sorok","level"],
+  sorjuana:["konyv","toll"], velazquez:["paletta","ecset"], goya:["ecset","maszk"],
+  sorolla:["nap","ecset"], falla:["hangjegy","gitar"], albeniz:["gitar","hangjegy"],
+  coubertin:["babér","nap"], battuta:["utvonal","iranytu"],
+  /* borító és hátlap: vegyesen mindenből */
+  mix:["fiola","atom","konyv","hangjegy","geo","iranytu","toll","szarny",
+       "fogas","level","asztro","paletta","tabla","babér","utvonal","korona"],
+  /* HU */
+  curie:["atom","fiola"], mengyelejev:["tabla","fiola"], lavoisier:["fiola","kvadrans"],
+  arrhenius:["fiola","atom"], newton:["nap","geo"], galilei:["asztro","nap"],
+  watt:["fogas","hullam"], bolyai:["geo","asztro"], euklidesz:["geo","x2"],
+  pitagorasz:["geo","x2"], darwin:["level","hajo"], linne:["level","konyv"],
+  szentgyorgyi:["fiola","level"], kolumbusz:["hajo","iranytu"], korosicsoma:["utvonal","konyv"],
+  szechenyi:["hajo","fogas"], semmelweis:["fiola","neuron"], marconi:["hullam","fogas"],
+  petofi:["toll","sorok"], arany:["toll","sorok"], bach:["hangjegy","korona"],
+  beethoven:["hangjegy","sorok"], bartok:["hangjegy","gitar"],
+  neumann:["tabla","fogas"], lovelace:["fogas","tabla"], turing:["tabla","x2"],
+};
+
+/* determinisztikus véletlen, hogy minden újratöltéskor ugyanaz legyen */
+function _mag(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}
+  return()=>{h^=h<<13;h^=h>>>17;h^=h<<5;return((h>>>0)%100000)/100000;};}
+
+function mintaHatter(k, w, h){
+  const azon=(k.kep||k.id).split('_').pop();
+  const nevek=SZEMELY_MOTIVUM[azon]||["konyv","sorok"];
+  const r=_mag(azon), szin=k.szin||"#3f6fd8";
+  let g="";
+  /* rácsba szórjuk, hogy egyenletesen fedje az oldalt, de ne legyen szabályos */
+  const OSZ=7, SOR=5, cw=w/OSZ, ch=h/SOR;
+  for(let i=0;i<OSZ*SOR;i++){
+    const m=MOTIVUM[nevek[i%nevek.length]]; if(!m) continue;
+    const x=(i%OSZ)*cw+cw*(0.15+r()*0.7),
+          y=Math.floor(i/OSZ)*ch+ch*(0.15+r()*0.7),
+          s=(0.55+r()*1.25), rot=Math.round(-38+r()*76),
+          o=(0.075+r()*0.085).toFixed(3);
+    if(m.t){
+      g+=`<text x="${x.toFixed(0)}" y="${y.toFixed(0)}" font-family="Georgia,serif"
+           font-size="${(46*s).toFixed(0)}" font-weight="700" fill="${szin}"
+           opacity="${o}" transform="rotate(${rot} ${x.toFixed(0)} ${y.toFixed(0)})">${m.t}</text>`;
+    } else {
+      g+=`<g transform="translate(${(x-50*s).toFixed(0)},${(y-50*s).toFixed(0)}) scale(${s.toFixed(2)}) rotate(${rot} 50 50)"
+           fill="none" stroke="${szin}" stroke-width="${(3.4/s).toFixed(2)}"
+           stroke-linecap="round" stroke-linejoin="round" opacity="${o}"><path d="${m.p}"/></g>`;
+    }
+  }
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${g}</svg>`;
+  return `url("data:image/svg+xml;utf8,${encodeURIComponent(svg)}")`;
+}
+
+/* ── KATTINTÁSRA IS BEHÚZHATÓ ───────────────────────────────────────────────
+   Nem csak húzni lehet: rá lehet kattintani egy üres helyre, és megnyílik a
+   fájlkereső. A kiválasztott kép abba a helybe kerül.
+*/
+const SAJATKEP = {};
+let varToltes = null;
+const kepFile = document.createElement('input');
+kepFile.type = 'file'; kepFile.accept = 'image/*'; kepFile.style.display = 'none';
+document.body.appendChild(kepFile);
+kepFile.addEventListener('change', () => {
+  const f = kepFile.files[0];
+  if (!f || varToltes === null) { kepFile.value = ''; return; }
+  const n = varToltes;
+  const fr = new FileReader();
+  fr.onload = () => {
+    SAJATKEP[n] = fr.result;
+    beragasztva.add(n);
+    PAKLI = PAKLI.filter(x => x.hova !== n);
+    uzenet.className = 'uzenet jo';
+    uzenet.textContent = UZ_KEPBETOLTVE.replace('{n}', n);
+    rajzol(); pakli();
+  };
+  fr.readAsDataURL(f);
+  kepFile.value = '';
+});
+
+/* ── BORÍTÓ ÉS HÁTLAP ───────────────────────────────────────────────────────
+   A TutorIA-címer, a névjel és a mintás háttér. Ha van kép a
+   static/kartyak/hatterek/ mappában, az kerül legfelülre; ha nincs,
+   a minta akkor is kitölti az oldalt.
+*/
+const CIMER = `<svg viewBox="0 0 250 300" class="bo-cimer">
+ <defs>
+  <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+   <stop offset="0" stop-color="#f7e4a8"/><stop offset=".38" stop-color="#d9a94a"/>
+   <stop offset=".62" stop-color="#b9832f"/><stop offset="1" stop-color="#f0d78f"/></linearGradient>
+  <linearGradient id="cp" x1="0" y1="0" x2="0" y2="1">
+   <stop offset="0" stop-color="#232b57"/><stop offset="1" stop-color="#0e1230"/></linearGradient>
+  <radialGradient id="cf" cx=".5" cy=".42" r=".62">
+   <stop offset="0" stop-color="#fff4cf"/><stop offset=".45" stop-color="#e8c063"/>
+   <stop offset="1" stop-color="#8c5f1c"/></radialGradient>
+ </defs>
+ <g transform="translate(125,18)">
+  <path d="M0,-6 L96,22 C96,124 62,196 0,232 C-62,196 -96,124 -96,22 Z"
+        fill="url(#cp)" stroke="url(#cg)" stroke-width="7"/>
+  <path d="M0,6 L84,32 C84,120 55,183 0,215 C-55,183 -84,120 -84,32 Z"
+        fill="none" stroke="url(#cg)" stroke-width="2" opacity=".55"/>
+  <path d="M0,10 L0,205 M-82,74 L82,74" stroke="url(#cg)" stroke-width="3.4" opacity=".8"/>
+  <g fill="none" stroke="url(#cg)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+   <g transform="translate(-43,42) scale(.86)">
+    <path d="M-6,-15 L-6,-4 L-15,11 Q-18,17 -11,17 L11,17 Q18,17 15,11 L6,-4 L6,-15"/>
+    <path d="M-10,-15 L10,-15"/><path d="M-12,5 L12,5"/></g>
+   <g transform="translate(43,42) scale(.86)">
+    <path d="M-17,-11 Q-8,-15 0,-11 Q8,-15 17,-11 L17,11 Q8,7 0,11 Q-8,7 -17,11 Z"/>
+    <path d="M0,-11 L0,11"/></g>
+   <g transform="translate(-40,120) scale(.86)">
+    <circle cx="0" cy="-14" r="3.4" fill="url(#cg)" stroke="none"/>
+    <path d="M0,-11 L-11,16"/><path d="M0,-11 L11,16"/><path d="M-7,5 L7,5"/></g>
+   <g transform="translate(40,120) scale(.86)">
+    <ellipse cx="-6" cy="12" rx="7.6" ry="5.6" transform="rotate(-20 -6 12)"
+             fill="url(#cg)" stroke="none"/>
+    <path d="M1,12 L1,-15 Q12,-11 17,-3"/></g>
+  </g>
+  <circle cx="0" cy="74" r="31" fill="#0e1230" stroke="url(#cg)" stroke-width="5"/>
+  <circle cx="0" cy="74" r="24" fill="url(#cf)" opacity=".35"/>
+  <path transform="translate(0,74) scale(1.18)" fill="url(#cg)"
+        d="M0,-15 Q2.4,-2.4 15,0 Q2.4,2.4 0,15 Q-2.4,2.4 -15,0 Q-2.4,-2.4 0,-15 Z"/>
+  <circle cx="0" cy="196" r="5" fill="url(#cg)"/>
+ </g>
+ <g transform="translate(125,262)">
+  <path d="M-104,-15 L104,-15 L93,2 L104,19 L-104,19 L-93,2 Z"
+        fill="#8d2530" stroke="url(#cg)" stroke-width="2.5"/>
+  <text x="0" y="8" text-anchor="middle" font-family="Georgia,serif" font-weight="700"
+        font-size="16" letter-spacing="3.2" fill="#f6e6bd">TUTORIA</text>
+ </g>
+</svg>`;
+
+/* vegyes minta a borítóhoz és a hátlaphoz */
+function fedlapHatter(kepnev){
+  const alap = mintaHatter({kep:"x_mix", szin:"#f0c869"}, 1100, 780);
+  /* ABSZOLÚT útvonal kell: az album a /children/1/album címen fut, egy
+     relatív "static/..." onnan /children/1/static/... lenne, és 404. */
+  return `url("${ADAT.hatterek}${kepnev}.png"), ${alap}`;
+}
+
+function boritoHTML(T){
+  return `<div class="bo-arny"></div>
+  <div class="bo-tart">
+    ${CIMER}
+    <div class="bo-nev">Tutor<span>IA</span></div>
+    <div class="bo-vonal"><i></i><b>${T.hivatalos}</b><i></i></div>
+    <div class="focim">${T.focim}</div>
+    <div class="meh">${K.slice(0,14).map(k=>
+      `<div class="hx"><img src="${KEPUT(k)}" onerror="this.style.display='none';`
+      + `this.nextElementSibling.style.display='flex'"><span style="display:none">?</span></div>`
+      ).join('')}</div>
+    <div class="bo-also">
+      <span><b>${K.length}</b>${T.szemely}</span><i></i>
+      <span><b>${K.length*2}</b>${T.lap}</span><i></i>
+      <span><b>${TARGYAK.length}</b>${T.targy}</span>
+    </div>
+    <div class="bo-motto">${T.motto}</div>
+  </div>`;
+}
+
+function hatsoHTML(T){
+  return `<div class="bo-arny"></div>
+  <div class="bo-tart">
+    <div class="focim" style="font-size:1.9rem;letter-spacing:3px">${T.motto}</div>
+    <div class="ha-szoveg">${T.zaro}</div>
+    <div class="ha-vonal"><span>${T.tulajdonos}</span><i></i></div>
+    <div class="ha-jel">${CIMER}</div>
+    <div class="bo-motto" style="opacity:.5">${T.hivatalos}</div>
+  </div>`;
+}
+
+const K = ADAT.kartyak;
+const TARGYAK = ["Kémia", "Fizika", "Matematika", "Biológia", "Földrajz", "Történelem", "Magyar nyelv és irodalom", "Ének-zene", "Digitális kultúra"];
+const BE = {};   /* az appban a static mappából jönnek a képek */
+const KEPUT = k => BE[k.kep] || (ADAT.kepgyoker + k.kep + ".png");
+const KARTYAUT = (k,arany) => BE[k.kep+(arany?"_kartya_arany":"_kartya")] 
+  || (ADAT.kepgyoker + k.kep + (arany?"_kartya_arany.png":"_kartya.png"));
+
+const FRISS = "?v=" + Date.now();   /* a bongeszo ne a regi kepet mutassa */
+
+/* A lap képe: ha az ARANY fájl hiányzik, NEM esünk vissza a simára –
+   különben ezüst lap kerülne az arany helyre. */
+const KARTYAUT_SZIG = (k,arany) =>
+  BE[k.kep+(arany?"_kartya_arany":"_kartya")]
+  || (ADAT.kepgyoker + k.kep + (arany?"_kartya_arany.png":"_kartya.png"));
+function kepBetolt(url){
+  return new Promise(r=>{ const i=new Image();
+    i.onload=()=>r(true); i.onerror=()=>r(false); i.src=url; });
+}
+
+const HIBAKEP = 'onerror="this.style.visibility=\'hidden\'"';
+
+/* A hely száma a kártyában TÁROLT sorszámból jön, nem a lista sorrendjéből.
+   Így egy később hozzáadott kártya nem tolja el a meglévők helyét. */
+K.forEach(k=>{ const n=k.sorszam||0; k.hely1=n*2-1; k.hely2=n*2; });
+
+const OLDALAK=[{t:"borito"}];
+TARGYAK.forEach(t=>{
+  const cs=K.filter(x=>x.targy===t);
+  OLDALAK.push({t:"szakasz",targy:t,tagok:cs});
+  cs.forEach(k=>OLDALAK.push({t:"szemely",k}));
+});
+OLDALAK.push({t:"checklist"},{t:"hatso"});
+
+/* A KÉZ csak azokat a lapokat tartalmazza, amelyeket a gyerek TÉNYLEG
+   megszerzett és még nem ragasztott be. A szerver küldi – a böngészőből nem
+   lehet olyan lapot beragasztani, amit nem húzott ki. */
+const _KIND = {}; K.forEach(k => _KIND[k.id] = k);
+let PAKLI = (ADAT.kezben || []).map(c => ({
+  id: c.tarolt, k: _KIND[c.kartya_id], arany: !!c.arany,
+  hova: (_KIND[c.kartya_id] || {})[c.arany ? "hely2" : "hely1"],
+})).filter(x => x.k);
+const MIND = PAKLI.slice();
+const beragasztva = new Set(ADAT.beragasztva || []);
+let oldal=0; let HUZOTT=null;
+document.getElementById('ossz').textContent=K.length*2;
+const lap=document.getElementById('lap'), uzenet=document.getElementById('uzenet');
+
+function helyHTML(k,n,arany){
+  if(beragasztva.has(n))
+    return `<div class="hely kesz"><img src="${SAJATKEP[n]||KARTYAUT(k,arany)}" ${HIBAKEP}></div>`;
+  return `<div class="hely ${arany?'arany':''}" data-n="${n}">
+    <span class="szam">${n}</span><span class="fajta">${arany?'ARANY':'sima'}</span>
+    <span class="q">?</span><span class="lecke">${k.lecke}</span></div>`;
+}
+function rajzol(){
+  const o=OLDALAK[oldal]; lap.style.background="";
+  if(o.t==="borito"){
+    lap.className="lap borito";
+    lap.style.backgroundImage=fedlapHatter("borito")
+      +",linear-gradient(165deg,#2b3568,#141a3c 55%,#0b0f22)";
+    lap.innerHTML=boritoHTML(T);
+  } else if(o.t==="szakasz"){
+    lap.className="lap szakasz";
+    lap.style.background=`linear-gradient(150deg,${o.tagok[0].szin},#141a3c)`;
+    lap.innerHTML=`<div class="szfej"><h2>${o.targy.toUpperCase()}</h2>
+       <div class="kicsi" style="margin-top:6px">7. OSZTÁLY</div>
+       <div class="db"><b>${o.tagok.length*2}</b><span>LAP</span></div></div>
+      <div class="arcsor">${o.tagok.map(k=>{
+        const van=beragasztva.has(k.hely1)||beragasztva.has(k.hely2);
+        return `<div class="arc"><div class="ker ${van?'':'hianyzik'}">
+          <img src="${KEPUT(k)}" ${HIBAKEP}></div>
+          <div class="n">${k.nev}</div><div class="l">${k.lecke}</div></div>`;}).join('')}</div>`;
+  } else if(o.t==="szemely"){
+    const k=o.k; lap.className="lap szemely";
+    lap.style.backgroundImage=mintaHatter(k,1100,760);
+    lap.style.backgroundSize="cover";
+    lap.style.backgroundRepeat="no-repeat";
+    lap.innerHTML=`
+     <div class="sz-tag" style="background:${k.szin}">${k.targy.toUpperCase()} · ${k.evf}. OSZTÁLY</div>
+     <div class="sz-fejlec"><div class="sz-nev">${k.nev}</div>
+       <div class="sz-alnev" style="color:${k.szin}">${k.alnev}</div></div>
+     <div class="sz-torzs" style="--fo:${k.szin}">
+      <div class="sz-bal">
+       <div class="sz-kep"><img src="${KEPUT(k)}" ${HIBAKEP}>
+         <span class="nincs">a portré még nincs a mappában:<br>static/kartyak/hu/${k.kep}.png</span></div>
+       <div class="becenev" style="background:${k.szin}"><b>${k.becenev}</b><span>${k.leiras}</span></div>
+       <div class="dobozok">
+        <div class="doboz"><b>A TÉNY</b><span>${k.teny}</span></div>
+        <div class="doboz kek"><b>AMIT KEVESEN TUDNAK</b><span>${k.erd}</span></div></div>
+      </div>
+      <div class="sz-jobb">
+       <div class="adatlap"><div class="fej">ADATLAP</div><table>
+         <tr><td>Szakterülete</td><td>${k.targy}</td></tr>
+         <tr><td>Élt</td><td>${k.alnev.split('· ')[1]||''}</td></tr>
+         <tr><td>Képessége</td><td>${k.kepesseg}</td></tr>
+         <tr><td>Ereje</td><td>${k.ero}</td></tr>
+         <tr><td>Ritkaság</td><td>${k.csillag} ${k.cimke}</td></tr>
+         <tr><td>Lecke</td><td>${k.lecke}</td></tr></table></div>
+       <div class="helyek">${helyHTML(k,k.hely1,false)}${helyHTML(k,k.hely2,true)}</div>
+       <div class="idezet">„${k.idezet}”</div>
+      </div></div>`;
+    kotesek();
+  } else if(o.t==="checklist"){
+    lap.className="lap checklist";
+    let h=`<h2>CHECKLIST</h2>`;
+    TARGYAK.forEach(t=>{
+      h+=`<div class="clsz">${t.toUpperCase()} · 7. OSZTÁLY</div><div class="clracs">`;
+      K.filter(x=>x.targy===t).forEach(k=>{
+        [[k.hely1,''],[k.hely2,' ★']].forEach(([n,cs])=>{
+          const van=beragasztva.has(n);
+          h+=`<div class="cl ${van?'van':''}"><div class="k">${van
+            ?`<img src="${KEPUT(k)}" ${HIBAKEP}>`:'<span>?</span>'}</div>
+            <div class="sav"><span class="box">${van?'✓':''}</span>
+            <span class="n">${n}${cs}</span></div></div>`;});});
+      h+=`</div>`;});
+    lap.innerHTML=h;
+  } else {
+    lap.className="lap hatso";
+    lap.style.backgroundImage=fedlapHatter("hatso")
+      +",linear-gradient(200deg,#1e2650,#101638 55%,#080b18)";
+    lap.innerHTML=hatsoHTML(T);
+  }
+  document.getElementById('oldalszam').textContent=`${oldal+1} / ${OLDALAK.length}`;
+  document.getElementById('elore').disabled=oldal===0;
+  document.getElementById('hatra').disabled=oldal===OLDALAK.length-1;
+  document.getElementById('db').textContent=beragasztva.size;
+}
+function kotesek(){
+  lap.querySelectorAll('.hely[data-n]').forEach(h=>{
+    h.addEventListener('dragover',e=>{e.preventDefault();
+      const c=PAKLI.find(x=>x.id===HUZOTT);
+      if(c && Number(h.dataset.n)!==c.hova){h.classList.add('tiltott');e.dataTransfer.dropEffect='none';return;}
+      h.classList.add('rahuz');});
+    h.addEventListener('dragleave',()=>h.classList.remove('rahuz','tiltott'));
+    h.addEventListener('drop',e=>{e.preventDefault();h.classList.remove('rahuz');
+      const id=e.dataTransfer.getData('text/plain');
+      const c=PAKLI.find(x=>x.id===id); if(!c) return;
+      if(Number(h.dataset.n)===c.hova){
+        beragasztva.add(c.hova); PAKLI=PAKLI.filter(x=>x.id!==id);
+        uzenet.className='uzenet jo';
+        uzenet.textContent=`Megvan! ${c.k.nev}${c.arany?' arany lapja':''} a helyére került.`;
+        rajzol(); pakli();
+        /* Mentés: enélkül újratöltéskor kiesne a lap az albumból. */
+        if (window.BERAGASZT_URL) {
+          fetch(window.BERAGASZT_URL, {method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({lap: id})}).catch(()=>{});
+        }
+      } else {
+        h.classList.add('rossz'); setTimeout(()=>h.classList.remove('rossz'),400);
+        uzenet.className='uzenet baj';
+        uzenet.textContent='Nem ez a helye. Melyik tantárgyban és melyik leckében tanultál róla?';
+      }});});
+}
+function pakli(){
+  const p=document.getElementById('pakli');
+  if(!PAKLI.length){p.innerHTML='<div style="opacity:.5;padding:18px">Minden lapot beragasztottál.</div>';return;}
+  p.innerHTML=PAKLI.slice(0,40).map(c=>`<div class="mini ${c.arany?'aranylap':''}" draggable="true" data-id="${c.id}">
+     <span class="cimke">${c.hova}</span>
+     <img src="${KARTYAUT_SZIG(c.k,c.arany)}" ${HIBAKEP}><div class="c">${c.k.nev}</div></div>`).join('');
+  p.querySelectorAll('.mini').forEach(m=>m.addEventListener('dragstart',e=>{
+    e.dataTransfer.setData('text/plain',m.dataset.id); HUZOTT=m.dataset.id;
+    uzenet.className='uzenet';uzenet.textContent='';}));
+}
+document.getElementById('elore').addEventListener('click',()=>{if(oldal>0){oldal--;rajzol();}});
+document.getElementById('hatra').addEventListener('click',()=>{if(oldal<OLDALAK.length-1){oldal++;rajzol();}});
+document.addEventListener('dragover',e=>e.preventDefault());
+document.addEventListener('drop',e=>e.preventDefault());
+rajzol(); pakli();
+
+/* csak azok a lapok kerulnek a pakliba, amelyeknek tenyleg van kepuk */
+(async () => {
+  const jo = [];
+  for (const c of PAKLI) if (await kepBetolt(KARTYAUT_SZIG(c.k, c.arany))) jo.push(c);
+  PAKLI = jo;
+  pakli();
+})();
+
+</script></body></html>

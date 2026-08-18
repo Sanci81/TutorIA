@@ -353,6 +353,19 @@ TRANSLATIONS = {
         "hu": "Még {n} próbálkozásod van. Tanulj még {time} és próbálhatsz újra!",
         "es": "Te quedan {n} intentos. ¡Estudia {time} más y vuelve a intentarlo!",
     },
+    # A fejléc két buborékja: az érme a kinézet-boltba, a pont a tasakboltba visz.
+    "album_title": {
+        "hu": "Gyűjtőalbum – ragaszd be a lapjaidat",
+        "es": "Álbum: pega tus cromos",
+    },
+    "looks_shop_title": {
+        "hu": "Kinézet – az érméidből háttért választhatsz",
+        "es": "Aspecto: elige un fondo con tus monedas",
+    },
+    "pack_shop_title": {
+        "hu": "Tasakbolt – a pontjaidból lapot húzhatsz",
+        "es": "Tienda de sobres: consigue cromos con tus puntos",
+    },
     # Amíg van a három esélyből, NEM kell várni – ilyenkor ez a szöveg megy.
     "quiz_attempts_left_now_fmt": {
         "hu": "Még {n} próbálkozásod van. Nézd át a hibákat, és próbáld újra!",

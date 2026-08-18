@@ -3,6 +3,12 @@
 {% block title %}{{ subject_label }} · {{ child['name'] }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
+<style>
+  /* A gyerek által megvásárolt kinézet. A háttér a kinezet.py-ból jön, és
+     ugyanaz a CSS érték, amit a kinézet-boltban előnézetként lát. */
+  .chat-messages{background:{{ kinezet_hatter|safe }} !important}
+  .chat-coins-pill{cursor:pointer;text-decoration:none;color:inherit}
+</style>
 <section class="chat-layout{% if chat_mode == 'voice' %} chat-layout-voice{% endif %}" id="chat-page">
     <button type="button" class="chat-sidebar-toggle" id="sidebar-toggle" aria-label="{{ t('chat_topics_title') }}">☰</button>
 
@@ -77,7 +83,12 @@
                     <h1 class="chat-child-name">{{ child['name'] }}</h1>
                     <p class="chat-subject">{{ subject_label }}</p>
                 </div>
-                <div class="chat-coins-pill">🪙 <span id="coins-display">{{ coins }}</span></div>
+                <a class="chat-coins-pill" href="{{ kinezet_url }}"
+                   title="{{ t('looks_shop_title') }}">🪙 <span id="coins-display">{{ coins }}</span></a>
+                <a class="chat-coins-pill" href="{{ bolt_url }}"
+                   title="{{ t('pack_shop_title') }}">⭐ <span id="pont-display">{{ pont }}</span></a>
+                <a class="chat-coins-pill" href="{{ album_url }}"
+                   title="{{ t('album_title') }}">📕</a>
             </div>
 
             {% if not placement_mode %}
@@ -664,13 +675,19 @@
         });
     }
 
-    function updateGamification(xp, gameLevel, coins) {
+    function updateGamification(xp, gameLevel, coins, penztarca) {
         var xpEl = document.getElementById('xp-display');
         var levelEl = document.getElementById('level-display');
         var coinsEl = document.getElementById('coins-display');
+        var pontEl = document.getElementById('pont-display');
         if (xpEl) xpEl.textContent = xp;
         if (levelEl) levelEl.textContent = gameLevel;
         if (coinsEl && coins !== undefined) coinsEl.textContent = coins;
+        /* A pont a tasakbolt fizetőeszköze – a pénztárcából jön, hogy a
+           gyerek rögtön lássa, mennyivel került közelebb a következő laphoz. */
+        if (pontEl && penztarca && penztarca.pont !== undefined) {
+            pontEl.textContent = penztarca.pont;
+        }
     }
 
     function sendMessage(text, topicId) {
@@ -723,7 +740,7 @@
                 if (res.data.sidebar) renderSidebar(res.data.sidebar);
                 if (res.data.show_test_offer && btnTest) btnTest.hidden = false;
                 updateVocabulary(res.data.vocabulary, res.data.current_topic);
-                updateGamification(res.data.xp, res.data.game_level, res.data.coins);
+                updateGamification(res.data.xp, res.data.game_level, res.data.coins, res.data.penztarca);
             })
             .catch(function () {
                 setLoading(false);
@@ -881,7 +898,7 @@
                     appendBubble('assistant', d.congrats_message);
                 }
                 if (d.vocabulary) updateVocabulary(d.vocabulary, d.topic_name);
-                updateGamification(d.xp, d.game_level, d.coins);
+                updateGamification(d.xp, d.game_level, d.coins, d.penztarca);
                 if (d.topic_done) {
                     setTimeout(function () {
                         confetti({
@@ -1124,7 +1141,7 @@
                     }
                     if (res.data.sidebar) renderSidebar(res.data.sidebar);
                     updateVocabulary(res.data.vocabulary, res.data.current_topic);
-                    updateGamification(res.data.xp, res.data.game_level, res.data.coins);
+                    updateGamification(res.data.xp, res.data.game_level, res.data.coins, res.data.penztarca);
                     setVoiceUi('idle');
                     if (!reply.trim()) {
                         setVoiceUi('idle');
@@ -1260,7 +1277,7 @@
                     var d = res.data;
                     if (d.sidebar) renderSidebar(d.sidebar);
                     if (d.vocabulary) updateVocabulary(d.vocabulary, d.topic_name);
-                    updateGamification(d.xp, d.game_level, d.coins);
+                    updateGamification(d.xp, d.game_level, d.coins, d.penztarca);
                     if (d.topic_done) {
                         setTimeout(function () {
                             confetti({

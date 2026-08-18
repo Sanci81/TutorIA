@@ -75,6 +75,12 @@ TASAKOK: list[dict] = [
 # működést vissza akarod, elég ezt True-ra állítani.
 KARTYA_LECKEBOL = False
 
+# Az ARANY változat: minden emberhez tartozik egy sima és egy arany lap, és
+# az albumban is két hely van neki. Az arany ritkább – ez adja a gyűjtés
+# hosszát. Csak akkor húzható, ha a keretes arany kép tényleg elkészült.
+ARANY_ESELY = 0.15       # ekkora eséllyel arany a kihúzott lap
+ARANY_JEL = "#arany"     # a tárolt azonosító vége arany lapnál
+
 DUPLA_ERME = 25          # duplikátumért járó érme
 DUPLA_HATAR = 3          # ennyi azonos ritkaságú duplikátum = egy ingyen tasak
 INGYEN_TASAK = "ketto"     # a három duplából járó ingyen tasak fajtája
@@ -98,6 +104,17 @@ def tasak_by_id(tasak_id: str) -> dict | None:
 
 
 _STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+
+
+def arany_letezik(k: dict, static_dir: str | None = None) -> bool:
+    """Van-e KÉSZ arany lapja ennek a kártyának."""
+    gyoker = static_dir or _STATIC
+    return os.path.isfile(os.path.join(gyoker, kartyak.kartya_utvonal(k, True)))
+
+
+def kartya_azonosito(k: dict, arany: bool) -> str:
+    """A tárolt azonosító. Az arany külön lapnak számít – külön is gyűjthető."""
+    return k["id"] + ARANY_JEL if arany else k["id"]
 
 
 def kep_letezik(k: dict, static_dir: str | None = None) -> bool:
@@ -144,6 +161,7 @@ def huzas(
     meglevo = set(meglevo)
     hianyzo = [k for k in keszlet if k["id"] not in meglevo]
 
+
     szerint: dict[str, list[dict]] = {}
     for k in keszlet:
         szerint.setdefault(k["ritkasag"], []).append(k)
@@ -175,14 +193,20 @@ def huzas(
         lap = huzz_egyet(
             ESELY_GARANCIA.get(t["garancia"], ESELY_NORMAL) if utolso
             else ESELY_NORMAL)
-        lapok.append(lap)
+        # Arany változat: ritkán, és csak ha a keretes arany kép elkészült.
+        arany = (rnd.random() < ARANY_ESELY) and arany_letezik(lap, static_dir)
+        lapok.append({**lap, "arany": arany})
         kivalasztott.add(lap["id"])
 
     # Ha csupa duplikátum jött ki, de van még megszerezhető lap, az egyiket
     # kicseréljük egy hiányzóra – enélkül a nagy gyűjtemény frusztráló lenne.
-    if hianyzo and all(k["id"] in meglevo for k in lapok):
+    # Az "új-e" itt már az ARANY változatot is figyelembe veszi: egy embernek
+    # a sima és az arany lapja két külön gyűjthető darab.
+    if hianyzo and all(kartya_azonosito(k, k.get("arany", False)) in meglevo
+                       for k in lapok):
         csere = [k for k in hianyzo if k["id"] not in kivalasztott] or hianyzo
-        lapok[rnd.randrange(len(lapok))] = rnd.choice(csere)
+        uj_lap = rnd.choice(csere)
+        lapok[rnd.randrange(len(lapok))] = {**uj_lap, "arany": False}
 
     return lapok
 
