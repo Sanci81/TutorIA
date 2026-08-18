@@ -74,6 +74,9 @@
       linear-gradient(45deg,transparent 33.333%,var(--perem) 33.333%,var(--perem) 66.667%,transparent 66.667%),
       linear-gradient(-45deg,transparent 33.333%,var(--perem) 33.333%,var(--perem) 66.667%,transparent 66.667%);
     background-size:11px 26px}
+  /* Az ALSÓ perem a felső tükörképe. Enélkül a fogak ugyanabba az irányba
+     állnak fent és lent, és a zacskó félrecsúszottnak látszik. */
+  .csomag .perem.also{transform:scaleY(-1)}
 
   .csomag .test{position:relative;overflow:hidden;min-height:352px;
     display:flex;align-items:center;justify-content:center;

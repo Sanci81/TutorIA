@@ -49,24 +49,9 @@ def _svg(belso: str, szin: str, atlatszo: float = 0.16) -> str:
 
 
 # ── a rajzok ────────────────────────────────────────────────────────────────
-_SZIV = ('<path d="M16 26c0-5 4-8 8-8 3 0 5 2 6 4 1-2 3-4 6-4 4 0 8 3 8 8 0 8-14 16-14 16'
-         'S16 34 16 26z"/>'
-         '<path d="M44 52c0-3 2-5 5-5 2 0 3 1 4 2 1-1 2-2 4-2 2 0 5 2 5 5 0 5-9 10-9 10'
-         's-9-5-9-10z" fill-opacity="0.10"/>')
+_SZIV = ('<path d="M20.0 30.21C9.79 22.79,7.0 15.36,11.64 11.64C15.36 8.86,19.07 10.71,20.0 13.5C20.93 10.71,24.64 8.86,28.36 11.64C33.0 15.36,30.21 22.79,20.0 30.21Z" stroke="none"/><path d="M48.0 53.29C41.71 48.71,40.0 44.14,42.86 41.86C45.14 40.14,47.43 41.29,48.0 43.0C48.57 41.29,50.86 40.14,53.14 41.86C56.0 44.14,54.29 48.71,48.0 53.29Z" stroke="none" fill-opacity="0.55"/>')
 
-_FOCI = (
-    # Igazi futball-labda: TÖMÖR fekete ötszög középen, körülötte a szomszédos
-    # ötszögek darabjai a peremen – ez a jellegzetes minta, amiről a labda
-    # felismerhető. (Az első változatom vékony körvonal volt középen apró
-    # ötszöggel, az kerékre hasonlított, nem labdára.)
-    '<circle cx="20" cy="20" r="12" fill="none" stroke-width="2.2"/>'
-    '<path d="M20 13.4l6.3 4.6-2.4 7.4h-7.8l-2.4-7.4z" stroke="none" fill-opacity="0.55"/>'
-    '<path d="M20 13.4V8.2M26.3 18l4.9-3.6M23.9 25.4l3 4.9M16.1 25.4l-3 4.9'
-    'M13.7 18l-4.9-3.6" fill="none" stroke-width="2"/>'
-    '<circle cx="49" cy="47" r="7.5" fill="none" stroke-width="1.8"/>'
-    '<path d="M49 42.9l3.9 2.9-1.5 4.6h-4.8l-1.5-4.6z" stroke="none" fill-opacity="0.55"/>'
-    '<path d="M49 42.9v-3.3M52.9 45.8l3.1-2.2M51.4 50.4l1.9 3.1M46.6 50.4l-1.9 3.1'
-    'M45.1 45.8l-3.1-2.2" fill="none" stroke-width="1.5"/>')
+_FOCI = ('<clipPath id="l1"><circle cx="21" cy="21" r="13"/></clipPath><g clip-path="url(#l1)"><path d="M21.0 16.06L25.7 19.47L23.9 25.0L18.1 25.0L16.3 19.47Z" stroke="none"/><path d="M21.0 16.06L21.0 11.9" fill="none" stroke-width="2.0"/><path d="M28.8 5.92L23.41 13.34L14.69 10.5L14.69 1.34L23.41 -1.5Z" stroke="none"/><path d="M25.7 19.47L29.65 18.19" fill="none" stroke-width="2.0"/><path d="M37.75 23.76L29.03 20.92L29.03 11.76L37.75 8.92L43.14 16.34Z" stroke="none"/><path d="M23.9 25.0L26.35 28.36" fill="none" stroke-width="2.0"/><path d="M23.55 37.78L23.55 28.62L32.27 25.78L37.66 33.2L32.27 40.62Z" stroke="none"/><path d="M18.1 25.0L15.65 28.36" fill="none" stroke-width="2.0"/><path d="M5.83 28.62L14.55 25.78L19.94 33.2L14.55 40.62L5.83 37.78Z" stroke="none"/><path d="M16.3 19.47L12.35 18.19" fill="none" stroke-width="2.0"/><path d="M9.07 8.92L14.46 16.34L9.07 23.76L0.35 20.92L0.35 11.76Z" stroke="none"/></g><circle cx="21" cy="21" r="13" fill="none" stroke-width="2.0"/><clipPath id="l2"><circle cx="49" cy="48" r="7.5"/></clipPath><g clip-path="url(#l2)"><path d="M49.0 45.15L51.71 47.12L50.68 50.31L47.32 50.31L46.29 47.12Z" stroke="none"/><path d="M49.0 45.15L49.0 42.75" fill="none" stroke-width="1.5"/><path d="M53.5 39.3L50.39 43.58L45.36 41.95L45.36 36.65L50.39 35.02Z" stroke="none"/><path d="M51.71 47.12L53.99 46.38" fill="none" stroke-width="1.5"/><path d="M58.66 49.59L53.63 47.96L53.63 42.66L58.66 41.03L61.77 45.31Z" stroke="none"/><path d="M50.68 50.31L52.09 52.25" fill="none" stroke-width="1.5"/><path d="M50.47 57.69L50.47 52.39L55.5 50.76L58.61 55.04L55.5 59.32Z" stroke="none"/><path d="M47.32 50.31L45.91 52.25" fill="none" stroke-width="1.5"/><path d="M40.25 52.39L45.28 50.76L48.39 55.04L45.28 59.32L40.25 57.69Z" stroke="none"/><path d="M46.29 47.12L44.01 46.38" fill="none" stroke-width="1.5"/><path d="M42.12 41.03L45.23 45.31L42.12 49.59L37.09 47.96L37.09 42.66Z" stroke="none"/></g><circle cx="49" cy="48" r="7.5" fill="none" stroke-width="1.5"/>')
 
 _CSILLAG = ('<path d="M20 8l3.2 7.4 8 .7-6 5.3 1.8 7.8L20 25.1l-7 4.1 1.8-7.8-6-5.3 8-.7z"/>'
             '<path d="M46 36l2.2 5 5.4.5-4 3.6 1.2 5.3-4.8-2.8-4.8 2.8 1.2-5.3-4-3.6 5.4-.5z"'
