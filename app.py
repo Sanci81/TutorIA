@@ -42,6 +42,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import abra
 import database
 import kartyak
+import kinezet
 import pontok
 import tasak
 import translations as i18n
@@ -2962,14 +2963,19 @@ def _update_streak(child_id: int, progress_subject: str) -> dict:
         if streak_last and streak_last < yesterday:
             streak_days = 0
 
-    new_coins = coins + bonus_coins
+    # A sorozat-jutalom is a PÉNZTÁRCÁBA megy: egy érme van az alkalmazásban.
+    new_coins = coins
+    if bonus_coins > 0:
+        try:
+            new_coins = database.add_coins_wallet(child_id, bonus_coins)
+        except Exception as _exc:
+            print(f"[ERME] sorozat-jutalom hiba: {_exc}", flush=True)
 
     progress = database.update_child_progress(
         child_id,
         progress_subject,
         streak_days=streak_days,
         streak_last_date=today,
-        coins=new_coins if bonus_coins > 0 else None,
     )
 
     return progress
@@ -5067,6 +5073,8 @@ def child_chat(child_id: int):
             if cleaned:
                 msg["content"] = cleaned
 
+    _penztarca = database.get_wallet(child_id)
+
     return render_template(
         "chat.html",
         child=child,
@@ -5094,7 +5102,12 @@ def child_chat(child_id: int):
         learning_today=learning_today,
         show_early_test=show_early_test,
         progress=progress,
-        coins=progress.get("coins", 0),
+        # Az érme és a pont a PÉNZTÁRCÁBÓL jön – egy szám az egész appban.
+        coins=_penztarca.get("erme", 0),
+        pont=_penztarca.get("pont", 0),
+        kinezet_hatter=kinezet.hatter(_penztarca.get("kinezet")),
+        kinezet_url=url_for("child_looks", child_id=child_id),
+        bolt_url=url_for("child_shop", child_id=child_id),
         streak_days=progress.get("streak_days", 0),
         active_curriculum=active_curriculum,
     )
@@ -5535,7 +5548,7 @@ def child_chat_send(child_id: int):
             "figures": figures,
             "uj_kartyak": uj_kartyak,
             "dupla_ermek": dupla_ermek,
-            "coins": progress.get("coins", 0),
+            "coins": database.get_wallet(child_id)["erme"],
             "pont_esemenyek": pont_esemenyek,
             "penztarca": database.get_wallet(child_id),
         }
@@ -6174,10 +6187,13 @@ def child_chat_test_submit(child_id: int):
         new_xp = cur_progress.get("xp", 0) + 50
         new_game_level = (new_xp // 200) + 1
 
-        # Coins jóváírás: témakör teljesítés +100, ha 100% akkor +50 bónusz
-        new_coins = cur_progress.get("coins", 0) + 100
-        if score == 100:
-            new_coins += 50
+        # ÉRME jóváírás: témakör teljesítés +100, ha 100% akkor +50 bónusz.
+        # Az érme a PÉNZTÁRCÁBA megy, mert az alkalmazásban EGY érme van, és
+        # abból a kinézeteket lehet megvenni. (Régen tantárgyanként külön
+        # gyűlt a child_progress-ben, és semmit nem lehetett vele kezdeni.)
+        new_coins = database.add_coins_wallet(
+            child_id, 100 + (50 if score == 100 else 0)
+        )
 
     # ── PONT a tesztért ────────────────────────────────────────────────
     # Az első sikeres teljesítés ér a legtöbbet; az ismétlés jóval kevesebbet,
@@ -6662,10 +6678,7 @@ def api_learning_start():
     from datetime import date as _date
     today_minutes = database.get_learning_time_today(child_id, subject)
     if today_minutes == 0:
-        progress_subject = _chat_progress_subject(subject, None)
-        cur = database.get_or_create_child_progress(child_id, progress_subject)
-        new_coins = cur.get("coins", 0) + 10
-        database.update_child_progress(child_id, progress_subject, coins=new_coins)
+        database.add_coins_wallet(child_id, 10)   # a pénztárcába, mint minden érme
         result["daily_bonus_coins"] = 10
     else:
         result["daily_bonus_coins"] = 0
@@ -6824,6 +6837,10 @@ def _bolt_tasakok(es: bool) -> list[dict]:
             "meret": t["meret"],
             "garancia": t.get("garancia"),
             "leiras": t["leiras_es"] if es else t["leiras"],
+            # A tasak színe a mérettől függ – a gyerek a színről ismeri fel.
+            "szin1": t.get("szin1", "#4f66d8"),
+            "szin2": t.get("szin2", "#26307e"),
+            "peremszin": t.get("peremszin", "#c9d2f5"),
         }
         for t in tasak.TASAKOK
     ]
@@ -6927,6 +6944,14 @@ def child_shop_buy(child_id: int):
     print(f"[TASAK] child={child_id} tasak={t['id']} #{tasak_szam} "
           f"lapok={len(ki)} uj={sum(1 for x in ki if x['uj'])} "
           f"erme=+{erme_ossz} pont={penz['pont']}", flush=True)
+    # A kiküldött képútvonalak, és hogy a fájl valóban ott van-e a lemezen.
+    # Ha a gyerek törött képet lát, ebből az egy sorból kiderül, hol a hiba:
+    # rossz URL-t adunk, vagy hiányzik a fájl.
+    for _k, _x in zip(huzott, ki):
+        _fajl = os.path.join(app.static_folder, kartyak.kartya_utvonal(_k))
+        print(f"[TASAK-KEP] {_x['nev']}: url={_x['kep']} "
+              f"fajl={'VAN' if os.path.isfile(_fajl) else 'HIANYZIK'} ({_fajl})",
+              flush=True)
 
     return jsonify({
         "lapok": ki,
@@ -6937,6 +6962,106 @@ def child_shop_buy(child_id: int):
         "ingyen_tasak": penz["ingyen_tasak"],
         "tasak_szam": tasak_szam,
     })
+
+
+# ── Kinézetek: erre megy el az érme ─────────────────────────────────────────
+# PONT → tasak → kártya (a gyűjtés).
+# ÉRME → a csevegőablak háttere (a saját ízlés).
+# Két külön dolog, két külön szám, és mind a kettő érthető egy gyereknek.
+
+
+@app.route("/kinezet/minta/<nev>.svg")
+def looks_pattern(nev: str):
+    """Egy kinézet-minta SVG fájlként.
+
+    Korábban ezek adat-URI-ként utaztak a CSS-ben. Az elvileg működik, de
+    három helyen is el tud romlani (HTML attribútum, JSON, CSS idézőjelek),
+    és ha elromlik, NÉMÁN tűnik el a minta – csak a színátmenet marad. Egy
+    sima fájl mindig ugyanaz, és a böngésző el is tárolja.
+    """
+    svg = kinezet.minta_svg(nev)
+    if not svg:
+        abort(404)
+    return Response(svg, mimetype="image/svg+xml",
+                    headers={"Cache-Control": "public, max-age=86400"})
+
+
+@app.route("/children/<int:child_id>/kinezet")
+@login_required
+def child_looks(child_id: int):
+    """A kinézet-bolt: háttér a csevegőablakhoz, érméért."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    penztarca = database.get_wallet(child_id)
+    es = _kartya_oldal() == "es"
+    feloldott = kinezet.feloldva(penztarca.get("kinezetek"))
+    aktiv = penztarca.get("kinezet") or kinezet.INGYEN
+    if aktiv not in feloldott:
+        aktiv = kinezet.INGYEN
+
+    return render_template(
+        "kinezet.html",
+        child=child,
+        adat={
+            "nyelv": "es" if es else "hu",
+            "erme": penztarca["erme"],
+            "aktiv": aktiv,
+            "kinezetek": kinezet.lista_a_bolthoz(es, feloldott, aktiv),
+        },
+        vasarlas_url=url_for("child_looks_buy", child_id=child_id),
+        valasztas_url=url_for("child_looks_select", child_id=child_id),
+        vissza_url=url_for("select_tasks", child_id=child_id),
+    )
+
+
+@app.route("/children/<int:child_id>/kinezet/vasarlas", methods=["POST"])
+@login_required
+def child_looks_buy(child_id: int):
+    """Kinézet megvétele érméért. Vásárlás után rögtön aktív is lesz."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    es = _kartya_oldal() == "es"
+    keresett = (request.get_json(silent=True) or {}).get("kinezet") or ""
+    k = kinezet.by_id(keresett)
+    if k["id"] != keresett.strip():
+        return jsonify({"hiba": "Nincs ilyen kinézet."}), 400
+
+    penztarca = database.get_wallet(child_id)
+    if k["id"] in kinezet.feloldva(penztarca.get("kinezetek")):
+        database.set_kinezet(child_id, k["id"])
+        return jsonify({"ok": True, "mar_megvolt": True,
+                        "erme": penztarca["erme"], "aktiv": k["id"]})
+
+    if not database.spend_coins_wallet(child_id, int(k["ar"])):
+        hiany = int(k["ar"]) - penztarca["erme"]
+        return jsonify({"hiba": (
+            f"Te faltan {hiany} monedas." if es else f"Még {hiany} érme kell."
+        )}), 400
+
+    database.unlock_kinezet(child_id, k["id"])
+    database.set_kinezet(child_id, k["id"])
+    uj = database.get_wallet(child_id)
+    print(f"[KINEZET] child={child_id} vett={k['id']} ar={k['ar']} "
+          f"erme={uj['erme']}", flush=True)
+    return jsonify({"ok": True, "erme": uj["erme"], "aktiv": k["id"]})
+
+
+@app.route("/children/<int:child_id>/kinezet/valasztas", methods=["POST"])
+@login_required
+def child_looks_select(child_id: int):
+    """Már feloldott kinézet aktiválása."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    keresett = ((request.get_json(silent=True) or {}).get("kinezet") or "").strip()
+    if not database.set_kinezet(child_id, keresett):
+        return jsonify({"hiba": "Ez a kinézet még nincs feloldva."}), 400
+    return jsonify({"ok": True, "aktiv": keresett})
 
 
 if __name__ == "__main__":

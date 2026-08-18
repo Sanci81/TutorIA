@@ -18,6 +18,14 @@
     border-radius:999px;padding:8px 16px;font-size:.9rem;font-weight:700;white-space:nowrap}
   .zseton b{color:#f0c869;font-size:1.05rem;margin-right:5px}
 
+  /* Figyelmeztető sáv, ha a fájlt közvetlenül nyitották meg. Enélkül a
+     próbaadat valódinak látszik, és a törött kártyaképet a szerver hibájának
+     hinné az ember — pedig csak nincs is szerver. */
+  .proba{max-width:960px;margin:0 auto 18px;padding:12px 16px;border-radius:12px;
+    background:rgba(240,200,105,.13);border:1px solid rgba(240,200,105,.45);
+    color:#f4e6bd;font-size:.85rem;line-height:1.5}
+  .proba b{color:#f0c869}
+
   /* ── BOLT ─────────────────────────────────────────────── */
   .bolt{max-width:960px;margin:0 auto;display:grid;gap:16px;
     grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
@@ -27,6 +35,8 @@
   .tasak:hover{transform:translateY(-4px);box-shadow:0 16px 38px rgba(0,0,0,.5)}
   .tasak.szegeny{opacity:.5}
   .tasak .cim{font-size:1.15rem;font-weight:900;letter-spacing:.4px}
+  .tasak .szincsik{position:absolute;left:0;right:0;top:0;height:6px;
+    background:linear-gradient(90deg,var(--c1,#4f66d8),var(--c2,#26307e))}
   .tasak .db{font-size:.78rem;color:#f0c869;font-weight:800;letter-spacing:1.6px}
   .tasak .le{font-size:.85rem;opacity:.75;line-height:1.5;flex:1}
   .tasak .gar{font-size:.76rem;background:rgba(240,200,105,.16);border:1px solid rgba(240,200,105,.4);
@@ -45,21 +55,68 @@
   .fedes.nyit{display:flex}
   .utasitas{font-size:.95rem;opacity:.75;letter-spacing:.3px;text-align:center}
 
-  .csomag{width:230px;height:320px;border-radius:18px;cursor:pointer;position:relative;
-    background:linear-gradient(155deg,#3d4a8c,#232b57 55%,#161c3c);
-    border:2px solid rgba(240,200,105,.5);box-shadow:0 22px 60px rgba(0,0,0,.7);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
-    overflow:hidden;animation:leb 2.6s ease-in-out infinite}
+  /* A TASAK. Szándékosan NEM kártya alakú: szélesebb és zömökebb, fóliás,
+     fogazott peremmel — hogy első pillantásra zacskónak lássa a gyerek, ne
+     egy újabb kártyának. A Panini-tasak arányát követi (kb. 4:5). */
+  /* Keskeny, magas fóliazacskó, rombuszmintával és középen egy világos
+     szalaggal — ez a Top Eleven-féle forma. A --c1/--c2 a tasak MÉRETÉHEZ
+     tartozó szín (1 lap világoskék, 2 lap sötétkék, 3 lap narancs), így a
+     gyerek a színről tudja, mit vett, olvasás nélkül. */
+  .csomag{--c1:#4f66d8;--c2:#26307e;--perem:#c9d2f5;
+    width:212px;cursor:pointer;position:relative;
+    filter:drop-shadow(0 26px 48px rgba(0,0,0,.8));
+    animation:leb 2.6s ease-in-out infinite}
   @keyframes leb{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
-  .csomag::after{content:"";position:absolute;top:-60%;left:-40%;width:60%;height:220%;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
+
+  /* apró fogazású, hegesztett perem fent és lent */
+  .csomag .perem{height:13px;
+    background:
+      linear-gradient(45deg,transparent 33.333%,var(--perem) 33.333%,var(--perem) 66.667%,transparent 66.667%),
+      linear-gradient(-45deg,transparent 33.333%,var(--perem) 33.333%,var(--perem) 66.667%,transparent 66.667%);
+    background-size:11px 26px}
+
+  .csomag .test{position:relative;overflow:hidden;min-height:352px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--c1)}
+  /* A rombuszminta. A sakktáblát külön rétegen ELFORGATJUK 45 fokkal – így
+     lesznek belőle rombuszok, mint a Top Eleven paklikon. (Forgatás nélkül
+     egyenes sakktábla marad, az más benyomást kelt.) */
+  .csomag .test::before{content:"";position:absolute;inset:-45%;
+    background:
+      linear-gradient(45deg,var(--c2) 25%,transparent 25%,transparent 75%,var(--c2) 75%),
+      linear-gradient(45deg,var(--c2) 25%,transparent 25%,transparent 75%,var(--c2) 75%);
+    background-size:34px 34px;background-position:0 0,17px 17px;
+    transform:rotate(45deg)}
+  /* futó fényszalag: fóliahatás */
+  .csomag .test::after{content:"";position:absolute;top:-60%;left:-45%;width:48%;height:220%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.42),transparent);
     transform:rotate(18deg);animation:csill 2.8s linear infinite}
-  @keyframes csill{0%{left:-40%}100%{left:120%}}
-  .csomag .jel{font-family:Georgia,serif;font-size:2rem;font-weight:900;color:#f4ecd8}
-  .csomag .jel span{color:#f0c869}
-  .csomag .mit{font-size:.72rem;letter-spacing:3.4px;color:#f0c869;font-weight:800}
+  @keyframes csill{0%{left:-45%}100%{left:125%}}
+
+  /* a világos függőleges szalag, rajta a jel — mint a Top Eleven paklikon */
+  .csomag .szalag{position:relative;z-index:2;width:66%;padding:26px 8px 34px;
+    background:linear-gradient(180deg,#ffffff,#eef1f8);
+    box-shadow:0 3px 14px rgba(0,0,0,.22);
+    display:flex;flex-direction:column;align-items:center;gap:6px;
+    clip-path:polygon(0 0,100% 0,100% 86%,50% 100%,0 86%)}
+  .csomag .jel{font-family:Georgia,serif;font-size:1.6rem;font-weight:900;
+    color:#1d2450;line-height:1}
+  .csomag .jel span{color:var(--c2)}
+  .csomag .alcim{font-size:.5rem;letter-spacing:2.6px;color:#8a92ad;font-weight:800}
+
+  /* a lapszám-jelvény a zacskó alján */
+  .csomag .mit{position:absolute;z-index:3;left:50%;bottom:16px;transform:translateX(-50%);
+    display:flex;align-items:center;gap:5px;white-space:nowrap;
+    padding:4px 12px;border-radius:6px;background:#fff;
+    border:2px solid var(--c2);box-shadow:0 3px 10px rgba(0,0,0,.3);
+    font-size:.82rem;font-weight:900;color:var(--c2)}
+  .csomag .mit i{font-style:normal;font-size:.62rem;letter-spacing:1.4px;color:#6b7392}
+
+  /* felszakítás: előbb a felső perem repül le, aztán összemegy a zacskó */
   .csomag.szakad{animation:szak .5s ease-in forwards}
-  @keyframes szak{0%{transform:scale(1)}40%{transform:scale(1.1) rotate(-3deg)}
+  .csomag.szakad .perem.felso{animation:perem_le .34s ease-in forwards}
+  @keyframes perem_le{to{transform:translateY(-46px) rotate(-11deg);opacity:0}}
+  @keyframes szak{0%{transform:scale(1)}40%{transform:scale(1.08) rotate(-3deg)}
     100%{transform:scale(.2) rotate(8deg);opacity:0}}
 
   .lapsor{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;perspective:1400px}
@@ -74,6 +131,13 @@
   .lap .hatlap b span{color:#f0c869}
   .lap .elolap{transform:rotateY(180deg);background:#101830}
   .lap .elolap img{width:100%;height:100%;object-fit:contain;display:block}
+  /* Ha a kártyakép nem tölt be, NE néma törött ikon legyen: írjuk ki, melyik
+     lap az, és pontosan melyik útvonal hiányzik. Egy képernyőképből látszik. */
+  .lap .kephiba{width:100%;height:100%;padding:14px 10px;display:flex;
+    flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center}
+  .lap .kephiba b{font-size:.95rem;color:#f4ecd8;line-height:1.2}
+  .lap .kephiba i{font-size:.72rem;color:#ff9c8a;font-style:normal}
+  .lap .kephiba code{font-size:.58rem;color:#9aa4cf;word-break:break-all;line-height:1.35}
   /* A címke a megfordított lap GYEREKE, ezért vele együtt tükröződne, és a
      szöveg visszafelé látszana. Ezért visszaforgatjuk. */
   .lap.fordul .cimke{transform:rotateY(180deg)}
@@ -110,13 +174,22 @@
   </div>
 </div>
 
+<div class="proba" id="proba" hidden></div>
+
 <div class="bolt" id="bolt"></div>
 
 <div class="fedes" id="fedes">
   <div class="utasitas" id="utasitas"></div>
   <div class="csomag" id="csomag">
-    <div class="jel">Tutor<span>IA</span></div>
-    <div class="mit" id="csomag-mit">TASAK</div>
+    <div class="perem felso"></div>
+    <div class="test">
+      <div class="szalag">
+        <div class="jel">Tutor<span>IA</span></div>
+        <div class="alcim" id="csomag-alcim">TUDÁSKÁRTYÁK</div>
+      </div>
+      <div class="mit" id="csomag-mit"><b>1</b><i>LAP</i></div>
+    </div>
+    <div class="perem also"></div>
   </div>
   <div class="lapsor" id="lapsor"></div>
   <div class="osszegzo" id="osszegzo"></div>
@@ -141,11 +214,14 @@ const ADAT = window.ADAT || {
   pont: 620, erme: 50, lapok: 3,
   tasakok: [
     {id:"egy",   nev:"Egy lap",   ar:100, meret:1, garancia:null,
-     leiras:"Egy véletlen lap. Bármi lehet."},
+     leiras:"Egy véletlen lap. Bármi lehet.",
+     szin1:"#7ed0f4", szin2:"#2f9fd4", peremszin:"#d8eefb"},
     {id:"ketto", nev:"Két lap",   ar:180, meret:2, garancia:null,
-     leiras:"Két lap, olcsóbban, mintha külön vennéd."},
+     leiras:"Két lap, olcsóbban, mintha külön vennéd.",
+     szin1:"#4f66d8", szin2:"#26307e", peremszin:"#c9d2f5"},
     {id:"harom", nev:"Három lap", ar:250, meret:3, garancia:"ritka",
-     leiras:"Három lap, és az utolsó garantáltan ritka vagy jobb."},
+     leiras:"Három lap, és az utolsó garantáltan ritka vagy jobb.",
+     szin1:"#ffb43f", szin2:"#e8722a", peremszin:"#ffe6c2"},
   ],
   /* próbahúzás – élesben a szerver adja vissza vásárláskor */
   proba: [
@@ -161,6 +237,9 @@ const ADAT = window.ADAT || {
 const RITKA = new Set(["nagyon_ritka","legendas"]);
 const $ = id => document.getElementById(id);
 const DUPLA = ADAT.dupla_erme || 25;
+/* Igaz, ha nincs szerver: a fájlt közvetlenül nyitották meg. Ilyenkor minden
+   szám és kép PRÓBAADAT — ezt ki is írjuk, hogy ne tűnjön valódi hibának. */
+const PROBA_MOD = !window.ADAT;
 
 /* ── két nyelv ──────────────────────────────────────────────────────────── */
 const SZOVEG = {
@@ -179,6 +258,10 @@ const SZOVEG = {
       (dup ? `<br><b>${dup}</b> már megvolt — ${erme} érmét kaptál értük.` : ``),
     album:"Az albumba",
     ures:"Még nincs kész kártya ezen az oldalon.",
+    csomag_alcim:"TUDÁSKÁRTYÁK",
+    lapdb_rovid:m=>(m===1?"LAP":"LAP"),
+    proba_mod:"PRÓBA MÓD — ezt a fájlt közvetlenül nyitottad meg, nem az alkalmazásból. A pontok és a kártyaképek csak akkor valódiak, ha a böngészőben a /children/…/bolt címet nyitod meg.",
+    kephiba:"a kártyakép nem töltődött be",
   },
   es: {
     cim:"Tienda de sobres",
@@ -195,6 +278,10 @@ const SZOVEG = {
       (dup ? `<br><b>${dup}</b> repetidos — has ganado ${erme} monedas.` : ``),
     album:"Al álbum",
     ures:"Todavía no hay cromos listos en este lado.",
+    csomag_alcim:"CROMOS DEL SABER",
+    lapdb_rovid:m=>(m===1?"CROMO":"CROMOS"),
+    proba_mod:"MODO DE PRUEBA — has abierto el archivo directamente, no la aplicación. Los puntos y las imágenes solo son reales en /children/…/bolt.",
+    kephiba:"la imagen del cromo no se ha cargado",
   },
 };
 const T = SZOVEG[(ADAT.nyelv || "hu")] || SZOVEG.hu;
@@ -206,6 +293,12 @@ $("t-pont").textContent  = T.pont;
 $("t-erme").textContent  = T.erme;
 $("t-lap").textContent   = T.lap;
 $("zar").textContent     = T.album;
+$("csomag-alcim").textContent = T.csomag_alcim;
+
+if (PROBA_MOD) {
+  $("proba").hidden = false;
+  $("proba").innerHTML = "<b>⚠</b> " + T.proba_mod;
+}
 
 let allapot = {pont:ADAT.pont, erme:ADAT.erme, lapok:ADAT.lapok};
 
@@ -219,7 +312,11 @@ function egyenleg(){
 function boltRajz(){
   $("bolt").innerHTML = ADAT.tasakok.map(t => {
     const telik = allapot.pont >= t.ar;
-    return `<div class="tasak ${telik?'':'szegeny'}">
+    /* A csempe fejsávja a tasak színe – a gyerek így a boltban is látja,
+       melyik szín melyik méret, mielőtt megveszi. */
+    return `<div class="tasak ${telik?'':'szegeny'}"
+                 style="--c1:${t.szin1||'#4f66d8'};--c2:${t.szin2||'#26307e'}">
+      <div class="szincsik"></div>
       <div class="db">${T.lapdb(t.meret)}</div>
       <div class="cim">${t.nev}</div>
       <div class="le">${t.leiras}</div>
@@ -266,7 +363,12 @@ async function vasarol(tasakId){
 
 /* ── a bontás ───────────────────────────────────────────────────────────── */
 function bontas(t, lapok){
-  $("csomag-mit").textContent = t.nev.toUpperCase();
+  /* A tasak a MÉRETÉHEZ tartozó színt veszi fel, és a jelvényen a lapszám áll. */
+  const cs0 = $("csomag");
+  cs0.style.setProperty('--c1', t.szin1 || '#4f66d8');
+  cs0.style.setProperty('--c2', t.szin2 || '#26307e');
+  cs0.style.setProperty('--perem', t.peremszin || '#c9d2f5');
+  $("csomag-mit").innerHTML = `<b>${t.meret}</b><i>${T.lapdb_rovid(t.meret)}</i>`;
   $("lapsor").innerHTML = "";
   $("osszegzo").className = "osszegzo";
   $("zar").className = "zar";
@@ -290,6 +392,23 @@ function lapokKi(lapok){
       <div class="oldal elolap"><img src="${l.kep}" alt="${l.nev}"></div>
       <div class="cimke ${l.uj?'uj':'dupla'}">${l.uj ? T.uj : T.dupla(DUPLA)}</div>
     </div>`).join('');
+
+  /* Törött kártyakép: kiírjuk a nevet és a hiányzó útvonalat, hogy ne néma
+     hiba legyen. A `complete && naturalWidth===0` azért kell, mert a hiba
+     megtörténhet még azelőtt, hogy a figyelő felkerülne. */
+  document.querySelectorAll('.lap img').forEach(img => {
+    const rossz = () => {
+      if (!img.parentNode) return;
+      const d = document.createElement('div');
+      d.className = 'kephiba';
+      d.innerHTML = `<b>${img.alt}</b><i>${T.kephiba}</i>` +
+                    `<code>${(img.getAttribute('src')||'').replace(/</g,'&lt;')}</code>`;
+      img.replaceWith(d);
+      console.error('[TASAK] nem toltodott be a kartyakep:', img.getAttribute('src'));
+    };
+    img.addEventListener('error', rossz);
+    if (img.complete && img.naturalWidth === 0) rossz();
+  });
 
   let hatra = lapok.length;
   document.querySelectorAll('.lap').forEach(el => {

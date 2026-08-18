@@ -30,6 +30,10 @@ import kartyak
 # Egy jó nap ~150–200 pont: lecke 50 + teszt 100–150.
 # Ezért az egy lap megfizethető szinte minden lecke után, a nagy tasakra
 # viszont gyűjteni kell – és a gyűjtés maga is motivál.
+#
+# SZÍN: minden tasakméretnek SAJÁT SZÍNE van, mint a Top Elevenben. A gyerek
+# már a színről tudja, hány lap van benne – nem kell elolvasnia. A `szin1` a
+# világosabb, a `szin2` a sötétebb árnyalat: ebből lesz a rombuszminta.
 TASAKOK: list[dict] = [
     {
         "id": "egy",
@@ -40,6 +44,7 @@ TASAKOK: list[dict] = [
         "garancia": None,
         "leiras": "Egy véletlen lap. Bármi lehet.",
         "leiras_es": "Un cromo al azar. Puede ser cualquiera.",
+        "szin1": "#7ed0f4", "szin2": "#2f9fd4", "peremszin": "#d8eefb",
     },
     {
         "id": "ketto",
@@ -50,6 +55,7 @@ TASAKOK: list[dict] = [
         "garancia": None,
         "leiras": "Két lap, olcsóbban, mintha külön vennéd.",
         "leiras_es": "Dos cromos, más barato que por separado.",
+        "szin1": "#4f66d8", "szin2": "#26307e", "peremszin": "#c9d2f5",
     },
     {
         "id": "harom",
@@ -60,6 +66,7 @@ TASAKOK: list[dict] = [
         "garancia": "ritka",
         "leiras": "Három lap, és az utolsó garantáltan ritka vagy jobb.",
         "leiras_es": "Tres cromos, y el último es raro o mejor.",
+        "szin1": "#ffb43f", "szin2": "#e8722a", "peremszin": "#ffe6c2",
     },
 ]
 

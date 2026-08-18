@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – Kinézet</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:"Segoe UI",system-ui,sans-serif;color:#e9e4d6;min-height:100vh;
+    background:radial-gradient(circle at 50% -10%,#26305e,#141830 45%,#080a16);
+    padding:22px 16px 60px}
+  .fej{max-width:1000px;margin:0 auto 20px;display:flex;justify-content:space-between;
+    align-items:center;gap:14px;flex-wrap:wrap}
+  .fej h1{font-size:1.35rem;letter-spacing:.3px}
+  .fej .alcim{opacity:.6;font-size:.85rem;margin-top:3px}
+  .zseton{background:rgba(255,255,255,.07);border:1px solid rgba(240,200,105,.32);
+    border-radius:999px;padding:8px 16px;font-size:.9rem;font-weight:700;white-space:nowrap}
+  .zseton b{color:#f0c869;font-size:1.05rem;margin-right:5px}
+
+  /* Figyelmeztetés, ha a fájlt közvetlenül nyitották meg: ilyenkor nincs
+     szerver, a minták nem töltődnek be, és minden szám próbaadat. */
+  .proba{max-width:1000px;margin:0 auto;padding:12px 16px;border-radius:12px;
+    background:rgba(240,200,105,.13);border:1px solid rgba(240,200,105,.45);
+    color:#f4e6bd;font-size:.85rem;line-height:1.5}
+  .proba b{color:#f0c869}
+
+  .csoportcim{max-width:1000px;margin:26px auto 12px;font-size:.72rem;letter-spacing:2.4px;
+    color:rgba(233,228,214,.5);font-weight:800}
+  .racs{max-width:1000px;margin:0 auto;display:grid;gap:16px;
+    grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+
+  .db{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+    border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px}
+  .db.enyem{border-color:rgba(240,200,105,.4)}
+  .db.aktiv{border-color:#7fe0ab;box-shadow:0 0 0 1px #7fe0ab,0 10px 26px rgba(0,0,0,.5)}
+
+  /* Az előnézet UGYANAZT a CSS hátteret kapja, ami élesben a csevegőablakra
+     kerül – amit itt lát a gyerek, azt kapja. */
+  .elonezet{height:132px;border-radius:11px;position:relative;overflow:hidden;
+    border:1px solid rgba(0,0,0,.15);padding:12px;display:flex;flex-direction:column;gap:7px}
+  .buborek{max-width:82%;padding:7px 11px;border-radius:12px;font-size:.68rem;line-height:1.3;
+    background:#fff;color:#2b3350;box-shadow:0 2px 6px rgba(20,30,60,.14)}
+  .buborek.enyem{align-self:flex-end;background:#3d4a8c;color:#f4f1e8}
+
+  .nev{font-size:.95rem;font-weight:700}
+  .also{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .ar{font-size:.85rem;color:#f0c869;font-weight:700;white-space:nowrap}
+  .gomb{border:0;border-radius:10px;padding:9px 14px;font-size:.82rem;font-weight:800;
+    cursor:pointer;background:linear-gradient(180deg,#f3d283,#dcae4a);color:#2a2410}
+  .gomb:hover{filter:brightness(1.07)}
+  .gomb:disabled{background:#39406b;color:#8890b5;cursor:not-allowed}
+  .gomb.hasznal{background:linear-gradient(180deg,#8ee9b8,#4cc98a);color:#0c2a1c}
+  .jelenleg{font-size:.78rem;color:#7fe0ab;font-weight:800}
+
+  .vissza{display:block;max-width:1000px;margin:30px auto 0;text-align:center}
+  .vissza a{color:rgba(233,228,214,.6);font-size:.85rem;text-decoration:none}
+  .vissza a:hover{color:#f0c869}
+</style>
+</head>
+<body>
+
+<div class="fej">
+  <div>
+    <h1 id="t-cim">Kinézet</h1>
+    <div class="alcim" id="t-alcim">Az érméidből a tanulóablak hátterét cserélheted.</div>
+  </div>
+  <div class="zseton"><b id="e-erme">0</b><span id="t-erme">érme</span></div>
+</div>
+
+<div class="proba" id="proba" hidden></div>
+
+<div id="lista"></div>
+
+<div class="vissza"><a id="t-vissza" href="#">← Vissza a tanuláshoz</a></div>
+
+<script>
+/* Élesben a Flask tölti ki. Fájlból megnyitva ez a három sor hibás marad –
+   külön blokk, csak ez dől el, és lentebb a próbaadat lép a helyére. */
+window.ADAT = {{ adat|tojson }};
+window.VASARLAS_URL = "{{ vasarlas_url }}";
+window.VALASZTAS_URL = "{{ valasztas_url }}";
+window.VISSZA_URL = "{{ vissza_url }}";
+</script>
+
+<script>
+const ADAT = window.ADAT || {
+  nyelv:"hu", erme:900, aktiv:"alap",
+  kinezetek:[
+    {id:"alap",  nev:"Alap",       ar:0,   fajta:"szin",  megvan:true,  aktiv:true,
+     hatter:"linear-gradient(160deg,#ffffff,#f4f6fb)"},
+    {id:"ejkek", nev:"Éjkék",      ar:150, fajta:"szin",  megvan:false, aktiv:false,
+     hatter:"linear-gradient(160deg,#e8effb,#cddcf5)"},
+    {id:"szivek",nev:"Szívecskék", ar:350, fajta:"minta", megvan:false, aktiv:false,
+     hatter:"linear-gradient(160deg,#fff2f5,#ffe0e8)"},
+  ],
+};
+
+const $ = id => document.getElementById(id);
+
+const SZOVEG = {
+  hu: {
+    cim:"Kinézet", alcim:"Az érméidből a tanulóablak hátterét cserélheted.",
+    erme:"érme", vissza:"← Vissza a tanuláshoz",
+    csoport:{szin:"SIMA SZÍNEK", minta:"MINTÁSAK", kulon:"KÜLÖNLEGES"},
+    vesz:"Megveszem", hasznal:"Ezt használom", jelenleg:"Ez van beállítva",
+    hianyzik:n=>`Még ${n} érme kell`, ingyen:"Ingyenes",
+    minta_buborek:"Szia! Mit tanuljunk ma?", enyem_buborek:"Kezdjük!",
+    proba_mod:"PRÓBA MÓD — ezt a fájlt közvetlenül nyitottad meg, nem az alkalmazásból. A minták nem töltődnek be és az érme sem valódi. A működő oldal a /children/…/kinezet címen van.",
+  },
+  es: {
+    cim:"Aspecto", alcim:"Con tus monedas puedes cambiar el fondo de la ventana.",
+    erme:"monedas", vissza:"← Volver a estudiar",
+    csoport:{szin:"COLORES LISOS", minta:"CON DIBUJOS", kulon:"ESPECIAL"},
+    vesz:"Comprar", hasznal:"Usar este", jelenleg:"En uso ahora",
+    hianyzik:n=>`Te faltan ${n} monedas`, ingyen:"Gratis",
+    minta_buborek:"¡Hola! ¿Qué estudiamos hoy?", enyem_buborek:"¡Empezamos!",
+    proba_mod:"MODO DE PRUEBA — has abierto el archivo directamente, no la aplicación. Los dibujos no se cargan y las monedas no son reales. La página real está en /children/…/kinezet.",
+  },
+};
+const T = SZOVEG[ADAT.nyelv] || SZOVEG.hu;
+
+document.documentElement.lang = ADAT.nyelv || "hu";
+$("t-cim").textContent   = T.cim;
+$("t-alcim").textContent = T.alcim;
+$("t-erme").textContent  = T.erme;
+$("t-vissza").textContent = T.vissza;
+if (window.VISSZA_URL) $("t-vissza").href = window.VISSZA_URL;
+
+/* Nincs szerver → minden szám és minta próbaadat. Mondjuk ki, ne kelljen
+   találgatni, miért néz ki másképp, mint az alkalmazásban. */
+if (!window.ADAT) {
+  $("proba").hidden = false;
+  $("proba").innerHTML = "<b>⚠</b> " + T.proba_mod;
+}
+
+let allapot = { erme: ADAT.erme, aktiv: ADAT.aktiv,
+                enyem: new Set(ADAT.kinezetek.filter(k=>k.megvan).map(k=>k.id)) };
+
+function rajzol(){
+  $("e-erme").textContent = allapot.erme;
+  const sorrend = ["szin","minta","kulon"];
+  $("lista").innerHTML = sorrend.map(f => {
+    const csoport = ADAT.kinezetek.filter(k => k.fajta === f);
+    if (!csoport.length) return "";
+    return `<div class="csoportcim">${T.csoport[f]}</div><div class="racs">` +
+      csoport.map(k => {
+        const enyem  = allapot.enyem.has(k.id);
+        const aktiv  = allapot.aktiv === k.id;
+        const telik  = allapot.erme >= k.ar;
+        let gomb;
+        if (aktiv)       gomb = `<span class="jelenleg">${T.jelenleg}</span>`;
+        else if (enyem)  gomb = `<button class="gomb hasznal" data-hasznal="${k.id}">${T.hasznal}</button>`;
+        else if (telik)  gomb = `<button class="gomb" data-vesz="${k.id}">${T.vesz}</button>`;
+        else             gomb = `<button class="gomb" disabled>${T.hianyzik(k.ar - allapot.erme)}</button>`;
+        return `<div class="db ${enyem?'enyem':''} ${aktiv?'aktiv':''}">
+          <div class="elonezet" style="background:${k.hatter}">
+            <div class="buborek">${T.minta_buborek}</div>
+            <div class="buborek enyem">${T.enyem_buborek}</div>
+          </div>
+          <div class="nev">${k.nev}</div>
+          <div class="also">
+            <span class="ar">${k.ar ? k.ar + " " + T.erme : T.ingyen}</span>
+            ${gomb}
+          </div>
+        </div>`;
+      }).join("") + `</div>`;
+  }).join("");
+
+  document.querySelectorAll('[data-vesz]').forEach(b =>
+    b.addEventListener('click', () => vesz(b.dataset.vesz)));
+  document.querySelectorAll('[data-hasznal]').forEach(b =>
+    b.addEventListener('click', () => hasznal(b.dataset.hasznal)));
+}
+
+async function vesz(id){
+  const k = ADAT.kinezetek.find(x => x.id === id);
+  if (!k || allapot.erme < k.ar) return;
+  if (window.VASARLAS_URL) {
+    let v;
+    try {
+      v = await fetch(window.VASARLAS_URL, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({kinezet: id})
+      }).then(r => r.json());
+    } catch (e) { alert(String(e)); return; }
+    if (!v || v.hiba) { alert((v && v.hiba) || 'hiba'); return; }
+    allapot.erme = v.erme;
+    allapot.aktiv = v.aktiv;
+  } else {
+    allapot.erme -= k.ar;
+    allapot.aktiv = id;
+  }
+  allapot.enyem.add(id);
+  rajzol();
+}
+
+async function hasznal(id){
+  if (window.VALASZTAS_URL) {
+    let v;
+    try {
+      v = await fetch(window.VALASZTAS_URL, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({kinezet: id})
+      }).then(r => r.json());
+    } catch (e) { alert(String(e)); return; }
+    if (!v || v.hiba) { alert((v && v.hiba) || 'hiba'); return; }
+  }
+  allapot.aktiv = id;
+  rajzol();
+}
+
+rajzol();
+</script>
+</body>
+</html>
