@@ -83,12 +83,13 @@
                     <h1 class="chat-child-name">{{ child['name'] }}</h1>
                     <p class="chat-subject">{{ subject_label }}</p>
                 </div>
-                <a class="chat-coins-pill" href="{{ kinezet_url }}"
-                   title="{{ t('looks_shop_title') }}">🪙 <span id="coins-display">{{ coins }}</span></a>
-                <a class="chat-coins-pill" href="{{ bolt_url }}"
-                   title="{{ t('pack_shop_title') }}">⭐ <span id="pont-display">{{ pont }}</span></a>
-                <a class="chat-coins-pill" href="{{ album_url }}"
-                   title="{{ t('album_title') }}">📕</a>
+                {# CSAK az egyenleg látszik tanulás közben – a boltot és az
+                   albumot a profilról nyitja, hogy a lecke ne szakadjon meg.
+                   A számnak viszont itt kell lennie: a gyerek akkor érzi a
+                   jutalmat, amikor megdolgozott érte. #}
+                <div class="chat-coins-pill" title="{{ t('coin_hint') }}">🪙
+                   <span id="coins-display">{{ coins }}</span>
+                   <span id="pont-display" hidden>{{ pont }}</span></div>
             </div>
 
             {% if not placement_mode %}

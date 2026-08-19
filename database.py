@@ -355,6 +355,9 @@ class ChildWallet(Base):
     # Egyszeri átvezetés: a régi, tantárgyankénti coins összegét egyszer
     # hozzáadjuk az érméhez, hogy a gyereknek ne tűnjön el, amit összegyűjtött.
     regi_erme_atvezetve: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    # Egyetlen valuta lett: a pont beolvadt az érmébe. Ez a jelző mondja meg,
+    # hogy a régi pontegyenleget már hozzáadtuk-e.
+    pont_atvezetve: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
@@ -1897,6 +1900,7 @@ def ensure_child_wallet_table() -> None:
             "kinezet VARCHAR(32) NOT NULL DEFAULT 'alap'",
             "kinezetek TEXT NOT NULL DEFAULT 'alap'",
             "regi_erme_atvezetve BOOLEAN NOT NULL DEFAULT FALSE",
+            "pont_atvezetve BOOLEAN NOT NULL DEFAULT FALSE",
         ):
             conn.execute(text(
                 f"ALTER TABLE child_wallet ADD COLUMN IF NOT EXISTS {oszlop}"))
@@ -1971,6 +1975,12 @@ def _wallet_row(db, child_id: int) -> "ChildWallet":
         row.erme = (row.erme or 0) + int(regi)
         row.regi_erme_atvezetve = True
         db.flush()
+    # A pont beolvasztása az érmébe – egyszer, gyerekenként.
+    if not (row.pont_atvezetve or False):
+        row.erme = (row.erme or 0) + int(row.pont or 0)
+        row.pont = 0
+        row.pont_atvezetve = True
+        db.flush()
     return row
 
 
@@ -1985,7 +1995,9 @@ def get_wallet(child_id: int) -> dict[str, Any]:
         r = _wallet_row(db, child_id)
         db.commit()
         return {
-            "pont": r.pont or 0,
+            # EGY valuta van. A "pont" kulcs megmaradt a régi hívók kedvéért,
+            # de ugyanazt az egy egyenleget mutatja, mint az "erme".
+            "pont": r.erme or 0,
             "osszes_pont": r.osszes_pont or 0,
             "erme": r.erme or 0,
             "ingyen_tasak": r.ingyen_tasak or 0,
@@ -2046,37 +2058,29 @@ def set_kinezet(child_id: int, kinezet_id: str) -> bool:
 
 
 def add_points(child_id: int, mennyi: int) -> dict[str, Any]:
-    """Pont jóváírása. Negatív értéket nem fogad el – a levonás a spend_points."""
+    """Jutalom jóváírása. EGY valuta van: az érme.
+
+    A név megmaradt, mert sok helyről hívjuk, de az összeg az érmére megy –
+    a gyereknek egyetlen számot kell követnie, és mindenre költheti.
+    """
     if mennyi <= 0:
         return get_wallet(child_id)
     db = _session()
     try:
         r = _wallet_row(db, child_id)
-        r.pont = (r.pont or 0) + mennyi
-        r.osszes_pont = (r.osszes_pont or 0) + mennyi
+        r.erme = (r.erme or 0) + mennyi
+        r.osszes_pont = (r.osszes_pont or 0) + mennyi   # életút-összeg
         db.commit()
-        return {"pont": r.pont, "osszes_pont": r.osszes_pont,
-                "erme": r.erme or 0, "ingyen_tasak": r.ingyen_tasak or 0,
+        return {"pont": r.erme, "osszes_pont": r.osszes_pont,
+                "erme": r.erme, "ingyen_tasak": r.ingyen_tasak or 0,
                 "tasak_szam": r.tasak_szam or 0}
     finally:
         db.close()
 
 
 def spend_points(child_id: int, mennyi: int) -> bool:
-    """Levonás. False, ha nincs elég – ilyenkor semmit nem változtat."""
-    if mennyi <= 0:
-        return True
-    db = _session()
-    try:
-        r = _wallet_row(db, child_id)
-        if (r.pont or 0) < mennyi:
-            db.commit()
-            return False
-        r.pont = (r.pont or 0) - mennyi
-        db.commit()
-        return True
-    finally:
-        db.close()
+    """Levonás az érméből. False, ha nincs elég – ilyenkor nem változtat."""
+    return spend_coins_wallet(child_id, mennyi)
 
 
 def add_coins_wallet(child_id: int, mennyi: int) -> int:

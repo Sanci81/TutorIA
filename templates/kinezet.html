@@ -52,15 +52,22 @@
   .gomb.hasznal{background:linear-gradient(180deg,#8ee9b8,#4cc98a);color:#0c2a1c}
   .jelenleg{font-size:.78rem;color:#7fe0ab;font-weight:800}
 
-  .vissza{display:block;max-width:1000px;margin:30px auto 0;text-align:center}
-  .vissza a{color:rgba(233,228,214,.6);font-size:.85rem;text-decoration:none}
-  .vissza a:hover{color:#f0c869}
+  /* A visszalépés FELÜL, gombként. Alul, halvány szövegként észrevehetetlen. */
+  .fej{align-items:center}
+  .fejkozep{flex:1;text-align:center}
+  .vissza-gomb{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+    background:rgba(255,255,255,.09);border:1px solid rgba(240,200,105,.4);
+    color:#f0c869;text-decoration:none;font-weight:800;font-size:.88rem;
+    padding:10px 18px;border-radius:999px;transition:background .15s}
+  .vissza-gomb:hover{background:rgba(240,200,105,.2)}
+  .vissza{display:none}
 </style>
 </head>
 <body>
 
 <div class="fej">
-  <div>
+  <a class="vissza-gomb" id="t-vissza-fent" href="#">← Vissza a tanuláshoz</a>
+  <div class="fejkozep">
     <h1 id="t-cim">Kinézet</h1>
     <div class="alcim" id="t-alcim">Az érméidből a tanulóablak hátterét cserélheted.</div>
   </div>
@@ -124,7 +131,11 @@ $("t-cim").textContent   = T.cim;
 $("t-alcim").textContent = T.alcim;
 $("t-erme").textContent  = T.erme;
 $("t-vissza").textContent = T.vissza;
-if (window.VISSZA_URL) $("t-vissza").href = window.VISSZA_URL;
+$("t-vissza-fent").textContent = T.vissza;
+if (window.VISSZA_URL) {
+  $("t-vissza").href = window.VISSZA_URL;
+  $("t-vissza-fent").href = window.VISSZA_URL;
+}
 
 /* Nincs szerver → minden szám és minta próbaadat. Mondjuk ki, ne kelljen
    találgatni, miért néz ki másképp, mint az alkalmazásban. */

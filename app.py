@@ -41,6 +41,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 import abra
 import database
+import jelek_kicsi
 import kartyak
 import kinezet
 import pontok
@@ -1023,7 +1024,21 @@ def dashboard():
         # A kiválasztott tanár neve az aktív tantervben – hogy a szülő a
         # vezérlőpulton is lássa, ne kelljen a profilba belépnie.
         child["_teacher_name"] = _teacher_profile(child, _active_curriculum())["name"]
-    return render_template("dashboard.html", parent=parent, children=children)
+    # A gyűjtemény a GYEREKHEZ tartozik, nem a tantárgyhoz: az album, a bolt
+    # és a kinézet ezért a profilkártyáról nyílik, nem a csevegő fejlécéből.
+    egyenleg = {}
+    for c in children:
+        try:
+            egyenleg[c["id"]] = database.get_wallet(c["id"])["erme"]
+        except Exception:
+            egyenleg[c["id"]] = 0
+    return render_template(
+        "dashboard.html", parent=parent, children=children,
+        egyenleg=egyenleg,
+        album_jel=jelek_kicsi.album(19),
+        tasak_jel=jelek_kicsi.tasak(19),
+        kinezet_jel=jelek_kicsi.kinezet(19),
+    )
 
 
 def _parse_birth_date_form(raw: str) -> date | None:
@@ -7166,6 +7181,7 @@ def child_album(child_id: int):
             "hatterek": url_for("static", filename="kartyak/hatterek/"),
         },
         beragaszt_url=url_for("child_album_place", child_id=child_id),
+        vissza_url=url_for("select_tasks", child_id=child_id),
     )
 
 

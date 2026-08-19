@@ -67,9 +67,20 @@
                        href="{{ url_for('edit_child', child_id=child['id']) }}">
                         {{ t('btn_edit_child') }}
                     </a>
+                    {# A gyűjtemény a GYEREKHEZ tartozik, nem a tantárgyhoz,
+                       ezért az album és a bolt a profilkártyán van. #}
                     <a class="btn btn-ghost" style="margin-top:0.5rem; display:inline-block;"
-                       href="{{ url_for('child_collection', child_id=child['id']) }}">
-                        🃏 Tudáskártyák
+                       href="{{ url_for('child_album', child_id=child['id']) }}">
+                        {{ album_jel|safe }} Gyűjtőalbum
+                    </a>
+                    <a class="btn btn-ghost" style="margin-top:0.5rem; display:inline-block;"
+                       href="{{ url_for('child_shop', child_id=child['id']) }}">
+                        {{ tasak_jel|safe }} Bolt
+                        <b style="color:#d97706">{{ egyenleg.get(child['id'], 0) }}</b> érme
+                    </a>
+                    <a class="btn btn-ghost" style="margin-top:0.5rem; display:inline-block;"
+                       href="{{ url_for('child_looks', child_id=child['id']) }}">
+                        {{ kinezet_jel|safe }} Kinézet
                     </a>
                     <a href="{{ url_for('select_tasks', child_id=child['id']) }}"
                        style="display:block; width:100%; padding:1rem;

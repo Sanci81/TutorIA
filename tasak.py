@@ -45,6 +45,7 @@ TASAKOK: list[dict] = [
         "leiras": "Egy véletlen lap. Bármi lehet.",
         "leiras_es": "Un cromo al azar. Puede ser cualquiera.",
         "szin1": "#7ed0f4", "szin2": "#2f9fd4", "peremszin": "#d8eefb",
+        "arany_esely": 0.06,   # olcsó merítés – itt ritka az arany
     },
     {
         "id": "ketto",
@@ -56,6 +57,7 @@ TASAKOK: list[dict] = [
         "leiras": "Két lap, olcsóbban, mintha külön vennéd.",
         "leiras_es": "Dos cromos, más barato que por separado.",
         "szin1": "#4f66d8", "szin2": "#26307e", "peremszin": "#c9d2f5",
+        "arany_esely": 0.14,
     },
     {
         "id": "harom",
@@ -67,6 +69,7 @@ TASAKOK: list[dict] = [
         "leiras": "Három lap, és az utolsó garantáltan ritka vagy jobb.",
         "leiras_es": "Tres cromos, y el último es raro o mejor.",
         "szin1": "#ffb43f", "szin2": "#e8722a", "peremszin": "#ffe6c2",
+        "arany_esely": 0.28,   # a drága tasak: nagyjából minden negyedik lap arany
     },
 ]
 
@@ -78,7 +81,10 @@ KARTYA_LECKEBOL = False
 # Az ARANY változat: minden emberhez tartozik egy sima és egy arany lap, és
 # az albumban is két hely van neki. Az arany ritkább – ez adja a gyűjtés
 # hosszát. Csak akkor húzható, ha a keretes arany kép tényleg elkészült.
-ARANY_ESELY = 0.15       # ekkora eséllyel arany a kihúzott lap
+# Az arany a DRÁGÁBB tasakban gyakoribb — ezért éri meg a nagyobb tasak.
+# Az egylapos olcsó merítés, ott ritka; a háromlapos a "jó" tasak.
+# Tasakonként külön szám, lásd TASAKOK["arany_esely"].
+ARANY_ESELY = 0.15       # tartalék, ha egy tasaknál nincs megadva
 ARANY_JEL = "#arany"     # a tárolt azonosító vége arany lapnál
 
 DUPLA_ERME = 25          # duplikátumért járó érme
@@ -194,7 +200,8 @@ def huzas(
             ESELY_GARANCIA.get(t["garancia"], ESELY_NORMAL) if utolso
             else ESELY_NORMAL)
         # Arany változat: ritkán, és csak ha a keretes arany kép elkészült.
-        arany = (rnd.random() < ARANY_ESELY) and arany_letezik(lap, static_dir)
+        _ae = t.get("arany_esely", ARANY_ESELY)
+        arany = (rnd.random() < _ae) and arany_letezik(lap, static_dir)
         lapok.append({**lap, "arany": arany})
         kivalasztott.add(lap["id"])
 

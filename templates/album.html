@@ -170,10 +170,21 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
 .hely .fajta{display:none!important}
 .hely .szam{font-size:1.5rem!important;opacity:.55!important;top:8px!important;left:10px!important;
   color:#a4564c!important}
+
+  /* A visszalépés a lap TETEJÉN, gombként. Alul, halvány szövegként a gyerek
+     nem vette észre – és egy albumból ki kell tudni jönni. */
+  .top{align-items:center}
+  .topkozep{flex:1;text-align:center}
+  .vissza-gomb{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+    background:rgba(255,255,255,.09);border:1px solid rgba(240,200,105,.4);
+    color:#f0c869;text-decoration:none;font-weight:800;font-size:.88rem;
+    padding:10px 18px;border-radius:999px;transition:background .15s}
+  .vissza-gomb:hover{background:rgba(240,200,105,.2)}
 </style></head><body>
 
 <div class="top">
- <div><h1>TutorIA – Gyűjtőalbum</h1>
+ <a class="vissza-gomb" href="{{ vissza_url }}">← Vissza a tanuláshoz</a>
+ <div class="topkozep"><h1>TutorIA – Gyűjtőalbum</h1>
    <div class="sub">Húzd a lapjaidat a saját helyükre. A sima lap a sima helyre, az arany az aranyra.</div></div>
  <div class="prog">Beragasztva: <b id="db">0</b> / <span id="ossz"></span></div>
 </div>
@@ -474,7 +485,7 @@ function rajzol(){
     lap.className="lap szakasz";
     lap.style.background=`linear-gradient(150deg,${o.tagok[0].szin},#141a3c)`;
     lap.innerHTML=`<div class="szfej"><h2>${o.targy.toUpperCase()}</h2>
-       <div class="kicsi" style="margin-top:6px">7. OSZTÁLY</div>
+       <div class="kicsi" style="margin-top:6px">${o.tagok.length} SZEMÉLY</div>
        <div class="db"><b>${o.tagok.length*2}</b><span>LAP</span></div></div>
       <div class="arcsor">${o.tagok.map(k=>{
         const van=beragasztva.has(k.hely1)||beragasztva.has(k.hely2);
@@ -515,7 +526,7 @@ function rajzol(){
     lap.className="lap checklist";
     let h=`<h2>CHECKLIST</h2>`;
     TARGYAK.forEach(t=>{
-      h+=`<div class="clsz">${t.toUpperCase()} · 7. OSZTÁLY</div><div class="clracs">`;
+      h+=`<div class="clsz">${t.toUpperCase()}</div><div class="clracs">`;
       K.filter(x=>x.targy===t).forEach(k=>{
         [[k.hely1,''],[k.hely2,' ★']].forEach(([n,cs])=>{
           const van=beragasztva.has(n);

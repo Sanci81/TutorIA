@@ -172,7 +172,6 @@
   </div>
   <div class="egyenleg">
     <div class="zseton"><b id="e-pont">0</b><span id="t-pont">pont</span></div>
-    <div class="zseton"><b id="e-erme">0</b><span id="t-erme">érme</span></div>
     <div class="zseton"><b id="e-lap">0</b><span id="t-lap">lapod van</span></div>
   </div>
 </div>
@@ -248,12 +247,12 @@ const PROBA_MOD = !window.ADAT;
 const SZOVEG = {
   hu: {
     cim:"Tasakbolt",
-    alcim:"A pontjaidat tasakra váltod, a tasakból lapok jönnek.",
-    pont:"pont", erme:"érme", lap:"lapod van",
+    alcim:"Az érméidet tasakra váltod, a tasakból lapok jönnek.",
+    pont:"érme", erme:"érme", lap:"lapod van",
     lapdb:m=>`${m} LAP`,
     garancia:g=>`Az utolsó lap garantáltan <b>${g==='ritka'?'ritka':'nagyon ritka'}</b> vagy jobb.`,
-    arjel:t=>`pont · ${Math.round(t.ar/t.meret)} pont/lap`,
-    vesz:"Megveszem", hianyzik:n=>`Még ${n} pont kell`,
+    arjel:t=>`érme · ${Math.round(t.ar/t.meret)} érme/lap`,
+    vesz:"Megveszem", hianyzik:n=>`Még ${n} érme kell`,
     szakitsd:"Koppints a tasakra, hogy felszakítsd",
     forditsd:"Fordítsd meg a lapokat",
     uj:"ÚJ LAP", dupla:n=>`már megvolt · +${n} érme`,
@@ -268,12 +267,12 @@ const SZOVEG = {
   },
   es: {
     cim:"Tienda de sobres",
-    alcim:"Cambias tus puntos por sobres, y de los sobres salen cromos.",
-    pont:"puntos", erme:"monedas", lap:"cromos tienes",
+    alcim:"Cambias tus monedas por sobres, y de los sobres salen cromos.",
+    pont:"monedas", erme:"monedas", lap:"cromos tienes",
     lapdb:m=>`${m} ${m===1?'CROMO':'CROMOS'}`,
     garancia:g=>`El último cromo es <b>${g==='ritka'?'raro':'muy raro'}</b> o mejor, garantizado.`,
-    arjel:t=>`puntos · ${Math.round(t.ar/t.meret)} por cromo`,
-    vesz:"Comprar", hianyzik:n=>`Te faltan ${n} puntos`,
+    arjel:t=>`monedas · ${Math.round(t.ar/t.meret)} por cromo`,
+    vesz:"Comprar", hianyzik:n=>`Te faltan ${n} monedas`,
     szakitsd:"Toca el sobre para abrirlo",
     forditsd:"Da la vuelta a los cromos",
     uj:"NUEVO", dupla:n=>`repetido · +${n} monedas`,
@@ -293,7 +292,6 @@ document.documentElement.lang = ADAT.nyelv || "hu";
 $("t-cim").textContent   = T.cim;
 $("t-alcim").textContent = T.alcim;
 $("t-pont").textContent  = T.pont;
-$("t-erme").textContent  = T.erme;
 $("t-lap").textContent   = T.lap;
 $("zar").textContent     = T.album;
 $("csomag-alcim").textContent = T.csomag_alcim;
@@ -307,7 +305,6 @@ let allapot = {pont:ADAT.pont, erme:ADAT.erme, lapok:ADAT.lapok};
 
 function egyenleg(){
   $("e-pont").textContent = allapot.pont;
-  $("e-erme").textContent = allapot.erme;
   $("e-lap").textContent  = allapot.lapok;
   boltRajz();
 }
@@ -419,7 +416,7 @@ function lapokKi(lapok){
       if (el.classList.contains('fordul')) return;
       el.classList.add('fordul');
       const l = lapok[Number(el.dataset.i)];
-      if (l.uj) allapot.lapok++; else allapot.erme += DUPLA;
+      if (l.uj) allapot.lapok++; else allapot.pont += DUPLA;  /* egy valuta */
       egyenleg();
       if (--hatra === 0) setTimeout(() => vege(lapok), 700);
     }, {once:false});
