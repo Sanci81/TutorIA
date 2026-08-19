@@ -41,6 +41,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 import abra
 import database
+import hang
 import jelek_kicsi
 import kartyak
 import kinezet
@@ -2006,7 +2007,8 @@ def _voice_mode_prompt_block(effective_age: int) -> str:
     return f"""
 
 HANGOS MÓD: A tanuló {effective_age} éves és hangon kommunikál veled.
-Válaszaidat RÖVIDEN fogalmazd (max 2-3 mondat).
+Válaszaidat RÖVIDEN fogalmazd (max 2-3 mondat, összesen legfeljebb 400 karakter).
+A felolvasott hosszú monológ a gyereket elveszíti: mondj egy gondolatot, aztán kérdezz.
 Csak egyszerű szavakat használj, amit egy {effective_age} éves megért.
 Ne tegyél fel egyszerre több kérdést.
 """
@@ -6678,18 +6680,55 @@ def api_voice_speak():
             session["tts_fl_words"] = dict(list(_acc.items())[-150:])
     except Exception:
         pass
-    # MÉRÉS: a felolvasás karakterre megy. Ez a hangos mód legdrágább tétele,
-    # ezért itt gyűjtjük, gyerekenként – enélkül az árazás csak tipp.
+    # ── 1. RÖVIDÍTÉS ────────────────────────────────────────────────────
+    # A felolvasás karakterre megy. A hosszú monológ egy gyereknek amúgy is
+    # sok, ezért mondathatáron elvágjuk – ez olcsóbb ÉS jobb.
+    text = hang.rovidit(text)
+
+    _cid = None
     try:
-        _cid = data.get("child_id") or session.get("chat_child_id")
-        if _cid:
-            database.add_usage(int(_cid), tts_karakter=len(text))
-    except Exception:
-        pass
+        # A MENESZTŐ oldal az elsődleges: a böngészőből érkező child_id csak
+        # tartalék. Így a keretet nem lehet másik gyerek nevére átterhelni.
+        _cid = int(session.get("chat_child_id") or data.get("child_id") or 0) or None
+    except (TypeError, ValueError):
+        _cid = None
+
+    # ── 3. NAPI KERET ───────────────────────────────────────────────────
+    # Ha ma már elfogyott, a felolvasás kimarad – de a TANÍTÁS megy tovább
+    # szövegben. A gyerek soha nem akad el, csak a hang hallgat el.
+    if _cid:
+        try:
+            if hang.keret_maradek(database.mai_tts_karakter(_cid)) <= 0:
+                print(f"[TTS] child={_cid} napi hangkeret elfogyott", flush=True)
+                return jsonify({"error": "voice_budget_spent",
+                                "message": i18n.t("voice_budget_spent", g.lang)}), 429
+        except Exception:
+            pass
+
+    # ── 2. GYORSTÁR ─────────────────────────────────────────────────────
+    # A visszatérő mondatok ("Ügyes vagy!") egyszer készülnek el. A mentett
+    # hang ingyen van, és azonnal érkezik – nincs várakozás.
+    _hangnev = _azure_target_voice() or "alap"
+    # A gyorstár NEM a static alatt van: a felolvasott mondatban ott lehet
+    # a gyerek neve ("Ügyes vagy, Leila!"), és a static mappát a világ is
+    # látja. Így a mentett hangot csak a szerver éri el.
+    _tar = hang.Gyorstar(os.path.join(app.root_path, "hangcache"))
+    _kesz = _tar.olvas(text, _hangnev)
+    if _kesz is not None:
+        print(f"[TTS] gyorstarbol ({len(text)} karakter megsporolva)", flush=True)
+        return Response(_kesz, mimetype="audio/mpeg")
+
+    # MÉRÉS: csak azt számoljuk, amiért TÉNYLEG fizetünk.
+    if _cid:
+        try:
+            database.add_usage(_cid, tts_karakter=len(text))
+        except Exception:
+            pass
 
     audio_bytes = _azure_tts_speak(text)
     if audio_bytes is not None:
         print("[TTS-DEBUG] route=azure", flush=True)
+        _tar.ir(text, _hangnev, audio_bytes)
         return Response(audio_bytes, mimetype="audio/mpeg")
     print("[TTS-DEBUG] route=openai", flush=True)
     try:
@@ -6699,6 +6738,7 @@ def api_voice_speak():
     except Exception as exc:
         logger.exception("TTS hiba: %s", exc)
         return jsonify({"error": "speak_failed", "detail": str(exc)}), 500
+    _tar.ir(text, _hangnev, audio_bytes)
     return Response(audio_bytes, mimetype="audio/mpeg")
 
 

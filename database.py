@@ -290,7 +290,7 @@ class ChildUsage(Base):
     hang_mp: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
     be_token: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     ki_token: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    kerés: Mapped[int] = mapped_column("keres", Integer, nullable=False, default=0)
+    keres: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
 class ChildProgress(Base):
@@ -1931,12 +1931,24 @@ def add_usage(child_id: int, *, tts_karakter: int = 0, hang_mp: float = 0.0,
             row.hang_mp = (row.hang_mp or 0.0) + max(0.0, float(hang_mp))
             row.be_token = (row.be_token or 0) + max(0, int(be_token))
             row.ki_token = (row.ki_token or 0) + max(0, int(ki_token))
-            row.kerés = (row.kerés or 0) + max(0, int(keres))
+            row.keres = (row.keres or 0) + max(0, int(keres))
             db.commit()
         finally:
             db.close()
     except Exception:
         logger.warning("add_usage sikertelen", exc_info=True)
+
+
+def mai_tts_karakter(child_id: int) -> int:
+    """Mennyi felolvasást használt el a gyerek MA. A napi kerethez kell."""
+    db = _session()
+    try:
+        ma = datetime.now(timezone.utc).date()
+        row = db.scalar(select(ChildUsage).where(
+            ChildUsage.child_id == child_id, ChildUsage.nap == ma))
+        return int(row.tts_karakter or 0) if row else 0
+    finally:
+        db.close()
 
 
 def get_usage(child_id: int | None = None, napok: int = 30) -> list[dict[str, Any]]:
@@ -1952,7 +1964,7 @@ def get_usage(child_id: int | None = None, napok: int = 30) -> list[dict[str, An
             "child_id": r.child_id, "nap": r.nap.isoformat(),
             "tts_karakter": r.tts_karakter or 0, "hang_mp": r.hang_mp or 0.0,
             "be_token": r.be_token or 0, "ki_token": r.ki_token or 0,
-            "keres": r.kerés or 0,
+            "keres": r.keres or 0,
         } for r in rows]
     finally:
         db.close()

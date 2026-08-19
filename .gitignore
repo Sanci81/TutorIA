@@ -5,3 +5,4 @@ venv/
 tutoria.db
 *.db
 cache/
+hangcache/

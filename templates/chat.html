@@ -220,6 +220,41 @@
     var transcribeUrl = {{ url_for('api_voice_transcribe')|tojson }};
     var speakUrl = {{ url_for('api_voice_speak')|tojson }};
 
+    // ── Napi hangkeret ──────────────────────────────────────────────────
+    // Ha ma elfogyott a felolvasás, EGYSZER szólunk a gyereknek, utána
+    // csendben maradunk. A tanulás írásban zavartalanul megy tovább – a
+    // gyerek soha nem lát hibaüzenetet, és nem is akad el.
+    var hangKeretElfogyott = false;
+    function hangKeretVege() {
+        if (hangKeretElfogyott) return;
+        hangKeretElfogyott = true;
+        try { appendBubble('assistant', L.voiceBudgetSpent); } catch (e) {}
+    }
+
+    // A buborékok 🔊 gombja. Ugyanaz a keret- és hibakezelés, mint a hangos
+    // módban, és a lejátszás után elengedjük a memóriát.
+    function ujraOlvas(szoveg) {
+        if (hangKeretElfogyott) return;
+        fetch(speakUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: szoveg, child_id: childId })
+        })
+            .then(function (r) {
+                if (r.status === 429) { hangKeretVege(); return null; }
+                if (!r.ok) return null;
+                return r.blob();
+            })
+            .then(function (blob) {
+                if (!blob) return;
+                var url = URL.createObjectURL(blob);
+                var audio = new Audio(url);
+                audio.onended = function () { URL.revokeObjectURL(url); };
+                audio.play();
+            })
+            .catch(function () {});
+    }
+
     // Feliratok az aktív tanterv nyelvén (HU/ES) – a t() az aktív g.lang alapján ad vissza.
     var L = {
         topicsDoneSuffix: {{ t('chat_topics_done_suffix')|tojson }},
@@ -260,6 +295,7 @@
         voiceProcessing: {{ t('chat_voice_processing')|tojson }},
         voiceMicPermission: {{ t('chat_voice_mic_permission')|tojson }},
         replayTitle: {{ t('chat_replay_title')|tojson }},
+        voiceBudgetSpent: {{ t('voice_budget_spent')|tojson }},
         think: [
             {{ t('chat_think_1')|tojson }},
             {{ t('chat_think_2')|tojson }},
@@ -393,17 +429,7 @@
             e.preventDefault();
             e.stopPropagation();
             var t = this.getAttribute('data-text');
-            fetch(speakUrl, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({text: t})
-            })
-            .then(function(r) { return r.blob(); })
-            .then(function(blob) {
-                var url = URL.createObjectURL(blob);
-                var audio = new Audio(url);
-                audio.play();
-            });
+            ujraOlvas(t);
         });
         var wrap = inner.closest('.chat-bubble-assistant');
         if (wrap) {
@@ -449,17 +475,7 @@
                 e.preventDefault();
                 e.stopPropagation();
                 var t = this.getAttribute('data-text');
-                fetch(speakUrl, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({text: t})
-                })
-                .then(function(r) { return r.blob(); })
-                .then(function(blob) {
-                    var url = URL.createObjectURL(blob);
-                    var audio = new Audio(url);
-                    audio.play();
-                });
+                ujraOlvas(t);
             });
             var replayWrap = document.createElement('div');
             replayWrap.className = 'bubble-replay-wrap';
@@ -500,12 +516,14 @@
     }
 
     function playTts(text) {
+        if (hangKeretElfogyott) return Promise.reject(new Error('keret'));
         return fetch(speakUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: text })
+            body: JSON.stringify({ text: text, child_id: childId })
         })
             .then(function (r) {
+                if (r.status === 429) { hangKeretVege(); throw new Error('keret'); }
                 if (!r.ok) throw new Error('tts');
                 return r.blob();
             })

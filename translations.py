@@ -354,6 +354,10 @@ TRANSLATIONS = {
         "es": "Te quedan {n} intentos. ¡Estudia {time} más y vuelve a intentarlo!",
     },
     # A fejléc két buborékja: az érme a kinézet-boltba, a pont a tasakboltba visz.
+    "voice_budget_spent": {
+        "hu": "Mára elfogyott a felolvasás – de a tanulás megy tovább írásban!",
+        "es": "Hoy se ha acabado la voz, ¡pero seguimos aprendiendo por escrito!",
+    },
     "coin_hint": {
         "hu": "Az érméid – a boltban tasakra vagy kinézetre költheted",
         "es": "Tus monedas: gástalas en sobres o en el aspecto",
