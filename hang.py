@@ -121,3 +121,103 @@ class Gyorstar:
 def keret_maradek(mai_karakter: int, keret: int = NAPI_KERET) -> int:
     """Mennyi felolvasás van még ma. Nulla alá nem megy."""
     return max(0, keret - max(0, int(mai_karakter or 0)))
+
+
+# ── 4. matematikai jelek kimondása ──────────────────────────────────────────
+# MIÉRT: az Azure a "80 - 30 = 50" szövegből a jeleket NEM mondja ki, a végén
+# álló "50."-et pedig magyarul SORSZÁMNAK olvassa: "nyolcvan harminc ötvenedik".
+# A gyerek ebből semmit nem ért. Itt szavakká írjuk a jeleket, mielőtt a
+# felolvasóhoz kerülne.
+
+_MUVELET = {
+    "hu": {"=": " egyenlő ", "+": " meg ", "-": " mínusz ",
+           "*": " szorozva ", "×": " szorozva ", "⋅": " szorozva ",
+           "/": " osztva ", "÷": " osztva ", "%": " százalék ",
+           "x": " szorozva ", "X": " szorozva ",
+           "<": " kisebb mint ", ">": " nagyobb mint "},
+    "es": {"=": " igual a ", "+": " más ", "-": " menos ",
+           "*": " por ", "×": " por ", "⋅": " por ",
+           "/": " entre ", "÷": " entre ", "%": " por ciento ",
+           "x": " por ", "X": " por ",
+           "<": " menor que ", ">": " mayor que "},
+}
+
+# Ezek a jelek SOHA nem jelentenek mást magyar szövegben, így bárhol cserélhetők.
+_MINDIG = ("×", "⋅", "÷", "=", "%", "<", ">")
+# Ezek viszont igen: a "-" toldalékot köt ("1848-ban"), a "/" dátumot választ
+# el, a "*" pedig kiemelés lehet. Ezért CSAK két szám között, szóközökkel.
+# Az "x" is lehet szorzásjel ("9 x 10"), de csak akkor, ha KÉT szám között
+# áll, szóközökkel. Az algebrai "3x" így érintetlen marad.
+_OVATOS = re.compile(r"(?<=\d)\s+([-+*/xX])\s+(?=\d)")
+# A "8+3" alakot is értjük, ha nincs körülötte szóköz – a + soha nem toldalék.
+_PLUSZ = re.compile(r"(?<=\d)\+(?=\d)")
+
+# Mondat VÉGÉN álló szám: itt olvassa az Azure sorszámnak. A "3. feladat"
+# viszont tényleg sorszám, azt nem bántjuk – ezért kell a szigorú feltétel:
+# a szám előtt van másik szó, utána pedig mondatvég vagy új mondat kezdődik.
+_SZAM_MONDATVEGEN = re.compile(
+    r"(?<=\S\s)(\d{1,6})\.(?=\s+[A-ZÁÉÍÓÖŐÚÜŰ]|\s*$)")
+
+_HU_EGYES = ["nulla", "egy", "kettő", "három", "négy",
+             "öt", "hat", "hét", "nyolc", "kilenc"]
+_HU_TIZES = ["", "tíz", "húsz", "harminc", "negyven",
+             "ötven", "hatvan", "hetven", "nyolcvan", "kilencven"]
+_HU_ELOTAG = ["", "tizen", "huszon", "harminc", "negyven",
+              "ötven", "hatvan", "hetven", "nyolcvan", "kilencven"]
+
+
+def _ket(szo: str) -> str:
+    """Összetételben a 'kettő' rövidül: kétszáz, kétezer."""
+    return szo[:-5] + "két" if szo.endswith("kettő") else szo
+
+
+def _hu_100(n: int) -> str:
+    if n < 10:
+        return _HU_EGYES[n]
+    tizes, egyes = divmod(n, 10)
+    if egyes == 0:
+        return _HU_TIZES[tizes]
+    return _HU_ELOTAG[tizes] + _HU_EGYES[egyes]
+
+
+def _hu_1000(n: int) -> str:
+    if n < 100:
+        return _hu_100(n)
+    szaz, maradek = divmod(n, 100)
+    ki = ("" if szaz == 1 else _ket(_HU_EGYES[szaz])) + "száz"
+    return ki + (_hu_100(maradek) if maradek else "")
+
+
+def hu_szam(n: int) -> str:
+    """Magyar számnév. Enélkül a mondatvégi szám sorszámmá torzul."""
+    if n < 0:
+        return "mínusz " + hu_szam(-n)
+    if n < 1000:
+        return _hu_1000(n)
+    if n < 1_000_000:
+        ezres, maradek = divmod(n, 1000)
+        ki = ("" if ezres == 1 else _ket(_hu_1000(ezres))) + "ezer"
+        return ki + (_hu_1000(maradek) if maradek else "")
+    return str(n)
+
+
+def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
+    """A felolvasás előtti utolsó simítás: jelekből szavak."""
+    szoveg = szoveg or ""
+    jelek = _MUVELET.get(nyelv) or _MUVELET["hu"]
+
+    for jel in _MINDIG:
+        if jel in szoveg:
+            szoveg = szoveg.replace(jel, jelek[jel])
+    szoveg = _PLUSZ.sub(jelek["+"], szoveg)
+    szoveg = _OVATOS.sub(lambda m: jelek[m.group(1)], szoveg)
+
+    # A cseréket dupla szóköz követi (" = " → "  egyenlő  "). Ezt MOST kell
+    # eltakarítani: a mondatvégi szám felismerése szóközre is illeszkedik,
+    # és a dupla szóköztől nem találná meg az "egyenlő 50." alakot.
+    szoveg = re.sub(r"[ \t]{2,}", " ", szoveg).strip()
+
+    if nyelv == "hu":
+        szoveg = _SZAM_MONDATVEGEN.sub(lambda m: hu_szam(int(m.group(1))) + ".",
+                                       szoveg)
+    return szoveg

@@ -6680,9 +6680,17 @@ def api_voice_speak():
             session["tts_fl_words"] = dict(list(_acc.items())[-150:])
     except Exception:
         pass
+    # ── 0. MATEMATIKAI JELEK ────────────────────────────────────────────
+    # A felolvasó a "80 - 30 = 50" jeleit NEM mondja ki, a mondatvégi "50."-et
+    # pedig sorszámnak olvassa. Ezt előbb szavakká írjuk – enélkül a gyerek
+    # azt hallja: "nyolcvan harminc ötvenedik".
+    text = hang.kiejtes(
+        text, "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu")
+
     # ── 1. RÖVIDÍTÉS ────────────────────────────────────────────────────
     # A felolvasás karakterre megy. A hosszú monológ egy gyereknek amúgy is
     # sok, ezért mondathatáron elvágjuk – ez olcsóbb ÉS jobb.
+    # A kiejtés UTÁN vágunk: azért fizetünk, ami tényleg elhangzik.
     text = hang.rovidit(text)
 
     _cid = None
