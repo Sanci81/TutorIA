@@ -479,6 +479,89 @@ TRANSLATIONS = {
     },
 
     # --- lábléc ---
+    # ── Jogi oldalak, fiókkezelés ──────────────────────────────────────────
+    "privacy_title": {
+        "hu": "Adatkezelési tájékoztató",
+        "es": "Política de privacidad",
+    },
+    "terms_title": {
+        "hu": "Felhasználási feltételek",
+        "es": "Condiciones de uso",
+    },
+    "nav_account": {"hu": "Fiókom", "es": "Mi cuenta"},
+    "privacy_delete_box_title": {
+        "hu": "Bármikor meggondolhatod magad",
+        "es": "Puede cambiar de opinión cuando quiera",
+    },
+    "privacy_delete_box_text": {
+        "hu": "Az adataidat egy kattintással letöltheted, a fiókodat pedig "
+              "azonnal és véglegesen törölheted itt:",
+        "es": "Puede descargar sus datos con un clic y borrar la cuenta de "
+              "forma inmediata y definitiva aquí:",
+    },
+    "terms_privacy_box_title": {
+        "hu": "Mit kezdünk az adataiddal",
+        "es": "Qué hacemos con sus datos",
+    },
+    "terms_privacy_box_text": {
+        "hu": "Külön leírtuk, milyen adatot tárolunk és kihez kerül:",
+        "es": "Lo explicamos por separado: qué guardamos y a quién llega:",
+    },
+    "account_data_title": {"hu": "A fiókod", "es": "Su cuenta"},
+    "account_registered": {"hu": "Regisztrált", "es": "Registrado"},
+    "account_children_count": {"hu": "Gyerekek", "es": "Menores"},
+    "account_export_title": {
+        "hu": "Az adataid letöltése",
+        "es": "Descargar sus datos",
+    },
+    "account_export_text": {
+        "hu": "Egy fájlba gyűjtve megkapod mindazt, amit rólad és a "
+              "gyerekeidről tárolunk – a beszélgetéseket is beleértve.",
+        "es": "Recibirá en un solo archivo todo lo que guardamos sobre usted "
+              "y sus hijos, incluidas las conversaciones.",
+    },
+    "account_export_btn": {"hu": "Letöltés", "es": "Descargar"},
+    "account_delete_title": {"hu": "A fiók törlése", "es": "Borrar la cuenta"},
+    "account_delete_warning": {
+        "hu": "Ez végleges. A gyerekeid haladása, eredményei, érméi és "
+              "kártyái is elvesznek, és nem állíthatók vissza.",
+        "es": "Esto es definitivo. También se perderán el progreso, los "
+              "resultados, las monedas y las cartas de sus hijos, sin "
+              "posibilidad de recuperarlos.",
+    },
+    "account_delete_text": {
+        "hu": "Ha biztos vagy benne, add meg a jelszavadat.",
+        "es": "Si está seguro, introduzca su contraseña.",
+    },
+    "account_delete_password": {"hu": "Jelszó", "es": "Contraseña"},
+    "account_delete_btn": {"hu": "A fiókom végleges törlése",
+                           "es": "Borrar mi cuenta definitivamente"},
+    "account_delete_confirm": {
+        "hu": "Biztosan törlöd a fiókot? Ez nem vonható vissza.",
+        "es": "¿Seguro que desea borrar la cuenta? No se puede deshacer.",
+    },
+    "account_delete_done": {
+        "hu": "A fiókod és minden hozzá tartozó adat törölve.",
+        "es": "Su cuenta y todos sus datos han sido eliminados.",
+    },
+    "account_delete_bad_password": {
+        "hu": "A jelszó nem stimmel – a fiók nem lett törölve.",
+        "es": "La contraseña no es correcta: la cuenta no se ha borrado.",
+    },
+    "account_delete_failed": {
+        "hu": "A törlés nem sikerült. Írj nekünk, és kézzel elintézzük.",
+        "es": "No se ha podido borrar. Escríbanos y lo haremos manualmente.",
+    },
+    "register_accept": {
+        "hu": "Elolvastam és elfogadom a feltételeket és az adatkezelési "
+              "tájékoztatót.",
+        "es": "He leído y acepto las condiciones de uso y la política de "
+              "privacidad.",
+    },
+    "register_accept_required": {
+        "hu": "A regisztrációhoz el kell fogadnod a feltételeket.",
+        "es": "Para registrarse debe aceptar las condiciones.",
+    },
     "footer_text": {
         "hu": "TutorIA — Tanulás, személyre szabva.",
         "es": "TutorIA — Aprendizaje, personalizado.",

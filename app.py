@@ -41,6 +41,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 import abra
 import database
+import ellenoriz
 import hang
 import jelek_kicsi
 import kartyak
@@ -907,6 +908,12 @@ def register():
             flash(i18n.t("flash_password_mismatch", g.lang), "error")
             return render_template("register.html", email=email)
 
+        # A hozzájárulás nem lehet előre bepipálva, és nem lehet kihagyni:
+        # ez a jogalapunk arra, hogy egyáltalán adatot kezeljünk.
+        if not request.form.get("elfogadom"):
+            flash(i18n.t("register_accept_required", g.lang), "error")
+            return render_template("register.html", email=email)
+
         parent_id = database.create_parent(email, generate_password_hash(password))
         if parent_id is None:
             flash(i18n.t("flash_email_taken", g.lang), "error")
@@ -917,6 +924,91 @@ def register():
         return redirect(url_for("dashboard"))
 
     return render_template("register.html", email="")
+
+
+
+# ---------------------------------------------------------------------------
+# Jogi oldalak és fiókkezelés (GDPR)
+#
+# Ezek nem díszek: a tájékoztató, a hozzájárulás a regisztrációnál, az adatok
+# letöltése és a fiók törlése együtt teszik jogszerűvé a szolgáltatást, amint
+# az első IDEGEN család regisztrál.
+# ---------------------------------------------------------------------------
+
+# Az üzemeltető neve és a kapcsolattartási cím. Környezeti változóból jön, hogy
+# ne kelljen kódot módosítani, ha változik.
+def _jogi_adatok() -> dict[str, str]:
+    return {
+        "uzemelteto": os.environ.get("UZEMELTETO", "Vigh Sándor"),
+        "kapcsolat": os.environ.get("KAPCSOLAT_EMAIL", "vigh.sandor81@gmail.com"),
+        # A Railway régióját a projekt beállításainál látod. Amíg nincs
+        # megadva, ŐSZINTÉN azt írjuk ki, hogy nem tudjuk – nem tippelünk.
+        "railway_regio": os.environ.get("RAILWAY_REGIO", "Európai Unió"),
+        "frissitve": JOGI_FRISSITVE,
+    }
+
+
+JOGI_FRISSITVE = "2026. augusztus 23."
+
+
+@app.route("/adatvedelem")
+def adatvedelem():
+    return render_template("adatvedelem.html", **_jogi_adatok())
+
+
+@app.route("/feltetelek")
+def feltetelek():
+    return render_template("feltetelek.html", **_jogi_adatok())
+
+
+@app.route("/fiok")
+@login_required
+def fiok():
+    szulo = database.get_parent_by_id(session["parent_id"])
+    if not szulo:
+        return redirect(url_for("logout"))
+    gyerekek = database.get_children_for_parent(session["parent_id"]) or []
+    letrejott = szulo.get("created_at")
+    return render_template(
+        "fiok.html",
+        szulo=szulo,
+        gyerek_szam=len(gyerekek),
+        regisztralt=letrejott.strftime("%Y. %m. %d.") if letrejott else "—",
+    )
+
+
+@app.route("/fiok/adatok")
+@login_required
+def fiok_export():
+    """Adathordozhatóság: minden tárolt adat egyetlen JSON fájlban."""
+    adat = database.export_parent_data(session["parent_id"])
+    valasz = Response(
+        json.dumps(adat, ensure_ascii=False, indent=2, default=str),
+        mimetype="application/json; charset=utf-8",
+    )
+    valasz.headers["Content-Disposition"] = 'attachment; filename="tutoria_adataim.json"'
+    return valasz
+
+
+@app.route("/fiok/torles", methods=["POST"])
+@login_required
+def fiok_torles():
+    """Fióktörlés. Jelszóval erősítjük meg, hogy egy nyitva hagyott böngésző
+    mellől senki ne törölhesse le más családjának a munkáját."""
+    szulo = database.get_parent_by_id(session["parent_id"])
+    jelszo = request.form.get("jelszo") or ""
+    if not szulo or not check_password_hash(szulo.get("password_hash") or "", jelszo):
+        flash(i18n.t("account_delete_bad_password", g.lang), "error")
+        return redirect(url_for("fiok"))
+
+    parent_id = session["parent_id"]
+    if not database.delete_parent_account(parent_id):
+        flash(i18n.t("account_delete_failed", g.lang), "error")
+        return redirect(url_for("fiok"))
+
+    session.clear()
+    flash(i18n.t("account_delete_done", g.lang), "success")
+    return redirect(url_for("index"))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -5294,6 +5386,34 @@ def child_chat_send(child_id: int):
         logger.exception("Chat AI hiba (child_id=%s): %s", child_id, exc)
         return jsonify({"error": "chat_failed", "detail": str(exc)}), 500
 
+    # ── A VÁLASZ ELLENŐRZÉSE, mielőtt a gyerek elolvassa ────────────────
+    # Élesben előfordult, hogy a tanár megdicsért egy ROSSZ választ, majd a
+    # saját levezetése mást adott ki ("Pontosan 18 cm. Mert 6+6+6+6 = 24").
+    # Egy gyerek ilyenkor a dicséretet hiszi el. Ha a válasz ellentmond
+    # önmagának, egyszer visszakérdezünk – ez ritka, tehát olcsó.
+    _baj = ellenoriz.ellentmondas(raw_reply)
+    if _baj:
+        print(f"[ELLENORZES] {_baj} – ujrakeres", flush=True)
+        try:
+            _ujra = _call_ai_for_chat(
+                system_prompt
+                + "\n\nFIGYELEM: az előző válaszod ellentmondott önmagának ("
+                + _baj + "). Számold ki ÚJRA, lépésről lépésre. CSAK akkor "
+                "dicsérj, ha a gyerek válasza pontosan egyezik a te kiszámolt "
+                "eredményeddel; ha nem egyezik, kedvesen javítsd ki.",
+                history, user_text, child_id=child_id)
+            if ellenoriz.ellentmondas(_ujra) is None:
+                raw_reply = _ujra
+                print("[ELLENORZES] a masodik valasz rendben", flush=True)
+            else:
+                raw_reply = _ujra
+                print("[ELLENORZES] a masodik valasz is hibas!", flush=True)
+        except Exception:
+            logger.exception("Ellenorzott ujrakeres hiba")
+
+    # A modell néha egy szó közepén ír át másik írásrendszerre ("интернетen").
+    raw_reply = ellenoriz.latinra(raw_reply)
+
     _remember_fl_words(raw_reply)
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
@@ -6417,7 +6537,8 @@ def child_chat_test_submit(child_id: int):
                 chat_session = database.get_or_create_chat_session(
                     child_id, subject, language=language, topic_id=topic_id, grade=_chat_grade_num(child)
                 )
-                reply = _call_ai_for_chat(congrats_prompt, [], "")
+                reply = ellenoriz.latinra(
+                    _call_ai_for_chat(congrats_prompt, [], ""))
                 database.add_chat_message(chat_session["id"], "assistant", reply)
                 congrats_message = reply
             except Exception:

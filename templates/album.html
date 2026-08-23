@@ -50,9 +50,13 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
 .sz-torzs{display:grid;grid-template-columns:1fr 292px;gap:18px;padding:12px 26px 22px}
 .sz-bal{position:relative;min-height:420px;display:flex;flex-direction:column}
 .sz-kep{position:relative;margin-top:16px;aspect-ratio:16/11;border-radius:10px;overflow:hidden;
- box-shadow:0 16px 36px rgba(0,0,0,.26);background:#101830}
-.sz-kep img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block;background:#101830}
-.sz-kep .nincs{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.32);font-size:.9rem;text-align:center;padding:20px}
+ box-shadow:0 16px 36px rgba(0,0,0,.26)}
+.sz-kep img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block;background:transparent}
+/* Kép nélkül: világos, halvány mező a lap színével – NEM sötét tömb.
+   Sötét blokkal minden kész-kép nélküli oldal egyformának látszott,
+   és lapozásnál az volt az érzés, hogy nem történik semmi. */
+.sz-kep{background:repeating-linear-gradient(135deg,rgba(0,0,0,.035) 0 12px,transparent 12px 24px),#f3efe4}
+.sz-kep .nincs{position:absolute;inset:0;z-index:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#9aa0ad;font-size:.9rem;text-align:center;padding:20px;font-weight:700}
 .becenev{position:absolute;left:-8px;top:-6px;z-index:3;background:var(--fo);color:#fff;
  padding:9px 18px 10px 14px;border-radius:4px;box-shadow:0 7px 18px rgba(0,0,0,.34);
  transform:rotate(-2deg);max-width:250px}
@@ -180,6 +184,18 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
     color:#f0c869;text-decoration:none;font-weight:800;font-size:.88rem;
     padding:10px 18px;border-radius:999px;transition:background .15s}
   .vissza-gomb:hover{background:rgba(240,200,105,.2)}
+
+  /* Ugrósáv: egy kattintás bármelyik tantárgyra. Enélkül 38 oldalt kell
+     végiglapozni ahhoz, hogy a gyerek megnézze, hol tart. */
+  .ugrosav{max-width:1180px;margin:0 auto 12px;display:flex;gap:7px;flex-wrap:wrap;
+    justify-content:center}
+  .ugrosav button{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);
+    color:#e9e4d6;border-radius:999px;padding:7px 14px;font-size:.78rem;font-weight:700;
+    cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:7px}
+  .ugrosav button:hover{background:rgba(255,255,255,.13)}
+  .ugrosav button.itt{border-color:#f0c869;color:#f0c869}
+  .ugrosav .pont{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.55}
+  .ugrosav .arany{font-size:.7rem;opacity:.7}
 </style></head><body>
 
 <div class="top">
@@ -188,6 +204,7 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
    <div class="sub">Húzd a lapjaidat a saját helyükre. A sima lap a sima helyre, az arany az aranyra.</div></div>
  <div class="prog">Beragasztva: <b id="db">0</b> / <span id="ossz"></span></div>
 </div>
+<div class="ugrosav" id="ugrosav"></div>
 <div class="album"><div class="lap" id="lap"></div></div>
 <div class="lapozo">
  <button class="gomb halvany" id="elore">‹ Előző</button>
@@ -504,7 +521,8 @@ function rajzol(){
      <div class="sz-torzs" style="--fo:${k.szin}">
       <div class="sz-bal">
        <div class="sz-kep"><img src="${KEPUT(k)}" ${HIBAKEP}>
-         <span class="nincs">a portré még nincs a mappában:<br>static/kartyak/hu/${k.kep}.png</span></div>
+         <span class="nincs"><b style="font-size:1.5rem;opacity:.45">?</b>
+         ${k.nev} lapja még készül</span></div>
        <div class="becenev" style="background:${k.szin}"><b>${k.becenev}</b><span>${k.leiras}</span></div>
        <div class="dobozok">
         <div class="doboz"><b>A TÉNY</b><span>${k.teny}</span></div>
@@ -546,6 +564,7 @@ function rajzol(){
   document.getElementById('elore').disabled=oldal===0;
   document.getElementById('hatra').disabled=oldal===OLDALAK.length-1;
   document.getElementById('db').textContent=beragasztva.size;
+  ugrosav();
 }
 function kotesek(){
   lap.querySelectorAll('.hely[data-n]').forEach(h=>{
@@ -574,6 +593,29 @@ function kotesek(){
         uzenet.textContent='Nem ez a helye. Melyik tantárgyban és melyik leckében tanultál róla?';
       }});});
 }
+function ugrosav(){
+  const e=document.getElementById('ugrosav'); if(!e) return;
+  const elemek=[{cim:"Borító",i:0}];
+  OLDALAK.forEach((o,i)=>{ if(o.t==="szakasz") elemek.push({cim:o.targy,i:i,szin:o.tagok[0].szin}); });
+  elemek.push({cim:"Lista",i:OLDALAK.findIndex(o=>o.t==="checklist")});
+  e.innerHTML=elemek.map(x=>{
+    // hány lap van meg ebből a tantárgyból – a gyerek lássa, hol áll
+    let jel="";
+    const o=OLDALAK[x.i];
+    if(o && o.t==="szakasz"){
+      const ossz=o.tagok.length*2;
+      const meg=o.tagok.reduce((n,k)=>n+(beragasztva.has(k.hely1)?1:0)+(beragasztva.has(k.hely2)?1:0),0);
+      jel=`<span class="arany">${meg}/${ossz}</span>`;
+    }
+    const itt = x.i===oldal || (o&&o.t==="szakasz"&&OLDALAK[oldal]&&OLDALAK[oldal].t==="szemely"
+                 && OLDALAK[oldal].k.targy===x.cim);
+    return `<button data-i="${x.i}" class="${itt?'itt':''}">`+
+      (x.szin?`<span class="pont" style="color:${x.szin}"></span>`:``)+
+      `${x.cim}${jel}</button>`;
+  }).join('');
+  e.querySelectorAll('button').forEach(b=>
+    b.addEventListener('click',()=>lapra(Number(b.dataset.i))));
+}
 function pakli(){
   const p=document.getElementById('pakli');
   if(!PAKLI.length){p.innerHTML='<div style="opacity:.5;padding:18px">Minden lapot beragasztottál.</div>';return;}
@@ -584,8 +626,15 @@ function pakli(){
     e.dataTransfer.setData('text/plain',m.dataset.id); HUZOTT=m.dataset.id;
     uzenet.className='uzenet';uzenet.textContent='';}));
 }
-document.getElementById('elore').addEventListener('click',()=>{if(oldal>0){oldal--;rajzol();}});
-document.getElementById('hatra').addEventListener('click',()=>{if(oldal<OLDALAK.length-1){oldal++;rajzol();}});
+function lapra(uj_oldal){
+  if(uj_oldal<0 || uj_oldal>OLDALAK.length-1) return;
+  oldal=uj_oldal; rajzol();
+  /* A lap tetejére görgetünk: enélkül a képernyő ott marad, ahol volt, és a
+     gyerek azt hiszi, nem lépett semmit – pedig lapozott. */
+  document.querySelector('.album').scrollIntoView({behavior:'smooth',block:'start'});
+}
+document.getElementById('elore').addEventListener('click',()=>lapra(oldal-1));
+document.getElementById('hatra').addEventListener('click',()=>lapra(oldal+1));
 document.addEventListener('dragover',e=>e.preventDefault());
 document.addEventListener('drop',e=>e.preventDefault());
 rajzol(); pakli();

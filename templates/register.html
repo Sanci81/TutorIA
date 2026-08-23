@@ -3,6 +3,13 @@
 {% block title %}{{ t('register_title') }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
+<style>
+  /* A hozzájárulás jelölőnégyzete. Szándékosan NINCS előre bepipálva:
+     az előre bepipált hozzájárulás a GDPR szerint érvénytelen. */
+  .elfogado{display:flex;align-items:flex-start;gap:10px;margin:16px 0 18px;
+            font-size:.92rem;line-height:1.5;color:#4b5563}
+  .elfogado input{margin-top:3px;flex:0 0 auto;width:18px;height:18px}
+</style>
 <div class="auth-wrapper">
     <div class="card auth-card">
         <h1 class="card-title">{{ t('register_title') }}</h1>
@@ -53,6 +60,13 @@
                     </button>
                 </div>
             </div>
+
+            <label class="elfogado">
+                <input type="checkbox" name="elfogadom" value="1" required>
+                <span>{{ t('register_accept') }}
+                    (<a href="{{ url_for('feltetelek') }}" target="_blank">{{ t('terms_title') }}</a>,
+                     <a href="{{ url_for('adatvedelem') }}" target="_blank">{{ t('privacy_title') }}</a>)</span>
+            </label>
 
             <button type="submit" class="btn btn-primary btn-block">{{ t('btn_register') }}</button>
         </form>

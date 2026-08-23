@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('privacy_title') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<style>
+  .jogi{max-width:760px;margin:0 auto;padding:24px 16px 64px;line-height:1.65}
+  .jogi h1{font-size:1.9rem;margin-bottom:4px}
+  .jogi .frissitve{color:#6b7280;font-size:.9rem;margin-bottom:28px}
+  .jogi h2{font-size:1.2rem;margin:32px 0 8px}
+  .jogi p{margin:0 0 12px}
+  .jogi table{width:100%;border-collapse:collapse;margin:8px 0 16px;font-size:.95rem}
+  .jogi th,.jogi td{border:1px solid #d9dee7;padding:8px 10px;text-align:left;vertical-align:top}
+  .jogi th{background:#f3f5f9}
+  .jogi .kiemelt{background:#fff8e6;border-left:4px solid #e8a33d;padding:12px 14px;margin:16px 0}
+</style>
+
+<div class="jogi">
+{% if lang == 'es' %}
+  <h1>Política de privacidad</h1>
+  <p class="frissitve">Última actualización: {{ frissitve }}</p>
+
+  <p>Este documento explica qué datos trata TutorIA, con qué finalidad y durante
+  cuánto tiempo. Está escrito a partir del funcionamiento real de la aplicación,
+  no de una plantilla.</p>
+
+  <h2>1. Responsable del tratamiento</h2>
+  <p>{{ uzemelteto }}, España. Contacto: <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a></p>
+
+  <h2>2. Quién crea la cuenta</h2>
+  <p>La cuenta la crea siempre <strong>la madre, el padre o el tutor legal</strong>,
+  que añade a sus hijos dentro de su propia cuenta. Los menores no se registran
+  por su cuenta. La base jurídica es el consentimiento del progenitor y la
+  ejecución del servicio solicitado.</p>
+
+  <h2>3. Qué datos tratamos</h2>
+  <table>
+    <tr><th>Dato</th><th>Finalidad</th></tr>
+    <tr><td>Correo electrónico del progenitor</td><td>Inicio de sesión, recuperación de contraseña, avisos</td></tr>
+    <tr><td>Contraseña (solo su huella cifrada, nunca el texto)</td><td>Inicio de sesión</td></tr>
+    <tr><td>Nombre de pila del menor, edad o fecha de nacimiento, curso, país</td><td>Adaptar el nivel y el currículo</td></tr>
+    <tr><td>Mensajes del chat con el profesor de IA</td><td>Continuidad de la clase y seguimiento del progreso</td></tr>
+    <tr><td>Voz grabada durante el modo hablado</td><td>Convertirla en texto. <strong>No se almacena</strong>: se transcribe y se descarta</td></tr>
+    <tr><td>Minutos estudiados, resultados de los tests, temas completados</td><td>Progreso e informe a los progenitores</td></tr>
+    <tr><td>Monedas, cartas, aspecto elegido</td><td>Funcionamiento del juego</td></tr>
+    <tr><td>Consumo diario (caracteres leídos, segundos de voz, peticiones)</td><td>Control de costes del servicio</td></tr>
+  </table>
+
+  <h2>4. Cookies</h2>
+  <p>TutorIA <strong>no utiliza cookies de seguimiento, analítica ni publicidad</strong>.
+  Solo se usa una cookie técnica de sesión, imprescindible para mantener el inicio
+  de sesión. Por eso no verá ningún aviso de cookies.</p>
+
+  <h2>5. Con quién se comparten los datos</h2>
+  <p>Solo con los proveedores necesarios para que el servicio funcione:</p>
+  <table>
+    <tr><th>Proveedor</th><th>Para qué</th><th>Dónde</th></tr>
+    <tr><td>Railway</td><td>Alojamiento y base de datos</td><td>{{ railway_regio }}</td></tr>
+    <tr><td>OpenAI</td><td>Respuestas del profesor de IA y transcripción de voz</td><td>Estados Unidos</td></tr>
+    <tr><td>Microsoft Azure Speech</td><td>Lectura en voz alta</td><td>Unión Europea (Norte de Europa)</td></tr>
+    <tr><td>Resend</td><td>Envío de correos (recuperar contraseña)</td><td>Estados Unidos</td></tr>
+  </table>
+  <p>Las transferencias a Estados Unidos se amparan en las cláusulas contractuales
+  tipo de la Comisión Europea y en el Marco de Privacidad de Datos UE-EE. UU.
+  <strong>No vendemos datos a nadie</strong> y no se usan para publicidad.</p>
+
+  <h2>6. Cuánto tiempo</h2>
+  <p>Mientras la cuenta exista. Al borrar la cuenta, todos los datos del
+  progenitor y de sus hijos se eliminan de forma inmediata y definitiva.</p>
+
+  <h2>7. Sus derechos</h2>
+  <p>Puede acceder, rectificar, suprimir, limitar u oponerse al tratamiento, y
+  solicitar la portabilidad de sus datos. Dos de ellos están disponibles con un
+  clic en <a href="{{ url_for('fiok') }}">Mi cuenta</a>: descargar todos sus datos
+  y borrar la cuenta. Para lo demás, escríbanos a
+  <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a>.</p>
+  <p>Si considera que no hemos atendido su solicitud, puede reclamar ante la
+  Agencia Española de Protección de Datos (<a href="https://www.aepd.es" rel="noopener">aepd.es</a>).</p>
+
+  <h2>8. Menores</h2>
+  <p>El servicio está pensado para menores, pero siempre bajo la cuenta y la
+  supervisión de un adulto. No pedimos al menor su apellido, dirección, teléfono
+  ni fotografía, y le pedimos que tampoco los escriba en el chat.</p>
+{% else %}
+  <h1>Adatkezelési tájékoztató</h1>
+  <p class="frissitve">Utolsó frissítés: {{ frissitve }}</p>
+
+  <p>Ez a tájékoztató leírja, milyen adatokat kezel a TutorIA, mire használja
+  őket, és meddig őrzi meg. Az alkalmazás tényleges működése alapján készült,
+  nem sablonból.</p>
+
+  <h2>1. Az adatkezelő</h2>
+  <p>{{ uzemelteto }}, Spanyolország. Kapcsolat:
+  <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a></p>
+
+  <h2>2. Ki hozza létre a fiókot</h2>
+  <p>A fiókot mindig a <strong>szülő vagy törvényes képviselő</strong> hozza létre,
+  és ő veszi fel a gyerekeit a saját fiókjába. Gyerek önállóan nem regisztrál.
+  Az adatkezelés jogalapja a szülő hozzájárulása és a megrendelt szolgáltatás
+  teljesítése.</p>
+
+  <h2>3. Milyen adatokat kezelünk</h2>
+  <table>
+    <tr><th>Adat</th><th>Miért</th></tr>
+    <tr><td>A szülő e-mail-címe</td><td>Belépés, jelszó-helyreállítás, értesítések</td></tr>
+    <tr><td>Jelszó (csak titkosított lenyomata, a jelszó maga soha)</td><td>Belépés</td></tr>
+    <tr><td>A gyerek keresztneve, életkora vagy születési dátuma, osztálya, országa</td><td>A szint és a tanterv beállítása</td></tr>
+    <tr><td>A chat üzenetei az AI-tanárral</td><td>Az óra folytonossága és a haladás követése</td></tr>
+    <tr><td>Hangos módban felvett hang</td><td>Szöveggé alakítás. <strong>Nem tároljuk</strong>: leírás után eldobjuk</td></tr>
+    <tr><td>Tanulási percek, tesztek eredményei, teljesített témakörök</td><td>Haladás és szülői jelentés</td></tr>
+    <tr><td>Érmék, kártyák, választott kinézet</td><td>A játék működése</td></tr>
+    <tr><td>Napi fogyasztás (felolvasott karakterek, hang másodpercei, kérések)</td><td>A szolgáltatás költségének követése</td></tr>
+  </table>
+
+  <h2>4. Sütik</h2>
+  <p>A TutorIA <strong>nem használ követő, elemző vagy hirdetési sütit</strong>.
+  Egyetlen technikai munkamenet-süti van, ami a bejelentkezés fenntartásához
+  feltétlenül szükséges. Ezért nem is találkozol süti-figyelmeztetéssel.</p>
+
+  <h2>5. Kihez kerülnek az adatok</h2>
+  <p>Csak azokhoz a szolgáltatókhoz, akik nélkül az alkalmazás nem működne:</p>
+  <table>
+    <tr><th>Szolgáltató</th><th>Mihez</th><th>Hol</th></tr>
+    <tr><td>Railway</td><td>Üzemeltetés és adatbázis</td><td>{{ railway_regio }}</td></tr>
+    <tr><td>OpenAI</td><td>Az AI-tanár válaszai és a hang leírása</td><td>Egyesült Államok</td></tr>
+    <tr><td>Microsoft Azure Speech</td><td>Felolvasás</td><td>Európai Unió (Észak-Európa)</td></tr>
+    <tr><td>Resend</td><td>E-mail küldés (jelszó-helyreállítás)</td><td>Egyesült Államok</td></tr>
+  </table>
+  <p>Az Egyesült Államokba történő továbbítás alapja az Európai Bizottság
+  általános szerződési feltételei és az EU–USA adatvédelmi keret.
+  <strong>Adatot senkinek nem adunk el</strong>, és hirdetésre nem használunk.</p>
+
+  <h2>6. Meddig őrizzük</h2>
+  <p>Amíg a fiók létezik. A fiók törlésekor a szülő és a gyerekei minden adata
+  azonnal és véglegesen törlődik.</p>
+
+  <h2>7. A te jogaid</h2>
+  <p>Kérheted az adataidhoz való hozzáférést, helyesbítésüket, törlésüket, a
+  kezelés korlátozását, tiltakozhatsz ellene, és kérheted az adatok hordozását.
+  Kettő ezek közül egy kattintás a <a href="{{ url_for('fiok') }}">Fiókom</a>
+  oldalon: minden adatod letöltése és a fiók törlése. A többihez írj ide:
+  <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a>.</p>
+  <p>Ha úgy érzed, nem intéztük el a kérésedet, panasszal élhetsz a spanyol
+  adatvédelmi hatóságnál (<a href="https://www.aepd.es" rel="noopener">aepd.es</a>),
+  vagy a lakóhelyed szerinti tagállam hatóságánál.</p>
+
+  <h2>8. Gyerekek</h2>
+  <p>A szolgáltatás gyerekeknek készült, de mindig felnőtt fiókja alatt és
+  felügyeletével. A gyerektől nem kérjük a vezetéknevét, lakcímét, telefonszámát
+  vagy fényképét, és arra kérjük, hogy a chatbe se írja be ezeket.</p>
+{% endif %}
+
+  <div class="kiemelt">
+    <strong>{{ t('privacy_delete_box_title') }}</strong><br>
+    {{ t('privacy_delete_box_text') }}
+    <a href="{{ url_for('fiok') }}">{{ t('nav_account') }}</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('terms_title') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<style>
+  .jogi{max-width:760px;margin:0 auto;padding:24px 16px 64px;line-height:1.65}
+  .jogi h1{font-size:1.9rem;margin-bottom:4px}
+  .jogi .frissitve{color:#6b7280;font-size:.9rem;margin-bottom:28px}
+  .jogi h2{font-size:1.2rem;margin:32px 0 8px}
+  .jogi p{margin:0 0 12px}
+  .jogi .kiemelt{background:#fff8e6;border-left:4px solid #e8a33d;padding:12px 14px;margin:16px 0}
+</style>
+
+<div class="jogi">
+{% if lang == 'es' %}
+  <h1>Condiciones de uso</h1>
+  <p class="frissitve">Última actualización: {{ frissitve }}</p>
+
+  <h2>1. Qué es TutorIA</h2>
+  <p>TutorIA es un profesor particular de inteligencia artificial para niños,
+  disponible en húngaro y en español, que sigue el currículo escolar. Lo ofrece
+  {{ uzemelteto }} desde España.</p>
+
+  <h2>2. Fase de prueba</h2>
+  <p>El servicio se encuentra en fase de prueba. Puede contener errores, y las
+  funciones pueden cambiar o desaparecer. Durante esta fase el uso es gratuito y
+  no garantizamos disponibilidad continua.</p>
+
+  <h2>3. La cuenta</h2>
+  <p>Solo puede abrir cuenta una persona mayor de edad, que se responsabiliza de
+  los menores que añada. Guarde su contraseña; si sospecha que alguien la conoce,
+  cámbiela.</p>
+
+  <h2>4. Lo que la IA dice</h2>
+  <p>El profesor es un programa de inteligencia artificial. <strong>Puede
+  equivocarse.</strong> Comprobamos automáticamente sus cuentas y sus dibujos, y
+  corregimos lo que detectamos, pero no sustituye al colegio ni a un profesor
+  humano, y sus respuestas no son consejo profesional de ningún tipo.</p>
+
+  <h2>5. Uso adecuado</h2>
+  <p>No utilice el servicio para insultar, acosar ni para introducir contenido
+  ilegal. No intente sobrecargar el sistema ni acceder a datos de otras familias.
+  Podemos suspender una cuenta que incumpla estas reglas.</p>
+
+  <h2>6. Las cartas y las monedas</h2>
+  <p>Las monedas, los sobres y las cartas del álbum son elementos del juego.
+  <strong>No tienen valor económico</strong>, no se pueden canjear por dinero y
+  desaparecen al borrar la cuenta.</p>
+
+  <h2>7. Cancelación</h2>
+  <p>Puede borrar su cuenta en cualquier momento desde
+  <a href="{{ url_for('fiok') }}">Mi cuenta</a>, sin dar explicaciones. El borrado
+  es inmediato y definitivo.</p>
+
+  <h2>8. Responsabilidad</h2>
+  <p>Ofrecemos el servicio tal cual, en fase de prueba y de forma gratuita. No
+  respondemos de daños indirectos. Nada de lo aquí escrito limita los derechos
+  que la ley reconoce a los consumidores.</p>
+
+  <h2>9. Ley aplicable</h2>
+  <p>Se aplica el Derecho español y el de la Unión Europea. Si usted reside en
+  otro Estado miembro, conserva la protección de las normas imperativas de su
+  país de residencia.</p>
+{% else %}
+  <h1>Felhasználási feltételek</h1>
+  <p class="frissitve">Utolsó frissítés: {{ frissitve }}</p>
+
+  <h2>1. Mi a TutorIA</h2>
+  <p>A TutorIA egy mesterséges intelligencián alapuló magántanár gyerekeknek,
+  magyar és spanyol nyelven, a tanterv szerint haladva. Üzemeltetője
+  {{ uzemelteto }}, Spanyolországból.</p>
+
+  <h2>2. Tesztidőszak</h2>
+  <p>A szolgáltatás tesztidőszakban van. Előfordulhatnak hibák, a funkciók
+  változhatnak vagy megszűnhetnek. Ebben az időszakban a használat ingyenes, és
+  a folyamatos elérhetőséget nem garantáljuk.</p>
+
+  <h2>3. A fiók</h2>
+  <p>Fiókot csak nagykorú személy nyithat, aki felel az általa felvett
+  gyerekekért. A jelszavadat őrizd meg; ha azt gyanítod, hogy más is tudja,
+  cseréld le.</p>
+
+  <h2>4. Amit az AI mond</h2>
+  <p>A tanár egy mesterséges intelligencia. <strong>Tévedhet.</strong> A
+  számolásait és az ábráit automatikusan ellenőrizzük, és amit észreveszünk, azt
+  javítjuk — de nem helyettesíti az iskolát és az emberi tanárt, a válaszai pedig
+  semmilyen értelemben nem szakvélemény.</p>
+
+  <h2>5. Rendeltetésszerű használat</h2>
+  <p>Ne használd a szolgáltatást sértegetésre, zaklatásra vagy jogsértő tartalom
+  bevitelére. Ne próbáld túlterhelni a rendszert, és ne próbálj más családok
+  adataihoz hozzáférni. Az ilyen fiókot felfüggeszthetjük.</p>
+
+  <h2>6. A kártyák és az érmék</h2>
+  <p>Az érmék, a tasakok és az albumba kerülő kártyák a játék részei.
+  <strong>Nincs pénzben kifejezhető értékük</strong>, pénzre nem válthatók, és a
+  fiók törlésével megszűnnek.</p>
+
+  <h2>7. Felmondás</h2>
+  <p>A fiókodat bármikor törölheted a <a href="{{ url_for('fiok') }}">Fiókom</a>
+  oldalon, indoklás nélkül. A törlés azonnali és végleges.</p>
+
+  <h2>8. Felelősség</h2>
+  <p>A szolgáltatást tesztidőszakban, ingyenesen, adott állapotában nyújtjuk.
+  Közvetett károkért nem vállalunk felelősséget. Az itt írtak nem korlátozzák a
+  fogyasztókat a jogszabály alapján megillető jogokat.</p>
+
+  <h2>9. Alkalmazandó jog</h2>
+  <p>A spanyol és az uniós jog alkalmazandó. Ha más tagállamban laksz, a
+  lakóhelyed szerinti ország kötelező fogyasztóvédelmi szabályainak védelme
+  továbbra is megillet.</p>
+{% endif %}
+
+  <div class="kiemelt">
+    <strong>{{ t('terms_privacy_box_title') }}</strong><br>
+    {{ t('terms_privacy_box_text') }}
+    <a href="{{ url_for('adatvedelem') }}">{{ t('privacy_title') }}</a>
+  </div>
+</div>
+{% endblock %}

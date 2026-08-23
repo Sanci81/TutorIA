@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="hu"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – mibe kerül egy gyerek</title>
+<style>
+ *{box-sizing:border-box;margin:0;padding:0}
+ body{font-family:"Segoe UI",system-ui,sans-serif;color:#e9e4d6;min-height:100vh;
+   background:radial-gradient(circle at 50% -10%,#26305e,#141830 45%,#080a16);padding:26px 18px 70px}
+ .k{max-width:980px;margin:0 auto}
+ h1{font-size:1.35rem;margin-bottom:6px}
+ .al{opacity:.62;font-size:.88rem;line-height:1.55;margin-bottom:22px}
+ h2{font-size:.66rem;letter-spacing:2.4px;color:rgba(233,228,214,.5);margin:26px 0 12px;font-weight:800}
+ table{width:100%;border-collapse:collapse;background:rgba(255,255,255,.04);
+   border-radius:14px;overflow:hidden}
+ th,td{padding:11px 13px;text-align:right;font-size:.88rem;
+   border-bottom:1px solid rgba(255,255,255,.07)}
+ th{font-size:.66rem;letter-spacing:1.4px;color:rgba(233,228,214,.55);font-weight:800;
+   text-transform:uppercase}
+ th:first-child,td:first-child{text-align:left}
+ tr:last-child td{border-bottom:0}
+ td.fo{color:#f0c869;font-weight:800}
+ .arak{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+   background:rgba(255,255,255,.04);border-radius:14px;padding:16px}
+ .arak label{display:flex;flex-direction:column;gap:5px;font-size:.74rem;
+   color:rgba(233,228,214,.62)}
+ .arak input{background:#0e1330;border:1px solid rgba(255,255,255,.14);border-radius:8px;
+   padding:8px 10px;color:#e9e4d6;font-size:.92rem;font-family:inherit}
+ .ures{background:rgba(255,255,255,.04);border-radius:14px;padding:26px;
+   text-align:center;color:rgba(233,228,214,.6);font-size:.9rem;line-height:1.6}
+ .magy{background:rgba(240,200,105,.1);border-left:3px solid #f0c869;
+   border-radius:0 12px 12px 0;padding:14px 18px;font-size:.85rem;line-height:1.6;
+   margin-top:22px;color:rgba(244,230,189,.9)}
+ .magy b{color:#f0c869}
+ .valt{display:flex;gap:8px;margin-bottom:16px}
+ .valt a{font-size:.8rem;padding:7px 14px;border-radius:999px;text-decoration:none;
+   background:rgba(255,255,255,.06);color:rgba(233,228,214,.7)}
+ .valt a.aktiv{background:rgba(240,200,105,.18);color:#f0c869;font-weight:800}
+</style></head><body><div class="k">
+
+<h1>Mibe kerül egy gyerek</h1>
+<div class="al">Ez nem becslés: a felolvasott karaktereket, a felismert hang hosszát és a
+beszélgetés tokenjeit az alkalmazás méri, gyerekenként. Az egységárakat átírhatod –
+a számítás azonnal újraszámol.</div>
+
+<div class="valt">
+  <a href="?napok=7"  class="{{ 'aktiv' if napok == 7 else '' }}">7 nap</a>
+  <a href="?napok=30" class="{{ 'aktiv' if napok == 30 else '' }}">30 nap</a>
+  <a href="?napok=90" class="{{ 'aktiv' if napok == 90 else '' }}">90 nap</a>
+</div>
+
+{% if gyerekek %}
+<table id="tabla">
+  <thead><tr>
+    <th>Gyerek</th><th>Aktív nap</th><th>Felolvasott karakter</th>
+    <th>Hang (perc)</th><th>Token be / ki</th><th>Költség</th><th>Vetítve havi</th>
+  </tr></thead>
+  <tbody></tbody>
+</table>
+{% else %}
+<div class="ures">Ebben az időszakban még nincs mért fogyasztás.<br>
+Használd egy kicsit az alkalmazást — hangos módban is —, és itt megjelenik.</div>
+{% endif %}
+
+<h2>Egységárak</h2>
+<div class="arak">
+  <label>Felolvasás ($ / 1M karakter)<input type="number" id="tts_1m" step="0.5"></label>
+  <label>Beszédfelismerés ($ / perc)<input type="number" id="hang_perc" step="0.001"></label>
+  <label>Bemenő token ($ / 1M)<input type="number" id="be_1m" step="0.05"></label>
+  <label>Kimenő token ($ / 1M)<input type="number" id="ki_1m" step="0.1"></label>
+  <label>Euró / dollár<input type="number" id="eur_usd" step="0.01"></label>
+</div>
+
+<div class="magy">
+  <b>Mit kezdj ezzel.</b> Ha a havi vetített összeg közel van az előfizetési árhoz vagy
+  meghaladja azt, a hangos mód viszi el a pénzt. Három dolgon lehet változtatni, mielőtt
+  az árat emelnéd: a tanár <b>rövidebben beszéljen</b> hangos módban (a költség a
+  karakterek száma), a visszatérő mondatok (köszönés, dicséret) <b>kimentett hangból</b>
+  menjenek újra, és legyen <b>napi hangkeret</b> gyerekenként, ami után szövegre vált.
+  Az első kettő nem rontja az élményt — az első kifejezetten javítja, mert a hosszú
+  felolvasott monológ egy gyereknek amúgy is sok.
+</div>
+
+<script>
+const ARAK = {{ arak|tojson }};
+const GYEREKEK = {{ gyerekek|tojson }};
+const NAPOK = {{ napok }};
+const $ = id => document.getElementById(id);
+Object.keys(ARAK).forEach(k => { if ($(k)) $(k).value = ARAK[k]; });
+
+const eur = n => n.toLocaleString('hu-HU',{minimumFractionDigits:2,maximumFractionDigits:2}) + " €";
+
+function szamol(){
+  const a = {};
+  Object.keys(ARAK).forEach(k => a[k] = parseFloat($(k).value) || 0);
+  const tb = document.querySelector('#tabla tbody');
+  if (!tb) return;
+  tb.innerHTML = GYEREKEK.map(g => {
+    const usd = g.tts_karakter/1e6*a.tts_1m
+              + g.hang_mp/60*a.hang_perc
+              + g.be_token/1e6*a.be_1m
+              + g.ki_token/1e6*a.ki_1m;
+    const e = usd * a.eur_usd;
+    /* Havi vetítés a MÉRT napok alapján – nem a naptári hónapból, mert a
+       gyerek nem tanul minden nap. */
+    const havi = g.napok ? e / g.napok * 30 : 0;
+    return `<tr>
+      <td>${g.nev}</td>
+      <td>${g.napok}</td>
+      <td>${g.tts_karakter.toLocaleString('hu-HU')}</td>
+      <td>${(g.hang_mp/60).toFixed(1)}</td>
+      <td>${(g.be_token/1000).toFixed(0)}e / ${(g.ki_token/1000).toFixed(0)}e</td>
+      <td>${eur(e)}</td>
+      <td class="fo">${eur(havi)}</td>
+    </tr>`;
+  }).join('');
+}
+Object.keys(ARAK).forEach(k => { if ($(k)) $(k).addEventListener('input', szamol); });
+szamol();
+</script>
+</div></body></html>

@@ -784,6 +784,123 @@ def get_parent_by_id(parent_id: int) -> dict[str, Any] | None:
         db.close()
 
 
+
+# ---------------------------------------------------------------------------
+# GDPR: adatkivitel és fióktörlés
+#
+# Ez nem "szép ha van" funkció: a törléshez való jog (GDPR 17. cikk) és az
+# adathordozhatóság (20. cikk) kötelező, és egy hatóság ezt kéri számon
+# elsőként. Ezért NEM a rendszer beállításaira bízzuk, hogy a kapcsolódó
+# sorok eltűnnek-e: mind a tizenkét táblát KÉZZEL takarítjuk ki, sorrendben.
+# ---------------------------------------------------------------------------
+
+# A gyerekhez kötött táblák. Ha új tábla születik, IDE is fel kell venni –
+# különben a törlés után árva adat marad a gyerekről.
+_GYEREK_TABLAK = (
+    Vocabulary, ChildLearningTime, ChildTopicScore,
+    ChildUsage, ChildProgress, ChildWallet, ChildCard,
+)
+
+
+def export_parent_data(parent_id: int) -> dict[str, Any]:
+    """A szülőről és gyerekeiről tárolt ÖSSZES adat, letölthető alakban.
+
+    Az adathordozhatósághoz kell: a felhasználó bármikor megkaphatja, amit
+    róla tárolunk. A jelszó kivonata természetesen nem kerül bele.
+    """
+    db = _session()
+    try:
+        szulo = db.get(Parent, parent_id)
+        if szulo is None:
+            return {}
+        ki: dict[str, Any] = {
+            "szulo": {"email": szulo.email,
+                      "regisztralt": szulo.created_at.isoformat()
+                      if szulo.created_at else None},
+            "gyerekek": [],
+        }
+        gyerekek = db.scalars(
+            select(Child).where(Child.parent_id == parent_id)).all()
+        for gy in gyerekek:
+            sor: dict[str, Any] = {
+                "nev": gy.name,
+                "osztaly": gy.grade,
+                "tanterv": gy.curriculum,
+                "letrehozva": gy.created_at.isoformat() if gy.created_at else None,
+                "beszelgetesek": [],
+                "tanulasi_ido": [],
+                "eredmenyek": [],
+            }
+            munkamenetek = db.scalars(
+                select(ChatSession).where(ChatSession.child_id == gy.id)).all()
+            for m in munkamenetek:
+                uzenetek = db.scalars(
+                    select(ChatMessage)
+                    .where(ChatMessage.session_id == m.id)
+                    .order_by(ChatMessage.id)).all()
+                sor["beszelgetesek"].append({
+                    "tantargy": m.subject,
+                    "temakor": m.topic_id,
+                    "uzenetek": [{"ki": u.role, "szoveg": u.content}
+                                 for u in uzenetek],
+                })
+            for t in db.scalars(select(ChildLearningTime)
+                                .where(ChildLearningTime.child_id == gy.id)).all():
+                sor["tanulasi_ido"].append({
+                    "datum": t.date.isoformat() if t.date else None,
+                    "tantargy": t.subject, "perc": t.minutes})
+            for e in db.scalars(select(ChildTopicScore)
+                                .where(ChildTopicScore.child_id == gy.id)).all():
+                sor["eredmenyek"].append({
+                    "tantargy": getattr(e, "subject", None),
+                    "temakor": getattr(e, "topic_id", None),
+                    "szazalek": getattr(e, "score", None)})
+            ki["gyerekek"].append(sor)
+        return ki
+    finally:
+        db.close()
+
+
+def delete_parent_account(parent_id: int) -> bool:
+    """A szülő és MINDEN hozzá tartozó adat végleges törlése.
+
+    Sorrend számít: előbb az üzenetek, mert azok a beszélgetéshez kötődnek,
+    és csak a végén maga a szülő. Egyetlen tranzakció – ha bármi elhasal,
+    semmi nem törlődik, és nem marad félig üres fiók.
+    """
+    db = _session()
+    try:
+        gyerek_idk = list(db.scalars(
+            select(Child.id).where(Child.parent_id == parent_id)).all())
+
+        if gyerek_idk:
+            munkamenet_idk = list(db.scalars(
+                select(ChatSession.id)
+                .where(ChatSession.child_id.in_(gyerek_idk))).all())
+            if munkamenet_idk:
+                db.execute(delete(ChatMessage).where(
+                    ChatMessage.session_id.in_(munkamenet_idk)))
+            db.execute(delete(ChatSession).where(
+                ChatSession.child_id.in_(gyerek_idk)))
+            for tabla in _GYEREK_TABLAK:
+                db.execute(delete(tabla).where(tabla.child_id.in_(gyerek_idk)))
+            db.execute(delete(Child).where(Child.parent_id == parent_id))
+
+        db.execute(delete(PasswordResetToken).where(
+            PasswordResetToken.parent_id == parent_id))
+        eredmeny = db.execute(delete(Parent).where(Parent.id == parent_id))
+        db.commit()
+        logger.info("Fiok torolve: parent_id=%s, gyerekek=%s",
+                    parent_id, len(gyerek_idk))
+        return bool(eredmeny.rowcount)
+    except Exception:
+        db.rollback()
+        logger.exception("Fioktorles sikertelen: parent_id=%s", parent_id)
+        return False
+    finally:
+        db.close()
+
+
 # ---------------------------------------------------------------------------
 # Gyerek (child) műveletek
 # ---------------------------------------------------------------------------
