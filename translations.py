@@ -562,6 +562,14 @@ TRANSLATIONS = {
         "hu": "A regisztrációhoz el kell fogadnod a feltételeket.",
         "es": "Para registrarse debe aceptar las condiciones.",
     },
+    "chat_fullscreen": {
+        "hu": "Teljes képernyő",
+        "es": "Pantalla completa",
+    },
+    "chat_fullscreen_exit": {
+        "hu": "Kilépés a teljes képernyőből",
+        "es": "Salir de pantalla completa",
+    },
     "footer_text": {
         "hu": "TutorIA — Tanulás, személyre szabva.",
         "es": "TutorIA — Aprendizaje, personalizado.",
