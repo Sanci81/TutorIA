@@ -68,10 +68,6 @@
                    vitt, a felirat pedig az aktuális módot mutatta: ez zavaró volt,
                    és chat módból nem volt egyértelmű a visszaút. #}
                 <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
-                {# Teljes képernyő – mint a videóknál. A gyereknek egy gomb. #}
-                <button type="button" class="chat-teljes-gomb" id="chat-teljes"
-                        title="{{ t('chat_fullscreen') }}"
-                        aria-label="{{ t('chat_fullscreen') }}">⛶</button>
                 {% if not show_chat_switch %}
                     <span class="chat-mode-toggle chat-mode-voice">{{ t('chat_mode_voice') }}</span>
                 {% elif chat_mode == 'voice' %}
@@ -224,49 +220,6 @@
     var transcribeUrl = {{ url_for('api_voice_transcribe')|tojson }};
     var speakUrl = {{ url_for('api_voice_speak')|tojson }};
 
-    // ── Teljes képernyő ────────────────────────────────────────────────
-    // Két rétegben működik. Először megpróbáljuk a böngésző valódi teljes
-    // képernyőjét (mint a videóknál). Ha az nem megy – régi iPhone, beágyazott
-    // nézet –, akkor is kitesszük a chatet az egész ablakra egy osztállyal.
-    // Így a gomb SOHA nem tehetetlen.
-    (function () {
-        var gomb = document.getElementById('chat-teljes');
-        var lap = document.getElementById('chat-page');
-        if (!gomb || !lap) return;
-        var kerhet = lap.requestFullscreen || lap.webkitRequestFullscreen;
-        var kilep = document.exitFullscreen || document.webkitExitFullscreen;
-
-        function jelol() {
-            var benne = lap.classList.contains('teljes-mod');
-            gomb.textContent = benne ? '\u2715' : '\u26f6';
-            gomb.title = benne ? L.fullscreenExit : L.fullscreen;
-            gomb.setAttribute('aria-label', gomb.title);
-        }
-        function be() {
-            lap.classList.add('teljes-mod');
-            if (kerhet) { try { kerhet.call(lap); } catch (e) {} }
-            jelol();
-        }
-        function ki() {
-            lap.classList.remove('teljes-mod');
-            if (document.fullscreenElement || document.webkitFullscreenElement) {
-                try { kilep.call(document); } catch (e) {}
-            }
-            jelol();
-        }
-        gomb.addEventListener('click', function () {
-            lap.classList.contains('teljes-mod') ? ki() : be();
-        });
-        // Escape-re a böngésző magától kilép – az osztályt is le kell venni.
-        function valtozott() {
-            var benne = document.fullscreenElement || document.webkitFullscreenElement;
-            if (!benne) { lap.classList.remove('teljes-mod'); jelol(); }
-        }
-        document.addEventListener('fullscreenchange', valtozott);
-        document.addEventListener('webkitfullscreenchange', valtozott);
-        jelol();
-    })();
-
     // ── Napi hangkeret ──────────────────────────────────────────────────
     // Ha ma elfogyott a felolvasás, EGYSZER szólunk a gyereknek, utána
     // csendben maradunk. A tanulás írásban zavartalanul megy tovább – a
@@ -343,8 +296,6 @@
         voiceMicPermission: {{ t('chat_voice_mic_permission')|tojson }},
         replayTitle: {{ t('chat_replay_title')|tojson }},
         voiceBudgetSpent: {{ t('voice_budget_spent')|tojson }},
-        fullscreen: {{ t('chat_fullscreen')|tojson }},
-        fullscreenExit: {{ t('chat_fullscreen_exit')|tojson }},
         think: [
             {{ t('chat_think_1')|tojson }},
             {{ t('chat_think_2')|tojson }},

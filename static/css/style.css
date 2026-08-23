@@ -1061,19 +1061,10 @@ a.btn-generate {
     gap: 1rem;
     max-width: 1280px;
     margin: 0 auto;
-    /* Magasságot NEM találgatunk: a body oszlop-flex, a .content pedig
-       kitölti a maradékot, így a chat pontosan annyi helyet kap, amennyi
-       a fejléc alatt marad. Régi böngészőnek marad a becsült érték. */
-    height: calc(100dvh - 150px);
-    min-height: 420px;
-    /* Egyetlen, teljes magasságú sor: enélkül a rács a TARTALOMHOZ
-       igazodik, és az üzenetlista nem nő ki a rendelkezésre álló helyre. */
-    grid-template-rows: 1fr;
+    min-height: calc(100vh - 160px);
     align-items: stretch;
     position: relative;
-    overflow: hidden;
 }
-.topic-sidebar { overflow-y: auto; }
 .chat-layout:has(.chat-sidebar-vocab) {
     grid-template-columns: 260px 1fr minmax(160px, 200px);
 }
@@ -1834,18 +1825,14 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
     transform: none;
 }
 .chat-messages {
-    flex: 1 1 auto;
+    flex: 1;
     overflow-y: auto;
     padding: 1rem 0.25rem;
     display: flex;
     flex-direction: column;
     gap: 0.85rem;
-    /* Korábban itt "max-height: 55vh" állt. Emiatt az üzenetek egy kis
-       ablakba szorultak, amiben KÜLÖN kellett görgetni, miközben a lap
-       maga is görgethető volt – két görgetősáv egymásban. Egy gyereknek
-       ez használhatatlan. Most az üzenetlista tölti ki a maradék helyet,
-       és CSAK az görög. */
-    min-height: 0;
+    min-height: 280px;
+    max-height: 55vh;
 }
 .chat-bubble {
     display: flex;
@@ -2073,111 +2060,4 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
 @keyframes thinking-pulse {
     0%, 100% { opacity: 0.6; }
     50% { opacity: 1; }
-}
-
-
-/* ---------- A chat oldal pontos magassága ----------
-   A lap MAGA ne görögjön, csak az üzenetlista. Enélkül két görgetősáv
-   van egymásban, és a gyerek nem találja, hol folytatódik a szöveg. */
-body:has(.chat-layout) {
-    height: 100dvh;
-    min-height: 0;
-    overflow: hidden;
-}
-body:has(.chat-layout) .content {
-    flex: 1 1 auto;
-    min-height: 0;
-    display: flex;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    overflow: hidden;
-}
-body:has(.chat-layout) .content > .chat-layout {
-    height: 100%;
-    flex: 1 1 auto;
-}
-/* A tanulás közben nincs szükség láblécre; a jogi oldalak minden más
-   oldalról elérhetők maradnak. */
-body:has(.chat-layout) .footer { display: none; }
-
-
-/* ---------- A chat fejléc tömörítése ----------
-   MÉRVE Chromiumban: a fejléc 411 képpont volt, a beszélgetés 389 – a
-   keret többet foglalt, mint maga a tanulás. Itt visszaszedjük a
-   térközöket, hogy az üzeneteké legyen a hely. */
-.chat-header-playful {
-    padding: 8px 10px;
-    border-width: 2px;
-    border-radius: 16px;
-}
-.chat-header { gap: 0.35rem; margin-bottom: 0.5rem; }
-.chat-header-identity { padding: 0.3rem 0.55rem; }
-.chat-avatar-circle { width: 38px; height: 38px; font-size: 1rem; }
-.chat-child-name { font-size: 1.02rem; }
-.chat-subject { font-size: 0.8rem; }
-.chat-topic-card { padding: 0.3rem 0.7rem; }
-.chat-topic-card-label { font-size: 0.66rem; margin-bottom: 0; }
-.chat-current-topic { font-size: 0.98rem; margin: 0.05rem 0 0; }
-.chat-mini-stats { font-size: 0.82rem; }
-.btn-test-start { margin-top: 0.3rem; padding: 0.5rem 1.1rem; font-size: 0.95rem; }
-.chat-header-actions { margin: 0; }
-/* A fejléc elemein 10-10 px külön margó ÜLT a rács saját térköze mellett:
-   együtt 50 képpont ment el a semmire. A térközt a gap adja. */
-.chat-header > * { margin-top: 0; margin-bottom: 0; }
-.chat-streak-bar { padding: 0.25rem 0.6rem; font-size: 0.84rem; }
-/* Hangos módban külön korlát ült az üzenetlistán: "calc(100vh - 340px)".
-   Emiatt 900 képpontos képernyőn 560-nál megállt, és alul üresen maradt
-   közel száz képpont. A magasságot a rács adja, korlát nem kell. */
-.chat-layout-voice .chat-messages { max-height: none; }
-
-/* ---------- Teljes képernyő ----------
-   Osztállyal dolgozunk, nem a :fullscreen ál-osztállyal: a #chat-page
-   MAGA a rács, tehát a ":fullscreen .chat-layout" alakú szabályok soha
-   nem illeszkedtek – ettől esett szét a legutóbbi próbálkozás. */
-.chat-teljes-gomb {
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid #bbf7d0;
-    border-radius: 10px;
-    width: 34px;
-    height: 34px;
-    font-size: 1rem;
-    line-height: 1;
-    cursor: pointer;
-    color: #166534;
-    flex-shrink: 0;
-}
-.chat-teljes-gomb:hover { background: #fff; }
-
-.chat-layout.teljes-mod {
-    /* Rögzített borítás: akkor is kitölti az ablakot, ha a böngésző nem
-       engedi a valódi teljes képernyőt. */
-    position: fixed;
-    inset: 0;
-    z-index: 200;
-    grid-template-columns: 1fr;      /* a témalista kimarad */
-    max-width: none;
-    width: 100vw;
-    height: 100dvh;
-    padding: 10px 16px;
-    background: var(--green-50);
-    box-sizing: border-box;
-}
-.chat-layout.teljes-mod .topic-sidebar,
-.chat-layout.teljes-mod .chat-sidebar-toggle { display: none; }
-.chat-layout.teljes-mod .chat-messages { font-size: 1.06rem; }
-
-
-/* Széles képernyőn a névkártya és a "Most ezt tanulod" doboz egymás
-   MELLÉ fér – ezzel még egy sornyi hely marad a beszélgetésnek. */
-@media (min-width: 900px) {
-    .chat-header {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        align-items: stretch;
-        column-gap: 0.5rem;
-    }
-    .chat-header .chat-header-topbar,
-    .chat-header .chat-mini-stats,
-    .chat-header .chat-streak-bar,
-    .chat-header .chat-header-actions { grid-column: 1 / -1; }
 }
