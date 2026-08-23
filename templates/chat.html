@@ -225,32 +225,46 @@
     var speakUrl = {{ url_for('api_voice_speak')|tojson }};
 
     // ── Teljes képernyő ────────────────────────────────────────────────
-    // A böngésző saját teljes képernyő módja, ugyanaz, amit a videók
-    // használnak. Ha a böngésző nem engedi (régi iPhone), a gombot
-    // elrejtjük, hogy ne kattintgasson hiába a gyerek.
+    // Két rétegben működik. Először megpróbáljuk a böngésző valódi teljes
+    // képernyőjét (mint a videóknál). Ha az nem megy – régi iPhone, beágyazott
+    // nézet –, akkor is kitesszük a chatet az egész ablakra egy osztállyal.
+    // Így a gomb SOHA nem tehetetlen.
     (function () {
         var gomb = document.getElementById('chat-teljes');
         var lap = document.getElementById('chat-page');
         if (!gomb || !lap) return;
         var kerhet = lap.requestFullscreen || lap.webkitRequestFullscreen;
-        if (!kerhet) { gomb.style.display = 'none'; return; }
+        var kilep = document.exitFullscreen || document.webkitExitFullscreen;
 
-        function allapot() {
-            var benne = document.fullscreenElement || document.webkitFullscreenElement;
+        function jelol() {
+            var benne = lap.classList.contains('teljes-mod');
             gomb.textContent = benne ? '\u2715' : '\u26f6';
             gomb.title = benne ? L.fullscreenExit : L.fullscreen;
+            gomb.setAttribute('aria-label', gomb.title);
+        }
+        function be() {
+            lap.classList.add('teljes-mod');
+            if (kerhet) { try { kerhet.call(lap); } catch (e) {} }
+            jelol();
+        }
+        function ki() {
+            lap.classList.remove('teljes-mod');
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                try { kilep.call(document); } catch (e) {}
+            }
+            jelol();
         }
         gomb.addEventListener('click', function () {
-            var benne = document.fullscreenElement || document.webkitFullscreenElement;
-            if (benne) {
-                (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-            } else {
-                kerhet.call(lap).catch(function () {});
-            }
+            lap.classList.contains('teljes-mod') ? ki() : be();
         });
-        document.addEventListener('fullscreenchange', allapot);
-        document.addEventListener('webkitfullscreenchange', allapot);
-        allapot();
+        // Escape-re a böngésző magától kilép – az osztályt is le kell venni.
+        function valtozott() {
+            var benne = document.fullscreenElement || document.webkitFullscreenElement;
+            if (!benne) { lap.classList.remove('teljes-mod'); jelol(); }
+        }
+        document.addEventListener('fullscreenchange', valtozott);
+        document.addEventListener('webkitfullscreenchange', valtozott);
+        jelol();
     })();
 
     // ── Napi hangkeret ──────────────────────────────────────────────────
