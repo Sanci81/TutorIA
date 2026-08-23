@@ -941,9 +941,12 @@ def _jogi_adatok() -> dict[str, str]:
     return {
         "uzemelteto": os.environ.get("UZEMELTETO", "Vigh Sándor"),
         "kapcsolat": os.environ.get("KAPCSOLAT_EMAIL", "vigh.sandor81@gmail.com"),
-        # A Railway régióját a projekt beállításainál látod. Amíg nincs
-        # megadva, ŐSZINTÉN azt írjuk ki, hogy nem tudjuk – nem tippelünk.
-        "railway_regio": os.environ.get("RAILWAY_REGIO", "Európai Unió"),
+        # A Railway régiója MÉRT adat, nem tipp: a projekt beállításainál
+        # "US West (California, USA)" áll. Ha egyszer EU-ba költözik az
+        # adatbázis, elég ezt az egy sort átírni – vagy a RAILWAY_REGIO
+        # környezeti változót beállítani, az felülírja.
+        "railway_regio": os.environ.get(
+            "RAILWAY_REGIO", "US West (Kalifornia, USA)"),
         "frissitve": JOGI_FRISSITVE,
     }
 
