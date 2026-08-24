@@ -40,6 +40,7 @@ import resend
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import abra
+import abra_ellenor
 import database
 import ellenoriz
 import hang
@@ -5459,6 +5460,35 @@ def child_chat_send(child_id: int):
     )
     if _extra_svg:
         raw_svgs.append(_extra_svg)
+
+    # ── Az ábra ÖSSZEVETÉSE a szöveggel ─────────────────────────────────
+    # Az abra.py a rajz technikai hibáit fogja meg; azt viszont nem tudja
+    # megítélni, hogy a rajz AZT mutatja-e, amit a szöveg mond. Egy trapéznál
+    # például az alsó oldalra „5 cm és 5 cm" került, és a magasság a ferde
+    # szárra mutatott. Egy rövid AI-hívás ezt kiszűri – és ha hibás, az ábra
+    # KIMARAD, nem próbáljuk megjavítani: a rossz rajz többet árt, mint a
+    # hiányzó. Hibára, érthetetlen válaszra mindig ÁTENGEDÜNK.
+    if figures and abra_ellenor.bekapcsolva():
+        _kulcs = os.environ.get("OPENAI_API_KEY")
+        if _kulcs:
+            try:
+                _kliens = _openai_client(_kulcs, request_timeout=abra_ellenor.IDOKORLAT)
+                _es = (_active_curriculum() or "HU").upper() == "ES"
+                _megmarad = []
+                for _abra in figures:
+                    _jo, _indok = abra_ellenor.rendben(
+                        _abra, reply, kliens=_kliens, es=_es)
+                    if _jo:
+                        _megmarad.append(_abra)
+                    else:
+                        print(f"[ABRA-ELLENOR] eldobva: {_indok}", flush=True)
+                if len(_megmarad) != len(figures):
+                    _elhagyott = [f for f in figures if f not in _megmarad]
+                    raw_svgs = [r for r in raw_svgs
+                                if _sanitize_svg(r) not in _elhagyott]
+                figures = _megmarad
+            except Exception as exc:
+                print(f"[ABRA-ELLENOR] kihagyva: {exc}", flush=True)
     marker_count = len(vocab_pairs)
     fallback_count = 0
     reply_count = 0
