@@ -2125,3 +2125,32 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 .chat-layout.teljes-mod .chat-header-actions { flex: 0 0 auto; margin: 0; }
 .chat-layout.teljes-mod .btn-test-start { margin-top: 0; }
 .chat-layout.teljes-mod .chat-header-playful { padding: 8px 12px; }
+
+/* ---------- Nagyításban minden LEÉR a képernyő aljáig ----------
+   A rácsnak egyetlen, teljes magasságú sora van: enélkül a tartalomhoz
+   igazodik, és alul üresen marad a képernyő fele. A beszélgetésen ülő
+   magassági korlátokat itt feloldjuk – nagyításban a hely a chaté. */
+.chat-layout.teljes-mod {
+    grid-template-rows: 1fr;
+    align-items: stretch;
+}
+.chat-layout.teljes-mod .chat-main {
+    min-height: 0;
+    height: 100%;
+}
+.chat-layout.teljes-mod .chat-messages {
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;      /* a 55vh és a 100vh-340px korlát helyett */
+}
+/* A szójegyzék külön oszlop: a rács nyújtja ki, magában görög. Százalékos
+   magasságot NEM adunk neki – attól kinőne a képernyőből. */
+.chat-layout.teljes-mod .chat-sidebar-vocab {
+    /* A .chat-sidebar alap szabálya "calc(100vh - 140px)"-nél megállítja –
+       nagyításban ezt feloldjuk, hogy a szójegyzék is leérjen az aljáig. */
+    max-height: none;
+    height: auto;
+    min-height: 0;
+    overflow-y: auto;
+    align-self: stretch;
+}
