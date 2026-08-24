@@ -2100,6 +2100,28 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     box-sizing: border-box;
     overflow: hidden;
 }
+/* Teljes képernyőn a témalista eltűnik, a SZÓJEGYZÉK viszont marad:
+   nyelvóránál az a tanulás része. */
 .chat-layout.teljes-mod .topic-sidebar,
-.chat-layout.teljes-mod .chat-sidebar-vocab,
 .chat-layout.teljes-mod .chat-sidebar-toggle { display: none; }
+.chat-layout.teljes-mod:has(.chat-sidebar-vocab) {
+    grid-template-columns: 1fr minmax(180px, 240px);
+}
+
+/* A fejlécből csak a felső sáv és a Szintfelmérő gomb marad – egy sorban.
+   A névkártya, az érme, a „Most ezt tanulod" doboz és a percek a rendes
+   nézetben ott vannak; nagyításban csak elvennék a helyet a beszélgetéstől. */
+.chat-layout.teljes-mod .chat-header-identity,
+.chat-layout.teljes-mod .chat-topic-card,
+.chat-layout.teljes-mod .chat-mini-stats,
+.chat-layout.teljes-mod .chat-streak-bar { display: none; }
+.chat-layout.teljes-mod .chat-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+}
+.chat-layout.teljes-mod .chat-header-topbar { flex: 1 1 auto; }
+.chat-layout.teljes-mod .chat-header-actions { flex: 0 0 auto; margin: 0; }
+.chat-layout.teljes-mod .btn-test-start { margin-top: 0; }
+.chat-layout.teljes-mod .chat-header-playful { padding: 8px 12px; }
