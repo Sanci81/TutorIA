@@ -1784,6 +1784,8 @@ _ABRA_RULES_HU = (
     'felül/alul: text-anchor="middle". Két felirat ne fedje egymást.\n'
     "- Az arányok legyenek valósághűek (6 cm × 3 cm téglalap kétszer olyan "
     "széles, mint magas).\n"
+    "- Ha a szöveg végén ÚJ feladat áll (más számokkal), az ábra az ÚJ feladatot "
+    "mutassa, ne a már megoldott példát.\n"
     "- Az ábra MAGYARÁZZON: felszínnél a test HÁLÓJÁT, térfogatnál a térbeli "
     "testet, kerületnél a síkidomot a mért oldalakkal, törtnél felosztott, "
     "beszínezett alakzatot rajzolj.\n"
@@ -3231,6 +3233,10 @@ Reglas:
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- EL DIBUJO DEBE MOSTRAR EL EJERCICIO QUE EL NIÑO TIENE QUE RESOLVER AHORA.
+  Si al final propones un ejercicio nuevo con otros números, dibuja los números
+  NUEVOS, no los del ejemplo ya resuelto. El niño ve el dibujo DEBAJO de la
+  pregunta: si muestra el ejemplo anterior, creerá que preguntas por ese.
 - OBLIGATORIO escribir fill="none" en CADA rect, circle, ellipse, polygon y path. Si lo olvidas, el navegador lo rellena de NEGRO y sale una mancha negra en vez del dibujo. Sin excepción.
 - Si el concepto es ABSTRACTO (probabilidad, azar, conceptos gramaticales, sentimientos) y no puedes hacer un dibujo que MIDA o MUESTRE algo real, NO dibujes nada. Un icono inventado (un sol, un árbol, una cara) confunde al niño más que la ausencia de dibujo.
 - Las etiquetas: font-size="16" fill="#222" text-anchor="middle", y colócalas SIEMPRE FUERA de la figura, a al menos 12 píxeles de distancia.
@@ -3266,6 +3272,10 @@ REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
    - Si el niño hace una pregunta completamente fuera de tema (ej. "¿dónde puedo comprar un juguete?", "¿qué cocino?"): di amablemente: "Ahora no puedo responder a eso, ¡pero estaré encantado de ayudarte con el estudio! Sigamos donde lo dejamos." – y continúa enseñando.
    - NUNCA digas "Eso lo aprenderemos más tarde" – es demasiado frío y puede que ni siquiera lo estudien porque no está relacionado con la asignatura.
 6. El {grade}º curso es un año concreto del bloque curricular correspondiente — enseña según la POSICIÓN DE BLOQUE indicada arriba, no des tareas de bloques inferiores.
+7. SI LA REGLA TIENE UNA FÓRMULA HABITUAL, DILA TAMBIÉN – no solo los pasos.
+   Primero los pasos en el lenguaje del niño, después: «esto se escribe así de corto: …».
+   Por ejemplo, el perímetro del rectángulo: P = 2 × (a + b); el área: A = a × b.
+   En el examen el niño buscará la FÓRMULA: si no te la ha oído, de poco le sirve haberlo entendido.
 7. CORRECCIÓN GRAMATICAL ESPAÑOLA: Todas tus frases deben ser en español gramaticalmente correcto.
    - Usa un lenguaje natural, como hablaría un profesor español nativo.
    - Evita estructuras calcadas de otros idiomas.
@@ -3471,6 +3481,10 @@ Reglas:
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- EL DIBUJO DEBE MOSTRAR EL EJERCICIO QUE EL NIÑO TIENE QUE RESOLVER AHORA.
+  Si al final propones un ejercicio nuevo con otros números, dibuja los números
+  NUEVOS, no los del ejemplo ya resuelto. El niño ve el dibujo DEBAJO de la
+  pregunta: si muestra el ejemplo anterior, creerá que preguntas por ese.
 - OBLIGATORIO escribir fill="none" en CADA rect, circle, ellipse, polygon y path. Si lo olvidas, el navegador lo rellena de NEGRO y sale una mancha negra en vez del dibujo. Sin excepción.
 - Si el concepto es ABSTRACTO (probabilidad, azar, conceptos gramaticales, sentimientos) y no puedes hacer un dibujo que MIDA o MUESTRE algo real, NO dibujes nada. Un icono inventado (un sol, un árbol, una cara) confunde al niño más que la ausencia de dibujo.
 - Las etiquetas: font-size="16" fill="#222" text-anchor="middle", y colócalas SIEMPRE FUERA de la figura, a al menos 12 píxeles de distancia.
@@ -3506,6 +3520,10 @@ REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
    - Si el niño hace una pregunta completamente fuera de tema (ej. "¿dónde puedo comprar un juguete?", "¿qué cocino?"): di amablemente: "Ahora no puedo responder a eso, ¡pero estaré encantado de ayudarte con el estudio! Sigamos donde lo dejamos." – y continúa enseñando.
    - NUNCA digas "Eso lo aprenderemos más tarde" – es demasiado frío y puede que ni siquiera lo estudien porque no está relacionado con la asignatura.
 6. El {grade}º curso es un año concreto del bloque curricular correspondiente — enseña según la POSICIÓN DE BLOQUE indicada arriba, no des tareas de bloques inferiores.
+7. SI LA REGLA TIENE UNA FÓRMULA HABITUAL, DILA TAMBIÉN – no solo los pasos.
+   Primero los pasos en el lenguaje del niño, después: «esto se escribe así de corto: …».
+   Por ejemplo, el perímetro del rectángulo: P = 2 × (a + b); el área: A = a × b.
+   En el examen el niño buscará la FÓRMULA: si no te la ha oído, de poco le sirve haberlo entendido.
 7. CORRECCIÓN GRAMATICAL ESPAÑOLA: Todas tus frases deben ser en español gramaticalmente correcto.
    - Usa un lenguaje natural, como hablaría un profesor español nativo.
    - Evita estructuras calcadas de otros idiomas.
@@ -3639,6 +3657,10 @@ FONTOS SZABÁLYOK – MINDIG tartsd be:
    - Ha a gyerek teljesen offtopic kérdést tesz fel (pl. "hol vehetek játékot?", "mit főzzek?"): mondd kedvesen: "Erre most nem tudok válaszolni, de szívesen segítek a tanulásban! Folytassuk ott, ahol abbahagytuk." – majd folytasd a tanítást.
    - SOHA ne mondd hogy "Azt majd később tanuljuk!" – ez túl rideg, és lehet nem is tanulják mert nem a tantárgyhoz kapcsolódik.
 6. A {grade}. osztály a kerettanterv adott blokkjának egy konkrét éve — a fenti BLOKK-POZÍCIÓ alapján tanítsd, ne adj alacsonyabb blokkba tartozó feladatokat.
+7. HA A SZABÁLYNAK VAN BEVETT KÉPLETE, MONDD KI A KÉPLETET IS – ne csak a lépéseket.
+   Előbb a lépések a gyerek nyelvén, aztán: „ezt röviden így írjuk: …".
+   Például a téglalap kerülete: K = 2 × (a + b); a területe: T = a × b.
+   A gyerek a dolgozatban a KÉPLETET fogja keresni – ha nem hallotta tőled, hiába értette meg.
 """
 
     prompt += """=== SZEMLÉLTETÉS ===
@@ -3656,6 +3678,10 @@ Szabályok:
 - Ha a fogalom ABSZTRAKT (valószínűség, véletlen, nyelvtani fogalom, érzelem), és nem tudsz olyan rajzot adni, ami MÉR vagy MEGMUTAT valami valóságosat, akkor NE rajzolj semmit. A kitalált ikon (nap, fa, arc) jobban összezavarja a gyereket, mint ha nincs ábra.
 - A feliratok: font-size="16" fill="#222" text-anchor="middle", és MINDIG az alakzaton KÍVÜL, tőle legalább 12 pixelre helyezd el őket.
 - Az alakzat arányai legyenek valósághűek: egy 6 cm × 3 cm-es téglalap kétszer olyan széles legyen, mint amilyen magas.
+- AZ ÁBRA AZT A FELADATOT MUTASSA, AMIT A GYEREKNEK MOST MEG KELL OLDANIA.
+  Ha a válaszod végén új feladatot adsz más számokkal, az ábrán az ÚJ feladat
+  számai legyenek – ne a már megoldott példáé. A gyerek az ábrát a kérdés ALATT
+  látja: ha ott a régi példa van, azt hiszi, arra kérdezel rá.
 - Ha méreteket is jelölsz, írd ki az értéket is a betűjel mellé (pl. "a = 6 cm").
 - Használj világos, letisztult rajzot: felesleges díszítés, árnyék, gradiens nélkül.
 - Az ábra legyen EGYSZERŰ és feliratozott: vastag vonalak, nagy betűk (font-size 14-18), fekete rajz világos háttéren, magyar feliratokkal.

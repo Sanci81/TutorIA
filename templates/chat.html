@@ -207,6 +207,20 @@
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
+    // ── A teszt ablak és a teljes képernyő ─────────────────────────────
+    // A böngésző teljes képernyő módjában CSAK a kinagyított elem tartalma
+    // látszik. A teszt ablaka viszont a <section> MELLETT állt, nem benne –
+    // ezért nagyításban egyszerűen nem jelent meg. Beköltöztetjük a chat
+    // dobozába: normál nézetben ez semmit nem változtat (az ablak úgyis a
+    // képernyőhöz van rögzítve), nagyításban viszont láthatóvá válik.
+    (function () {
+        var lap = document.getElementById('chat-page');
+        var ablak = document.getElementById('test-overlay');
+        if (lap && ablak && ablak.parentElement !== lap) {
+            lap.appendChild(ablak);
+        }
+    })();
+
     // ── Teljes képernyő ────────────────────────────────────────────────
     // Előbb a böngésző valódi teljes képernyőjét kérjük (mint a videóknál).
     // Ha az nem megy, akkor is kitesszük a chatet az egész ablakra egy
