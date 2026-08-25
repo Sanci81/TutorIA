@@ -952,7 +952,7 @@ def _jogi_adatok() -> dict[str, str]:
     }
 
 
-JOGI_FRISSITVE = "2026. augusztus 23."
+JOGI_FRISSITVE = "2026. augusztus 25."
 
 
 @app.route("/adatvedelem")
