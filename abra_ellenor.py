@@ -152,3 +152,31 @@ def rendben(svg: str, szoveg: str, *, kliens, es: bool = False) -> tuple[bool, s
         print(f"[ABRA-ELLENOR] hiba, az abrat atengedem: {exc}", flush=True)
         return True, ""
     return _valasz_ertelmezese(nyers)
+
+
+# ---------------------------------------------------------------------------
+# NAPLÓ – közvetlenül az appban nézhető, nem a Railway naplójában
+#
+# A Railway-naplóban keresgélni körülményes, és könnyű rossz telepítést
+# nézni. Ezért az utolsó néhány ábra-döntést itt tartjuk a memóriában, és
+# a /abra-naplo oldalon meg lehet nézni. Újratelepítéskor kiürül – ez így
+# jó: a hibakereséshez pár óra bőven elég.
+# ---------------------------------------------------------------------------
+
+MAX_NAPLO = 40
+_naplo: list[dict] = []
+
+
+def jegyez(**mezok) -> None:
+    """Egy ábra-döntés feljegyzése. Sosem dob hibát."""
+    try:
+        _naplo.append(mezok)
+        if len(_naplo) > MAX_NAPLO:
+            del _naplo[: len(_naplo) - MAX_NAPLO]
+    except Exception:
+        pass
+
+
+def naplo() -> list[dict]:
+    """A feljegyzések, a legfrissebb elöl."""
+    return list(reversed(_naplo))

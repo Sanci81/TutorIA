@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Ábra-napló · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<style>
+  .naplo{max-width:1000px;margin:0 auto;padding:20px 16px 60px}
+  .naplo h1{font-size:1.6rem;margin:0 0 4px}
+  .naplo .alcim{color:#6b7280;margin:0 0 20px;line-height:1.6}
+  .naplo table{width:100%;border-collapse:collapse;font-size:.93rem}
+  .naplo th,.naplo td{border:1px solid #d9dee7;padding:7px 9px;text-align:left;vertical-align:top}
+  .naplo th{background:#f3f5f9;white-space:nowrap}
+  .naplo .szam{text-align:center;font-variant-numeric:tabular-nums}
+  .naplo .allapot{white-space:nowrap;font-weight:700}
+  .naplo .jo{color:#166534}
+  .naplo .baj{color:#a12b2b}
+  .naplo .semmi{color:#92400e}
+  .naplo .szoveg{color:#4b5563;font-size:.86rem}
+  .naplo .ures{background:#fff8e6;border-left:4px solid #e8a33d;padding:14px 16px;line-height:1.6}
+  .naplo .magyarazat{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
+                     padding:12px 14px;margin-top:22px;font-size:.9rem;line-height:1.65;color:#475569}
+</style>
+
+<div class="naplo">
+  <h1>Ábra-napló</h1>
+  <p class="alcim">Az utolsó {{ bejegyzesek|length }} válasz ábra-döntése.
+     Üzemmód: <strong>{{ uzemmod }}</strong>.
+     Újratelepítéskor kiürül.</p>
+
+  {% if not bejegyzesek %}
+    <div class="ures">
+      Még nincs bejegyzés. Nyiss meg egy tantárgyat a gyerek fiókjában, kérdezz
+      valamit (például: <em>„mekkora egy 5 cm oldalú négyzet kerülete?"</em>),
+      aztán tölts be újra ezt az oldalt.
+    </div>
+  {% else %}
+  <table>
+    <tr>
+      <th>Idő</th><th>Tantárgy</th><th class="szam">Rajzolt</th>
+      <th class="szam">Ép</th><th>Mi történt</th><th>Indok</th>
+    </tr>
+    {% for b in bejegyzesek %}
+    <tr>
+      <td>{{ b.ido }}</td>
+      <td>{{ b.tantargy }}<br><span class="szoveg">{{ b.temakor }}</span></td>
+      <td class="szam">{{ b.nyers }}</td>
+      <td class="szam">{{ b.tisztitott }}</td>
+      <td class="allapot
+          {%- if 'nincs' in b.allapot %} semmi
+          {%- elif 'eldobta' in b.allapot %} baj
+          {%- else %} jo{% endif %}">{{ b.allapot }}</td>
+      <td class="szoveg">{{ b.indok or '—' }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  <div class="magyarazat">
+    <strong>Hogyan olvasd.</strong>
+    A <em>Rajzolt</em> az, amit az AI küldött; az <em>Ép</em> az, ami az
+    `abra.py` technikai ellenőrzését túlélte.<br>
+    Ha <strong>Rajzolt = 0</strong>, az AI meg sem próbált rajzolni — akkor a
+    tanári prompton kell igazítani.<br>
+    Ha <strong>Rajzolt &gt; 0, de Ép = 0</strong>, a rajz technikailag hibás volt
+    (fekete folt, egymásra csúszó felirat, hamis oldalarány).<br>
+    Ha mindkettő nagyobb nullánál, a rajz kiment a gyerekhez — az „Indok"
+    oszlopban pedig ott áll, ha az ellenőr talált benne tárgyi hibát.
+  </div>
+</div>
+{% endblock %}

@@ -1015,6 +1015,28 @@ def fiok_torles():
     return redirect(url_for("index"))
 
 
+# ---------------------------------------------------------------------------
+# Ábra-napló – hibakereső oldal CSAK az üzemeltetőnek
+#
+# A Railway naplójában keresgélni körülményes: könnyű rossz telepítés kártyáját
+# nézni, és a keresőmezőbe is könnyű elgépelni. Ez az oldal ugyanazt mutatja,
+# csak az appon belül: mit rajzolt az AI, mi élte túl a technikai ellenőrzést.
+# Idegen szemnek nem való, ezért aki nem az üzemeltető, annak 404.
+# ---------------------------------------------------------------------------
+@app.route("/abra-naplo")
+@login_required
+def abra_naplo():
+    szulo = database.get_parent_by_id(session["parent_id"])
+    sajat = (_jogi_adatok()["kapcsolat"] or "").strip().lower()
+    if not szulo or (szulo.get("email") or "").strip().lower() != sajat:
+        abort(404)
+    return render_template(
+        "abra_naplo.html",
+        bejegyzesek=abra_ellenor.naplo(),
+        uzemmod=abra_ellenor.uzemmod(),
+    )
+
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -5468,6 +5490,20 @@ def child_chat_send(child_id: int):
     # szárra mutatott. Egy rövid AI-hívás ezt kiszűri – és ha hibás, az ábra
     # KIMARAD, nem próbáljuk megjavítani: a rossz rajz többet árt, mint a
     # hiányzó. Hibára, érthetetlen válaszra mindig ÁTENGEDÜNK.
+    # A döntés MINDIG feljegyződik, akkor is, ha nincs ábra – abból derül ki,
+    # hogy az AI meg sem rajzolta, szemben azzal, hogy mi dobtuk el.
+    abra_ellenor.jegyez(
+        ido=datetime.now(timezone.utc).strftime("%H:%M:%S"),
+        tantargy=subject_label,
+        temakor=current_topic,
+        nyers=len(raw_svgs),
+        tisztitott=len(figures),
+        allapot="nincs rajz" if not raw_svgs else
+                ("abra.py eldobta" if not figures else "vizsgalat alatt"),
+        indok="",
+        szoveg=(reply or "")[:200],
+    )
+
     if figures and abra_ellenor.bekapcsolva():
         _kulcs = os.environ.get("OPENAI_API_KEY")
         if _kulcs:
@@ -5475,9 +5511,12 @@ def child_chat_send(child_id: int):
                 _kliens = _openai_client(_kulcs, request_timeout=abra_ellenor.IDOKORLAT)
                 _es = (_active_curriculum() or "HU").upper() == "ES"
                 _megmarad = []
+                _elso_indok = ""
                 for _abra in figures:
                     _jo, _indok = abra_ellenor.rendben(
                         _abra, reply, kliens=_kliens, es=_es)
+                    if not _jo and not _elso_indok:
+                        _elso_indok = _indok
                     if _jo:
                         _megmarad.append(_abra)
                     elif abra_ellenor.eldobhat():
@@ -5488,6 +5527,11 @@ def child_chat_send(child_id: int):
                         _megmarad.append(_abra)
                         print(f"[ABRA-ELLENOR] JELZES (atengedve): {_indok}",
                               flush=True)
+                if abra_ellenor._naplo:
+                    abra_ellenor._naplo[-1]["allapot"] = (
+                        f"ellenor: {len(_megmarad)}/{len(figures)} maradt "
+                        f"({abra_ellenor.uzemmod()})")
+                    abra_ellenor._naplo[-1]["indok"] = _elso_indok
                 print(f"[ABRA-ELLENOR] uzemmod={abra_ellenor.uzemmod()} "
                       f"vizsgalt={len(figures)} megmaradt={len(_megmarad)}",
                       flush=True)
