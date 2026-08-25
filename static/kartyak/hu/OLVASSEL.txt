@@ -26,3 +26,28 @@ SZABÁLYOK
     - Kerüljük azokat, akiknek a hagyatéka aktívan licenceli az arcképét.
     - A kártya kinézete a sajátunk: se Pokélabda, se Pokémon logó vagy
       betűtípus, se a keretük pontos másolata.
+
+MÉG HIÁNYZÓ PORTRÉK (2026. augusztus)
+    Mindegyikhez EGY fájl kell, a portré. A kártyalapot és az arany
+    változatot az app rajzolja rá.
+
+    matematika_7_bolyai.png           Bolyai János
+    matematika_7_euklidesz.png        Euklidész
+    biologia_7_darwin.png             Charles Darwin
+    biologia_7_linne.png              Carl Linné
+    biologia_7_szentgyorgyi.png       Szent-Györgyi Albert
+    foldrajz_7_kolumbusz.png          Kolumbusz Kristóf
+    foldrajz_7_koroscsoma.png         Kőrösi Csoma Sándor
+    tortenelem_7_szechenyi.png        Széchenyi István
+    tortenelem_7_semmelweis.png       Semmelweis Ignác
+    tortenelem_7_marconi.png          Guglielmo Marconi
+    magyar_7_petofi.png               Petőfi Sándor
+    magyar_7_arany.png                Arany János
+    enekzene_7_bach.png               Johann Sebastian Bach
+    enekzene_7_beethoven.png          Ludwig van Beethoven
+    enekzene_7_bartok.png             Bartók Béla
+    digitalis_7_neumann.png           Neumann János
+    digitalis_7_lovelace.png          Ada Lovelace
+    digitalis_7_turing.png            Alan Turing
+
+    Ami már megvan: fizika_7_galilei, fizika_7_newton, fizika_7_watt, kemia_7_arrhenius, kemia_7_curie, kemia_7_lavoisier, kemia_7_mengyelejev, matematika_7_pitagorasz.
