@@ -1813,7 +1813,32 @@ _ABRA_RULES_HU = (
     "testet, kerületnél a síkidomot a mért oldalakkal, törtnél felosztott, "
     "beszínezett alakzatot rajzolj.\n"
     "- Feliratok MAGYARUL, rövidek. Díszítés, árnyék, gradiens nélkül.\n"
-    '- Ha képlet is kell, az az ábra ALJÁRA kerüljön külön sorba, viewBox="0 0 320 260".'
+    "- A feliratban SZEREPELJEN a mérőszám is, ne csak a betűjel: a = 4 m, "
+    "ne pusztán a. A gyerek a rajzról akar számolni.\n"
+    '- Ha képlet is kell, az az ábra ALJÁRA kerüljön külön sorba, viewBox="0 0 320 260".\n'
+    "\n"
+    "TÉGLATEST (doboz, szoba, kocka) – EZT A VÁZAT MÁSOLD, csak a számokat "
+    "cseréld. Kézzel rajzolva a hátsó élek rendre elcsúsznak, ezért ne "
+    "improvizálj:\n"
+    '<svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">\n'
+    '<rect x="100" y="100" width="140" height="70" fill="none" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="100" y1="100" x2="142" y2="66" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="240" y1="100" x2="282" y2="66" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="240" y1="170" x2="282" y2="136" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="142" y1="66" x2="282" y2="66" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="282" y1="66" x2="282" y2="136" stroke="#222" stroke-width="3"/>\n'
+    '<text x="170" y="192" text-anchor="middle" font-size="16" fill="#222">a = 4 m</text>\n'
+    '<text x="92" y="140" text-anchor="end" font-size="16" fill="#222">m = 2 m</text>\n'
+    '<text x="272" y="192" text-anchor="middle" font-size="16" fill="#222">b = 3 m</text>\n'
+    '<text x="170" y="226" text-anchor="middle" font-size="16" fill="#222">T = a x b x m</text>\n'
+    "</svg>\n"
+    "A három MÉLYSÉGI él (a ferdék) MIND ugyanoda, jobbra-fel mutat, és "
+    "egyforma hosszú – ha az egyik lefelé áll, a doboz eltörik.\n"
+    "MELYIK ÉL MELYIK: a magasság (m) a FÜGGŐLEGES él, SOHA nem a ferde. "
+    "Az elülső vízszintes él az a (hosszúság), a ferde mélységi él a b "
+    "(szélesség). Ezt keverni a leggyakoribb hiba.\n"
+    "A szemközti téglalap oldalaránya kövesse az a : m arányt (4 : 2 = "
+    "kétszer olyan széles, mint magas)."
 )
 
 _ABRA_RULES_ES = (
@@ -1843,7 +1868,32 @@ _ABRA_RULES_ES = (
     "plana con los lados medidos; para las fracciones, una figura dividida y "
     "coloreada.\n"
     "- Textos del dibujo EN ESPAÑOL, cortos. Sin decoración, sombras ni gradientes.\n"
-    '- Si hace falta una fórmula, va abajo del todo en línea aparte, viewBox="0 0 320 260".'
+    "- En la etiqueta pon TAMBIEN la medida, no solo la letra: a = 4 m, no "
+    "solo a. El nino quiere calcular a partir del dibujo.\n"
+    '- Si hace falta una fórmula, va abajo del todo en línea aparte, viewBox="0 0 320 260".\n'
+    "\n"
+    "ORTOEDRO (caja, habitación, cubo) – COPIA ESTE ESQUELETO y cambia solo "
+    "los números. Dibujadas a mano las aristas traseras siempre se "
+    "desalinean, así que no improvises:\n"
+    '<svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">\n'
+    '<rect x="100" y="100" width="140" height="70" fill="none" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="100" y1="100" x2="142" y2="66" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="240" y1="100" x2="282" y2="66" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="240" y1="170" x2="282" y2="136" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="142" y1="66" x2="282" y2="66" stroke="#222" stroke-width="3"/>\n'
+    '<line x1="282" y1="66" x2="282" y2="136" stroke="#222" stroke-width="3"/>\n'
+    '<text x="170" y="192" text-anchor="middle" font-size="16" fill="#222">a = 4 m</text>\n'
+    '<text x="92" y="140" text-anchor="end" font-size="16" fill="#222">m = 2 m</text>\n'
+    '<text x="272" y="192" text-anchor="middle" font-size="16" fill="#222">b = 3 m</text>\n'
+    '<text x="170" y="226" text-anchor="middle" font-size="16" fill="#222">V = a x b x m</text>\n'
+    "</svg>\n"
+    "Las TRES aristas de profundidad (las oblicuas) apuntan TODAS hacia "
+    "arriba-derecha y miden lo mismo; si una baja, la caja se rompe.\n"
+    "QUÉ ARISTA ES CUÁL: la altura (m) es la arista VERTICAL, NUNCA la "
+    "oblicua. La horizontal de delante es a (largo), la oblicua de "
+    "profundidad es b (ancho). Confundirlas es el error más frecuente.\n"
+    "El rectángulo frontal debe respetar la proporción a : m (4 : 2 = el "
+    "doble de ancho que de alto)."
 )
 
 
@@ -3351,6 +3401,7 @@ Reglas:
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- EN UN ORTOEDRO (caja, habitación, cubo): la altura (m) es la arista VERTICAL, la horizontal de delante es a, la oblicua de profundidad es b. Las tres aristas oblicuas apuntan TODAS hacia arriba-derecha y miden lo mismo; si una baja, la caja se rompe.
 - EL DIBUJO DEBE MOSTRAR EL EJERCICIO QUE EL NIÑO TIENE QUE RESOLVER AHORA.
   Si al final propones un ejercicio nuevo con otros números, dibuja los números
   NUEVOS, no los del ejemplo ya resuelto. El niño ve el dibujo DEBAJO de la
@@ -3599,6 +3650,7 @@ Reglas:
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- EN UN ORTOEDRO (caja, habitación, cubo): la altura (m) es la arista VERTICAL, la horizontal de delante es a, la oblicua de profundidad es b. Las tres aristas oblicuas apuntan TODAS hacia arriba-derecha y miden lo mismo; si una baja, la caja se rompe.
 - EL DIBUJO DEBE MOSTRAR EL EJERCICIO QUE EL NIÑO TIENE QUE RESOLVER AHORA.
   Si al final propones un ejercicio nuevo con otros números, dibuja los números
   NUEVOS, no los del ejemplo ya resuelto. El niño ve el dibujo DEBAJO de la
@@ -3779,6 +3831,10 @@ FONTOS SZABÁLYOK – MINDIG tartsd be:
    Előbb a lépések a gyerek nyelvén, aztán: „ezt röviden így írjuk: …".
    Például a téglalap kerülete: K = 2 × (a + b); a területe: T = a × b.
    A gyerek a dolgozatban a KÉPLETET fogja keresni – ha nem hallotta tőled, hiába értette meg.
+8. MAGYAROS FOGALMAZÁS a méretek után. Ha a méret egy tárgyat jelzőként ír le, a mértékegység TOLDALÉKOT kap:
+   HELYES: „egy 4 m × 3 m × 2 m-es szoba", „egy 5 cm-es oldal", „egy 2 kg-os zsák".
+   HELYTELEN: „egy 4 m × 3 m × 2 m szoba", „egy 5 cm oldal".
+   Állítmányként viszont toldalék NÉLKÜL áll: „a szoba magassága 2 m", „az oldal 5 cm".
 """
 
     prompt += """=== SZEMLÉLTETÉS ===
@@ -3792,6 +3848,7 @@ Szabályok:
 - Egyéb esetben csak akkor rajzolj, ha tényleg segít, és ne minden válaszban.
 - Az ábra rajzterülete legyen viewBox="0 0 320 220", és HAGYJ 30 pixel margót minden oldalon, hogy a feliratok ne lógjanak ki.
 - A vonalak: stroke="#222" stroke-width="3", kitöltés nélkül (fill="none").
+- TÉGLATESTNÉL (doboz, szoba, kocka): a magasság (m) a FÜGGŐLEGES él, az elülső vízszintes él az a, a ferde mélységi él a b. A három ferde élnek MIND jobbra-fel kell mutatnia és egyforma hosszúnak lennie – ha az egyik lefelé áll, a doboz eltörik.
 - KÖTELEZŐ kiírnod a fill="none"-t MINDEN rect, circle, ellipse, polygon és path elemre. Ha kihagyod, a böngésző FEKETÉRE tölti ki, és a rajz helyén tömör fekete folt lesz. Kivétel nincs.
 - Ha a fogalom ABSZTRAKT (valószínűség, véletlen, nyelvtani fogalom, érzelem), és nem tudsz olyan rajzot adni, ami MÉR vagy MEGMUTAT valami valóságosat, akkor NE rajzolj semmit. A kitalált ikon (nap, fa, arc) jobban összezavarja a gyereket, mint ha nincs ábra.
 - A feliratok: font-size="16" fill="#222" text-anchor="middle", és MINDIG az alakzaton KÍVÜL, tőle legalább 12 pixelre helyezd el őket.
@@ -5578,33 +5635,38 @@ def child_chat_send(child_id: int):
     if _extra_svg:
         raw_svgs.append(_extra_svg)
 
-    # ── SZÁMÜTKÖZÉS: a rajz a MEGOLDOTT példát mutatja ──────────────────
-    # Élesben ez jött ki: a szöveg végén „ha a = 6 m, b = 2 m" állt, a rajzon
-    # viszont még „a = 5 m, b = 4 m" – a gyerek a rajzot nézi, és rossz
-    # számokkal kezd számolni.
+    # ── MÉRHETŐ TARTALMI HIBÁK a rajzon ─────────────────────────────────
+    # Kettő fordult elő élesben, és mindkettő MÉRHETŐ, nem véleményes:
     #
-    # Ehhez nem kell modell: a betűjel és a szám ott áll a rajz feliratában
-    # is, a szövegben is. Az összevetés biztos, ingyenes és azonnali. Ha
-    # ütközik, EGYSZER újrarajzoltatjuk a helyes értékekkel megadva. Ha a
-    # második kör sem stimmel, az ábra kimarad: a rossz rajz többet árt.
+    #  1. A rajz a MEGOLDOTT példa számait mutatta („a = 5 m"), miközben a
+    #     szöveg végén már az ÚJ feladat állt („a = 6 m"). A gyerek a rajzot
+    #     nézi, és rossz számokkal kezd számolni.
+    #  2. Egy téglatesten a függőleges élre „b" került, a ferde mélységi élre
+    #     „m". A magasság MINDIG a függőleges él – különben a képlet is
+    #     összekeveredik a gyerek fejében.
+    #
+    # Egyikhez sem kell modell: az adat ott áll a rajz forrásában. Az
+    # ellenőrzés ingyenes és azonnali. Ha hibás, EGYSZER újrarajzoltatjuk,
+    # megmondva, mi a baj. Ha a második kör sem jó, az ábra kimarad: a rossz
+    # rajz többet árt, mint a hiányzó.
     _utkozes_indok = ""
     if figures:
         try:
             _es_mod = (_active_curriculum() or "HU").upper() == "ES"
             _javitott: list[str] = []
             for _abra in figures:
-                _u = abra_ellenor.szamutkozes(_abra, reply)
-                if not _u:
+                _baj, _eloiras = abra_ellenor.tartalmi_hiba(
+                    _abra, reply, es=_es_mod)
+                if not _baj:
                     _javitott.append(_abra)
                     continue
-                _utkozes_indok = _utkozes_indok or abra_ellenor.utkozes_leiras(_u)
-                print(f"[ABRA-SZAM] utkozes: {abra_ellenor.utkozes_leiras(_u)}"
-                      " – ujrarajzolas", flush=True)
+                _utkozes_indok = _utkozes_indok or _baj
+                print(f"[ABRA-SZAM] hiba: {_baj} – ujrarajzolas", flush=True)
                 _uj = _generate_illustration(
-                    reply, subject_label, current_topic, es=_es_mod,
-                    eloiras=abra_ellenor.eloiras_szoveg(
-                        abra_ellenor.kivant_ertekek(_abra, reply), es=_es_mod))
-                if _uj and not abra_ellenor.szamutkozes(_uj, reply):
+                    reply, subject_label, current_topic,
+                    es=_es_mod, eloiras=_eloiras)
+                if _uj and not abra_ellenor.tartalmi_hiba(
+                        _uj, reply, es=_es_mod)[0]:
                     _javitott.append(_uj)
                     raw_svgs.append(_uj)
                     _utkozes_indok += " → újrarajzolva, most jó"

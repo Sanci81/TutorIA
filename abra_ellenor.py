@@ -240,6 +240,121 @@ def eloiras_szoveg(ertekpar, *, es: bool = False) -> str:
 
 
 # ---------------------------------------------------------------------------
+# A MAGASSÁG FELIRATA – szintén AI nélkül
+#
+# Élesben ez jött ki egy téglatestnél: a függőleges élre „b" került, a
+# mélységet jelző ferde élre pedig „m". A magasság MINDIG a függőleges él –
+# ha a gyerek ezt rosszul tanulja meg, a képlet is összekeveredik a fejében.
+#
+# Ez is mérhető, nem véleményes: megkeressük, melyik szakaszhoz áll a
+# legközelebb az „m" felirat, és megnézzük, függőleges-e az a szakasz.
+# ---------------------------------------------------------------------------
+
+_MAGASSAG_CIMKEK = {"m", "h", "magasság", "magassag", "altura", "alt"}
+
+_XML_TAG = re.compile(r"\{[^}]*\}")
+
+
+def _szam(ertek, alap: float = 0.0) -> float:
+    try:
+        return float(str(ertek).strip().replace("px", ""))
+    except (TypeError, ValueError):
+        return alap
+
+
+def _szakaszok(gyoker) -> list[tuple[float, float, float, float]]:
+    """Az ábra vonalszakaszai. Csak azt vesszük, ami BIZTOSAN szakasz:
+    line, rect oldalai, polygon/polyline csúcsai. A path-t kihagyjuk – ott
+    a görbékből rossz irányt olvasnánk ki, és jó rajzot dobnánk el."""
+    ki: list[tuple[float, float, float, float]] = []
+    for el in gyoker.iter():
+        nev = _XML_TAG.sub("", el.tag or "").lower()
+        if nev == "line":
+            ki.append((_szam(el.get("x1")), _szam(el.get("y1")),
+                       _szam(el.get("x2")), _szam(el.get("y2"))))
+        elif nev == "rect":
+            x, y = _szam(el.get("x")), _szam(el.get("y"))
+            sz, ma = _szam(el.get("width")), _szam(el.get("height"))
+            ki += [(x, y, x + sz, y), (x, y + ma, x + sz, y + ma),
+                   (x, y, x, y + ma), (x + sz, y, x + sz, y + ma)]
+        elif nev in ("polygon", "polyline"):
+            szamok = [float(s) for s in
+                      re.findall(r"-?\d+(?:\.\d+)?", el.get("points") or "")]
+            pontok = list(zip(szamok[0::2], szamok[1::2]))
+            if nev == "polygon" and len(pontok) > 2:
+                pontok.append(pontok[0])
+            ki += [(pontok[i][0], pontok[i][1], pontok[i + 1][0], pontok[i + 1][1])
+                   for i in range(len(pontok) - 1)]
+    return [s for s in ki if (s[0] - s[2]) ** 2 + (s[1] - s[3]) ** 2 > 25]
+
+
+def _tavolsag_szakasztol(px: float, py: float, sz) -> float:
+    x1, y1, x2, y2 = sz
+    dx, dy = x2 - x1, y2 - y1
+    hossz2 = dx * dx + dy * dy
+    t = 0.0 if hossz2 == 0 else max(0.0, min(1.0, ((px - x1) * dx + (py - y1) * dy) / hossz2))
+    vx, vy = x1 + t * dx - px, y1 + t * dy - py
+    return (vx * vx + vy * vy) ** 0.5
+
+
+def magassag_rossz_elen(svg: str) -> str:
+    """Üres szöveg = rendben. Különben a hiba rövid leírása.
+
+    Csak akkor szólunk, ha a felirat PONTOSAN a magasságot jelöli („m", „h",
+    „magasság"). A „3 m" vagy a „T = a × b × m" nem ilyen – azokban az m
+    mértékegység, illetve képletrész.
+    """
+    try:
+        import xml.etree.ElementTree as ET
+        gyoker = ET.fromstring(svg or "")
+    except Exception:
+        return ""
+    szakaszok = _szakaszok(gyoker)
+    if not szakaszok:
+        return ""
+    for el in gyoker.iter():
+        if _XML_TAG.sub("", el.tag or "").lower() != "text":
+            continue
+        szoveg = "".join(el.itertext()).strip().rstrip(":").lower()
+        if szoveg not in _MAGASSAG_CIMKEK:
+            continue
+        px, py = _szam(el.get("x")), _szam(el.get("y"))
+        legkozelebb = min(szakaszok, key=lambda s: _tavolsag_szakasztol(px, py, s))
+        dx = abs(legkozelebb[0] - legkozelebb[2])
+        dy = abs(legkozelebb[1] - legkozelebb[3])
+        if dy <= dx:
+            # A magasság FÜGGŐLEGES él. Ha a felirat egy vízszintes vagy ferde
+            # élhez tartozik, a rajz mást tanít, mint a képlet.
+            return (f"a magasság felirata ({szoveg}) nem függőleges élen áll "
+                    f"– a magasságot jelölő él nem lehet ferde vagy fekvő")
+    return ""
+
+
+def tartalmi_hiba(svg: str, szoveg: str, *, es: bool = False) -> tuple[str, str]:
+    """A rajz MÉRHETŐ tartalmi hibái. (indok, előírás). Üres indok = rendben.
+
+    Egy helyen gyűjtjük össze, hogy a hívónak egyetlen döntése legyen:
+    újrarajzoltatni vagy sem.
+    """
+    utkozes = szamutkozes(svg, szoveg)
+    if utkozes:
+        return (utkozes_leiras(utkozes),
+                eloiras_szoveg(kivant_ertekek(svg, szoveg), es=es))
+    magassag = magassag_rossz_elen(svg)
+    if magassag:
+        if es:
+            return magassag, (
+                "IMPORTANTE: la altura (m) es SIEMPRE la arista VERTICAL. "
+                "La arista horizontal de delante es a, la de profundidad es b. "
+                "Coloca cada etiqueta junto a su arista.")
+        return magassag, (
+            "FONTOS: a magasság (m) MINDIG a FÜGGŐLEGES él. Az elülső "
+            "vízszintes él az a, a mélységet jelző ferde él a b. Mindegyik "
+            "felirat a SAJÁT éle mellé kerüljön.")
+    return "", ""
+
+
+# ---------------------------------------------------------------------------
 # NAPLÓ – közvetlenül az appban nézhető, nem a Railway naplójában
 #
 # A Railway-naplóban keresgélni körülményes, és könnyű rossz telepítést
