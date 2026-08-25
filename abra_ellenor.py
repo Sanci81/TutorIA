@@ -30,10 +30,34 @@ import json
 import os
 import re
 
-# Kikapcsolható egyetlen környezeti változóval, ha lassúnak bizonyulna:
-# ABRA_ELLENOR=0
+# HÁROM ÜZEMMÓD, és ALAPBÓL a középső fut.
+#
+#   "naplo"  – az ellenőr lefut és NAPLÓZ, de az ábrát MINDIG átengedi.
+#              Ez az alapértelmezés: előbb lássuk fekete-fehéren, mit ítélne
+#              hibásnak, és csak akkor kapcsoljuk élesre, ha a napló szerint
+#              tényleg a rossz rajzokat fogja meg.
+#   "1"      – éles: a hibásnak ítélt ábra kimarad.
+#   "0"      – teljesen ki, hívás sincs.
+#
+# Ezt a leckét drágán tanultam: az előző körben élesre állítva szállítottam,
+# és az ábrák egyszerűen eltűntek, mérés nélkül.
+def uzemmod() -> str:
+    m = (os.environ.get("ABRA_ELLENOR", "naplo") or "naplo").strip().lower()
+    if m in ("0", "false", "no", "ki"):
+        return "ki"
+    if m in ("1", "true", "yes", "eles"):
+        return "eles"
+    return "naplo"
+
+
 def bekapcsolva() -> bool:
-    return (os.environ.get("ABRA_ELLENOR", "1") or "1").strip() not in ("0", "false", "no")
+    """Fusson-e egyáltalán a hívás."""
+    return uzemmod() != "ki"
+
+
+def eldobhat() -> bool:
+    """Eltüntetheti-e ténylegesen az ábrát."""
+    return uzemmod() == "eles"
 
 
 MODELL = os.environ.get("ABRA_ELLENOR_MODELL", "gpt-4o-mini")

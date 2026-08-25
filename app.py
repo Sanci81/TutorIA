@@ -5480,8 +5480,17 @@ def child_chat_send(child_id: int):
                         _abra, reply, kliens=_kliens, es=_es)
                     if _jo:
                         _megmarad.append(_abra)
+                    elif abra_ellenor.eldobhat():
+                        print(f"[ABRA-ELLENOR] ELDOBVA: {_indok}", flush=True)
                     else:
-                        print(f"[ABRA-ELLENOR] eldobva: {_indok}", flush=True)
+                        # Napló üzemmód: megmutatjuk, de feljegyezzük, mit
+                        # dobtunk volna el. Így mérhető, mielőtt élesítjük.
+                        _megmarad.append(_abra)
+                        print(f"[ABRA-ELLENOR] JELZES (atengedve): {_indok}",
+                              flush=True)
+                print(f"[ABRA-ELLENOR] uzemmod={abra_ellenor.uzemmod()} "
+                      f"vizsgalt={len(figures)} megmaradt={len(_megmarad)}",
+                      flush=True)
                 if len(_megmarad) != len(figures):
                     _elhagyott = [f for f in figures if f not in _megmarad]
                     raw_svgs = [r for r in raw_svgs
