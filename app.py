@@ -1861,8 +1861,14 @@ def _generate_illustration(
     topic: str,
     *,
     es: bool = False,
+    eloiras: str = "",
 ) -> str | None:
-    """Külön, rövid AI-hívással kér egy SVG ábrát a most tanított szöveghez."""
+    """Külön, rövid AI-hívással kér egy SVG ábrát a most tanított szöveghez.
+
+    Az `eloiras` egy pontosított utasítás ÚJRARAJZOLÁSHOZ (pl. „az ábra
+    a = 6, b = 2 értékeket mutassa"). A gyorstár kulcsába is beleszámít,
+    különben a javított kérés a régi, hibás rajzot kapná vissza.
+    """
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         return None
@@ -1874,6 +1880,8 @@ def _generate_illustration(
         ("es" if es else "hu").encode("utf-8")
         + b"|"
         + (subject_label or "").encode("utf-8")
+        + b"|"
+        + (eloiras or "").encode("utf-8")
         + b"|"
         + snippet.encode("utf-8")
     ).hexdigest()
@@ -1890,7 +1898,8 @@ def _generate_illustration(
                 {"role": "system", "content": system},
                 {
                     "role": "user",
-                    "content": f"{subject_label} – {topic}\n\n{snippet}",
+                    "content": f"{subject_label} – {topic}\n\n{snippet}"
+                               + (f"\n\n{eloiras}" if eloiras else ""),
                 },
             ],
         )
@@ -2134,6 +2143,75 @@ Ne tegyél fel egyszerre több kérdést.
 """
 
 
+# ── Iskolai szakszavak a beszédfelismerőnek ─────────────────────────────────
+# MIÉRT: a gyerek azt mondta, „és köbmétert számolunk", a gép ezt írta le:
+# „és követeltet számolunk". A szó ritka a hétköznapi beszédben, ezért a
+# felismerő a gyakoribb, hasonló hangzású szóra tippel. Ha a kérésben ott
+# van a VÁRHATÓ szókészlet, a tippelés jó irányba billen. Rövid lista kell:
+# egy hosszú felsorolás elvonja a figyelmet a tényleges hangról.
+_SZAKSZAVAK: dict[str, dict[str, str]] = {
+    "hu": {
+        "matematika": ("kerület, terület, térfogat, felszín, köbméter, "
+                       "négyzetméter, centiméter, milliméter, téglalap, "
+                       "négyzet, háromszög, kocka, hasáb, henger, gömb, "
+                       "átmérő, sugár, derékszög, tört, tizedestört, "
+                       "szorzás, osztás, összeadás, kivonás, maradék"),
+        "fizika": ("erő, tömeg, sűrűség, gyorsulás, energia, teljesítmény, "
+                   "áramkör, feszültség, ellenállás, newton, joule, watt"),
+        "kémia": ("vegyjel, vegyület, molekula, atom, elem, oldat, "
+                  "kémiai kötés, periódusos rendszer, savak, lúgok"),
+        "biológia": ("sejt, szövet, szerv, fotoszintézis, tápláléklánc, "
+                     "gerinces, gerinctelen, élőhely, szaporodás"),
+        "földrajz": ("kontinens, éghajlat, domborzat, folyó, hegység, "
+                     "medence, vízgyűjtő, égtáj, térkép, hosszúsági kör"),
+        "történelem": ("honfoglalás, államalapítás, szabadságharc, "
+                       "forradalom, király, nemzetgyűlés, világháború"),
+    },
+    "es": {
+        "matematika": ("perímetro, área, superficie, volumen, metro cúbico, "
+                       "metro cuadrado, centímetro, rectángulo, cuadrado, "
+                       "triángulo, cubo, prisma, cilindro, esfera, diámetro, "
+                       "radio, ángulo recto, fracción, decimal"),
+        "fizika": ("fuerza, masa, densidad, aceleración, energía, potencia, "
+                   "circuito, voltaje, resistencia"),
+        "kémia": ("símbolo químico, compuesto, molécula, átomo, elemento, "
+                  "disolución, enlace químico, tabla periódica"),
+        "biológia": ("célula, tejido, órgano, fotosíntesis, cadena "
+                     "alimentaria, vertebrado, invertebrado, hábitat"),
+        "földrajz": ("continente, clima, relieve, río, cordillera, cuenca, "
+                     "punto cardinal, mapa, meridiano"),
+        "történelem": ("reconquista, revolución, rey, guerra mundial, "
+                       "constitución, imperio"),
+    },
+}
+
+
+def _szakszavak(subject: str, keret: str) -> str:
+    """A tantárgyhoz illő szakszavak a felismerőnek. Ismeretlen tantárgyra
+    üres – a nem odaillő szólista rontana, nem javítana."""
+    def ekezet_nelkul(s: str) -> str:
+        bontott = unicodedata.normalize("NFD", str(s or "").strip().lower())
+        return "".join(c for c in bontott if unicodedata.category(c) != "Mn")
+
+    kulcs = ekezet_nelkul(subject)
+    if not kulcs:
+        return ""
+    # A spanyol oldalon a tantárgy neve spanyolul érkezhet.
+    for spanyol, magyar in (("matemat", "matematika"), ("fisic", "fizika"),
+                            ("quimic", "kémia"), ("biolog", "biológia"),
+                            ("geograf", "földrajz"), ("histor", "történelem"),
+                            ("ciencias", "biológia")):
+        if kulcs.startswith(spanyol):
+            kulcs = ekezet_nelkul(magyar)
+            break
+    tabla = _SZAKSZAVAK.get("es" if keret == "es" else "hu", {})
+    for nev, szavak in tabla.items():
+        sima = ekezet_nelkul(nev)
+        if sima in kulcs or kulcs in sima:
+            return szavak
+    return ""
+
+
 def _get_topic_hint_words(child_id: int, subject: str, language: str | None) -> list[str] | None:
     """Aktuális témakör célnyelvi szólistája transzkripciós támpontnak."""
     child = database.get_child_by_id(child_id, session["parent_id"])
@@ -2184,6 +2262,7 @@ def _get_topic_hint_words(child_id: int, subject: str, language: str | None) -> 
 def _transcribe_via_chat(
     audio_bytes: bytes, filename: str, native_lang: str, target_lang: str,
     hint_words: list[str] | None = None, context_text: str | None = None,
+    szakszavak: str = "",
 ) -> str | None:
     """Elsődleges átírás: hangot értő chat-modell (gpt-5.4-mini). None = hiba."""
     api_key = _openai_api_key()
@@ -2217,6 +2296,8 @@ def _transcribe_via_chat(
 
         if hint_words:
             system += f"\nVárható szavak a leckéből: {', '.join(hint_words[:20])}"
+        if szakszavak:
+            system += f"\nA tantárgy szakszavai: {szakszavak}"
         if context_text:
             system += f"\nAz előző tanári üzenet: {context_text}"
 
@@ -2242,6 +2323,7 @@ def _whisper_transcribe(
     frame: str = "hu", force_language: str | None = None,
     hint_words: list[str] | None = None,
     context_text: str | None = None,
+    szakszavak: str = "",
 ) -> str:
     api_key = _openai_api_key()
     if not api_key:
@@ -2276,6 +2358,19 @@ def _whisper_transcribe(
         if hint_words and not force_language:
             whisper_prompt += " Possible words: " + ", ".join(hint_words[:30])
 
+    # A visszhang-szűrő EZZEL hasonlít össze: csak az UTASÍTÁS szövegével.
+    # A szakszavakat és a témakörnyezetet szándékosan kihagyjuk belőle,
+    # különben a „kerület" szót mondó gyereket prompt-visszhangnak néznénk,
+    # és eldobnánk a helyes válaszát.
+    echo_prompt = whisper_prompt
+
+    if szakszavak:
+        # A ritka iskolai szavakra a felismerő magától a gyakoribb, hasonló
+        # hangzású szót tippeli („köbmétert" → „követeltet"). Ha látja, hogy
+        # ezek várhatók, jó irányba billen a tippelés.
+        whisper_prompt += (
+            (" Palabras que pueden aparecer: " if force_language == "es"
+             else " Előfordulható szavak: ") + szakszavak + ".")
     if context_text:
         whisper_prompt += " Context: " + context_text[-200:]
 
@@ -2304,7 +2399,7 @@ def _whisper_transcribe(
         )
 
     _norm_result = _norm_for_echo(result)
-    _norm_prompt = _norm_for_echo(whisper_prompt)
+    _norm_prompt = _norm_for_echo(echo_prompt)
     if _norm_result and (
         _norm_result in _norm_prompt
         or _norm_prompt in _norm_result
@@ -5483,6 +5578,45 @@ def child_chat_send(child_id: int):
     if _extra_svg:
         raw_svgs.append(_extra_svg)
 
+    # ── SZÁMÜTKÖZÉS: a rajz a MEGOLDOTT példát mutatja ──────────────────
+    # Élesben ez jött ki: a szöveg végén „ha a = 6 m, b = 2 m" állt, a rajzon
+    # viszont még „a = 5 m, b = 4 m" – a gyerek a rajzot nézi, és rossz
+    # számokkal kezd számolni.
+    #
+    # Ehhez nem kell modell: a betűjel és a szám ott áll a rajz feliratában
+    # is, a szövegben is. Az összevetés biztos, ingyenes és azonnali. Ha
+    # ütközik, EGYSZER újrarajzoltatjuk a helyes értékekkel megadva. Ha a
+    # második kör sem stimmel, az ábra kimarad: a rossz rajz többet árt.
+    _utkozes_indok = ""
+    if figures:
+        try:
+            _es_mod = (_active_curriculum() or "HU").upper() == "ES"
+            _javitott: list[str] = []
+            for _abra in figures:
+                _u = abra_ellenor.szamutkozes(_abra, reply)
+                if not _u:
+                    _javitott.append(_abra)
+                    continue
+                _utkozes_indok = _utkozes_indok or abra_ellenor.utkozes_leiras(_u)
+                print(f"[ABRA-SZAM] utkozes: {abra_ellenor.utkozes_leiras(_u)}"
+                      " – ujrarajzolas", flush=True)
+                _uj = _generate_illustration(
+                    reply, subject_label, current_topic, es=_es_mod,
+                    eloiras=abra_ellenor.eloiras_szoveg(
+                        abra_ellenor.kivant_ertekek(_abra, reply), es=_es_mod))
+                if _uj and not abra_ellenor.szamutkozes(_uj, reply):
+                    _javitott.append(_uj)
+                    raw_svgs.append(_uj)
+                    _utkozes_indok += " → újrarajzolva, most jó"
+                    print("[ABRA-SZAM] a masodik rajz rendben", flush=True)
+                else:
+                    _utkozes_indok += " → az ábra kimaradt"
+                    print("[ABRA-SZAM] a masodik rajz sem jo, kihagyva",
+                          flush=True)
+            figures = _javitott
+        except Exception as exc:
+            print(f"[ABRA-SZAM] kihagyva: {exc}", flush=True)
+
     # ── Az ábra ÖSSZEVETÉSE a szöveggel ─────────────────────────────────
     # Az abra.py a rajz technikai hibáit fogja meg; azt viszont nem tudja
     # megítélni, hogy a rajz AZT mutatja-e, amit a szöveg mond. Egy trapéznál
@@ -5499,8 +5633,8 @@ def child_chat_send(child_id: int):
         nyers=len(raw_svgs),
         tisztitott=len(figures),
         allapot="nincs rajz" if not raw_svgs else
-                ("abra.py eldobta" if not figures else "vizsgalat alatt"),
-        indok="",
+                ("eldobva" if not figures else "vizsgalat alatt"),
+        indok=_utkozes_indok,
         szoveg=(reply or "")[:200],
     )
 
@@ -5531,7 +5665,10 @@ def child_chat_send(child_id: int):
                     abra_ellenor._naplo[-1]["allapot"] = (
                         f"ellenor: {len(_megmarad)}/{len(figures)} maradt "
                         f"({abra_ellenor.uzemmod()})")
-                    abra_ellenor._naplo[-1]["indok"] = _elso_indok
+                    # A számütközés indokát NEM írjuk felül – az a biztos
+                    # megállapítás, ez csak az AI véleménye.
+                    abra_ellenor._naplo[-1]["indok"] = " | ".join(
+                        r for r in (_utkozes_indok, _elso_indok) if r)
                 print(f"[ABRA-ELLENOR] uzemmod={abra_ellenor.uzemmod()} "
                       f"vizsgalt={len(figures)} megmaradt={len(_megmarad)}",
                       flush=True)
@@ -6799,6 +6936,16 @@ def api_voice_transcribe():
         except Exception:
             pass
 
+    # A tantárgy szakszavai a felismerő elé. Enélkül a „köbmétert" szóból
+    # „követeltet" lett – a gyerek jól mondta, a gép hallotta félre.
+    # SZÁNDÉKOSAN külön változó, nem a context_text: a context_text szavai
+    # bekerülnek a visszhang-szűrőbe, és akkor a „kerület és terület" kezdetű
+    # valódi gyerekmondatot a szűrő prompt-visszhangnak nézné.
+    try:
+        szakszavak = _szakszavak(subject_ctx, frame)
+    except Exception:
+        szakszavak = ""
+
     if _foreign:
         # ── Elsődleges út: hangot értő chat-modell ──
         route = "merge"
@@ -6814,7 +6961,7 @@ def api_voice_transcribe():
         try:
             chat_text = _transcribe_via_chat(
                 audio_bytes, upload.filename, native_lang=native_lang, target_lang=language,
-                hint_words=hint_words, context_text=context_text,
+                hint_words=hint_words, context_text=context_text, szakszavak=szakszavak,
             )
         except Exception as exc:
             chat_text = None
@@ -6830,7 +6977,7 @@ def api_voice_transcribe():
             try:
                 text_native = _whisper_transcribe(
                     audio_bytes, upload.filename, language=language, frame=frame,
-                    force_language=force_lang, hint_words=hint_words, context_text=context_text,
+                    force_language=force_lang, hint_words=hint_words, context_text=context_text, szakszavak=szakszavak,
                 )
             except Exception:
                 pass
@@ -6838,7 +6985,7 @@ def api_voice_transcribe():
                 try:
                     text_target = _whisper_transcribe(
                         audio_bytes, upload.filename, language=language, frame=frame,
-                        force_language=target_lang_code, hint_words=hint_words, context_text=context_text,
+                        force_language=target_lang_code, hint_words=hint_words, context_text=context_text, szakszavak=szakszavak,
                     )
                 except Exception:
                     pass
@@ -6884,7 +7031,7 @@ def api_voice_transcribe():
         return jsonify({"text": text})
 
     try:
-        text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame, force_language=force_lang, hint_words=hint_words, context_text=context_text)
+        text = _whisper_transcribe(audio_bytes, upload.filename, language=language, frame=frame, force_language=force_lang, hint_words=hint_words, context_text=context_text, szakszavak=szakszavak)
     except NotImplementedError:
         return jsonify({"error": "openai_not_configured"}), 501
     except Exception as exc:

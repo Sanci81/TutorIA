@@ -155,6 +155,91 @@ def rendben(svg: str, szoveg: str, *, kliens, es: bool = False) -> tuple[bool, s
 
 
 # ---------------------------------------------------------------------------
+# SZÁMÜTKÖZÉS – AI NÉLKÜL, biztosan
+#
+# Élesben ez jött ki: a szöveg végén ÚJ feladat állt („ha a = 6 m, b = 2 m,
+# m = 3 m"), a rajzon viszont még a MEGOLDOTT példa számai voltak (a = 5 m,
+# b = 4 m). A gyerek a rajzot nézi, és rossz számokkal kezd számolni.
+#
+# Ezt nem kell modellre bízni: a rajz feliratában ÉS a szövegben is ott áll
+# betűre, hogy „a = 5". Összehasonlítani egyszerű, olcsó és BIZTOS – nincs
+# találgatás, nincs API-hívás, nincs késleltetés.
+#
+# A szabály: a rajznak a LEGUTOLSÓ értékadást kell mutatnia, mert a szöveg
+# végén álló feladat az, amit a gyereknek most meg kell oldania.
+# ---------------------------------------------------------------------------
+
+# Csak EGYBETŰS jelölést nézünk (a, b, c, m, h, r), mert a képletekben ezek
+# állnak. A „T = 36" alakot szándékosan kihagyjuk: az eredmény, nem adat.
+_ERTEKADAS = re.compile(
+    r"(?<![A-Za-z0-9ÁÉÍÓÖŐÚÜŰáéíóöőúüű])([a-hmrxyz])\s*=\s*(\d+(?:[.,]\d+)?)")
+
+_SVG_SZOVEG = re.compile(r"<text[^>]*>(.*?)</text>", re.S | re.I)
+_TAG = re.compile(r"<[^>]+>")
+
+
+def _ertekek(szoveg: str) -> dict[str, str]:
+    """Betűjel → a LEGUTOLSÓ hozzá írt szám. Az utolsó számít: a szöveg
+    végén álló új feladat írja felül a korábbi kidolgozott példát."""
+    ki: dict[str, str] = {}
+    for betu, szam in _ERTEKADAS.findall(szoveg or ""):
+        ki[betu] = szam.replace(",", ".").rstrip("0").rstrip(".") or "0"
+    return ki
+
+
+def svg_feliratok(svg: str) -> str:
+    """A rajz feliratai egyetlen szövegként."""
+    return " ".join(_TAG.sub("", r) for r in _SVG_SZOVEG.findall(svg or ""))
+
+
+def szamutkozes(svg: str, szoveg: str) -> list[tuple[str, str, str]]:
+    """(betű, a rajzon, a szövegben) minden ütközésre. Üres lista = rendben.
+
+    Csak azokat a betűket nézzük, amelyeknek MINDKÉT helyen van értéke:
+    ha a rajz csak „6 m"-t ír betűjel nélkül, nincs mit összevetni.
+    """
+    rajz = _ertekek(svg_feliratok(svg))
+    if not rajz:
+        return []
+    doku = _ertekek(szoveg)
+    return [(betu, ertek, doku[betu])
+            for betu, ertek in rajz.items()
+            if betu in doku and doku[betu] != ertek]
+
+
+def utkozes_leiras(utkozesek: list[tuple[str, str, str]]) -> str:
+    """Rövid, ember számára olvasható összefoglaló a naplóhoz."""
+    return "; ".join(f"{b}: rajzon {r}, szövegben {s}" for b, r, s in utkozesek)
+
+
+def kivant_ertekek(svg: str, szoveg: str) -> dict[str, str]:
+    """Amit a rajznak mutatnia KELLENE: a rajzon szereplő betűjelek, a
+    szövegből vett (legutolsó) értékkel. A hibátlan betűket is beleírjuk,
+    különben az újrarajzolásnál azok csúsznának el."""
+    rajz = _ertekek(svg_feliratok(svg))
+    doku = _ertekek(szoveg)
+    return {b: doku[b] for b in rajz if b in doku}
+
+
+def eloiras_szoveg(ertekpar, *, es: bool = False) -> str:
+    """Utasítás az illusztrátornak az ÚJRARAJZOLÁSHOZ.
+
+    Elfogad ütközés-listát és {betű: érték} szótárat is.
+    """
+    if isinstance(ertekpar, dict):
+        ertekek = ", ".join(f"{b} = {s}" for b, s in sorted(ertekpar.items()))
+    else:
+        ertekek = ", ".join(f"{b} = {s}" for b, _, s in ertekpar)
+    if es:
+        return ("IMPORTANTE: el dibujo DEBE mostrar exactamente estos valores "
+                f"del ejercicio que el texto pregunta al final: {ertekek}. "
+                "No uses los números del ejemplo ya resuelto.")
+    return ("FONTOS: az ábra PONTOSAN ezeket az értékeket mutassa, mert a "
+            f"szöveg a végén ezt kérdezi: {ertekek}. A már megoldott példa "
+            "számait NE használd.")
+
+
+# ---------------------------------------------------------------------------
 # NAPLÓ – közvetlenül az appban nézhető, nem a Railway naplójában
 #
 # A Railway-naplóban keresgélni körülményes, és könnyű rossz telepítést

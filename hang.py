@@ -201,10 +201,159 @@ def hu_szam(n: int) -> str:
     return str(n)
 
 
+# ── 5. mértékegységek kimondása ─────────────────────────────────────────────
+# MIÉRT: az Azure az "5 m" szövegből BETŰT olvas: "öt em". A gyerek nem érti,
+# és rosszul is rögzül. A "36 m³"-ből pedig "harminchat em három" lesz.
+# Csak SZÁM UTÁN cserélünk, így a "T = a × b × m" képletben az m érintetlen
+# marad – ott tényleg betűjel, nem méter.
+
+_MERTEK_HU = {
+    "mm": "milliméter", "cm": "centiméter", "dm": "deciméter",
+    "m": "méter", "km": "kilométer",
+    "mm²": "négyzetmilliméter", "cm²": "négyzetcentiméter",
+    "dm²": "négyzetdeciméter", "m²": "négyzetméter", "km²": "négyzetkilométer",
+    "mm2": "négyzetmilliméter", "cm2": "négyzetcentiméter",
+    "dm2": "négyzetdeciméter", "m2": "négyzetméter", "km2": "négyzetkilométer",
+    "mm³": "köbmilliméter", "cm³": "köbcentiméter",
+    "dm³": "köbdeciméter", "m³": "köbméter",
+    "mm3": "köbmilliméter", "cm3": "köbcentiméter",
+    "dm3": "köbdeciméter", "m3": "köbméter",
+    "g": "gramm", "dkg": "dekagramm", "kg": "kilogramm",
+    "ml": "milliliter", "cl": "centiliter", "dl": "deciliter",
+    "l": "liter", "hl": "hektoliter",
+    "Ft": "forint", "€": "euró",
+}
+
+# Spanyolban a mennyiség számít: „1 metro", de „5 metros".
+_MERTEK_ES = {
+    "mm": ("milímetro", "milímetros"), "cm": ("centímetro", "centímetros"),
+    "dm": ("decímetro", "decímetros"), "m": ("metro", "metros"),
+    "km": ("kilómetro", "kilómetros"),
+    "mm²": ("milímetro cuadrado", "milímetros cuadrados"),
+    "cm²": ("centímetro cuadrado", "centímetros cuadrados"),
+    "dm²": ("decímetro cuadrado", "decímetros cuadrados"),
+    "m²": ("metro cuadrado", "metros cuadrados"),
+    "km²": ("kilómetro cuadrado", "kilómetros cuadrados"),
+    "mm³": ("milímetro cúbico", "milímetros cúbicos"),
+    "cm³": ("centímetro cúbico", "centímetros cúbicos"),
+    "dm³": ("decímetro cúbico", "decímetros cúbicos"),
+    "m³": ("metro cúbico", "metros cúbicos"),
+    "g": ("gramo", "gramos"), "kg": ("kilogramo", "kilogramos"),
+    "ml": ("mililitro", "mililitros"), "cl": ("centilitro", "centilitros"),
+    "dl": ("decilitro", "decilitros"), "l": ("litro", "litros"),
+    "€": ("euro", "euros"),
+}
+_MERTEK_ES.update({
+    "mm2": _MERTEK_ES["mm²"], "cm2": _MERTEK_ES["cm²"],
+    "dm2": _MERTEK_ES["dm²"], "m2": _MERTEK_ES["m²"], "km2": _MERTEK_ES["km²"],
+    "mm3": _MERTEK_ES["mm³"], "cm3": _MERTEK_ES["cm³"],
+    "dm3": _MERTEK_ES["dm³"], "m3": _MERTEK_ES["m³"],
+})
+
+_BETUK = "A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű"
+
+
+def _mertek_minta(tabla: dict) -> "re.Pattern[str]":
+    """A HOSSZABB egység előbb: különben az „m³"-ból „m" lenne, és a ³ ott
+    maradna. A kötőjelet kihagyjuk („5 m-es"), azt a toldalék miatt nem
+    bántjuk."""
+    egysegek = sorted(tabla, key=len, reverse=True)
+    minta = "|".join(re.escape(e) for e in egysegek)
+    return re.compile(
+        r"(\d+(?:[.,]\d+)?)\s*(" + minta + r")(?![" + _BETUK + r"0-9²³·-])")
+
+
+_MERTEK_RE_HU = _mertek_minta(_MERTEK_HU)
+_MERTEK_RE_ES = _mertek_minta(_MERTEK_ES)
+
+
+# Magyarban az egység toldalékot kap: „80 km-t", „5 m-es". A kötőjelet
+# eltüntetjük, a toldalékot pedig HOZZÁRAGASZTJUK a kimondott szóhoz:
+# „80 kilométert", „5 méteres". Kötőjellel hagyva az Azure külön betűzné.
+_MERTEK_TOLDALEK_HU = re.compile(
+    r"(\d+(?:[.,]\d+)?)\s*("
+    + "|".join(re.escape(e) for e in sorted(_MERTEK_HU, key=len, reverse=True))
+    + r")-([a-záéíóöőúüű]{1,5})(?![" + _BETUK + r"])")
+
+
+def mertekegysegek(szoveg: str, nyelv: str = "hu") -> str:
+    """„5 m" → „5 méter", „36 m³" → „36 köbméter"."""
+    if nyelv != "es":
+        szoveg = _MERTEK_TOLDALEK_HU.sub(
+            lambda m: f"{m.group(1)} {_MERTEK_HU[m.group(2)]}{m.group(3)}", szoveg)
+    if nyelv == "es":
+        def csere(m: "re.Match[str]") -> str:
+            szam, egyseg = m.group(1), m.group(2)
+            egyes, tobbes = _MERTEK_ES[egyseg]
+            return f"{szam} {egyes if szam in ('1', '1,0', '1.0') else tobbes}"
+        return _MERTEK_RE_ES.sub(csere, szoveg)
+    return _MERTEK_RE_HU.sub(
+        lambda m: f"{m.group(1)} {_MERTEK_HU[m.group(2)]}", szoveg)
+
+
+# ── 6. képletek betűjele ────────────────────────────────────────────────────
+# MIÉRT: a "K = 4 × a"-ból az Azure "kö egyenlő..."-t mond, mert a K-t
+# BETŰNEK olvassa. A gyerek fejében így nem kapcsolódik össze a képlet a
+# fogalommal. Csak akkor cserélünk, ha a betű után egyenlőségjel áll –
+# tehát tényleg képlet, nem mondatkezdő nagybetű.
+
+_KEPLET_BETU = re.compile(r"(?<![" + _BETUK + r"])([KTAVP])(?=\s*=)")
+
+
+def _kepletjel_hu(betu: str, szoveg: str) -> str | None:
+    """A T kétértelmű: lehet terület és térfogat is. A szöveg dönti el, és ha
+    a szöveg sem árulja el, INKÁBB NEM cseréljük – a rossz szó félrevezet."""
+    also = (szoveg or "").lower()
+    if betu == "K":
+        return "kerület"
+    if betu == "V":
+        return "térfogat"
+    if betu in ("T", "A"):
+        terfogat = also.count("térfogat")
+        terulet = also.count("terület")
+        if terfogat > terulet:
+            return "térfogat"
+        if terulet > terfogat:
+            return "terület"
+        # Ha a szöveg egyik szót sem mondja ki, a mértékegység árulkodik:
+        # a köbméter térfogat, a négyzetméter terület.
+        if re.search(r"\d\s*[a-z]{1,2}³|\d\s*[a-z]{1,2}3\b|köb", also):
+            return "térfogat"
+        if re.search(r"\d\s*[a-z]{1,2}²|\d\s*[a-z]{1,2}2\b|négyzet", also):
+            return "terület"
+    return None
+
+
+def _kepletjel_es(betu: str, szoveg: str) -> str | None:
+    return {"P": "perímetro", "A": "área", "V": "volumen"}.get(betu)
+
+
+def kepletjelek(szoveg: str, nyelv: str = "hu") -> str:
+    """„K = 4 × a" → „kerület = 4 × a"."""
+    jel = _kepletjel_es if nyelv == "es" else _kepletjel_hu
+
+    def csere(m: "re.Match[str]") -> str:
+        szo = jel(m.group(1), szoveg)
+        return szo if szo else m.group(0)
+
+    return _KEPLET_BETU.sub(csere, szoveg)
+
+
 def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
     """A felolvasás előtti utolsó simítás: jelekből szavak."""
     szoveg = szoveg or ""
     jelek = _MUVELET.get(nyelv) or _MUVELET["hu"]
+
+    # A képletjel ELŐBB, amíg az egyenlőségjel még a helyén van: erről
+    # ismerjük fel, hogy a betű képletet kezd, nem mondatot.
+    szoveg = kepletjelek(szoveg, nyelv)
+    if nyelv != "es":
+        # „25%-a" → „25 százaléka". Kötőjellel hagyva külön betűzné.
+        szoveg = re.sub(r"%\s*-\s*([a-záéíóöőúüű]{1,4})",
+                        lambda m: " százalék" + m.group(1), szoveg)
+    # A mértékegység is ELŐBB: az "×" cseréje után az "5 m × 3 m" alakban
+    # a szám és az egység közé beékelődne a "szorozva".
+    szoveg = mertekegysegek(szoveg, nyelv)
 
     for jel in _MINDIG:
         if jel in szoveg:
