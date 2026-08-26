@@ -43,6 +43,15 @@
   .adm .kicsi{color:#6b7280;font-size:.8rem}
   .adm .dragabb{color:#a12b2b;font-weight:700}
   .adm .ures{background:#fff8e6;border-left:4px solid #e8a33d;padding:14px 16px;line-height:1.6}
+  .adm .napok{display:flex;gap:3px;align-items:flex-end;overflow-x:auto;padding-bottom:4px}
+  .adm .nap{flex:0 0 auto;width:34px;text-align:center}
+  .adm .oszlop{height:70px;display:flex;align-items:flex-end;justify-content:center}
+  .adm .oszlop i{display:block;width:16px;background:#7c3aed;border-radius:3px 3px 0 0;min-height:2px}
+  .adm .cimke{font-size:.68rem;color:#6b7280;margin-top:3px}
+  .adm .ossz{font-size:.66rem;color:#94a3b8}
+  .adm .torol{background:#fff;border:1px solid #e6b3b3;color:#a12b2b;border-radius:999px;
+              padding:3px 11px;font-size:.78rem;cursor:pointer;margin-right:6px}
+  .adm .torol:hover{background:#fff5f5}
   .adm .lab{margin-top:26px;color:#6b7280;font-size:.86rem;line-height:1.6;
             background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 15px}
 </style>
@@ -53,9 +62,9 @@
 
   <div class="idosav">
     <span class="kicsi">Időszak:</span>
-    {% for n in [7, 30, 90] %}
+    {% for n in [1, 7, 30, 90] %}
       <a href="{{ url_for('admin_attekintes', napok=n) }}"
-         class="{% if napok == n %}be{% endif %}">{{ n }} nap</a>
+         class="{% if napok == n %}be{% endif %}">{{ "Ma" if n == 1 else n ~ " nap" }}</a>
     {% endfor %}
   </div>
 
@@ -70,14 +79,31 @@
       <div class="ertek">{{ (ossz_perc / 60)|round(1) }} óra</div>
       <div class="alatta">ebből {{ hang_szazalek }}% hangos</div></div>
     <div class="csempe"><div class="cim">Költség</div>
-      <div class="ertek">{{ fizetendo }} €</div>
-      <div class="alatta">{{ napok }} nap alatt ténylegesen fizetve
-        {% if fizetendo < ossz_koltseg %}<br>(mérve {{ ossz_koltseg }} €, az
-        ingyenes kerettel csökkentve){% endif %}</div></div>
+      <div class="ertek">{{ ossz_koltseg }} €</div>
+      <div class="alatta">{{ "ma" if napok == 1 else napok ~ " nap alatt" }}, mérve
+        {%- if napok >= 30 and fizetendo < ossz_koltseg %}<br>ebből kb.
+        <b>{{ fizetendo }} €</b> fizetendő az Azure ingyenes kerete után{% endif %}</div></div>
     <div class="csempe"><div class="cim">Legdrágább gyerek</div>
       <div class="ertek">{{ csucs_koltseg }} €</div>
-      <div class="alatta">{{ csucs_nev or '—' }} · havi szinten</div></div>
+      <div class="alatta">{{ csucs_nev or '—' }} · {{ napok }} nap alatt</div></div>
   </div>
+
+  {% if napi %}
+  <div class="csalad">
+    <div style="font-weight:600;margin-bottom:10px">Naponta</div>
+    <div class="napok">
+      {% for n in napi %}
+      <div class="nap" title="{{ n.nap }} · {{ n.gyerek }} gyerek · {{ n.keres }} kérés">
+        <div class="oszlop"><i style="height:{{ (100 * n.koltseg / napi_csucs)|round(0)|int if napi_csucs else 0 }}%"></i></div>
+        <div class="cimke">{{ n.nap.strftime('%m.%d') }}</div>
+        <div class="ossz">{{ '%.3f'|format(n.koltseg) }}</div>
+      </div>
+      {% endfor %}
+    </div>
+    <p class="kicsi" style="margin:10px 0 0">Napi költség euróban. Az oszlop
+      magassága a legdrágább naphoz mért. Fölé húzva látod, hány gyerek tanult.</p>
+  </div>
+  {% endif %}
 
   {% if not csaladok %}
     <div class="ures">Még nincs egyetlen regisztrált család sem.</div>
@@ -92,15 +118,21 @@
           · {{ cs.gyerekek|length }} gyerek</div>
       </div>
       <div>
+        <form method="post" action="{{ url_for('admin_meres_torles') }}"
+              style="display:inline" onsubmit="return confirm('Biztosan törlöd {{ cs.email }} mérési adatait? A gyerekek, a haladás és a fiók MEGMARAD, csak a statisztika ürül. Ez nem vonható vissza.');">
+          <input type="hidden" name="kit" value="{{ cs.id }}">
+          <input type="hidden" name="napok" value="{{ napok }}">
+          <button type="submit" class="torol" title="A mérési adatok törlése">Mérés törlése</button>
+        </form>
         <span class="jelzo {{ cs.allapot_stilus }}">{{ cs.allapot }}</span>
-        <span class="meta">&nbsp;{{ cs.havi_koltseg }} € / hó</span>
+        <span class="meta">&nbsp;{{ cs.havi_koltseg }} €</span>
       </div>
     </div>
 
     {% if cs.gyerekek %}
     <table>
       <tr><th>Gyerek</th><th>Tanult</th><th>Hangos / szöveges</th>
-          <th>Tantárgyak</th><th class="szam">Költség / hó</th></tr>
+          <th>Tantárgyak</th><th class="szam">Költség</th></tr>
       {% for gy in cs.gyerekek %}
       <tr>
         <td>{{ gy.nev }}<br><span class="kicsi">{{ gy.osztaly }}. {{ gy.tanterv }}</span></td>
@@ -133,10 +165,12 @@
 
   <div class="lab">
     <strong>Hogyan olvasd.</strong>
-    A <em>Költség / hó</em> a mért fogyasztásból számolt becslés, harminc napra
-    vetítve: felolvasott karakterek, felismert hangmásodpercek és AI-tokenek,
-    a szolgáltatók listaárán. A pirosan kiemelt gyerek többe kerül, mint a
-    beállított havi ár ({{ ar }} €) — ott a hangos mód viszi el a pénzt.<br>
+    A <em>Költség</em> a VÁLASZTOTT IDŐSZAKRA mért összeg — nincs átszámítva
+    hónapra. Ezért a 90 napos nézetben mindig több vagy ugyanannyi, mint a 30
+    naposban. (Korábban 30 napra vetítettem, és emiatt a hosszabb időszak
+    kisebb összeget mutatott — az félrevezető volt.) Havi költséghez válaszd a
+    30 napos nézetet. A pirosan kiemelt gyerek többe kerül a havi árnál
+    ({{ ar }} €) — ott a hangos mód viszi el a pénzt.<br>
     A <em>Hangos / szöveges</em> sáv csak azokra az órákra épül, amiket a mérés
     bevezetése óta tartottak; a régebbi óráknál nem tudjuk, milyen módban folytak.<br>
     <strong>Az egységárak {{ arak_ellenorizve }}-i állapot szerint:</strong>

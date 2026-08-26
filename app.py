@@ -7839,7 +7839,10 @@ def admin_attekintes():
             gy["hang_arany"] = round(100 * gy["perc_hang"] / ismert) if ismert else 0
             # az időszak fogyasztását 30 napra vetítjük, hogy havi árral vethesd össze
             gy["tantargyak"] = [(_targynev(n), p) for n, p in gy["tantargyak"]]
-            gy["havi_koltseg"] = round(_gyerek_koltseg(gy) * 30.0 / napok, 2)
+            # NINCS 30 napra vetítés. Korábban volt, és attól a 90 napos nézet
+            # HARMADAKKORA összeget mutatott, mint a 30 napos – ugyanaz a
+            # fogyasztás hosszabb időszakra osztva. A mért összeg a helyes.
+            gy["havi_koltseg"] = round(_gyerek_koltseg(gy), 2)
             cs["havi_koltseg"] += gy["havi_koltseg"]
             ossz_perc += gy["perc_ossz"]
             ossz_hang += gy["perc_hang"]
@@ -7858,6 +7861,9 @@ def admin_attekintes():
     # Az Azure havonta 500 000 karaktert ingyen ad. Ez a te FIÓKODRA jár, nem
     # gyerekenként – ezért csak összesítve van értelme levonni; a gyerekek
     # soraiban a teljes költség marad, mert árazni azzal kell.
+    napi = database.napi_fogyasztas(napok=napok)
+    for n in napi:
+        n["koltseg"] = round(_gyerek_koltseg(n), 4)
     _ingyen = _dij("TTS_INGYEN", 500_000.0) * napok / 30.0
     _tts_ar = _dij("TTS_1M", 16.0) / 1_000_000 * _dij("EUR_USD", 0.92)
     fizetendo = round(max(0.0, ossz_koltseg - min(ossz_tts, _ingyen) * _tts_ar), 2)
@@ -7866,13 +7872,32 @@ def admin_attekintes():
         "admin.html",
         csaladok=csaladok, napok=napok, ar=ar,
         fizetendo=fizetendo, ingyen_keret=int(_ingyen), ossz_tts=ossz_tts,
-        arak_ellenorizve=ARAK_ELLENORIZVE,
+        arak_ellenorizve=ARAK_ELLENORIZVE, napi=napi,
+        napi_csucs=max([n["koltseg"] for n in napi] or [0]),
         gyerek_szam=gyerek_szam, tanult_gyerek=tanult_gyerek,
         aktiv_csalad=aktiv_csalad, ossz_perc=ossz_perc,
         hang_szazalek=round(100 * ossz_hang / _ismert) if _ismert else 0,
         ossz_koltseg=round(ossz_koltseg, 2),
         csucs_koltseg=csucs_koltseg, csucs_nev=csucs_nev,
     )
+
+
+@app.route("/admin/meres-torles", methods=["POST"])
+@login_required
+def admin_meres_torles():
+    """A mérési adatok törlése. A tanulás és a fiókok ÉRINTETLENEK maradnak –
+    csak a statisztika ürül. Szándékosan külön a fióktörléstől: azt a szülő
+    maga kezdeményezi a Fiókom oldalon."""
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
+    kit = (request.form.get("kit") or "").strip()
+    parent_id = int(kit) if kit.isdigit() else None
+    db_torolt, tan_torolt = database.torol_meresi_adatokat(parent_id)
+    flash(f"Törölve: {db_torolt} fogyasztási és {tan_torolt} tanulási sor.",
+          "success")
+    return redirect(url_for("admin_attekintes",
+                            napok=request.form.get("napok") or 30))
 
 
 @app.route("/koltseg")

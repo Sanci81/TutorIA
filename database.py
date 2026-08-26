@@ -2223,6 +2223,59 @@ def admin_csaladok(napok: int = 30) -> list[dict[str, Any]]:
         db.close()
 
 
+def napi_fogyasztas(napok: int = 30) -> list[dict[str, Any]]:
+    """Naponkénti összesítés az egész szolgáltatásra. Ebből látszik, mikor
+    ugrik meg a használat – és mikor a számla."""
+    db = _session()
+    try:
+        hatar = datetime.now(timezone.utc).date() - timedelta(days=max(1, napok))
+        ossz: dict[Any, dict[str, Any]] = {}
+        for u in db.scalars(select(ChildUsage).where(ChildUsage.nap >= hatar)).all():
+            n = ossz.setdefault(u.nap, {
+                "nap": u.nap, "tts_karakter": 0, "hang_mp": 0.0,
+                "be_token": 0, "ki_token": 0, "keres": 0, "gyerek": set()})
+            n["tts_karakter"] += u.tts_karakter or 0
+            n["hang_mp"] += u.hang_mp or 0.0
+            n["be_token"] += u.be_token or 0
+            n["ki_token"] += u.ki_token or 0
+            n["keres"] += u.keres or 0
+            n["gyerek"].add(u.child_id)
+        for n in ossz.values():
+            n["gyerek"] = len(n["gyerek"])
+        return sorted(ossz.values(), key=lambda x: x["nap"])
+    finally:
+        db.close()
+
+
+def torol_meresi_adatokat(parent_id: int | None = None) -> tuple[int, int]:
+    """A mérési adatok törlése. (fogyasztási sor, tanulási sor).
+
+    A gyerekek, a haladás és a fiókok ÉRINTETLENEK: csak a statisztika ürül.
+    parent_id nélkül mindenkire vonatkozik.
+    """
+    db = _session()
+    try:
+        if parent_id:
+            gyerekek = [c.id for c in db.scalars(
+                select(Child).where(Child.parent_id == parent_id)).all()]
+        else:
+            gyerekek = [c.id for c in db.scalars(select(Child)).all()]
+        if not gyerekek:
+            return (0, 0)
+        u = db.query(ChildUsage).filter(
+            ChildUsage.child_id.in_(gyerekek)).delete(synchronize_session=False)
+        t = db.query(ChildLearningTime).filter(
+            ChildLearningTime.child_id.in_(gyerekek)).delete(synchronize_session=False)
+        db.commit()
+        return (int(u or 0), int(t or 0))
+    except Exception:
+        db.rollback()
+        logger.warning("torol_meresi_adatokat sikertelen", exc_info=True)
+        return (0, 0)
+    finally:
+        db.close()
+
+
 def _wallet_row(db, child_id: int) -> "ChildWallet":
     row = db.get(ChildWallet, child_id)
     if row is None:
