@@ -93,6 +93,12 @@ class Parent(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+    # Mikor járt itt utoljára. Ebből derül ki, hogy egy család MÉG HASZNÁLJA-e
+    # a szolgáltatást – a teszt legfontosabb kérdése. Utólag nem pótolható:
+    # ami nem íródik ki menet közben, az örökre elveszett.
+    last_seen: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
     children: Mapped[list["Child"]] = relationship(
         back_populates="parent", cascade="all, delete-orphan"
@@ -231,6 +237,10 @@ class ChildLearningTime(Base):
     session_end: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    # "voice" vagy "text": hangosan tanult-e a gyerek ebben az órában.
+    # A chat oldal egészére vonatkozik, mert a gyerek ott választ módot –
+    # ezért a SESSION szintjén tároljuk, nem fordulónként.
+    mode: Mapped[str | None] = mapped_column(String(10), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -405,6 +415,7 @@ def _parent_dict(parent: Parent) -> dict[str, Any]:
         "email": parent.email,
         "password_hash": parent.password_hash,
         "created_at": parent.created_at,
+        "last_seen": parent.last_seen,
     }
 
 
@@ -489,6 +500,34 @@ def init_db() -> None:
     ensure_child_cards_table()
     ensure_child_wallet_table()
     ensure_child_usage_table()
+    ensure_parents_last_seen_column()
+    ensure_learning_time_mode_column()
+
+
+def ensure_parents_last_seen_column() -> None:
+    """parents.last_seen – mikor volt a szülő utoljára aktív."""
+    from sqlalchemy import text
+
+    try:
+        with _get_engine().begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE parents ADD COLUMN IF NOT EXISTS "
+                "last_seen TIMESTAMPTZ"))
+    except Exception as exc:
+        logger.warning("ensure_parents_last_seen_column: kihagyva: %s", exc)
+
+
+def ensure_learning_time_mode_column() -> None:
+    """child_learning_time.mode – hangos vagy szöveges órán tanult-e."""
+    from sqlalchemy import text
+
+    try:
+        with _get_engine().begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE child_learning_time ADD COLUMN IF NOT EXISTS "
+                "mode VARCHAR(10)"))
+    except Exception as exc:
+        logger.warning("ensure_learning_time_mode_column: kihagyva: %s", exc)
 
 
 def ensure_children_voice_columns() -> None:
@@ -773,6 +812,24 @@ def get_parent_by_email(email: str) -> dict[str, Any] | None:
         return _parent_dict(parent) if parent else None
     finally:
         db.close()
+
+
+def touch_parent(parent_id: int) -> None:
+    """A szülő utolsó aktivitásának frissítése. Hibára SOHA nem dob: a mérés
+    nem akadályozhatja meg, hogy valaki használja az appot."""
+    if not parent_id:
+        return
+    try:
+        db = _session()
+        try:
+            p = db.get(Parent, parent_id)
+            if p is not None:
+                p.last_seen = datetime.now(timezone.utc)
+                db.commit()
+        finally:
+            db.close()
+    except Exception:
+        logger.warning("touch_parent sikertelen", exc_info=True)
 
 
 def get_parent_by_id(parent_id: int) -> dict[str, Any] | None:
@@ -1732,6 +1789,7 @@ def start_learning_session(
     child_id: int,
     subject: str,
     topic_id: str | None = None,
+    mode: str | None = None,
 ) -> dict[str, Any] | None:
     """Rögzíti a tanulási session kezdetét. Visszaadja a session adatait."""
     db = _session()
@@ -1744,6 +1802,7 @@ def start_learning_session(
             date=now.date(),
             minutes=0.0,
             session_start=now,
+            mode=(mode or None),
         )
         db.add(row)
         db.commit()
@@ -1757,6 +1816,7 @@ def start_learning_session(
             "minutes": row.minutes,
             "session_start": row.session_start.isoformat(),
             "session_end": row.session_end.isoformat() if row.session_end else None,
+            "mode": row.mode,
         }
     except Exception:
         db.rollback()

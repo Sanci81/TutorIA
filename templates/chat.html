@@ -399,7 +399,8 @@
             body: JSON.stringify({
                 child_id: childId,
                 subject: subject,
-                topic_id: currentTopicId
+                topic_id: currentTopicId,
+                mode: {{ chat_mode|tojson }}
             })
         })
         .then(function (r) { return r.json(); })

@@ -955,6 +955,28 @@ def _jogi_adatok() -> dict[str, str]:
 JOGI_FRISSITVE = "2026. augusztus 25."
 
 
+# ── A szülő utolsó aktivitása ───────────────────────────────────────────────
+# Ebből derül ki, hogy egy család MÉG HASZNÁLJA-e a szolgáltatást. Nem minden
+# kérésnél írunk az adatbázisba – az fölösleges terhelés lenne –, hanem
+# legfeljebb tízpercenként. A pontos másodperc úgysem érdekes.
+_LATOGATAS_SURUSEG = 600      # másodperc
+
+
+@app.before_request
+def _szulo_aktivitas() -> None:
+    pid = session.get("parent_id")
+    if not pid:
+        return
+    try:
+        most = datetime.now(timezone.utc).timestamp()
+        if most - float(session.get("utolso_jelzes") or 0) < _LATOGATAS_SURUSEG:
+            return
+        session["utolso_jelzes"] = most
+        database.touch_parent(pid)
+    except Exception:
+        pass          # a mérés soha nem akadályozhatja meg a belépést
+
+
 @app.route("/adatvedelem")
 def adatvedelem():
     return render_template("adatvedelem.html", **_jogi_adatok())
@@ -7205,12 +7227,15 @@ def api_learning_start():
     child_id = data.get("child_id")
     subject = (data.get("subject") or "").strip()
     topic_id = (data.get("topic_id") or "").strip() or None
+    # Hangos vagy szöveges órán ül a gyerek. A chat oldal egészére vonatkozik,
+    # ezért az óra indításakor tudjuk – és csak MOST tudjuk feljegyezni.
+    mode = "voice" if (data.get("mode") or "").strip().lower() == "voice" else "text"
     if not child_id or not subject:
         return jsonify({"error": "child_id and subject required"}), 400
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         return jsonify({"error": "child not found"}), 404
-    result = database.start_learning_session(child_id, subject, topic_id)
+    result = database.start_learning_session(child_id, subject, topic_id, mode=mode)
     if not result:
         return jsonify({"error": "failed"}), 500
 
