@@ -160,6 +160,23 @@
     {% else %}
       <p class="kicsi" style="margin:0">Nincs felvett gyerek.</p>
     {% endif %}
+
+    {% if cs.napi %}
+    <div style="margin-top:12px;padding-top:11px;border-top:1px solid #eef1f6">
+      <div class="kicsi" style="margin-bottom:5px">Naponta ennél a családnál:</div>
+      <div class="napok">
+        {% for n in cs.napi %}
+        <div class="nap" title="{{ n.nap }} · {{ n.keres }} kérés · {{ n.tts_karakter }} felolvasott karakter">
+          <div class="oszlop" style="height:44px">
+            <i style="height:{{ (100 * n.koltseg / cs.napi_csucs)|round(0)|int if cs.napi_csucs else 0 }}%"></i>
+          </div>
+          <div class="cimke">{{ n.nap.strftime('%m.%d') }}</div>
+          <div class="ossz">{{ '%.3f'|format(n.koltseg) }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
   </div>
   {% endfor %}
 

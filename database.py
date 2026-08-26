@@ -2178,6 +2178,7 @@ def admin_csaladok(napok: int = 30) -> list[dict[str, Any]]:
                 "id": c.id, "nev": c.name, "osztaly": c.grade,
                 "tanterv": (c.curriculum or "HU"),
                 "perc_hang": 0.0, "perc_szoveg": 0.0, "perc_ismeretlen": 0.0,
+                "napi": {},
                 "tantargyak": {},
                 "tts_karakter": 0, "hang_mp": 0.0,
                 "be_token": 0, "ki_token": 0, "keres": 0,
@@ -2210,12 +2211,31 @@ def admin_csaladok(napok: int = 30) -> list[dict[str, Any]]:
             gy["be_token"] += u.be_token or 0
             gy["ki_token"] += u.ki_token or 0
             gy["keres"] += u.keres or 0
+            # naponkénti bontás is, hogy családonként látszódjon a lefutás
+            n = gy["napi"].setdefault(u.nap, {
+                "nap": u.nap, "tts_karakter": 0, "hang_mp": 0.0,
+                "be_token": 0, "ki_token": 0, "keres": 0})
+            n["tts_karakter"] += u.tts_karakter or 0
+            n["hang_mp"] += u.hang_mp or 0.0
+            n["be_token"] += u.be_token or 0
+            n["ki_token"] += u.ki_token or 0
+            n["keres"] += u.keres or 0
 
         for cs in csaladok.values():
             cs["gyerekek"].sort(key=lambda g: g["nev"] or "")
+            csalad_napi: dict[Any, dict[str, Any]] = {}
             for gy in cs["gyerekek"]:
                 gy["tantargyak"] = sorted(gy["tantargyak"].items(),
                                           key=lambda x: -x[1])
+                for nap, n in gy["napi"].items():
+                    cn = csalad_napi.setdefault(nap, {
+                        "nap": nap, "tts_karakter": 0, "hang_mp": 0.0,
+                        "be_token": 0, "ki_token": 0, "keres": 0})
+                    for k in ("tts_karakter", "hang_mp", "be_token",
+                              "ki_token", "keres"):
+                        cn[k] += n[k]
+                gy["napi"] = sorted(gy["napi"].values(), key=lambda x: x["nap"])
+            cs["napi"] = sorted(csalad_napi.values(), key=lambda x: x["nap"])
         return sorted(csaladok.values(),
                       key=lambda c: (c["utoljara"] is None, 
                                      -(c["utoljara"].timestamp() if c["utoljara"] else 0)))

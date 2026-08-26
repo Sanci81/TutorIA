@@ -425,16 +425,95 @@ def _openai_api_key() -> str | None:
     return os.environ.get("OPENAI_API_KEY") or os.environ.get("OPENAI_KEY")
 
 
+# ── MINDEN AI-hívás mérése ──────────────────────────────────────────────────
+# Tizenhárom helyen hívjuk az OpenAI-t: tanítás, ábrarajzolás, ábraellenőrzés,
+# hangátírás, tesztjavítás, kiejtés… Korábban EGYETLEN helyen mértük, ezért a
+# költség kevesebbet mutatott a valóságnál.
+#
+# Nem tizenhárom helyre írjuk be a mérést – azt előbb-utóbb elfelejtenénk egy
+# új hívásnál. Helyette magát a KLIENST burkoljuk be: bármit hív bárki, a
+# token-fogyasztás magától rögzül. Aki új hívást ír, nem tud kimaradni.
+
+
+class _MertKliens:
+    """OpenAI kliens, ami minden válasz token-fogyasztását feljegyzi."""
+
+    def __init__(self, kliens):
+        self._k = kliens
+        self.chat = _MertChat(kliens.chat, self)
+        self.audio = _MertAudio(kliens.audio, self)
+
+    def __getattr__(self, nev):
+        return getattr(self._k, nev)
+
+    def jegyez(self, valasz) -> None:
+        """A mérés SOHA nem akadályozhatja meg a tanítást: mindent lenyel."""
+        try:
+            gyerek = None
+            try:
+                gyerek = g.get("meres_gyerek")
+            except Exception:
+                gyerek = None
+            if not gyerek:
+                return
+            u = getattr(valasz, "usage", None)
+            if not u:
+                return
+            database.add_usage(
+                int(gyerek),
+                be_token=int(getattr(u, "prompt_tokens", 0)
+                              or getattr(u, "input_tokens", 0) or 0),
+                ki_token=int(getattr(u, "completion_tokens", 0)
+                              or getattr(u, "output_tokens", 0) or 0),
+            )
+        except Exception:
+            pass
+
+
+class _MertChat:
+    def __init__(self, chat, szulo):
+        self.completions = _MertCompletions(chat.completions, szulo)
+
+
+class _MertCompletions:
+    def __init__(self, c, szulo):
+        self._c, self._sz = c, szulo
+
+    def create(self, *a, **kw):
+        valasz = self._c.create(*a, **kw)
+        self._sz.jegyez(valasz)
+        return valasz
+
+
+class _MertAudio:
+    def __init__(self, audio, szulo):
+        self._a, self._sz = audio, szulo
+        self.transcriptions = _MertTranscriptions(audio.transcriptions, szulo)
+
+    def __getattr__(self, nev):
+        return getattr(self._a, nev)
+
+
+class _MertTranscriptions:
+    def __init__(self, t, szulo):
+        self._t, self._sz = t, szulo
+
+    def create(self, *a, **kw):
+        valasz = self._t.create(*a, **kw)
+        self._sz.jegyez(valasz)
+        return valasz
+
+
 def _openai_client(api_key: str, *, request_timeout: float = 90.0):
     """OpenAI kliens httpx timeout-tal (Railway connection error ellen)."""
     import httpx
     from openai import OpenAI
 
-    return OpenAI(
+    return _MertKliens(OpenAI(
         api_key=api_key,
         timeout=httpx.Timeout(request_timeout, connect=10.0),
         max_retries=2,
-    )
+    ))
 
 
 def _call_ai_for_tasks(
@@ -964,6 +1043,11 @@ _LATOGATAS_SURUSEG = 600      # másodperc
 
 @app.before_request
 def _szulo_aktivitas() -> None:
+    # Melyik gyerekre könyveljük az AI-hívásokat ebben a kérésben
+    try:
+        g.meres_gyerek = session.get("chat_child_id") or None
+    except Exception:
+        pass
     pid = session.get("parent_id")
     if not pid:
         return
@@ -4802,18 +4886,8 @@ def _call_ai_for_chat(
         messages=messages,
         reasoning_effort="low",
     )
-    # MÉRÉS: a beszélgetés tokenjei. A rendszerprompt több tízezer karakter,
-    # ezért a BEmenet a nagyobb tétel – jó tudni, mennyibe kerül valójában.
-    try:
-        _u = getattr(response, "usage", None)
-        if child_id and _u:
-            database.add_usage(
-                int(child_id),
-                be_token=getattr(_u, "prompt_tokens", 0) or 0,
-                ki_token=getattr(_u, "completion_tokens", 0) or 0,
-            )
-    except Exception:
-        pass
+    # A mérést a burkolt kliens végzi (_MertKliens), ezért itt NINCS külön
+    # add_usage – különben kétszer könyvelnénk ugyanazt a hívást.
     return (response.choices[0].message.content or "").strip()
 
 
@@ -7853,6 +7927,9 @@ def admin_attekintes():
             if gy["havi_koltseg"] > csucs_koltseg:
                 csucs_koltseg, csucs_nev = gy["havi_koltseg"], gy["nev"]
         cs["havi_koltseg"] = round(cs["havi_koltseg"], 2)
+        for n in cs["napi"]:
+            n["koltseg"] = round(_gyerek_koltseg(n), 4)
+        cs["napi_csucs"] = max([n["koltseg"] for n in cs["napi"]] or [0])
         if u and (most - u).days < napok:
             aktiv_csalad += 1
 
