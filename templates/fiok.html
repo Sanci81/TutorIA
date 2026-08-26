@@ -17,6 +17,11 @@
   .fiok .gomb-veszelyes{background:#a12b2b}
   .fiok input[type=password]{width:100%;padding:10px;border:1px solid #c7cdd8;border-radius:8px;
                              font-size:1rem;margin-bottom:12px}
+  .fiok .valasztek{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+  .fiok .valasz{border:1px solid #c7cdd8;border-radius:999px;padding:7px 14px;
+                cursor:pointer;font-size:.95rem;background:#fff}
+  .fiok .valasz.kivalasztva{border-color:#1f3a63;background:#eef3fb;font-weight:600}
+  .fiok .valasz input{margin-right:6px}
   .fiok .figyelmeztetes{background:#fff8e6;border-left:4px solid #e8a33d;padding:10px 12px;
                         margin-bottom:14px;font-size:.95rem;line-height:1.55}
 </style>
@@ -35,6 +40,28 @@
     <h2>{{ t('account_export_title') }}</h2>
     <p>{{ t('account_export_text') }}</p>
     <a class="gomb" href="{{ url_for('fiok_export') }}">{{ t('account_export_btn') }}</a>
+  </div>
+
+  <div class="doboz">
+    <h2>{{ t('notify_title') }}</h2>
+    <p>{{ t('notify_text') }}</p>
+    <form method="post" action="{{ url_for('ertesites_beallit') }}">
+      <div class="valasztek">
+        {% for kulcs, cimke in [('napi','notify_daily'), ('heti','notify_weekly'),
+                                ('havi','notify_monthly'), ('ki','notify_off')] %}
+        <label class="valasz{% if ertesites == kulcs %} kivalasztva{% endif %}">
+          <input type="radio" name="mod" value="{{ kulcs }}"
+                 {% if ertesites == kulcs %}checked{% endif %}>
+          {{ t(cimke) }}
+        </label>
+        {% endfor %}
+      </div>
+      <p class="adat" style="margin:2px 0 12px">{{ t('notify_daily_note') }}</p>
+      <label for="ertesites_jelszo">{{ t('account_delete_password') }}</label>
+      <input type="password" id="ertesites_jelszo" name="jelszo" required
+             autocomplete="current-password">
+      <button type="submit" class="gomb">{{ t('notify_save') }}</button>
+    </form>
   </div>
 
   <div class="doboz veszelyes">

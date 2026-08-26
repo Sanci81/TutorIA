@@ -548,6 +548,45 @@ TRANSLATIONS = {
         "hu": "A jelszó nem stimmel – a fiók nem lett törölve.",
         "es": "La contraseña no es correcta: la cuenta no se ha borrado.",
     },
+    "notify_title": {
+        "hu": "Haladás-jelentés e-mailben",
+        "es": "Informe de progreso por correo",
+    },
+    "notify_text": {
+        "hu": "Rendszeres levél arról, mit tanult a gyereked, mi ment jól és "
+              "mivel küzd még. A jelszavad kell hozzá, hogy csak te tudd "
+              "átállítani – így a gyerek nem kapcsolhatja ki.",
+        "es": "Un correo periódico con lo que ha estudiado su hijo, lo que le "
+              "ha salido bien y lo que aún le cuesta. Pedimos su contraseña "
+              "para que solo usted pueda cambiarlo.",
+    },
+    "notify_daily": {"hu": "Naponta", "es": "A diario"},
+    "notify_weekly": {"hu": "Hetente", "es": "Cada semana"},
+    "notify_monthly": {"hu": "Havonta", "es": "Cada mes"},
+    "notify_off": {"hu": "Ne küldjetek", "es": "No enviar"},
+    "notify_daily_note": {
+        "hu": "Naponta csak akkor megy levél, ha aznap volt tanulás.",
+        "es": "El correo diario solo se envía si ese día hubo estudio.",
+    },
+    "notify_save": {"hu": "Mentés", "es": "Guardar"},
+    "notify_saved": {
+        "hu": "Beállítva.",
+        "es": "Guardado.",
+    },
+    "notify_saved_error": {
+        "hu": "Ismeretlen beállítás – nem változott semmi.",
+        "es": "Opción desconocida: no se ha cambiado nada.",
+    },
+    "notify_unsub_title": {
+        "hu": "Kikapcsoltuk a leveleket",
+        "es": "Hemos desactivado los correos",
+    },
+    "notify_unsub_text": {
+        "hu": "Több haladás-jelentést nem küldünk. Ha meggondolod magad, a "
+              "Fiókom oldalon bármikor visszakapcsolhatod.",
+        "es": "No enviaremos más informes. Si cambia de opinión, puede "
+              "volver a activarlo en Mi cuenta.",
+    },
     "account_delete_failed": {
         "hu": "A törlés nem sikerült. Írj nekünk, és kézzel elintézzük.",
         "es": "No se ha podido borrar. Escríbanos y lo haremos manualmente.",

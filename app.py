@@ -45,6 +45,7 @@ import database
 import ellenoriz
 import hang
 import jelek_kicsi
+import level
 import kartyak
 import kinezet
 import pontok
@@ -1084,6 +1085,7 @@ def fiok():
         szulo=szulo,
         gyerek_szam=len(gyerekek),
         regisztralt=letrejott.strftime("%Y. %m. %d.") if letrejott else "—",
+        ertesites=szulo.get("ertesites") or "heti",
     )
 
 
@@ -1140,6 +1142,103 @@ def abra_naplo():
         bejegyzesek=abra_ellenor.naplo(),
         uzemmod=abra_ellenor.uzemmod(),
     )
+
+
+# ── Szülői haladás-jelentés ─────────────────────────────────────────────────
+# A szülő nem fog belépni az oldalra. Ez a levél az egyetlen rendszeres
+# visszajelzés arról, hogy amiért fizet, az működik-e.
+#
+# A KIKAPCSOLÁS csak a szülőnek elérhető: a Fiókom oldalon JELSZÓVAL, vagy a
+# levélben lévő linkkel. A gyerek ugyanabban a munkamenetben ül, mint a szülő,
+# ezért egy sima kapcsolót ő is átállíthatna – és nem tudnánk megmondani, ki
+# kapcsolta ki.
+
+
+def _leiratkozo_jel():
+    from itsdangerous import URLSafeSerializer
+    return URLSafeSerializer(app.config["SECRET_KEY"], salt="ertesites")
+
+
+def _leiratkozo_url(parent_id: int) -> str:
+    try:
+        return url_for("ertesites_leiratkozas",
+                       jegy=_leiratkozo_jel().dumps(int(parent_id)),
+                       _external=True)
+    except Exception:
+        return ""
+
+
+@app.route("/ertesites/beallit", methods=["POST"])
+@login_required
+def ertesites_beallit():
+    """A jelentés gyakoriságának állítása – JELSZÓVAL megerősítve."""
+    szulo = database.get_parent_by_id(session["parent_id"])
+    jelszo = request.form.get("jelszo") or ""
+    mod = (request.form.get("mod") or "").strip().lower()
+    if not szulo or not check_password_hash(szulo.get("password_hash") or "", jelszo):
+        flash(i18n.t("account_delete_bad_password", g.lang), "error")
+    elif not database.szulo_ertesites_beallit(session["parent_id"], mod):
+        flash(i18n.t("notify_saved_error", g.lang), "error")
+    else:
+        flash(i18n.t("notify_saved", g.lang), "success")
+    return redirect(url_for("fiok"))
+
+
+@app.route("/leiratkozas/<jegy>")
+def ertesites_leiratkozas(jegy: str):
+    """Leiratkozás a levélből, belépés nélkül. A jegy aláírt, ezért nem lehet
+    más szülőt kiiratkoztatni a szám kitalálásával."""
+    try:
+        parent_id = int(_leiratkozo_jel().loads(jegy))
+    except Exception:
+        abort(404)
+    database.szulo_ertesites_beallit(parent_id, "ki")
+    return render_template("leiratkozas.html")
+
+
+@app.route("/feladat/ertesites")
+def feladat_ertesites():
+    """A napi futtatás: kinek jár ma jelentés. Railway Cron hívja.
+
+    Kulccsal védve, mert bejelentkezés nélkül elérhető. Idempotens: ha egy nap
+    kimarad, másnap pótolja, és ugyanaznap kétszer nem küld.
+    """
+    kulcs = os.environ.get("FELADAT_KULCS")
+    if not kulcs or request.args.get("kulcs") != kulcs:
+        abort(404)
+
+    api = os.environ.get("RESEND_API_KEY")
+    proba = request.args.get("proba") == "1"
+    kimenet = []
+    for szulo in database.ertesitendo_szulok():
+        napok = {"napi": 1, "heti": 7, "havi": 30}.get(szulo["mod"], 7)
+        jelentes = database.szuloi_jelentes(szulo["id"], napok=napok)
+        # Napi módban üres napról NE küldjünk – abból lesz a spam-jelölés.
+        if szulo["mod"] == "napi" and not jelentes["van_tanulas"]:
+            kimenet.append(f'{szulo["email"]}: kihagyva (nem tanult)')
+            continue
+        targy, html, szoveg = level.keszit(
+            jelentes,
+            nyelv="es" if (os.environ.get("ALAP_NYELV") or "hu") == "es" else "hu",
+            app_url=url_for("index", _external=True),
+            leiratkozo_url=_leiratkozo_url(szulo["id"]))
+        if proba:
+            kimenet.append(f'{szulo["email"]}: KÜLDENÉNK – {targy}')
+            continue
+        try:
+            if not api:
+                raise RuntimeError("RESEND_API_KEY hianyzik")
+            resend.api_key = api
+            resend.Emails.send({"from": _resend_from_address(),
+                                "to": [szulo["email"]], "subject": targy,
+                                "html": html, "text": szoveg})
+            database.ertesites_elkuldve(szulo["id"])
+            kimenet.append(f'{szulo["email"]}: elkuldve')
+        except Exception as exc:
+            # Nem jegyezzük elküldöttnek – holnap újra próbálja
+            kimenet.append(f'{szulo["email"]}: HIBA {exc}')
+    return Response("\n".join(kimenet) or "nincs esedekes",
+                    mimetype="text/plain; charset=utf-8")
 
 
 @app.route("/login", methods=["GET", "POST"])

@@ -99,6 +99,12 @@ class Parent(Base):
     last_seen: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    # Milyen gyakran kérjen jelentést a gyerekei haladásáról:
+    # "heti" (alap) | "havi" | "napi" | "ki". CSAK a szülő állíthatja –
+    # jelszóval a Fiókom oldalon, vagy a levélben lévő leiratkozó linkkel.
+    ertesites: Mapped[str] = mapped_column(String(10), nullable=False,
+                                           server_default="heti")
+    utolso_ertesites: Mapped[date | None] = mapped_column(Date, nullable=True)
 
     children: Mapped[list["Child"]] = relationship(
         back_populates="parent", cascade="all, delete-orphan"
@@ -416,6 +422,8 @@ def _parent_dict(parent: Parent) -> dict[str, Any]:
         "password_hash": parent.password_hash,
         "created_at": parent.created_at,
         "last_seen": parent.last_seen,
+        "ertesites": parent.ertesites or "heti",
+        "utolso_ertesites": parent.utolso_ertesites,
     }
 
 
@@ -502,6 +510,7 @@ def init_db() -> None:
     ensure_child_usage_table()
     ensure_parents_last_seen_column()
     ensure_learning_time_mode_column()
+    ensure_parents_ertesites_columns()
 
 
 def ensure_parents_last_seen_column() -> None:
@@ -515,6 +524,22 @@ def ensure_parents_last_seen_column() -> None:
                 "last_seen TIMESTAMPTZ"))
     except Exception as exc:
         logger.warning("ensure_parents_last_seen_column: kihagyva: %s", exc)
+
+
+def ensure_parents_ertesites_columns() -> None:
+    """A szülői jelentés beállítása és a legutóbbi küldés napja."""
+    from sqlalchemy import text
+
+    for stmt in (
+        "ALTER TABLE parents ADD COLUMN IF NOT EXISTS "
+        "ertesites VARCHAR(10) NOT NULL DEFAULT 'heti'",
+        "ALTER TABLE parents ADD COLUMN IF NOT EXISTS utolso_ertesites DATE",
+    ):
+        try:
+            with _get_engine().begin() as conn:
+                conn.execute(text(stmt))
+        except Exception as exc:
+            logger.warning("ensure_parents_ertesites_columns: kihagyva: %s", exc)
 
 
 def ensure_learning_time_mode_column() -> None:
@@ -830,6 +855,74 @@ def touch_parent(parent_id: int) -> None:
             db.close()
     except Exception:
         logger.warning("touch_parent sikertelen", exc_info=True)
+
+
+ERTESITES_MODOK = ("napi", "heti", "havi", "ki")
+_ERTESITES_NAPOK = {"napi": 1, "heti": 7, "havi": 30}
+
+
+def szulo_ertesites_beallit(parent_id: int, mod: str) -> bool:
+    """A jelentés gyakoriságának beállítása. Ismeretlen értéket elutasít."""
+    if mod not in ERTESITES_MODOK:
+        return False
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if p is None:
+            return False
+        p.ertesites = mod
+        db.commit()
+        return True
+    except Exception:
+        db.rollback()
+        return False
+    finally:
+        db.close()
+
+
+def ertesitendo_szulok(ma: date | None = None) -> list[dict[str, Any]]:
+    """Kinek jár MA jelentés.
+
+    A küldés napja a REGISZTRÁCIÓ napjához igazodik, nem mindenkinek
+    ugyanaznap – így nem megy ki száz levél egyszerre, és belefér a
+    szolgáltató napi keretébe.
+    """
+    ma = ma or datetime.now(timezone.utc).date()
+    db = _session()
+    try:
+        ki: list[dict[str, Any]] = []
+        for p in db.scalars(select(Parent)).all():
+            mod = (p.ertesites or "heti").strip().lower()
+            koz = _ERTESITES_NAPOK.get(mod)
+            if not koz:
+                continue                       # "ki" vagy ismeretlen
+            if p.utolso_ertesites and (ma - p.utolso_ertesites).days < koz:
+                continue                       # még nem esedékes
+            if not p.utolso_ertesites:
+                # Első alkalom: a regisztráció napjához igazítjuk, hogy a
+                # küldések szétterüljenek a héten/hónapon belül.
+                alap = (p.created_at.date() if p.created_at else ma)
+                if koz > 1 and (ma - alap).days % koz != 0:
+                    continue
+            ki.append({"id": p.id, "email": p.email, "mod": mod,
+                       "utolso": p.utolso_ertesites})
+        return ki
+    finally:
+        db.close()
+
+
+def ertesites_elkuldve(parent_id: int, nap: date | None = None) -> None:
+    """Feljegyzi, hogy ma ment ki jelentés. Enélkül holnap újra kimenne."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if p is not None:
+            p.utolso_ertesites = nap or datetime.now(timezone.utc).date()
+            db.commit()
+    except Exception:
+        db.rollback()
+    finally:
+        db.close()
 
 
 def get_parent_by_id(parent_id: int) -> dict[str, Any] | None:
@@ -2292,6 +2385,75 @@ def torol_meresi_adatokat(parent_id: int | None = None) -> tuple[int, int]:
         db.rollback()
         logger.warning("torol_meresi_adatokat sikertelen", exc_info=True)
         return (0, 0)
+    finally:
+        db.close()
+
+
+def szuloi_jelentes(parent_id: int, napok: int = 7) -> dict[str, Any]:
+    """A szülői levél nyersanyaga: mit tanult a gyerek, mi ment jól, hol gyenge.
+
+    Egy hívásban gyűjti össze, mert a levélküldő nem akar tízszer kérdezni.
+    Ha egy gyerek nem tanult, ATTÓL IS kikerül a levélbe – a szülőnek az is
+    információ, hogy a héten nem történt semmi.
+    """
+    ma = datetime.now(timezone.utc).date()
+    hatar = ma - timedelta(days=max(1, napok))
+    db = _session()
+    try:
+        gyerekek = []
+        for c in db.scalars(select(Child).where(
+                Child.parent_id == parent_id).order_by(Child.name)).all():
+            percek: dict[str, float] = {}
+            ossz = 0.0
+            napok_halmaz = set()
+            for t in db.scalars(select(ChildLearningTime).where(
+                    ChildLearningTime.child_id == c.id,
+                    ChildLearningTime.date >= hatar)).all():
+                p = float(t.minutes or 0.0)
+                if p <= 0:
+                    continue
+                percek[t.subject] = percek.get(t.subject, 0.0) + p
+                ossz += p
+                napok_halmaz.add(t.date)
+
+            kesz, gyenge = [], []
+            for sz in db.scalars(select(ChildTopicScore).where(
+                    ChildTopicScore.child_id == c.id)).all():
+                mikor = getattr(sz, "completed_at", None)
+                if not mikor or mikor.date() < hatar:
+                    continue
+                tetel = {"nev": sz.topic_name or sz.topic_id,
+                         "pont": int(sz.score or 0),
+                         "targy": sz.subject}
+                (kesz if sz.passed else gyenge).append(tetel)
+
+            uj_szo = db.scalar(select(func.count()).select_from(Vocabulary)
+                               .where(Vocabulary.child_id == c.id)) or 0
+            kartya = db.scalar(select(func.count()).select_from(ChildCard)
+                               .where(ChildCard.child_id == c.id)) or 0
+
+            gyerekek.append({
+                "nev": c.name,
+                "osztaly": c.grade,
+                "perc": round(ossz),
+                "napok": len(napok_halmaz),
+                "tantargyak": sorted(percek.items(), key=lambda x: -x[1]),
+                "teljesitett": kesz[:6],
+                "gyenge": gyenge[:4],
+                "szavak": int(uj_szo),
+                "kartyak": int(kartya),
+            })
+
+        p = db.get(Parent, parent_id)
+        return {
+            "parent_id": parent_id,
+            "email": p.email if p else "",
+            "mod": (p.ertesites if p else "heti") or "heti",
+            "napok": napok,
+            "tol": hatar, "ig": ma,
+            "gyerekek": gyerekek,
+            "van_tanulas": any(g["perc"] > 0 for g in gyerekek),
+        }
     finally:
         db.close()
 
