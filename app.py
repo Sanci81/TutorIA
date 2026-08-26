@@ -7754,6 +7754,17 @@ def _admin_kapu():
         status=403, mimetype="text/html; charset=utf-8")
 
 
+# Egységárak – 2026. augusztus 26-án ELLENŐRIZVE a szolgáltatók árlistáján.
+# Az elsőként beírt becsléseim közül három rossz volt, ezért van itt dátum:
+# ha fél év múlva nézed, tudd, mikorról valók.
+#   TTS_1M     Azure neurális felolvasás, 1 millió karakter        16.00 USD
+#   TTS_INGYEN Azure havi ingyenes keret, karakter               500 000
+#   HANG_PERC  gpt-4o-mini-transcribe, egy perc hang               0.003 USD
+#   BE_1M      chat modell, 1 millió bemeneti token                0.10 USD
+#   KI_1M      chat modell, 1 millió kimeneti token                0.60 USD
+ARAK_ELLENORIZVE = "2026. augusztus 26."
+
+
 def _dij(nev: str, alap: float) -> float:
     try:
         return float(os.environ.get(nev, alap))
@@ -7773,9 +7784,9 @@ def _utc(t):
 def _gyerek_koltseg(gy: dict) -> float:
     """Egy gyerek HAVI költsége euróban, a mért fogyasztásból."""
     usd = (gy["tts_karakter"] / 1_000_000 * _dij("TTS_1M", 16.0)
-           + gy["hang_mp"] / 60.0 * _dij("HANG_PERC", 0.006)
-           + gy["be_token"] / 1_000_000 * _dij("BE_1M", 0.25)
-           + gy["ki_token"] / 1_000_000 * _dij("KI_1M", 2.0))
+           + gy["hang_mp"] / 60.0 * _dij("HANG_PERC", 0.003)
+           + gy["be_token"] / 1_000_000 * _dij("BE_1M", 0.10)
+           + gy["ki_token"] / 1_000_000 * _dij("KI_1M", 0.60))
     return usd * _dij("EUR_USD", 0.92)
 
 
@@ -7791,6 +7802,17 @@ def admin_attekintes():
     most = datetime.now(timezone.utc)
     ar = _dij("HAVI_AR", 7.99)
 
+    def _targynev(nyers: str) -> str:
+        """A tanulási sorokban a tanterv FÁJLNEVE áll ("Matematika_1_4.json").
+        A képernyőn ez olvashatatlan, ezért emberi névre fordítjuk."""
+        try:
+            nev = _display_subject_name(nyers or "")
+        except Exception:
+            nev = nyers or ""
+        nev = nev.replace(".json", "").replace("_", " ").strip()
+        return nev[:1].upper() + nev[1:] if nev else "—"
+
+    ossz_tts = 0
     ossz_perc = ossz_hang = ossz_koltseg = 0.0
     gyerek_szam = tanult_gyerek = aktiv_csalad = 0
     csucs_koltseg, csucs_nev = 0.0, ""
@@ -7816,11 +7838,13 @@ def admin_attekintes():
             ismert = gy["perc_hang"] + gy["perc_szoveg"]
             gy["hang_arany"] = round(100 * gy["perc_hang"] / ismert) if ismert else 0
             # az időszak fogyasztását 30 napra vetítjük, hogy havi árral vethesd össze
+            gy["tantargyak"] = [(_targynev(n), p) for n, p in gy["tantargyak"]]
             gy["havi_koltseg"] = round(_gyerek_koltseg(gy) * 30.0 / napok, 2)
             cs["havi_koltseg"] += gy["havi_koltseg"]
             ossz_perc += gy["perc_ossz"]
             ossz_hang += gy["perc_hang"]
             ossz_koltseg += _gyerek_koltseg(gy)
+            ossz_tts += gy["tts_karakter"]
             if gy["perc_ossz"] > 0:
                 tanult_gyerek += 1
             if gy["havi_koltseg"] > csucs_koltseg:
@@ -7831,9 +7855,18 @@ def admin_attekintes():
 
     _ismert = ossz_hang + sum(gy["perc_szoveg"] for cs in csaladok
                               for gy in cs["gyerekek"])
+    # Az Azure havonta 500 000 karaktert ingyen ad. Ez a te FIÓKODRA jár, nem
+    # gyerekenként – ezért csak összesítve van értelme levonni; a gyerekek
+    # soraiban a teljes költség marad, mert árazni azzal kell.
+    _ingyen = _dij("TTS_INGYEN", 500_000.0) * napok / 30.0
+    _tts_ar = _dij("TTS_1M", 16.0) / 1_000_000 * _dij("EUR_USD", 0.92)
+    fizetendo = round(max(0.0, ossz_koltseg - min(ossz_tts, _ingyen) * _tts_ar), 2)
+
     return render_template(
         "admin.html",
         csaladok=csaladok, napok=napok, ar=ar,
+        fizetendo=fizetendo, ingyen_keret=int(_ingyen), ossz_tts=ossz_tts,
+        arak_ellenorizve=ARAK_ELLENORIZVE,
         gyerek_szam=gyerek_szam, tanult_gyerek=tanult_gyerek,
         aktiv_csalad=aktiv_csalad, ossz_perc=ossz_perc,
         hang_szazalek=round(100 * ossz_hang / _ismert) if _ismert else 0,

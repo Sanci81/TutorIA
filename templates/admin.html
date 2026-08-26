@@ -70,8 +70,10 @@
       <div class="ertek">{{ (ossz_perc / 60)|round(1) }} óra</div>
       <div class="alatta">ebből {{ hang_szazalek }}% hangos</div></div>
     <div class="csempe"><div class="cim">Költség</div>
-      <div class="ertek">{{ ossz_koltseg }} €</div>
-      <div class="alatta">{{ napok }} nap alatt, mérve</div></div>
+      <div class="ertek">{{ fizetendo }} €</div>
+      <div class="alatta">{{ napok }} nap alatt ténylegesen fizetve
+        {% if fizetendo < ossz_koltseg %}<br>(mérve {{ ossz_koltseg }} €, az
+        ingyenes kerettel csökkentve){% endif %}</div></div>
     <div class="csempe"><div class="cim">Legdrágább gyerek</div>
       <div class="ertek">{{ csucs_koltseg }} €</div>
       <div class="alatta">{{ csucs_nev or '—' }} · havi szinten</div></div>
@@ -137,9 +139,17 @@
     beállított havi ár ({{ ar }} €) — ott a hangos mód viszi el a pénzt.<br>
     A <em>Hangos / szöveges</em> sáv csak azokra az órákra épül, amiket a mérés
     bevezetése óta tartottak; a régebbi óráknál nem tudjuk, milyen módban folytak.<br>
+    <strong>Az egységárak {{ arak_ellenorizve }}-i állapot szerint:</strong>
+    Azure felolvasás 16 USD / millió karakter (havi 500 000 karakter ingyen),
+    hangfelismerés 0,003 USD / perc, chat modell 0,10 USD / millió bemeneti és
+    0,60 USD / millió kimeneti token, 0,92 EUR/USD árfolyamon. Ezek
+    LISTAÁRAK — a mérvadó mindig a szolgáltatók által kiállított számla.
+    Vesd össze: OpenAI → Usage, Azure → Cost analysis.<br>
     Az árat a <code>HAVI_AR</code>, az egységárakat a <code>TTS_1M</code>,
-    <code>HANG_PERC</code>, <code>BE_1M</code>, <code>KI_1M</code> és
-    <code>EUR_USD</code> környezeti változóval írhatod át.
+    <code>TTS_INGYEN</code>, <code>HANG_PERC</code>, <code>BE_1M</code>,
+    <code>KI_1M</code> és <code>EUR_USD</code> környezeti változóval írhatod át.<br>
+    Eddig {{ "{:,}".format(ossz_tts).replace(",", " ") }} karaktert olvastunk fel
+    ebben az időszakban; az ingyenes keret {{ "{:,}".format(ingyen_keret).replace(",", " ") }}.
   </div>
 </div>
 {% endblock %}
