@@ -7718,6 +7718,102 @@ def child_album_place(child_id: int):
 # felismert másodperc pénz. Enélkül az árazás tipp – ez a lap méri.
 
 
+# ── Áttekintés az üzemeltetőnek ─────────────────────────────────────────────
+# Egyetlen kérdésre válaszol: ki használja, mire, és mennyibe kerül. A mért
+# fogyasztásból számol, nem becslésből – ezért lehet róla árat dönteni.
+#
+# Az egységárak a szolgáltatók listaárai. Környezeti változóval átírhatók, ha
+# kedvezményes csomagod lesz: akkor sem kell kódot módosítani.
+
+def _dij(nev: str, alap: float) -> float:
+    try:
+        return float(os.environ.get(nev, alap))
+    except (TypeError, ValueError):
+        return alap
+
+
+def _utc(t):
+    """Időzóna nélküli időpontot UTC-nek veszünk. Az adatbázis-illesztők nem
+    egyformán viselkednek, és két ilyen érték kivonása kivételt dob – ez
+    döntené össze az oldalt, nem a hiányzó adat."""
+    if t is None:
+        return None
+    return t if t.tzinfo else t.replace(tzinfo=timezone.utc)
+
+
+def _gyerek_koltseg(gy: dict) -> float:
+    """Egy gyerek HAVI költsége euróban, a mért fogyasztásból."""
+    usd = (gy["tts_karakter"] / 1_000_000 * _dij("TTS_1M", 16.0)
+           + gy["hang_mp"] / 60.0 * _dij("HANG_PERC", 0.006)
+           + gy["be_token"] / 1_000_000 * _dij("BE_1M", 0.25)
+           + gy["ki_token"] / 1_000_000 * _dij("KI_1M", 2.0))
+    return usd * _dij("EUR_USD", 0.92)
+
+
+@app.route("/admin")
+@login_required
+def admin_attekintes():
+    szulo = database.get_parent_by_id(session["parent_id"])
+    sajat = (_jogi_adatok()["kapcsolat"] or "").strip().lower()
+    if not szulo or (szulo.get("email") or "").strip().lower() != sajat:
+        abort(404)
+
+    napok = max(1, min(365, int(request.args.get("napok", 30) or 30)))
+    csaladok = database.admin_csaladok(napok=napok)
+    most = datetime.now(timezone.utc)
+    ar = _dij("HAVI_AR", 7.99)
+
+    ossz_perc = ossz_hang = ossz_koltseg = 0.0
+    gyerek_szam = tanult_gyerek = aktiv_csalad = 0
+    csucs_koltseg, csucs_nev = 0.0, ""
+
+    for cs in csaladok:
+        # állapot: mikor járt itt utoljára
+        u = _utc(cs["utoljara"])
+        if u is None:
+            cs["allapot"], cs["allapot_stilus"] = "még nem lépett be", "soha"
+        else:
+            ora = (most - u).total_seconds() / 3600
+            if ora < 0.25:
+                cs["allapot"], cs["allapot_stilus"] = "most itt van", "most"
+            elif ora < 24:
+                cs["allapot"], cs["allapot_stilus"] = f"{int(ora)} órája", "ma"
+            else:
+                cs["allapot"], cs["allapot_stilus"] = f"{int(ora // 24)} napja", "reg"
+        cs["havi_koltseg"] = 0.0
+        for gy in cs["gyerekek"]:
+            gyerek_szam += 1
+            gy["perc_ossz"] = (gy["perc_hang"] + gy["perc_szoveg"]
+                               + gy["perc_ismeretlen"])
+            ismert = gy["perc_hang"] + gy["perc_szoveg"]
+            gy["hang_arany"] = round(100 * gy["perc_hang"] / ismert) if ismert else 0
+            # az időszak fogyasztását 30 napra vetítjük, hogy havi árral vethesd össze
+            gy["havi_koltseg"] = round(_gyerek_koltseg(gy) * 30.0 / napok, 2)
+            cs["havi_koltseg"] += gy["havi_koltseg"]
+            ossz_perc += gy["perc_ossz"]
+            ossz_hang += gy["perc_hang"]
+            ossz_koltseg += _gyerek_koltseg(gy)
+            if gy["perc_ossz"] > 0:
+                tanult_gyerek += 1
+            if gy["havi_koltseg"] > csucs_koltseg:
+                csucs_koltseg, csucs_nev = gy["havi_koltseg"], gy["nev"]
+        cs["havi_koltseg"] = round(cs["havi_koltseg"], 2)
+        if u and (most - u).days < napok:
+            aktiv_csalad += 1
+
+    _ismert = ossz_hang + sum(gy["perc_szoveg"] for cs in csaladok
+                              for gy in cs["gyerekek"])
+    return render_template(
+        "admin.html",
+        csaladok=csaladok, napok=napok, ar=ar,
+        gyerek_szam=gyerek_szam, tanult_gyerek=tanult_gyerek,
+        aktiv_csalad=aktiv_csalad, ossz_perc=ossz_perc,
+        hang_szazalek=round(100 * ossz_hang / _ismert) if _ismert else 0,
+        ossz_koltseg=round(ossz_koltseg, 2),
+        csucs_koltseg=csucs_koltseg, csucs_nev=csucs_nev,
+    )
+
+
 @app.route("/koltseg")
 @login_required
 def cost_report():

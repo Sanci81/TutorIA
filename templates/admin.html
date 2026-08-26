@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Áttekintés · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<style>
+  .adm{max-width:1180px;margin:0 auto;padding:20px 16px 70px}
+  .adm h1{font-size:1.55rem;margin:0 0 4px}
+  .adm .alcim{color:#6b7280;margin:0 0 20px}
+  .adm .idosav{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+  .adm .idosav a{padding:6px 13px;border:1px solid #d9dee7;border-radius:999px;
+                 text-decoration:none;color:#1f3a63;font-size:.9rem;background:#fff}
+  .adm .idosav a.be{background:#1f3a63;border-color:#1f3a63;color:#fff}
+
+  .adm .fejsor{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+               margin-bottom:24px}
+  .adm .csempe{background:#fff;border:1px solid #d9dee7;border-radius:12px;padding:13px 15px}
+  .adm .csempe .cim{font-size:.8rem;color:#6b7280;text-transform:uppercase;letter-spacing:.03em}
+  .adm .csempe .ertek{font-size:1.6rem;font-weight:700;line-height:1.25;margin-top:2px}
+  .adm .csempe .alatta{font-size:.82rem;color:#6b7280}
+
+  .adm .csalad{background:#fff;border:1px solid #d9dee7;border-radius:14px;
+               padding:15px 17px;margin-bottom:14px}
+  .adm .cfej{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+             align-items:baseline;border-bottom:1px solid #eef1f6;padding-bottom:10px;margin-bottom:12px}
+  .adm .cfej .email{font-weight:600;font-size:1.02rem;word-break:break-all}
+  .adm .cfej .meta{color:#6b7280;font-size:.86rem}
+  .adm .jelzo{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.78rem;
+              font-weight:700;white-space:nowrap}
+  .adm .most{background:#dcfce7;color:#166534}
+  .adm .ma{background:#e0f2fe;color:#075985}
+  .adm .reg{background:#fef3c7;color:#92400e}
+  .adm .soha{background:#f1f5f9;color:#64748b}
+
+  .adm table{width:100%;border-collapse:collapse;font-size:.9rem}
+  .adm th,.adm td{border-bottom:1px solid #eef1f6;padding:7px 8px;text-align:left;vertical-align:top}
+  .adm th{color:#6b7280;font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.03em}
+  .adm td.szam{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .adm .sav{display:flex;height:8px;border-radius:4px;overflow:hidden;background:#eef1f6;min-width:90px}
+  .adm .sav i{display:block}
+  .adm .sav .h{background:#7c3aed}
+  .adm .sav .sz{background:#22c55e}
+  .adm .kicsi{color:#6b7280;font-size:.8rem}
+  .adm .dragabb{color:#a12b2b;font-weight:700}
+  .adm .ures{background:#fff8e6;border-left:4px solid #e8a33d;padding:14px 16px;line-height:1.6}
+  .adm .lab{margin-top:26px;color:#6b7280;font-size:.86rem;line-height:1.6;
+            background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 15px}
+</style>
+
+<div class="adm">
+  <h1>Áttekintés</h1>
+  <p class="alcim">Ki tanul, mit, hogyan — és mibe kerül. Csak te látod ezt az oldalt.</p>
+
+  <div class="idosav">
+    <span class="kicsi">Időszak:</span>
+    {% for n in [7, 30, 90] %}
+      <a href="{{ url_for('admin_attekintes', napok=n) }}"
+         class="{% if napok == n %}be{% endif %}">{{ n }} nap</a>
+    {% endfor %}
+  </div>
+
+  <div class="fejsor">
+    <div class="csempe"><div class="cim">Család</div>
+      <div class="ertek">{{ csaladok|length }}</div>
+      <div class="alatta">{{ aktiv_csalad }} volt aktív {{ napok }} napban</div></div>
+    <div class="csempe"><div class="cim">Gyerek</div>
+      <div class="ertek">{{ gyerek_szam }}</div>
+      <div class="alatta">{{ tanult_gyerek }} tanult ténylegesen</div></div>
+    <div class="csempe"><div class="cim">Tanulás</div>
+      <div class="ertek">{{ (ossz_perc / 60)|round(1) }} óra</div>
+      <div class="alatta">ebből {{ hang_szazalek }}% hangos</div></div>
+    <div class="csempe"><div class="cim">Költség</div>
+      <div class="ertek">{{ ossz_koltseg }} €</div>
+      <div class="alatta">{{ napok }} nap alatt, mérve</div></div>
+    <div class="csempe"><div class="cim">Legdrágább gyerek</div>
+      <div class="ertek">{{ csucs_koltseg }} €</div>
+      <div class="alatta">{{ csucs_nev or '—' }} · havi szinten</div></div>
+  </div>
+
+  {% if not csaladok %}
+    <div class="ures">Még nincs egyetlen regisztrált család sem.</div>
+  {% endif %}
+
+  {% for cs in csaladok %}
+  <div class="csalad">
+    <div class="cfej">
+      <div>
+        <div class="email">{{ cs.email }}</div>
+        <div class="meta">Regisztrált: {{ cs.regisztralt.strftime('%Y. %m. %d.') if cs.regisztralt else '—' }}
+          · {{ cs.gyerekek|length }} gyerek</div>
+      </div>
+      <div>
+        <span class="jelzo {{ cs.allapot_stilus }}">{{ cs.allapot }}</span>
+        <span class="meta">&nbsp;{{ cs.havi_koltseg }} € / hó</span>
+      </div>
+    </div>
+
+    {% if cs.gyerekek %}
+    <table>
+      <tr><th>Gyerek</th><th>Tanult</th><th>Hangos / szöveges</th>
+          <th>Tantárgyak</th><th class="szam">Költség / hó</th></tr>
+      {% for gy in cs.gyerekek %}
+      <tr>
+        <td>{{ gy.nev }}<br><span class="kicsi">{{ gy.osztaly }}. {{ gy.tanterv }}</span></td>
+        <td class="szam">{{ gy.perc_ossz|round(0)|int }} perc
+          <br><span class="kicsi">{{ gy.utolso_tanulas.strftime('%m. %d.') if gy.utolso_tanulas else '—' }}</span></td>
+        <td>
+          {% if gy.perc_ossz > 0 %}
+            <div class="sav">
+              <i class="h" style="width:{{ gy.hang_arany }}%"></i>
+              <i class="sz" style="width:{{ 100 - gy.hang_arany }}%"></i>
+            </div>
+            <span class="kicsi">{{ gy.hang_arany }}% hangos</span>
+          {% else %}<span class="kicsi">—</span>{% endif %}
+        </td>
+        <td class="kicsi">
+          {% for nev, perc in gy.tantargyak[:4] %}
+            {{ nev }} <b>{{ perc|round(0)|int }}p</b>{% if not loop.last %} · {% endif %}
+          {% else %}—{% endfor %}
+        </td>
+        <td class="szam {% if gy.havi_koltseg > ar %}dragabb{% endif %}">
+          {{ gy.havi_koltseg }} €</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+      <p class="kicsi" style="margin:0">Nincs felvett gyerek.</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <div class="lab">
+    <strong>Hogyan olvasd.</strong>
+    A <em>Költség / hó</em> a mért fogyasztásból számolt becslés, harminc napra
+    vetítve: felolvasott karakterek, felismert hangmásodpercek és AI-tokenek,
+    a szolgáltatók listaárán. A pirosan kiemelt gyerek többe kerül, mint a
+    beállított havi ár ({{ ar }} €) — ott a hangos mód viszi el a pénzt.<br>
+    A <em>Hangos / szöveges</em> sáv csak azokra az órákra épül, amiket a mérés
+    bevezetése óta tartottak; a régebbi óráknál nem tudjuk, milyen módban folytak.<br>
+    Az árat a <code>HAVI_AR</code>, az egységárakat a <code>TTS_1M</code>,
+    <code>HANG_PERC</code>, <code>BE_1M</code>, <code>KI_1M</code> és
+    <code>EUR_USD</code> környezeti változóval írhatod át.
+  </div>
+</div>
+{% endblock %}

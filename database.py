@@ -2147,6 +2147,82 @@ def get_usage(child_id: int | None = None, napok: int = 30) -> list[dict[str, An
         db.close()
 
 
+# ---------------------------------------------------------------------------
+# ADMIN ÖSSZESÍTŐ – az üzemeltető egyetlen kérdésére válaszol:
+# ki használja, mire, és mennyibe kerül.
+#
+# Egy hívásban gyűjti össze az összes családot, hogy ne kelljen családonként
+# külön lekérdezni – tíz családnál még mindegy, százan már nem.
+# ---------------------------------------------------------------------------
+
+
+def admin_csaladok(napok: int = 30) -> list[dict[str, Any]]:
+    """Minden család, gyerekeivel, tanulási idejével és fogyasztásával."""
+    db = _session()
+    try:
+        hatar_nap = datetime.now(timezone.utc).date() - timedelta(days=max(1, napok))
+
+        gyerek_szulo: dict[int, int] = {}
+        csaladok: dict[int, dict[str, Any]] = {}
+        for p in db.scalars(select(Parent).order_by(Parent.created_at)).all():
+            csaladok[p.id] = {
+                "id": p.id, "email": p.email,
+                "regisztralt": p.created_at, "utoljara": p.last_seen,
+                "gyerekek": [],
+            }
+        for c in db.scalars(select(Child)).all():
+            if c.parent_id not in csaladok:
+                continue
+            gyerek_szulo[c.id] = c.parent_id
+            csaladok[c.parent_id]["gyerekek"].append({
+                "id": c.id, "nev": c.name, "osztaly": c.grade,
+                "tanterv": (c.curriculum or "HU"),
+                "perc_hang": 0.0, "perc_szoveg": 0.0, "perc_ismeretlen": 0.0,
+                "tantargyak": {},
+                "tts_karakter": 0, "hang_mp": 0.0,
+                "be_token": 0, "ki_token": 0, "keres": 0,
+                "utolso_tanulas": None,
+            })
+
+        gyerek_mutato = {gy["id"]: gy
+                         for cs in csaladok.values() for gy in cs["gyerekek"]}
+
+        for t in db.scalars(select(ChildLearningTime)
+                            .where(ChildLearningTime.date >= hatar_nap)).all():
+            gy = gyerek_mutato.get(t.child_id)
+            if gy is None:
+                continue
+            perc = float(t.minutes or 0.0)
+            kulcs = {"voice": "perc_hang", "text": "perc_szoveg"}.get(
+                t.mode or "", "perc_ismeretlen")
+            gy[kulcs] += perc
+            gy["tantargyak"][t.subject] = gy["tantargyak"].get(t.subject, 0.0) + perc
+            if gy["utolso_tanulas"] is None or t.date > gy["utolso_tanulas"]:
+                gy["utolso_tanulas"] = t.date
+
+        for u in db.scalars(select(ChildUsage)
+                            .where(ChildUsage.nap >= hatar_nap)).all():
+            gy = gyerek_mutato.get(u.child_id)
+            if gy is None:
+                continue
+            gy["tts_karakter"] += u.tts_karakter or 0
+            gy["hang_mp"] += u.hang_mp or 0.0
+            gy["be_token"] += u.be_token or 0
+            gy["ki_token"] += u.ki_token or 0
+            gy["keres"] += u.keres or 0
+
+        for cs in csaladok.values():
+            cs["gyerekek"].sort(key=lambda g: g["nev"] or "")
+            for gy in cs["gyerekek"]:
+                gy["tantargyak"] = sorted(gy["tantargyak"].items(),
+                                          key=lambda x: -x[1])
+        return sorted(csaladok.values(),
+                      key=lambda c: (c["utoljara"] is None, 
+                                     -(c["utoljara"].timestamp() if c["utoljara"] else 0)))
+    finally:
+        db.close()
+
+
 def _wallet_row(db, child_id: int) -> "ChildWallet":
     row = db.get(ChildWallet, child_id)
     if row is None:
