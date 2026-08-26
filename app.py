@@ -1048,10 +1048,9 @@ def fiok_torles():
 @app.route("/abra-naplo")
 @login_required
 def abra_naplo():
-    szulo = database.get_parent_by_id(session["parent_id"])
-    sajat = (_jogi_adatok()["kapcsolat"] or "").strip().lower()
-    if not szulo or (szulo.get("email") or "").strip().lower() != sajat:
-        abort(404)
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
     return render_template(
         "abra_naplo.html",
         bejegyzesek=abra_ellenor.naplo(),
@@ -7725,6 +7724,36 @@ def child_album_place(child_id: int):
 # Az egységárak a szolgáltatók listaárai. Környezeti változóval átírhatók, ha
 # kedvezményes csomagod lesz: akkor sem kell kódot módosítani.
 
+def _admin_cimek() -> set[str]:
+    """Kik láthatják az üzemeltetői oldalakat. Vesszővel több cím is megadható
+    az ADMIN_EMAILEK környezeti változóban; alapból a kapcsolattartási cím."""
+    nyers = os.environ.get("ADMIN_EMAILEK") or _jogi_adatok()["kapcsolat"] or ""
+    return {c.strip().lower() for c in nyers.split(",") if c.strip()}
+
+
+def _admin_kapu():
+    """None, ha szabad az út. Különben kész válasz.
+
+    SZÁNDÉKOSAN nem néma 404: az üzemeltető nem tudná kideríteni, miért nem
+    engedi be – pont ez történt élesben. Így látja a belépett címét.
+    """
+    szulo = database.get_parent_by_id(session.get("parent_id") or 0)
+    cim = (szulo or {}).get("email", "")
+    if szulo and cim.strip().lower() in _admin_cimek():
+        return None
+    return Response(
+        "<!doctype html><meta charset='utf-8'>"
+        "<div style=\"font:16px/1.6 system-ui,sans-serif;max-width:640px;"
+        "margin:60px auto;padding:0 20px\">"
+        "<h1 style='font-size:1.3rem'>Ez az oldal az üzemeltetőé</h1>"
+        f"<p>Ezzel a címmel vagy belépve: <b>{cim or 'nem vagy belépve'}</b></p>"
+        "<p style='color:#5b6474'>Ha ez a te címed, és mégsem enged be, állítsd be "
+        "a Railway-en az <code>ADMIN_EMAILEK</code> változót erre a címre "
+        "(vesszővel több is lehet).</p>"
+        "<p><a href='/'>Vissza</a></p></div>",
+        status=403, mimetype="text/html; charset=utf-8")
+
+
 def _dij(nev: str, alap: float) -> float:
     try:
         return float(os.environ.get(nev, alap))
@@ -7753,10 +7782,9 @@ def _gyerek_koltseg(gy: dict) -> float:
 @app.route("/admin")
 @login_required
 def admin_attekintes():
-    szulo = database.get_parent_by_id(session["parent_id"])
-    sajat = (_jogi_adatok()["kapcsolat"] or "").strip().lower()
-    if not szulo or (szulo.get("email") or "").strip().lower() != sajat:
-        abort(404)
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
 
     napok = max(1, min(365, int(request.args.get("napok", 30) or 30)))
     csaladok = database.admin_csaladok(napok=napok)
