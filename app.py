@@ -78,6 +78,17 @@ logger = logging.getLogger(__name__)
 AZURE_VOICE_HU = "hu-HU-NoemiNeural"
 AZURE_VOICE_ES = "es-ES-ElviraNeural"
 
+# Beszédfelismerő modell. 2026. augusztus 28-án ELLENŐRIZVE az OpenAI
+# árlistáján és átírás-útmutatóján: fájl-átírásra a gpt-transcribe az AJÁNLOTT
+# modell, a korábban használt gpt-4o-mini-transcribe pedig kifejezetten már
+# NEM az. Szóhiba (Artificial Analysis AA-WER v2): 3.3% a 4.5% helyett – vagyis
+# negyedével kevesebb félrehallás, 0.003 helyett 0.0045 USD/perc áron. Egy
+# gyerek beszédét felismerni a rendszer leggyengébb pontja, ezért megéri.
+# Ha az új modell bármiért nem elérhető (fiókjogosultság, elutasított
+# paraméter), a TARTALEK-ra esünk vissza – a felvétel ne veszjen el.
+STT_MODEL = os.environ.get("STT_MODEL", "gpt-transcribe")
+STT_MODEL_TARTALEK = os.environ.get("STT_MODEL_TARTALEK", "gpt-4o-mini-transcribe")
+
 # A tanár hangja + neve tantervenként és nemenként. A név a hanghoz tartozik,
 # a szülő a profilban csak a hang nemét választja ki (női/férfi).
 TEACHER_PROFILES = {
@@ -2610,6 +2621,30 @@ def _transcribe_via_chat(
         return None
 
 
+def _stt_kulcsszavak(szakszavak: str, hint_words: list[str] | None) -> list[str]:
+    """Szó szerint várható szavak a felismerőnek (gpt-transcribe `keywords`).
+
+    A felület az EGÉSZ kérést elutasítja, ha egy kulcsszóban `<`, `>` vagy
+    sortörés van, ezért itt megtisztítjuk őket: egyetlen rossz karakter miatt
+    nem maradhat a gyerek felismerés nélkül.
+    """
+    nyers: list[str] = []
+    if szakszavak:
+        nyers.extend(szakszavak.split(","))
+    if hint_words:
+        nyers.extend(hint_words)
+
+    kesz: list[str] = []
+    latott: set[str] = set()
+    for szo in nyers:
+        tiszta = " ".join(str(szo).replace("<", " ").replace(">", " ").split())
+        if not tiszta or tiszta.lower() in latott:
+            continue
+        latott.add(tiszta.lower())
+        kesz.append(tiszta)
+    return kesz[:100]
+
+
 def _whisper_transcribe(
     audio_bytes: bytes, filename: str = "audio.webm", language: str = "hu",
     frame: str = "hu", force_language: str | None = None,
@@ -2656,32 +2691,63 @@ def _whisper_transcribe(
     # és eldobnánk a helyes válaszát.
     echo_prompt = whisper_prompt
 
+    # A ritka iskolai szavakra a felismerő magától a gyakoribb, hasonló
+    # hangzású szót tippeli („köbmétert" → „követeltet"). Ha látja, hogy ezek
+    # várhatók, jó irányba billen a tippelés.
+    #
+    # A KÉT MODELL MÁSHOL VÁRJA EZT. A régi (gpt-4o-mini-transcribe) csak a
+    # promptban tudja fogadni; a gpt-transcribe erre külön `keywords` listát
+    # kap. Az utóbbi jobb: a prompt rövid marad, így kevesebbet visszhangzik.
+    regi_prompt = whisper_prompt
     if szakszavak:
-        # A ritka iskolai szavakra a felismerő magától a gyakoribb, hasonló
-        # hangzású szót tippeli („köbmétert" → „követeltet"). Ha látja, hogy
-        # ezek várhatók, jó irányba billen a tippelés.
-        whisper_prompt += (
+        regi_prompt += (
             (" Palabras que pueden aparecer: " if force_language == "es"
              else " Előfordulható szavak: ") + szakszavak + ".")
     if context_text:
+        regi_prompt += " Context: " + context_text[-200:]
         whisper_prompt += " Context: " + context_text[-200:]
 
+    kulcsszavak = _stt_kulcsszavak(szakszavak, hint_words)
+
     client = _openai_client(api_key, request_timeout=60.0)
-    buf = io.BytesIO(audio_bytes)
-    buf.name = filename if "." in filename else f"{filename}.webm"
-    create_kwargs: dict = {
-        "model": "gpt-4o-mini-transcribe",
-        "file": buf,
-        "prompt": whisper_prompt,
-    }
-    if force_language:
-        create_kwargs["language"] = force_language
-        create_kwargs["temperature"] = 0
-    transcription = client.audio.transcriptions.create(**create_kwargs)
-    result = (transcription.text or "").strip()
+
+    def _atiras(model: str, *, uj_stilus: bool) -> str:
+        # A fájlt minden hívásnál újra kell csomagolni: az előző kérés a
+        # végére olvasta a puffert, egy második hívás üres hangot küldene.
+        buf = io.BytesIO(audio_bytes)
+        buf.name = filename if "." in filename else f"{filename}.webm"
+        kwargs: dict = {"model": model, "file": buf}
+        if uj_stilus:
+            kwargs["prompt"] = whisper_prompt
+            extra: dict = {}
+            if kulcsszavak:
+                extra["keywords"] = kulcsszavak
+            if force_language:
+                # A gpt-transcribe a `languages` LISTÁT kéri az egyes számú
+                # `language` helyett, és a kettőt együtt elutasítja.
+                extra["languages"] = [force_language]
+            if extra:
+                kwargs["extra_body"] = extra
+        else:
+            kwargs["prompt"] = regi_prompt
+            if force_language:
+                kwargs["language"] = force_language
+                kwargs["temperature"] = 0
+        valasz = client.audio.transcriptions.create(**kwargs)
+        return (valasz.text or "").strip()
+
+    try:
+        result = _atiras(STT_MODEL, uj_stilus=True)
+    except Exception as exc:
+        logger.warning(
+            "STT %s nem sikerult (%s) - tartalek: %s",
+            STT_MODEL, str(exc).splitlines()[0] if str(exc) else exc,
+            STT_MODEL_TARTALEK,
+        )
+        result = _atiras(STT_MODEL_TARTALEK, uj_stilus=False)
 
     # ── DIREKT prompt-visszhang szűrő ──
-    # A gpt-4o-mini-transcribe néha SZÓ SZERINT visszaadja a neki küldött
+    # A felismerő néha SZÓ SZERINT visszaadja a neki küldött
     # utasítást ("Magyar nyelvű gyerek beszél. Írd le pontosan..."). A lenti
     # gyakoriság-alapú szűrő ezt nem fogja meg, mert az utasítás szavai nincsenek
     # az _ECHO_WORDS halmazban. Ezért közvetlenül a prompthoz hasonlítjuk.
@@ -8076,10 +8142,12 @@ def _admin_kapu():
 # ha fél év múlva nézed, tudd, mikorról valók.
 #   TTS_1M     Azure neurális felolvasás, 1 millió karakter        16.00 USD
 #   TTS_INGYEN Azure havi ingyenes keret, karakter               500 000
-#   HANG_PERC  gpt-4o-mini-transcribe, egy perc hang               0.003 USD
+#   HANG_PERC  gpt-transcribe, egy perc hang                       0.0045 USD
 #   BE_1M      chat modell, 1 millió bemeneti token                0.10 USD
 #   KI_1M      chat modell, 1 millió kimeneti token                0.60 USD
-ARAK_ELLENORIZVE = "2026. augusztus 26."
+# A HANG_PERC 2026. augusztus 28-án frissült, amikor a felismerő modellt
+# gpt-4o-mini-transcribe-ról gpt-transcribe-ra váltottuk (0.003 → 0.0045).
+ARAK_ELLENORIZVE = "2026. augusztus 28."
 
 
 def _dij(nev: str, alap: float) -> float:
@@ -8101,7 +8169,7 @@ def _utc(t):
 def _gyerek_koltseg(gy: dict) -> float:
     """Egy gyerek HAVI költsége euróban, a mért fogyasztásból."""
     usd = (gy["tts_karakter"] / 1_000_000 * _dij("TTS_1M", 16.0)
-           + gy["hang_mp"] / 60.0 * _dij("HANG_PERC", 0.003)
+           + gy["hang_mp"] / 60.0 * _dij("HANG_PERC", 0.0045)
            + gy["be_token"] / 1_000_000 * _dij("BE_1M", 0.10)
            + gy["ki_token"] / 1_000_000 * _dij("KI_1M", 0.60))
     return usd * _dij("EUR_USD", 0.92)
