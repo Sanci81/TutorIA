@@ -32,7 +32,10 @@ TRANSLATIONS = {
     # --- általános / navigáció ---
     "app_name": {"hu": "TutorIA", "es": "TutorIA"},
     "nav_home": {"hu": "Főoldal", "es": "Inicio"},
-    "nav_dashboard": {"hu": "Vezérlőpult", "es": "Panel"},
+    # A "Vezérlőpult" gépies, és nem mondja meg, mi van mögötte. Ez az oldal
+    # a gyerekek listája és a haladásuk, ezért "Áttekintés". (Ha inkább
+    # "Kezdőlap" vagy "Gyerekek" kell, elég ezt az egy sort átírni.)
+    "nav_dashboard": {"hu": "Áttekintés", "es": "Resumen"},
     "nav_register": {"hu": "Regisztráció", "es": "Registrarse"},
     "nav_login": {"hu": "Bejelentkezés", "es": "Iniciar sesión"},
     "nav_logout": {"hu": "Kijelentkezés", "es": "Cerrar sesión"},
@@ -293,7 +296,10 @@ TRANSLATIONS = {
     "chat_input_placeholder": {"hu": "Írd ide az üzeneted…", "es": "Escribe tu mensaje…"},
     "chat_send": {"hu": "Küldés", "es": "Enviar"},
     "chat_voice_status_idle": {"hu": "Nyomd meg és beszélj! 🎙️", "es": "¡Pulsa y habla! 🎙️"},
-    "chat_voice_listening": {"hu": "Figyelek... 👂", "es": "Te escucho... 👂"},
+    "chat_voice_listening": {
+        "hu": "Figyelek... 👂 Ha befejezted, nyomd meg újra!",
+        "es": "Te escucho... 👂 Cuando termines, ¡pulsa otra vez!",
+    },
     "chat_voice_processing": {"hu": "Mindjárt mondom... 💭", "es": "Un momento... 💭"},
     "chat_voice_unsupported": {
         "hu": "A böngésződ nem támogatja a hangfelvételt.",
@@ -311,6 +317,18 @@ TRANSLATIONS = {
     "chat_err_network": {
         "hu": "Hálózati hiba – próbáld újra!",
         "es": "Error de red: ¡inténtalo de nuevo!",
+    },
+    # Nem "hiba" a gyerek felé: a lassú válasz nem az ő hibája, és nem is
+    # zsákutca. Megmondjuk, mit tegyen.
+    "chat_err_timeout": {
+        "hu": "Ez most sokáig tartott, és félbeszakadt. Írd le még egyszer, kérlek! 🙂",
+        "es": "Esto ha tardado demasiado y se ha cortado. ¿Puedes escribirlo otra vez? 🙂",
+    },
+    # Nem hiba, hanem használati tipp: a gomb KAPCSOLÓ – egy nyomás indít,
+    # a következő leállít, nem kell nyomva tartani.
+    "chat_voice_too_short": {
+        "hu": "Ez túl rövid volt. Nyomd meg, beszélj, majd nyomd meg újra! 🎤",
+        "es": "Ha sido muy corto. Pulsa, habla y vuelve a pulsar. 🎤",
     },
     "chat_err_not_understood": {
         "hu": "Nem értettem – próbáld újra! 🙂",

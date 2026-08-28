@@ -68,10 +68,6 @@
                    vitt, a felirat pedig az aktuális módot mutatta: ez zavaró volt,
                    és chat módból nem volt egyértelmű a visszaút. #}
                 <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
-                {# Teljes képernyő. Jobbra tolva, hogy a fejléc közepét ne foglalja. #}
-                <button type="button" class="chat-teljes-gomb" id="chat-teljes"
-                        title="{{ t('chat_fullscreen') }}"
-                        aria-label="{{ t('chat_fullscreen') }}">⛶</button>
                 {% if not show_chat_switch %}
                     <span class="chat-mode-toggle chat-mode-voice">{{ t('chat_mode_voice') }}</span>
                 {% elif chat_mode == 'voice' %}
@@ -207,58 +203,7 @@
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <script>
-    // ── A teszt ablak és a teljes képernyő ─────────────────────────────
-    // A böngésző teljes képernyő módjában CSAK a kinagyított elem tartalma
-    // látszik. A teszt ablaka viszont a <section> MELLETT állt, nem benne –
-    // ezért nagyításban egyszerűen nem jelent meg. Beköltöztetjük a chat
-    // dobozába: normál nézetben ez semmit nem változtat (az ablak úgyis a
-    // képernyőhöz van rögzítve), nagyításban viszont láthatóvá válik.
-    (function () {
-        var lap = document.getElementById('chat-page');
-        var ablak = document.getElementById('test-overlay');
-        if (lap && ablak && ablak.parentElement !== lap) {
-            lap.appendChild(ablak);
-        }
-    })();
-
-    // ── Teljes képernyő ────────────────────────────────────────────────
-    // Előbb a böngésző valódi teljes képernyőjét kérjük (mint a videóknál).
-    // Ha az nem megy, akkor is kitesszük a chatet az egész ablakra egy
-    // osztállyal – így a gomb soha nem tehetetlen.
-    (function () {
-        var gomb = document.getElementById('chat-teljes');
-        var lap = document.getElementById('chat-page');
-        if (!gomb || !lap) return;
-        var kerhet = lap.requestFullscreen || lap.webkitRequestFullscreen;
-        var kilep = document.exitFullscreen || document.webkitExitFullscreen;
-        function jelol() {
-            var benne = lap.classList.contains('teljes-mod');
-            gomb.textContent = benne ? '\u2715' : '\u26f6';
-        }
-        gomb.addEventListener('click', function () {
-            if (lap.classList.contains('teljes-mod')) {
-                lap.classList.remove('teljes-mod');
-                if (document.fullscreenElement || document.webkitFullscreenElement) {
-                    try { kilep.call(document); } catch (e) {}
-                }
-            } else {
-                lap.classList.add('teljes-mod');
-                if (kerhet) { try { kerhet.call(lap); } catch (e) {} }
-            }
-            jelol();
-        });
-        function valtozott() {
-            if (!(document.fullscreenElement || document.webkitFullscreenElement)) {
-                lap.classList.remove('teljes-mod');
-                jelol();
-            }
-        }
-        document.addEventListener('fullscreenchange', valtozott);
-        document.addEventListener('webkitfullscreenchange', valtozott);
-        jelol();
-    })();
-
-    (function () {
+(function () {
     var childId = {{ child['id']|tojson }};
     var sendUrl = {{ url_for('child_chat_send', child_id=child['id'])|tojson }};
     var progressUrl = {{ url_for('child_chat_progress', child_id=child['id'])|tojson }};
@@ -344,6 +289,8 @@
         reviewExplanation: {{ t('review_explanation')|tojson }},
         errNoReply: {{ t('chat_err_no_reply')|tojson }},
         errNetwork: {{ t('chat_err_network')|tojson }},
+        errTimeout: {{ t('chat_err_timeout')|tojson }},
+        voiceTooShort: {{ t('chat_voice_too_short')|tojson }},
         errNotUnderstood: {{ t('chat_err_not_understood')|tojson }},
         voiceStatusIdle: {{ t('chat_voice_status_idle')|tojson }},
         voiceListening: {{ t('chat_voice_listening')|tojson }},
@@ -399,8 +346,7 @@
             body: JSON.stringify({
                 child_id: childId,
                 subject: subject,
-                topic_id: currentTopicId,
-                mode: {{ chat_mode|tojson }}
+                topic_id: currentTopicId
             })
         })
         .then(function (r) { return r.json(); })
@@ -634,6 +580,7 @@
 
     function setLoading(on) {
         typing.hidden = !on;
+        typing.dataset.mikor = on ? String(Date.now()) : '';
         if (sendBtn) sendBtn.disabled = on;
         if (input) input.disabled = on;
         if (on) {
@@ -643,6 +590,46 @@
             stopThinkingMessages();
         }
     }
+
+    /* ── EGY KÉRÉS SEM VÁRHAT ÖRÖKKÉ ────────────────────────────────────
+       Ha a szerver nem válaszol (elakadt hívás, elszállt folyamat), a régi
+       kódban a "•••" ott maradt, a beviteli mező tiltva maradt, és a
+       gyereknek úgy tűnt, lefagyott a program – pontosan ezt jelentette a
+       teszt: "megáll, nem történik semmi". Innentől 90 másodperc után
+       megszakítjuk a kérést, és a gyerek kap egy értelmes üzenetet. */
+    var KERES_IDOKORLAT = 90000;
+
+    function fetchIdovel(url, opts, ms) {
+        var beallitas = {};
+        for (var k in (opts || {})) { if (opts.hasOwnProperty(k)) beallitas[k] = opts[k]; }
+        var vezerlo = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+        if (vezerlo) beallitas.signal = vezerlo.signal;
+        var ora = setTimeout(function () { if (vezerlo) { vezerlo.abort(); } },
+                             ms || KERES_IDOKORLAT);
+        return fetch(url, beallitas).then(
+            function (r) { clearTimeout(ora); return r; },
+            function (e) { clearTimeout(ora); throw e; }
+        );
+    }
+
+    function halozatiUzenet(e) {
+        return (e && e.name === 'AbortError') ? L.errTimeout : L.errNetwork;
+    }
+
+    /* Végső biztosíték: ha a gépelés-jelző valamiért mégis ott ragadna
+       (olyan úton, amire nem gondoltunk), 110 másodperc után magától
+       eltűnik, és a gyerek újra tud írni. Inkább tűnjön el korán, mint
+       hogy a program haltnak látsszon. */
+    setInterval(function () {
+        if (!typing || typing.hidden) { return; }
+        var mikor = Number(typing.dataset.mikor || 0);
+        if (!mikor) { typing.dataset.mikor = String(Date.now()); return; }
+        if (Date.now() - mikor > 110000) {
+            typing.dataset.mikor = '';
+            setLoading(false);
+            appendBubble('assistant', L.errTimeout);
+        }
+    }, 5000);
 
     function renderSidebar(sidebar) {
         if (!sidebar || !sidebarList) return;
@@ -770,7 +757,7 @@
         appendBubble('user', text);
         input.value = '';
         setLoading(true);
-        fetch(sendUrl, {
+        fetchIdovel(sendUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -817,9 +804,9 @@
                 updateVocabulary(res.data.vocabulary, res.data.current_topic);
                 updateGamification(res.data.xp, res.data.game_level, res.data.coins, res.data.penztarca);
             })
-            .catch(function () {
+            .catch(function (e) {
                 setLoading(false);
-                appendBubble('assistant', L.errNetwork);
+                appendBubble('assistant', halozatiUzenet(e));
             });
     }
 
@@ -889,7 +876,7 @@
                 quizAnswers[qi] = picked ? parseInt(picked.value, 10) : -1;
             }
         });
-        fetch(testSubmitUrl, {
+        fetchIdovel(testSubmitUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1046,7 +1033,7 @@
         }
         closeTestModal();
         if (btnTest) { btnTest.disabled = true; btnTest.textContent = L.testGenerating; }
-        fetch(testGenUrl, {
+        fetchIdovel(testGenUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1132,6 +1119,7 @@
     /* ---------- Hangos mód ---------- */
     if (chatMode === 'voice') {
         var voiceMicBtn = document.getElementById('voice-mic-btn');
+        var voiceMicIcon = voiceMicBtn ? voiceMicBtn.querySelector('.voice-mic-icon') : null;
         var voiceStatus = document.getElementById('voice-status');
         var voiceUnsupported = document.getElementById('voice-unsupported');
         var voicePanel = document.getElementById('voice-panel');
@@ -1145,6 +1133,11 @@
             voiceState = state;
             if (!voiceMicBtn || !voiceStatus) return;
             voiceMicBtn.classList.remove('recording', 'disabled');
+            /* Felvétel közben a gomb megállító jelre vált, hogy a gyerek
+               lássa: ugyanaz a gomb fejezi is be. */
+            if (voiceMicIcon) {
+                voiceMicIcon.textContent = (state === 'recording') ? '⏹️' : '🎙️';
+            }
             if (state === 'recording') {
                 voiceMicBtn.classList.add('recording');
                 voiceStatus.textContent = L.voiceListening;
@@ -1168,7 +1161,7 @@
             typing.hidden = false;
             startThinkingMessages();
             scrollToBottom();
-            return fetch(sendUrl, {
+            return fetchIdovel(sendUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1226,10 +1219,10 @@
                         setVoiceUi('idle');
                     });
                 })
-                .catch(function () {
+                .catch(function (e) {
                     typing.hidden = true;
                     stopThinkingMessages();
-                    appendBubble('assistant', L.errNetwork);
+                    appendBubble('assistant', halozatiUzenet(e));
                     setVoiceUi('idle');
                 });
         }
@@ -1250,7 +1243,7 @@
             if (chatFrame && chatFrame.value) {
                 fd.append('frame', chatFrame.value);
             }
-            fetch(transcribeUrl, { method: 'POST', body: fd })
+            fetchIdovel(transcribeUrl, { method: 'POST', body: fd })
                 .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
                     if (!res.ok || !res.data.text) {
@@ -1264,8 +1257,10 @@
                     }
                     return sendVoiceChat(text);
                 })
-                .catch(function () {
-                    appendBubble('assistant', L.errNetwork);
+                .catch(function (e) {
+                    typing.hidden = true;
+                    stopThinkingMessages();
+                    appendBubble('assistant', halozatiUzenet(e));
                     setVoiceUi('idle');
                 });
         }
@@ -1328,7 +1323,7 @@
 
         function finishVoiceTest() {
             setVoiceUi('processing');
-            fetch(testSubmitUrl, {
+            fetchIdovel(testSubmitUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1344,6 +1339,8 @@
                 .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
                     voiceTestActive = false;
+                    typing.hidden = true;          /* semmikepp ne maradjon ott */
+                    stopThinkingMessages();
                     if (!res.ok) {
                         appendBubble('assistant', L.errNoReply);
                         setVoiceUi('idle');
@@ -1375,16 +1372,18 @@
                         .then(function () { setVoiceUi('idle'); })
                         .catch(function () { setVoiceUi('idle'); });
                 })
-                .catch(function () {
+                .catch(function (e) {
                     voiceTestActive = false;
-                    appendBubble('assistant', L.errNetwork);
+                    typing.hidden = true;
+                    stopThinkingMessages();
+                    appendBubble('assistant', halozatiUzenet(e));
                     setVoiceUi('idle');
                 });
         }
 
         function startVoiceTest() {
             if (btnTest) { btnTest.disabled = true; btnTest.textContent = L.testGenerating; }
-            fetch(testGenUrl, {
+            fetchIdovel(testGenUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -1414,20 +1413,40 @@
                     voiceTestActive = true;
                     askVoiceTestQuestion();
                 })
-                .catch(function () {
+                .catch(function (e) {
                     if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
-                    appendBubble('assistant', L.errNetwork);
+                    typing.hidden = true;
+                    stopThinkingMessages();
+                    appendBubble('assistant', halozatiUzenet(e));
                 });
         }
 
+        /* A MIKROFONGOMB KAPCSOLÓ: egy nyomás indít, a következő leállít.
+           A gombot NEM kell nyomva tartani – a nyomva tartás elvonta a
+           gyerek figyelmét a beszédről, és ha az ujja lecsúszott a gombról,
+           a mondat közepén elvágta a felvételt. */
+        var mikrofonIndul = false;         /* a mikrofon még nyílik (getUserMedia) */
+        var megallitasKerve = false;       /* a leállítás korábban jött, mint a mikrofon */
+        var felvetelKezdet = 0;
+        var hosszOra = null;
+        var LEGROVIDEBB_FELVETEL = 350;    /* ennél rövidebb: véletlen dupla koppintás */
+        var LEGHOSSZABB_FELVETEL = 90000;  /* ha elfelejti leállítani, magától lezárul */
+
         function stopRecording() {
+            /* A getUserMedia lassú (engedélykérés, eszköznyitás). Ha a
+               leállítás közben érkezik, jegyezzük meg: az indulás végén
+               azonnal le fog állni. */
+            if (mikrofonIndul) { megallitasKerve = true; return; }
+            if (hosszOra) { clearTimeout(hosszOra); hosszOra = null; }
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                 mediaRecorder.stop();
             }
         }
 
         function startRecording() {
-            if (voiceState === 'recording') return;
+            if (voiceState === 'recording' || mikrofonIndul) return;
+            mikrofonIndul = true;
+            megallitasKerve = false;
             if (currentAudio) {
                 currentAudio.pause();
                 URL.revokeObjectURL(currentAudio.src);
@@ -1451,21 +1470,51 @@
                         if (e.data && e.data.size > 0) audioChunks.push(e.data);
                     };
                     mediaRecorder.onstop = function () {
+                        if (hosszOra) { clearTimeout(hosszOra); hosszOra = null; }
                         if (mediaStream) {
                             mediaStream.getTracks().forEach(function (t) { t.stop(); });
                             mediaStream = null;
                         }
                         var type = (mediaRecorder && mediaRecorder.mimeType) || 'audio/webm';
                         var blob = new Blob(audioChunks, { type: type });
+                        /* Fél másodpercnél rövidebb felvételből csak egy
+                           szótöredék lesz ("Ba.", "Ott…"), amire a tanár
+                           aztán komolyan válaszol. Inkább kérjük újra. */
+                        if (Date.now() - felvetelKezdet < LEGROVIDEBB_FELVETEL) {
+                            setVoiceUi('idle');
+                            if (voiceStatus) { voiceStatus.textContent = L.voiceTooShort; }
+                            return;
+                        }
                         uploadAndProcess(blob);
                     };
                     mediaRecorder.start();
+                    felvetelKezdet = Date.now();
+                    mikrofonIndul = false;
                     setVoiceUi('recording');
+                    /* Ha a gyerek elfelejti leállítani, ne vegyen fel a
+                       végtelenségig. */
+                    hosszOra = setTimeout(function () {
+                        hosszOra = null;
+                        stopRecording();
+                    }, LEGHOSSZABB_FELVETEL);
+                    /* Ha a második nyomás már megtörtént, amíg a mikrofon
+                       nyílt, most azonnal álljunk le. */
+                    if (megallitasKerve) { stopRecording(); }
                 })
                 .catch(function () {
+                    mikrofonIndul = false;
                     alert(L.voiceMicPermission);
                     setVoiceUi('idle');
                 });
+        }
+
+        /* Egyetlen nyomás: ha nem vesz fel, indít; ha vesz fel, leállít. */
+        function toggleRecording() {
+            if (voiceState === 'recording' || mikrofonIndul) {
+                stopRecording();
+                return;
+            }
+            startRecording();
         }
 
         if (typeof navigator === 'undefined' || !navigator.mediaDevices ||
@@ -1474,21 +1523,28 @@
             if (voiceUnsupported) voiceUnsupported.hidden = false;
             if (voicePanel) voicePanel.classList.add('unsupported');
         } else if (voiceMicBtn) {
-            voiceMicBtn.addEventListener('mousedown', function (e) {
-                e.preventDefault();
-                startRecording();
-            });
-            voiceMicBtn.addEventListener('touchstart', function (e) {
-                e.preventDefault();
-                startRecording();
-            }, { passive: false });
-            voiceMicBtn.addEventListener('mouseup', stopRecording);
-            voiceMicBtn.addEventListener('mouseleave', stopRecording);
-            voiceMicBtn.addEventListener('touchend', function (e) {
-                e.preventDefault();
+            /* EGY esemény kezeli az indítást és a leállítást is. A
+               pointerdown azonnal reagál (nincs koppintás-késleltetés), és
+               nem duplázódik a click-kel, mint a touchstart tenné. */
+            if (window.PointerEvent) {
+                voiceMicBtn.addEventListener('pointerdown', function (e) {
+                    e.preventDefault();
+                    toggleRecording();
+                });
+            } else {
+                voiceMicBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    toggleRecording();
+                });
+            }
+            /* Ha a lap elveszti a fókuszt (értesítés, más ablak), a
+               mikrofon ne maradjon élőben a háttérben. A mikrofon nyílása
+               közben viszont hagyjuk békén: az engedélykérő ablak maga is
+               fókuszvesztést okoz, és ez levágná a felvétel elejét. */
+            window.addEventListener('blur', function () {
+                if (mikrofonIndul) { return; }
                 stopRecording();
             });
-            voiceMicBtn.addEventListener('touchcancel', stopRecording);
         }
 
         // Belépéskor olvassuk fel a legutolsó (üdvözlő) asszisztens üzenetet,

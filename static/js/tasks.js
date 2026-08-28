@@ -73,17 +73,25 @@ document.addEventListener('DOMContentLoaded', function () {
         return (card.getAttribute(attr) || '').trim();
     }
 
-    function bindHoldToRecord(btn, card, onTranscribed) {
+    /* A gomb KAPCSOLÓ: egy nyomás indítja a felvételt, a következő
+       leállítja. Nyomva tartani nem kell – az elvonta a gyerek figyelmét a
+       beszédről, és ha az ujja lecsúszott a gombról, a mondat közepén
+       elvágta a felvételt. */
+    function bindTapToRecord(btn, card, onTranscribed) {
         if (!btn) return;
         if (!voiceSupported) {
             btn.disabled = true;
             return;
         }
 
+        var LEGHOSSZABB_FELVETEL = 90000;  /* ha elfelejti leállítani */
         var mediaRecorder = null;
         var mediaStream = null;
         var audioChunks = [];
         var recording = false;
+        var indul = false;                 /* a mikrofon még nyílik */
+        var megallitasKerve = false;
+        var hosszOra = null;
 
         function setStatus(msg, show) {
             var status = card.querySelector('[data-voice-status]');
@@ -122,6 +130,10 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function stopRecording() {
+            /* A mikrofon nyílása lassú; ha közben jön a leállítás, jegyezzük
+               meg, és az indulás végén azonnal álljunk le. */
+            if (indul) { megallitasKerve = true; return; }
+            if (hosszOra) { clearTimeout(hosszOra); hosszOra = null; }
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                 mediaRecorder.stop();
             }
@@ -130,7 +142,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function startRecording() {
-            if (recording || globalVoiceBusy) return;
+            if (recording || indul || globalVoiceBusy) return;
+            indul = true;
+            megallitasKerve = false;
             navigator.mediaDevices.getUserMedia({ audio: true })
                 .then(function (stream) {
                     mediaStream = stream;
@@ -146,6 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (e.data && e.data.size > 0) audioChunks.push(e.data);
                     };
                     mediaRecorder.onstop = function () {
+                        if (hosszOra) { clearTimeout(hosszOra); hosszOra = null; }
                         if (mediaStream) {
                             mediaStream.getTracks().forEach(function (t) { t.stop(); });
                             mediaStream = null;
@@ -155,29 +170,41 @@ document.addEventListener('DOMContentLoaded', function () {
                     };
                     mediaRecorder.start();
                     recording = true;
+                    indul = false;
                     btn.classList.add('recording');
                     setStatus(cfg.msgListening || 'Figyelek… 👂', true);
+                    hosszOra = setTimeout(function () {
+                        hosszOra = null;
+                        stopRecording();
+                    }, LEGHOSSZABB_FELVETEL);
+                    if (megallitasKerve) { stopRecording(); }
                 })
                 .catch(function () {
+                    indul = false;
                     alert('Kérjük engedélyezd a mikrofon használatát!');
                 });
         }
 
-        btn.addEventListener('mousedown', function (e) {
-            e.preventDefault();
+        function toggleRecording() {
+            if (recording || indul) {
+                stopRecording();
+                return;
+            }
             startRecording();
-        });
-        btn.addEventListener('touchstart', function (e) {
-            e.preventDefault();
-            startRecording();
-        }, { passive: false });
-        btn.addEventListener('mouseup', stopRecording);
-        btn.addEventListener('mouseleave', stopRecording);
-        btn.addEventListener('touchend', function (e) {
-            e.preventDefault();
-            stopRecording();
-        });
-        btn.addEventListener('touchcancel', stopRecording);
+        }
+
+        /* A pointerdown azonnal reagál és nem duplázódik a click-kel. */
+        if (window.PointerEvent) {
+            btn.addEventListener('pointerdown', function (e) {
+                e.preventDefault();
+                toggleRecording();
+            });
+        } else {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                toggleRecording();
+            });
+        }
     }
 
     document.querySelectorAll('[data-read-aloud]').forEach(function (btn) {
@@ -319,13 +346,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (speakAnswerBtn) {
-            bindHoldToRecord(speakAnswerBtn, card, function (text) {
+            bindTapToRecord(speakAnswerBtn, card, function (text) {
                 submitCheck(text);
             });
         }
 
         if (speakOptionalBtn) {
-            bindHoldToRecord(speakOptionalBtn, card, function (text) {
+            bindTapToRecord(speakOptionalBtn, card, function (text) {
                 if (input) {
                     input.value = text;
                     input.focus();
