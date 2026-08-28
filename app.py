@@ -15,6 +15,7 @@ import logging
 import os
 import random
 import re
+import time
 import traceback
 import unicodedata
 import urllib.request
@@ -49,6 +50,7 @@ import level
 import kartyak
 import kinezet
 import pontok
+import szamellenor
 import tasak
 import translations as i18n
 from curriculum_loader import (
@@ -505,15 +507,23 @@ class _MertTranscriptions:
         return valasz
 
 
-def _openai_client(api_key: str, *, request_timeout: float = 90.0):
-    """OpenAI kliens httpx timeout-tal (Railway connection error ellen)."""
+def _openai_client(api_key: str, *, request_timeout: float = 90.0,
+                   max_retries: int = 2):
+    """OpenAI kliens httpx timeout-tal (Railway connection error ellen).
+
+    A max_retries FONTOS, és könnyű elnézni: a tényleges várakozás
+    timeout × (1 + max_retries), plusz a várakozási szünetek. 60 másodperc
+    és két újrapróbálás együtt HÁROM PERC csend – a gyerek addig csak a
+    pontokat nézi, és azt hiszi, lefagyott. Interaktív helyen (chat) ezért
+    rövid időkorlát és egy újrapróbálás kell.
+    """
     import httpx
     from openai import OpenAI
 
     return _MertKliens(OpenAI(
         api_key=api_key,
         timeout=httpx.Timeout(request_timeout, connect=10.0),
-        max_retries=2,
+        max_retries=max_retries,
     ))
 
 
@@ -1407,6 +1417,20 @@ def add_child():
         if not birth_date:
             errors = True
 
+        # A szülő CSAK az aktuális tanterv osztályát adja meg – a magyar
+        # oldalon a magyart, a spanyolon a spanyolt. A másikat ebből
+        # származtatjuk. Korábban mindkettőt kötelező volt kitölteni, holott
+        # egy magyar szülő nem tudja, hányadik "curso" felelne meg a
+        # gyerekének. A magyar 1–8, a spanyol Primaria 1–6, ezért a 7. és a
+        # 8. osztály is a 6-os spanyol szintre képződik le.
+        if not grade_hu_raw and grade_es_raw:
+            grade_hu_raw = grade_es_raw
+        if not grade_es_raw and grade_hu_raw:
+            try:
+                grade_es_raw = str(min(6, max(1, int(grade_hu_raw))))
+            except (TypeError, ValueError):
+                pass
+
         if not name or country not in ("ES", "HU") or not grade_hu_raw or not grade_es_raw:
             errors = True
 
@@ -1485,6 +1509,20 @@ def edit_child(child_id: int):
         birth_date = _parse_birth_date_form(birth_date_raw)
         if not birth_date:
             errors = True
+
+        # A szülő CSAK az aktuális tanterv osztályát adja meg – a magyar
+        # oldalon a magyart, a spanyolon a spanyolt. A másikat ebből
+        # származtatjuk. Korábban mindkettőt kötelező volt kitölteni, holott
+        # egy magyar szülő nem tudja, hányadik "curso" felelne meg a
+        # gyerekének. A magyar 1–8, a spanyol Primaria 1–6, ezért a 7. és a
+        # 8. osztály is a 6-os spanyol szintre képződik le.
+        if not grade_hu_raw and grade_es_raw:
+            grade_hu_raw = grade_es_raw
+        if not grade_es_raw and grade_hu_raw:
+            try:
+                grade_es_raw = str(min(6, max(1, int(grade_hu_raw))))
+            except (TypeError, ValueError):
+                pass
 
         if not name or country not in ("ES", "HU") or not grade_hu_raw or not grade_es_raw:
             errors = True
@@ -4124,6 +4162,45 @@ Most te jössz! Hogyan mondod spanyolul azt, hogy 'könyv'?"
 
 EZ a stílus a minta MINDEN tantárgyra és MINDEN témakörre.
 
+AMIT A TESZTELŐ SZÜLŐK KIFOGÁSOLTAK – EZEKET KERÜLD:
+
+1. A GYAKORLÓ FELADAT NE UGYANAZ LEGYEN, MINT A PÉLDA.
+   Ha a magyarázatban szerepelt: "A kisfiú meglátta a virágot. Ő odament
+   hozzá." – akkor a feladatban MÁS mondat legyen. Ugyanazt visszakérdezni
+   nem gyakorlás, csak másolás.
+
+2. A KÉRDÉS ABBÓL KÖVETKEZZEN, AMIT MOST MAGYARÁZTÁL.
+   Ha becslésről tanítottál (19 × 4 ≈ 20 × 4), akkor becslést kérdezz –
+   ne "mennyi 80 − 10?". A kérdés az imént tanított dolgot mérje.
+
+3. VÁLTOZTASD, MELYIK A JÓ VÁLASZ.
+   Ha két lehetőség közül kell választani, ne mindig a MÁSODIK legyen a
+   helyes. Keverd: néha az első, néha a második. A gyerek különben a
+   sorrendet tanulja meg, nem az anyagot.
+
+4. AZ INDOKLÁS LEGYEN PONTOS, NE KÖRÜLÍRÓ.
+   Az "a" és "az" névelőnél az ok NEM a szó "hangzása", hanem az, hogy az
+   utána álló szó MAGÁNHANGZÓVAL kezdődik ("az óra", mert az "ó"
+   magánhangzó; "a ceruza", mert a "c" mássalhangzó). Minden szabálynál a
+   valódi okot mondd meg, ne a benyomást.
+
+5. ÁBRÁT CSAK AKKOR EMLÍTS, HA RAJZOLSZ IS.
+   "Nézd meg az ábrát" csak akkor szerepelhet a válaszodban, ha ugyanabban
+   a válaszban tényleg küldesz <ABRA> blokkot. Ábra nélkül a gyerek keresi,
+   nem találja, és azt hiszi, ő rontott el valamit.
+
+6. HA A GYEREK VÁLASZA NEM ILLIK A KÉRDÉSHEZ, KÉRDEZZ VISSZA.
+   Hangmódban a felismerő félrehallhat. Ha az átirat egészen mást jelent,
+   mint amit kérdeztél (a kérdés "bolt", a válasz "park"), NE építs rá
+   magyarázatot – kérdezd meg kedvesen: "Ezt nem hallottam jól, mondanád
+   még egyszer?" Sose állítsd egy szóról, hogy mást jelent, mint amit.
+
+7. SOHA NE ÖNMAGÁVAL MAGYARÁZZ.
+   "A park azt jelenti, hogy park" – ez semmit nem tanít. Ha egy szó a két
+   nyelvben ugyanaz, MONDD KI: "a park magyarul is park – ez könnyű szó."
+   Utána adj olyan szót, ami tényleg különbözik. Egy magyarázat sose legyen
+   ugyanaz a szó, amit magyaráz.
+
 NYELVHASZNÁLAT:
 """
 
@@ -4541,7 +4618,14 @@ def _call_ai_for_quiz(
                 result.append(item)
             return result
 
-        return _oral_normalize(_oral_request())[:q_count]
+        _oral = _oral_normalize(_oral_request())[:q_count]
+        try:                                   # ugyanaz a számellenőrzés
+            _oral, _naplo = szamellenor.ellenoriz(_oral)
+            for _sor in _naplo:
+                print(f"[SZAMELLENOR/szobeli] javitva: {_sor}", flush=True)
+        except Exception as _exc:
+            print(f"[SZAMELLENOR/szobeli] kihagyva: {_exc}", flush=True)
+        return _oral
 
     # ── Írásbeli teszt meglévő ágai kezdődnek itt ──
     _history_block = ""
@@ -4946,6 +5030,19 @@ def _call_ai_for_quiz(
     if not questions:
         raise ValueError("Érvénytelen kvíz JSON – nulla valid kérdés")
 
+    # ── A SZÁMTANI MEGOLDÓKULCS ELLENŐRZÉSE ────────────────────────────────
+    # A modell a kérdést jól írja, de a választ FEJBŐL számolja, és téved.
+    # Éles teszten a 4. osztályos szintfelmérőn négyszer a program mondta
+    # rossznak a gyerek jó válaszát. Itt kiszámoljuk a műveletet, és ha
+    # eltér, a saját számításunk nyer. Ha nem egyértelmű a kérdés, nem
+    # nyúlunk hozzá – lásd szamellenor.py.
+    try:
+        questions, _naplo = szamellenor.ellenoriz(questions)
+        for _sor in _naplo:
+            print(f"[SZAMELLENOR] javitva: {_sor}", flush=True)
+    except Exception as _exc:                        # sose bukjon el rajta a kvíz
+        print(f"[SZAMELLENOR] kihagyva: {_exc}", flush=True)
+
     # Véletlenszerűsítjük az mc kérdések helyes válaszának pozícióját
     for q in questions:
         if q.get("type") == "mc" and "options" in q and "correct" in q:
@@ -4979,7 +5076,10 @@ def _call_ai_for_chat(
             messages.append({"role": msg["role"], "content": content})
     messages.append({"role": "user", "content": user_message})
 
-    client = _openai_client(api_key, request_timeout=60.0)
+    # A gyerek ELŐTT ül és vár. 40 mp + egy újrapróbálás ≈ 85 mp a legrosszabb
+    # esetben – a böngésző 90 mp-nél szakítja meg a kérést, tehát még épp
+    # belefér, és nem marad örökre pörgő pont a képernyőn.
+    client = _openai_client(api_key, request_timeout=40.0, max_retries=1)
     response = client.chat.completions.create(
         model="gpt-5.4-mini",
         messages=messages,
@@ -5638,6 +5738,10 @@ def child_chat(child_id: int):
 @login_required
 def child_chat_send(child_id: int):
     """Chat üzenet küldése – OpenAI válasz + haladás mentés."""
+    # Mennyi ideig tartott? A "megáll, nem történik semmi" hibát enélkül nem
+    # lehet utólag megfogni: a naplóban látszani fog, ha egy kör 30 mp fölé
+    # megy, és az is, melyik tantárgynál.
+    _kezdet = time.monotonic()
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
@@ -5935,6 +6039,23 @@ def child_chat_send(child_id: int):
                 figures = _megmarad
             except Exception as exc:
                 print(f"[ABRA-ELLENOR] kihagyva: {exc}", flush=True)
+    # ── ÍGÉRT, DE HIÁNYZÓ ÁBRA ──────────────────────────────────────────
+    # "Nézd meg az ábrát: a nyíl mutatja az északi irányt" – és nincs ábra.
+    # A gyerek keresi, nem találja, és azt hiszi, ő nézett el valamit.
+    # SZÁNDÉKOSAN nem rajzoltatunk ilyenkor pótlólag: az még egy AI-kör
+    # lenne, miközben a gyerek már vár – és épp a hosszú várakozás miatt
+    # tűnt úgy, hogy a program megáll. A mondat kivétele azonnali és biztos,
+    # a magyarázat pedig nélküle is teljes.
+    if not figures and abra_ellenor.igert_abrat(reply):
+        try:
+            _abra_nelkul, _kivett = abra_ellenor.abra_igeret_nelkul(reply)
+            if _kivett:
+                print(f"[ABRA-IGERET] nincs rajz, kivett mondat: "
+                      f"{_kivett[:140]}", flush=True)
+                reply = _abra_nelkul
+        except Exception as exc:
+            print(f"[ABRA-IGERET] kihagyva: {exc}", flush=True)
+
     marker_count = len(vocab_pairs)
     fallback_count = 0
     reply_count = 0
@@ -6185,6 +6306,11 @@ def child_chat_send(child_id: int):
     vocabulary = []
     if is_foreign and language:
         vocabulary = database.get_vocabulary(child_id, subject, language=language, topic_id=current_topic_id)
+
+    _eltelt = time.monotonic() - _kezdet
+    if _eltelt > 20:
+        print(f"[LASSU] chat kor {_eltelt:.1f}s child={child_id} "
+              f"targy={subject!r} tema={current_topic!r}", flush=True)
 
     return jsonify(
         {
@@ -6677,6 +6803,17 @@ def child_chat_test_submit(child_id: int):
     total = len(questions)
     review: list[dict[str, Any]] = []
 
+    # BIZTONSÁGI HÁLÓ a javítás előtt: ha a kérdés számtani, a megoldókulcsot
+    # újraszámoljuk. A generáláskor is megtörténik, de a már futó tesztekben
+    # (és a kliens által visszaküldött kérdésekben) még a régi, rossz kulcs
+    # lehet. A gyerek jó válaszát sosem szabad pirosra festeni.
+    try:
+        questions, _naplo = szamellenor.ellenoriz(questions)
+        for _sor in _naplo:
+            print(f"[SZAMELLENOR/javitas] {_sor}", flush=True)
+    except Exception as _exc:
+        print(f"[SZAMELLENOR/javitas] kihagyva: {_exc}", flush=True)
+
     # Szóbeli teszt: AI-alapú fonetikus értékelés (visszaesés: _oral_answers_match)
     oral_results: list[bool] = []
     if is_oral:
@@ -6728,7 +6865,14 @@ def child_chat_test_submit(child_id: int):
                         is_correct = oral_results[i] if i < len(oral_results) else False
                         if is_correct:
                             correct += 1
-                elif user_ans is not None and str(user_ans).strip().lower() == str(q.get("answer", "")).strip().lower():
+                elif user_ans is not None and (
+                    str(user_ans).strip().lower()
+                    == str(q.get("answer", "")).strip().lower()
+                    # Számnál a LEÍRÁS ne számítson: "4 000", "4000." és
+                    # "4000" ugyanaz a válasz. Enélkül a gyerek jól számol,
+                    # és a szóköz miatt kap pirosat.
+                    or szamellenor.azonos_szam(user_ans, q.get("answer"))
+                ):
                     is_correct = True
                     correct += 1
         except (IndexError, TypeError, ValueError):

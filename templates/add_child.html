@@ -22,24 +22,33 @@
                 </div>
             </div>
 
+            {# CSAK AZ AKTUÁLIS TANTERV OSZTÁLYA LÁTSZIK.
+               Korábban mindkettő ott volt, és a magyar oldalon is be kellett
+               állítani a spanyol osztályt – érthetetlen, és a szülő nem is
+               tudja, hányadikos lenne a gyereke a másik rendszerben.
+               A másikat a szerver származtatja (lásd add_child): a magyar 1–8
+               leképezése a spanyol Primaria 1–6-ra, a 7. és 8. osztály a
+               6-osra. #}
+            {% set akt = (active_curriculum or 'HU')|upper %}
             <div class="field-row">
                 <div class="field">
-                    <label for="grade_hu">{{ t('label_child_grade_hu') }}</label>
-                    <select id="grade_hu" name="grade_hu" required data-current="{{ form.get('grade_hu', '') }}">
-                        <option value="">{{ t('select_placeholder') }}</option>
-                        {% for i in range(1, 9) %}
-                            <option value="{{ i }}" {{ 'selected' if form.get('grade_hu')|string == i|string else '' }}>{{ i }}. {{ t('grade_label') }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="field">
-                    <label for="grade_es">{{ t('label_child_grade_es') }}</label>
-                    <select id="grade_es" name="grade_es" required data-current="{{ form.get('grade_es', '') }}">
-                        <option value="">{{ t('select_placeholder') }}</option>
-                        {% for i in range(1, 7) %}
-                            <option value="{{ i }}" {{ 'selected' if form.get('grade_es')|string == i|string else '' }}>{{ i }}. {{ t('grade_label') }}</option>
-                        {% endfor %}
-                    </select>
+                    {% if akt == 'ES' %}
+                        <label for="grade_es">{{ t('label_child_grade_es') }}</label>
+                        <select id="grade_es" name="grade_es" required data-current="{{ form.get('grade_es', '') }}">
+                            <option value="">{{ t('select_placeholder') }}</option>
+                            {% for i in range(1, 7) %}
+                                <option value="{{ i }}" {{ 'selected' if form.get('grade_es')|string == i|string else '' }}>{{ i }}. {{ t('grade_label') }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <label for="grade_hu">{{ t('label_child_grade_hu') }}</label>
+                        <select id="grade_hu" name="grade_hu" required data-current="{{ form.get('grade_hu', '') }}">
+                            <option value="">{{ t('select_placeholder') }}</option>
+                            {% for i in range(1, 9) %}
+                                <option value="{{ i }}" {{ 'selected' if form.get('grade_hu')|string == i|string else '' }}>{{ i }}. {{ t('grade_label') }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
                 </div>
             </div>
 

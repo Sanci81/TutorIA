@@ -380,3 +380,65 @@ def jegyez(**mezok) -> None:
 def naplo() -> list[dict]:
     """A feljegyzések, a legfrissebb elöl."""
     return list(reversed(_naplo))
+
+
+# ── ÍGÉRT, DE HIÁNYZÓ ÁBRA ──────────────────────────────────────────────────
+# A tesztben ez jött vissza: a szöveg azt írta, "Nézd meg az ábrát: a nyíl
+# mutatja az északi irányt" – és a válasz végén nem volt semmi. A gyerek
+# keresi, nem találja, és azt hiszi, ő nézett el valamit.
+#
+# Kétféle megoldás közül a BIZTOSAT választjuk: ha nincs ábra, kivesszük a
+# rá hivatkozó mondatot. Az ábra újrarajzoltatása lassú, és nem biztos, hogy
+# sikerül; a mondat kivétele viszont mindig sikerül, és a magyarázat nélküle
+# is teljes – az ábra sosem hordozza az egyetlen információt.
+
+# A \b FONTOS: nélküle a "térképen" szóban a "képen" is találat lenne, és a
+# "melyik térképen látjuk a hegyeket?" kérdést vágnánk ki a válaszból.
+_ABRA_EMLITES = re.compile(
+    r"\b(?:"
+    r"n[ée]zd?\s+meg\s+(?:az?\s+)?(?:[áa]br[áa]|rajz|k[ée]p)"
+    r"|figyeld\s+meg\s+(?:az?\s+)?(?:[áa]br[áa]|rajz|k[ée]p)"
+    r"|(?:az?\s+)?(?:[áa]br[áa]n|rajzon|k[ée]pen|[áa]br[áa]t|rajzot)"
+    r"|(?:al[áa]bbi|lenti|k[öo]vetkez[őo])\s+(?:[áa]bra|rajz|k[ée]p)"
+    r"|mira\s+(?:el|la)\s+(?:dibujo|imagen|esquema|figura)"
+    r"|fíjate\s+en\s+(?:el|la)\s+(?:dibujo|imagen|esquema|figura)"
+    r"|en\s+(?:el|la)\s+(?:dibujo|imagen|esquema|figura)"
+    r")",
+    re.IGNORECASE,
+)
+
+
+def igert_abrat(szoveg: str) -> bool:
+    """Hivatkozik-e a szöveg olyan ábrára, aminek látszania kellene?"""
+    return bool(szoveg) and bool(_ABRA_EMLITES.search(szoveg))
+
+
+def abra_igeret_nelkul(szoveg: str) -> tuple[str, str]:
+    """Kiveszi az ábrára hivatkozó mondatokat. Visszaad: (szöveg, mit vettünk ki).
+
+    Ha ezzel az egész válasz elfogyna, NEM nyúlunk hozzá: jobb egy fölösleges
+    mondat, mint egy üres válasz.
+    """
+    if not szoveg or not igert_abrat(szoveg):
+        return szoveg, ""
+
+    kivett: list[str] = []
+    uj_sorok: list[str] = []
+    for sor in szoveg.split("\n"):
+        if not sor.strip():
+            uj_sorok.append(sor)
+            continue
+        # mondatokra bontás úgy, hogy a záró írásjel a mondatnál maradjon
+        mondatok = re.findall(r"[^.!?…]+(?:[.!?…]+|$)", sor)
+        maradt = [m for m in mondatok if not _ABRA_EMLITES.search(m)]
+        kivett += [m.strip() for m in mondatok if _ABRA_EMLITES.search(m)]
+        uj = "".join(maradt).strip()
+        # Ami a mondat kivétele után marad, néha csak egy emodzsi vagy egy
+        # írásjel. Az árván maradt jel zavaróbb, mint a hiányzó mondat.
+        if uj and re.search(r"[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüűÑñ0-9]", uj):
+            uj_sorok.append(uj)
+
+    eredmeny = re.sub(r"\n{3,}", "\n\n", "\n".join(uj_sorok)).strip()
+    if not eredmeny:
+        return szoveg, ""
+    return eredmeny, " | ".join(kivett)
