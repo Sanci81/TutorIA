@@ -89,6 +89,30 @@ AZURE_VOICE_ES = "es-ES-ElviraNeural"
 STT_MODEL = os.environ.get("STT_MODEL", "gpt-transcribe")
 STT_MODEL_TARTALEK = os.environ.get("STT_MODEL_TARTALEK", "gpt-4o-mini-transcribe")
 
+
+# ── A felolvasás tempója ────────────────────────────────────────────────────
+# Egy szám, SZÁZALÉKBAN, a normál beszédtempóhoz képest. Negatív = lassabb.
+# Eddig -10 volt: érthető, de kicsit vontatott. A -5 alig hallhatóan gyorsabb,
+# és a gyerek figyelme jobban kitart.
+#
+# Ez a HANGERŐ-gomb párja: kódmódosítás nélkül állítható a TTS_TEMPO környezeti
+# változóval, mert hogy mennyi a jó, azt csak hallás után lehet eldönteni.
+# A korlát szándékos: egy elgépelt "50" a gyereknek érthetetlen hadarás lenne.
+def _tts_tempo_szazalek() -> int:
+    try:
+        ertek = int(float(os.environ.get("TTS_TEMPO", "-5")))
+    except (TypeError, ValueError):
+        ertek = -5
+    return max(-25, min(15, ertek))
+
+
+TTS_TEMPO = _tts_tempo_szazalek()
+# Azure SSML: "-5%" / "+5%" – az előjel KÖTELEZŐ, különben abszolút értékként
+# értelmezi, és a "5%" a normál tempó huszada lenne.
+TTS_TEMPO_SSML = f"{TTS_TEMPO:+d}%"
+# OpenAI: 1.0 a normál, tehát -5% → 0.95.
+TTS_TEMPO_OPENAI = round(1.0 + TTS_TEMPO / 100.0, 2)
+
 # A tanár hangja + neve tantervenként és nemenként. A név a hanghoz tartozik,
 # a szülő a profilban csak a hang nemét választja ki (női/férfi).
 TEACHER_PROFILES = {
@@ -3183,7 +3207,7 @@ def _azure_tts_speak(text: str) -> bytes | None:
             if len(_segs) > 1:
                 _parts = [
                     f'<voice name="{v or voice}">'
-                    f'<prosody rate="-10%">{_ssml_escape(t)}</prosody>'
+                    f'<prosody rate="{TTS_TEMPO_SSML}">{_ssml_escape(t)}</prosody>'
                     f'</voice>'
                     for t, v in _segs
                 ]
@@ -3202,7 +3226,7 @@ def _azure_tts_speak(text: str) -> bytes | None:
                 v = seg_voice or voice
                 parts.append(
                     f'<voice name="{v}">'
-                    f'<prosody rate="-10%">{_ssml_escape(seg_text)}</prosody>'
+                    f'<prosody rate="{TTS_TEMPO_SSML}">{_ssml_escape(seg_text)}</prosody>'
                     f'</voice>'
                 )
             ssml = f'<speak version="1.0" xml:lang="{lang}">' + "".join(parts) + "</speak>"
@@ -3212,7 +3236,7 @@ def _azure_tts_speak(text: str) -> bytes | None:
             ssml = (
                 f'<speak version="1.0" xml:lang="{lang}">'
                 f'<voice name="{voice}">'
-                f'<prosody rate="-10%">{escaped}</prosody>'
+                f'<prosody rate="{TTS_TEMPO_SSML}">{escaped}</prosody>'
                 f'</voice></speak>'
             )
         url = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1"
@@ -3271,7 +3295,7 @@ def _openai_tts_speak(text: str) -> bytes:
             voice="coral",
             input=text[:4096],
             instructions=instructions,
-            speed=0.9,
+            speed=TTS_TEMPO_OPENAI,
         )
         return response.content
     except Exception as exc:
@@ -3280,6 +3304,7 @@ def _openai_tts_speak(text: str) -> bytes:
             model="tts-1",
             voice="nova",
             input=text[:4096],
+            speed=TTS_TEMPO_OPENAI,
         )
         return response.content
 
