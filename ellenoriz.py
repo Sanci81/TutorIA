@@ -206,10 +206,12 @@ _VAZ_SZAVAK = {
     "jossz", "jon", "kovetkezik", "nezzuk", "majd", "es", "is", "pedig",
     "kerlek", "na", "hat", "vajon", "akkor", "tehat", "mondd", "meg",
     "nekem", "vissza", "szerinted", "tudod", "emlekszel",
+    "kifejezes", "fordulat", "mondat",
     # spanyol
     "que", "cual", "cuales", "como", "el", "la", "los", "las", "un", "una",
     "esto", "esta", "estos", "palabra", "ahora", "tu", "dime", "di", "y",
     "es", "por", "favor", "recuerdas", "sabes", "turno", "toca",
+    "frase", "expresion",
 }
 
 
@@ -257,3 +259,23 @@ def ismetelt_kerdes(uj_valasz: str, elozo_valasz: str) -> str | None:
     if difflib.SequenceMatcher(None, uj, regi).ratio() > 0.92:
         return uj
     return None
+
+
+def ismetelt_kerdes_nelkul(uj_valasz: str, elozo_valasz: str) -> str:
+    """Ha a tanár ugyanazt kérdezte újra, a kérdés kikerül a válaszból.
+
+    Akkor használjuk, ha az újrapróbálás is ugyanazt kérdezné: jobb egy
+    kérdés nélküli dicséret, mint hogy a gyerek másodszor is ugyanarra
+    feleljen. Ha a kérdés kivétele kiürítené a választ, nem nyúlunk hozzá.
+    """
+    if not ismetelt_kerdes(uj_valasz, elozo_valasz):
+        return uj_valasz
+    talalatok = list(_KERDES.finditer(uj_valasz))
+    if not talalatok:
+        return uj_valasz
+    last = talalatok[-1]
+    maradek = (uj_valasz[:last.start()] + uj_valasz[last.end():]).strip()
+    maradek = re.sub(r"\n{3,}", "\n\n", maradek).strip()
+    if not maradek or not re.search(r"[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüűÑñ]", maradek):
+        return uj_valasz
+    return maradek

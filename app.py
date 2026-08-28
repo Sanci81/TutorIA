@@ -6155,7 +6155,14 @@ def child_chat_send(child_id: int):
                 raw_reply = _ujra
                 print("[ELLENORZES] a masodik valasz mar tovabblep", flush=True)
             else:
-                print("[ELLENORZES] a masodik valasz is ismetel – marad az elso",
+                # Az újrapróbálás is ugyanazt kérdezné. Az első választ
+                # NEM adjuk ki: abból pont a megismételt kérdés a baj.
+                # A kérdést kivesszük, a dicséret és a magyarázat marad.
+                if _ujra:
+                    raw_reply = _ujra
+                raw_reply = ellenoriz.ismetelt_kerdes_nelkul(
+                    raw_reply, _elozo_tanari)
+                print("[ELLENORZES] a masodik valasz is ismetel – kerdes kivetve",
                       flush=True)
         except Exception:
             logger.exception("Ismetelt kerdes ujrakeres hiba")
