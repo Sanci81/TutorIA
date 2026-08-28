@@ -3652,6 +3652,119 @@ SOHA ne kérj a gyerektől személyes adatot (lakcím, telefonszám, jelszó, is
 """
 
 
+# ── Kérdés-higiénia: MINDEN tantervben és MINDEN tantárgyban ────────────────
+# Élesben ez jött vissza egy 4. osztályos angolóráról:
+#
+#   tanár:  „Most jön a school: ez iskola. … Mit jelent a school?"
+#   gyerek: „Iskola."
+#   tanár:  „Nagyon ügyes! A school azt jelenti, hogy iskola. … Mit jelent a school?"
+#
+# A gyerek jól válaszolt, a tanár megdicsérte, majd UGYANAZT kérdezte újra. Egy
+# másik körben a kérdés a saját válaszát tartalmazta: „A bus azt jelenti, hogy
+# busz. Például: I go to school by bus. Mit jelent a bus?" – a válasz egy sorral
+# feljebb elhangzott, tehát a gyereknek nem kell tudnia semmit.
+#
+# A prompt eddig tiltotta a kétszeri kérdezést (TANÍTÁSI MÓDSZER), de a kezdő
+# tempó blokk ELŐÍRTA („kérdezz vissza UGYANARRA a szóra"), és a későbbi,
+# konkrétabb utasítás győzött. Ezért itt az IDŐZÍTÉST is kimondjuk.
+#
+# A visszakérdezés iránya FONTOS: hangmódban nem kérhetjük, hogy a gyerek idegen
+# szót mondjon ki (a felismerő a hasonló hangzású szavakat nem különbözteti meg),
+# ezért a megoldás nem a fordított irányú kérdés, hanem a FELIDÉZÉS: egy korábban
+# tanult elem jelentése, vagy egy egész mondat jelentése.
+_KERDES_HIGIENIA_HU = """
+=== HA A GYEREK JÓL VÁLASZOLT, LÉPJ TOVÁBB ===
+- Ha a gyerek helyesen válaszolt, UGYANEBBEN a válaszban dicsérd meg ÉS lépj a
+  következő dologra. Amit a gyerek már tud, arra ne kérdezz rá újra.
+- Ugyanarra CSAK akkor kérdezz vissza, ha a gyerek rosszul válaszolt vagy nem
+  tudta – és akkor is előbb magyarázd el MÁS szavakkal, MÁS példával.
+- SOHA ne tegyél fel egymás után kétszer ugyanazt a kérdést.
+
+=== A KÉRDÉS VÁLASZA NE HANGOZZON EL A KÉRDÉS ELŐTT ===
+- Ha a saját válaszodban már kimondtad valaminek a jelentését, NE arra kérdezz rá.
+  ROSSZ: „A bus azt jelenti, hogy busz. Például: I go to school by bus.
+          Mit jelent a bus?" – a válasz egy sorral feljebb ott van.
+- Helyette FELIDÉZÉST kérj vagy egész mondatra kérdezz:
+  JÓ: „Emlékszel, mit jelent a street?" (egy KORÁBBAN tanult elem)
+  JÓ: „Mit jelent ez a mondat: I go to school by bus?"
+- A kérdés akkor jó, ha a gyereknek fel kell IDÉZNIE valamit, nem csak
+  visszaolvasnia, amit egy sorral feljebb leírtál.
+"""
+
+_KERDES_HIGIENIA_ES = """
+=== SI EL NIÑO ACIERTA, PASA ADELANTE ===
+- Si el niño responde bien, en LA MISMA respuesta felicítale Y pasa a lo
+  siguiente. No vuelvas a preguntar lo que ya sabe.
+- Repite la misma pregunta SOLO si el niño falló o no supo contestar – y aun
+  entonces explícalo primero con OTRAS palabras y OTRO ejemplo.
+- NUNCA hagas dos veces seguidas la misma pregunta.
+
+=== LA RESPUESTA NO DEBE APARECER ANTES DE LA PREGUNTA ===
+- Si en tu propia respuesta ya has dicho el significado de algo, NO preguntes
+  por eso.
+  MAL: «bus significa autobús. Por ejemplo: I go to school by bus.
+        ¿Qué significa bus?» – la respuesta está una línea más arriba.
+- En su lugar pide que RECUERDE algo, o pregunta por una frase completa:
+  BIEN: «¿Te acuerdas de qué significa street?» (algo enseñado ANTES)
+  BIEN: «¿Qué significa esta frase: I go to school by bus?»
+- La pregunta es buena si el niño tiene que RECORDAR algo, no solo releer lo que
+  acabas de escribir una línea antes.
+"""
+
+
+# ── Nyelvóra: fordulatok és a példamondat fordítása ─────────────────────────
+# Két hiba egy helyen. Egy: a tutor csak SZAVAKAT tanított, a témakör nyelvtani
+# fókuszát (My town: there is / there are, next to, opposite) soha nem érte el,
+# mert a kezdő tempó szabály egy szónál többet nem engedett. A hivatalos NAT
+# kerettanterv viszont a szókincs MELLETT a nyelvi funkciókat és struktúrákat is
+# kötelező érvényűnek nevezi. Kettő: a példamondat magyar jelentése kimaradt
+# („There is a hospital near my town." és semmi több), holott alsó tagozaton a
+# magyarázat nyelve magyar – hangmódban a gyerek nem is látja írásban.
+#
+# FONTOS, hogy ez NEM nyelvtani szabály tanítása: 1-4. osztályban a gyerek a
+# kerettanterv szerint sem kap szabályt, csak KÉSZ FORDULATOT utánoz.
+_NYELVORA_FORDULAT_HU = """
+=== NE CSAK SZAVAKAT TANÍTS – FORDULATOT IS ===
+- A témakörnek a szókincsen KÍVÜL nyelvtani fókusza is van (a témakör
+  tananyagában „Nyelvtani fókusz" néven szerepel, pl. there is / there are,
+  next to, opposite). Ezt is meg KELL tanítanod, különben a gyerek szavakat tud,
+  de mondatot nem.
+- Alsó tagozaton (1-4.) ezt SOHA ne szabályként magyarázd. KÉSZ FORDULATKÉNT
+  add, amit a gyerek utánoz: „There is a park near my school."
+- Váltogasd: néha egy új szó, néha egy új fordulat. A témakör végére a gyerek
+  mondja is ki a témakör fordulatát, ne csak a szavakat ismerje fel.
+- 5. osztálytól már megnevezheted a szerkezetet is, röviden.
+
+=== A PÉLDAMONDAT MAGYAR JELENTÉSE KÖTELEZŐ ===
+- MINDEN idegen nyelvű példamondat után írd oda zárójelben a magyar jelentést:
+  „There is a hospital near my town. (Van egy kórház a városom közelében.)"
+- Fordítás nélkül a példamondat egy 8 évesnek értelmetlen hangsor. Hangmódban
+  ez különösen igaz, mert a gyerek nem is látja írásban.
+- Ez a példamondatra is áll, nem csak a szóra.
+"""
+
+_NYELVORA_FORDULAT_ES = """
+=== NO ENSEÑES SOLO PALABRAS – TAMBIÉN EXPRESIONES ===
+- El tema tiene, ADEMÁS del vocabulario, un foco gramatical (aparece en el
+  contenido del tema como «Nyelvtani fókusz» / foco gramatical, p. ej.
+  there is / there are, next to, opposite). También hay que enseñarlo: si no, el
+  niño sabe palabras pero no sabe formar una frase.
+- En los primeros cursos (1º-4º) NUNCA lo expliques como regla gramatical. Dalo
+  como EXPRESIÓN HECHA que el niño imita: «There is a park near my school.»
+- Alterna: a veces una palabra nueva, a veces una expresión nueva. Al final del
+  tema el niño debe poder DECIR la expresión, no solo reconocer las palabras.
+- Desde 5º curso ya puedes nombrar la estructura, brevemente.
+
+=== LA TRADUCCIÓN DE LA FRASE DE EJEMPLO ES OBLIGATORIA ===
+- Después de CADA frase de ejemplo en lengua extranjera escribe su significado
+  entre paréntesis: «There is a hospital near my town. (Hay un hospital cerca de
+  mi ciudad.)»
+- Sin traducción, la frase de ejemplo es una sucesión de sonidos sin sentido para
+  un niño de 8 años. En modo voz aún más, porque no la ve escrita.
+- Esto vale también para la frase de ejemplo, no solo para la palabra.
+"""
+
+
 def _build_chat_system_prompt(
     child: dict,
     *,
@@ -3864,12 +3977,14 @@ RECORDATORIO: ¡No olvides los marcadores <VOCAB>palabra_español=palabra_{lang}
    todavía no se han enseñado.
 
 === RITMO PARA PRINCIPIANTES ===
-- En los primeros cursos (1º-4º) o con principiantes, enseña SOLO UNA palabra nueva por
-  respuesta. Nunca dos ni tres.
-- Di la palabra nueva y REPÍTELA dos veces más dentro de tu respuesta, en frases
+- En los primeros cursos (1º-4º) o con principiantes, enseña SOLO UN elemento nuevo por
+  respuesta. Ese elemento puede ser una palabra o una expresión hecha
+  («There is a park near my school.»). Nunca dos ni tres.
+- Di el elemento nuevo y REPÍTELO dos veces más dentro de tu respuesta, en frases
   distintas, para que se fije.
-- Después pregunta por ESA misma palabra. Solo pasa a una palabra nueva cuando el niño
-  la haya dicho bien.
+- Después haz UNA pregunta sobre ello. Si el niño acierta, en LA MISMA respuesta
+  felicítale y pasa al elemento siguiente – no vuelvas a preguntar lo mismo. Repite
+  la pregunta solo si falló, y entonces explícalo antes con otras palabras.
 - En modo voz (mode=voice) el niño NO SABE LEER: no te refieras a texto escrito, no pidas
   deletrear, no des listas ni opciones A/B/C. Habla en frases cortas y sencillas.
 - Respuesta corta: máximo 3-4 frases.
@@ -3934,6 +4049,8 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
   no del niño.
 - Solo márcalo como error si el SIGNIFICADO de la respuesta es claramente OTRO.
 """
+        prompt += _KERDES_HIGIENIA_ES
+        prompt += _NYELVORA_FORDULAT_ES
         prompt += _spiral_block
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
@@ -4111,6 +4228,7 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
 - Solo márcalo como error si el SIGNIFICADO de la respuesta es claramente OTRO.
 """
 
+        prompt += _KERDES_HIGIENIA_ES
         prompt += _spiral_block
 
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
@@ -4345,12 +4463,15 @@ EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket 
    fogadd el helyesnek, dicsérd meg, és mondd ki a helyes alakot.
 
 === TEMPÓ KEZDŐKNEK ===
-- Alsó tagozaton (1-4.) vagy kezdő szintnél EGYSZERRE CSAK EGY új szót taníts. Soha ne
+- Alsó tagozaton (1-4.) vagy kezdő szintnél EGYSZERRE CSAK EGY új nyelvi elemet taníts.
+  Ez lehet egy szó VAGY egy kész fordulat („There is a park near my school."). Soha ne
   hármat, ne is kettőt.
-- Az új szót mondd ki, majd ISMÉTELD MEG még kétszer a válaszodon belül, más-más
+- Az új elemet mondd ki, majd ISMÉTELD MEG még kétszer a válaszodon belül, más-más
   mondatban, hogy rögzüljön.
-- Utána kérdezz vissza UGYANARRA a szóra. Csak akkor jöhet új szó, ha ezt a gyerek
-  helyesen visszamondta.
+- Utána tegyél fel EGY kérdést róla. Ha a gyerek jól válaszol, UGYANEBBEN a válaszban
+  dicsérd meg és lépj a következő elemre – ne kérdezd meg még egyszer ugyanazt. Csak
+  akkor kérdezz vissza ugyanarra, ha rosszul válaszolt, és akkor is magyarázd el előbb
+  más szavakkal.
 - Hangmódban (mode=voice) a gyerek NEM TUD OLVASNI: ne hivatkozz leírt szövegre, ne
   kérj betűzést, ne adj felsorolást vagy A/B/C választ. Egyszerű, rövid mondatokban
   beszélj, és kérdezz.
@@ -4420,6 +4541,7 @@ nem csak az idegen szavakat. Példák: 'Iszak' vagy 'Visszat' a 'viszlát' helye
   hibája, nem a gyereké.
 - Csak akkor jelezd hibásnak, ha egyértelműen MÁS a válasz jelentése.
 """
+        prompt += _NYELVORA_FORDULAT_HU
 
     prompt += """=== MAGYAR NYELVHELYESSÉG (a gyerek ebből tanul!) ===
 A szövegeidet egy gyerek olvassa és hallja, ezért a magyar nyelvhelyesség KÖTELEZŐ.
@@ -4465,6 +4587,7 @@ nem csak az idegen szavakat. Példák: 'Iszak' vagy 'Visszat' a 'viszlát' helye
 - Csak akkor jelezd hibásnak, ha egyértelműen MÁS a válasz jelentése.
 """
 
+    prompt += _KERDES_HIGIENIA_HU
     prompt += _spiral_block
 
     print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
@@ -5978,6 +6101,39 @@ def child_chat_send(child_id: int):
                 print("[ELLENORZES] a masodik valasz is hibas!", flush=True)
         except Exception:
             logger.exception("Ellenorzott ujrakeres hiba")
+
+    # ── UGYANAZ A KÉRDÉS MÁSODSZOR IS ──────────────────────────────────
+    # A gyerek jól válaszolt, a tanár megdicsérte, majd ugyanazt kérdezte
+    # újra ("Mit jelent a school?" → "Iskola." → "Ügyes! Mit jelent a
+    # school?"). A promptban tiltjuk, de a modell néha akkor is megteszi,
+    # ezért itt SZÁMOLÁSSAL is elkapjuk. Rossz válasz utáni ismétlés jogos,
+    # azt az ellenőrző nem jelzi (dicséret kell hozzá).
+    _elozo_tanari = next(
+        (m["content"] for m in reversed(history) if m.get("role") == "assistant"),
+        "",
+    )
+    _ismetles = ellenoriz.ismetelt_kerdes(raw_reply, _elozo_tanari)
+    if _ismetles:
+        print(f"[ELLENORZES] ismetelt kerdes: {_ismetles!r} – ujrakeres",
+              flush=True)
+        try:
+            _ujra = _call_ai_for_chat(
+                system_prompt
+                + "\n\nFIGYELEM: az előző válaszodban UGYANAZT kérdezted, amit "
+                "egy körrel korábban már megkérdeztél, és amire a gyerek JÓL "
+                "válaszolt. Írd meg újra a választ: dicsérd meg a gyereket, "
+                "majd TANÍTS EGY ÚJ dolgot (szót vagy fordulatot) magyarázattal "
+                "és lefordított példamondattal, és a végén EGY ÚJ kérdést tegyél "
+                "fel. A már megválaszolt kérdést NE tedd fel újra.",
+                history, user_text, child_id=child_id)
+            if _ujra and not ellenoriz.ismetelt_kerdes(_ujra, _elozo_tanari):
+                raw_reply = _ujra
+                print("[ELLENORZES] a masodik valasz mar tovabblep", flush=True)
+            else:
+                print("[ELLENORZES] a masodik valasz is ismetel – marad az elso",
+                      flush=True)
+        except Exception:
+            logger.exception("Ismetelt kerdes ujrakeres hiba")
 
     # A modell néha egy szó közepén ír át másik írásrendszerre ("интернетen").
     raw_reply = ellenoriz.latinra(raw_reply)

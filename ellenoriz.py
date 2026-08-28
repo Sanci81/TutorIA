@@ -24,6 +24,7 @@ MIT NEM TUD
 
 from __future__ import annotations
 
+import difflib
 import re
 import unicodedata
 
@@ -162,3 +163,97 @@ def ellentmondas(szoveg: str) -> str | None:
 def rendben(szoveg: str) -> bool:
     """Kiadható-e a gyereknek. Csak akkor False, ha BIZTOSAN hibás."""
     return ellentmondas(szoveg) is None and not van_idegen_iras(szoveg)
+
+
+# ── 4. ugyanaz a kérdés másodszor is ────────────────────────────────────────
+# Élesben egy 4. osztályos angolóráról:
+#     tanár:  „… Mit jelent a school?"
+#     gyerek: „Iskola."
+#     tanár:  „Nagyon ügyes! … Most te jössz: mit jelent a school?"
+# A gyerek jól válaszolt, meg is dicsérték, mégis ugyanazt kérdezték újra.
+#
+# A DICSÉRET a döntő feltétel. Rossz válasz után ugyanazt újra megkérdezni
+# LEGITIM tanári lépés („próbáld még egyszer"), ezért ott nem szólunk közbe.
+# Csak akkor jelzünk, ha a tanár megdicsérte a gyereket – tehát a válasz jó
+# volt –, és utána mégis ugyanazt kérdezte.
+_DICSERET = re.compile(
+    r"\b(?:nagyon\s+)?(?:ügyes|szuper|pontosan|helyes|bravó|kiváló|remek"
+    r"|zseniális|tökéletes|jól\s+van|így\s+van|ez\s+az|nagyon\s+jó"
+    r"|muy\s+bien|correcto|exacto|perfecto|genial|estupendo|excelente"
+    r"|así\s+es|eso\s+es)\b",
+    re.IGNORECASE,
+)
+
+# A kérdés a mondatvégi kérdőjelig tart. A ¿ miatt a spanyol is illeszkedik.
+_KERDES = re.compile(r"[^.!?\n¿]*\?")
+
+# Ennél rövidebb kérdésnél nem döntünk: a „Miért?" beleillik egy csomó
+# hosszabb kérdésbe, és fölöslegesen jeleznénk.
+_MIN_KERDES_HOSSZ = 12
+
+# A kérdés VÁZA – ezek a szavak minden kérdésben ott lehetnek, és nem
+# hordozzák, hogy MIRŐL van szó. „Mit jelent a school?" és „Mit jelent az a
+# szó, hogy school?" ugyanaz a kérdés, csak a váz más. Ezért a vázat
+# levesszük, és azt vetjük össze, ami MARAD.
+#
+# A „jelent" / „significa" SZÁNDÉKOSAN nincs a listán: az különbözteti meg a
+# „Mit jelent a bus?" kérdést a „Hogy mondod angolul, hogy busz?" kérdéstől,
+# és ez a kettő nem ugyanaz.
+_VAZ_SZAVAK = {
+    # magyar
+    "a", "az", "egy", "ez", "ezt", "ezek", "mit", "mi", "mik", "mire",
+    "hogy", "hogyan", "szo", "szot", "szava", "szavat", "most", "te",
+    "jossz", "jon", "kovetkezik", "nezzuk", "majd", "es", "is", "pedig",
+    "kerlek", "na", "hat", "vajon", "akkor", "tehat", "mondd", "meg",
+    "nekem", "vissza", "szerinted", "tudod", "emlekszel",
+    # spanyol
+    "que", "cual", "cuales", "como", "el", "la", "los", "las", "un", "una",
+    "esto", "esta", "estos", "palabra", "ahora", "tu", "dime", "di", "y",
+    "es", "por", "favor", "recuerdas", "sabes", "turno", "toca",
+}
+
+
+def _kerdes_szavai(szoveg: str) -> tuple[str, frozenset[str]]:
+    """Az utolsó kérdés: (összehasonlítható szöveg, tartalmi szavak).
+
+    Üres stringet és üres halmazt ad, ha nincs kérdés a szövegben.
+    """
+    talalatok = [m.group().strip() for m in _KERDES.finditer(szoveg or "")]
+    if not talalatok:
+        return "", frozenset()
+    # ékezetek le, csak betű és szám marad, egy szóköz a tagolás
+    alap = unicodedata.normalize("NFKD", talalatok[-1].lower())
+    alap = "".join(c for c in alap if not unicodedata.combining(c))
+    szavak = "".join(c if c.isalnum() else " " for c in alap).split()
+    return " ".join(szavak), frozenset(szavak) - _VAZ_SZAVAK
+
+
+def ismetelt_kerdes(uj_valasz: str, elozo_valasz: str) -> str | None:
+    """Ugyanazt kérdezi-e a tanár másodszor is, egy JÓ válasz után.
+
+    Visszaadja a megismételt kérdést, vagy None-t, ha nincs baj.
+    """
+    if not uj_valasz or not elozo_valasz:
+        return None
+    if not _DICSERET.search(uj_valasz):
+        # Nem dicsért → a gyerek valószínűleg rosszul válaszolt, az ismétlés
+        # ilyenkor jogos tanári lépés.
+        return None
+
+    uj, uj_szavak = _kerdes_szavai(uj_valasz)
+    regi, regi_szavak = _kerdes_szavai(elozo_valasz)
+    if not uj or not regi:
+        return None
+    if min(len(uj), len(regi)) < _MIN_KERDES_HOSSZ:
+        return None
+
+    # A DÖNTŐ vizsgálat: ha a tartalmi szavak halmaza megegyezik, a kérdés
+    # ugyanaz, akármilyen fordulattal vezette be. Egyetlen eltérő tartalmi
+    # szó (school → hospital, alma → körte) már MÁS kérdés.
+    if uj_szavak and uj_szavak == regi_szavak:
+        return uj
+    # Elírásra, ragozásra biztosíték. Magasan tartjuk: két különböző
+    # tartalmi szóval is 0.75 körüli hasonlóság jön ki, azt nem jelezhetjük.
+    if difflib.SequenceMatcher(None, uj, regi).ratio() > 0.92:
+        return uj
+    return None
