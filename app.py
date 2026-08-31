@@ -1254,13 +1254,23 @@ def feladat_ertesites():
 
     api = os.environ.get("RESEND_API_KEY")
     proba = request.args.get("proba") == "1"
+    # A választ egy KÜLSŐ időzítő is láthatja (ő hívja meg az URL-t), ezért
+    # e-mail cím nem kerülhet bele. Csak számokat adunk vissza; a próbában
+    # takart címet, hogy teszteléskor felismerd, de más ne tudja elolvasni.
+    szam = {"elkuldve": 0, "kihagyva": 0, "hiba": 0, "kuldenenk": 0}
+
+    def _takart(cim: str) -> str:
+        nev, _, dom = cim.partition("@")
+        return f"{nev[:2]}***@{dom}"
+
     kimenet = []
     for szulo in database.ertesitendo_szulok():
         napok = {"napi": 1, "heti": 7, "havi": 30}.get(szulo["mod"], 7)
         jelentes = database.szuloi_jelentes(szulo["id"], napok=napok)
         # Napi módban üres napról NE küldjünk – abból lesz a spam-jelölés.
         if szulo["mod"] == "napi" and not jelentes["van_tanulas"]:
-            kimenet.append(f'{szulo["email"]}: kihagyva (nem tanult)')
+            szam["kihagyva"] += 1
+            kimenet.append(f'{_takart(szulo["email"])}: kihagyva (nem tanult)')
             continue
         targy, html, szoveg = level.keszit(
             jelentes,
@@ -1268,7 +1278,8 @@ def feladat_ertesites():
             app_url=url_for("index", _external=True),
             leiratkozo_url=_leiratkozo_url(szulo["id"]))
         if proba:
-            kimenet.append(f'{szulo["email"]}: KÜLDENÉNK – {targy}')
+            szam["kuldenenk"] += 1
+            kimenet.append(f'{_takart(szulo["email"])}: KÜLDENÉNK – {targy}')
             continue
         try:
             if not api:
@@ -1278,12 +1289,20 @@ def feladat_ertesites():
                                 "to": [szulo["email"]], "subject": targy,
                                 "html": html, "text": szoveg})
             database.ertesites_elkuldve(szulo["id"])
-            kimenet.append(f'{szulo["email"]}: elkuldve')
+            szam["elkuldve"] += 1
         except Exception as exc:
             # Nem jegyezzük elküldöttnek – holnap újra próbálja
-            kimenet.append(f'{szulo["email"]}: HIBA {exc}')
-    return Response("\n".join(kimenet) or "nincs esedekes",
-                    mimetype="text/plain; charset=utf-8")
+            szam["hiba"] += 1
+            print(f'[ERTESITO] hiba {_takart(szulo["email"])}: {exc}', flush=True)
+
+    if proba:
+        # Próbát te futtatsz a saját böngésződből – itt látod a részleteket.
+        valasz = "\n".join(kimenet) or "nincs esedekes"
+    else:
+        # Éles futás: az időzítő szolgáltatás ezt látja. Csak számok.
+        valasz = ("elkuldve={elkuldve} kihagyva={kihagyva} hiba={hiba}"
+                  .format(**szam))
+    return Response(valasz, mimetype="text/plain; charset=utf-8")
 
 
 @app.route("/login", methods=["GET", "POST"])

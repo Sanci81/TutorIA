@@ -145,6 +145,32 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
 .ha-vonal i{display:block;height:1px;background:#d9a94a;opacity:.55;margin-top:24px}
 .ha-jel .bo-cimer{width:84px;opacity:.92}
 
+/* ── a helyek jelölése ────────────────────────────────────────────────────
+   Piros szaggatott = ide még nem került lap. Zöld = megvan.
+   A hely arányát a kártyáéhoz igazítjuk (340×548), hogy a lap kitöltse. */
+.hely{aspect-ratio:340/548!important;border:2px dashed #c0392b!important;
+      background:#f6e8e6!important}
+.hely.arany{border-color:#c0392b!important;
+      background:linear-gradient(150deg,#f9ece2,#f2ded0)!important}
+.hely .fajta{color:#a4564c!important}
+.hely.kesz{border:0!important;background:transparent!important;padding:0!important;overflow:visible!important;position:relative}
+.hely.kesz img{width:100%!important;height:100%!important;object-fit:contain!important;display:block;background:transparent}
+.hely.rahuz{border-color:#2f8f60!important;background:#e6f5ec!important}
+.hely.tiltott{cursor:not-allowed!important;opacity:.45}
+.hely.rossz{border-color:#c0392b!important;background:#fadcd8!important}
+
+/* ── a pakli lapjai összetéveszthetetlenek legyenek ──────────────────────
+   Ezüst keret = sima lap, arany keret + sarokcímke = arany lap. */
+.mini{position:relative;border:2px solid #9aa0ad!important}
+.mini.aranylap{border:3px solid #d8b355!important;
+  box-shadow:0 0 0 2px rgba(246,231,189,.85),0 6px 18px rgba(0,0,0,.55)!important}
+.mini .cimke{position:absolute;top:4px;left:4px;z-index:2;font-size:.72rem;font-weight:900;
+  min-width:20px;text-align:center;padding:2px 6px;border-radius:5px;color:#1b1a24;
+  background:#f0c869;box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.hely .fajta{display:none!important}
+.hely .szam{font-size:1.5rem!important;opacity:.55!important;top:8px!important;left:10px!important;
+  color:#a4564c!important}
+
 .sz-tag{white-space:nowrap;font-size:.6rem;letter-spacing:1.1px;max-width:92%;overflow:hidden;text-overflow:ellipsis}
 .sz-fejlec{padding-top:32px}
 </style></head><body>
@@ -380,8 +406,21 @@ const K = [{"id": "es_medio_3_cajal", "sorszam": 1, "kep": "medio_3_cajal", "nev
 const TARGYAK = ["Conocimiento del Medio Natural, Social y Cultural", "Matemáticas", "Lengua Castellana y Literatura", "Educación Artística", "Educación Física", "Lengua Extranjera"];
 const BE = {};
 const KEPUT = k => BE[k.kep] || ("static/kartyak/es/" + k.kep + ".png");
-const KARTYAUT = (k,arany) => BE[k.kep+(arany?"_kartya_arany":"_kartya")] || BE[k.kep+"_kartya"]
+const KARTYAUT = (k,arany) => BE[k.kep+(arany?"_kartya_arany":"_kartya")] 
   || ("static/kartyak/es/" + k.kep + (arany?"_kartya_arany.png":"_kartya.png"));
+
+const FRISS = "?v=" + Date.now();   /* a bongeszo ne a regi kepet mutassa */
+
+/* A lap képe: ha az ARANY fájl hiányzik, NEM esünk vissza a simára –
+   különben ezüst lap kerülne az arany helyre. */
+const KARTYAUT_SZIG = (k,arany) =>
+  BE[k.kep+(arany?"_kartya_arany":"_kartya")]
+  || ("static/kartyak/es/" + k.kep + (arany?"_kartya_arany.png":"_kartya.png") + FRISS);
+function kepBetolt(url){
+  return new Promise(r=>{ const i=new Image();
+    i.onload=()=>r(true); i.onerror=()=>r(false); i.src=url; });
+}
+
 const HIBAKEP = 'onerror="this.style.visibility=\'hidden\'"';
 
 /* A hely száma a kártyában TÁROLT sorszámból jön, nem a lista sorrendjéből.
@@ -400,7 +439,7 @@ let PAKLI=K.map(k=>[{id:k.id+"_a",k:k,hova:k.hely1,arany:false},
                     {id:k.id+"_b",k:k,hova:k.hely2,arany:true}]).flat();
 const MIND=PAKLI.slice();
 const beragasztva=new Set();
-let oldal=0;
+let oldal=0; let HUZOTT=null;
 document.getElementById('ossz').textContent=K.length*2;
 const lap=document.getElementById('lap'), uzenet=document.getElementById('uzenet');
 
@@ -488,8 +527,11 @@ function kotesek(){
   lap.querySelectorAll('.hely[data-n]').forEach(h=>{
     h.style.cursor='pointer';
     h.addEventListener('click',()=>{varToltes=Number(h.dataset.n);kepFile.click();});
-    h.addEventListener('dragover',e=>{e.preventDefault();h.classList.add('rahuz');});
-    h.addEventListener('dragleave',()=>h.classList.remove('rahuz'));
+    h.addEventListener('dragover',e=>{e.preventDefault();
+      const c=PAKLI.find(x=>x.id===HUZOTT);
+      if(c && Number(h.dataset.n)!==c.hova){h.classList.add('tiltott');e.dataTransfer.dropEffect='none';return;}
+      h.classList.add('rahuz');});
+    h.addEventListener('dragleave',()=>h.classList.remove('rahuz','tiltott'));
     h.addEventListener('drop',e=>{e.preventDefault();h.classList.remove('rahuz');
       const id=e.dataTransfer.getData('text/plain');
       const c=PAKLI.find(x=>x.id===id); if(!c) return;
@@ -507,10 +549,11 @@ function kotesek(){
 function pakli(){
   const p=document.getElementById('pakli');
   if(!PAKLI.length){p.innerHTML='<div style="opacity:.5;padding:18px">Has pegado todos los cromos.</div>';return;}
-  p.innerHTML=PAKLI.slice(0,40).map(c=>`<div class="mini" draggable="true" data-id="${c.id}">
-     <img src="${KARTYAUT(c.k,c.arany)}" ${HIBAKEP}><div class="c">${c.k.nev}${c.arany?' ★':''}</div></div>`).join('');
+  p.innerHTML=PAKLI.slice(0,40).map(c=>`<div class="mini ${c.arany?'aranylap':''}" draggable="true" data-id="${c.id}">
+     <span class="cimke">${c.hova}</span>
+     <img src="${KARTYAUT_SZIG(c.k,c.arany)}" ${HIBAKEP}><div class="c">${c.k.nev}</div></div>`).join('');
   p.querySelectorAll('.mini').forEach(m=>m.addEventListener('dragstart',e=>{
-    e.dataTransfer.setData('text/plain',m.dataset.id);
+    e.dataTransfer.setData('text/plain',m.dataset.id); HUZOTT=m.dataset.id;
     uzenet.className='uzenet';uzenet.textContent='';}));
 }
 document.getElementById('elore').addEventListener('click',()=>{if(oldal>0){oldal--;rajzol();}});
@@ -518,4 +561,13 @@ document.getElementById('hatra').addEventListener('click',()=>{if(oldal<OLDALAK.
 document.addEventListener('dragover',e=>e.preventDefault());
 document.addEventListener('drop',e=>e.preventDefault());
 rajzol(); pakli();
+
+/* csak azok a lapok kerulnek a pakliba, amelyeknek tenyleg van kepuk */
+(async () => {
+  const jo = [];
+  for (const c of PAKLI) if (await kepBetolt(KARTYAUT_SZIG(c.k, c.arany))) jo.push(c);
+  PAKLI = jo;
+  pakli();
+})();
+
 </script></body></html>
