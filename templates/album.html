@@ -196,6 +196,52 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
   .ugrosav button.itt{border-color:#f0c869;color:#f0c869}
   .ugrosav .pont{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.55}
   .ugrosav .arany{font-size:.7rem;opacity:.7}
+
+/* ── TELEFONRA ────────────────────────────────────────────────────────────
+   A személylap két hasábra van tervezve (1fr + 292 px), és a becenév-tábla
+   meg a két tény-doboz ABSZOLÚT helyzetben úszik a kép fölött. Ez papíron
+   szép, telefonon viszont a 292 px-es hasáb egyedül szélesebb, mint a
+   képernyő: a bal hasáb összenyomódik, az úszó dobozok pedig egymásra és a
+   névre csúsznak – pontosan az, ami a tesztképen olvashatatlan volt.
+   Kis képernyőn ezért EGY hasáb van, és az úszó elemek visszaülnek a sorba. */
+@media (max-width:760px){
+  .album{padding:8px;border-radius:7px}
+  .lap{min-height:0;overflow:visible}
+
+  .sz-fejlec{padding:26px 16px 0}
+  .sz-nev{font-size:1.85rem;letter-spacing:-.7px;line-height:1}
+  .sz-alnev{font-size:.8rem}
+  .sz-tag{font-size:.6rem;padding:4px 12px}
+
+  .sz-torzs{grid-template-columns:1fr;gap:14px;padding:12px 16px 20px}
+  .sz-bal{min-height:0}
+  /* A becenév a kép FÖLÉ kerül – nem rá. */
+  .becenev{position:static;order:-1;transform:none;max-width:none;
+           margin:0;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.22)}
+  .sz-kep{margin-top:12px;aspect-ratio:4/3}
+  /* A két tény-doboz a kép ALÁ, egymás alá. */
+  .dobozok{position:static;margin-top:12px;gap:9px}
+  .doboz,.doboz.kek{transform:none}
+  .doboz span{font-size:.82rem}
+
+  .adatlap table{font-size:.82rem}
+  .adatlap td{padding:7px 10px}
+  .helyek{gap:9px}
+  .hely .lecke{font-size:.7rem}
+  .idezet{font-size:.8rem}
+
+  /* A többi lap is elfér: borító, szakasz, checklist. */
+  .focim{font-size:1.9rem;letter-spacing:1px}
+  .meh{grid-template-columns:repeat(4,1fr);gap:6px}
+  .szfej{padding:20px 16px 12px}
+  .szfej h2{font-size:2rem;letter-spacing:-.9px}
+  .szfej .db{top:20px;right:16px;padding:6px 10px}
+  .szfej .db b{font-size:1.2rem}
+  .arcsor{grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:10px;padding:14px 16px 20px}
+  .checklist{padding:16px}
+  .checklist h2{font-size:1.6rem}
+  .clracs{grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:6px}
+}
 </style></head><body>
 
 <div class="top">
