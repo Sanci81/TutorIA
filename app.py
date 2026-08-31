@@ -7741,10 +7741,17 @@ def api_voice_speak():
         text, "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu")
 
     # ── 1. RÖVIDÍTÉS ────────────────────────────────────────────────────
-    # A felolvasás karakterre megy. A hosszú monológ egy gyereknek amúgy is
-    # sok, ezért mondathatáron elvágjuk – ez olcsóbb ÉS jobb.
-    # A kiejtés UTÁN vágunk: azért fizetünk, ami tényleg elhangzik.
-    text = hang.rovidit(text)
+    # A felolvasás karakterre megy, ezért mondathatáron vágunk – a kiejtés
+    # UTÁN, hogy azért fizessünk, ami tényleg elhangzik.
+    #
+    # DE: hangos módban NEM vágunk rövidre. Ott a gyerek csak hall, és a
+    # 420 karakteres korlát miatt a magyarázat vége – gyakran maga a kérdés –
+    # egyszerűen nem hangzott el. A gyerek csendben maradt, mert nem tudta,
+    # mit kérdeztek tőle. Szövegmódban marad a rövid változat: ott a választ
+    # el is olvassa.
+    _hangos = (data.get("mode") or "").strip().lower() == "voice"
+    text = hang.rovidit(
+        text, hang.MAX_KARAKTER_HANG if _hangos else hang.MAX_KARAKTER)
 
     _cid = None
     try:

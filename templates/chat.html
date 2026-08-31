@@ -570,7 +570,9 @@
         return fetch(speakUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: text, child_id: childId })
+            /* A módot is elküldjük: hangos módban a szerver VÉGIG felolvassa
+               a választ, szövegmódban marad a rövidített változat. */
+            body: JSON.stringify({ text: text, child_id: childId, mode: chatMode })
         })
             .then(function (r) {
                 if (r.status === 429) { hangKeretVege(); throw new Error('keret'); }

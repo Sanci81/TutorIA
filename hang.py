@@ -24,14 +24,23 @@ import os
 import re
 
 # ── 1. a felolvasott szöveg hossza ──────────────────────────────────────────
-# Egy gyereknek szánt hangos válasz 2-3 mondat. 420 karakter bőven ennyi.
-# Ha ennél hosszabb, MONDATHATÁRON vágunk – nem a szó közepén.
+# SZÖVEGMÓDBAN a felolvasás kiegészítés: a gyerek olvassa is a választ, ezért
+# 420 karakter után mondathatáron elvágjuk – így nem fizetünk azért, amit a
+# gyerek amúgy is lát.
 MAX_KARAKTER = 420
 
+# HANGOS MÓDBAN viszont a felolvasás MAGA a tanítás. Ott a levágás azt
+# jelentette, hogy a magyarázat vége – sokszor maga a kérdés – soha nem
+# hangzott el, és a gyerek csendben maradt, nem tudva, mit kérdeztek tőle.
+# Itt tehát végigolvassuk a választ; a 3000 karakter csak azért van, hogy egy
+# elszabadult, több oldalas válasz ne vigye el a napi keretet egyetlen körben.
+MAX_KARAKTER_HANG = 3_000
+
 # ── 3. napi keret gyerekenként ──────────────────────────────────────────────
-# 12 000 karakter kb. 25-30 tanári forduló: egy bőséges tanulónap.
+# A teljes hosszú felolvasás körönként kb. háromszor annyi karakter, ezért a
+# napi keret is nő. 30 000 karakter így is kb. 30 tanári forduló hangos módban.
 # Fölötte a felolvasás kikapcsol aznapra, a szöveges tanítás megy tovább.
-NAPI_KERET = 12_000
+NAPI_KERET = 30_000
 
 _MONDATVEG = re.compile(r"(?<=[.!?…])\s+")
 
