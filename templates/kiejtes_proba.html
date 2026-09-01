@@ -33,6 +33,7 @@ button.felvesz{background:var(--piros)}
 .szo.jo{background:#dcfce7;color:#14532d}
 .szo.koz{background:#fef3c7;color:#78350f}
 .szo.rossz{background:#fee2e2;color:#7f1d1d}
+.szo.nincs{background:#eef1f6;color:#5b6474}
 .szo small{opacity:.65;font-size:.65em;margin-left:4px}
 pre{background:#0f1720;color:#d7e2ee;border-radius:11px;padding:13px;overflow:auto;
     font-size:.76rem;max-height:340px;margin:12px 0 0}
@@ -173,9 +174,14 @@ function mutat(d) {
   });
   var sz = document.getElementById('szavak'); sz.innerHTML = '';
   (e.szavak || []).forEach(function (w) {
-    var o = w.pont >= 80 ? 'jo' : (w.pont >= 60 ? 'koz' : 'rossz');
+    /* Ha nincs pont, SEMLEGES a szó – a piros azt jelentené, hogy rosszul
+       ejtette, holott csak nem kaptunk rá értéket. */
+    var o = (w.pont === null || w.pont === undefined) ? 'nincs'
+          : (w.pont >= 80 ? 'jo' : (w.pont >= 60 ? 'koz' : 'rossz'));
+    var jel = (w.pont === null || w.pont === undefined) ? '' :
+              '<small>' + w.pont + '</small>';
     sz.insertAdjacentHTML('beforeend',
-      '<span class="szo ' + o + '">' + w.szo + '<small>' + w.pont + '</small></span>');
+      '<span class="szo ' + o + '">' + w.szo + jel + '</span>');
   });
   document.getElementById('felismert').textContent =
     e.felismert ? 'Amit hallott: „' + e.felismert + '”' : '';

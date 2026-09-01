@@ -133,12 +133,19 @@ def egyszerusit(valasz: dict) -> dict:
             ki["pontszamok"][nev] = round(float(v))
 
     for szo in elso.get("Words") or []:
+        # Az Azure kétféle elrendezésben adhatja a szó szintű pontot: külön
+        # "PronunciationAssessment" blokkban, vagy magán a szó-objektumon.
+        # Élesben az utóbbit kaptuk, ezért MINDKETTŐT megnézzük — enélkül
+        # minden szó nullát mutatott, holott az összesített pont 80 fölött volt.
         w = szo.get("PronunciationAssessment") or {}
+        nyers_pont = w.get("AccuracyScore", szo.get("AccuracyScore"))
         ki["szavak"].append({
             "szo": szo.get("Word", ""),
-            "pont": round(float(w.get("AccuracyScore", 0) or 0)),
+            # None, ha tényleg nincs pont – ez MÁS, mint a nulla pont.
+            "pont": (round(float(nyers_pont))
+                     if isinstance(nyers_pont, (int, float)) else None),
             # None / "None" / "Mispronunciation" / "Omission" / "Insertion"
-            "hiba": (w.get("ErrorType") or "None"),
+            "hiba": (w.get("ErrorType") or szo.get("ErrorType") or "None"),
         })
     return ki
 
