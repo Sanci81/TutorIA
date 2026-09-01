@@ -4585,6 +4585,33 @@ Ha egy válaszban 3 új szót tanítasz, mindháromhoz kell marker:
 {"<VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB><VOCAB>szilva=ciruela</VOCAB>" if not es_curriculum else "<VOCAB>manzana=apple</VOCAB><VOCAB>pera=pear</VOCAB><VOCAB>ciruela=plum</VOCAB>"}
 Ez MINDEN válaszban KÖTELEZŐ ahol új szót tanítasz. Kihagyni TILOS!
 
+⚖️ A RAGOZÁST EGY TÁBLÁZATBAN ADD, NE SZÉTSZÓRVA:
+Ha a témakör nyelvtani fókusza egy IGE (angolul to be, to have; spanyolul
+ser, estar, tener), akkor a teljes sort add meg egyszerre, kis táblázatként,
+magyar jelentéssel:
+   I am        – én vagyok
+   you are     – te vagy
+   he/she/it is– ő van
+   we are      – mi vagyunk
+   they are    – ők vannak
+Ez EGY új dolog, nem öt: a gyerek a rendszert tanulja meg, nem öt külön
+szót. Utána egy mondattal gyakoroltasd ("I am six years old."), és a
+következő válaszokban erre építs — ne kezdd elölről darabonként.
+A "there is / there are" is CSAK ezután jöjjön, mert az erre épül.
+
+⚖️ AMI ÖSSZETARTOZIK, AZT EGYÜTT TANÍTSD:
+Az "egyszerre egy új dolog" szabály a SZAVAKRA vonatkozik. A nyelvtani
+PÁROKRA nem: azokat külön tanítani félrevezető, mert a gyerek nem érti, mikor
+melyiket kell használni. Egy válaszban, szembeállítva tanítsd őket:
+- there is / there are  (egy dolog / több dolog)
+- a / an                (mássalhangzó / magánhangzó előtt)
+- this / these, that / those
+- ser / estar, a / az, -ban / -ben
+Mutasd meg mindkettőt EGY példamondattal, és mondd ki a különbséget egy
+mondatban: "There is a shop. (egy bolt) — There are two shops. (két bolt)".
+Utána kérdezz rá arra, hogy MELYIKET kell használni, ne arra, hogy mit
+jelent az egyik.
+
 🗣️ KIEJTÉS-GYAKORLÁS — HASZNÁLD, DE MÉRTÉKKEL:
 Ha azt szeretnéd, hogy a gyerek MONDJA is ki, amit tanult, írd a válaszod
 végére ezt a jelölőt a gyakorlandó mondattal:
@@ -6481,6 +6508,22 @@ def child_chat_send(child_id: int):
     # A tanár által kért kiejtés-gyakorlat mondata. A jelölőt a
     # _parse_chat_markers már kivette a látható szövegből.
     _gyakorlo_mondat = _mondd_szoveg(raw_reply)
+
+    # HA A TANÁR ELFELEJTI, MI KÉRJÜK.
+    # A promptban leírt szabályt a modell nem mindig tartja be, és élesben
+    # egyszer sem kérte a gyakorlást. Egy nyelvórán viszont a kimondás nem
+    # díszítés, hanem maga a tanulás — ezért nem bízzuk a jóindulatára:
+    # minden HARMADIK olyan válasz után, ahol új szót tanított, magunk
+    # teszünk egy gyakorlókártyát az utoljára tanított szóval.
+    # A "minden harmadik" önkényes szám volt. A helyes szabály egyszerűbb:
+    # AMIKOR ÚJ IDEGEN SZÓT TANÍT, AKKOR mondja is ki a gyerek. Egy válaszban
+    # legfeljebb egy kártya, mert egy válaszban egy új dolgot tanítunk.
+    # Nem-nyelvi tantárgynál nincs kártya: ott a tananyag a magyar (vagy
+    # spanyol) fogalom, nem a kiejtés — ott a kimondás nem mérce.
+    if not _gyakorlo_mondat and is_foreign and language and vocab_pairs:
+        _gyakorlo_mondat = str(vocab_pairs[-1][1]).strip()[:200]
+        print(f"[MONDD] uj szo tanitva, gyakorlokartya: "
+              f"{_gyakorlo_mondat!r}", flush=True)
 
     marker_count = len(vocab_pairs)
     fallback_count = 0
