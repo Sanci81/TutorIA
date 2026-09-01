@@ -60,28 +60,15 @@
     </aside>
 
     <div class="chat-main">
-        {# ── FEJLÉC: KÉT SÁV ───────────────────────────────────────────
-           Korábban öt sáv volt egymás alatt (váltógombok, névkártya, „Most
-           ezt tanulod” doboz, percek, Szintfelmérő gomb), együtt közel 290
-           képpont. Egy laptopon ez a képernyő harmada, mielőtt a gyerek egy
-           szót elolvasna — telefonon még rosszabb. Ugyanez az információ
-           elfér két sorban: fent KI tanul és MIVEL, lent MIT tanul éppen. #}
         <header class="chat-header chat-header-playful">
             <div class="chat-header-topbar">
                 {# Bal oldalt MINDIG a visszalépés, jobb oldalt EGYETLEN váltógomb,
-                   ami azt írja ki, HOVÁ visz — nem azt, hol vagyunk éppen. #}
+                   ami azt írja ki, HOVÁ visz — nem azt, hol vagyunk éppen.
+                   Korábban hangos módban a bal és a jobb oldali gomb is a chatbe
+                   vitt, a felirat pedig az aktuális módot mutatta: ez zavaró volt,
+                   és chat módból nem volt egyértelmű a visszaút. #}
                 <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
-                <div class="chat-avatar-circle">{{ child['name'][0]|upper }}</div>
-                <div class="chat-header-identity-text">
-                    <h1 class="chat-child-name">{{ child['name'] }}</h1>
-                    <p class="chat-subject">{{ subject_label }}</p>
-                </div>
-                <span class="chat-header-ter"></span>
-                {# CSAK az egyenleg látszik tanulás közben – a boltot és az
-                   albumot a profilról nyitja, hogy a lecke ne szakadjon meg. #}
-                <div class="chat-coins-pill" title="{{ t('coin_hint') }}">🪙
-                   <span id="coins-display">{{ coins }}</span>
-                   <span id="pont-display" hidden>{{ pont }}</span></div>
+                {# Teljes képernyő. Jobbra tolva, hogy a fejléc közepét ne foglalja. #}
                 <button type="button" class="chat-teljes-gomb" id="chat-teljes"
                         title="{{ t('chat_fullscreen') }}"
                         aria-label="{{ t('chat_fullscreen') }}">⛶</button>
@@ -94,19 +81,39 @@
                 {% endif %}
             </div>
 
-            <div class="chat-header-also">
-                {% if not placement_mode %}
-                <span class="chat-also-jel" aria-hidden="true">🎯</span>
+            <div class="chat-header-identity">
+                <div class="chat-avatar-circle">{{ child['name'][0]|upper }}</div>
+                <div class="chat-header-identity-text">
+                    <h1 class="chat-child-name">{{ child['name'] }}</h1>
+                    <p class="chat-subject">{{ subject_label }}</p>
+                </div>
+                {# CSAK az egyenleg látszik tanulás közben – a boltot és az
+                   albumot a profilról nyitja, hogy a lecke ne szakadjon meg.
+                   A számnak viszont itt kell lennie: a gyerek akkor érzi a
+                   jutalmat, amikor megdolgozott érte. #}
+                <div class="chat-coins-pill" title="{{ t('coin_hint') }}">🪙
+                   <span id="coins-display">{{ coins }}</span>
+                   <span id="pont-display" hidden>{{ pont }}</span></div>
+            </div>
+
+            {% if not placement_mode %}
+            <div class="chat-topic-card chat-topic-card-playful">
+                <span class="chat-topic-card-label">{{ t('chat_now_learning') }}</span>
                 <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
-                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="chat-mini-stats">
                 <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> {{ t('chat_minutes_suffix') }}</span>
                 <span class="chat-mini-stat">🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
-                {% if streak_days and streak_days > 0 %}
-                <span class="chat-mini-stat chat-mini-stat-sorozat" id="streak-bar">
-                    {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
-                </span>
-                {% endif %}
-                <span class="chat-header-ter"></span>
+            </div>
+            {% if streak_days and streak_days > 0 %}
+            <div class="chat-streak-bar" id="streak-bar">
+                {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
+            </div>
+            {% endif %}
+
+            <div class="chat-header-actions">
                 {% if show_early_test %}
                 <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
                     {{ t('chat_test_start') }}
@@ -338,6 +345,13 @@
         errNoReply: {{ t('chat_err_no_reply')|tojson }},
         errNetwork: {{ t('chat_err_network')|tojson }},
         errTimeout: {{ t('chat_err_timeout')|tojson }},
+        kiCim:      {{ t('kiejtes_cim')|tojson }},
+        kiSugo:     {{ t('kiejtes_sugo')|tojson }},
+        kiHallgasd: {{ t('kiejtes_hallgasd')|tojson }},
+        kiUjra:     {{ t('kiejtes_ujra')|tojson }},
+        kiFigyelek: {{ t('kiejtes_figyelek')|tojson }},
+        kiNezem:    {{ t('kiejtes_nezem')|tojson }},
+        kiNemMent:  {{ t('kiejtes_nem_ment')|tojson }},
         voiceTooShort: {{ t('chat_voice_too_short')|tojson }},
         errNotUnderstood: {{ t('chat_err_not_understood')|tojson }},
         voiceStatusIdle: {{ t('chat_voice_status_idle')|tojson }},
@@ -570,9 +584,7 @@
         return fetch(speakUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            /* A módot is elküldjük: hangos módban a szerver VÉGIG felolvassa
-               a választ, szövegmódban marad a rövidített változat. */
-            body: JSON.stringify({ text: text, child_id: childId, mode: chatMode })
+            body: JSON.stringify({ text: text, child_id: childId })
         })
             .then(function (r) {
                 if (r.status === 429) { hangKeretVege(); throw new Error('keret'); }
@@ -680,6 +692,125 @@
             appendBubble('assistant', L.errTimeout);
         }
     }, 5000);
+
+    /* ── KIEJTÉS-GYAKORLÁS ────────────────────────────────────────────
+       A tanár <MONDD> jelölővel kér egy "mondd utánam" gyakorlatot. A gyerek
+       kimondja, az Azure szavanként megnézi, és a gyerek SZÍNEKET lát —
+       számot nem. Egy hatévesnek a "61 pont" ítélet, a "gyakoroljuk még ezt
+       a két szót" viszont feladat. */
+    var KI_MINTAVETEL = 16000;
+
+    /* A böngésző webm/opus-t vesz fel, az Azure 16 kHz mono PCM WAV-ot vár.
+       Az átalakítás itt történik, így a szerverre nem kell ffmpeg. */
+    function kiWav(abuf) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        return new AC().decodeAudioData(abuf).then(function (buf) {
+            var OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+            var off = new OAC(1, Math.ceil(buf.duration * KI_MINTAVETEL), KI_MINTAVETEL);
+            var f = off.createBufferSource();
+            f.buffer = buf; f.connect(off.destination); f.start();
+            return off.startRendering();
+        }).then(function (kesz) {
+            var m = kesz.getChannelData(0);
+            var pu = new ArrayBuffer(44 + m.length * 2), n = new DataView(pu), i = 0;
+            function sz(t) { for (var k = 0; k < t.length; k++) n.setUint8(i++, t.charCodeAt(k)); }
+            function u32(v) { n.setUint32(i, v, true); i += 4; }
+            function u16(v) { n.setUint16(i, v, true); i += 2; }
+            sz('RIFF'); u32(36 + m.length * 2); sz('WAVE'); sz('fmt ');
+            u32(16); u16(1); u16(1); u32(KI_MINTAVETEL); u32(KI_MINTAVETEL * 2);
+            u16(2); u16(16); sz('data'); u32(m.length * 2);
+            for (var j = 0; j < m.length; j++) {
+                var v = Math.max(-1, Math.min(1, m[j]));
+                n.setInt16(i, v < 0 ? v * 0x8000 : v * 0x7fff, true); i += 2;
+            }
+            return new Blob([pu], { type: 'audio/wav' });
+        });
+    }
+
+    function kiejtesKartya(mondd) {
+        if (!mondd || !mondd.mondat) { return; }
+        var k = document.createElement('div');
+        k.className = 'kiejtes-kartya';
+        k.innerHTML =
+            '<div class="ki-fejlec">🗣️ ' + escapeHtml(L.kiCim) + '</div>' +
+            '<div class="ki-mondat"></div>' +
+            '<div class="ki-vissza" hidden></div>' +
+            '<div class="ki-also">' +
+              '<button type="button" class="ki-mikro">🎙</button>' +
+              '<span class="ki-sugo">' + escapeHtml(L.kiSugo) + '</span>' +
+            '</div>';
+        k.querySelector('.ki-mondat').textContent = mondd.mondat;
+        messagesEl.insertBefore(k, typing);
+        scrollToBottom();
+
+        var mikro = k.querySelector('.ki-mikro');
+        var sugo = k.querySelector('.ki-sugo');
+        var rogz = null, darab = [], folyam = null, vesz = false;
+
+        mikro.onclick = function () {
+            if (vesz) { if (rogz && rogz.state !== 'inactive') { rogz.stop(); } return; }
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) {
+                folyam = st; darab = [];
+                rogz = new MediaRecorder(st);
+                rogz.ondataavailable = function (e) { if (e.data.size) { darab.push(e.data); } };
+                rogz.onstop = function () {
+                    folyam.getTracks().forEach(function (t) { t.stop(); });
+                    vesz = false; mikro.classList.remove('vesz');
+                    mikro.disabled = true; sugo.textContent = L.kiNezem;
+                    new Blob(darab).arrayBuffer().then(kiWav).then(function (wav) {
+                        return kiKuld(k, mondd, wav);
+                    }).catch(function () {
+                        sugo.textContent = L.kiNemMent; mikro.disabled = false;
+                    });
+                };
+                rogz.start(); vesz = true;
+                mikro.classList.add('vesz'); sugo.textContent = L.kiFigyelek;
+            }).catch(function () { sugo.textContent = L.voiceMicPermission; });
+        };
+    }
+
+    function kiKuld(k, mondd, wav) {
+        var fd = new FormData();
+        fd.append('hang', wav, 'felvetel.wav');
+        fd.append('mondat', mondd.mondat);
+        fd.append('nyelv', mondd.nyelv || 'hu-HU');
+        return fetchIdovel('/api/kiejtes/ertekel', { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (d) { kiMutat(k, mondd, d); });
+    }
+
+    function kiMutat(k, mondd, d) {
+        var mikro = k.querySelector('.ki-mikro');
+        var sugo = k.querySelector('.ki-sugo');
+        var vissza = k.querySelector('.ki-vissza');
+        mikro.disabled = false; sugo.textContent = '';
+
+        if (d && d.ok && d.szavak && d.szavak.length) {
+            var m = k.querySelector('.ki-mondat');
+            m.innerHTML = '';
+            d.szavak.forEach(function (w) {
+                var e = document.createElement('span');
+                /* KÉT szín van, piros nincs: "jó" és "gyakoroljuk még". */
+                e.className = 'ki-szo ' + (w.jo ? 'jo' : 'gyak');
+                e.textContent = w.szo;
+                m.appendChild(e);
+            });
+        }
+        vissza.textContent = (d && d.biztato) || L.kiNemMent;
+        vissza.hidden = false;
+
+        if (!k.querySelector('.ki-gombsor')) {
+            var g = document.createElement('div');
+            g.className = 'ki-gombsor';
+            g.innerHTML =
+                '<button type="button" class="ki-g ki-feher">' + escapeHtml(L.kiHallgasd) + '</button>' +
+                '<button type="button" class="ki-g ki-zold">' + escapeHtml(L.kiUjra) + '</button>';
+            k.appendChild(g);
+            g.children[0].onclick = function () { playTts(mondd.mondat).catch(function () {}); };
+            g.children[1].onclick = function () { k.querySelector('.ki-mikro').click(); };
+        }
+        scrollToBottom();
+    }
 
     function renderSidebar(sidebar) {
         if (!sidebar || !sidebarList) return;
@@ -841,6 +972,7 @@
                     }, 200);
                 }
                 appendBubble('assistant', aiMessage, res.data.figures);
+                if (res.data.mondd) { kiejtesKartya(res.data.mondd); }
                 if (res.data.current_topic_id) {
                     currentTopicId = res.data.current_topic_id;
                     if (topicIdInput) topicIdInput.value = currentTopicId;
@@ -1249,6 +1381,7 @@
                         }, 200);
                     }
                     appendBubble('assistant', reply, res.data.figures);
+                    if (res.data.mondd) { kiejtesKartya(res.data.mondd); }
                     if (res.data.current_topic_id) {
                         currentTopicId = res.data.current_topic_id;
                         var tid = document.getElementById('chat-topic-id');

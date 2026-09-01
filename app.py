@@ -1221,6 +1221,73 @@ def kiejtes_proba():
     return jsonify(eredmeny)
 
 
+# ── Kiejtés-gyakorlás a leckében ────────────────────────────────────────────
+# A gyerek kimondja a mondatot, az Azure szavanként megmondja, mennyire ment.
+# AMIT A GYEREK LÁT: színek és egy bátorító mondat — SEMMI SZÁM. Egy hatéves
+# számára a "61 pont" ítélet, a "ezt a két szót gyakoroljuk még" feladat.
+# A számok a szülői oldalra valók, nem ide.
+_KIEJTES_JO_HATAR = 75          # e fölött zöld, alatta "gyakoroljuk még"
+
+
+@app.route("/api/kiejtes/ertekel", methods=["POST"])
+@login_required
+def api_kiejtes_ertekel():
+    gyerek_id = session.get("chat_child_id")
+    child = (database.get_child_by_id(int(gyerek_id), session["parent_id"])
+             if gyerek_id else None)
+    if not child:
+        return jsonify({"ok": False, "uzenet": "nincs aktív gyerek"}), 400
+
+    feltoltes = request.files.get("hang")
+    mondat = (request.form.get("mondat") or "").strip()
+    nyelv = (request.form.get("nyelv") or "hu-HU").strip()
+    if not feltoltes or not mondat:
+        return jsonify({"ok": False, "uzenet": "hiányzó adat"}), 400
+
+    wav = feltoltes.read()
+    # MÉRÉS: a kiejtés-értékelés a beszédfelismerés díjszabása szerint megy.
+    # A WAV 16 kHz, mono, 16 bit → másodpercenként 32 000 bájt.
+    try:
+        database.add_usage(int(gyerek_id), hang_mp=max(0.0, (len(wav) - 44) / 32000.0))
+    except Exception:
+        pass
+
+    try:
+        nyers = kiejtes.ertekel(wav, mondat, nyelv=nyelv)
+    except Exception as exc:
+        print(f"[KIEJTES] hiba: {exc}", flush=True)
+        # A gyerek soha ne lásson technikai hibát: kap egy kedves mondatot,
+        # és mehet tovább. A tanulás nem áll meg attól, hogy az Azure hallgat.
+        return jsonify({"ok": False, "biztato": i18n.t("kiejtes_nem_ment", g.lang)})
+
+    e = kiejtes.egyszerusit(nyers)
+    szavak = []
+    gyenge = []
+    for w in e["szavak"]:
+        pont = w["pont"]
+        jo = (pont is None) or (pont >= _KIEJTES_JO_HATAR)
+        szavak.append({"szo": w["szo"], "jo": jo})
+        if not jo:
+            gyenge.append(w["szo"])
+
+    lang = "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu"
+    if not szavak:
+        biztato = i18n.t("kiejtes_nem_hallottam", lang)
+    elif not gyenge:
+        biztato = i18n.t("kiejtes_tokeletes", lang)
+    else:
+        biztato = i18n.t("kiejtes_gyakorold", lang).replace(
+            "{szavak}", ", ".join(gyenge[:3]))
+
+    print(f"[KIEJTES] child={gyerek_id} nyelv={nyelv} "
+          f"ossz={e['pontszamok'].get('osszesitett')} gyenge={gyenge}", flush=True)
+
+    # A SZÁMOKAT visszaadjuk, de a böngésző nem mutatja meg a gyereknek —
+    # a szülői jelentéshez viszont kelleni fognak.
+    return jsonify({"ok": True, "szavak": szavak, "biztato": biztato,
+                    "pontszamok": e["pontszamok"]})
+
+
 # ── Szülői haladás-jelentés ─────────────────────────────────────────────────
 # A szülő nem fog belépni az oldalra. Ez a levél az egyetlen rendszeres
 # visszajelzés arról, hogy amiért fizet, az működik-e.
@@ -1998,6 +2065,40 @@ _CHAT_MARKER_SVG = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 
+# Kiejtés-gyakorlás: <MONDD>There is a park near my school.</MONDD>
+# A tanár ezzel kér egy "mondd utánam" gyakorlatot. A jelölő a chatben nem
+# látszik – a mondatból a gyerek oldalán egy külön kártya lesz mikrofonnal.
+_CHAT_MARKER_MONDD = re.compile(
+    r"<\s*MONDD\s*>\s*(.*?)\s*<\s*/\s*MONDD\s*>",
+    re.IGNORECASE | re.DOTALL,
+)
+
+
+# Az Azure teljes nyelvkódot vár ("en-US"), a program viszont magyarul nevezi
+# a tantárgyat ("angol"). Ez a két világ közti fordítás.
+_KIEJTES_NYELV = {
+    "angol": "en-US", "német": "de-DE", "nemet": "de-DE",
+    "francia": "fr-FR", "spanyol": "es-ES", "olasz": "it-IT",
+}
+
+
+def _kiejtes_nyelvkod(language: str | None, keret: str) -> str:
+    """Melyik nyelven értékeljük a kiejtést ebben a leckében."""
+    kod = _KIEJTES_NYELV.get((language or "").strip().lower())
+    if kod:
+        return kod                      # idegen nyelv óra: a CÉLNYELV számít
+    return "es-ES" if (keret or "hu").lower() == "es" else "hu-HU"
+
+
+def _mondd_szoveg(text: str) -> str:
+    """A <MONDD> jelölőben kért gyakorlómondat, vagy üres szöveg."""
+    talalat = _CHAT_MARKER_MONDD.search(text or "")
+    if not talalat:
+        return ""
+    # Egy mondatnál hosszabbat nem gyakoroltatunk: az Azure 30 másodpercig
+    # értékel, és egy gyerek úgysem mond el hibátlanul egy bekezdést.
+    return " ".join(talalat.group(1).split())[:200]
+
 # Az AI néha elfelejti az <ABRA> keretet, és csupaszon (vagy ```svg blokkban)
 # adja vissza a rajzot. Ezt is fogadjuk el, különben az ábra elveszne.
 _BARE_SVG_RE = re.compile(r"<svg\b.*?</svg\s*>", re.IGNORECASE | re.DOTALL)
@@ -2035,6 +2136,7 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     clean = _CHAT_MARKER_LEVEL.sub("", clean)
     clean = _CHAT_MARKER_VOCAB.sub("", clean)
     clean = _CHAT_MARKER_SVG.sub("", clean)
+    clean = _CHAT_MARKER_MONDD.sub("", clean)
     clean = _BARE_SVG_RE.sub("", clean)
     # A rajz körüli üres ```svg / ``` sorok eltakarítása
     clean = _EMPTY_FENCE_RE.sub("", clean)
@@ -4483,6 +4585,21 @@ Ha egy válaszban 3 új szót tanítasz, mindháromhoz kell marker:
 {"<VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB><VOCAB>szilva=ciruela</VOCAB>" if not es_curriculum else "<VOCAB>manzana=apple</VOCAB><VOCAB>pera=pear</VOCAB><VOCAB>ciruela=plum</VOCAB>"}
 Ez MINDEN válaszban KÖTELEZŐ ahol új szót tanítasz. Kihagyni TILOS!
 
+🗣️ KIEJTÉS-GYAKORLÁS — HASZNÁLD, DE MÉRTÉKKEL:
+Ha azt szeretnéd, hogy a gyerek MONDJA is ki, amit tanult, írd a válaszod
+végére ezt a jelölőt a gyakorlandó mondattal:
+<MONDD>There is a park near my school.</MONDD>
+A gyerek ekkor kap egy mikrofonos kártyát, kimondja, és a program szavanként
+megnézi a kiejtését. Szabályok:
+- LEGFELJEBB EGY <MONDD> egy válaszban.
+- Csak akkor, ha a mondatot ELŐTTE megtanítottad és lefordítottad.
+- Rövid legyen: egy mondat, legfeljebb tíz szó. Egy bekezdést a gyerek nem
+  tud egyszerre kimondani, és a program is csak 30 másodpercet értékel.
+- NE minden válaszban kérd. Két-három tanítás után egyszer — akkor viszont
+  tényleg mondja ki, mert a nyelvet beszélve lehet megtanulni.
+- A jelölőn KÍVÜL ne írd le még egyszer "mondd utánam" formában: a kártya
+  már tartalmazza a mondatot.
+
 Hangfelismerés-tolerancia: hangmódban a gyerek beszéde nem mindig íródik át tökéletesen. Ha az átiratból egyértelmű, hogy a gyerek a helyes CÉLSZÓT próbálta mondani (akár közelítő vagy elírt formában, pl. "modern" a "mother" helyett), fogadd el HELYESNEK, dicsérd meg, és mondd ki a helyes alakot. Csak akkor javíts ki érdemben, ha egyértelműen MÁS szót mond.
 
 Te vezeted az órát, nem a gyerek. Minden válaszodban TANÍTS: mondd meg, mi a következő lépés, mutass be 1-3 új szót vagy kifejezést példamondattal, és csak UTÁNA kérdezz egyet, ami arra épül. SOHA ne kérdezd meg a gyerektől, hogy mit szeretne tanulni, és ne csak kérdezgess egymás után — a kérdés a tanítást követi, nem helyettesíti.
@@ -6361,6 +6478,10 @@ def child_chat_send(child_id: int):
         except Exception as exc:
             print(f"[ABRA-IGERET] kihagyva: {exc}", flush=True)
 
+    # A tanár által kért kiejtés-gyakorlat mondata. A jelölőt a
+    # _parse_chat_markers már kivette a látható szövegből.
+    _gyakorlo_mondat = _mondd_szoveg(raw_reply)
+
     marker_count = len(vocab_pairs)
     fallback_count = 0
     reply_count = 0
@@ -6634,6 +6755,14 @@ def child_chat_send(child_id: int):
             "game_level": progress.get("game_level", 1),
             "topic_done": topic_done,
             "figures": figures,
+            # Kiejtés-gyakorlás: ha a tanár <MONDD> jelölőt tett a válaszba,
+            # a gyerek egy külön kártyát kap mikrofonnal. Nyelv nélkül nincs
+            # mit értékelni, ezért a nyelvkódot is ideadjuk.
+            "mondd": ({"mondat": _gyakorlo_mondat,
+                       "nyelv": _kiejtes_nyelvkod(
+                           language,
+                           "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu")}
+                      if _gyakorlo_mondat else None),
             "uj_kartyak": uj_kartyak,
             "dupla_ermek": dupla_ermek,
             "coins": database.get_wallet(child_id)["erme"],

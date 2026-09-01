@@ -326,6 +326,35 @@ TRANSLATIONS = {
     },
     # Nem hiba, hanem használati tipp: a gomb KAPCSOLÓ – egy nyomás indít,
     # a következő leállít, nem kell nyomva tartani.
+    # ── Kiejtés-gyakorlás ────────────────────────────────────────────────
+    # A gyerek SOHA nem lát pontszámot, csak ezeket a mondatokat. Egy hatéves
+    # számára a szám ítélet; a mondat feladat.
+    "kiejtes_tokeletes": {
+        "hu": "Nagyon szép volt! Minden szót jól mondtál. 🌟",
+        "es": "¡Muy bien! Has dicho todas las palabras correctamente. 🌟",
+    },
+    "kiejtes_gyakorold": {
+        "hu": "Szép volt! Ezt gyakoroljuk még egy kicsit: {szavak}",
+        "es": "¡Bien hecho! Vamos a practicar un poco más: {szavak}",
+    },
+    "kiejtes_nem_hallottam": {
+        "hu": "Ezt nem hallottam jól. Mondd el még egyszer, kérlek! 🎤",
+        "es": "No te he oído bien. ¿Puedes decirlo otra vez? 🎤",
+    },
+    "kiejtes_nem_ment": {
+        "hu": "Most nem tudtam meghallgatni – de menjünk tovább! 🙂",
+        "es": "Ahora no he podido escucharte, ¡pero sigamos! 🙂",
+    },
+    "kiejtes_cim": {"hu": "Mondd utánam", "es": "Repite conmigo"},
+    "kiejtes_sugo": {
+        "hu": "Nyomd meg, mondd ki, aztán nyomd meg újra.",
+        "es": "Pulsa, dilo y vuelve a pulsar.",
+    },
+    "kiejtes_hallgasd": {"hu": "🔊 Hallgasd meg", "es": "🔊 Escúchalo"},
+    "kiejtes_ujra": {"hu": "Még egyszer", "es": "Otra vez"},
+    "kiejtes_figyelek": {"hu": "Figyelek…", "es": "Te escucho…"},
+    "kiejtes_nezem": {"hu": "Megnézem…", "es": "Un momento…"},
+
     "chat_voice_too_short": {
         "hu": "Ez túl rövid volt. Nyomd meg, beszélj, majd nyomd meg újra! 🎤",
         "es": "Ha sido muy corto. Pulsa, habla y vuelve a pulsar. 🎤",
