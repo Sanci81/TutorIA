@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Ellenőrzi, hogy a felolvasó MIT MOND KI a leírt szövegből.
+"""Ellenőrzi, MIT LÁT és MIT HALL a gyerek a tanár válaszából.
 
 MIÉRT VAN EZ A FÁJL
     A hang.py minden hibája ugyanúgy néz ki: a képernyőn jó a szöveg, csak
@@ -23,6 +23,7 @@ from __future__ import annotations
 import sys
 
 import hang
+import szamellenor
 
 # (bemenet, aminek el kell hangoznia, miért van itt)
 ESETEK: list[tuple[str, str, str]] = [
@@ -84,9 +85,37 @@ ESETEK: list[tuple[str, str, str]] = [
      "mértani képletben a K kerületet jelent – ez SZÁNDÉKOS"),
 ]
 
+# Amit a gyerek LÁT: a szamellenor átírja a tanár mondatát, mielőtt kimegy.
+# (bemenet, aminek látszania kell, miért van itt)
+SZOVEG_ESETEK: list[tuple[str, str, str]] = [
+    ("Most jön egy kis becslés: 48 × 2 inkább 80, 90 vagy 100?",
+     "Most jön egy kis becslés: 48 × 2 inkább 80-hoz, 90-hez vagy 100-hoz "
+     "van közelebb?",
+     "rag és 'van közelebb' nélkül úgy hangzik, mintha 80/90/100 valamelyike "
+     "lenne a pontos eredmény – pedig 96"),
+    ("Szerinted a 19 × 4 inkább 60, 70 vagy 80?",
+     "Szerinted a 19 × 4 inkább 60-hoz, 70-hez vagy 80-hoz van közelebb?",
+     "ugyanaz a hiba, ez volt az első bejelentett esete"),
+    ("Mennyi 5 × 5 inkább 20 vagy 25?",
+     "Mennyi 5 × 5 inkább 20-hoz vagy 25-höz van közelebb?",
+     "két lehetőségnél is működnie kell; 25 → -höz"),
+    ("A 48 × 2 inkább 80-hoz, 90-hez vagy 100-hoz van közelebb?",
+     "A 48 × 2 inkább 80-hoz, 90-hez vagy 100-hoz van közelebb?",
+     "ha a tanár már jól fogalmazott, NEM írjuk át másodszor"),
+    ("Szerinted ez inkább 2,5 vagy 3,5?",
+     "Szerinted ez inkább 2,5 vagy 3,5?",
+     "tizedes törtet nem ragozunk – inkább hagyjuk, mint elrontsuk"),
+    ("Melyik tetszik jobban, inkább a piros vagy a kék?",
+     "Melyik tetszik jobban, inkább a piros vagy a kék?",
+     "nem számokról szól: hozzá se nyúlunk"),
+    ("6 × 5 valóban 31?", "6 × 5 valóban 30?",
+     "a hamis egyenlőséget javítjuk – a szorzás értéke nem vélemény"),
+]
+
 
 def main() -> int:
     rossz = 0
+    print("AMIT A GYEREK HALL (hang.py)")
     for be, vart, miert in ESETEK:
         kapott = hang.kiejtes(be, "hu")
         if kapott == vart:
@@ -98,10 +127,24 @@ def main() -> int:
         print(f"        várt:   {vart}")
         print(f"        miért:  {miert}")
     print()
+    print("AMIT A GYEREK LÁT (szamellenor.py)")
+    for be, vart, miert in SZOVEG_ESETEK:
+        kapott, _ = szamellenor.chat_ellenoriz(be)
+        if kapott == vart:
+            print(f"  ok    {be}")
+            continue
+        rossz += 1
+        print(f"  ROSSZ {be}")
+        print(f"        kapott: {kapott}")
+        print(f"        várt:   {vart}")
+        print(f"        miért:  {miert}")
+
+    osszes = len(ESETEK) + len(SZOVEG_ESETEK)
+    print()
     if rossz:
-        print(f"{rossz} hiba a(z) {len(ESETEK)} esetből. NE PUSHOLJ.")
+        print(f"{rossz} hiba a(z) {osszes} esetből. NE PUSHOLJ.")
         return 1
-    print(f"Mind a(z) {len(ESETEK)} eset rendben.")
+    print(f"Mind a(z) {osszes} eset rendben.")
     return 0
 
 

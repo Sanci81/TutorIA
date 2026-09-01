@@ -303,6 +303,37 @@ def oszto_raggal(n: int) -> str:
     return szo                      # nem tudjuk ragozni: inkább rag nélkül
 
 
+# ── "80-hoz", "90-hez", "100-hoz" ───────────────────────────────────────────
+# MIÉRT ITT: a rag attól függ, hogyan MONDJUK ki a számot, nem attól, hogyan
+# írjuk. A "80" azért kap -hoz-t, mert "nyolcvan", a "90" azért -hez-t, mert
+# "kilencven". Ezt a tudást ez a modul őrzi, ezért itt a helye — a becslő
+# kérdéseket író szamellenor.py innen kéri el.
+#
+# A -hoz/-hez/-höz nem hasonul, csak hangrendet választ; a magánhangzóra
+# végződő szó viszont nyújt: nulla → nulláHOZ.
+_HOZ_RAG = {
+    "nulla": "hoz", "egy": "hez", "kettő": "höz", "három": "hoz",
+    "négy": "hez", "öt": "höz", "hat": "hoz", "hét": "hez",
+    "nyolc": "hoz", "kilenc": "hez", "tíz": "hez", "húsz": "hoz",
+    "harminc": "hoz", "negyven": "hez", "ötven": "hez", "hatvan": "hoz",
+    "hetven": "hez", "nyolcvan": "hoz", "kilencven": "hez",
+    "száz": "hoz", "ezer": "hez",
+}
+_HOZ_VEGEK = sorted(_HOZ_RAG, key=len, reverse=True)
+
+
+def hoz_rag(n: int) -> str:
+    """Melyik rag illik a számhoz: 80 → 'hoz', 90 → 'hez', 5 → 'höz'.
+
+    A hívó maga ragasztja a leírt számhoz: f"{80}-{hoz_rag(80)}" → "80-hoz".
+    """
+    szo = hu_szam(n)
+    for veg in _HOZ_VEGEK:
+        if szo.endswith(veg):
+            return _HOZ_RAG[veg]
+    return "hoz"
+
+
 # Csak SZÓKÖZÖKKEL körülvett ":" és "/" – a "10:30" óra, a "3/4" tört.
 # A "÷" viszont mindig osztás, ott a szóköz nem feltétel.
 _OSZTAS = re.compile(

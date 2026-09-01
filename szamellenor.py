@@ -29,6 +29,8 @@ from __future__ import annotations
 
 import re
 
+import hang
+
 # A művelet jelei, ahogy egy magyar vagy spanyol feladatlapon előfordulnak.
 # Az osztás lehet ":", "/" vagy "÷", a szorzás "×", "x", "*" vagy "·".
 _JELEK = {
@@ -237,6 +239,67 @@ _VALASZTAS = re.compile(
 )
 
 
+# ── A BECSLŐ KÉRDÉS MEGFOGALMAZÁSA ──────────────────────────────────────────
+# ÉLES PÉLDA, amit a gyerek kapott:
+#
+#     "Most jön egy kis becslés: 48 × 2 inkább 80, 90 vagy 100?"
+#
+# A 48 × 2 az 96. Egyik felkínált szám sem az — és a kérdésből nem derül ki,
+# hogy nem is kell, hogy az legyen. A gyerek azt hallja, hogy "mennyi 48 × 2:
+# 80, 90 vagy 100?", amire NINCS jó válasz. Emiatt vagy tippel, vagy elhiszi,
+# hogy a 100 a helyes eredmény.
+#
+# Magyarul a kérdés így teljes:
+#
+#     "48 × 2 inkább 80-hoz, 90-hez vagy 100-hoz van közelebb?"
+#
+# Ettől lesz nyilvánvaló, hogy KÖZELSÉGET kérdezünk, nem egyenlőséget. A rag
+# is kell hozzá: rag nélkül ("inkább 80, 90 vagy 100") a mondat befejezetlen.
+#
+# MIÉRT ÁTÍRÁS ÉS NEM UTASÍTÁS A TANÁRNAK: a promptban leírt szabályt a modell
+# nem mindig tartja be — ez a kérdés is így jutott el a gyerekig. Az átírás
+# viszont mindig megtörténik.
+_BECSLES_KERDES = re.compile(
+    r"\binkább\b\s+((?:" + _SZAM + r")(?:\s*,\s*(?:" + _SZAM + r"))*"
+    r"\s+(?:vagy|avagy)\s+(?:" + _SZAM + r"))\s*\?",
+    re.IGNORECASE,
+)
+# Ha ez már benne van, a tanár jól fogalmazott – nem nyúlunk hozzá.
+_MAR_JO = re.compile(r"k[öo]zelebb|k[öo]zel[íi]t", re.IGNORECASE)
+
+
+def becsles_kerdes_javit(szoveg: str) -> tuple[str, list[str]]:
+    """"inkább 80, 90 vagy 100?" → "inkább 80-hoz, 90-hez vagy 100-hoz van közelebb?"
+
+    Csak akkor ír át, ha a felkínáltak MIND egész számok. Tizedes törtnél és
+    mértékegységnél inkább nem nyúlunk hozzá, mint hogy elrontsuk.
+    """
+    naplo: list[str] = []
+    if not szoveg or "inkább" not in szoveg.lower():
+        return szoveg, naplo
+
+    def csere(m: "re.Match[str]") -> str:
+        egesz = m.group(0)
+        if _MAR_JO.search(egesz):
+            return egesz
+        szamok = re.findall(_SZAM, m.group(1))
+        if not 2 <= len(szamok) <= 4:
+            return egesz
+        ertekek = []
+        for sz in szamok:
+            v = _szamma(sz)
+            if v != int(v):                 # tizedes tört: nem ragozunk
+                return egesz
+            ertekek.append(int(v))
+        raggal = [f"{sz}-{hang.hoz_rag(e)}" for sz, e in zip(szamok, ertekek)]
+        ki = ("inkább " + ", ".join(raggal[:-1]) + " vagy " + raggal[-1]
+              + " van közelebb?")
+        naplo.append(f"becslo kerdes atirva: {egesz!r} → {ki!r}")
+        return ki
+
+    return _BECSLES_KERDES.sub(csere, szoveg), naplo
+
+
 def chat_ellenoriz(szoveg: str) -> tuple[str, list[str]]:
     """A tanár chat-üzenetében a számtani állítások ellenőrzése.
 
@@ -260,6 +323,11 @@ def chat_ellenoriz(szoveg: str) -> tuple[str, list[str]]:
         return m.group(0).replace(m.group(2), _szoveg(ertek))
 
     javitott = _ALLITAS.sub(javit, szoveg)
+
+    # A becslő kérdés megfogalmazása. ELŐBB, mint a választhatatlanság
+    # vizsgálata: az átírt kérdésre már VAN jó válasz, tehát nincs mit jelezni.
+    javitott, becsles_naplo = becsles_kerdes_javit(javitott)
+    naplo.extend(becsles_naplo)
 
     mondatok = re.split(r"(?<=[.!?…])\s+", javitott)
     for i, mondat in enumerate(mondatok):

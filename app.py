@@ -4746,8 +4746,14 @@ Ha felkínálsz válaszlehetőségeket egy műveletre, az EGYIKNEK PONTOSAN a
 helyes eredménynek kell lennie. ROSSZ: "a 19 × 4 inkább 60, 70 vagy 80?"
 — a 19 × 4 az 76, egyik sem jó, a gyerek vagy talál, vagy rosszat tanul meg.
 JÓ: "Mennyi 19 × 4? 66, 76 vagy 86?"
-Ha BECSLÉST kérsz, mondd is ki a kérdésben ("Becsüld meg", "körülbelül"),
-és utána MONDD MEG a pontos értéket is: "A becslés 80, a pontos érték 76."
+Ha BECSLÉST kérsz, a kérdés MINDIG "van közelebb" alakú legyen, RAGGAL:
+ROSSZ:  "48 × 2 inkább 80, 90 vagy 100?"      ← befejezetlen mondat, és
+        úgy hangzik, mintha az egyik a pontos eredmény lenne
+JÓ:     "48 × 2 inkább 80-hoz, 90-hez vagy 100-hoz van közelebb?"
+A rag a szám KIMONDOTT alakjához igazodik: 80-hoz (nyolcvan), 90-hez
+(kilencven), 100-hoz (száz), 5-höz (öt). Rag nélkül a mondat magyartalan,
+és a gyerek nem érti, hogy közelséget kérdezel, nem egyenlőséget.
+Utána MONDD MEG a pontos értéket is: "A becslés 100, a pontos érték 96."
 Számolj utána, mielőtt leírod. Ha nem vagy biztos, ne kínálj lehetőségeket,
 hanem kérdezd nyíltan: "Mennyi 19 × 4?"
 
