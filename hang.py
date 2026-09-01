@@ -268,6 +268,127 @@ def szorzas_szoval(szoveg: str) -> str:
         lambda m: f"{szorzoszam(int(m.group(1)))} {m.group(2)}", szoveg)
 
 
+# ── OSZTÁS: az OSZTÓ -val/-vel ragot kap ────────────────────────────────────
+# MIÉRT: magyarul a "8000 : 1000" nem "nyolcezer osztva ezer", hanem
+# NYOLCEZER OSZTVA EZERREL. A ragot leírni nem szoktuk, de kimondani igen —
+# és a gyerek a HANGOT hallja, nem a leírt alakot. Rag nélkül idegenül szól,
+# és rosszul is rögzül.
+#
+# MIÉRT TÁBLÁZAT ÉS NEM SZABÁLY: a -val/-vel a szó végén hasonul (ezer →
+# ezerREL, húsz → húSSZal, egy → eGGYel), a mély/magas választás pedig
+# összetett számnévnél az UTOLSÓ tagot követi ("nyolcezerrel" magas, pedig
+# van benne "o"). Egy általános hangrend-szabály ezen elcsúszna. A hu_szam()
+# viszont mindig e HUSZONKÉT szó valamelyikére végződik, így a teljes esetet
+# fel tudjuk sorolni – ez rövidebb is, és nem téved.
+_OSZTO_RAG = {
+    "nulla": "nullával", "egy": "eggyel", "kettő": "kettővel",
+    "három": "hárommal", "négy": "néggyel", "öt": "öttel",
+    "hat": "hattal", "hét": "héttel", "nyolc": "nyolccal",
+    "kilenc": "kilenccel", "tíz": "tízzel", "húsz": "hússzal",
+    "harminc": "harminccal", "negyven": "negyvennel", "ötven": "ötvennel",
+    "hatvan": "hatvannal", "hetven": "hetvennel", "nyolcvan": "nyolcvannal",
+    "kilencven": "kilencvennel", "száz": "százzal", "ezer": "ezerrel",
+}
+# A HOSSZABB végződés nyer: a "kilencven" nem a "kilenc" ága, és a
+# "huszonöt" nem az "öt"-é... de igen, annak épp az: "huszonöttel".
+_OSZTO_VEGEK = sorted(_OSZTO_RAG, key=len, reverse=True)
+
+
+def oszto_raggal(n: int) -> str:
+    """1000 → 'ezerrel', 9 → 'kilenccel', 20 → 'hússzal'."""
+    szo = hu_szam(n)
+    for veg in _OSZTO_VEGEK:
+        if szo.endswith(veg):
+            return szo[: -len(veg)] + _OSZTO_RAG[veg]
+    return szo                      # nem tudjuk ragozni: inkább rag nélkül
+
+
+# Csak SZÓKÖZÖKKEL körülvett ":" és "/" – a "10:30" óra, a "3/4" tört.
+# A "÷" viszont mindig osztás, ott a szóköz nem feltétel.
+_OSZTAS = re.compile(
+    r"(?<![\w.,])(\d{1,6})(?:\s+[:/]\s+|\s*÷\s*)(\d{1,6})"
+    r"(-[a-záéíóöőúüű]{1,6})?(?![\w])")
+
+
+def osztas_szoval(szoveg: str) -> str:
+    """"8000 : 1000" → "nyolcezer osztva ezerrel". A jelcserék ELŐTT fut."""
+    def csere(m: "re.Match[str]") -> str:
+        oszt, oszto, told = m.group(1), m.group(2), m.group(3) or ""
+        if told:
+            # A szöveg írója maga tett rá toldalékot ("... : 4-hez"), azt
+            # nem írjuk felül – ő tudja, mit akart mondani.
+            return f"{hu_szam(int(oszt))} osztva {hu_szam(int(oszto))}{told[1:]}"
+        return f"{hu_szam(int(oszt))} osztva {oszto_raggal(int(oszto))}"
+
+    return _OSZTAS.sub(csere, szoveg)
+
+
+# ── MÉRETSZORZÁS: "5 m × 3 m" ───────────────────────────────────────────────
+# MIÉRT: a mértékegység cseréje ELŐBB fut (különben a "szorozva" beékelődne a
+# szám és az egység közé), így viszont a "×" már nem két SZÁM között áll, és
+# a szorzas_szoval() nem találja meg. Ami maradt: "öt méter SZOROZVA három
+# méter" — ez magyarul hibás, mert a "szorozva" -val/-vel ragot vonz
+# ("három méterREL"). Méretnél viszont nem is ezt mondjuk: "öt méter SZOR
+# három méter". Ezért itt a "×"-ből "szor" lesz, nem "szorozva".
+_SZOR_EGYSEG = re.compile(r"(?<=[a-záéíóöőúüű])\s*[×⋅*]\s*(?=\d)")
+
+
+def meretszorzas_szoval(szoveg: str) -> str:
+    """"5 méter × 3 méter" → "5 méter szor 3 méter"."""
+    return _SZOR_EGYSEG.sub(" szor ", szoveg)
+
+
+# ── ÉVSZÁM-TARTOMÁNY: "1848-49" ─────────────────────────────────────────────
+# Kötőjel van benne, ezért a toldalékos-szám szabály nem nyúl hozzá, és
+# számjegyként megy a felolvasóhoz. Kimondva: "ezernyolcszáznegyvennyolc
+# negyvenkilenc".
+_EVKOR = re.compile(r"(?<![\w-])((?:1\d|20)\d{2})\s*[-–—]\s*(\d{2,4})(?![\w-])")
+
+
+def evkor_szoval(szoveg: str) -> str:
+    return _EVKOR.sub(
+        lambda m: f"{hu_szam(int(m.group(1)))} {hu_szam(int(m.group(2)))}",
+        szoveg)
+
+
+# ── AMI SZÁMJEGY MARADT ─────────────────────────────────────────────────────
+# MIÉRT KELL: eddig csak a szorzás, az osztás, a toldalékos és a mondatvégi
+# szám lett szóvá írva. A TÖBBIT a felolvasóra bíztuk — az pedig találgat.
+# Így lett a "4000 + 2000-re"-ből "4000 meg kétezerre": az egyik szám szóban,
+# a másik számjegyben. Ez nem csak csúnya, hanem megbízhatatlan is.
+#
+# EZ A SZABÁLY FUT UTOLSÓNAK, amikor minden más már elvégezte a dolgát, és
+# ami maradt, az tényleg sima tőszámnév.
+#
+# AMIHEZ NEM NYÚL, és miért:
+#   "3. feladat"  – pont követi: SORSZÁM, azt így is jól mondja
+#   "10:30"       – kettőspont: óra
+#   "3,5"         – vessző: tizedes tört
+#   "3/4"         – perjel: tört (a valódi osztást a jelcsere már elvitte)
+#   "1848-ban"    – kötőjel: azt a toldalékos szabály már elintézte
+#   "-5"          – kötőjel előtte: lehet negatív szám vagy tartomány vége
+_MARADEK_SZAM = re.compile(r"(?<![\w.,:%/-])(\d{1,6})(?![\w.,:%°/-])")
+
+# KETTŐ VAGY KÉT. Magyarul főnév előtt "két alma", magában "kettő".
+# Ugyanez a tizenkettő/tizenkét, huszonkettő/huszonkét párra is áll. A
+# felolvasónak ez mindegy volna, a gyereknek nem: a "tizenkettő alma"
+# hallhatóan idegen, és így is rögzülne.
+_KOVETI_SZO = re.compile(r"\s+[a-záéíóöőúüű]")
+
+
+def szamok_szoval(szoveg: str) -> str:
+    """"Van 12 alma" → "Van tizenkét alma". UTOLSÓNAK fut."""
+    def csere(m: "re.Match[str]") -> str:
+        szo = hu_szam(int(m.group(1)))
+        # Ha főnév követi, a "kettő" rövidül. A mondat végén álló szám
+        # ("Mennyi? Kettő.") viszont marad teljes alakban.
+        if szo.endswith("kettő") and _KOVETI_SZO.match(szoveg, m.end()):
+            return _ket(szo)
+        return szo
+
+    return _MARADEK_SZAM.sub(csere, szoveg)
+
+
 def toldalekos_szam_szoval(szoveg: str) -> str:
     """"10-re" → "tízre". A jelcserék UTÁN kell futnia, különben a "2000-re"
     szóvá írása után a mellette álló "+" már nem két szám között állna, és
@@ -432,7 +553,14 @@ def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
 
     # A SZORZÁS még a jelcserék előtt: utána a "×" már " szorozva " lenne.
     if nyelv == "hu":
+        # ELŐBB a méretszorzás: a mértékegység cseréje már megtörtént, így a
+        # "méter × 3" alakot csak itt tudjuk elkapni.
+        szoveg = meretszorzas_szoval(szoveg)
         szoveg = szorzas_szoval(szoveg)
+        # Az OSZTÁS is: a ":" cseréje után már nem tudnánk, melyik szám az
+        # osztó, és a ragot nem tudnánk hova tenni.
+        szoveg = osztas_szoval(szoveg)
+        szoveg = evkor_szoval(szoveg)
 
     for jel in _MINDIG:
         if jel in szoveg:
@@ -451,4 +579,7 @@ def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
         szoveg = toldalekos_szam_szoval(szoveg)
         szoveg = _SZAM_MONDATVEGEN.sub(lambda m: hu_szam(int(m.group(1))) + ".",
                                        szoveg)
+        # UTOLSÓ LÉPÉS: ami eddig számjegy maradt, az sima tőszámnév.
+        # Innentől a felolvasónak nincs mit találgatnia.
+        szoveg = szamok_szoval(szoveg)
     return szoveg
