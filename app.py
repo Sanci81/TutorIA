@@ -48,6 +48,7 @@ import hang
 import jelek_kicsi
 import level
 import kartyak
+import kiejtes
 import kinezet
 import pontok
 import szamellenor
@@ -1187,6 +1188,37 @@ def abra_naplo():
         bejegyzesek=abra_ellenor.naplo(),
         uzemmod=abra_ellenor.uzemmod(),
     )
+
+
+# ── Kiejtés-értékelés: MŰKÖDIK-E EGYÁLTALÁN ────────────────────────────────
+# Az Azure kiejtés-értékelése 33 nyelven érhető el, és a dokumentációból nem
+# derül ki megbízhatóan, hogy a MAGYAR köztük van-e. Napokat építeni egy olyan
+# funkcióra, ami a fő nyelvünkön esetleg nem is működik, rossz üzlet — ezért
+# van ez az üzemeltetőnek szóló próbaoldal. Egyetlen valódi hívás eldönti.
+# Semmit nem ment el, és a gyerekek nem érik el.
+@app.route("/kiejtes-proba", methods=["GET", "POST"])
+@login_required
+def kiejtes_proba():
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
+
+    if request.method == "GET":
+        return render_template("kiejtes_proba.html")
+
+    feltoltes = request.files.get("hang")
+    mondat = (request.form.get("mondat") or "").strip()
+    nyelv = (request.form.get("nyelv") or "hu-HU").strip()
+    if not feltoltes or not mondat:
+        return jsonify({"ok": False, "uzenet": "hiányzik a hang vagy a mondat"}), 400
+
+    wav = feltoltes.read()
+    print(f"[KIEJTES] proba nyelv={nyelv} mondat={mondat!r} "
+          f"wav={len(wav)} bajt", flush=True)
+    eredmeny = kiejtes.probal(wav, mondat, nyelv)
+    print(f"[KIEJTES] eredmeny: {eredmeny.get('ok_szoveg')} "
+          f"{eredmeny.get('uzenet', '')[:160]}", flush=True)
+    return jsonify(eredmeny)
 
 
 # ── Szülői haladás-jelentés ─────────────────────────────────────────────────

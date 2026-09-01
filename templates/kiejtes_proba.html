@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="hu"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – kiejtés-értékelés próbája</title>
+<style>
+:root{--kek:#1f3a63;--zold:#16a34a;--piros:#c0392b;--sarga:#e8a33d;
+      --papir:#f6f8fb;--keret:#dfe4ec;--szurke:#5b6474;--lap:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--papir);color:#1a1f2b;
+     font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.lap{max-width:820px;margin:0 auto;padding:26px 20px 60px}
+h1{font-size:1.4rem;margin:0 0 4px;color:var(--kek)}
+.alcim{margin:0 0 22px;color:var(--szurke);font-size:.95rem}
+.doboz{background:var(--lap);border:1px solid var(--keret);border-radius:14px;
+       padding:16px 18px;margin-bottom:14px}
+label{display:block;font-weight:700;font-size:.85rem;margin-bottom:5px;color:var(--szurke)}
+input[type=text],select{width:100%;font:inherit;padding:9px 12px;border:1px solid var(--keret);
+       border-radius:9px;background:#fff;color:inherit}
+.sor{display:flex;gap:12px;flex-wrap:wrap}
+.sor>*{flex:1;min-width:180px}
+button{font:inherit;font-weight:700;padding:11px 22px;border-radius:999px;border:none;
+       background:var(--zold);color:#fff;cursor:pointer}
+button.masodlagos{background:#fff;color:var(--kek);border:1px solid var(--keret)}
+button:disabled{opacity:.5;cursor:default}
+button.felvesz{background:var(--piros)}
+.allapot{margin:12px 0 0;font-weight:700}
+.pontok{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 0}
+.pont{background:#f0f4fa;border-radius:11px;padding:9px 14px;text-align:center;min-width:104px}
+.pont b{display:block;font-size:1.5rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.pont span{font-size:.76rem;color:var(--szurke)}
+.szavak{margin-top:14px;font-size:1.15rem;line-height:2}
+.szo{padding:3px 9px;border-radius:8px;margin-right:5px;white-space:nowrap}
+.szo.jo{background:#dcfce7;color:#14532d}
+.szo.koz{background:#fef3c7;color:#78350f}
+.szo.rossz{background:#fee2e2;color:#7f1d1d}
+.szo small{opacity:.65;font-size:.65em;margin-left:4px}
+pre{background:#0f1720;color:#d7e2ee;border-radius:11px;padding:13px;overflow:auto;
+    font-size:.76rem;max-height:340px;margin:12px 0 0}
+.megj{color:var(--szurke);font-size:.9rem}
+</style></head><body>
+<div class="lap">
+  <h1>Kiejtés-értékelés – működik-e ez a nyelv?</h1>
+  <p class="alcim">Mondd ki a mondatot, és nézzük meg, ad-e az Azure pontszámot rá.
+     Ez csak próba: semmi nem kerül adatbázisba, és a gyerekek nem látják.</p>
+
+  <div class="doboz">
+    <div class="sor">
+      <div style="flex:2">
+        <label for="mondat">Ezt kell kimondani</label>
+        <input type="text" id="mondat" value="A kutya az udvaron fut.">
+      </div>
+      <div>
+        <label for="nyelv">Nyelv</label>
+        <select id="nyelv">
+          <option value="hu-HU" selected>magyar (hu-HU)</option>
+          <option value="es-ES">spanyol (es-ES)</option>
+          <option value="en-US">angol (en-US)</option>
+        </select>
+      </div>
+    </div>
+    <div class="sor" style="margin-top:14px">
+      <button id="gomb">🎙 Felvétel indítása</button>
+      <button id="ujra" class="masodlagos" hidden>Újra</button>
+    </div>
+    <p class="allapot" id="allapot">Nyomd meg a gombot, mondd ki a mondatot, aztán nyomd meg újra.</p>
+  </div>
+
+  <div class="doboz" id="eredmeny" hidden>
+    <div id="osszefoglalo"></div>
+    <div class="pontok" id="pontok"></div>
+    <div class="szavak" id="szavak"></div>
+    <p class="megj" id="felismert"></p>
+    <details style="margin-top:10px">
+      <summary class="megj">Nyers Azure-válasz</summary>
+      <pre id="nyers"></pre>
+    </details>
+  </div>
+</div>
+
+<script>
+/* A böngésző webm/opus-t vesz fel, az Azure viszont 16 kHz-es mono PCM WAV-ot
+   vár. Az átalakítás ITT történik, nem a szerveren – így nem kell ffmpeg a
+   Railwayre, és a telepítés érintetlen marad. */
+var AZURE_MINTAVETEL = 16000;
+
+function wavva(abuf) {
+  var AC = window.AudioContext || window.webkitAudioContext;
+  return new AC().decodeAudioData(abuf).then(function (buf) {
+    var hossz = Math.ceil(buf.duration * AZURE_MINTAVETEL);
+    var off = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(
+      1, hossz, AZURE_MINTAVETEL);       /* 1 = mono, egyben újramintavételez */
+    var forras = off.createBufferSource();
+    forras.buffer = buf; forras.connect(off.destination); forras.start();
+    return off.startRendering();
+  }).then(function (kesz) {
+    var minta = kesz.getChannelData(0);
+    var puffer = new ArrayBuffer(44 + minta.length * 2);
+    var n = new DataView(puffer), p = 0;
+    function szo(s) { for (var i = 0; i < s.length; i++) n.setUint8(p++, s.charCodeAt(i)); }
+    function u32(v) { n.setUint32(p, v, true); p += 4; }
+    function u16(v) { n.setUint16(p, v, true); p += 2; }
+    szo('RIFF'); u32(36 + minta.length * 2); szo('WAVE');
+    szo('fmt '); u32(16); u16(1); u16(1);
+    u32(AZURE_MINTAVETEL); u32(AZURE_MINTAVETEL * 2); u16(2); u16(16);
+    szo('data'); u32(minta.length * 2);
+    for (var i = 0; i < minta.length; i++) {
+      var s = Math.max(-1, Math.min(1, minta[i]));
+      n.setInt16(p, s < 0 ? s * 0x8000 : s * 0x7fff, true); p += 2;
+    }
+    return new Blob([puffer], { type: 'audio/wav' });
+  });
+}
+
+var gomb = document.getElementById('gomb');
+var allapot = document.getElementById('allapot');
+var rogzito = null, darabok = [], folyam = null, felvesz = false;
+
+gomb.onclick = function () {
+  if (felvesz) { rogzito && rogzito.state !== 'inactive' && rogzito.stop(); return; }
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(function (s) {
+    folyam = s; darabok = [];
+    rogzito = new MediaRecorder(s);
+    rogzito.ondataavailable = function (e) { if (e.data.size) darabok.push(e.data); };
+    rogzito.onstop = function () {
+      folyam.getTracks().forEach(function (t) { t.stop(); });
+      felvesz = false; gomb.classList.remove('felvesz');
+      gomb.textContent = '🎙 Felvétel indítása'; gomb.disabled = true;
+      allapot.textContent = 'Átalakítás és küldés…';
+      new Blob(darabok).arrayBuffer().then(wavva).then(kuld).catch(function (e) {
+        allapot.textContent = 'Nem sikerült átalakítani: ' + e;
+        gomb.disabled = false;
+      });
+    };
+    rogzito.start(); felvesz = true;
+    gomb.classList.add('felvesz'); gomb.textContent = '■ Kész, elemezzük';
+    allapot.textContent = 'Figyelek… mondd ki a mondatot, aztán nyomd meg újra.';
+  }).catch(function () { allapot.textContent = 'A mikrofon nem elérhető.'; });
+};
+
+function kuld(wav) {
+  var fd = new FormData();
+  fd.append('hang', wav, 'felvetel.wav');
+  fd.append('mondat', document.getElementById('mondat').value);
+  fd.append('nyelv', document.getElementById('nyelv').value);
+  return fetch(window.location.pathname, { method: 'POST', body: fd })
+    .then(function (r) { return r.json(); })
+    .then(mutat)
+    .catch(function (e) { allapot.textContent = 'Hálózati hiba: ' + e; })
+    .then(function () { gomb.disabled = false; });
+}
+
+function mutat(d) {
+  document.getElementById('eredmeny').hidden = false;
+  document.getElementById('nyers').textContent = JSON.stringify(d.nyers || d, null, 1);
+  var o = document.getElementById('osszefoglalo');
+  if (d.ok) {
+    allapot.textContent = 'Kész.';
+    o.innerHTML = '<b style="color:var(--zold)">Működik ezen a nyelven.</b>';
+  } else {
+    allapot.textContent = 'Kész.';
+    o.innerHTML = '<b style="color:var(--piros)">Nem kaptunk pontszámot.</b> ' +
+      '<span class="megj">' + (d.uzenet || '') + '</span>';
+  }
+  var e = d.eredmeny || { pontszamok: {}, szavak: [], felismert: '' };
+  var nev = { osszesitett: 'összesített', pontossag: 'pontosság',
+              folyamatossag: 'folyamatosság', teljesseg: 'teljesség',
+              hanglejtes: 'hanglejtés' };
+  var p = document.getElementById('pontok'); p.innerHTML = '';
+  Object.keys(nev).forEach(function (k) {
+    if (e.pontszamok[k] === undefined) return;
+    p.insertAdjacentHTML('beforeend',
+      '<div class="pont"><b>' + e.pontszamok[k] + '</b><span>' + nev[k] + '</span></div>');
+  });
+  var sz = document.getElementById('szavak'); sz.innerHTML = '';
+  (e.szavak || []).forEach(function (w) {
+    var o = w.pont >= 80 ? 'jo' : (w.pont >= 60 ? 'koz' : 'rossz');
+    sz.insertAdjacentHTML('beforeend',
+      '<span class="szo ' + o + '">' + w.szo + '<small>' + w.pont + '</small></span>');
+  });
+  document.getElementById('felismert').textContent =
+    e.felismert ? 'Amit hallott: „' + e.felismert + '”' : '';
+}
+</script></body></html>
