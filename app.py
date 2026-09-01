@@ -4619,6 +4619,16 @@ Ha egy válaszban 3 új szót tanítasz, mindháromhoz kell marker:
 {"<VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB><VOCAB>szilva=ciruela</VOCAB>" if not es_curriculum else "<VOCAB>manzana=apple</VOCAB><VOCAB>pera=pear</VOCAB><VOCAB>ciruela=plum</VOCAB>"}
 Ez MINDEN válaszban KÖTELEZŐ ahol új szót tanítasz. Kihagyni TILOS!
 
+🔢 SZÁMOLÓS KÉRDÉSNÉL A HELYES ÉRTÉK LEGYEN A VÁLASZTHATÓK KÖZÖTT:
+Ha felkínálsz válaszlehetőségeket egy műveletre, az EGYIKNEK PONTOSAN a
+helyes eredménynek kell lennie. ROSSZ: "a 19 × 4 inkább 60, 70 vagy 80?"
+— a 19 × 4 az 76, egyik sem jó, a gyerek vagy talál, vagy rosszat tanul meg.
+JÓ: "Mennyi 19 × 4? 66, 76 vagy 86?"
+Ha BECSLÉST kérsz, mondd is ki a kérdésben ("Becsüld meg", "körülbelül"),
+és utána MONDD MEG a pontos értéket is: "A becslés 80, a pontos érték 76."
+Számolj utána, mielőtt leírod. Ha nem vagy biztos, ne kínálj lehetőségeket,
+hanem kérdezd nyíltan: "Mennyi 19 × 4?"
+
 ⚖️ A RAGOZÁST EGY TÁBLÁZATBAN ADD, NE SZÉTSZÓRVA:
 Ha a témakör nyelvtani fókusza egy IGE (angolul to be, to have; spanyolul
 ser, estar, tener), akkor a teljes sort add meg egyszerre, kis táblázatként,
@@ -6538,6 +6548,21 @@ def child_chat_send(child_id: int):
                 reply = _abra_nelkul
         except Exception as exc:
             print(f"[ABRA-IGERET] kihagyva: {exc}", flush=True)
+
+    # ── A TANÁR SAJÁT SZÁMÍTÁSAI ────────────────────────────────────────
+    # A kvíz megoldókulcsát már ellenőrizzük, a beszélgetést eddig semmi.
+    # Élesben ez ment ki: "Szerinted a 19 × 4 inkább 60, 70 vagy 80?" — a
+    # 19 × 4 az 76, egyik felkínált szám sem jó. A hamis egyenlőséget itt
+    # javítjuk; a választhatatlan kérdést csak naplózzuk, mert az átírásával
+    # egy szándékos becslési feladatot ronthatnánk el.
+    try:
+        _javitott, _szam_naplo = szamellenor.chat_ellenoriz(reply)
+        if _javitott != reply:
+            reply = _javitott
+        for _sor in _szam_naplo:
+            print(f"[SZAMELLENOR/chat] {_sor}", flush=True)
+    except Exception as _exc:
+        print(f"[SZAMELLENOR/chat] kihagyva: {_exc}", flush=True)
 
     # A tanár által kért kiejtés-gyakorlat mondata. A jelölőt a
     # _parse_chat_markers már kivette a látható szövegből.

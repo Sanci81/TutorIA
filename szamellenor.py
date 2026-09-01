@@ -210,3 +210,80 @@ def azonos_szam(a, b) -> bool:
     """
     x, y = _mint_szam(a), _mint_szam(b)
     return _egyezik(x, y)
+
+
+# ── A TANÁR SAJÁT SZÁMÍTÁSAI A BESZÉLGETÉSBEN ───────────────────────────────
+# A kvíz megoldókulcsát már ellenőrizzük. A tanár viszont a CHATBEN is állít
+# dolgokat a számokról, és ott eddig semmi nem nézte meg. Élesben ez jött ki:
+#
+#     "Szerinted a 19 × 4 inkább 60, 70 vagy 80?"
+#
+# A 19 × 4 az 76. Egyik felkínált szám sem az. A gyerek vagy talál, vagy
+# elhiszi, hogy 80 — és mindkettő rosszabb, mintha meg sem kérdezték volna.
+
+_ALLITAS = re.compile(
+    rf"({_SZAM}(?:{_MUVELET}{_SZAM})+)\s*"
+    r"(?:=|\bval[óo]ban\b|\baz\b|\bannyi,? mint\b|\bes igual a\b|\bes\b)\s*"
+    rf"({_SZAM})",
+    re.IGNORECASE,
+)
+
+# "…60, 70 vagy 80?" – két-négy felkínált szám a mondat végén.
+_VALASZTAS = re.compile(
+    rf"({_SZAM})(?:\s*,\s*({_SZAM}))?(?:\s*,\s*({_SZAM}))?"
+    r"\s*(?:vagy|o|or)\s*"
+    rf"({_SZAM})\s*\?",
+    re.IGNORECASE,
+)
+
+
+def chat_ellenoriz(szoveg: str) -> tuple[str, list[str]]:
+    """A tanár chat-üzenetében a számtani állítások ellenőrzése.
+
+    Két dolgot csinál:
+      1. A HAMIS EGYENLŐSÉGET javítja ("6 × 5 valóban 31" → "30"). Ez
+         egyértelmű: a szorzás értéke nem vélemény.
+      2. A VÁLASZTÁSOS KÉRDÉST csak JELZI, ha a helyes érték nincs a
+         felkínáltak között. Ezt SZÁNDÉKOSAN nem írjuk át: lehet, hogy a
+         tanár becslést kért, és a kérdés átírásával mi rontanánk el.
+    """
+    naplo: list[str] = []
+    if not szoveg:
+        return szoveg, naplo
+
+    def javit(m: "re.Match[str]") -> str:
+        ertek = _kiertekel(m.group(1))
+        allitott = _szamma(m.group(2))
+        if ertek is None or _egyezik(ertek, allitott):
+            return m.group(0)
+        naplo.append(f"hamis allitas: {m.group(0)!r} → {_szoveg(ertek)}")
+        return m.group(0).replace(m.group(2), _szoveg(ertek))
+
+    javitott = _ALLITAS.sub(javit, szoveg)
+
+    mondatok = re.split(r"(?<=[.!?…])\s+", javitott)
+    for i, mondat in enumerate(mondatok):
+        if _KIVETEL.search(mondat):
+            continue                      # becslést kért – ott nem baj
+        valasztas = _VALASZTAS.search(mondat)
+        if not valasztas:
+            continue
+        # A művelet gyakran az ELŐZŐ mondatban áll: "Mennyi 8 × 7?
+        # Szerinted 54, 56 vagy 58?" Ezért egy mondatot visszanézünk.
+        kifejezes = _KIFEJEZES.search(mondat)
+        if not kifejezes and i > 0:
+            if _KIVETEL.search(mondatok[i - 1]):
+                continue
+            kifejezes = _KIFEJEZES.search(mondatok[i - 1])
+        if not kifejezes:
+            continue
+        ertek = _kiertekel(kifejezes.group(0))
+        if ertek is None:
+            continue
+        opciok = [_szamma(x) for x in valasztas.groups() if x]
+        if not any(_egyezik(ertek, o) for o in opciok):
+            naplo.append(
+                f"valaszthatatlan kerdes: {kifejezes.group(0)} = {_szoveg(ertek)}, "
+                f"felkinalva: {[_szoveg(o) for o in opciok]}")
+
+    return javitott, naplo
