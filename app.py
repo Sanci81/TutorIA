@@ -2090,6 +2090,40 @@ def _kiejtes_nyelvkod(language: str | None, keret: str) -> str:
     return "es-ES" if (keret or "hu").lower() == "es" else "hu-HU"
 
 
+# Ha nincs új idegen szó, akkor is legyen mit kimondani: a válasz egyik
+# mondatát olvassa fel a gyerek. Külföldön élő gyereknél a MAGYAR mondat
+# hangos elolvasása önmagában gyakorlás — épp azt a képességet tartja
+# életben, amiért a szülő fizet.
+_OLVASHATO_MONDAT = re.compile(r"[^.!?…\n]{15,140}[.!?…]")
+
+
+def _olvasando_mondat(szoveg: str) -> str:
+    """A válasz első olyan mondata, amit érdemes hangosan elolvastatni.
+
+    Kimarad a kérdés (arra válaszolni kell, nem felolvasni), és minden, ami
+    számot vagy jelet tartalmaz: a kiejtés-értékelő a "8 × 5"-tel nem tud
+    mit kezdeni, és a gyerek sem tudná, mit várunk tőle.
+    """
+    for talalat in _OLVASHATO_MONDAT.finditer(szoveg or ""):
+        mondat = " ".join(talalat.group(0).split())
+        # Emodzsi és díszítés ki: a kiejtés-értékelő betűket vár, és a
+        # gyereknek sem azt kell kimondania, hogy "mosolygó arc".
+        mondat = re.sub(r"[^\w\s,.!?;:'\"()\-áéíóöőúüűÁÉÍÓÖŐÚÜŰñÑ]", "", mondat)
+        mondat = mondat.strip(" ,.:;-!?").strip()
+        if not mondat:
+            continue
+        mondat += "."
+        if talalat.group(0).rstrip().endswith("?"):
+            continue
+        if re.search(r"[\d<>=×÷*/\[\]{}|_]", mondat):
+            continue
+        szavak = mondat.split()
+        if not 3 <= len(szavak) <= 14:
+            continue
+        return mondat[:200]
+    return ""
+
+
 def _mondd_szoveg(text: str) -> str:
     """A <MONDD> jelölőben kért gyakorlómondat, vagy üres szöveg."""
     talalat = _CHAT_MARKER_MONDD.search(text or "")
@@ -6515,15 +6549,28 @@ def child_chat_send(child_id: int):
     # díszítés, hanem maga a tanulás — ezért nem bízzuk a jóindulatára:
     # minden HARMADIK olyan válasz után, ahol új szót tanított, magunk
     # teszünk egy gyakorlókártyát az utoljára tanított szóval.
-    # A "minden harmadik" önkényes szám volt. A helyes szabály egyszerűbb:
-    # AMIKOR ÚJ IDEGEN SZÓT TANÍT, AKKOR mondja is ki a gyerek. Egy válaszban
-    # legfeljebb egy kártya, mert egy válaszban egy új dolgot tanítunk.
-    # Nem-nyelvi tantárgynál nincs kártya: ott a tananyag a magyar (vagy
-    # spanyol) fogalom, nem a kiejtés — ott a kimondás nem mérce.
-    if not _gyakorlo_mondat and is_foreign and language and vocab_pairs:
+    # AMIKOR ÚJ IDEGEN SZÓT TANÍT, AKKOR mondja is ki a gyerek — MINDEGY,
+    # MELYIK TANTÁRGYON. Egy idegen szó kiejtését ugyanúgy meg kell tanulni
+    # akkor is, ha épp földrajzórán került elő, mint angolórán. A korábbi
+    # feltétel (csak nyelvórán) önkényes volt, és pont a legtöbb félrement
+    # kiejtést hagyta ellenőrzés nélkül.
+    # Válaszonként legfeljebb egy kártya, mert egy válaszban egy új dolgot
+    # tanítunk.
+    _idegen_gyakorlas = False
+    if not _gyakorlo_mondat and vocab_pairs:
         _gyakorlo_mondat = str(vocab_pairs[-1][1]).strip()[:200]
+        _idegen_gyakorlas = True
         print(f"[MONDD] uj szo tanitva, gyakorlokartya: "
               f"{_gyakorlo_mondat!r}", flush=True)
+    if not _gyakorlo_mondat:
+        # MINDEN TANTÁRGYON, MINDEN VÁLASZBAN. Ha nincs új idegen szó, a
+        # válasz egyik mondatát olvassa fel a gyerek. Hangosan olvasni
+        # ugyanúgy gyakorlás, mint egy szót kimondani — és külföldön élő
+        # gyereknél ez a legtöbb, amit a magyar nyelvéért tehetünk.
+        _gyakorlo_mondat = _olvasando_mondat(reply)
+        if _gyakorlo_mondat:
+            print(f"[MONDD] felolvasando mondat: {_gyakorlo_mondat!r}",
+                  flush=True)
 
     marker_count = len(vocab_pairs)
     fallback_count = 0
@@ -6801,9 +6848,12 @@ def child_chat_send(child_id: int):
             # Kiejtés-gyakorlás: ha a tanár <MONDD> jelölőt tett a válaszba,
             # a gyerek egy külön kártyát kap mikrofonnal. Nyelv nélkül nincs
             # mit értékelni, ezért a nyelvkódot is ideadjuk.
+            # Idegen szónál a CÉLNYELVEN értékelünk, felolvasott mondatnál
+            # a tanítás nyelvén – különben a magyar mondatot angolként
+            # próbálná értékelni, és mindent hibásnak látna.
             "mondd": ({"mondat": _gyakorlo_mondat,
                        "nyelv": _kiejtes_nyelvkod(
-                           language,
+                           language if _idegen_gyakorlas else None,
                            "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu")}
                       if _gyakorlo_mondat else None),
             "uj_kartyak": uj_kartyak,

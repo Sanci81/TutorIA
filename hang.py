@@ -141,12 +141,14 @@ def keret_maradek(mai_karakter: int, keret: int = NAPI_KERET) -> int:
 _MUVELET = {
     "hu": {"=": " egyenlő ", "+": " meg ", "-": " mínusz ",
            "*": " szorozva ", "×": " szorozva ", "⋅": " szorozva ",
-           "/": " osztva ", "÷": " osztva ", "%": " százalék ",
+           "/": " osztva ", "÷": " osztva ", ":": " osztva ",
+           "%": " százalék ",
            "x": " szorozva ", "X": " szorozva ",
            "<": " kisebb mint ", ">": " nagyobb mint "},
     "es": {"=": " igual a ", "+": " más ", "-": " menos ",
            "*": " por ", "×": " por ", "⋅": " por ",
-           "/": " entre ", "÷": " entre ", "%": " por ciento ",
+           "/": " entre ", "÷": " entre ", ":": " entre ",
+           "%": " por ciento ",
            "x": " por ", "X": " por ",
            "<": " menor que ", ">": " mayor que "},
 }
@@ -157,7 +159,9 @@ _MINDIG = ("×", "⋅", "÷", "=", "%", "<", ">")
 # el, a "*" pedig kiemelés lehet. Ezért CSAK két szám között, szóközökkel.
 # Az "x" is lehet szorzásjel ("9 x 10"), de csak akkor, ha KÉT szám között
 # áll, szóközökkel. Az algebrai "3x" így érintetlen marad.
-_OVATOS = re.compile(r"(?<=\d)\s+([-+*/xX])\s+(?=\d)")
+# A ":" is osztásjel, ha KÉT SZÁM KÖZÖTT áll szóközökkel ("360 : 9").
+# Szóköz nélkül ("10:30") óra, azt nem bántjuk.
+_OVATOS = re.compile(r"(?<=\d)\s+([-+*/xX:])\s+(?=\d)")
 # A "8+3" alakot is értjük, ha nincs körülötte szóköz – a + soha nem toldalék.
 _PLUSZ = re.compile(r"(?<=\d)\+(?=\d)")
 
@@ -208,6 +212,68 @@ def hu_szam(n: int) -> str:
         ki = ("" if ezres == 1 else _ket(_hu_1000(ezres))) + "ezer"
         return ki + (_hu_1000(maradek) if maradek else "")
     return str(n)
+
+
+# ── 4/b. SZORZÁS ÉS TOLDALÉKOS SZÁM ─────────────────────────────────────────
+# MIÉRT: magyarul a "8 × 5" nem "nyolc szorozva öt", hanem NYOLCSZOR ÖT.
+# A toldalékos szám pedig ("10-re", "4-hez") a felolvasónál sorszámmá torzul:
+# "a tizediken", "a negyedikhez". A gyerek ebből semmit nem ért, és rosszul
+# is rögzül. Mindkettőt SZÓVÁ írjuk, mielőtt a hang elmegy.
+
+# A -szor / -szer / -ször a szó utolsó magánhangzójától függ.
+_SZOR_HATSO = "aáoóuú"      # → -szor
+_SZOR_ELSO = "eéií"         # → -szer
+_SZOR_AJAK = "öőüű"         # → -ször
+
+
+def szorzoszam(n: int) -> str:
+    """8 → 'nyolcszor', 5 → 'ötször', 2 → 'kétszer'."""
+    szo = _ket(hu_szam(n))
+    if szo.endswith("húsz"):
+        return szo[:-1] + "szor"        # húsz → hússzor
+    for betu in reversed(szo):
+        if betu in _SZOR_HATSO:
+            return szo + "szor"
+        if betu in _SZOR_ELSO:
+            return szo + "szer"
+        if betu in _SZOR_AJAK:
+            return szo + "ször"
+    return szo + "szor"
+
+
+# "8 × 5", "4 × 10-re", "12x3" — a toldalékot is magához veszi, különben
+# a csere után árván maradna: "négyszer tíz-re".
+_SZORZAS = re.compile(
+    r"(?<!\d)(\d{1,6})\s*[×⋅*]\s*(\d{1,6})(-[a-záéíóöőúüű]{1,6})?")
+
+# Képletben a második tag betű: "K = 4 × a" → "négyszer a".
+_SZORZAS_BETU = re.compile(r"(?<!\w)(\d{1,6})\s*[×⋅]\s*([a-zA-Z])(?!\w)")
+
+# Toldalékos szám: "10-re", "4-hez", "1848-ban". A toldalékot a szöveg írója
+# már helyesen választotta meg, ezért elég a számot szóvá írni és hozzáragasztani.
+# A ":" is tiltott előzmény: a "10:30-kor" időpont, nem toldalékos szám.
+_TOLDALEKOS_SZAM = re.compile(
+    r"(?<![\w:-])(\d{1,6})-([a-záéíóöőúüű]{1,8})(?![\w-])")
+
+
+def szorzas_szoval(szoveg: str) -> str:
+    """"8 × 5" → "nyolcszor öt". A jelcserék ELŐTT kell futnia."""
+    def csere(m: "re.Match[str]") -> str:
+        elso, masodik, told = m.group(1), m.group(2), m.group(3) or ""
+        ki = f"{szorzoszam(int(elso))} {hu_szam(int(masodik))}"
+        return ki + told[1:] if told else ki
+
+    szoveg = _SZORZAS.sub(csere, szoveg)
+    return _SZORZAS_BETU.sub(
+        lambda m: f"{szorzoszam(int(m.group(1)))} {m.group(2)}", szoveg)
+
+
+def toldalekos_szam_szoval(szoveg: str) -> str:
+    """"10-re" → "tízre". A jelcserék UTÁN kell futnia, különben a "2000-re"
+    szóvá írása után a mellette álló "+" már nem két szám között állna, és
+    kimondatlan maradna."""
+    return _TOLDALEKOS_SZAM.sub(
+        lambda m: hu_szam(int(m.group(1))) + m.group(2), szoveg)
 
 
 # ── 5. mértékegységek kimondása ─────────────────────────────────────────────
@@ -364,6 +430,10 @@ def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
     # a szám és az egység közé beékelődne a "szorozva".
     szoveg = mertekegysegek(szoveg, nyelv)
 
+    # A SZORZÁS még a jelcserék előtt: utána a "×" már " szorozva " lenne.
+    if nyelv == "hu":
+        szoveg = szorzas_szoval(szoveg)
+
     for jel in _MINDIG:
         if jel in szoveg:
             szoveg = szoveg.replace(jel, jelek[jel])
@@ -376,6 +446,9 @@ def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
     szoveg = re.sub(r"[ \t]{2,}", " ", szoveg).strip()
 
     if nyelv == "hu":
+        # A TOLDALÉKOS SZÁM csak most: a "+" és a "-" cseréje már megtörtént,
+        # tehát a "4000 + 2000-re" plusza nem vész el.
+        szoveg = toldalekos_szam_szoval(szoveg)
         szoveg = _SZAM_MONDATVEGEN.sub(lambda m: hu_szam(int(m.group(1))) + ".",
                                        szoveg)
     return szoveg
