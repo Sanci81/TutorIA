@@ -1288,6 +1288,128 @@ def api_kiejtes_ertekel():
                     "pontszamok": e["pontszamok"]})
 
 
+# ── A GYEREK SAJÁT VÁLASZÁNAK KIEJTÉSE ──────────────────────────────────────
+# A "mondd utánam" kártya azt méri, amit ELŐRE MEGADTUNK. Ez itt mást csinál:
+# a gyerek a leckében szabadon válaszol, és AZT nézzük meg.
+#
+# HOGYAN LEHETSÉGES EZ VISZONYÍTÁSI MONDAT NÉLKÜL
+#     Sehogy — ezért nem is próbáljuk. Az OpenAI már átírta, amit a gyerek
+#     mondott; EZT AZ ÁTIRATOT adjuk az Azure-nak viszonyítási szövegnek.
+#     Így pontosan azt kapjuk vissza, amit akarunk: a kimondott szavakból
+#     melyik jött ki tisztán, és melyik nem.
+#
+# AMIT EZ NEM TUD
+#     Ha a gyerek annyira másképp ejt egy szót, hogy az OpenAI MÁS SZÓT ír le,
+#     akkor a viszonyítás is az a másik szó lesz, és jó pontot kap rá. Ez a
+#     módszer határa: a nehezen érthető beszédet megtalálja, a következetesen
+#     félreejtett szót nem mindig. A "mondd utánam" kártya azért marad meg
+#     mellette, mert ott TUDJUK, minek kellett volna elhangoznia.
+#
+# AMIT A GYEREK EBBŐL LÁT
+#     Semmit. Se kártya, se szín, se szám. Ha nehezen volt érthető, a tanár
+#     a KÖVETKEZŐ válaszában kérdez vissza kedvesen — úgy, ahogy egy ember
+#     tenné. A leckéből nem zökkenti ki, mert nem szakítja meg.
+_KIEJTES_VALASZ_HATAR = 60        # e alatt számít nehezen érthetőnek egy szó
+_KIEJTES_VALASZ_MIN_SZO = 3       # ennél rövidebb választ nem elemzünk
+_KIEJTES_VALASZ_MIN_MP = 1.5      # ennél rövidebb hangot sem
+_KIEJTES_VALASZ_MAX_GYENGE = 2    # egyszerre legfeljebb ennyi szóra kérdez vissza
+
+
+@app.route("/api/kiejtes/valasz", methods=["POST"])
+@login_required
+def api_kiejtes_valasz():
+    """A gyerek szabad válaszának kiejtése. A böngésző a HÁTTÉRBEN hívja.
+
+    Nem ad vissza semmit, amit meg kellene mutatni: a válasz csak azért van,
+    hogy a böngésző lássa, megtörtént-e. A hasznos rész a munkamenetbe kerül,
+    és a következő tanári fordulóban hasznosul.
+    """
+    gyerek_id = session.get("chat_child_id")
+    if not gyerek_id:
+        return jsonify({"ok": False}), 400
+
+    feltoltes = request.files.get("hang")
+    szoveg = " ".join((request.form.get("szoveg") or "").split())
+    nyelv = (request.form.get("nyelv") or "hu-HU").strip()
+    if not feltoltes or not szoveg:
+        return jsonify({"ok": False}), 400
+
+    # RÖVID VÁLASZT NEM ELEMZÜNK. Egy "igen" vagy egy "negyvenkettő" kiejtésén
+    # nincs mit javítani, viszont minden hívás pénzbe kerül. A hosszabb,
+    # mondatszerű válasz az, ahol a beszéd tényleg gyakorlás.
+    if len(szoveg.split()) < _KIEJTES_VALASZ_MIN_SZO:
+        return jsonify({"ok": True, "kihagyva": "rovid_szoveg"})
+
+    wav = feltoltes.read()
+    masodperc = max(0.0, (len(wav) - 44) / 32000.0)
+    if masodperc < _KIEJTES_VALASZ_MIN_MP:
+        return jsonify({"ok": True, "kihagyva": "rovid_hang"})
+    if masodperc > kiejtes.MAX_MASODPERC:
+        return jsonify({"ok": True, "kihagyva": "hosszu_hang"})
+
+    try:
+        database.add_usage(int(gyerek_id), hang_mp=masodperc)
+    except Exception:
+        pass
+
+    try:
+        nyers = kiejtes.ertekel(wav, szoveg, nyelv=nyelv)
+    except Exception as exc:
+        # Csendben elbukik. A lecke ettől nem áll meg, és a gyerek nem is
+        # tud róla, hogy volt itt bármi.
+        print(f"[KIEJTES/valasz] hiba: {exc}", flush=True)
+        return jsonify({"ok": False})
+
+    e = kiejtes.egyszerusit(nyers)
+    gyenge = [w["szo"] for w in e["szavak"]
+              if isinstance(w["pont"], (int, float))
+              and w["pont"] < _KIEJTES_VALASZ_HATAR]
+
+    print(f"[KIEJTES/valasz] child={gyerek_id} nyelv={nyelv} "
+          f"mp={masodperc:.1f} ossz={e['pontszamok'].get('osszesitett')} "
+          f"gyenge={gyenge}", flush=True)
+
+    # A KÖVETKEZŐ tanári fordulónak szól. Egyszer használjuk el, hogy ne
+    # kérdezzen vissza ugyanarra a szóra minden fordulóban.
+    if gyenge:
+        session["kiejtes_gyenge"] = gyenge[:_KIEJTES_VALASZ_MAX_GYENGE]
+    else:
+        session.pop("kiejtes_gyenge", None)
+    return jsonify({"ok": True})
+
+
+def _kiejtes_visszakerdezes(lang: str) -> str:
+    """Halk utasítás a tanárnak, ha az előző válasz nehezen volt érthető.
+
+    Egyszer használatos: kiolvasás után törlődik, különben a tanár minden
+    fordulóban ugyanarra a szóra kérdezne vissza.
+    """
+    gyenge = session.pop("kiejtes_gyenge", None)
+    if not gyenge:
+        return ""
+    if lang == "es":
+        szavak = ", ".join(f"«{sz}»" for sz in gyenge)
+        return (
+            "\n\nPRONUNCIACIÓN: al niño no se le entendió bien "
+            f"{szavak} en su última respuesta. RESPONDE PRIMERO a lo que "
+            "dijo — su respuesta es lo importante. Después, en UNA sola "
+            "frase amable, pídele que repita esa palabra contigo, y "
+            "pronúnciala tú primero. NUNCA digas que se le entendió mal, "
+            "ni menciones puntuaciones, ni que una máquina lo evaluó."
+        )
+    # Egy szónál "szót", többnél "szavakat" – a magyar nem tűri a "szó(t)"-ot.
+    szavak = ", ".join(f"„{sz}”" for sz in gyenge)
+    rag = "szót" if len(gyenge) == 1 else "szavakat"
+    return (
+        "\n\nKIEJTÉS: a gyerek előző válaszában a(z) " + szavak + " " +
+        rag + " nehezen lehetett érteni. ELŐSZÖR arra válaszolj, amit "
+        "mondott — a tartalom a fontos. Utána EGYETLEN kedves mondatban "
+        "kérd meg, hogy mondja ki veled együtt ezt a szót, és te mondd ki "
+        "előtte. SOHA ne mondd, hogy rosszul ejtette, ne említs pontszámot, "
+        "és ne utalj rá, hogy egy gép értékelte."
+    )
+
+
 # ── Szülői haladás-jelentés ─────────────────────────────────────────────────
 # A szülő nem fog belépni az oldalra. Ez a levél az egyetlen rendszeres
 # visszajelzés arról, hogy amiért fizet, az működik-e.
@@ -6184,6 +6306,10 @@ def child_chat(child_id: int):
         album_url=url_for("child_album", child_id=child_id),
         streak_days=progress.get("streak_days", 0),
         active_curriculum=active_curriculum,
+        # Melyik nyelven értékeljük a gyerek SAJÁT válaszának kiejtését.
+        # Idegen nyelv órán a célnyelv, egyébként a tanítás nyelve.
+        kiejtes_nyelv=_kiejtes_nyelvkod(
+            language, "es" if active_curriculum == "ES" else "hu"),
     )
 
 
@@ -6306,6 +6432,10 @@ def child_chat_send(child_id: int):
     system_prompt += _topic_teaching_prompt_block(current_topic_item, es_curriculum=_active_curriculum() == "ES")
     if chat_mode == "voice":
         system_prompt += _voice_mode_prompt_block(_child_effective_age(child))
+        # Ha az előző választ nehezen lehetett érteni, a tanár most kedvesen
+        # visszakérdez rá. Kártya nélkül, szám nélkül — ahogy egy ember tenné.
+        system_prompt += _kiejtes_visszakerdezes(
+            "es" if _active_curriculum() == "ES" else "hu")
 
     history = database.get_chat_messages(session_id, limit=20)
 
@@ -6587,15 +6717,15 @@ def child_chat_send(child_id: int):
         _idegen_gyakorlas = True
         print(f"[MONDD] uj szo tanitva, gyakorlokartya: "
               f"{_gyakorlo_mondat!r}", flush=True)
-    if not _gyakorlo_mondat:
-        # MINDEN TANTÁRGYON, MINDEN VÁLASZBAN. Ha nincs új idegen szó, a
-        # válasz egyik mondatát olvassa fel a gyerek. Hangosan olvasni
-        # ugyanúgy gyakorlás, mint egy szót kimondani — és külföldön élő
-        # gyereknél ez a legtöbb, amit a magyar nyelvéért tehetünk.
-        _gyakorlo_mondat = _olvasando_mondat(reply)
-        if _gyakorlo_mondat:
-            print(f"[MONDD] felolvasando mondat: {_gyakorlo_mondat!r}",
-                  flush=True)
+    # ITT VOLT A "MINDEN VÁLASZ EGY MONDATÁT OLVASSA FEL" TARTALÉK. KIVETTÜK.
+    # Élesben a tanár saját mondatait dobta fel gyakorlásra — például egy
+    # bocsánatkérést ("Igazad van, ezt pontosabban kellett volna mondanom.").
+    # Egy ilyen mondat utánmondása nem tanít semmit, viszont kizökkent a
+    # leckéből: a gyerek épp egy feladaton gondolkodott, és hirtelen egy
+    # oda nem illő mondatot kell felolvasnia.
+    # A kártya MOSTANTÓL CSAK AKKOR jelenik meg, ha volt MIT gyakorolni:
+    # a tanár kifejezetten kérte (<MONDD>), vagy új idegen szó került elő
+    # (vocab_pairs) — ez utóbbi bármelyik tantárgyon működik.
 
     marker_count = len(vocab_pairs)
     fallback_count = 0

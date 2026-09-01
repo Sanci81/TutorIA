@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – avatarválasztó</title>
+<style>
+  :root{
+    --zold:#16a34a; --zold-sotet:#0f7a37;
+    --kek:#1f3a63; --kek-vil:#2f6fed;
+    --papir:#f6f8fb; --keret:#d9dee7; --szurke:#5b6474;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--papir);color:#1a1f2b;
+       font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+  header{background:#fff;border-bottom:1px solid var(--keret);padding:18px 20px}
+  h1{margin:0 0 4px;font-size:1.35rem}
+  header p{margin:0;color:var(--szurke);font-size:.95rem}
+
+  .vezerlo{position:sticky;top:0;z-index:5;background:#fff;
+           border-bottom:1px solid var(--keret);padding:12px 20px;
+           display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .vezerlo b{margin-right:4px;font-size:.9rem;color:var(--szurke)}
+  button{font:inherit;font-size:.92rem;padding:7px 14px;border-radius:999px;
+         border:1px solid var(--keret);background:#fff;cursor:pointer}
+  button:hover{border-color:#9aa4b5}
+  button.aktiv{background:var(--kek);border-color:var(--kek);color:#fff}
+
+  .racs{display:grid;gap:18px;padding:22px 20px 60px;
+        grid-template-columns:repeat(auto-fit,minmax(280px,1fr));max-width:1180px;margin:0 auto}
+  .kartya{background:#fff;border:1px solid var(--keret);border-radius:16px;
+          padding:18px;text-align:center}
+  .kartya h2{margin:0 0 2px;font-size:1.05rem}
+  .kartya .leiras{margin:0 0 14px;color:var(--szurke);font-size:.88rem;min-height:3.2em}
+  .szinpad{background:linear-gradient(#eef4ff,#e6f6ec);border-radius:12px;padding:10px}
+  svg{width:100%;height:auto;max-width:210px;display:block;margin:0 auto}
+
+  /* pislogás: a szemhéj lehúzódik */
+  .szem{transform-box:fill-box;transform-origin:center;transition:transform .09s}
+  .pislog .szem{transform:scaleY(.08)}
+
+  /* száj: a beszéd a magasságát mozgatja */
+  .szaj.csor{transform-origin:top center}
+  .szaj{transform-box:fill-box;transform-origin:center;
+        transform:scaleY(var(--nyit,.25));transition:transform .07s}
+
+  .kicsi{margin-top:14px;padding-top:12px;border-top:1px dashed var(--keret)}
+  .kicsi .cim{font-size:.78rem;color:var(--szurke);margin-bottom:6px}
+  .kicsi svg{max-width:46px}
+  .sor{display:flex;align-items:center;justify-content:center;gap:10px}
+  .buborek{background:var(--zold);color:#fff;border-radius:14px;
+           padding:7px 12px;font-size:.85rem;text-align:left}
+  .megj{max-width:1180px;margin:0 auto;padding:0 20px 50px;color:var(--szurke);font-size:.92rem}
+  .megj h3{color:#1a1f2b;font-size:1rem;margin:22px 0 6px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TutorIA – melyik avatar legyen?</h1>
+  <p>Mindhárom pislog és mozog a szája. Nyomd meg a „Beszél" gombot, és válts arckifejezést.</p>
+</header>
+
+<div class="vezerlo">
+  <b>Mindhárom egyszerre:</b>
+  <button id="beszelGomb">▶ Beszél</button>
+  <button class="arc aktiv" data-arc="semleges">Semleges</button>
+  <button class="arc" data-arc="orul">Örül</button>
+  <button class="arc" data-arc="gondolkodik">Gondolkodik</button>
+  <button class="arc" data-arc="batorit">Bátorít</button>
+</div>
+
+<div class="racs" id="racs"></div>
+
+<div class="megj">
+  <h3>Mit érdemes tudni a döntéshez</h3>
+  <p>A <strong>bagoly</strong> mellett szól egy gyakorlati érv: egy emberi arcnál el kell
+  döntened, hogy fiú vagy lány, milyen bőrszínű, milyen korú. Egy egész EU-ra szánt
+  gyerekalkalmazásnál ez nem semleges döntés — a bagoly ezt megkerüli, és nyolcadikosnak
+  sem gyerekes.</p>
+  <p>A <strong>tanár</strong> a legszemélyesebb, de a legtöbb rajzolást is kéri: minden
+  arckifejezéshez több részlet mozog, és könnyebb bántóan nézni ki.</p>
+  <p>A <strong>geometrikus</strong> a legolcsóbb és kis méretben a legolvashatóbb, viszont
+  a legkevésbé megnyerő.</p>
+  <p>Amit mindhárom tud majd élesben: a száj a <em>tényleges hangerőhöz</em> mozog
+  (nem véletlenszerűen), pislog magától, és vált arckifejezést jó válasznál, rossz
+  válasznál és gondolkodás közben. A lenti kis méret azt mutatja, hogyan néz ki a
+  chat mellett.</p>
+</div>
+
+<script>
+const SZIN = { bor:"#f0c9a8", haj:"#4a3628", ruha:"#1f3a63", zold:"#16a34a",
+               toll:"#8b6f47", tollVil:"#c9a97e", uveg:"#2f6fed" };
+
+/* ── 1. geometrikus ─────────────────────────────────────────────────── */
+function geometrikus(id){ return `
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" id="${id}">
+  <path d="M46 190c0-24 24-36 54-36s54 12 54 36z" fill="${SZIN.zold}"/>
+  <circle cx="100" cy="104" r="60" fill="#ffe9d2"/>
+  <path d="M100 44c33 0 58 22 58 46 0 6-6 8-9 4-10-14-27-22-49-22s-39 8-49 22
+           c-3 4-9 2-9-4 0-24 25-46 58-46z" fill="${SZIN.zold}"/>
+  <circle class="szem" cx="79" cy="106" r="10" fill="#fff"/>
+  <circle class="szem" cx="121" cy="106" r="10" fill="#fff"/>
+  <circle class="pupilla" cx="79" cy="107" r="5" fill="#22303f"/>
+  <circle class="pupilla" cx="121" cy="107" r="5" fill="#22303f"/>
+  <path class="szemoldok" d="M69 89c4-4 12-4 16-1M115 88c4-3 12-3 16 1"
+        stroke="#0f7a37" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+  <ellipse class="szaj" cx="100" cy="137" rx="17" ry="13" fill="#8a4a4a"/>
+  <circle class="pir" cx="64" cy="124" r="9" fill="#f2907f" opacity="0"/>
+  <circle class="pir" cx="136" cy="124" r="9" fill="#f2907f" opacity="0"/>
+</svg>`; }
+
+/* ── 2. rajzfilmes tanár ────────────────────────────────────────────── */
+function tanar(id){ return `
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" id="${id}">
+  <path d="M40 200c0-30 27-46 60-46s60 16 60 46z" fill="${SZIN.ruha}"/>
+  <path d="M86 148h28v20H86z" fill="#e5b593"/>
+  <ellipse cx="100" cy="102" rx="46" ry="52" fill="${SZIN.bor}"/>
+  <path d="M54 92c0-30 20-46 46-46s46 16 46 46c0-14-16-22-46-22S54 78 54 92z"
+        fill="${SZIN.haj}"/>
+  <ellipse class="szem" cx="82" cy="100" rx="8" ry="9" fill="#fff"/>
+  <ellipse class="szem" cx="118" cy="100" rx="8" ry="9" fill="#fff"/>
+  <circle class="pupilla" cx="82" cy="101" r="4" fill="#2b2118"/>
+  <circle class="pupilla" cx="118" cy="101" r="4" fill="#2b2118"/>
+  <g fill="none" stroke="${SZIN.uveg}" stroke-width="3.5" opacity=".9">
+    <circle cx="82" cy="100" r="15"/><circle cx="118" cy="100" r="15"/>
+    <path d="M97 100h6M67 98l-9-3M133 98l9-3" stroke-linecap="round"/>
+  </g>
+  <path class="szemoldok" d="M70 80c5-4 14-4 19 0M111 80c5-4 14-4 19 0"
+        stroke="${SZIN.haj}" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <ellipse class="szaj" cx="100" cy="132" rx="15" ry="12" fill="#7a3b3b"/>
+  <ellipse class="pir" cx="66" cy="118" r="9" fill="#e88" opacity="0"/>
+  <ellipse class="pir" cx="134" cy="118" r="9" fill="#e88" opacity="0"/>
+</svg>`; }
+
+/* ── 3. bagoly ──────────────────────────────────────────────────────── */
+function bagoly(id){ return `
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" id="${id}">
+  <ellipse cx="100" cy="120" rx="62" ry="66" fill="${SZIN.toll}"/>
+  <ellipse cx="100" cy="132" rx="42" ry="48" fill="${SZIN.tollVil}"/>
+  <path d="M46 78c-4-18 2-32 10-34 6-2 14 6 18 16z" fill="${SZIN.toll}"/>
+  <path d="M154 78c4-18-2-32-10-34-6-2-14 6-18 16z" fill="${SZIN.toll}"/>
+  <circle cx="76" cy="102" r="27" fill="#fff8ec"/>
+  <circle cx="124" cy="102" r="27" fill="#fff8ec"/>
+  <circle class="szem" cx="76" cy="102" r="17" fill="#f7a827"/>
+  <circle class="szem" cx="124" cy="102" r="17" fill="#f7a827"/>
+  <circle class="pupilla" cx="76" cy="102" r="9" fill="#26180c"/>
+  <circle class="pupilla" cx="124" cy="102" r="9" fill="#26180c"/>
+  <circle cx="80" cy="98" r="3" fill="#fff"/><circle cx="128" cy="98" r="3" fill="#fff"/>
+  <path class="szemoldok" d="M56 74c8-7 22-8 30-3M114 71c8-5 22-4 30 3"
+        stroke="#5d4630" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <path class="szaj csor" d="M100 116l-14 24h28z" fill="#f7a827"/>
+  <ellipse class="pir" cx="58" cy="130" r="9" fill="#e88" opacity="0"/>
+  <ellipse class="pir" cx="142" cy="130" r="9" fill="#e88" opacity="0"/>
+</svg>`; }
+
+const STILUSOK = [
+  { kulcs:"geo", nev:"1 · Geometrikus", rajz:geometrikus,
+    leiras:"Letisztult, mértani formák. Kis méretben a legolvashatóbb, és a legkevesebb munka." },
+  { kulcs:"tanar", nev:"2 · Rajzfilmes tanár", rajz:tanar,
+    leiras:"Emberi tanárfigura szemüveggel. A legszemélyesebb, de a legtöbb rajzolást kéri." },
+  { kulcs:"bagoly", nev:"3 · Bagoly", rajz:bagoly,
+    leiras:"Klasszikus tanító-kabala. Nem kell nemet és bőrszínt választani, mégis megnyerő." },
+];
+
+const racs = document.getElementById("racs");
+racs.innerHTML = STILUSOK.map(s => `
+  <div class="kartya">
+    <h2>${s.nev}</h2>
+    <p class="leiras">${s.leiras}</p>
+    <div class="szinpad">${s.rajz(s.kulcs + "-nagy")}</div>
+    <div class="kicsi">
+      <div class="cim">Így néz ki a chat mellett:</div>
+      <div class="sor">${s.rajz(s.kulcs + "-kicsi")}
+        <div class="buborek">Ügyes vagy! Nézzük a következőt.</div></div>
+    </div>
+  </div>`).join("");
+
+const osszes = () => Array.from(document.querySelectorAll("svg"));
+
+/* pislogás – emberien szabálytalan ütemben */
+function pislogtat(){
+  osszes().forEach(s => {
+    s.classList.add("pislog");
+    setTimeout(() => s.classList.remove("pislog"), 120);
+  });
+  setTimeout(pislogtat, 2200 + Math.random() * 3500);
+}
+setTimeout(pislogtat, 900);
+
+/* beszéd – élesben ezt a hang tényleges hangereje adja */
+let beszel = false, ido = 0, idozito = null;
+document.getElementById("beszelGomb").onclick = function(){
+  beszel = !beszel;
+  this.classList.toggle("aktiv", beszel);
+  this.textContent = beszel ? "■ Elhallgat" : "▶ Beszél";
+  if (beszel) {
+    idozito = setInterval(() => {
+      ido += 0.13;
+      const n = 0.22 + Math.abs(Math.sin(ido * 3.1)) * 0.5
+                     + Math.abs(Math.sin(ido * 7.7)) * 0.28;
+      osszes().forEach(s => s.style.setProperty("--nyit", n.toFixed(2)));
+    }, 70);
+  } else {
+    clearInterval(idozito);
+    osszes().forEach(s => s.style.setProperty("--nyit", .25));
+  }
+};
+
+/* arckifejezések */
+const ARCOK = {
+  semleges:   { szemoldok:0,  pir:0,   pupillaY:0,  szajY:0,   szajSzel:1   },
+  orul:       { szemoldok:-6, pir:.55, pupillaY:0,  szajY:2,   szajSzel:1.25 },
+  gondolkodik:{ szemoldok:4,  pir:0,   pupillaY:-4, szajY:-1,  szajSzel:.6  },
+  batorit:    { szemoldok:-3, pir:.35, pupillaY:0,  szajY:1,   szajSzel:1.1 },
+};
+function arcotAllit(nev){
+  const a = ARCOK[nev];
+  osszes().forEach(s => {
+    const sz = s.querySelector(".szemoldok");
+    if (sz) sz.setAttribute("transform", `translate(0 ${a.szemoldok})`);
+    s.querySelectorAll(".pir").forEach(p => p.setAttribute("opacity", a.pir));
+    s.querySelectorAll(".pupilla").forEach(p =>
+      p.setAttribute("transform", `translate(0 ${a.pupillaY})`));
+    const szaj = s.querySelector(".szaj");
+    if (szaj) szaj.setAttribute("transform",
+      `translate(0 ${a.szajY}) scale(${a.szajSzel} 1)`);
+  });
+}
+document.querySelectorAll(".arc").forEach(g => g.onclick = function(){
+  document.querySelectorAll(".arc").forEach(x => x.classList.remove("aktiv"));
+  this.classList.add("aktiv");
+  arcotAllit(this.dataset.arc);
+});
+arcotAllit("semleges");
+</script>
+</body>
+</html>

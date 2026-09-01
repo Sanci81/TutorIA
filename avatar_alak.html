@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – egész alakos avatar</title>
+<style>
+  :root{ --zold:#16a34a; --kek:#1f3a63; --papir:#f6f8fb; --keret:#d9dee7; --szurke:#5b6474; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--papir);color:#1a1f2b;
+       font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif}
+  header{background:#fff;border-bottom:1px solid var(--keret);padding:16px 20px}
+  h1{margin:0 0 3px;font-size:1.3rem}
+  header p{margin:0;color:var(--szurke);font-size:.93rem}
+
+  .vezerlo{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid var(--keret);
+           padding:11px 20px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+  .vezerlo b{font-size:.88rem;color:var(--szurke);margin-right:2px}
+  button{font:inherit;font-size:.9rem;padding:6px 13px;border-radius:999px;
+         border:1px solid var(--keret);background:#fff;cursor:pointer}
+  button:hover{border-color:#9aa4b5}
+  button.aktiv{background:var(--kek);border-color:var(--kek);color:#fff}
+  .valaszto{margin-left:auto;display:flex;gap:7px}
+
+  .racs{display:grid;gap:18px;padding:20px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+        max-width:1080px;margin:0 auto}
+  .kartya{background:#fff;border:1px solid var(--keret);border-radius:16px;padding:16px;text-align:center}
+  .kartya h2{margin:0 0 10px;font-size:1.02rem}
+  .szinpad{background:linear-gradient(#eef4ff,#e8f6ed);border-radius:12px;padding:8px}
+  .szinpad svg{width:100%;height:auto;max-width:210px;display:block;margin:0 auto}
+
+  .eles{max-width:1080px;margin:0 auto;padding:6px 20px 40px}
+  .eles h3{font-size:1rem;margin:0 0 10px}
+  .chatdoboz{background:#fff;border:1px solid var(--keret);border-radius:16px;padding:16px;
+             display:flex;gap:14px;align-items:flex-end}
+  .chatdoboz svg{width:96px;height:auto;flex:0 0 auto}
+  .buborek{background:var(--zold);color:#fff;border-radius:16px;padding:11px 15px;
+           font-size:.93rem;line-height:1.5;max-width:460px}
+
+  .megj{max-width:1080px;margin:0 auto;padding:0 20px 50px;color:var(--szurke);font-size:.92rem}
+
+  /* ─── a figura mozgó részei ─────────────────────────────────────── */
+  svg .kar, svg .alkar, svg .fej, svg .torzs{
+    transform-box:view-box; transition:transform .42s cubic-bezier(.34,.9,.4,1); }
+  svg .szem{transform-box:fill-box;transform-origin:center;transition:transform .08s}
+  svg.pislog .szem{transform:scaleY(.08)}
+  svg .szaj{transform-box:fill-box;transform-origin:center;
+            transform:scaleY(var(--nyit,.3));transition:transform .07s}
+  svg .torzs{animation:legzes 3.4s ease-in-out infinite}
+  svg .fej{animation:fejmozgas 7s ease-in-out infinite}
+  @keyframes fejmozgas{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
+  @keyframes legzes{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TutorIA – egész alakos avatar</h1>
+  <p>Egy nő és egy férfi, ugyanazzal a vázzal. Nyomd meg a „Magyaráz" gombot, és nézd a kezét.</p>
+</header>
+
+<div class="vezerlo">
+  <b>Mit csinál:</b>
+  <button id="beszelGomb">▶ Magyaráz (beszél)</button>
+  <button class="moz aktiv" data-moz="pihen">Áll</button>
+  <button class="moz" data-moz="mutat">Rámutat az ábrára</button>
+  <button class="moz" data-moz="tapsol">Tapsol</button>
+  <button class="moz" data-moz="gondolkodik">Gondolkodik</button>
+  <button class="moz" data-moz="integet">Integet</button>
+</div>
+
+<div class="racs" id="racs"></div>
+
+<div class="eles">
+  <h3>Így nézne ki élesben, a chat mellett</h3>
+  <div class="chatdoboz">
+    <div id="elesFigura"></div>
+    <div class="buborek">A téglatest térfogata a hossz, a szélesség és a magasság
+      szorzata. Nézd meg az ábrán: az <b>a</b> a hosszúság, a <b>b</b> a szélesség,
+      az <b>m</b> pedig a magasság — az mindig a függőleges él.</div>
+  </div>
+</div>
+
+<div class="megj">
+  <p>A száj most szabályos ütemben mozog, mert nincs valódi hang. Élesben a felolvasott
+  hang <em>tényleges hangerejét</em> méri a böngésző, és annyira nyílik ki a száj — így
+  pontosan a szavakra fog mozogni, nem csak úgy általában.</p>
+  <p>A két figura ugyanarra a vázra épül: azonos csontváz, más haj és ruha. Ezért ha
+  később kell egy harmadik, az már fél óra, nem egy nap.</p>
+</div>
+
+<script>
+/* ══ közös váz ═══════════════════════════════════════════════════════
+   Csuklópontok: váll (78,120) és (142,120), könyök 46-tal lejjebb.
+   A kar egyetlen vastag, lekerekített végű vonal — így a forgatás
+   mindig természetesen néz ki, és nincs mit eltörni.                    */
+
+const V_BAL = [84,118], V_JOBB = [136,118], KONYOK = 42, ALKAR = 38;
+
+/* A kar vastag, lekerekített vonal — ez bírja a forgatást. Emberibbé az
+   teszi, hogy a felkar vastagabb az alkarnál, és nyugalomban is HAJLIK:
+   ember sosem áll kifeszített karral.                                    */
+function kar(oldal, ujjas, bor){
+  const [x,y] = oldal === "bal" ? V_BAL : V_JOBB;
+  const ky = y + KONYOK;
+  return `
+  <g class="kar ${oldal}" style="transform-origin:${x}px ${y}px">
+    <line x1="${x}" y1="${y}" x2="${x}" y2="${ky}"
+          stroke="${ujjas}" stroke-width="15" stroke-linecap="round"/>
+    <g class="alkar ${oldal}" style="transform-origin:${x}px ${ky}px">
+      <line x1="${x}" y1="${ky}" x2="${x}" y2="${ky + ALKAR}"
+            stroke="${bor}" stroke-width="12" stroke-linecap="round"/>
+      <ellipse cx="${x}" cy="${ky + ALKAR + 5}" rx="8" ry="9" fill="${bor}"/>
+    </g>
+  </g>`;
+}
+
+/* Fej: keskenyedő áll, fül, orr, szemhéj. Ettől lesz arc a körből.       */
+function fej(hajElol, hajHatul, bor, borArny){
+  return `
+  <g class="fej" style="transform-origin:110px 92px">
+    <ellipse cx="85" cy="57" rx="4.2" ry="6" fill="${bor}"/>
+    <ellipse cx="135" cy="57" rx="4.2" ry="6" fill="${bor}"/>
+    ${hajHatul}
+    <path d="M110 27c-15 0-24 11-24 27 0 11 5 21 13 26 4 2.6 18 2.6 22 0
+             8-5 13-15 13-26 0-16-9-27-24-27z" fill="${bor}"/>
+    <path d="M96 76c8 4 20 4 28 0-4 6-24 6-28 0z" fill="${borArny}" opacity=".5"/>
+    <path class="szemoldok" d="M94 47c4-3 9-3 12 0M114 47c3-3 8-3 12 0"
+          stroke="#6b5340" stroke-width="2.3" stroke-linecap="round" fill="none"/>
+    <ellipse class="szem" cx="100" cy="57" rx="4.2" ry="4.8" fill="#2f2620"/>
+    <ellipse class="szem" cx="120" cy="57" rx="4.2" ry="4.8" fill="#2f2620"/>
+    <path d="M95.4 53.6c2.6-2.4 6.6-2.4 9.2 0M115.4 53.6c2.6-2.4 6.6-2.4 9.2 0"
+          stroke="${borArny}" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+    <circle cx="101.4" cy="55.4" r="1.3" fill="#fff"/>
+    <circle cx="121.4" cy="55.4" r="1.3" fill="#fff"/>
+    <path d="M108 62c-1 3 0 5 2 5" stroke="${borArny}" stroke-width="1.8"
+          stroke-linecap="round" fill="none"/>
+    <ellipse class="szaj" cx="110" cy="72" rx="6.5" ry="5" fill="#8a4a4a"/>
+    <ellipse class="pir" cx="92" cy="66" rx="5.5" ry="3.4" fill="#e8907f" opacity=".22"/>
+    <ellipse class="pir" cx="128" cy="66" rx="5.5" ry="3.4" fill="#e8907f" opacity=".22"/>
+    ${hajElol}
+  </g>`;
+}
+
+/* ── NŐ ─────────────────────────────────────────────────────────────── */
+function no(id){
+  const HAJ="#6b4226", HAJ_S="#55341f", RUHA="#c2456a", UJJAS="#a83a5b",
+        BOR="#f0c9a8", BOR_A="#dcae8a";
+  return `
+<svg viewBox="0 0 220 360" xmlns="http://www.w3.org/2000/svg" id="${id}">
+  <ellipse cx="110" cy="345" rx="46" ry="7" fill="#000" opacity=".07"/>
+  <g class="torzs">
+    <path d="M97 250c-3 24-4 46-3 70 0 7 12 7 12 0 1-24 1-46 2-70z" fill="${BOR}"/>
+    <path d="M112 250c1 24 1 46 2 70 0 7 12 7 12 0 1-24 0-46-3-70z" fill="${BOR}"/>
+    <path d="M93 318h14c1 7 1 12-4 14H88c-6 0-5-6 5-14z" fill="#403c46"/>
+    <path d="M113 318h14c10 8 11 14 5 14h-15c-5-2-5-7-4-14z" fill="#403c46"/>
+    <path d="M102 66h16v40c0 8-16 8-16 0z" fill="${BOR}"/>
+    <path d="M102 68c5 6 11 6 16 0v9c-5 6-11 6-16 0z" fill="${BOR_A}" opacity=".6"/>
+    <path d="M110 99c-13 0-22 6-24 17-3 15-1 33 2 45 4 14-4 30-12 60-3 12-8 22-8 28
+             0 9 22 15 42 15s42-6 42-15c0-6-5-16-8-28-8-30-16-46-12-60 3-12 5-30 2-45
+             -2-11-11-17-24-17z" fill="${RUHA}"/>
+    <path d="M110 99c-8 0-14 2-18 6 4 7 11 11 18 11s14-4 18-11c-4-4-10-6-18-6z" fill="${UJJAS}"/>
+    <path d="M134 116c3 15 1 33-2 45-4 14 4 30 12 60 3 12 8 22 8 28 0 5-7 9-18 12
+             6-4 9-8 9-12 0-6-5-16-8-28-8-30-16-46-12-60 3-12 5-30 2-45z"
+          fill="#000" opacity=".07"/>
+    <circle cx="110" cy="150" r="3.4" fill="#ffd9a0"/>
+    <circle cx="110" cy="170" r="3.4" fill="#ffd9a0"/>
+    ${kar("bal", UJJAS, BOR)}
+    ${kar("jobb", UJJAS, BOR)}
+    ${fej(
+      `<path d="M87 45c2-17 11-26 23-26s21 9 23 26c-3-8-8-13-14-11-5 2-8 5-15 4
+               -6-1-11-3-17 7z" fill="${HAJ}"/>`,
+      `<path d="M83 52c0-27 12-40 27-40s27 13 27 40c0 24-2 42-8 42-4 0-2-11-2-26
+              0-17-7-25-17-25s-17 8-17 25c0 15 2 26-2 26-6 0-8-18-8-42z" fill="${HAJ}"/>
+       <path d="M96 16c9-5 19-5 28 0 4 3 6 7 5 11-4-7-11-10-19-10s-15 3-19 10c-1-4 1-8 5-11z"
+             fill="${HAJ_S}"/>`,
+      BOR, BOR_A)}
+  </g>
+</svg>`;
+}
+
+/* ── FÉRFI ──────────────────────────────────────────────────────────── */
+function ferfi(id){
+  const HAJ="#3a2c22", ING="#2f6fed", UJJAS="#2559c4", NADRAG="#2b3550",
+        BOR="#e8bb95", BOR_A="#d0a077";
+  return `
+<svg viewBox="0 0 220 360" xmlns="http://www.w3.org/2000/svg" id="${id}">
+  <ellipse cx="110" cy="345" rx="46" ry="7" fill="#000" opacity=".07"/>
+  <g class="torzs">
+    <path d="M92 194c-3 34-4 72-3 110 0 7 13 7 13 0 1-38 3-76 5-110z" fill="${NADRAG}"/>
+    <path d="M113 194c2 34 4 72 5 110 0 7 13 7 13 0 1-38 0-76-3-110z" fill="${NADRAG}"/>
+    <path d="M89 316h14c1 8 1 13-4 15H84c-6 0-5-6 5-15z" fill="#2a2a30"/>
+    <path d="M117 316h14c10 9 11 15 5 15h-15c-5-2-5-7-4-15z" fill="#2a2a30"/>
+    <path d="M102 66h16v40c0 8-16 8-16 0z" fill="${BOR}"/>
+    <path d="M102 68c5 6 11 6 16 0v9c-5 6-11 6-16 0z" fill="${BOR_A}" opacity=".6"/>
+    <path d="M110 99c-14 0-24 6-26 18-3 16-4 32-4 46 0 12-2 22-2 30 0 8 14 12 32 12
+             s32-4 32-12c0-8-2-18-2-30 0-14-1-30-4-46-2-12-12-18-26-18z" fill="${ING}"/>
+    <path d="M136 117c3 16 4 32 4 46 0 12 2 22 2 30 0 4-5 7-14 10 4-3 6-5 6-10
+             0-8-2-18-2-30 0-14-1-30-4-46z" fill="#000" opacity=".08"/>
+    <path d="M110 128l-12-18 12-11 12 11z" fill="#fff" opacity=".92"/>
+    <path d="M98 110l12-11 12 11-12 8z" fill="${UJJAS}"/>
+    <circle cx="110" cy="155" r="3" fill="#dbe6ff"/>
+    <circle cx="110" cy="176" r="3" fill="#dbe6ff"/>
+    ${kar("bal", UJJAS, BOR)}
+    ${kar("jobb", UJJAS, BOR)}
+    ${fej(
+      `<path d="M87 44c2-16 11-25 23-25s21 9 23 25c-3-7-7-12-13-10-5 1-9 4-16 3
+               -5-1-10-2-17 7z" fill="${HAJ}"/>`,
+      `<path d="M86 46c0-21 11-33 24-33s24 12 24 33c-2-10-4-15-8-15-4 0-6 4-16 4
+              s-12-4-16-4c-4 0-6 5-8 15z" fill="${HAJ}"/>`,
+      BOR, BOR_A)}
+  </g>
+</svg>`;
+}
+
+/* ══ mozdulatok ══════════════════════════════════════════════════════
+   Fokban: [bal kar, bal alkar, jobb kar, jobb alkar].
+   Pozitív = az óramutató járásával egyezően. A bal kar (képernyő bal
+   oldala) pozitív értéknél lendül kifelé, a jobb negatívnál.          */
+const MOZDULATOK = {
+  pihen:       [  8, -14,  -6,  17],
+  magyarazA:   [ 28, -52, -30,  48],
+  magyarazB:   [ 44, -28, -16,  66],
+  magyarazC:   [ 18, -64, -40,  30],
+  mutat:       [ 10, -12, -78, -16],
+  tapsol:      [ 34, -74, -34,  74],
+  gondolkodik: [ 22, -78, -52, -88],
+  integet:     [  8,  -6,-138,  22],
+};
+
+let aktualisFigura = "no";
+const racs = document.getElementById("racs");
+
+function ujraRajzol(){
+  racs.innerHTML = `
+    <div class="kartya"><h2>Nő</h2><div class="szinpad">${no("no-nagy")}</div></div>
+    <div class="kartya"><h2>Férfi</h2><div class="szinpad">${ferfi("ferfi-nagy")}</div></div>`;
+  document.getElementById("elesFigura").innerHTML =
+    aktualisFigura === "no" ? no("eles") : ferfi("eles");
+  allit(MOZDULATOK[aktualisMoz] || MOZDULATOK.pihen);
+}
+
+const osszes = () => Array.from(document.querySelectorAll("svg"));
+
+function allit(f){
+  osszes().forEach(s => {
+    const q = (sel) => s.querySelector(sel);
+    if (q(".kar.bal"))    q(".kar.bal").style.transform    = `rotate(${f[0]}deg)`;
+    if (q(".alkar.bal"))  q(".alkar.bal").style.transform  = `rotate(${f[1]}deg)`;
+    if (q(".kar.jobb"))   q(".kar.jobb").style.transform   = `rotate(${f[2]}deg)`;
+    if (q(".alkar.jobb")) q(".alkar.jobb").style.transform = `rotate(${f[3]}deg)`;
+  });
+}
+
+/* pislogás */
+function pislogtat(){
+  osszes().forEach(s => { s.classList.add("pislog");
+    setTimeout(() => s.classList.remove("pislog"), 115); });
+  setTimeout(pislogtat, 2400 + Math.random() * 3400);
+}
+setTimeout(pislogtat, 800);
+
+/* beszéd + magyarázó gesztus */
+let beszel = false, szajIdo = 0, szajTimer = null, gesztusTimer = null, gi = 0;
+const MAGYARAZ = ["magyarazA","magyarazB","magyarazC","magyarazB"];
+
+document.getElementById("beszelGomb").onclick = function(){
+  beszel = !beszel;
+  this.classList.toggle("aktiv", beszel);
+  this.textContent = beszel ? "■ Elhallgat" : "▶ Magyaráz (beszél)";
+  if (beszel) {
+    document.querySelectorAll(".moz").forEach(x => x.classList.remove("aktiv"));
+    szajTimer = setInterval(() => {
+      szajIdo += 0.13;
+      const n = .24 + Math.abs(Math.sin(szajIdo*3.1))*.5 + Math.abs(Math.sin(szajIdo*7.7))*.26;
+      osszes().forEach(s => s.style.setProperty("--nyit", n.toFixed(2)));
+    }, 70);
+    const lep = () => { allit(MOZDULATOK[MAGYARAZ[gi++ % MAGYARAZ.length]]); };
+    lep();
+    gesztusTimer = setInterval(lep, 950);
+  } else {
+    clearInterval(szajTimer); clearInterval(gesztusTimer);
+    osszes().forEach(s => s.style.setProperty("--nyit", .3));
+    allit(MOZDULATOK.pihen);
+    document.querySelector('.moz[data-moz="pihen"]').classList.add("aktiv");
+    aktualisMoz = "pihen";
+  }
+};
+
+/* egyszeri mozdulatok */
+let aktualisMoz = "pihen";
+document.querySelectorAll(".moz").forEach(g => g.onclick = function(){
+  if (beszel) document.getElementById("beszelGomb").click();
+  document.querySelectorAll(".moz").forEach(x => x.classList.remove("aktiv"));
+  this.classList.add("aktiv");
+  aktualisMoz = this.dataset.moz;
+  allit(MOZDULATOK[aktualisMoz]);
+  osszes().forEach(s => s.querySelectorAll(".pir")
+    .forEach(p => p.setAttribute("opacity", aktualisMoz === "tapsol" ? .5 : 0)));
+  if (aktualisMoz === "tapsol") {            // két csattanás
+    let n = 0;
+    const t = setInterval(() => {
+      const f = MOZDULATOK.tapsol.slice();
+      if (n % 2) { f[1] += 16; f[3] -= 16; }
+      allit(f);
+      if (++n > 4) clearInterval(t);
+    }, 230);
+  }
+  if (aktualisMoz === "integet") {           // integetés
+    let n = 0;
+    const t = setInterval(() => {
+      const f = MOZDULATOK.integet.slice();
+      f[3] = (n % 2) ? -14 : 34;
+      allit(f);
+      if (++n > 5) clearInterval(t);
+    }, 260);
+  }
+});
+
+document.querySelectorAll(".valaszto button").forEach(b => b.onclick = function(){
+  document.querySelectorAll(".valaszto button").forEach(x => x.classList.remove("aktiv"));
+  this.classList.add("aktiv");
+  aktualisFigura = this.dataset.ki;
+  ujraRajzol();
+});
+
+ujraRajzol();
+</script>
+</body>
+</html>

@@ -60,15 +60,28 @@
     </aside>
 
     <div class="chat-main">
+        {# ── FEJLÉC: KÉT SÁV ───────────────────────────────────────────
+           Korábban öt sáv volt egymás alatt (váltógombok, névkártya, „Most
+           ezt tanulod” doboz, percek, Szintfelmérő gomb), együtt közel 290
+           képpont. Egy laptopon ez a képernyő harmada, mielőtt a gyerek egy
+           szót elolvasna — telefonon még rosszabb. Ugyanez az információ
+           elfér két sorban: fent KI tanul és MIVEL, lent MIT tanul éppen. #}
         <header class="chat-header chat-header-playful">
             <div class="chat-header-topbar">
                 {# Bal oldalt MINDIG a visszalépés, jobb oldalt EGYETLEN váltógomb,
-                   ami azt írja ki, HOVÁ visz — nem azt, hol vagyunk éppen.
-                   Korábban hangos módban a bal és a jobb oldali gomb is a chatbe
-                   vitt, a felirat pedig az aktuális módot mutatta: ez zavaró volt,
-                   és chat módból nem volt egyértelmű a visszaút. #}
+                   ami azt írja ki, HOVÁ visz — nem azt, hol vagyunk éppen. #}
                 <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
-                {# Teljes képernyő. Jobbra tolva, hogy a fejléc közepét ne foglalja. #}
+                <div class="chat-avatar-circle">{{ child['name'][0]|upper }}</div>
+                <div class="chat-header-identity-text">
+                    <h1 class="chat-child-name">{{ child['name'] }}</h1>
+                    <p class="chat-subject">{{ subject_label }}</p>
+                </div>
+                <span class="chat-header-ter"></span>
+                {# CSAK az egyenleg látszik tanulás közben – a boltot és az
+                   albumot a profilról nyitja, hogy a lecke ne szakadjon meg. #}
+                <div class="chat-coins-pill" title="{{ t('coin_hint') }}">🪙
+                   <span id="coins-display">{{ coins }}</span>
+                   <span id="pont-display" hidden>{{ pont }}</span></div>
                 <button type="button" class="chat-teljes-gomb" id="chat-teljes"
                         title="{{ t('chat_fullscreen') }}"
                         aria-label="{{ t('chat_fullscreen') }}">⛶</button>
@@ -81,39 +94,19 @@
                 {% endif %}
             </div>
 
-            <div class="chat-header-identity">
-                <div class="chat-avatar-circle">{{ child['name'][0]|upper }}</div>
-                <div class="chat-header-identity-text">
-                    <h1 class="chat-child-name">{{ child['name'] }}</h1>
-                    <p class="chat-subject">{{ subject_label }}</p>
-                </div>
-                {# CSAK az egyenleg látszik tanulás közben – a boltot és az
-                   albumot a profilról nyitja, hogy a lecke ne szakadjon meg.
-                   A számnak viszont itt kell lennie: a gyerek akkor érzi a
-                   jutalmat, amikor megdolgozott érte. #}
-                <div class="chat-coins-pill" title="{{ t('coin_hint') }}">🪙
-                   <span id="coins-display">{{ coins }}</span>
-                   <span id="pont-display" hidden>{{ pont }}</span></div>
-            </div>
-
-            {% if not placement_mode %}
-            <div class="chat-topic-card chat-topic-card-playful">
-                <span class="chat-topic-card-label">{{ t('chat_now_learning') }}</span>
+            <div class="chat-header-also">
+                {% if not placement_mode %}
+                <span class="chat-also-jel" aria-hidden="true">🎯</span>
                 <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
-            </div>
-            {% endif %}
-
-            <div class="chat-mini-stats">
+                {% endif %}
                 <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> {{ t('chat_minutes_suffix') }}</span>
                 <span class="chat-mini-stat">🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
-            </div>
-            {% if streak_days and streak_days > 0 %}
-            <div class="chat-streak-bar" id="streak-bar">
-                {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
-            </div>
-            {% endif %}
-
-            <div class="chat-header-actions">
+                {% if streak_days and streak_days > 0 %}
+                <span class="chat-mini-stat chat-mini-stat-sorozat" id="streak-bar">
+                    {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
+                </span>
+                {% endif %}
+                <span class="chat-header-ter"></span>
                 {% if show_early_test %}
                 <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
                     {{ t('chat_test_start') }}
@@ -149,6 +142,8 @@
         <input type="hidden" id="chat-language" value="{{ language or '' }}">
         <input type="hidden" id="chat-frame" value="{{ 'es' if active_curriculum == 'ES' else 'hu' }}">
         <input type="hidden" id="chat-topic-id" value="{{ current_topic_id }}">
+        {# Ezen a nyelven nézzük meg, mennyire érthető, amit a gyerek mond. #}
+        <input type="hidden" id="chat-kiejtes-nyelv" value="{{ kiejtes_nyelv }}">
 
         <div class="voice-panel" id="voice-panel">
             <p class="voice-status" id="voice-status">{{ t('chat_voice_status_idle') }}</p>
@@ -702,9 +697,20 @@
 
     /* A böngésző webm/opus-t vesz fel, az Azure 16 kHz mono PCM WAV-ot vár.
        Az átalakítás itt történik, így a szerverre nem kell ffmpeg. */
-    function kiWav(abuf) {
+    /* EGYETLEN AudioContext az egész oldalra. A böngésző legfeljebb hat
+       darabot enged megnyitni; amíg ez csak a "mondd utánam" kártyán futott,
+       ez sosem állt elő, de hangos módban MINDEN válasz erre megy át — a
+       hetedik felvételnél a böngésző megtagadná az újabb létrehozását, és a
+       kiejtés-elemzés némán leállna. */
+    var kiAC = null;
+    function kiAudioContext() {
         var AC = window.AudioContext || window.webkitAudioContext;
-        return new AC().decodeAudioData(abuf).then(function (buf) {
+        if (!kiAC) { kiAC = new AC(); }
+        return kiAC;
+    }
+
+    function kiWav(abuf) {
+        return kiAudioContext().decodeAudioData(abuf).then(function (buf) {
             var OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
             var off = new OAC(1, Math.ceil(buf.duration * KI_MINTAVETEL), KI_MINTAVETEL);
             var f = off.createBufferSource();
@@ -777,6 +783,29 @@
         return fetchIdovel('/api/kiejtes/ertekel', { method: 'POST', body: fd })
             .then(function (r) { return r.json(); })
             .then(function (d) { kiMutat(k, mondd, d); });
+    }
+
+    /* ── A GYEREK SAJÁT VÁLASZA ──────────────────────────────────────────
+       Hangos módban minden szabad választ elküldünk elemzésre — ugyanazt a
+       felvételt, amit a szövegfelismerő is kapott. Viszonyítási szövegnek a
+       felismert szöveg megy: így derül ki, melyik szó nem jött ki tisztán.
+
+       SEMMIT NEM MUTATUNK BELŐLE. Ha volt nehezen érthető szó, a tanár a
+       KÖVETKEZŐ válaszában kérdez vissza rá — a kártya és a pontszám itt
+       csak elterelné a figyelmet a leckéről. */
+    function kiejtesValasz(blob, szoveg) {
+        if (!blob || !szoveg || szoveg.split(/\s+/).length < 3) { return; }
+        var nyelv = (document.getElementById('chat-kiejtes-nyelv') || {}).value;
+        if (!nyelv) { return; }
+        blob.arrayBuffer().then(kiWav).then(function (wav) {
+            var fd = new FormData();
+            fd.append('hang', wav, 'valasz.wav');
+            fd.append('szoveg', szoveg);
+            fd.append('nyelv', nyelv);
+            /* Sima fetch, nem fetchIdovel: ez a hívás nem tartozik a
+               lecke menetéhez, ezért nem is szabad hibát dobnia rá. */
+            return fetch('/api/kiejtes/valasz', { method: 'POST', body: fd });
+        }).catch(function () { /* csendben */ });
     }
 
     function kiMutat(k, mondd, d) {
@@ -1438,6 +1467,10 @@
                     if (voiceTestActive) {
                         return handleVoiceTestAnswer(text);
                     }
+                    /* A kiejtés-elemzés a HÁTTÉRBEN indul, és nem várunk rá:
+                       a lecke ettől egy pillanatot sem lassul. Ha elbukik,
+                       arról a gyerek nem tud meg semmit. */
+                    kiejtesValasz(blob, text);
                     return sendVoiceChat(text);
                 })
                 .catch(function (e) {

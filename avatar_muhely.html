@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – avatar műhely (Leonardo)</title>
+<style>
+  :root{--kek:#1f3a63;--zold:#16a34a;--papir:#f6f8fb;--keret:#d9dee7;--szurke:#5b6474;
+        --sarga:#fff8e6;--sarga-k:#e8a33d;--piros:#a12b2b}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--papir);color:#1a1f2b;
+       font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+  .lap{max-width:900px;margin:0 auto;padding:24px 20px 70px}
+  h1{font-size:1.5rem;margin:0 0 4px}
+  .alcim{color:var(--szurke);margin:0 0 26px}
+  h2{font-size:1.12rem;margin:34px 0 8px;padding-top:14px;border-top:1px solid var(--keret)}
+  h3{font-size:.98rem;margin:20px 0 6px}
+  p{margin:0 0 12px}
+  .doboz{background:#fff;border:1px solid var(--keret);border-radius:12px;padding:14px 16px;margin:12px 0}
+  .figyelem{background:var(--sarga);border-left:4px solid var(--sarga-k);border-radius:0 10px 10px 0;
+            padding:12px 15px;margin:14px 0}
+  table{width:100%;border-collapse:collapse;font-size:.94rem;margin:8px 0 14px}
+  th,td{border:1px solid var(--keret);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:#f3f5f9;white-space:nowrap;width:38%}
+  code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:.9em}
+  .prompt{position:relative;background:#111827;color:#e8edf5;border-radius:10px;
+          padding:14px 16px 14px;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;
+          white-space:pre-wrap;word-break:break-word;margin:6px 0 4px}
+  .masol{position:absolute;top:9px;right:9px;background:#2b3a52;color:#fff;border:0;
+         border-radius:7px;padding:5px 11px;font-size:.8rem;cursor:pointer}
+  .masol:hover{background:#3b4d69}
+  .masol.kesz{background:var(--zold)}
+  ol,ul{margin:0 0 12px;padding-left:22px}
+  li{margin-bottom:6px}
+  .rossz{color:var(--piros);font-weight:600}
+  .jo{color:#166534;font-weight:600}
+
+  /* próbaterület */
+  .proba{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:700px){.proba{grid-template-columns:1fr}}
+  .ejtomezo{border:2px dashed #b8c1d1;border-radius:12px;background:#fff;min-height:340px;
+            display:flex;align-items:center;justify-content:center;text-align:center;
+            color:var(--szurke);font-size:.9rem;padding:10px;position:relative;overflow:hidden}
+  .ejtomezo.rajta{border-color:var(--zold);background:#f0fbf4}
+  .ejtomezo img{max-width:100%;max-height:420px;display:block}
+  .vonalak{position:absolute;inset:0;pointer-events:none}
+  .vonalak div{position:absolute;left:0;right:0;height:0;border-top:2px dashed rgba(220,38,38,.75)}
+  .vonalak span{position:absolute;left:6px;transform:translateY(-100%);
+                background:rgba(220,38,38,.9);color:#fff;font-size:11px;padding:1px 6px;border-radius:4px}
+  .kicsiproba{display:flex;align-items:flex-end;gap:12px;margin-top:10px}
+  .kicsiproba img{height:120px;width:auto}
+  .bub{background:var(--zold);color:#fff;border-radius:14px;padding:9px 13px;font-size:.88rem;max-width:330px}
+</style>
+</head>
+<body>
+<div class="lap">
+
+<h1>Avatar műhely — Leonardo</h1>
+<p class="alcim">Két figura kell: egy nő és egy férfi. A cél nem egy szép kép, hanem
+egy <strong>szétvágható</strong> kép — amit fejre, törzsre, felkarra és alkarra tudok bontani,
+és ráakasztani a kész mozgásvázra.</p>
+
+<div class="figyelem">
+  <strong>Ez a legfontosabb az egészben.</strong> A kar és a test között
+  <strong>látszódnia kell egy résnek</strong>. Ha a figura leengedett karral, a testéhez
+  simulva áll, a képet nem lehet szétvágni — hiába gyönyörű. Minden más hiba javítható,
+  ez az egy nem.
+</div>
+
+<h2>1. Beállítások</h2>
+<table>
+  <tr><th>Modell</th><td>Amelyikkel a kártyákat csináltad (<code>Leonardo Lightning XL</code>).
+      Ha van kreditkereted <code>Phoenix</code>-re, az pontosabban követi a promptot — itt ez sokat számít.</td></tr>
+  <tr><th>Prompt Enhance</th><td><strong>KI.</strong> Ez a legfontosabb kapcsoló: bekapcsolva
+      átírja a promptot, és pont a rést meg a testtartást szúrja el.</td></tr>
+  <tr><th>Képarány</th><td><strong>3:4 álló</strong> (kb. 768 × 1024). Álló egészalakos figurához
+      négyzet nem jó — levágja a lábat vagy pindurira zsugorítja.</td></tr>
+  <tr><th>Style / stílus</th><td><code>Illustration</code> vagy <code>Graphic Design</code>.
+      Ha nincs ilyen, akkor <code>None</code>. A <code>Dynamic</code> most NE — az drámai
+      fényt tesz rá, ami vágásnál elárulja magát.</td></tr>
+  <tr><th>Contrast</th><td>Közepes. A magas kontraszt erős árnyékot rak a karra, és a
+      forgatásnál az árnyék rossz irányba mutatna.</td></tr>
+  <tr><th>Képek száma</th><td>4 — hogy legyen miből választani.</td></tr>
+  <tr><th>Elements</th><td>Üresen.</td></tr>
+</table>
+
+<h2>2. A nő — ezt másold be</h2>
+<div class="prompt" id="p1"><button class="masol" data-cel="p1">Másolás</button>flat vector illustration of a friendly female teacher in her early thirties, full body from head to shoes, standing straight and facing the viewer, symmetrical relaxed A-pose, both arms hanging down and clearly AWAY from the body with a visible empty gap between each arm and the torso, elbows slightly bent, hands open and relaxed at her sides, shoulder-length warm brown hair, simple raspberry pink knee-length dress with short sleeves, bare lower legs, dark flat shoes, calm friendly face, mouth closed, looking straight at the viewer, clean thick outlines, flat colours with soft simple cel shading, warm friendly palette, plain solid very light grey background, whole figure centred with clear empty margin above the head and below the feet, modern children's educational app character
+
+NO text, NO letters, NO numbers, NO watermark, NO signature, NO logo, NO frame, NO cropped feet, NO cropped hands, NO arms crossed, NO hands in pockets, NO hands touching the body or the hips, NO objects, NO book, NO pointer, NO desk, NO furniture, NO background scenery, NO photorealism, NO 3D render, NO anime, NO more than one person, NO extra limbs, NO deformed hands, NO strong shadows</div>
+
+<h2>3. A férfi — ugyanazzal a stílussal</h2>
+<p>Amikor a nő megvan és tetszik, nyisd meg a képét, és nyomd meg a
+<strong>„Use as reference → Style Reference"</strong> gombot, mielőtt a férfit generálod.
+Így lesz a kettő egy család. (Character Reference-t <strong>NE</strong> — attól a férfi
+is a nő arcát kapná.)</p>
+<div class="prompt" id="p2"><button class="masol" data-cel="p2">Másolás</button>flat vector illustration of a friendly male teacher in his early thirties, full body from head to shoes, standing straight and facing the viewer, symmetrical relaxed A-pose, both arms hanging down and clearly AWAY from the body with a visible empty gap between each arm and the torso, elbows slightly bent, hands open and relaxed at his sides, short dark brown hair, plain blue button-up shirt with short sleeves, navy trousers, dark shoes, calm friendly face, mouth closed, looking straight at the viewer, clean thick outlines, flat colours with soft simple cel shading, warm friendly palette, plain solid very light grey background, whole figure centred with clear empty margin above the head and below the feet, modern children's educational app character
+
+NO text, NO letters, NO numbers, NO watermark, NO signature, NO logo, NO frame, NO cropped feet, NO cropped hands, NO arms crossed, NO hands in pockets, NO hands touching the body or the hips, NO objects, NO book, NO pointer, NO desk, NO furniture, NO background scenery, NO photorealism, NO 3D render, NO anime, NO more than one person, NO extra limbs, NO deformed hands, NO strong shadows</div>
+
+<div class="figyelem">
+  A tiltó szavak azért vannak a prompt <strong>végén</strong> is, mert a Lightning
+  automata módjában nincs külön Negative Prompt mező — így viszont elolvassa őket.
+  Ha a te felületeden VAN Negative Prompt mező, akkor a „NO…" kezdetű blokkot
+  vágd ki innen, és oda tedd be.
+</div>
+
+<h2>4. Melyiket válaszd a négy közül</h2>
+<p>Nézd végig ebben a sorrendben. Az elsőn bukik el a legtöbb kép:</p>
+<ol>
+  <li><span class="jo">Van rés a kar és a test között?</span> Mindkét oldalon átlátszik
+      a háttér a kar mellett? Ha nem — dobd, akármilyen szép.</li>
+  <li>A <strong>teljes láb és a cipő</strong> benne van a képben, és a feje búbja fölött is
+      van hely?</li>
+  <li>A háttér <strong>egyszínű</strong>, nincs rajta bútor, tábla, padló?</li>
+  <li>A <strong>keze ép</strong>? (Öt ujj, nem összeolvadt csonk — a generátorok itt szoktak elrontani.)</li>
+  <li>A <strong>szája csukva</strong> és kicsi? A beszélő szájat én rajzolom rá, tehát a
+      csukott száj a jó kiindulás.</li>
+  <li>Nincs rajta felirat, aláírás, embléma?</li>
+</ol>
+<p>Ha a négyből egy sem megy át az 1. ponton, ne generálj újra vaktában — írd be a
+promptba a testtartás elé ezt: <code>arms held out at about 20 degrees from the body</code>,
+és úgy futtasd újra.</p>
+
+<h2>5. Próbáld ki itt, mielőtt elküldöd</h2>
+<p>Húzd rá a letöltött PNG-t a mezőre. A piros szaggatott vonalak azt mutatják,
+<strong>hol fogom elvágni</strong>: nyak, váll, könyök. Ha ezeken a vonalakon a kar
+a testre simul, akkor az a kép nem lesz jó.</p>
+<div class="proba">
+  <div>
+    <h3 style="margin-top:0">Nő</h3>
+    <div class="ejtomezo" id="e1">Húzd ide a képet<br>(vagy kattints)
+      <input type="file" accept="image/*" hidden>
+    </div>
+  </div>
+  <div>
+    <h3 style="margin-top:0">Férfi</h3>
+    <div class="ejtomezo" id="e2">Húzd ide a képet<br>(vagy kattints)
+      <input type="file" accept="image/*" hidden>
+    </div>
+  </div>
+</div>
+<div class="kicsiproba" id="kicsi" style="display:none">
+  <img id="kicsiKep" alt="">
+  <div class="bub">Így lesz akkora, amekkora a chat mellett tényleg lesz.
+    Ha ekkorában nem olvasható az arca, túl részletes a rajz.</div>
+</div>
+
+<h2>6. Ha megvan</h2>
+<p>Mentsd ide, pontosan ezekkel a nevekkel:</p>
+<div class="doboz">
+  <code>C:\Users\User\Desktop\TutorIA\static\avatar\no.png</code><br>
+  <code>C:\Users\User\Desktop\TutorIA\static\avatar\ferfi.png</code>
+</div>
+<p>Az <code>avatar</code> mappát hozd létre a <code>static</code> mappán belül.
+Utána szólj — én onnan elolvasom, kivágom a hátteret, szétszedem a részekre, és
+ráteszem a mozgásvázra. A háttér eltávolítását és a darabolást én csinálom, azzal
+neked nincs dolgod.</p>
+
+<script>
+document.querySelectorAll(".masol").forEach(g => g.onclick = function(){
+  const el = document.getElementById(this.dataset.cel).cloneNode(true);
+  el.querySelector(".masol").remove();
+  navigator.clipboard.writeText(el.textContent.trim()).then(() => {
+    this.textContent = "Kimásolva ✓"; this.classList.add("kesz");
+    setTimeout(() => { this.textContent = "Másolás"; this.classList.remove("kesz"); }, 1800);
+  });
+});
+
+/* vágásvonalak – a mozgásváz arányai szerint:
+   nyak 26%, váll 33%, könyök 45% a figura magasságától mérve */
+const VAGAS = [[26,"nyak"],[33,"váll"],[45,"könyök"]];
+
+function betolt(mezo, fajl){
+  if (!fajl || !fajl.type.startsWith("image/")) return;
+  const url = URL.createObjectURL(fajl);
+  mezo.innerHTML = `<img src="${url}" alt=""><div class="vonalak">` +
+    VAGAS.map(([sz,nev]) =>
+      `<div style="top:${sz}%"></div><span style="top:${sz}%">${nev}</span>`).join("") +
+    `</div><input type="file" accept="image/*" hidden>`;
+  koss(mezo);
+  document.getElementById("kicsi").style.display = "flex";
+  document.getElementById("kicsiKep").src = url;
+}
+
+function koss(mezo){
+  const be = mezo.querySelector("input");
+  mezo.onclick = () => be.click();
+  be.onchange = () => betolt(mezo, be.files[0]);
+  mezo.ondragover = e => { e.preventDefault(); mezo.classList.add("rajta"); };
+  mezo.ondragleave = () => mezo.classList.remove("rajta");
+  mezo.ondrop = e => { e.preventDefault(); mezo.classList.remove("rajta");
+                       betolt(mezo, e.dataTransfer.files[0]); };
+}
+document.querySelectorAll(".ejtomezo").forEach(koss);
+</script>
+</div>
+</body>
+</html>

@@ -1497,18 +1497,22 @@ a.btn-generate {
     padding-bottom: 1rem;
 }
 .chat-header {
-    margin-bottom: 1rem;
+    margin-bottom: 0.7rem;
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
+    gap: 0.5rem;
 }
 .chat-header-topbar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
+/* A rugalmas hézag választja el a bal oldalt (ki tanul) a jobbtól
+   (érme, nagyítás, módváltó). Enélkül a space-between a névkártya
+   beolvadása után szétdobná a sor közepét. */
+.chat-header-ter { flex: 1 1 0; min-width: 0; }
 .chat-header-topbar .chat-back,
 .chat-header-topbar .voice-switch-chat {
     margin-bottom: 0;
@@ -1572,7 +1576,7 @@ a.btn-generate {
 .chat-header-playful {
     background: linear-gradient(180deg, #fef3c7 0%, #dbeafe 55%, #dcfce7 100%);
     border-radius: 20px;
-    padding: 14px;
+    padding: 10px 12px;
     border: 3px solid var(--white);
     box-shadow: 0 4px 14px rgba(20, 83, 45, 0.1);
 }
@@ -1597,6 +1601,9 @@ a.btn-generate {
 }
 a.chat-mode-toggle { cursor: pointer; }
 a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
+/* A .chat-header-identity dobozt a fejléc már nem használja – a név és a
+   tantárgy a felső sávba került. A szabály itt marad, mert más oldal is
+   hivatkozhat rá. */
 .chat-header-identity {
     display: flex;
     align-items: center;
@@ -1606,9 +1613,43 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
     padding: 10px 14px;
     margin: 10px 0;
 }
+
+/* ── A fejléc ALSÓ sávja: mit tanul éppen, mennyit, és a Szintfelmérő ──
+   Egyetlen sor, fehér lapon. A „Most ezt tanulod” szaggatott dobozát a
+   célkereszt-jel helyettesíti: rövidebb, és ugyanazt mondja. */
+.chat-header-also {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    background: var(--white);
+    border-radius: 14px;
+    padding: 8px 12px;
+}
+.chat-also-jel { font-size: 0.95rem; line-height: 1; flex-shrink: 0; }
+.chat-header-also .chat-current-topic {
+    margin: 0;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #166534;
+    min-width: 0;
+}
+.chat-header-also .chat-mini-stat {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #166534;
+    white-space: nowrap;
+}
+.chat-mini-stat-sorozat { color: #c2410c; }
+.chat-header-also .btn-test-start {
+    margin-top: 0;
+    padding: 7px 16px;
+    font-size: 0.88rem;
+}
 .chat-avatar-circle {
-    width: 40px;
-    height: 40px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     background: linear-gradient(135deg, #fbbf24, #ec4899);
     color: #fff;
@@ -1619,18 +1660,23 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
     font-size: 1.1rem;
     flex-shrink: 0;
 }
-.chat-header-identity-text { flex: 1; min-width: 0; }
+.chat-header-identity-text { min-width: 0; }
 .chat-header-identity-text .chat-child-name {
-    font-size: 1.05rem;
+    font-size: 1rem;
     margin: 0;
     text-align: left;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .chat-header-identity-text .chat-subject {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     margin: 0;
     text-align: left;
     color: #7c3aed;
     font-weight: 700;
+    line-height: 1.2;
 }
 .chat-xp-pill {
     background: linear-gradient(135deg, #fff3cd, #ffe69c);
@@ -2115,6 +2161,10 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 .chat-layout.teljes-mod .chat-topic-card,
 .chat-layout.teljes-mod .chat-mini-stats,
 .chat-layout.teljes-mod .chat-streak-bar { display: none; }
+/* A fejléc két sávra fogyott: nagyításban az alsó (téma, percek,
+   Szintfelmérő) marad el, a felső sor pedig egy sorban fut tovább. */
+.chat-layout.teljes-mod .chat-header-also { display: none; }
+.chat-layout.teljes-mod .chat-header-topbar { flex-wrap: nowrap; }
 .chat-layout.teljes-mod .chat-header {
     flex-direction: row;
     align-items: center;
@@ -2153,6 +2203,48 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     min-height: 0;
     overflow-y: auto;
     align-self: stretch;
+}
+
+/* ── A FEJLÉC TELEFONON ──────────────────────────────────────────────────
+   A két sáv telefonon is két sáv marad, csak minden elem kisebb. A név
+   levágódik három ponttal, ha nem fér ki – ez jobb, mint ha a módváltó
+   gombot nyomná le a következő sorba. */
+@media (max-width: 560px) {
+    .chat-header-playful { padding: 9px 10px; }
+    .chat-avatar-circle { width: 28px; height: 28px; font-size: 0.9rem; }
+    /* Egyetlen sor, nem törik: ami nem fér ki, az a NÉV, és az három
+       ponttal végződik. Enélkül a módváltó gomb külön sorba csúszott. */
+    .chat-header-topbar { gap: 0.4rem; flex-wrap: nowrap; }
+    .chat-header-identity-text { flex: 1 1 auto; min-width: 0; }
+    /* Telefonon a nyíl önmagában is érthető – a felirat vitte a helyet. */
+    .chat-header-topbar .chat-back { font-size: 0; padding: 0; }
+    .chat-header-topbar .chat-back::before { content: '←'; font-size: 1.35rem; }
+    .chat-header-identity-text .chat-child-name { font-size: 0.9rem; }
+    .chat-header-identity-text .chat-subject { font-size: 0.7rem; }
+    .chat-mode-toggle { padding: 5px 10px; font-size: 0.74rem; }
+    .chat-coins-pill { padding: 5px 9px; font-size: 0.85rem; }
+    .chat-teljes-gomb { width: 30px; height: 30px; margin-right: 0.2rem; }
+    .chat-header-also { gap: 7px 10px; padding: 7px 10px; flex-wrap: nowrap; }
+    .chat-header-also .chat-current-topic {
+        font-size: 0.92rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    /* Telefonon a percek és a szint lemaradnak: elférnek a profilon, és
+       tanulás közben nem ezekre kell néznie a gyereknek. A téma neve és a
+       Szintfelmérő gomb marad – ezekre kattint. */
+    .chat-header-also .chat-mini-stat { display: none; }
+    .chat-header-also .btn-test-start {
+        padding: 6px 13px;
+        font-size: 0.82rem;
+        flex-shrink: 0;
+    }
+    /* A módváltó gomb telefonon csak a mikrofont mutatja: a felirat vitte a
+       helyet, amitől a gomb külön sorba csúszott. */
+    .chat-mode-toggle { font-size: 0; padding: 6px 10px; }
+    .chat-mode-toggle::before { content: '🎙'; font-size: 1rem; }
+    .chat-mode-toggle.chat-mode-chat::before { content: '⌨️'; }
 }
 
 /* ── KIEJTÉS-GYAKORLÁS a chatben ─────────────────────────────────────────
