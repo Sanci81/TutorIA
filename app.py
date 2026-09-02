@@ -6692,7 +6692,8 @@ def child_chat_send(child_id: int):
     # javítjuk; a választhatatlan kérdést csak naplózzuk, mert az átírásával
     # egy szándékos becslési feladatot ronthatnánk el.
     try:
-        _javitott, _szam_naplo = szamellenor.chat_ellenoriz(reply)
+        _javitott, _szam_naplo = szamellenor.chat_ellenoriz(
+            reply, "es" if _active_curriculum() == "ES" else "hu")
         if _javitott != reply:
             reply = _javitott
         for _sor in _szam_naplo:

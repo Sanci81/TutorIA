@@ -62,6 +62,14 @@ ESETEK: list[tuple[str, str, str]] = [
      "huszonkettő → huszonkét főnév előtt"),
     ("Hány maradt? 2", "Hány maradt? kettő",
      "magában viszont marad a teljes alak"),
+    ("80 - 2 = 78", "nyolcvan mínusz kettő egyenlő hetvennyolc",
+     "'mínusz KÉT egyenlő' volt – a 'két' csak megszámlált szó előtt áll"),
+    ("2 meg 3 az 5", "kettő meg három az öt",
+     "az operátor nem megszámlálható"),
+    ("A 2 nagyobb mint az 1.", "A kettő nagyobb mint az egy.",
+     "összehasonlításban sem rövidül"),
+    ("Vegyél 2 tojást!", "Vegyél két tojást!",
+     "megszámlált főnév előtt viszont IGEN"),
     ("1848-49 a szabadságharc.",
      "ezernyolcszáznegyvennyolc negyvenkilenc a szabadságharc.",
      "évszám-tartomány kötőjellel"),
@@ -83,6 +91,15 @@ ESETEK: list[tuple[str, str, str]] = [
      "a kötőjeles toldalék külön betűződött volna"),
     ("A K = 4 × a képlet.", "A kerület egyenlő négyszer a képlet.",
      "mértani képletben a K kerületet jelent – ez SZÁNDÉKOS"),
+
+    # ── ARÁNY: nem osztás ──────────────────────────────────────────────
+    ("Az arány 2 : 3 volt.", "Az arány kettő a háromhoz volt.",
+     "'kettő osztva hárommal' volt – az arányt nem így mondjuk"),
+    ("A fiúk és lányok aránya 3 : 5.",
+     "A fiúk és lányok aránya három az öthöz.",
+     "magánhangzó előtt 'az', nem 'a'"),
+    ("Mennyi 6 : 2?", "Mennyi hat osztva kettővel?",
+     "az 'arány' szó nélkül ez tényleg osztás – nem találgatunk"),
 ]
 
 # Amit a gyerek LÁT: a szamellenor átírja a tanár mondatát, mielőtt kimegy.
@@ -112,6 +129,23 @@ SZOVEG_ESETEK: list[tuple[str, str, str]] = [
      "a hamis egyenlőséget javítjuk – a szorzás értéke nem vélemény"),
 ]
 
+# Ugyanaz a hiba a SPANYOL oldalon. Ott nincs rag: a "está más cerca de"
+# fordulat hordozza, hogy közelséget kérdezünk, nem egyenlőséget.
+SPANYOL_ESETEK: list[tuple[str, str, str]] = [
+    ("Estimemos: ¿48 × 2 es más bien 80, 90 o 100?",
+     "Estimemos: ¿48 × 2 está más cerca de 80, 90 o 100?",
+     "'es más bien' egyenlőséget állít – a 48 × 2 az 96"),
+    ("¿19 × 4 más bien 60, 70 o 80?",
+     "¿19 × 4 está más cerca de 60, 70 o 80?",
+     "ugyanaz kötőszó nélkül"),
+    ("¿48 × 2 está más cerca de 80, 90 o 100?",
+     "¿48 × 2 está más cerca de 80, 90 o 100?",
+     "ha már jó, nem írjuk át másodszor"),
+    ("¿Prefieres más bien el rojo o el azul?",
+     "¿Prefieres más bien el rojo o el azul?",
+     "nem számokról szól: hozzá se nyúlunk"),
+]
+
 
 def main() -> int:
     rossz = 0
@@ -139,7 +173,20 @@ def main() -> int:
         print(f"        várt:   {vart}")
         print(f"        miért:  {miert}")
 
-    osszes = len(ESETEK) + len(SZOVEG_ESETEK)
+    print()
+    print("A SPANYOL OLDAL (szamellenor.py)")
+    for be, vart, miert in SPANYOL_ESETEK:
+        kapott, _ = szamellenor.chat_ellenoriz(be, "es")
+        if kapott == vart:
+            print(f"  ok    {be}")
+            continue
+        rossz += 1
+        print(f"  ROSSZ {be}")
+        print(f"        kapott: {kapott}")
+        print(f"        várt:   {vart}")
+        print(f"        miért:  {miert}")
+
+    osszes = len(ESETEK) + len(SZOVEG_ESETEK) + len(SPANYOL_ESETEK)
     print()
     if rossz:
         print(f"{rossz} hiba a(z) {osszes} esetből. NE PUSHOLJ.")

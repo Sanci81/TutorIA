@@ -382,6 +382,32 @@ def evkor_szoval(szoveg: str) -> str:
         szoveg)
 
 
+# ── ARÁNY: "2 : 3" ─────────────────────────────────────────────────────────
+# MIÉRT: az arányt magyarul nem osztásként mondjuk ki. A "2 : 3" nem "kettő
+# osztva hárommal", hanem "KETTŐ A HÁROMHOZ". Az osztás-szabály viszont ugyanezt
+# az alakot látja, ezért ennek ELŐBB kell futnia.
+#
+# HONNAN TUDJUK, HOGY ARÁNY: az "arány" szó ott áll a mondatban. Enélkül nem
+# találgatunk – a "6 : 2" az esetek túlnyomó részében tényleg osztás.
+_ARANY_SZO = re.compile(r"ar[áa]ny", re.IGNORECASE)
+_ARANY = re.compile(r"(?<![\w.,:])(\d{1,6})\s+:\s+(\d{1,6})(?![\w])")
+
+
+def arany_szoval(szoveg: str) -> str:
+    """"Az arány 2 : 3" → "Az arány kettő a háromhoz"."""
+    if not _ARANY_SZO.search(szoveg):
+        return szoveg
+    def csere(m: "re.Match[str]") -> str:
+        elso = hu_szam(int(m.group(1)))
+        masodik = hu_szam(int(m.group(2)))
+        # "három AZ öthöz", nem "három A öthöz": a névelő magánhangzó előtt
+        # "az". Az öt, az egy és az ezer magánhangzóval kezdődik.
+        nevelo = "az" if masodik[0] in "aáeéiíoóöőuúüű" else "a"
+        return f"{elso} {nevelo} {masodik}{hoz_rag(int(m.group(2)))}"
+
+    return _ARANY.sub(csere, szoveg)
+
+
 # ── AMI SZÁMJEGY MARADT ─────────────────────────────────────────────────────
 # MIÉRT KELL: eddig csak a szorzás, az osztás, a toldalékos és a mondatvégi
 # szám lett szóvá írva. A TÖBBIT a felolvasóra bíztuk — az pedig találgat.
@@ -400,20 +426,45 @@ def evkor_szoval(szoveg: str) -> str:
 #   "-5"          – kötőjel előtte: lehet negatív szám vagy tartomány vége
 _MARADEK_SZAM = re.compile(r"(?<![\w.,:%/-])(\d{1,6})(?![\w.,:%°/-])")
 
-# KETTŐ VAGY KÉT. Magyarul főnév előtt "két alma", magában "kettő".
-# Ugyanez a tizenkettő/tizenkét, huszonkettő/huszonkét párra is áll. A
-# felolvasónak ez mindegy volna, a gyereknek nem: a "tizenkettő alma"
-# hallhatóan idegen, és így is rögzülne.
-_KOVETI_SZO = re.compile(r"\s+[a-záéíóöőúüű]")
+# KETTŐ VAGY KÉT. Magyarul MEGSZÁMLÁLT FŐNÉV előtt "két alma", minden más
+# helyzetben "kettő". A felolvasónak ez mindegy volna, a gyereknek nem: a
+# "tizenkettő alma" hallhatóan idegen, és így is rögzülne.
+#
+# AZ ELSŐ VÁLTOZAT ITT HIBÁS VOLT: azt néztem, követi-e SZÓ a számot, és ha
+# igen, rövidítettem. Ettől lett a "80 - 2 = 78"-ból "nyolcvan mínusz KÉT
+# egyenlő hetvennyolc". A "két" ugyanis nem az bármi előtt áll, hanem amit
+# MEGSZÁMLÁL. Az "egyenlő" nem megszámlálható.
+#
+# Főnevet szótár nélkül nem tudunk felismerni, viszont az ELLENKEZŐJE zárt
+# lista: azok a szavak, amik számot követhetnek anélkül, hogy a szám őket
+# számlálná. Ezek nagyrészt olyan szavak, amiket EZ A MODUL tesz a szövegbe
+# (egyenlő, meg, mínusz, osztva), a többi kötőszó és létige.
+_NEM_FONEV = {
+    # amit a jelcsere ír be
+    "egyenlő", "meg", "mínusz", "szorozva", "osztva", "szor", "százalék",
+    "plusz", "kisebb", "nagyobb",
+    # kötőszó, névelő, partikula
+    "és", "vagy", "is", "se", "sem", "de", "hanem", "pedig", "azaz",
+    "tehát", "illetve", "a", "az", "hogy", "mert", "míg", "ha",
+    # létige és gyakori állítmány szám után
+    "van", "volt", "lesz", "lett", "marad", "maradt", "jön", "jött",
+    "nem", "már", "majd", "csak", "épp", "éppen",
+    # összehasonlítás
+    "mint", "több", "kevesebb", "közelebb", "távolabb", "jobb", "rosszabb",
+}
+_KOVETKEZO_SZO = re.compile(r"\s+([a-záéíóöőúüű]+)")
 
 
 def szamok_szoval(szoveg: str) -> str:
     """"Van 12 alma" → "Van tizenkét alma". UTOLSÓNAK fut."""
     def csere(m: "re.Match[str]") -> str:
         szo = hu_szam(int(m.group(1)))
-        # Ha főnév követi, a "kettő" rövidül. A mondat végén álló szám
-        # ("Mennyi? Kettő.") viszont marad teljes alakban.
-        if szo.endswith("kettő") and _KOVETI_SZO.match(szoveg, m.end()):
+        if not szo.endswith("kettő"):
+            return szo
+        # Csak akkor rövidül, ha MEGSZÁMLÁLT SZÓ követi. A mondat végén álló
+        # szám ("Marad 2.") és az operátor előtti ("2 egyenlő") marad teljes.
+        kovet = _KOVETKEZO_SZO.match(szoveg, m.end())
+        if kovet and kovet.group(1) not in _NEM_FONEV:
             return _ket(szo)
         return szo
 
@@ -587,6 +638,9 @@ def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
         # ELŐBB a méretszorzás: a mértékegység cseréje már megtörtént, így a
         # "méter × 3" alakot csak itt tudjuk elkapni.
         szoveg = meretszorzas_szoval(szoveg)
+        # Az ARÁNY az osztás ELŐTT: ugyanazt az alakot látják, és az arány a
+        # szűkebb eset ("2 : 3" az arány szó társaságában).
+        szoveg = arany_szoval(szoveg)
         szoveg = szorzas_szoval(szoveg)
         # Az OSZTÁS is: a ":" cseréje után már nem tudnánk, melyik szám az
         # osztó, és a ragot nem tudnánk hova tenni.

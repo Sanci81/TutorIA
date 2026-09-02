@@ -259,48 +259,83 @@ _VALASZTAS = re.compile(
 # MIÉRT ÁTÍRÁS ÉS NEM UTASÍTÁS A TANÁRNAK: a promptban leírt szabályt a modell
 # nem mindig tartja be — ez a kérdés is így jutott el a gyerekig. Az átírás
 # viszont mindig megtörténik.
+# SPANYOLUL ugyanez a hiba: "Estimemos: ¿48 × 2 es 80, 90 o 100?" — a kérdés
+# egyenlőséget állít, holott közelséget kérdez. Spanyolul nincs rag, a
+# megoldás egy fordulat: "¿48 × 2 está más cerca de 80, 90 o 100?"
 _BECSLES_KERDES = re.compile(
     r"\binkább\b\s+((?:" + _SZAM + r")(?:\s*,\s*(?:" + _SZAM + r"))*"
     r"\s+(?:vagy|avagy)\s+(?:" + _SZAM + r"))\s*\?",
     re.IGNORECASE,
 )
+_BECSLES_KERDES_ES = re.compile(
+    r"(?:\b(?:es|son|ser[íi]a|ser[áa])\s+)?\bm[áa]s bien\b\s+"
+    r"((?:" + _SZAM + r")(?:\s*,\s*(?:" + _SZAM + r"))*"
+    r"\s+(?:o|u)\s+(?:" + _SZAM + r"))\s*\?",
+    re.IGNORECASE,
+)
 # Ha ez már benne van, a tanár jól fogalmazott – nem nyúlunk hozzá.
-_MAR_JO = re.compile(r"k[öo]zelebb|k[öo]zel[íi]t", re.IGNORECASE)
+_MAR_JO = re.compile(r"k[öo]zelebb|k[öo]zel[íi]t|cerca de|se acerca",
+                     re.IGNORECASE)
 
 
-def becsles_kerdes_javit(szoveg: str) -> tuple[str, list[str]]:
+def _egesz_szamok(szoveg_resz: str) -> list[tuple[str, int]] | None:
+    """A felkínált számok, ha MIND egész. Tizedes törtnél None."""
+    szamok = re.findall(_SZAM, szoveg_resz)
+    if not 2 <= len(szamok) <= 4:
+        return None
+    ki: list[tuple[str, int]] = []
+    for sz in szamok:
+        v = _szamma(sz)
+        if v != int(v):                 # tizedes tört: nem ragozunk
+            return None
+        ki.append((sz, int(v)))
+    return ki
+
+
+def becsles_kerdes_javit(szoveg: str, nyelv: str = "hu") -> tuple[str, list[str]]:
     """"inkább 80, 90 vagy 100?" → "inkább 80-hoz, 90-hez vagy 100-hoz van közelebb?"
 
+    Spanyolul: "más bien 80, 90 o 100?" → "está más cerca de 80, 90 o 100?"
     Csak akkor ír át, ha a felkínáltak MIND egész számok. Tizedes törtnél és
     mértékegységnél inkább nem nyúlunk hozzá, mint hogy elrontsuk.
     """
     naplo: list[str] = []
-    if not szoveg or "inkább" not in szoveg.lower():
+    if not szoveg:
         return szoveg, naplo
 
-    def csere(m: "re.Match[str]") -> str:
+    def csere_hu(m: "re.Match[str]") -> str:
         egesz = m.group(0)
         if _MAR_JO.search(egesz):
             return egesz
-        szamok = re.findall(_SZAM, m.group(1))
-        if not 2 <= len(szamok) <= 4:
+        szamok = _egesz_szamok(m.group(1))
+        if not szamok:
             return egesz
-        ertekek = []
-        for sz in szamok:
-            v = _szamma(sz)
-            if v != int(v):                 # tizedes tört: nem ragozunk
-                return egesz
-            ertekek.append(int(v))
-        raggal = [f"{sz}-{hang.hoz_rag(e)}" for sz, e in zip(szamok, ertekek)]
+        raggal = [f"{sz}-{hang.hoz_rag(e)}" for sz, e in szamok]
         ki = ("inkább " + ", ".join(raggal[:-1]) + " vagy " + raggal[-1]
               + " van közelebb?")
         naplo.append(f"becslo kerdes atirva: {egesz!r} → {ki!r}")
         return ki
 
-    return _BECSLES_KERDES.sub(csere, szoveg), naplo
+    def csere_es(m: "re.Match[str]") -> str:
+        egesz = m.group(0)
+        if _MAR_JO.search(egesz):
+            return egesz
+        szamok = _egesz_szamok(m.group(1))
+        if not szamok:
+            return egesz
+        # Spanyolul nincs rag: a "está más cerca de" fordulat hordozza a
+        # jelentést. Az utolsó elem elé "o" kerül, nem vessző.
+        sz = [x for x, _ in szamok]
+        ki = ("está más cerca de " + ", ".join(sz[:-1]) + " o " + sz[-1] + "?")
+        naplo.append(f"pregunta de estimacion reescrita: {egesz!r} → {ki!r}")
+        return ki
+
+    if nyelv == "es":
+        return _BECSLES_KERDES_ES.sub(csere_es, szoveg), naplo
+    return _BECSLES_KERDES.sub(csere_hu, szoveg), naplo
 
 
-def chat_ellenoriz(szoveg: str) -> tuple[str, list[str]]:
+def chat_ellenoriz(szoveg: str, nyelv: str = "hu") -> tuple[str, list[str]]:
     """A tanár chat-üzenetében a számtani állítások ellenőrzése.
 
     Két dolgot csinál:
@@ -326,7 +361,7 @@ def chat_ellenoriz(szoveg: str) -> tuple[str, list[str]]:
 
     # A becslő kérdés megfogalmazása. ELŐBB, mint a választhatatlanság
     # vizsgálata: az átírt kérdésre már VAN jó válasz, tehát nincs mit jelezni.
-    javitott, becsles_naplo = becsles_kerdes_javit(javitott)
+    javitott, becsles_naplo = becsles_kerdes_javit(javitott, nyelv)
     naplo.extend(becsles_naplo)
 
     mondatok = re.split(r"(?<=[.!?…])\s+", javitott)
