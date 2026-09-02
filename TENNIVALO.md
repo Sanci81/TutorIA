@@ -100,7 +100,51 @@ nevére — magánszemélyként aláírva most rendben van, de nem marad az.
 python hang_teszt.py
 ```
 
-41 esetet néz: mit LÁT és mit HALL a gyerek. Mindnek "ok"-nak kell
-lennie. Minden sor egy valódi hiba emléke, amit egyszer már ki kellett
-javítani — ha új hibát találsz a felolvasásban vagy a feladatokban,
-oda kerüljön be, ne csak a javítás.
+49 esetet néz: mit LÁT és mit HALL a gyerek. INGYENES, két másodperc,
+nem hív AI-t. Mindnek "ok"-nak kell lennie. Minden sor egy valódi hiba
+emléke — ha újat találsz, oda kerüljön be, ne csak a javítás.
+
+## HIBAKERESÉS ÓRÁK LEJÁTSZÁSÁVAL
+
+```
+python tanar_teszt.py --gyors            3 óra, néhány tíz cent
+python tanar_teszt.py --ora 20 --fordulo 6    20 óra, pár euró
+```
+
+Ehhez KELL az OpenAI kulcs, egyetlen sorban, sortörés nélkül:
+    $env:OPENAI_API_KEY = "sk-proj-..."
+Ha elakad: `python tanar_teszt.py --proba` megmondja, hol.
+
+AMIT EDDIG TALÁLT (mind valódi, mind javítva):
+  · a tanult szó nem is látszott – a jelölő eltüntette
+  · a nyers <VOCAB> jelölő kiment a képernyőre
+  · a feleletválasztós kérdésekből eltűntek a válaszlehetőségek
+  · a mondat végi szavak összeragadtak: "alreadyyet", "llamarseser"
+  · az <FL:en>...</FL:en> jelölők kiszivárogtak angolórán
+  · a tanár arról kérdezett, amit két sorral feljebb ő maga mondott ki
+
+## FONTOS: MÉRÉS ÉS JAVÍTÁS NEM EGYSZERRE
+
+2026-09-02-én elrontottam: egyszerre változtattam a programon ÉS az
+ellenőrző listáján, ezért a 47 → 54 összehasonlítás semmit nem jelentett.
+A "gyanús" 43 → 23 esése is nagyrészt a lista pontosításától volt.
+
+A helyes sorrend, ha MÉRNI akarunk:
+  1. az ellenőrző listáját RÖGZÍTJÜK (nem nyúlunk hozzá)
+  2. futtatunk → ez a kiindulási szám
+  3. javítunk CSAK a programon
+  4. újra futtatunk ugyanazzal a paranccsal → ez az igazi összehasonlítás
+
+A tanar_teszt.py HIBAKERESŐNEK kiváló, MÉRŐMŰSZERNEK csak így.
+
+## AMI A JELENTÉSBŐL MÉG HÁTRAVAN
+
+- [ ] **Ténybeli hibák** (5 biztos a legutóbbi futásban). Például:
+      "az ötvözet több fém keveréke" (az acél vas ÉS szén),
+      "az életképes dalok" (helyesen: életképet bemutató dalok),
+      "él/ella es – ő van" (a ser igének nem ez a jelentése).
+      Ezt SZABÁLLYAL nem lehet megoldani – tudásbeli tévedés, nem
+      szabálysértés. Két út van: okosabb modell a tanárnak, vagy
+      tantárgyanként egy ellenőrző lépés. Mindkettő pénzbe kerül.
+- [ ] **Magyartalan mondatok** (11 biztos). Írtam rá szabályt valódi
+      példákkal, de még nem mértük, hogy használt-e.

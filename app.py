@@ -2844,6 +2844,40 @@ def _resolve_current_topic_id(
     return catalog[0]["id"]
 
 
+# A PÉLDAMONDAT IS TANÍT — akkor is, ha nem akartuk.
+#
+# A lejátszott órák ezt a hibát tucatjával adták vissza. Német 3. osztály,
+# a mai szó a "Schule" (iskola). A tanár példamondata:
+#     "Ich gehe zur Schule." (Iskolába megyek.)
+# Egy harmadikos ebből NEM a Schule szót tanulja meg, hanem egy igeragozást
+# és egy elöljáró-összevonást (zu + der = zur), amit még soha nem látott.
+# A szó elveszik a nyelvtanban, amit véletlenül tanítottunk mellé.
+# Spanyol 5. osztály ugyanez: "Mi ciudad es grande" — a "mi" birtokos még
+# nem volt. Ez ugyanaz a hiba, mint a "there is / there are" a létige előtt,
+# csak a példamondatba bújva.
+_PELDAMONDAT_SZABALY_HU = """
+A PÉLDAMONDATBAN CSAK OLYAN NYELVTAN LEHET, AMIT A GYEREK MÁR TUD.
+A példamondat is tanít, akkor is, ha nem akarod. Ha egy SZÓT tanítasz,
+a mondat körülötte legyen a lehető legegyszerűbb — a fenti sorrendből
+csak az, ami már sorra került.
+  ROSSZ: Schule = iskola. „Ich gehe zur Schule.”
+         (a gyerek még nem tud igét ragozni, és a zur összevonást sem)
+  JÓ:    Schule = iskola. „die Schule”
+Ha nem tudsz olyan mondatot írni, ami csak a már tanultakból áll, akkor
+NE ÍRJ MONDATOT: add meg a szót magában, és lépj tovább. Egy jól megértett
+szó többet ér, mint egy mondat, amiből semmit nem ért."""
+
+_PELDAMONDAT_SZABALY_ES = """
+EN LOS EJEMPLOS SOLO PUEDE APARECER GRAMÁTICA QUE EL NIÑO YA CONOCE.
+El ejemplo también enseña, aunque no lo pretendas. Si enseñas una PALABRA,
+la frase que la rodea debe ser lo más simple posible: solo lo que ya se ha
+visto en el orden de arriba.
+  MAL:  Schule = escuela. «Ich gehe zur Schule.»
+  BIEN: Schule = escuela. «die Schule»
+Si no puedes construir una frase con lo ya aprendido, NO PONGAS FRASE:
+da la palabra sola y sigue adelante."""
+
+
 def _tanitasi_sorrend(topic: dict, *, spanyol: bool) -> str:
     """A tanterv saját tanítási sorrendje, ha megadta.
 
@@ -2882,6 +2916,7 @@ def _tanitasi_sorrend(topic: dict, *, spanyol: bool) -> str:
                 "brevemente y vuelve al punto en el que estáis.")
         if szokincs:
             sorok.append("Vocabulario del tema: " + ", ".join(szokincs))
+        sorok.append(_PELDAMONDAT_SZABALY_ES)
     else:
         sorok.append("\n=== TANÍTÁSI SORREND (a kerettantervből) ===")
         if cel:
@@ -2897,6 +2932,7 @@ def _tanitasi_sorrend(topic: dict, *, spanyol: bool) -> str:
                 "röviden, aztán térj vissza oda, ahol tartotok.")
         if szokincs:
             sorok.append("A témakör szókincse: " + ", ".join(szokincs))
+        sorok.append(_PELDAMONDAT_SZABALY_HU)
     return "\n".join(sorok) + "\n"
 
 
