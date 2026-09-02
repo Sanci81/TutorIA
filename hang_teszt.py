@@ -147,6 +147,15 @@ JELOLO_ESETEK: list[tuple[str, str, str]] = [
      "<VOCAB>körte=pera</VOCAB>.",
      "Ma két új szót tanulunk: manzana és pera.",
      "mondat közepén is a szó marad, nem a jelölés"),
+    ("Az already azt mondja: „már”, a yet pedig: „még”. "
+     "<VOCAB>már=already</VOCAB><VOCAB>még=yet</VOCAB>",
+     "Az already azt mondja: „már”, a yet pedig: „még”.",
+     "a mondat végi ÖSSZEFOGLALÓ szavai összeragadtak: „alreadyyet”. Ha a "
+     "mondat már kimondta őket, a felsorolás felesleges — de a szójegyzékbe "
+     "attól még bekerül"),
+    ("Két új szó jön: <VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB>",
+     "Két új szó jön: manzana, pera",
+     "ha a szavak MÉG NEM hangzottak el, látszaniuk kell — de vesszővel"),
 ]
 
 # Ugyanaz a hiba a SPANYOL oldalon. Ott nincs rag: a "está más cerca de"

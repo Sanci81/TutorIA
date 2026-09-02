@@ -2289,11 +2289,25 @@ def _vocab_valaszlehetosegek(szoveg: str) -> str:
             return blokk
         # CSAK az idegen szó látszik. A magyar megfelelő elárulná a választ.
         szavak = [f.strip() for _, f in parok if f.strip()]
-        return " " + ", ".join(szavak) if szavak else blokk
+        if not szavak:
+            return blokk
+        elotte = szoveg[:m.start()]
+        # ÖSSZEFOGLALÓ: ha a mondat már kimondta mindegyik szót, a felsorolás
+        # csak ismétlés — a szójegyzékbe ettől még bekerül, a képernyőre nem.
+        if all(sz in elotte for sz in szavak):
+            return ""
+        # VÁLASZTÉK vagy új szavak: vesszővel elválasztva, olvashatóan.
+        return " " + ", ".join(szavak)
 
-    # Kérdőjel, majd (esetleg szóközök után) csupa VOCAB jelölő a sor végéig.
+    # EGYMÁS MELLETT ÁLLÓ JELÖLŐK — bárhol, nem csak kérdés után.
+    #
+    # MÁSODIK ÉLES HIBA, a húsz lejátszott óra hozta elő. A tanár a mondat
+    # VÉGÉRE tett egy szójegyzék-összefoglalót:
+    #     ... a yet pedig: „még nem”. <VOCAB>már=already</VOCAB><VOCAB>még=yet</VOCAB>
+    # a gyerek pedig ezt látta a mondat után: „alreadyyet”.
+    # Ugyanez lett „llamarseser”, „finishtidyalready”, „everneverso far”.
     minta = re.compile(
-        r"(?<=\?)\s*((?:\s*<\s*VOCAB\s*>[^<]*<\s*/\s*VOCAB\s*>){2,})",
+        r"((?:\s*<\s*VOCAB\s*>[^<]*<\s*/\s*VOCAB\s*>){2,})",
         re.IGNORECASE)
     return minta.sub(csere, szoveg)
 

@@ -127,23 +127,38 @@ ELLENORZO_LISTA = """
    "majdnem jó"-nak vagy hibásnak minősítette. Az összevont és a teljes alak
    EGYFORMÁN HELYES (isn't = is not, don't = do not). Chatben a kisbetű és a
    hiányzó vessző NEM hiba.
-2. ROSSZ SORREND. Olyan nyelvtani vagy fogalmi elemet tanított, aminek az
-   előfeltételét még nem vette. Például a "there is / there are" a létige
-   (to be) előtt.
+2. ROSSZ SORREND — CSAK NYELVTAN ÉS FOGALOM. Olyan NYELVTANI SZERKEZETET vagy
+   FOGALMAT használt vagy tanított, aminek az előfeltételét még nem vették.
+   Például "there is / there are" a létige előtt, vagy Perfekt akkor, amikor
+   még csak a sein/haben múlt ideje van soron.
+   FIGYELEM: ÚJ SZÓ TANÍTÁSA NEM HIBA. A tantervi lista a nyelvtan sorrendjét
+   adja, nem a megengedett szavak teljes listáját. Ha a tanár a témához illő
+   új szót tanít, az RENDBEN VAN — ne jelezd.
 3. TÉNYBELI HIBA. Bármely tantárgyban: rossz évszám, rossz képlet, rossz
-   fogalom, rossz tudós, rossz mértékegység. Ezt KÜLÖN figyeld: a
-   történelem, fizika, kémia, biológia hibáit senki más nem szűri.
+   fogalom, rossz tudós, rossz mértékegység, rossz fordítás. Ezt KÜLÖN
+   figyeld: a történelem, fizika, kémia, biológia hibáit senki más nem szűri.
 4. ÍGÉRT, DE HIÁNYZÓ DOLOG. "Nézd meg az ábrát", "itt egy kép", "lent
    látod" — de semmi nincs ott.
-5. MEGVÁLASZOLHATATLAN KÉRDÉS. A felkínált válaszok között nincs helyes.
+5. MEGVÁLASZOLHATATLAN KÉRDÉS. Választós kérdést tesz fel, de nincs mihez
+   választani, VAGY egyik felkínált válasz sem helyes.
 6. LERAGADT. Ugyanazt kérdezi újra, vagy csak dicsér és nem halad tovább.
-7. A PÉLDA ÉS A GYAKORLÓ FELADAT UGYANAZ. A gyerek másolhatja a választ.
+   Egy frissen tanult szó VISSZAKÉRDEZÉSE NEM leragadás — az gyakorlás.
+   Csak akkor jelezd, ha HÁROMSZOR is ugyanoda tér vissza előrelépés nélkül.
+7. A KÉRDÉSBEN OTT A VÁLASZ. A gyerek a kérdés szövegéből kimásolhatja a
+   megoldást. FIGYELEM: az alábbi szöveg már úgy szerepel, AHOGY A GYEREK
+   LÁTJA. Ha egy választós kérdésnél csak az idegen szavak látszanak, a
+   magyar megfelelőjük nem — az RENDBEN VAN, az egy rendes feladat.
 8. MAGYARTALAN VAGY IDEGENSZERŰ MONDAT. Rossz ragozás, tükörfordítás,
-   idegen szórend.
+   idegen szórend, hibás toldalék.
 9. ÉLETKORHOZ NEM ILLŐ. Egy hatévesnek túl hosszú, túl elvont, vagy olyan
    szót használ, amit nem érthet.
 10. NYELVET VÁLTOTT. Magyar órán idegen nyelvre váltott, vagy fordítva
     (idegennyelv-órán a célnyelvi rész kivételével).
+11. NEM ANNYI, AMENNYIT MONDOTT. "Most két új szót tanulunk", aztán hármat
+    sorol fel. Vagy "három feladat jön", és kettő jön.
+12. TECHNIKAI SZEMÉT A KÉPERNYŐN. Olyasmi látszik, ami a programnak szólt,
+    nem a gyereknek: <VOCAB>, <FL>, </FL>, <ABRA>, félbehagyott tag,
+    kapcsos zárójel, JSON-részlet. Ez MINDIG hiba, akármilyen apró.
 """
 
 
@@ -278,6 +293,7 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
     )
 
     tortenet: list[dict] = []
+    latott: list[str] = []          # amit a gyerek TÉNYLEG lát
     gyerek_tortenet: list[dict] = []
     gepi: list[str] = []
 
@@ -296,6 +312,14 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
         tortenet.append({"role": "user", "content": gyerek_uzenet})
         tortenet.append({"role": "assistant", "content": tanar_valasz})
         gepi.extend(_gepi_ellenorzes(tanar_valasz))
+        # AMIT A GYEREK LÁT — a jelölők feldolgozása után. Az ellenőrző EZT
+        # kapja, nem a nyerset: az első futásnál a nyers <VOCAB>magyar=idegen</VOCAB>
+        # párokat látva azt hitte, a válasz másolható a kérdésből, holott a
+        # gyerek a magyar megfelelőt sosem látja.
+        try:
+            latott.append(app._parse_chat_markers(tanar_valasz)[0].strip())
+        except Exception:
+            latott.append(tanar_valasz)
 
         gyerek_tortenet.append({"role": "user", "content": tanar_valasz})
         try:
@@ -307,9 +331,18 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
             break
         gyerek_tortenet.append({"role": "assistant", "content": gyerek_uzenet})
 
+    # A NAPLÓBA a nyers megy (hogy lásd a jelölőket is), az ELLENŐRZŐNEK a
+    # megtisztított – az a valóság, amivel a gyerek szembesül.
     beszelgetes = "\n\n".join(
         ("GYEREK: " if m["role"] == "user" else "TANÁR: ") + m["content"]
         for m in tortenet)
+    gyerek_uzenetek = [m["content"] for m in tortenet if m["role"] == "user"]
+    sorok: list[str] = []
+    for i_forduló, gy in enumerate(gyerek_uzenetek):
+        sorok.append("GYEREK: " + gy)
+        if i_forduló < len(latott):
+            sorok.append("TANÁR: " + latott[i_forduló])
+    beszelgetes_latott = "\n\n".join(sorok)
 
     sorrend = temakor.get("nyelvtan") or []
     sorrend_szoveg = ("\nA TANTERV SORRENDJE ehhez a témakörhöz:\n"
@@ -322,7 +355,7 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
         + f". Témakör: {temakor['name']}.{sorrend_szoveg}\n\n"
         f"Keresd meg a TANÁR hibáit ez alapján:\n{ELLENORZO_LISTA}\n"
         "Adj vissza egy json választ ebben az alakban: "
-        "{\"talalatok\": [{\"pont\": <1-10>, "
+        "{\"talalatok\": [{\"pont\": <1-12>, "
         "\"idezet\": \"<a tanár szó szerinti mondata>\", "
         "\"miert\": \"<egy mondat magyarul>\", "
         "\"biztos\": \"biztos\"|\"gyanus\"}]}\n"
@@ -330,7 +363,7 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
         "\"biztos\" mező legyen \"gyanus\", de akkor is add vissza. "
         "Ha tényleg nincs semmi, üres listát adj.\n"
         "Az IDÉZET legyen SZÓ SZERINTI, hogy meg lehessen keresni.\n\n"
-        f"AZ ÓRA:\n{beszelgetes}"
+        f"AZ ÓRA (pontosan úgy, AHOGY A GYEREK LÁTTA):\n{beszelgetes_latott}"
     )
     # AZ ÁTNÉZÉS. Ha ez elbukik, azt HANGOSAN kell mondani: az első futásnál
     # mindhárom óra "0 hiba"-t mutatott, holott az ellenőrző el sem indult.
@@ -604,7 +637,7 @@ def _jelentes(eredmenyek: list[dict], ido: str) -> None:
 
     s.append("\n## Amit az ellenőrző talált\n")
     ures = True
-    for pont in range(1, 11):
+    for pont in range(1, 13):
         sorok = [(e, t) for e in eredmenyek for t in e["talalatok"]
                  if t.get("pont") == pont]
         if not sorok:
