@@ -1,339 +1,321 @@
-# TutorIA – tanári minőség, 2026-09-02 20:21
+# TutorIA – tanári minőség, 2026-09-02 21:26
 
 Lejátszott órák: **20**  
-Gépi találat (számtan, felolvasás — ez NEM vélemény): **0**  
-Az ellenőrző szerint biztos hiba: **47**  
-Az ellenőrző szerint gyanús: **43**
+Gépi találat (számtan, felolvasás — ez NEM vélemény): **1**  
+Az ellenőrző szerint biztos hiba: **54**  
+Az ellenőrző szerint gyanús: **23**
 
 > Az ellenőrző maga is egy AI. Nem talál meg mindent, és néha
 > olyat is megjelöl, ami rendben van. A lista nem ítélet — nézd át.
 > A GÉPI találatok viszont tények, azokat nem kell mérlegelni.
 
 
+## Gépi találatok
+
+- **Technika és tervezés** (7. o.): [számtan] hamis allitas: '10 / 20 = 1' → 0.5
+
 ## Amit az ellenőrző talált
 
 
+### 1. JÓ VÁLASZT KIJAVÍTOTT. A gyerek helyeset mondott, a tanár mégis
+
+- **BIZTOS** — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
+  - A tanár ezt mondta: „Szép, érzed a jelentését! 😊  
+A ser de inkább azt jelenti: „valahonnan való vagy” vagy „onnan származol”.”
+  - Miért baj: A gyerek válasza („Származik.”) a tanított jelentés alapján elfogadható volt, mégis csak részben helyesnek minősítette a tanár.
+
 ### 2. ROSSZ SORREND — CSAK NYELVTAN ÉS FOGALOM. Olyan NYELVTANI SZERKEZETET vagy
 
-- gyanús — Földrajz 7. o., „Tájékozódás a térképen – fokhálózat és méretarány”
-  - A tanár ezt mondta: „A szintvonalas térkép a domborzatot mutatja.”
-  - Miért baj: A megadott témakör a fokhálózat és a méretarány, ehhez képest a tanár új földrajzi fogalmat kezd tanítani előkészítés nélkül.
-- gyanús — Földrajz 7. o., „Tájékozódás a térképen – fokhálózat és méretarány”
-  - A tanár ezt mondta: „A szintvonalak egyenlő magasságú pontokat kötnek össze.”
-  - Miért baj: A tanár a kijelölt témán túl egy új fogalmi anyagot tanít részletesen, ami előfeltétel nélkülinek tűnik ebben az órában.
-- gyanús — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
-  - A tanár ezt mondta: „Most jön a bitte, ez azt jelenti, hogy kérem. Például: Bitte! (Kérem!)”
-  - Miért baj: A megadott témakör és sorrend szerint a sein ige egyes szám 1-2. személye és a köszönés-bemutatkozás rögzült fordulatai vannak soron; a „bitte” nem köszönés vagy bemutatkozás, ezért ez sorrendi kilépés lehet.
-- gyanús — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
-  - A tanár ezt mondta: „Most tanuljuk meg a danke szót, ez azt jelenti, hogy köszönöm. Például: Danke! (Köszönöm!)”
-  - Miért baj: A megadott témakör és sorrend szerint a sein ige 1-2. személye és a köszönés-bemutatkozás rögzült fordulatai vannak soron; a „danke” nem köszönés vagy bemutatkozás, ezért ez sorrendi kilépés lehet.
-- **BIZTOS** — Technika és tervezés 3. o., „Anyagok a környezetünkben”
-  - A tanár ezt mondta: „Most egy fontos párost tanulunk:”
-  - Miért baj: Fogalmi hiba, mert nem párost, hanem három fogalmat sorol fel: nyersanyag, alapanyag, termék.
 - gyanús — Idegen nyelv (angol) 8. o., „Just, already, yet – Ami már megtörtént”
-  - A tanár ezt mondta: „recently azt jelenti: mostanában, nemrég. Például: We have recently moved to a new flat. (Mostanában költöztünk egy új lakásba.) recently”
-  - Miért baj: A tantervi témában csak az already, yet, just és a Present Perfect–Past Simple együtt szerepel, a recently mint új időhatározói fogalom itt sorrenden kívüli nyelvtani bővítésnek tűnik.
-- gyanús — Idegen nyelv (angol) 8. o., „Just, already, yet – Ami már megtörtént”
-  - A tanár ezt mondta: „Most egy új szó jön, ami azt jelenti, hogy valami nemrég történt:
-recently = mostanában, nemrég. Például: I have recently started tennis. (Mostanában elkezdtem teniszezni.) recently”
-  - Miért baj: A recently beemelése nem része a megadott nyelvtani sorrendnek, ezért ez itt sorrendi hibának tűnhet.
-- **BIZTOS** — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
-  - A tanár ezt mondta: „A következő fontos dolog a ser de, ami azt mondja meg, honnan vagy.”
-  - Miért baj: A tantervi sorrend szerint előbb a ser ige ragozása jön, itt viszont a ser szerkezetet már korábban tanítja.
-- **BIZTOS** — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
-  - A tanár ezt mondta: „Most két új dolgot tanulunk.
-A vivir azt jelenti, hogy „lakni, élni valahol”. Például: Vivo en Szeged. (Szegeden lakom.)”
-  - Miért baj: A vivir és a Vivo alak bevezetése nincs benne az adott témához megadott nyelvtani sorrendben, mert a vivir ige ragozásának előfeltételeit még nem vették.
+  - A tanár ezt mondta: „recently azt jelenti, hogy „nemrég” vagy „a közelmúltban”. Akkor használjuk, ha valami mostanában történt. Például: I have recently started a new book. (Nemrég kezdtem egy új könyvet.)”
+  - Miért baj: A tantervi sorrendben ennél a témánál az already, yet, just szerepel, a tanár pedig egy új időhatározói fogalmat és használatát tanította be közéjük.
 - gyanús — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
-  - A tanár ezt mondta: „A el idioma azt jelenti: „nyelv”. Például: El idioma es español. (A nyelv spanyol.)”
-  - Miért baj: Az idioma szóval együtt az es alakot és egy teljes ser szerkezetet használ, miközben a ser ragozása csak később kerül elő a tantervi sorrendben.
-- gyanús — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „Az already azt jelenti, hogy már. Például: I have already finished. (Már befejeztem.)”
-  - Miért baj: Az already használata nincs benne a megadott tantervi sorrendben ennél a témánál, a tanár mégis új nyelvtani elemmel bővítette az anyagot.
-- gyanús — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „Most jön még három fontos szó:
-ever = valaha. Például: Have you ever been to London? (Voltál valaha London-ban?)
-never = soha. Például: I have never tried sushi. (Soha nem kóstoltam susit.)
-so far = eddig, idáig. Például: I have done three exercises so far. (Eddig három feladatot csináltam meg.)”
-  - Miért baj: A so far használata nincs benne a megadott tantervi sorrendben, mégis a nyelvtani témához tanította.
-- gyanús — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „Most jön még három fontos szó:
-experience = élmény, tapasztalat. Például: It was a new experience for me. (Új élmény volt nekem.)
-achieve = elér, megvalósít, sikerül valamit elérni. Például: I achieved my goal. (Elértem a célomat.)
-so far = eddig. Például: I have done two pages so far. (Eddig két oldalt csináltam meg.)”
-  - Miért baj: A so far használata továbbra is a megadott tantervi sorrenden kívüli elem ennél a témánál.
-- gyanús — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „Látod? A have + past participle szerkezettel azt mondjuk, hogy valami már megtörtént. Az already azt erősíti, hogy ez már megvan, kész van.”
-  - Miért baj: Az already mint plusz nyelvtani jelentésárnyalat nincs benne a megadott tantervi sorrendben, mégis külön magyarázta.
+  - A tanár ezt mondta: „Most jön a ser de. Ez azt jelenti, hogy „valahonnan származik valaki”.”
+  - Miért baj: A tantervben a ser ige ragozása és a kérdőszavak után jönnek csak a további szerkezetek, a „ser de” mint külön nyelvtani fordulat itt előfeltétel nélkül jelenik meg.
+- **BIZTOS** — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
+  - A tanár ezt mondta: „Például: Mi ciudad es grande. (Az én városom nagy.)”
+  - Miért baj: A „mi” birtokos névelő használata olyan nyelvtani elem, ami nincs benne az adott tantervi sorrendben, ezért előfeltétel nélküli új nyelvtan.
+- **BIZTOS** — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
+  - A tanár ezt mondta: „Hungría es mi país. (Magyarország az én országom.)”
+  - Miért baj: A mondatban a „mi” birtokos szerkezet szerepel, amit a megadott tantervi sorrend még nem vezetett be.
+- **BIZTOS** — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
+  - A tanár ezt mondta: „El español es un idioma. (A spanyol egy nyelv.)”
+  - Miért baj: Az „un” határozatlan névelő használata nincs benne az adott tantervi sorrendben, ezért itt előrehozott nyelvtani elem.
 - **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
-  - A tanár ezt mondta: „Például: Die Schule ist groß. (Az iskola nagy.)”
-  - Miért baj: A tanterv szerint itt még csak a haben ige és a szabályos igék jelen idejű E/1, E/2 alakjai következnek, a sein/létige használata előfeltétel nélkül jelenik meg.
+  - A tanár ezt mondta: „A mai új szavunk: Schule = iskola. Például: Ich gehe zur Schule. (Iskolába megyek.)”
+  - Miért baj: Az 'ich gehe' alak a szabályos ige jelen idejét használja E/1-ben, miközben a tanterv szerint előbb csak a haben ige van soron.
 - **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
-  - A tanár ezt mondta: „Például: Der Lehrer ist nett. (A tanár kedves.)”
-  - Miért baj: A mondat a sein igét használja, pedig a megadott sorrend alapján ezt még nem vették.
-- gyanús — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
-  - A tanár ezt mondta: „Ein mondatban: Ich mag den Lehrer. (Szeretem a tanárt.)”
-  - Miért baj: A mag ige és a tárgyesetű den olyan nyelvtani elemek, amelyeknek nincs meg az előfeltétele a megadott tantervi sorrendben.
+  - A tanár ezt mondta: „Még egyszer: Schule bedeutet iskola. In der Schule lerne ich. (Az iskolában tanulok.)”
+  - Miért baj: A 'bedeutet' és a 'lerne' olyan jelen idejű igealakok, amelyek megelőzik a tantervben megadott sorrendet.
 - **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
-  - A tanár ezt mondta: „Például: Das Klassenzimmer ist hell. (A tanterem világos.)”
-  - Miért baj: Itt is a sein ige szerepel, pedig a tantervi sorrend szerint ez még nincs soron.
+  - A tanár ezt mondta: „Most jön az új szavunk: Lehrer = tanár. Például: Der Lehrer ist nett. (A tanár kedves.) Még egy mondat: Ich sehe den Lehrer in der Schule. (Látom a tanárt az iskolában.)”
+  - Miért baj: A 'ist' létige és a 'sehe' igealak olyan nyelvtani elemek, amelyek nincsenek benne az eddig megadott tantervi lépésekben.
 - **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
-  - A tanár ezt mondta: „Például: Die Stunde ist lang. (Az óra hosszú.)”
-  - Miért baj: A tanár a sein igét használja a példa mondatban, holott a megadott tananyagban ez még nem előfeltételezett szerkezet.
+  - A tanár ezt mondta: „Most jön az új szavunk: Klassenzimmer = tanterem. Például: Im Klassenzimmer lernen wir. (A tanteremben tanulunk.) Még egy mondat: Das Klassenzimmer ist groß. (A tanterem nagy.)”
+  - Miért baj: A 'lernen wir' többes számú igeragozás, az 'ist' pedig olyan nyelvtan, amit a megadott sorrend még nem vezetett be.
 - **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
-  - A tanár ezt mondta: „Például: Die Pause ist kurz. (A szünet rövid.)”
-  - Miért baj: Ez a példa is a sein igét használja a tantervben megadott sorrendet megelőzve.
+  - A tanár ezt mondta: „Most jön az új szavunk: Stunde = óra. Például: Die erste Stunde ist Mathe. (Az első óra matematika.) Még egy mondat: Wir haben eine Stunde im Klassenzimmer. (Van egy óránk a tanteremben.)”
+  - Miért baj: Az 'ist' és a 'wir haben' alakok túlmutatnak azon, hogy csak a haben ige E/1 és E/2, majd szabályos igék E/1 és E/2 szerepeljenek.
+- **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „Most jön az új szavunk: Pause = szünet. Például: In der Pause spielen wir. (A szünetben játszunk.) Még egy mondat: Die Pause ist kurz. (A szünet rövid.)”
+  - Miért baj: A 'spielen wir' többes számú ragozás és az 'ist' használata megelőzi a megadott nyelvtani sorrendet.
+- **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „Most jön az új szavunk: Mathe = matek. Például: Ich habe Mathe. (Matekom van.) Még egy mondat: Mathe ist mein Lieblingsfach. (A matek a kedvenc tantárgyam.)”
+  - Miért baj: Az 'ist' létige használata nincs benne a megadott, eddig tanított nyelvtani sorrendben.
 
 ### 3. TÉNYBELI HIBA. Bármely tantárgyban: rossz évszám, rossz képlet, rossz
 
-- gyanús — Ének-zene 4. o., „Zeneművek/Énekes anyag”
-  - A tanár ezt mondta: „Van egy fontos zenei fogalom is: tempo giusto. Ez azt jelenti, hogy a dalt az eredeti, egyenletes, “illő” tempójában énekeljük.”
-  - Miért baj: A tempo giusto nem általában az "eredeti, egyenletes, illő" tempót jelenti, hanem inkább a darab vagy tánctípus jellegének megfelelő, helyes természetes tempót, így a magyarázat pontatlan.
-- **BIZTOS** — Ének-zene 4. o., „Zeneművek/Énekes anyag”
-  - A tanár ezt mondta: „Nagyon jó, Anna! 😊 Pontosan, az életképes dalok a mindennapi életről szólnak.”
-  - Miért baj: Az "életképes dalok" téves kifejezés, itt helyesen "életképeket bemutató dalok" vagy hasonló megfogalmazás lenne; az "életképes" mást jelent magyarul.
+- **BIZTOS** — Földrajz 7. o., „Tájékozódás a térképen – fokhálózat és méretarány”
+  - A tanár ezt mondta: „Az aránymérték azt segíti megérteni, hogy a térképen látható dolgok mennyire vannak kicsinyítve.”
+  - Miért baj: Az „aránymérték” nem helyes földrajzi szakkifejezés ebben az értelemben; itt a méretarány a helyes fogalom.
+- gyanús — Földrajz 7. o., „Tájékozódás a térképen – fokhálózat és méretarány”
+  - A tanár ezt mondta: „A szélességi körök vízszintesek, a hosszúsági körök függőlegesek.”
+  - Miért baj: Ez így leegyszerűsítve pontatlan, mert a térképvetülettől függően nem általánosan igaz minden térképre.
+- **BIZTOS** — Földrajz 7. o., „Tájékozódás a térképen – fokhálózat és méretarány”
+  - A tanár ezt mondta: „Most nézzük meg az aránymértéket is. Ez azt mutatja meg, mennyivel kisebb a térképen látható dolog a valóságnál.”
+  - Miért baj: Itt is hibás vagy nem szakszerű fogalmat használ, mert a térképen ezt a méretarány fejezi ki, nem az „aránymérték”.
 - gyanús — Technika és tervezés 3. o., „Anyagok a környezetünkben”
-  - A tanár ezt mondta: „A mesterséges anyagokat az ember készíti. Ilyen a műanyag vagy az üveg.”
-  - Miért baj: Ténybeli hiba, mert az üveg ebben az iskolai felosztásban nem mesterséges anyagként szokott szerepelni, hanem természetes eredetű ásványi alapanyagokból készülő anyagként a besorolás így félrevezető.
+  - A tanár ezt mondta: „Ilyen például a műanyag vagy az üveg.”
+  - Miért baj: Az üveg ebben a felosztásban nem általában mesterséges anyagként tanítandó, mert természetes formában is létezik, ezért ez így pontatlan leegyszerűsítés.
+- **BIZTOS** — Technika és tervezés 3. o., „Anyagok a környezetünkben”
+  - A tanár ezt mondta: „A gumilabda játék lehet, és a gumi általában mesterséges anyagként szerepel ebben a tananyagban. 😊”
+  - Miért baj: A gumi lehet természetes is (kaucsukból), ezért a gumi egyszerűen mesterségesnek minősítése tényszerűen pontatlan.
+- **BIZTOS** — Technika és tervezés 3. o., „Anyagok a környezetünkben”
+  - A tanár ezt mondta: „Vannak mesterséges anyagok, mint a műanyag, az üveg és sokféle papírtermék.”
+  - Miért baj: A papírtermék nem anyag, hanem késztermék, ezért az anyagok közé sorolása fogalmi hiba.
+- gyanús — Technika és tervezés 7. o., „Mechanikai hajtások, mechanizmusok”
+  - A tanár ezt mondta: „Az áttételt egyszerűen így számoljuk:
+áttétel = a hajtókerék fogszáma / a hajtott kerék fogszáma”
+  - Miért baj: Ez így leegyszerűsítve és általánosan állítva pontatlan, mert az áttétel definíciója többféleképpen adható meg, és nem minden esetben így számolják.
+- gyanús — Technika és tervezés 7. o., „Mechanikai hajtások, mechanizmusok”
+  - A tanár ezt mondta: „Például ha a hajtókeréken 10 fog van, a hajtott keréken pedig 20, akkor az áttétel 10 / 20 = 1/2. Ez azt jelenti, hogy a hajtott kerék lassabban forog.”
+  - Miért baj: Az áttétel értelmezése itt bizonytalanul van tanítva, mert sok tananyagban épp fordítva definiálják az áttételt, ezért ez ténybelileg félrevezető lehet.
 - **BIZTOS** — Testnevelés 7. o., „Gimnasztika és rendgyakorlatok – prevenció, relaxáció”
-  - A tanár ezt mondta: „Ez a kettő együtt nagyon hasznos, mert az egyik nyújt, a másik átmozgat.”
-  - Miért baj: Ténybelileg pontatlan, mert a statikus és dinamikus gyakorlat közti különbség nem az, hogy az egyik nyújt, a másik átmozgat; mindkettő lehet nyújtó vagy átmozgató jellegű is.
-- **BIZTOS** — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
-  - A tanár ezt mondta: „él / ella es – ő van”
-  - Miért baj: A spanyol ser ige él/ella es alakja ebben a témában azt jelenti, hogy „ő”, nem pedig „ő van”.
-- **BIZTOS** — Technika és tervezés 6. o., „Fém”
-  - A tanár ezt mondta: „- Az ötvözet több fém keveréke. Például: az acél is egy fontos ötvözet.”
-  - Miért baj: Ténybeli hiba, mert az ötvözet nem csak több fém keveréke lehet, hanem fém és más elem keveréke is; az acél például vas és szén ötvözete.
-- gyanús — Digitális kultúra 4. o., „Keresés az interneten”
-  - A tanár ezt mondta: „Ha túl sok szót írsz be, a keresés néha kevesebb, de pontatlanabb találatot adhat.”
-  - Miért baj: Ez így általános állításként félrevezető, mert a több, pontosító szó általában szűkíti és pontosítja a találatokat, nem pedig pontatlanabbá teszi őket.
+  - A tanár ezt mondta: „A bemutatás azt jelenti, hogy valaki megmutatja a gyakorlatot. A bemutattatás azt jelenti, hogy te is megpróbálod ugyanúgy végrehajtani.”
+  - Miért baj: A "bemutattatás" nem ezt jelenti: pedagógiai értelemben inkább azt, hogy a tanár bemutattat valakivel egy gyakorlatot, nem pedig egyszerűen azt, hogy a tanuló lemásolja.
+- gyanús — Testnevelés 7. o., „Gimnasztika és rendgyakorlatok – prevenció, relaxáció”
+  - A tanár ezt mondta: „Most figyelj erre is: a bemelegítés után fontos a nyújtás.”
+  - Miért baj: Ez így általános igazságként félrevezető, mert a nyújtás nem minden esetben a bemelegítés után következik; prevenciós szempontból a helye és módja mozgásformától függ.
+- gyanús — Technika és tervezés 6. o., „Fém”
+  - A tanár ezt mondta: „Például az acél is ilyen anyag. Azért jó, mert erősebb lehet, mint a sima vas.”
+  - Miért baj: Ténybelileg pontatlan, mert az acél nem több fém keveréke, hanem vas és szén ötvözete, tehát itt az "ötvözet" magyarázata félrevezető.
+
+### 4. ÍGÉRT, DE HIÁNYZÓ DOLOG. "Nézd meg az ábrát", "itt egy kép", "lent
+
+- **BIZTOS** — Földrajz 7. o., „Tájékozódás a térképen – fokhálózat és méretarány”
+  - A tanár ezt mondta: „Most nézd meg a rajzot: bal oldalt a fokhálózatot, alul pedig egy egyszerű méretarányt látsz.”
+  - Miért baj: A tanár rajzra hivatkozik, de a gyerek által látott szövegben nincs ilyen ábra vagy rajz.
 
 ### 5. MEGVÁLASZOLHATATLAN KÉRDÉS. Választós kérdést tesz fel, de nincs mihez
 
-- gyanús — Földrajz 7. o., „Tájékozódás a térképen – fokhálózat és méretarány”
-  - A tanár ezt mondta: „Most egy rövid gyakorló kérdés: melyik segít a térképen a távolság kiszámításában?”
-  - Miért baj: A kérdés "melyik" formájú, de nem ad hozzá válaszlehetőségeket, így választósnak hat, mégsem lehet mi közül választani.
-- gyanús — Digitális kultúra 5. o., „Mi az algoritmus? Lépések és sorrend”
-  - A tanár ezt mondta: „Most te jössz: melyik fontosabb, hogy a lépések jó sorrendben legyenek, vagy hogy teljesen összevissza álljanak?”
-  - Miért baj: A kérdés erősen sugallja a helyes választ, így valójában nem valódi választási helyzetet ad.
+- **BIZTOS** — Technika és tervezés 7. o., „Mechanikai hajtások, mechanizmusok”
+  - A tanár ezt mondta: „Most egy rövid kérdés: melyik mechanizmusban kapcsolódik össze a forgás és az egyenes vonalú mozgás?”
+  - Miért baj: A kérdés így több helyes választ is enged, ezért egyértelműen nem egyetlen megoldású feladat.
+- **BIZTOS** — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
+  - A tanár ezt mondta: „Most te jössz: melyik kérdés kezdődik így: Have you ever…?  
+ever”
+  - Miért baj: A tanár kérdést tesz fel, de nincs hozzá valódi választási lehetőség vagy értelmesen megadható opció.
+- **BIZTOS** — Etika 5. o., „Éntudat – Önismeret”
+  - A tanár ezt mondta: „Most mondd meg: melyik szó jelent olyan hatást, ami segít neked, és jól befolyásol?”
+  - Miért baj: A kérdés azt mondja, hogy „melyik szó”, de nem ad meg választható lehetőségeket, így választószerűen megválaszolhatatlan.
 
 ### 6. LERAGADT. Ugyanazt kérdezi újra, vagy csak dicsér és nem halad tovább.
 
-- **BIZTOS** — Digitális kultúra 6. o., „Szöveg bevitele, javítása, mentése”
-  - A tanár ezt mondta: „Most te jössz: melyik művelettel tudsz egy elmentett szöveget újra elővenni? 😊”
-  - Miért baj: A megnyitásra már korábban kétszer is rákérdezett, így ez ugyanannak a tudásnak a harmadik visszakérdezése előrelépés nélkül.
-- gyanús — Földrajz 7. o., „Tájékozódás a térképen – fokhálózat és méretarány”
-  - A tanár ezt mondta: „Most egy rövid gyakorló kérdés: melyik segít a térképen a távolság kiszámításában?”
-  - Miért baj: A tanár többször ugyanarra a már többször megválaszolt méretarány-fogalomra kérdez vissza előrelépés nélkül.
 - gyanús — Digitális kultúra 5. o., „Mi az algoritmus? Lépések és sorrend”
-  - A tanár ezt mondta: „A bemenet az, ami bekerül a feladatba.
-Ez lehet egy szám, egy szó vagy egy utasítás.
-Például amikor azt mondom: „Rajzolj egy kört!”, ez az utasítás a bemenet.
+  - A tanár ezt mondta: „Most nézzünk még két fontos dolgot.”
+  - Miért baj: A tanár többször visszatér ugyanazokhoz a már elmagyarázott fogalmakhoz (bemenet, kimenet, algoritmus leírása) kevés előrelépéssel, ezért ez leragadás gyanúja.
+- **BIZTOS** — Digitális kultúra 5. o., „Mi az algoritmus? Lépések és sorrend”
+  - A tanár ezt mondta: „Most egy új dolgot tanulunk: az algoritmus leírását.”
+  - Miért baj: Az algoritmus leírását korábban már elmagyarázta, ezért ez ugyanannak a témának újraindítása előrelépés nélkül.
+- **BIZTOS** — Digitális kultúra 5. o., „Mi az algoritmus? Lépések és sorrend”
+  - A tanár ezt mondta: „Most nézzünk két új fogalmat.”
+  - Miért baj: A tanár itt újként vezeti be a bemenet és kimenet fogalmát, pedig ezeket már többször tanította korábban, így ez leragadás.
+- **BIZTOS** — Vizuális kultúra 4. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
+  - A tanár ezt mondta: „Most nézzünk meg még két fontos szót.
 
-A kimenet az, ami a végén elkészül.
-Ez az eredmény.
-Például ha követed az utasítást, a rajzod lesz a kimenet.”
-  - Miért baj: A tanár a bemenet és kimenet fogalmát többször, nagyon hasonló módon magyarázza újra előrelépés nélkül.
-- gyanús — Vizuális kultúra 5. o., „Vizuális művészeti jelenségek – Alkotások, stílusok”
-  - A tanár ezt mondta: „Most te jössz! Szerinted az, hogy „a képen két fa van”, objektív vagy szubjektív állítás? 😊”
-  - Miért baj: Később többször is ugyanazt az objektív–szubjektív megkülönböztetést kérdezi vissza érdemi továbblépés nélkül, így ez leragadásnak tűnik.
-- gyanús — Vizuális kultúra 5. o., „Vizuális művészeti jelenségek – Alkotások, stílusok”
-  - A tanár ezt mondta: „Most te jössz: a „szerintem ez szép” inkább tény vagy vélemény? 😊”
-  - Miért baj: Az óra korábbi részében már többször ugyanazt a tény/vélemény illetve objektív/szubjektív különbséget gyakoroltatja, ami előrelépés nélküli ismétlésnek tűnik.
-- **BIZTOS** — Vizuális kultúra 5. o., „Vizuális művészeti jelenségek – Alkotások, stílusok”
-  - A tanár ezt mondta: „Mondd meg, hogy ezek közül melyik objektív, és melyik szubjektív:”
-  - Miért baj: Harmadszor tér vissza ugyanarra az objektív–szubjektív felismerésre lényegi új elem nélkül, ezért ez már leragadás.
-- **BIZTOS** — Vizuális kultúra 5. o., „Vizuális művészeti jelenségek – Alkotások, stílusok”
-  - A tanár ezt mondta: „Még egy kicsit gyakoroljunk: ha azt mondom, „a képen négy piros virág van”, az objektív vagy szubjektív?”
-  - Miért baj: Ugyanazt az objektív–szubjektív felismerést kérdezi vissza újra, ami a többszöri ismétlés miatt leragadásnak számít.
-- gyanús — Természettudomány 6. o., „Az állatok testfelépítése”
-  - A tanár ezt mondta: „Most te jössz: a kutya gerinces vagy gerinctelen?”
-  - Miért baj: A tanár később többször is ugyanahhoz a gerinces–gerinctelen megkülönböztetéshez tér vissza nagyon hasonló, egyszerű kérdésekkel, előrelépés nélkül.
-- gyanús — Természettudomány 6. o., „Az állatok testfelépítése”
-  - A tanár ezt mondta: „Most figyelj: a pók gerinces vagy gerinctelen?”
-  - Miért baj: Ez ismét ugyanannak a frissen már többször gyakorolt kategóriának a visszakérdezése, és később újra ugyanez a mintázat folytatódik.
-- gyanús — Természettudomány 6. o., „Az állatok testfelépítése”
-  - A tanár ezt mondta: „Most egy kérdés: a farkas növényevő, ragadozó vagy mindenevő?”
-  - Miért baj: A tanár a táplálkozási csoportokat már korábban ugyanilyen egyszerű formában visszakérdezte, ezért ez leragadásgyanús ismétlés.
-- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
-  - A tanár ezt mondta: „A figurális alkotás olyan kép vagy tárgy, amelyen felismerhető valami valóságos dolog, például ember, állat vagy ház.”
-  - Miért baj: A tanár később újra visszatér ugyanennek a fogalomnak a magyarázatára előrelépés nélkül, így ez leragadásnak tűnik.
-- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
-  - A tanár ezt mondta: „A figurális alkotásban felismerhető valami valóságos dolog, például ember vagy ház.”
-  - Miért baj: Ez a figurális alkotás ismétlése, amelyet a tanár már korábban ugyanígy elmagyarázott, valódi továbblépés nélkül.
-- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
-  - A tanár ezt mondta: „A képmező azt jelenti, hogy a rajzod teljes felülete, amin a történet megjelenik.”
-  - Miért baj: A képmező fogalmát a tanár később ismét ugyanúgy elmagyarázza, ami ismétlés előrelépés nélkül.
-- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
-  - A tanár ezt mondta: „A képmező a rajz teljes helye.”
-  - Miért baj: Ez a képmező újabb magyarázata, pedig a fogalmat már korábban megtanította a tanár.
-- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
-  - A tanár ezt mondta: „A kompozíció azt mutatja meg, hogyan rendezed el a képen a dolgokat.”
-  - Miért baj: A kompozíció fogalmát a tanár később ismét ugyanígy elmagyarázza, ami leragadásgyanús.
-- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
-  - A tanár ezt mondta: „A kompozíció azt mutatja meg, hogyan rendezed el a dolgokat a képen.”
-  - Miért baj: Ez a kompozíció fogalmának ismétlése, amit a tanár már korábban elmagyarázott.
-- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
-  - A tanár ezt mondta: „A hangulat azt mutatja meg, milyen érzést kelt a kép.”
-  - Miért baj: A hangulat fogalmát a tanár később újra tanítja nagyon hasonló módon, ami előrelépés nélküli ismétlés lehet.
-- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
-  - A tanár ezt mondta: „A hangulat megmutatja, milyen érzésű a kép.”
-  - Miért baj: Ez a hangulat fogalmának ismétlése, amelyet a tanár már korábban bemutatott.
+A kollázs többféle darabból összeállított kép. Lehet benne rajz, színes papír, újságdarab vagy más anyag.  
+Például: egy kastélyt készítesz piros papírból, a felhőket pedig vattából.
+
+A portré egy ember arcképe. Ilyenkor az arc, a haj, a szem és a mimika is fontos.  
+Például: ha egy mesehőst rajzolsz, a szemével és a szájával is megmutathatod, hogy vidám vagy komoly.
+
+A hangulat megmutatja, milyen érzésű a kép. Lehet nyugodt, vidám, titokzatos vagy szomorú.”
+  - Miért baj: A tanár azt mondja, hogy még két fontos szót néznek meg, de valójában hármat sorol fel: kollázs, portré, hangulat.
+- **BIZTOS** — Technika és tervezés 6. o., „Fém”
+  - A tanár ezt mondta: „Most te jössz: melyik szerszámmal lehet a fémet hajlítani?”
+  - Miért baj: A tanár rövid időn belül harmadszor tér vissza ugyanarra a kérdésre (a fém hajlítása és a fogó), előrelépés nélkül.
 - gyanús — Digitális kultúra 4. o., „Keresés az interneten”
-  - A tanár ezt mondta: „Most te jössz: melyik ad pontosabb keresést, a „macska” vagy a „macska etetése kölyökkorban”?”
-  - Miért baj: A tanár több egymást követő alkalommal ugyanazt a mintájú kérdést teszi fel különböző szavakkal, érdemi előrelépés nélkül.
-- gyanús — Etika 5. o., „Éntudat – Önismeret”
-  - A tanár ezt mondta: „Most te jössz: melyik szó jelent azt, hogy nem adod fel rögtön?”
-  - Miért baj: A tanár rövid időn belül újra ugyanarra a fogalomra kérdez rá, majd később ismét ugyanezt gyakoroltatja továbblépés nélkül.
-- gyanús — Etika 5. o., „Éntudat – Önismeret”
-  - A tanár ezt mondta: „Most te jössz: melyik a helyes, ha azt mondom, hogy „többször is gyakorlok, amíg jobb nem leszek” — kitartás vagy segítségkérés?”
-  - Miért baj: Ez már megint ugyanarra a frissen tárgyalt kitartás fogalomra kérdez vissza, és összességében háromszor tér vissza ugyanoda érdemi előrelépés nélkül.
+  - A tanár ezt mondta: „Most te jössz: melyik az, amivel pontosan egy weboldalt nyitunk meg, a kulcsszó vagy az URL?”
+  - Miért baj: A tanár később lényegében ugyanezt a kérdést újra felteszi ellenőrző kérdésként, így visszatér ugyanoda előrelépés nélkül.
+- gyanús — Digitális kultúra 4. o., „Keresés az interneten”
+  - A tanár ezt mondta: „Most egy kis ellenőrző kérdés:
+Ha egy konkrét oldal címét akarod megnyitni, melyik kell hozzá: a kulcsszó vagy az URL?”
+  - Miért baj: Ez lényegében ugyanaz a kérdés, mint amit korábban már feltett és a gyerek helyesen megválaszolt, ezért leragadás gyanúja merül fel.
 
 ### 7. A KÉRDÉSBEN OTT A VÁLASZ. A gyerek a kérdés szövegéből kimásolhatja a
 
-- **BIZTOS** — Digitális kultúra 5. o., „Mi az algoritmus? Lépések és sorrend”
-  - A tanár ezt mondta: „Most te jössz: melyik fontosabb, hogy a lépések jó sorrendben legyenek, vagy hogy teljesen összevissza álljanak?”
-  - Miért baj: A kérdésben gyakorlatilag benne van a válasz, mert az egyik lehetőség nyilvánvalóan helyes, a másik pedig abszurd.
-- **BIZTOS** — Természettudomány 6. o., „Az állatok testfelépítése”
-  - A tanár ezt mondta: „Most egy könnyű kérdés: a nyúl növényevő, ragadozó vagy mindenevő?”
-  - Miért baj: Közvetlenül előtte ugyanebben a felsorolásban elhangzik, hogy „a nyúl növényevő”, így a válasz kimásolható a kérdés előtti szövegből.
-- **BIZTOS** — Természettudomány 6. o., „Az állatok testfelépítése”
-  - A tanár ezt mondta: „Most figyelj: a pók gerinces vagy gerinctelen?”
-  - Miért baj: Közvetlenül előtte a tanár kimondja, hogy „a pók gerinctelen”, ezért a válasz benne van a kérdést megelőző szövegben.
-- **BIZTOS** — Természettudomány 6. o., „Az állatok testfelépítése”
-  - A tanár ezt mondta: „Most te jössz: a róka háziállat vagy vadon élő állat?”
-  - Miért baj: Közvetlenül előtte szerepel példaként, hogy „a róka vadon élő állat”, így a megoldás a kérdés előtti szövegből kiolvasható.
-- **BIZTOS** — Természettudomány 6. o., „Az állatok testfelépítése”
-  - A tanár ezt mondta: „Most egy kérdés: a farkas növényevő, ragadozó vagy mindenevő?”
-  - Miért baj: Közvetlenül előtte a tanár azt mondja, hogy „a farkas ragadozó”, tehát a válasz eleve benne van a kérdés előtti szövegben.
-- **BIZTOS** — Természettudomány 6. o., „Az állatok testfelépítése”
-  - A tanár ezt mondta: „Most egy kicsit nehezebb kérdés jön: a csiga gerinces vagy gerinctelen?”
-  - Miért baj: Korábban a tanár már szó szerint elmondta, hogy „a csiga gerinctelen”, ezért a válasz a korábbi tanári szövegből egyszerűen kimásolható.
-- gyanús — Technika és tervezés 7. o., „Mechanikai hajtások, mechanizmusok”
-  - A tanár ezt mondta: „Például: ha egy szerkezetben a forgó mozgásból oda-vissza mozgás lesz, melyik mechanizmusra gondolunk?”
-  - Miért baj: A kérdésben benne van a korábban szó szerint tanított meghatározás, így a gyerek könnyen kimásolhatja a választ az előző magyarázatból.
-- **BIZTOS** — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „Most te jössz: melyik szó jelenti azt, hogy „már”? 😊
-
-already”
-  - Miért baj: A kérdésben gyakorlatilag ott van a válasz, mert a gyerek közvetlenül alatta egyetlen lehetőségként látja az „already” szót.
-- **BIZTOS** — Technika és tervezés 6. o., „Fém”
-  - A tanár ezt mondta: „Most te jössz! Melyik fém könnyű: a réz vagy az aluminium? 🙂”
-  - Miért baj: A kérdés előtt közvetlenül elhangzott szó szerint, hogy „A aluminium könnyű fém”, ezért a válasz a kérdés szövegkörnyezetéből egyszerűen kimásolható.
-- **BIZTOS** — Technika és tervezés 6. o., „Fém”
-  - A tanár ezt mondta: „Most te jössz! Melyik fém vonzza a mágnest: a vas vagy a réz? 🙂”
-  - Miért baj: A kérdés előtt közvetlenül szerepelt, hogy „a vasat a mágnes megfoghatja”, így a válasz benne van az előzményben.
-- **BIZTOS** — Technika és tervezés 6. o., „Fém”
-  - A tanár ezt mondta: „Most te jössz! Mivel lehet védeni a fémet a korrózió ellen: védőbevonattal vagy vízzel? 🙂”
-  - Miért baj: A tanár közvetlenül előtte elmondta, hogy „A védőbevonat megóvja a fémet”, ezért a válasz egyértelműen benne van a kérdés előzményében.
-- gyanús — Technika és tervezés 6. o., „Fém”
-  - A tanár ezt mondta: „Most te jössz! Az acél inkább fém vagy papír? 🙂”
-  - Miért baj: A kérdés előtti magyarázatból közvetlenül következik, hogy az acél a fémekről szóló részhez tartozik, így a válasz gyakorlatilag benne van a kérdésben.
-- **BIZTOS** — Technika és tervezés 6. o., „Fém”
-  - A tanár ezt mondta: „Most te jössz! Mivel rögzítünk két részt, ha csavarral dolgozunk? 🙂”
-  - Miért baj: A kérdés maga tartalmazza a választ, mert benne van, hogy „ha csavarral dolgozunk”, tehát csavarral rögzítünk.
+- **BIZTOS** — Etika 8. o., „Éntudat – Önismeret”
+  - A tanár ezt mondta: „Most te jössz: szerinted mi segít jobban a jóllétedben, a pihenés vagy a túl sok tanulás?”
+  - Miért baj: A kérdésben benne van a helyes válasz sugallata, mert a „túl sok tanulás” eleve negatívan van megfogalmazva.
+- **BIZTOS** — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Most te jössz: hogyan mondod németül, hogy „szia”?  
+hallo”
+  - Miért baj: A kérdésben közvetlenül ott van a megoldás, így a gyerek egyszerűen kimásolhatja a választ.
+- **BIZTOS** — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Wie sagt man auf Deutsch „viszlát“?  
+tschüss”
+  - Miért baj: A kérdés alatt ott szerepel a helyes válasz, ezért a megoldás kimásolható.
+- **BIZTOS** — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Wie sagt man auf Deutsch „jó reggelt“?  
+guten Morgen”
+  - Miért baj: A helyes válasz látható a kérdésben, ezért ez válaszmásolható feladat.
+- **BIZTOS** — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Wie sagt man auf Deutsch „jó napot“?  
+guten Tag”
+  - Miért baj: A gyerek a kérdés szövegéből ki tudja másolni a helyes választ.
+- **BIZTOS** — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Wie sagt man auf Deutsch „kérem“?  
+bitte”
+  - Miért baj: A helyes megoldás a kérdés alatt szerepel, így nem kell önállóan felidézni.
+- **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „Mit jelent a Schule? 
+Schule”
+  - Miért baj: A kérdés alatt ugyanaz a szó ott áll, így a gyerek a kérdés szövegéből egyszerűen kimásolhatja a választ.
+- **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „Hogyan mondjuk németül azt, hogy tanár?  
+Lehrer”
+  - Miért baj: A megoldás szó szerint ott van a kérdés alatt, ezért a válasz kimásolható.
+- **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „Mit jelent a Klassenzimmer?  
+Klassenzimmer”
+  - Miért baj: A kérdés alatt szerepel ugyanaz a szó, így a feladat megoldása kimásolható.
+- **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „Mit jelent a Stunde?  
+Stunde”
+  - Miért baj: A megoldandó szó a kérdés alatt változtatás nélkül megjelenik, ezért a válasz kimásolható.
+- **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „Mit jelent a Pause?  
+Pause”
+  - Miért baj: A kérdés alatt ugyanaz a szó látszik, ezért a gyerek a választ egyszerűen kimásolhatja.
+- **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „Mit jelent a Mathe?  
+Mathe”
+  - Miért baj: A kérdés alatt ott van a megoldandó szó, ezért a válasz a kérdésből kimásolható.
 
 ### 8. MAGYARTALAN VAGY IDEGENSZERŰ MONDAT. Rossz ragozás, tükörfordítás,
 
+- gyanús — Digitális kultúra 6. o., „Szöveg bevitele, javítása, mentése”
+  - A tanár ezt mondta: „Ha pedig a szó rossz helyen van, áthelyezheted máshová.”
+  - Miért baj: A „máshová áthelyezheted” szókapcsolat magyartalanul hat, természetesebben az lenne, hogy „máshová teheted” vagy „áthelyezheted”.
+- gyanús — Digitális kultúra 6. o., „Szöveg bevitele, javítása, mentése”
+  - A tanár ezt mondta: „GYEREK: Elmentem? Akkor nem vesztem el.”
+  - Miért baj: A tanár által adott mintából ez a gyerekválasz magyartalan, helyesen inkább „Elmentem? Akkor nem veszítem el.” lenne.
 - **BIZTOS** — Ének-zene 4. o., „Zeneművek/Énekes anyag”
-  - A tanár ezt mondta: „Nagyon jó, Anna! 😊 Pontosan, az életképes dalok a mindennapi életről szólnak.”
-  - Miért baj: Az "életképes dalok" magyartalan/hibás szóhasználat ebben a jelentésben, mert az "életképes" nem ezt jelenti.
-- **BIZTOS** — Etika 8. o., „Éntudat – Önismeret”
-  - A tanár ezt mondta: „Az identitás az, ami téged tégeddé tesz.”
-  - Miért baj: A mondat magyartalan, mert a „téged tégeddé” szóismétlés hibás megfogalmazás.
-- **BIZTOS** — Etika 8. o., „Éntudat – Önismeret”
-  - A tanár ezt mondta: „Például: ha fontos neked az őszinteség, akkor akkor is igazat mondasz, amikor nehéz.”
-  - Miért baj: A mondatban felesleges szóismétlés van („akkor akkor is”), ezért hibásan megfogalmazott.
+  - A tanár ezt mondta: „A Himnusz-t mindig tiszteletteljesen, szépen énekeljük.”
+  - Miért baj: A „Himnuszt” alak helyes, a „Himnusz-t” magyartalan toldalékolás.
+- **BIZTOS** — Ének-zene 4. o., „Zeneművek/Énekes anyag”
+  - A tanár ezt mondta: „Az tempo giusto valóban egyenletes, természetes tempót jelent.”
+  - Miért baj: Magyarul az idegen szó előtt is „A tempo giusto” a helyes, az „Az tempo giusto” magyartalan.
+- **BIZTOS** — Ének-zene 4. o., „Zeneművek/Énekes anyag”
+  - A tanár ezt mondta: „Például egy táncos népdal jól illik a táncház-hoz.”
+  - Miért baj: A „táncházhoz” alak helyes, a kötőjeles „táncház-hoz” magyartalan írásmód.
+- **BIZTOS** — Ének-zene 4. o., „Zeneművek/Énekes anyag”
+  - A tanár ezt mondta: „Például a Himnusz-t ünnepélyesen énekeljük, a tréfás dalokat pedig vidáman.”
+  - Miért baj: A „Himnuszt” alak helyes, a „Himnusz-t” hibás toldalékolás.
+- **BIZTOS** — Ének-zene 4. o., „Zeneművek/Énekes anyag”
+  - A tanár ezt mondta: „Most te jössz! Szerinted a Himnusz-t vidáman vagy ünnepélyesen énekeljük? 😊”
+  - Miért baj: A „Himnuszt” lenne a helyes forma, a „Himnusz-t” magyartalan.
+- **BIZTOS** — Ének-zene 4. o., „Zeneművek/Énekes anyag”
+  - A tanár ezt mondta: „Igen, a Himnusz-t ünnepélyesen énekeljük, szépen és komolyan.”
+  - Miért baj: A „Himnuszt” lenne a helyes alak, a „Himnusz-t” hibás.
+- **BIZTOS** — Ének-zene 4. o., „Zeneművek/Énekes anyag”
+  - A tanár ezt mondta: „- az tempo giusto egyenletes tempó,”
+  - Miért baj: Az „az tempo giusto” helyett magyarosan „a tempo giusto” a helyes.
 - **BIZTOS** — Technika és tervezés 3. o., „Anyagok a környezetünkben”
-  - A tanár ezt mondta: „- a papír jó rajzolni és írni,”
-  - Miért baj: Magyartalan megfogalmazás, helyesen például "a papír jó rajzoláshoz és íráshoz" vagy "a papírra jó rajzolni és írni".
-- **BIZTOS** — Technika és tervezés 3. o., „Anyagok a környezetünkben”
-  - A tanár ezt mondta: „- a fa jó bútorhoz,”
-  - Miért baj: Magyartalan, idegenszerű mondat; természetesebben "a fa jó bútor készítéséhez" vagy "a fából jó bútor készül".
-- **BIZTOS** — Technika és tervezés 3. o., „Anyagok a környezetünkben”
-  - A tanár ezt mondta: „- a fém jó kanálhoz vagy szerszámhoz.”
-  - Miért baj: Magyartalan megfogalmazás, mert hiányzik a természetes magyar szerkezet, például "kanálhoz vagy szerszámhoz való" helyett inkább "kanál vagy szerszám készítéséhez jó".
-- **BIZTOS** — Technika és tervezés 3. o., „Anyagok a környezetünkben”
-  - A tanár ezt mondta: „Ha egy tárgyat készítesz, mindig az anyag tulajdonságához kell választani a munkát is.”
-  - Miért baj: Ez a mondat magyartalanul hangzik; természetesebben azt mondanánk, hogy az anyag tulajdonságaihoz kell megválasztani a munkamódot vagy az eljárást.
-- gyanús — Technika és tervezés 7. o., „Mechanikai hajtások, mechanizmusok”
-  - A tanár ezt mondta: „Jó. ez uncsi?”
-  - Miért baj: Ez a gyerek mondata, nem a tanáré, ezért nem tanári hibaként értékelhető, de a tanár oldalán nincs egyértelmű hiba itt.
-- gyanús — Testnevelés 7. o., „Gimnasztika és rendgyakorlatok – prevenció, relaxáció”
-  - A tanár ezt mondta: „Ez a kettő együtt nagyon hasznos, mert az egyik nyújt, a másik átmozgat.”
-  - Miért baj: Magyartalanul pontatlan, mert nem derül ki egyértelműen, melyik melyik, ráadásul a statikus–dinamikus felosztást így túl leegyszerűsítve, pongyolán fogalmazza meg.
+  - A tanár ezt mondta: „Például a gumi összenyomható, aztán újra visszaalakú.”
+  - Miért baj: A „visszaalakú” szó magyartalan, helyesen például „visszaalakítható” vagy „visszanyeri az alakját” lenne.
+- **BIZTOS** — Vizuális kultúra 4. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
+  - A tanár ezt mondta: „A mimiká az arc mozdulata, például a mosoly vagy a ráncolt homlok.”
+  - Miért baj: A "mimiká" alak magyartalan, helyesen "mimika".
 - **BIZTOS** — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „Have you ever been to London? (Voltál valaha London-ban?)”
-  - Miért baj: A „London-ban” alak magyartalan, helyesen „Londonban” lenne.
-- **BIZTOS** — Technika és tervezés 6. o., „Fém”
-  - A tanár ezt mondta: „- A aluminium könnyű fém. Például: a aluminium-fólia vékony és hajlítható.”
-  - Miért baj: Magyartalan, mert helyesen „az alumínium”, illetve „az alumíniumfólia” lenne.
+  - A tanár ezt mondta: „Például: Have you ever been to <FL:en>London</FL:en>? (Jártál már valaha London</FL:en>ban?)”
+  - Miért baj: A magyar mondat magyartalan és hibás a bent maradt idegen jelölés miatt: „London</FL:en>ban”.
+- **BIZTOS** — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „Schule bedeutet iskola.”
+  - Miért baj: Ez a mondat magyartalan és kevert nyelvű, természetes németül inkább 'Schule bedeutet: Schule = iskola' helyett teljesen egy nyelven kellene fogalmazni.
 
 ### 9. ÉLETKORHOZ NEM ILLŐ. Egy hatévesnek túl hosszú, túl elvont, vagy olyan
 
-- gyanús — Digitális kultúra 5. o., „Mi az algoritmus? Lépések és sorrend”
-  - A tanár ezt mondta: „Most jöjjön még két fontos szó:
+- gyanús — Technika és tervezés 3. o., „Anyagok a környezetünkben”
+  - A tanár ezt mondta: „A környezettudatos döntés azt jelenti, hogy olyan anyagot választunk, ami kevesebb hulladékot ad, vagy újra felhasználható.”
+  - Miért baj: A „környezettudatos döntés” és a megfogalmazás egy 8 éves gyereknek túl elvont lehet ebben a formában.
+- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
+  - A tanár ezt mondta: „A fikció kitalált történetet jelent.”
+  - Miért baj: A „fikció” szó és fogalom egy 8 éves gyereknek valószínűleg túl elvont és életkorához nehezen illő lehet.
+- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
+  - A tanár ezt mondta: „A karakter azt mutatja meg, milyen a szereplő belül és kívül.”
+  - Miért baj: A „karakter” szó ilyen elvont meghatározása egy 8 éves gyereknek életkorhoz képest nehéz lehet.
+- gyanús — Vizuális kultúra 3. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
+  - A tanár ezt mondta: „A színhangulat azt jelenti, hogy a színek milyen érzést keltenek.”
+  - Miért baj: A „színhangulat” mint összetett, elvont fogalom egy 8 évesnek nehéz lehet.
 
-Az algoritmus leírása azt jelenti, hogy leírjuk a lépéseket egymás után, érthetően.
-Például nem csak azt mondjuk: „készítsd el”, hanem így mondjuk: „keverd meg, majd süsd ki”.
-Ez segít abban, hogy más is megértse, mit kell csinálni.
+### 10. NYELVET VÁLTOTT. Magyar órán idegen nyelvre váltott, vagy fordítva
 
-A problémamegoldó tevékenység azt jelenti, hogy egy feladatot megoldunk gondolkodással és lépésekkel.”
-  - Miért baj: A „problémamegoldó tevékenység” kifejezés és a hosszú, elvont definíció egy 10 éves gyereknek túl nehéz és túlságosan elvont lehet.
+- gyanús — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Jetzt kommt das nächste Wort: tschüss = viszlát, szia. Például: Tschüss! (Viszlát!)”
+  - Miért baj: Idegen nyelv órán a célnyelvi részen kívül magyar és német magyarázat keveredik, ami a szabály szerint nyelvváltásnak számít.
+- gyanús — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Jetzt kommt: guten Morgen = jó reggelt. Például: Guten Morgen! (Jó reggelt!)”
+  - Miért baj: A tanári instrukció magyar és német elemeket kever, nem tart következetes órai nyelvet.
+- gyanús — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Jetzt kommt: guten Tag = jó napot. Például: Guten Tag! (Jó napot!)”
+  - Miért baj: A tanár német és magyar nyelvet vegyesen használja az instrukcióban.
+- gyanús — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Jetzt kommt: bitte = kérem, szívesen. Például: Bitte! (Kérem!)”
+  - Miért baj: Az instrukcióban indokolatlanul váltogatja a magyar és német nyelvet.
+- gyanús — Idegen nyelv (nemet) 1. o., „Begrüßung – Köszönés és bemutatkozás”
+  - A tanár ezt mondta: „Jetzt kommt: danke = köszönöm. Például: Danke! (Köszönöm!)”
+  - Miért baj: A tanári magyarázat nyelvet váltogat a célnyelvi részen kívül is.
+- gyanús — Idegen nyelv (nemet) 3. o., „Die Schule – Az iskolában”
+  - A tanár ezt mondta: „A mai új szavunk: Schule = iskola. Például: Ich gehe zur Schule. (Iskolába megyek.)
+Még egyszer: Schule bedeutet iskola. In der Schule lerne ich. (Az iskolában tanulok.)”
+  - Miért baj: Idegen nyelv órán a célnyelvi rész kivételével magyarul kellene beszélni, itt indokolatlanul német mondatokkal vált nyelvet magyarázó részben is.
 
 ### 11. NEM ANNYI, AMENNYIT MONDOTT. "Most két új szót tanulunk", aztán hármat
 
-- **BIZTOS** — Digitális kultúra 6. o., „Szöveg bevitele, javítása, mentése”
-  - A tanár ezt mondta: „Most három új dolgot nézzünk meg.”
-  - Miért baj: A tanár három új dolgot ígér, de utána négyet sorol fel: másolás, áthelyezés, helyesírás-ellenőrző, megnyitni.
-- **BIZTOS** — Ének-zene 4. o., „Zeneművek/Énekes anyag”
-  - A tanár ezt mondta: „Most még egy fontos dolgot megtanulunk:”
-  - Miért baj: A tanár azt mondja, egy fontos dolgot tanulnak, de utána három külön pontot sorol fel.
-- **BIZTOS** — Technika és tervezés 3. o., „Anyagok a környezetünkben”
-  - A tanár ezt mondta: „Most egy fontos párost tanulunk:”
-  - Miért baj: A tanár párost ígér, de utána három dolgot tanít: nyersanyag, alapanyag, termék.
 - **BIZTOS** — Testnevelés 7. o., „Gimnasztika és rendgyakorlatok – prevenció, relaxáció”
-  - A tanár ezt mondta: „A mai órán négy fontos dolgot nézünk meg.”
-  - Miért baj: A tanár azt mondja, négy dolgot néznek meg, de az órán ezután több mint négy fogalmat és témát vesznek át.
-- gyanús — Testnevelés 7. o., „Gimnasztika és rendgyakorlatok – prevenció, relaxáció”
-  - A tanár ezt mondta: „Most még két fontos dolgot tanulunk.”
-  - Miért baj: Két dolgot ígér, de utána csak egy kérdést tesz fel, a második dolog kifejtése vagy lezárása nem jelenik meg a megadott részben.
+  - A tanár ezt mondta: „Most nézzünk meg még két fontos dolgot.”
+  - Miért baj: A tanár azt mondja, hogy két dolgot néznek meg, de utána három dolgot sorol fel: légzőgyakorlatok, bemutatás/bemutattatás és szabályos végrehajtás.
 - **BIZTOS** — Vizuális kultúra 4. o., „Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények”
-  - A tanár ezt mondta: „Most két új dolgot tanulunk még.”
-  - Miért baj: A tanár azt mondja, két új dolgot tanulnak, de utána csak egy új fogalmat vezet be, mert a kollázst korábban már megtanították.
-- **BIZTOS** — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
-  - A tanár ezt mondta: „Most két új dolgot tanulunk.”
-  - Miért baj: A tanár azt mondja, két új dolgot tanulnak, de utána hármat sorol fel: vivir, el país, la dirección.
-- gyanús — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „Most jön még három fontos szó:
-experience = élmény, tapasztalat. Például: It was a new experience for me. (Új élmény volt nekem.)
-achieve = elér, megvalósít, sikerül valamit elérni. Például: I achieved my goal. (Elértem a célomat.)
-so far = eddig. Például: I have done two pages so far. (Eddig két oldalt csináltam meg.)”
-  - Miért baj: A tanár azt mondta, hogy „még” három fontos szó jön, de ezek közül a so far már korábban szerepelt, tehát nem három új szó következett.
-- **BIZTOS** — Digitális kultúra 4. o., „Keresés az interneten”
-  - A tanár ezt mondta: „Most megtanultunk két új szót:”
-  - Miért baj: A tanár azt mondja, hogy két új szót tanulnak, de utána négyet sorol fel: weboldal, webhely, pontos kifejezés, valamint egy új magyarázat a böngészőprogramról.
-- gyanús — Etika 5. o., „Éntudat – Önismeret”
-  - A tanár ezt mondta: „Most már három fontos dolgot is tudsz: erősség, fejlődési cél és kitartás. 👏”
-  - Miért baj: A tanár azt mondja, három fontos dolgot tud már a gyerek, miközben közvetlenül előtte a segítségkérést is ugyanúgy megtanította, így ez félrevezető felsorolás.
+  - A tanár ezt mondta: „Most nézzünk meg még két fontos szót.
+
+A kollázs többféle darabból összeállított kép. Lehet benne rajz, színes papír, újságdarab vagy más anyag.  
+Például: egy kastélyt készítesz piros papírból, a felhőket pedig vattából.
+
+A portré egy ember arcképe. Ilyenkor az arc, a haj, a szem és a mimika is fontos.  
+Például: ha egy mesehőst rajzolsz, a szemével és a szájával is megmutathatod, hogy vidám vagy komoly.
+
+A hangulat megmutatja, milyen érzésű a kép. Lehet nyugodt, vidám, titokzatos vagy szomorú.”
+  - Miért baj: Nem annyi fogalmat mond, amennyit ígér: kettő helyett három új fogalmat vesz elő.
+- **BIZTOS** — Etika 5. o., „Éntudat – Önismeret”
+  - A tanár ezt mondta: „Most nézzünk meg még két fontos dolgot az önismerethez kapcsolódva.”
+  - Miért baj: A tanár két dolgot ígér, de utána hármat sorol fel: fejlődés, tervezés, saját értékeid figyelembevétele.
+- **BIZTOS** — Etika 5. o., „Éntudat – Önismeret”
+  - A tanár ezt mondta: „Most nézzünk még két fontos dolgot az önismerethez kapcsolódva.”
+  - Miért baj: A tanár itt is két dolgot ígér, de utána hármat tanít: egészség, harmónia, elfogadás.
 
 ### 12. TECHNIKAI SZEMÉT A KÉPERNYŐN. Olyasmi látszik, ami a programnak szólt,
 
-- **BIZTOS** — Idegen nyelv (angol) 8. o., „Just, already, yet – Ami már megtörtént”
-  - A tanár ezt mondta: „A already és a yet nem ezt jelentik. Az already inkább azt mondja: „már”, a yet pedig: „még”, „még nem”. alreadyyet”
-  - Miért baj: Az „alreadyyet” összetapadt technikai vagy szerkesztési szemétnek látszik a gyerek képernyőjén.
-- **BIZTOS** — Idegen nyelv (spanyol) 5. o., „¡Hola! Me presento – Bemutatkozás és személyes adatok”
-  - A tanár ezt mondta: „llamarseser”
-  - Miért baj: Ez technikai vagy hibásan összefolyt szövegnek látszik, nem a gyereknek szánt rendes tananyag.
+- **BIZTOS** — Vizuális kultúra 5. o., „Vizuális művészeti jelenségek – Alkotások, stílusok”
+  - A tanár ezt mondta: „Most egy kis gyakorlás következik.  
+Nézd meg ezt a két állítást, és mondd meg, melyik objektív és melyik <FL:la>szubjektív>:”
+  - Miért baj: Technikai jelölés maradt a gyereknek szánt szövegben: "<FL:la>".
 - **BIZTOS** — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „finishtidyalready”
-  - Miért baj: Ez technikai szemétnek vagy hibásan megjelenített feladatelemnek tűnik, nem gyereknek szánt rendes szöveg.
+  - A tanár ezt mondta: „Például: Have you ever been to <FL:en>London</FL:en>? (Jártál már valaha London</FL:en>ban?)”
+  - Miért baj: Technikai jelölés látszik a gyereknek szánt szövegben, ráadásul félrehagyott tag is maradt benne.
 - **BIZTOS** — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „everneverso_far”
-  - Miért baj: Ez technikai szemétnek vagy hibásan megjelenített feladatelemnek tűnik, nem gyereknek szánt rendes szöveg.
-- **BIZTOS** — Idegen nyelv (angol) 7. o., „What have you done? – Mit csináltál eddig?”
-  - A tanár ezt mondta: „experienceachieveso_far”
-  - Miért baj: Ez technikai szemétnek vagy hibásan megjelenített feladatelemnek tűnik, nem gyereknek szánt rendes szöveg.
+  - A tanár ezt mondta: „<FL:en>Yes, I have. (Igen, már volt.)  ”
+  - Miért baj: Technikai jelölés (<FL:en>) jelent meg a képernyőn, ami nem a gyereknek szóló tartalom.
 
 ---
 

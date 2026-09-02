@@ -153,6 +153,14 @@ JELOLO_ESETEK: list[tuple[str, str, str]] = [
      "a mondat végi ÖSSZEFOGLALÓ szavai összeragadtak: „alreadyyet”. Ha a "
      "mondat már kimondta őket, a felsorolás felesleges — de a szójegyzékbe "
      "attól még bekerül"),
+    ("Have you ever been to <FL:en>London</FL:en>? "
+     "(Jártál már <FL:en>London</FL:en>ban?)",
+     "Have you ever been to London? (Jártál már Londonban?)",
+     "a záró tag NYELVKÓDDAL is jöhet: </FL:en>. A régi minta csak a </FL> "
+     "alakot ismerte, ezért a NYERS jelölő ment ki a gyerekhez"),
+    ("melyik objektív és melyik <FL:la>szubjektív>:",
+     "melyik objektív és melyik szubjektív>:",
+     "félbehagyott, záró pár nélküli jelölő – a szöveg marad, a tag megy"),
     ("Két új szó jön: <VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB>",
      "Két új szó jön: manzana, pera",
      "ha a szavak MÉG NEM hangzottak el, látszaniuk kell — de vesszővel"),

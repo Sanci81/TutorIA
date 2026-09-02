@@ -2190,7 +2190,17 @@ _CHAT_MARKER_VOCAB_EGY = re.compile(
 
 # Idegen szó jelölő: <FL:de>Wasser</FL> — a felolvasásnál anyanyelvi hangot kap,
 # a chatben csak a szó látszik, a jelölő nem.
-_CHAT_MARKER_FL = re.compile(r"<\s*FL:([a-z]{2})\s*>(.*?)<\s*/\s*FL\s*>", re.IGNORECASE | re.DOTALL)
+# A ZÁRÓ TAG NYELVKÓDDAL IS JÖHET: a tanár gyakran </FL:en>-t ír </FL> helyett.
+# A régi minta csak a </FL> alakot ismerte, ezért a NYERS JELÖLŐ ment ki a
+# gyerekhez: „Have you ever been to <FL:en>London</FL:en>?”. 2026-09-02.
+_CHAT_MARKER_FL = re.compile(
+    r"<\s*FL:([a-z]{2})\s*>(.*?)<\s*/\s*FL(?::[a-z]{2})?\s*>",
+    re.IGNORECASE | re.DOTALL)
+
+# TAKARÍTÁS: ami ezek után is FL-jelölésnek látszik, az hibás — nyitó pár
+# nélkül, elgépelve, félbehagyva. A gyereknek SEMMILYEN tag nem való a
+# képernyőre, ezért a maradékot is leszedjük. A SZÖVEG marad, a jelölés megy.
+_FL_MARADEK = re.compile(r"<\s*/?\s*FL(?::[a-z]{2})?\s*>", re.IGNORECASE)
 
 _CHAT_MARKER_SVG = re.compile(
     r"<\s*ABRA\s*>\s*(.*?)\s*<\s*/\s*ABRA\s*>",
@@ -2339,6 +2349,7 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
 
     # Az <FL:xx>szó</FL> jelölőből csak a jelölés tűnik el, a SZÓ marad.
     clean = _CHAT_MARKER_FL.sub(lambda m: m.group(2), text)
+    clean = _FL_MARADEK.sub("", clean)      # a hibás párok maradéka
     clean = _CHAT_MARKER_TOPIC.sub("", clean)
     clean = _CHAT_MARKER_LEVEL.sub("", clean)
     # A KÉRDÉS UTÁN ÁLLÓ SZÓJEGYZÉK-JELÖLŐK A VÁLASZLEHETŐSÉGEK.
