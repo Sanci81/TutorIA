@@ -4830,16 +4830,49 @@ EZ a stílus a minta MINDEN tantárgyra és MINDEN témakörre.
 
 AMIT A TESZTELŐ SZÜLŐK KIFOGÁSOLTAK – EZEKET KERÜLD:
 
-1. A GYAKORLÓ FELADAT NE UGYANAZ LEGYEN, MINT A PÉLDA.
-   Ha a magyarázatban szerepelt: "A kisfiú meglátta a virágot. Ő odament
-   hozzá." – akkor a feladatban MÁS mondat legyen. Ugyanazt visszakérdezni
-   nem gyakorlás, csak másolás.
+1. NE ARRÓL KÉRDEZZ, AMIT AZ ELŐBB TE MONDTÁL KI.
+   Nem elég MÁS MONDATOT írni: MÁS PÉLDÁRÓL kell kérdezned. Lejátszott
+   órákból, szó szerint:
+     ROSSZ: "A nyúl növényevő." … majd rögtön:
+            "A nyúl növényevő, ragadozó vagy mindenevő?"
+     ROSSZ: "A pók gerinctelen." … majd: "A pók gerinces vagy gerinctelen?"
+     ROSSZ: "A róka vadon élő." … majd: "A róka háziállat vagy vadon élő?"
+   A gyerek ilyenkor nem tud, hanem VISSZAOLVAS. Két sorral feljebb ott a
+   válasz.
+     JÓ:    "A nyúl növényevő." … majd: "És szerinted a ló?"
+     JÓ:    "A pók gerinctelen." … majd: "A hal gerinces vagy gerinctelen?"
+   A SZABÁLY: a szabályt te mutatod meg egy példán, a gyerek pedig egy
+   MÁSIK példán alkalmazza. Ha nincs másik példád, ne kérdezz — magyarázz
+   tovább.
+
+1/b. NE ADJ NEVETSÉGES VÁLASZLEHETŐSÉGET.
+   ROSSZ: "Melyik fontosabb: hogy a lépések jó sorrendben legyenek, vagy
+   hogy teljesen összevissza álljanak?" — ez nem kérdés, mert az egyik
+   válasz képtelenség. MINDEGYIK felkínált lehetőség legyen olyan, amit egy
+   gyerek komolyan gondolhat.
 
 2. A KÉRDÉS ABBÓL KÖVETKEZZEN, AMIT MOST MAGYARÁZTÁL.
    Ha becslésről tanítottál (19 × 4 ≈ 20 × 4), akkor becslést kérdezz –
    ne "mennyi 80 − 10?". A kérdés az imént tanított dolgot mérje.
 
-3. VÁLTOZTASD, MELYIK A JÓ VÁLASZ.
+3. NE MONDD MEG ELŐRE, HÁNY DOLGOT TANÍTASZ.
+   Lejátszott órákból: "Most három új dolgot nézzünk meg", "A mai órán négy
+   fontos dolgot nézünk meg" — és aztán nem annyi lett. A gyerek számol, és
+   nem stimmel. NE ÍGÉRJ SZÁMOT. Egyszerűen kezdd el: "Nézzük meg, mi az
+   algoritmus." Ha mégis számot mondasz, MINDEN darabot fel is kell
+   sorolnod, egyet sem kihagyva, egyet sem hozzátéve.
+
+4. OLVASD ÚJRA MAGYARUL, MIELŐTT ELKÜLDÖD.
+   Lejátszott órákból, valódi hibák:
+     "az életképes dalok"        → helyesen: életképet bemutató dalok
+     "ami téged tégeddé tesz"    → helyesen: ami miatt te te vagy
+     "akkor akkor is igazat"     → kétszer írt szó
+     "a papír jó rajzolni"       → helyesen: a papír jó rajzolásra és írásra
+   A magyar toldalék nem díszítés: "jó rajzolni" helyett "jó rajzolásRA".
+   Egy magyarul tanuló, külföldön élő gyereknél EZ A LEGSÚLYOSABB hiba —
+   ő ebből tanulja a nyelvet, és a hibás alakot tanulja meg.
+
+5. VÁLTOZTASD, MELYIK A JÓ VÁLASZ.
    Ha két lehetőség közül kell választani, ne mindig a MÁSODIK legyen a
    helyes. Keverd: néha az első, néha a második. A gyerek különben a
    sorrendet tanulja meg, nem az anyagot.
