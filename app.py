@@ -2749,20 +2749,81 @@ def _resolve_current_topic_id(
     return catalog[0]["id"]
 
 
+def _tanitasi_sorrend(topic: dict, *, spanyol: bool) -> str:
+    """A tanterv saját tanítási sorrendje, ha megadta.
+
+    MIÉRT KELL: a tantervi fájlok a nyelvi témaköröknél SORRENDBE RAKOTT
+    nyelvtani listát adnak — angol 5. osztály, első témakör:
+        1. létige: to be teljes ragozása
+        2. kérdőszavak: who, when, where, what, how
+        3. igenlő és nemleges rövid válasz
+    A sorrend nem véletlen: a 2. és a 3. az 1.-re épül. Eddig ezt a listát a
+    katalógus ELDOBTA, a modellnek a prózából kellett kitalálnia — és nem
+    mindig találta el. Így került elő a "there is / there are" a létige ELŐTT.
+
+    Ez a blokk a prózán KÍVÜL megy a promptba, mert a próza közepén elvész.
+    A nem-nyelvi tantárgyaknál nincs ilyen lista; ott üres marad, és minden
+    megy tovább úgy, ahogy eddig.
+    """
+    nyelvtan = topic.get("nyelvtan") or []
+    szokincs = topic.get("szokincs") or []
+    cel = topic.get("cefr_cel") or ""
+    if not (nyelvtan or szokincs or cel):
+        return ""
+
+    sorok: list[str] = []
+    if spanyol:
+        sorok.append("\n=== ORDEN DE ENSEÑANZA (del currículo oficial) ===")
+        if cel:
+            sorok.append(f"Objetivo del tema: {cel}")
+        if nyelvtan:
+            sorok.append(
+                "Puntos gramaticales EN ESTE ORDEN. Cada uno se apoya en el "
+                "anterior. NUNCA enseñes uno antes de que el niño domine el "
+                "anterior — aunque el niño pregunte por él:")
+            sorok.extend(f"  {i}. {p}" for i, p in enumerate(nyelvtan, 1))
+            sorok.append(
+                "Si el niño pregunta por un punto posterior, respóndele "
+                "brevemente y vuelve al punto en el que estáis.")
+        if szokincs:
+            sorok.append("Vocabulario del tema: " + ", ".join(szokincs))
+    else:
+        sorok.append("\n=== TANÍTÁSI SORREND (a kerettantervből) ===")
+        if cel:
+            sorok.append(f"A témakör célja: {cel}")
+        if nyelvtan:
+            sorok.append(
+                "A nyelvtani elemek EBBEN A SORRENDBEN jönnek. Mindegyik az "
+                "előzőre épül. SOHA ne taníts meg egy elemet, amíg az előtte "
+                "állót a gyerek nem tudja — akkor sem, ha a gyerek kérdez rá:")
+            sorok.extend(f"  {i}. {p}" for i, p in enumerate(nyelvtan, 1))
+            sorok.append(
+                "Ha a gyerek egy későbbi elemre kérdez rá, válaszolj neki "
+                "röviden, aztán térj vissza oda, ahol tartotok.")
+        if szokincs:
+            sorok.append("A témakör szókincse: " + ", ".join(szokincs))
+    return "\n".join(sorok) + "\n"
+
+
 def _topic_teaching_prompt_block(topic: dict | None, *, es_curriculum: bool = False) -> str:
     if not topic:
         return ""
     text = (topic.get("text") or "")[:12000]
+    # A SORREND a próza UTÁN jön, közvetlenül az utasítás előtt: ez az utolsó,
+    # amit a modell a témakörről olvas, és ez a kötelező érvényű rész.
+    sorrend = _tanitasi_sorrend(topic, spanyol=es_curriculum)
     if es_curriculum:
         return (
             f"\n\nAhora estáis en el siguiente tema: {topic.get('name', '')}.\n"
             f"Contenido curricular del tema:\n{text}\n"
+            f"{sorrend}"
             "Enséñale al niño paso a paso a partir de este contenido, "
             "y ofrécele el test cuando creas que está preparado (o si el niño lo pide).\n"
         )
     return (
         f"\n\nMost a következő témán vagytok: {topic.get('name', '')}.\n"
         f"Témakör tananyaga (kerettanterv):\n{text}\n"
+        f"{sorrend}"
         "Ebből tanítsd a gyereket lépésről lépésre, majd kínáld fel a tesztet, "
         "ha úgy érzed, készen áll (vagy ha a gyerek kéri).\n"
     )
@@ -5062,7 +5123,15 @@ def _call_ai_for_quiz(
                     "- FONTOS: az `answer` mező mindig a kérdésre adott TELJES, HELYES választ tartalmazza. Ha a kérdés egy kifejezésre vonatkozik (pl. 'Hogy mondják angolul, hogy mi a neved?'), az answer a teljes kifejezés legyen ('What is your name?'), NE egyetlen szó belőle. Csak olyan kérdést tegyél fel, amelyre a te answer meződ a HELYES válasz — ellenőrizd magad, mielőtt kiadod a kérdést.\n"
                     "- Legfeljebb 5 kérdést adj.\n"
                 )
-            source_block = f"VOCABULARY LIST (use ONLY these words): {', '.join(szokincs)}" if szokincs else f"TOPIC CONTENT:\n{material}"
+            # A SZÓJEGYZÉK NEM VÁLTJA KI A TANANYAGOT, csak kiegészíti.
+            # Amíg a katalógus eldobta a szokincs mezőt, ez az ág sosem futott,
+            # és a kvíz a teljes témakör-szövegből dolgozott. Ha most a
+            # szójegyzékre cserélnénk, a kvíz CSAK a nyolc szót kérdezné, és a
+            # nyelvtant (pl. a létigét) soha többé — pedig épp az a lecke.
+            source_block = (
+                f"VOCABULARY LIST (the topic's core words): {', '.join(szokincs)}\n\n"
+                f"TOPIC CONTENT:\n{material}"
+            ) if szokincs else f"TOPIC CONTENT:\n{material}"
             system = (
                 f"WRITE ALL QUESTION TEXT IN {q_lang}.\n"
                 f"You are a {lang_display} oral quiz generator for a 6-year-old.\n\n"
@@ -5272,8 +5341,16 @@ def _call_ai_for_quiz(
 
     if is_foreign_language:
         if szokincs:
-            source_block = f"VOCABULARY LIST (use ONLY these words): {', '.join(szokincs)}"
-            source_rule = "ONLY use words from the vocabulary list. Every question must test these specific words."
+            # Szójegyzék ÉS tananyag – lásd a szóbeli ágnál írt indoklást.
+            source_block = (
+                f"VOCABULARY LIST (the topic's core words): {', '.join(szokincs)}\n\n"
+                f"TOPIC CONTENT:\n{material}"
+            )
+            source_rule = (
+                "Base every question on the vocabulary list AND the topic "
+                "content. The listed words come first, but the grammar in the "
+                "topic content is just as testable — do not skip it."
+            )
         else:
             source_block = f"TOPIC CONTENT:\n{material}"
             source_rule = "Create questions based on the topic content. Test vocabulary, phrases and structures from the text."

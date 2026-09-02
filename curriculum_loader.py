@@ -1552,6 +1552,50 @@ def curriculum_topic_names(topics: dict[str, list[str]]) -> list[str]:
     return list(topics.keys())
 
 
+# ── A TANTERV SZERKEZETE ────────────────────────────────────────────────────
+# A tantervi fájlokban a nyelvi témaköröknél KÜLÖN, SORRENDBE RAKOTT listák
+# állnak — például az angol 5. osztály első témakörénél:
+#     nyelvtan: ["létige: to be teljes ragozása", "kérdőszavak: who, when...",
+#                "igenlő és nemleges rövid válasz"]
+# Ez a sorrend nem véletlen: a létige ELŐBB jön, mert a többi arra épül.
+#
+# A katalógus korábban CSAK a nevet és a prózát (teljes_szoveg) tartotta meg,
+# ezeket a listákat eldobta. Így a tanár modellnek a prózából kellett
+# kitalálnia a sorrendet, minden fordulóban újra — és nem mindig találta el.
+# Innen jött, hogy a "there is / there are" a létige előtt került elő.
+#
+# Ezek a mezők NEM MINDEN témakörnél vannak meg: a matematika és a többi
+# nem-nyelvi tantárgy csak nevet, óraszámot és prózát ad. Ezért a hiányuk
+# normális, nem hiba — a hívónak üres listával kell számolnia.
+_SZERKEZET_MEZOK = (
+    "szokincs",                 # a témakör szavai
+    "nyelvtan",                 # NYELVTANI SORRENDBEN – ez a legfontosabb
+    "kommunikacios_szandekok",  # mire használja a nyelvet
+    "javasolt_tevekenysegek",   # milyen feladatokon keresztül
+    "cefr_cel",                 # mit tudjon a végén (szöveg, nem lista)
+    "kerettantervi_temakor",    # a hivatalos témakör neve (szöveg)
+)
+
+
+def _szerkezet(item: dict[str, Any]) -> dict[str, Any]:
+    """A témakör szerkezetes mezői, ha a tanterv megadta őket.
+
+    Csak azt adja vissza, ami TÉNYLEG ott van: a hiányzó mező nem kerül be
+    üresen, hogy a hívó meg tudja különböztetni a "nincs megadva" esetet a
+    "meg van adva, de üres"-től.
+    """
+    ki: dict[str, Any] = {}
+    for mezo in _SZERKEZET_MEZOK:
+        ertek = item.get(mezo)
+        if isinstance(ertek, list):
+            tisztitott = [str(x).strip() for x in ertek if str(x).strip()]
+            if tisztitott:
+                ki[mezo] = tisztitott
+        elif isinstance(ertek, str) and ertek.strip():
+            ki[mezo] = ertek.strip()
+    return ki
+
+
 def extract_topic_catalog(
     data: dict[str, Any], grade: int | str, *, raw_data: dict[str, Any] | None = None
 ) -> list[dict[str, Any]]:
@@ -1577,6 +1621,8 @@ def extract_topic_catalog(
                             "text": str(item.get("teljes_szoveg", "")),
                             "index": idx,
                             "ora_szam": ora_szam,
+                            # A tanterv saját sorrendje – lásd _szerkezet().
+                            **_szerkezet(item),
                         }
                     )
         return catalog
@@ -1601,6 +1647,7 @@ def _loe_catalog_from_list(items: list) -> list[dict[str, Any]]:
                 "text": str(item.get("teljes_szoveg") or ""),
                 "index": idx,
                 "ora_szam": int(m.group()) if m else 0,
+                **_szerkezet(item),
             })
     return catalog
 
