@@ -1803,6 +1803,30 @@ def _elo_json_language_branch_score(
         return 5
 
 
+# ── A NYELV NEVE ÉKEZET NÉLKÜL ──────────────────────────────────────────────
+# ÉLES HIBA, 2026-09-02: a német tananyag (nemet_5-8.json) SOHA nem került
+# használatba. A program a nyelvet a felületről "német" alakban kapta, a
+# fájlválasztó viszont mindenhol az ékezet nélküli "nemet"-hez hasonlított.
+# A kettő soha nem egyezett, ezért a német óra a közös, angol nyelvű
+# Elo_idegen_nyelv_*.json-ból ment — nyelvtani sorrend és szókincs nélkül,
+# angol témakörnevekkel. Az angolnál és a spanyolnál nincs ékezet a névben,
+# ezért azoknál fel sem tűnt.
+#
+# EZÉRT NEM SPECIÁLIS ESET: minden nyelvnevet ékezet nélküli alakra hozunk,
+# hogy a következő ékezetes nyelv (pl. "francia" rendben, de "cseh"/"görög"
+# később) ne akadjon el ugyanezen.
+_NYELV_EKEZET = str.maketrans({
+    "á": "a", "é": "e", "í": "i", "ó": "o", "ö": "o", "ő": "o",
+    "ú": "u", "ü": "u", "ű": "u",
+})
+
+
+def _nyelv_kulcs(nyelv: str | None) -> str | None:
+    """'német' → 'nemet'. A fájlválasztó ezt az alakot ismeri."""
+    kulcs = (nyelv or "").strip().lower()
+    return kulcs.translate(_NYELV_EKEZET) or None
+
+
 def get_curriculum_for_chat(
     subject_file: str,
     grade: int | str,
@@ -1812,7 +1836,7 @@ def get_curriculum_for_chat(
     """JSON betöltés + évfolyam szerinti teljes tananyag (chat AI-hoz)."""
     grade_num = parse_grade(grade)
     subject_file = (subject_file or "").strip()
-    explicit_language = (language or "").strip().lower() or None
+    explicit_language = _nyelv_kulcs(language)
     effective_language = explicit_language
 
     logger.warning(

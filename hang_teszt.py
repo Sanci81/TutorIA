@@ -129,6 +129,26 @@ SZOVEG_ESETEK: list[tuple[str, str, str]] = [
      "a hamis egyenlőséget javítjuk – a szorzás értéke nem vélemény"),
 ]
 
+# A SZÓJEGYZÉK-JELÖLŐ. Ezt a lejátszott órák hozták elő: a jelölő ELTÜNTETTE
+# a szót, amit a gyereknek meg kellett volna tanulnia.
+JELOLO_ESETEK: list[tuple[str, str, str]] = [
+    ("- <VOCAB>ma=hoy</VOCAB> = azt jelenti, hogy ma.",
+     "- hoy = azt jelenti, hogy ma.",
+     "a szó ELTŰNT: a gyerek '-  = azt jelenti, hogy ma'-t látott"),
+    ("Nagyon jó! A <VOCAB>hoy</VOCAB> azt jelenti, hogy ma.",
+     "Nagyon jó! A hoy azt jelenti, hogy ma.",
+     "az '=' nélküli alakot semmi nem ismerte fel: a NYERS jelölő ment ki"),
+    ("Most te jössz: melyik a „látott”? <VOCAB>látott=visto</VOCAB>"
+     "<VOCAB>írt=escrito</VOCAB><VOCAB>készített=hecho</VOCAB>",
+     "Most te jössz: melyik a „látott”? visto, escrito, hecho",
+     "kérdés után a jelölők a VÁLASZLEHETŐSÉGEK – eltűntek, és a kérdésre "
+     "nem lehetett válaszolni. A magyar megfelelő NEM látszhat: elárulná."),
+    ("Ma két új szót tanulunk: <VOCAB>alma=manzana</VOCAB> és "
+     "<VOCAB>körte=pera</VOCAB>.",
+     "Ma két új szót tanulunk: manzana és pera.",
+     "mondat közepén is a szó marad, nem a jelölés"),
+]
+
 # Ugyanaz a hiba a SPANYOL oldalon. Ott nincs rag: a "está más cerca de"
 # fordulat hordozza, hogy közelséget kérdezünk, nem egyenlőséget.
 SPANYOL_ESETEK: list[tuple[str, str, str]] = [
@@ -174,6 +194,27 @@ def main() -> int:
         print(f"        miért:  {miert}")
 
     print()
+    print("AMIT A GYEREK LÁT (jelölők, app.py)")
+    try:
+        import logging
+        import os
+        logging.disable(logging.CRITICAL)
+        os.environ.setdefault("SECRET_KEY", "hang-teszt")
+        import app
+        for be, vart, miert in JELOLO_ESETEK:
+            kapott = app._parse_chat_markers(be)[0].strip()
+            if kapott == vart:
+                print(f"  ok    {be[:60]}")
+                continue
+            rossz += 1
+            print(f"  ROSSZ {be[:60]}")
+            print(f"        kapott: {kapott}")
+            print(f"        várt:   {vart}")
+            print(f"        miért:  {miert}")
+    except Exception as _h:
+        print(f"  (kihagyva – az app nem tölthető be: {_h})")
+
+    print()
     print("A SPANYOL OLDAL (szamellenor.py)")
     for be, vart, miert in SPANYOL_ESETEK:
         kapott, _ = szamellenor.chat_ellenoriz(be, "es")
@@ -186,7 +227,8 @@ def main() -> int:
         print(f"        várt:   {vart}")
         print(f"        miért:  {miert}")
 
-    osszes = len(ESETEK) + len(SZOVEG_ESETEK) + len(SPANYOL_ESETEK)
+    osszes = (len(ESETEK) + len(SZOVEG_ESETEK) + len(SPANYOL_ESETEK)
+              + len(JELOLO_ESETEK))
     print()
     if rossz:
         print(f"{rossz} hiba a(z) {osszes} esetből. NE PUSHOLJ.")

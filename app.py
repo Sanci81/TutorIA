@@ -55,6 +55,7 @@ import szamellenor
 import tasak
 import translations as i18n
 from curriculum_loader import (
+    _nyelv_kulcs,
     ELO_IDEGEN_NYELV_1_4_FILE,
     ELO_IDEGEN_NYELV_5_8_FILE,
     _display_subject_name,
@@ -2178,6 +2179,15 @@ _CHAT_MARKER_VOCAB = re.compile(
      re.IGNORECASE | re.MULTILINE,
 )
 
+# A SZÓJEGYZÉK-JELÖLŐ MÁSIK ALAKJA: <VOCAB>hoy</VOCAB>, pár nélkül.
+# A tanár rendszeresen írja így, amikor egy MÁR TANÍTOTT szóra hivatkozik
+# ("A <VOCAB>hoy</VOCAB> azt jelenti, hogy ma"). A pár-alakú minta ezt nem
+# ismerte fel, ezért a nyers jelölő KIMENT A GYEREKHEZ, tagekkel együtt.
+_CHAT_MARKER_VOCAB_EGY = re.compile(
+    r"[<\[]\s*VOCAB\s*[>\]]\s*([^=<\[\n]+?)\s*[<\[]\s*/\s*VOCAB\s*[>\]]",
+    re.IGNORECASE,
+)
+
 # Idegen szó jelölő: <FL:de>Wasser</FL> — a felolvasásnál anyanyelvi hangot kap,
 # a chatben csak a szó látszik, a jelölő nem.
 _CHAT_MARKER_FL = re.compile(r"<\s*FL:([a-z]{2})\s*>(.*?)<\s*/\s*FL\s*>", re.IGNORECASE | re.DOTALL)
@@ -2261,6 +2271,33 @@ _BARE_SVG_RE = re.compile(r"<svg\b.*?</svg\s*>", re.IGNORECASE | re.DOTALL)
 _EMPTY_FENCE_RE = re.compile(r"^\s*`{3,}[a-zA-Z]*\s*$", re.MULTILINE)
 
 
+def _vocab_valaszlehetosegek(szoveg: str) -> str:
+    """A kérdőjel után álló <VOCAB> jelölőkből látható választék lesz.
+
+    Csak akkor nyúl hozzá, ha a jelölők KÉRDÉS UTÁN állnak, és legalább
+    kettő van belőlük — ilyenkor ugyanis nem tanítás, hanem választék.
+    A tanítás közben álló jelölőket (mondat közepén, kérdés nélkül)
+    érintetlenül hagyja, azokat továbbra is eltávolítja a hívó.
+    """
+    if "<VOCAB" not in szoveg:
+        return szoveg
+
+    def csere(m: "re.Match[str]") -> str:
+        blokk = m.group(0)
+        parok = _CHAT_MARKER_VOCAB.findall(blokk)
+        if len(parok) < 2:
+            return blokk
+        # CSAK az idegen szó látszik. A magyar megfelelő elárulná a választ.
+        szavak = [f.strip() for _, f in parok if f.strip()]
+        return " " + ", ".join(szavak) if szavak else blokk
+
+    # Kérdőjel, majd (esetleg szóközök után) csupa VOCAB jelölő a sor végéig.
+    minta = re.compile(
+        r"(?<=\?)\s*((?:\s*<\s*VOCAB\s*>[^<]*<\s*/\s*VOCAB\s*>){2,})",
+        re.IGNORECASE)
+    return minta.sub(csere, szoveg)
+
+
 def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[str, str]], list[str]]:
     """Belső jelölők eltávolítása; topic, level, szójegyzék párok, SVG ábrák."""
     level_val: int | None = None
@@ -2290,7 +2327,30 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     clean = _CHAT_MARKER_FL.sub(lambda m: m.group(2), text)
     clean = _CHAT_MARKER_TOPIC.sub("", clean)
     clean = _CHAT_MARKER_LEVEL.sub("", clean)
-    clean = _CHAT_MARKER_VOCAB.sub("", clean)
+    # A KÉRDÉS UTÁN ÁLLÓ SZÓJEGYZÉK-JELÖLŐK A VÁLASZLEHETŐSÉGEK.
+    #
+    # ÉLES HIBA, amit a lejátszott órák hoztak elő. A tanár ezt írta:
+    #     Most te jössz: melyik a „látott”?
+    #     <VOCAB>látott=visto</VOCAB><VOCAB>írt=escrito</VOCAB>...
+    # A jelölők eltűntek, és a gyerek ezt látta:
+    #     Most te jössz: melyik a „látott”?
+    # Válaszlehetőség NÉLKÜL. Nem tudott mire válaszolni.
+    #
+    # A javítás nem törli őket, hanem MEGMUTATJA az idegen szavakat
+    # választékként — a magyar megfelelőt viszont NEM, mert az elárulná a
+    # választ. Így a törött kérdésből működő feleletválasztós lesz.
+    clean = _vocab_valaszlehetosegek(clean)
+    # A SZÓ MARAD, CSAK A JELÖLÉS TŰNIK EL — ugyanúgy, ahogy az <FL> jelölőnél.
+    #
+    # ÉLES HIBA, amit a lejátszott órák hoztak elő. A tanár ezt írta:
+    #     - <VOCAB>ma=hoy</VOCAB> = azt jelenti, hogy ma.
+    # a gyerek pedig EZT látta:
+    #     -  = azt jelenti, hogy ma.
+    # Vagyis épp az a szó hiányzott, amit tanulnia kellett volna. Minden
+    # nyelvórán, minden új szónál. Mostantól az IDEGEN szó marad a helyén:
+    #     - hoy = azt jelenti, hogy ma.
+    clean = _CHAT_MARKER_VOCAB.sub(lambda m: m.group(2).strip(), clean)
+    clean = _CHAT_MARKER_VOCAB_EGY.sub(lambda m: m.group(1).strip(), clean)
     clean = _CHAT_MARKER_SVG.sub("", clean)
     clean = _CHAT_MARKER_MONDD.sub("", clean)
     clean = _BARE_SVG_RE.sub("", clean)
@@ -2616,7 +2676,17 @@ _CHAT_LANGUAGE_DISPLAY = {
 
 
 def _normalize_chat_language(language: str | None) -> str:
-    lang = (language or "").strip().lower()
+    """A nyelv neve a program belső, ÉKEZET NÉLKÜLI alakjára.
+
+    ÉLES HIBA, 2026-09-02: a felület "német" alakban adta a nyelvet, a
+    _CHAT_LANGUAGES viszont az ékezet nélküli "nemet"-et tartalmazza. A
+    kettő soha nem egyezett, ezért ez a függvény ÜRES SZÖVEGET adott vissza
+    minden német órára — és üres nyelvvel a rendszerprompt idegennyelv-blokkja
+    (szókincs-jelölők, célnyelvi utasítások, évfolyamszint) NEM ÉPÜLT BE.
+    A német óra így nem is tudta magáról, hogy német óra.
+    Az angolnál és a spanyolnál nincs ékezet a nevükben, ezért nem tűnt fel.
+    """
+    lang = _nyelv_kulcs(language) or ""
     return lang if lang in _CHAT_LANGUAGES else ""
 
 
@@ -3051,10 +3121,13 @@ def _whisper_transcribe(
         raise NotImplementedError("OPENAI_API_KEY nincs beállítva")
     import io
 
+    # MINDKÉT ALAK KELL. A felület ÉKEZET NÉLKÜL küldi a nyelvet ("nemet"),
+    # ez a táblázat viszont csak az ékezetes alakot ismerte — a német beszédet
+    # ezért MAGYARKÉNT íratta át a felismerővel. 2026-09-02.
     lang_map = {
         "spanyol": "es",
         "angol": "en",
-        "német": "de",
+        "nemet": "de", "német": "de",
         "francia": "fr",
         "hu": "hu",
     }
@@ -4949,6 +5022,25 @@ A beszédfelismerő rendszeresen félrehallja a nem anyanyelvi kiejtést. Ha egy
   Ugyanez érvényes minden más, hangzásában közeli szóra is.
   CSAK akkor jelöld hibásnak, ha az átirat egy TELJESEN MÁS jelentésű szó (pl. "tree"
   helyett "dog"). Ha bizonytalan vagy, inkább fogadd el, és ismételtesd meg kedvesen.
+
+=== A JÓ VÁLASZ AZ JÓ. NE JAVÍTSD KI ===
+ÉLES HIBA, amit a gyerek kapott: leírta, hogy "no there is not" — ez TELJESEN
+HELYES angol —, a tanár mégis azt felelte: "A mondatod majdnem jó volt. Inkább
+így mondjuk: No, there isn't." Ez rosszabb a semminél: a gyerek megtanulta,
+hogy egy helyes alak hibás.
+- A RÖVIDÍTETT ÉS A TELJES ALAK EGYFORMÁN HELYES. is not = isn't, do not =
+  don't, I am = I'm, cannot = can't, there is not = there isn't. Egyik sem
+  "jobb" a másiknál, és EGYIK SEM HIBA.
+- Ha a gyerek válasza helyes, mondd ki, hogy HELYES. Ne mondd rá, hogy
+  "majdnem jó", "szinte jó", "kicsit még csiszoljuk". Ezek a szavak akkor
+  valók, ha tényleg volt benne hiba.
+- Másik alakot MUTATHATSZ, de nem javításként: "Ez így jó! Beszédben gyakran
+  így is mondjuk: No, there isn't." — a "jó" előbb van, és nincs "inkább".
+- GÉPELÉSNÉL A KIS- ÉS NAGYBETŰ, A VESSZŐ ÉS A PONT NEM HIBA. A gyerek
+  chatben ír, nem tollbamondást. A "no there is not" ugyanolyan jó válasz,
+  mint a "No, there is not."
+- Csak akkor javíts, ha a mondat TÉNYLEG hibás: rossz igealak, rossz szórend,
+  rossz szó. Ha nem vagy biztos benne, hogy hiba — akkor nem hiba.
 
 === MAGYAROS MEGFOGALMAZÁS ===
 Ne mondd, hogy "Mit jelent az angol flower?" — ez magyartalan.
@@ -8072,7 +8164,10 @@ def api_voice_transcribe():
         pass
 
     frame = "es" if _active_curriculum() == "ES" else "hu"
-    _foreign = language in ("angol", "német", "francia", "spanyol")
+    # "nemet" ÉS "német": a felület az elsőt küldi, a lista eddig csak a
+    # másodikat ismerte, ezért a NÉMET óra kimaradt az idegennyelv-ágból —
+    # nem futott rá a kétnyelvű átírás és a szakszó-súgó.
+    _foreign = language in ("angol", "nemet", "német", "francia", "spanyol")
     force_lang = "es" if frame == "es" else "hu"
 
     hint_words: list[str] | None = None
@@ -8117,7 +8212,8 @@ def api_voice_transcribe():
         route = "merge"
         error_line = ""
         native_lang = force_lang  # "hu" vagy "es"
-        target_lang_code_map = {"angol": "en", "német": "de", "francia": "fr", "spanyol": "es"}
+        target_lang_code_map = {"angol": "en", "nemet": "de", "német": "de",
+                            "francia": "fr", "spanyol": "es"}
         target_lang_code = target_lang_code_map.get(language)
 
         text_native = ""

@@ -1,0 +1,210 @@
+TutorIA – lejátszott órák, 2026-09-02 15:27
+
+
+======================================================================
+Idegen nyelv – spanyol · 6. osztály · Anna (11 éves)
+Témakör: ¿Qué has hecho hoy? – Mit csináltál ma? (pretérito perfecto)
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia! Ma azt fogjuk gyakorolni, hogyan mondjuk el spanyolul, mit csináltunk ma. 😊
+
+Először 4 fontos dolgot tanulunk:
+- <VOCAB>ma=hoy</VOCAB> = azt jelenti, hogy ma. Például: Hoy estudio español. (Ma spanyolt tanulok.)
+- <VOCAB>már=ya</VOCAB> = azt jelenti, hogy már. Például: Ya he terminado. (Már befejeztem.)
+- <VOCAB>csinálni=hacer</VOCAB> = azt jelenti, hogy csinálni, készíteni. Például: Hago la tarea. (Megcsinálom a házi feladatot.)
+- A spanyol befejezett múltban gyakran így mondjuk: he + befejezett melléknévi igenév. Például: He hecho la tarea. (Megcsináltam a házi feladatot.)
+
+Figyeld meg: a kész mondatban a he hecho azt jelenti, hogy „megcsináltam”. Ezt fogjuk majd sokszor használni.  
+Most te jössz! Hogyan mondod spanyolul azt, hogy „ma”? <VOCAB>ma=hoy</VOCAB><VOCAB>már=ya</VOCAB><VOCAB>csinálni=hacer</VOCAB>
+
+GYEREK: Hoy.
+
+TANÁR: Nagyon jó! 😊 A <VOCAB>hoy</VOCAB> azt jelenti, hogy ma.
+
+Most tanuljunk még kettőt:
+- <VOCAB>még nem=todavía no</VOCAB> = azt mondjuk, ha valami még nem történt meg. Például: Todavía no he escrito. (Még nem írtam meg.)
+- <VOCAB>valaha=alguna vez</VOCAB> = azt kérdezi, hogy valaha, életedben egyszer már megtörtént-e valami. Például: ¿Alguna vez has visto una película? (Valaha láttál már egy filmet?)
+
+Ezekkel tudsz kérdezni és válaszolni arról, hogy valami már megtörtént-e vagy még nem.  
+Most mondd meg: melyik a „még nem”? <VOCAB>még nem=todavía no</VOCAB><VOCAB>valaha=alguna vez</VOCAB>
+
+GYEREK: Todavía no.
+
+TANÁR: Nagyon ügyes! 😊 A <VOCAB>todavía no</VOCAB> helyes.
+
+Most jön három fontos múlt idejű alak:
+- <VOCAB>látott=visto</VOCAB> = a ver ige befejezett alakja. Például: He visto una película. (Láttam egy filmet.)
+- <VOCAB>írt=escrito</VOCAB> = az escribir ige befejezett alakja. Például: He escrito una carta. (Írtam egy levelet.)
+- <VOCAB>készített, csinált=hecho</VOCAB> = a hacer ige befejezett alakja. Például: He hecho la tarea. (Megcsináltam a házi feladatot.)
+
+Most te jössz: melyik a „látott”? <VOCAB>látott=visto</VOCAB><VOCAB>írt=escrito</VOCAB><VOCAB>készített, csinált=hecho</VOCAB>
+
+GYEREK: Visto.
+
+TANÁR: Szuper, ez helyes! 😊 A <VOCAB>visto</VOCAB> azt jelenti, hogy „látott”.
+
+Most gyakoroljuk egy kicsit a mondatok sorrendjét:
+- <VOCAB>már=ya</VOCAB> gyakran a mondat elején áll. Például: Ya he escrito. (Már írtam.)
+- <VOCAB>ma=hoy</VOCAB> azt mondja meg, hogy mikor történt valami. Például: Hoy he visto una película. (Ma láttam egy filmet.)
+- <VOCAB>valaha=alguna vez</VOCAB> kérdésben szokott állni. Például: ¿Alguna vez has escrito una carta? (Írtál már valaha levelet?)
+
+Most mondj egy szót: melyik azt jelenti, hogy „már”? <VOCAB>már=ya</VOCAB><VOCAB>ma=hoy</VOCAB><VOCAB>valaha=alguna vez</VOCAB>
+
+GYEREK: Ya.
+
+TANÁR: Nagyon jó! 😊 A <VOCAB>ya</VOCAB> helyes.
+
+Most még három fontos szót tanulunk:
+- <VOCAB>ezen a héten=esta semana</VOCAB> = azt jelenti, hogy ezen a héten. Például: Esta semana he escrito mucho. (Ezen a héten sokat írtam.)
+- <VOCAB>visszatérni=volver</VOCAB> = azt jelenti, hogy visszamenni, visszatérni. Például: He vuelto a casa. (Visszamentem haza.)
+- <VOCAB>végre=por fin</VOCAB> = akkor használjuk, amikor valami sok várakozás után sikerül. Például: Por fin he visto la película. (Végre megnéztem a filmet.)
+
+Most te jössz: melyik azt jelenti, hogy „végre”? <VOCAB>ezen a héten=esta semana</VOCAB><VOCAB>visszatérni=volver</VOCAB><VOCAB>végre=por fin</VOCAB>
+
+
+======================================================================
+Idegen nyelv – angol · 6. osztály · Viki (11 éves)
+Témakör: Where were you? – Hol voltál?
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia! Ma azt tanuljuk meg, hogyan beszélünk angolul a múltról, például arról, hogy hol voltál tegnap. 😊
+
+Először négy fontos szót tanulunk:
+- <FL:en>yesterday</FL> = tegnap. Például: <FL:en>Yesterday</FL> I was at home. (Tegnap otthon voltam.)
+- <FL:en>last week</FL> = múlt héten. Például: <FL:en>Last week</FL> I was at school. (Múlt héten az iskolában voltam.)
+- <FL:en>ago</FL> = ezelőtt. Például: Two days <FL:en>ago</FL> I was tired. (Két nappal ezelőtt fáradt voltam.)
+- <FL:en>then</FL> = akkor, azután. Például: I was small <FL:en>then</FL>. (Akkor még kicsi voltam.)
+
+Most egy nagyon fontos múlt idejű szót is megtanulunk:
+- <FL:en>was</FL> = voltam, volt, volt. Ezt akkor használjuk, ha egyes számról beszélünk. Például: I <FL:en>was</FL> happy. (Boldog voltam.)
+- <FL:en>were</FL> = voltunk, voltatok, voltak. Ezt többes számnál használjuk. Például: We <FL:en>were</FL> at the park. (A parkban voltunk.)
+
+Egy könnyű szabály:
+- I <FL:en>was</FL>...
+- you / we / they <FL:en>were</FL>...
+
+Most te jössz: melyik kell ide? <FL:en>I ___ at home.</FL>
+
+GYEREK: was.
+
+TANÁR: Nagyon jó! 😊 Az I-hoz a <FL:en>was</FL> kell.
+
+Most jön egy új, nagyon hasznos fordulat:
+- <FL:en>born</FL> = született. Például: I was <FL:en>born</FL> in 2014. (2014-ben születtem.)
+- <FL:en>childhood</FL> = gyerekkor. Például: My <FL:en>childhood</FL> was happy. (A gyerekkorom boldog volt.)
+- <FL:en>old</FL> = idős vagy régi. Például: My grandma is <FL:en>old</FL>. (A nagymamám idős.)
+- <FL:en>young</FL> = fiatal. Például: I was <FL:en>young</FL> in the photo. (Fiatal voltam a képen.)
+
+Figyeld meg:
+- <FL:en>old</FL> lehet idős vagy régi is.
+- <FL:en>young</FL> a fiatal ellentéte.
+
+Melyik szóval mondanád azt, hogy „fiatal”?
+
+GYEREK: young.
+
+TANÁR: Ügyes! 😊 A <FL:en>young</FL> jelentése: fiatal.
+
+Most gyakoroljunk egy kicsit a múltról:
+- <FL:en>Where were you?</FL> = Hol voltál?
+- <FL:en>I was at home.</FL> = Otthon voltam.
+- <FL:en>I was born in 2014.</FL> = 2014-ben születtem.
+
+Emlékszel, melyik szó jelentette azt, hogy „tegnap”? <VOCAB>tegnap=yesterday</VOCAB>
+
+GYEREK: yesterday.
+
+TANÁR: Nagyon jó! 😊 A <FL:en>yesterday</FL> tényleg azt jelenti, hogy tegnap.
+
+Most két új időszót tanulunk:
+- <FL:en>last week</FL> = múlt héten. Például: <FL:en>Last week</FL> I was at my grandma’s. (Múlt héten a nagymamámnál voltam.)
+- <FL:en>ago</FL> = ezelőtt. Például: Two days <FL:en>ago</FL> I was tired. (Két nappal ezelőtt fáradt voltam.)
+- <FL:en>then</FL> = akkor, azután. Például: I was small <FL:en>then</FL>. (Akkor még kicsi voltam.)
+
+Most figyelj: a <FL:en>was</FL> és <FL:en>were</FL> múlt idejű létige.
+- I <FL:en>was</FL>...
+- you / we / they <FL:en>were</FL>...
+
+Melyik illik ide: <FL:en>We ___ at school last week.</FL> <VOCAB>múlt héten=last week</VOCAB><VOCAB>ezelőtt=ago</VOCAB><VOCAB>akkor=then</VOCAB>
+
+GYEREK: were.
+
+TANÁR: Nagyon ügyes! 😊 A <FL:en>we</FL> mellé a <FL:en>were</FL> kell.
+
+Most egy kicsit visszaidézzük az eddigieket:
+- <FL:en>born</FL> = született. Példa: I was <FL:en>born</FL> in 2014. (2014-ben születtem.)
+- <FL:en>childhood</FL> = gyerekkor. Példa: My <FL:en>childhood</FL> was happy. (A gyerekkorom boldog volt.)
+- <FL:en>old</FL> = idős vagy régi. Példa: My bike is <FL:en>old</FL>. (A biciklim régi.)
+- <FL:en>young</FL> = fiatal. Példa: I was <FL:en>young</FL> in the photo. (Fiatal voltam a képen.)
+
+Most te jössz: melyik szó jelentése „gyerekkor”? <VOCAB>született=born</VOCAB><VOCAB>gyerekkor=childhood</VOCAB><VOCAB>idős vagy régi=old</VOCAB><VOCAB>fiatal=young</VOCAB>
+
+
+======================================================================
+Idegen nyelv – nemet · 6. osztály · Máté (11 éves)
+Témakör: Wo warst du? – Hol voltál? (múlt idő)
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Máté! Ma azt fogjuk tanulni, hogyan mondjuk el németül, hol voltál és mikor történt valami. 😊
+
+Először négy fontos szót nézünk meg:
+- <FL:de>gestern</FL> = tegnap. Például: <FL:de>Gestern</FL> war ich zu Hause. (Tegnap otthon voltam.)
+- <FL:de>letzte Woche</FL> = múlt héten. Például: <FL:de>Letzte Woche</FL> war ich krank. (Múlt héten beteg voltam.)
+- <FL:de>damals</FL> = akkoriban, régen. Például: <FL:de>Damals</FL> war alles anders. (Akkoriban minden más volt.)
+- <FL:de>der Urlaub</FL> = a nyaralás. Például: <FL:de>Der Urlaub</FL> war spannend. (A nyaralás izgalmas volt.)
+
+Most te jössz: melyik szó jelenti azt, hogy „tegnap”?  
+<VOCAB>tegnap=gestern</VOCAB><VOCAB>múlt héten=letzte Woche</VOCAB><VOCAB>akkoriban=damals</VOCAB><VOCAB>nyaralás=der Urlaub</VOCAB>
+
+GYEREK: gestern
+
+TANÁR: Ügyes vagy! ✅ A <FL:de>gestern</FL> tényleg azt jelenti, hogy tegnap.
+
+Most tanuljunk még három fontos szót:
+- <FL:de>zu Hause</FL> = otthon. Például: <FL:de>Ich war zu Hause.</FL> (Otthon voltam.)
+- <FL:de>krank</FL> = beteg. Például: <FL:de>Letzte Woche war ich krank.</FL> (Múlt héten beteg voltam.)
+- <FL:de>langweilig</FL> = unalmas. Például: <FL:de>Der Tag war langweilig.</FL> (A nap unalmas volt.)
+
+Emlékezz: a mondat elején is állhat az időhatározó, például: <FL:de>Gestern</FL> war ich zu Hause. (Tegnap otthon voltam.)
+
+Melyik szó jelenti azt, hogy „beteg”?  
+<VOCAB>otthon=zu Hause</VOCAB><VOCAB>beteg=krank</VOCAB><VOCAB>unalmas=langweilig</VOCAB>
+
+GYEREK: krank
+
+TANÁR: Nagyon ügyes! ✅ A <FL:de>krank</FL> valóban azt jelenti, hogy beteg.
+
+Most jön még három hasznos szó:
+- <FL:de>spannend</FL> = izgalmas. Például: <FL:de>Der Film war spannend.</FL> (A film izgalmas volt.)
+- <FL:de>plötzlich</FL> = hirtelen. Például: <FL:de>Plötzlich</FL> war es dunkel.</FL> (Hirtelen sötét lett.)
+- <FL:de>danach</FL> = azután. Például: <FL:de>Danach</FL> bin ich nach Hause gegangen. (Azután hazamentem.)
+
+Most egy könnyű kérdés: melyik szó jelenti azt, hogy „hirtelen”?  
+<VOCAB>izgalmas=spannend</VOCAB><VOCAB>hirtelen=plötzlich</VOCAB><VOCAB>azután=danach</VOCAB>
+
+GYEREK: plötzlich
+
+TANÁR: Szuper! ✅ A <FL:de>plötzlich</FL> azt jelenti, hogy hirtelen.
+
+Most egy fontos nyelvtani részt tanulunk: a <FL:de>sein</FL> múlt idejét.  
+- <FL:de>ich war</FL> = én voltam  
+- <FL:de>du warst</FL> = te voltál  
+- <FL:de>er/sie/es war</FL> = ő volt  
+Például: <FL:de>Gestern war ich zu Hause.</FL> (Tegnap otthon voltam.)
+
+Melyik mondat jelentése: „Tegnap otthon voltam.”?
+
+GYEREK: Gestern war ich zu Hause.
+
+TANÁR: Nagyon jó! ✅ Pontosan ezt jelenti: <FL:de>Gestern war ich zu Hause.</FL> = Tegnap otthon voltam.
+
+Most egy másik fontos alak jön: a <FL:de>haben</FL> múlt ideje.  
+- <FL:de>ich hatte</FL> = nekem volt / volt nálam  
+- <FL:de>du hattest</FL> = neked volt / volt nálad  
+- <FL:de>er/sie/es hatte</FL> = neki volt  
+Például: <FL:de>Letzte Woche hatte ich Fieber.</FL> (Múlt héten lázam volt.)
+
+Melyik mondat jelentése: „Múlt héten lázam volt.”?

@@ -62,6 +62,21 @@ nevére — magánszemélyként aláírva most rendben van, de nem marad az.
 
 ---
 
+## TANANYAG-HIÁNY
+
+- [x] **A német tananyag rendben van, és be is töltődik.**
+      Kétszer tévedtem vele 2026-09-02-én. Először azt hittem, hiányos a
+      JSON (nem az: teljes, sorrenddel és szókinccsel). Aztán azt, hogy a
+      program nem tölti be (betölti: a felület ÉKEZET NÉLKÜL küldi a
+      nyelvet — `value="nemet"` —, és a betöltő pont ezt várja).
+      A hibát a tanar_teszt.py-ba ÉN írtam bele, ékezettel.
+
+- [x] **Viszont három VALÓDI hiba kijött közben, a fordítottja:**
+      a hangátírás három helyen csak az ÉKEZETES "német" alakot ismerte,
+      miközben a felület ékezet nélkülit küld. Következmény: a német
+      beszédet MAGYARKÉNT íratta át, és a német óra kimaradt a kétnyelvű
+      átírásból. Javítva: mindhárom hely mindkét alakot elfogadja.
+
 ## HIÁNYZÓ FUNKCIÓK
 
 - [ ] A spanyol oldalon nincs album.
