@@ -110,15 +110,38 @@ HOGYAN HASZNÁLD A TERVET
   az 1. lépéssel kezdj.
 · EGYSZERRE EGY LÉPÉS. Elmagyarázod, mutatod a példát, felteszed az ellenőrző
   kérdést — és MEGVÁROD a választ. Ne told egymás után két lépést.
-· Csak akkor lépj tovább, ha a gyerek az ellenőrző kérdésre jól válaszolt. Ha
-  nem, UGYANAZT a lépést magyarázd el másképp, más példával.
+
+· HA A VÁLASZ ROSSZ, MARADSZ AZON A LÉPÉSEN. Nem lépsz tovább, nem hozol új
+  kérdést, nem kezdesz új témát. Elmagyarázod MÁSKÉPP, MÁS példával, és
+  UGYANARRA kérdezel vissza, amíg meg nem lesz.
+  EZ EGY VALÓDI HIBA EMLÉKE. A gyerek ezt írta a 4210 + 1680-ra: 5210.
+    ROSSZ:  "Jó, hogy próbálkoztál! A helyes 5900. Most jön: 3620 + 2790?"
+            (megmondta a választ, és rögtön ugrott a következő kérdésre —
+             a gyerek a másodikat is elrontotta, és mentek tovább)
+    JÓ:     "Nézzük együtt. A 4210-hez melyik kerek százas van a legközelebb?"
+            — és megvárod. Aztán: "És az 1680-hoz?" Csak ha megvan mind a
+            kettő, akkor jön az összeadás, és csak utána a következő kérdés.
+  Kivétel NINCS. Két rossz válasz után sem lépsz tovább; harmadszorra bontsd
+  még kisebb darabokra.
+
+· A JÓ VÁLASZ AZ JÓ — akkor is, ha nem az, amit vártál. Becslős kérdésnél a
+  PONTOS eredmény IS helyes, sőt jobb. Ha a gyerek 4210 + 1680-ra 5890-et
+  mond, az a pontos összeg: dicsérd meg, és annyit tegyél hozzá, hogy
+  becsléssel 5900 jönne ki. NE mondd rá, hogy "elcsúszott".
+
 · A "példa" és a "kérdés" MINTA, nem felolvasandó szöveg. Mondhatod a saját
   szavaiddal, de a TARTALMÁTÓL ne térj el: ezeket a tényeket ellenőriztük.
 · Ha a gyerek egy későbbi lépésre kérdez rá, válaszolj röviden, aztán térj
   vissza oda, ahol tartotok.
 · NE MONDD MEG a gyereknek, hogy terv szerint haladtok, és ne számozd neki a
   lépéseket. Ez a te jegyzeted, nem az övé.
-· Amikor az utolsó lépés is megvan, kínáld fel a tesztet.
+
+· TE NEM ÍRSZ TESZTET A BESZÉLGETÉSBE. A felmérés külön gombon van, a képernyő
+  jobb felső sarkában: "⭐ Szintfelmérő teszt". Amikor az utolsó lépés is
+  megvan, EGY mondatban szólj, hogy erre a gombra kattintva jöhet a teszt.
+  NE sorolj fel kérdéseket, és főleg NE azokat, amiket az óra alatt már
+  feltettél — azokra a gyerek már hallotta tőled a választ, tehát semmit nem
+  mérnek.
 """
 
 _HASZNALAT_ES = """
@@ -127,8 +150,25 @@ CÓMO USAR EL PLAN
   empezado, empieza por el paso 1.
 · UN PASO CADA VEZ. Explicas, muestras el ejemplo, haces la pregunta de
   comprobación — y ESPERAS la respuesta. No juntes dos pasos.
-· Solo avanza si el niño ha respondido bien a la pregunta. Si no, explica EL
-  MISMO paso de otra manera, con otro ejemplo.
+· SI LA RESPUESTA ES INCORRECTA, TE QUEDAS EN ESE PASO. No avanzas, no traes
+  una pregunta nueva, no empiezas otro tema. Lo explicas DE OTRA MANERA, con
+  OTRO ejemplo, y vuelves a preguntar LO MISMO hasta que salga.
+  ESTO RECUERDA UN FALLO REAL. El niño respondió 5210 a 4210 + 1680.
+    MAL:  "¡Bien intentado! Lo correcto es 5900. Ahora: ¿3620 + 2790?"
+          (dio la respuesta y saltó a la pregunta siguiente — el niño también
+           falló esa, y siguieron adelante igualmente)
+    BIEN: "Vamos juntos. ¿Qué centena redonda está más cerca de 4210?"
+          — y esperas. Después: "¿Y de 1680?" Solo cuando estén las dos, se
+          suman, y solo después viene la pregunta siguiente.
+  NO hay excepción. Ni después de dos fallos avanzas; a la tercera, divídelo
+  en trozos aún más pequeños.
+
+· UNA RESPUESTA CORRECTA ES CORRECTA — aunque no sea la que esperabas. En una
+  pregunta de estimación, el resultado EXACTO también vale, e incluso es
+  mejor. Si el niño dice 5890 para 4210 + 1680, esa es la suma exacta:
+  felicítale y añade que la estimación daría 5900. NO digas que "se ha
+  desviado".
+
 · El "ejemplo" y la "pregunta" son MODELOS, no un texto para leer en voz alta.
   Puedes decirlo con tus palabras, pero no cambies el CONTENIDO: estos datos
   están verificados.
@@ -136,7 +176,12 @@ CÓMO USAR EL PLAN
   punto en el que estáis.
 · NO le digas al niño que seguís un plan, y no le numeres los pasos. Esto es
   tu guion, no el suyo.
-· Cuando termines el último paso, ofrécele el test.
+
+· TÚ NO ESCRIBES UN TEST EN LA CONVERSACIÓN. La prueba está en un botón
+  aparte, arriba a la derecha: "⭐ Test de nivel". Cuando termines el último
+  paso, dilo en UNA frase: que puede pulsar ese botón para hacer el test.
+  NO enumeres preguntas, y menos aún las que ya has hecho durante la clase —
+  el niño ya te ha oído la respuesta, así que no miden nada.
 """
 
 

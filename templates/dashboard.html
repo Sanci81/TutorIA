@@ -24,13 +24,34 @@
                     {% for c in range(50) %}<span class="confetti confetti-{{ c % 5 }}"></span>{% endfor %}
                 </div>
                 <div class="birthday-card">
+                    <button type="button" class="birthday-zaro"
+                            data-birthday-close="birthday-{{ child['id'] }}"
+                            aria-label="Bezárás" title="Bezárás">&times;</button>
                     <div class="birthday-emoji">🎉🎂</div>
                     <h2>Boldog születésnapot, {{ child['name'] }}! 🎈</h2>
                     <p>A TutorIA csapata sok boldogságot kíván!</p>
                 </div>
             </div>
             <script>
-                (function(){var el=document.getElementById('birthday-{{ child["id"] }}');if(el){setTimeout(function(){el.style.opacity='0';el.style.transition='opacity 0.8s';setTimeout(function(){el.remove();},800);},5000);}})();
+                // Az ablak 5 másodperc után magától eltűnik. A gomb és az Esc
+                // ugyanazt csinálja, csak azonnal – ne kelljen megvárni.
+                (function(){
+                    var el=document.getElementById('birthday-{{ child["id"] }}');
+                    if(!el){return;}
+                    var lement=false;
+                    function bezar(){
+                        if(lement){return;} lement=true;
+                        el.style.transition='opacity 0.8s';
+                        el.style.opacity='0';
+                        setTimeout(function(){el.remove();},800);
+                    }
+                    var gomb=el.querySelector('[data-birthday-close]');
+                    if(gomb){gomb.addEventListener('click',bezar);}
+                    document.addEventListener('keydown',function(e){
+                        if(e.key==='Escape'){bezar();}
+                    });
+                    setTimeout(bezar,5000);
+                })();
             </script>
             {% endif %}
             <article class="child-card">
@@ -67,20 +88,9 @@
                        href="{{ url_for('edit_child', child_id=child['id']) }}">
                         {{ t('btn_edit_child') }}
                     </a>
-                    {# A gyűjtemény a GYEREKHEZ tartozik, nem a tantárgyhoz,
-                       ezért az album és a bolt a profilkártyán van. #}
                     <a class="btn btn-ghost" style="margin-top:0.5rem; display:inline-block;"
-                       href="{{ url_for('child_album', child_id=child['id']) }}">
-                        {{ album_jel|safe }} Gyűjtőalbum
-                    </a>
-                    <a class="btn btn-ghost" style="margin-top:0.5rem; display:inline-block;"
-                       href="{{ url_for('child_shop', child_id=child['id']) }}">
-                        {{ tasak_jel|safe }} Bolt
-                        <b style="color:#d97706">{{ egyenleg.get(child['id'], 0) }}</b> érme
-                    </a>
-                    <a class="btn btn-ghost" style="margin-top:0.5rem; display:inline-block;"
-                       href="{{ url_for('child_looks', child_id=child['id']) }}">
-                        {{ kinezet_jel|safe }} Kinézet
+                       href="{{ url_for('child_collection', child_id=child['id']) }}">
+                        🃏 Tudáskártyák
                     </a>
                     <a href="{{ url_for('select_tasks', child_id=child['id']) }}"
                        style="display:block; width:100%; padding:1rem;

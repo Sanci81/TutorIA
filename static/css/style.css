@@ -2020,6 +2020,28 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
     z-index: 2;
     max-width: 420px;
 }
+/* Bezáró gomb. A .birthday-modal-on `pointer-events: none` van (hogy a
+   konfetti alatt is lehessen az oldalt használni), ezért a gombon ezt
+   VISSZA kell kapcsolni – enélkül látszik, de nem kattintható. */
+.birthday-zaro {
+    position: absolute;
+    top: 10px; right: 14px;
+    width: 36px; height: 36px;
+    border: 0; border-radius: 50%;
+    background: transparent;
+    color: #8a938e;
+    font-size: 26px; line-height: 1;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: background 0.15s, color 0.15s;
+}
+.birthday-zaro:hover,
+.birthday-zaro:focus-visible { background: #f0f2f1; color: #3a423e; }
+.birthday-zaro:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(31, 122, 77, 0.35);
+}
+
 .birthday-emoji { font-size: 3rem; margin-bottom: 0.5rem; }
 .birthday-card h2 { font-size: 1.5rem; margin: 0.5rem 0; color: #222; }
 .birthday-card p { font-size: 1rem; color: #666; margin: 0; }
