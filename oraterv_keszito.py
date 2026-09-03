@@ -39,9 +39,15 @@ HASZNÁLAT
     (Ctrl+C), és később ott folytatja, ahol abbahagyta.
 
 MENNYIBE KERÜL
-    Témakörönként két AI-hívás. Egy tantárgy egy évfolyama nagyjából
-    8-10 témakör, tehát 16-20 hívás — néhány tíz cent. Indítás előtt
-    kiírja, hány témakör jön, és megkérdezi, indulhat-e.
+    Témakörönként két AI-hívás. Indítás előtt kiírja, hány témakör jön, és
+    megkérdezi, indulhat-e. A VÉGÉN kiírja, hány tokent használt el, és hogy
+    a teljes tananyag ennek hányszorosa lenne — így nem kell találgatni.
+
+    python oraterv_keszito.py --tantargy Matematika --evfolyam 4 --ujra --olcso
+        A PISZKOZATOT az olcsó modell írja, a TÉNYEKET viszont ugyanaz az
+        erős modell nézi át, mint eddig. A minőség kapuja az ellenőrző, ezért
+        ez a fele-harmada árból is jó tervet adhat. Egy tantárgyon érdemes
+        kipróbálni és összehasonlítani, mielőtt mindet így csinálnánk.
 """
 
 from __future__ import annotations
@@ -71,8 +77,14 @@ except Exception as hiba:                              # pragma: no cover
 
 KESZITO_MODELL = "gpt-5.4"        # a tervet ő írja
 ELLENOR_MODELL = "gpt-5.4"        # a tényeket ő nézi át
+OLCSO_KESZITO = "gpt-5.4-mini"    # --olcso: a piszkozatot az olcsó írja
 NYELVEK = ("angol", "nemet", "spanyol")
 MAPPA = oraterv.MAPPA
+
+# Elhasznált tokenek modellenként: {modell: [bemenet, kimenet]}.
+# MIÉRT: a számla utólag jön, és összemosódik a gyerekek beszélgetéseivel.
+# Így futás közben látod, mit visz el EZ a munka, és nem kell találgatni.
+_TOKENEK: dict[str, list[int]] = {}
 
 
 def _kliens(idokorlat: float = 180.0):
@@ -91,7 +103,35 @@ def _json_valasz(kliens, modell: str, keres: str) -> dict:
         model=modell,
         messages=[{"role": "user", "content": keres}],
         response_format={"type": "json_object"})
+    hasznalat = getattr(v, "usage", None)
+    if hasznalat is not None:
+        sor = _TOKENEK.setdefault(modell, [0, 0])
+        sor[0] += int(getattr(hasznalat, "prompt_tokens", 0) or 0)
+        sor[1] += int(getattr(hasznalat, "completion_tokens", 0) or 0)
     return json.loads(v.choices[0].message.content or "{}")
+
+
+def _token_jelentes(kesz_darab: int) -> None:
+    """Mennyi fogyott, és ebből mennyi lenne a teljes tananyag."""
+    if not _TOKENEK:
+        return
+    print("\nELHASZNÁLT TOKENEK")
+    ossz_be = ossz_ki = 0
+    for modell, (be, ki) in sorted(_TOKENEK.items()):
+        print(f"  {modell:16} bemenet {be:>9,}   kimenet {ki:>9,}"
+              .replace(",", " "))
+        ossz_be += be
+        ossz_ki += ki
+    print(f"  {'ÖSSZESEN':16} bemenet {ossz_be:>9,}   kimenet {ossz_ki:>9,}"
+          .replace(",", " "))
+    if kesz_darab:
+        print(f"\n  Ez {kesz_darab} tantárgy-évfolyam. Egyre jut: "
+              f"{ossz_be // kesz_darab:,} bemenet + {ossz_ki // kesz_darab:,} "
+              "kimenet.".replace(",", " "))
+        print(f"  A teljes tananyag (110 tantárgy-évfolyam) ennek a "
+              f"{110 / kesz_darab:.0f}-szerese lenne.")
+    print("\n  A DOLLÁRT a platform.openai.com Usage oldalán látod. Vedd le a")
+    print("  'Default project' szűrőt, és állítsd a dátumot mai napra.")
 
 
 # A lenyomatot és a fájlnevet AZ oraterv.py adja, nem itt számoljuk újra.
@@ -237,7 +277,14 @@ def main() -> int:
     p.add_argument("--mind", action="store_true", help="minden tantárgy")
     p.add_argument("--ujra", action="store_true",
                    help="a már kész fájlokat is újragenerálja")
+    p.add_argument("--olcso", action="store_true",
+                   help="a piszkozatot az olcsó modell írja; a TÉNYEKET "
+                        "ugyanaz az erős modell nézi át, mint eddig")
     a = p.parse_args()
+
+    global KESZITO_MODELL
+    if a.olcso:
+        KESZITO_MODELL = OLCSO_KESZITO
 
     if not (a.tantargy or a.mind):
         print("Adj meg egy tantárgyat, vagy a --mind kapcsolót.")
@@ -290,13 +337,16 @@ def main() -> int:
         f"{c} {e}. o." + (f" ({n})" if n else "")
         for _, c, e, n, _ in tennivalo[:6])
         + ("…" if len(tennivalo) > 6 else ""))
-    print("\nTémakörönként két AI-hívás. Indulhat? (i/n) ", end="")
+    print(f"\nTémakörönként két AI-hívás: a tervet a {KESZITO_MODELL} írja, "
+          f"a tényeket a {ELLENOR_MODELL} nézi át.")
+    print("Indulhat? (i/n) ", end="")
     if input().strip().lower() not in ("i", "igen", "y", "yes"):
         print("Nem csináltam semmit.")
         return 0
 
     kliens = _kliens()
     osszes_javitas = 0
+    kesz_darab = 0
     for i, (fajl, cimke, evf, nyelv, ki) in enumerate(tennivalo, 1):
         jel = f"{cimke} {evf}. o." + (f" ({nyelv})" if nyelv else "")
         try:
@@ -315,6 +365,7 @@ def main() -> int:
                 terv = _egy_temakor(kliens, cimke, evf, nyelv, t)
             except KeyboardInterrupt:
                 print("\nMegszakítva. Ami kész, az megmaradt.")
+                _token_jelentes(kesz_darab)
                 return 0
             except Exception as hiba:
                 print(f"      ! {t['name'][:40]}: {type(hiba).__name__}: "
@@ -339,14 +390,14 @@ def main() -> int:
             "keszito_modell": KESZITO_MODELL,
             "temakorok": tervek,
         }, ensure_ascii=False, indent=1), encoding="utf-8")
+        kesz_darab += 1
         print(f"      → {ki.name}")
 
     print(f"\nKész. Összesen {osszes_javitas} ténybeli hibát javított ki az "
           "ellenőrző, MIELŐTT bármelyik gyerek látta volna.")
     print(f"A tervek itt vannak: {MAPPA}")
-    print("Az OLDAL ettől nem változott semmit — az app.py-hoz ez a program "
-          "hozzá sem nyúlt. A bekötés külön lépés lesz.")
     print("Ha van fent '! bennemaradt' sor, azt az ellenőrző nem vette észre.")
+    _token_jelentes(kesz_darab)
     return 0
 
 
