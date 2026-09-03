@@ -50,6 +50,7 @@ import level
 import kartyak
 import kiejtes
 import kinezet
+import oraterv
 import pontok
 import szamellenor
 import tasak
@@ -2936,25 +2937,43 @@ def _tanitasi_sorrend(topic: dict, *, spanyol: bool) -> str:
     return "\n".join(sorok) + "\n"
 
 
-def _topic_teaching_prompt_block(topic: dict | None, *, es_curriculum: bool = False) -> str:
+def _topic_teaching_prompt_block(
+    topic: dict | None,
+    *,
+    es_curriculum: bool = False,
+    subject_file: str = "",
+    grade=None,
+    language: str | None = None,
+) -> str:
     if not topic:
         return ""
     text = (topic.get("text") or "")[:12000]
     # A SORREND a próza UTÁN jön, közvetlenül az utasítás előtt: ez az utolsó,
     # amit a modell a témakörről olvas, és ez a kötelező érvényű rész.
     sorrend = _tanitasi_sorrend(topic, spanyol=es_curriculum)
+    # Az ELŐRE ELKÉSZÍTETT, tényellenőrzött óraterv. Ha nincs ilyen a
+    # témakörhöz, üres marad, és minden megy tovább pontosan úgy, ahogy eddig.
+    terv = ""
+    try:
+        terv = oraterv.prompt_blokk(
+            oraterv.lepesek(subject_file, grade, _nyelv_kulcs(language), topic),
+            spanyol=es_curriculum,
+        )
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("ORATERV: a terv betöltése nem sikerült")
+        terv = ""
     if es_curriculum:
         return (
             f"\n\nAhora estáis en el siguiente tema: {topic.get('name', '')}.\n"
             f"Contenido curricular del tema:\n{text}\n"
-            f"{sorrend}"
+            f"{sorrend}{terv}"
             "Enséñale al niño paso a paso a partir de este contenido, "
             "y ofrécele el test cuando creas que está preparado (o si el niño lo pide).\n"
         )
     return (
         f"\n\nMost a következő témán vagytok: {topic.get('name', '')}.\n"
         f"Témakör tananyaga (kerettanterv):\n{text}\n"
-        f"{sorrend}"
+        f"{sorrend}{terv}"
         "Ebből tanítsd a gyereket lépésről lépésre, majd kínáld fel a tesztet, "
         "ha úgy érzed, készen áll (vagy ha a gyerek kéri).\n"
     )
@@ -6698,7 +6717,13 @@ def child_chat_send(child_id: int):
         szokincs=current_topic_item.get("szokincs") if is_foreign and current_topic_item else None,
         spiralis=bool(chat_curriculum.get("spiralis")),
     )
-    system_prompt += _topic_teaching_prompt_block(current_topic_item, es_curriculum=_active_curriculum() == "ES")
+    system_prompt += _topic_teaching_prompt_block(
+        current_topic_item,
+        es_curriculum=_active_curriculum() == "ES",
+        subject_file=subject,
+        grade=grade_num,
+        language=language or None,
+    )
     if chat_mode == "voice":
         system_prompt += _voice_mode_prompt_block(_child_effective_age(child))
         # Ha az előző választ nehezen lehetett érteni, a tanár most kedvesen

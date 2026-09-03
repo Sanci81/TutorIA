@@ -3,7 +3,7 @@
 Ez a fájl azért van, hogy ne a fejedben kelljen tartani. Ha valamit
 elintéztél, húzd ki, vagy töröld a sort.
 
-Utoljára frissítve: 2026-09-02
+Utoljára frissítve: 2026-09-03
 
 ---
 
@@ -42,23 +42,40 @@ nevére — magánszemélyként aláírva most rendben van, de nem marad az.
 
 ## AZ OKTATÁS MINŐSÉGE (ez a fő munka)
 
-- [ ] **Óraterv.** A témakörön belül ma nincs sorrend: a tanár minden
-      fordulóban a nulláról improvizál. Innen jön, hogy a `there is /
+- [~] **Óraterv.** A témakörön belül eddig nem volt sorrend: a tanár minden
+      fordulóban a nulláról improvizált. Innen jött, hogy a `there is /
       there are` a létige ELŐTT került elő.
-      A tantervi fájlokban ott a helyes sorrend (pl. angol 5. osztály:
-      1. létige, 2. kérdőszavak, 3. rövid válaszok), de a
-      `curriculum_loader.extract_topic_catalog()` eldobja — csak
-      `id, name, text, index, ora_szam` marad.
-      Négy lépés: (1) a `nyelvtan` és `szokincs` mezők visszaszerzése,
-      (2) a terv generálása és tárolása témakörönként, (3) a tanári
-      prompt átállítása a tervre, (4) admin nézet, ahol a terv
-      megnézhető és újragenerálható.
+      - [x] (1) a `nyelvtan` és `szokincs` mezők visszaszerzése
+            (`curriculum_loader._szerkezet`)
+      - [x] (2) a terv generálása és tárolása témakörönként
+            (`oraterv_keszito.py` → `oratervek/` mappa)
+      - [x] (3) a tanári prompt átállítása a tervre (`oraterv.py`, és az
+            `app.py`-ban a `_topic_teaching_prompt_block` — EGYETLEN hely)
+      - [ ] (4) admin nézet, ahol a terv megnézhető és újragenerálható
+      - [ ] a többi tantárgy legenerálása (ma CSAK a matek 4. van kész)
+
+      HOGY MŰKÖDIK: `oratervek/Matematika_1_4__4.json` — tantárgyanként,
+      évfolyamonként (nyelveknél nyelvenként) egy fájl. Ha egy témakörhöz
+      NINCS terv, az `oraterv.py` üres szöveget ad, és minden pontosan úgy
+      megy, ahogy eddig. A terv mellé el van mentve a tantervi szöveg
+      lenyomata: ha a kerettanterv változik, a régi terv MAGÁTÓL érvényét
+      veszti — nem tanít elavult anyagot.
+
+      FONTOS: az `oratervek/` mappa NINCS a .gitignore-ban, tehát a
+      tervek a repóval együtt mennek ki Railwayre. Push után élesek.
+
+      MENNYIBE KERÜL a többi: kb. 110 tantárgy-évfolyam, nagyságrendileg
+      40-50 euró. Ezért lett először CSAK a matek: ha a szerkezeten
+      igazítani kell, egy tantárgy megy újra, nem száztíz.
 
 - [ ] **A 888 soros tanári utasítás megrövidítése.**
       Önmagának mond ellent (4657. sor: "Taníts meg 3-4 új dolgot
       EGYSZERRE" vs 4858. sor: "EGYSZERRE CSAK EGY új nyelvi elemet").
-      CSAK az óraterv élesedése UTÁN — külön lépésben, hogy tudjuk,
-      melyik változtatás mit okozott.
+      Most már az ÓRATERVNEK is ellentmond ("egyszerre egy lépés").
+      A terv az utasítás legvégén van, tehát erősebb — de ha a próbán
+      azt látod, hogy a tanár továbbra is ömleszt, ez a régi sor a
+      bűnös, azt kell kivenni. KÜLÖN lépésben, hogy tudjuk, melyik
+      változtatás mit okozott.
 
 ---
 
@@ -139,7 +156,14 @@ A tanar_teszt.py HIBAKERESŐNEK kiváló, MÉRŐMŰSZERNEK csak így.
 
 ## AMI A JELENTÉSBŐL MÉG HÁTRAVAN
 
-- [ ] **Ténybeli hibák** (5 biztos a legutóbbi futásban). Például:
+- [~] **Ténybeli hibák.** Erre lett az óraterv: a matek 4. tervében az
+      ellenőrző 39 ténybeli hibát javított ki, MIELŐTT gyerek látta
+      volna. Köztük igaziak: 245 + ? = 482-t összeadással akarta
+      megoldatni (kivonás kell); a 402 − 178 pótlásos lépései hibásak
+      voltak; 4 piros és 1 kék korongból akart 10 húzást visszatevés
+      nélkül. Ez a tantárgyakra egyenként igaz — ahol nincs terv, ott
+      a hiba is megmarad.
+      Régi feljegyzés a szabályalapú megoldás korlátairól:
       "az ötvözet több fém keveréke" (az acél vas ÉS szén),
       "az életképes dalok" (helyesen: életképet bemutató dalok),
       "él/ella es – ő van" (a ser igének nem ez a jelentése).

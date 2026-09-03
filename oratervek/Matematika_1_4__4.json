@@ -1,0 +1,1112 @@
+{
+ "tantargy_fajl": "Matematika_1_4.json",
+ "tantargy": "Matematika",
+ "evfolyam": 4,
+ "nyelv": null,
+ "keszult": "2026-09-03",
+ "keszito_modell": "gpt-5.4",
+ "temakorok": [
+  {
+   "temakor_id": "t0",
+   "temakor": "Szóbeli számolási eljárások",
+   "ujjlenyomat": "d082f8f3ca8e4c87",
+   "lepesek": [
+    {
+     "cim": "Ügyes fejben számolás kerek számokkal",
+     "mit": "A tanuló kerek tízesekkel és kerek százasokkal fejben összead és kivon a 10 000-es számkörben.",
+     "epul": [],
+     "pelda": "3200 + 500 = 3700, mert 32 százas meg 5 százas együtt 37 százas.",
+     "kerdes": "Mennyi fejben: 4600 - 200?"
+    },
+    {
+     "cim": "Számolás bontással",
+     "mit": "A tanuló a számokat részekre bontva könnyebben ad össze és von ki.",
+     "epul": [
+      1
+     ],
+     "pelda": "2800 + 340 = 2800 + 300 + 40 = 3140.",
+     "kerdes": "Mennyi fejben: 5300 + 260?"
+    },
+    {
+     "cim": "Szorzás és osztás 10-zel, 100-zal, 1000-rel",
+     "mit": "A tanuló megérti, hogy 10-zel, 100-zal, 1000-rel szorozva vagy osztva a számjegyek helyiértéke megváltozik.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "450 × 10 = 4500, mert minden számjegy egy hellyel nagyobb helyiértékre kerül.",
+     "kerdes": "Mennyi: 7200 : 100?"
+    },
+    {
+     "cim": "Becslés kerekítéssel",
+     "mit": "A tanuló észszerű becslést készít úgy, hogy a számokat kerek tízesre vagy százasra kerekíti.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "1980 + 3050 helyett becslünk: 2000 + 3100 = 5100.",
+     "kerdes": "Kb. mennyi: 4210 + 1680, ha százasokra kerekítesz?"
+    },
+    {
+     "cim": "Összeg és különbség becslése négyjegyű számokkal",
+     "mit": "A tanuló négyjegyű számok összegét és különbségét százasokra kerekítve megbecsüli.",
+     "epul": [
+      1,
+      4
+     ],
+     "pelda": "5730 - 2480 becslése: 5700 - 2500 = 3200.",
+     "kerdes": "Kb. mennyi: 3620 + 2790, ha százasokra kerekítesz?"
+    },
+    {
+     "cim": "Szorzás becslése kétjegyű számokkal",
+     "mit": "A tanuló kétjegyű számok egy- és kétjegyű számmal való szorzatát megbecsüli kerekítéssel.",
+     "epul": [
+      4
+     ],
+     "pelda": "48 × 6 helyett becslünk: 50 × 6 = 300.",
+     "kerdes": "Kb. mennyi: 31 × 19, ha kerekítéssel becsülsz?"
+    },
+    {
+     "cim": "Okos szorzás: felezés és kétszerezés",
+     "mit": "A tanuló felismeri, hogy néhány szorzás könnyebben kiszámolható, ha az egyik tényezőt felezi, a másikat kétszerezi.",
+     "epul": [
+      3,
+      6
+     ],
+     "pelda": "25 × 16 = 50 × 8 = 100 × 4 = 400.",
+     "kerdes": "Mennyi ügyesen: 15 × 4, ha az egyik tényezőt kétszerezed, a másikat felezed?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "A 2. lépés „mit” mezőjében a hibás „különböztet meg” megfogalmazást „von ki”-ra javítottam, mert itt a kivonásról van szó.",
+     "A 3. lépés „mit” mezőjét pontosítottam: nem maga a szám tolódik, hanem a számjegyek helyiértéke változik meg.",
+     "A 3. lépés „pelda” mezőjében a „balra kerül a helyiérték-táblázatban” megfogalmazást pontosabbra cseréltem: „egy hellyel nagyobb helyiértékre kerül”.",
+     "Az 5. lépés „mit” mezőjéből elhagytam a pontatlan „teljes” szót, mert matematikailag felesleges és nem szakszerű ebben a megfogalmazásban.",
+     "A 6. lépés „mit” mezőjében a „teljes kétjegyű számok egy- és kétjegyűvel” megfogalmazást pontosítottam „kétjegyű számok egy- és kétjegyű számmal” alakra."
+    ],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t1",
+   "temakor": "Fejben számolás",
+   "ujjlenyomat": "64e6cbab1655d65b",
+   "lepesek": [
+    {
+     "cim": "Ügyes összeadás és kivonás 100-ig",
+     "mit": "Fejben pontosan összeadok és kivonok 100-as számkörben egyszerűbb bontással és kiegészítéssel.",
+     "epul": [],
+     "pelda": "A tanár mutatja: 48 + 27 úgy is kiszámolható fejben, hogy 48 + 20 = 68, majd 68 + 7 = 75.",
+     "kerdes": "Mennyi fejben: 63 - 25?"
+    },
+    {
+     "cim": "Kétjegyűekkel is számolok",
+     "mit": "Fejben összeadok és kivonok teljes kétjegyű számokat 100-ig több lépésben.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár mutatja: 76 - 38 = 76 - 30 = 46, majd 46 - 8 = 38.",
+     "kerdes": "Mennyi fejben: 34 + 29?"
+    },
+    {
+     "cim": "Tudom a szorzótáblát",
+     "mit": "Emlékezetből tudom a kisegyszeregyet és gyorsan felidézem az egyjegyű szorzásokat.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár mutatja: 6 × 4 = 24.",
+     "kerdes": "Mennyi: 7 × 8?"
+    },
+    {
+     "cim": "Az osztás a szorzás párja",
+     "mit": "Megértem, hogy a bennfoglalás és az egyenlő részekre osztás a szorzással összetartozik.",
+     "epul": [
+      3
+     ],
+     "pelda": "A tanár mutatja: ha 5 × 6 = 30, akkor 30 : 5 = 6 és 30 : 6 = 5.",
+     "kerdes": "Ha 4 × 9 = 36, akkor mennyi 36 : 4?"
+    },
+    {
+     "cim": "Szorzok és osztok 100-ig",
+     "mit": "Fejben pontosan szorzok egyjegyűvel és osztok maradék nélkül a 100-as számkörben.",
+     "epul": [
+      3,
+      4
+     ],
+     "pelda": "A tanár mutatja: 8 × 7 = 56, ezért 56 : 8 = 7.",
+     "kerdes": "Mennyi fejben: 54 : 6?"
+    },
+    {
+     "cim": "Kerek tízesekkel és százasokkal számolok",
+     "mit": "Fejben számolok kerek tízesekkel és százasokkal a már ismert minták alapján.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár mutatja: 340 + 20 = 360, mert ez olyan, mint a 34 + 2 = 36.",
+     "kerdes": "Mennyi fejben: 580 - 30?"
+    },
+    {
+     "cim": "Nagy számokkal is megy",
+     "mit": "Fejben pontosan számolok a 10 000-es számkörben kerek tízesekkel, százasokkal és ezresekkel az ismert minták alapján.",
+     "epul": [
+      5,
+      6
+     ],
+     "pelda": "A tanár mutatja: 4300 + 200 = 4500, mert ez olyan, mint a 43 + 2 = 45.",
+     "kerdes": "Mennyi fejben: 7000 - 3000?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "A 6. lépés \"mit\" mezőjében a \"100-as szabályok\" megfogalmazást \"ismert minták\" kifejezésre javítottam, mert itt nem külön matematikai szabályról, hanem analóg számolási mintáról van szó.",
+     "A 7. lépés \"mit\" mezőjében az \"ismert szabályok szerint\" megfogalmazást \"ismert minták alapján\" kifejezésre javítottam a pontosabb matematikai szóhasználat érdekében."
+    ],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t2",
+   "temakor": "Írásbeli összeadás és kivonás",
+   "ujjlenyomat": "608a7024a9740a13",
+   "lepesek": [
+    {
+     "cim": "Helyi értékek rendben",
+     "mit": "Megtanulja, hogy az írásbeli műveleteknél az egyeseket, tízeseket és százasokat egymás alá kell írni.",
+     "epul": [],
+     "pelda": "A tanár felírja egymás alá: 243 és 156, úgy, hogy a 3 és 6 az egyesek, a 4 és 5 a tízesek, a 2 és 1 a százasok helyén álljon.",
+     "kerdes": "Hogyan írnád egymás alá helyesen ezt a két számot: 318 és 47?"
+    },
+    {
+     "cim": "Összeadás átvitel nélkül",
+     "mit": "Megtanulja az írásbeli összeadást, amikor egyik helyi értéken sincs továbbvitel.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár kiszámolja: 243 + 125 = 368, először az egyeseket, majd a tízeseket, végül a százasokat adja össze.",
+     "kerdes": "Mennyi az írásbeli összeadás eredménye: 352 + 146?"
+    },
+    {
+     "cim": "Összeadás továbbvitellel az egyeseknél",
+     "mit": "Megtanulja, hogy ha az egyesek összege 10 vagy több, akkor 1 tízest tovább kell vinni.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár megmutatja: 268 + 135 = 403, mert 8 + 5 = 13, leírjuk a 3 egyest, és 1 tízest továbbviszünk, majd 6 + 3 + 1 = 10, leírjuk a 0 tízest, és 1 százast továbbviszünk, végül 2 + 1 + 1 = 4.",
+     "kerdes": "Mennyi: 247 + 126?"
+    },
+    {
+     "cim": "Összeadás továbbvitellel több helyen",
+     "mit": "Megtanulja az írásbeli összeadást akkor is, amikor az egyeseknél és a tízeseknél is van továbbvitel.",
+     "epul": [
+      1,
+      2,
+      3
+     ],
+     "pelda": "A tanár kiszámolja: 586 + 277, mert 6 + 7 = 13, majd 8 + 7 + 1 = 16, végül 5 + 2 + 1 = 8, tehát 863.",
+     "kerdes": "Mennyi az eredmény: 475 + 358?"
+    },
+    {
+     "cim": "Hiányos összeadás",
+     "mit": "Megtanulja a hiányos összeadást, vagyis megkeresi a hiányzó tagot az összeg és az egyik tag ismeretében.",
+     "epul": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "pelda": "A tanár felírja: 324 + □ = 560, és helyi értékenként gondolkodva megkeresi a hiányzó számot.",
+     "kerdes": "Melyik szám hiányzik: 412 + □ = 730?"
+    },
+    {
+     "cim": "Kivonás pótlással átlépés nélkül",
+     "mit": "Megtanulja az írásbeli kivonást pótlással, amikor egyik helyi értéken sem kell átlépni a következő helyi értékre.",
+     "epul": [
+      1,
+      5
+     ],
+     "pelda": "A tanár kiszámolja: 658 - 324, és helyi értékenként megmutatja, mennyit kell pótolni 4-ről 8-ra, 2-ről 5-re, 3-ről 6-ra.",
+     "kerdes": "Mennyi: 746 - 213?"
+    },
+    {
+     "cim": "Kivonás pótlással átlépéssel és ellenőrzéssel",
+     "mit": "Megtanulja az írásbeli kivonást akkor is, amikor pótlás közben a következő helyi értékre kell lépni, majd becsléssel és ellenőrzéssel megvizsgálja az eredményt.",
+     "epul": [
+      1,
+      4,
+      5,
+      6
+     ],
+     "pelda": "A tanár kiszámolja: 503 - 278, pótlással haladva 8-ról 13-ra 5, 7-ről 9-re 2, 2-ről 5-re 2, tehát 225, majd ellenőrzi: 278 + 225 = 503.",
+     "kerdes": "Mennyi: 602 - 387, és melyik összeadással tudod ellenőrizni?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "A 3. lépés példáját kiegészítettem a teljes, helyes számítással és az eredménnyel, mert az eredeti példa félbemaradt, így pontatlan volt.",
+     "Az 1. lépés példájában javítottam a központozást: az „úgy hogy” helyett a helyes „úgy, hogy” alak szerepel."
+    ],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t3",
+   "temakor": "Írásbeli szorzás és osztás",
+   "ujjlenyomat": "45da53cef4e9dbff",
+   "lepesek": [
+    {
+     "cim": "Sok egyforma összeadásból szorzás",
+     "mit": "Megtanulja, hogy több egyforma szám összeadását rövidebben szorzással is le lehet írni.",
+     "epul": [],
+     "pelda": "A 4+4+4+4 összeadás helyett azt írjuk: 4×4=16.",
+     "kerdes": "Hogyan írnád le szorzással ezt: 6+6+6?"
+    },
+    {
+     "cim": "Írásbeli szorzás egyjegyű szorzóval",
+     "mit": "Megtanulja helyesen elvégezni az írásbeli szorzást egyjegyű szorzóval.",
+     "epul": [
+      1
+     ],
+     "pelda": "Írásban kiszámoljuk: 23×4. 4×3=12, leírjuk a 2-t, marad 1; 4×2=8, meg a maradék 1, így 92.",
+     "kerdes": "Mennyi 41×3 írásban?"
+    },
+    {
+     "cim": "Szorzás kerek tízesekkel",
+     "mit": "Megtanulja, hogyan szorozzon írásban olyan kétjegyű számmal, amelynek az egyes helyén 0 áll.",
+     "epul": [
+      2
+     ],
+     "pelda": "Kiszámoljuk: 36×20. Először 36×2=72, majd mivel 20 az 2 tízes, az eredmény 720.",
+     "kerdes": "Mennyi 14×30?"
+    },
+    {
+     "cim": "Szorzás teljes kétjegyű számmal",
+     "mit": "Megtanulja az írásbeli szorzást teljes kétjegyű szorzóval két lépésben.",
+     "epul": [
+      2,
+      3
+     ],
+     "pelda": "Kiszámoljuk: 24×13. Először 24×3=72, utána 24×10=240, végül 72+240=312.",
+     "kerdes": "Mennyi 32×12?"
+    },
+    {
+     "cim": "Becslés szorzás előtt és után",
+     "mit": "Megtanulja megbecsülni a szorzás eredményét, és megvizsgálni, hogy a kapott eredmény reális-e.",
+     "epul": [
+      4
+     ],
+     "pelda": "A 24×13 előtt becsülünk: 24 kb. 20, 13 kb. 10, ezért az eredmény kb. 200; a pontos 312 nagyobb, de még hihető, mert mindkét számot lefelé kerekítettük.",
+     "kerdes": "Kb. mennyi lehet a 39×21 eredménye?"
+    },
+    {
+     "cim": "Osztás kirakással és részekre osztással",
+     "mit": "Megérti, hogy az osztás egyenlő részekre osztást jelent, és ezt tárgyakkal vagy pénzzel is meg tudja mutatni.",
+     "epul": [
+      1
+     ],
+     "pelda": "12 forintot 3 gyerek között egyenlően osztunk szét, így mindegyik 4 forintot kap, tehát 12:3=4.",
+     "kerdes": "Ha 15 almát 5 gyerek között egyenlően osztunk szét, hány alma jut egy gyereknek?"
+    },
+    {
+     "cim": "Írásbeli osztás egyjegyű osztóval",
+     "mit": "Megtanulja az írásbeli osztást egyjegyű osztóval visszaszorzással és kivonással ellenőrizve a lépéseket.",
+     "epul": [
+      6,
+      2
+     ],
+     "pelda": "Kiszámoljuk: 84:4. A 8 tízesben 2 darab 4 van, mert 2×4=8, maradék 0; lehozzuk a 4-et, abban 1 darab 4 van, mert 1×4=4, maradék 0, ezért az eredmény 21.",
+     "kerdes": "Mennyi 96:3 írásban?"
+    },
+    {
+     "cim": "Ellenőrzés visszaszorzással",
+     "mit": "Megtanulja ellenőrizni az osztást visszaszorzással, a szorzást pedig becsléssel és átgondolással.",
+     "epul": [
+      5,
+      7
+     ],
+     "pelda": "Az 84:4=21 eredményt így ellenőrizzük: 21×4=84, tehát jó az osztás.",
+     "kerdes": "Hogyan ellenőriznéd a 72:8=9 műveletet?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t4",
+   "temakor": "Törtrészek",
+   "ujjlenyomat": "170f573448347c84",
+   "lepesek": [
+    {
+     "cim": "Az egész és az egyenlő részek",
+     "mit": "A tanuló megérti, hogy egy egész dolgot egyenlő részekre oszthatunk.",
+     "epul": [],
+     "pelda": "A tanár mutat egy almát, és azt mondja: ha az almát 2 egyforma részre vágjuk, akkor az alma egészét osztottuk fel egyenlő részekre.",
+     "kerdes": "Ha egy csokit 4 ugyanolyan nagy darabra törünk, akkor egyenlő részekre osztottuk-e az egészet?"
+    },
+    {
+     "cim": "Az egységtörtek neve",
+     "mit": "A tanuló megismeri az egységtörteket, például az egy kettedet, egy harmadot és egy negyedet.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár egy papírcsíkot 4 egyenlő részre hajt, és megmutat egy részt: ez egy negyed.",
+     "kerdes": "Ha egy körlapot 3 egyenlő részre osztunk, akkor hogyan nevezzük az egyik részt?"
+    },
+    {
+     "cim": "Több egységtört együtt",
+     "mit": "A tanuló megérti, hogy több egyforma törtrészből nagyobb részt is alkothatunk, például két harmadot.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár egy téglalapot 3 egyenlő részre oszt, és ebből 2 részt kiszínez: ez két harmad.",
+     "kerdes": "Ha egy szalagot 4 egyenlő részre osztunk, és ebből 3 részt megjelölünk, akkor mit mutatunk?"
+    },
+    {
+     "cim": "Törtrészek kirakása és megmutatása",
+     "mit": "A tanuló kirakással, hajtogatással és színezéssel is meg tud jeleníteni törtrészeket.",
+     "epul": [
+      1,
+      2,
+      3
+     ],
+     "pelda": "A tanár 8 egyforma korongból 4-et pirosra fordít, és azt mondja: ez négy nyolcad.",
+     "kerdes": "Hogyan mutatnád meg két negyedet egy 4 részre osztott papíron?"
+    },
+    {
+     "cim": "Ugyanaz másképp is lehet",
+     "mit": "A tanuló felfedezi, hogy különböző törtrészek néha ugyanakkora részt jelentenek.",
+     "epul": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "pelda": "A tanár megmutat egy félbevágott papírt, majd egy ugyanakkora papírt 4 részre osztva ebből 2 részt: egy ketted ugyanannyi, mint két negyed.",
+     "kerdes": "Ugyanakkora lehet-e egy harmad és két hatod?"
+    },
+    {
+     "cim": "Melyik a nagyobb?",
+     "mit": "A tanuló össze tud hasonlítani törtrészeket kirakással, rajzzal vagy méréssel.",
+     "epul": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "pelda": "A tanár két egyforma csíkot mutat: az egyikből egy felet, a másikból egy negyedet jelöl meg, és megfigyelik, hogy az egy ketted nagyobb, mint az egy negyed.",
+     "kerdes": "Melyik a nagyobb: három negyed vagy két negyed?"
+    },
+    {
+     "cim": "Az egész változhat",
+     "mit": "A tanuló megérti, hogy ugyanaz a törtnév mást jelenthet, ha nem ugyanakkora az egész.",
+     "epul": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "pelda": "A tanár mutat két különböző hosszúságú papírcsíkot, és mindkettőn megjelöli az egyik felét; a gyerekek látják, hogy a két egy ketted nem egyforma hosszú, mert más volt az egész.",
+     "kerdes": "Lehet-e egy nagy pizza egy negyede nagyobb, mint egy kis pizza egy negyede?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "A 2. lépés „mit” mezőjében az „1 kettedet, 1 harmadot és 1 negyedet” megfogalmazást „egy kettedet, egy harmadot és egy negyedet” formára javítottam.",
+     "A 2. lépés „pelda” mezőjében az „ez 1 negyed” megfogalmazást „ez egy negyed” formára javítottam.",
+     "A 3. lépés „mit” mezőjében a „2 harmadot” megfogalmazást „két harmadot” formára javítottam.",
+     "A 3. lépés „pelda” mezőjében az „ez 2 harmad” megfogalmazást „ez két harmad” formára javítottam.",
+     "A 4. lépés „pelda” mezőjében az „ez 4 nyolcad” megfogalmazást „ez négy nyolcad” formára javítottam.",
+     "A 4. lépés „kerdes” mezőjében a „2 negyedet” megfogalmazást „két negyedet” formára javítottam.",
+     "Az 5. lépés „pelda” mezőjében az „1 ketted ugyanannyi, mint 2 negyed” megfogalmazást „egy ketted ugyanannyi, mint két negyed” formára javítottam.",
+     "Az 5. lépés „kerdes” mezőjében az „1 harmad és 2 hatod” megfogalmazást „egy harmad és két hatod” formára javítottam.",
+     "A 6. lépés „pelda” mezőjében az „1 felet, 1 negyedet, 1 ketted” alakokat „egy felet, egy negyedet, egy ketted” formára javítottam.",
+     "A 6. lépés „kerdes” mezőjében a „3 negyed vagy 2 negyed” megfogalmazást „három negyed vagy két negyed” formára javítottam.",
+     "A 7. lépés „pelda” mezőjében az „1 felet” és „1 ketted” alakokat „egyik felét” és „egy ketted” formára javítottam.",
+     "A 7. lépés „kerdes” mezőjében az „1 negyede” alakokat „egy negyede” formára javítottam."
+    ],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t5",
+   "temakor": "Negatív számok",
+   "ujjlenyomat": "56e19f381b1016c5",
+   "lepesek": [
+    {
+     "cim": "Előtte és utána",
+     "mit": "A tanuló megérti, hogy események lehetnek valami előtt és után időben.",
+     "epul": [],
+     "pelda": "A tanár felrajzol egy idővonalat, és megmutatja, hogy a 4. osztály után jön az 5. osztály, a 4. osztály előtt pedig a 3. osztály van.",
+     "kerdes": "Mi van a kedd előtt, és mi van a kedd után?"
+    },
+    {
+     "cim": "Lefelé és felfelé",
+     "mit": "A tanuló megérti az irányított mennyiségeket a térben: valami lehet fentebb vagy lentebb egy kijelölt szinthez képest.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár egy házat rajzol, ahol a földszint a kiindulás, fölötte van az 1. emelet, alatta pedig a pince.",
+     "kerdes": "Ha a földszint a kiindulás, akkor a 2. emelet feljebb vagy lejjebb van? És a pince?"
+    },
+    {
+     "cim": "Melegebb, hidegebb, fagypont",
+     "mit": "A tanuló leolvassa a hőmérőt, és megérti, hogy a fagypont alatti hőmérséklet a nulla alatti tartományba esik.",
+     "epul": [
+      2
+     ],
+     "pelda": "A tanár megmutat egy hőmérőt, ahol a higany a 0 alatt két osztással áll, és elmondja, hogy ez 2 fokkal van fagypont alatt.",
+     "kerdes": "Ha a hőmérőn a jel a 0 fölött 3 osztással van, hidegebb vagy melegebb van, mint fagypontkor?"
+    },
+    {
+     "cim": "Pozitív és negatív számok",
+     "mit": "A tanuló megismeri, hogy a nulla fölötti számok pozitívak, a nulla alattiak negatívak.",
+     "epul": [
+      1,
+      2,
+      3
+     ],
+     "pelda": "A tanár a hőmérőn megmutatja, hogy a +4 négy fokkal van a nulla fölött, míg a -3 három fokkal van a nulla alatt.",
+     "kerdes": "A -1 pozitív szám vagy negatív szám?"
+    },
+    {
+     "cim": "Adósság és pénz",
+     "mit": "A tanuló megérti, hogy a negatív szám hiányt vagy adósságot is jelenthet, a pozitív szám pedig meglévő mennyiséget.",
+     "epul": [
+      4
+     ],
+     "pelda": "A tanár kirak 5 játékpénzt és 2 adósságcédulát, majd elmondja, hogy ez annyit jelent: van 5 forint, de 2 forinttal tartozunk.",
+     "kerdes": "Ha valakinek 3 adósságcédulája van és nincs játékpénze, akkor az inkább pozitív helyzet vagy negatív helyzet?"
+    },
+    {
+     "cim": "Számok helye és sorrendje",
+     "mit": "A tanuló nagyság szerint összehasonlítja a pozitív és negatív egész számokat a használt modellen belül.",
+     "epul": [
+      4,
+      5
+     ],
+     "pelda": "A tanár a számsoron megmutatja, hogy -5 balra van -2-től, ezért -5 kisebb, és +3 jobbra van 0-tól, ezért +3 nagyobb, mint 0.",
+     "kerdes": "Melyik a nagyobb: -1 vagy -4?"
+    },
+    {
+     "cim": "Nő, csökken vagy marad",
+     "mit": "A tanuló eldönti konkrét helyzetekben, hogy egy mennyiség nőtt, csökkent vagy nem változott.",
+     "epul": [
+      3,
+      4,
+      5,
+      6
+     ],
+     "pelda": "A tanár elmondja, hogy reggel -2 fok volt, délben +1 fok lett, ezért a hőmérséklet nőtt.",
+     "kerdes": "Egy búvár -3 méteren volt, majd -6 méterre ment. Nőtt, csökkent vagy nem változott a helyzete?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "A 4. lépés példájában a \"+4 négy fokkal\" megfogalmazást \"a +4 négy fokkal\" alakra javítottam, mert így nyelvtanilag helyes és egyértelmű a mondat."
+    ],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t6",
+   "temakor": "Alkotás térben és síkon",
+   "ujjlenyomat": "f5e2487bd7cc8907",
+   "lepesek": [
+    {
+     "cim": "Építsd meg úgy, ahogy látod!",
+     "mit": "A tanuló egyszerű térbeli és síkbeli mintát lemásol megfigyelés alapján.",
+     "epul": [],
+     "pelda": "A tanár kirak 6 építőkockából egy kis tornyot: alul 3 kocka egymás mellett, fölöttük középen 2 kocka, legfelül 1 kocka; a gyerek ugyanilyet épít.",
+     "kerdes": "Ha a tanár 5 korongból kirak egy sort piros–kék–piros–kék–piros sorrendben, hogyan raknád ki ugyanígy?"
+    },
+    {
+     "cim": "Folytasd a mintát!",
+     "mit": "A tanuló felismer és folytat egyszerű sormintát és síkmintát.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár kirak mozaiklapokból egy sort: sárga háromszög, zöld négyzet, sárga háromszög, zöld négyzet; a gyerek folytatja a mintát még 4 elemmel.",
+     "kerdes": "Mi jön ezután ebben a sorban: kör, kör, csillag, kör, kör, csillag, ...?"
+    },
+    {
+     "cim": "Építs feltétel szerint!",
+     "mit": "A tanuló alkotás közben követ egyszerű megadott feltételeket, és több jó megoldást is keres.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár azt kéri: rakj ki pálcikákból egy négyszöget úgy, hogy pontosan 4 pálcikát használj; a gyerek készíthet például négyzetet vagy téglalapot.",
+     "kerdes": "Tudsz-e kirakni 6 korongból olyan mintát, amelyben pontosan 3 piros és 3 kék korong van?"
+    },
+    {
+     "cim": "Rajzolj eszközökkel!",
+     "mit": "A tanuló egyszerű síkidomokat hoz létre vonalzóval, alaklemezzel vagy körzővel.",
+     "epul": [
+      1,
+      3
+     ],
+     "pelda": "A tanár megmutatja, hogyan rajzoljon a gyerek vonalzóval egy 4 centiméter oldalhosszúságú négyzetet.",
+     "kerdes": "Melyik eszközt választanád, ha pontos kört szeretnél rajzolni?"
+    },
+    {
+     "cim": "Nézd felülről!",
+     "mit": "A tanuló egyszerű építményhez alaprajzot készít, és alaprajz alapján építményt épít.",
+     "epul": [
+      1,
+      3
+     ],
+     "pelda": "A tanár 4 kockából épít egy alakzatot úgy, hogy 3 kocka egy sorban van, és a középső mögött van még 1 kocka; a gyerek felülnézetben lerajzolja, hol állnak a kockák.",
+     "kerdes": "Ha felülnézetben egy 2×2-es négyzetet látsz, hány helyen áll legalább egy kocka?"
+    },
+    {
+     "cim": "Lapokból testet!",
+     "mit": "A tanuló egyszerű testeket épít lapokból vagy élekből, és felismeri az egyszerű hálókat, élvázakat.",
+     "epul": [
+      1,
+      4,
+      5
+     ],
+     "pelda": "A tanár 6 egyforma négyzetlapból kockát hajtogat, majd megmutatja, hogy ezek a lapok kiterítve a kocka hálóját adják.",
+     "kerdes": "Melyik testet lehet megépíteni 6 egyforma négyzetlapból?"
+    },
+    {
+     "cim": "Tükörkép és felezés",
+     "mit": "A tanuló szimmetrikus alakzatokat hoz létre, felismeri a szimmetriát, és ellenőrzi hajtogatással vagy tükörrel.",
+     "epul": [
+      2,
+      3,
+      4
+     ],
+     "pelda": "A tanár egy függőleges vonal egyik oldalára kirak 3 mozaiklapot, a gyerek a másik oldalra úgy rakja ki a darabokat, hogy tükörképet kapjon.",
+     "kerdes": "Szimmetrikus-e az a minta, amelynek bal oldalán felül egy kör és alul egy háromszög van, a jobb oldalán pedig felül egy kör és alul egy háromszög van?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "A 4. lépés példájában a „4 centiméter hosszú szakaszokból álló négyzet” megfogalmazást pontosítottam „4 centiméter oldalhosszúságú négyzet”-re, mert a négyzetet nem szokás így meghatározni.",
+     "A 7. lépés kérdését kijavítottam, mert az eredeti elrendezés nem volt tengelyesen szimmetrikus; olyan példára cseréltem, amelynek van egyértelmű helyes válasza."
+    ],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t7",
+   "temakor": "Alakzatok geometriai tulajdonságai",
+   "ujjlenyomat": "49b72525ffbea9cd",
+   "lepesek": [
+    {
+     "cim": "Alakzatok megfigyelése és válogatása",
+     "mit": "A tanuló észreveszi az alakzatok egyszerű tulajdonságait, és ezek alapján szét tudja válogatni őket.",
+     "epul": [],
+     "pelda": "A tanár kitesz köröket, háromszögeket és négyszögeket, majd külön kupacba gyűjti azokat, amelyeknek egyenes oldala van.",
+     "kerdes": "Melyik alakzatot tennéd a görbe vonalúak közé: a kört, a négyzetet vagy a háromszöget?"
+    },
+    {
+     "cim": "Vonalak, oldalak, csúcsok",
+     "mit": "A tanuló felismeri az egyenes és görbe vonalakat, és meg tudja számolni a síkidomok oldalait és csúcsait.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár mutat egy háromszöget, és együtt megszámolják, hogy 3 oldala és 3 csúcsa van.",
+     "kerdes": "Hány csúcsa van egy négyszögnek?"
+    },
+    {
+     "cim": "Háromszög, négyszög, kör",
+     "mit": "A tanuló megnevezi a gyakori síkidomokat a vonalaik, oldalaik és csúcsaik alapján.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár felmutat egy alakzatot, amelynek 4 egyenes oldala és 4 csúcsa van, és megnevezi: ez egy négyszög.",
+     "kerdes": "Melyik alakzatnak nincs csúcsa: a körnek vagy a háromszögnek?"
+    },
+    {
+     "cim": "Tükrös alakzatok",
+     "mit": "A tanuló felismeri, hogy egy síkidom tükrösen szimmetrikus-e vagy nem.",
+     "epul": [
+      1,
+      2,
+      3
+     ],
+     "pelda": "A tanár megmutat egy négyzetet, félbehajtja, és látszik, hogy a két fele illeszkedik egymásra, ezért tükrösen szimmetrikus.",
+     "kerdes": "Szerinted egy szabályos háromszög tükrös vagy nem tükrös?"
+    },
+    {
+     "cim": "Testek: lap, él, csúcs",
+     "mit": "A tanuló megfigyeli az egyszerű testeken a lapokat, éleket és csúcsokat, és meg tudja számolni ezeket.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár megmutat egy kockát, és megszámolják rajta a 6 lapot, 12 élt és 8 csúcsot.",
+     "kerdes": "Mit számolnál meg egy dobozon, ha azt szeretnéd tudni, hány csúcsa van?"
+    },
+    {
+     "cim": "Téglatest és kocka",
+     "mit": "A tanuló felismeri a téglatestet és a kockát, és meg tudja mondani a fő tulajdonságaikat.",
+     "epul": [
+      5
+     ],
+     "pelda": "A tanár mutat egy cipősdobozt, megfigyelik, hogy lapjai téglalapok, ezért ez téglatest.",
+     "kerdes": "Miért különleges a kocka a téglatestek között?"
+    },
+    {
+     "cim": "Téglalap, négyzet és derékszög",
+     "mit": "A tanuló felismeri a téglalap és a négyzet tulajdonságait, valamint a derékszöget.",
+     "epul": [
+      2,
+      3,
+      4
+     ],
+     "pelda": "A tanár mutat egy téglalapot, megfigyelik rajta a 4 oldalt, a 4 csúcsot, és hajtogatással megmutatja, hogy mind a 4 szöge derékszög.",
+     "kerdes": "Miben különbözik a négyzet a téglalaptól az oldalai alapján?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "Az 1. lépés kérdésében a felsorolást nyelvtanilag javítottam: „egy kör, egy négyzet vagy egy háromszög” helyett „a kört, a négyzetet vagy a háromszöget”.",
+     "Az 5. lépés kérdésében a „hány sarka van” megfogalmazást pontosítottam „hány csúcsa van” alakra, hogy egyezzen a geometriai szakszóhasználattal.",
+     "A 7. lépés példájában a „szögei egyenlők” állítást pontosítottam „mind a 4 szöge derékszög” megfogalmazásra, mert ez a téglalap lényegi geometriai tulajdonsága.",
+     "A 7. lépés kérdését pontosítottam: „Miben több a négyzet a téglalaphoz képest az oldalai alapján?” helyett „Miben különbözik a négyzet a téglalaptól az oldalai alapján?”, mert az eredeti megfogalmazás pontatlan volt."
+    ],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t8",
+   "temakor": "Transzformációk",
+   "ujjlenyomat": "43cdc65bacfdd91b",
+   "lepesek": [
+    {
+     "cim": "Szimmetria keresése körülöttünk",
+     "mit": "A tanuló felismeri, hogy vannak olyan tárgyak és képek, amelyeknek a két fele egyformának látszik.",
+     "epul": [],
+     "pelda": "A tanár megmutat egy pillangó képét, és megfigyelteti, hogy a teste két oldalán a szárnyak egyformák.",
+     "kerdes": "Melyik lehet szimmetrikus: egy levél vagy egy fél pár zokni?"
+    },
+    {
+     "cim": "Tükörkép készítése",
+     "mit": "A tanuló tükör segítségével megfigyeli és létrehozza egy alakzat tükörképét.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár egy szív felét rajzolja a füzetbe, majd függőlegesen mellé tesz egy tükröt, és megmutatja a teljes szív képét.",
+     "kerdes": "Ha egy fa egyik oldalát látod a tükör mellett, mit mutat a tükör: ugyanazt az oldalt vagy a tükörképét?"
+    },
+    {
+     "cim": "Tengelyes szimmetria hajtogatással",
+     "mit": "A tanuló megkeresi, hol lehet egy alakzatot úgy félbehajtani, hogy a két fele fedje egymást.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár kivágott papírszívet ad, középen félbehajtja, és megmutatja, hogy a két oldal pontosan egymásra illik.",
+     "kerdes": "Ha egy négyzetet középen függőlegesen hajtasz félbe, fedik-e egymást a felek?"
+    },
+    {
+     "cim": "Tükörkép rajzolása rácson",
+     "mit": "A tanuló négyzetrácson megrajzolja egy egyszerű alakzat tükörképét a tengely másik oldalára.",
+     "epul": [
+      2,
+      3
+     ],
+     "pelda": "A tanár egy függőleges vonalat jelöl tengelynek, bal oldalára rajzol egy 2 négyzet magas, 1 négyzet széles téglalapot, majd ugyanilyen távolságra a jobb oldalra berajzolja a tükörképét.",
+     "kerdes": "Ha a tengelytől balra 3 négyzetre van egy pont, hová kerül a tükörképe?"
+    },
+    {
+     "cim": "Eltolás a síkban",
+     "mit": "A tanuló megérti, hogy eltoláskor az alakzat formája és helyzete nem változik, csak máshová kerül.",
+     "epul": [
+      4
+     ],
+     "pelda": "A tanár egy kis háromszöget rajzol négyzetrácsra, majd megmutatja, hogyan csúsztatja el 4 négyzettel jobbra és 1 négyzettel lefelé ugyanabban a helyzetben.",
+     "kerdes": "Ha egy négyzetet 2 mezővel balra tolunk, megfordul-e közben?"
+    },
+    {
+     "cim": "Tükrözés vagy eltolás?",
+     "mit": "A tanuló megkülönbözteti egymástól a tükörképet és az eltolt képet.",
+     "epul": [
+      4,
+      5
+     ],
+     "pelda": "A tanár két rajzot mutat ugyanarról a nyíl alakzatról: az egyik ugyanabba az irányba néz, csak arrébb van, a másik a tengely túloldalán a tükörképe; a gyerekek eldöntik, melyik az eltolt kép és melyik a tükörkép.",
+     "kerdes": "Ha egy betű alakja a másik oldalon tükörképként jelenik meg, az eltolás vagy tükrözés?"
+    },
+    {
+     "cim": "Nagyítás és kicsinyítés",
+     "mit": "A tanuló hasonló alakzatot készít úgy, hogy az eredeti formát megtartja, de a méretét megváltoztatja.",
+     "epul": [
+      5,
+      6
+     ],
+     "pelda": "A tanár négyzetrácson rajzol egy 1×2-es téglalapot, majd megmutatja, hogy kétszeresére nagyítva 2×4-es téglalapot kapunk.",
+     "kerdes": "Ha egy 2 egység oldalhosszúságú négyzetet a felére kicsinyítünk, mekkora oldalhosszúságú lesz az új négyzet?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "Az 1. lépés „mit” mezőjében javítottam a nyelvtant: „amelyek két fele” helyett „amelyeknek a két fele”.",
+     "Az 5. lépés „mit” mezőjében az „állása” szót „helyzete” szóra javítottam, mert eltoláskor az alakzat helyzete változatlan, nem a helye; a megfogalmazás így szakszerűbb.",
+     "Az 5. lépés „pelda” mezőjében az „ugyanabban az állásban” kifejezést „ugyanabban a helyzetben” alakra javítottam, hogy összhangban legyen a transzformáció pontos leírásával.",
+     "A 6. lépés „pelda” mezőjében javítottam a pontatlan megfogalmazást: a tükrözött nyíl nem általánosan „ellenkező irányba néz”, hanem a tengelyre vonatkozó tükörképe jelenik meg.",
+     "A 6. lépés „kerdes” mezőjében a „fordítva jelenik meg” kifejezést „tükörképként jelenik meg” alakra javítottam, mert ez egyértelmű és szakszerű.",
+     "A 7. lépés „pelda” mezőjében az „1x2-es” és „2x4-es” alakot tipográfiailag helyesebb „1×2-es” és „2×4-es” formára javítottam.",
+     "A 7. lépés „kerdes” mezőjében pontosítottam a mértéket: a „2 oldalhosszú” helyett „2 egység oldalhosszúságú” szerepel, hogy a kérdés egyértelmű és matematikailag szabatos legyen."
+    ],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t9",
+   "temakor": "Tájékozódás térben és síkon",
+   "ujjlenyomat": "53747d18a3aa213a",
+   "lepesek": [
+    {
+     "cim": "Merre van?",
+     "mit": "Megtanulja helyesen használni az alapvető irányokat és helyzeteket jelölő szavakat térben: előtt, mögött, mellett, balra, jobbra.",
+     "epul": [],
+     "pelda": "A tanár az asztal elé tesz egy labdát, és azt mondja: „A labda az asztal előtt van.”",
+     "kerdes": "Ha a szék a pad mögött van, akkor hol van a szék a padhoz képest?"
+    },
+    {
+     "cim": "Lépések és fordulások",
+     "mit": "Megtanulja követni az egyszerű mozgásos utasításokat, például hány lépést menjen és merre forduljon.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár ezt mondja: „Menj előre 3 lépést, aztán fordulj jobbra.”",
+     "kerdes": "Mit csinálsz, ha azt hallod: „Menj előre 2 lépést, aztán fordulj balra”?"
+    },
+    {
+     "cim": "Oda és vissza",
+     "mit": "Megtanul egy bejárt útvonalon visszatalálni a kiindulópontra.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár vezet egy gyereket így: „Előre 2 lépés, jobbra fordul, előre 1 lépés”, majd megmutatja a visszautat: „Fordulj meg, előre 1 lépés, balra fordul, előre 2 lépés.”",
+     "kerdes": "Ha egy úton ezt tetted: „Előre 1 lépés, balra fordul, előre 2 lépés”, hogyan indulnál vissza?"
+    },
+    {
+     "cim": "Rajzolt útvonal",
+     "mit": "Megtanulja a mozgást és az útvonalat síkban, rajzon vagy négyzethálón követni.",
+     "epul": [
+      1,
+      2,
+      3
+     ],
+     "pelda": "A tanár a táblán négyzethálón indul egy pontból, és ezt rajzolja: „1 mező fel, 2 mező jobbra.”",
+     "kerdes": "Ha egy pontból 2 mezőt lefelé és 1 mezőt balra haladsz, hol leszel a kiindulóponthoz képest?"
+    },
+    {
+     "cim": "Pont keresése a hálón",
+     "mit": "Megtanulja megtalálni egy pont helyét négyzethálón két adat segítségével.",
+     "epul": [
+      4
+     ],
+     "pelda": "A tanár megmutatja, hogy az A oszlop és a 3. sor metszésében van az A3 pont.",
+     "kerdes": "Hol van a C2 pont a négyzethálón?"
+    },
+    {
+     "cim": "Egyszerű térkép készítése",
+     "mit": "Megtanulja, hogyan lehet egy ismerős helyet egyszerű térképen ábrázolni.",
+     "epul": [
+      1,
+      4,
+      5
+     ],
+     "pelda": "A tanár lerajzolja a tantermet felülnézetből: bejelöli az ajtót, a tanári asztalt és két padsort.",
+     "kerdes": "Mit rajzolnál be a tanterem térképére, hogy más is könnyebben tájékozódjon benne?"
+    },
+    {
+     "cim": "Tájékozódás térképen",
+     "mit": "Megtanul egyszerű térkép alapján helyet keresni és útvonalat követni.",
+     "epul": [
+      3,
+      5,
+      6
+     ],
+     "pelda": "A tanár egy tanterem-térképen megmutatja az ajtót, és azt mondja: „Az ajtótól menj 2 mezőt előre és 1 mezőt jobbra, ott van a könyvespolc.”",
+     "kerdes": "Ha a térképen a padtól 1 mezőt balra és 2 mezőt felfelé kell menni, mit kell követni az útvonalon?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t10",
+   "temakor": "Összefüggések, kapcsolatok, szabályszerűségek felismerése",
+   "ujjlenyomat": "c3fd8c06b779f122",
+   "lepesek": [
+    {
+     "cim": "Kapcsolatokat keresünk",
+     "mit": "A tanuló egyszerű kapcsolatokat vesz észre és megnevez tárgyak, személyek és számok között.",
+     "epul": [],
+     "pelda": "A tanár két ceruzát mutat: egy rövidet és egy hosszút, és kimondja: „Ez a ceruza rövidebb, az a ceruza hosszabb.”",
+     "kerdes": "Ha van egy 7 éves és egy 10 éves gyerek, melyik az idősebb?"
+    },
+    {
+     "cim": "Párok és hármasok",
+     "mit": "A tanuló elempárokban és elemhármasokban is felismeri, mi tartozik össze egy szabály szerint.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár ilyen számpárokat ír a táblára: 2–4, 3–5, 6–8, és megfogalmazza: „A második szám mindig 2-vel nagyobb.”",
+     "kerdes": "Mi illik a 7–? párba, ha a második szám mindig 3-mal nagyobb az elsőnél?"
+    },
+    {
+     "cim": "Ismétlődő minták",
+     "mit": "A tanuló felismeri és folytatja a periodikusan ismétlődő sorozatokat tárgyakkal, jelekkel vagy számokkal.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár ezt a mintát rakja ki: piros kör, kék négyzet, piros kör, kék négyzet, és megkérdezi, mi jön utána.",
+     "kerdes": "Folytasd a sort: háromszög, kör, kör, háromszög, kör, kör, ..."
+    },
+    {
+     "cim": "Sorozatok szabállyal",
+     "mit": "A tanuló egyszerű számsorozatok szabályát felismeri, megfogalmazza és a sort mindkét irányba folytatja.",
+     "epul": [
+      2,
+      3
+     ],
+     "pelda": "A tanár felírja: 5, 8, 11, 14, és elmondja: „Mindig 3-mal nő a szám.”",
+     "kerdes": "Mi a következő két szám ebben a sorozatban: 20, 18, 16, ...?"
+    },
+    {
+     "cim": "Napok, hónapok rendje",
+     "mit": "A tanuló sorrendben felsorolja a napokat, hónapokat, évszakokat, akár nem az első elemtől kezdve is.",
+     "epul": [
+      3,
+      4
+     ],
+     "pelda": "A tanár azt mondja: „Kezdjük szerdával!”, majd sorolja: szerda, csütörtök, péntek, szombat, vasárnap, hétfő, kedd.",
+     "kerdes": "Ha ma péntek van, milyen nap lesz 3 nap múlva?"
+    },
+    {
+     "cim": "Gépek szabálya",
+     "mit": "A tanuló egyszerű gépjátékban felismeri, milyen szabály változtatja meg a számot vagy alakzatot, és megfordított szabályt is keres.",
+     "epul": [
+      2,
+      4
+     ],
+     "pelda": "A tanár egy gépet rajzol: 6 bemegy, 9 kijön; 10 bemegy, 13 kijön, majd kimondja: „Ez a gép mindig 3-at ad hozzá.”",
+     "kerdes": "Egy gép mindig 2-t vesz el. Mi jön ki, ha a 15 megy be?"
+    },
+    {
+     "cim": "Táblázatban is látjuk",
+     "mit": "A tanuló táblázatban rendezi az összetartozó adatokat, és abból megfogalmazza a szabályt.",
+     "epul": [
+      2,
+      4,
+      6
+     ],
+     "pelda": "A tanár táblázatot készít: első oszlop: 1, 2, 3, 4; második oszlop: 2, 4, 6, 8, majd elmondja: „A második szám mindig az első kétszerese.”",
+     "kerdes": "Nézd ezt a kapcsolatot: 5→10, 6→12, 7→14. Mi kerül a 9 mellé?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t11",
+   "temakor": "Adatok megfigyelése",
+   "ujjlenyomat": "e8c1018b4105883b",
+   "lepesek": [
+    {
+     "cim": "Mi az adat?",
+     "mit": "A tanuló megérti, hogy az adat olyan információ, amit megfigyelünk és feljegyezhetünk.",
+     "epul": [],
+     "pelda": "A tanár megfigyeli az osztályban, hogy ki hozott uzsonnát, és feljegyzi: 18 igen, 4 nem.",
+     "kerdes": "Melyik lehet adat: „szép a táska” vagy „12 gyereknek van kulacsa”?"
+    },
+    {
+     "cim": "Adatokat gyűjtünk",
+     "mit": "A tanuló egyszerű adatokat gyűjt a környezetéből megfigyeléssel vagy számolással.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár megszámolja, hány piros, hány kék és hány zöld ceruza van az asztalon, majd felírja a darabszámokat.",
+     "kerdes": "Ha az udvaron megszámoljuk, hány gyerek hintázik és hány csúszdázik, mit csinálunk?"
+    },
+    {
+     "cim": "Adatokat feljegyzünk",
+     "mit": "A tanuló megtanulja, hogy a gyűjtött adatokat pontosan le kell írni, hogy később is fel lehessen használni őket.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "A tanár megméri három könyv tömegét, és így jegyzi le: 30 dkg, 45 dkg, 50 dkg.",
+     "kerdes": "Miért jó felírni, hogy hétfőn 6 gyerek hozott almát, kedden pedig 8?"
+    },
+    {
+     "cim": "Táblázatba rendezzük",
+     "mit": "A tanuló a feljegyzett adatokat egyszerű táblázatba tudja rendezni.",
+     "epul": [
+      1,
+      2,
+      3
+     ],
+     "pelda": "A tanár a gyümölcsadatokat táblázatba írja: alma – 7, körte – 5, banán – 4.",
+     "kerdes": "Ha felírtuk, hogy 3 fekete, 6 fehér és 2 barna kutyát láttunk, hova rendezhetjük ezeket áttekinthetően?"
+    },
+    {
+     "cim": "Diagramot készítünk",
+     "mit": "A tanuló egyszerű diagramon ábrázolja a táblázat adatait.",
+     "epul": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "pelda": "A gyümölcsös táblázat alapján a tanár oszlopdiagramot rajzol: alma 7 egység magas, körte 5 egység magas, banán 4 egység magas oszloppal.",
+     "kerdes": "Ha egy táblázatban ez van: piros autó 2, kék autó 5, zöld autó 3, mit lehet készíteni belőle, hogy könnyebb legyen összehasonlítani?"
+    },
+    {
+     "cim": "Leolvassuk a diagramot",
+     "mit": "A tanuló adatokat és egyszerű összefüggéseket olvas le táblázatból és diagramról.",
+     "epul": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "pelda": "A tanár egy diagramon megmutatja, hogy a barna kutyák oszlopa a legmagasabb, ezért abból láttak a legtöbbet.",
+     "kerdes": "Egy diagramon a sárga virág oszlopa 4-ig ér, a lila virágé 6-ig; melyikből van több?"
+    },
+    {
+     "cim": "Megfigyeljük, mi jellemző",
+     "mit": "A tanuló kiválasztja az adatok közül az egyenlőket, a legkisebbet és a legnagyobbat, és egyszerűen jellemzi az összességet.",
+     "epul": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "pelda": "A tanár egy táblázatban ezt mutatja: tej 320 Ft, kenyér 450 Ft, alma 320 Ft, sajt 890 Ft; együtt megkeresik az egyenlő árakat, a legolcsóbbat és a legdrágábbat.",
+     "kerdes": "Ezek közül melyik a legnagyobb adat: 5 ugrás, 8 ugrás, 8 ugrás, 3 ugrás; és van-e két egyenlő adat?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "Az 5. lépés példájában a „7 magas”, „5 magas”, „4 magas” megfogalmazást „7 egység magas”, „5 egység magas”, „4 egység magas” alakra javítottam, mert a diagram oszlopának magasságát egységekben vagy skálaértékben célszerű megadni.",
+     "A 6. lépés példájában a pontatlan „a kutyák közül a barna oszlopa” megfogalmazást „a barna kutyák oszlopa” alakra javítottam, mert így nyelvtanilag és jelentésében egyértelmű."
+    ],
+    "gyanus_maradt": []
+   }
+  },
+  {
+   "temakor_id": "t12",
+   "temakor": "Valószínűségi gondolkodás",
+   "ujjlenyomat": "2b092b1ac202c1e9",
+   "lepesek": [
+    {
+     "cim": "Véletlen dolgok a játékban",
+     "mit": "A tanuló észreveszi, hogy vannak olyan játékok és kísérletek, amelyekben a véletlen dönti el, mi történik.",
+     "epul": [],
+     "pelda": "A tanár feldob egy pénzérmét, és megmutatja, hogy előre nem tudjuk biztosan, fej vagy írás lesz.",
+     "kerdes": "Ha kihúzunk egy csukott zsákból egy színes korongot anélkül, hogy belenéznénk, előre biztosan tudjuk-e, melyik színt húzzuk?"
+    },
+    {
+     "cim": "Biztos, lehetetlen, lehet, de nem biztos",
+     "mit": "A tanuló megkülönbözteti a biztos, a lehetetlen és a lehetséges, de nem biztos eseményeket egyszerű helyzetekben.",
+     "epul": [
+      1
+     ],
+     "pelda": "Egy zsákban csak piros korongok vannak: pirosat húzni biztos, kéket húzni lehetetlen.",
+     "kerdes": "Egy dobozban 2 sárga és 1 zöld golyó van: zöldet húzni biztos, lehetetlen vagy lehetséges, de nem biztos?"
+    },
+    {
+     "cim": "Tippeljünk: melyik várható gyakrabban?",
+     "mit": "A tanuló tapasztalat alapján tippet ad arra, hogy két esemény közül melyik valószínűbb, ha a különbség jól látható.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "Egy zsákban 5 piros és 1 kék korong van, ezért a tanár azt mutatja, hogy pirosat húzni valószínűbb, mint kéket.",
+     "kerdes": "Egy dobozban 4 zöld és 2 sárga korong van: melyik esemény valószínűbb, zöldet húzni vagy sárgát húzni?"
+    },
+    {
+     "cim": "Számoljuk meg, mi hányszor történt",
+     "mit": "A tanuló egyszerű kísérletek eredményeit megszámolja és rögzíti strigulával vagy táblázatban.",
+     "epul": [
+      1,
+      2,
+      3
+     ],
+     "pelda": "A tanár 10-szer feldob egy pénzérmét, és a gyerekek strigulával jelölik, hányszor lett fej és hányszor írás.",
+     "kerdes": "Ha 8 húzásnál a piros eredményhez 5 strigula, a kékhez 3 strigula került, melyikből volt több?"
+    },
+    {
+     "cim": "Hasonlítsuk össze a tippet a valósággal",
+     "mit": "A tanuló összeveti az előzetes tippjét a megfigyelt gyakoriságokkal, és egyszerű magyarázatot mond rá.",
+     "epul": [
+      3,
+      4
+     ],
+     "pelda": "A gyerekek azt tippelik, hogy egy 5 piros, 1 kék korongos zsákból többször lesz piros, majd 12 húzás után megnézik, hogy valóban több lett-e a piros.",
+     "kerdes": "Ha valaki azt tippelte, hogy a zöld lesz több, de a kísérlet végén 9 sárga és 4 zöld lett, egyezett a tippje a megfigyeléssel?"
+    },
+    {
+     "cim": "Keressünk ellenpéldát",
+     "mit": "A tanuló ellenpéldával meg tudja mutatni, ha egy állítás nem igaz a biztos vagy lehetetlen eseményekről.",
+     "epul": [
+      2,
+      5
+     ],
+     "pelda": "Valaki azt mondja: „Kék korongot húzni lehetetlen.” A tanár megmutat egy zsákot, amelyben van 1 kék és 3 piros korong, ez ellenpélda, mert itt lehet kéket húzni.",
+     "kerdes": "Egy gyerek azt állítja: „A 6 oldalú dobókockán a 7-est dobni biztos.” Mit mondasz erre?"
+    },
+    {
+     "cim": "Egyszerű valószínűségi játékot játszunk",
+     "mit": "A tanuló egyszerű valószínűségi játékban stratégiát választ, tippel, számol és a végén megfigyeli, jó volt-e a választása.",
+     "epul": [
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "pelda": "Két dobókockával dobunk, és a tanár megkérdezi, melyik összegre érdemes több zsetont tenni: 2-re vagy 7-re; a gyerekek választanak, majd több dobás után megszámolják, melyik jött gyakrabban.",
+     "kerdes": "Ha egy játékban két kockával dobunk, szerinted a 3-as összegre vagy a 8-as összegre érdemesebb fogadni?"
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "A 2. lépés kérdésében a „zöldet húzni biztos” állítás tényszerűen rendben van mint eldöntendő besorolási feladat, ezért nem kellett javítani.",
+     "A teljes óraterv mind a négy szöveges mezőjét külön átnéztem minden lépésben, de tényszerű hibát nem találtam, ezért a szövegekhez nem nyúltam hozzá."
+    ],
+    "gyanus_maradt": []
+   }
+  }
+ ]
+}
