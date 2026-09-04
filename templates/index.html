@@ -95,17 +95,30 @@
 </section>
 
 {# Az album CSAK a magyar oldalon jelenik meg: spanyol kártya még nincs.
-   Amint lesz, elég ide beírni a képeket és levenni a nyelvi feltételt. #}
-{# Az album CSAK a magyar oldalon jelenik meg: spanyol kártya még nincs.
-   A kép az album SAJÁT borítója (album.html), változtatás nélkül. #}
+   A borító az album SAJÁT fedlapja (album.html), változtatás nélkül. #}
 {% if lang == 'hu' %}
 <section class="bem-szakasz bem-album-sav">
   <div class="bem-fejlec">
     <h2>{{ t('bem_album_cim') }}</h2>
     <p>{{ t('bem_album_alcim') }}</p>
   </div>
+
   <img class="bem-borito" loading="lazy" alt="{{ t('bem_album_cim') }}"
        src="{{ url_for('static', filename='bemutato/album_borito.jpg') }}">
+
+  {# ...és alatta a lapok, amiket a gyerek gyűjt. #}
+  <h3 class="bem-lapok-cim">{{ t('bem_lapok_cim') }}</h3>
+  <div class="bem-album">
+    {% for kep, nev in [('curie.jpg', 'Marie Curie'),
+                        ('mengyelejev.jpg', 'Mengyelejev'),
+                        ('newton.jpg', 'Isaac Newton'),
+                        ('galilei.jpg', 'Galileo Galilei'),
+                        ('euklidesz.jpg', 'Eukleidész'),
+                        ('darwin.jpg', 'Charles Darwin')] %}
+      <img class="bem-lap" loading="lazy" alt="{{ nev }}"
+           src="{{ url_for('static', filename='bemutato/' ~ kep) }}">
+    {% endfor %}
+  </div>
 </section>
 {% endif %}
 

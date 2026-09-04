@@ -748,6 +748,7 @@ TRANSLATIONS = {
     "bem_album_cim": {"hu": "A gyűjtőalbum", "es": "El álbum de cromos"},
     "bem_album_alcim": {"hu": "Ezért ül le holnap is.", "es": "Por esto se sienta también mañana."},
 
+    "bem_lapok_cim": {"hu": "Néhány lap az albumból", "es": "Algunos cromos del álbum"},
     "bem_zaro_cim": {"hu": "Ülj le vele egy órára.", "es": "Siéntate con él una clase."},
     "bem_zaro_alcim": {"hu": "Utána mondd meg, mit gondolsz.", "es": "Después dime qué te parece."},
     "bem_zaro_cta": {"hu": "Elkezdem", "es": "Empezar"},

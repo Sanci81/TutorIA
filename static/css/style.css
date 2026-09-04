@@ -2523,8 +2523,22 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     box-shadow: 0 22px 54px rgba(10, 30, 20, 0.28);
 }
 
-.bem-album { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.bem-lapok-cim {
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: #5d6b64;
+    margin: 42px 0 18px;
+}
+.bem-album {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 14px;
+    max-width: 900px;
+    margin: 0 auto;
+}
 .bem-lap {
+    box-shadow: 0 6px 18px rgba(20, 60, 40, 0.16);
     /* A kártyaképek 1020 x 1644 képpontosak – ez az arányuk. */
     aspect-ratio: 1020 / 1644;
     width: 100%;
