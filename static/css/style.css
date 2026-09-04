@@ -65,13 +65,14 @@ a:hover { text-decoration: underline; }
 .brand-mark {
     display: grid;
     place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--green-500), var(--green-700));
-    color: var(--white);
-    font-weight: 800;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+    overflow: hidden;
+    /* Az égőt SVG rajzolja, a sötét háttér is abban van – ezért nincs
+       itt külön háttérszín. */
 }
+.brand-mark svg { width: 100%; height: 100%; display: block; }
 .nav-links {
     display: flex;
     align-items: center;
@@ -2447,8 +2448,14 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 
 /* A biztonsági rész a legerősebb érv, ezért ez a legfeltűnőbb blokk. */
 .bem-biztonsag {
-    background: #155c3a;
+    /* Mélység + finom minta + arany kiemelés – ugyanaz a hangulat,
+       mint a gyűjtőalbumé, hogy a két felület egy márkának látsszon. */
+    background:
+        radial-gradient(120% 90% at 50% -10%, rgba(61, 220, 151, 0.16), transparent 60%),
+        linear-gradient(168deg, #1b6f47 0%, #125133 46%, #0c3a25 100%);
     color: #fff;
+    position: relative;
+    overflow: hidden;
     max-width: none;
     padding-left: 24px;
     padding-right: 24px;
@@ -2569,4 +2576,59 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     .bem-hero, .bem-racs3, .bem-lepesek { grid-template-columns: 1fr; }
     .bem-hero h1 { font-size: 34px; }
     .bem-album { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ── A biztonsági szakasz díszítése ──────────────────────────────────── */
+.bem-biztonsag::before {
+    /* halvány, ismétlődő rajzos minta, mint az album borítóján */
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'>\
+<g fill='none' stroke='%23ffffff' stroke-opacity='0.055' stroke-width='2'>\
+<circle cx='34' cy='36' r='15'/>\
+<path d='M120 24h34v26h-34z'/>\
+<path d='M150 96l14 24h-28z'/>\
+<circle cx='58' cy='140' r='11'/>\
+<path d='M14 96h30M14 106h22'/>\
+<path d='M96 150c10-14 26-14 36 0'/>\
+<path d='M172 152v22M162 162h20'/>\
+<circle cx='104' cy='74' r='7'/>\
+</g></svg>");
+}
+.bem-biztonsag > * { position: relative; z-index: 1; }
+
+/* arany vonal a cím alatt */
+.bem-biztonsag .bem-fejlec h2 { position: relative; padding-bottom: 18px; }
+.bem-biztonsag .bem-fejlec h2::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 74px;
+    height: 3px;
+    border-radius: 99px;
+    background: linear-gradient(90deg, transparent, #f2dd8a, transparent);
+}
+
+.bem-biztonsag .bem-kartya {
+    background: linear-gradient(170deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.04));
+    border-color: rgba(242, 221, 138, 0.24);
+    box-shadow: 0 16px 34px rgba(4, 26, 16, 0.3);
+}
+.bem-biztonsag .bem-kartya h3 { color: #ffeeb8; }
+.bem-biztonsag .bem-ikon {
+    background: linear-gradient(150deg, rgba(242, 221, 138, 0.24), rgba(242, 221, 138, 0.08));
+    box-shadow: inset 0 0 0 1px rgba(242, 221, 138, 0.35);
+}
+.bem-biztonsag .bem-ikon svg { stroke: #f7e6ae; }
+
+/* a párbeszéd kapjon keretet és mélységet, ne csak fehér folt legyen */
+.bem-biztonsag .bem-beszelgetes {
+    box-shadow: 0 22px 50px rgba(4, 26, 16, 0.4);
+    border: 1px solid rgba(242, 221, 138, 0.3);
 }
