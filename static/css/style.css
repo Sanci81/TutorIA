@@ -2515,7 +2515,11 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 .bem-album-sav > * { max-width: 1040px; margin-left: auto; margin-right: auto; }
 .bem-album { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
 .bem-lap {
-    aspect-ratio: 3 / 4;
+    /* A kártyaképek 1020 x 1644 képpontosak – ez az arányuk. */
+    aspect-ratio: 1020 / 1644;
+    width: 100%;
+    object-fit: cover;
+    overflow: hidden;
     border-radius: 12px;
     background: linear-gradient(150deg, #dfeae4, #c6dbcf);
     border: 1px solid #dbe5df;

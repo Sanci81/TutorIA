@@ -94,20 +94,27 @@
   </div>
 </section>
 
+{# Az album CSAK a magyar oldalon jelenik meg: spanyol kártya még nincs.
+   Amint lesz, elég ide beírni a képeket és levenni a nyelvi feltételt. #}
+{% if lang == 'hu' %}
 <section class="bem-szakasz bem-album-sav">
   <div class="bem-fejlec">
     <h2>{{ t('bem_album_cim') }}</h2>
     <p>{{ t('bem_album_alcim') }}</p>
   </div>
   <div class="bem-album">
-    <div class="bem-lap">Puli</div>
-    <div class="bem-lap">Rubik Ernő</div>
-    <div class="bem-lap">Balaton</div>
+    {% for kep, nev in [('curie.jpg', 'Marie Curie'),
+                        ('newton.jpg', 'Isaac Newton'),
+                        ('euklidesz.jpg', 'Eukleidész')] %}
+      <img class="bem-lap" loading="lazy" alt="{{ nev }}"
+           src="{{ url_for('static', filename='bemutato/' ~ kep) }}">
+    {% endfor %}
     <div class="bem-lap bem-lap-zar">?</div>
     <div class="bem-lap bem-lap-zar">?</div>
     <div class="bem-lap bem-lap-zar">?</div>
   </div>
 </section>
+{% endif %}
 
 <section class="bem-zaro">
   <h2>{{ t('bem_zaro_cim') }}</h2>
