@@ -1,43 +1,118 @@
 {% extends "base.html" %}
 
+{# BEMUTATÓ OLDAL
+   Ez az, amit a szülő ELŐSZÖR lát. Szándékosan rövid: egy főoldalon senki
+   nem olvas bekezdéseket. Minden kártyán EGY mondat van.
+   Fénykép NINCS benne, csak rajzolt formák — így nem függ a képgenerálástól.
+   A stílusa a style.css végén van, `bem-` előtaggal, hogy a program többi
+   részének kinézetéhez ne nyúljon hozzá. #}
+
 {% block content %}
-<section class="hero">
-    <div class="hero-text">
-        <h1>{{ t('landing_title') }}</h1>
-        <p class="hero-subtitle">{{ t('landing_subtitle') }}</p>
-        <div class="hero-actions">
-            {% if session.get('parent_id') %}
-                <a class="btn btn-primary btn-lg" href="{{ url_for('dashboard') }}">{{ t('landing_cta') }}</a>
-            {% else %}
-                <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">{{ t('landing_cta') }}</a>
-                <span class="hero-login">
-                    {{ t('landing_login_prompt') }}
-                    <a href="{{ url_for('login') }}">{{ t('nav_login') }}</a>
-                </span>
-            {% endif %}
-        </div>
+<section class="bem-hero">
+  <div class="bem-hero-szoveg">
+    <h1>{{ t('bem_cim_1') }} <em>{{ t('bem_cim_kiemelt') }}</em> {{ t('bem_cim_2') }}</h1>
+    <p class="bem-alcim">{{ t('bem_alcim') }}</p>
+    {% if session.get('parent_id') %}
+      <a class="bem-gomb" href="{{ url_for('dashboard') }}">{{ t('landing_cta') }}</a>
+    {% else %}
+      <a class="bem-gomb" href="{{ url_for('register') }}">{{ t('bem_cta') }}</a>
+      <p class="bem-apro">{{ t('bem_apro') }}</p>
+    {% endif %}
+  </div>
+
+  {# A Novakid legjobb ötlete: az első dolog egy KÉRDÉS, nem szöveg. #}
+  <div class="bem-valaszto">
+    <h3>{{ t('bem_osztaly_kerdes') }}</h3>
+    <div class="bem-evek">
+      {% for evf in range(1, 9) %}
+        <a class="bem-ev" href="{{ url_for('register') }}">{{ evf }}<small>{{ t('bem_osztaly') }}</small></a>
+      {% endfor %}
     </div>
-    <div class="hero-art" aria-hidden="true">
-        <div class="blob"></div>
-        <div class="hero-emoji">🎓</div>
-    </div>
+  </div>
 </section>
 
-<section class="features">
-    <div class="feature-card">
-        <div class="feature-icon">👨‍👩‍👧‍👦</div>
-        <h3>{{ t('feature_1_title') }}</h3>
-        <p>{{ t('feature_1_text') }}</p>
+<section class="bem-szakasz">
+  <div class="bem-fejlec"><h2>{{ t('bem_mi_cim') }}</h2></div>
+  <div class="bem-racs3">
+    <div class="bem-kartya">
+      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2Z"/><path d="M8 7h7M8 11h7"/></svg></div>
+      <h3>{{ t('bem_mi_1_cim') }}</h3>
+      <p>{{ t('bem_mi_1') }}</p>
     </div>
-    <div class="feature-card">
-        <div class="feature-icon">🗺️</div>
-        <h3>{{ t('feature_2_title') }}</h3>
-        <p>{{ t('feature_2_text') }}</p>
+    <div class="bem-kartya">
+      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+      <h3>{{ t('bem_mi_2_cim') }}</h3>
+      <p>{{ t('bem_mi_2') }}</p>
     </div>
-    <div class="feature-card">
-        <div class="feature-icon">🌍</div>
-        <h3>{{ t('feature_3_title') }}</h3>
-        <p>{{ t('feature_3_text') }}</p>
+    <div class="bem-kartya">
+      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/></svg></div>
+      <h3>{{ t('bem_mi_3_cim') }}</h3>
+      <p>{{ t('bem_mi_3') }}</p>
     </div>
+  </div>
+</section>
+
+{# A legerősebb érv, ezért ez a legfeltűnőbb blokk. #}
+<section class="bem-szakasz bem-biztonsag">
+  <div class="bem-fejlec">
+    <h2>{{ t('bem_biz_cim') }}</h2>
+    <p>{{ t('bem_biz_alcim') }}</p>
+  </div>
+  <div class="bem-racs3">
+    <div class="bem-kartya">
+      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6Z"/></svg></div>
+      <h3>{{ t('bem_biz_1_cim') }}</h3>
+      <p>{{ t('bem_biz_1') }}</p>
+    </div>
+    <div class="bem-kartya">
+      <div class="bem-ikon"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+      <h3>{{ t('bem_biz_2_cim') }}</h3>
+      <p>{{ t('bem_biz_2') }}</p>
+    </div>
+    <div class="bem-kartya">
+      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div>
+      <h3>{{ t('bem_biz_3_cim') }}</h3>
+      <p>{{ t('bem_biz_3') }}</p>
+    </div>
+  </div>
+
+  {# Nem állít, hanem MEGMUTAT. Ez többet ér, mint a fölötte lévő három kártya. #}
+  <div class="bem-beszelgetes">
+    <div class="bem-bub bem-bub-t"><span class="bem-ki">{{ t('bem_cimke_tanar') }}</span>{{ t('bem_pelda_1') }}</div>
+    <div class="bem-bub bem-bub-gy"><span class="bem-ki">{{ t('bem_cimke_gyerek') }}</span>{{ t('bem_pelda_2') }}</div>
+    <div class="bem-bub bem-bub-t"><span class="bem-ki">{{ t('bem_cimke_tanar') }}</span>{{ t('bem_pelda_3') }}</div>
+  </div>
+</section>
+
+<section class="bem-szakasz">
+  <div class="bem-fejlec"><h2>{{ t('bem_hogyan_cim') }}</h2></div>
+  <div class="bem-lepesek">
+    <div class="bem-lepes"><h3>{{ t('bem_l1_cim') }}</h3><p>{{ t('bem_l1') }}</p></div>
+    <div class="bem-lepes"><h3>{{ t('bem_l2_cim') }}</h3><p>{{ t('bem_l2') }}</p></div>
+    <div class="bem-lepes"><h3>{{ t('bem_l3_cim') }}</h3><p>{{ t('bem_l3') }}</p></div>
+    <div class="bem-lepes"><h3>{{ t('bem_l4_cim') }}</h3><p>{{ t('bem_l4') }}</p></div>
+  </div>
+</section>
+
+<section class="bem-szakasz bem-album-sav">
+  <div class="bem-fejlec">
+    <h2>{{ t('bem_album_cim') }}</h2>
+    <p>{{ t('bem_album_alcim') }}</p>
+  </div>
+  <div class="bem-album">
+    <div class="bem-lap">Puli</div>
+    <div class="bem-lap">Rubik Ernő</div>
+    <div class="bem-lap">Balaton</div>
+    <div class="bem-lap bem-lap-zar">?</div>
+    <div class="bem-lap bem-lap-zar">?</div>
+    <div class="bem-lap bem-lap-zar">?</div>
+  </div>
+</section>
+
+<section class="bem-zaro">
+  <h2>{{ t('bem_zaro_cim') }}</h2>
+  <p>{{ t('bem_zaro_alcim') }}</p>
+  <a class="bem-gomb bem-gomb-vilagos"
+     href="{{ url_for('dashboard') if session.get('parent_id') else url_for('register') }}">{{ t('bem_zaro_cta') }}</a>
 </section>
 {% endblock %}

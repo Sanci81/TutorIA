@@ -660,6 +660,98 @@ TRANSLATIONS = {
         "hu": "TutorIA — Tanulás, személyre szabva.",
         "es": "TutorIA — Aprendizaje, personalizado.",
     },
+    # ── BEMUTATÓ (főoldal) ────────────────────────────────────────────────
+    # Rövid mondatok. Egy szülő nem olvas bekezdéseket egy főoldalon.
+    "bem_cim_1": {"hu": "Egy tanár, aki", "es": "Un profesor que"},
+    "bem_cim_kiemelt": {"hu": "megvárja", "es": "espera"},
+    "bem_cim_2": {"hu": "a gyerekedet.", "es": "a tu hijo."},
+    "bem_alcim": {
+        "hu": "Lépésről lépésre halad az iskolai anyaggal. Ha a válasz nem jó, nem megy tovább.",
+        "es": "Avanza paso a paso con el temario escolar. Si la respuesta no es correcta, no sigue adelante.",
+    },
+    "bem_cta": {"hu": "Kipróbálom", "es": "Quiero probarlo"},
+    "bem_apro": {
+        "hu": "Az első hónap ingyenes. Bankkártya nem kell.",
+        "es": "El primer mes es gratis. No hace falta tarjeta.",
+    },
+    "bem_osztaly_kerdes": {
+        "hu": "Hányadik osztályos a gyereked?",
+        "es": "¿En qué curso está tu hijo?",
+    },
+    "bem_osztaly": {"hu": "osztály", "es": "curso"},
+
+    "bem_mi_cim": {"hu": "Nem csevegő robot. Tanár.", "es": "No es un chatbot. Es un profesor."},
+    "bem_mi_1_cim": {"hu": "Az iskolai anyagot tanítja", "es": "Enseña el temario del colegio"},
+    "bem_mi_1": {
+        "hu": "Ugyanazt, ugyanabban a sorrendben, mint a suliban.",
+        "es": "Lo mismo y en el mismo orden que en clase.",
+    },
+    "bem_mi_2_cim": {"hu": "Akkor, amikor kell", "es": "Cuando hace falta"},
+    "bem_mi_2": {
+        "hu": "Délután, este, hétvégén. Annyiszor, ahányszor a gyerek kéri.",
+        "es": "Por la tarde, por la noche, el fin de semana. Las veces que el niño quiera.",
+    },
+    "bem_mi_3_cim": {"hu": "Beszélni is lehet vele", "es": "También se le puede hablar"},
+    "bem_mi_3": {
+        "hu": "A gyerek hangosan válaszol, és a kiejtésére is kap visszajelzést.",
+        "es": "El niño responde en voz alta y recibe también corrección de pronunciación.",
+    },
+
+    "bem_biz_cim": {"hu": "Nyugodtan otthagyhatod vele", "es": "Puedes dejarle a solas con él"},
+    "bem_biz_alcim": {
+        "hu": "Nem attól félsz, hogy rosszul tanít. Attól, hogy a gyereked mást csinál majd.",
+        "es": "No te preocupa que enseñe mal. Te preocupa que tu hijo acabe haciendo otra cosa.",
+    },
+    "bem_biz_1_cim": {"hu": "Csak a tanulásról beszél", "es": "Solo habla de estudiar"},
+    "bem_biz_1": {
+        "hu": "Ha a gyerek elterelné, kedvesen visszavezeti az órához.",
+        "es": "Si el niño cambia de tema, lo devuelve a la clase con amabilidad.",
+    },
+    "bem_biz_2_cim": {"hu": "Nincs benne idegen", "es": "No hay nada ajeno dentro"},
+    "bem_biz_2": {
+        "hu": "Se hirdetés, se videó, se csevegés más gyerekekkel.",
+        "es": "Ni anuncios, ni vídeos, ni chat con otros niños.",
+    },
+    "bem_biz_3_cim": {"hu": "Te látod, mi történt", "es": "Tú ves lo que ha pasado"},
+    "bem_biz_3": {
+        "hu": "Bármikor elolvashatod, miről beszélgettek.",
+        "es": "Puedes leer en cualquier momento de qué han hablado.",
+    },
+    "bem_pelda_1": {
+        "hu": "Kb. mennyi 4210 + 1680, ha százasokra kerekítesz?",
+        "es": "¿Cuánto es 4210 + 1680, más o menos, redondeando a centenas?",
+    },
+    "bem_pelda_2": {
+        "hu": "inkább nézzünk valami vicceset",
+        "es": "mejor vemos algo divertido",
+    },
+    "bem_pelda_3": {
+        "hu": "Megértem 🙂 De előbb ezt fejezzük be. A 4210-hez melyik kerek százas van a legközelebb?",
+        "es": "Te entiendo 🙂 Pero antes terminamos esto. ¿Qué centena está más cerca de 4210?",
+    },
+    "bem_cimke_tanar": {"hu": "Tanár", "es": "Profesor"},
+    "bem_cimke_gyerek": {"hu": "Gyerek", "es": "Niño"},
+
+    "bem_hogyan_cim": {"hu": "Hogyan működik", "es": "Cómo funciona"},
+    "bem_l1_cim": {"hu": "Felveszed a gyereket", "es": "Añades a tu hijo"},
+    "bem_l1": {"hu": "Név, osztály, tanárhang. Egy perc.", "es": "Nombre, curso, voz del profesor. Un minuto."},
+    "bem_l2_cim": {"hu": "Választ tantárgyat", "es": "Elige una asignatura"},
+    "bem_l2": {"hu": "A témakörök sorban nyílnak.", "es": "Los temas se abren en orden."},
+    "bem_l3_cim": {"hu": "Tanul és hibázik", "es": "Aprende y se equivoca"},
+    "bem_l3": {"hu": "A rossz válasz nem baj. Abból tanul.", "es": "Equivocarse no pasa nada. Así aprende."},
+    "bem_l4_cim": {"hu": "Kap érte kártyát", "es": "Gana cromos"},
+    "bem_l4": {
+        "hu": "A kész témakör érmét ér, az érme kártyát.",
+        "es": "Cada tema terminado da monedas, y las monedas dan cromos.",
+    },
+
+    "bem_album_cim": {"hu": "A gyűjtőalbum", "es": "El álbum de cromos"},
+    "bem_album_alcim": {"hu": "Ezért ül le holnap is.", "es": "Por esto se sienta también mañana."},
+
+    "bem_zaro_cim": {"hu": "Ülj le vele egy órára.", "es": "Siéntate con él una clase."},
+    "bem_zaro_alcim": {"hu": "Utána mondd meg, mit gondolsz.", "es": "Después dime qué te parece."},
+    "bem_zaro_cta": {"hu": "Elkezdem", "es": "Empezar"},
+
 }
 
 
