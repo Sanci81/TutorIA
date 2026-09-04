@@ -2513,6 +2513,16 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     padding-left: 24px; padding-right: 24px;
 }
 .bem-album-sav > * { max-width: 1040px; margin-left: auto; margin-right: auto; }
+/* Az album saját borítója képként – a tervezéséhez nem nyúlunk. */
+.bem-borito {
+    display: block;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 22px 54px rgba(10, 30, 20, 0.28);
+}
+
 .bem-album { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
 .bem-lap {
     /* A kártyaképek 1020 x 1644 képpontosak – ez az arányuk. */
