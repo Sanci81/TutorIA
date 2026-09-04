@@ -726,8 +726,8 @@ TRANSLATIONS = {
         "es": "mejor vemos algo divertido",
     },
     "bem_pelda_3": {
-        "hu": "Megértem 🙂 De előbb ezt fejezzük be. A 4210-hez melyik kerek százas van a legközelebb?",
-        "es": "Te entiendo 🙂 Pero antes terminamos esto. ¿Qué centena está más cerca de 4210?",
+        "hu": "Megértem 🙂 De előbb fejezzük be ezt az egyet. Szóval: kb. mennyi 4210 + 1680, ha százasokra kerekítesz?",
+        "es": "Te entiendo 🙂 Pero antes terminamos esta. Entonces: ¿cuánto es 4210 + 1680, más o menos, redondeando a centenas?",
     },
     "bem_cimke_tanar": {"hu": "Tanár", "es": "Profesor"},
     "bem_cimke_gyerek": {"hu": "Gyerek", "es": "Niño"},
