@@ -8961,6 +8961,24 @@ def _album_kartya(k: dict) -> dict:
     }
 
 
+def _kartya_kepek(oldal: str) -> list[str]:
+    """A `static/kartyak/<oldal>/` mappában MEGLÉVŐ arcképek nevei.
+
+    Csak az alap arcképet nézi (pl. `kemia_7_curie.png`), a `_kartya` és
+    `_kartya_arany` végződésűeket nem — a borítón az arckép szerepel.
+    """
+    from pathlib import Path
+    mappa = Path(app.static_folder or "static") / "kartyak" / (oldal or "hu")
+    try:
+        return sorted(
+            f.stem for f in mappa.glob("*.png")
+            if not f.stem.endswith(("_kartya", "_kartya_arany"))
+        )
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("ALBUM: a kártyaképek listázása nem sikerült")
+        return []
+
+
 @app.route("/children/<int:child_id>/album")
 @login_required
 def child_album(child_id: int):
@@ -8998,6 +9016,12 @@ def child_album(child_id: int):
             "beragasztva": beragasztva,
             "kepgyoker": url_for("static", filename=f"kartyak/{oldal}/"),
             "hatterek": url_for("static", filename="kartyak/hatterek/"),
+            # MELYIK KÁRTYÁHOZ VAN MÁR KÉP.
+            # MIÉRT: a borítón eddig a katalógus ELSŐ 14 lapja szerepelt,
+            # akkor is, ha azokhoz még nem készült el a kép — ezért látszott
+            # csak kettő, a többi helyén üres hatszög. Innentől a borító a
+            # meglévő képekből válogat.
+            "vankep": _kartya_kepek(oldal),
         },
         beragaszt_url=url_for("child_album_place", child_id=child_id),
         vissza_url=url_for("select_tasks", child_id=child_id),

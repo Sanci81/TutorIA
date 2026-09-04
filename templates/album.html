@@ -452,6 +452,19 @@ function fedlapHatter(kepnev){
   return `url("${ADAT.hatterek}${kepnev}.png"), ${alap}`;
 }
 
+// A borítóra CSAK olyan lap kerüljön, amihez már VAN kép. Korábban a
+// katalógus első 14 eleme került ide, és mivel azokhoz többnyire még nem
+// készült el a kép, üres hatszögek látszottak.
+const VANKEP = new Set(ADAT.vankep || []);
+function boritoLapok(){
+  const van = VANKEP.size ? K.filter(k => VANKEP.has(k.kep)) : [];
+  if(van.length >= 14) return van.slice(0,14);
+  // Ha kevesebb kép van, mint 14 hely: a meglévők előre, a többi utána,
+  // hogy a méhsejt alakja megmaradjon.
+  const tobbi = K.filter(k => !VANKEP.has(k.kep));
+  return van.concat(tobbi).slice(0,14);
+}
+
 function boritoHTML(T){
   return `<div class="bo-arny"></div>
   <div class="bo-tart">
@@ -459,7 +472,7 @@ function boritoHTML(T){
     <div class="bo-nev">Tutor<span>IA</span></div>
     <div class="bo-vonal"><i></i><b>${T.hivatalos}</b><i></i></div>
     <div class="focim">${T.focim}</div>
-    <div class="meh">${K.slice(0,14).map(k=>
+    <div class="meh">${boritoLapok().map(k=>
       `<div class="hx"><img src="${KEPUT(k)}" onerror="this.style.display='none';`
       + `this.nextElementSibling.style.display='flex'"><span style="display:none">?</span></div>`
       ).join('')}</div>
