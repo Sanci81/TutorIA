@@ -2856,7 +2856,7 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 }
 .targyracs {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
     gap: 12px;
     margin-top: 8px;
 }
@@ -2901,4 +2901,17 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     font-size: 15px;
     color: #16241d;
     line-height: 1.25;
+}
+
+/* A hosszú tantárgynevek (pl. „Környezetismeret”) NE lógjanak ki. */
+.targy { min-width: 0; }
+.targy-nev {
+    min-width: 0;
+    overflow-wrap: break-word;   /* szó KÖZEPÉN ne törjön el */
+}
+/* Nyelvválasztó: zászló az ikon helyén. */
+.targy-zaszlo {
+    font-size: 24px;
+    line-height: 1;
+    background: #f3f6f4;
 }

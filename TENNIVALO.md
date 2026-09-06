@@ -3,7 +3,7 @@
 Ez a fájl azért van, hogy ne a fejedben kelljen tartani. Ha valamit
 elintéztél, húzd ki, vagy töröld a sort.
 
-Utoljára frissítve: 2026-09-03
+Utoljára frissítve: 2026-09-06
 
 ---
 
@@ -172,3 +172,67 @@ A tanar_teszt.py HIBAKERESŐNEK kiváló, MÉRŐMŰSZERNEK csak így.
       tantárgyanként egy ellenőrző lépés. Mindkettő pénzbe kerül.
 - [ ] **Magyartalan mondatok** (11 biztos). Írtam rá szabályt valódi
       példákkal, de még nem mértük, hogy használt-e.
+
+---
+
+## A GYEREK FELÜLETE — GYEREKBARÁTABBRA (2026-09-06, Sándor kérései)
+
+Ami már KÉSZ:
+- [x] Tantárgyválasztó: legördülő lista helyett színes csempék, saját
+      ikonnal tantárgyanként. A régi `<select>` rejtve MEGMARADT, mert
+      minden meglévő JavaScript arra épül — a csempék csak beállítják.
+- [x] A nyelvválasztó is csempe lett (zászlóval), nem előugró menü.
+- [x] A hosszú tantárgynevek nem lógnak ki a csempéből.
+- [x] Az ikonok újrarajzolva: könyv, kör-plusz, levél, szív, földgömb,
+      hangjegy, paletta, ceruza, képernyő, futó alak, atom, lombik,
+      mikroszkóp, óra, maszkok, ház.
+
+Ami HÁTRAVAN — ezeket Sándor kérte, sorrendben:
+
+- [ ] **FIGURA (kabala) a gyerek oldalára.** Ha fiú tanul, fiú figura
+      álljon ott; ha lány, lány. Olyasmi, mint a Smartick vidám lánya.
+      SÁNDOR FELAJÁNLOTTA, HOGY MEGRAJZOLJA. Ehhez a programban
+      tudni kell a gyerek nemét — MA NEM TÁROLJUK. Kell hozzá:
+      (1) egy „fiú / lány" mező a gyerek profiljában,
+      (2) két rajz (`static/figura/fiu.svg`, `lany.svg`),
+      (3) a figura megjelenítése a chat és a tantárgyválasztó mellett.
+
+- [ ] **A háttér nem gyerekbarát**, sima. Kellene rajzos, színes háttér
+      a gyerek oldalaira (nem a szülőire).
+
+- [ ] **AVATAR**, amit a gyerek érméért vesz meg. Helye: a Kinézet
+      menüpont (ott van már a háttérvásárlás). A megvett avatar
+      jelenjen meg a menüsorban és a chatben.
+
+- [ ] **További kinézeti elemek**: háttérbeállítások, betűszín-választás.
+
+- [ ] **Számbeviteli tábla a matekhoz**, mint a synthesis.com-on: a
+      számok egymás alatt, a válasz helyén üres kockák, a gyerek beírja
+      a számjegyeket. Alapja megvan (`abra.py`). Kiterjeszthető más
+      tantárgyakra is (kémiai egyenlet, hiányzó szó, térkép).
+
+- [ ] **MINDEN, AMIT A MAGYAR OLDALON MEGCSINÁLUNK, KERÜLJÖN FEL A
+      SPANYOLRA IS.** A csempék és a nyelvválasztó már fordításon
+      keresztül mennek, tehát azok automatikusan jók.
+
+## A GYŰJTŐALBUM
+
+- [x] Egy album van, NEM évfolyamhoz kötött — mint a Panini. Az
+      évfolyam-címke lekerült a lapról. Egy másodikos ugyanúgy
+      megszerezhet bármelyik lapot.
+- [x] A kártyalapon a teljes kép látszik, a szöveges dobozok a kép
+      ALATT vannak (nem rajta).
+- [ ] **TÖBB KÁRTYA KELL.** Ma 26 lap van 52 helyre, tehát az album
+      SOSEM telhet meg. Nem kell mindnek híres embernek lennie: hegy,
+      bolygó, folyó, állat, hangszer, találmány is lehet — de mindnek
+      NEVEZETESNEK kell lennie.
+      JOGI SZABÁLY: csak legalább 70 éve elhunyt személy, vagy
+      élettelen dolog. Élő vagy nemrég elhunyt embert NEM. Vers vagy
+      dalszöveg csak közkincs szerzőtől (ezért maradt ki Weöres).
+- [ ] A „Kártyák" menüpont ugyanazt mutatja, mint az album — ki kell
+      venni a gyerek menüsorából.
+
+## EGYÉB
+
+- [ ] **Domain.** Még nincs eldöntve, magyar vagy spanyol névre.
+      Évi 10-15 euró körül.
