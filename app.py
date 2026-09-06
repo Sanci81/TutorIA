@@ -1121,6 +1121,12 @@ def index():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    # Aki már be van lépve, annak nincs dolga a regisztrációval. Enélkül a
+    # bemutató oldalról ide lehetett esni, és ott se kijelentkezni, se
+    # továbbmenni nem lehetett.
+    if session.get("parent_id"):
+        return redirect(url_for("dashboard"))
+
     if request.method == "POST":
         email = (request.form.get("email") or "").strip()
         password = request.form.get("password") or ""

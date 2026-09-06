@@ -194,10 +194,10 @@ document.addEventListener('DOMContentLoaded', function () {
   // Kulcsszó → szín + ikon. A tantárgy nevében keressük, magyarul és
   // spanyolul is. Amire nincs találat, semleges zöld könyvet kap.
   var TIPUSOK = [
-    [['matemat'],                                  '#2f8fd8', 'matek'],
-    [['magyar', 'lengua', 'irodalom', 'literat'],   '#ef5f5f', 'konyv'],
+    [['matemat', 'matem'],                          '#2f8fd8', 'matek'],
     [['idegen', 'angol', 'nemet', 'német', 'spanyol', 'francia', 'ingl', 'extranjer'],
                                                     '#7b5bd6', 'fold'],
+    [['magyar', 'lengua', 'irodalom', 'literat'],   '#ef5f5f', 'konyv'],
     [['környezet', 'kornyezet', 'natural', 'termeszet', 'természet'],
                                                     '#17b8a6', 'level'],
     [['ének', 'enek', 'zene', 'músic', 'music'],    '#e0609b', 'hangjegy'],
@@ -207,7 +207,8 @@ document.addEventListener('DOMContentLoaded', function () {
     [['digitál', 'digital', 'informat'],            '#1f8f9e', 'kepernyo'],
     [['testnevel', 'educación f', 'educacion f', 'sport'],
                                                     '#0e8a7c', 'futo'],
-    [['etika', 'hittan', 'valores', 'erkölcs'],     '#6b3f92', 'sziv'],
+    [['etika', 'hittan', 'valores', 'erkölcs', 'religi', 'vallás', 'vallas'],
+                                                    '#6b3f92', 'sziv'],
     [['fizika', 'física', 'fisica'],                '#c9782a', 'atom'],
     [['kémia', 'kemia', 'quím', 'quim'],            '#2f8f60', 'lombik'],
     [['biológia', 'biologia', 'biolog'],            '#4a8f3f', 'mikro'],

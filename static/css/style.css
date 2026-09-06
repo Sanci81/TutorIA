@@ -2934,88 +2934,17 @@ body:has(.chat-layout) .content { max-width: 1560px; }
    Szándékosan nagyon halvány: a szöveg olvashatósága fontosabb.
    ═══════════════════════════════════════════════════════════════════ */
 body.gyerek-hatter {
-    background-color: #f3f9f5;
-    /* A FEHÉR FÁTYOL a minta FÖLÖTT van: enélkül a fejléc szövege
-       olvashatatlan volt a firkák előtt. A minta így is látszik,
-       csak halkabban. */
+    /* NINCS minta, NINCS rács, NINCS firka. Csak egy nyugodt, világos
+       színátmenet, és két nagyon halvány, nagy folt a lap két szélén.
+       Így a lap nem üres és nem is fárasztó – a tartalom a főszereplő. */
+    background-color: #f2f7fb;
     background-image:
-        linear-gradient(rgba(255, 255, 255, .62), rgba(255, 255, 255, .62)),
-        url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='560' height='560' viewBox='0 0 420 420'>\
-<g fill='none' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.4'>\
-<g stroke='%232f8fd8' stroke-opacity='.30'>\
-<path d='M28 34h26M41 21v26'/><path d='M330 60h24'/><path d='M96 250h22M107 239v22'/>\
-<path d='M262 330l16 16M278 330l-16 16'/></g>\
-<g stroke='%2317b8a6' stroke-opacity='.30'>\
-<path d='M150 40c10-14 26-14 36 0'/>\
-<path d='M60 300c0-26 18-42 40-42 0 26-16 42-40 42Z'/>\
-<path d='M300 148c0-22 15-35 34-35 0 22-14 35-34 35Z'/></g>\
-<g stroke='%23f5a623' stroke-opacity='.32'>\
-<circle cx='356' cy='250' r='15'/><path d='M341 250h30M356 235c6 7 6 23 0 30M356 235c-6 7-6 23 0 30'/>\
-<path d='M120 120v-16l10-2v16'/><circle cx='117' cy='121' r='4'/><circle cx='127' cy='119' r='4'/></g>\
-<g stroke='%23ef5f5f' stroke-opacity='.30'>\
-<path d='M196 236v6l-5 9a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-5-9v-6M195 236h12'/>\
-<path d='M32 150h20v22H32z'/><path d='M42 150v22'/></g>\
-<g stroke='%237b5bd6' stroke-opacity='.30'>\
-<circle cx='232' cy='96' r='14'/><path d='M218 96h28M232 82c5 6 5 22 0 28M232 82c-5 6-5 22 0 28'/>\
-<path d='M300 372h6v-12h-6zM334 372h6v-12h-6zM306 366h28'/></g>\
-<g stroke='%23e0609b' stroke-opacity='.30'>\
-<path d='M78 396c8-10 20-10 28 0'/><path d='M372 30c8 10 8 22 0 30'/></g>\
-</g>\
-<g font-family='Nunito, Segoe UI, sans-serif' font-size='19' font-weight='700'>\
-<text x='196' y='46' fill='%232f8fd8' fill-opacity='.30'>7 + 5</text>\
-<text x='26' y='226' fill='%23ef5f5f' fill-opacity='.28'>Hola</text>\
-<text x='250' y='196' fill='%237b5bd6' fill-opacity='.28'>Hi</text>\
-<text x='118' y='348' fill='%230e8a7c' fill-opacity='.28'>Hallo</text>\
-<text x='300' y='288' fill='%239a5e0c' fill-opacity='.28'>H2O</text>\
-<text x='150' y='166' fill='%232f8f60' fill-opacity='.28'>CO2</text>\
-<text x='356' y='120' fill='%23c9782a' fill-opacity='.28'>12 : 4</text>\
-<text x='40' y='86' fill='%236b3f92' fill-opacity='.28'>Szia</text>\
-</g></svg>");
+        radial-gradient(760px 520px at 8% 0%, rgba(47, 143, 216, .16), transparent 62%),
+        radial-gradient(700px 520px at 100% 22%, rgba(23, 184, 166, .15), transparent 60%),
+        radial-gradient(620px 460px at 50% 100%, rgba(245, 166, 35, .12), transparent 62%);
     background-attachment: fixed;
 }
 
-/* A SPANYOL OLDALON a „Szia” semmit nem mond a gyereknek – ott angolt,
-   németet és franciát tanulnak, tehát az szerepel a háttérben. */
-body.gyerek-hatter.hatter-es {
-    background-image:
-        linear-gradient(rgba(255, 255, 255, .62), rgba(255, 255, 255, .62)),
-        url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='560' height='560' viewBox='0 0 420 420'>\
-<g fill='none' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.4'>\
-<g stroke='%232f8fd8' stroke-opacity='.30'>\
-<path d='M28 34h26M41 21v26'/><path d='M330 60h24'/><path d='M96 250h22M107 239v22'/>\
-<path d='M262 330l16 16M278 330l-16 16'/></g>\
-<g stroke='%2317b8a6' stroke-opacity='.30'>\
-<path d='M150 40c10-14 26-14 36 0'/>\
-<path d='M60 300c0-26 18-42 40-42 0 26-16 42-40 42Z'/>\
-<path d='M300 148c0-22 15-35 34-35 0 22-14 35-34 35Z'/></g>\
-<g stroke='%23f5a623' stroke-opacity='.32'>\
-<circle cx='356' cy='250' r='15'/><path d='M341 250h30M356 235c6 7 6 23 0 30M356 235c-6 7-6 23 0 30'/>\
-<path d='M120 120v-16l10-2v16'/><circle cx='117' cy='121' r='4'/><circle cx='127' cy='119' r='4'/></g>\
-<g stroke='%23ef5f5f' stroke-opacity='.30'>\
-<path d='M196 236v6l-5 9a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-5-9v-6M195 236h12'/>\
-<path d='M32 150h20v22H32z'/><path d='M42 150v22'/></g>\
-<g stroke='%237b5bd6' stroke-opacity='.30'>\
-<circle cx='232' cy='96' r='14'/><path d='M218 96h28M232 82c5 6 5 22 0 28M232 82c-5 6-5 22 0 28'/>\
-<path d='M300 372h6v-12h-6zM334 372h6v-12h-6zM306 366h28'/></g>\
-<g stroke='%23e0609b' stroke-opacity='.30'>\
-<path d='M78 396c8-10 20-10 28 0'/><path d='M372 30c8 10 8 22 0 30'/></g>\
-</g>\
-<g font-family='Nunito, Segoe UI, sans-serif' font-size='19' font-weight='700'>\
-<text x='196' y='46' fill='%232f8fd8' fill-opacity='.30'>7 + 5</text>\
-<text x='26' y='226' fill='%23ef5f5f' fill-opacity='.28'>Hola</text>\
-<text x='250' y='196' fill='%237b5bd6' fill-opacity='.28'>Hi</text>\
-<text x='118' y='348' fill='%230e8a7c' fill-opacity='.28'>Hallo</text>\
-<text x='300' y='288' fill='%239a5e0c' fill-opacity='.28'>H2O</text>\
-<text x='150' y='166' fill='%232f8f60' fill-opacity='.28'>CO2</text>\
-<text x='356' y='120' fill='%23c9782a' fill-opacity='.28'>12 : 4</text>\
-<text x='34' y='86' fill='%236b3f92' fill-opacity='.28'>Bonjour</text>\
-</g></svg>");
-}
-
-/* Az oldal fejléce (cím + alcím) kapjon saját, halvány lapot, hogy a
-   szöveg mindig olvasható legyen a minta előtt. */
 body.gyerek-hatter .select-tasks-header,
 body.gyerek-hatter .back-link {
     background: rgba(255, 255, 255, .82);
@@ -3028,3 +2957,95 @@ body.gyerek-hatter .back-link {
     padding: 8px 14px;
     margin-bottom: 10px;
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   GYEREKKÁRTYA A GYEREKVÁLASZTÓN
+   Minden gyerek saját színt kap – több testvérnél egy pillantásra
+   megkülönböztethetők. Kevés adat, nagy betű, egyértelmű főgomb.
+   ═══════════════════════════════════════════════════════════════════ */
+.gy-kartya {
+    --gyszin: #1e7a4d;
+    position: relative;
+    background: #fff;
+    border: 1px solid #e3e9e5;
+    border-radius: 22px;
+    padding: 0 22px 20px;
+    overflow: hidden;
+    box-shadow: 0 12px 30px rgba(20, 60, 40, .08);
+    transition: transform .16s, box-shadow .16s;
+}
+.gy-kartya:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 44px rgba(20, 60, 40, .14);
+}
+.gy-kartya::before {          /* színes szalag a kártya tetején */
+    content: "";
+    display: block;
+    height: 78px;
+    margin: 0 -22px 0;
+    background:
+        radial-gradient(120% 140% at 20% -30%, rgba(255, 255, 255, .45), transparent 60%),
+        var(--gyszin);
+}
+.gy-fejlec { display: flex; align-items: center; gap: 14px; margin-top: -34px; }
+.gy-arc {
+    width: 68px; height: 68px;
+    flex: none;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid #fff;
+    box-shadow: 0 6px 18px rgba(20, 60, 40, .18);
+    display: grid; place-items: center;
+    font-size: 27px; font-weight: 800;
+    color: var(--gyszin);
+}
+.gy-cim { padding-top: 30px; min-width: 0; }
+.gy-cim h3 {
+    margin: 0;
+    font-size: 19px;
+    color: #16241d;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.gy-cim p { margin: 2px 0 0; font-size: 13.5px; color: #5d6b64; }
+
+.gy-tenyek { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 18px 0 16px; }
+.gy-teny {
+    background: #f5f8f6;
+    border-radius: 14px;
+    padding: 12px 14px;
+    text-align: center;
+}
+.gy-teny-jel { display: block; margin: 0 auto 4px; }
+.gy-teny-jel svg {
+    width: 20px; height: 20px;
+    fill: none; stroke: var(--gyszin); stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+}
+.gy-teny b {
+    display: block;
+    font-size: 17px; font-weight: 800; color: #16241d;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.gy-teny span { font-size: 11.5px; color: #5d6b64; }
+
+.gy-inditas {
+    display: block;
+    text-align: center;
+    padding: 15px;
+    border-radius: 999px;
+    background: var(--gyszin);
+    color: #fff !important;
+    font-weight: 800;
+    font-size: 16.5px;
+    text-decoration: none;
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--gyszin) 35%, transparent);
+}
+.gy-inditas:hover { filter: brightness(1.07); text-decoration: none; }
+
+.gy-also {
+    display: flex; justify-content: center; gap: 16px;
+    margin-top: 14px;
+    font-size: 13.5px;
+}
+.gy-also a { color: #5d6b64 !important; font-weight: 600; }
+.gy-also a:hover { color: var(--gyszin) !important; }

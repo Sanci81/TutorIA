@@ -54,53 +54,52 @@
                 })();
             </script>
             {% endif %}
-            <article class="child-card">
-                <div class="child-avatar">{{ child['name'][:1]|upper }}</div>
-                <h3 class="child-name">{{ child['name'] }}</h3>
-                <ul class="child-meta">
-                    <li>
-                        <span class="meta-label">{{ t('card_age') }}</span>
-                        <span class="meta-value">
+            {# GYEREKKÁRTYA.
+               Minden gyerek SAJÁT SZÍNT kap (a nevéből számolva), hogy több
+               testvérnél egy pillantásra meg lehessen különböztetni őket.
+               A fontos adat kevés és nagy; a hosszú lista lekerült. #}
+            {% set szinek = ['#2f8fd8', '#ef5f5f', '#17b8a6', '#7b5bd6',
+                             '#f5a623', '#e0609b', '#0e8a7c', '#c9782a'] %}
+            {% set gyszin = szinek[(child['name']|length + child['id']) % 8] %}
+            <article class="gy-kartya" style="--gyszin: {{ gyszin }}">
+                <div class="gy-fejlec">
+                    <div class="gy-arc">{{ child['name'][:1]|upper }}</div>
+                    <div class="gy-cim">
+                        <h3>{{ child['name'] }}</h3>
+                        <p>
                             {% if child['grade'] %}
-                                {{ t('grade_display_fmt').format(grade=child['_active_grade']) }} / {{ child['age'] }} {{ t('years_old') }}
-                            {% else %}
-                                {{ child['age'] }} {{ t('years_old') }}
+                                {{ t('grade_display_fmt').format(grade=child['_active_grade']) }} ·
                             {% endif %}
+                            {{ child['age'] }} {{ t('years_old') }}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="gy-tenyek">
+                    <div class="gy-teny">
+                        <span class="gy-teny-jel" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h5M9.5 14.5h5"/></svg>
                         </span>
-                    </li>
-                    <li>
-                        <span class="meta-label">{{ t('label_teacher_voice') }}</span>
-                        <span class="meta-value">{{ child['_teacher_name'] }}</span>
-                    </li>
-                    <li>
-                        <span class="meta-label">{{ t('card_location') }}</span>
-                        <span class="meta-value">
-                            {% if child['country'] == 'ES' %}
-                                {{ t('country_es') }}{% if child['region'] %} · {{ region_name(child['region']) }}{% endif %}
-                            {% else %}
-                                {{ t('country_hu') }}
-                            {% endif %}
+                        <b>{{ egyenleg.get(child['id'], 0) }}</b>
+                        <span>{{ t('gy_erme') }}</span>
+                    </div>
+                    <div class="gy-teny">
+                        <span class="gy-teny-jel" aria-hidden="true">
+                            <svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/></svg>
                         </span>
-                    </li>
-                </ul>
-                <div class="child-card-actions">
-                    <a class="btn btn-ghost" style="margin-top:0.5rem; display:inline-block;"
-                       href="{{ url_for('edit_child', child_id=child['id']) }}">
-                        {{ t('btn_edit_child') }}
-                    </a>
-                    <a class="btn btn-ghost" style="margin-top:0.5rem; display:inline-block;"
-                       href="{{ url_for('child_collection', child_id=child['id']) }}">
-                        🃏 Tudáskártyák
-                    </a>
-                    <a href="{{ url_for('select_tasks', child_id=child['id']) }}"
-                       style="display:block; width:100%; padding:1rem;
-                              background:#f59e0b; color:#000000;
-                              font-weight:800; font-size:1.1rem;
-                              text-align:center; border-radius:999px;
-                              text-decoration:none; margin-top:1rem;
-                              border:3px solid #d97706;">
-                        🖋️ {{ t('btn_generate_tasks') }}
-                    </a>
+                        <b>{{ child['_teacher_name'] }}</b>
+                        <span>{{ t('label_teacher_voice') }}</span>
+                    </div>
+                </div>
+
+                <a class="gy-inditas" href="{{ url_for('select_tasks', child_id=child['id']) }}">
+                    {{ t('btn_generate_tasks') }}
+                </a>
+
+                <div class="gy-also">
+                    <a href="{{ url_for('child_album', child_id=child['id']) }}">{{ t('gy_album') }}</a>
+                    <a href="{{ url_for('child_shop', child_id=child['id']) }}">{{ t('gy_bolt') }}</a>
+                    <a href="{{ url_for('edit_child', child_id=child['id']) }}">{{ t('btn_edit_child') }}</a>
                 </div>
             </article>
         {% endfor %}

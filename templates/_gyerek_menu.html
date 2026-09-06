@@ -79,9 +79,9 @@
     <svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2Z"/><path d="M9 3v18"/></svg>
     <span>{{ t('gy_album') }}</span></a>
 
-  <a class="gyg gyg-kartya" href="{{ url_for('child_collection', child_id=aktiv_gyerek.id) }}">
-    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M17 7l4 1.5-3 11"/></svg>
-    <span>{{ t('gy_kartyak') }}</span></a>
+  {# A „Kártyák" menüpont kikerült: ugyanazt mutatta, mint a Gyűjtőalbum,
+     csak listában. Az útvonal (child_collection) megmaradt, csak nem
+     hivatkozunk rá – így semmi nem törik el. #}
 
   <a class="gyg gyg-bolt" href="{{ url_for('child_shop', child_id=aktiv_gyerek.id) }}">
     <svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 11.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>

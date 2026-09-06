@@ -25,7 +25,9 @@
     <h3>{{ t('bem_osztaly_kerdes') }}</h3>
     <div class="bem-evek">
       {% for evf in range(1, 9) %}
-        <a class="bem-ev" href="{{ url_for('register') }}">{{ evf }}<small>{{ t('bem_osztaly') }}</small></a>
+        {# Ha a szülő már be van lépve, az évfolyam-gomb ne küldje újra
+           regisztrálni — vigye a saját gyerekeihez. #}
+        <a class="bem-ev" href="{{ url_for('dashboard') if session.get('parent_id') else url_for('register') }}">{{ evf }}<small>{{ t('bem_osztaly') }}</small></a>
       {% endfor %}
     </div>
   </div>
