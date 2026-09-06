@@ -49,9 +49,13 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
 .sz-alnev{font-size:.84rem;font-weight:700;margin-top:3px}
 .sz-torzs{display:grid;grid-template-columns:1fr 292px;gap:18px;padding:12px 26px 22px}
 .sz-bal{position:relative;min-height:420px;display:flex;flex-direction:column}
-.sz-kep{position:relative;margin-top:16px;aspect-ratio:16/11;border-radius:10px;overflow:hidden;
- box-shadow:0 16px 36px rgba(0,0,0,.26)}
-.sz-kep img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:center 22%;display:block;background:transparent}
+/* A TELJES KÉP LÁTSZÓDJON. A kártyaképek állók (1020x1644), a keret pedig
+   fekvő volt – emiatt a fejeknek a fele lemaradt. Álló keret + `contain`. */
+/* NINCS rögzített képarány: a kép SAJÁT arányában jelenik meg, teljes
+   egészében, és a keret hozzá igazodik. Így se levágás, se üres sáv. */
+.sz-kep{position:relative;margin-top:16px;border-radius:10px;overflow:hidden;
+ box-shadow:0 16px 36px rgba(0,0,0,.26);background:#101830;min-height:200px}
+.sz-kep img{position:relative;z-index:1;width:100%;height:auto;display:block;background:#101830}
 /* Kép nélkül: világos, halvány mező a lap színével – NEM sötét tömb.
    Sötét blokkal minden kész-kép nélküli oldal egyformának látszott,
    és lapozásnál az volt az érzés, hogy nem történik semmi. */
@@ -62,7 +66,9 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
  transform:rotate(-2deg);max-width:250px}
 .becenev b{display:block;font-size:1.1rem;font-weight:900;line-height:1}
 .becenev span{display:block;font-size:.71rem;line-height:1.35;margin-top:4px}
-.dobozok{position:absolute;left:8px;right:8px;bottom:10px;z-index:3;display:flex;flex-direction:column;gap:7px}
+/* A TÉNY és az AMIT KEVESEN TUDNAK a kép ALÁ kerül, nem rá – így egyik
+   sem takarja a másikat. A kis döntés megmarad, attól él a lap. */
+.dobozok{margin-top:10px;display:flex;flex-direction:column;gap:8px}
 .doboz{background:#f0c869;border-radius:4px;padding:8px 12px;box-shadow:0 5px 14px rgba(0,0,0,.32);transform:rotate(-.8deg)}
 .doboz.kek{background:#1b2350;color:#fff;transform:rotate(.8deg)}
 .doboz b{display:block;font-size:.63rem;font-weight:900;letter-spacing:1.2px;margin-bottom:2px;opacity:.75}
