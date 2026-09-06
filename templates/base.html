@@ -13,7 +13,9 @@
 <body>
     <header class="navbar">
         <div class="navbar-inner">
-            <a class="brand" href="{{ url_for('index') }}">
+            {# A logó a GYEREK saját kezdőlapjára visz, amikor ő ül a gép
+               előtt — a bemutató oldal a szülőé, ott nincs dolga. #}
+            <a class="brand" href="{{ url_for('select_tasks', child_id=aktiv_gyerek.id) if aktiv_gyerek else url_for('index') }}">
                 {# Az égő: sötét lekerekített négyzet, benne a körte, és a
                    körtében a T betű hálózati pontokból. #}
                 <span class="brand-mark" aria-hidden="true">
@@ -64,7 +66,7 @@
         </div>
     </header>
 
-    {% include "_gyerek_menu.html" %}
+    {% if not gyerek_menu_nelkul %}{% include "_gyerek_menu.html" %}{% endif %}
 
     <main class="content">
         {% with messages = get_flashed_messages(with_categories=true) %}

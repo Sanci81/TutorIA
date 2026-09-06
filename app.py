@@ -1105,7 +1105,10 @@ def test_openai():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    # A bemutató oldal a SZÜLŐÉ. Ha idetéved a gyerek munkamenete, a menüsora
+    # ne lógjon rá — de a munkamenetet sem szakítjuk meg: egy kattintás a
+    # logóra visszaviszi a saját kezdőlapjára.
+    return render_template("index.html", gyerek_menu_nelkul=True)
 
 
 @app.route("/register", methods=["GET", "POST"])

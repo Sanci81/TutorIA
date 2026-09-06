@@ -273,7 +273,7 @@ window.BERAGASZT_URL = "{{ beragaszt_url }}";
 <script>
 const ADAT = window.ADAT || {kartyak:[], kezben:[], beragasztva:[], kepgyoker:"static/kartyak/hu/"};
 const UZ_KEPBETOLTVE = "Kép betöltve a(z) {n}. helyre.";
-const T = {"hivatalos": "HIVATALOS GYŰJTŐALBUM", "focim": "TUDÁSKÁRTYÁK", "szemely": " SZEMÉLY", "lap": " LAP", "targy": " TANTÁRGY", "motto": "TANULJ · GYŰJTS · GYŐZZ", "zaro": "Minden lap egy emberé, aki egyszer valamit először értett meg. Aki mind a nyolc évet végigjárja és minden lapot megszerez, annak ez az album nyomtatva is a sajátja lehet.", "tulajdonos": "EZ AZ ALBUM A KÖVETKEZŐ TULAJDONA:"};
+const T = {"hivatalos": "HIVATALOS · TUDÁSKÁRTYÁK", "focim": "GYŰJTŐALBUM", "szemely": " SZEMÉLY", "lap": " LAP", "targy": " TANTÁRGY", "motto": "TANULJ · GYŰJTS · GYŐZZ", "zaro": "Minden lap egy emberé, aki egyszer valamit először értett meg. Aki mind a nyolc évet végigjárja és minden lapot megszerez, annak ez az album nyomtatva is a sajátja lehet.", "tulajdonos": "EZ AZ ALBUM A KÖVETKEZŐ TULAJDONA:"};
 /* ── HÁTTÉRMINTA ────────────────────────────────────────────────────────────
    Minden személy mögé a SAJÁT jelképeiből szórunk halvány mintát.
    Vektor, nulla képgenerálás. A szín a tantárgy színe.
@@ -459,12 +459,17 @@ function fedlapHatter(kepnev){
 // készült el a kép, üres hatszögek látszottak.
 const VANKEP = new Set(ADAT.vankep || []);
 function boritoLapok(){
-  const van = VANKEP.size ? K.filter(k => VANKEP.has(k.kep)) : [];
-  if(van.length >= 14) return van.slice(0,14);
-  // Ha kevesebb kép van, mint 14 hely: a meglévők előre, a többi utána,
-  // hogy a méhsejt alakja megmaradjon.
-  const tobbi = K.filter(k => !VANKEP.has(k.kep));
-  return van.concat(tobbi).slice(0,14);
+  // CSAK olyan lap kerül a borítóra, amihez VAN kép. Korábban a katalógus
+  // első 14 eleme került ide, és mivel azokhoz többnyire még nincs kép,
+  // üres hatszögek maradtak.
+  return K.filter(k => VANKEP.has(KEPFAJL(k)) || BE[k.kep]);
+}
+
+function boritoOszlop(n){
+  // Az oszlopok száma a darabszámhoz igazodik, hogy a méhsejtben NE
+  // MARADJON ÜRES HELY. 10 -> 5, 9 -> 3, 8 -> 4, és így tovább.
+  for(const o of [5,4,3,6,7]) if(n % o === 0) return o;
+  return Math.min(n, 5);
 }
 
 function boritoHTML(T){
@@ -474,7 +479,7 @@ function boritoHTML(T){
     <div class="bo-nev">Tutor<span>IA</span></div>
     <div class="bo-vonal"><i></i><b>${T.hivatalos}</b><i></i></div>
     <div class="focim">${T.focim}</div>
-    <div class="meh">${boritoLapok().map(k=>
+    <div class="meh" style="grid-template-columns:repeat(${boritoOszlop(boritoLapok().length)},1fr);max-width:${boritoOszlop(boritoLapok().length)*104}px">${boritoLapok().map(k=>
       `<div class="hx"><img src="${KEPUT(k)}" onerror="this.style.display='none';`
       + `this.nextElementSibling.style.display='flex'"><span style="display:none">?</span></div>`
       ).join('')}</div>
@@ -501,7 +506,14 @@ function hatsoHTML(T){
 const K = ADAT.kartyak;
 const TARGYAK = ["Kémia", "Fizika", "Matematika", "Biológia", "Földrajz", "Történelem", "Magyar nyelv és irodalom", "Ének-zene", "Digitális kultúra"];
 const BE = {};   /* az appban a static mappából jönnek a képek */
-const KEPUT = k => BE[k.kep] || (ADAT.kepgyoker + k.kep + ".png");
+// A katalógusban a tantárgy előtagja 8 karakterre van vágva
+// (matemati_7_euklidesz), a KÉPFÁJL neve viszont teljes. Enélkül a matek
+// lapok képe soha nem talált célba.
+const KEPNEV = {"matemati_7_euklidesz": "matematika_7_euklidesz",
+                "matemati_7_bolyai": "matematika_7_bolyai",
+                "matemati_7_pitagorasz": "matematika_7_pitagorasz"};
+const KEPFAJL = k => KEPNEV[k.kep] || k.kep;
+const KEPUT = k => BE[k.kep] || (ADAT.kepgyoker + KEPFAJL(k) + ".png");
 const KARTYAUT = (k,arany) => BE[k.kep+(arany?"_kartya_arany":"_kartya")] 
   || (ADAT.kepgyoker + k.kep + (arany?"_kartya_arany.png":"_kartya.png"));
 
