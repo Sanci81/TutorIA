@@ -279,7 +279,7 @@ window.BERAGASZT_URL = "{{ beragaszt_url }}";
 <script>
 const ADAT = window.ADAT || {kartyak:[], kezben:[], beragasztva:[], kepgyoker:"static/kartyak/hu/"};
 const UZ_KEPBETOLTVE = "Kép betöltve a(z) {n}. helyre.";
-const T = {"hivatalos": "HIVATALOS · TUDÁSKÁRTYÁK", "focim": "GYŰJTŐALBUM", "szemely": " SZEMÉLY", "lap": " LAP", "targy": " TANTÁRGY", "motto": "TANULJ · GYŰJTS · GYŐZZ", "zaro": "Minden lap egy emberé, aki egyszer valamit először értett meg. Aki mind a nyolc évet végigjárja és minden lapot megszerez, annak ez az album nyomtatva is a sajátja lehet.", "tulajdonos": "EZ AZ ALBUM A KÖVETKEZŐ TULAJDONA:"};
+const T = {"hivatalos": "HIVATALOS · TUDÁSKÁRTYÁK", "focim": "GYŰJTŐALBUM", "szemely": " SZEMÉLY", "lap": " LAP", "targy": " TANTÁRGY", "motto": "TANULJ · GYŰJTS · GYŐZZ", "zaro": "Minden lap egy felfedezés: egy ember, egy hely, egy hangszer, egy gondolat — valami, ami megváltoztatta, ahogyan a világot látjuk. Aki minden lapot megszerez, annak ez az album nyomtatva is a sajátja lehet.", "tulajdonos": "EZ AZ ALBUM A KÖVETKEZŐ TULAJDONA:"};
 /* ── HÁTTÉRMINTA ────────────────────────────────────────────────────────────
    Minden személy mögé a SAJÁT jelképeiből szórunk halvány mintát.
    Vektor, nulla képgenerálás. A szín a tantárgy színe.
@@ -594,7 +594,11 @@ function rajzol(){
     lap.style.backgroundSize="cover";
     lap.style.backgroundRepeat="no-repeat";
     lap.innerHTML=`
-     <div class="sz-tag" style="background:${k.szin}">${k.targy.toUpperCase()} · ${k.evf}. OSZTÁLY</div>
+     {# NINCS ÉVFOLYAM A LAPON. Ez egy gyűjtőalbum, mint a Panini: a kártya
+        nem osztályhoz tartozik, hanem a gyerek megszerzi és beragasztja.
+        Egy másodikos ugyanúgy megkaphat egy olyan lapot, ami hetedikes
+        anyaghoz készült – a leírás abból is tanít. Csak a tantárgy marad. #}
+     <div class="sz-tag" style="background:${k.szin}">${k.targy.toUpperCase()}</div>
      <div class="sz-fejlec"><div class="sz-nev">${k.nev}</div>
        <div class="sz-alnev" style="color:${k.szin}">${k.alnev}</div></div>
      <div class="sz-torzs" style="--fo:${k.szin}">
