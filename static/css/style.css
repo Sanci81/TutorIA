@@ -2843,3 +2843,62 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     stroke-linecap: round; stroke-linejoin: round;
 }
 .pin-nyitva:hover { background: #fdefd8; text-decoration: none; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   TANTÁRGYVÁLASZTÓ CSEMPÉK (a gyerek első képernyője)
+   A legördülő lista megmarad rejtve – minden régi JavaScript rá épül.
+   ═══════════════════════════════════════════════════════════════════ */
+.targy-rejtett {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+.targyracs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin-top: 8px;
+}
+.targy {
+    --tszin: #1e7a4d;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 16px;
+    border: 2px solid #e3e9e5;
+    border-radius: 16px;
+    background: #fff;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    transition: transform .14s, box-shadow .14s, border-color .14s;
+}
+.targy:hover {
+    transform: translateY(-3px);
+    border-color: var(--tszin);
+    box-shadow: 0 12px 26px rgba(20, 60, 40, .12);
+}
+.targy.kivalasztva {
+    border-color: var(--tszin);
+    background: color-mix(in srgb, var(--tszin) 9%, #fff);
+    box-shadow: 0 10px 24px rgba(20, 60, 40, .14);
+}
+.targy-jel {
+    width: 42px; height: 42px;
+    flex: none;
+    border-radius: 13px;
+    display: grid; place-items: center;
+    background: color-mix(in srgb, var(--tszin) 15%, #fff);
+}
+.targy-jel svg {
+    width: 22px; height: 22px;
+    fill: none; stroke: var(--tszin);
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.targy-nev {
+    font-weight: 700;
+    font-size: 15px;
+    color: #16241d;
+    line-height: 1.25;
+}

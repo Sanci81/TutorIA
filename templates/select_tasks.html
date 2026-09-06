@@ -62,9 +62,24 @@
                   action="{{ url_for('generate_tasks', child_id=child['id']) }}"
                   id="generate-tasks-form"
                   lang="{{ lang }}">
+                {# TANTÁRGYVÁLASZTÓ GYEREKNEK.
+                   A legördülő lista megmarad, csak elrejtve: minden meglévő
+                   JavaScript rá épül (nyelvválasztó, gombok), és nem akartam
+                   azokhoz hozzányúlni. A gyerek a színes csempéket látja;
+                   kattintásra azok állítják be a listát. #}
                 <div class="field">
                     <label for="subject-select">{{ t('label_subject') }}</label>
-                    <select id="subject-select" name="subject" required lang="{{ lang }}">
+                    <div class="targyracs" id="targyracs">
+                        {% for opt in subject_options %}
+                        <button type="button" class="targy" data-ertek="{{ opt['value'] }}"
+                                data-cimke="{{ opt['label'] }}">
+                            <span class="targy-jel" aria-hidden="true"></span>
+                            <span class="targy-nev">{{ opt['label'] }}</span>
+                        </button>
+                        {% endfor %}
+                    </div>
+                    <select id="subject-select" name="subject" required lang="{{ lang }}"
+                            class="targy-rejtett" tabindex="-1" aria-hidden="true">
                         <option value="">{{ t('select_placeholder') }}</option>
                         {% for opt in subject_options %}
                             <option value="{{ opt['value'] }}">{{ opt['label'] }}</option>
@@ -127,6 +142,64 @@
 
 {% block scripts %}
 <script>
+// ── A SZÍNES TANTÁRGYCSEMPÉK ────────────────────────────────────────────
+// Minden csempe a rejtett legördülő listát állítja be, majd 'change'
+// eseményt küld – így a meglévő logika (nyelvválasztó, gombok) változatlanul
+// működik tovább.
+document.addEventListener('DOMContentLoaded', function () {
+  var racs = document.getElementById('targyracs');
+  var lista = document.getElementById('subject-select');
+  if (!racs || !lista) { return; }
+
+  // Kulcsszó → szín és ikon. A tantárgy nevében keressük, magyarul és
+  // spanyolul is. Ami nincs a listán, semleges zöldet kap.
+  var TIPUSOK = [
+    [['matemat'],            '#2f8fd8', 'M12 5v14M5 12h14'],
+    [['magyar', 'lengua', 'irodalom'], '#ef5f5f', 'M4 19V5h12v14zM8 8h5M8 12h5'],
+    [['idegen', 'angol', 'nemet', 'német', 'spanyol', 'francia', 'ingl'], '#7b5bd6',
+                             'M3 12h18M12 3a15 15 0 0 1 0 18A15 15 0 0 1 12 3'],
+    [['környezet', 'kornyezet', 'natural'], '#17b8a6', 'M12 20V9M12 9a5 5 0 0 1 5-5 5 5 0 0 1-5 5m0 0a5 5 0 0 0-5-5 5 5 0 0 0 5 5'],
+    [['ének', 'enek', 'zene', 'músic', 'music'], '#e0609b', 'M9 18V5l10-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0m10-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0'],
+    [['vizuál', 'vizual', 'rajz', 'plástic', 'plastic'], '#f5a623', 'M12 3a9 9 0 1 0 0 18h2a3 3 0 0 0 0-6h-1a2 2 0 0 1 0-4h3a4 4 0 0 0 0-8Z'],
+    [['technik', 'tervez'], '#9a5e0c', 'M4 20l6-6M14 4l6 6-4 4-6-6zM8 12l-4 4v4h4l4-4'],
+    [['testnevel', 'educación f', 'educacion f'], '#0e8a7c', 'M6 4v16M18 4v16M6 12h12'],
+    [['etika', 'hittan', 'valores'], '#6b3f92', 'M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10Z'],
+    [['digitál', 'digital', 'informat'], '#1f8f9e', 'M4 5h16v11H4zM9 20h6'],
+    [['fizika', 'física', 'fisica'], '#c9782a', 'M12 12m-2 0a2 2 0 1 0 4 0 2 2 0 1 0-4 0M12 2a10 6 0 0 1 0 20 10 6 0 0 1 0-20M3 7a10 6 0 0 0 18 10'],
+    [['kémia', 'kemia', 'quím', 'quim'], '#2f8f60', 'M9 3v6l-5 9a2 2 0 0 0 2 3h12a2 2 0 0 0 2-3l-5-9V3M9 3h6'],
+    [['biológia', 'biologia', 'biolog'], '#4a8f3f', 'M7 4c8 2 10 8 10 16M17 4C9 6 7 12 7 20M7 9h10M6 14h12'],
+    [['földrajz', 'foldrajz', 'geograf'], '#2f86a8', 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18'],
+    [['történel', 'tortenel', 'histor'], '#b4353f', 'M12 7v5l3 2M12 21a9 9 0 1 1 9-9']
+  ];
+
+  function tipus(cimke) {
+    var n = (cimke || '').toLowerCase();
+    for (var i = 0; i < TIPUSOK.length; i++) {
+      var kulcsok = TIPUSOK[i][0];
+      for (var j = 0; j < kulcsok.length; j++) {
+        if (n.indexOf(kulcsok[j]) !== -1) { return TIPUSOK[i]; }
+      }
+    }
+    return [[], '#1e7a4d', 'M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2Z'];
+  }
+
+  Array.prototype.forEach.call(racs.querySelectorAll('.targy'), function (gomb) {
+    var t = tipus(gomb.dataset.cimke);
+    gomb.style.setProperty('--tszin', t[1]);
+    gomb.querySelector('.targy-jel').innerHTML =
+      '<svg viewBox="0 0 24 24"><path d="' + t[2] + '"/></svg>';
+
+    gomb.addEventListener('click', function () {
+      Array.prototype.forEach.call(racs.querySelectorAll('.targy'), function (g) {
+        g.classList.remove('kivalasztva');
+      });
+      gomb.classList.add('kivalasztva');
+      lista.value = gomb.dataset.ertek;
+      lista.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     var form = document.getElementById('generate-tasks-form');
     var overlay = document.getElementById('loading-overlay');
