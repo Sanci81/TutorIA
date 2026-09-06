@@ -1,0 +1,102 @@
+{# ══════════════════════════════════════════════════════════════════════
+   A GYEREK SAJÁT MENÜSORA
+
+   MIÉRT VAN: az album, a kártyák, a bolt és a kinézet linkjei a
+   gyerekválasztón voltak — az pedig a szülői kód mögé került. Enélkül a
+   gyerek nem érné el a SAJÁT dolgait.
+
+   MIÉRT ÖNÁLLÓ: a gyűjtőalbum, a tasakbontás és a kinézet oldala nem a
+   base.html-re épül, és nem is tölti be a style.css-t. Ezért a stílus
+   IDE van beépítve — így mind a hat gyerekoldalon ugyanaz látszik, és
+   csak EGY helyen kell módosítani.
+
+   A gyerek NEVE is itt van: több gyereknél így látszik, ki ül a gép előtt.
+   ══════════════════════════════════════════════════════════════════════ #}
+{% if aktiv_gyerek %}
+<style>
+.gymenu{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  padding:10px 18px;background:#fff;border-bottom:1px solid #dbe5df;
+  font-family:"Nunito","Segoe UI",system-ui,sans-serif;
+  box-shadow:0 2px 10px rgba(20,60,40,.05)}
+.gymenu .gyjel{width:34px;height:34px;border-radius:10px;background:#0e2a1e;
+  display:grid;place-items:center;flex:none}
+.gymenu .gyjel svg{width:26px;height:26px}
+.gymenu .gynev{font-weight:800;font-size:15px;color:#155c3a;
+  max-width:14ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  margin-right:6px}
+.gymenu a.gyg{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;
+  border-radius:999px;font-weight:700;font-size:14px;text-decoration:none;
+  transition:transform .14s}
+.gymenu a.gyg:hover{transform:translateY(-2px);text-decoration:none}
+.gymenu a.gyg svg{width:17px;height:17px;fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round}
+.gyg-tanul{background:#e4f1e9;color:#14603b}      .gyg-tanul svg{stroke:#14603b}
+.gyg-album{background:#e6effa;color:#21618f}      .gyg-album svg{stroke:#21618f}
+.gyg-kartya{background:#f7ecfb;color:#6b3f92}     .gyg-kartya svg{stroke:#6b3f92}
+.gyg-bolt{background:#fdf0e2;color:#9a5e0c}       .gyg-bolt svg{stroke:#9a5e0c}
+.gyg-kinezet{background:#fde9f1;color:#a03667}    .gyg-kinezet svg{stroke:#a03667}
+.gymenu .gyerme{display:inline-flex;align-items:center;gap:6px;margin-left:auto;
+  font-weight:800;font-size:15px;color:#9a5e0c;background:#fff6e6;
+  border:2px solid #f3d9ad;border-radius:999px;padding:6px 14px}
+.gymenu .gyerme svg{width:17px;height:17px;fill:none;stroke:#c77f10;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.gymenu .gyszulo{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;
+  border:1px solid #dbe5df;border-radius:999px;font-size:13.5px;font-weight:600;
+  color:#5d6b64;text-decoration:none}
+.gymenu .gyszulo:hover{background:#f3f6f4;text-decoration:none}
+.gymenu .gyszulo svg{width:15px;height:15px;fill:none;stroke:#c77f10;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:900px){
+  .gymenu a.gyg span{display:none}
+  .gymenu a.gyg{padding:9px 11px}
+  .gymenu .gynev,.gymenu .gyszulo span{display:none}
+  .gymenu .gyszulo{padding:9px 11px}
+}
+</style>
+
+<nav class="gymenu" aria-label="{{ aktiv_gyerek.name }}">
+  <span class="gyjel" aria-hidden="true">
+    <svg viewBox="0 0 120 120">
+      <rect x="0" y="0" width="120" height="120" rx="30" fill="#0e2a1e"/>
+      <path d="M60 17c-15 0-26.5 11.3-26.5 25.4 0 8.8 4.2 15 8.4 19.9 2.9 3.4 4.6 6.4 5.1 10.3h26c.5-3.9 2.2-6.9 5.1-10.3 4.2-4.9 8.4-11.1 8.4-19.9C86.5 28.3 75 17 60 17Z"
+            fill="none" stroke="#3ddc97" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M49 81h22M51 89h18M55 96h10" fill="none" stroke="#f2dd8a"
+            stroke-width="5" stroke-linecap="round"/>
+      <g stroke="#f2dd8a" stroke-width="3.4" stroke-linecap="round">
+        <path d="M45 37h30M60 37v25"/></g>
+      <g fill="#f2dd8a">
+        <circle cx="45" cy="37" r="5.4"/><circle cx="60" cy="37" r="5.4"/>
+        <circle cx="75" cy="37" r="5.4"/><circle cx="60" cy="62" r="5.4"/></g>
+    </svg>
+  </span>
+  <span class="gynev">{{ aktiv_gyerek.name }}</span>
+
+  <a class="gyg gyg-tanul" href="{{ url_for('select_tasks', child_id=aktiv_gyerek.id) }}">
+    <svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2Z"/><path d="M8 7h7M8 11h7"/></svg>
+    <span>{{ t('gy_tanulas') }}</span></a>
+
+  <a class="gyg gyg-album" href="{{ url_for('child_album', child_id=aktiv_gyerek.id) }}">
+    <svg viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v18H6a2 2 0 0 1-2-2Z"/><path d="M9 3v18"/></svg>
+    <span>{{ t('gy_album') }}</span></a>
+
+  <a class="gyg gyg-kartya" href="{{ url_for('child_collection', child_id=aktiv_gyerek.id) }}">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="12" height="16" rx="2"/><path d="M17 7l4 1.5-3 11"/></svg>
+    <span>{{ t('gy_kartyak') }}</span></a>
+
+  <a class="gyg gyg-bolt" href="{{ url_for('child_shop', child_id=aktiv_gyerek.id) }}">
+    <svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 11.2A2 2 0 0 1 15.8 21H8.2a2 2 0 0 1-2-1.8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+    <span>{{ t('gy_bolt') }}</span></a>
+
+  <a class="gyg gyg-kinezet" href="{{ url_for('child_looks', child_id=aktiv_gyerek.id) }}">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1.4"/><circle cx="15" cy="10" r="1.4"/><path d="M9 15c1.8 1.4 4.2 1.4 6 0"/></svg>
+    <span>{{ t('gy_kinezet') }}</span></a>
+
+  <span class="gyerme" title="{{ t('gy_erme') }}">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h5M9.5 14.5h5"/></svg>
+    {{ aktiv_gyerek.erme }}</span>
+
+  <a class="gyszulo" href="{{ url_for('szuloi_pin') }}">
+    <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    <span>{{ t('pin_szuloknek') }}</span></a>
+</nav>
+{% endif %}

@@ -220,7 +220,31 @@ def inject_helpers():
         "languages": i18n.LANGUAGES,
         "region_name": lambda code: i18n.region_name(code, g.lang),
         "spanish_regions": i18n.SPANISH_REGIONS,
+        # AZ AKTÍV GYEREK. Ebből épül a gyerek saját menüsora: a neve, az
+        # érméi, és a saját oldalainak linkjei. Enélkül a gyerek nem érné el
+        # a saját albumát, mert azok a linkek a gyerekválasztón vannak — az
+        # pedig a szülői kód mögött van.
+        "aktiv_gyerek": _aktiv_gyerek_adat(),
     }
+
+
+def _aktiv_gyerek_adat() -> dict | None:
+    """A menüsorhoz: a most tanuló gyerek neve és érméi. Hibára soha nem dob."""
+    gid = session.get("aktiv_gyerek")
+    if not gid or "parent_id" not in session:
+        return None
+    try:
+        gy = database.get_child_by_id(gid, session["parent_id"])
+        if not gy:
+            return None
+        return {
+            "id": gy["id"],
+            "name": gy.get("name") or "",
+            "erme": (database.get_wallet(gid) or {}).get("erme", 0),
+        }
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("A gyerek menüsorát nem sikerült összeállítani")
+        return None
 
 
 @app.route("/lang/<lang_code>")
@@ -1767,6 +1791,13 @@ def _gyerek_kapu(child_id: int):
         return None
     if _pin_ervenyes():
         session["aktiv_gyerek"] = child_id
+        # A KÓD ÉRVÉNYESSÉGE ITT AZONNAL LEJÁR.
+        # MIÉRT: ettől a pillanattól a GYEREK ül a gép előtt. Ha a szülő
+        # tizenöt percnyi érvényes kóddal adná át a gépet, a gyerek addig
+        # átsétálhatna a testvére felületére. Így a szülőnek minden
+        # visszalépéskor újra be kell írnia — ez a helyes irány, mert a
+        # visszalépés az ő művelete, nem a gyereké.
+        session.pop(_PIN_KULCS, None)
         return None
     return redirect(url_for("szuloi_pin", tovabb=request.full_path))
 

@@ -801,6 +801,13 @@ TRANSLATIONS = {
         "hu": "Még nincs beállítva. Amíg nincs, a gyerek mindenhez hozzáfér.",
         "es": "Aún no está configurado. Hasta entonces, el niño tiene acceso a todo.",
     },
+    # ── A GYEREK SAJÁT MENÜSORA ──────────────────────────────────────────
+    "gy_tanulas": {"hu": "Tanulás", "es": "Aprender"},
+    "gy_album": {"hu": "Album", "es": "Álbum"},
+    "gy_kartyak": {"hu": "Kártyák", "es": "Cromos"},
+    "gy_bolt": {"hu": "Bolt", "es": "Tienda"},
+    "gy_kinezet": {"hu": "Kinézet", "es": "Aspecto"},
+    "gy_erme": {"hu": "Érméid", "es": "Tus monedas"},
 
 }
 
