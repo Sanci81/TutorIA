@@ -10,12 +10,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/betutipus.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
+<body{% if aktiv_gyerek %} class="gyerek-hatter"{% endif %}>
     <header class="navbar">
         <div class="navbar-inner">
-            {# A logó a GYEREK saját kezdőlapjára visz, amikor ő ül a gép
-               előtt — a bemutató oldal a szülőé, ott nincs dolga. #}
-            <a class="brand" href="{{ url_for('select_tasks', child_id=aktiv_gyerek.id) if aktiv_gyerek else url_for('index') }}">
+            <a class="brand" href="{{ url_for('index') }}">
                 {# Az égő: sötét lekerekített négyzet, benne a körte, és a
                    körtében a T betű hálózati pontokból. #}
                 <span class="brand-mark" aria-hidden="true">
