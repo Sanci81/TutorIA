@@ -266,6 +266,68 @@ def login_required(view):
     return wrapped
 
 
+# ---------------------------------------------------------------------------
+# SZÜLŐI PIN
+#
+# MIÉRT VAN: a gyerek ugyanazon a gépen, ugyanabban a munkamenetben ül, mint a
+# szülő. Enélkül át tudja írni a saját osztályát – és onnantól rossz évfolyam
+# anyagát kapja –, belenézhet a testvére albumába, elköltheti a testvére
+# érméit, és ki tud jelentkeztetni mindenkit.
+#
+# EZ NEM JELSZÓ. Négy számjegy, aminek egyetlen dolga van: egy gyerek ne
+# menjen át rajta véletlenül. Ezért nincs benne bonyolultsági követelmény.
+#
+# AMI SZABADON MARAD: a tanulás, a teszt, a saját album, a bolt, a
+# tasakbontás, a kinézet. A tanuláshoz egyetlen kattintással sem lehet
+# nehezebb hozzáférni, mint eddig.
+# ---------------------------------------------------------------------------
+PIN_PERC = 15                    # ennyi ideig nem kérdez újra
+_PIN_KULCS = "pin_ervenyes_ig"
+
+
+def _pin_ervenyes() -> bool:
+    """Igaz, ha a szülő nemrég adta meg a kódot."""
+    ig = session.get(_PIN_KULCS)
+    if not ig:
+        return False
+    try:
+        return time.time() < float(ig)
+    except (TypeError, ValueError):
+        return False
+
+
+def _pin_megujit() -> None:
+    session[_PIN_KULCS] = time.time() + PIN_PERC * 60
+
+
+def _van_pin() -> bool:
+    """Van-e egyáltalán beállított PIN ehhez a fiókhoz.
+
+    A RÉGI FIÓKOKNAK NINCS. Nekik minden pontosan úgy működik, ahogy eddig –
+    egy frissítés nem zárhat ki senkit a saját adataiból. A Fiókom oldalon
+    tudnak beállítani, és onnantól él a védelem.
+    """
+    pid = session.get("parent_id")
+    if not pid:
+        return False
+    szulo = database.get_parent_by_id(pid)
+    return bool(szulo and szulo.get("szuloi_pin"))
+
+
+def pin_required(view):
+    """Szülői rész: PIN kell hozzá, ha a fiókhoz be van állítva."""
+    @wraps(view)
+    def wrapped(*args, **kwargs):
+        if "parent_id" not in session:
+            flash(i18n.t("flash_login_required", g.lang), "info")
+            return redirect(url_for("login"))
+        if _van_pin() and not _pin_ervenyes():
+            return redirect(url_for("szuloi_pin", tovabb=request.full_path))
+        return view(*args, **kwargs)
+
+    return wrapped
+
+
 def _mail_is_configured() -> bool:
     return bool(os.environ.get("RESEND_API_KEY"))
 
@@ -1043,12 +1105,21 @@ def register():
             flash(i18n.t("register_accept_required", g.lang), "error")
             return render_template("register.html", email=email)
 
-        parent_id = database.create_parent(email, generate_password_hash(password))
+        # A SZÜLŐI PIN. Kötelező, mert a gyerek ugyanezen a gépen ül majd.
+        pin = (request.form.get("szuloi_pin") or "").strip()
+        if not _pin_alak_jo(pin):
+            flash(i18n.t("pin_alak", g.lang), "error")
+            return render_template("register.html", email=email)
+
+        parent_id = database.create_parent(
+            email, generate_password_hash(password),
+            szuloi_pin=generate_password_hash(pin))
         if parent_id is None:
             flash(i18n.t("flash_email_taken", g.lang), "error")
             return render_template("register.html", email=email)
 
         session["parent_id"] = parent_id
+        _pin_megujit()          # regisztráció után ne kérje rögtön újra
         flash(i18n.t("flash_registered", g.lang), "success")
         return redirect(url_for("dashboard"))
 
@@ -1120,8 +1191,22 @@ def feltetelek():
     return render_template("feltetelek.html", **_jogi_adatok())
 
 
+@app.route("/fiok/pin", methods=["POST"])
+@pin_required
+def fiok_pin():
+    """A szülői kód beállítása vagy megváltoztatása a Fiókom oldalon."""
+    uj = (request.form.get("uj_pin") or "").strip()
+    if not _pin_alak_jo(uj):
+        flash(i18n.t("pin_alak", g.lang), "error")
+    else:
+        database.set_parent_pin(session["parent_id"], generate_password_hash(uj))
+        _pin_megujit()
+        flash(i18n.t("pin_mentve", g.lang), "success")
+    return redirect(url_for("fiok"))
+
+
 @app.route("/fiok")
-@login_required
+@pin_required
 def fiok():
     szulo = database.get_parent_by_id(session["parent_id"])
     if not szulo:
@@ -1138,7 +1223,7 @@ def fiok():
 
 
 @app.route("/fiok/adatok")
-@login_required
+@pin_required
 def fiok_export():
     """Adathordozhatóság: minden tárolt adat egyetlen JSON fájlban."""
     adat = database.export_parent_data(session["parent_id"])
@@ -1151,7 +1236,7 @@ def fiok_export():
 
 
 @app.route("/fiok/torles", methods=["POST"])
-@login_required
+@pin_required
 def fiok_torles():
     """Fióktörlés. Jelszóval erősítjük meg, hogy egy nyitva hagyott böngésző
     mellől senki ne törölhesse le más családjának a munkáját."""
@@ -1608,15 +1693,92 @@ def reset_password(token):
 
 
 @app.route("/logout")
+@pin_required
 def logout():
+    # MIÉRT PIN: enélkül egy félrekattintás kizár mindenkit, és a gyerek nem
+    # tud visszalépni, mert nem tudja a szülő jelszavát.
     session.pop("parent_id", None)
+    session.pop(_PIN_KULCS, None)
+    session.pop("aktiv_gyerek", None)
     flash(i18n.t("flash_logged_out", g.lang), "info")
     return redirect(url_for("index"))
+
+
+@app.route("/szuloi-pin", methods=["GET", "POST"])
+@login_required
+def szuloi_pin():
+    """A szülői rész kódbekérője."""
+    tovabb = request.values.get("tovabb") or url_for("dashboard")
+    # Csak a saját oldalunkra engedünk vissza – külső cím soha.
+    if not tovabb.startswith("/"):
+        tovabb = url_for("dashboard")
+
+    if request.method == "POST":
+        kod = (request.form.get("pin") or "").strip()
+        szulo = database.get_parent_by_id(session["parent_id"]) or {}
+        tarolt = szulo.get("szuloi_pin")
+        if tarolt and check_password_hash(tarolt, kod):
+            _pin_megujit()
+            return redirect(tovabb)
+        flash(i18n.t("pin_rossz", g.lang), "error")
+
+    return render_template("szuloi_pin.html", tovabb=tovabb)
+
+
+@app.route("/szuloi-pin/elfelejtettem", methods=["GET", "POST"])
+@login_required
+def szuloi_pin_elfelejtettem():
+    """Új PIN a BEJELENTKEZÉSI jelszóval. Így a szülő nem tudja kizárni magát."""
+    if request.method == "POST":
+        jelszo = request.form.get("jelszo") or ""
+        uj = (request.form.get("uj_pin") or "").strip()
+        szulo = database.get_parent_by_id(session["parent_id"]) or {}
+        if not check_password_hash(szulo.get("password_hash", ""), jelszo):
+            flash(i18n.t("pin_rossz_jelszo", g.lang), "error")
+        elif not _pin_alak_jo(uj):
+            flash(i18n.t("pin_alak", g.lang), "error")
+        else:
+            database.set_parent_pin(session["parent_id"], generate_password_hash(uj))
+            _pin_megujit()
+            flash(i18n.t("pin_mentve", g.lang), "success")
+            return redirect(url_for("fiok"))
+
+    return render_template("szuloi_pin_elfelejtettem.html")
+
+
+def _pin_alak_jo(pin: str) -> bool:
+    """Pontosan négy számjegy. Semmi több – ez nem jelszó."""
+    return bool(pin) and len(pin) == 4 and pin.isdigit()
+
+
+def _gyerek_kapu(child_id: int):
+    """A testvér felülete ne legyen szabadon elérhető.
+
+    Amikor a szülő kiválaszt egy gyereket, az lesz az AKTÍV gyerek. Amíg ő az
+    aktív, minden az övé szabadon megy. MÁSIK gyerekre váltani viszont szülői
+    művelet: ahhoz PIN kell.
+
+    Ha nincs beállítva PIN (régi fiókok), ez a függvény nem csinál semmit.
+    """
+    if not _van_pin():
+        session["aktiv_gyerek"] = child_id
+        return None
+    if session.get("aktiv_gyerek") == child_id:
+        return None
+    if _pin_ervenyes():
+        session["aktiv_gyerek"] = child_id
+        return None
+    return redirect(url_for("szuloi_pin", tovabb=request.full_path))
 
 
 @app.route("/dashboard")
 @login_required
 def dashboard():
+    # Ha már fut egy gyerek munkamenete, a vissza-lépés a gyerekválasztóra
+    # SZÜLŐI művelet: itt látszik a szülő e-mail-címe és a testvér adatai.
+    if (session.get("aktiv_gyerek") and _van_pin() and not _pin_ervenyes()):
+        return redirect(url_for("szuloi_pin", tovabb=url_for("dashboard")))
+    session.pop("aktiv_gyerek", None)
     parent = database.get_parent_by_id(session["parent_id"])
     children = database.get_children_for_parent(session["parent_id"])
     today = date.today()
@@ -1678,7 +1840,7 @@ def _validate_grade_for_curriculum(curriculum: str, grade: int) -> str | None:
 
 
 @app.route("/children/add", methods=["GET", "POST"])
-@login_required
+@pin_required
 def add_child():
     active_curriculum = "ES" if g.lang == "es" else "HU"
     if request.method == "POST":
@@ -1761,7 +1923,7 @@ def add_child():
 
 
 @app.route("/children/<int:child_id>/edit", methods=["GET", "POST"])
-@login_required
+@pin_required
 def edit_child(child_id: int):
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
@@ -1936,6 +2098,9 @@ def _build_learning_summary_for_display(
 @login_required
 def select_tasks(child_id: int):
     """Tantárgy választása feladatgeneráláshoz."""
+    kapu = _gyerek_kapu(child_id)
+    if kapu:
+        return kapu
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
@@ -6097,6 +6262,9 @@ def child_vocabulary(child_id: int):
 @login_required
 def child_chat(child_id: int):
     """AI tanár chat – kizárólag kerettanterv JSON alapján."""
+    kapu = _gyerek_kapu(child_id)
+    if kapu:
+        return kapu
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
@@ -7319,6 +7487,9 @@ def child_chat_send(child_id: int):
 @login_required
 def child_collection(child_id: int):
     """Tudáskártya-gyűjtemény: ami megvan, és ami még hiányzik."""
+    kapu = _gyerek_kapu(child_id)
+    if kapu:
+        return kapu
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
@@ -8720,6 +8891,9 @@ def _bolt_tasakok(es: bool) -> list[dict]:
 @login_required
 def child_shop(child_id: int):
     """A tasakbolt képernyője."""
+    kapu = _gyerek_kapu(child_id)
+    if kapu:
+        return kapu
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
@@ -8862,6 +9036,9 @@ def looks_pattern(nev: str):
 @login_required
 def child_looks(child_id: int):
     """A kinézet-bolt: háttér a csevegőablakhoz, érméért."""
+    kapu = _gyerek_kapu(child_id)
+    if kapu:
+        return kapu
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
@@ -8983,6 +9160,9 @@ def _kartya_kepek(oldal: str) -> list[str]:
 @login_required
 def child_album(child_id: int):
     """A gyűjtőalbum: helyek, borító, és a gyerek saját lapjai."""
+    kapu = _gyerek_kapu(child_id)
+    if kapu:
+        return kapu
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)

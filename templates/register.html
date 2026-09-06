@@ -61,6 +61,16 @@
                 </div>
             </div>
 
+            {# SZÜLŐI KÓD. Azért itt, a regisztrációban, mert később senki nem
+               állítja be – és addig a gyerek mindenhez hozzáfér. #}
+            <div class="field">
+                <label for="szuloi_pin">{{ t('pin_reg_cimke') }}</label>
+                <input type="password" id="szuloi_pin" name="szuloi_pin"
+                       inputmode="numeric" pattern="[0-9]{4}" maxlength="4"
+                       autocomplete="off" required>
+                <p class="mezo-sugo">{{ t('pin_reg_sugo') }}</p>
+            </div>
+
             <label class="elfogado">
                 <input type="checkbox" name="elfogadom" value="1" required>
                 <span>{{ t('register_accept') }}

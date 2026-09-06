@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{# SZÜLŐI KÓD BEKÉRŐJE
+   Szándékosan szűk és nyugodt. A gyereknek is látszania kell, hogy ez a rész
+   nem az övé – ezért lakat és semmi játékos elem. #}
+
+{% block content %}
+<section class="pin-lap">
+  <div class="pin-doboz">
+    <div class="pin-lakat" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+    </div>
+    <h1>{{ t('pin_cim') }}</h1>
+    <p class="pin-alcim">{{ t('pin_alcim') }}</p>
+
+    <form method="post" action="{{ url_for('szuloi_pin') }}">
+      <input type="hidden" name="tovabb" value="{{ tovabb }}">
+      <input class="pin-mezo" type="password" name="pin"
+             inputmode="numeric" pattern="[0-9]*" maxlength="4"
+             autocomplete="off" autofocus required
+             aria-label="{{ t('pin_alcim') }}">
+      <button class="btn btn-primary pin-gomb" type="submit">{{ t('pin_tovabb') }}</button>
+    </form>
+
+    <a class="pin-link" href="{{ url_for('szuloi_pin_elfelejtettem') }}">
+      {{ t('pin_elfelejtettem') }}
+    </a>
+  </div>
+</section>
+{% endblock %}

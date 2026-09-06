@@ -732,17 +732,19 @@ TRANSLATIONS = {
     "bem_cimke_tanar": {"hu": "Tanár", "es": "Profesor"},
     "bem_cimke_gyerek": {"hu": "Gyerek", "es": "Niño"},
 
-    "bem_hogyan_cim": {"hu": "Hogyan működik", "es": "Cómo funciona"},
-    "bem_l1_cim": {"hu": "Felveszed a gyereket", "es": "Añades a tu hijo"},
+    "bem_hogyan_cim": {"hu": "Hogyan működik…", "es": "Cómo funciona…"},
+    "bem_l1_cim": {"hu": "Regisztrálod a gyereket", "es": "Registras a tu hijo"},
     "bem_l1": {"hu": "Név, osztály, tanárhang. Egy perc.", "es": "Nombre, curso, voz del profesor. Un minuto."},
     "bem_l2_cim": {"hu": "Választ tantárgyat", "es": "Elige una asignatura"},
     "bem_l2": {"hu": "A témakörök sorban nyílnak.", "es": "Los temas se abren en orden."},
-    "bem_l3_cim": {"hu": "Tanul és hibázik", "es": "Aprende y se equivoca"},
-    "bem_l3": {"hu": "A rossz válasz nem baj. Abból tanul.", "es": "Equivocarse no pasa nada. Así aprende."},
-    "bem_l4_cim": {"hu": "Kap érte kártyát", "es": "Gana cromos"},
+    "bem_l3_cim": {"hu": "Tanul a tanárral", "es": "Aprende con el profesor"},
+    "bem_l3": {"hu": "Egy lépés, egy kérdés. Addig marad rajta, amíg meg nem érti.",
+              "es": "Un paso, una pregunta. Sigue en él hasta que lo entiende."},
+    "bem_l4_cim": {"hu": "Érmét kap érte", "es": "Gana monedas"},
     "bem_l4": {
-        "hu": "A kész témakör érmét ér, az érme kártyát.",
-        "es": "Cada tema terminado da monedas, y las monedas dan cromos.",
+        "hu": "A kész témakörért érme jár. Abból lesz kártya, háttér és avatar.",
+        "es": "Cada tema terminado da monedas: con ellas consigue cromos, "
+              "fondos y avatares.",
     },
 
     "bem_album_cim": {"hu": "A gyűjtőalbum", "es": "El álbum de cromos"},
@@ -752,6 +754,53 @@ TRANSLATIONS = {
     "bem_zaro_cim": {"hu": "Ülj le vele egy órára.", "es": "Siéntate con él una clase."},
     "bem_zaro_alcim": {"hu": "Utána mondd meg, mit gondolsz.", "es": "Después dime qué te parece."},
     "bem_zaro_cta": {"hu": "Elkezdem", "es": "Empezar"},
+
+    # ── SZÜLŐI PIN ────────────────────────────────────────────────────────
+    "pin_cim": {"hu": "Szülői rész", "es": "Zona de padres"},
+    "pin_alcim": {"hu": "Add meg a négyjegyű kódot",
+                  "es": "Introduce el código de cuatro cifras"},
+    "pin_tovabb": {"hu": "Tovább", "es": "Continuar"},
+    "pin_elfelejtettem": {"hu": "Elfelejtettem a kódot",
+                          "es": "He olvidado el código"},
+    "pin_rossz": {"hu": "Nem jó a kód.", "es": "El código no es correcto."},
+    "pin_alak": {"hu": "A kód pontosan négy számjegy legyen.",
+                 "es": "El código debe tener exactamente cuatro cifras."},
+    "pin_mentve": {"hu": "A kódot elmentettem.", "es": "Código guardado."},
+    "pin_rossz_jelszo": {"hu": "Nem jó a jelszó.",
+                         "es": "La contraseña no es correcta."},
+    "pin_reg_cimke": {"hu": "Szülői kód (4 számjegy)",
+                      "es": "Código de padres (4 cifras)"},
+    "pin_reg_sugo": {
+        "hu": "Ez választja el a szülői részt a gyerekétől. A gyerek szabadon "
+              "tanul és gyűjt, de a profil szerkesztéséhez, a fiókodhoz és a "
+              "kijelentkezéshez ez a kód kell.",
+        "es": "Esto separa la zona de padres de la del niño. El niño aprende y "
+              "colecciona con libertad, pero para editar el perfil, entrar en "
+              "tu cuenta o cerrar sesión hace falta este código.",
+    },
+    "pin_uj_cimke": {"hu": "Új szülői kód", "es": "Nuevo código de padres"},
+    "pin_mentes": {"hu": "Kód mentése", "es": "Guardar código"},
+    "pin_jelszo_cimke": {"hu": "A bejelentkezési jelszavad",
+                         "es": "Tu contraseña de acceso"},
+    "pin_elfelejt_cim": {"hu": "Új szülői kód", "es": "Nuevo código de padres"},
+    "pin_elfelejt_alcim": {
+        "hu": "Add meg a bejelentkezési jelszavadat, és adhatsz új kódot.",
+        "es": "Introduce tu contraseña de acceso y podrás poner un código nuevo.",
+    },
+    "pin_szuloknek": {"hu": "Szülőknek", "es": "Para padres"},
+    "pin_fiok_cim": {"hu": "Szülői kód", "es": "Código de padres"},
+    "pin_fiok_leiras": {
+        "hu": "Négy számjegy, ami elválasztja a szülői részt a gyerekétől. "
+              "Nem jelszó – csak annyi a dolga, hogy a gyerek ne menjen át "
+              "rajta véletlenül.",
+        "es": "Cuatro cifras que separan la zona de padres de la del niño. No "
+              "es una contraseña: solo sirve para que el niño no pase por "
+              "descuido.",
+    },
+    "pin_nincs": {
+        "hu": "Még nincs beállítva. Amíg nincs, a gyerek mindenhez hozzáfér.",
+        "es": "Aún no está configurado. Hasta entonces, el niño tiene acceso a todo.",
+    },
 
 }
 

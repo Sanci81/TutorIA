@@ -64,6 +64,22 @@
     </form>
   </div>
 
+  {# SZÜLŐI KÓD – itt lehet később megváltoztatni. #}
+  <div class="doboz">
+    <h2>{{ t('pin_fiok_cim') }}</h2>
+    <p class="adat">{{ t('pin_fiok_leiras') }}</p>
+    {% if not szulo.get('van_pin') %}
+      <div class="figyelmeztetes">{{ t('pin_nincs') }}</div>
+    {% endif %}
+    <form method="post" action="{{ url_for('fiok_pin') }}">
+      <label for="uj_pin">{{ t('pin_uj_cimke') }}</label>
+      <input type="password" id="uj_pin" name="uj_pin"
+             inputmode="numeric" pattern="[0-9]{4}" maxlength="4"
+             autocomplete="off" required>
+      <button type="submit" class="gomb">{{ t('pin_mentes') }}</button>
+    </form>
+  </div>
+
   <div class="doboz veszelyes">
     <h2>{{ t('account_delete_title') }}</h2>
     <div class="figyelmeztetes">{{ t('account_delete_warning') }}</div>

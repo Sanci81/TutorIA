@@ -44,7 +44,14 @@
             </a>
 
             <nav class="nav-links">
-                {% if session.get('parent_id') %}
+                {% if session.get('aktiv_gyerek') %}
+                    {# A GYEREK ÜL A GÉP ELŐTT. Egyetlen szülői ajtó látszik,
+                       kóddal – mint a Smartick „Web de padres" gombja. #}
+                    <a class="szuloknek" href="{{ url_for('szuloi_pin') }}">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                        {{ t('pin_szuloknek') }}
+                    </a>
+                {% elif session.get('parent_id') %}
                     <a href="{{ url_for('dashboard') }}">{{ t('nav_dashboard') }}</a>
                     <a href="{{ url_for('fiok') }}">{{ t('nav_account') }}</a>
                     <a href="{{ url_for('logout') }}">{{ t('nav_logout') }}</a>

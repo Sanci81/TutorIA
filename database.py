@@ -105,6 +105,12 @@ class Parent(Base):
     ertesites: Mapped[str] = mapped_column(String(10), nullable=False,
                                            server_default="heti")
     utolso_ertesites: Mapped[date | None] = mapped_column(Date, nullable=True)
+    # SZÜLŐI PIN – négy számjegy, titkosítva.
+    # MIÉRT: a gyerek ugyanazon a gépen ugyanabban a munkamenetben ül, mint a
+    # szülő. PIN nélkül át tudja írni a saját osztályát (és onnantól rossz
+    # anyagot kap), belenézhet a testvére albumába, és ki tud jelentkeztetni.
+    # Ez NEM jelszó: csak annyi a dolga, hogy egy gyerek ne menjen át rajta.
+    szuloi_pin: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     children: Mapped[list["Child"]] = relationship(
         back_populates="parent", cascade="all, delete-orphan"
@@ -424,6 +430,8 @@ def _parent_dict(parent: Parent) -> dict[str, Any]:
         "last_seen": parent.last_seen,
         "ertesites": parent.ertesites or "heti",
         "utolso_ertesites": parent.utolso_ertesites,
+        "szuloi_pin": parent.szuloi_pin,
+        "van_pin": bool(parent.szuloi_pin),
     }
 
 
@@ -511,6 +519,7 @@ def init_db() -> None:
     ensure_parents_last_seen_column()
     ensure_learning_time_mode_column()
     ensure_parents_ertesites_columns()
+    ensure_parents_pin_column()
 
 
 def ensure_parents_last_seen_column() -> None:
@@ -524,6 +533,19 @@ def ensure_parents_last_seen_column() -> None:
                 "last_seen TIMESTAMPTZ"))
     except Exception as exc:
         logger.warning("ensure_parents_last_seen_column: kihagyva: %s", exc)
+
+
+def ensure_parents_pin_column() -> None:
+    """parents.szuloi_pin – a szülői rész négyjegyű kódja, titkosítva."""
+    from sqlalchemy import text
+
+    try:
+        with _get_engine().begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE parents ADD COLUMN IF NOT EXISTS "
+                "szuloi_pin VARCHAR(255)"))
+    except Exception as exc:
+        logger.warning("ensure_parents_pin_column: kihagyva: %s", exc)
 
 
 def ensure_parents_ertesites_columns() -> None:
@@ -812,11 +834,16 @@ def ensure_password_reset_table() -> None:
 # ---------------------------------------------------------------------------
 
 
-def create_parent(email: str, password_hash: str) -> int | None:
-    """Új szülő létrehozása. Visszaadja az id-t, vagy None ha az email foglalt."""
+def create_parent(email: str, password_hash: str,
+                  szuloi_pin: str | None = None) -> int | None:
+    """Új szülő létrehozása. Visszaadja az id-t, vagy None ha az email foglalt.
+
+    A `szuloi_pin` MÁR TITKOSÍTVA érkezik – nyers számjegyet ide soha ne adj.
+    """
     db = _session()
     try:
-        parent = Parent(email=email.strip().lower(), password_hash=password_hash)
+        parent = Parent(email=email.strip().lower(), password_hash=password_hash,
+                        szuloi_pin=szuloi_pin)
         db.add(parent)
         db.commit()
         db.refresh(parent)
@@ -824,6 +851,23 @@ def create_parent(email: str, password_hash: str) -> int | None:
     except IntegrityError:
         db.rollback()
         return None
+    finally:
+        db.close()
+
+
+def set_parent_pin(parent_id: int, pin_hash: str | None) -> bool:
+    """A szülői PIN beállítása vagy törlése. A hash-t a hívó készíti."""
+    db = _session()
+    try:
+        parent = db.get(Parent, parent_id)
+        if not parent:
+            return False
+        parent.szuloi_pin = pin_hash
+        db.commit()
+        return True
+    except Exception:
+        db.rollback()
+        raise
     finally:
         db.close()
 

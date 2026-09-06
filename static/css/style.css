@@ -2736,3 +2736,90 @@ body:has(.chat-layout) .content { max-width: 1560px; }
         radial-gradient(70% 120% at 85% 100%, rgba(23, 184, 166, 0.32), transparent 60%),
         linear-gradient(160deg, #1e7a4d, #14603b);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   SZÜLŐI PIN
+   Szűk, nyugodt, játék nélkül – a gyereknek is látszania kell, hogy
+   ez a rész nem az övé.
+   ═══════════════════════════════════════════════════════════════════ */
+.pin-lap {
+    display: grid;
+    place-items: center;
+    padding: 56px 20px 80px;
+}
+.pin-doboz {
+    background: #fff;
+    border: 1px solid #dbe5df;
+    border-radius: 20px;
+    padding: 34px 30px 28px;
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(20, 60, 40, 0.12);
+}
+.pin-doboz-szeles { max-width: 420px; text-align: left; }
+.pin-lakat {
+    width: 54px; height: 54px;
+    border-radius: 16px;
+    background: #fdf1e0;
+    display: grid; place-items: center;
+    margin: 0 auto 16px;
+}
+.pin-lakat svg {
+    width: 27px; height: 27px;
+    stroke: #c77f10; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.pin-doboz h1 { font-size: 21px; margin: 0 0 5px; }
+.pin-alcim { font-size: 14px; color: #5d6b64; margin: 0 0 20px; }
+.pin-mezo {
+    width: 100%;
+    font-size: 30px;
+    letter-spacing: 0.5em;
+    text-align: center;
+    padding: 12px 0 12px 0.5em;
+    border: 2px solid #dbe5df;
+    border-radius: 14px;
+    margin-bottom: 16px;
+}
+.pin-mezo:focus { outline: none; border-color: #1e7a4d; }
+.pin-cimke {
+    display: block;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #5d6b64;
+    margin: 14px 0 6px;
+}
+.pin-szoveg {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid #dbe5df;
+    border-radius: 12px;
+    font-size: 15px;
+}
+.pin-szoveg:focus { outline: none; border-color: #1e7a4d; }
+.pin-gomb { width: 100%; margin-top: 18px; }
+.pin-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 13.5px;
+    color: #5d6b64;
+}
+.mezo-sugo { font-size: 13px; color: #5d6b64; margin: 6px 0 0; line-height: 1.5; }
+.szuloknek {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #5d6b64 !important;
+    border: 1px solid #dbe5df;
+    border-radius: 99px;
+    padding: 7px 15px;
+}
+.szuloknek svg {
+    width: 15px; height: 15px;
+    stroke: #c77f10; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.szuloknek:hover { background: #f3f6f4; text-decoration: none; }
