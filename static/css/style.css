@@ -2632,3 +2632,107 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     box-shadow: 0 22px 50px rgba(4, 26, 16, 0.4);
     border: 1px solid rgba(242, 221, 138, 0.3);
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   BEMUTATÓ – SZÍNES VÁLTOZAT (vázlat)
+   A keret nyugodt marad a szülőnek, a HANGSÚLYOK lesznek színesek
+   a gyereknek. Fénykép nincs benne, csak rajzolt formák.
+   ═══════════════════════════════════════════════════════════════════ */
+:root {
+    --b-sarga: #f5a623;
+    --b-korall: #ef5f5f;
+    --b-kek: #2f8fd8;
+    --b-lila: #7b5bd6;
+    --b-turkiz: #17b8a6;
+    --b-rozsa: #e0609b;
+}
+
+.bem-hero {
+    position: relative;
+    isolation: isolate;
+    padding: 62px 24px 68px;
+}
+.bem-hero::before {
+    content: "";
+    position: absolute;
+    inset: -40px -50vw -10px;
+    z-index: -2;
+    background:
+        radial-gradient(52% 60% at 12% 18%, rgba(245, 166, 35, 0.24), transparent 70%),
+        radial-gradient(46% 55% at 88% 12%, rgba(47, 143, 216, 0.22), transparent 70%),
+        radial-gradient(50% 60% at 72% 95%, rgba(23, 184, 166, 0.22), transparent 70%),
+        linear-gradient(180deg, #f2f9f5, #f6f9f7);
+}
+.bem-hero::after {
+    content: "";
+    position: absolute;
+    inset: -40px -50vw -10px;
+    z-index: -1;
+    opacity: 0.6;
+    background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'>\
+<g fill='none' stroke-width='3' stroke-linecap='round'>\
+<circle cx='40' cy='44' r='17' stroke='%23f5a623' stroke-opacity='.45'/>\
+<path d='M150 26h40v30h-40z' stroke='%232f8fd8' stroke-opacity='.4'/>\
+<path d='M196 118l16 28h-32z' stroke='%2317b8a6' stroke-opacity='.45'/>\
+<path d='M22 128h34M22 140h24' stroke='%23ef5f5f' stroke-opacity='.4'/>\
+<circle cx='120' cy='96' r='9' stroke='%237b5bd6' stroke-opacity='.45'/>\
+<path d='M64 186c14-18 34-18 48 0' stroke='%23e0609b' stroke-opacity='.4'/>\
+<path d='M198 196v26M186 209h24' stroke='%23f5a623' stroke-opacity='.45'/>\
+<path d='M96 40l10 18-10 18-10-18z' stroke='%2317b8a6' stroke-opacity='.35'/>\
+</g></svg>");
+}
+.bem-hero h1 { font-size: 48px; }
+
+.bem-valaszto { border: 0; box-shadow: 0 18px 46px rgba(20, 60, 40, 0.14); }
+.bem-ev { border-width: 2px; }
+.bem-ev:nth-child(1) { border-color: rgba(239, 95, 95, 0.42); color: var(--b-korall); }
+.bem-ev:nth-child(2) { border-color: rgba(245, 166, 35, 0.45); color: #c77f10; }
+.bem-ev:nth-child(3) { border-color: rgba(23, 184, 166, 0.45); color: #0e8a7c; }
+.bem-ev:nth-child(4) { border-color: rgba(47, 143, 216, 0.42); color: var(--b-kek); }
+.bem-ev:nth-child(5) { border-color: rgba(123, 91, 214, 0.42); color: var(--b-lila); }
+.bem-ev:nth-child(6) { border-color: rgba(224, 96, 155, 0.42); color: var(--b-rozsa); }
+.bem-ev:nth-child(7) { border-color: rgba(23, 184, 166, 0.45); color: #0e8a7c; }
+.bem-ev:nth-child(8) { border-color: rgba(245, 166, 35, 0.45); color: #c77f10; }
+.bem-ev:hover { transform: translateY(-3px) scale(1.03); }
+
+.bem-racs3 .bem-kartya { border-top: 5px solid var(--b-kek); }
+.bem-racs3 .bem-kartya:nth-child(1) { border-top-color: var(--b-kek); }
+.bem-racs3 .bem-kartya:nth-child(2) { border-top-color: var(--b-sarga); }
+.bem-racs3 .bem-kartya:nth-child(3) { border-top-color: var(--b-turkiz); }
+.bem-szakasz:not(.bem-biztonsag) .bem-kartya:nth-child(1) .bem-ikon { background: rgba(47, 143, 216, 0.15); }
+.bem-szakasz:not(.bem-biztonsag) .bem-kartya:nth-child(1) .bem-ikon svg { stroke: var(--b-kek); }
+.bem-szakasz:not(.bem-biztonsag) .bem-kartya:nth-child(2) .bem-ikon { background: rgba(245, 166, 35, 0.2); }
+.bem-szakasz:not(.bem-biztonsag) .bem-kartya:nth-child(2) .bem-ikon svg { stroke: #c77f10; }
+.bem-szakasz:not(.bem-biztonsag) .bem-kartya:nth-child(3) .bem-ikon { background: rgba(23, 184, 166, 0.17); }
+.bem-szakasz:not(.bem-biztonsag) .bem-kartya:nth-child(3) .bem-ikon svg { stroke: #0e8a7c; }
+.bem-szakasz:not(.bem-biztonsag) .bem-kartya {
+    box-shadow: 0 10px 26px rgba(20, 60, 40, 0.07);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.bem-szakasz:not(.bem-biztonsag) .bem-kartya:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(20, 60, 40, 0.12);
+}
+
+.bem-lepes:nth-child(1)::before { background: var(--b-korall); }
+.bem-lepes:nth-child(2)::before { background: var(--b-sarga); }
+.bem-lepes:nth-child(3)::before { background: var(--b-kek); }
+.bem-lepes:nth-child(4)::before { background: var(--b-lila); }
+.bem-lepes::before { box-shadow: 0 6px 14px rgba(20, 60, 40, 0.18); }
+
+.bem-album-sav {
+    background:
+        radial-gradient(60% 70% at 20% 0%, rgba(245, 166, 35, 0.14), transparent 70%),
+        radial-gradient(60% 70% at 85% 100%, rgba(123, 91, 214, 0.13), transparent 70%),
+        #fffdf8;
+}
+.bem-lap { transition: transform 0.15s; }
+.bem-lap:hover { transform: translateY(-5px) rotate(-1.5deg); }
+
+.bem-zaro {
+    background:
+        radial-gradient(70% 120% at 15% 0%, rgba(245, 166, 35, 0.3), transparent 60%),
+        radial-gradient(70% 120% at 85% 100%, rgba(23, 184, 166, 0.32), transparent 60%),
+        linear-gradient(160deg, #1e7a4d, #14603b);
+}
