@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/betutipus.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body{% if aktiv_gyerek %} class="gyerek-hatter"{% endif %}>
+<body{% if aktiv_gyerek %} class="gyerek-hatter{% if lang == 'es' %} hatter-es{% endif %}"{% endif %}>
     <header class="navbar">
         <div class="navbar-inner">
             <a class="brand" href="{{ url_for('index') }}">
