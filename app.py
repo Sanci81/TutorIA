@@ -225,6 +225,9 @@ def inject_helpers():
         # a saját albumát, mert azok a linkek a gyerekválasztón vannak — az
         # pedig a szülői kód mögött van.
         "aktiv_gyerek": _aktiv_gyerek_adat(),
+        # Látszódjon, hogy a szülői rész NYITVA van. Enélkül nem érthető,
+        # miért enged be egyes oldalakra kód nélkül.
+        "pin_nyitva": bool(session.get("parent_id")) and _van_pin() and _pin_ervenyes(),
     }
 
 
@@ -305,7 +308,12 @@ def login_required(view):
 # tasakbontás, a kinézet. A tanuláshoz egyetlen kattintással sem lehet
 # nehezebb hozzáférni, mint eddig.
 # ---------------------------------------------------------------------------
-PIN_PERC = 15                    # ennyi ideig nem kérdez újra
+# MIÉRT ILYEN RÖVID: a kód beírása után ennyi ideig nem kérdez újra, hogy a
+# szülő több beállítást el tudjon intézni egymás után. Eredetileg 15 perc
+# volt — az viszont úgy hatott, mintha a védelem nem is működne: a szülő
+# beírta a kódot, és utána negyedóráig mindenhová bejutott. Három perc
+# elég a beállításokhoz, és nem hagyja tárva az ajtót.
+PIN_PERC = 3
 _PIN_KULCS = "pin_ervenyes_ig"
 
 
@@ -1750,6 +1758,14 @@ def szuloi_pin():
         flash(i18n.t("pin_rossz", g.lang), "error")
 
     return render_template("szuloi_pin.html", tovabb=tovabb)
+
+
+@app.route("/szuloi-pin/bezar")
+@login_required
+def szuloi_pin_bezar():
+    """A szülői rész azonnali bezárása – ne kelljen megvárni a lejáratot."""
+    session.pop(_PIN_KULCS, None)
+    return redirect(request.referrer or url_for("dashboard"))
 
 
 @app.route("/szuloi-pin/elfelejtettem", methods=["GET", "POST"])

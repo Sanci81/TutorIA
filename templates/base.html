@@ -48,6 +48,14 @@
             <nav class="nav-links">
                 {% if aktiv_gyerek %}
                 {% elif session.get('parent_id') %}
+                    {% if pin_nyitva %}
+                    {# LÁTSZÓDJON, hogy a szülői rész most nyitva van, és
+                       egy kattintással be lehessen csukni. #}
+                    <a class="pin-nyitva" href="{{ url_for('szuloi_pin_bezar') }}">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V6a4 4 0 0 1 7-2.6"/></svg>
+                        {{ t('pin_nyitva_cimke') }}
+                    </a>
+                    {% endif %}
                     <a href="{{ url_for('dashboard') }}">{{ t('nav_dashboard') }}</a>
                     <a href="{{ url_for('fiok') }}">{{ t('nav_account') }}</a>
                     <a href="{{ url_for('logout') }}">{{ t('nav_logout') }}</a>

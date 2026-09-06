@@ -2823,3 +2823,23 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 .szuloknek:hover { background: #f3f6f4; text-decoration: none; }
+
+/* A szülői rész nyitva van – látható, egy kattintással zárható. */
+.pin-nyitva {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #9a5e0c !important;
+    background: #fff6e6;
+    border: 1px solid #f3d9ad;
+    border-radius: 99px;
+    padding: 6px 13px;
+}
+.pin-nyitva svg {
+    width: 15px; height: 15px;
+    fill: none; stroke: #c77f10; stroke-width: 2;
+    stroke-linecap: round; stroke-linejoin: round;
+}
+.pin-nyitva:hover { background: #fdefd8; text-decoration: none; }

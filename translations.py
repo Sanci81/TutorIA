@@ -808,6 +808,8 @@ TRANSLATIONS = {
     "gy_bolt": {"hu": "Bolt", "es": "Tienda"},
     "gy_kinezet": {"hu": "Kinézet", "es": "Aspecto"},
     "gy_erme": {"hu": "Érméid", "es": "Tus monedas"},
+    "pin_nyitva_cimke": {"hu": "Szülői rész nyitva · bezárás",
+                         "es": "Zona de padres abierta · cerrar"},
 
 }
 
