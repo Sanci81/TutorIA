@@ -3184,3 +3184,58 @@ body.gyerek-hatter .back-link {
     }
     .chat-layout:has(.chat-sidebar-vocab) .chat-kabala-oszlop { display: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   „BE VAN LÉPVE" JELZÉS A FEJLÉCBEN
+   Egy KIS, szegélyes doboz az e-mail-címmel — nem nagyobb, mint a
+   menüpontok. (Előtte hiányzott a stílus, ezért a rajzjel teljes
+   méretben jelent meg, és szétnyomta a fejlécet.)
+   ═══════════════════════════════════════════════════════════════════ */
+.belepve {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 230px;
+    padding: 5px 12px 5px 8px;
+    border: 1px solid #dfe6e2;
+    border-radius: 999px;
+    background: #fff;
+    color: #46564e;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+.belepve svg {
+    flex: 0 0 auto;
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: #1e7a4d;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.belepve b {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+@media (max-width: 900px) {
+    .belepve { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   NAGYÍTOTT (teljes képernyős) CHAT + KABALA
+   A kabala oszlopszabálya a fájlban később áll, mint a nagyítás
+   szabálya, ezért felülírta azt, és a beszélgetés egy keskeny sávba
+   szorult. Itt explicit megadjuk a nagyított nézet oszlopait.
+   ═══════════════════════════════════════════════════════════════════ */
+.chat-layout.teljes-mod:has(.chat-kabala-oszlop) {
+    grid-template-columns: 1fr 130px;
+}
+.chat-layout.teljes-mod:has(.chat-sidebar-vocab):has(.chat-kabala-oszlop) {
+    grid-template-columns: 1fr minmax(180px, 240px) 120px;
+}
+@media (max-width: 1120px) {
+    .chat-layout.teljes-mod:has(.chat-kabala-oszlop) { grid-template-columns: 1fr; }
+}
