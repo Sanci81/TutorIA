@@ -801,6 +801,9 @@ TRANSLATIONS = {
         "hu": "Még nincs beállítva. Amíg nincs, a gyerek mindenhez hozzáfér.",
         "es": "Aún no está configurado. Hasta entonces, el niño tiene acceso a todo.",
     },
+    # ── GYAKORLÓ FELADAT A BESZÉLGETÉSBEN ────────────────────────────────
+    "feladat_kesz": {"hu": "Kész", "es": "Listo"},
+
     # ── A GYEREK NEME (csak a kabala figurához) ──────────────────────────
     "nem_cimke": {"hu": "A gyerek neme", "es": "Niño o niña"},
     "nem_fiu": {"hu": "Fiú", "es": "Niño"},

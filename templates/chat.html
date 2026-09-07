@@ -364,6 +364,7 @@
         voiceProcessing: {{ t('chat_voice_processing')|tojson }},
         voiceMicPermission: {{ t('chat_voice_mic_permission')|tojson }},
         replayTitle: {{ t('chat_replay_title')|tojson }},
+        feladatKesz: {{ t('feladat_kesz')|tojson }},
         voiceBudgetSpent: {{ t('voice_budget_spent')|tojson }},
         think: [
             {{ t('chat_think_1')|tojson }},
@@ -523,7 +524,7 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
-    function appendBubble(role, text, figures) {
+    function appendBubble(role, text, figures, feladat) {
         var wrap = document.createElement('div');
         wrap.className = 'chat-bubble chat-bubble-' + role;
         if (chatMode === 'voice' && role === 'assistant') {
@@ -580,8 +581,128 @@
             });
         }
 
+        // GYAKORLÓ FELADAT a buborék alatt (beírós számoló vagy válaszgombok).
+        if (role === 'assistant' && feladat) {
+            var fel = feladatElem(feladat);
+            if (fel) { inner.appendChild(fel); }
+        }
+
         messagesEl.insertBefore(wrap, typing);
         scrollToBottom();
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // GYAKORLÓ FELADATOK
+    // Nem külön képernyő: a beszélgetésbe épül. Amit a gyerek beír vagy
+    // kiválaszt, az sima üzenetként megy vissza a tanárnak, tehát a
+    // haladás és a pontozás pont ugyanúgy működik, mint eddig.
+    // ══════════════════════════════════════════════════════════════════
+    function feladatElem(f) {
+        if (!f || !f.tipus) { return null; }
+        if (f.tipus === 'szamolo') { return szamoloTabla(f); }
+        if (f.tipus === 'valaszt') { return valasztGombok(f); }
+        return null;
+    }
+
+    function feladatKuld(doboz, szoveg) {
+        if (!szoveg) { return; }
+        doboz.classList.add('feladat-kesz');
+        doboz.querySelectorAll('button, input').forEach(function (e) { e.disabled = true; });
+        sendMessage(szoveg);
+    }
+
+    // Oszlopos számolás: a két szám egymás alatt, alul üres kockák.
+    function szamoloTabla(f) {
+        var szelesseg = Math.max(String(f.a).length, String(f.b).length,
+                                 String(f.eredmeny).length);
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-szamolo';
+
+        function sor(szam, jel) {
+            var s = document.createElement('div');
+            s.className = 'fsz-sor';
+            var j = document.createElement('span');
+            j.className = 'fsz-jel';
+            j.textContent = jel || '';
+            s.appendChild(j);
+            var sz = String(szam).padStart(szelesseg, ' ');
+            for (var i = 0; i < sz.length; i++) {
+                var c = document.createElement('span');
+                c.className = 'fsz-jegy';
+                c.textContent = sz[i] === ' ' ? '' : sz[i];
+                s.appendChild(c);
+            }
+            return s;
+        }
+
+        doboz.appendChild(sor(f.a, ''));
+        doboz.appendChild(sor(f.b, f.jel));
+
+        var vonal = document.createElement('div');
+        vonal.className = 'fsz-vonal';
+        doboz.appendChild(vonal);
+
+        var valaszSor = document.createElement('div');
+        valaszSor.className = 'fsz-sor fsz-valasz';
+        var ures = document.createElement('span');
+        ures.className = 'fsz-jel';
+        valaszSor.appendChild(ures);
+        var mezok = [];
+        for (var i = 0; i < szelesseg; i++) {
+            var be = document.createElement('input');
+            be.type = 'text';
+            be.inputMode = 'numeric';
+            be.maxLength = 1;
+            be.className = 'fsz-mezo';
+            be.setAttribute('aria-label', (szelesseg - i) + '.');
+            valaszSor.appendChild(be);
+            mezok.push(be);
+        }
+        doboz.appendChild(valaszSor);
+
+        // A gyerek jobbról balra tölti ki, ahogy a füzetben számol.
+        mezok.forEach(function (be, idx) {
+            be.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                if (this.value && idx < mezok.length - 1) { mezok[idx + 1].focus(); }
+            });
+            be.addEventListener('keydown', function (e) {
+                if (e.key === 'Backspace' && !this.value && idx > 0) { mezok[idx - 1].focus(); }
+                if (e.key === 'ArrowLeft' && idx > 0) { mezok[idx - 1].focus(); }
+                if (e.key === 'ArrowRight' && idx < mezok.length - 1) { mezok[idx + 1].focus(); }
+                if (e.key === 'Enter') { e.preventDefault(); kesz.click(); }
+            });
+        });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var ertek = mezok.map(function (m) { return m.value || ''; }).join('');
+            ertek = ertek.replace(/^0+(?=\d)/, '');
+            if (!ertek) { mezok[mezok.length - 1].focus(); return; }
+            feladatKuld(doboz, ertek);
+        });
+        doboz.appendChild(kesz);
+
+        setTimeout(function () { mezok[mezok.length - 1].focus(); }, 60);
+        return doboz;
+    }
+
+    // Válaszgombok: minden tantárgynál működik, nem csak matekban.
+    function valasztGombok(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-valaszt';
+        f.opciok.forEach(function (opcio) {
+            var g = document.createElement('button');
+            g.type = 'button';
+            g.className = 'feladat-opcio';
+            g.textContent = opcio;
+            g.addEventListener('click', function () { feladatKuld(doboz, opcio); });
+            doboz.appendChild(g);
+        });
+        return doboz;
     }
 
     function playTts(text) {
@@ -1010,7 +1131,7 @@
                         });
                     }, 200);
                 }
-                appendBubble('assistant', aiMessage, res.data.figures);
+                appendBubble('assistant', aiMessage, res.data.figures, res.data.feladat);
                 if (res.data.mondd) { kiejtesKartya(res.data.mondd); }
                 if (res.data.current_topic_id) {
                     currentTopicId = res.data.current_topic_id;
@@ -1419,7 +1540,7 @@
                             });
                         }, 200);
                     }
-                    appendBubble('assistant', reply, res.data.figures);
+                    appendBubble('assistant', reply, res.data.figures, res.data.feladat);
                     if (res.data.mondd) { kiejtesKartya(res.data.mondd); }
                     if (res.data.current_topic_id) {
                         currentTopicId = res.data.current_topic_id;

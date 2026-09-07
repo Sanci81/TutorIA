@@ -2424,6 +2424,77 @@ def _normalize_chat_mode(mode: str | None, profile: str) -> str:
         return "voice"
     return "chat"
 
+# ── GYAKORLÓ FELADAT A BESZÉLGETÉSBEN ───────────────────────────────
+# A tanár egy JSON-t tesz a válaszába:
+#     <FELADAT>{"tipus":"szamolo","jel":"-","a":325,"b":148}</FELADAT>
+#     <FELADAT>{"tipus":"valaszt","opciok":["macska","kutya","ló"]}</FELADAT>
+# Ebből a gyerek nem szöveget olvas, hanem BEÍRHATÓ vagy KATTINTHATÓ
+# feladatot kap. A válasza utána sima üzenetként megy vissza, tehát a
+# haladás, a pontozás és a témakör-lezárás változatlanul működik.
+_CHAT_MARKER_FELADAT = re.compile(
+    r"[<\[]\s*FELADAT\s*[>\]]\s*(\{.*?\})\s*[<\[]\s*/\s*FELADAT\s*[>\]]",
+    re.IGNORECASE | re.DOTALL,
+)
+
+_FELADAT_JELEK = {"+": "+", "-": "−", "−": "−", "*": "×", "x": "×",
+                  "×": "×", "/": "÷", ":": "÷", "÷": "÷"}
+
+
+def _feladat_parse(text: str) -> dict | None:
+    """A <FELADAT> jelölőből épít egy ellenőrzött feladatleírást.
+
+    A HELYES EREDMÉNYT MINDIG MI SZÁMOLJUK KI, sosem a nyelvi modell —
+    egy elszámolt géppel gyakoroltatni rosszabb, mint nem gyakoroltatni.
+    Bármi gyanús: None, és akkor egyszerűen marad a sima kérdés.
+    """
+    m = _CHAT_MARKER_FELADAT.search(text or "")
+    if not m:
+        return None
+    try:
+        adat = json.loads(m.group(1))
+    except Exception:
+        return None
+    if not isinstance(adat, dict):
+        return None
+
+    tipus = str(adat.get("tipus") or "").strip().lower()
+
+    if tipus == "szamolo":
+        jel = _FELADAT_JELEK.get(str(adat.get("jel") or "").strip())
+        try:
+            a_ert = int(adat["a"])
+            b_ert = int(adat["b"])
+        except Exception:
+            return None
+        if jel is None or not (0 <= a_ert <= 999999 and 0 <= b_ert <= 999999):
+            return None
+        if jel == "+":
+            ered = a_ert + b_ert
+        elif jel == "−":
+            ered = a_ert - b_ert
+        elif jel == "×":
+            ered = a_ert * b_ert
+        else:
+            if b_ert == 0 or a_ert % b_ert != 0:
+                return None          # maradékos osztást nem kérünk beírósan
+            ered = a_ert // b_ert
+        if ered < 0:
+            return None              # negatív eredményt nem írunk oszlopba
+        return {"tipus": "szamolo", "jel": jel, "a": a_ert, "b": b_ert,
+                "eredmeny": str(ered)}
+
+    if tipus == "valaszt":
+        opciok = adat.get("opciok")
+        if not isinstance(opciok, list):
+            return None
+        tiszta = [str(o).strip() for o in opciok if str(o).strip()][:6]
+        if len(tiszta) < 2:
+            return None
+        return {"tipus": "valaszt", "opciok": tiszta}
+
+    return None
+
+
 _CHAT_MARKER_TOPIC = re.compile(r"<TOPIC_COMPLETE>", re.IGNORECASE)
 _CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
 _CHAT_MARKER_VOCAB = re.compile(
@@ -2629,6 +2700,7 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     clean = _CHAT_MARKER_VOCAB.sub(lambda m: m.group(2).strip(), clean)
     clean = _CHAT_MARKER_VOCAB_EGY.sub(lambda m: m.group(1).strip(), clean)
     clean = _CHAT_MARKER_SVG.sub("", clean)
+    clean = _CHAT_MARKER_FELADAT.sub("", clean)
     clean = _CHAT_MARKER_MONDD.sub("", clean)
     clean = _BARE_SVG_RE.sub("", clean)
     # A rajz körüli üres ```svg / ``` sorok eltakarítása
@@ -5304,6 +5376,33 @@ mondatban: "There is a shop. (egy bolt) — There are two shops. (két bolt)".
 Utána kérdezz rá arra, hogy MELYIKET kell használni, ne arra, hogy mit
 jelent az egyik.
 
+✏️ BEÍRÓS ÉS KATTINTÓS FELADAT — EZ TESZI GYAKORLÁSSÁ AZ ÓRÁT:
+A kérdéseidet nem csak szövegben teheted fel. Ha a válaszod végére odaírod
+ezt a jelölőt, a gyerek nem gépel, hanem BEÍR vagy RÁKATTINT:
+
+1) Oszlopos számolás (csak matek). A két szám egymás alatt jelenik meg,
+   alatta üres kockákkal — pont úgy, mint a füzetben:
+   <FELADAT>{"tipus":"szamolo","jel":"-","a":325,"b":148}</FELADAT>
+   A "jel" ezek egyike: + - * :
+   Az EREDMÉNYT NE ÍRD LE sehová: a program maga számolja ki és ellenőrzi.
+   Csak egész számokkal, nulla vagy pozitív eredménnyel, és osztásnál csak
+   maradék nélkül. Ha ezek bármelyike nem teljesül, hagyd el a jelölőt.
+
+2) Válaszgombok (MINDEN tantárgynál, nem csak matekban):
+   <FELADAT>{"tipus":"valaszt","opciok":["macska","kutya","ló"]}</FELADAT>
+   Kettő és hat közötti lehetőség. A kérdést a szövegben tedd fel, a
+   jelölőbe CSAK a válaszlehetőségek kerülnek. Pontosan egy legyen helyes.
+   Példák: melyik szó a helyes fordítás; melyik állat emlős; melyik évszám;
+   melyik hangszer húros; melyik mondat helyesírása jó.
+
+Szabályok mindkettőre:
+- LEGFELJEBB EGY <FELADAT> egy válaszban, és mindig a válasz VÉGÉN.
+- Csak akkor, ha ELŐTTE megtanítottad, amit kérdezel.
+- A jelölő UTÁN már ne írj kérdést: a feladat maga a kérdés.
+- Nem minden válaszba kell. Magyarázat, majd feladat — ez a jó ritmus.
+- A gyerek válasza sima üzenetként érkezik vissza hozzád, ugyanúgy
+  értékeld, mintha beírta volna.
+
 🗣️ KIEJTÉS-GYAKORLÁS — HASZNÁLD, DE MÉRTÉKKEL:
 Ha azt szeretnéd, hogy a gyerek MONDJA is ki, amit tanult, írd a válaszod
 végére ezt a jelölőt a gyakorlandó mondattal:
@@ -7116,6 +7215,9 @@ def child_chat_send(child_id: int):
     raw_reply = ellenoriz.latinra(raw_reply)
 
     _remember_fl_words(raw_reply)
+    # A gyakorló feladatot a NYERS válaszból olvassuk ki, mielőtt a jelölők
+    # eltűnnének a szövegből.
+    feladat = _feladat_parse(raw_reply)
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:
@@ -7577,6 +7679,8 @@ def child_chat_send(child_id: int):
             "game_level": progress.get("game_level", 1),
             "topic_done": topic_done,
             "figures": figures,
+            # Beírós / kattintós gyakorló feladat, ha a tanár kért egyet.
+            "feladat": feladat,
             # Kiejtés-gyakorlás: ha a tanár <MONDD> jelölőt tett a válaszba,
             # a gyerek egy külön kártyát kap mikrofonnal. Nyelv nélkül nincs
             # mit értékelni, ezért a nyelvkódot is ideadjuk.

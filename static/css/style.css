@@ -2689,7 +2689,8 @@ body:has(.chat-layout) .content { max-width: 1560px; }
        ahol nem takarnak szöveget. */
     background-size: 100% auto;
 }
-.bem-hero { padding-bottom: 172px; }
+/* Alul szabad sáv a két figurának – így nem lógnak rá a szövegre. */
+.bem-hero { padding-bottom: 214px; }
 .bem-figura {
     position: absolute;
     bottom: 0;
@@ -2700,10 +2701,11 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     user-select: none;
     filter: drop-shadow(0 10px 22px rgba(20, 60, 40, .16));
 }
-/* A JOBB oldalon állnak, az évfolyam-kártya alatt: ott üres a sáv,
-   így egyetlen betűt sem takarnak el. */
-.bem-figura-1 { right: 172px; }
-.bem-figura-2 { right: 32px; height: 205px; }
+/* A KÉT SZÉLEN állnak, egymástól távol: a lány bal oldalon a szöveg
+   alatt, a fiú jobb oldalon az évfolyam-kártya alatt. Egyik sem takar
+   el betűt, mert fölöttük ott a szabad sáv. */
+.bem-figura-1 { left: 8px; height: 196px; }
+.bem-figura-2 { right: 24px; height: 204px; }
 @media (max-width: 900px) {
     .bem-hero { padding-bottom: 68px; }
     .bem-figura { display: none; }
@@ -3239,3 +3241,114 @@ body.gyerek-hatter .back-link {
 @media (max-width: 1120px) {
     .chat-layout.teljes-mod:has(.chat-kabala-oszlop) { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   GYAKORLÓ FELADAT A BESZÉLGETÉSBEN
+   Nem külön képernyő: a tanár buborékja alatt jelenik meg. A gyerek
+   beírja a számjegyeket vagy rákattint a válaszra — és onnantól úgy
+   megy tovább, mint egy sima üzenet.
+   ═══════════════════════════════════════════════════════════════════ */
+.feladat {
+    display: block;
+    clear: both;
+    margin: 12px 0 2px;
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(20, 60, 40, .1);
+}
+.feladat.feladat-kesz { opacity: .62; }
+
+/* ── Oszlopos számolás ── */
+.feladat-szamolo {
+    /* SAJÁT SORBAN, a szöveg ALATT – ha inline-block, a kérdés mellé
+       csúszik, és a buborék szövege szétesik körülötte. */
+    display: block;
+    width: fit-content;
+    min-width: 168px;
+}
+.fsz-sor {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+.fsz-jel {
+    width: 26px;
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: #ef5f5f;
+}
+.fsz-jegy {
+    width: 42px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 800;
+    color: #16241d;
+    font-variant-numeric: tabular-nums;
+}
+.fsz-vonal {
+    height: 3px;
+    background: #16241d;
+    border-radius: 2px;
+    margin: 4px 0 10px;
+}
+.fsz-mezo {
+    width: 42px;
+    height: 50px;
+    padding: 0;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: #1e7a4d;
+    border: 2px solid #cfe0d6;
+    border-radius: 10px;
+    background: #f6fbf8;
+}
+.fsz-mezo:focus {
+    outline: none;
+    border-color: #1e7a4d;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(30, 122, 77, .16);
+}
+.feladat-kesz-gomb {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: #1e7a4d;
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+.feladat-kesz-gomb:hover { background: #176a42; }
+.feladat-kesz-gomb:disabled { background: #9fc0ac; cursor: default; }
+
+/* ── Válaszgombok (minden tantárgyhoz) ── */
+.feladat-valaszt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.feladat-opcio {
+    padding: 11px 18px;
+    border: 2px solid #cfe0d6;
+    border-radius: 999px;
+    background: #f6fbf8;
+    color: #16241d;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color .14s, background .14s, transform .14s;
+}
+.feladat-opcio:hover {
+    border-color: #1e7a4d;
+    background: #fff;
+    transform: translateY(-1px);
+}
+.feladat-opcio:disabled { cursor: default; transform: none; }
