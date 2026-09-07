@@ -7,7 +7,11 @@
     <a class="back-link" href="{{ url_for('dashboard') }}">← {{ t('btn_back_dashboard') }}</a>
 
     <div class="select-tasks-header">
-        <div class="select-tasks-avatar">{{ child['name'][:1]|upper }}</div>
+        <div class="select-tasks-avatar">
+            {% if aktiv_gyerek and aktiv_gyerek.avatar %}
+            <img src="{{ url_for('avatar_kep', kulcs=aktiv_gyerek.avatar) }}" alt="">
+            {% else %}{{ child['name'][:1]|upper }}{% endif %}
+        </div>
         <div>
             <h1>{{ t('select_tasks_title') }}</h1>
             <p class="select-tasks-subtitle">

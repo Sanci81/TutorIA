@@ -71,7 +71,11 @@
                 {# Bal oldalt MINDIG a visszalépés, jobb oldalt EGYETLEN váltógomb,
                    ami azt írja ki, HOVÁ visz — nem azt, hol vagyunk éppen. #}
                 <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
-                <div class="chat-avatar-circle">{{ child['name'][0]|upper }}</div>
+                <div class="chat-avatar-circle">
+                    {% if aktiv_gyerek and aktiv_gyerek.avatar %}
+                    <img src="{{ url_for('avatar_kep', kulcs=aktiv_gyerek.avatar) }}" alt="">
+                    {% else %}{{ child['name'][0]|upper }}{% endif %}
+                </div>
                 <div class="chat-header-identity-text">
                     <h1 class="chat-child-name">{{ child['name'] }}</h1>
                     <p class="chat-subject">{{ subject_label }}</p>

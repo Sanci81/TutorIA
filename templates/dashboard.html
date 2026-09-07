@@ -63,7 +63,12 @@
             {% set gyszin = szinek[(child['name']|length + child['id']) % 8] %}
             <article class="gy-kartya" style="--gyszin: {{ gyszin }}">
                 <div class="gy-fejlec">
-                    <div class="gy-arc">{{ child['name'][:1]|upper }}</div>
+                    {# A profilkörben a gyerek AVATARJA van. A Kinézetben
+                       választ vagy kever magának egyet; ha még nem választott,
+                       az alapértelmezett arcot kapja. #}
+                    <div class="gy-arc">
+                        <img src="{{ avatar_kepek.get(child['id'], '') }}" alt="" loading="lazy">
+                    </div>
                     <div class="gy-cim">
                         <h3>{{ child['name'] }}</h3>
                         <p>

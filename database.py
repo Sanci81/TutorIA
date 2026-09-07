@@ -383,6 +383,10 @@ class ChildWallet(Base):
     # Kinézetek: melyik az aktív, és melyeket oldotta már fel ("alap,szivek").
     kinezet: Mapped[str] = mapped_column(String(32), nullable=False, default="alap")
     kinezetek: Mapped[str] = mapped_column(Text, nullable=False, default="alap")
+    # Avatar: melyik a profilképe, és melyeket oldotta már fel. A saját,
+    # kevert avatar kulcsa hosszabb ("sajat:2-copf-3-4"), ezért 64 karakter.
+    avatar: Mapped[str] = mapped_column(String(64), nullable=False, default="gyerek1")
+    avatarok: Mapped[str] = mapped_column(Text, nullable=False, default="")
     # Egyszeri átvezetés: a régi, tantárgyankénti coins összegét egyszer
     # hozzáadjuk az érméhez, hogy a gyereknek ne tűnjön el, amit összegyűjtött.
     regi_erme_atvezetve: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
@@ -532,6 +536,29 @@ def init_db() -> None:
     ensure_parents_pin_column()
     ensure_children_neme_column()
     ensure_chat_messages_feladat_column()
+    ensure_wallet_avatar_columns()
+
+
+def ensure_wallet_avatar_columns() -> None:
+    """child_wallet.avatar / .avatarok – a gyerek profilképe."""
+    from sqlalchemy import text
+
+    for oszlop, tipus in (("avatar", "VARCHAR(64)"), ("avatarok", "TEXT")):
+        try:
+            with _get_engine().begin() as conn:
+                conn.execute(text(
+                    f"ALTER TABLE child_wallet ADD COLUMN IF NOT EXISTS {oszlop} {tipus}"))
+            continue
+        except Exception as exc:
+            logger.warning("ensure_wallet_avatar_columns(%s): kihagyva: %s", oszlop, exc)
+        # SQLite: nincs „IF NOT EXISTS", ezért előbb megnézzük.
+        try:
+            with _get_engine().begin() as conn:
+                meglevo = {sor[1] for sor in conn.execute(text("PRAGMA table_info(child_wallet)"))}
+                if oszlop not in meglevo:
+                    conn.execute(text(f"ALTER TABLE child_wallet ADD COLUMN {oszlop} {tipus}"))
+        except Exception as exc:
+            logger.warning("ensure_wallet_avatar_columns sqlite(%s): kihagyva: %s", oszlop, exc)
 
 
 def ensure_chat_messages_feladat_column() -> None:
@@ -2623,6 +2650,8 @@ def get_wallet(child_id: int) -> dict[str, Any]:
             "tasak_szam": r.tasak_szam or 0,
             "kinezet": r.kinezet or "alap",
             "kinezetek": r.kinezetek or "alap",
+            "avatar": getattr(r, "avatar", None) or "gyerek1",
+            "avatarok": getattr(r, "avatarok", None) or "",
         }
     finally:
         db.close()
@@ -2670,6 +2699,42 @@ def set_kinezet(child_id: int, kinezet_id: str) -> bool:
             db.commit()
             return False
         r.kinezet = kinezet_id
+        db.commit()
+        return True
+    finally:
+        db.close()
+
+
+def unlock_avatar(child_id: int, avatar_id: str) -> str:
+    """Avatar feloldása. Visszaadja a feloldottak új listáját."""
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        meglevo = [s.strip() for s in (r.avatarok or "").split(",") if s.strip()]
+        if avatar_id not in meglevo:
+            meglevo.append(avatar_id)
+        r.avatarok = ",".join(meglevo)
+        db.commit()
+        return r.avatarok
+    finally:
+        db.close()
+
+
+def set_avatar(child_id: int, avatar_id: str, *, ellenoriz: bool = True) -> bool:
+    """Aktív avatar beállítása. False, ha nincs feloldva.
+
+    Az `ellenoriz=False` a saját, kevert avatarhoz kell: azt a gyerek
+    bármikor átszínezheti, ha egyszer már megvette a keverőt.
+    """
+    db = _session()
+    try:
+        r = _wallet_row(db, child_id)
+        if ellenoriz:
+            meglevo = [s.strip() for s in (r.avatarok or "").split(",") if s.strip()]
+            if avatar_id not in meglevo:
+                db.commit()
+                return False
+        r.avatar = avatar_id
         db.commit()
         return True
     finally:

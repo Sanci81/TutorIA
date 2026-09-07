@@ -3166,17 +3166,14 @@ body.gyerek-hatter .back-link {
    KABALA FIGURA A BESZÉLGETÉS MELLETT
    SAJÁT OSZLOPOT kap a rácsban, hogy soha ne takarjon el szöveget vagy
    gombot. Szándékosan MOZDULATLAN: a gyerek a feladatra figyeljen.
-   Keskeny képernyőn eltűnik – ott nincs rá hely.
+
+   FONTOS: minden oszlopszabály MIN-WIDTH lekérdezésben van. Korábban
+   max-width nélkül álltak, ezért felülírták a 900 képpontos mobilszabályt,
+   és TELEFONON a beszélgetés egy 34 képpontos sávba szorult. Így most
+   keskeny képernyőn a kabala szabályaiból SEMMI nem érvényes.
    ═══════════════════════════════════════════════════════════════════ */
-.chat-layout:has(.chat-kabala-oszlop) {
-    grid-template-columns: 260px 1fr 130px;
-}
-/* Idegennyelv-órán a szójegyzék IS ott van: ilyenkor négy oszlop kell. */
-.chat-layout:has(.chat-sidebar-vocab):has(.chat-kabala-oszlop) {
-    grid-template-columns: 260px 1fr minmax(160px, 200px) 120px;
-}
 .chat-kabala-oszlop {
-    display: flex;
+    display: none;               /* alapból nincs – csak széles képernyőn */
     align-items: flex-end;
     justify-content: center;
     min-width: 0;
@@ -3193,224 +3190,30 @@ body.gyerek-hatter .back-link {
     user-select: none;
     filter: drop-shadow(0 6px 16px rgba(20, 60, 40, .14));
 }
-@media (max-width: 1120px) {
-    .chat-layout:has(.chat-kabala-oszlop) { grid-template-columns: 260px 1fr; }
-    .chat-kabala-oszlop { display: none; }
+
+/* Szójegyzék NÉLKÜL: 1121 képponttól fér el a figura. */
+@media (min-width: 1121px) {
+    .chat-layout:has(.chat-kabala-oszlop) {
+        grid-template-columns: 260px 1fr 130px;
+    }
+    .chat-layout.teljes-mod:has(.chat-kabala-oszlop) {
+        grid-template-columns: 1fr 130px;
+    }
+    .chat-kabala-oszlop { display: flex; }
 }
-/* Szójegyzékkel együtt hamarabb fogy el a hely. */
-@media (max-width: 1420px) {
+
+/* Szójegyzékkel (nyelvóra) négy oszlop kell – ehhez több hely. */
+@media (min-width: 1421px) {
     .chat-layout:has(.chat-sidebar-vocab):has(.chat-kabala-oszlop) {
-        grid-template-columns: 260px 1fr minmax(160px, 200px);
+        grid-template-columns: 260px 1fr minmax(160px, 200px) 120px;
     }
+    .chat-layout.teljes-mod:has(.chat-sidebar-vocab):has(.chat-kabala-oszlop) {
+        grid-template-columns: 1fr minmax(180px, 240px) 120px;
+    }
+}
+/* 1421 alatt nyelvórán nincs figura – ott a szójegyzék a fontosabb. */
+@media (max-width: 1420px) {
     .chat-layout:has(.chat-sidebar-vocab) .chat-kabala-oszlop { display: none; }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   „BE VAN LÉPVE" JELZÉS A FEJLÉCBEN
-   Egy KIS, szegélyes doboz az e-mail-címmel — nem nagyobb, mint a
-   menüpontok. (Előtte hiányzott a stílus, ezért a rajzjel teljes
-   méretben jelent meg, és szétnyomta a fejlécet.)
-   ═══════════════════════════════════════════════════════════════════ */
-.belepve {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    max-width: 230px;
-    padding: 5px 12px 5px 8px;
-    border: 1px solid #dfe6e2;
-    border-radius: 999px;
-    background: #fff;
-    color: #46564e;
-    font-size: 13px;
-    line-height: 1.2;
-    white-space: nowrap;
-}
-.belepve svg {
-    flex: 0 0 auto;
-    width: 17px;
-    height: 17px;
-    fill: none;
-    stroke: #1e7a4d;
-    stroke-width: 1.9;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-.belepve b {
-    font-weight: 600;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-@media (max-width: 900px) {
-    .belepve { display: none; }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   NAGYÍTOTT (teljes képernyős) CHAT + KABALA
-   A kabala oszlopszabálya a fájlban később áll, mint a nagyítás
-   szabálya, ezért felülírta azt, és a beszélgetés egy keskeny sávba
-   szorult. Itt explicit megadjuk a nagyított nézet oszlopait.
-   ═══════════════════════════════════════════════════════════════════ */
-.chat-layout.teljes-mod:has(.chat-kabala-oszlop) {
-    grid-template-columns: 1fr 130px;
-}
-.chat-layout.teljes-mod:has(.chat-sidebar-vocab):has(.chat-kabala-oszlop) {
-    grid-template-columns: 1fr minmax(180px, 240px) 120px;
-}
-@media (max-width: 1120px) {
-    .chat-layout.teljes-mod:has(.chat-kabala-oszlop) { grid-template-columns: 1fr; }
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   GYAKORLÓ FELADAT A BESZÉLGETÉSBEN
-   Nem külön képernyő: a tanár buborékja alatt jelenik meg. A gyerek
-   beírja a számjegyeket vagy rákattint a válaszra — és onnantól úgy
-   megy tovább, mint egy sima üzenet.
-   ═══════════════════════════════════════════════════════════════════ */
-.feladat {
-    display: block;
-    clear: both;
-    margin: 12px 0 2px;
-    padding: 14px 16px;
-    background: #fff;
-    border-radius: 14px;
-    box-shadow: 0 2px 10px rgba(20, 60, 40, .1);
-}
-.feladat.feladat-kesz { opacity: .62; }
-
-/* ── Oszlopos számolás ── */
-.feladat-szamolo {
-    /* SAJÁT SORBAN, a szöveg ALATT – ha inline-block, a kérdés mellé
-       csúszik, és a buborék szövege szétesik körülötte. */
-    display: block;
-    width: fit-content;
-    min-width: 168px;
-}
-.fsz-sor {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 6px;
-    margin-bottom: 6px;
-}
-.fsz-jel {
-    width: 26px;
-    text-align: center;
-    font-size: 26px;
-    font-weight: 800;
-    color: #ef5f5f;
-}
-.fsz-jegy {
-    width: 42px;
-    text-align: center;
-    font-size: 30px;
-    font-weight: 800;
-    color: #16241d;
-    font-variant-numeric: tabular-nums;
-}
-.fsz-vonal {
-    height: 3px;
-    background: #16241d;
-    border-radius: 2px;
-    margin: 4px 0 10px;
-}
-.fsz-mezo {
-    width: 42px;
-    height: 50px;
-    padding: 0;
-    text-align: center;
-    font-size: 28px;
-    font-weight: 800;
-    color: #1e7a4d;
-    border: 2px solid #cfe0d6;
-    border-radius: 10px;
-    background: #f6fbf8;
-}
-.fsz-mezo:focus {
-    outline: none;
-    border-color: #1e7a4d;
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(30, 122, 77, .16);
-}
-.feladat-kesz-gomb {
-    display: block;
-    width: 100%;
-    margin-top: 6px;
-    padding: 10px 18px;
-    border: 0;
-    border-radius: 999px;
-    background: #1e7a4d;
-    color: #fff;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-}
-.feladat-kesz-gomb:hover { background: #176a42; }
-.feladat-kesz-gomb:disabled { background: #9fc0ac; cursor: default; }
-
-/* ── Válaszgombok (minden tantárgyhoz) ── */
-.feladat-valaszt {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-.feladat-opcio {
-    padding: 11px 18px;
-    border: 2px solid #cfe0d6;
-    border-radius: 999px;
-    background: #f6fbf8;
-    color: #16241d;
-    font: inherit;
-    font-weight: 700;
-    cursor: pointer;
-    transition: border-color .14s, background .14s, transform .14s;
-}
-.feladat-opcio:hover {
-    border-color: #1e7a4d;
-    background: #fff;
-    transform: translateY(-1px);
-}
-.feladat-opcio:disabled { cursor: default; transform: none; }
-
-/* ═══════════════════════════════════════════════════════════════════
-   MOBIL: NE LEHESSEN OLDALRA HÚZNI AZ OLDALT
-   A bemutató oldal háttérsávjai (.bem-hero::before/::after) szándékosan
-   szélesebbek a tartalomnál, hogy a szín és a jelek a képernyő széléig
-   érjenek. Emiatt viszont a lap vízszintesen görgethető lett — telefonon
-   el lehetett húzni az egészet oldalra.
-   Az „overflow-x: clip" levágja a kilógó részt, de – az „overflow: hidden"
-   nel ellentétben – NEM csinál görgetődobozt, így a chat ragadós kabala
-   figurája továbbra is működik.
-   ═══════════════════════════════════════════════════════════════════ */
-html {
-    overflow-x: clip;
-    max-width: 100%;
-}
-body {
-    overflow-x: clip;
-    max-width: 100%;
-}
-
-/* ── A KÉT FIGURA TELEFONON IS OTT VAN ──
-   Eddig 900 képpont alatt eltűntek, pedig a szülők többsége telefonon
-   nyitja meg először az oldalt. Kisebb méretben, a két alsó sarokban
-   állnak, a szöveg alatt. */
-@media (max-width: 900px) {
-    .bem-hero {
-        padding-bottom: 150px;
-        max-height: none;
-    }
-    .bem-figura {
-        display: block;
-        height: 132px;
-        filter: drop-shadow(0 6px 14px rgba(20, 60, 40, .14));
-    }
-    .bem-figura-1 { left: 2px; height: 126px; }
-    .bem-figura-2 { right: 2px; height: 132px; }
-}
-@media (max-width: 460px) {
-    .bem-hero { padding-bottom: 122px; }
-    .bem-figura-1 { height: 104px; }
-    .bem-figura-2 { height: 109px; }
 }
 
 /* ── MARADÉKSOR (átvitel) az oszlopos számoláshoz ──
@@ -3565,4 +3368,176 @@ body {
 @media (max-width: 560px) {
     .fpar-racs { gap: 8px 10px; }
     .fpar-elem, .fsor-elem { padding: 9px 11px; font-size: 14px; }
+}
+
+/* ÜRES HELYIÉRTÉK az oszlopos számolásban (pl. 5600 − 800: az 5 alatt).
+   Halvány kocka, hogy a gyerek lássa, ez az oszlop is a feladat része. */
+.fsz-ures {
+    border: 2px solid #e6eeea;
+    border-radius: 10px;
+    background: #fbfdfc;
+    box-sizing: border-box;
+    height: 42px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   „BE VAN LÉPVE" JELZÉS A FEJLÉCBEN
+   Egy KIS, szegélyes doboz az e-mail-címmel — nem nagyobb, mint a
+   menüpontok.
+   ═══════════════════════════════════════════════════════════════════ */
+.belepve {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 230px;
+    padding: 5px 12px 5px 8px;
+    border: 1px solid #dfe6e2;
+    border-radius: 999px;
+    background: #fff;
+    color: #46564e;
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+.belepve svg {
+    flex: 0 0 auto;
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: #1e7a4d;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.belepve b {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+@media (max-width: 900px) {
+    .belepve { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBIL: NE LEHESSEN OLDALRA HÚZNI AZ OLDALT
+   A bemutató oldal háttérsávjai szándékosan szélesebbek a tartalomnál.
+   Az „overflow-x: clip" levágja a kilógó részt, de – az „overflow:
+   hidden"-nel ellentétben – NEM csinál görgetődobozt, így a ragadós
+   kabala figura továbbra is működik.
+   ═══════════════════════════════════════════════════════════════════ */
+html, body {
+    overflow-x: clip;
+    max-width: 100%;
+}
+
+/* A KÉT FIGURA TELEFONON IS OTT VAN a bemutató oldal alján. */
+@media (max-width: 900px) {
+    .bem-hero {
+        padding-bottom: 150px;
+        max-height: none;
+    }
+    .bem-figura {
+        display: block;
+        filter: drop-shadow(0 6px 14px rgba(20, 60, 40, .14));
+    }
+    .bem-figura-1 { left: 2px; height: 126px; }
+    .bem-figura-2 { right: 2px; height: 132px; }
+}
+@media (max-width: 460px) {
+    .bem-hero { padding-bottom: 122px; }
+    .bem-figura-1 { height: 104px; }
+    .bem-figura-2 { height: 109px; }
+}
+
+/* A témalista nyitógombja telefonon rálógott a Küldés gombra. Feljebb
+   tesszük, a beszélgetés bal szélére – ott semmit nem takar. */
+@media (max-width: 900px) {
+    .chat-sidebar-toggle {
+        bottom: auto;
+        top: 50%;
+        left: 0;
+        border-radius: 0 12px 12px 0;
+        padding: 10px 8px;
+        opacity: .92;
+    }
+}
+
+/* A profilkörben AVATAR van a névbetű helyett. */
+.gy-arc { overflow: hidden; padding: 0; }
+.gy-arc img { width: 100%; height: 100%; display: block; border-radius: 50%; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   AVATAR-VÁLASZTÓ ÉS -KÉSZÍTŐ a Kinézet oldalon
+   ═══════════════════════════════════════════════════════════════════ */
+.av-szakasz { margin: 0 0 34px; }
+.av-cim { font-size: 20px; font-weight: 800; color: #16241d; margin: 0 0 4px; }
+.av-alcim { color: #5d6b64; font-size: 14px; margin: 0 0 16px; }
+.av-racs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+    gap: 12px;
+}
+.av-elem {
+    position: relative;
+    padding: 10px 8px 12px;
+    border: 2px solid #e3e9e5;
+    border-radius: 16px;
+    background: #fff;
+    cursor: pointer;
+    font: inherit;
+    text-align: center;
+    transition: border-color .14s, transform .14s, box-shadow .14s;
+}
+.av-elem:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(20,60,40,.1); }
+.av-elem img { width: 74px; height: 74px; display: block; margin: 0 auto 6px; }
+.av-nev { font-size: 13px; font-weight: 700; color: #16241d; }
+.av-ar { font-size: 12px; font-weight: 700; color: #c9782a; margin-top: 2px; }
+.av-ingyen { color: #1e7a4d; }
+.av-elem.av-aktiv { border-color: #1e7a4d; background: #f2faf5; }
+.av-elem.av-zarva img { filter: grayscale(.75); opacity: .55; }
+.av-pipa {
+    position: absolute; top: 6px; right: 6px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #1e7a4d; color: #fff;
+    font-size: 13px; line-height: 22px;
+}
+
+/* ── keverő ── */
+.av-kevero {
+    margin-top: 22px;
+    padding: 16px;
+    border: 2px dashed #cfe0d6;
+    border-radius: 18px;
+    background: #f8fcfa;
+}
+.av-kevero-fej { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.av-elonezet { width: 104px; height: 104px; flex: none; }
+.av-valasztok { display: flex; flex-direction: column; gap: 10px; flex: 1 1 240px; min-width: 0; }
+.av-sor { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.av-sor > span { font-size: 13px; font-weight: 700; color: #46564e; min-width: 76px; }
+.av-korok { display: flex; gap: 7px; flex-wrap: wrap; }
+.av-kor {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 3px solid #fff; box-shadow: 0 0 0 2px #d9e4dd;
+    cursor: pointer; padding: 0;
+}
+.av-kor.av-valasztva { box-shadow: 0 0 0 3px #1e7a4d; }
+.av-frizurak { display: flex; gap: 6px; flex-wrap: wrap; }
+.av-friz {
+    padding: 6px 12px; border-radius: 999px; border: 2px solid #d9e4dd;
+    background: #fff; font: inherit; font-size: 13px; font-weight: 700;
+    color: #46564e; cursor: pointer;
+}
+.av-friz.av-valasztva { border-color: #1e7a4d; color: #1e7a4d; background: #f2faf5; }
+.av-kevero-gomb {
+    margin-top: 14px; padding: 11px 22px; border: 0; border-radius: 999px;
+    background: #1e7a4d; color: #fff; font: inherit; font-weight: 700; cursor: pointer;
+}
+.av-kevero-gomb:hover { background: #176a42; }
+.av-kevero-gomb:disabled { background: #9fc0ac; cursor: default; }
+
+/* Az avatar a chat fejlécében és a tantárgyválasztón is. */
+.chat-avatar-circle, .select-tasks-avatar { overflow: hidden; padding: 0; }
+.chat-avatar-circle img, .select-tasks-avatar img {
+    width: 100%; height: 100%; display: block; border-radius: 50%;
 }

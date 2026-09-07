@@ -51,6 +51,7 @@ import kartyak
 import kiejtes
 import kinezet
 import oraterv
+import avatarok
 import pontok
 import szamellenor
 import tasak
@@ -259,6 +260,7 @@ def _aktiv_gyerek_adat() -> dict | None:
             "id": gy["id"],
             "name": gy.get("name") or "",
             "erme": (database.get_wallet(gid) or {}).get("erme", 0),
+            "avatar": _avatar_kulcs(gid),
         }
     except Exception:                                      # pragma: no cover
         app.logger.exception("A gyerek menüsorát nem sikerült összeállítani")
@@ -1873,14 +1875,18 @@ def dashboard():
     # A gyűjtemény a GYEREKHEZ tartozik, nem a tantárgyhoz: az album, a bolt
     # és a kinézet ezért a profilkártyáról nyílik, nem a csevegő fejlécéből.
     egyenleg = {}
+    avatar_kepek = {}
     for c in children:
         try:
             egyenleg[c["id"]] = database.get_wallet(c["id"])["erme"]
         except Exception:
             egyenleg[c["id"]] = 0
+        # A profilkör a gyerek AVATARJÁT mutatja, nem a nevének betűjét.
+        avatar_kepek[c["id"]] = url_for("avatar_kep", kulcs=_avatar_kulcs(c["id"]))
     return render_template(
         "dashboard.html", parent=parent, children=children,
         egyenleg=egyenleg,
+        avatar_kepek=avatar_kepek,
         album_jel=jelek_kicsi.album(19),
         tasak_jel=jelek_kicsi.tasak(19),
         kinezet_jel=jelek_kicsi.kinezet(19),
@@ -9453,6 +9459,97 @@ def looks_pattern(nev: str):
                     headers={"Cache-Control": "public, max-age=86400"})
 
 
+@app.route("/avatar/<path:kulcs>.svg")
+def avatar_kep(kulcs: str):
+    """Egy avatar SVG fájlként. A kevert avatar kulcsa is idejön
+    („sajat:2-copf-3-4"), a rajzoló pedig ellenőrzi, hogy értelmes-e."""
+    return Response(avatarok.svg(kulcs), mimetype="image/svg+xml",
+                    headers={"Cache-Control": "public, max-age=604800"})
+
+
+@app.route("/children/<int:child_id>/avatar/vasarlas", methods=["POST"])
+@login_required
+def child_avatar_buy(child_id: int):
+    """Avatar megvétele érméért. Vásárlás után rögtön ez lesz a profilkép."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+    es = _kartya_oldal() == "es"
+    kert = ((request.get_json(silent=True) or {}).get("avatar") or "").strip()
+
+    # A saját (kevert) avatarnál a KEVERŐT kell egyszer megvenni; utána
+    # bármikor átszínezheti, újabb fizetés nélkül.
+    sajat = avatarok.sajat_e(kert)
+    if not sajat and kert not in avatarok.KULCSOK:
+        return jsonify({"hiba": "Nincs ilyen avatar."}), 400
+
+    penztarca = database.get_wallet(child_id)
+    meglevo = _avatar_meglevo(penztarca)
+    jel = avatarok.SAJAT_ELOTAG if sajat else kert
+    if jel in meglevo:
+        database.set_avatar(child_id, kert, ellenoriz=not sajat)
+        return jsonify({"ok": True, "mar_megvolt": True,
+                        "erme": penztarca["erme"], "aktiv": kert})
+
+    koltseg = avatarok.ar(kert)
+    if koltseg and not database.spend_coins_wallet(child_id, koltseg):
+        hiany = koltseg - penztarca["erme"]
+        return jsonify({"hiba": (
+            f"Te faltan {hiany} monedas." if es else f"Még {hiany} érme kell."
+        )}), 400
+
+    database.unlock_avatar(child_id, jel)
+    if sajat:
+        database.unlock_avatar(child_id, kert)
+    database.set_avatar(child_id, kert, ellenoriz=False)
+    uj = database.get_wallet(child_id)
+    print(f"[AVATAR] child={child_id} vett={kert} ar={koltseg} erme={uj['erme']}",
+          flush=True)
+    return jsonify({"ok": True, "erme": uj["erme"], "aktiv": kert})
+
+
+@app.route("/children/<int:child_id>/avatar/valasztas", methods=["POST"])
+@login_required
+def child_avatar_select(child_id: int):
+    """Már feloldott avatar beállítása, vagy a saját avatar átszínezése."""
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+    kert = ((request.get_json(silent=True) or {}).get("avatar") or "").strip()
+    sajat = avatarok.sajat_e(kert)
+    if sajat:
+        # Csak akkor, ha a keverő már meg van véve.
+        if avatarok.SAJAT_ELOTAG not in _avatar_meglevo(database.get_wallet(child_id)):
+            return jsonify({"hiba": "A keverő még nincs feloldva."}), 400
+        database.set_avatar(child_id, kert, ellenoriz=False)
+        return jsonify({"ok": True, "aktiv": kert})
+    # Az INGYENESEKET mindenki megkapja: azoknál nincs mit ellenőrizni.
+    # (Enélkül a négy alap avatart nem lehetett kiválasztani, mert az
+    # adatbázisban üres volt a feloldottak listája.)
+    ingyenes = kert in avatarok.INGYENES
+    if not database.set_avatar(child_id, kert, ellenoriz=not ingyenes):
+        return jsonify({"hiba": "Ez az avatar még nincs feloldva."}), 400
+    return jsonify({"ok": True, "aktiv": kert})
+
+
+def _avatar_meglevo(penztarca: dict) -> set[str]:
+    """A gyerek avatarjai. Az ingyeneseket mindenki megkapja."""
+    sajat = {s.strip() for s in (penztarca.get("avatarok") or "").split(",") if s.strip()}
+    return sajat | set(avatarok.INGYENES)
+
+
+def _avatar_kulcs(child_id: int) -> str:
+    """A gyerek profilképének kulcsa. Hibára soha nem dob."""
+    try:
+        p = database.get_wallet(child_id) or {}
+        k = (p.get("avatar") or "").strip()
+        if avatarok.sajat_e(k) or k in avatarok.KULCSOK:
+            return k
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("Az avatar kulcsát nem sikerült lekérni")
+    return avatarok.INGYENES[0]
+
+
 @app.route("/children/<int:child_id>/kinezet")
 @login_required
 def child_looks(child_id: int):
@@ -9483,7 +9580,45 @@ def child_looks(child_id: int):
         vasarlas_url=url_for("child_looks_buy", child_id=child_id),
         valasztas_url=url_for("child_looks_select", child_id=child_id),
         vissza_url=url_for("select_tasks", child_id=child_id),
+        avatar_adat=_avatar_bolt_adat(child_id, penztarca, es),
+        avatar_vasarlas_url=url_for("child_avatar_buy", child_id=child_id),
+        avatar_valasztas_url=url_for("child_avatar_select", child_id=child_id),
     )
+
+
+def _avatar_bolt_adat(child_id: int, penztarca: dict, es: bool) -> dict:
+    """Az avatar-rész adatai a Kinézet oldalhoz."""
+    meglevo = _avatar_meglevo(penztarca)
+    aktiv = (penztarca.get("avatar") or "").strip() or avatarok.INGYENES[0]
+    nyelv = "es" if es else "hu"
+    lista = []
+    for a in avatarok.LISTA:
+        van = a["kulcs"] in meglevo
+        lista.append({
+            "kulcs": a["kulcs"],
+            "nev": a["nev_es"] if es else a["nev_hu"],
+            "ar": a["ar"],
+            "van": van,
+            "aktiv": a["kulcs"] == aktiv,
+            "kep": url_for("avatar_kep", kulcs=a["kulcs"]),
+        })
+    return {
+        "nyelv": nyelv,
+        "aktiv": aktiv,
+        "lista": lista,
+        "kevero": {
+            "van": avatarok.SAJAT_ELOTAG in meglevo,
+            "ar": avatarok.SAJAT_AR,
+            "borok": [b[0] for b in avatarok.BOR],
+            "hajak": [h[0] for h in avatarok.HAJ],
+            "ruhak": avatarok.RUHAK,
+            "frizurak": [{"kulcs": f["kulcs"],
+                          "nev": f["nev_es"] if es else f["nev_hu"]}
+                         for f in avatarok.FRIZURAK],
+            "sajat_aktiv": avatarok.sajat_e(aktiv),
+            "sajat_kulcs": aktiv if avatarok.sajat_e(aktiv) else "",
+        },
+    }
 
 
 @app.route("/children/<int:child_id>/kinezet/vasarlas", methods=["POST"])
