@@ -91,6 +91,163 @@ def _pir(y: float = 122, tav: float = 36) -> str:
             f'<ellipse cx="{100+tav}" cy="{y}" rx="10" ry="6" fill="#ef8f8f" opacity=".5"/>')
 
 
+# ── SZEMFORMÁK ───────────────────────────────────────────────────────
+def _szem_valtozat(nev: str, y: float = 104, tav: float = 21) -> str:
+    b, j = 100 - tav, 100 + tav
+    if nev == "nagy":
+        return _szemek(y, tav, 12)
+    if nev == "kacsintos":
+        return (f'<ellipse cx="{b}" cy="{y}" rx="8.7" ry="9.5" fill="#fff" '
+                f'stroke="{KONTUR}" stroke-width="2.6"/>'
+                f'<circle cx="{b+1}" cy="{y+1}" r="4.8" fill="{KONTUR}"/>'
+                f'<path d="M{j-10} {y} q10 8 20 0" fill="none" stroke="{KONTUR}" '
+                f'stroke-width="4" stroke-linecap="round"/>')
+    if nev == "boldog":
+        return (f'<path d="M{b-10} {y+3} q10 -12 20 0" fill="none" stroke="{KONTUR}" '
+                f'stroke-width="4.2" stroke-linecap="round"/>'
+                f'<path d="M{j-10} {y+3} q10 -12 20 0" fill="none" stroke="{KONTUR}" '
+                f'stroke-width="4.2" stroke-linecap="round"/>')
+    if nev == "alvos":
+        return (f'<path d="M{b-10} {y} q10 9 20 0" fill="none" stroke="{KONTUR}" '
+                f'stroke-width="4" stroke-linecap="round"/>'
+                f'<path d="M{j-10} {y} q10 9 20 0" fill="none" stroke="{KONTUR}" '
+                f'stroke-width="4" stroke-linecap="round"/>')
+    if nev == "csillag":
+        def cs(cx):
+            return (f'<path d="M{cx} {y-11} 3.3 7.5 8.2.7-6.2 5.4 1.9 8L{cx} {y+7.5}'
+                    f'l-7.2 4.1 1.9-8-6.2-5.4 8.2-.7Z" fill="#f5c542" '
+                    f'stroke="{KONTUR}" stroke-width="2.2" stroke-linejoin="round"/>')
+        return cs(b) + cs(j)
+    return _szemek(y, tav)
+
+
+SZEMEK = [
+    {"kulcs": "alap", "nev_hu": "Sima", "nev_es": "Normal"},
+    {"kulcs": "nagy", "nev_hu": "Nagy", "nev_es": "Grandes"},
+    {"kulcs": "kacsintos", "nev_hu": "Kacsintós", "nev_es": "Guiño"},
+    {"kulcs": "boldog", "nev_hu": "Boldog", "nev_es": "Feliz"},
+    {"kulcs": "alvos", "nev_hu": "Álmos", "nev_es": "Dormilón"},
+    {"kulcs": "csillag", "nev_hu": "Csillagos", "nev_es": "Estrellas"},
+]
+
+
+# ── SZÁJFORMÁK ───────────────────────────────────────────────────────
+def _szaj_valtozat(nev: str, y: float = 128) -> str:
+    if nev == "vigyor":
+        return (f'<path d="M78 {y-2}q22 22 44 0q-4 16-22 16t-22-16Z" fill="#fff" '
+                f'stroke="{KONTUR}" stroke-width="3.4" stroke-linejoin="round"/>')
+    if nev == "nyelv":
+        return (f'<path d="M82 {y}q18 16 36 0q-4 14-18 14t-18-14Z" fill="{KONTUR}"/>'
+                f'<path d="M92 {y+9}q8 12 16 0Z" fill="#f28fb0"/>')
+    if nev == "meglepett":
+        return (f'<ellipse cx="100" cy="{y+4}" rx="9" ry="11" fill="{KONTUR}"/>')
+    if nev == "egyenes":
+        return (f'<path d="M86 {y+2}h28" fill="none" stroke="{KONTUR}" '
+                f'stroke-width="3.8" stroke-linecap="round"/>')
+    if nev == "nagy":
+        return _szaj(y, 22)
+    return _szaj(y, 15)
+
+
+SZAJAK = [
+    {"kulcs": "alap", "nev_hu": "Mosoly", "nev_es": "Sonrisa"},
+    {"kulcs": "nagy", "nev_hu": "Nagy mosoly", "nev_es": "Gran sonrisa"},
+    {"kulcs": "vigyor", "nev_hu": "Vigyor", "nev_es": "Risa"},
+    {"kulcs": "nyelv", "nev_hu": "Nyelvet ölt", "nev_es": "Lengua fuera"},
+    {"kulcs": "meglepett", "nev_hu": "Meglepett", "nev_es": "Sorpresa"},
+    {"kulcs": "egyenes", "nev_hu": "Komoly", "nev_es": "Serio"},
+]
+
+
+# ── KIEGÉSZÍTŐK ──────────────────────────────────────────────────────
+# Ezek BÁRMELYIK avatarra ráhúzhatók, az állatokra is: a rajz legvégére
+# kerülnek, a kör alakú vágáson belül. Ettől lesznek a vicces avatarok.
+def _kiego(nev: str) -> str:
+    if nev == "sapka":
+        return (f'<path d="M40 74c0-32 27-52 60-52s60 20 60 52Z" fill="#2f8fd8" '
+                f'stroke="{KONTUR}" stroke-width="{V}"/>'
+                f'<path d="M34 74h132v14H34Z" fill="#1f6fae" stroke="{KONTUR}" stroke-width="{V}"/>'
+                f'<circle cx="100" cy="20" r="8" fill="#f5d24a" stroke="{KONTUR}" stroke-width="3"/>')
+    if nev == "varazskalap":
+        return (f'<path d="M30 78h140L100 4Z" fill="#5b3fa8" stroke="{KONTUR}" stroke-width="{V}"/>'
+                f'<path d="M30 78h140l-8 14H38Z" fill="#7a5cc9" stroke="{KONTUR}" stroke-width="3"/>'
+                f'<path d="M100 30l6 13 14 2-10 10 2 14-12-7-12 7 2-14-10-10 14-2Z" '
+                f'fill="#f5d24a" stroke="{KONTUR}" stroke-width="2.2"/>')
+    if nev == "korona":
+        return (f'<path d="M52 76 44 30l24 18 16-26 16 26 24-18-8 46Z" fill="#f5c542" '
+                f'stroke="{KONTUR}" stroke-width="{V}" stroke-linejoin="round"/>'
+                f'<circle cx="70" cy="60" r="4.5" fill="#e2574c"/>'
+                f'<circle cx="100" cy="56" r="4.5" fill="#4a90d9"/>'
+                f'<circle cx="130" cy="60" r="4.5" fill="#4caf50"/>')
+    if nev == "szemuveg":
+        return (f'<g fill="none" stroke="{KONTUR}" stroke-width="4">'
+                f'<circle cx="79" cy="104" r="19"/><circle cx="121" cy="104" r="19"/>'
+                f'<path d="M98 104h4M60 100l-14-4M140 100l14-4"/></g>')
+    if nev == "napszemuveg":
+        return (f'<path d="M56 92h88v6q0 22-20 22t-22-18h-4q-2 18-22 18t-20-22Z" '
+                f'fill="#2b3a55" stroke="{KONTUR}" stroke-width="3.4"/>'
+                f'<path d="M56 92h88M48 90l8 2M152 90l-8 2" stroke="{KONTUR}" '
+                f'stroke-width="4" fill="none" stroke-linecap="round"/>'
+                f'<path d="M64 100q8-4 16-2" stroke="#8fb6e8" stroke-width="4" '
+                f'fill="none" stroke-linecap="round" opacity=".8"/>')
+    if nev == "maszk":
+        return (f'<path d="M52 90h96q6 0 6 8-2 16-14 18-14 2-22-8h-36q-8 10-22 8'
+                f'-12-2-14-18 0-8 6-8Z" fill="#e23b4f" stroke="{KONTUR}" stroke-width="3.4"/>'
+                f'<ellipse cx="79" cy="102" rx="10" ry="7" fill="#fff"/>'
+                f'<ellipse cx="121" cy="102" rx="10" ry="7" fill="#fff"/>'
+                f'<circle cx="80" cy="102" r="3.6" fill="{KONTUR}"/>'
+                f'<circle cx="122" cy="102" r="3.6" fill="{KONTUR}"/>')
+    if nev == "virag":
+        return (f'<path d="M40 66q60-30 120 0" fill="none" stroke="#5fbf6f" '
+                f'stroke-width="9" stroke-linecap="round"/>'
+                f'<g transform="translate(146 56)">' +
+                ''.join(f'<circle cx="{round(11*__import__("math").cos(i*1.2566),1)}" '
+                        f'cy="{round(11*__import__("math").sin(i*1.2566),1)}" r="8" '
+                        f'fill="#f5d24a" stroke="{KONTUR}" stroke-width="2.4"/>'
+                        for i in range(5)) +
+                f'<circle cx="0" cy="0" r="6" fill="#ef8f5f" stroke="{KONTUR}" stroke-width="2.4"/>'
+                f'</g>')
+    if nev == "fejpant":
+        return (f'<path d="M40 70q60-26 120 0v14q-60-26-120 0Z" fill="#ef5f5f" '
+                f'stroke="{KONTUR}" stroke-width="3.4"/>')
+    if nev == "fulhallgato":
+        return (f'<path d="M44 104v-8a56 56 0 0 1 112 0v8" fill="none" stroke="{KONTUR}" '
+                f'stroke-width="8" stroke-linecap="round"/>'
+                f'<rect x="30" y="96" width="26" height="34" rx="12" fill="#3d4a5c" '
+                f'stroke="{KONTUR}" stroke-width="3.4"/>'
+                f'<rect x="144" y="96" width="26" height="34" rx="12" fill="#3d4a5c" '
+                f'stroke="{KONTUR}" stroke-width="3.4"/>')
+    return ""
+
+
+KIEGESZITOK = [
+    {"kulcs": "nincs", "nev_hu": "Nincs", "nev_es": "Ninguno"},
+    {"kulcs": "sapka", "nev_hu": "Sapka", "nev_es": "Gorra"},
+    {"kulcs": "korona", "nev_hu": "Korona", "nev_es": "Corona"},
+    {"kulcs": "varazskalap", "nev_hu": "Varázskalap", "nev_es": "Sombrero"},
+    {"kulcs": "szemuveg", "nev_hu": "Szemüveg", "nev_es": "Gafas"},
+    {"kulcs": "napszemuveg", "nev_hu": "Napszemüveg", "nev_es": "Gafas de sol"},
+    {"kulcs": "maszk", "nev_hu": "Álarc", "nev_es": "Antifaz"},
+    {"kulcs": "virag", "nev_hu": "Virágos pánt", "nev_es": "Diadema"},
+    {"kulcs": "fejpant", "nev_hu": "Fejpánt", "nev_es": "Cinta"},
+    {"kulcs": "fulhallgato", "nev_hu": "Fülhallgató", "nev_es": "Cascos"},
+]
+
+
+def _rarajzol(alap_svg: str, extra: str) -> str:
+    """Egy kiegészítőt tesz EGY MÁR KÉSZ avatar rajzára, a körön belül.
+
+    Így a béka is kaphat sapkát: nem kell minden állatot újrarajzolni.
+    """
+    if not extra:
+        return alap_svg
+    jel = "</g>"
+    hol = alap_svg.rfind(jel)
+    if hol < 0:
+        return alap_svg
+    return alap_svg[:hol] + extra + alap_svg[hol:]
+
+
 # ── GYEREKARCOK ──────────────────────────────────────────────────────
 def _frizura(nev: str, alap: str, vilagos: str) -> tuple[str, str]:
     """(hátsó réteg, elülső réteg) — a hátsó a fej MÖGÖTT rajzolódik."""
@@ -134,7 +291,8 @@ def _frizura(nev: str, alap: str, vilagos: str) -> tuple[str, str]:
     return hatso, elulso
 
 
-def _gyerek(hatter: str, bor_i: int, haj_i: int, frizura: str, ruha: str) -> str:
+def _gyerek(hatter: str, bor_i: int, haj_i: int, frizura: str, ruha: str,
+            szem: str = "alap", szaj: str = "alap", kiego: str = "nincs") -> str:
     bor, bor_arny = BOR[bor_i]
     haj, haj_vil = HAJ[haj_i]
     hatso, elulso = _frizura(frizura, haj, haj_vil)
@@ -156,7 +314,8 @@ def _gyerek(hatter: str, bor_i: int, haj_i: int, frizura: str, ruha: str) -> str
         # halvány árnyék az áll körül
         f'<path d="M50 118v-4c0 30 22 50 50 50s50-20 50-50v4c0 30-22 50-50 50'
         f's-50-20-50-50Z" fill="{bor_arny}" opacity=".5"/>'
-        + elulso + _szemoldok() + _szemek() + _orr() + _szaj() + _pir()
+        + elulso + _szemoldok() + _szem_valtozat(szem) + _orr()
+        + _szaj_valtozat(szaj) + _pir() + _kiego(kiego)
     )
     return _keret(hatter, t)
 
@@ -406,34 +565,84 @@ HATTEREK = ["#e3f0ff", "#ffeaf3", "#e9f7ef", "#fff2e2",
 SAJAT_ELOTAG = "sajat:"
 SAJAT_AR = 200          # egyszeri feloldás; utána bármikor újrakeverhető
 
+# A saját avatar kulcsa MEZŐNEVES, hogy később bővíthető legyen anélkül,
+# hogy a régi kulcsok elromlanának:
+#     sajat:a=arc,b=2,f=copf,h=3,r=5,sz=csillag,s=nyelv,k=korona
+# Az "a" (alap) lehet "arc" — ilyenkor a gyerekarc épül fel a mezőkből —,
+# vagy egy KÉSZ avatar kulcsa ("beka"), és akkor csak a kiegészítő kerül rá.
+_ALAP_MEZOK = {"a": "arc", "b": "0", "f": "rovid", "h": "0", "r": "0",
+               "sz": "alap", "s": "alap", "k": "nincs"}
 
-def sajat_kulcs(bor: int, frizura: str, haj: int, ruha: int) -> str:
+
+def sajat_kulcs(alap: str = "arc", bor: int = 0, frizura: str = "rovid",
+                haj: int = 0, ruha: int = 0, szem: str = "alap",
+                szaj: str = "alap", kiego: str = "nincs") -> str:
     """Ellenőrzött kulcs a kevert avatarhoz."""
+    if alap != "arc" and alap not in KULCSOK:
+        alap = "arc"
     bor = max(0, min(int(bor), len(BOR) - 1))
     haj = max(0, min(int(haj), len(HAJ) - 1))
     ruha = max(0, min(int(ruha), len(RUHAK) - 1))
-    ervenyes = {f["kulcs"] for f in FRIZURAK}
-    if frizura not in ervenyes:
+    if frizura not in {f["kulcs"] for f in FRIZURAK}:
         frizura = FRIZURAK[0]["kulcs"]
-    return f"{SAJAT_ELOTAG}{bor}-{frizura}-{haj}-{ruha}"
+    if szem not in {x["kulcs"] for x in SZEMEK}:
+        szem = "alap"
+    if szaj not in {x["kulcs"] for x in SZAJAK}:
+        szaj = "alap"
+    if kiego not in {x["kulcs"] for x in KIEGESZITOK}:
+        kiego = "nincs"
+    return (f"{SAJAT_ELOTAG}a={alap},b={bor},f={frizura},h={haj},r={ruha},"
+            f"sz={szem},s={szaj},k={kiego}")
+
+
+def sajat_mezok(kulcs: str) -> dict:
+    """A kulcsból mezőszótár. Hiányzó mezőre alapérték, hibásra is."""
+    m = dict(_ALAP_MEZOK)
+    if not kulcs or not kulcs.startswith(SAJAT_ELOTAG):
+        return m
+    torzs = kulcs[len(SAJAT_ELOTAG):]
+    # RÉGI, kötőjeles alak: "2-copf-3-4" — hogy a korábban mentett
+    # avatarok se vesszenek el.
+    if "=" not in torzs:
+        r = torzs.split("-")
+        if len(r) == 4:
+            m.update({"b": r[0], "f": r[1], "h": r[2], "r": r[3]})
+        return m
+    for darab in torzs.split(","):
+        if "=" not in darab:
+            continue
+        kul, _, ert = darab.partition("=")
+        if kul.strip() in m:
+            m[kul.strip()] = ert.strip()
+    return m
 
 
 def _sajat_svg(kulcs: str) -> str | None:
     """A „sajat:..." kulcsból rajzol. Hibás kulcsra None."""
     if not kulcs.startswith(SAJAT_ELOTAG):
         return None
-    reszek = kulcs[len(SAJAT_ELOTAG):].split("-")
-    if len(reszek) != 4:
-        return None
+    m = sajat_mezok(kulcs)
+    kiego = m["k"] if m["k"] in {x["kulcs"] for x in KIEGESZITOK} else "nincs"
+
+    # KÉSZ AVATAR ALAPON: a béka marad béka, csak kap egy sapkát.
+    if m["a"] != "arc":
+        keszito = _KESZITOK.get(m["a"])
+        if not keszito:
+            return None
+        return _rarajzol(keszito(), _kiego(kiego))
+
     try:
-        bor, frizura, haj, ruha = int(reszek[0]), reszek[1], int(reszek[2]), int(reszek[3])
+        bor, haj, ruha = int(m["b"]), int(m["h"]), int(m["r"])
     except ValueError:
         return None
     if not (0 <= bor < len(BOR) and 0 <= haj < len(HAJ) and 0 <= ruha < len(RUHAK)):
         return None
-    if frizura not in {f["kulcs"] for f in FRIZURAK}:
+    if m["f"] not in {f["kulcs"] for f in FRIZURAK}:
         return None
-    return _gyerek(HATTEREK[ruha % len(HATTEREK)], bor, haj, frizura, RUHAK[ruha])
+    szem = m["sz"] if m["sz"] in {x["kulcs"] for x in SZEMEK} else "alap"
+    szaj = m["s"] if m["s"] in {x["kulcs"] for x in SZAJAK} else "alap"
+    return _gyerek(HATTEREK[ruha % len(HATTEREK)], bor, haj, m["f"],
+                   RUHAK[ruha], szem, szaj, kiego)
 
 
 def sajat_e(kulcs: str) -> bool:

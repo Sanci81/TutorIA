@@ -97,6 +97,11 @@
   .av-friz.av-valasztva{border-color:#7fd6a6;color:#7fd6a6;background:rgba(127,214,166,.12)}
   .av-kev-gomb{margin-top:14px;padding:11px 22px;border:0;border-radius:999px;
     background:#f0c869;color:#221a06;font:inherit;font-weight:800;cursor:pointer}
+  .av-alapok{display:flex;gap:8px;flex-wrap:wrap}
+  .av-alap{width:46px;height:46px;padding:0;border-radius:50%;border:3px solid transparent;
+    background:transparent;cursor:pointer}
+  .av-alap img{width:100%;height:100%;display:block;border-radius:50%}
+  .av-alap.av-valasztva{border-color:#7fd6a6}
   .av-kev-gomb:disabled{opacity:.5;cursor:default}
   .av-uzenet{margin-top:10px;font-size:.82rem;color:#ffb4b4;min-height:1em}
 </style>
@@ -281,51 +286,77 @@ rajzol();
   if (!AV || !doboz) { return; }
   const es = AV.nyelv === 'es';
   const SZO = es ? {
-    cim: 'Tu avatar', alcim: 'Elige uno o crea el tuyo con monedas.',
+    cim: 'Tu avatar', alcim: 'Elige uno o crea el tuyo.',
     kevero: 'Crea tu propio avatar', bor: 'Piel', haj: 'Pelo', ruha: 'Ropa',
-    frizura: 'Peinado', mentes: 'Guardar', megveszem: 'Comprar por',
-    erme: 'monedas', ingyen: 'gratis', keveroLeiras:
-      'Mezcla piel, peinado, color de pelo y ropa. Una vez comprado, puedes cambiarlo siempre.'
+    frizura: 'Peinado', szem: 'Ojos', szaj: 'Boca', kiego: 'Extra', alap: 'Base',
+    mentes: 'Guardar como nuevo', megveszem: 'Comprar por',
+    erme: 'monedas', ingyen: 'gratis', sajat: 'Míos',
+    keveroLeiras: 'Base, piel, peinado, ojos, boca y un extra. Cada uno que guardes se añade a los tuyos.',
+    kerdes: '¿Seguro que quieres comprarlo por', tele: 'Ya tienes el máximo de avatares propios.'
   } : {
-    cim: 'A te avatarod', alcim: 'Válassz egyet, vagy keverj magadnak érméért.',
+    cim: 'A te avatarod', alcim: 'Válassz egyet, vagy készíts magadnak.',
     kevero: 'Készíts saját avatart', bor: 'Bőr', haj: 'Haj', ruha: 'Ruha',
-    frizura: 'Frizura', mentes: 'Mentés', megveszem: 'Megveszem',
-    erme: 'érme', ingyen: 'ingyenes', keveroLeiras:
-      'Bőrszín, frizura, hajszín és ruha. Ha egyszer megvetted, bármikor átszínezheted.'
+    frizura: 'Frizura', szem: 'Szem', szaj: 'Száj', kiego: 'Kiegészítő', alap: 'Alap',
+    mentes: 'Mentés újként', megveszem: 'Megveszem',
+    erme: 'érme', ingyen: 'ingyenes', sajat: 'Sajátjaid',
+    keveroLeiras: 'Alap, bőr, frizura, szem, száj és egy kiegészítő. Amit elmentesz, bekerül a sajátjaid közé.',
+    kerdes: 'Biztosan megveszed ennyiért:', tele: 'Már megvan a legtöbb saját avatarod.'
   };
 
   const kev = AV.kevero;
   const allapot = {
     aktiv: AV.aktiv,
-    bor: 0, frizura: kev.frizurak[0].kulcs, haj: 0, ruha: 0,
+    alap: kev.mezok.a || 'arc',
+    bor: +kev.mezok.b || 0,
+    frizura: kev.mezok.f || kev.frizurak[0].kulcs,
+    haj: +kev.mezok.h || 0,
+    ruha: +kev.mezok.r || 0,
+    szem: kev.mezok.sz || 'alap',
+    szaj: kev.mezok.s || 'alap',
+    kiego: kev.mezok.k || 'nincs',
   };
-  if (kev.sajat_aktiv && kev.sajat_kulcs) {
-    const r = kev.sajat_kulcs.replace('sajat:', '').split('-');
-    if (r.length === 4) {
-      allapot.bor = +r[0] || 0; allapot.frizura = r[1];
-      allapot.haj = +r[2] || 0; allapot.ruha = +r[3] || 0;
-    }
-  }
 
   function sajatKulcs() {
-    return 'sajat:' + allapot.bor + '-' + allapot.frizura + '-' +
-           allapot.haj + '-' + allapot.ruha;
+    return 'sajat:a=' + allapot.alap + ',b=' + allapot.bor + ',f=' + allapot.frizura +
+           ',h=' + allapot.haj + ',r=' + allapot.ruha + ',sz=' + allapot.szem +
+           ',s=' + allapot.szaj + ',k=' + allapot.kiego;
   }
 
   function kepUrl(kulcs) { return '/avatar/' + encodeURIComponent(kulcs) + '.svg'; }
 
   async function kuld(url, kulcs) {
-    const v = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    return await fetch(url, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ avatar: kulcs })
     }).then(r => r.json()).catch(e => ({ hiba: String(e) }));
-    return v || { hiba: 'hiba' };
   }
 
   function hiba(szoveg) {
     const e = document.getElementById('av-uzenet');
     if (e) { e.textContent = szoveg || ''; }
+  }
+
+  function ermeFrissit(v) {
+    if (typeof v === 'number') {
+      const e = document.getElementById('e-erme');
+      if (e) { e.textContent = v; }
+    }
+  }
+
+  function gombsor(lista, mezo) {
+    return lista.map(x =>
+      '<button type="button" class="av-friz' +
+      (allapot[mezo] === x.kulcs ? ' av-valasztva' : '') +
+      '" data-mezo="' + mezo + '" data-ertek="' + x.kulcs + '">' + x.nev + '</button>'
+    ).join('');
+  }
+
+  function korok(lista, mezo) {
+    return lista.map((szin, i) =>
+      '<button type="button" class="av-kor' +
+      (allapot[mezo] === i ? ' av-valasztva' : '') +
+      '" style="background:' + szin + '" data-mezo="' + mezo +
+      '" data-szam="' + i + '"></button>').join('');
   }
 
   function rajzol() {
@@ -334,7 +365,8 @@ rajzol();
       return '<button type="button" class="av-elem' +
         (a.kulcs === allapot.aktiv ? ' av-aktiv' : '') +
         (a.van ? '' : ' av-zarva') + '" data-kulcs="' + a.kulcs +
-        '" data-van="' + (a.van ? '1' : '') + '" data-ar="' + a.ar + '">' +
+        '" data-van="' + (a.van ? '1' : '') + '" data-ar="' + a.ar +
+        '" data-nev="' + a.nev + '">' +
         (a.kulcs === allapot.aktiv ? '<span class="av-pipa">✓</span>' : '') +
         '<img src="' + a.kep + '" alt="" loading="lazy">' +
         '<div class="av-nev">' + a.nev + '</div>' +
@@ -342,16 +374,21 @@ rajzol();
         (a.van ? '✓' : arSzoveg) + '</div></button>';
     }).join('');
 
-    const korok = (lista, mezo) => lista.map((szin, i) =>
-      '<button type="button" class="av-kor' +
-      (allapot[mezo] === i ? ' av-valasztva' : '') +
-      '" style="background:' + szin + '" data-mezo="' + mezo +
-      '" data-ertek="' + i + '"></button>').join('');
+    // A keverő ALAPJA: saját arc, vagy egy már megvett avatar.
+    const alapok = kev.alapok.map(x =>
+      '<button type="button" class="av-alap' +
+      (allapot.alap === x.kulcs ? ' av-valasztva' : '') +
+      '" data-mezo="alap" data-ertek="' + x.kulcs + '" title="' + x.nev + '">' +
+      '<img src="' + x.kep + '" alt=""></button>').join('');
 
-    const frizurak = kev.frizurak.map(f =>
-      '<button type="button" class="av-friz' +
-      (allapot.frizura === f.kulcs ? ' av-valasztva' : '') +
-      '" data-friz="' + f.kulcs + '">' + f.nev + '</button>').join('');
+    const arcSorok = allapot.alap === 'arc' ? (
+      '<div class="av-sor"><span>' + SZO.bor + '</span>' + korok(kev.borok, 'bor') + '</div>' +
+      '<div class="av-sor"><span>' + SZO.haj + '</span>' + korok(kev.hajak, 'haj') + '</div>' +
+      '<div class="av-sor"><span>' + SZO.ruha + '</span>' + korok(kev.ruhak, 'ruha') + '</div>' +
+      '<div class="av-sor"><span>' + SZO.frizura + '</span>' + gombsor(kev.frizurak, 'frizura') + '</div>' +
+      '<div class="av-sor"><span>' + SZO.szem + '</span>' + gombsor(kev.szemek, 'szem') + '</div>' +
+      '<div class="av-sor"><span>' + SZO.szaj + '</span>' + gombsor(kev.szajak, 'szaj') + '</div>'
+    ) : '';
 
     doboz.innerHTML =
       '<h2>' + SZO.cim + '</h2><div class="alcim2">' + SZO.alcim + '</div>' +
@@ -361,10 +398,9 @@ rajzol();
       '<div class="av-kev-fej">' +
       '<img class="av-elonezet" id="av-elonezet" src="' + kepUrl(sajatKulcs()) + '" alt="">' +
       '<div class="av-valasztok">' +
-      '<div class="av-sor"><span>' + SZO.bor + '</span>' + korok(kev.borok, 'bor') + '</div>' +
-      '<div class="av-sor"><span>' + SZO.haj + '</span>' + korok(kev.hajak, 'haj') + '</div>' +
-      '<div class="av-sor"><span>' + SZO.ruha + '</span>' + korok(kev.ruhak, 'ruha') + '</div>' +
-      '<div class="av-sor"><span>' + SZO.frizura + '</span>' + frizurak + '</div>' +
+      '<div class="av-sor"><span>' + SZO.alap + '</span><div class="av-alapok">' + alapok + '</div></div>' +
+      arcSorok +
+      '<div class="av-sor"><span>' + SZO.kiego + '</span>' + gombsor(kev.kiegeszitok, 'kiego') + '</div>' +
       '</div></div>' +
       '<button type="button" class="av-kev-gomb" id="av-mentes">' +
       (kev.van ? SZO.mentes : (SZO.megveszem + ' ' + kev.ar + ' ' + SZO.erme)) +
@@ -373,44 +409,65 @@ rajzol();
     doboz.querySelectorAll('.av-elem').forEach(g => {
       g.addEventListener('click', async () => {
         const kulcs = g.dataset.kulcs;
+        hiba('');
+        if (!g.dataset.van) {
+          // MEGERŐSÍTÉS: véletlenül is rá lehet koppintani egy 400 érmés
+          // avatarra, ezért vásárlás előtt mindig rákérdezünk.
+          const ok = window.confirm(SZO.kerdes + ' ' + g.dataset.nev + ' — ' +
+                                    g.dataset.ar + ' ' + SZO.erme + '?');
+          if (!ok) { return; }
+        }
         const url = g.dataset.van ? window.AVATAR_VALASZTAS_URL
                                   : window.AVATAR_VASARLAS_URL;
         const v = await kuld(url, kulcs);
-        if (v.hiba) { hiba(v.hiba); return; }
+        if (!v || v.hiba) { hiba((v && v.hiba) || 'hiba'); return; }
         allapot.aktiv = kulcs;
         const t = AV.lista.find(x => x.kulcs === kulcs);
         if (t) { t.van = true; }
-        if (typeof v.erme === 'number') {
-          const e = document.getElementById('e-erme');
-          if (e) { e.textContent = v.erme; }
+        // Amit most vett meg, az AZONNAL választható a keverő alapjának is
+        // — enélkül csak oldal-újratöltés után jelent volna meg ott.
+        if (t && !t.sajat && !kev.alapok.some(x => x.kulcs === kulcs)) {
+            kev.alapok.push({ kulcs: kulcs, nev: t.nev, kep: t.kep });
         }
+        ermeFrissit(v.erme);
         rajzol();
       });
     });
 
     doboz.querySelectorAll('.av-kor').forEach(g => {
       g.addEventListener('click', () => {
-        allapot[g.dataset.mezo] = +g.dataset.ertek;
-        rajzol();
+        allapot[g.dataset.mezo] = +g.dataset.szam; rajzol();
       });
     });
-    doboz.querySelectorAll('.av-friz').forEach(g => {
-      g.addEventListener('click', () => { allapot.frizura = g.dataset.friz; rajzol(); });
+    doboz.querySelectorAll('.av-friz, .av-alap').forEach(g => {
+      g.addEventListener('click', () => {
+        allapot[g.dataset.mezo] = g.dataset.ertek; rajzol();
+      });
     });
 
     const mentes = document.getElementById('av-mentes');
     if (mentes) {
       mentes.addEventListener('click', async () => {
+        hiba('');
+        if (!kev.van) {
+          const ok = window.confirm(SZO.kerdes + ' ' + kev.ar + ' ' + SZO.erme + '?');
+          if (!ok) { return; }
+        }
         mentes.disabled = true;
-        const url = kev.van ? window.AVATAR_VALASZTAS_URL : window.AVATAR_VASARLAS_URL;
-        const v = await kuld(url, sajatKulcs());
+        const kulcs = sajatKulcs();
+        const v = await kuld(window.AVATAR_VASARLAS_URL, kulcs);
         mentes.disabled = false;
-        if (v.hiba) { hiba(v.hiba); return; }
+        if (!v || v.hiba) { hiba((v && v.hiba) || 'hiba'); return; }
         kev.van = true;
-        allapot.aktiv = sajatKulcs();
-        if (typeof v.erme === 'number') {
-          const e = document.getElementById('e-erme');
-          if (e) { e.textContent = v.erme; }
+        allapot.aktiv = kulcs;
+        ermeFrissit(v.erme);
+        // Az új alkotás bekerül a rácsba, a többi avatar mellé.
+        if (!AV.lista.some(x => x.kulcs === kulcs)) {
+          AV.sajat_darab = (AV.sajat_darab || 0) + 1;
+          AV.lista.push({
+            kulcs: kulcs, nev: (es ? 'Mi avatar ' : 'Saját ') + AV.sajat_darab,
+            ar: 0, van: true, sajat: true, kep: kepUrl(kulcs)
+          });
         }
         rajzol();
       });

@@ -9477,17 +9477,40 @@ def child_avatar_buy(child_id: int):
     es = _kartya_oldal() == "es"
     kert = ((request.get_json(silent=True) or {}).get("avatar") or "").strip()
 
-    # A saját (kevert) avatarnál a KEVERŐT kell egyszer megvenni; utána
-    # bármikor átszínezheti, újabb fizetés nélkül.
     sajat = avatarok.sajat_e(kert)
     if not sajat and kert not in avatarok.KULCSOK:
         return jsonify({"hiba": "Nincs ilyen avatar."}), 400
 
     penztarca = database.get_wallet(child_id)
     meglevo = _avatar_meglevo(penztarca)
-    jel = avatarok.SAJAT_ELOTAG if sajat else kert
-    if jel in meglevo:
-        database.set_avatar(child_id, kert, ellenoriz=not sajat)
+
+    if sajat:
+        # A KEVERŐT kell egyszer megvenni. Ha már megvan, a mentés ingyenes,
+        # és az elkészült avatar bekerül a gyűjteménybe a többi mellé.
+        if avatarok.SAJAT_ELOTAG in meglevo:
+            sajatok = [k for k in meglevo if avatarok.sajat_e(k)]
+            if kert not in sajatok and len(sajatok) >= AVATAR_SAJAT_MAX:
+                return jsonify({"hiba": (
+                    f"Ya tienes {AVATAR_SAJAT_MAX} avatares propios."
+                    if es else f"Már megvan a {AVATAR_SAJAT_MAX} saját avatarod."
+                )}), 400
+            database.unlock_avatar(child_id, kert)
+            database.set_avatar(child_id, kert, ellenoriz=False)
+            return jsonify({"ok": True, "erme": penztarca["erme"], "aktiv": kert,
+                            "uj": kert not in sajatok})
+        if not database.spend_coins_wallet(child_id, avatarok.SAJAT_AR):
+            hiany = avatarok.SAJAT_AR - penztarca["erme"]
+            return jsonify({"hiba": (
+                f"Te faltan {hiany} monedas." if es else f"Még {hiany} érme kell."
+            )}), 400
+        database.unlock_avatar(child_id, avatarok.SAJAT_ELOTAG)
+        database.unlock_avatar(child_id, kert)
+        database.set_avatar(child_id, kert, ellenoriz=False)
+        uj = database.get_wallet(child_id)
+        return jsonify({"ok": True, "erme": uj["erme"], "aktiv": kert, "uj": True})
+
+    if kert in meglevo:
+        database.set_avatar(child_id, kert, ellenoriz=False)
         return jsonify({"ok": True, "mar_megvolt": True,
                         "erme": penztarca["erme"], "aktiv": kert})
 
@@ -9497,10 +9520,7 @@ def child_avatar_buy(child_id: int):
         return jsonify({"hiba": (
             f"Te faltan {hiany} monedas." if es else f"Még {hiany} érme kell."
         )}), 400
-
-    database.unlock_avatar(child_id, jel)
-    if sajat:
-        database.unlock_avatar(child_id, kert)
+    database.unlock_avatar(child_id, kert)
     database.set_avatar(child_id, kert, ellenoriz=False)
     uj = database.get_wallet(child_id)
     print(f"[AVATAR] child={child_id} vett={kert} ar={koltseg} erme={uj['erme']}",
@@ -9511,25 +9531,20 @@ def child_avatar_buy(child_id: int):
 @app.route("/children/<int:child_id>/avatar/valasztas", methods=["POST"])
 @login_required
 def child_avatar_select(child_id: int):
-    """Már feloldott avatar beállítása, vagy a saját avatar átszínezése."""
+    """Már feloldott avatar beállítása."""
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
     kert = ((request.get_json(silent=True) or {}).get("avatar") or "").strip()
-    sajat = avatarok.sajat_e(kert)
-    if sajat:
-        # Csak akkor, ha a keverő már meg van véve.
-        if avatarok.SAJAT_ELOTAG not in _avatar_meglevo(database.get_wallet(child_id)):
-            return jsonify({"hiba": "A keverő még nincs feloldva."}), 400
-        database.set_avatar(child_id, kert, ellenoriz=False)
-        return jsonify({"ok": True, "aktiv": kert})
-    # Az INGYENESEKET mindenki megkapja: azoknál nincs mit ellenőrizni.
-    # (Enélkül a négy alap avatart nem lehetett kiválasztani, mert az
-    # adatbázisban üres volt a feloldottak listája.)
-    ingyenes = kert in avatarok.INGYENES
-    if not database.set_avatar(child_id, kert, ellenoriz=not ingyenes):
+    meglevo = _avatar_meglevo(database.get_wallet(child_id))
+    if kert not in meglevo:
         return jsonify({"hiba": "Ez az avatar még nincs feloldva."}), 400
+    database.set_avatar(child_id, kert, ellenoriz=False)
     return jsonify({"ok": True, "aktiv": kert})
+
+
+# Ennyi saját avatart tarthat meg a gyerek. Ha kevés, elég ezt átírni.
+AVATAR_SAJAT_MAX = 12
 
 
 def _avatar_meglevo(penztarca: dict) -> set[str]:
@@ -9591,32 +9606,62 @@ def _avatar_bolt_adat(child_id: int, penztarca: dict, es: bool) -> dict:
     meglevo = _avatar_meglevo(penztarca)
     aktiv = (penztarca.get("avatar") or "").strip() or avatarok.INGYENES[0]
     nyelv = "es" if es else "hu"
+
     lista = []
     for a in avatarok.LISTA:
-        van = a["kulcs"] in meglevo
         lista.append({
             "kulcs": a["kulcs"],
             "nev": a["nev_es"] if es else a["nev_hu"],
             "ar": a["ar"],
-            "van": van,
-            "aktiv": a["kulcs"] == aktiv,
+            "van": a["kulcs"] in meglevo,
+            "sajat": False,
             "kep": url_for("avatar_kep", kulcs=a["kulcs"]),
         })
+
+    # A GYEREK SAJÁT ALKOTÁSAI is a rácsba kerülnek, a többi mellé.
+    sajatok = sorted(k for k in meglevo if avatarok.sajat_e(k))
+    for i, k in enumerate(sajatok, start=1):
+        lista.append({
+            "kulcs": k,
+            "nev": (f"Mi avatar {i}" if es else f"Saját {i}"),
+            "ar": 0, "van": True, "sajat": True,
+            "kep": url_for("avatar_kep", kulcs=k),
+        })
+
+    def _cimkek(elemek):
+        return [{"kulcs": x["kulcs"], "nev": x["nev_es"] if es else x["nev_hu"]}
+                for x in elemek]
+
+    # A keverő ALAPJA lehet a saját arc, vagy bármelyik MÁR MEGVETT avatar —
+    # így a békára is rá lehet tenni egy sapkát, az eredeti béka megmarad.
+    alapok = [{"kulcs": "arc", "nev": "Mi cara" if es else "Saját arc",
+               "kep": url_for("avatar_kep", kulcs=avatarok.sajat_kulcs())}]
+    for a in avatarok.LISTA:
+        if a["kulcs"] in meglevo:
+            alapok.append({
+                "kulcs": a["kulcs"],
+                "nev": a["nev_es"] if es else a["nev_hu"],
+                "kep": url_for("avatar_kep", kulcs=a["kulcs"]),
+            })
+
     return {
         "nyelv": nyelv,
         "aktiv": aktiv,
         "lista": lista,
+        "sajat_darab": len(sajatok),
+        "sajat_max": AVATAR_SAJAT_MAX,
         "kevero": {
             "van": avatarok.SAJAT_ELOTAG in meglevo,
             "ar": avatarok.SAJAT_AR,
             "borok": [b[0] for b in avatarok.BOR],
             "hajak": [h[0] for h in avatarok.HAJ],
             "ruhak": avatarok.RUHAK,
-            "frizurak": [{"kulcs": f["kulcs"],
-                          "nev": f["nev_es"] if es else f["nev_hu"]}
-                         for f in avatarok.FRIZURAK],
-            "sajat_aktiv": avatarok.sajat_e(aktiv),
-            "sajat_kulcs": aktiv if avatarok.sajat_e(aktiv) else "",
+            "frizurak": _cimkek(avatarok.FRIZURAK),
+            "szemek": _cimkek(avatarok.SZEMEK),
+            "szajak": _cimkek(avatarok.SZAJAK),
+            "kiegeszitok": _cimkek(avatarok.KIEGESZITOK),
+            "alapok": alapok,
+            "mezok": avatarok.sajat_mezok(aktiv if avatarok.sajat_e(aktiv) else ""),
         },
     }
 
