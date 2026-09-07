@@ -124,6 +124,12 @@
                             <div class="chat-figure" style="max-width:320px;width:100%;margin:8px auto;background:#fff;border-radius:8px;padding:8px;">{{ svg | safe }}</div>
                         {% endfor %}
                     {% endif %}
+                    {# A gyakorló feladat újratöltés után is megmarad. Csak a
+                       LEGUTOLSÓ tanári üzenetnél van kitöltve — arra vár most
+                       választ a tanár. #}
+                    {% if msg['role'] == 'assistant' and msg.get('feladat') %}
+                        <div class="feladat-hely" data-feladat="{{ msg['feladat']|tojson|forceescape }}"></div>
+                    {% endif %}
                     </div>
                 </div>
             {% endfor %}
@@ -704,6 +710,18 @@
         });
         return doboz;
     }
+
+    // Az oldal betöltésekor a MENTETT feladatot is kirakjuk (újratöltés után
+    // ne tűnjön el, amire a tanár épp választ vár).
+    (function mentettFeladatok() {
+        document.querySelectorAll('.feladat-hely').forEach(function (hely) {
+            var adat = null;
+            try { adat = JSON.parse(hely.getAttribute('data-feladat') || 'null'); }
+            catch (e) { adat = null; }
+            var elem = feladatElem(adat);
+            if (elem) { hely.replaceWith(elem); } else { hely.remove(); }
+        });
+    })();
 
     function playTts(text) {
         if (hangKeretElfogyott) return Promise.reject(new Error('keret'));

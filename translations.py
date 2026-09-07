@@ -32,10 +32,9 @@ TRANSLATIONS = {
     # --- általános / navigáció ---
     "app_name": {"hu": "TutorIA", "es": "TutorIA"},
     "nav_home": {"hu": "Főoldal", "es": "Inicio"},
-    # A "Vezérlőpult" gépies, és nem mondja meg, mi van mögötte. Ez az oldal
-    # a gyerekek listája és a haladásuk, ezért "Áttekintés". (Ha inkább
-    # "Kezdőlap" vagy "Gyerekek" kell, elég ezt az egy sort átírni.)
-    "nav_dashboard": {"hu": "Áttekintés", "es": "Resumen"},
+    # A menüpont a GYEREKVÁLASZTÓRA visz („ki tanul most?"), ezért a neve is
+    # ezt mondja. Az „Áttekintés" nem árulta el, mi van mögötte.
+    "nav_dashboard": {"hu": "Gyerekeim", "es": "Mis hijos"},
     "nav_register": {"hu": "Regisztráció", "es": "Registrarse"},
     "nav_login": {"hu": "Bejelentkezés", "es": "Iniciar sesión"},
     "nav_logout": {"hu": "Kijelentkezés", "es": "Cerrar sesión"},

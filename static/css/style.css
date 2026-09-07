@@ -2689,8 +2689,15 @@ body:has(.chat-layout) .content { max-width: 1560px; }
        ahol nem takarnak szöveget. */
     background-size: 100% auto;
 }
-/* Alul szabad sáv a két figurának – így nem lógnak rá a szövegre. */
-.bem-hero { padding-bottom: 214px; }
+/* Alul szabad sáv a két figurának – így nem lógnak rá a szövegre.
+   A hero összesen ne legyen magasabb, mint a képernyő: a figurák lába
+   se lógjon ki görgetés nélkül. */
+.bem-hero {
+    padding-top: 40px;
+    padding-bottom: 178px;
+    max-height: calc(100vh - 74px);
+    box-sizing: border-box;
+}
 .bem-figura {
     position: absolute;
     bottom: 0;
@@ -2704,8 +2711,19 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 /* A KÉT SZÉLEN állnak, egymástól távol: a lány bal oldalon a szöveg
    alatt, a fiú jobb oldalon az évfolyam-kártya alatt. Egyik sem takar
    el betűt, mert fölöttük ott a szabad sáv. */
-.bem-figura-1 { left: 8px; height: 196px; }
-.bem-figura-2 { right: 24px; height: 204px; }
+.bem-figura-1 { left: 8px; height: 168px; }
+.bem-figura-2 { right: 24px; height: 176px; }
+/* Alacsony ablakban még kisebbek, hogy soha ne kelljen értük görgetni. */
+@media (max-height: 820px) {
+    .bem-hero { padding-top: 24px; padding-bottom: 148px; }
+    .bem-figura-1 { height: 140px; }
+    .bem-figura-2 { height: 147px; }
+}
+@media (max-height: 700px) {
+    .bem-hero { padding-top: 16px; padding-bottom: 124px; }
+    .bem-figura-1 { height: 116px; }
+    .bem-figura-2 { height: 122px; }
+}
 @media (max-width: 900px) {
     .bem-hero { padding-bottom: 68px; }
     .bem-figura { display: none; }

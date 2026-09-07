@@ -4658,6 +4658,73 @@ _NYELVORA_FORDULAT_ES = """
 """
 
 
+# ══════════════════════════════════════════════════════════════════════
+# BEÍRÓS ÉS KATTINTÓS GYAKORLÓ FELADAT
+# MINDEN tantárgyhoz és MINDKÉT tantervhez hozzáfűzzük. (Először tévedésből
+# csak az idegennyelv-ágba került be, ezért matekon soha nem jelent meg.)
+# ══════════════════════════════════════════════════════════════════════
+_FELADAT_BLOKK_HU = """
+
+✏️ BEÍRÓS ÉS KATTINTÓS FELADAT — EZ TESZI GYAKORLÁSSÁ AZ ÓRÁT:
+A kérdéseidet ne csak szövegben tedd fel. Ha a válaszod VÉGÉRE odaírod ezt
+a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
+
+1) OSZLOPOS SZÁMOLÁS (csak matek, csak írásbeli műveletnél). A két szám
+   egymás alatt jelenik meg, alatta üres kockákkal, mint a füzetben:
+   <FELADAT>{"tipus":"szamolo","jel":"-","a":325,"b":148}</FELADAT>
+   A "jel" ezek egyike: + - * :
+   Az EREDMÉNYT NE ÍRD LE sehová — a program maga számolja ki és ellenőrzi.
+   Csak egész szám, nulla vagy pozitív eredmény, osztásnál maradék nélkül.
+   FEJBEN SZÁMOLÁSHOZ NE ezt használd, hanem a válaszgombokat.
+
+2) VÁLASZGOMBOK — MINDEN TANTÁRGYNÁL, nem csak matekban:
+   <FELADAT>{"tipus":"valaszt","opciok":["macska","kutya","ló"]}</FELADAT>
+   Kettő és hat közötti lehetőség. A KÉRDÉST a szövegben tedd fel, a
+   jelölőbe CSAK a válaszlehetőségek kerülnek, és pontosan egy legyen jó.
+   Példák: melyik szó a helyes fordítás; melyik állat emlős; melyik évszám;
+   melyik hangszer húros; melyik mondat helyesírása jó; mennyi 5300+260.
+
+SZABÁLYOK:
+- LEGFELJEBB EGY <FELADAT> egy válaszban, mindig a válasz VÉGÉN.
+- Csak arra kérdezz, amit ELŐTTE megtanítottál.
+- A jelölő után már ne írj külön kérdést: a feladat maga a kérdés.
+- Nem kell minden válaszba. Magyarázat, aztán feladat — ez a jó ritmus.
+- HA KÉRDEZEL A GYEREKTŐL, LEHETŐLEG ADJ HOZZÁ FELADATOT: kattintani
+  könnyebb, mint gépelni, és a kicsik így nem akadnak el a billentyűzeten.
+- A gyerek válasza sima üzenetként érkezik vissza hozzád; ugyanúgy
+  értékeld, mintha beírta volna.
+"""
+
+_FELADAT_BLOKK_ES = """
+
+✏️ EJERCICIO PARA ESCRIBIR O PULSAR — ESTO CONVIERTE LA CLASE EN PRÁCTICA:
+No hagas las preguntas solo con texto. Si escribes esta marca AL FINAL de tu
+respuesta, el niño no teclea: rellena casillas o pulsa un botón.
+
+1) CUENTA EN COLUMNA (solo matemáticas, solo cálculo escrito). Los dos
+   números aparecen uno debajo del otro, con casillas vacías debajo:
+   <FELADAT>{"tipus":"szamolo","jel":"-","a":325,"b":148}</FELADAT>
+   "jel" es uno de: + - * :
+   NO ESCRIBAS EL RESULTADO en ningún sitio: el programa lo calcula y lo
+   comprueba. Solo números enteros, resultado cero o positivo, y en la
+   división sin resto. Para cálculo mental usa los botones, no esto.
+
+2) BOTONES DE RESPUESTA — EN TODAS LAS ASIGNATURAS, no solo en matemáticas:
+   <FELADAT>{"tipus":"valaszt","opciok":["gato","perro","caballo"]}</FELADAT>
+   Entre dos y seis opciones. La PREGUNTA va en el texto; en la marca van
+   SOLO las opciones, y exactamente una debe ser correcta.
+
+REGLAS:
+- COMO MÁXIMO UNA <FELADAT> por respuesta, siempre al final.
+- Pregunta solo lo que ya has enseñado antes.
+- Después de la marca no escribas otra pregunta: el ejercicio es la pregunta.
+- No en todas las respuestas. Explicación, luego ejercicio: ese es el ritmo.
+- SIEMPRE QUE PREGUNTES, intenta añadir un ejercicio: pulsar es más fácil
+  que teclear para un niño pequeño.
+- La respuesta del niño te llega como un mensaje normal; evalúala igual.
+"""
+
+
 def _build_chat_system_prompt(
     child: dict,
     *,
@@ -4945,6 +5012,7 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
         prompt += _KERDES_HIGIENIA_ES
         prompt += _NYELVORA_FORDULAT_ES
         prompt += _spiral_block
+        prompt += _FELADAT_BLOKK_ES
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
               f"len={len(prompt)}", flush=True)
@@ -5123,6 +5191,7 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
 
         prompt += _KERDES_HIGIENIA_ES
         prompt += _spiral_block
+        prompt += _FELADAT_BLOKK_ES
 
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'NIVEL ADECUADO' in prompt} "
@@ -5376,33 +5445,6 @@ mondatban: "There is a shop. (egy bolt) — There are two shops. (két bolt)".
 Utána kérdezz rá arra, hogy MELYIKET kell használni, ne arra, hogy mit
 jelent az egyik.
 
-✏️ BEÍRÓS ÉS KATTINTÓS FELADAT — EZ TESZI GYAKORLÁSSÁ AZ ÓRÁT:
-A kérdéseidet nem csak szövegben teheted fel. Ha a válaszod végére odaírod
-ezt a jelölőt, a gyerek nem gépel, hanem BEÍR vagy RÁKATTINT:
-
-1) Oszlopos számolás (csak matek). A két szám egymás alatt jelenik meg,
-   alatta üres kockákkal — pont úgy, mint a füzetben:
-   <FELADAT>{"tipus":"szamolo","jel":"-","a":325,"b":148}</FELADAT>
-   A "jel" ezek egyike: + - * :
-   Az EREDMÉNYT NE ÍRD LE sehová: a program maga számolja ki és ellenőrzi.
-   Csak egész számokkal, nulla vagy pozitív eredménnyel, és osztásnál csak
-   maradék nélkül. Ha ezek bármelyike nem teljesül, hagyd el a jelölőt.
-
-2) Válaszgombok (MINDEN tantárgynál, nem csak matekban):
-   <FELADAT>{"tipus":"valaszt","opciok":["macska","kutya","ló"]}</FELADAT>
-   Kettő és hat közötti lehetőség. A kérdést a szövegben tedd fel, a
-   jelölőbe CSAK a válaszlehetőségek kerülnek. Pontosan egy legyen helyes.
-   Példák: melyik szó a helyes fordítás; melyik állat emlős; melyik évszám;
-   melyik hangszer húros; melyik mondat helyesírása jó.
-
-Szabályok mindkettőre:
-- LEGFELJEBB EGY <FELADAT> egy válaszban, és mindig a válasz VÉGÉN.
-- Csak akkor, ha ELŐTTE megtanítottad, amit kérdezel.
-- A jelölő UTÁN már ne írj kérdést: a feladat maga a kérdés.
-- Nem minden válaszba kell. Magyarázat, majd feladat — ez a jó ritmus.
-- A gyerek válasza sima üzenetként érkezik vissza hozzád, ugyanúgy
-  értékeld, mintha beírta volna.
-
 🗣️ KIEJTÉS-GYAKORLÁS — HASZNÁLD, DE MÉRTÉKKEL:
 Ha azt szeretnéd, hogy a gyerek MONDJA is ki, amit tanult, írd a válaszod
 végére ezt a jelölőt a gyakorlandó mondattal:
@@ -5619,6 +5661,7 @@ nem csak az idegen szavakat. Példák: 'Iszak' vagy 'Visszat' a 'viszlát' helye
 
     prompt += _KERDES_HIGIENIA_HU
     prompt += _spiral_block
+    prompt += _FELADAT_BLOKK_HU
 
     print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
           f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
@@ -6931,6 +6974,15 @@ def child_chat(child_id: int):
             if cleaned:
                 msg["content"] = cleaned
 
+    # A GYAKORLÓ FELADAT ÚJRATÖLTÉS UTÁN IS OTT LEGYEN — de csak a LEGUTOLSÓ
+    # tanári üzenetnél, mert csak arra vár most választ a tanár. A régebbi,
+    # már megválaszolt feladatokat nem rakjuk ki újra kattinthatóan.
+    _utolso_tanari = next(
+        (m for m in reversed(messages) if m.get("role") == "assistant"), None)
+    for _m in messages:
+        if _m is not _utolso_tanari:
+            _m["feladat"] = None
+
     _penztarca = database.get_wallet(child_id)
 
     # KABALA FIGURA. Csak akkor van, ha a szülő megadta a gyerek nemét.
@@ -7521,7 +7573,7 @@ def child_chat_send(child_id: int):
     db_reply = reply
     if raw_svgs:
         db_reply = reply + "\n\n" + "".join(f"<ABRA>{s}</ABRA>" for s in raw_svgs)
-    database.add_chat_message(session_id, "assistant", db_reply)
+    database.add_chat_message(session_id, "assistant", db_reply, feladat=feladat)
 
     if is_foreign and language and vocab_pairs:
         _chat_save_vocabulary(child_id, subject, language, vocab_pairs, topic_id=current_topic_id)

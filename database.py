@@ -14,6 +14,7 @@ A kapcsolati URL a DATABASE_URL environment variable-ből jön
 from __future__ import annotations
 
 import hashlib
+import json
 import logging
 import os
 import secrets
@@ -198,6 +199,10 @@ class ChatMessage(Base):
     )
     role: Mapped[str] = mapped_column(String(20), nullable=False)
     content: Mapped[str] = mapped_column(Text, nullable=False)
+    # A beírós / kattintós gyakorló feladat JSON-ban. Enélkül az oldal
+    # újratöltésekor eltűnt a feladatdoboz, és a gyerek nem tudott
+    # válaszolni arra, amit épp kérdeztek tőle.
+    feladat: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -526,6 +531,29 @@ def init_db() -> None:
     ensure_parents_ertesites_columns()
     ensure_parents_pin_column()
     ensure_children_neme_column()
+    ensure_chat_messages_feladat_column()
+
+
+def ensure_chat_messages_feladat_column() -> None:
+    """chat_messages.feladat – a beírós/kattintós feladat JSON-ja."""
+    from sqlalchemy import text
+
+    try:
+        with _get_engine().begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE chat_messages ADD COLUMN IF NOT EXISTS feladat TEXT"))
+        return
+    except Exception as exc:
+        logger.warning("ensure_chat_messages_feladat_column: kihagyva: %s", exc)
+
+    # SQLite nem ismeri az „IF NOT EXISTS" alakot – ott megnézzük előbb.
+    try:
+        with _get_engine().begin() as conn:
+            oszlopok = {sor[1] for sor in conn.execute(text("PRAGMA table_info(chat_messages)"))}
+            if "feladat" not in oszlopok:
+                conn.execute(text("ALTER TABLE chat_messages ADD COLUMN feladat TEXT"))
+    except Exception as exc:
+        logger.warning("ensure_chat_messages_feladat_column (sqlite): kihagyva: %s", exc)
 
 
 def ensure_children_neme_column() -> None:
@@ -1418,11 +1446,19 @@ def _chat_session_dict(row: ChatSession) -> dict[str, Any]:
 
 
 def _chat_message_dict(row: ChatMessage) -> dict[str, Any]:
+    nyers = getattr(row, "feladat", None)
+    feladat = None
+    if nyers:
+        try:
+            feladat = json.loads(nyers)
+        except Exception:
+            feladat = None
     return {
         "id": row.id,
         "session_id": row.session_id,
         "role": row.role,
         "content": row.content,
+        "feladat": feladat,
         "created_at": row.created_at,
     }
 
@@ -1547,10 +1583,12 @@ def get_chat_messages(session_id: int, *, limit: int = 20) -> list[dict[str, Any
         db.close()
 
 
-def add_chat_message(session_id: int, role: str, content: str) -> dict[str, Any]:
+def add_chat_message(session_id: int, role: str, content: str,
+                     feladat: dict | None = None) -> dict[str, Any]:
     db = _session()
     try:
-        msg = ChatMessage(session_id=session_id, role=role, content=content.strip())
+        msg = ChatMessage(session_id=session_id, role=role, content=content.strip(),
+                          feladat=json.dumps(feladat, ensure_ascii=False) if feladat else None)
         db.add(msg)
         db.commit()
         db.refresh(msg)
