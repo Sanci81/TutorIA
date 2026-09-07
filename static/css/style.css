@@ -2663,10 +2663,32 @@ body:has(.chat-layout) .content { max-width: 1560px; }
         radial-gradient(50% 60% at 72% 95%, rgba(23, 184, 166, 0.22), transparent 70%),
         linear-gradient(180deg, #f2f9f5, #f6f9f7);
 }
-/* A hero alján a két gyerekfigura áll. Korábban itt egy mértani
-   mintacsempe volt (kör, négyzet, plusz jel); az bármelyik oldalon ott
-   lehetne, és a szakasz alján el is volt vágva. Helyette olyat teszünk
-   ide, ami CSAK ehhez az oldalhoz tartozik. */
+/* A HERO HÁTTERE.
+   Korábban egy ISMÉTLŐDŐ mértani csempe volt itt (kör, négyzet, plusz jel),
+   ezért a szakasz szélén minden alakzat félbevágódott. Most EGYETLEN,
+   kézzel elrendezett kép van (static/img/hatter_jelek.svg), ami nem
+   ismétlődik: a jelek a lap szélein ülnek, egyik sincs elvágva, és
+   mindegyik jelent valamit — szám, művelet, betű, hangjegy, lombik,
+   földgömb, könyv, ecset, vonalzó. */
+.bem-hero::after {
+    content: "";
+    position: absolute;
+    /* Pontosan a KÉPERNYŐ szélességét fedi le – nem többet, nem kevesebbet.
+       Így a kép két szélén ülő jelek tényleg a képernyő szélére kerülnek
+       (nem a szöveg mögé), és egyik sincs elvágva. */
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 100vw;
+    transform: translateX(-50%);
+    z-index: -1;
+    background-image: url("/static/img/hatter_jelek.svg");
+    background-repeat: no-repeat;
+    background-position: center;
+    /* Teljes szélességben, arányosan: a jelek így maradnak a KÉT SZÉLEN,
+       ahol nem takarnak szöveget. */
+    background-size: 100% auto;
+}
 .bem-hero { padding-bottom: 172px; }
 .bem-figura {
     position: absolute;
@@ -2912,7 +2934,15 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 .targy { min-width: 0; }
 .targy-nev {
     min-width: 0;
-    overflow-wrap: break-word;   /* szó KÖZEPÉN ne törjön el */
+    /* A hosszú tantárgynevek (Környezetismeret, Conocimiento del Medio…)
+       eddig szó KÖZEPÉN törtek el, kötőjel nélkül: „Környezetismer et".
+       Az elválasztás bekapcsolásával rendes kötőjelet kapnak, és ha még
+       így sem fér ki, egy hajszálnyival kisebb betűvel írjuk. */
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    overflow-wrap: break-word;
+    font-size: .97em;
+    line-height: 1.28;
 }
 /* Nyelvválasztó: zászló az ikon helyén. */
 .targy-zaszlo {
@@ -2939,14 +2969,20 @@ body:has(.chat-layout) .content { max-width: 1560px; }
    Szándékosan nagyon halvány: a szöveg olvashatósága fontosabb.
    ═══════════════════════════════════════════════════════════════════ */
 body.gyerek-hatter {
-    /* NINCS minta, NINCS rács, NINCS firka. Csak egy nyugodt, világos
-       színátmenet, és két nagyon halvány, nagy folt a lap két szélén.
-       Így a lap nem üres és nem is fárasztó – a tartalom a főszereplő. */
+    /* A GYEREK OLDALAINAK HÁTTERE.
+       Nyugodt színátmenet, és fölötte UGYANAZ az iskolai jelkészlet, mint
+       a bemutató oldalon (static/img/hatter_jelek.svg). Nem ismétlődik,
+       ezért egyetlen jel sem vágódik ketté, és a jelek a lap szélein
+       ülnek – középen szabad marad a hely a tartalomnak. */
     background-color: #f2f7fb;
     background-image:
+        url("/static/img/hatter_jelek.svg"),
         radial-gradient(760px 520px at 8% 0%, rgba(47, 143, 216, .16), transparent 62%),
         radial-gradient(700px 520px at 100% 22%, rgba(23, 184, 166, .15), transparent 60%),
         radial-gradient(620px 460px at 50% 100%, rgba(245, 166, 35, .12), transparent 62%);
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-position: center, 0 0, 0 0, 0 0;
+    background-size: 100% auto, auto, auto, auto;
     background-attachment: fixed;
 }
 
@@ -3115,6 +3151,10 @@ body.gyerek-hatter .back-link {
 .chat-layout:has(.chat-kabala-oszlop) {
     grid-template-columns: 260px 1fr 130px;
 }
+/* Idegennyelv-órán a szójegyzék IS ott van: ilyenkor négy oszlop kell. */
+.chat-layout:has(.chat-sidebar-vocab):has(.chat-kabala-oszlop) {
+    grid-template-columns: 260px 1fr minmax(160px, 200px) 120px;
+}
 .chat-kabala-oszlop {
     display: flex;
     align-items: flex-end;
@@ -3133,7 +3173,14 @@ body.gyerek-hatter .back-link {
     user-select: none;
     filter: drop-shadow(0 6px 16px rgba(20, 60, 40, .14));
 }
-@media (max-width: 1280px) {
+@media (max-width: 1120px) {
     .chat-layout:has(.chat-kabala-oszlop) { grid-template-columns: 260px 1fr; }
     .chat-kabala-oszlop { display: none; }
+}
+/* Szójegyzékkel együtt hamarabb fogy el a hely. */
+@media (max-width: 1420px) {
+    .chat-layout:has(.chat-sidebar-vocab):has(.chat-kabala-oszlop) {
+        grid-template-columns: 260px 1fr minmax(160px, 200px);
+    }
+    .chat-layout:has(.chat-sidebar-vocab) .chat-kabala-oszlop { display: none; }
 }

@@ -74,7 +74,7 @@
                         <button type="button" class="targy" data-ertek="{{ opt['value'] }}"
                                 data-cimke="{{ opt['label'] }}">
                             <span class="targy-jel" aria-hidden="true"></span>
-                            <span class="targy-nev">{{ opt['label'] }}</span>
+                            <span class="targy-nev">{{ opt['label']|elvalaszt }}</span>
                         </button>
                         {% endfor %}
                     </div>

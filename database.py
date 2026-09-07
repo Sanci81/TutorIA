@@ -537,8 +537,20 @@ def ensure_children_neme_column() -> None:
             conn.execute(text(
                 "ALTER TABLE children ADD COLUMN IF NOT EXISTS "
                 "gyerek_neme VARCHAR(10)"))
+        return
     except Exception as exc:
         logger.warning("ensure_children_neme_column: kihagyva: %s", exc)
+
+    # Az SQLite nem ismeri az „ADD COLUMN IF NOT EXISTS” alakot. Ott
+    # megnézzük, van-e már ilyen oszlop, és ha nincs, egyszerűen hozzáadjuk.
+    # Enélkül helyi (SQLite) futtatásnál a gyereklekérdezés hibára futna.
+    try:
+        with _get_engine().begin() as conn:
+            oszlopok = {sor[1] for sor in conn.execute(text("PRAGMA table_info(children)"))}
+            if "gyerek_neme" not in oszlopok:
+                conn.execute(text("ALTER TABLE children ADD COLUMN gyerek_neme VARCHAR(10)"))
+    except Exception as exc:
+        logger.warning("ensure_children_neme_column (sqlite): kihagyva: %s", exc)
 
 
 def ensure_parents_last_seen_column() -> None:

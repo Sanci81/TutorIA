@@ -228,7 +228,22 @@ def inject_helpers():
         # Látszódjon, hogy a szülői rész NYITVA van. Enélkül nem érthető,
         # miért enged be egyes oldalakra kód nélkül.
         "pin_nyitva": bool(session.get("parent_id")) and _van_pin() and _pin_ervenyes(),
+        # KI VAN BELÉPVE. A fejlécben látszik a szülő e-mail-címe, hogy a
+        # bemutató oldalon se kelljen találgatni, be van-e lépve valaki.
+        "belepett_szulo": _belepett_szulo_email(),
     }
+
+
+def _belepett_szulo_email() -> str:
+    """A belépett szülő e-mail-címe a fejléchez. Hibára soha nem dob."""
+    if not session.get("parent_id"):
+        return ""
+    try:
+        szulo = database.get_parent_by_id(session["parent_id"])
+        return (szulo or {}).get("email", "") or ""
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("A belépett szülő nevét nem sikerült lekérni")
+        return ""
 
 
 def _aktiv_gyerek_adat() -> dict | None:
@@ -2970,6 +2985,28 @@ def _display_language_name(language: str | None, *, ui_lang: str | None = None) 
 @app.template_filter("display_language")
 def display_language_filter(value: str) -> str:
     return _display_language_name(value)
+
+
+# Hosszú, egybeírt tantárgynevek elválasztási pontjai. A böngésző magától
+# nem tudja, hol lehet elvágni egy magyar összetett szót, ezért eddig a szó
+# közepén tört el, kötőjel nélkül: „Környezetismer et". A lágy elválasztójel
+# (\u00AD) nem látszik, csak akkor, ha tényleg ott kell törni.
+_ELVALASZTAS: dict[str, str] = {
+    "Környezetismeret": "Környezet\u00ADismeret",
+    "Természettudomány": "Természet\u00ADtudomány",
+    "Természetismeret": "Természet\u00ADismeret",
+    "Állampolgári ismeretek": "Állampolgári isme\u00ADretek",
+    "Hon- és népismeret": "Hon- és nép\u00ADismeret",
+    "Digitális kultúra": "Digitális kul\u00ADtúra",
+    "Testnevelés és egészségfejlesztés": "Testnevelés és egészség\u00ADfejlesztés",
+}
+
+
+@app.template_filter("elvalaszt")
+def elvalaszt_filter(value: str) -> str:
+    """Lágy elválasztójelet tesz a hosszú tantárgynevekbe."""
+    szoveg = (value or "").strip()
+    return _ELVALASZTAS.get(szoveg, szoveg)
 
 
 def _chat_progress_subject(subject: str, language: str | None) -> str:
