@@ -22,6 +22,32 @@
                 </div>
             </div>
 
+            {# A GYEREK NEME. Nem kötelező, és csak annyi múlik rajta, melyik
+               rajzfigura áll a chat mellett. Ezt oda is írjuk, hogy senki ne
+               gondolja, hogy a tananyagot befolyásolja. #}
+            <div class="field">
+                <label>{{ t('nem_cimke') }}</label>
+                <div class="nemvalaszto">
+                    {% set jelenlegi = form.get('gyerek_neme', '') %}
+                    <label class="nemgomb">
+                        <input type="radio" name="gyerek_neme" value="fiu"
+                               {{ 'checked' if jelenlegi == 'fiu' else '' }}>
+                        <span>{{ t('nem_fiu') }}</span>
+                    </label>
+                    <label class="nemgomb">
+                        <input type="radio" name="gyerek_neme" value="lany"
+                               {{ 'checked' if jelenlegi == 'lany' else '' }}>
+                        <span>{{ t('nem_lany') }}</span>
+                    </label>
+                    <label class="nemgomb">
+                        <input type="radio" name="gyerek_neme" value=""
+                               {{ 'checked' if jelenlegi not in ('fiu', 'lany') else '' }}>
+                        <span>{{ t('nem_nincs') }}</span>
+                    </label>
+                </div>
+                <p class="field-hint">{{ t('nem_miert') }}</p>
+            </div>
+
             {# CSAK AZ AKTUÁLIS TANTERV OSZTÁLYA LÁTSZIK.
                Korábban mindkettő ott volt, és a magyar oldalon is be kellett
                állítani a spanyol osztályt – érthetetlen, és a szülő nem is

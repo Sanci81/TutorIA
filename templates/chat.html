@@ -169,6 +169,17 @@
         {% endif %}
     </div>
 
+    {# KABALA FIGURA. SAJÁT oszlopot kap a beszélgetés mellett, hogy soha
+       ne takarjon el se szöveget, se gombot. Nem mozog és nem villog: a
+       gyerek a feladatra figyeljen. Csak akkor van, ha a szülő megadta a
+       gyerek nemét; idegennyelv-órán (ott van a szójegyzék) és keskeny
+       képernyőn nem jelenik meg. #}
+    {% if kabala_kep and not (is_foreign_language and language) %}
+    <div class="chat-kabala-oszlop" aria-hidden="true">
+        <img class="chat-kabala" src="{{ url_for('static', filename=kabala_kep) }}" alt="">
+    </div>
+    {% endif %}
+
     {% if is_foreign_language and language %}
     <aside class="chat-sidebar chat-sidebar-vocab">
         <h2 class="chat-sidebar-title">{{ t('chat_vocab_title') }}</h2>

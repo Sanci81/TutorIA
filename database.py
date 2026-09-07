@@ -140,6 +140,10 @@ class Child(Base):
     # A tanár NEVE ebből származik (lásd app.py TEACHER_PROFILES).
     voice_gender_hu: Mapped[str | None] = mapped_column(String(10), nullable=True)
     voice_gender_es: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    # A GYEREK neme: "fiu" vagy "lany". Csak arra kell, hogy melyik kabala
+    # figura álljon mellette a chatben. Megadása nem kötelező – ha üres,
+    # nem jelenik meg figura.
+    gyerek_neme: Mapped[str | None] = mapped_column(String(10), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -490,6 +494,7 @@ def _child_dict(child: Child) -> dict[str, Any]:
         "region": child.region,
         "voice_gender_hu": getattr(child, "voice_gender_hu", None) or "female",
         "voice_gender_es": getattr(child, "voice_gender_es", None) or "female",
+        "gyerek_neme": getattr(child, "gyerek_neme", None) or "",
         "created_at": child.created_at,
         "needs_birth_date": bd is None,
     }
@@ -520,6 +525,20 @@ def init_db() -> None:
     ensure_learning_time_mode_column()
     ensure_parents_ertesites_columns()
     ensure_parents_pin_column()
+    ensure_children_neme_column()
+
+
+def ensure_children_neme_column() -> None:
+    """children.gyerek_neme – „fiu" vagy „lany", a kabala figurához."""
+    from sqlalchemy import text
+
+    try:
+        with _get_engine().begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE children ADD COLUMN IF NOT EXISTS "
+                "gyerek_neme VARCHAR(10)"))
+    except Exception as exc:
+        logger.warning("ensure_children_neme_column: kihagyva: %s", exc)
 
 
 def ensure_parents_last_seen_column() -> None:
@@ -1111,6 +1130,7 @@ def create_child(
     *,
     grade_hu: int | None = None,
     grade_es: int | None = None,
+    gyerek_neme: str | None = None,
 ) -> int:
     db = _session()
     try:
@@ -1137,6 +1157,7 @@ def create_child(
             country=country,
             curriculum=curriculum,
             region=region,
+            gyerek_neme=gyerek_neme if gyerek_neme in ("fiu", "lany") else None,
         )
         db.add(child)
         db.commit()
@@ -1160,6 +1181,7 @@ def update_child(
     grade_es: int | None = None,
     voice_gender_hu: str | None = None,
     voice_gender_es: str | None = None,
+    gyerek_neme: str | None = None,
 ) -> bool:
     """Gyerek profil szerkesztése – csak a megadott szülő gyerekéhez."""
     db = _session()
@@ -1187,6 +1209,9 @@ def update_child(
             child.voice_gender_hu = voice_gender_hu
         if voice_gender_es in ("female", "male"):
             child.voice_gender_es = voice_gender_es
+        # Üres érték = „nem adom meg"; ilyenkor törlődik a korábbi választás.
+        if gyerek_neme is not None:
+            child.gyerek_neme = gyerek_neme if gyerek_neme in ("fiu", "lany") else None
         db.commit()
         return True
     finally:

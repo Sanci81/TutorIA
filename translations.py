@@ -801,6 +801,18 @@ TRANSLATIONS = {
         "hu": "Még nincs beállítva. Amíg nincs, a gyerek mindenhez hozzáfér.",
         "es": "Aún no está configurado. Hasta entonces, el niño tiene acceso a todo.",
     },
+    # ── A GYEREK NEME (csak a kabala figurához) ──────────────────────────
+    "nem_cimke": {"hu": "A gyerek neme", "es": "Niño o niña"},
+    "nem_fiu": {"hu": "Fiú", "es": "Niño"},
+    "nem_lany": {"hu": "Lány", "es": "Niña"},
+    "nem_nincs": {"hu": "Nem adom meg", "es": "Prefiero no decirlo"},
+    "nem_miert": {
+        "hu": "Csak azt dönti el, melyik rajzfigura kíséri a tanulásban. "
+              "A tananyagra nincs hatással.",
+        "es": "Solo decide qué personaje le acompaña mientras aprende. "
+              "No afecta al contenido.",
+    },
+
     # ── A GYEREK SAJÁT MENÜSORA ──────────────────────────────────────────
     "gy_tanulas": {"hu": "Tanulás", "es": "Aprender"},
     "gy_album": {"hu": "Album", "es": "Álbum"},

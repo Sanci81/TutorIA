@@ -31,6 +31,13 @@
       {% endfor %}
     </div>
   </div>
+
+  {# A KÉT GYEREKFIGURA. Ez váltja a korábbi, jelentés nélküli mértani
+     firkákat: azok bármelyik oldalon ott lehetnének, ezek viszont
+     KONKRÉTAN a TutorIA arca. A hero alsó szélén állnak, a szöveg alatt;
+     keskeny képernyőn nem jelennek meg. #}
+  <img class="bem-figura bem-figura-1" src="{{ url_for('static', filename='kabala/lany.png') }}" alt="" aria-hidden="true">
+  <img class="bem-figura bem-figura-2" src="{{ url_for('static', filename='kabala/fiu.png') }}" alt="" aria-hidden="true">
 </section>
 
 <section class="bem-szakasz">

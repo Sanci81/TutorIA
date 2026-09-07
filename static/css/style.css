@@ -2663,25 +2663,30 @@ body:has(.chat-layout) .content { max-width: 1560px; }
         radial-gradient(50% 60% at 72% 95%, rgba(23, 184, 166, 0.22), transparent 70%),
         linear-gradient(180deg, #f2f9f5, #f6f9f7);
 }
-.bem-hero::after {
-    content: "";
+/* A hero alján a két gyerekfigura áll. Korábban itt egy mértani
+   mintacsempe volt (kör, négyzet, plusz jel); az bármelyik oldalon ott
+   lehetne, és a szakasz alján el is volt vágva. Helyette olyat teszünk
+   ide, ami CSAK ehhez az oldalhoz tartozik. */
+.bem-hero { padding-bottom: 172px; }
+.bem-figura {
     position: absolute;
-    inset: -40px -50vw -10px;
-    z-index: -1;
-    opacity: 0.6;
-    background-image: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'>\
-<g fill='none' stroke-width='3' stroke-linecap='round'>\
-<circle cx='40' cy='44' r='17' stroke='%23f5a623' stroke-opacity='.45'/>\
-<path d='M150 26h40v30h-40z' stroke='%232f8fd8' stroke-opacity='.4'/>\
-<path d='M196 118l16 28h-32z' stroke='%2317b8a6' stroke-opacity='.45'/>\
-<path d='M22 128h34M22 140h24' stroke='%23ef5f5f' stroke-opacity='.4'/>\
-<circle cx='120' cy='96' r='9' stroke='%237b5bd6' stroke-opacity='.45'/>\
-<path d='M64 186c14-18 34-18 48 0' stroke='%23e0609b' stroke-opacity='.4'/>\
-<path d='M198 196v26M186 209h24' stroke='%23f5a623' stroke-opacity='.45'/>\
-<path d='M96 40l10 18-10 18-10-18z' stroke='%2317b8a6' stroke-opacity='.35'/>\
-</g></svg>");
+    bottom: 0;
+    height: 190px;
+    width: auto;
+    z-index: 1;
+    pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 10px 22px rgba(20, 60, 40, .16));
 }
+/* A JOBB oldalon állnak, az évfolyam-kártya alatt: ott üres a sáv,
+   így egyetlen betűt sem takarnak el. */
+.bem-figura-1 { right: 172px; }
+.bem-figura-2 { right: 32px; height: 205px; }
+@media (max-width: 900px) {
+    .bem-hero { padding-bottom: 68px; }
+    .bem-figura { display: none; }
+}
+
 .bem-hero h1 { font-size: 48px; }
 
 .bem-valaszto { border: 0; box-shadow: 0 18px 46px rgba(20, 60, 40, 0.14); }
@@ -3049,3 +3054,86 @@ body.gyerek-hatter .back-link {
 }
 .gy-also a { color: #5d6b64 !important; font-weight: 600; }
 .gy-also a:hover { color: var(--gyszin) !important; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   FIÚ / LÁNY VÁLASZTÓ a gyerek profiljában
+   Három nagy, kattintható gomb rádiógomb helyett – telefonon is
+   könnyen eltalálható. A választott gomb zöld keretet kap.
+   ═══════════════════════════════════════════════════════════════════ */
+.nemvalaszto {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 6px;
+}
+.nemgomb {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 2px solid #dfe6e2;
+    border-radius: 999px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    color: #2c3e37;
+    transition: border-color .15s, background .15s;
+}
+.nemgomb:hover { border-color: #9fc9b4; }
+.nemgomb input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    border: 2px solid #c4d2cb;
+    border-radius: 50%;
+    background: #fff;
+}
+.nemgomb input:checked {
+    border-color: #1e7a4d;
+    background: radial-gradient(circle, #1e7a4d 0 45%, #fff 47%);
+}
+.nemgomb:has(input:checked) {
+    border-color: #1e7a4d;
+    background: #f0f8f3;
+}
+.field-hint {
+    margin: 8px 0 0;
+    font-size: .86rem;
+    color: #6b7a73;
+    line-height: 1.45;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   KABALA FIGURA A BESZÉLGETÉS MELLETT
+   SAJÁT OSZLOPOT kap a rácsban, hogy soha ne takarjon el szöveget vagy
+   gombot. Szándékosan MOZDULATLAN: a gyerek a feladatra figyeljen.
+   Keskeny képernyőn eltűnik – ott nincs rá hely.
+   ═══════════════════════════════════════════════════════════════════ */
+.chat-layout:has(.chat-kabala-oszlop) {
+    grid-template-columns: 260px 1fr 130px;
+}
+.chat-kabala-oszlop {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-width: 0;
+    pointer-events: none;
+}
+.chat-kabala {
+    /* „ragadós": ha a lap hosszabb a képernyőnél, a figura akkor is
+       látszik az alsó sarokban, nem csúszik le a lap aljára. */
+    position: sticky;
+    bottom: 14px;
+    width: 100%;
+    max-width: 112px;
+    height: auto;
+    user-select: none;
+    filter: drop-shadow(0 6px 16px rgba(20, 60, 40, .14));
+}
+@media (max-width: 1280px) {
+    .chat-layout:has(.chat-kabala-oszlop) { grid-template-columns: 260px 1fr; }
+    .chat-kabala-oszlop { display: none; }
+}

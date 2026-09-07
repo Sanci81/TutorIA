@@ -44,15 +44,15 @@
             </a>
 
             <nav class="nav-links">
-                {% if aktiv_gyerek %}
-                    {# Gyerek-munkamenet: a felső sáv nem mutat szülői
-                       menüpontot. DE ha a gyereksáv nincs kirakva (pl. a
-                       bemutató oldalon), a szülő ne rekedjen kint: legyen
-                       egy ajtó, ami PIN-t kér. #}
-                    {% if gyerek_menu_nelkul %}
-                    <a class="szuloknek" href="{{ url_for('szuloi_pin') }}">{{ t('pin_szuloknek') }}</a>
-                    {% endif %}
+                {% if aktiv_gyerek and not gyerek_menu_nelkul %}
+                    {# Gyerek-munkamenet a gyerek saját oldalain: a felső sáv
+                       nem mutat szülői menüpontot – alatta ott a gyereksáv,
+                       abban van a „Szülőknek” ajtó. #}
                 {% elif session.get('parent_id') %}
+                    {# A bemutató oldalon MINDIG látszik, hogy a szülő be van
+                       lépve, akkor is, ha épp fut egy gyerek munkamenete.
+                       Mind a három menüpont PIN-t kér, tehát a gyerek így sem
+                       jut be egyikbe sem. #}
                     {% if pin_nyitva %}
                     {# LÁTSZÓDJON, hogy a szülői rész most nyitva van, és
                        egy kattintással be lehessen csukni. #}

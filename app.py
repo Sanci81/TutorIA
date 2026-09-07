@@ -844,6 +844,10 @@ def _generate_practice_tasks_bundle(
         return None
 
     grade_num = _active_grade(child)
+    # A tanterv jele MINDIG legyen meg. Korábban csak az alábbi else ágban
+    # kapott értéket, ezért magyar oldalon a 882. sor UnboundLocalError-ral
+    # elszállt, és a „Tanulás indítása" 500-as hibát adott.
+    child_curr = _active_curriculum()
     if g.lang == "hu":
         allowed_files = {o["value"] for o in get_hu_subjects_for_grade(grade_num)}
         if subject not in allowed_files:
@@ -856,7 +860,6 @@ def _generate_practice_tasks_bundle(
         if subject not in idegen_files:
             language = None
     else:
-        child_curr = _active_curriculum()
         region = child.get("region") if child_curr == "ES" else None
         try:
             available = get_subjects_for_profile(
@@ -1906,6 +1909,10 @@ def add_child():
         grade_es_raw = (request.form.get("grade_es") or "").strip()
         country = request.form.get("country") or ""
         region = request.form.get("region") or None
+        # A gyerek neme: csak a kabala figurához kell, megadása nem kötelező.
+        neme = (request.form.get("gyerek_neme") or "").strip()
+        if neme not in ("fiu", "lany"):
+            neme = ""
 
         errors = False
         birth_date = _parse_birth_date_form(birth_date_raw)
@@ -1961,6 +1968,7 @@ def add_child():
                     "grade_es": grade_es_raw,
                     "country": country,
                     "region": region,
+                    "gyerek_neme": neme,
                 },
             )
 
@@ -1971,6 +1979,7 @@ def add_child():
             session["parent_id"], name, birth_date, grade, country, region,
             curriculum=active_curriculum,
             grade_hu=grade_hu, grade_es=grade_es,
+            gyerek_neme=neme or None,
         )
         flash(i18n.t("flash_child_added", g.lang), "success")
         return redirect(url_for("dashboard"))
@@ -1999,6 +2008,9 @@ def edit_child(child_id: int):
             voice_hu = "female"
         if voice_es not in ("female", "male"):
             voice_es = "female"
+        neme = (request.form.get("gyerek_neme") or "").strip()
+        if neme not in ("fiu", "lany"):
+            neme = ""
 
         errors = False
         birth_date = _parse_birth_date_form(birth_date_raw)
@@ -2056,6 +2068,7 @@ def edit_child(child_id: int):
                     "region": region,
                     "voice_gender_hu": voice_hu,
                     "voice_gender_es": voice_es,
+                    "gyerek_neme": neme,
                 },
                 teacher_profiles=TEACHER_PROFILES,
                 active_curriculum=active_curriculum,
@@ -2077,6 +2090,7 @@ def edit_child(child_id: int):
             grade_es=grade_es_val,
             voice_gender_hu=voice_hu,
             voice_gender_es=voice_es,
+            gyerek_neme=neme,
         )
         # A hangválasztás azonnal érvényesüljön a következő felolvasásnál is.
         session.pop("tts_voice", None)
@@ -2094,6 +2108,7 @@ def edit_child(child_id: int):
         "region": child.get("region") or "",
         "voice_gender_hu": child.get("voice_gender_hu") or "female",
         "voice_gender_es": child.get("voice_gender_es") or "female",
+        "gyerek_neme": child.get("gyerek_neme") or "",
     }
     return render_template(
         "edit_child.html", child=child, form=form,
@@ -6782,8 +6797,14 @@ def child_chat(child_id: int):
 
     _penztarca = database.get_wallet(child_id)
 
+    # KABALA FIGURA. Csak akkor van, ha a szülő megadta a gyerek nemét.
+    # Ha nincs megadva, egyszerűen nem jelenik meg semmi.
+    _kabala = {"fiu": "kabala/fiu.png", "lany": "kabala/lany.png"}.get(
+        (child.get("gyerek_neme") or "").strip())
+
     return render_template(
         "chat.html",
+        kabala_kep=_kabala,
         child=child,
         subject=subject,
         subject_label=subject_label,
