@@ -609,6 +609,9 @@
         if (f.tipus === 'szamolo') { return szamoloTabla(f); }
         if (f.tipus === 'szam') { return szamMezo(f); }
         if (f.tipus === 'valaszt') { return valasztGombok(f); }
+        if (f.tipus === 'parosit') { return parositas(f); }
+        if (f.tipus === 'sorrend') { return sorbarendezes(f); }
+        if (f.tipus === 'hianyzo') { return hianyzoSzo(f); }
         return null;
     }
 
@@ -788,6 +791,223 @@
             var elem = feladatElem(adat);
             if (elem) { hely.replaceWith(elem); } else { hely.remove(); }
         });
+    })();
+
+    // Véletlen sorrend – hogy ne a megadott sorrend legyen a megoldás.
+    function keverd(t) {
+        var m = t.slice();
+        for (var i = m.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var cs = m[i]; m[i] = m[j]; m[j] = cs;
+        }
+        return m;
+    }
+
+    // PÁROSÍTÁS. Bal oldalon a szavak, jobb oldalon a jelentések keverve.
+    // A gyerek rákattint egy balra, majd egy jobbra – összekapcsolódnak,
+    // és azonos színt kapnak. Nyelvtől történelemig minden tárgyhoz jó.
+    function parositas(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-parosit';
+        var racs = document.createElement('div');
+        racs.className = 'fpar-racs';
+        doboz.appendChild(racs);
+
+        var balOszlop = document.createElement('div');
+        var jobbOszlop = document.createElement('div');
+        balOszlop.className = 'fpar-oszlop';
+        jobbOszlop.className = 'fpar-oszlop';
+        racs.appendChild(balOszlop);
+        racs.appendChild(jobbOszlop);
+
+        var SZINEK = ['#2f8fd8', '#ef5f5f', '#17b8a6', '#7b5bd6', '#f5a623', '#e0609b'];
+        var kivalasztottBal = null;
+        var parok = {};          // bal szöveg -> jobb szöveg
+        var kovSzin = 0;
+
+        function gomb(szoveg, oldal) {
+            var g = document.createElement('button');
+            g.type = 'button';
+            g.className = 'fpar-elem';
+            g.textContent = szoveg;
+            g.dataset.oldal = oldal;
+            g.addEventListener('click', function () {
+                if (doboz.classList.contains('feladat-kesz')) { return; }
+                if (oldal === 'bal') {
+                    if (kivalasztottBal) { kivalasztottBal.classList.remove('fpar-aktiv'); }
+                    kivalasztottBal = (kivalasztottBal === g) ? null : g;
+                    if (kivalasztottBal) { g.classList.add('fpar-aktiv'); }
+                } else if (kivalasztottBal) {
+                    var szin = SZINEK[kovSzin % SZINEK.length];
+                    kovSzin++;
+                    kivalasztottBal.classList.remove('fpar-aktiv');
+                    kivalasztottBal.classList.add('fpar-kesz');
+                    g.classList.add('fpar-kesz');
+                    kivalasztottBal.style.borderColor = szin;
+                    g.style.borderColor = szin;
+                    kivalasztottBal.style.color = szin;
+                    g.style.color = szin;
+                    parok[kivalasztottBal.textContent] = g.textContent;
+                    kivalasztottBal = null;
+                }
+            });
+            return g;
+        }
+
+        f.parok.forEach(function (p) { balOszlop.appendChild(gomb(p[0], 'bal')); });
+        keverd(f.parok).forEach(function (p) { jobbOszlop.appendChild(gomb(p[1], 'jobb')); });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var lista = Object.keys(parok).map(function (b) { return b + ' – ' + parok[b]; });
+            if (!lista.length) { return; }
+            feladatKuld(doboz, lista.join(', '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
+    }
+
+    // SORBARENDEZÉS. A gyerek a helyes sorrendben kattint rájuk; minden
+    // kattintás sorszámot ad. Események időrendje, mese lépései, egy
+    // kísérlet menete, mondatrészek – sok tárgynál ez a természetes feladat.
+    function sorbarendezes(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-sorrend';
+        var sorrend = [];
+
+        var lista = document.createElement('div');
+        lista.className = 'fsor-lista';
+        doboz.appendChild(lista);
+
+        keverd(f.elemek).forEach(function (szoveg) {
+            var g = document.createElement('button');
+            g.type = 'button';
+            g.className = 'fsor-elem';
+            var jel = document.createElement('span');
+            jel.className = 'fsor-szam';
+            var cim = document.createElement('span');
+            cim.textContent = szoveg;
+            g.appendChild(jel);
+            g.appendChild(cim);
+            g.addEventListener('click', function () {
+                if (doboz.classList.contains('feladat-kesz')) { return; }
+                var hol = sorrend.indexOf(szoveg);
+                if (hol >= 0) { sorrend.splice(hol, 1); } else { sorrend.push(szoveg); }
+                lista.querySelectorAll('.fsor-elem').forEach(function (e) {
+                    var sz = e.lastChild.textContent;
+                    var i = sorrend.indexOf(sz);
+                    e.firstChild.textContent = i >= 0 ? (i + 1) : '';
+                    e.classList.toggle('fsor-valasztott', i >= 0);
+                });
+            });
+            lista.appendChild(g);
+        });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            if (sorrend.length < f.elemek.length) { return; }
+            feladatKuld(doboz, sorrend.map(function (x, i) {
+                return (i + 1) + '. ' + x;
+            }).join(' '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
+    }
+
+    // HIÁNYZÓ SZÓ. A mondatban ___ jelöli a hiányt. Ha vannak felkínált
+    // szavak, azokra kattint; ha nincsenek, beírja.
+    function hianyzoSzo(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-hianyzo';
+
+        var mondat = document.createElement('div');
+        mondat.className = 'fhi-mondat';
+        var reszek = f.mondat.split('___');
+        var lyuk = document.createElement('span');
+        lyuk.className = 'fhi-lyuk';
+        var beirt = '';
+
+        mondat.appendChild(document.createTextNode(reszek[0] || ''));
+        mondat.appendChild(lyuk);
+        mondat.appendChild(document.createTextNode(reszek.slice(1).join('___') || ''));
+        doboz.appendChild(mondat);
+
+        var mezo = null;
+        if (f.szavak && f.szavak.length) {
+            var sor = document.createElement('div');
+            sor.className = 'fhi-szavak';
+            keverd(f.szavak).forEach(function (sz) {
+                var g = document.createElement('button');
+                g.type = 'button';
+                g.className = 'feladat-opcio';
+                g.textContent = sz;
+                g.addEventListener('click', function () {
+                    if (doboz.classList.contains('feladat-kesz')) { return; }
+                    beirt = sz;
+                    lyuk.textContent = sz;
+                    sor.querySelectorAll('.feladat-opcio').forEach(function (e) {
+                        e.classList.toggle('fhi-valasztott', e === g);
+                    });
+                });
+                sor.appendChild(g);
+            });
+            doboz.appendChild(sor);
+        } else {
+            mezo = document.createElement('input');
+            mezo.type = 'text';
+            mezo.className = 'fhi-mezo';
+            mezo.addEventListener('input', function () {
+                beirt = this.value.trim();
+                lyuk.textContent = beirt;
+            });
+            mezo.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); kesz.click(); }
+            });
+            doboz.appendChild(mezo);
+        }
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            if (!beirt) { if (mezo) { mezo.focus(); } return; }
+            feladatKuld(doboz, f.mondat.replace('___', beirt));
+        });
+        doboz.appendChild(kesz);
+        if (mezo) { setTimeout(function () { mezo.focus(); }, 60); }
+        return doboz;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // TELEFON: A BILLENTYŰZET NE TAKARJA EL, AMIT ÍRUNK
+    // Androidon a felugró billentyűzet ráült a beírómezőre, és a gyerek
+    // nem látta, mit gépel. Amikor bármelyik mező fókuszt kap – a chat
+    // beírója vagy egy feladat kockája –, begörgetjük a látható részbe.
+    // ══════════════════════════════════════════════════════════════════
+    (function billentyuzetKezeles() {
+        function lathatova() {
+            var a = document.activeElement;
+            if (!a || !a.matches || !a.matches('input, textarea')) { return; }
+            try { a.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+            catch (e) { try { a.scrollIntoView(false); } catch (e2) {} }
+        }
+        document.addEventListener('focusin', function (e) {
+            if (e.target && e.target.matches && e.target.matches('input, textarea')) {
+                setTimeout(lathatova, 320);
+            }
+        });
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', function () {
+                setTimeout(lathatova, 60);
+            });
+        }
     })();
 
     function playTts(text) {
