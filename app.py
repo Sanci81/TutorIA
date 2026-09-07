@@ -52,6 +52,7 @@ import kiejtes
 import kinezet
 import oraterv
 import avatarok
+import csomagok
 import pontok
 import szamellenor
 import tasak
@@ -232,7 +233,26 @@ def inject_helpers():
         # KI VAN BELÉPVE. A fejlécben látszik a szülő e-mail-címe, hogy a
         # bemutató oldalon se kelljen találgatni, be van-e lépve valaki.
         "belepett_szulo": _belepett_szulo_email(),
+        # Csak azokat a nyelveket kínáljuk fel, amiket a csomag enged.
+        # Jobb el sem mutatni a gombot, mint hibaüzenettel elutasítani.
+        "elerheto_nyelvek": _elerheto_nyelvek(),
     }
+
+
+def _elerheto_nyelvek() -> dict:
+    """A fejléc nyelvváltójába kerülő nyelvek."""
+    if not session.get("parent_id"):
+        return dict(i18n.LANGUAGES)
+    try:
+        engedett = csomagok.elerheto_tantervek(_szulo_csomag())
+    except Exception:                                      # pragma: no cover
+        return dict(i18n.LANGUAGES)
+    ki = {}
+    for kod, nev in i18n.LANGUAGES.items():
+        tanterv = "ES" if kod == "es" else "HU"
+        if tanterv in engedett:
+            ki[kod] = nev
+    return ki or dict(i18n.LANGUAGES)
 
 
 def _belepett_szulo_email() -> str:
@@ -269,6 +289,14 @@ def _aktiv_gyerek_adat() -> dict | None:
 
 @app.route("/lang/<lang_code>")
 def set_language(lang_code):
+    # AMELYIK TANTERVRE NINCS ELŐFIZETÉSE, ARRA NEM VÁLTHAT.
+    # A magyar csomagos szülő a spanyol oldalt nem éri el, és fordítva.
+    # Bejelentkezés nélkül szabadon nézelődhet: ott még nincs mit védeni.
+    kert_tanterv = "ES" if lang_code == "es" else "HU"
+    if session.get("parent_id") and not _csomag_engedi_tantervet(kert_tanterv):
+        flash(i18n.t("csomag_nem_eleri", g.lang), "error")
+        return redirect(request.referrer or url_for("dashboard"))
+
     if lang_code in i18n.LANGUAGES:
         session["lang"] = lang_code
         # Gyerekenkénti emlékezés: ha van kiválasztott gyerek, mentsük el a tantervet
@@ -1280,6 +1308,7 @@ def fiok():
         gyerek_szam=len(gyerekek),
         regisztralt=letrejott.strftime("%Y. %m. %d.") if letrejott else "—",
         ertesites=szulo.get("ertesites") or "heti",
+        keret=_havi_keret(),
     )
 
 
@@ -2291,6 +2320,16 @@ def generate_tasks(child_id: int):
         flash(i18n.t("flash_subject_required", g.lang), "error")
         return redirect(url_for("select_tasks", child_id=child_id))
 
+    # HAVI KERET: ha elfogyott, nem indul új óra. Nem tiltjuk ki a gyereket
+    # a programból — az album, a bolt és a kinézet marad —, csak új tanulást
+    # nem kezd, amíg a hónap fordul.
+    keret = _havi_keret()
+    if keret["elfogyott"]:
+        if request.is_json:
+            return jsonify({"error": "keret_elfogyott"}), 402
+        flash(i18n.t("csomag_keret_elfogyott", g.lang), "error")
+        return redirect(url_for("select_tasks", child_id=child_id))
+
     bundle = _generate_practice_tasks_bundle(child_id, child, subject, language)
     if bundle is None:
         if request.is_json:
@@ -2327,6 +2366,16 @@ def regenerate_tasks(child_id: int):
 
     if not subject:
         flash(i18n.t("flash_subject_required", g.lang), "error")
+        return redirect(url_for("select_tasks", child_id=child_id))
+
+    # HAVI KERET: ha elfogyott, nem indul új óra. Nem tiltjuk ki a gyereket
+    # a programból — az album, a bolt és a kinézet marad —, csak új tanulást
+    # nem kezd, amíg a hónap fordul.
+    keret = _havi_keret()
+    if keret["elfogyott"]:
+        if request.is_json:
+            return jsonify({"error": "keret_elfogyott"}), 402
+        flash(i18n.t("csomag_keret_elfogyott", g.lang), "error")
         return redirect(url_for("select_tasks", child_id=child_id))
 
     bundle = _generate_practice_tasks_bundle(child_id, child, subject, language)
@@ -9545,6 +9594,50 @@ def child_avatar_select(child_id: int):
 
 # Ennyi saját avatart tarthat meg a gyerek. Ha kevés, elég ezt átírni.
 AVATAR_SAJAT_MAX = 12
+
+
+def _szulo_csomag(parent_id: int | None = None) -> str:
+    """A belépett szülő csomagjának kulcsa. Hibára soha nem dob."""
+    pid = parent_id or session.get("parent_id")
+    if not pid:
+        return csomagok.TESZT
+    try:
+        szulo = database.get_parent_by_id(pid) or {}
+        kulcs = (szulo.get("csomag") or "").strip()
+        lejar = szulo.get("csomag_lejar")
+        # LEJÁRT ELŐFIZETÉS: nem zárjuk ki a szülőt, csak visszaesik a
+        # tesztidőszakra — a fizetés bekötéséig ez a helyes viselkedés.
+        if lejar and lejar < date.today():
+            return csomagok.TESZT
+        return kulcs or csomagok.TESZT
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("A szülő csomagját nem sikerült lekérni")
+        return csomagok.TESZT
+
+
+def _csomag_engedi_tantervet(tanterv: str) -> bool:
+    return csomagok.engedi_tantervet(_szulo_csomag(), tanterv)
+
+
+def _havi_keret() -> dict:
+    """Mennyi tanulási perc fogyott el ebben a hónapban, és mennyi jár."""
+    pid = session.get("parent_id")
+    kulcs = _szulo_csomag(pid)
+    keret = csomagok.havi_perc(kulcs)
+    ma = date.today()
+    try:
+        elhasznalt = database.havi_tanulasi_perc(pid, ma.year, ma.month) if pid else 0.0
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("A havi tanulási időt nem sikerült lekérni")
+        elhasznalt = 0.0
+    return {
+        "csomag": kulcs,
+        "csomag_nev": csomagok.nev(kulcs, g.lang if hasattr(g, "lang") else "hu"),
+        "keret": keret,
+        "elhasznalt": round(elhasznalt, 1),
+        "maradek": max(0.0, round(keret - elhasznalt, 1)),
+        "elfogyott": elhasznalt >= keret,
+    }
 
 
 def _avatar_meglevo(penztarca: dict) -> set[str]:

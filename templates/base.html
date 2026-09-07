@@ -82,7 +82,7 @@
                 {% endif %}
 
                 <div class="lang-switch">
-                    {% for code, label in languages.items() %}
+                    {% for code, label in (elerheto_nyelvek or languages).items() %}
                         <a class="lang-btn {{ 'active' if code == lang else '' }}"
                            href="{{ url_for('set_language', lang_code=code) }}">{{ code|upper }}</a>
                     {% endfor %}

@@ -800,6 +800,22 @@ TRANSLATIONS = {
         "hu": "Még nincs beállítva. Amíg nincs, a gyerek mindenhez hozzáfér.",
         "es": "Aún no está configurado. Hasta entonces, el niño tiene acceso a todo.",
     },
+    # ── ELŐFIZETÉSI CSOMAGOK ─────────────────────────────────────────────
+    "csomag_nem_eleri": {
+        "hu": "Ez a tanterv nincs benne a csomagodban.",
+        "es": "Este currículo no está incluido en tu plan.",
+    },
+    "csomag_keret_elfogyott": {
+        "hu": "A havi tanulási időd elfogyott. A jövő hónapban újraindul.",
+        "es": "Se ha agotado tu tiempo de este mes. Se reinicia el mes que viene.",
+    },
+    "csomag_cim": {"hu": "Előfizetés", "es": "Suscripción"},
+    "csomag_havi_perc": {"hu": "havi perc", "es": "minutos al mes"},
+    "csomag_elhasznalt": {"hu": "Ebben a hónapban elhasználva",
+                          "es": "Usado este mes"},
+    "csomag_maradek": {"hu": "Hátralévő idő", "es": "Tiempo restante"},
+    "csomag_perc": {"hu": "perc", "es": "min"},
+
     # ── GYAKORLÓ FELADAT A BESZÉLGETÉSBEN ────────────────────────────────
     "feladat_kesz": {"hu": "Kész", "es": "Listo"},
     "feladat_maradek": {"hu": "Átvitel (ide írhatod a fölvitt számot)",

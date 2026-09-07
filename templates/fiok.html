@@ -10,6 +10,8 @@
   .fiok .doboz h2{font-size:1.1rem;margin:0 0 6px}
   .fiok .doboz p{margin:0 0 14px;color:#4b5563;line-height:1.6}
   .fiok .adat{color:#6b7280;font-size:.95rem}
+  .keret-sav{height:10px;border-radius:999px;background:#e8eeea;overflow:hidden;margin:10px 0}
+  .keret-sav span{display:block;height:100%;background:#1e7a4d;border-radius:999px}
   .fiok .gomb{display:inline-block;background:#1f3a63;color:#fff;border:none;border-radius:8px;
               padding:10px 18px;font-size:1rem;cursor:pointer;text-decoration:none}
   .fiok .veszelyes{border-color:#e6b3b3;background:#fff7f7}
@@ -34,6 +36,21 @@
     <p class="adat">{{ szulo.email }}<br>
        {{ t('account_registered') }}: {{ regisztralt }}<br>
        {{ t('account_children_count') }}: {{ gyerek_szam }}</p>
+  </div>
+
+  {# ELŐFIZETÉS. Amíg nincs fizetés bekötve, itt a „Teszt időszak" áll —
+     de a havi felhasznált idő már most is látszik, mert az érdekli a
+     szülőt, és mert így a keret bevezetése nem lesz meglepetés. #}
+  <div class="doboz">
+    <h2>{{ t('csomag_cim') }}</h2>
+    <p class="adat"><b>{{ keret.csomag_nev }}</b> — {{ keret.keret }} {{ t('csomag_havi_perc') }}</p>
+    <div class="keret-sav" aria-hidden="true">
+      <span style="width: {{ ((keret.elhasznalt / keret.keret * 100) if keret.keret else 0)|round(0, 'floor') }}%"></span>
+    </div>
+    <p class="adat">
+      {{ t('csomag_elhasznalt') }}: <b>{{ keret.elhasznalt }}</b> {{ t('csomag_perc') }} ·
+      {{ t('csomag_maradek') }}: <b>{{ keret.maradek }}</b> {{ t('csomag_perc') }}
+    </p>
   </div>
 
   <div class="doboz">

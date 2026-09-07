@@ -112,6 +112,11 @@ class Parent(Base):
     # anyagot kap), belenézhet a testvére albumába, és ki tud jelentkeztetni.
     # Ez NEM jelszó: csak annyi a dolga, hogy egy gyerek ne menjen át rajta.
     szuloi_pin: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # ELŐFIZETÉS. Üres = tesztidőszak: mindent elér, bő kerettel.
+    # A csomag dönti el, MELYIK TANTERVET éri el, és mennyi tanulási perc
+    # jár egy hónapra (lásd csomagok.py).
+    csomag: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    csomag_lejar: Mapped[date | None] = mapped_column(Date, nullable=True)
 
     children: Mapped[list["Child"]] = relationship(
         back_populates="parent", cascade="all, delete-orphan"
@@ -444,6 +449,8 @@ def _parent_dict(parent: Parent) -> dict[str, Any]:
         "ertesites": parent.ertesites or "heti",
         "utolso_ertesites": parent.utolso_ertesites,
         "szuloi_pin": parent.szuloi_pin,
+        "csomag": (getattr(parent, "csomag", None) or "").strip(),
+        "csomag_lejar": getattr(parent, "csomag_lejar", None),
         "van_pin": bool(parent.szuloi_pin),
     }
 
@@ -537,6 +544,70 @@ def init_db() -> None:
     ensure_children_neme_column()
     ensure_chat_messages_feladat_column()
     ensure_wallet_avatar_columns()
+    ensure_parents_csomag_columns()
+
+
+def ensure_parents_csomag_columns() -> None:
+    """parents.csomag / .csomag_lejar – az előfizetés."""
+    from sqlalchemy import text
+
+    for oszlop, tipus in (("csomag", "VARCHAR(32)"), ("csomag_lejar", "DATE")):
+        try:
+            with _get_engine().begin() as conn:
+                conn.execute(text(
+                    f"ALTER TABLE parents ADD COLUMN IF NOT EXISTS {oszlop} {tipus}"))
+            continue
+        except Exception as exc:
+            logger.warning("ensure_parents_csomag_columns(%s): kihagyva: %s", oszlop, exc)
+        try:
+            with _get_engine().begin() as conn:
+                meglevo = {sor[1] for sor in conn.execute(text("PRAGMA table_info(parents)"))}
+                if oszlop not in meglevo:
+                    conn.execute(text(f"ALTER TABLE parents ADD COLUMN {oszlop} {tipus}"))
+        except Exception as exc:
+            logger.warning("ensure_parents_csomag_columns sqlite(%s): kihagyva: %s", oszlop, exc)
+
+
+def set_parent_csomag(parent_id: int, csomag: str | None,
+                      lejar: date | None = None) -> bool:
+    """A szülő csomagjának beállítása."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if not p:
+            return False
+        p.csomag = (csomag or "").strip() or None
+        p.csomag_lejar = lejar
+        db.commit()
+        return True
+    finally:
+        db.close()
+
+
+def havi_tanulasi_perc(parent_id: int, ev: int, honap: int) -> float:
+    """A szülő ÖSSZES gyerekének tanulási perce egy adott hónapban.
+
+    A keretet a szülő fizeti, ezért a gyerekek együtt fogyasztják.
+    """
+    from calendar import monthrange
+    db = _session()
+    try:
+        elso = date(ev, honap, 1)
+        utolso = date(ev, honap, monthrange(ev, honap)[1])
+        gyerek_idk = [c.id for c in db.scalars(
+            select(Child).where(Child.parent_id == parent_id)).all()]
+        if not gyerek_idk:
+            return 0.0
+        sorok = db.scalars(
+            select(ChildLearningTime).where(
+                ChildLearningTime.child_id.in_(gyerek_idk),
+                ChildLearningTime.date >= elso,
+                ChildLearningTime.date <= utolso,
+            )
+        ).all()
+        return round(sum(r.minutes or 0 for r in sorok), 1)
+    finally:
+        db.close()
 
 
 def ensure_wallet_avatar_columns() -> None:
