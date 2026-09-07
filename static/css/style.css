@@ -3370,3 +3370,98 @@ body.gyerek-hatter .back-link {
     transform: translateY(-1px);
 }
 .feladat-opcio:disabled { cursor: default; transform: none; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBIL: NE LEHESSEN OLDALRA HÚZNI AZ OLDALT
+   A bemutató oldal háttérsávjai (.bem-hero::before/::after) szándékosan
+   szélesebbek a tartalomnál, hogy a szín és a jelek a képernyő széléig
+   érjenek. Emiatt viszont a lap vízszintesen görgethető lett — telefonon
+   el lehetett húzni az egészet oldalra.
+   Az „overflow-x: clip" levágja a kilógó részt, de – az „overflow: hidden"
+   nel ellentétben – NEM csinál görgetődobozt, így a chat ragadós kabala
+   figurája továbbra is működik.
+   ═══════════════════════════════════════════════════════════════════ */
+html {
+    overflow-x: clip;
+    max-width: 100%;
+}
+body {
+    overflow-x: clip;
+    max-width: 100%;
+}
+
+/* ── A KÉT FIGURA TELEFONON IS OTT VAN ──
+   Eddig 900 képpont alatt eltűntek, pedig a szülők többsége telefonon
+   nyitja meg először az oldalt. Kisebb méretben, a két alsó sarokban
+   állnak, a szöveg alatt. */
+@media (max-width: 900px) {
+    .bem-hero {
+        padding-bottom: 150px;
+        max-height: none;
+    }
+    .bem-figura {
+        display: block;
+        height: 132px;
+        filter: drop-shadow(0 6px 14px rgba(20, 60, 40, .14));
+    }
+    .bem-figura-1 { left: 2px; height: 126px; }
+    .bem-figura-2 { right: 2px; height: 132px; }
+}
+@media (max-width: 460px) {
+    .bem-hero { padding-bottom: 122px; }
+    .bem-figura-1 { height: 104px; }
+    .bem-figura-2 { height: 109px; }
+}
+
+/* ── MARADÉKSOR (átvitel) az oszlopos számoláshoz ──
+   A gyerek jegyzete: ide írja a fölvitt egyest összeadásnál, vagy a
+   kölcsönkérést kivonásnál. Nem küldjük el és nem ellenőrizzük — ugyanaz
+   a szerepe, mint a füzet szélén a ceruzajelnek. */
+.fsz-maradek { margin-bottom: 2px; }
+.fsz-maradek-mezo {
+    width: 42px;
+    height: 26px;
+    padding: 0;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: #c9782a;
+    border: 1px dashed #dfd0bd;
+    border-radius: 6px;
+    background: #fffdf9;
+}
+.fsz-maradek-mezo:focus {
+    outline: none;
+    border-color: #c9782a;
+    border-style: solid;
+    background: #fff;
+}
+
+/* ── EGY SZÁM BEÍRÁSA (fejben számolás) ── */
+.feladat-szam { display: block; width: fit-content; min-width: 190px; }
+.fszam-muvelet {
+    font-size: 24px;
+    font-weight: 800;
+    color: #16241d;
+    margin-bottom: 8px;
+    font-variant-numeric: tabular-nums;
+}
+.fszam-mezo {
+    width: 100%;
+    min-width: 170px;
+    height: 52px;
+    padding: 0 14px;
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: #1e7a4d;
+    border: 2px solid #cfe0d6;
+    border-radius: 12px;
+    background: #f6fbf8;
+}
+.fszam-mezo:focus {
+    outline: none;
+    border-color: #1e7a4d;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(30, 122, 77, .16);
+}

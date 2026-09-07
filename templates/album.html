@@ -579,7 +579,9 @@ function rajzol(){
     lap.innerHTML=boritoHTML(T);
   } else if(o.t==="szakasz"){
     lap.className="lap szakasz";
-    lap.style.background=`linear-gradient(150deg,${o.tagok[0].szin},#141a3c)`;
+    // Ha egy tantárgyhoz még nincs kártya, a tagok lista üres. Enélkül
+    // a fenti sor hibára futott, és az egész album JS-e megállt.
+    lap.style.background=`linear-gradient(150deg,${(o.tagok[0]||{}).szin||'#3f6fd8'},#141a3c)`;
     lap.innerHTML=`<div class="szfej"><h2>${o.targy.toUpperCase()}</h2>
        <div class="kicsi" style="margin-top:6px">${o.tagok.length} SZEMÉLY</div>
        <div class="db"><b>${o.tagok.length*2}</b><span>LAP</span></div></div>
@@ -679,7 +681,7 @@ function kotesek(){
 function ugrosav(){
   const e=document.getElementById('ugrosav'); if(!e) return;
   const elemek=[{cim:"Borító",i:0}];
-  OLDALAK.forEach((o,i)=>{ if(o.t==="szakasz") elemek.push({cim:o.targy,i:i,szin:o.tagok[0].szin}); });
+  OLDALAK.forEach((o,i)=>{ if(o.t==="szakasz") elemek.push({cim:o.targy,i:i,szin:(o.tagok[0]||{}).szin||"#3f6fd8"}); });
   elemek.push({cim:"Lista",i:OLDALAK.findIndex(o=>o.t==="checklist")});
   e.innerHTML=elemek.map(x=>{
     // hány lap van meg ebből a tantárgyból – a gyerek lássa, hol áll

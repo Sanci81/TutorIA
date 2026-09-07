@@ -802,6 +802,8 @@ TRANSLATIONS = {
     },
     # ── GYAKORLÓ FELADAT A BESZÉLGETÉSBEN ────────────────────────────────
     "feladat_kesz": {"hu": "Kész", "es": "Listo"},
+    "feladat_maradek": {"hu": "Átvitel (ide írhatod a fölvitt számot)",
+                        "es": "Llevada (apunta aquí lo que te llevas)"},
 
     # ── A GYEREK NEME (csak a kabala figurához) ──────────────────────────
     "nem_cimke": {"hu": "A gyerek neme", "es": "Niño o niña"},

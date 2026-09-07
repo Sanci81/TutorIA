@@ -2483,6 +2483,21 @@ def _feladat_parse(text: str) -> dict | None:
         return {"tipus": "szamolo", "jel": jel, "a": a_ert, "b": b_ert,
                 "eredmeny": str(ered)}
 
+    if tipus == "szam":
+        # EGY SZÁMOT KELL KISZÁMOLNI ÉS BEÍRNI. Fejben számoláshoz ez való,
+        # nem a válaszgomb: a gombokból ki lehet találni az eredményt
+        # anélkül, hogy a gyerek tényleg kiszámolta volna.
+        jel = _FELADAT_JELEK.get(str(adat.get("jel") or "").strip())
+        muvelet = ""
+        if jel is not None:
+            try:
+                muvelet = f"{int(adat['a'])} {jel} {int(adat['b'])}"
+            except Exception:
+                muvelet = ""
+        if not muvelet:
+            muvelet = str(adat.get("muvelet") or "").strip()[:40]
+        return {"tipus": "szam", "muvelet": muvelet}
+
     if tipus == "valaszt":
         opciok = adat.get("opciok")
         if not isinstance(opciok, list):
@@ -2490,6 +2505,15 @@ def _feladat_parse(text: str) -> dict | None:
         tiszta = [str(o).strip() for o in opciok if str(o).strip()][:6]
         if len(tiszta) < 2:
             return None
+        # BIZTOSÍTÉK: ha MINDEN lehetőség szám, akkor ez számolós kérdés
+        # volt. Ilyenkor a gombokból ki lehetne találni az eredményt, ezért
+        # beírós mezőre cseréljük. A promptban is tiltva van, de a modellre
+        # ebben nem támaszkodunk – a gyerek gyakorlása múlik rajta.
+        def _szam_e(sz: str) -> bool:
+            return bool(re.fullmatch(r"-?\d[\d\s.,]*", sz))
+
+        if all(_szam_e(o) for o in tiszta):
+            return {"tipus": "szam", "muvelet": ""}
         return {"tipus": "valaszt", "opciok": tiszta}
 
     return None
@@ -4677,12 +4701,25 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    Csak egész szám, nulla vagy pozitív eredmény, osztásnál maradék nélkül.
    FEJBEN SZÁMOLÁSHOZ NE ezt használd, hanem a válaszgombokat.
 
-2) VÁLASZGOMBOK — MINDEN TANTÁRGYNÁL, nem csak matekban:
+2) SZÁM BEÍRÁSA — MINDEN SZÁMOLÁSHOZ, ami nem oszlopos:
+   <FELADAT>{"tipus":"szam","jel":"+","a":4700,"b":180}</FELADAT>
+   Egy mező, a gyerek KISZÁMOLJA és beírja az eredményt. Fejben számolás,
+   egyenlet, mértékegység-átváltás, szöveges feladat — mind ez.
+   Ha nem egyszerű kétoperandusú művelet, a "muvelet" mezőbe írhatsz
+   rövid feliratot: <FELADAT>{"tipus":"szam","muvelet":"3x + 5 = 20, x"}</FELADAT>
+
+3) VÁLASZGOMBOK — csak NEM SZÁMOLÓS kérdéshez:
    <FELADAT>{"tipus":"valaszt","opciok":["macska","kutya","ló"]}</FELADAT>
    Kettő és hat közötti lehetőség. A KÉRDÉST a szövegben tedd fel, a
    jelölőbe CSAK a válaszlehetőségek kerülnek, és pontosan egy legyen jó.
-   Példák: melyik szó a helyes fordítás; melyik állat emlős; melyik évszám;
-   melyik hangszer húros; melyik mondat helyesírása jó; mennyi 5300+260.
+   Példák: melyik szó a helyes fordítás; melyik állat emlős; melyik jel
+   mutatja a települést; melyik mondat helyesírása jó; melyik hangszer húros.
+
+⛔ SZÁMOLÁSNÁL SOHA NE ADJ VÁLASZGOMBOKAT.
+Ha a kérdés az, hogy MENNYI valami, a "szamolo" vagy a "szam" típust
+használd. A felkínált lehetőségekből a gyerek kitalálja az eredményt
+anélkül, hogy tényleg kiszámolta volna — akkor pedig nem gyakorolt semmit.
+Számolós kérdés + válaszgomb = HIBA.
 
 SZABÁLYOK:
 - LEGFELJEBB EGY <FELADAT> egy válaszban, mindig a válasz VÉGÉN.
@@ -4709,10 +4746,20 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    comprueba. Solo números enteros, resultado cero o positivo, y en la
    división sin resto. Para cálculo mental usa los botones, no esto.
 
-2) BOTONES DE RESPUESTA — EN TODAS LAS ASIGNATURAS, no solo en matemáticas:
+2) ESCRIBIR UN NÚMERO — para todo cálculo que no sea en columna:
+   <FELADAT>{"tipus":"szam","jel":"+","a":4700,"b":180}</FELADAT>
+   Una casilla: el niño CALCULA y escribe el resultado. Cálculo mental,
+   ecuaciones, conversión de unidades, problemas con enunciado.
+   Si no es una operación simple, usa "muvelet" como etiqueta corta:
+   <FELADAT>{"tipus":"szam","muvelet":"3x + 5 = 20, x"}</FELADAT>
+
+3) BOTONES DE RESPUESTA — solo para preguntas QUE NO SEAN DE CÁLCULO:
    <FELADAT>{"tipus":"valaszt","opciok":["gato","perro","caballo"]}</FELADAT>
    Entre dos y seis opciones. La PREGUNTA va en el texto; en la marca van
    SOLO las opciones, y exactamente una debe ser correcta.
+
+⛔ EN UN CÁLCULO NUNCA DES BOTONES. Si preguntas CUÁNTO es algo, usa
+"szamolo" o "szam". Con botones el niño adivina en vez de calcular.
 
 REGLAS:
 - COMO MÁXIMO UNA <FELADAT> por respuesta, siempre al final.

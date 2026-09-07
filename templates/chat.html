@@ -371,6 +371,7 @@
         voiceMicPermission: {{ t('chat_voice_mic_permission')|tojson }},
         replayTitle: {{ t('chat_replay_title')|tojson }},
         feladatKesz: {{ t('feladat_kesz')|tojson }},
+        feladatMaradek: {{ t('feladat_maradek')|tojson }},
         voiceBudgetSpent: {{ t('voice_budget_spent')|tojson }},
         think: [
             {{ t('chat_think_1')|tojson }},
@@ -606,6 +607,7 @@
     function feladatElem(f) {
         if (!f || !f.tipus) { return null; }
         if (f.tipus === 'szamolo') { return szamoloTabla(f); }
+        if (f.tipus === 'szam') { return szamMezo(f); }
         if (f.tipus === 'valaszt') { return valasztGombok(f); }
         return null;
     }
@@ -640,6 +642,30 @@
             }
             return s;
         }
+
+        // MARADÉKSOR (átvitel / kölcsönkérés). Összeadásnál ide írja a
+        // gyerek a fölvitt egyest, kivonásnál a kölcsönkérést — pont úgy,
+        // mint a füzetben. Nem kötelező kitölteni: ez a gyerek jegyzete,
+        // nem küldjük el, és nem is ellenőrizzük.
+        var maradek = document.createElement('div');
+        maradek.className = 'fsz-sor fsz-maradek';
+        var mUres = document.createElement('span');
+        mUres.className = 'fsz-jel';
+        maradek.appendChild(mUres);
+        for (var mi = 0; mi < szelesseg; mi++) {
+            var mm = document.createElement('input');
+            mm.type = 'text';
+            mm.inputMode = 'numeric';
+            mm.maxLength = 1;
+            mm.className = 'fsz-maradek-mezo';
+            mm.title = L.feladatMaradek;
+            mm.setAttribute('aria-label', L.feladatMaradek);
+            mm.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+            });
+            maradek.appendChild(mm);
+        }
+        doboz.appendChild(maradek);
 
         doboz.appendChild(sor(f.a, ''));
         doboz.appendChild(sor(f.b, f.jel));
@@ -693,6 +719,47 @@
         doboz.appendChild(kesz);
 
         setTimeout(function () { mezok[mezok.length - 1].focus(); }, 60);
+        return doboz;
+    }
+
+    // EGY SZÁM BEÍRÁSA. Fejben számoláshoz ez való: a gyereknek tényleg ki
+    // kell számolnia, nem tud tippelni a felkínált lehetőségek közül.
+    function szamMezo(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-szam';
+
+        if (f.muvelet) {
+            var m = document.createElement('div');
+            m.className = 'fszam-muvelet';
+            m.textContent = f.muvelet + ' =';
+            doboz.appendChild(m);
+        }
+
+        var be = document.createElement('input');
+        be.type = 'text';
+        be.inputMode = 'numeric';
+        be.className = 'fszam-mezo';
+        be.setAttribute('aria-label', f.muvelet || '');
+        be.addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9-]/g, '').slice(0, 12);
+        });
+        be.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); kesz.click(); }
+        });
+        doboz.appendChild(be);
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var ertek = (be.value || '').trim();
+            if (!ertek) { be.focus(); return; }
+            feladatKuld(doboz, ertek);
+        });
+        doboz.appendChild(kesz);
+
+        setTimeout(function () { be.focus(); }, 60);
         return doboz;
     }
 
