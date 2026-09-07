@@ -638,9 +638,19 @@
             s.appendChild(j);
             var sz = String(szam).padStart(szelesseg, ' ');
             for (var i = 0; i < sz.length; i++) {
+                if (sz[i] === ' ') {
+                    // ÜRES HELYIÉRTÉK a kivonandó (vagy a rövidebb) sorban.
+                    // Nem hagyjuk üresen: halvány kockát rakunk oda, hogy a
+                    // gyerek lássa, ez az oszlop is számít – abból a jegyből
+                    // is „kivonunk", csak nullát.
+                    var u = document.createElement('span');
+                    u.className = 'fsz-jegy fsz-ures';
+                    s.appendChild(u);
+                    continue;
+                }
                 var c = document.createElement('span');
                 c.className = 'fsz-jegy';
-                c.textContent = sz[i] === ' ' ? '' : sz[i];
+                c.textContent = sz[i];
                 s.appendChild(c);
             }
             return s;
