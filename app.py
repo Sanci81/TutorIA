@@ -2440,7 +2440,51 @@ _FELADAT_JELEK = {"+": "+", "-": "−", "−": "−", "*": "×", "x": "×",
                   "×": "×", "/": "÷", ":": "÷", "÷": "÷"}
 
 
-def _feladat_parse(text: str) -> dict | None:
+def _szamolo_feladat(jel: str | None, a_nyers, b_nyers) -> dict | None:
+    """Oszlopos számolás leírása. A HELYES EREDMÉNYT MI SZÁMOLJUK KI.
+
+    Bármi gyanús (nem egész szám, negatív eredmény, maradékos osztás):
+    None, és akkor marad a sima kérdés — elszámolt géppel gyakoroltatni
+    rosszabb, mint nem gyakoroltatni.
+    """
+    try:
+        a_ert = int(a_nyers)
+        b_ert = int(b_nyers)
+    except Exception:
+        return None
+    if jel is None or not (0 <= a_ert <= 999999 and 0 <= b_ert <= 999999):
+        return None
+    if jel == "+":
+        ered = a_ert + b_ert
+    elif jel == "−":
+        ered = a_ert - b_ert
+    elif jel == "×":
+        ered = a_ert * b_ert
+    else:
+        if b_ert == 0 or a_ert % b_ert != 0:
+            return None
+        ered = a_ert // b_ert
+    if ered < 0:
+        return None
+    return {"tipus": "szamolo", "jel": jel, "a": a_ert, "b": b_ert,
+            "eredmeny": str(ered)}
+
+
+def _fejben_szamolhat(grade: int | None, es_tanterv: bool) -> bool:
+    """Elvárható-e, hogy a gyerek FEJBEN adja meg az eredményt?
+
+    Kisiskolás nem tud fejben négyjegyűeket összeadni — neki oszlopba kell
+    írnia, ahogy a füzetben is. Magyar tanterven a 7. osztálytól, spanyolon
+    az 5. évfolyamtól engedjük a fejben számolós mezőt; alatta minden
+    egyszerű műveletet OSZLOPOS táblaként adunk.
+    """
+    if grade is None:
+        return False
+    return grade >= 5 if es_tanterv else grade >= 7
+
+
+def _feladat_parse(text: str, *, grade: int | None = None,
+                   es_tanterv: bool = False) -> dict | None:
     """A <FELADAT> jelölőből épít egy ellenőrzött feladatleírást.
 
     A HELYES EREDMÉNYT MINDIG MI SZÁMOLJUK KI, sosem a nyelvi modell —
@@ -2460,28 +2504,9 @@ def _feladat_parse(text: str) -> dict | None:
     tipus = str(adat.get("tipus") or "").strip().lower()
 
     if tipus == "szamolo":
-        jel = _FELADAT_JELEK.get(str(adat.get("jel") or "").strip())
-        try:
-            a_ert = int(adat["a"])
-            b_ert = int(adat["b"])
-        except Exception:
-            return None
-        if jel is None or not (0 <= a_ert <= 999999 and 0 <= b_ert <= 999999):
-            return None
-        if jel == "+":
-            ered = a_ert + b_ert
-        elif jel == "−":
-            ered = a_ert - b_ert
-        elif jel == "×":
-            ered = a_ert * b_ert
-        else:
-            if b_ert == 0 or a_ert % b_ert != 0:
-                return None          # maradékos osztást nem kérünk beírósan
-            ered = a_ert // b_ert
-        if ered < 0:
-            return None              # negatív eredményt nem írunk oszlopba
-        return {"tipus": "szamolo", "jel": jel, "a": a_ert, "b": b_ert,
-                "eredmeny": str(ered)}
+        return _szamolo_feladat(
+            _FELADAT_JELEK.get(str(adat.get("jel") or "").strip()),
+            adat.get("a"), adat.get("b"))
 
     if tipus == "szam":
         # EGY SZÁMOT KELL KISZÁMOLNI ÉS BEÍRNI. Fejben számoláshoz ez való,
@@ -2494,9 +2519,55 @@ def _feladat_parse(text: str) -> dict | None:
                 muvelet = f"{int(adat['a'])} {jel} {int(adat['b'])}"
             except Exception:
                 muvelet = ""
+        # KISISKOLÁSNAK OSZLOPBA. Ha van igazi kétoperandusú művelet, és a
+        # gyerek évfolyamán még nem elvárható a fejben számolás, akkor a
+        # beírós mező helyett az oszlopos táblát adjuk. Nem a modellre
+        # bízzuk: az „fejben" szót bármikor leírhatja egy másodikosnak is.
+        if jel is not None and not _fejben_szamolhat(grade, es_tanterv):
+            oszlopos = _szamolo_feladat(jel, adat.get("a"), adat.get("b"))
+            if oszlopos:
+                return oszlopos
         if not muvelet:
             muvelet = str(adat.get("muvelet") or "").strip()[:40]
         return {"tipus": "szam", "muvelet": muvelet}
+
+    if tipus == "parosit":
+        # PÁROSÍTÁS: szó és jelentése, fogalom és meghatározása, ország és
+        # fővárosa, hangszer és csoportja. Nyelvórától történelemig jó.
+        parok = adat.get("parok")
+        if not isinstance(parok, list):
+            return None
+        tiszta = []
+        for par in parok[:6]:
+            if isinstance(par, (list, tuple)) and len(par) == 2:
+                bal, jobb = str(par[0]).strip()[:60], str(par[1]).strip()[:60]
+                if bal and jobb:
+                    tiszta.append([bal, jobb])
+        if len(tiszta) < 2:
+            return None
+        return {"tipus": "parosit", "parok": tiszta}
+
+    if tipus == "sorrend":
+        # SORBARENDEZÉS: események időrendje, mese lépései, mondatrészek,
+        # egy kísérlet menete, számok nagyság szerint.
+        elemek = adat.get("elemek")
+        if not isinstance(elemek, list):
+            return None
+        tiszta = [str(e).strip()[:80] for e in elemek if str(e).strip()][:6]
+        if len(tiszta) < 2:
+            return None
+        return {"tipus": "sorrend", "elemek": tiszta}
+
+    if tipus == "hianyzo":
+        # HIÁNYZÓ SZÓ a mondatban. A mondatban ___ jelöli a hiányt.
+        mondat = str(adat.get("mondat") or "").strip()[:200]
+        if "___" not in mondat:
+            return None
+        szavak = adat.get("szavak")
+        kinalat = []
+        if isinstance(szavak, list):
+            kinalat = [str(x).strip()[:40] for x in szavak if str(x).strip()][:6]
+        return {"tipus": "hianyzo", "mondat": mondat, "szavak": kinalat}
 
     if tipus == "valaszt":
         opciok = adat.get("opciok")
@@ -4715,6 +4786,22 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    Példák: melyik szó a helyes fordítás; melyik állat emlős; melyik jel
    mutatja a települést; melyik mondat helyesírása jó; melyik hangszer húros.
 
+4) PÁROSÍTÁS — szó és jelentése, fogalom és meghatározása, ország és
+   fővárosa, hangszer és csoportja, évszám és esemény:
+   <FELADAT>{"tipus":"parosit","parok":[["macska","cat"],["kutya","dog"]]}</FELADAT>
+   Kettő és hat pár. A jobb oldal keverve jelenik meg.
+
+5) SORBARENDEZÉS — események időrendje, mese lépései, egy kísérlet menete,
+   mondatrészek, számok nagyság szerint:
+   <FELADAT>{"tipus":"sorrend","elemek":["Tojás","Lárva","Báb","Lepke"]}</FELADAT>
+   HELYES sorrendben írd le őket; a program keverve mutatja a gyereknek.
+   Kettő és hat elem.
+
+6) HIÁNYZÓ SZÓ a mondatban — nyelvtan, helyesírás, idegen nyelv, fogalmak.
+   A hiányt HÁROM ALÁHÚZÁS jelöli:
+   <FELADAT>{"tipus":"hianyzo","mondat":"A Duna Magyarország leg___ folyója.","szavak":["hosszabb","hosszab"]}</FELADAT>
+   A "szavak" elhagyható — akkor a gyerek beírja.
+
 ⛔ SZÁMOLÁSNÁL SOHA NE ADJ VÁLASZGOMBOKAT.
 Ha a kérdés az, hogy MENNYI valami, a "szamolo" vagy a "szam" típust
 használd. A felkínált lehetőségekből a gyerek kitalálja az eredményt
@@ -4757,6 +4844,21 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    <FELADAT>{"tipus":"valaszt","opciok":["gato","perro","caballo"]}</FELADAT>
    Entre dos y seis opciones. La PREGUNTA va en el texto; en la marca van
    SOLO las opciones, y exactamente una debe ser correcta.
+
+4) EMPAREJAR — palabra y significado, concepto y definición, país y
+   capital, instrumento y familia, fecha y acontecimiento:
+   <FELADAT>{"tipus":"parosit","parok":[["gato","cat"],["perro","dog"]]}</FELADAT>
+   Entre dos y seis parejas. La columna derecha se muestra barajada.
+
+5) ORDENAR — orden cronológico, pasos de un cuento o de un experimento,
+   partes de la oración, números por tamaño:
+   <FELADAT>{"tipus":"sorrend","elemek":["Huevo","Larva","Crisálida","Mariposa"]}</FELADAT>
+   Escríbelos en el orden CORRECTO; el programa los baraja al mostrarlos.
+
+6) PALABRA QUE FALTA en la frase — gramática, ortografía, lengua
+   extranjera. El hueco se marca con TRES GUIONES BAJOS:
+   <FELADAT>{"tipus":"hianyzo","mondat":"El Nilo es el río más ___ de África.","szavak":["largo","largos"]}</FELADAT>
+   "szavak" es opcional: sin él, el niño lo escribe.
 
 ⛔ EN UN CÁLCULO NUNCA DES BOTONES. Si preguntas CUÁNTO es algo, usa
 "szamolo" o "szam". Con botones el niño adivina en vez de calcular.
@@ -7316,7 +7418,9 @@ def child_chat_send(child_id: int):
     _remember_fl_words(raw_reply)
     # A gyakorló feladatot a NYERS válaszból olvassuk ki, mielőtt a jelölők
     # eltűnnének a szövegből.
-    feladat = _feladat_parse(raw_reply)
+    feladat = _feladat_parse(
+        raw_reply, grade=grade_num,
+        es_tanterv=(_active_curriculum() or "HU").upper() == "ES")
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:

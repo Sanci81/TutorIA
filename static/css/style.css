@@ -3465,3 +3465,104 @@ body {
     background: #fff;
     box-shadow: 0 0 0 3px rgba(30, 122, 77, .16);
 }
+
+/* ── PÁROSÍTÁS ── */
+.feladat-parosit { display: block; }
+.fpar-racs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 18px;
+    margin-bottom: 10px;
+}
+.fpar-oszlop { display: flex; flex-direction: column; gap: 8px; }
+.fpar-elem {
+    padding: 10px 14px;
+    border: 2px solid #cfe0d6;
+    border-radius: 12px;
+    background: #f6fbf8;
+    color: #16241d;
+    font: inherit;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .14s, background .14s;
+}
+.fpar-elem:hover { background: #fff; }
+.fpar-aktiv {
+    border-color: #1e7a4d;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(30, 122, 77, .16);
+}
+.fpar-kesz { background: #fff; }
+
+/* ── SORBARENDEZÉS ── */
+.feladat-sorrend { display: block; }
+.fsor-lista { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+.fsor-elem {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border: 2px solid #cfe0d6;
+    border-radius: 12px;
+    background: #f6fbf8;
+    color: #16241d;
+    font: inherit;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+.fsor-elem:hover { background: #fff; }
+.fsor-szam {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    line-height: 24px;
+    text-align: center;
+    border: 2px solid #cfe0d6;
+    border-radius: 50%;
+    font-size: 14px;
+    color: #1e7a4d;
+}
+.fsor-valasztott { border-color: #1e7a4d; background: #fff; }
+.fsor-valasztott .fsor-szam { border-color: #1e7a4d; background: #eaf6ef; }
+
+/* ── HIÁNYZÓ SZÓ ── */
+.feladat-hianyzo { display: block; }
+.fhi-mondat {
+    font-size: 18px;
+    font-weight: 600;
+    color: #16241d;
+    line-height: 1.7;
+    margin-bottom: 12px;
+}
+.fhi-lyuk {
+    display: inline-block;
+    min-width: 84px;
+    padding: 0 8px;
+    margin: 0 2px;
+    border-bottom: 3px solid #1e7a4d;
+    color: #1e7a4d;
+    font-weight: 800;
+    text-align: center;
+}
+.fhi-szavak { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.fhi-valasztott { border-color: #1e7a4d; background: #fff; color: #1e7a4d; }
+.fhi-mezo {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e7a4d;
+    border: 2px solid #cfe0d6;
+    border-radius: 12px;
+    background: #f6fbf8;
+}
+.fhi-mezo:focus { outline: none; border-color: #1e7a4d; background: #fff; }
+
+@media (max-width: 560px) {
+    .fpar-racs { gap: 8px 10px; }
+    .fpar-elem, .fsor-elem { padding: 9px 11px; font-size: 14px; }
+}
