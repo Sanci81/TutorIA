@@ -855,9 +855,9 @@ TRANSLATIONS = {
     "csomag_perc_sima": {"hu": "tanulási perc", "es": "minutos de estudio"},
     "csomag_perc_egyszer": {"hu": "tanulási perc, egyszeri keret",
                             "es": "minutos de estudio, por una sola vez"},
-    "csomag_hang_mind": {"hu": "Hangos tanítás végig",
-                         "es": "Voz durante todo el tiempo"},
-    "csomag_hang_ebbol": {"hu": "Ebből hangos:", "es": "De ese tiempo, con voz:"},
+    "csomag_hang_mind": {"hu": "Hangos tanítás korlátlanul",
+                         "es": "Clases con voz sin límite"},
+    "csomag_hang_ebbol": {"hu": "Hangos tanítás:", "es": "Clases con voz:"},
     "csomag_nem_ujul": {"hu": "A keret nem újul meg", "es": "El tiempo no se renueva"},
     "csomag_ujraindul_elseje": {
         "hu": "A keret minden hónap 1-jén újraindul",
@@ -886,18 +886,16 @@ TRANSLATIONS = {
     # SZÁNDÉKOSAN őszinte és óvatos: nem állítjuk, hogy hivatalos tananyag.
     # Egy tanár észrevenné az eltérést, és joggal kifogásolná.
     "csomag_gyik_tananyag": {
-        "hu": "A magyar kerettanterv, illetve a spanyol LOMLOE témakörei "
-              "alapján állítjuk össze — de a feladatokat mi írjuk, és "
-              "eltérhetnek attól, amit a gyerek éppen az iskolában vesz. "
-              "Nem hivatalos tananyag, és nem helyettesíti az iskolát: "
-              "gyakorlásra és magyarázatra való. Ha hibát találsz, írj "
-              "nekünk, és javítjuk.",
-        "es": "Los preparamos siguiendo los temas del currículo húngaro y de "
-              "la LOMLOE española, pero los ejercicios los escribimos "
-              "nosotros y pueden diferir de lo que el niño está viendo en "
-              "clase. No es material oficial ni sustituye al colegio: sirve "
-              "para practicar y entender. Si encuentras un error, escríbenos "
-              "y lo corregimos.",
+        "hu": "A magyar kerettanterv témakörei alapján állítjuk össze — de a "
+              "feladatokat mi írjuk, és eltérhetnek attól, amit a gyerek "
+              "éppen az iskolában vesz. Nem hivatalos tananyag, és nem "
+              "helyettesíti az iskolát: gyakorlásra és magyarázatra való. "
+              "Ha hibát találsz, írj nekünk, és javítjuk.",
+        "es": "Los preparamos siguiendo los temas de la LOMLOE, pero los "
+              "ejercicios los escribimos nosotros y pueden diferir de lo que "
+              "el niño está viendo en clase. No es material oficial ni "
+              "sustituye al colegio: sirve para practicar y entender. Si "
+              "encuentras un error, escríbenos y lo corregimos.",
     },
     "csomag_havonta_gomb": {"hu": "havonta", "es": "mensual"},
 
@@ -946,12 +944,12 @@ TRANSLATIONS = {
     "csomag_kovetkezo_dij": {"hu": "A következő díj esedékessége",
                              "es": "Próximo cobro"},
     "csomag_mindben": {
-        "hu": "Minden csomagban: az évfolyam összes tantárgya · magyar vagy "
-              "spanyol tanterv · szülői kód · az adataitokat bármikor "
-              "letöltheted, a fiókot bármikor törölheted",
-        "es": "En todos los planes: todas las asignaturas del curso · "
-              "currículo húngaro o español · código para padres · puedes "
-              "descargar vuestros datos y borrar la cuenta cuando quieras",
+        "hu": "Minden csomagban: az évfolyam összes tantárgya · szülői kód · "
+              "az adataitokat bármikor letöltheted, a fiókot bármikor "
+              "törölheted",
+        "es": "En todos los planes: todas las asignaturas del curso · código "
+              "para padres · puedes descargar vuestros datos y borrar la "
+              "cuenta cuando quieras",
     },
     # A 14 nap JOGSZABÁLY (távollévők közötti szerződés), nem ígéret. Azért
     # elég önmagában, mert a szülő az ingyenes próbában már látta, mit vesz.
@@ -1053,13 +1051,12 @@ TRANSLATIONS = {
     "csomag_gyik_perc_cim": {"hu": "Mi az a tanulási perc?",
                              "es": "¿Qué es un minuto de estudio?"},
     "csomag_gyik_perc": {
-        "hu": "Csak az AKTÍV idő számít: az, amíg a gyerek ténylegesen "
-              "dolgozik — ír, válaszol, kattint vagy görget. Ha öt percig "
-              "nem történik semmi, vagy a gyerek átvált egy másik lapra, az "
-              "óra megáll, és csak akkor indul újra, amikor megint csinál "
-              "valamit. A nyitva felejtett beszélgetés tehát nem fogyasztja "
-              "a keretet. A keret a fordulónapon indul újra, és a maradék "
-              "nem vihető át.",
+        "hu": "Csak azt az időt számoljuk, amíg a gyerek ténylegesen dolgozik. "
+              "Az óra megáll, ha öt percig nem történik semmi, és azonnal "
+              "megáll, ha a gyerek átvált egy másik ablakra — a nyitva "
+              "felejtett beszélgetés tehát nem fogyaszt semmit. Amikor újra "
+              "ír vagy kattint, ott folytatódik, ahol abbamaradt. A keret a "
+              "fordulónapon indul újra, a maradék nem vihető át.",
         "es": "Solo cuenta el tiempo ACTIVO: mientras el niño realmente "
               "trabaja — escribe, responde, hace clic o se desplaza. Si "
               "durante cinco minutos no ocurre nada, o cambia a otra "

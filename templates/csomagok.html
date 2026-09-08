@@ -53,9 +53,38 @@
           justify-content:center;gap:26px}
   .lyukak i{width:9px;height:9px;border-radius:50%;background:#eef2ee;display:block}
 
+  /* ── LAPONKÉNTI SZÍN ──────────────────────────────────────────────
+     Eddig csak az ajánlott lap volt színes, a másik három fehéren
+     beleolvadt a háttérbe. Most mindegyiknek saját fejléc-sávja és
+     kerete van: a Próba semleges, az Alap a márka zöldje (ez az
+     ajánlott), a Pro ezüst, a Max arany. A törzs marad fehér, mert a
+     fémes háttéren a szöveg olvashatatlan lenne. */
+  .lap-fej-sav{position:absolute;top:0;left:0;right:0;height:88px;
+               border-radius:6px 18px 0 0;pointer-events:none}
+  .lap-free .lap-fej-sav{background:linear-gradient(160deg,#eef4f0,#fff)}
+  .lap-pro  .lap-fej-sav{background:linear-gradient(160deg,#dfe6ec,#fff)}
+  .lap-max  .lap-fej-sav{background:linear-gradient(160deg,#f6e7c2,#fff)}
+  .lap-free{border-top:4px solid #b9c9c0}
+  .lap-pro {border-top:4px solid #93a3b3}
+  .lap-max {border-top:4px solid #d4a017}
+  .lap-free .avatar-kor{border-color:#eef4f0}
+  .lap-pro  .avatar-kor{border-color:#e6ecf1}
+  .lap-max  .avatar-kor{border-color:#f6e7c2}
+  .lap-pro  .ar{color:#3f5568}
+  .lap-max  .ar{color:#8a6410}
+  .lap-pro  .gomb{background:#3f5568}
+  .lap-pro  .gomb:hover{background:#2e4052}
+  .lap-max  .gomb{background:#8a6410}
+  .lap-max  .gomb:hover{background:#6d4f0c}
+  .lap-pro  .jellemzok li::before{color:#3f5568}
+  .lap-max  .jellemzok li::before{color:#8a6410}
+  .lap-max  .ido i{background:#e8cf93}
+  .lap-pro  .ido i{background:#cdd8e1}
+
   .lap.ki{background:#0f3f2b;color:#fff;
           box-shadow:0 3px 0 #082a1c, 0 18px 38px rgba(15,63,43,.3)}
   .lap.ki::before{background:#3ddc97}
+  .lap.ki .lap-fej-sav{background:linear-gradient(160deg,rgba(61,220,151,.16),transparent)}
   .lap.ki .lyukak i{background:rgba(255,255,255,.16)}
   .lap.talalat{outline:3px solid #e8a33d;outline-offset:3px}
 
@@ -171,7 +200,8 @@
 
   <div class="kartyak">
     {% for cs in csomag_lista %}
-    <div class="lap{% if cs.ajanlott %} ki{% endif %}{% if cs.kulcs == sajat_csomag %} enyem{% endif %}">
+    <div class="lap lap-{{ cs.kulcs }}{% if cs.ajanlott %} ki{% endif %}{% if cs.kulcs == sajat_csomag %} enyem{% endif %}">
+      <span class="lap-fej-sav" aria-hidden="true"></span>
       <div class="lyukak"><i></i><i></i><i></i></div>
       <span class="avatar-kor">
         <img src="{{ url_for('avatar_kep', kulcs=csomag_avatar[cs.kulcs]) }}" alt="">

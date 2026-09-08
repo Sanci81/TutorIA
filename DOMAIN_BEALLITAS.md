@@ -11,20 +11,26 @@ domain a Railway-re mutasson. A sorrend számít: előbb a Railway.
 
 ## 1. Railway: a domain bejelentése
 
-1. Railway → a **TutorIA projekt** → kattints a webes service-re (az, amit
-   most a `web-production-d406e` cím szolgál ki, NEM a Postgres).
-2. **Settings** fül → görgess a **Networking** részhez.
-3. **Custom Domain** → **+ Add Domain**.
-4. Írd be: `tutoriacademia.com` → **Add**.
-5. Kattints megint a **+ Add Domain**-re, és írd be: `www.tutoriacademia.com`
-   → **Add**.
+> **A Hobby csomag elég hozzá**: service-enként 2 saját domain jár, és
+> nekünk pontosan ennyi kell (a fő cím és a www). Nem kell Pro csomag.
 
-A Railway most kiír egy **CNAME célt** — valami ilyet:
-`abc123.up.railway.app`. **Ezt a szöveget másold ki**, ez kell a következő
-lépéshez. Mindkét domainhez ugyanazt adja.
+1. Railway → **Projects** → nyisd meg a **TutorIA projektet**.
+2. Kattints a **webes service dobozára** (az, amit most a
+   `web-production-d406e` cím szolgál ki — NEM a Postgres).
+3. Fent a **Settings** fül.
+4. Görgess a **Networking** részhez, azon belül a **Public Networking**
+   dobozhoz. Ott van a **+ Custom Domain** gomb.
+5. Írd be: `tutoriacademia.com` → **Add**.
+6. Kattints megint a **+ Custom Domain**-re: `www.tutoriacademia.com` → **Add**.
 
-Amíg nincs kész a DNS, a Railway sárgán jelzi, hogy „Waiting for DNS" —
-ez normális.
+A Railway most **KÉT dolgot ad meg**, és MIND A KETTŐ kell:
+
+- egy **CNAME** cél — valami ilyen: `abc123.up.railway.app`
+- egy **TXT** rekord — ezzel igazolja, hogy tényleg a tiéd a domain
+
+**Írd ki vagy másold ki mind a kettőt**, ez kell a következő lépéshez.
+Csak a CNAME-mel nem fog működni: a Railway addig „Waiting for DNS"
+állapotban marad.
 
 ---
 
@@ -56,6 +62,18 @@ Mentés: **Save**.
 | TTL | Auto |
 
 Mentés: **Save**.
+
+**Harmadik rekord (az igazolás) — ezt ne hagyd ki:**
+
+| mező | mit írj be |
+|---|---|
+| Type | `TXT` |
+| Name | amit a Railway ír (gyakran `@` vagy `_railway`) |
+| Content | a Railway-től kapott TXT érték, szó szerint |
+| TTL | Auto |
+
+Mentés: **Save**. Ha a Railway mindkét domainhez külön TXT-t adott, akkor
+mind a kettőt vedd fel.
 
 > **Miért szürke a felhő?** A narancs (proxy) módban a Cloudflare a saját
 > tanúsítványát tenné a Railway elé, és a kettő könnyen összeakad —
