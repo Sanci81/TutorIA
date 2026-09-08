@@ -953,13 +953,13 @@ TRANSLATIONS = {
               "currículo húngaro o español · código para padres · puedes "
               "descargar vuestros datos y borrar la cuenta cuando quieras",
     },
+    # A 14 nap JOGSZABÁLY (távollévők közötti szerződés), nem ígéret. Azért
+    # elég önmagában, mert a szülő az ingyenes próbában már látta, mit vesz.
     "csomag_garancia": {
-        "hu": "14 napos elállási jog a jogszabály szerint, és azon felül 30 "
-              "napos pénzvisszafizetés tőlünk: ha nem válik be, írsz egy "
-              "levelet, és visszaküldjük a díjat – indoklás nélkül.",
-        "es": "14 días de derecho de desistimiento por ley y, además, 30 días "
-              "de devolución por nuestra parte: si no os convence, escríbenos "
-              "y te devolvemos el dinero, sin explicaciones.",
+        "hu": "Előbb kipróbálod, csak utána fizetsz — és az előfizetés után "
+              "is 14 napig meggondolhatod magad, indoklás nélkül.",
+        "es": "Primero lo probáis y solo después pagáis; y aun después tienes "
+              "14 días para cambiar de opinión, sin dar explicaciones.",
     },
     "notify_daily_csomag": {
         "hu": "A napi jelentés a Pro és a Max csomagban érhető el. A heti és "
