@@ -1,0 +1,94 @@
+<title>Születésnapi ablak – bezáró gomb</title>
+<style>
+  :root { --zold:#1f7a4d; --lap:#eef2ef; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+         background:var(--lap); color:#1c2b22; }
+  .fejlec { padding:18px 24px; background:#fff; border-bottom:1px solid #dfe6e1;
+            font-weight:700; font-size:15px; }
+  .fejlec span { font-weight:400; color:#5d6b63; }
+  .keret { padding:24px; }
+  .magyarazat { max-width:760px; margin:0 auto 20px; font-size:14px; line-height:1.6;
+                color:#41504a; }
+  .magyarazat b { color:#1c2b22; }
+
+  /* a színpad: a homályos háttér, ahogy az oldalon is látszik */
+  .szinpad { position:relative; max-width:760px; margin:0 auto; height:380px;
+             border-radius:16px; overflow:hidden;
+             background:linear-gradient(160deg,#8fae9d,#7ea08e); }
+  .szinpad::after { content:""; position:absolute; inset:0; background:rgba(0,0,0,.45); }
+
+  .kartya { position:absolute; inset:0; margin:auto; width:min(420px,88%); height:max-content;
+            background:#fff; border-radius:24px; padding:2rem 3rem; text-align:center;
+            box-shadow:0 12px 40px rgba(0,0,0,.25); z-index:2; }
+  .emoji { font-size:3rem; margin-bottom:.5rem; }
+  .kartya h2 { font-size:1.5rem; margin:.5rem 0; color:#222; }
+  .kartya p { font-size:1rem; color:#666; margin:0; }
+
+  /* EZ AZ ÚJ RÉSZ */
+  .zaro { position:absolute; top:10px; right:14px;
+          width:36px; height:36px; border:0; border-radius:50%;
+          background:transparent; color:#8a938e; font-size:22px; line-height:1;
+          cursor:pointer; transition:background .15s, color .15s; }
+  .zaro:hover, .zaro:focus-visible { background:#f0f2f1; color:#3a423e; outline:none; }
+  .zaro:focus-visible { box-shadow:0 0 0 3px rgba(31,122,77,.35); }
+
+  .jelolo { position:absolute; z-index:3; font-size:12px; font-weight:700;
+            color:#fff; background:#c0392b; padding:3px 9px; border-radius:99px;
+            box-shadow:0 2px 8px rgba(0,0,0,.3); }
+  .nyil { position:absolute; z-index:3; height:2px; background:#c0392b; }
+
+  .lab { max-width:760px; margin:20px auto 0; font-size:13.5px; line-height:1.65;
+         color:#41504a; }
+  .ujra { display:inline-block; margin-top:14px; font-size:13px; padding:7px 14px;
+          border:1px solid #c3cec8; border-radius:8px; background:#fff; cursor:pointer; }
+</style>
+
+<div class="fejlec">TutorIA · minta <span>— ez csak előnézet, az oldal még nem változott</span></div>
+
+<div class="keret">
+  <p class="magyarazat">
+    Ez az az ablak, ami a főoldalon feljön. <b>Semmi más nem változik rajta</b> — ugyanaz a
+    fehér kártya, ugyanaz a szöveg, ugyanúgy magától eltűnik 5 másodperc után. Egyetlen
+    dolog kerül bele: egy <b>bezáró gomb a jobb felső sarokban</b>, hogy ne kelljen megvárni.
+  </p>
+
+  <div class="szinpad">
+    <div class="kartya">
+      <button class="zaro" id="x" aria-label="Bezárás" title="Bezárás">✕</button>
+      <div class="emoji">🎉🎂</div>
+      <h2>Boldog születésnapot, Vigh Sándor György! 🎈</h2>
+      <p>A TutorIA csapata sok boldogságot kíván!</p>
+    </div>
+    <div class="jelolo" style="top:58px; right:34px;">ez az új</div>
+  </div>
+
+  <div style="text-align:center">
+    <button class="ujra" id="ujra">Mutasd újra</button>
+  </div>
+
+  <p class="lab">
+    Próbáld ki: kattints az ✕-re, és az ablak eltűnik. A gomb halványszürke, hogy ne vonja
+    el a figyelmet az ünneplésről, de ránézésre látszik, hogy kattintható — ha fölé viszed
+    az egeret, besötétedik.
+  </p>
+  <p class="lab">
+    A billentyűzet is működik majd: <b>Esc</b> szintén bezárja. Ez azoknak számít, akik nem
+    egérrel dolgoznak, és semmibe nem kerül.
+  </p>
+</div>
+
+<script>
+  const kartya = document.querySelector('.szinpad');
+  document.getElementById('x').onclick = () => {
+    kartya.querySelector('.kartya').style.transition = 'opacity .35s, transform .35s';
+    kartya.querySelector('.kartya').style.opacity = '0';
+    kartya.querySelector('.kartya').style.transform = 'scale(.96)';
+    kartya.querySelector('.jelolo').style.opacity = '0';
+  };
+  document.getElementById('ujra').onclick = () => {
+    const k = kartya.querySelector('.kartya');
+    k.style.opacity = '1'; k.style.transform = 'none';
+    kartya.querySelector('.jelolo').style.opacity = '1';
+  };
+</script>

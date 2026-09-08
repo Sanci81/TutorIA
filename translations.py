@@ -566,7 +566,22 @@ TRANSLATIONS = {
         "es": "Recibirá en un solo archivo todo lo que guardamos sobre usted "
               "y sus hijos, incluidas las conversaciones.",
     },
-    "account_export_btn": {"hu": "Letöltés", "es": "Descargar"},
+    "account_export_btn": {"hu": "Letöltés (JSON)", "es": "Descargar (JSON)"},
+    "account_export_pdf_btn": {"hu": "Letöltés PDF-ben", "es": "Descargar en PDF"},
+    "account_export_formatum": {
+        "hu": "A PDF-et bármelyik gépen meg tudod nyitni. A JSON gépi "
+              "formátum: akkor kell, ha az adatokat egy másik szolgáltatásba "
+              "szeretnéd átvinni.",
+        "es": "El PDF se puede abrir en cualquier ordenador. El JSON es un "
+              "formato técnico: sirve para trasladar los datos a otro "
+              "servicio.",
+    },
+    "account_export_pdf_hiba": {
+        "hu": "A PDF most nem készült el. Az adataidat a JSON gombbal "
+              "ugyanúgy le tudod tölteni.",
+        "es": "Ahora no se ha podido crear el PDF. Puede descargar sus datos "
+              "igualmente con el botón JSON.",
+    },
     "account_delete_title": {"hu": "A fiók törlése", "es": "Borrar la cuenta"},
     "account_delete_warning": {
         "hu": "Ez végleges. A gyerekeid haladása, eredményei, érméi és "
@@ -815,6 +830,262 @@ TRANSLATIONS = {
                           "es": "Usado este mes"},
     "csomag_maradek": {"hu": "Hátralévő idő", "es": "Tiempo restante"},
     "csomag_perc": {"hu": "perc", "es": "min"},
+
+    # ── AZ ELŐFIZETÉS OLDAL ──────────────────────────────────────────────
+    "csomag_oldal_cim": {"hu": "Csomagok és árak", "es": "Planes y precios"},
+    "csomag_oldal_bevezeto": {
+        "hu": "Egy tanulási perc kerül pénzbe, nem a gyerekek száma. Ezért a "
+              "csomagok között az az egy különbség, hogy mennyi időt "
+              "taníthat a program – a keretet a család közösen használja.",
+        "es": "Lo que cuesta es el minuto de estudio, no el número de hijos. "
+              "Por eso la única diferencia entre los planes es cuánto tiempo "
+              "puede enseñar el programa: el tiempo lo comparte la familia.",
+    },
+    "csomag_jelenlegi": {"hu": "A csomagod", "es": "Tu plan"},
+    "csomag_ajanlott": {"hu": "Ezt ajánljuk", "es": "Recomendado"},
+    "csomag_ho": {"hu": "hó", "es": "mes"},
+    "csomag_evente": {"hu": "Egy évre előre", "es": "Pago anual"},
+    "csomag_ingyen": {"hu": "Ingyenes", "es": "Gratis"},
+    "csomag_ingyen_alatt": {
+        "hu": "Kipróbálásra. Bankkártya nem kell hozzá.",
+        "es": "Para probarlo. No hace falta tarjeta.",
+    },
+    # A jellemzők EGYSÉGES szerkezetűek minden csomagnál: mennyi idő,
+    # mennyi belőle hangos, hány profil. Ha az egyiknél kiírjuk és a
+    # másiknál nem, a szülő joggal érzi félrevezetőnek.
+    "csomag_havonta": {"hu": "Havonta", "es": "Al mes"},
+    "csomag_perc_sima": {"hu": "tanulási perc", "es": "minutos de estudio"},
+    "csomag_perc_egyszer": {"hu": "tanulási perc, egyszeri keret",
+                            "es": "minutos de estudio, por una sola vez"},
+    "csomag_hang_mind": {
+        "hu": "Hangos tanítás végig: a tanár felolvassa a magyarázatot, és a "
+              "gyerek beszélve is válaszolhat neki",
+        "es": "Voz durante todo el tiempo: el profesor lee la explicación en "
+              "voz alta y el niño puede contestarle hablando",
+    },
+    "csomag_hang_ebbol": {"hu": "Ebből hangos tanítás:",
+                          "es": "De ese tiempo, con voz:"},
+    "csomag_nem_ujul": {"hu": "A keret nem újul meg", "es": "El tiempo no se renueva"},
+    "csomag_ujraindul_elseje": {
+        "hu": "A keret minden hónap 1-jén újraindul",
+        "es": "El tiempo se renueva el día 1 de cada mes",
+    },
+    "csomag_kb_napi": {"hu": "≈ napi", "es": "≈ al día"},
+    "csomag_kb_ora": {"hu": "vagy heti", "es": "o a la semana"},
+    "csomag_tanora": {"hu": "tanóra", "es": "clases"},
+    "csomag_megtakaritas": {"hu": "Megtakarítás", "es": "Ahorro"},
+    "csomag_evente_gomb": {"hu": "évente", "es": "anual"},
+    "csomag_ev": {"hu": "év", "es": "año"},
+    "csomag_havi_alatt": {
+        "hu": "Havonta fizetve, bármikor lemondható.",
+        "es": "Pago mensual, cancelable cuando quieras.",
+    },
+    "csomag_eves_alatt": {"hu": "Egy évre előre, ez havonta",
+                          "es": "Un año por adelantado; al mes sale a"},
+    "csomag_evesre_valtva": {
+        "hu": "Évesre váltva megspórolsz",
+        "es": "Pagando al año te ahorras",
+    },
+    "csomag_gyik_tananyag_cim": {
+        "hu": "Honnan van a tananyag?",
+        "es": "¿De dónde sale el contenido?",
+    },
+    # SZÁNDÉKOSAN őszinte és óvatos: nem állítjuk, hogy hivatalos tananyag.
+    # Egy tanár észrevenné az eltérést, és joggal kifogásolná.
+    "csomag_gyik_tananyag": {
+        "hu": "A feladatokat mi állítjuk össze, a magyar és a spanyol "
+              "iskolákban szokásos évfolyam-témakörök alapján. Ez nem "
+              "hivatalos tananyag, és nem helyettesíti az iskolát: gyakorlásra "
+              "és magyarázatra való. Ha valamit hibásnak találsz, írj nekünk, "
+              "és javítjuk.",
+        "es": "Los ejercicios los preparamos nosotros, siguiendo los temas "
+              "habituales de cada curso en los colegios húngaros y españoles. "
+              "No es material oficial ni sustituye al colegio: sirve para "
+              "practicar y entender. Si encuentras un error, escríbenos y lo "
+              "corregimos.",
+    },
+    "csomag_havonta_gomb": {"hu": "havonta", "es": "mensual"},
+
+    # ── „Melyik csomag kell nekünk?" segéd ───────────────────────────────
+    "csomag_segito_cim": {"hu": "Melyik csomag kell nektek?",
+                          "es": "¿Qué plan necesitáis?"},
+    "csomag_segito_leiras": {
+        "hu": "Állítsd be, hányan tanulnak és mennyit — megmutatjuk, melyik "
+              "csomag elég hozzá. Heti öt tanulónappal számolunk.",
+        "es": "Indica cuántos estudian y cuánto tiempo: te mostramos qué plan "
+              "os basta. Calculamos con cinco días de estudio a la semana.",
+    },
+    "csomag_segito_gyerek": {"hu": "Hány gyerek tanul?", "es": "¿Cuántos niños estudian?"},
+    "csomag_segito_perc": {"hu": "Naponta hány percet, fejenként?",
+                           "es": "¿Cuántos minutos al día, cada uno?"},
+    "csomag_segito_eredmeny": {"hu": "Ez havonta", "es": "Eso son al mes"},
+    "csomag_segito_ajanlat": {"hu": "Ehhez ez a csomag elég:",
+                              "es": "Para eso basta este plan:"},
+    "csomag_segito_tul_sok": {
+        "hu": "Ennyi időhöz a Max csomag sem elég — írj nekünk, és megoldjuk.",
+        "es": "Para tanto tiempo ni el plan Max basta: escríbenos y lo vemos.",
+    },
+    "csomag_valto_havi": {"hu": "Havonta", "es": "Mensual"},
+    "csomag_valto_eves": {"hu": "Évente", "es": "Anual"},
+    "csomag_valto_havi_info": {
+        "hu": "Havi fizetés, bármikor lemondható.",
+        "es": "Pago mensual, se puede cancelar cuando quieras.",
+    },
+    "csomag_valto_eves_info": {
+        "hu": "Évente fizetve két hónapot megspórolsz.",
+        "es": "Pagando al año te ahorras dos meses.",
+    },
+    "csomag_havonta_fizetve": {
+        "hu": "Minden hónapban ugyanazon a napon.",
+        "es": "El mismo día de cada mes.",
+    },
+    "csomag_evente_fizetve": {
+        "hu": "Évente egyszer, összesen",
+        "es": "Una vez al año, en total",
+    },
+    "csomag_egyszeri_info": {
+        "hu": "Ez egyszeri próbakeret – nem indul újra a hónap fordulóján.",
+        "es": "Es un tiempo de prueba único: no se renueva cada mes.",
+    },
+    "csomag_ujraindul": {"hu": "A kereted újraindul", "es": "Tu tiempo se renueva"},
+    "csomag_kovetkezo_dij": {"hu": "A következő díj esedékessége",
+                             "es": "Próximo cobro"},
+    "csomag_garancia": {
+        "hu": "30 napos pénzvisszafizetési garancia. Ha nem válik be, "
+              "írsz egy levelet, és visszaküldjük a díjat – indoklás nélkül.",
+        "es": "Garantía de devolución de 30 días. Si no os convence, "
+              "escríbenos y te devolvemos el dinero, sin explicaciones.",
+    },
+    "notify_daily_csomag": {
+        "hu": "A napi jelentés a Pro és a Max csomagban érhető el. A heti és "
+              "a havi minden csomagban jár.",
+        "es": "El informe diario está disponible en los planes Pro y Max. El "
+              "semanal y el mensual van incluidos en todos.",
+    },
+    "csomag_napi_jelentes": {"hu": "Napi haladási jelentés",
+                             "es": "Informe diario de progreso"},
+    "csomag_heti_jelentes": {"hu": "Heti és havi jelentés",
+                             "es": "Informe semanal y mensual"},
+    "csomag_gyik_mikor_cim": {"hu": "Mikor vonjátok le a díjat?",
+                              "es": "¿Cuándo se cobra?"},
+    "csomag_gyik_mikor": {
+        "hu": "Havi előfizetésnél minden hónapban azon a napon, amelyiken "
+              "előfizettél; évesnél évente egyszer, ugyanazon a napon. A "
+              "pontos dátumot mindig látod a Fiókom oldalon, és a levonás "
+              "előtt néhány nappal e-mailben is szólunk. Lemondás után nincs "
+              "több levonás.",
+        "es": "En la suscripción mensual, el mismo día de cada mes en que te "
+              "diste de alta; en la anual, una vez al año en esa misma fecha. "
+              "La fecha exacta la ves siempre en Mi cuenta, y te avisamos por "
+              "correo unos días antes del cobro. Tras cancelar no hay más cobros.",
+    },
+    "csomag_profil": {"hu": "gyerekprofil", "es": "perfiles de niño"},
+    "csomag_minden_tantargy": {
+        "hu": "Az évfolyam összes tantárgya: matematika, anyanyelv, "
+              "természettudomány, történelem, idegen nyelv",
+        "es": "Todas las asignaturas del curso: matemáticas, lengua, ciencias, "
+              "historia e idioma extranjero",
+    },
+    # SZÁNDÉKOSAN nem írjuk, hogy „hivatalos kerettanterv": a tananyagunk a
+    # témakörök alapján készült, de eltérhet. Egy tanár észrevenné, és joggal
+    # kifogásolná – a félrevezető állítás jogi kockázat is.
+    "csomag_tananyag": {
+        "hu": "A feladatok a gyerek évfolyamának szokásos témakörei szerint "
+              "haladnak, a saját tempójában",
+        "es": "Los ejercicios siguen los temas habituales del curso del niño, "
+              "a su propio ritmo",
+    },
+    "csomag_kartyak": {
+        "hu": "Tudáskártyák és gyűjtőalbum: a jó válaszokért pont jár, abból "
+              "kártyacsomagot lehet bontani",
+        "es": "Cartas de conocimiento y álbum: las respuestas correctas dan "
+              "puntos, y con ellos se abren sobres de cartas",
+    },
+    "csomag_pin": {
+        "hu": "Szülői kód: a gyerek nem tud kilépni és nem írhat át beállítást",
+        "es": "Código para padres: el niño no puede salir ni cambiar ajustes",
+    },
+    "csomag_adatok": {
+        "hu": "Az adataitokat bármikor letöltheted, a fiókot bármikor törölheted",
+        "es": "Puedes descargar vuestros datos y borrar la cuenta cuando quieras",
+    },
+    "csomag_ket_tanterv": {"hu": "Magyar és spanyol tanterv",
+                           "es": "Currículo húngaro y español"},
+    "csomag_ez_a_tied": {"hu": "Ez a csomagod", "es": "Es tu plan"},
+    "csomag_ingyen_gomb": {"hu": "Kipróbálom", "es": "Probar"},
+    "csomag_elofizetek": {"hu": "Előfizetek", "es": "Suscribirme"},
+    "csomag_regisztralok": {"hu": "Regisztrálok", "es": "Registrarme"},
+    "csomag_erdekel_gomb": {"hu": "Szólj, amikor indul",
+                            "es": "Avísame cuando empiece"},
+    "csomag_erdekel_mar": {"hu": "Szólunk, amint indul",
+                           "es": "Te avisaremos al empezar"},
+    "csomag_most_nem_koszonjuk": {
+        "hu": "Rendben, nem kérdezzük többet. Ha meggondolod magad, az "
+              "Előfizetés menüpont mindig ott van.",
+        "es": "De acuerdo, no volveremos a preguntar. Si cambias de idea, "
+              "el menú Suscripción sigue ahí.",
+    },
+    "keret_vege_cim": {
+        "hu": "Elfogyott az ingyenes idő",
+        "es": "Se ha agotado el tiempo gratuito",
+    },
+    "keret_vege_szoveg": {
+        "hu": "A gyerekeid fiókja, gyűjteménye és minden eddigi eredménye "
+              "megmarad — csak új tanulás nem indul. Ha szeretnétek "
+              "folytatni, nézd meg a csomagokat.",
+        "es": "Las cuentas de tus hijos, su colección y todos sus resultados "
+              "se mantienen; solo no se pueden empezar clases nuevas. Si "
+              "queréis continuar, mira los planes.",
+    },
+    "keret_vege_megnezem": {"hu": "Megnézem a csomagokat", "es": "Ver los planes"},
+    "keret_vege_most_nem": {"hu": "Most nem", "es": "Ahora no"},
+    "csomag_erdekel_koszonjuk": {
+        "hu": "Köszönjük! Írunk, amint elindul az előfizetés. Addig minden "
+              "marad a régiben.",
+        "es": "¡Gracias! Te escribiremos en cuanto empiecen las "
+              "suscripciones. Hasta entonces no cambia nada.",
+    },
+    "csomag_keret_elfogyott_szulo": {
+        "hu": "A havi idő elfogyott. A jövő hónap elsején magától újraindul.",
+        "es": "El tiempo de este mes se ha agotado. Se reinicia el día uno.",
+    },
+    "csomag_profil_betelt": {
+        "hu": "Ebben a csomagban {db} gyerekprofil hozható létre.",
+        "es": "Este plan permite crear {db} perfiles de niño.",
+    },
+    "csomag_gyik_perc_cim": {"hu": "Mi az a tanulási perc?",
+                             "es": "¿Qué es un minuto de estudio?"},
+    "csomag_gyik_perc": {
+        "hu": "Az az idő, amíg a gyerek ténylegesen tanul a programmal. Ha "
+              "közben elmegy uzsonnázni, az nem számít bele. A keret a "
+              "hónap első napján újraindul, és a maradék nem vihető át – "
+              "cserébe nem is kell előre megtippelni, mennyit fogtok tanulni.",
+        "es": "El tiempo que el niño está realmente estudiando con el "
+              "programa. Si se levanta a merendar, eso no cuenta. El tiempo "
+              "se reinicia el día uno de cada mes y no se acumula.",
+    },
+    "csomag_gyik_profil_cim": {"hu": "Több gyereknek külön kell fizetni?",
+                               "es": "¿Hay que pagar por cada hijo?"},
+    "csomag_gyik_profil": {
+        "hu": "Nem. Egy profil létrehozása ingyen van, és a havi keretet a "
+              "testvérek együtt használják. Ha ketten tanulnak, gyorsabban "
+              "fogy – ezért érdemes olyan csomagot választani, amiben "
+              "mindannyiuknak jut idő.",
+        "es": "No. Crear un perfil es gratis y los hermanos comparten el "
+              "tiempo mensual. Si estudian dos, se gasta más rápido: por eso "
+              "conviene elegir un plan con tiempo para todos.",
+    },
+    "csomag_gyik_valtas_cim": {"hu": "Lehet váltani vagy lemondani?",
+                               "es": "¿Se puede cambiar o cancelar?"},
+    "csomag_gyik_valtas": {
+        "hu": "Bármikor, egy kattintással, indoklás nélkül. Lemondás után a "
+              "hónap végéig marad a csomagod, utána a gyerekeid adatai és "
+              "gyűjteményük megmaradnak – csak a havi idő lesz kevesebb.",
+        "es": "Cuando quieras, con un clic y sin dar explicaciones. Al "
+              "cancelar mantienes el plan hasta fin de mes; después los "
+              "datos y la colección de tus hijos siguen ahí, solo tendrás "
+              "menos tiempo al mes.",
+    },
 
     # ── GYAKORLÓ FELADAT A BESZÉLGETÉSBEN ────────────────────────────────
     "feladat_kesz": {"hu": "Kész", "es": "Listo"},

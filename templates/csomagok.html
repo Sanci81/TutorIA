@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('csomag_oldal_cim') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+{# Az árak MINDENKINEK látszanak, belépés nélkül is: a szülő az árat akarja
+   megnézni, mielőtt regisztrál. A gyerek viszont soha nem látja ezt az
+   oldalt – neki nem adunk el semmit.
+
+   A LAP KÉPE: minden csomag egy kilyukasztott füzetlap, margóvonallal, a
+   tetején egy avatarral a saját készletünkből. Nem véletlen: ezt a gyerek
+   is felismeri, és nem hasonlít semelyik másik előfizetős oldalra. #}
+<style>
+  .csom{max-width:1140px;margin:0 auto;padding:26px 16px 70px}
+  .csom h1{font-size:2.15rem;margin:0 0 10px;text-align:center;color:#0f3f2b;
+           letter-spacing:-.5px}
+  .csom .bevezeto{text-align:center;color:#4b5563;max-width:62ch;margin:0 auto 26px;
+                  line-height:1.7;font-size:1.02rem}
+
+  /* „Melyik csomag kell nekünk?" – csúszkás segítő. */
+  .segito{max-width:760px;margin:0 auto 44px;background:#f4f9f6;border:1px solid #cfe5da;
+          border-radius:16px;padding:22px 24px}
+  .segito h2{font-size:1.12rem;margin:0 0 6px;color:#0f3f2b}
+  .segito-leiras{color:#4b5563;font-size:.92rem;line-height:1.6;margin:0 0 16px}
+  .segito-racs{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .segito-mezo{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center}
+  .segito-mezo span{grid-column:1 / -1;font-size:.9rem;color:#374151;font-weight:600}
+  .segito-mezo b{font-size:1.15rem;color:#0f3f2b;min-width:2.4em;text-align:right;
+                 font-variant-numeric:tabular-nums}
+  .segito-mezo input[type=range]{width:100%;accent-color:#1e7a4d}
+  .segito-eredmeny{margin:16px 0 0;font-size:1rem;color:#14532d;line-height:1.6}
+  .segito-eredmeny b{font-size:1.2rem}
+  .segito-eredmeny .ajanl{display:inline-block;background:#1e7a4d;color:#fff;font-weight:800;
+                          padding:2px 12px;border-radius:99px;margin-left:4px}
+
+  .csom .sajat{max-width:700px;margin:0 auto 34px;background:#eef6f1;border:1px solid #bcdccb;
+               border-radius:14px;padding:16px 20px;color:#14532d;line-height:1.7}
+  .csom .sajat b{color:#166534}
+  .csom .sajat .kiemelt-sor{display:block;margin-top:6px;color:#8a4b0d}
+
+  /* ── A FÜZETLAPOK ─────────────────────────────────────────────────── */
+  .kartyak{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+           gap:18px;align-items:stretch;padding-top:46px}
+  .lap{background:#fff;border-radius:6px 18px 18px 6px;padding:56px 22px 24px 30px;
+       position:relative;display:flex;flex-direction:column;
+       box-shadow:0 3px 0 #e4e9e5, 0 12px 28px rgba(15,63,43,.09);
+       transition:transform .18s, box-shadow .18s}
+  .lap:hover{transform:translateY(-3px);box-shadow:0 3px 0 #e4e9e5,0 18px 36px rgba(15,63,43,.14)}
+  /* A füzet piros margóvonala – ettől lesz lap, nem doboz. */
+  .lap::before{content:"";position:absolute;left:15px;top:0;bottom:0;width:2px;
+               background:#f0b8b0}
+  .lyukak{position:absolute;top:14px;left:30px;right:16px;display:flex;
+          justify-content:center;gap:26px}
+  .lyukak i{width:9px;height:9px;border-radius:50%;background:#eef2ee;display:block}
+
+  .lap.ki{background:#0f3f2b;color:#fff;
+          box-shadow:0 3px 0 #082a1c, 0 18px 38px rgba(15,63,43,.3)}
+  .lap.ki::before{background:#3ddc97}
+  .lap.ki .lyukak i{background:rgba(255,255,255,.16)}
+  .lap.talalat{outline:3px solid #e8a33d;outline-offset:3px}
+
+  /* Az avatar kilóg a lap tetején – a gyerek is felismeri. */
+  .avatar-kor{position:absolute;top:-42px;left:50%;transform:translateX(-50%);
+              width:84px;height:84px;border-radius:50%;background:#f4f9f6;
+              border:4px solid #fff;overflow:hidden;
+              box-shadow:0 6px 16px rgba(15,63,43,.18)}
+  .lap.ki .avatar-kor{border-color:#0f3f2b;background:#dff5ea}
+  .avatar-kor img{width:100%;height:100%;display:block}
+
+  /* A címke az avatar ALATT áll, nem mellette – különben rátakar. A
+     többi lapon üres helyfoglaló tartja egy vonalban a neveket. */
+  .cimke-hely{display:block;min-height:24px;text-align:center;margin:0 0 2px}
+  .cimke{display:inline-block;background:#e8a33d;color:#3b2a06;
+         font-size:.68rem;font-weight:900;padding:4px 12px;border-radius:99px;
+         transform:rotate(-2deg);box-shadow:0 3px 8px rgba(232,163,61,.42);
+         letter-spacing:.4px;text-transform:uppercase;white-space:nowrap}
+
+  .lap h2{font-size:1.28rem;font-weight:800;color:#0f3f2b;margin:0 0 14px;text-align:center}
+  .lap{padding-top:52px}
+  .lap.ki h2{color:#fff}
+
+  /* Havi / éves váltó KÁRTYÁNKÉNT – a szülő ott nézi az árat. */
+  .ar-valto{display:flex;background:#eef2f0;border-radius:99px;padding:3px;gap:2px;
+            margin:0 0 12px}
+  .ar-valto button{flex:1;border:none;background:transparent;font:inherit;font-weight:700;
+                   color:#6b7280;padding:6px 8px;border-radius:99px;cursor:pointer;
+                   font-size:.78rem}
+  .ar-valto button.be{background:#fff;color:#0f3f2b;box-shadow:0 1px 3px rgba(15,63,43,.2)}
+  .lap.ki .ar-valto{background:rgba(255,255,255,.12)}
+  .lap.ki .ar-valto button{color:#9fc2b3}
+  .lap.ki .ar-valto button.be{background:#3ddc97;color:#08251a;box-shadow:none}
+
+  .ar{font-size:2.2rem;font-weight:800;color:#0f3f2b;line-height:1.05;margin:0;
+      letter-spacing:-1.5px;font-variant-numeric:tabular-nums}
+  .lap.ki .ar{color:#3ddc97}
+  .ar small{font-size:.8rem;font-weight:600;color:#8b9a92;letter-spacing:0}
+  .lap.ki .ar small{color:#9fc2b3}
+  .ar-alatt{color:#6b7280;font-size:.85rem;margin:6px 0 0;line-height:1.5;min-height:2.5em}
+  .lap.ki .ar-alatt{color:#c8ded4}
+  .megtakaritas{color:#166534;font-weight:800;font-size:.84rem;margin:2px 0 0;min-height:1.3em}
+  .lap.ki .megtakaritas{color:#3ddc97}
+
+  /* Az idő oszlopdiagramként – ránézésre látszik a különbség. */
+  .ido{display:flex;align-items:flex-end;gap:3px;height:36px;margin:18px 0 6px}
+  .ido i{width:6px;border-radius:2px;background:#cfe8dc;display:block}
+  .lap.ki .ido i{background:#3ddc97}
+  .ido-szoveg{font-size:.9rem;color:#0f3f2b;margin:0 0 4px;font-weight:800}
+  .lap.ki .ido-szoveg{color:#fff}
+  .ido-alatt{font-size:.82rem;color:#6b7280;margin:0 0 16px;font-weight:600}
+  .lap.ki .ido-alatt{color:#9fc2b3}
+
+  .jellemzok{list-style:none;padding:0;margin:0 0 20px;flex:1}
+  .jellemzok li{padding:8px 0 8px 23px;position:relative;color:#4b5b53;line-height:1.55;
+                font-size:.9rem;border-bottom:1px solid #f2f5f3}
+  .jellemzok li:last-child{border-bottom:0}
+  .jellemzok li::before{content:"✓";position:absolute;left:0;top:8px;color:#1e7a4d;
+                        font-weight:900}
+  .lap.ki .jellemzok li{color:#c8ded4;border-bottom-color:rgba(255,255,255,.09)}
+  .lap.ki .jellemzok li::before{color:#3ddc97}
+  .jellemzok li.nincs{color:#a8b3ad}
+  .jellemzok li.nincs::before{content:"–";color:#c9d2cc}
+
+  .csom .gomb{display:block;width:100%;text-align:center;background:#0f3f2b;color:#fff;
+              border:none;border-radius:11px;padding:13px 14px;font-size:.98rem;
+              font-weight:800;cursor:pointer;text-decoration:none;font-family:inherit;
+              transition:background .15s}
+  .csom .gomb:hover{background:#0a2f20}
+  .lap.ki .gomb{background:#3ddc97;color:#08251a}
+  .lap.ki .gomb:hover{background:#5ee6ab}
+  .csom .gomb.mar{background:#eef6f1;color:#166534;cursor:default;border:1px solid #bcdccb}
+  .lap.ki .gomb.mar{background:rgba(255,255,255,.14);color:#dff5ea;border:0}
+  .csom .gomb.enyem{background:#1e7a4d;cursor:default}
+
+  .garancia{max-width:700px;margin:38px auto 0;text-align:center;color:#166534;
+            background:#f4f9f6;border:1px solid #cfe5da;border-radius:12px;
+            padding:14px 20px;line-height:1.6;font-weight:600}
+  .magyarazat{max-width:70ch;margin:34px auto 0;color:#4b5563;line-height:1.75}
+  .magyarazat h3{font-size:1.05rem;color:#0f3f2b;margin:26px 0 6px}
+  .magyarazat p{margin:0 0 12px}
+
+  @media (max-width: 560px){
+    .csom h1{font-size:1.65rem}
+    .segito-racs{grid-template-columns:1fr}
+    .ar-alatt{min-height:0}
+  }
+</style>
+
+<div class="csom">
+  <h1>{{ t('csomag_oldal_cim') }}</h1>
+  <p class="bevezeto">{{ t('csomag_oldal_bevezeto') }}</p>
+
+  {# „MELYIK CSOMAG KELL NEKÜNK?" – a szülő nem percben gondolkodik, hanem
+     abban, hogy hány gyereke van és mennyit tanulnak naponta. #}
+  <div class="segito">
+    <h2>{{ t('csomag_segito_cim') }}</h2>
+    <p class="segito-leiras">{{ t('csomag_segito_leiras') }}</p>
+    <div class="segito-racs">
+      <label class="segito-mezo">
+        <span>{{ t('csomag_segito_gyerek') }}</span>
+        <input type="range" id="sg-gyerek" min="1" max="5" step="1" value="1">
+        <b id="sg-gyerek-ki">1</b>
+      </label>
+      <label class="segito-mezo">
+        <span>{{ t('csomag_segito_perc') }}</span>
+        <input type="range" id="sg-perc" min="5" max="60" step="5" value="15">
+        <b id="sg-perc-ki">15</b>
+      </label>
+    </div>
+    <p class="segito-eredmeny">
+      {{ t('csomag_segito_eredmeny') }} <b id="sg-osszes">—</b> {{ t('csomag_perc') }}.
+      <span id="sg-ajanlat"></span>
+    </p>
+  </div>
+
+  {% if keret %}
+  <div class="sajat">
+    {{ t('csomag_jelenlegi') }}: <b>{{ sajat_csomag_nev }}</b> —
+    {{ t('csomag_elhasznalt') }}: <b>{{ keret.elhasznalt }}</b> / {{ keret.keret }}
+    {{ t('csomag_perc') }}.
+    {% if keret.egyszeri %}
+      <span class="kiemelt-sor">{{ t('csomag_egyszeri_info') }}</span>
+    {% elif keret.ujraindul %}
+      <span class="kiemelt-sor">{{ t('csomag_ujraindul') }}:
+        <b>{{ keret.ujraindul.strftime('%Y. %m. %d.') }}</b></span>
+    {% endif %}
+    {% if keret.kovetkezo_dij %}
+      <span class="kiemelt-sor">{{ t('csomag_kovetkezo_dij') }}:
+        <b>{{ keret.kovetkezo_dij.strftime('%Y. %m. %d.') }}</b></span>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="kartyak">
+    {% for cs in csomag_lista %}
+    <div class="lap{% if cs.ajanlott %} ki{% endif %}{% if cs.kulcs == sajat_csomag %} enyem{% endif %}">
+      <div class="lyukak"><i></i><i></i><i></i></div>
+      <span class="avatar-kor">
+        <img src="{{ url_for('avatar_kep', kulcs=csomag_avatar[cs.kulcs]) }}" alt="">
+      </span>
+      <span class="cimke-hely">
+        {%- if cs.ajanlott %}<span class="cimke">{{ t('csomag_ajanlott') }}</span>{% endif -%}
+      </span>
+      <h2>{{ cs.nev }}</h2>
+
+      {% if cs.fizetos %}
+        {# A havi/éves váltó MINDEN LAPON ott van, mert a szülő itt nézi az
+           árat. Alapból a HAVI szám áll elöl, mert azt érti meg azonnal;
+           az éves lehetőség alatta, konkrét megtakarítással. #}
+        <div class="ar-valto" role="group">
+          <button type="button" class="be" data-mod="honap">{{ t('csomag_havonta_gomb') }}</button>
+          <button type="button" data-mod="ev">{{ t('csomag_evente_gomb') }}</button>
+        </div>
+        <p class="ar" data-ar
+           data-honap="{{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €<small> / {{ t('csomag_ho') }}</small>"
+           data-ev="{{ cs.ar_ev|int }} €<small> / {{ t('csomag_ev') }}</small>">
+          {{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €<small> / {{ t('csomag_ho') }}</small></p>
+        <p class="ar-alatt" data-alatt
+           data-honap="{{ t('csomag_havi_alatt') }}"
+           data-ev="{{ t('csomag_eves_alatt') }} {{ '%.2f'|format(cs.ar_ev_havonta)|replace('.', ',') }} € / {{ t('csomag_ho') }}">
+          {{ t('csomag_havi_alatt') }}</p>
+        <p class="megtakaritas" data-megt
+           data-honap="{{ t('csomag_evesre_valtva') }} {{ ((cs.ar_honap * 12) - cs.ar_ev)|round(0)|int }} €"
+           data-ev="{{ t('csomag_megtakaritas') }}: {{ ((cs.ar_honap * 12) - cs.ar_ev)|round(0)|int }} € / {{ t('csomag_ev') }}">
+          {{ t('csomag_evesre_valtva') }} {{ ((cs.ar_honap * 12) - cs.ar_ev)|round(0)|int }} €</p>
+      {% else %}
+        <p class="ar">{{ t('csomag_ingyen') }}</p>
+        <p class="ar-alatt">{{ t('csomag_ingyen_alatt') }}</p>
+        <p class="megtakaritas"></p>
+      {% endif %}
+
+      {# Az idő oszlopdiagramként: a magasság a csomag percéből jön, a
+         legnagyobb csomaghoz mérve. Ránézésre látszik a különbség. #}
+      <div class="ido">
+        {% set arany = (cs.havi_perc / max_perc * 100) %}
+        {% for k in [0.86, 1.0, 0.74, 0.94, 0.8] %}
+          <i style="height: {{ [ (arany * k)|round(0)|int, 4 ]|max }}%"></i>
+        {% endfor %}
+      </div>
+      {% if cs.egyszeri %}
+        <p class="ido-szoveg">{{ cs.havi_perc }} {{ t('csomag_perc_egyszer') }}</p>
+        <p class="ido-alatt">{{ t('csomag_nem_ujul') }}</p>
+      {% else %}
+        <p class="ido-szoveg">{{ t('csomag_havonta') }} {{ cs.havi_perc }}
+           {{ t('csomag_perc_sima') }}</p>
+        <p class="ido-alatt">{{ t('csomag_kb_napi') }}
+           {{ (cs.havi_perc / 21.5)|round(0)|int }} {{ t('csomag_perc') }} ·
+           {{ t('csomag_kb_ora') }} {{ (cs.havi_perc / 4.3 / 45)|round(1) }}
+           {{ t('csomag_tanora') }}</p>
+      {% endif %}
+
+      <ul class="jellemzok">
+        {% if cs.hangos_perc >= cs.havi_perc %}
+          <li>{{ t('csomag_hang_mind') }}</li>
+        {% else %}
+          <li>{{ t('csomag_hang_ebbol') }} {{ cs.hangos_perc }} {{ t('csomag_perc_sima') }}</li>
+        {% endif %}
+        <li>{{ cs.profil }} {{ t('csomag_profil') }}</li>
+        <li>{{ t('csomag_minden_tantargy') }}</li>
+        <li>{{ t('csomag_tananyag') }}</li>
+        {% if cs.napi_jelentes %}
+          <li>{{ t('csomag_napi_jelentes') }}</li>
+        {% else %}
+          <li>{{ t('csomag_heti_jelentes') }}</li>
+        {% endif %}
+        {% if cs.fizetos %}
+          <li>{{ t('csomag_kartyak') }}</li>
+        {% else %}
+          <li class="nincs">{{ t('csomag_kartyak') }}</li>
+        {% endif %}
+        <li>{{ t('csomag_pin') }}</li>
+        <li>{{ t('csomag_adatok') }}</li>
+      </ul>
+
+      {% if cs.kulcs == sajat_csomag %}
+        <span class="gomb enyem">{{ t('csomag_ez_a_tied') }}</span>
+      {% elif not cs.fizetos %}
+        <a class="gomb" href="{{ url_for('register') if not session.get('parent_id') else url_for('dashboard') }}">
+          {{ t('csomag_ingyen_gomb') }}</a>
+      {% elif fizetes_el %}
+        <a class="gomb" href="{{ url_for('fiok') }}">{{ t('csomag_elofizetek') }}</a>
+      {% elif session.get('parent_id') %}
+        {# Még nincs fizetés. Nem ígérünk semmit – csak eltároljuk, hogy ez
+           a szülő ezt a csomagot kérné. Ebből tudjuk meg, mikor indulhatunk. #}
+        {% if erdeklodes == cs.kulcs %}
+          <span class="gomb mar">{{ t('csomag_erdekel_mar') }}</span>
+        {% else %}
+        <form method="post" action="{{ url_for('csomag_erdekel') }}">
+          <input type="hidden" name="csomag" value="{{ cs.kulcs }}">
+          <button type="submit" class="gomb">{{ t('csomag_erdekel_gomb') }}</button>
+        </form>
+        {% endif %}
+      {% else %}
+        <a class="gomb" href="{{ url_for('register') }}">{{ t('csomag_regisztralok') }}</a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+
+  <p class="garancia">{{ t('csomag_garancia') }}</p>
+
+  <div class="magyarazat">
+    <h3>{{ t('csomag_gyik_perc_cim') }}</h3>
+    <p>{{ t('csomag_gyik_perc') }}</p>
+
+    <h3>{{ t('csomag_gyik_mikor_cim') }}</h3>
+    <p>{{ t('csomag_gyik_mikor') }}</p>
+
+    <h3>{{ t('csomag_gyik_profil_cim') }}</h3>
+    <p>{{ t('csomag_gyik_profil') }}</p>
+
+    <h3>{{ t('csomag_gyik_tananyag_cim') }}</h3>
+    <p>{{ t('csomag_gyik_tananyag') }}</p>
+
+    <h3>{{ t('csomag_gyik_valtas_cim') }}</h3>
+    <p>{{ t('csomag_gyik_valtas') }}</p>
+  </div>
+</div>
+
+<script>
+// ── Havi / éves váltó LAPONKÉNT ───────────────────────────────────────────
+// Az árakat a szerver írta a data- mezőkbe; itt csak átváltunk közöttük,
+// hogy a böngészőben ne legyen pénzügyi számolás, amit el lehet rontani.
+(function () {
+    document.querySelectorAll('.lap').forEach(function (lap) {
+        var gombok = lap.querySelectorAll('.ar-valto button');
+        if (!gombok.length) return;
+        var ar = lap.querySelector('[data-ar]');
+        var alatt = lap.querySelector('[data-alatt]');
+        var megt = lap.querySelector('[data-megt]');
+        gombok.forEach(function (g) {
+            g.addEventListener('click', function () {
+                var mod = g.dataset.mod;
+                gombok.forEach(function (x) { x.classList.toggle('be', x === g); });
+                if (ar) ar.innerHTML = ar.dataset[mod] || '';
+                if (alatt) alatt.textContent = alatt.dataset[mod] || '';
+                if (megt) megt.textContent = megt.dataset[mod] || '';
+            });
+        });
+    });
+})();
+
+// ── „Melyik csomag kell nekünk?" ──────────────────────────────────────────
+// Heti öt tanulónappal számolunk (≈ 21,5 nap havonta).
+(function () {
+    var PERCEK = {{ csomag_lista|map(attribute='havi_perc')|list|tojson }};
+    var NEVEK = {{ csomag_lista|map(attribute='nev')|list|tojson }};
+    var EGYSZERI = {{ csomag_lista|map(attribute='egyszeri')|list|tojson }};
+    var AJANLAT = {{ t('csomag_segito_ajanlat')|tojson }};
+    var TULSOK = {{ t('csomag_segito_tul_sok')|tojson }};
+
+    var gy = document.getElementById('sg-gyerek');
+    var pc = document.getElementById('sg-perc');
+    if (!gy || !pc) return;
+
+    function szamol() {
+        var gyerek = parseInt(gy.value, 10);
+        var perc = parseInt(pc.value, 10);
+        var havi = Math.round(gyerek * perc * 21.5);
+        document.getElementById('sg-gyerek-ki').textContent = gyerek;
+        document.getElementById('sg-perc-ki').textContent = perc;
+        document.getElementById('sg-osszes').textContent = havi;
+
+        // A legkisebb HAVI csomag, ami elég. Az egyszeri próba nem játszik.
+        var talalt = -1;
+        for (var i = 0; i < PERCEK.length; i++) {
+            if (!EGYSZERI[i] && PERCEK[i] >= havi) { talalt = i; break; }
+        }
+        var ki = document.getElementById('sg-ajanlat');
+        ki.innerHTML = talalt >= 0
+            ? AJANLAT + ' <span class="ajanl">' + NEVEK[talalt] + '</span>'
+            : TULSOK;
+
+        document.querySelectorAll('.lap').forEach(function (k, i) {
+            k.classList.toggle('talalat', i === talalt);
+        });
+    }
+
+    gy.addEventListener('input', szamol);
+    pc.addEventListener('input', szamol);
+    szamol();
+})();
+</script>
+{% endblock %}

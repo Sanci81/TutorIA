@@ -11,6 +11,36 @@
     <a class="btn btn-primary" href="{{ url_for('add_child') }}">{{ t('btn_add_child') }}</a>
 </section>
 
+{# ELFOGYOTT A KERET. Nem felugró ablak: az kizárja a szülőt abból, amit
+   éppen csinál, és tolakodó. Ez egy csendes kártya a lap tetején, két
+   válasszal — és a „Most nem" is válasz, azt is megszámoljuk. Ha egyszer
+   felelt, többé nem kérdezzük. #}
+{% if keret and keret.elfogyott and not erdeklodes %}
+<section class="keret-kartya">
+  <div class="keret-szoveg">
+    <h2>{{ t('keret_vege_cim') }}</h2>
+    <p>{{ t('keret_vege_szoveg') }}</p>
+  </div>
+  <div class="keret-gombok">
+    <a class="btn btn-primary" href="{{ url_for('csomagok_oldal') }}">{{ t('keret_vege_megnezem') }}</a>
+    <form method="post" action="{{ url_for('csomag_most_nem') }}">
+      <button type="submit" class="keret-nem">{{ t('keret_vege_most_nem') }}</button>
+    </form>
+  </div>
+</section>
+<style>
+  .keret-kartya{display:flex;flex-wrap:wrap;gap:18px;align-items:center;
+                justify-content:space-between;background:#fff8e6;
+                border:1px solid #f0d9a8;border-left:5px solid #e8a33d;
+                border-radius:12px;padding:18px 22px;margin:0 0 22px}
+  .keret-kartya h2{font-size:1.1rem;margin:0 0 4px;color:#7a4a08}
+  .keret-kartya p{margin:0;color:#6b5220;line-height:1.6;max-width:62ch}
+  .keret-gombok{display:flex;align-items:center;gap:14px}
+  .keret-nem{background:none;border:none;color:#8a6d33;text-decoration:underline;
+             cursor:pointer;font:inherit;font-size:.95rem;padding:6px}
+</style>
+{% endif %}
+
 {% if children and children|selectattr('needs_birth_date')|list|length > 0 %}
     <p class="flash flash-error" role="alert">{{ t('banner_birth_date_missing') }}</p>
 {% endif %}

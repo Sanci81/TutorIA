@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA árak — két irány</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#0b1220}
+  .jelolo{max-width:1180px;margin:0 auto;padding:34px 24px 10px;color:#93a4bd;
+          font-size:.82rem;letter-spacing:2.5px;text-transform:uppercase;font-weight:800}
+  .jelolo b{color:#fff;font-size:1.05rem;letter-spacing:0;text-transform:none;display:block;
+            margin-top:6px;font-weight:700}
+  .jelolo i{display:block;font-style:normal;color:#7d8ea8;font-size:.9rem;letter-spacing:0;
+            text-transform:none;font-weight:400;margin-top:4px;max-width:70ch;line-height:1.6}
+
+/* ══════════════ A VÁLTOZAT — „az idő a termék" ══════════════ */
+  .A{background:#0d1f19;padding:56px 24px 64px;position:relative;overflow:hidden}
+  .A::before{content:"";position:absolute;inset:-40% 30% auto -10%;height:70%;
+             background:radial-gradient(60% 60% at 50% 50%,rgba(61,220,151,.16),transparent 70%);
+             pointer-events:none}
+  .A-belso{max-width:1120px;margin:0 auto;position:relative}
+  .A h1{color:#fff;font-size:2.6rem;margin:0 0 10px;letter-spacing:-1px;font-weight:800}
+  .A h1 em{font-style:normal;color:#3ddc97}
+  .A .alcim{color:#9fc2b3;margin:0 0 34px;font-size:1.05rem;line-height:1.65;max-width:56ch}
+  .A-racs{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .A-kartya{background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);
+            border-radius:22px;padding:26px 22px 24px;color:#dfeee7;display:flex;
+            flex-direction:column;backdrop-filter:blur(6px);position:relative}
+  .A-kartya.ki{background:#fff;color:#0d1f19;border-color:#fff;
+               box-shadow:0 20px 50px rgba(61,220,151,.22)}
+  .A-jel{position:absolute;top:16px;right:16px;background:#3ddc97;color:#08251a;
+         font-size:.66rem;font-weight:900;letter-spacing:1px;padding:4px 9px;border-radius:99px}
+  .A-nev{font-size:.8rem;letter-spacing:2px;text-transform:uppercase;font-weight:800;
+         color:#7fd8b0;margin:0 0 18px}
+  .A-kartya.ki .A-nev{color:#1e7a4d}
+  /* Az IDŐ a főszereplő, nem az ár: a csomagok között ez a különbség. */
+  .A-perc{font-size:3.1rem;font-weight:800;line-height:1;letter-spacing:-2px;color:#fff}
+  .A-kartya.ki .A-perc{color:#0d1f19}
+  .A-perc span{font-size:.95rem;font-weight:600;letter-spacing:0;color:#7fd8b0;
+               display:block;margin-top:6px}
+  .A-kartya.ki .A-perc span{color:#4b7d66}
+  .A-sav{height:6px;border-radius:99px;background:rgba(255,255,255,.1);margin:18px 0 20px;
+         overflow:hidden}
+  .A-kartya.ki .A-sav{background:rgba(13,31,25,.1)}
+  .A-sav i{display:block;height:100%;border-radius:99px;
+           background:linear-gradient(90deg,#3ddc97,#8be8c2)}
+  .A-kartya.ki .A-sav i{background:linear-gradient(90deg,#1e7a4d,#3ddc97)}
+  .A-ar{font-size:1.75rem;font-weight:800;margin:0 0 2px;color:#fff}
+  .A-kartya.ki .A-ar{color:#0d1f19}
+  .A-ar small{font-size:.85rem;font-weight:600;color:#7fd8b0}
+  .A-kartya.ki .A-ar small{color:#4b7d66}
+  .A-evi{font-size:.84rem;color:#8fb9a6;margin:0 0 18px;min-height:1.3em}
+  .A-kartya.ki .A-evi{color:#4b7d66}
+  .A-lista{list-style:none;padding:0;margin:0 0 22px;flex:1;font-size:.9rem;line-height:1.5}
+  .A-lista li{padding:6px 0 6px 20px;position:relative;color:#b9d6c9}
+  .A-kartya.ki .A-lista li{color:#3d5d51}
+  .A-lista li::before{content:"";position:absolute;left:2px;top:12px;width:7px;height:7px;
+                      border-radius:2px;background:#3ddc97}
+  .A-kartya.ki .A-lista li::before{background:#1e7a4d}
+  .A-gomb{display:block;text-align:center;border-radius:12px;padding:13px;font-weight:800;
+          font-size:.95rem;text-decoration:none;border:1px solid rgba(255,255,255,.2);
+          color:#fff;background:transparent}
+  .A-kartya.ki .A-gomb{background:#0d1f19;color:#fff;border-color:#0d1f19}
+
+/* ══════════════ B VÁLTOZAT — „a füzet" ══════════════ */
+  .B{background:#fbf8f1;padding:56px 24px 64px}
+  .B-belso{max-width:1120px;margin:0 auto}
+  .B h1{font-size:2.6rem;margin:0 0 10px;color:#1d3a2e;letter-spacing:-1px;font-weight:800}
+  .B .alcim{color:#5f7268;margin:0 0 36px;font-size:1.05rem;line-height:1.65;max-width:56ch}
+  .B-racs{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  /* Minden kártya egy füzetlap: felül spirál, oldalt margóvonal. */
+  .B-lap{background:#fff;border-radius:6px 16px 16px 6px;padding:34px 22px 22px 30px;
+         position:relative;display:flex;flex-direction:column;
+         box-shadow:0 3px 0 #e6ded0, 0 12px 26px rgba(29,58,46,.09)}
+  .B-lap::before{content:"";position:absolute;left:14px;top:0;bottom:0;width:2px;
+                 background:#f0b8b0}
+  .B-lyukak{position:absolute;top:12px;left:0;right:0;display:flex;justify-content:center;
+            gap:26px}
+  .B-lyukak i{width:9px;height:9px;border-radius:50%;background:#eee5d6;display:block}
+  .B-lap.ki{background:#1d3a2e;color:#fff;box-shadow:0 3px 0 #0f241c,0 16px 34px rgba(29,58,46,.28)}
+  .B-lap.ki::before{background:#3ddc97}
+  .B-lap.ki .B-lyukak i{background:rgba(255,255,255,.18)}
+  .B-cimke{position:absolute;top:-12px;right:16px;background:#f2b134;color:#3b2a06;
+           font-size:.7rem;font-weight:900;padding:5px 12px;border-radius:99px;
+           transform:rotate(3deg);box-shadow:0 3px 8px rgba(242,177,52,.4)}
+  .B-nev{font-size:1.25rem;font-weight:800;color:#1d3a2e;margin:6px 0 14px}
+  .B-lap.ki .B-nev{color:#fff}
+  .B-ar{font-size:2.3rem;font-weight:800;color:#1d3a2e;line-height:1;letter-spacing:-1.5px}
+  .B-lap.ki .B-ar{color:#3ddc97}
+  .B-ar small{font-size:.8rem;font-weight:600;color:#8b9a92;letter-spacing:0}
+  .B-evi{font-size:.84rem;color:#8b9a92;margin:6px 0 16px;min-height:1.3em}
+  .B-lap.ki .B-evi{color:#9fc2b3}
+  /* Az idő kézzel rajzolt vonalkákkal – ennyi órát tanulhat a gyerek. */
+  .B-ido{display:flex;align-items:flex-end;gap:3px;height:34px;margin:0 0 6px}
+  .B-ido i{width:5px;border-radius:2px;background:#cfe8dc;display:block}
+  .B-lap.ki .B-ido i{background:#3ddc97}
+  .B-idoszoveg{font-size:.86rem;color:#5f7268;margin:0 0 16px;font-weight:700}
+  .B-lap.ki .B-idoszoveg{color:#cfe8dc}
+  .B-lista{list-style:none;padding:0;margin:0 0 20px;flex:1;font-size:.9rem;line-height:1.55}
+  .B-lista li{padding:5px 0 5px 22px;position:relative;color:#4b5b53}
+  .B-lap.ki .B-lista li{color:#c8ded4}
+  .B-lista li::before{content:"✓";position:absolute;left:0;top:5px;color:#1e7a4d;font-weight:900}
+  .B-lap.ki .B-lista li::before{color:#3ddc97}
+  .B-gomb{display:block;text-align:center;background:#1d3a2e;color:#fff;border-radius:10px;
+          padding:13px;font-weight:800;font-size:.95rem;text-decoration:none}
+  .B-lap.ki .B-gomb{background:#3ddc97;color:#0f241c}
+</style>
+</head>
+<body>
+
+<div class="jelolo">A változat
+  <b>„Az idő a termék"</b>
+  <i>Sötét, letisztult. A főszereplő nem az ár, hanem a PERC — mert a csomagok között
+     valójában az a különbség. A sáv ránézésre mutatja, mennyivel ad többet a következő szint.</i>
+</div>
+
+<section class="A">
+  <div class="A-belso">
+    <h1>Annyit fizetsz, <em>amennyit tanultok</em>.</h1>
+    <p class="alcim">Nem a gyerekek száma számít, hanem az idő. A keretet a család közösen
+       használja — testvérek, egy előfizetés.</p>
+
+    <div class="A-racs">
+      <div class="A-kartya">
+        <p class="A-nev">Ingyenes próba</p>
+        <div class="A-perc">50<span>tanulási perc, egyszer</span></div>
+        <div class="A-sav"><i style="width:3%"></i></div>
+        <p class="A-ar">0 €</p>
+        <p class="A-evi">Bankkártya nélkül</p>
+        <ul class="A-lista"><li>15 perc hangos</li><li>1 gyerekprofil</li><li>Minden tantárgy</li></ul>
+        <a class="A-gomb" href="#">Kipróbálom</a>
+      </div>
+
+      <div class="A-kartya ki">
+        <span class="A-jel">EZT AJÁNLJUK</span>
+        <p class="A-nev">Alap</p>
+        <div class="A-perc">400<span>tanulási perc havonta</span></div>
+        <div class="A-sav"><i style="width:22%"></i></div>
+        <p class="A-ar">14,90 €<small> / hó</small></p>
+        <p class="A-evi">Évente 149 € — két hónap ajándék</p>
+        <ul class="A-lista"><li>Mind hangos lehet</li><li>3 gyerekprofil</li><li>Kártyák és album</li></ul>
+        <a class="A-gomb" href="#">Ezt kérem</a>
+      </div>
+
+      <div class="A-kartya">
+        <p class="A-nev">Pro</p>
+        <div class="A-perc">900<span>tanulási perc havonta</span></div>
+        <div class="A-sav"><i style="width:50%"></i></div>
+        <p class="A-ar">24,90 €<small> / hó</small></p>
+        <p class="A-evi">Évente 249 €</p>
+        <ul class="A-lista"><li>Mind hangos lehet</li><li>5 gyerekprofil</li><li>Napi jelentés</li></ul>
+        <a class="A-gomb" href="#">Ezt kérem</a>
+      </div>
+
+      <div class="A-kartya">
+        <p class="A-nev">Max</p>
+        <div class="A-perc">1800<span>tanulási perc havonta</span></div>
+        <div class="A-sav"><i style="width:100%"></i></div>
+        <p class="A-ar">39,90 €<small> / hó</small></p>
+        <p class="A-evi">Évente 399 €</p>
+        <ul class="A-lista"><li>Mind hangos lehet</li><li>5 gyerekprofil</li><li>Napi jelentés</li></ul>
+        <a class="A-gomb" href="#">Ezt kérem</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="jelolo">B változat
+  <b>„A füzet"</b>
+  <i>Világos, meleg papírszín. Minden csomag egy kilyukasztott füzetlap, piros margóvonallal.
+     Az idő oszlopdiagramként, kézzel rajzolt vonalkákkal. Ez SAJÁT arculat — nem olyan,
+     mint bármelyik másik előfizetős oldal.</i>
+</div>
+
+<section class="B">
+  <div class="B-belso">
+    <h1>Válassz annyi időt, amennyit tanultok.</h1>
+    <p class="alcim">A testvérek egy kereten osztoznak. Új profil bármikor, ingyen.</p>
+
+    <div class="B-racs">
+      <div class="B-lap">
+        <div class="B-lyukak"><i></i><i></i><i></i></div>
+        <p class="B-nev">Ingyenes próba</p>
+        <p class="B-ar">0 €</p>
+        <p class="B-evi">Bankkártya nélkül</p>
+        <div class="B-ido"><i style="height:5%"></i><i style="height:5%"></i><i style="height:6%"></i></div>
+        <p class="B-idoszoveg">50 perc, egyszer</p>
+        <ul class="B-lista"><li>15 perc hangos</li><li>1 gyerekprofil</li><li>Minden tantárgy</li></ul>
+        <a class="B-gomb" href="#">Kipróbálom</a>
+      </div>
+
+      <div class="B-lap ki">
+        <div class="B-lyukak"><i></i><i></i><i></i></div>
+        <span class="B-cimke">EZT AJÁNLJUK</span>
+        <p class="B-nev">Alap</p>
+        <p class="B-ar">14,90 €<small> / hó</small></p>
+        <p class="B-evi">Évente 149 € — két hónap ajándék</p>
+        <div class="B-ido"><i style="height:26%"></i><i style="height:34%"></i><i style="height:22%"></i><i style="height:30%"></i><i style="height:24%"></i></div>
+        <p class="B-idoszoveg">400 perc havonta</p>
+        <ul class="B-lista"><li>Mind hangos lehet</li><li>3 gyerekprofil</li><li>Kártyák és album</li></ul>
+        <a class="B-gomb" href="#">Ezt kérem</a>
+      </div>
+
+      <div class="B-lap">
+        <div class="B-lyukak"><i></i><i></i><i></i></div>
+        <p class="B-nev">Pro</p>
+        <p class="B-ar">24,90 €<small> / hó</small></p>
+        <p class="B-evi">Évente 249 €</p>
+        <div class="B-ido"><i style="height:56%"></i><i style="height:70%"></i><i style="height:48%"></i><i style="height:64%"></i><i style="height:52%"></i></div>
+        <p class="B-idoszoveg">900 perc havonta</p>
+        <ul class="B-lista"><li>Mind hangos lehet</li><li>5 gyerekprofil</li><li>Napi jelentés</li></ul>
+        <a class="B-gomb" href="#">Ezt kérem</a>
+      </div>
+
+      <div class="B-lap">
+        <div class="B-lyukak"><i></i><i></i><i></i></div>
+        <p class="B-nev">Max</p>
+        <p class="B-ar">39,90 €<small> / hó</small></p>
+        <p class="B-evi">Évente 399 €</p>
+        <div class="B-ido"><i style="height:88%"></i><i style="height:100%"></i><i style="height:76%"></i><i style="height:94%"></i><i style="height:82%"></i></div>
+        <p class="B-idoszoveg">1800 perc havonta</p>
+        <ul class="B-lista"><li>Mind hangos lehet</li><li>5 gyerekprofil</li><li>Napi jelentés</li></ul>
+        <a class="B-gomb" href="#">Ezt kérem</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

@@ -122,18 +122,23 @@
         <div class="chat-messages" id="chat-messages" aria-live="polite">
             {% for msg in messages %}
                 <div class="chat-bubble chat-bubble-{{ msg['role'] }}">
-                    <div class="chat-bubble-inner">{{ msg['content'] }}
-                    {% if msg['role'] == 'assistant' and msg.get('figures') %}
+                    {# A buborék szövege „pre-wrap”, tehát MINDEN sortörés
+                       látszik. A sablon behúzásai is azok lennének: emiatt
+                       nyúlt le a buborék üresen. A {{- -}} jelek levágják a
+                       kiírás körüli üres helyet, a |trim pedig a szöveg
+                       végén maradt üres sorokat. Ezeket ne vedd ki. #}
+                    <div class="chat-bubble-inner">{{- msg['content']|trim -}}
+                    {%- if msg['role'] == 'assistant' and msg.get('figures') %}
                         {% for svg in msg['figures'] %}
                             <div class="chat-figure" style="max-width:320px;width:100%;margin:8px auto;background:#fff;border-radius:8px;padding:8px;">{{ svg | safe }}</div>
                         {% endfor %}
-                    {% endif %}
+                    {% endif -%}
                     {# A gyakorló feladat újratöltés után is megmarad. Csak a
                        LEGUTOLSÓ tanári üzenetnél van kitöltve — arra vár most
                        választ a tanár. #}
-                    {% if msg['role'] == 'assistant' and msg.get('feladat') %}
+                    {%- if msg['role'] == 'assistant' and msg.get('feladat') %}
                         <div class="feladat-hely" data-feladat="{{ msg['feladat']|tojson|forceescape }}"></div>
-                    {% endif %}
+                    {% endif -%}
                     </div>
                 </div>
             {% endfor %}
@@ -535,7 +540,19 @@
         messagesEl.scrollTop = messagesEl.scrollHeight;
     }
 
+    // A buborék „pre-wrap”, tehát minden sortörés látszik benne. Az AI és a
+    // gyerek szövege végén is maradhat üres sor — attól nyúlt le üresen a
+    // buborék. Itt vágjuk le: a sor végi szóközöket, a 2-nél több egymás
+    // utáni sortörést, és az elején-végén az üres helyet.
+    function tisztitBuborekSzoveg(t) {
+        return String(t == null ? '' : t)
+            .replace(/[ \t]+$/gm, '')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+    }
+
     function appendBubble(role, text, figures, feladat) {
+        text = tisztitBuborekSzoveg(text);
         var wrap = document.createElement('div');
         wrap.className = 'chat-bubble chat-bubble-' + role;
         if (chatMode === 'voice' && role === 'assistant') {

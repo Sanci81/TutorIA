@@ -117,6 +117,23 @@ class Parent(Base):
     # jár egy hónapra (lásd csomagok.py).
     csomag: Mapped[str | None] = mapped_column(String(32), nullable=True)
     csomag_lejar: Mapped[date | None] = mapped_column(Date, nullable=True)
+    # MIKOR KEZDŐDÖTT az előfizetés. Ebből jön a FORDULÓNAP: a havi keret
+    # nem a naptári hónap elsején indul újra, hanem akkor, amikor a szülő
+    # fizet. Aki 15-én fizetett elő, annak 15-én induljon a következő
+    # hónapja – különben az első hónapja fél hónap lenne.
+    csomag_kezdet: Mapped[date | None] = mapped_column(Date, nullable=True)
+    # MELYIK TANTERVRE szól az előfizetés: "HU" vagy "ES". A magyar és a
+    # spanyol oldal KÜLÖN termék, külön kell megvenni – aki a magyarra
+    # fizetett elő, a spanyol tantervet nem éri el. Üres = tesztidőszak,
+    # olyankor mind a kettő nyitva.
+    csomag_tanterv: Mapped[str | None] = mapped_column(String(2), nullable=True)
+    # ÉRDEKLŐDÉS. A tesztidőszak egyetlen igazán fontos kérdésére válaszol:
+    # HÁNYAN FIZETNÉNEK. Nem kérdőív – akkor íródik ki, amikor a szülő
+    # elhasználta a havi keretét, LÁTTA a csomagokat, és rákattintott, hogy
+    # szóljunk neki. Ez viselkedés, nem szándéknyilatkozat; a kérdőívre
+    # bárki rábök, csak hogy tovább taníttathasson.
+    erdeklodes: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    erdeklodes_datum: Mapped[date | None] = mapped_column(Date, nullable=True)
 
     children: Mapped[list["Child"]] = relationship(
         back_populates="parent", cascade="all, delete-orphan"
@@ -451,6 +468,10 @@ def _parent_dict(parent: Parent) -> dict[str, Any]:
         "szuloi_pin": parent.szuloi_pin,
         "csomag": (getattr(parent, "csomag", None) or "").strip(),
         "csomag_lejar": getattr(parent, "csomag_lejar", None),
+        "csomag_kezdet": getattr(parent, "csomag_kezdet", None),
+        "csomag_tanterv": (getattr(parent, "csomag_tanterv", None) or "").strip().upper(),
+        "erdeklodes": (getattr(parent, "erdeklodes", None) or "").strip(),
+        "erdeklodes_datum": getattr(parent, "erdeklodes_datum", None),
         "van_pin": bool(parent.szuloi_pin),
     }
 
@@ -551,7 +572,11 @@ def ensure_parents_csomag_columns() -> None:
     """parents.csomag / .csomag_lejar – az előfizetés."""
     from sqlalchemy import text
 
-    for oszlop, tipus in (("csomag", "VARCHAR(32)"), ("csomag_lejar", "DATE")):
+    for oszlop, tipus in (("csomag", "VARCHAR(32)"), ("csomag_lejar", "DATE"),
+                          ("csomag_kezdet", "DATE"),
+                          ("csomag_tanterv", "VARCHAR(2)"),
+                          ("erdeklodes", "VARCHAR(32)"),
+                          ("erdeklodes_datum", "DATE")):
         try:
             with _get_engine().begin() as conn:
                 conn.execute(text(
@@ -569,17 +594,115 @@ def ensure_parents_csomag_columns() -> None:
 
 
 def set_parent_csomag(parent_id: int, csomag: str | None,
-                      lejar: date | None = None) -> bool:
-    """A szülő csomagjának beállítása."""
+                      lejar: date | None = None,
+                      tanterv: str | None = None) -> bool:
+    """A szülő csomagjának beállítása.
+
+    A `tanterv` ("HU" vagy "ES") mondja meg, MELYIK oldalra szól az
+    előfizetés: a két tanterv külön termék.
+    """
     db = _session()
     try:
         p = db.get(Parent, parent_id)
         if not p:
             return False
-        p.csomag = (csomag or "").strip() or None
+        uj = (csomag or "").strip() or None
+        # Csomagváltáskor ÚJ ciklus indul: a fordulónap a váltás napja.
+        if uj != p.csomag:
+            p.csomag_kezdet = date.today() if uj else None
+        p.csomag = uj
         p.csomag_lejar = lejar
+        if tanterv is not None:
+            p.csomag_tanterv = (tanterv or "").strip().upper()[:2] or None
         db.commit()
         return True
+    finally:
+        db.close()
+
+
+def set_erdeklodes(parent_id: int, csomag_kulcs: str) -> bool:
+    """„Szólj, amikor indul" – a szülő megjelölte, melyik csomag kellene.
+
+    Az ELSŐ jelölést tartjuk meg dátummal együtt; ha később másikra vált,
+    a csomagot frissítjük, a dátumot nem. Így a mérés nem torzul: az
+    számít, mikor döntötte el, hogy fizetne.
+    """
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if not p:
+            return False
+        p.erdeklodes = (csomag_kulcs or "").strip()[:32] or None
+        if p.erdeklodes and not p.erdeklodes_datum:
+            p.erdeklodes_datum = date.today()
+        db.commit()
+        return True
+    finally:
+        db.close()
+
+
+def erdeklodok(napok: int = 365) -> list[dict]:
+    """Kik jelezték, hogy fizetnének, és melyik csomagra. Az üzemeltetői
+    áttekintéshez: ebből a számból lehet eldönteni, mikor indulhat éles."""
+    db = _session()
+    try:
+        hatar = date.today() - timedelta(days=max(1, napok))
+        sorok = db.scalars(
+            select(Parent)
+            .where(Parent.erdeklodes.is_not(None))
+            .where(Parent.erdeklodes_datum >= hatar)
+            .order_by(Parent.erdeklodes_datum.desc())).all()
+        return [{"email": p.email, "csomag": p.erdeklodes,
+                 "datum": p.erdeklodes_datum} for p in sorok]
+    except Exception:                                      # pragma: no cover
+        logger.exception("erdeklodok(): nem sikerült lekérni")
+        return []
+    finally:
+        db.close()
+
+
+def osszes_tanulasi_perc(parent_id: int) -> float:
+    """A szülő ÖSSZES gyerekének minden eddigi tanulási perce.
+
+    Az ingyenes próbához kell: az a keret EGYSZER jár, nem havonta. Ha
+    havonta újraindulna, a család örökre tanulhatna havi egy keveset –
+    a próbának nem ez a dolga.
+    """
+    db = _session()
+    try:
+        gyerekek = db.scalars(
+            select(Child.id).where(Child.parent_id == parent_id)).all()
+        if not gyerekek:
+            return 0.0
+        ossz = db.scalar(
+            select(func.coalesce(func.sum(ChildLearningTime.minutes), 0))
+            .where(ChildLearningTime.child_id.in_(gyerekek)))
+        return float(ossz or 0.0)
+    except Exception:                                      # pragma: no cover
+        logger.exception("osszes_tanulasi_perc(): nem sikerült lekérni")
+        return 0.0
+    finally:
+        db.close()
+
+
+def tanulasi_perc_kozott(parent_id: int, tol: date, ig: date) -> float:
+    """A szülő gyerekeinek tanulási perce két dátum között (mindkettő
+    beleértve). Az előfizetés FORDULÓNAPJÁHOZ igazított kerethez kell."""
+    db = _session()
+    try:
+        gyerekek = db.scalars(
+            select(Child.id).where(Child.parent_id == parent_id)).all()
+        if not gyerekek:
+            return 0.0
+        ossz = db.scalar(
+            select(func.coalesce(func.sum(ChildLearningTime.minutes), 0))
+            .where(ChildLearningTime.child_id.in_(gyerekek))
+            .where(ChildLearningTime.date >= tol)
+            .where(ChildLearningTime.date <= ig))
+        return float(ossz or 0.0)
+    except Exception:                                      # pragma: no cover
+        logger.exception("tanulasi_perc_kozott(): nem sikerült lekérni")
+        return 0.0
     finally:
         db.close()
 

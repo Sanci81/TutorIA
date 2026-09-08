@@ -1,0 +1,141 @@
+<title>Szülői PIN – terv</title>
+<style>
+:root{--zold:#1e7a4d;--zold-s:#155c3a;--vonal:#dbe5df;--halvany:#5d6b64;
+      --sarga:#f5a623;--korall:#ef5f5f;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;background:#f6f9f7;
+     color:#16241d;padding:26px 18px 60px}
+.sav{max-width:980px;margin:0 auto}
+h1{font-size:26px;letter-spacing:-.02em;margin-bottom:6px}
+.alcim{color:var(--halvany);margin-bottom:26px}
+h2{font-size:14px;text-transform:uppercase;letter-spacing:.1em;color:var(--halvany);
+   margin:32px 0 14px}
+.racs{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.doboz{background:#fff;border:1px solid var(--vonal);border-radius:16px;padding:22px}
+.doboz.zart{border-top:5px solid var(--korall)}
+.doboz.szabad{border-top:5px solid var(--zold)}
+.doboz h3{font-size:17px;margin-bottom:4px;display:flex;align-items:center;gap:9px}
+.doboz h3 svg{width:19px;height:19px;fill:none;stroke-width:2;stroke-linecap:round}
+.zart h3 svg{stroke:var(--korall)} .szabad h3 svg{stroke:var(--zold)}
+.doboz .mi{font-size:13.5px;color:var(--halvany);margin-bottom:14px}
+ul{list-style:none} li{padding:6px 0 6px 22px;position:relative;font-size:14.5px;
+   border-top:1px solid #f0f3f1}
+li:first-child{border-top:0}
+li::before{content:"";position:absolute;left:2px;top:14px;width:8px;height:8px;
+  border-radius:50%}
+.zart li::before{background:var(--korall)} .szabad li::before{background:var(--zold)}
+li b{font-weight:600}
+li small{display:block;color:var(--halvany);font-size:12.5px;line-height:1.45}
+
+.parbeszed{display:grid;grid-template-columns:1fr 320px;gap:26px;align-items:center;
+  background:#fff;border:1px solid var(--vonal);border-radius:18px;padding:26px;
+  margin-top:8px}
+.magy p{font-size:15px;color:var(--halvany);margin-bottom:10px}
+.magy p b{color:#16241d}
+.pin{background:#fff;border-radius:18px;padding:26px 24px;text-align:center;
+  box-shadow:0 18px 46px rgba(20,60,40,.16);border:1px solid var(--vonal)}
+.pin .lakat{width:52px;height:52px;border-radius:15px;background:#fdf1e0;
+  display:grid;place-items:center;margin:0 auto 14px}
+.pin .lakat svg{width:26px;height:26px;stroke:#c77f10;fill:none;stroke-width:2;
+  stroke-linecap:round}
+.pin h4{font-size:17px;margin-bottom:4px}
+.pin p{font-size:13.5px;color:var(--halvany);margin-bottom:16px}
+.jegyek{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+.jegy{width:46px;height:56px;border:2px solid var(--vonal);border-radius:12px;
+  display:grid;place-items:center;font-size:24px;font-weight:800}
+.jegy.tele{border-color:var(--zold);color:var(--zold)}
+.pin .gomb{display:block;width:100%;background:var(--zold);color:#fff;border:0;
+  padding:12px;border-radius:99px;font-weight:700;font-size:15px}
+.pin .link{display:block;margin-top:12px;font-size:13px;color:var(--halvany)}
+
+.jegyzet{background:#fffbe9;border:1px solid #f0e0a8;border-radius:14px;
+  padding:16px 20px;font-size:14px;color:#6b5a1f;margin-top:26px}
+.jegyzet b{color:#4a3f12}
+@media(max-width:820px){.racs,.parbeszed{grid-template-columns:1fr}}
+</style>
+
+<div class="sav">
+  <h1>Szülői PIN — mi lenne zárva, mi maradna szabadon</h1>
+  <p class="alcim">Ez csak terv. Semmit nem módosítottam a programban.</p>
+
+  <div class="racs">
+    <div class="doboz zart">
+      <h3>
+        <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        PIN kell hozzá
+      </h3>
+      <p class="mi">Amit egy gyerek elronthat, vagy ami rólad szól.</p>
+      <ul>
+        <li><b>Profil szerkesztése</b>
+          <small>Itt írható át az osztály. Egy negyedikes két kattintással
+          nyolcadikos lenne, és onnantól rossz anyagot kapna.</small></li>
+        <li><b>Új gyerek felvétele</b>
+          <small>Nem a gyerek dolga, és fiókot érint.</small></li>
+        <li><b>Fiókom</b>
+          <small>A te e-mail-címed, adataid, értesítési beállítások, fióktörlés.</small></li>
+        <li><b>Kijelentkezés</b>
+          <small>Ma egy félrekattintás kizár mindenkit, és a gyerek nem tud
+          visszalépni, mert nem tudja a jelszót.</small></li>
+        <li><b>Másik gyerek felülete</b>
+          <small>A testvér albuma és érméi ne legyenek elérhetők.</small></li>
+      </ul>
+    </div>
+
+    <div class="doboz szabad">
+      <h3>
+        <svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+        Szabadon marad
+      </h3>
+      <p class="mi">Amit a gyereknek egyedül kell tudnia használni.</p>
+      <ul>
+        <li><b>Tantárgyválasztás és az óra</b>
+          <small>A tanulás egyetlen kattintásra se legyen nehezebb.</small></li>
+        <li><b>Szintfelmérő teszt</b></li>
+        <li><b>Saját gyűjtőalbum</b>
+          <small>A saját lapjai, a beragasztás.</small></li>
+        <li><b>Bolt és tasakbontás</b>
+          <small>A saját érméiből. Ez a jutalom, ne kelljen érte szólnia.</small></li>
+        <li><b>Kinézet, tanárhang, nyelvváltás</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>Így nézne ki, amikor zárt részre lép</h2>
+  <div class="parbeszed">
+    <div class="magy">
+      <p><b>Négy számjegy, amit regisztrációkor adsz meg.</b> Nem jelszó, nem kell
+      erősnek lennie — csak annyi a dolga, hogy egy gyerek ne menjen át rajta
+      véletlenül.</p>
+      <p>Egyszer beírod, és <b>15 percig</b> nem kérdez újra. Így ha épp
+      több dolgot állítasz be, nem kell mindig újra beírni.</p>
+      <p>Ha elfelejted, a bejelentkezési jelszavaddal új PIN-t tudsz adni —
+      tehát nem tudsz kizárni magad.</p>
+      <p style="margin-top:16px;font-size:14px">
+      A gyerek felületén pedig lenne egy apró <b>„Szülőknek"</b> gomb, mint a
+      Smartick „Web de padres" gombja — így a gyerek látja, hogy az a rész nem
+      az övé, és nem próbálkozik.</p>
+    </div>
+
+    <div class="pin">
+      <div class="lakat">
+        <svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      </div>
+      <h4>Szülői rész</h4>
+      <p>Add meg a négyjegyű kódot</p>
+      <div class="jegyek">
+        <div class="jegy tele">•</div><div class="jegy tele">•</div>
+        <div class="jegy">&nbsp;</div><div class="jegy">&nbsp;</div>
+      </div>
+      <button class="gomb">Tovább</button>
+      <span class="link">Elfelejtettem a kódot</span>
+    </div>
+  </div>
+
+  <div class="jegyzet">
+    <b>Amit tudnod kell előre:</b> ehhez egy új mező kell az adatbázisban
+    (a szülő PIN-je, titkosítva), és a meglévő 43 védett útvonalból ötöt
+    kell átkapcsolni. Az órákhoz, a chathez és a tanításhoz nem nyúlok.
+    Ha bármelyik sor rossz helyen van a fenti két listában, szólj — a
+    besorolást te tudod jobban.
+  </div>
+</div>

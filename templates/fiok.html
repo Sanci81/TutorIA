@@ -14,6 +14,8 @@
   .keret-sav span{display:block;height:100%;background:#1e7a4d;border-radius:999px}
   .fiok .gomb{display:inline-block;background:#1f3a63;color:#fff;border:none;border-radius:8px;
               padding:10px 18px;font-size:1rem;cursor:pointer;text-decoration:none}
+  .fiok .letoltes-gombok{display:flex;gap:10px;flex-wrap:wrap}
+  .fiok .gomb-halvany{background:#fff;color:#1f3a63;border:1px solid #c7cdd8}
   .fiok .veszelyes{border-color:#e6b3b3;background:#fff7f7}
   .fiok .veszelyes h2{color:#a12b2b}
   .fiok .gomb-veszelyes{background:#a12b2b}
@@ -51,12 +53,40 @@
       {{ t('csomag_elhasznalt') }}: <b>{{ keret.elhasznalt }}</b> {{ t('csomag_perc') }} ·
       {{ t('csomag_maradek') }}: <b>{{ keret.maradek }}</b> {{ t('csomag_perc') }}
     </p>
+    {# Ha elfogyott a keret, a GYEREK csak annyit lát, hogy erre a hónapra
+       vége – árat neki nem mutatunk. A szülő itt találja meg, mit tehet. #}
+    {# A DÁTUMOKAT ki kell írni. "Elfogyott" önmagában nem mond semmit:
+       a szülő azt akarja tudni, mikor tanulhat megint a gyereke, és
+       mikor vonjuk le a következő díjat. #}
+    <p class="adat">
+      {% if keret.egyszeri %}
+        {{ t('csomag_egyszeri_info') }}
+      {% elif keret.ujraindul %}
+        {{ t('csomag_ujraindul') }}: <b>{{ keret.ujraindul.strftime('%Y. %m. %d.') }}</b>
+      {% endif %}
+      {% if keret.lejar %}
+        <br>{{ t('csomag_kovetkezo_dij') }}: <b>{{ keret.lejar.strftime('%Y. %m. %d.') }}</b>
+      {% endif %}
+    </p>
+    {% if keret.elfogyott %}
+      <div class="figyelmeztetes" style="margin:12px 0 0">
+        {{ t('csomag_keret_elfogyott_szulo') }}</div>
+    {% endif %}
+    <p style="margin:14px 0 0">
+      <a class="gomb gomb-halvany" href="{{ url_for('csomagok_oldal') }}">{{ t('csomag_cim') }}</a>
+    </p>
   </div>
 
   <div class="doboz">
     <h2>{{ t('account_export_title') }}</h2>
     <p>{{ t('account_export_text') }}</p>
-    <a class="gomb" href="{{ url_for('fiok_export') }}">{{ t('account_export_btn') }}</a>
+    {# KÉT gomb: a PDF-et a szülő meg tudja nyitni, a JSON a jogszabály
+       „géppel olvasható" követelménye. A PDF az első, mert azt keresik. #}
+    <div class="letoltes-gombok">
+      <a class="gomb" href="{{ url_for('fiok_export_pdf') }}">{{ t('account_export_pdf_btn') }}</a>
+      <a class="gomb gomb-halvany" href="{{ url_for('fiok_export') }}">{{ t('account_export_btn') }}</a>
+    </div>
+    <p class="adat" style="margin:10px 0 0">{{ t('account_export_formatum') }}</p>
   </div>
 
   <div class="doboz">

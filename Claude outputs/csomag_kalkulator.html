@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TutorIA csomagszámoló</title>
+<style>
+  :root{
+    --hatter:#0d1526; --lap:#152036; --lap2:#1b2942; --keret:#26374f;
+    --szoveg:#e8eef8; --halvany:#93a4bd; --arany:#f0a83c; --zold:#3ddc97;
+    --piros:#f2686b; --kek:#5b9bf3;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--hatter);color:var(--szoveg);
+       font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;padding:22px 16px 60px}
+  .burok{max-width:1180px;margin:0 auto}
+  h1{font-size:1.5rem;margin:0 0 4px;color:var(--arany)}
+  .alcim{color:var(--halvany);margin:0 0 22px;max-width:70ch}
+  h2{font-size:1.05rem;color:var(--arany);margin:0 0 14px;letter-spacing:.2px}
+  .racs{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:16px;margin-bottom:16px}
+  .lap{background:var(--lap);border:1px solid var(--keret);border-radius:14px;padding:18px 20px}
+  .sor{display:flex;align-items:center;justify-content:space-between;gap:14px;
+       padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+  .sor:last-child{border-bottom:0}
+  .sor label{flex:1;min-width:0}
+  .sor small{display:block;color:var(--halvany);font-size:.82rem;line-height:1.45;margin-top:2px}
+  input[type=number]{width:96px;background:var(--lap2);border:1px solid var(--keret);
+       color:var(--szoveg);border-radius:8px;padding:8px 10px;font-size:1rem;text-align:right;
+       font-variant-numeric:tabular-nums}
+  input[type=number]:focus{outline:2px solid var(--kek);outline-offset:1px}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th,td{padding:9px 8px;text-align:right;border-bottom:1px solid rgba(255,255,255,.07)}
+  th:first-child,td:first-child{text-align:left}
+  thead th{color:var(--halvany);font-size:.8rem;text-transform:uppercase;
+           letter-spacing:.5px;font-weight:700}
+  tbody td input{width:82px;padding:6px 8px;font-size:.95rem}
+  .tabla-burok{overflow-x:auto}
+  .jo{color:var(--zold);font-weight:700}
+  .rossz{color:var(--piros);font-weight:700}
+  .nagy{font-size:1.9rem;font-weight:800;line-height:1.15;font-variant-numeric:tabular-nums}
+  .kiemelt{background:linear-gradient(160deg,#16304a,#152036);border-color:#2f4b6b}
+  .cimke{color:var(--halvany);font-size:.85rem;text-transform:uppercase;letter-spacing:.6px}
+  .megj{color:var(--halvany);font-size:.88rem;line-height:1.6;margin:12px 0 0}
+  .kapcsolo{display:flex;align-items:center;gap:9px;color:var(--halvany);font-size:.9rem;
+            padding:9px 0;cursor:pointer}
+  .kapcsolo input{width:17px;height:17px;accent-color:var(--zold)}
+  .savok{margin-top:6px}
+  .sav-sor{display:grid;grid-template-columns:64px 1fr 76px;align-items:center;gap:10px;margin:9px 0}
+  .sav{height:11px;background:var(--lap2);border-radius:99px;overflow:hidden}
+  .sav i{display:block;height:100%;border-radius:99px;background:var(--zold);transition:width .2s}
+  .sav i.neg{background:var(--piros)}
+  .labjegyzet{color:var(--halvany);font-size:.85rem;margin-top:26px;border-top:1px solid var(--keret);
+              padding-top:16px;max-width:80ch}
+  code{background:var(--lap2);padding:1px 6px;border-radius:5px;font-size:.9em}
+</style>
+</head>
+<body>
+<div class="burok">
+
+<h1>TutorIA — csomagszámoló</h1>
+<p class="alcim">Minden szám átírható. A lényeg a jobb oldali oszlop: <b>egy család mennyit hoz</b>,
+miután levontuk, amit ő maga elfogyaszt. Ha ez a szám pozitív, akkor az a csomag önmagában nyereséges —
+akkor is, ha a felhasználó az UTOLSÓ percét is elhasználja.</p>
+
+<div class="racs">
+
+  <div class="lap">
+    <h2>Havi fix költség</h2>
+    <div class="sor"><label>Autónomo járulék
+      <small>Teljes: 300 €. Az első 12 hónapban tarifa plana 80 €.</small></label>
+      <input type="number" id="jarulek" value="300" step="10"></div>
+    <label class="kapcsolo"><input type="checkbox" id="plana">
+      Első év — tarifa plana (80 €)</label>
+    <div class="sor"><label>Railway</label><input type="number" id="railway" value="50" step="5"></div>
+    <div class="sor"><label>Könyvelő (gestoría)</label><input type="number" id="konyvelo" value="50" step="5"></div>
+    <div class="sor"><label>Domain, e-mail, egyéb</label><input type="number" id="egyeb" value="4" step="1"></div>
+    <div class="sor"><label><b>Összesen</b></label><b id="fix-ossz">404 €</b></div>
+
+    <h2 style="margin:22px 0 10px">A teszt időszak</h2>
+    <p class="megj" style="margin:0 0 6px">Amíg nem szedsz pénzt, a járulékot sem fizeted.
+    Ez az az összeg, ami addig havonta fogy.</p>
+    <div class="sor"><label>Tesztelő gyerek</label>
+      <input type="number" id="teszt-gyerek" value="15" step="1"></div>
+    <div class="sor"><label>Perc / gyerek / hó</label>
+      <input type="number" id="teszt-perc" value="300" step="50"></div>
+    <div class="sor"><label>Ebből hangos</label>
+      <input type="number" id="teszt-hang" value="300" step="50"></div>
+    <div class="sor"><label><b>Havi kiadás a teszt alatt</b></label>
+      <b id="teszt-ossz" class="rossz">—</b></div>
+    <p class="megj" id="teszt-bontas" style="margin-top:8px">—</p>
+  </div>
+
+  <div class="lap">
+    <h2>Amibe egy tanulási perc kerül</h2>
+    <div class="sor"><label>Hanggal (¢/perc)
+      <small>Felolvasás + beszédfelismerés + a chat tokenjei. A mért árakból:
+      0,6 cent per perc.</small></label>
+      <input type="number" id="perchang" value="0.6" step="0.05"></div>
+    <div class="sor"><label>Hang nélkül (¢/perc)
+      <small>Csak a szöveges chat, felolvasás nélkül. Tizedannyi.</small></label>
+      <input type="number" id="percnema" value="0.05" step="0.01"></div>
+    <div class="sor"><label>Mennyit használnak el a keretből (%)
+      <small>100% = mindenki az utolsó percig kihasználja. Ez a legrosszabb eset;
+      a valóság 40–60%.</small></label>
+      <input type="number" id="kihasznalas" value="100" step="5"></div>
+    <div class="sor"><label>Fizetési jutalék (%)
+      <small>Stripe / PayPal.</small></label>
+      <input type="number" id="jutalek" value="3" step="0.5"></div>
+    <p class="megj">Az <code>/admin</code> oldal gyerekenként méri a valódi fogyasztást.
+    Egy hónap teszt után onnan írd át ezt a két számot — akkor ez a táblázat már nem becslés lesz.</p>
+  </div>
+
+  <div class="lap kiemelt">
+    <h2>Az eredmény</h2>
+    <p class="cimke">Havi eredmény ezzel a felállással</p>
+    <div class="nagy" id="profit">—</div>
+    <p class="megj" id="profit-magyarazat">—</p>
+    <div class="sor"><label>Fizető család</label><b id="csaladok">—</b></div>
+    <div class="sor"><label>Ebből gyerek</label><b id="gyerekek">—</b></div>
+    <div class="sor"><label>Nullszaldóhoz kell</label><b id="nullszaldo">—</b></div>
+  </div>
+
+</div>
+
+<div class="lap">
+  <h2>A csomagok</h2>
+  <div class="tabla-burok">
+  <table>
+    <thead><tr>
+      <th>Csomag</th><th>Ár / hó (€)</th><th>Perc / hó</th><th>Ebből hangos</th><th>Profil</th>
+      <th>Család</th><th>Ár / perc</th><th>Fedezet / család</th><th>Összesen</th>
+    </tr></thead>
+    <tbody id="csomag-sorok"></tbody>
+  </table>
+  </div>
+  <div class="savok" id="savok"></div>
+  <p class="megj"><b>Fedezet / család</b> = az ár, mínusz a fizetési jutalék, mínusz amit az a család
+  elfogyaszt. Ez az, amiből a fix költséget fizeted. Ha egy csomagnál ez a szám piros,
+  az a csomag ráfizetéses, és nem segít rajta, ha többen veszik.
+  A Free-nél ez természetesen negatív: az nem hoz pénzt, hanem ennyibe kerül havonta
+  egy ingyenes felhasználó. Írd be a Család oszlopba, hányat bírsz el belőlük.</p>
+</div>
+
+<div class="lap" style="margin-top:16px">
+  <h2>Mennyibe kerül máshol</h2>
+  <div class="tabla-burok">
+  <table>
+    <thead><tr><th>Szolgáltatás</th><th>Ár / hó</th><th>Éves fizetéssel</th>
+      <th>Gyerek</th><th>Mit ad</th></tr></thead>
+    <tbody>
+      <tr><td><b>Smartick</b> (spanyol)</td><td>39 €</td><td>28,50 €/hó</td><td>1</td>
+        <td style="text-align:left">Matek és olvasás. Nincs AI-tanár, nincs beszélgetés.</td></tr>
+      <tr><td><b>Synthesis Tutor</b></td><td>29 $</td><td>119 $/év ≈ 9,9 $/hó</td><td>7-ig</td>
+        <td style="text-align:left">AI-tanár, de csak matek, és csak angolul.</td></tr>
+      <tr><td><b>Khanmigo</b></td><td>4 $</td><td>44 $/év</td><td>10-ig</td>
+        <td style="text-align:left">Nonprofit, adományból. Nem piaci ár.</td></tr>
+      <tr><td><b>Magántanár</b> (Andalúzia)</td><td>15–20 € / óra</td><td>—</td><td>1</td>
+        <td style="text-align:left">Heti egy óra ≈ 65 €/hó.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="megj">A TutorIA minden tantárgyat tanít, két tantervben, magyarul és spanyolul,
+  hanggal. A 300 perc = 5 óra tanítás havonta: magántanárnál az 75–100 €.</p>
+</div>
+
+<div class="lap" style="margin-top:16px">
+  <h2>Meddig tart a mínusz</h2>
+  <div class="tabla-burok">
+  <table>
+    <thead><tr><th>Fizető család</th><th>Gyerek</th><th>Bevétel</th><th>Fogyasztás + jutalék</th>
+      <th>Fix</th><th>Havi eredmény</th></tr></thead>
+    <tbody id="skala"></tbody>
+  </table>
+  </div>
+  <p class="megj">Ugyanez a csomagmegoszlás, csak arányosan több családdal. A teszt alatt nulla
+  fizető családod van, de a járulékot sem fizeted: akkor a havi kiadásod a Railway, a domain és
+  a tesztelők fogyasztása.</p>
+</div>
+
+<p class="labjegyzet">
+A perc a költség, nem a gyerek. Egy profil létrehozása nulla euró, ezért nem a profilok számát
+kell fizetni, hanem a percet: így nincs olyan csomag, amit egy másik helyett ki lehet trükközni.
+A keret a CSALÁDÉ, közösen — öt profil ugyanabból a percből tanul.
+</p>
+
+</div>
+
+<script>
+// A "hang" nem igen/nem, hanem HÁNY PERC szólal meg. A maradék perc
+// szöveges chat, ami tizedannyiba kerül. A Free-ben azért van hang, mert
+// hang nélkül a szülő nem tudja, mit venne meg.
+const CSOMAGOK = [
+  {nev:'Free',  ar:0,     perc:40,   hang:10,   profil:1, csalad:0},
+  {nev:'Alap',  ar:11.90, perc:300,  hang:300,  profil:5, csalad:25},
+  {nev:'Pro',   ar:24.90, perc:700,  hang:700,  profil:5, csalad:8},
+  {nev:'Max',   ar:39.90, perc:1200, hang:1200, profil:5, csalad:3},
+];
+// Hány gyerek jut átlagosan egy ilyen csomagot vevő családra. Csak a
+// "hány gyereket értem el" számhoz kell, a pénzhez nem.
+const GYEREK_ARANY = {Free:1, Alap:1, Pro:2, Max:3};
+
+const $ = id => document.getElementById(id);
+const eur = n => (n<0?'−':'') + Math.abs(n).toFixed(2).replace('.', ',') + ' €';
+const eur0 = n => (n<0?'−':'') + Math.abs(n).toFixed(0) + ' €';
+
+function ertek(id){ const v = parseFloat($(id).value); return isFinite(v) ? v : 0; }
+
+// A kapcsoló átírja a járulék mezőjét, de megjegyzi az eredetit, hogy
+// kikapcsoláskor vissza tudja adni – különben 80-on ragadna.
+let jarulekTeljes = 300;
+function planaValt(){
+  if ($('plana').checked){
+    jarulekTeljes = ertek('jarulek') || jarulekTeljes;
+    $('jarulek').value = 80;
+  } else {
+    $('jarulek').value = jarulekTeljes;
+  }
+  szamol();
+}
+
+function fixKoltseg(){
+  return ertek('jarulek') + ertek('railway') + ertek('konyvelo') + ertek('egyeb');
+}
+
+// A teszt alatt nincs járulék és nincs könyvelő sem: csak a szerver, a
+// domain, és amit a tesztelők elfogyasztanak.
+function tesztKiadas(){
+  const szerver = ertek('railway') + ertek('egyeb');
+  const hangos = Math.min(ertek('teszt-hang'), ertek('teszt-perc'));
+  const nema = Math.max(0, ertek('teszt-perc') - hangos);
+  const fogyasztas = ertek('teszt-gyerek')
+      * (hangos * ertek('perchang') + nema * ertek('percnema')) / 100;
+  return {szerver: szerver, fogyasztas: fogyasztas, ossz: szerver + fogyasztas};
+}
+
+function tesztKiir(){
+  const t = tesztKiadas();
+  $('teszt-ossz').textContent = eur0(t.ossz) + ' / hó';
+  $('teszt-bontas').innerHTML =
+    `Szerver + domain <b>${eur0(t.szerver)}</b> &nbsp;+&nbsp; ` +
+    `${ertek('teszt-gyerek')} gyerek fogyasztása <b>${eur(t.fogyasztas)}</b>`;
+}
+
+// Egy család havi fedezete: ár − jutalék − a saját fogyasztása.
+function fogyaszt(cs){
+  const kih = ertek('kihasznalas') / 100;
+  const hangos = Math.min(cs.hang, cs.perc);
+  const nema = Math.max(0, cs.perc - hangos);
+  return (hangos * ertek('perchang') + nema * ertek('percnema')) * kih / 100;
+}
+
+function fedezet(cs){
+  return cs.ar - (cs.ar * ertek('jutalek') / 100) - fogyaszt(cs);
+}
+
+function szamol(){
+  const fix = fixKoltseg();
+  $('fix-ossz').textContent = eur0(fix);
+  tesztKiir();
+
+  let bevetel = 0, koltseg = 0, csaladok = 0, gyerekek = 0, fedezetOssz = 0;
+  const sorok = [], savok = [];
+  let legnagyobbFedezet = 0;
+
+  for (const cs of CSOMAGOK){
+    const f = fedezet(cs);
+    const db = cs.csalad;
+    const fogy = fogyaszt(cs) + cs.ar * ertek('jutalek') / 100;
+
+    bevetel += cs.ar * db;
+    koltseg += fogy * db;
+    fedezetOssz += f * db;
+    csaladok += db;
+    gyerekek += db * (GYEREK_ARANY[cs.nev] || 1);
+    legnagyobbFedezet = Math.max(legnagyobbFedezet, Math.abs(f));
+
+    const arPerPerc = cs.perc ? (cs.ar / cs.perc) : 0;
+    sorok.push(`<tr>
+      <td><b>${cs.nev}</b></td>
+      <td><input type="number" step="0.5" data-mezo="ar" data-nev="${cs.nev}" value="${cs.ar}"></td>
+      <td><input type="number" step="50" data-mezo="perc" data-nev="${cs.nev}" value="${cs.perc}"></td>
+      <td><input type="number" step="10" data-mezo="hang" data-nev="${cs.nev}" value="${cs.hang}"></td>
+      <td>${cs.profil}</td>
+      <td><input type="number" step="1" data-mezo="csalad" data-nev="${cs.nev}" value="${db}"></td>
+      <td>${cs.ar ? arPerPerc.toFixed(3).replace('.', ',') : '—'}</td>
+      <td class="${f>=0?'jo':'rossz'}">${eur(f)}</td>
+      <td class="${f*db>=0?'jo':'rossz'}">${eur(f*db)}</td>
+    </tr>`);
+    savok.push({nev: cs.nev, ertek: f});
+  }
+
+  $('csomag-sorok').innerHTML = sorok.join('');
+  $('savok').innerHTML = savok.map(s => {
+    const szazalek = legnagyobbFedezet ? Math.abs(s.ertek)/legnagyobbFedezet*100 : 0;
+    return `<div class="sav-sor"><span>${s.nev}</span>
+      <span class="sav"><i class="${s.ertek<0?'neg':''}" style="width:${szazalek}%"></i></span>
+      <span class="${s.ertek>=0?'jo':'rossz'}" style="text-align:right">${eur(s.ertek)}</span></div>`;
+  }).join('');
+
+  const profit = fedezetOssz - fix;
+  $('profit').textContent = eur0(profit);
+  $('profit').className = 'nagy ' + (profit >= 0 ? 'jo' : 'rossz');
+  $('csaladok').textContent = csaladok + ' család';
+  $('gyerekek').textContent = Math.round(gyerekek) + ' gyerek';
+
+  // Nullszaldó: hányszorosa kell a mostani felállásnak.
+  if (fedezetOssz > 0){
+    const szorzo = fix / fedezetOssz;
+    const kellCsalad = Math.ceil(csaladok * szorzo);
+    const kellGyerek = Math.ceil(gyerekek * szorzo);
+    $('nullszaldo').textContent = kellCsalad + ' család (' + kellGyerek + ' gyerek)';
+    $('profit-magyarazat').textContent = profit >= 0
+      ? `Ennyi marad a kezedben minden hónapban, miután mindent kifizettél. A nullszaldót ${kellCsalad} fizető családnál éred el.`
+      : `Ennyivel vagy mínuszban havonta. ${kellCsalad} fizető család kell, hogy nullára gyere ki.`;
+  } else {
+    $('nullszaldo').textContent = 'soha — a fedezet nulla vagy negatív';
+    $('profit-magyarazat').textContent =
+      'Így nem lehet nullszaldó: a csomagok nem termelnek fedezetet. Emeld az árat vagy csökkentsd a percet.';
+  }
+
+  // Skála: ugyanez a megoszlás, arányosan több családdal.
+  const skalaSorok = [];
+  const alapCsalad = csaladok || 1;
+  for (const szorzo of [0.25, 0.5, 1, 1.5, 2, 3]){
+    let b = 0, k = 0, cs2 = 0, gy = 0;
+    for (const cs of CSOMAGOK){
+      const db = Math.round(cs.csalad * szorzo);
+      b += cs.ar * db;
+      k += (fogyaszt(cs) + cs.ar * ertek('jutalek') / 100) * db;
+      cs2 += db;
+      gy += db * (GYEREK_ARANY[cs.nev] || 1);
+    }
+    const e = b - k - fix;
+    skalaSorok.push(`<tr>
+      <td>${cs2}</td><td>${Math.round(gy)}</td><td>${eur0(b)}</td>
+      <td>${eur0(k)}</td><td>${eur0(fix)}</td>
+      <td class="${e>=0?'jo':'rossz'}">${eur0(e)}</td></tr>`);
+  }
+  $('skala').innerHTML = skalaSorok.join('');
+}
+
+document.addEventListener('input', e => {
+  const mezo = e.target.dataset.mezo;
+  if (mezo){
+    const cs = CSOMAGOK.find(c => c.nev === e.target.dataset.nev);
+    const v = parseFloat(e.target.value);
+    if (cs) cs[mezo] = isFinite(v) ? v : 0;
+    // A táblázatot nem rajzoljuk újra gépelés közben, mert elveszne a fókusz.
+    frissitCsakSzamok();
+    return;
+  }
+  szamol();
+});
+document.addEventListener('change', e => { if (e.target.id === 'plana') planaValt(); });
+
+// Gépelés közben csak a számokat frissítjük, a beviteli mezőket nem bántjuk.
+function frissitCsakSzamok(){
+  const fix = fixKoltseg();
+  $('fix-ossz').textContent = eur0(fix);
+  tesztKiir();
+  let fedezetOssz = 0, csaladok = 0, gyerekek = 0;
+  const cellak = document.querySelectorAll('#csomag-sorok tr');
+  CSOMAGOK.forEach((cs, i) => {
+    const f = fedezet(cs);
+    fedezetOssz += f * cs.csalad;
+    csaladok += cs.csalad;
+    gyerekek += cs.csalad * (GYEREK_ARANY[cs.nev] || 1);
+    const tr = cellak[i];
+    if (!tr) return;
+    const td = tr.children;
+    td[6].textContent = cs.perc && cs.ar ? (cs.ar/cs.perc).toFixed(3).replace('.', ',') : '—';
+    td[7].textContent = eur(f);
+    td[7].className = f >= 0 ? 'jo' : 'rossz';
+    td[8].textContent = eur(f * cs.csalad);
+    td[8].className = f * cs.csalad >= 0 ? 'jo' : 'rossz';
+    // (a 6/7/8 index a Hang oszlop beszúrása UTÁN is stimmel: Csomag, Ár,
+    //  Perc, Hangos, Profil, Család, Ár/perc, Fedezet, Összesen)
+  });
+  const profit = fedezetOssz - fix;
+  $('profit').textContent = eur0(profit);
+  $('profit').className = 'nagy ' + (profit >= 0 ? 'jo' : 'rossz');
+  $('csaladok').textContent = csaladok + ' család';
+  $('gyerekek').textContent = Math.round(gyerekek) + ' gyerek';
+  if (fedezetOssz > 0){
+    const szorzo = fix / fedezetOssz;
+    $('nullszaldo').textContent =
+      Math.ceil(csaladok*szorzo) + ' család (' + Math.ceil(gyerekek*szorzo) + ' gyerek)';
+  }
+}
+
+szamol();
+</script>
+</body>
+</html>

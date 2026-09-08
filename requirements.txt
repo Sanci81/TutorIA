@@ -6,3 +6,4 @@ SQLAlchemy>=2.0.41
 psycopg[binary]>=3.2.10
 openai>=1.40.0
 httpx>=0.24.0
+fpdf2>=2.8.0

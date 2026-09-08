@@ -74,9 +74,13 @@
                     </span>
                     {% endif %}
                     <a href="{{ url_for('dashboard') }}">{{ t('nav_dashboard') }}</a>
+                    <a href="{{ url_for('csomagok_oldal') }}">{{ t('csomag_cim') }}</a>
                     <a href="{{ url_for('fiok') }}">{{ t('nav_account') }}</a>
                     <a href="{{ url_for('logout') }}">{{ t('nav_logout') }}</a>
                 {% else %}
+                    {# Az árnak belépés NÉLKÜL is látszania kell: a szülő azt
+                       nézi meg először, és ha nem találja, elmegy. #}
+                    <a href="{{ url_for('csomagok_oldal') }}">{{ t('csomag_cim') }}</a>
                     <a href="{{ url_for('login') }}">{{ t('nav_login') }}</a>
                     <a class="nav-cta" href="{{ url_for('register') }}">{{ t('nav_register') }}</a>
                 {% endif %}

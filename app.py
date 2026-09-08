@@ -42,6 +42,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 import abra
 import abra_ellenor
+import adat_pdf
 import database
 import ellenoriz
 import hang
@@ -93,6 +94,14 @@ AZURE_VOICE_ES = "es-ES-ElviraNeural"
 # paraméter), a TARTALEK-ra esünk vissza – a felvétel ne veszjen el.
 STT_MODEL = os.environ.get("STT_MODEL", "gpt-transcribe")
 STT_MODEL_TARTALEK = os.environ.get("STT_MODEL_TARTALEK", "gpt-4o-mini-transcribe")
+
+
+# ── Megy-e már a fizetés? ───────────────────────────────────────────────────
+# Amíg ez hamis, az előfizetés oldalon nincs "Előfizetek" gomb, csak
+# "Szólj, amikor indul". Egyetlen kapcsoló, hogy az induláskor ne kelljen
+# sablonokban keresgélni: a Railway-en állítsd FIZETES_ELERHETO=1-re.
+FIZETES_ELERHETO = (os.environ.get("FIZETES_ELERHETO", "") or "").strip() in (
+    "1", "igen", "true", "yes")
 
 
 # ── A felolvasás tempója ────────────────────────────────────────────────────
@@ -1315,7 +1324,12 @@ def fiok():
 @app.route("/fiok/adatok")
 @pin_required
 def fiok_export():
-    """Adathordozhatóság: minden tárolt adat egyetlen JSON fájlban."""
+    """Adathordozhatóság (GDPR 20. cikk): géppel olvasható másolat.
+
+    A JSON azért marad, mert a jogszabály kifejezetten géppel olvasható,
+    általánosan használt formátumot kér – a PDF annak nem számít. Az
+    ÉRTHETŐ változat a testvér-útvonalon (fiok_export_pdf) van.
+    """
     adat = database.export_parent_data(session["parent_id"])
     valasz = Response(
         json.dumps(adat, ensure_ascii=False, indent=2, default=str),
@@ -1323,6 +1337,78 @@ def fiok_export():
     )
     valasz.headers["Content-Disposition"] = 'attachment; filename="tutoria_adataim.json"'
     return valasz
+
+
+@app.route("/fiok/adatok.pdf")
+@pin_required
+def fiok_export_pdf():
+    """Ugyanaz az adat, olvasható alakban (GDPR 15. cikk).
+
+    MIÉRT KELL A JSON MELLÉ: a JSON-t a szülők nagy része meg sem tudja
+    nyitni, és a 15. cikk „érthető formát" ír elő. A tartalom szó szerint
+    ugyanaz, csak a csomagolás más – ezért ugyanabból a függvényből dolgozik.
+    """
+    adat = database.export_parent_data(session["parent_id"])
+    try:
+        tartalom = adat_pdf.keszit(adat, g.lang if g.lang in ("hu", "es") else "hu")
+    except Exception as hiba:  # noqa: BLE001
+        # A PDF kényelmi formátum. Ha bármi baja van, a JOGILAG kötelező
+        # JSON-t akkor is meg kell kapnia – oda küldjük, nem hibaoldalra.
+        print(f"[EXPORT] a PDF nem készült el: {hiba!r}", flush=True)
+        flash(i18n.t("account_export_pdf_hiba", g.lang), "error")
+        return redirect(url_for("fiok"))
+
+    valasz = Response(tartalom, mimetype="application/pdf")
+    valasz.headers["Content-Disposition"] = \
+        'attachment; filename="tutoria_adataim.pdf"'
+    return valasz
+
+
+# ── Előfizetés ─────────────────────────────────────────────────────────────
+# Ez az oldal MINDENKINEK látszik, belépés nélkül is: a szülő az árat akarja
+# látni, mielőtt regisztrál. Amíg a fizetés nincs bekötve, nem gombot
+# mutatunk, hanem azt, hogy szólunk, amikor indul — és ELTÁROLJUK, ki melyik
+# csomagra kattintott. A tesztidőszak egyetlen fontos kérdése ez.
+@app.route("/csomagok")
+def csomagok_oldal():
+    belepett = bool(session.get("parent_id"))
+    sajat = _szulo_csomag() if belepett else None
+    szulo = (database.get_parent_by_id(session["parent_id"]) or {}) if belepett else {}
+    return render_template(
+        "csomagok.html",
+        csomag_lista=csomagok.valaszthato(g.lang),
+        sajat_csomag=sajat,
+        sajat_csomag_nev=csomagok.nev(sajat, g.lang) if belepett else "",
+        keret=_havi_keret() if belepett else None,
+        erdeklodes=(szulo.get("erdeklodes") or ""),
+        # Amíg ez hamis, nincs "Előfizetek" gomb, csak "Szólj, ha indul".
+        fizetes_el=FIZETES_ELERHETO,
+        gyerek_menu_nelkul=True,
+    )
+
+
+@app.route("/csomagok/most-nem", methods=["POST"])
+@login_required
+def csomag_most_nem():
+    """„Most nem." Ez IS válasz, és pont annyira fontos, mint az igen:
+    ebből tudjuk meg, hányan nem fizetnének. Elrejti a kérdést, hogy ne
+    kelljen még egyszer látnia."""
+    database.set_erdeklodes(session["parent_id"], "nem")
+    flash(i18n.t("csomag_most_nem_koszonjuk", g.lang), "success")
+    return redirect(request.referrer or url_for("dashboard"))
+
+
+@app.route("/csomagok/erdekel", methods=["POST"])
+@login_required
+def csomag_erdekel():
+    """„Szólj, amikor indul." Nem fizetés, nem kötelezettség – de ez az
+    egyetlen mérőszám, amiből előre látszik, hányan fizetnének."""
+    kulcs = (request.form.get("csomag") or "").strip()
+    if kulcs not in csomagok.CSOMAGOK:
+        abort(400)
+    database.set_erdeklodes(session["parent_id"], kulcs)
+    flash(i18n.t("csomag_erdekel_koszonjuk", g.lang), "success")
+    return redirect(url_for("csomagok_oldal"))
 
 
 @app.route("/fiok/torles", methods=["POST"])
@@ -1620,6 +1706,9 @@ def ertesites_beallit():
     mod = (request.form.get("mod") or "").strip().lower()
     if not szulo or not check_password_hash(szulo.get("password_hash") or "", jelszo):
         flash(i18n.t("account_delete_bad_password", g.lang), "error")
+    elif mod == "napi" and not csomagok.napi_jelentes(_szulo_csomag()):
+        # A heti és a havi mindenkinek jár; a napi a nagyobb csomagokban.
+        flash(i18n.t("notify_daily_csomag", g.lang), "error")
     elif not database.szulo_ertesites_beallit(session["parent_id"], mod):
         flash(i18n.t("notify_saved_error", g.lang), "error")
     else:
@@ -1914,6 +2003,10 @@ def dashboard():
         avatar_kepek[c["id"]] = url_for("avatar_kep", kulcs=_avatar_kulcs(c["id"]))
     return render_template(
         "dashboard.html", parent=parent, children=children,
+        # A keret azért kell ide, mert ha elfogyott, a SZÜLŐNEK szólunk –
+        # egy csendes kártyával a lap tetején, nem felugró ablakkal.
+        keret=_havi_keret(),
+        erdeklodes=(parent or {}).get("erdeklodes") or "",
         egyenleg=egyenleg,
         avatar_kepek=avatar_kepek,
         album_jel=jelek_kicsi.album(19),
@@ -1952,6 +2045,17 @@ def _validate_grade_for_curriculum(curriculum: str, grade: int) -> str | None:
 @pin_required
 def add_child():
     active_curriculum = "ES" if g.lang == "es" else "HU"
+
+    # PROFILKORLÁT. A profil maga nem kerül pénzbe (a PERC kerül), ezért ez
+    # nem szűk: a Free-ben egy, a fizetős csomagokban három vagy öt. Nem a
+    # forgalmat korlátozza, csak azt akadályozza meg, hogy egy fiókon több
+    # család osztozzon.
+    max_profil = csomagok.max_profil(_szulo_csomag())
+    meglevo = len(database.get_children_for_parent(session["parent_id"]) or [])
+    if meglevo >= max_profil:
+        flash(i18n.t("csomag_profil_betelt", g.lang).format(db=max_profil), "error")
+        return redirect(url_for("csomagok_oldal"))
+
     if request.method == "POST":
         name = (request.form.get("name") or "").strip()
         birth_date_raw = request.form.get("birth_date") or ""
@@ -2525,6 +2629,20 @@ def _szamolo_feladat(jel: str | None, a_nyers, b_nyers) -> dict | None:
             "eredmeny": str(ered)}
 
 
+# ÍRÁSBELI MŰVELET TÉMAKÖRÖK. Ha ezeket tanulja a gyerek, a számolást
+# OSZLOPBAN kell kérni, akkor is, ha egyébként már tudna fejben számolni —
+# épp az írásbeli eljárást gyakorolja.
+_IRASBELI_JELEK = (
+    "írásbeli", "irasbeli", "oszlopos",
+    "escrita", "escritas", "en columna", "por escrito", "algoritmo",
+)
+
+
+def _irasbeli_temakor(temakor: str | None) -> bool:
+    sz = (temakor or "").lower()
+    return any(j in sz for j in _IRASBELI_JELEK)
+
+
 def _fejben_szamolhat(grade: int | None, es_tanterv: bool) -> bool:
     """Elvárható-e, hogy a gyerek FEJBEN adja meg az eredményt?
 
@@ -2539,7 +2657,7 @@ def _fejben_szamolhat(grade: int | None, es_tanterv: bool) -> bool:
 
 
 def _feladat_parse(text: str, *, grade: int | None = None,
-                   es_tanterv: bool = False) -> dict | None:
+                   es_tanterv: bool = False, temakor: str | None = None) -> dict | None:
     """A <FELADAT> jelölőből épít egy ellenőrzött feladatleírást.
 
     A HELYES EREDMÉNYT MINDIG MI SZÁMOLJUK KI, sosem a nyelvi modell —
@@ -2578,7 +2696,10 @@ def _feladat_parse(text: str, *, grade: int | None = None,
         # gyerek évfolyamán még nem elvárható a fejben számolás, akkor a
         # beírós mező helyett az oszlopos táblát adjuk. Nem a modellre
         # bízzuk: az „fejben" szót bármikor leírhatja egy másodikosnak is.
-        if jel is not None and not _fejben_szamolhat(grade, es_tanterv):
+        # Írásbeli műveletet tanuló témakörben MINDIG oszlopba írunk — ott
+        # épp az az eljárás a lecke. Egyébként az évfolyam dönt.
+        if jel is not None and (_irasbeli_temakor(temakor)
+                                or not _fejben_szamolhat(grade, es_tanterv)):
             oszlopos = _szamolo_feladat(jel, adat.get("a"), adat.get("b"))
             if oszlopos:
                 return oszlopos
@@ -7475,7 +7596,8 @@ def child_chat_send(child_id: int):
     # eltűnnének a szövegből.
     feladat = _feladat_parse(
         raw_reply, grade=grade_num,
-        es_tanterv=(_active_curriculum() or "HU").upper() == "ES")
+        es_tanterv=(_active_curriculum() or "HU").upper() == "ES",
+        temakor=current_topic)
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:
@@ -9615,28 +9737,118 @@ def _szulo_csomag(parent_id: int | None = None) -> str:
         return csomagok.TESZT
 
 
+def _szulo_csomag_tanterv(parent_id: int | None = None) -> str:
+    """Melyik tantervre szól a szülő előfizetése: "HU", "ES", vagy üres.
+
+    Üres = tesztidőszak vagy még nem fizetett elő; olyankor mind a kettő
+    nyitva van.
+    """
+    pid = parent_id or session.get("parent_id")
+    if not pid:
+        return ""
+    try:
+        return ((database.get_parent_by_id(pid) or {}).get("csomag_tanterv") or "")
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("A csomag tantervét nem sikerült lekérni")
+        return ""
+
+
 def _csomag_engedi_tantervet(tanterv: str) -> bool:
-    return csomagok.engedi_tantervet(_szulo_csomag(), tanterv)
+    """A MAGYAR és a SPANYOL oldal külön termék: külön kell előfizetni rá.
+
+    Aki a magyar tantervre fizetett elő, a spanyol oldalt nem éri el, és
+    fordítva — ott ugyanezek a csomagok külön megvásárolhatók. A
+    tesztidőszakban (nincs csomag_tanterv) mind a kettő nyitva.
+    """
+    kert = (tanterv or csomagok.HU).upper()
+    if not csomagok.engedi_tantervet(_szulo_csomag(), kert):
+        return False
+    sajat = _szulo_csomag_tanterv()
+    return (not sajat) or sajat == kert
+
+
+def _honapot_lep(alap: date, honapok: int = 1) -> date:
+    """Ugyanaz a nap a következő hónapban. A 29–31-i fordulónapot a rövid
+    hónap utolsó napjára húzzuk (január 31. → február 28.), mert olyan nap
+    nincs — és a szülő nem veszíthet napokat emiatt."""
+    ev = alap.year + (alap.month - 1 + honapok) // 12
+    ho = (alap.month - 1 + honapok) % 12 + 1
+    from calendar import monthrange
+    return date(ev, ho, min(alap.day, monthrange(ev, ho)[1]))
+
+
+def _elofizetesi_ciklus(kezdet: date, mai: date) -> tuple[date, date]:
+    """Az AKTUÁLIS elszámolási hónap: mikor kezdődött, és mikor fordul.
+
+    MIÉRT NEM A NAPTÁRI HÓNAP: aki 15-én fizetett elő, annak 15-én induljon
+    újra a kerete, nem elsején — különben az első hónapja fél hónap lenne,
+    és joggal érezné becsapásnak.
+    """
+    forduló = kezdet
+    # Előre lépkedünk a fordulónapokon, amíg túl nem érünk a mai napon.
+    while True:
+        kovetkezo = _honapot_lep(forduló)
+        if kovetkezo > mai:
+            return forduló, kovetkezo
+        forduló = kovetkezo
+
+
+def _kovetkezo_ho_elseje(mai: date | None = None) -> date:
+    """A következő hónap első napja. Csak ott használjuk, ahol nincs
+    előfizetés (tesztidőszak) – ott nincs fordulónap, amihez igazodni."""
+    ma = mai or date.today()
+    return date(ma.year + (1 if ma.month == 12 else 0),
+                1 if ma.month == 12 else ma.month + 1, 1)
 
 
 def _havi_keret() -> dict:
-    """Mennyi tanulási perc fogyott el ebben a hónapban, és mennyi jár."""
+    """Mennyi tanulási perc fogyott el, mennyi jár, és mikor indul újra.
+
+    KÉTFÉLE KERET VAN. A fizetős csomagoké havi: minden hónap elsején
+    visszaáll. Az ingyenes próbáé EGYSZERI: a regisztráció óta elhasznált
+    ÖSSZES percet nézzük, és az nem töltődik újra.
+    """
     pid = session.get("parent_id")
     kulcs = _szulo_csomag(pid)
     keret = csomagok.havi_perc(kulcs)
+    egyszeri = csomagok.egyszeri(kulcs)
     ma = date.today()
+    szulo = (database.get_parent_by_id(pid) or {}) if pid else {}
+    kezdet = szulo.get("csomag_kezdet")
+
+    ujraindul = None
     try:
-        elhasznalt = database.havi_tanulasi_perc(pid, ma.year, ma.month) if pid else 0.0
+        if not pid:
+            elhasznalt = 0.0
+        elif egyszeri:
+            # Az ingyenes próba EGYSZER jár: minden eddigi percet nézünk.
+            elhasznalt = database.osszes_tanulasi_perc(pid)
+        elif kezdet:
+            # Van előfizetés: a FORDULÓNAPHOZ igazodunk, nem elsejéhez.
+            tol, ujraindul = _elofizetesi_ciklus(kezdet, ma)
+            elhasznalt = database.tanulasi_perc_kozott(pid, tol, ma)
+        else:
+            # Tesztidőszak: nincs fizetés, tehát nincs fordulónap sem.
+            elhasznalt = database.havi_tanulasi_perc(pid, ma.year, ma.month)
+            ujraindul = _kovetkezo_ho_elseje(ma)
     except Exception:                                      # pragma: no cover
-        app.logger.exception("A havi tanulási időt nem sikerült lekérni")
+        app.logger.exception("A tanulási időt nem sikerült lekérni")
         elhasznalt = 0.0
+
     return {
         "csomag": kulcs,
         "csomag_nev": csomagok.nev(kulcs, g.lang if hasattr(g, "lang") else "hu"),
         "keret": keret,
+        "hangos": csomagok.hangos_perc(kulcs),
         "elhasznalt": round(elhasznalt, 1),
         "maradek": max(0.0, round(keret - elhasznalt, 1)),
         "elfogyott": elhasznalt >= keret,
+        # Egyszeri próbánál nincs újraindulás – ezt a sablon is így mutatja.
+        "egyszeri": egyszeri,
+        "ujraindul": None if egyszeri else ujraindul,
+        # Fizetős csomagnál a fordulónapon van a következő levonás is.
+        "kovetkezo_dij": ujraindul if (kezdet and not egyszeri) else None,
+        "lejar": szulo.get("csomag_lejar"),
     }
 
 
@@ -9927,11 +10139,23 @@ def child_album_place(child_id: int):
 # Az egységárak a szolgáltatók listaárai. Környezeti változóval átírhatók, ha
 # kedvezményes csomagod lesz: akkor sem kell kódot módosítani.
 
+# Az üzemeltető két címe. Azért van a kódban is, nem csak környezeti
+# változóban, mert egy elfelejtett Railway-beállítás miatt már kizártuk
+# magunkat a saját áttekintő oldalunkról. Ez a két cím MINDIG bejut.
+_ADMIN_ALAP = ("vigh.sandor81@gmail.com", "vbviki86@gmail.com")
+
+
 def _admin_cimek() -> set[str]:
-    """Kik láthatják az üzemeltetői oldalakat. Vesszővel több cím is megadható
-    az ADMIN_EMAILEK környezeti változóban; alapból a kapcsolattartási cím."""
-    nyers = os.environ.get("ADMIN_EMAILEK") or _jogi_adatok()["kapcsolat"] or ""
-    return {c.strip().lower() for c in nyers.split(",") if c.strip()}
+    """Kik láthatják az üzemeltetői oldalakat. A két saját cím mindig benne
+    van; az ADMIN_EMAILEK környezeti változóval (vesszővel elválasztva) és a
+    kapcsolattartási címmel bővíthető."""
+    nyers = ",".join(x for x in (
+        os.environ.get("ADMIN_EMAILEK") or "",
+        _jogi_adatok()["kapcsolat"] or "",
+    ) if x)
+    cimek = {c.strip().lower() for c in nyers.split(",") if c.strip()}
+    cimek.update(_ADMIN_ALAP)
+    return cimek
 
 
 def _admin_kapu():
@@ -10087,7 +10311,29 @@ def admin_attekintes():
         hang_szazalek=round(100 * ossz_hang / _ismert) if _ismert else 0,
         ossz_koltseg=round(ossz_koltseg, 2),
         csucs_koltseg=csucs_koltseg, csucs_nev=csucs_nev,
+        erdeklodok=database.erdeklodok(napok=365),
+        erdeklodo_kell=_nullszaldo_csalad(),
     )
+
+
+def _nullszaldo_csalad() -> int:
+    """Hány Alap-előfizető fedezi a havi fix költséget.
+
+    Miért itt: az /admin oldalon a "hányan fizetnének" szám önmagában
+    semmit nem mond – ahhoz kell, hogy mennyi ELÉG. A fix költséget és a
+    perc árát környezeti változóból olvassuk, hogy ne kelljen kódot írni,
+    ha változik a Railway számlája vagy a járulék.
+    """
+    fix = _dij("HAVI_FIX_EUR", 404.0)          # járulék + Railway + könyvelő + domain
+    cent_perc = _dij("PERC_CENT_HANG", 0.6)    # egy hangos tanulási perc, centben
+    jutalek = _dij("FIZETESI_JUTALEK", 3.0)    # százalék
+    c = csomagok.CSOMAGOK.get("alap") or {}
+    ar = float(c.get("ar_honap") or 0) or 14.90
+    perc = int(c.get("havi_perc") or 400)
+    fedezet = ar - (ar * jutalek / 100.0) - (perc * cent_perc / 100.0)
+    if fedezet <= 0:
+        return 0
+    return int(fix / fedezet) + 1
 
 
 @app.route("/admin/meres-torles", methods=["POST"])

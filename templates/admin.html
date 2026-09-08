@@ -86,7 +86,30 @@
     <div class="csempe"><div class="cim">Legdrágább gyerek</div>
       <div class="ertek">{{ csucs_koltseg }} €</div>
       <div class="alatta">{{ csucs_nev or '—' }} · {{ napok }} nap alatt</div></div>
+    {# EZ A TESZTIDŐSZAK LEGFONTOSABB SZÁMA. Nem kérdőív: annyian vannak
+       benne, akik elhasználták a keretüket, MEGNÉZTÉK az árakat, és
+       rákattintottak, hogy szóljunk nekik. Ebből lehet eldönteni, mikor
+       indulhat éles — és csak ebből. #}
+    <div class="csempe"><div class="cim">Fizetne</div>
+      <div class="ertek">{{ erdeklodok|length }}</div>
+      <div class="alatta">{{ erdeklodo_kell }} kell a nullszaldóhoz</div></div>
   </div>
+
+  {% if erdeklodok %}
+  <div class="csalad">
+    <div style="font-weight:600;margin-bottom:10px">Kik jelezték, hogy fizetnének</div>
+    <table style="width:100%;border-collapse:collapse;font-size:.92rem">
+      <tr style="text-align:left;color:#6b7280">
+        <th style="padding:6px 4px">E-mail</th><th>Csomag</th><th>Mikor</th></tr>
+      {% for e in erdeklodok %}
+      <tr style="border-top:1px solid #eef2f6">
+        <td style="padding:6px 4px">{{ e.email }}</td>
+        <td>{{ e.csomag }}</td>
+        <td>{{ e.datum.strftime('%Y. %m. %d.') if e.datum else '—' }}</td></tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% endif %}
 
   {% if napi %}
   <div class="csalad">
