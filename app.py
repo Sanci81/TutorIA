@@ -104,6 +104,18 @@ FIZETES_ELERHETO = (os.environ.get("FIZETES_ELERHETO", "") or "").strip() in (
     "1", "igen", "true", "yes")
 
 
+# Melyik avatar áll az egyes csomagok lapjának tetején. A gyerek ugyanezeket
+# gyűjti a boltban, tehát ismerősek lesznek – és a lap így nem olyan, mint
+# bármelyik másik előfizetős oldal.
+CSOMAG_AVATAR = {
+    "free": "beka",
+    "alap": "roka",
+    "pro": "dino",
+    "max": "urhajos",
+    "teszt": "bagoly",
+}
+
+
 # ── A felolvasás tempója ────────────────────────────────────────────────────
 # Egy szám, SZÁZALÉKBAN, a normál beszédtempóhoz képest. Negatív = lassabb.
 # Eddig -10 volt: érthető, de kicsit vontatott. A -5 alig hallhatóan gyorsabb,
@@ -1374,9 +1386,15 @@ def csomagok_oldal():
     belepett = bool(session.get("parent_id"))
     sajat = _szulo_csomag() if belepett else None
     szulo = (database.get_parent_by_id(session["parent_id"]) or {}) if belepett else {}
+    lista = csomagok.valaszthato(g.lang)
     return render_template(
         "csomagok.html",
-        csomag_lista=csomagok.valaszthato(g.lang),
+        csomag_lista=lista,
+        # A lapok tetején egy-egy avatar a SAJÁT készletünkből – a gyerek is
+        # felismeri őket, és a lap rögtön a miénk lesz, nem akárkié.
+        csomag_avatar=CSOMAG_AVATAR,
+        # Az idő-oszlopok magasságához: a legnagyobb csomaghoz mérünk.
+        max_perc=max([c["havi_perc"] for c in lista] or [1]),
         sajat_csomag=sajat,
         sajat_csomag_nev=csomagok.nev(sajat, g.lang) if belepett else "",
         keret=_havi_keret() if belepett else None,
