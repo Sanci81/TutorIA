@@ -11,14 +11,14 @@
    tetején egy avatarral a saját készletünkből. Nem véletlen: ezt a gyerek
    is felismeri, és nem hasonlít semelyik másik előfizetős oldalra. #}
 <style>
-  .csom{max-width:1140px;margin:0 auto;padding:26px 16px 70px}
-  .csom h1{font-size:2.15rem;margin:0 0 10px;text-align:center;color:#0f3f2b;
+  .csom{max-width:1140px;margin:0 auto;padding:20px 16px 70px}
+  .csom h1{font-size:1.9rem;margin:0 0 8px;text-align:center;color:#0f3f2b;
            letter-spacing:-.5px}
-  .csom .bevezeto{text-align:center;color:#4b5563;max-width:62ch;margin:0 auto 26px;
-                  line-height:1.7;font-size:1.02rem}
+  .csom .bevezeto{text-align:center;color:#4b5563;max-width:56ch;margin:0 auto 20px;
+                  line-height:1.65;font-size:.98rem}
 
   /* „Melyik csomag kell nekünk?" – csúszkás segítő. */
-  .segito{max-width:760px;margin:0 auto 44px;background:#f4f9f6;border:1px solid #cfe5da;
+  .segito{max-width:760px;margin:30px auto 0;background:#f4f9f6;border:1px solid #cfe5da;
           border-radius:16px;padding:22px 24px}
   .segito h2{font-size:1.12rem;margin:0 0 6px;color:#0f3f2b}
   .segito-leiras{color:#4b5563;font-size:.92rem;line-height:1.6;margin:0 0 16px}
@@ -33,14 +33,14 @@
   .segito-eredmeny .ajanl{display:inline-block;background:#1e7a4d;color:#fff;font-weight:800;
                           padding:2px 12px;border-radius:99px;margin-left:4px}
 
-  .csom .sajat{max-width:700px;margin:0 auto 34px;background:#eef6f1;border:1px solid #bcdccb;
+  .csom .sajat{max-width:700px;margin:0 auto 22px;background:#eef6f1;border:1px solid #bcdccb;
                border-radius:14px;padding:16px 20px;color:#14532d;line-height:1.7}
   .csom .sajat b{color:#166534}
   .csom .sajat .kiemelt-sor{display:block;margin-top:6px;color:#8a4b0d}
 
   /* ── A FÜZETLAPOK ─────────────────────────────────────────────────── */
   .kartyak{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-           gap:18px;align-items:stretch;padding-top:46px}
+           gap:18px;align-items:stretch;padding-top:44px}
   .lap{background:#fff;border-radius:6px 18px 18px 6px;padding:56px 22px 24px 30px;
        position:relative;display:flex;flex-direction:column;
        box-shadow:0 3px 0 #e4e9e5, 0 12px 28px rgba(15,63,43,.09);
@@ -131,7 +131,9 @@
   .lap.ki .gomb.mar{background:rgba(255,255,255,.14);color:#dff5ea;border:0}
   .csom .gomb.enyem{background:#1e7a4d;cursor:default}
 
-  .garancia{max-width:700px;margin:38px auto 0;text-align:center;color:#166534;
+  .mindben{max-width:820px;margin:26px auto 0;text-align:center;color:#5f7268;
+           font-size:.9rem;line-height:1.7}
+  .garancia{max-width:700px;margin:26px auto 0;text-align:center;color:#166534;
             background:#f4f9f6;border:1px solid #cfe5da;border-radius:12px;
             padding:14px 20px;line-height:1.6;font-weight:600}
   .magyarazat{max-width:70ch;margin:34px auto 0;color:#4b5563;line-height:1.75}
@@ -148,29 +150,6 @@
 <div class="csom">
   <h1>{{ t('csomag_oldal_cim') }}</h1>
   <p class="bevezeto">{{ t('csomag_oldal_bevezeto') }}</p>
-
-  {# „MELYIK CSOMAG KELL NEKÜNK?" – a szülő nem percben gondolkodik, hanem
-     abban, hogy hány gyereke van és mennyit tanulnak naponta. #}
-  <div class="segito">
-    <h2>{{ t('csomag_segito_cim') }}</h2>
-    <p class="segito-leiras">{{ t('csomag_segito_leiras') }}</p>
-    <div class="segito-racs">
-      <label class="segito-mezo">
-        <span>{{ t('csomag_segito_gyerek') }}</span>
-        <input type="range" id="sg-gyerek" min="1" max="5" step="1" value="1">
-        <b id="sg-gyerek-ki">1</b>
-      </label>
-      <label class="segito-mezo">
-        <span>{{ t('csomag_segito_perc') }}</span>
-        <input type="range" id="sg-perc" min="5" max="60" step="5" value="15">
-        <b id="sg-perc-ki">15</b>
-      </label>
-    </div>
-    <p class="segito-eredmeny">
-      {{ t('csomag_segito_eredmeny') }} <b id="sg-osszes">—</b> {{ t('csomag_perc') }}.
-      <span id="sg-ajanlat"></span>
-    </p>
-  </div>
 
   {% if keret %}
   <div class="sajat">
@@ -255,8 +234,6 @@
           <li>{{ t('csomag_hang_ebbol') }} {{ cs.hangos_perc }} {{ t('csomag_perc_sima') }}</li>
         {% endif %}
         <li>{{ cs.profil }} {{ t('csomag_profil') }}</li>
-        <li>{{ t('csomag_minden_tantargy') }}</li>
-        <li>{{ t('csomag_tananyag') }}</li>
         {% if cs.napi_jelentes %}
           <li>{{ t('csomag_napi_jelentes') }}</li>
         {% else %}
@@ -267,8 +244,6 @@
         {% else %}
           <li class="nincs">{{ t('csomag_kartyak') }}</li>
         {% endif %}
-        <li>{{ t('csomag_pin') }}</li>
-        <li>{{ t('csomag_adatok') }}</li>
       </ul>
 
       {% if cs.kulcs == sajat_csomag %}
@@ -295,6 +270,33 @@
     </div>
     {% endfor %}
   </div>
+
+  {# Ami MINDEN csomagban ugyanaz, azt egyszer írjuk le, nem négyszer. #}
+  <p class="mindben">{{ t('csomag_mindben') }}</p>
+
+  {# „MELYIK CSOMAG KELL NEKÜNK?" – a szülő nem percben gondolkodik, hanem
+     abban, hogy hány gyereke van és mennyit tanulnak naponta. #}
+  <div class="segito">
+    <h2>{{ t('csomag_segito_cim') }}</h2>
+    <p class="segito-leiras">{{ t('csomag_segito_leiras') }}</p>
+    <div class="segito-racs">
+      <label class="segito-mezo">
+        <span>{{ t('csomag_segito_gyerek') }}</span>
+        <input type="range" id="sg-gyerek" min="1" max="5" step="1" value="1">
+        <b id="sg-gyerek-ki">1</b>
+      </label>
+      <label class="segito-mezo">
+        <span>{{ t('csomag_segito_perc') }}</span>
+        <input type="range" id="sg-perc" min="5" max="60" step="5" value="15">
+        <b id="sg-perc-ki">15</b>
+      </label>
+    </div>
+    <p class="segito-eredmeny">
+      {{ t('csomag_segito_eredmeny') }} <b id="sg-osszes">—</b> {{ t('csomag_perc') }}.
+      <span id="sg-ajanlat"></span>
+    </p>
+  </div>
+
 
   <p class="garancia">{{ t('csomag_garancia') }}</p>
 

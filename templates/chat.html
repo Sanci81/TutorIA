@@ -414,14 +414,43 @@
     var quizQuestions = [];
     var quizAnswers = [];
 
-    /* ---------- Tanulási idő követés ---------- */
+    /* ---------- Tanulási idő követés ----------
+       CSAK AZ AKTÍV IDŐ SZÁMÍT. A szülő percet fizet, ezért pontosan
+       meghatározható kell legyen, mi számít bele: az az idő, amíg a gyerek
+       ténylegesen dolgozik. Ha öt percig nem történik semmi – nem ír, nem
+       kattint, nem görget –, vagy ha átvált egy másik lapra, az óra megáll,
+       és csak akkor indul újra, amikor megint csinál valamit.
+
+       A SZAKASZOKAT ÖSSZEADJUK. A korábbi megoldás a szünet után nulláról
+       kezdte a számolást, így a szünet előtti idő elveszett – a mérés tehát
+       hibás volt. Most az aktív szakaszok hossza gyűlik össze. */
     var learningSessionId = null;
-    var learningStartTime = Date.now();
     var inactivityTimer = null;
     var heartbeatTimer = null;
     var learningPaused = false;
+    var aktivPercek = 0;              // a lezárt aktív szakaszok összege
+    var szakaszKezdet = Date.now();   // a most futó aktív szakasz kezdete
     var learningMinutesEl = document.getElementById('learning-minutes-today');
     var INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 perc
+
+    // Mennyi aktív idő telt el eddig, percben.
+    function eltelIdo() {
+        if (learningPaused) return aktivPercek;
+        return aktivPercek + (Date.now() - szakaszKezdet) / 60000;
+    }
+
+    // Az óra megállítása: a most futó szakaszt hozzáadjuk az összeghez.
+    function oraMegall() {
+        if (learningPaused) return;
+        aktivPercek += (Date.now() - szakaszKezdet) / 60000;
+        learningPaused = true;
+    }
+
+    function oraIndul() {
+        if (!learningPaused) return;
+        learningPaused = false;
+        szakaszKezdet = Date.now();
+    }
 
     function startLearningSession() {
         fetch('/api/learning/start', {
@@ -441,8 +470,8 @@
 
     function endLearningSession() {
         if (!learningSessionId) return;
-        var elapsed = (Date.now() - learningStartTime) / 60000;
-        if (learningPaused) elapsed = 0;
+        oraMegall();
+        var elapsed = aktivPercek;
         fetch('/api/learning/end', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -456,8 +485,7 @@
 
     function heartbeat() {
         if (!learningSessionId) return;
-        var elapsed = (Date.now() - learningStartTime) / 60000;
-        if (learningPaused) elapsed = 0;
+        var elapsed = eltelIdo();
         fetch('/api/learning/heartbeat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -473,13 +501,10 @@
     }
 
     function resetInactivity() {
-        if (learningPaused) {
-            learningPaused = false;
-            learningStartTime = Date.now();
-        }
+        oraIndul();
         clearTimeout(inactivityTimer);
         inactivityTimer = setTimeout(function () {
-            learningPaused = true;
+            oraMegall();
             heartbeat();
         }, INACTIVITY_LIMIT);
     }
@@ -494,6 +519,13 @@
     document.addEventListener('keydown', resetInactivity);
     document.addEventListener('touchstart', resetInactivity);
     document.addEventListener('scroll', resetInactivity);
+
+    // Ha a gyerek átvált másik lapra vagy kis méretre teszi az ablakot, az
+    // óra AZONNAL megáll – nem várunk vele öt percet. Visszatéréskor indul.
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) { oraMegall(); heartbeat(); }
+        else { resetInactivity(); }
+    });
 
     // End on unload
     window.addEventListener('beforeunload', function () {

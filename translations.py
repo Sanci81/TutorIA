@@ -834,12 +834,10 @@ TRANSLATIONS = {
     # ── AZ ELŐFIZETÉS OLDAL ──────────────────────────────────────────────
     "csomag_oldal_cim": {"hu": "Csomagok és árak", "es": "Planes y precios"},
     "csomag_oldal_bevezeto": {
-        "hu": "Egy tanulási perc kerül pénzbe, nem a gyerekek száma. Ezért a "
-              "csomagok között az az egy különbség, hogy mennyi időt "
-              "taníthat a program – a keretet a család közösen használja.",
-        "es": "Lo que cuesta es el minuto de estudio, no el número de hijos. "
-              "Por eso la única diferencia entre los planes es cuánto tiempo "
-              "puede enseñar el programa: el tiempo lo comparte la familia.",
+        "hu": "A csomagok között egy különbség van: mennyi időt taníthat a "
+              "program. A keretet a család közösen használja.",
+        "es": "Entre los planes hay una sola diferencia: cuánto tiempo puede "
+              "enseñar el programa. El tiempo lo comparte la familia.",
     },
     "csomag_jelenlegi": {"hu": "A csomagod", "es": "Tu plan"},
     "csomag_ajanlott": {"hu": "Ezt ajánljuk", "es": "Recomendado"},
@@ -857,14 +855,9 @@ TRANSLATIONS = {
     "csomag_perc_sima": {"hu": "tanulási perc", "es": "minutos de estudio"},
     "csomag_perc_egyszer": {"hu": "tanulási perc, egyszeri keret",
                             "es": "minutos de estudio, por una sola vez"},
-    "csomag_hang_mind": {
-        "hu": "Hangos tanítás végig: a tanár felolvassa a magyarázatot, és a "
-              "gyerek beszélve is válaszolhat neki",
-        "es": "Voz durante todo el tiempo: el profesor lee la explicación en "
-              "voz alta y el niño puede contestarle hablando",
-    },
-    "csomag_hang_ebbol": {"hu": "Ebből hangos tanítás:",
-                          "es": "De ese tiempo, con voz:"},
+    "csomag_hang_mind": {"hu": "Hangos tanítás végig",
+                         "es": "Voz durante todo el tiempo"},
+    "csomag_hang_ebbol": {"hu": "Ebből hangos:", "es": "De ese tiempo, con voz:"},
     "csomag_nem_ujul": {"hu": "A keret nem újul meg", "es": "El tiempo no se renueva"},
     "csomag_ujraindul_elseje": {
         "hu": "A keret minden hónap 1-jén újraindul",
@@ -893,16 +886,18 @@ TRANSLATIONS = {
     # SZÁNDÉKOSAN őszinte és óvatos: nem állítjuk, hogy hivatalos tananyag.
     # Egy tanár észrevenné az eltérést, és joggal kifogásolná.
     "csomag_gyik_tananyag": {
-        "hu": "A feladatokat mi állítjuk össze, a magyar és a spanyol "
-              "iskolákban szokásos évfolyam-témakörök alapján. Ez nem "
-              "hivatalos tananyag, és nem helyettesíti az iskolát: gyakorlásra "
-              "és magyarázatra való. Ha valamit hibásnak találsz, írj nekünk, "
-              "és javítjuk.",
-        "es": "Los ejercicios los preparamos nosotros, siguiendo los temas "
-              "habituales de cada curso en los colegios húngaros y españoles. "
-              "No es material oficial ni sustituye al colegio: sirve para "
-              "practicar y entender. Si encuentras un error, escríbenos y lo "
-              "corregimos.",
+        "hu": "A magyar kerettanterv, illetve a spanyol LOMLOE témakörei "
+              "alapján állítjuk össze — de a feladatokat mi írjuk, és "
+              "eltérhetnek attól, amit a gyerek éppen az iskolában vesz. "
+              "Nem hivatalos tananyag, és nem helyettesíti az iskolát: "
+              "gyakorlásra és magyarázatra való. Ha hibát találsz, írj "
+              "nekünk, és javítjuk.",
+        "es": "Los preparamos siguiendo los temas del currículo húngaro y de "
+              "la LOMLOE española, pero los ejercicios los escribimos "
+              "nosotros y pueden diferir de lo que el niño está viendo en "
+              "clase. No es material oficial ni sustituye al colegio: sirve "
+              "para practicar y entender. Si encuentras un error, escríbenos "
+              "y lo corregimos.",
     },
     "csomag_havonta_gomb": {"hu": "havonta", "es": "mensual"},
 
@@ -950,11 +945,21 @@ TRANSLATIONS = {
     "csomag_ujraindul": {"hu": "A kereted újraindul", "es": "Tu tiempo se renueva"},
     "csomag_kovetkezo_dij": {"hu": "A következő díj esedékessége",
                              "es": "Próximo cobro"},
+    "csomag_mindben": {
+        "hu": "Minden csomagban: az évfolyam összes tantárgya · magyar vagy "
+              "spanyol tanterv · szülői kód · az adataitokat bármikor "
+              "letöltheted, a fiókot bármikor törölheted",
+        "es": "En todos los planes: todas las asignaturas del curso · "
+              "currículo húngaro o español · código para padres · puedes "
+              "descargar vuestros datos y borrar la cuenta cuando quieras",
+    },
     "csomag_garancia": {
-        "hu": "30 napos pénzvisszafizetési garancia. Ha nem válik be, "
-              "írsz egy levelet, és visszaküldjük a díjat – indoklás nélkül.",
-        "es": "Garantía de devolución de 30 días. Si no os convence, "
-              "escríbenos y te devolvemos el dinero, sin explicaciones.",
+        "hu": "14 napos elállási jog a jogszabály szerint, és azon felül 30 "
+              "napos pénzvisszafizetés tőlünk: ha nem válik be, írsz egy "
+              "levelet, és visszaküldjük a díjat – indoklás nélkül.",
+        "es": "14 días de derecho de desistimiento por ley y, además, 30 días "
+              "de devolución por nuestra parte: si no os convence, escríbenos "
+              "y te devolvemos el dinero, sin explicaciones.",
     },
     "notify_daily_csomag": {
         "hu": "A napi jelentés a Pro és a Max csomagban érhető el. A heti és "
@@ -962,8 +967,8 @@ TRANSLATIONS = {
         "es": "El informe diario está disponible en los planes Pro y Max. El "
               "semanal y el mensual van incluidos en todos.",
     },
-    "csomag_napi_jelentes": {"hu": "Napi haladási jelentés",
-                             "es": "Informe diario de progreso"},
+    "csomag_napi_jelentes": {"hu": "Napi, heti és havi jelentés",
+                             "es": "Informe diario, semanal y mensual"},
     "csomag_heti_jelentes": {"hu": "Heti és havi jelentés",
                              "es": "Informe semanal y mensual"},
     "csomag_gyik_mikor_cim": {"hu": "Mikor vonjátok le a díjat?",
@@ -989,18 +994,10 @@ TRANSLATIONS = {
     # SZÁNDÉKOSAN nem írjuk, hogy „hivatalos kerettanterv": a tananyagunk a
     # témakörök alapján készült, de eltérhet. Egy tanár észrevenné, és joggal
     # kifogásolná – a félrevezető állítás jogi kockázat is.
-    "csomag_tananyag": {
-        "hu": "A feladatok a gyerek évfolyamának szokásos témakörei szerint "
-              "haladnak, a saját tempójában",
-        "es": "Los ejercicios siguen los temas habituales del curso del niño, "
-              "a su propio ritmo",
-    },
-    "csomag_kartyak": {
-        "hu": "Tudáskártyák és gyűjtőalbum: a jó válaszokért pont jár, abból "
-              "kártyacsomagot lehet bontani",
-        "es": "Cartas de conocimiento y álbum: las respuestas correctas dan "
-              "puntos, y con ellos se abren sobres de cartas",
-    },
+    "csomag_tananyag": {"hu": "Az évfolyam témakörei szerint halad",
+                        "es": "Avanza según los temas del curso"},
+    "csomag_kartyak": {"hu": "Tudáskártyák és gyűjtőalbum",
+                       "es": "Cartas de conocimiento y álbum"},
     "csomag_pin": {
         "hu": "Szülői kód: a gyerek nem tud kilépni és nem írhat át beállítást",
         "es": "Código para padres: el niño no puede salir ni cambiar ajustes",
@@ -1056,13 +1053,20 @@ TRANSLATIONS = {
     "csomag_gyik_perc_cim": {"hu": "Mi az a tanulási perc?",
                              "es": "¿Qué es un minuto de estudio?"},
     "csomag_gyik_perc": {
-        "hu": "Az az idő, amíg a gyerek ténylegesen tanul a programmal. Ha "
-              "közben elmegy uzsonnázni, az nem számít bele. A keret a "
-              "hónap első napján újraindul, és a maradék nem vihető át – "
-              "cserébe nem is kell előre megtippelni, mennyit fogtok tanulni.",
-        "es": "El tiempo que el niño está realmente estudiando con el "
-              "programa. Si se levanta a merendar, eso no cuenta. El tiempo "
-              "se reinicia el día uno de cada mes y no se acumula.",
+        "hu": "Csak az AKTÍV idő számít: az, amíg a gyerek ténylegesen "
+              "dolgozik — ír, válaszol, kattint vagy görget. Ha öt percig "
+              "nem történik semmi, vagy a gyerek átvált egy másik lapra, az "
+              "óra megáll, és csak akkor indul újra, amikor megint csinál "
+              "valamit. A nyitva felejtett beszélgetés tehát nem fogyasztja "
+              "a keretet. A keret a fordulónapon indul újra, és a maradék "
+              "nem vihető át.",
+        "es": "Solo cuenta el tiempo ACTIVO: mientras el niño realmente "
+              "trabaja — escribe, responde, hace clic o se desplaza. Si "
+              "durante cinco minutos no ocurre nada, o cambia a otra "
+              "pestaña, el reloj se para y vuelve a arrancar cuando hace "
+              "algo de nuevo. Una conversación olvidada abierta no consume "
+              "tiempo. El tiempo se renueva en la fecha de renovación y no "
+              "se acumula.",
     },
     "csomag_gyik_profil_cim": {"hu": "Több gyereknek külön kell fizetni?",
                                "es": "¿Hay que pagar por cada hijo?"},
