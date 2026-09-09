@@ -125,6 +125,28 @@
   .kor-nagy  .fszoveg-szo:hover{background:rgba(159,199,240,.14)}
   .kor-nagy  .fszoveg-szo.jelolt{border-bottom-color:#4a9f7e;
                                  background:rgba(74,159,126,.2)}
+  /* ══ ÉPÍTŐ-FELÜLET ═══════════════════════════════════════════════════
+     Fent a mondat épül, lent a kártyakészlet. Koppintásra mozognak – nincs
+     húzogatás, mert az telefonon és kis kézzel megbízhatatlan. */
+  .feladat-epito{width:100%}
+  .fepito-sor{min-height:56px;display:flex;flex-wrap:wrap;gap:8px;
+              padding:10px;border:2px dashed #c6d5e2;border-radius:12px;
+              margin-bottom:14px;align-content:flex-start}
+  .fepito-sor[data-ures="1"]::before{content:"";flex:1}
+  .fepito-keszlet{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .fepito-kartya{font:600 16px/1.2 inherit;color:#22364b;background:#fff;
+                 border:1.5px solid #c6d5e2;border-radius:10px;
+                 padding:10px 14px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .fepito-kartya:hover{border-color:#3fa88f}
+  .fepito-sor .fepito-kartya{background:#eaf6f2;border-color:#3fa88f}
+  .feladat-kesz .fepito-kartya{cursor:default}
+
+  .kor-kicsi .fepito-kartya{font-size:19px;padding:13px 17px}
+  .kor-kicsi .fepito-sor{min-height:66px}
+  .kor-nagy .fepito-kartya{background:#1d2530;border-color:#33404f;color:#dde5ee;
+                           font-size:14.5px;padding:8px 12px}
+  .kor-nagy .fepito-sor{border-color:#33404f}
+  .kor-nagy .fepito-sor .fepito-kartya{background:#24404a;border-color:#4a9f7e}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -501,6 +523,7 @@
         utasitasHianyzo: {{ t('utasitas_hianyzo')|tojson }},
         utasitasValaszt: {{ t('utasitas_valaszt')|tojson }},
         utasitasSzoveg: {{ t('utasitas_szoveg')|tojson }},
+        utasitasEpito: {{ t('utasitas_epito')|tojson }},
         utasitasAltalanos: {{ t('utasitas_altalanos')|tojson }},
         gombNehezebb: {{ t('gomb_nehezebb')|tojson }},
         gombPelda: {{ t('gomb_pelda')|tojson }},
@@ -930,6 +953,7 @@
         if (tipus === 'hianyzo') { return L.utasitasHianyzo; }
         if (tipus === 'valaszt') { return L.utasitasValaszt; }
         if (tipus === 'szoveg') { return L.utasitasSzoveg; }
+        if (tipus === 'epito') { return L.utasitasEpito; }
         return L.utasitasAltalanos;
     }
 
@@ -1054,6 +1078,7 @@
         if (f.tipus === 'sorrend') { return sorbarendezes(f); }
         if (f.tipus === 'hianyzo') { return hianyzoSzo(f); }
         if (f.tipus === 'szoveg') { return szovegJelolo(f); }
+        if (f.tipus === 'epito') { return epitoKartyak(f); }
         return null;
     }
 
@@ -1132,6 +1157,75 @@
         kesz.addEventListener('click', function () {
             if (!jeloltek.length) { return; }
             feladatKuld(doboz, jeloltek.join(', '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
+    }
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // ÉPÍTŐ-FELÜLET
+    //
+    // A gyerek kártyákból rak össze egy mondatot. Nincs húzogatás: a
+    // kártyára koppint, és felkerül a sorba; a sorban lévőre koppint, és
+    // visszakerül a készletbe. Ez telefonon is működik, és egy hatéves is
+    // megérti egy próbálkozásból.
+    // ══════════════════════════════════════════════════════════════════
+    function epitoKartyak(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-epito';
+
+        if (f.kerdes) {
+            var k = document.createElement('p');
+            k.className = 'fsz-kerdes';
+            k.textContent = f.kerdes;
+            doboz.appendChild(k);
+        }
+
+        var sor = document.createElement('div');
+        sor.className = 'fepito-sor';
+        sor.setAttribute('data-ures', '1');
+        doboz.appendChild(sor);
+
+        var keszlet = document.createElement('div');
+        keszlet.className = 'fepito-keszlet';
+        doboz.appendChild(keszlet);
+
+        function frissit() {
+            var van = sor.querySelectorAll('.fepito-kartya').length > 0;
+            sor.setAttribute('data-ures', van ? '0' : '1');
+            kesz.disabled = !van;
+        }
+
+        function kartya(szo, hova) {
+            var g = document.createElement('button');
+            g.type = 'button';
+            g.className = 'fepito-kartya';
+            g.textContent = szo;
+            g.addEventListener('click', function () {
+                if (doboz.classList.contains('feladat-kesz')) { return; }
+                // A sorból vissza a készletbe, a készletből a sor végére.
+                (g.parentNode === sor ? keszlet : sor).appendChild(g);
+                frissit();
+            });
+            hova.appendChild(g);
+            return g;
+        }
+
+        keverd(f.elemek || []).forEach(function (szo) { kartya(szo, keszlet); });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.disabled = true;
+        kesz.addEventListener('click', function () {
+            var szavak = [];
+            sor.querySelectorAll('.fepito-kartya').forEach(function (e) {
+                szavak.push(e.textContent);
+            });
+            if (!szavak.length) { return; }
+            feladatKuld(doboz, szavak.join(' '));
         });
         doboz.appendChild(kesz);
         return doboz;
@@ -2094,6 +2188,8 @@
                 var d = res.data;
                 var reviewHtml = buildReviewHtml(d.review);
                 if (d.passed) {
+                    // A lecke CSAK a sikeres teszttel zárul – a sín is itt ér célba.
+                    leckeVege = true; leckeAllomasra(4);
                     var congratsHtml = '';
                     if (d.congrats_message) {
                         congratsHtml = '<div class="chat-bubble chat-bubble-assistant"><div class="chat-bubble-inner">' +
@@ -2553,6 +2649,8 @@
                     if (d.sidebar) renderSidebar(d.sidebar);
                     if (d.vocabulary) updateVocabulary(d.vocabulary, d.topic_name);
                     updateGamification(d.xp, d.game_level, d.coins, d.penztarca);
+                    // Hangos teszt: a sín ugyanúgy célba ér, mint írásban.
+                    if (d.passed) { leckeVege = true; leckeAllomasra(4); }
                     if (d.topic_done) {
                         setTimeout(function () {
                             confetti({

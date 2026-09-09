@@ -2763,6 +2763,20 @@ def _feladat_parse(text: str, *, grade: int | None = None,
             kinalat = [str(x).strip()[:40] for x in szavak if str(x).strip()][:6]
         return {"tipus": "hianyzo", "mondat": mondat, "szavak": kinalat}
 
+    if tipus == "epito":
+        # ÉPÍTŐ-FELÜLET: a gyerek kártyákból RAK ÖSSZE valamit. Angol
+        # mondat szórendje, magyar mondat szerkezete, egy folyamat lépései.
+        # Az "elemek" a HELYES sorrendben jönnek — a böngésző keveri meg
+        # őket, ahogy a sorbarendezésnél is.
+        elemek = adat.get("elemek")
+        if not isinstance(elemek, list):
+            return None
+        tiszta = [str(e).strip()[:40] for e in elemek if str(e).strip()][:10]
+        if len(tiszta) < 3:
+            return None
+        return {"tipus": "epito", "elemek": tiszta,
+                "kerdes": str(adat.get("kerdes") or "").strip()[:140]}
+
     if tipus == "szoveg":
         # SZÖVEG-FELÜLET: a gyerek nem beír, hanem BELEJELÖL a szövegbe.
         # Erre épül a magyar nyelvtan (húzd alá az állítmányt), az irodalom
@@ -5019,6 +5033,12 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    A "kerdes" rövid, egy mondat: ez kerül a feladat fölé, és hangos módban
    ezt mondja ki a felolvasó. A megoldást NE írd bele.
 
+8) ÉPÍTÉS KÁRTYÁKBÓL — a gyerek szókártyákat rak sorba, és abból lesz a
+   mondat. Idegen nyelv szórendje, magyar mondatszerkezet, egy folyamat
+   lépései. Az elemeket HELYES sorrendben add meg; a program megkeveri:
+   <FELADAT>{"tipus":"epito","elemek":["I","am","going","to","school"],"kerdes":"Rakd össze a mondatot!"}</FELADAT>
+   Három és tíz elem között.
+
 ⛔ SZÁMOLÁSNÁL SOHA NE ADJ VÁLASZGOMBOKAT.
 Ha a kérdés az, hogy MENNYI valami, a "szamolo" vagy a "szam" típust
 használd. A felkínált lehetőségekből a gyerek kitalálja az eredményt
@@ -5085,6 +5105,13 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    <FELADAT>{"tipus":"szoveg","szoveg":"The cat are sleeping on the sofa.","kerdes":"¿Qué dos palabras no concuerdan?","tobb":true}</FELADAT>
    "kerdes" es una sola frase corta: aparece encima del ejercicio y el
    lector la dice en voz alta. NO incluyas la solución.
+
+8) CONSTRUIR CON TARJETAS — el niño ordena tarjetas de palabras y así
+   forma la frase. Orden de palabras en lengua extranjera, estructura de
+   la frase, pasos de un proceso. Da los elementos en el orden CORRECTO;
+   el programa los baraja:
+   <FELADAT>{"tipus":"epito","elemek":["Yo","voy","a","la","escuela"],"kerdes":"¡Construye la frase!"}</FELADAT>
+   Entre tres y diez elementos.
 
 ⛔ EN UN CÁLCULO NUNCA DES BOTONES. Si preguntas CUÁNTO es algo, usa
 "szamolo" o "szam". Con botones el niño adivina en vez de calcular.
@@ -5285,7 +5312,12 @@ Tema actual: {current_topic}
             )
 
         prompt += (
-            "\nSi un tema está claramente completado (oculto): <TOPIC_COMPLETE>\n"
+            "\nCuando hayas TERMINADO la materia del tema (oculto): <TOPIC_COMPLETE>\n"
+            "Esto NO cierra la lección: solo abre la prueba final. La lección\n"
+            "se cierra únicamente al aprobar la prueba, y el siguiente tema se\n"
+            "desbloquea solo entonces. Por eso, al poner esta marca, dile al\n"
+            "niño que ya viene la prueba final del tema y anímale a hacerla.\n"
+            "NUNCA le digas que la lección está terminada antes de la prueba.\n"
         )
 
         prompt += f"""
@@ -5520,7 +5552,12 @@ Tema actual: {current_topic}
             )
 
         prompt += (
-            "\nSi un tema está claramente completado (oculto): <TOPIC_COMPLETE>\n"
+            "\nCuando hayas TERMINADO la materia del tema (oculto): <TOPIC_COMPLETE>\n"
+            "Esto NO cierra la lección: solo abre la prueba final. La lección\n"
+            "se cierra únicamente al aprobar la prueba, y el siguiente tema se\n"
+            "desbloquea solo entonces. Por eso, al poner esta marca, dile al\n"
+            "niño que ya viene la prueba final del tema y anímale a hacerla.\n"
+            "NUNCA le digas que la lección está terminada antes de la prueba.\n"
         )
 
         prompt += f"""
@@ -5876,7 +5913,14 @@ Jelenlegi témakör: {current_topic}
     if level == 0:
         prompt += "\nSZINTFELMÉRŐ MÓD: Tegyél fel 5 játékos kérdést az anyagból, majd add meg: <LEVEL:X> (X=1-5).\n"
 
-    prompt += "\nHa egy témakör biztosan teljesítve van (rejtett): <TOPIC_COMPLETE>\n"
+    prompt += (
+        "\nHa VÉGIGVETTED a témakör anyagát (rejtett): <TOPIC_COMPLETE>\n"
+        "Ez NEM zárja le a leckét, csak elindítja a záró tesztet. A leckét\n"
+        "egyedül a sikeres teszt zárja le, és a következő lecke is csak\n"
+        "akkor nyílik ki. Ezért: amikor kiadod ezt a jelölőt, mondd meg a\n"
+        "gyereknek, hogy jöhet a lecke záró tesztje, és biztasd rá.\n"
+        "SOHA ne mondd neki, hogy kész a lecke, amíg a tesztet le nem tette.\n"
+    )
 
     if is_foreign_language and lang:
         prompt += f"""
@@ -8004,17 +8048,23 @@ def child_chat_send(child_id: int):
         level = level_set
 
     topic_names = [t["name"] for t in catalog]
-    if topic_done and current_topic and current_topic in topic_names:
-        completed, last_pos = _chat_advance_topic(progress, topic_names, current_topic)
-        if last_pos is None and completed:
-            last_pos = topic_names[-1] if topic_names else current_topic
+    # ── A LECKE VÉGÉN TESZT VAN. NINCS KIVÉTEL. ───────────────────────
+    # Korábban a tanár <TOPIC_COMPLETE> jelölője MAGÁTÓL lezárta a
+    # témakört, és nyitotta a következőt — teszt nélkül, csak azon
+    # múlva, hogy a modell mikor érezte késznek. Így egy lecke akkor is
+    # „elvégzett" lett, ha a gyerek semmit nem tudott belőle.
+    #
+    # Innentől a jelölő CSAK annyit jelent: a tananyag végigment, jöhet
+    # a teszt. A témakört egyedül a SIKERES TESZT zárja le (a
+    # /teszt/ertekel útvonalon), és a következő lecke is csak akkor
+    # nyílik ki. Előreugrani a szintfelmérővel lehet, ahogy eddig is.
+    tanulas_kesz = bool(topic_done)   # a tananyag végigment
+    topic_done = False                # de a lecke NINCS lezárva
 
-    # XP és game_level számítás
+    # XP és game_level: a lecke lezárásáért JÁRÓ jutalom is a teszthez
+    # került. Itt már nincs mit adni.
     new_xp = progress.get("xp", 0)
     new_game_level = progress.get("game_level", 1)
-    if topic_done:
-        new_xp += 50
-        new_game_level = (new_xp // 200) + 1
 
     # ── PONT: a befejezett leckéért és a lezárult szintfelmérőért ──────
     # A pont a bolt fizetőeszköze. Kártyát a gyerek NEM közvetlenül a
@@ -8143,11 +8193,18 @@ def child_chat_send(child_id: int):
             "placement_mode": progress.get("level", 0) == 0,
             "sidebar": sidebar,
             "vocabulary": vocabulary,
-            "show_test_offer": "teszt" in reply.lower()
+            # A TESZT GOMB nem szókeresésen múlik többé. Eddig az döntött,
+            # hogy a "teszt" szó szerepel-e a tanár válaszában — ha csak
+            # megemlítette, felugrott; ha "próbát" mondott, nem. Mostantól
+            # a tananyag végigmenetele nyitja meg, és ha egyszer kinyílt,
+            # nyitva is marad, amíg a gyerek le nem teszi.
+            "show_test_offer": bool(tanulas_kesz)
             or "tesztet" in reply.lower(),
             "xp": progress.get("xp", 0),
             "game_level": progress.get("game_level", 1),
             "topic_done": topic_done,
+            # A lecke-sín ebből tudja, hogy a Teszt állomásra ért a gyerek.
+            "tanulas_kesz": bool(tanulas_kesz),
             "figures": figures,
             # Beírós / kattintós gyakorló feladat, ha a tanár kért egyet.
             "feladat": feladat,

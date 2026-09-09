@@ -293,6 +293,8 @@ TRANSLATIONS = {
                          "es": "Elige la respuesta correcta."},
     "utasitas_szoveg": {"hu": "Kattints rá a szövegben.",
                        "es": "Pulsa la palabra en el texto."},
+    "utasitas_epito": {"hu": "Koppints a szavakra a helyes sorrendben.",
+                      "es": "Pulsa las palabras en el orden correcto."},
     "utasitas_altalanos": {"hu": "Oldd meg a feladatot.",
                            "es": "Resuelve el ejercicio."},
 
