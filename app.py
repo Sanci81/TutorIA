@@ -6680,7 +6680,7 @@ def _call_ai_for_quiz(
 
 def _call_ai_for_chat(
     system_prompt: str, history: list[dict[str, str]], user_message: str,
-    child_id: int | None = None,
+    child_id: int | None = None, idokorlat: float = 40.0, ujra: int = 1,
 ) -> str:
     api_key = _openai_api_key()
     if not api_key:
@@ -6700,7 +6700,8 @@ def _call_ai_for_chat(
     # A gyerek ELŐTT ül és vár. 40 mp + egy újrapróbálás ≈ 85 mp a legrosszabb
     # esetben – a böngésző 90 mp-nél szakítja meg a kérést, tehát még épp
     # belefér, és nem marad örökre pörgő pont a képernyőn.
-    client = _openai_client(api_key, request_timeout=40.0, max_retries=1)
+    client = _openai_client(api_key, request_timeout=max(8.0, idokorlat),
+                            max_retries=max(0, ujra))
     response = client.chat.completions.create(
         model="gpt-5.4-mini",
         messages=messages,
@@ -7385,6 +7386,22 @@ def child_chat_send(child_id: int):
     # lehet utólag megfogni: a naplóban látszani fog, ha egy kör 30 mp fölé
     # megy, és az is, melyik tantárgynál.
     _kezdet = time.monotonic()
+
+    # ── IDŐKERET AZ EGÉSZ KÖRRE ────────────────────────────────────────
+    # A böngésző 90 másodpercnél megszakítja a kérést (KERES_IDOKORLAT a
+    # chat.html-ben). Egy kör viszont TÖBB AI-hívásból is állhat: a rendes
+    # válasz, utána esetleg egy ellentmondás-újrakérdezés, egy ismételt-
+    # kérdés-újrakérdezés, majd ábránként egy ellenőrzés. Ezek egymás után
+    # simán elvitték a 90 mp-et – a szerver még dolgozott, a böngésző már
+    # rég feladta, a gyerek meg csak a pontokat nézte. Ezért innentől van
+    # egy közös keret: ha nincs benne idő, a plusz kör KIMARAD, és inkább
+    # az első választ adjuk ki. Késve érkező tökéletes válasznál jobb az
+    # időben érkező jó válasz.
+    _IDOKERET = 70.0
+
+    def _maradek() -> float:
+        return _IDOKERET - (time.monotonic() - _kezdet)
+
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
@@ -7547,7 +7564,12 @@ def child_chat_send(child_id: int):
     # Egy gyerek ilyenkor a dicséretet hiszi el. Ha a válasz ellentmond
     # önmagának, egyszer visszakérdezünk – ez ritka, tehát olcsó.
     _baj = ellenoriz.ellentmondas(raw_reply)
-    if _baj:
+    if _baj and _maradek() < 20:
+        # Nincs idő újrakérdezni. Az első választ adjuk ki – az ellentmondás
+        # benne marad, de ez még mindig sokkal jobb, mint a néma lefagyás.
+        print(f"[ELLENORZES] {_baj} – NINCS IDO ujrakeresre "
+              f"({_maradek():.0f}s)", flush=True)
+    elif _baj:
         print(f"[ELLENORZES] {_baj} – ujrakeres", flush=True)
         try:
             _ujra = _call_ai_for_chat(
@@ -7556,7 +7578,8 @@ def child_chat_send(child_id: int):
                 + _baj + "). Számold ki ÚJRA, lépésről lépésre. CSAK akkor "
                 "dicsérj, ha a gyerek válasza pontosan egyezik a te kiszámolt "
                 "eredményeddel; ha nem egyezik, kedvesen javítsd ki.",
-                history, user_text, child_id=child_id)
+                history, user_text, child_id=child_id,
+                idokorlat=min(35.0, _maradek() - 6), ujra=0)
             if ellenoriz.ellentmondas(_ujra) is None:
                 raw_reply = _ujra
                 print("[ELLENORZES] a masodik valasz rendben", flush=True)
@@ -7577,7 +7600,13 @@ def child_chat_send(child_id: int):
         "",
     )
     _ismetles = ellenoriz.ismetelt_kerdes(raw_reply, _elozo_tanari)
-    if _ismetles:
+    if _ismetles and _maradek() < 20:
+        # Nincs idő új választ kérni – de a megismételt kérdést AI nélkül,
+        # helyben is ki tudjuk venni. A dicséret és a magyarázat marad.
+        raw_reply = ellenoriz.ismetelt_kerdes_nelkul(raw_reply, _elozo_tanari)
+        print(f"[ELLENORZES] ismetelt kerdes – NINCS IDO ujrakeresre "
+              f"({_maradek():.0f}s), kerdes kivetve", flush=True)
+    elif _ismetles:
         print(f"[ELLENORZES] ismetelt kerdes: {_ismetles!r} – ujrakeres",
               flush=True)
         try:
@@ -7589,7 +7618,8 @@ def child_chat_send(child_id: int):
                 "majd TANÍTS EGY ÚJ dolgot (szót vagy fordulatot) magyarázattal "
                 "és lefordított példamondattal, és a végén EGY ÚJ kérdést tegyél "
                 "fel. A már megválaszolt kérdést NE tedd fel újra.",
-                history, user_text, child_id=child_id)
+                history, user_text, child_id=child_id,
+                idokorlat=min(35.0, _maradek() - 6), ujra=0)
             if _ujra and not ellenoriz.ismetelt_kerdes(_ujra, _elozo_tanari):
                 raw_reply = _ujra
                 print("[ELLENORZES] a masodik valasz mar tovabblep", flush=True)
@@ -7697,11 +7727,21 @@ def child_chat_send(child_id: int):
         szoveg=(reply or "")[:200],
     )
 
-    if figures and abra_ellenor.bekapcsolva():
+    if figures and abra_ellenor.bekapcsolva() and _maradek() < 12:
+        # Az ábra-ellenőrzés ábránként egy külön AI-hívás. Ha már nincs idő,
+        # inkább menjen ki az ábra ellenőrzés nélkül, mint hogy a gyerek
+        # semmit ne kapjon.
+        print(f"[ABRA-ELLENOR] NINCS IDO ({_maradek():.0f}s) – kihagyva",
+              flush=True)
+    elif figures and abra_ellenor.bekapcsolva():
         _kulcs = os.environ.get("OPENAI_API_KEY")
         if _kulcs:
             try:
-                _kliens = _openai_client(_kulcs, request_timeout=abra_ellenor.IDOKORLAT)
+                _kliens = _openai_client(
+                    _kulcs,
+                    request_timeout=min(abra_ellenor.IDOKORLAT,
+                                        max(6.0, _maradek() - 4)),
+                    max_retries=0)
                 _es = (_active_curriculum() or "HU").upper() == "ES"
                 _megmarad = []
                 _elso_indok = ""
