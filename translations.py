@@ -297,6 +297,9 @@ TRANSLATIONS = {
                       "es": "Pulsa las palabras en el orden correcto."},
     "utasitas_abra": {"hu": "Tedd a neveket a számok mellé.",
                      "es": "Coloca los nombres junto a los números."},
+    "utasitas_modell": {"hu": "Húzd a csúszkát, és nézd, mi történik.",
+                       "es": "Mueve el deslizador y mira qué pasa."},
+    "modell_cel": {"hu": "Cél:", "es": "Objetivo:"},
     "utasitas_altalanos": {"hu": "Oldd meg a feladatot.",
                            "es": "Resuelve el ejercicio."},
 

@@ -178,6 +178,36 @@
   .kor-nagy .fabra-hely{border-color:#33404f}
   .kor-nagy .fabra-hely .fabra-kartya{background:#24404a;border-color:#4a9f7e}
   .kor-nagy .fabra-jel{background:#4a9f7e}
+  /* A kivonandó sor üres helyiértéke BEÍRHATÓ – 5600 − 800 esetén a 800
+     elé eső hely a kölcsönkérés jegyzetének a helye. */
+  .fsz-ures-mezo{border:2px dashed #cbd8e2;border-radius:8px;background:#fcfdfe;
+                 text-align:center;font:inherit;color:#7a5c14;padding:0}
+  .fsz-ures-mezo:focus{outline:none;border-color:#3fa88f;background:#f2fbf8}
+  /* ══ MODELL-FELÜLET ══════════════════════════════════════════════════
+     Csúszka + növekvő oszlop. A célvonal végig látszik, hogy a gyereknek
+     legyen mihez igazodnia, és lássa, MERRE kell mozdulnia. */
+  .feladat-modell{width:100%}
+  .fmod-cel{font-size:14px;font-weight:700;color:#8a6a14;margin-bottom:10px}
+  .fmod-sav{position:relative;height:30px;background:#eef3f8;border-radius:8px;
+            overflow:hidden;margin-bottom:12px}
+  .fmod-sav i{display:block;height:100%;width:0;border-radius:8px;
+              background:linear-gradient(90deg,#7fc4b2,#3fa88f);
+              transition:width .12s linear}
+  .fmod-celvonal{position:absolute;top:0;bottom:0;width:3px;background:#e8a317;
+                 border-radius:2px}
+  .fmod-kijelzo{font:700 26px/1.2 inherit;color:#22364b;margin-bottom:14px;
+                text-align:center}
+  .fmod-talalt .fmod-kijelzo{color:#2f8f60}
+  .fmod-talalt .fmod-sav i{background:linear-gradient(90deg,#6fd0a2,#2f8f60)}
+  .fmod-csuszka{width:100%;margin:0 0 18px;accent-color:#3fa88f}
+
+  .kor-kicsi .fmod-kijelzo{font-size:32px}
+  .kor-kicsi .fmod-sav{height:38px}
+  .kor-nagy .fmod-kijelzo{font-size:20px;color:#eef4fa;
+                          font-family:"Consolas",monospace}
+  .kor-nagy .fmod-sav{background:#232c37}
+  .kor-nagy .fmod-cel{color:#d6b25e}
+  .kor-nagy .fmod-talalt .fmod-kijelzo{color:#6fd0a2}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -556,6 +586,8 @@
         utasitasSzoveg: {{ t('utasitas_szoveg')|tojson }},
         utasitasEpito: {{ t('utasitas_epito')|tojson }},
         utasitasAbra: {{ t('utasitas_abra')|tojson }},
+        utasitasModell: {{ t('utasitas_modell')|tojson }},
+        modellCel: {{ t('modell_cel')|tojson }},
         utasitasAltalanos: {{ t('utasitas_altalanos')|tojson }},
         gombNehezebb: {{ t('gomb_nehezebb')|tojson }},
         gombPelda: {{ t('gomb_pelda')|tojson }},
@@ -987,6 +1019,7 @@
         if (tipus === 'szoveg') { return L.utasitasSzoveg; }
         if (tipus === 'epito') { return L.utasitasEpito; }
         if (tipus === 'abra') { return L.utasitasAbra; }
+        if (tipus === 'modell') { return L.utasitasModell; }
         return L.utasitasAltalanos;
     }
 
@@ -1113,6 +1146,7 @@
         if (f.tipus === 'szoveg') { return szovegJelolo(f); }
         if (f.tipus === 'epito') { return epitoKartyak(f); }
         if (f.tipus === 'abra') { return abraCimkezo(f); }
+        if (f.tipus === 'modell') { return modellCsuszka(f); }
         return null;
     }
 
@@ -1378,6 +1412,91 @@
         return doboz;
     }
 
+
+    // ══════════════════════════════════════════════════════════════════
+    // MODELL-FELÜLET
+    //
+    // A gyerek húz egy csúszkát, és AZONNAL LÁTJA, mi történik: nő az
+    // oszlop, változik a szám. Ez az egyetlen felület, ami olyat mutat
+    // meg, amit szöveggel nem lehet elmondani — hogy két mennyiség
+    // EGYÜTT mozog.
+    //
+    // A szorzót és a célt a szerver ellenőrizte: a feladat biztosan
+    // megoldható egész csúszkaállásból.
+    // ══════════════════════════════════════════════════════════════════
+    function modellCsuszka(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-modell';
+
+        if (f.kerdes) {
+            var k = document.createElement('p');
+            k.className = 'fsz-kerdes';
+            k.textContent = f.kerdes;
+            doboz.appendChild(k);
+        }
+
+        var egyseg = f.egyseg ? (' ' + f.egyseg) : '';
+
+        // A CÉL végig látszik, hogy legyen mihez igazodni.
+        var cel = document.createElement('div');
+        cel.className = 'fmod-cel';
+        cel.textContent = L.modellCel + ' ' + f.cel + egyseg;
+        doboz.appendChild(cel);
+
+        // Az oszlop: ez teszi láthatóvá az összefüggést.
+        var savKeret = document.createElement('div');
+        savKeret.className = 'fmod-sav';
+        var sav = document.createElement('i');
+        savKeret.appendChild(sav);
+        var celVonal = document.createElement('b');
+        celVonal.className = 'fmod-celvonal';
+        savKeret.appendChild(celVonal);
+        doboz.appendChild(savKeret);
+
+        var kijelzo = document.createElement('div');
+        kijelzo.className = 'fmod-kijelzo';
+        doboz.appendChild(kijelzo);
+
+        var csuszka = document.createElement('input');
+        csuszka.type = 'range';
+        csuszka.className = 'fmod-csuszka';
+        csuszka.min = String(f.min);
+        csuszka.max = String(f.max);
+        csuszka.step = '1';
+        csuszka.value = String(f.min);
+        doboz.appendChild(csuszka);
+
+        // A sáv skálája: a legnagyobb elérhető érték és a cél közül a
+        // nagyobbik – így a célvonal mindig a sávon BELÜL van.
+        var teto = Math.max(Math.abs(f.max * f.szorzo),
+                            Math.abs(f.min * f.szorzo), Math.abs(f.cel)) || 1;
+        celVonal.style.left = (100 * Math.abs(f.cel) / teto) + '%';
+
+        function frissit() {
+            var x = Number(csuszka.value);
+            var ered = x * f.szorzo;
+            kijelzo.textContent = x + ' × ' + f.szorzo + ' = ' + ered + egyseg;
+            sav.style.width = Math.min(100, 100 * Math.abs(ered) / teto) + '%';
+            var talalt = (ered === f.cel);
+            doboz.classList.toggle('fmod-talalt', talalt);
+            kesz.disabled = false;      // rossz állással is beküldhet
+        }
+        csuszka.addEventListener('input', frissit);
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var x = Number(csuszka.value);
+            feladatKuld(doboz, x + ' × ' + f.szorzo + ' = ' + (x * f.szorzo) + egyseg);
+        });
+        doboz.appendChild(kesz);
+
+        frissit();
+        return doboz;
+    }
+
     function feladatKuld(doboz, szoveg) {
         if (!szoveg) { return; }
         doboz.classList.add('feladat-kesz');
@@ -1395,7 +1514,7 @@
         var doboz = document.createElement('div');
         doboz.className = 'feladat feladat-szamolo';
 
-        function sor(szam, jel) {
+        function sor(szam, jel, irhato) {
             var s = document.createElement('div');
             s.className = 'fsz-sor';
             var j = document.createElement('span');
@@ -1405,10 +1524,25 @@
             var sz = String(szam).padStart(szelesseg, ' ');
             for (var i = 0; i < sz.length; i++) {
                 if (sz[i] === ' ') {
-                    // ÜRES HELYIÉRTÉK a kivonandó (vagy a rövidebb) sorban.
-                    // Nem hagyjuk üresen: halvány kockát rakunk oda, hogy a
-                    // gyerek lássa, ez az oszlop is számít – abból a jegyből
-                    // is „kivonunk", csak nullát.
+                    // ÜRES HELYIÉRTÉK a kivonandó (rövidebb) sorban.
+                    // 5600 − 800 esetén a 800 elé egy hely kimarad, és a
+                    // kölcsönkérésnél épp ide kell jegyzetelni – ezért ez
+                    // nem néma kocka, hanem BEÍRHATÓ mező, mint a füzetben.
+                    // Nem küldjük el és nem ellenőrizzük: a gyerek jegyzete.
+                    if (irhato) {
+                        var ui = document.createElement('input');
+                        ui.type = 'text';
+                        ui.inputMode = 'numeric';
+                        ui.maxLength = 1;
+                        ui.className = 'fsz-jegy fsz-ures fsz-ures-mezo';
+                        ui.title = L.feladatMaradek;
+                        ui.setAttribute('aria-label', L.feladatMaradek);
+                        ui.addEventListener('input', function () {
+                            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                        });
+                        s.appendChild(ui);
+                        continue;
+                    }
                     var u = document.createElement('span');
                     u.className = 'fsz-jegy fsz-ures';
                     s.appendChild(u);
@@ -1447,7 +1581,7 @@
         doboz.appendChild(maradek);
 
         doboz.appendChild(sor(f.a, ''));
-        doboz.appendChild(sor(f.b, f.jel));
+        doboz.appendChild(sor(f.b, f.jel, true));
 
         var vonal = document.createElement('div');
         vonal.className = 'fsz-vonal';

@@ -2763,6 +2763,40 @@ def _feladat_parse(text: str, *, grade: int | None = None,
             kinalat = [str(x).strip()[:40] for x in szavak if str(x).strip()][:6]
         return {"tipus": "hianyzo", "mondat": mondat, "szavak": kinalat}
 
+    if tipus == "modell":
+        # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
+        # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
+        # matek (szorzás, arány, függvény meredeksége). Ez az egyetlen
+        # felület, ami olyat mutat meg, amit szöveggel nem lehet.
+        #
+        # A SZÁMOLÁST MI VÉGEZZÜK, nem a modell: csak egy szorzót és egy
+        # célszámot fogadunk el, a képletet nem a nyelvi modell adja. Egy
+        # elszámolt géppel gyakoroltatni rosszabb, mint nem gyakoroltatni.
+        try:
+            legkisebb = int(adat.get("min", 0))
+            legnagyobb = int(adat.get("max", 10))
+            szorzo = int(adat.get("szorzo", 1))
+            cel = int(adat.get("cel"))
+        except Exception:
+            return None
+        if szorzo == 0 or legnagyobb <= legkisebb:
+            return None
+        if not (-1000 <= legkisebb < legnagyobb <= 1000):
+            return None
+        if legnagyobb - legkisebb > 100:
+            return None      # 100 fölött a csúszka pontatlan és idegesítő
+        # A feladatnak MEGOLDHATÓNAK kell lennie: a cél pontosan kijöjjön
+        # egy egész csúszkaállásból, a tartományon belül.
+        if cel % szorzo != 0:
+            return None
+        megoldas = cel // szorzo
+        if not (legkisebb <= megoldas <= legnagyobb):
+            return None
+        return {"tipus": "modell", "min": legkisebb, "max": legnagyobb,
+                "szorzo": szorzo, "cel": cel,
+                "egyseg": str(adat.get("egyseg") or "").strip()[:12],
+                "kerdes": str(adat.get("kerdes") or "").strip()[:140]}
+
     if tipus == "abra":
         # ÁBRA-FELÜLET: a tanár rajzol egy SVG-t, amin SZÁMOK vannak
         # (1, 2, 3...), a gyerek pedig a számokhoz rendeli a neveket.
@@ -5086,6 +5120,16 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    megnevezett részhez tartozzon — a NEVET ne írd rá a rajzra, mert akkor
    nincs mit megoldani.
 
+10) MODELL CSÚSZKÁVAL — fizika, kémia, matek: amikor azt kell MEGLÁTNI,
+   hogyan függ egyik mennyiség a másiktól. A gyerek húzza a csúszkát, és
+   rögtön látja az eredményt egy növekvő oszlopon:
+   <FELADAT>{"tipus":"modell","min":0,"max":12,"szorzo":3,"cel":21,"egyseg":"cm","kerdes":"Állítsd be, hogy a hossz 21 cm legyen!"}</FELADAT>
+   A kijelzés MINDIG: csúszka × szorzo = eredmény. A "cel" az a szám,
+   amit el kell érni. FONTOS: a célnak oszthatónak kell lennie a
+   szorzóval, és az eredménynek a tartományon belül kell lennie —
+   különben a feladat megoldhatatlan, és a program eldobja.
+   Az "egyseg" elhagyható (cm, kg, N, ml).
+
 ⛔ SZÁMOLÁSNÁL SOHA NE ADJ VÁLASZGOMBOKAT.
 Ha a kérdés az, hogy MENNYI valami, a "szamolo" vagy a "szam" típust
 használd. A felkínált lehetőségekből a gyerek kitalálja az eredményt
@@ -5168,6 +5212,16 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    Entre dos y seis etiquetas. El NÚMERO debe verse bien y corresponder a
    la parte; NO escribas el nombre en el dibujo, o no quedaría nada que
    resolver.
+
+10) MODELO CON DESLIZADOR — física, química, matemáticas: cuando hay que
+   VER cómo depende una magnitud de otra. El niño mueve el deslizador y ve
+   el resultado al instante en una barra que crece:
+   <FELADAT>{"tipus":"modell","min":0,"max":12,"szorzo":3,"cel":21,"egyseg":"cm","kerdes":"¡Ajusta la longitud a 21 cm!"}</FELADAT>
+   La pantalla siempre muestra: deslizador × szorzo = resultado. "cel" es
+   el número que hay que alcanzar. IMPORTANTE: "cel" debe ser divisible
+   entre "szorzo" y el resultado debe caber en el rango; si no, el
+   ejercicio sería irresoluble y el programa lo descarta.
+   "egyseg" es opcional (cm, kg, N, ml).
 
 ⛔ EN UN CÁLCULO NUNCA DES BOTONES. Si preguntas CUÁNTO es algo, usa
 "szamolo" o "szam". Con botones el niño adivina en vez de calcular.
