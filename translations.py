@@ -295,6 +295,8 @@ TRANSLATIONS = {
                        "es": "Pulsa la palabra en el texto."},
     "utasitas_epito": {"hu": "Koppints a szavakra a helyes sorrendben.",
                       "es": "Pulsa las palabras en el orden correcto."},
+    "utasitas_abra": {"hu": "Tedd a neveket a számok mellé.",
+                     "es": "Coloca los nombres junto a los números."},
     "utasitas_altalanos": {"hu": "Oldd meg a feladatot.",
                            "es": "Resuelve el ejercicio."},
 

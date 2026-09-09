@@ -147,6 +147,37 @@
                            font-size:14.5px;padding:8px 12px}
   .kor-nagy .fepito-sor{border-color:#33404f}
   .kor-nagy .fepito-sor .fepito-kartya{background:#24404a;border-color:#4a9f7e}
+  /* ══ ÁBRA-FELÜLET ════════════════════════════════════════════════════
+     Fent a rajz a számokkal, alatta a számozott sorok, legalul a
+     névkártyák. Koppintásra mozognak, mint az építő-felületen. */
+  .feladat-abra{width:100%}
+  /* A rajz ne nyomja le a címkéket a képernyőről: kap egy magassági
+     korlátot is, nem csak szélességit. */
+  .fabra-rajz{max-width:260px;margin:0 auto 18px;background:#fff;
+              border-radius:10px;padding:10px;text-align:center}
+  .fabra-rajz svg{max-height:280px}
+  .fabra-sorok{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+  .fabra-sor{display:flex;align-items:center;gap:10px}
+  .fabra-jel{flex:0 0 30px;height:30px;border-radius:50%;background:#3fa88f;
+             color:#fff;font:700 15px/30px inherit;text-align:center}
+  .fabra-hely{flex:1;min-height:42px;border:2px dashed #c6d5e2;border-radius:10px;
+              display:flex;align-items:center;padding:4px 6px}
+  .fabra-keszlet{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .fabra-kartya{font:600 15px/1.2 inherit;color:#22364b;background:#fff;
+                border:1.5px solid #c6d5e2;border-radius:10px;padding:9px 13px;
+                cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .fabra-kartya:hover{border-color:#3fa88f}
+  .fabra-hely .fabra-kartya{background:#eaf6f2;border-color:#3fa88f;box-shadow:none}
+  .feladat-kesz .fabra-kartya{cursor:default}
+
+  .kor-kicsi .fabra-kartya{font-size:18px;padding:12px 16px}
+  .kor-kicsi .fabra-jel{flex:0 0 36px;height:36px;font-size:18px;line-height:36px}
+  .kor-nagy .fabra-rajz{background:#e9eef4}
+  .kor-nagy .fabra-kartya{background:#1d2530;border-color:#33404f;color:#dde5ee;
+                          font-size:14px}
+  .kor-nagy .fabra-hely{border-color:#33404f}
+  .kor-nagy .fabra-hely .fabra-kartya{background:#24404a;border-color:#4a9f7e}
+  .kor-nagy .fabra-jel{background:#4a9f7e}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -524,6 +555,7 @@
         utasitasValaszt: {{ t('utasitas_valaszt')|tojson }},
         utasitasSzoveg: {{ t('utasitas_szoveg')|tojson }},
         utasitasEpito: {{ t('utasitas_epito')|tojson }},
+        utasitasAbra: {{ t('utasitas_abra')|tojson }},
         utasitasAltalanos: {{ t('utasitas_altalanos')|tojson }},
         gombNehezebb: {{ t('gomb_nehezebb')|tojson }},
         gombPelda: {{ t('gomb_pelda')|tojson }},
@@ -954,6 +986,7 @@
         if (tipus === 'valaszt') { return L.utasitasValaszt; }
         if (tipus === 'szoveg') { return L.utasitasSzoveg; }
         if (tipus === 'epito') { return L.utasitasEpito; }
+        if (tipus === 'abra') { return L.utasitasAbra; }
         return L.utasitasAltalanos;
     }
 
@@ -1079,6 +1112,7 @@
         if (f.tipus === 'hianyzo') { return hianyzoSzo(f); }
         if (f.tipus === 'szoveg') { return szovegJelolo(f); }
         if (f.tipus === 'epito') { return epitoKartyak(f); }
+        if (f.tipus === 'abra') { return abraCimkezo(f); }
         return null;
     }
 
@@ -1226,6 +1260,119 @@
             });
             if (!szavak.length) { return; }
             feladatKuld(doboz, szavak.join(' '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
+    }
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // ÁBRA-FELÜLET
+    //
+    // A rajzon SZÁMOK vannak, alatta a nevek kártyaként. A gyerek a
+    // kártyára koppint, és az beugrik a soron következő üres helyre; a
+    // betett kártyára koppintva visszakerül. Ugyanaz a gesztus, mint az
+    // építő-felületen – egyszer kell megtanulni, mindenhol működik.
+    //
+    // Környezetismeret, biológia, földrajz, fizika: minden, aminek részei
+    // vannak.
+    // ══════════════════════════════════════════════════════════════════
+    function abraCimkezo(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-abra';
+
+        if (f.kerdes) {
+            var k = document.createElement('p');
+            k.className = 'fsz-kerdes';
+            k.textContent = f.kerdes;
+            doboz.appendChild(k);
+        }
+
+        var rajz = document.createElement('div');
+        rajz.className = 'fabra-rajz';
+        rajz.innerHTML = f.svg || '';
+        var svgEl = rajz.querySelector('svg');
+        if (svgEl) {
+            svgEl.setAttribute('width', '100%');
+            svgEl.removeAttribute('height');
+            svgEl.style.width = '100%';
+            svgEl.style.height = 'auto';
+            svgEl.style.display = 'block';
+        }
+        doboz.appendChild(rajz);
+
+        var sorok = document.createElement('div');
+        sorok.className = 'fabra-sorok';
+        doboz.appendChild(sorok);
+
+        var helyek = [];
+        (f.cimkek || []).forEach(function (c) {
+            var sor = document.createElement('div');
+            sor.className = 'fabra-sor';
+            var jel = document.createElement('span');
+            jel.className = 'fabra-jel';
+            jel.textContent = c.jel;
+            sor.appendChild(jel);
+            var hely = document.createElement('div');
+            hely.className = 'fabra-hely';
+            hely.setAttribute('data-jel', c.jel);
+            sor.appendChild(hely);
+            sorok.appendChild(sor);
+            helyek.push(hely);
+        });
+
+        var keszlet = document.createElement('div');
+        keszlet.className = 'fabra-keszlet';
+        doboz.appendChild(keszlet);
+
+        function frissit() {
+            var kesz_e = helyek.every(function (h) {
+                return h.querySelector('.fabra-kartya');
+            });
+            kesz.disabled = !kesz_e;
+        }
+
+        function elsoUres() {
+            for (var i = 0; i < helyek.length; i++) {
+                if (!helyek[i].querySelector('.fabra-kartya')) { return helyek[i]; }
+            }
+            return null;
+        }
+
+        keverd((f.cimkek || []).map(function (c) { return c.nev; }))
+            .forEach(function (nev) {
+                var g = document.createElement('button');
+                g.type = 'button';
+                g.className = 'fabra-kartya';
+                g.textContent = nev;
+                g.addEventListener('click', function () {
+                    if (doboz.classList.contains('feladat-kesz')) { return; }
+                    if (g.parentNode && g.parentNode.classList.contains('fabra-hely')) {
+                        keszlet.appendChild(g);        // vissza a készletbe
+                    } else {
+                        var hova = elsoUres();
+                        if (hova) { hova.appendChild(g); }
+                    }
+                    frissit();
+                });
+                keszlet.appendChild(g);
+            });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.disabled = true;
+        kesz.addEventListener('click', function () {
+            var reszek = [];
+            helyek.forEach(function (h) {
+                var kartya = h.querySelector('.fabra-kartya');
+                if (kartya) {
+                    reszek.push(h.getAttribute('data-jel') + ' = ' + kartya.textContent);
+                }
+            });
+            if (!reszek.length) { return; }
+            feladatKuld(doboz, reszek.join(', '));
         });
         doboz.appendChild(kesz);
         return doboz;

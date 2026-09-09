@@ -2763,6 +2763,44 @@ def _feladat_parse(text: str, *, grade: int | None = None,
             kinalat = [str(x).strip()[:40] for x in szavak if str(x).strip()][:6]
         return {"tipus": "hianyzo", "mondat": mondat, "szavak": kinalat}
 
+    if tipus == "abra":
+        # ÁBRA-FELÜLET: a tanár rajzol egy SVG-t, amin SZÁMOK vannak
+        # (1, 2, 3...), a gyerek pedig a számokhoz rendeli a neveket.
+        # Környezetismeret (a növény részei), biológia (a szív üregei),
+        # földrajz (a folyó szakaszai), fizika (az áramkör elemei).
+        #
+        # A rajz ugyanazon az ellenőrzésen megy át, mint a többi ábra
+        # (fekete kocka, egymásra csúszó feliratok), mert egy zavaros
+        # rajzzal tanítani rosszabb, mint rajz nélkül.
+        svg_nyers = str(adat.get("svg") or "").strip()
+        if "<svg" not in svg_nyers.lower():
+            return None
+        try:
+            svg_tiszta = abra.javit(svg_nyers)
+        except Exception:
+            svg_tiszta = None
+        if not svg_tiszta:
+            return None
+
+        cimkek = adat.get("cimkek")
+        if not isinstance(cimkek, list):
+            return None
+        tiszta = []
+        for c in cimkek[:6]:
+            if isinstance(c, dict):
+                jel = str(c.get("jel") or "").strip()[:3]
+                nev = str(c.get("nev") or "").strip()[:40]
+            elif isinstance(c, (list, tuple)) and len(c) == 2:
+                jel, nev = str(c[0]).strip()[:3], str(c[1]).strip()[:40]
+            else:
+                continue
+            if jel and nev:
+                tiszta.append({"jel": jel, "nev": nev})
+        if len(tiszta) < 2:
+            return None
+        return {"tipus": "abra", "svg": svg_tiszta, "cimkek": tiszta,
+                "kerdes": str(adat.get("kerdes") or "").strip()[:140]}
+
     if tipus == "epito":
         # ÉPÍTŐ-FELÜLET: a gyerek kártyákból RAK ÖSSZE valamit. Angol
         # mondat szórendje, magyar mondat szerkezete, egy folyamat lépései.
@@ -5039,6 +5077,15 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    <FELADAT>{"tipus":"epito","elemek":["I","am","going","to","school"],"kerdes":"Rakd össze a mondatot!"}</FELADAT>
    Három és tíz elem között.
 
+9) ÁBRA CÍMKÉZÉSE — környezetismeret, biológia, földrajz, fizika: minden,
+   aminek RÉSZEI vannak. Rajzolj egy egyszerű SVG-t, és tegyél rá SZÁMOKAT
+   (1, 2, 3...) a megnevezendő részekhez. A gyerek a számokhoz rendeli a
+   neveket:
+   <FELADAT>{"tipus":"abra","svg":"<svg viewBox='0 0 200 200'>...</svg>","cimkek":[{"jel":"1","nev":"gyökér"},{"jel":"2","nev":"szár"},{"jel":"3","nev":"levél"}],"kerdes":"Melyik szám melyik rész?"}</FELADAT>
+   Kettő és hat címke között. A rajzon a SZÁM legyen jól látható, és a
+   megnevezett részhez tartozzon — a NEVET ne írd rá a rajzra, mert akkor
+   nincs mit megoldani.
+
 ⛔ SZÁMOLÁSNÁL SOHA NE ADJ VÁLASZGOMBOKAT.
 Ha a kérdés az, hogy MENNYI valami, a "szamolo" vagy a "szam" típust
 használd. A felkínált lehetőségekből a gyerek kitalálja az eredményt
@@ -5112,6 +5159,15 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    el programa los baraja:
    <FELADAT>{"tipus":"epito","elemek":["Yo","voy","a","la","escuela"],"kerdes":"¡Construye la frase!"}</FELADAT>
    Entre tres y diez elementos.
+
+9) ETIQUETAR UN DIBUJO — conocimiento del medio, biología, geografía,
+   física: todo lo que tiene PARTES. Dibuja un SVG sencillo y pon NÚMEROS
+   (1, 2, 3...) en las partes que hay que nombrar. El niño asigna los
+   nombres a los números:
+   <FELADAT>{"tipus":"abra","svg":"<svg viewBox='0 0 200 200'>...</svg>","cimkek":[{"jel":"1","nev":"raíz"},{"jel":"2","nev":"tallo"},{"jel":"3","nev":"hoja"}],"kerdes":"¿Qué número es cada parte?"}</FELADAT>
+   Entre dos y seis etiquetas. El NÚMERO debe verse bien y corresponder a
+   la parte; NO escribas el nombre en el dibujo, o no quedaría nada que
+   resolver.
 
 ⛔ EN UN CÁLCULO NUNCA DES BOTONES. Si preguntas CUÁNTO es algo, usa
 "szamolo" o "szam". Con botones el niño adivina en vez de calcular.
