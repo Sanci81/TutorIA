@@ -8,6 +8,62 @@
      ugyanaz a CSS érték, amit a kinézet-boltban előnézetként lát. */
   .chat-messages{background:{{ kinezet_hatter|safe }} !important}
   .chat-coins-pill{cursor:pointer;text-decoration:none;color:inherit}
+
+  /* ══ LECKE-SÍN ═══════════════════════════════════════════════════════
+     Eddig a gyerek nem tudta, hol tart és mikor lesz vége — csak
+     görgetett lefelé egy végtelen chatben. Itt négy állomás látszik, és
+     a SAJÁT avatarja csúszik végig rajtuk. Ez adja meg a leckének azt,
+     ami eddig hiányzott: hogy van eleje és van vége. */
+  .lecke-sin-doboz{padding:26px 22px 10px;background:rgba(255,255,255,.92);
+                   border-bottom:1px solid rgba(0,0,0,.07)}
+  .lecke-sin{position:relative;height:9px;background:#e3ebf2;border-radius:6px;
+             margin:0 8px}
+  .lecke-sin-kesz{position:absolute;left:0;top:0;bottom:0;width:8%;
+                  border-radius:6px;background:linear-gradient(90deg,#5bc0a8,#3fa88f);
+                  transition:width .6s ease}
+  .lecke-allomas{position:absolute;top:50%;width:20px;height:20px;
+                 margin:-10px 0 0 -10px;border-radius:50%;background:#fff;
+                 border:3px solid #cdd9e3;transition:border-color .4s,background .4s}
+  .lecke-allomas.kesz{border-color:#3fa88f;background:#3fa88f}
+  .lecke-allomas.kesz::after{content:"✓";color:#fff;font-size:11px;font-weight:700;
+                             position:absolute;inset:0;display:flex;
+                             align-items:center;justify-content:center}
+  .lecke-allomas b{position:absolute;top:22px;left:50%;transform:translateX(-50%);
+                   font-size:10.5px;color:#7b8fa3;white-space:nowrap;font-weight:600}
+  .lecke-avatar{position:absolute;top:-24px;transform:translateX(-50%);
+                width:40px;height:40px;border-radius:50%;background:#ffd77a;
+                border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.22);
+                display:flex;align-items:center;justify-content:center;
+                font-size:22px;font-weight:700;color:#7a5c14;overflow:hidden;
+                transition:left .7s cubic-bezier(.4,1.4,.5,1);z-index:2}
+  .lecke-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* ══ ÉRME-CSÍK ═══════════════════════════════════════════════════════
+     A kártya NEM jár a leckéért — érméért veszi meg a boltban. Ez a csík
+     csak azt mutatja, mennyi hiányzik még a legolcsóbb tasakhoz. */
+  .erme-csik{display:flex;align-items:center;gap:11px;margin:30px 8px 0;
+             font-size:12.5px;color:#7a5c14}
+  .erme-sav{flex:1;height:7px;background:#f0e2c2;border-radius:5px;overflow:hidden}
+  .erme-sav i{display:block;height:100%;width:0;border-radius:5px;
+              background:linear-gradient(90deg,#f5c451,#e8a317);
+              transition:width .6s ease}
+
+  /* ══ VÁLASZTÓGOMBOK ══════════════════════════════════════════════════
+     Eddig a gyerek csak VÁLASZOLT. Ezekkel dönt is: kérhet nehezebbet,
+     példát, vagy továbbmehet. Nem AI-logika, csak három előre megírt
+     mondat — de a gyerek irányít, és ettől lesz játék a chatből. */
+  .chat-valaszto{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 10px 8px}
+  .chat-valaszto-gomb{border:1.5px solid #cfdce7;background:#fff;color:#2c4a68;
+                      font:600 13.5px/1.2 inherit;padding:9px 15px;
+                      border-radius:20px;cursor:pointer}
+  .chat-valaszto-gomb:hover{border-color:#3fa88f;background:#f2fbf8}
+  .chat-valaszto-gomb:disabled{opacity:.5;cursor:default}
+
+  @media (max-width:600px){
+    .lecke-sin-doboz{padding:24px 12px 10px}
+    .lecke-allomas b{font-size:9.5px}
+    .lecke-avatar{width:34px;height:34px;top:-21px}
+  }
 </style>
 <section class="chat-layout{% if chat_mode == 'voice' %} chat-layout-voice{% endif %}" id="chat-page">
     <button type="button" class="chat-sidebar-toggle" id="sidebar-toggle" aria-label="{{ t('chat_topics_title') }}">☰</button>
@@ -118,6 +174,31 @@
                 {% endif %}
             </div>
         </header>
+
+        {# ── LECKE-SÍN ─────────────────────────────────────────────────
+           Négy állomás, és a gyerek avatarja csúszik rajtuk. A szintfelmérő
+           alatt nincs értelme (ott nincs „lecke”), ezért ott elhagyjuk. #}
+        {% if not placement_mode %}
+        <div class="lecke-sin-doboz" id="lecke-sin-doboz">
+            <div class="lecke-sin">
+                <div class="lecke-sin-kesz" id="lecke-sin-kesz"></div>
+                <div class="lecke-allomas" data-all="1" style="left:8%"><b>{{ t('lecke_tanulas') }}</b></div>
+                <div class="lecke-allomas" data-all="2" style="left:36%"><b>{{ t('lecke_gyakorlas') }}</b></div>
+                <div class="lecke-allomas" data-all="3" style="left:64%"><b>{{ t('lecke_teszt') }}</b></div>
+                <div class="lecke-allomas" data-all="4" style="left:92%"><b>{{ t('lecke_kesz') }}</b></div>
+                <div class="lecke-avatar" id="lecke-avatar" style="left:8%">
+                    {% if aktiv_gyerek and aktiv_gyerek.avatar %}
+                    <img src="{{ url_for('avatar_kep', kulcs=aktiv_gyerek.avatar) }}" alt="">
+                    {% else %}{{ child['name'][0]|upper }}{% endif %}
+                </div>
+            </div>
+            <div class="erme-csik">
+                <span>🪙</span>
+                <div class="erme-sav"><i id="erme-sav-belso"></i></div>
+                <span id="erme-szoveg"></span>
+            </div>
+        </div>
+        {% endif %}
 
         <div class="chat-messages" id="chat-messages" aria-live="polite">
             {% for msg in messages %}
@@ -332,6 +413,11 @@
 
     // Feliratok az aktív tanterv nyelvén (HU/ES) – a t() az aktív g.lang alapján ad vissza.
     var L = {
+        gombNehezebb: {{ t('gomb_nehezebb')|tojson }},
+        gombPelda: {{ t('gomb_pelda')|tojson }},
+        gombTovabb: {{ t('gomb_tovabb')|tojson }},
+        ermeTasakig: {{ t('erme_tasakig')|tojson }},
+        ermeEleg: {{ t('erme_eleg')|tojson }},
         topicsDoneSuffix: {{ t('chat_topics_done_suffix')|tojson }},
         averageLabel: {{ t('chat_average_label')|tojson }},
         levelFmt: {{ t('chat_level_fmt')|tojson }},
@@ -583,6 +669,140 @@
             .trim();
     }
 
+    // ══════════════════════════════════════════════════════════════════
+    // LECKE-SÍN
+    //
+    // MIÉRT: egy végtelenül görgethető chatnek nincs se eleje, se vége.
+    // A gyerek nem tudja, mennyi van hátra, ezért unja. Négy állomás és
+    // egy csúszó avatar ezt oldja meg.
+    //
+    // MI IGAZ ÉS MI BECSLÉS – fontos, hogy tudd:
+    //   • a 3. állomás (Teszt) és a 4. (Kész) VALÓDI szerverjelzés:
+    //     a show_test_offer és a topic_done mezőből jön;
+    //   • az 1.→2. lépés (Tanulás → Gyakorlás) BECSLÉS a váltások
+    //     számából, mert a szerver ma nem méri, hogy a gyerek hol tart a
+    //     leckén belül. Ezért az avatar az állomások KÖZÖTT is csak
+    //     óvatosan kúszik előre, sosem ugrik a következő állomásig.
+    //   Ha pontos akar lenni, azt az app.py-ban kell megmérni – szólj,
+    //   és megcsinálom.
+    // ══════════════════════════════════════════════════════════════════
+    var ALLOMAS_X = [8, 36, 64, 92];   // az állomások helye százalékban
+    var GYAKORLAS_UTAN = 3;            // ennyi váltás után lép Gyakorlásra
+    var leckeAllomas = 1;
+    var leckeValtas = 0;
+    var leckeVege = false;   // a témakör kész – ilyenkor MIND a négy pipa
+
+    function leckeSinFrissit() {
+        var av = document.getElementById('lecke-avatar');
+        if (!av) { return; }                 // szintfelmérőnél nincs sín
+        var bub = document.getElementById('lecke-buborek');
+        var kesz = document.getElementById('lecke-sin-kesz');
+
+        var alap = ALLOMAS_X[leckeAllomas - 1];
+        var kovetkezo = ALLOMAS_X[Math.min(leckeAllomas, ALLOMAS_X.length - 1)];
+
+        // Kúszás az állomások között: legfeljebb a táv 60%-áig megyünk,
+        // hogy soha ne látsszon késznek egy állomás, ami még nincs kész.
+        var kuszas = 0;
+        if (leckeAllomas < ALLOMAS_X.length) {
+            var arany = Math.min(leckeValtas / GYAKORLAS_UTAN, 1) * 0.6;
+            kuszas = (kovetkezo - alap) * arany;
+        }
+        var x = alap + kuszas;
+
+        av.style.left = x + '%';
+        if (bub) { bub.style.left = x + '%'; }
+        if (kesz) { kesz.style.width = x + '%'; }
+
+        document.querySelectorAll('.lecke-allomas').forEach(function (e) {
+            var n = Number(e.getAttribute('data-all') || 0);
+            e.classList.toggle('kesz', leckeVege || n < leckeAllomas);
+        });
+    }
+
+    function leckeAllomasra(n) {
+        if (n <= leckeAllomas) { return; }
+        leckeAllomas = n;
+        leckeValtas = 0;
+        leckeSinFrissit();
+    }
+
+    // Új témakör = új lecke: a sín visszaáll az elejére.
+    function leckeUjrakezd() {
+        leckeAllomas = 1;
+        leckeValtas = 0;
+        leckeVege = false;
+        leckeSinFrissit();
+    }
+
+    /* A szerver válaszából olvassuk ki, hol tart a lecke. */
+    function leckeSinValasz(d) {
+        if (!d) { return; }
+        leckeValtas += 1;
+        if (leckeAllomas === 1 && leckeValtas >= GYAKORLAS_UTAN) {
+            leckeAllomasra(2);
+        }
+        if (d.show_test_offer) { leckeAllomasra(3); }
+        if (d.topic_done) { leckeVege = true; leckeAllomasra(4); }
+        leckeSinFrissit();
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // ÉRME-CSÍK
+    // A kártya NEM jár a leckéért – a boltban veszi meg érméért. Ez a
+    // csík csak azt mutatja, mennyi hiányzik a legolcsóbb tasakhoz.
+    // A 100 a tasak.py legolcsóbb tasakjának ára; ha ott átírod, itt is
+    // írd át.
+    // ══════════════════════════════════════════════════════════════════
+    var TASAK_AR = 100;
+
+    function ermeCsikFrissit(erme) {
+        var sav = document.getElementById('erme-sav-belso');
+        var szov = document.getElementById('erme-szoveg');
+        if (!sav || !szov) { return; }
+        var n = Number(erme);
+        if (!isFinite(n) || n < 0) { n = 0; }
+        var arany = Math.min(100, Math.round(100 * n / TASAK_AR));
+        sav.style.width = arany + '%';
+        if (n >= TASAK_AR) {
+            szov.textContent = L.ermeEleg;
+        } else {
+            szov.textContent = (TASAK_AR - n) + ' ' + L.ermeTasakig;
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // VÁLASZTÓGOMBOK
+    // Három előre megírt mondat gombra kötve. A gyerek így nem csak
+    // felel, hanem DÖNT is – ettől lesz a chatből játék.
+    // ══════════════════════════════════════════════════════════════════
+    function valasztoGombokKi() {
+        document.querySelectorAll('.chat-valaszto').forEach(function (e) {
+            e.parentNode && e.parentNode.removeChild(e);
+        });
+    }
+
+    function valasztoGombokBe() {
+        valasztoGombokKi();                       // csak a LEGUTÓBBI alatt
+        if (chatMode === 'voice') { return; }
+        var doboz = document.createElement('div');
+        doboz.className = 'chat-valaszto';
+        [['💪', L.gombNehezebb], ['💡', L.gombPelda], ['➡️', L.gombTovabb]]
+            .forEach(function (p) {
+                var g = document.createElement('button');
+                g.type = 'button';
+                g.className = 'chat-valaszto-gomb';
+                g.textContent = p[0] + ' ' + p[1];
+                g.addEventListener('click', function () {
+                    valasztoGombokKi();
+                    sendMessage(p[1]);            // sima üzenetként megy el
+                });
+                doboz.appendChild(g);
+            });
+        messagesEl.insertBefore(doboz, typing);
+        scrollToBottom();
+    }
+
     function appendBubble(role, text, figures, feladat) {
         text = tisztitBuborekSzoveg(text);
         var wrap = document.createElement('div');
@@ -648,6 +868,16 @@
         }
 
         messagesEl.insertBefore(wrap, typing);
+
+        // A választógombok MINDIG csak a legutolsó tanári üzenet alatt
+        // vannak. Ha a tanár feladatot küldött, azt oldja meg – ott a
+        // gombok csak elvinnék a figyelmet.
+        if (role === 'user') {
+            valasztoGombokKi();
+        } else if (role === 'assistant' && !feladat) {
+            valasztoGombokBe();
+        }
+
         scrollToBottom();
     }
 
@@ -1459,6 +1689,7 @@
         if (pontEl && penztarca && penztarca.pont !== undefined) {
             pontEl.textContent = penztarca.pont;
         }
+        if (coins !== undefined) { ermeCsikFrissit(coins); }
     }
 
     function sendMessage(text, topicId) {
@@ -1502,6 +1733,10 @@
                 appendBubble('assistant', aiMessage, res.data.figures, res.data.feladat);
                 if (res.data.mondd) { kiejtesKartya(res.data.mondd); }
                 if (res.data.current_topic_id) {
+                    // Új témakör = új lecke: a sín visszaáll az elejére.
+                    if (currentTopicId && res.data.current_topic_id !== currentTopicId) {
+                        leckeUjrakezd();
+                    }
                     currentTopicId = res.data.current_topic_id;
                     if (topicIdInput) topicIdInput.value = currentTopicId;
                 }
@@ -1511,6 +1746,7 @@
                 }
                 if (res.data.sidebar) renderSidebar(res.data.sidebar);
                 if (res.data.show_test_offer && btnTest) btnTest.hidden = false;
+                leckeSinValasz(res.data);
                 updateVocabulary(res.data.vocabulary, res.data.current_topic);
                 updateGamification(res.data.xp, res.data.game_level, res.data.coins, res.data.penztarca);
             })
@@ -2290,6 +2526,23 @@
             playTts(texts.join(' ')).catch(function () {});
         })();
     }
+
+    // ── Induló állapot: a sín és az érme-csík az oldal betöltésekor ──
+    leckeSinFrissit();
+    ermeCsikFrissit(
+        (document.getElementById('coins-display') || {}).textContent || 0);
+
+    // Az oldal betöltésekor is legyen három választógomb a legutolsó tanári
+    // üzenet alatt – ne csak akkor, ha közben érkezett új válasz.
+    (function () {
+        var utolso = messagesEl.querySelectorAll(
+            '.chat-bubble-assistant:not(.chat-typing), .chat-bubble-user');
+        if (utolso.length &&
+            utolso[utolso.length - 1].classList.contains('chat-bubble-assistant') &&
+            !utolso[utolso.length - 1].querySelector('.feladat')) {
+            valasztoGombokBe();
+        }
+    })();
 
     scrollToBottom();
 })();

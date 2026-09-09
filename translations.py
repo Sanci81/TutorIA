@@ -278,6 +278,24 @@ TRANSLATIONS = {
     "chat_average_label": {"hu": "Átlagod", "es": "Tu media"},
     "chat_now_learning": {"hu": "🎯 Most ezt tanulod", "es": "🎯 Ahora estás aprendiendo"},
     "chat_minutes_suffix": {"hu": "perc", "es": "min"},
+
+    # ── Lecke-sín: hol tart a gyerek a leckében ──────────────────────────
+    "lecke_tanulas": {"hu": "Tanulás", "es": "Aprender"},
+    "lecke_gyakorlas": {"hu": "Gyakorlás", "es": "Practicar"},
+    "lecke_teszt": {"hu": "Teszt", "es": "Prueba"},
+    "lecke_kesz": {"hu": "Kész", "es": "Hecho"},
+    "lecke_itt_tartasz": {"hu": "itt tartasz", "es": "vas por aquí"},
+
+    # ── Választógombok a tanár üzenete alatt ─────────────────────────────
+    "gomb_nehezebb": {"hu": "Nehezebbet kérek",
+                      "es": "Quiero algo más difícil"},
+    "gomb_pelda": {"hu": "Mutass egy példát", "es": "Muéstrame un ejemplo"},
+    "gomb_tovabb": {"hu": "Mehetünk tovább", "es": "Podemos seguir"},
+
+    # ── Érme-csík (a kártya NEM jár, azt érméért veszi meg) ──────────────
+    "erme_tasakig": {"hu": "érme egy tasakig", "es": "monedas para un sobre"},
+    "erme_eleg": {"hu": "Van elég érméd egy tasakra!",
+                  "es": "¡Ya tienes monedas para un sobre!"},
     "chat_level_fmt": {"hu": "{n}. szint", "es": "Nivel {n}"},
     "chat_streak_fmt": {"hu": "🔥 {n} napos sorozat!", "es": "🔥 {n} días seguidos!"},
     "chat_test_start": {"hu": "⭐ Szintfelmérő teszt", "es": "⭐ Test de nivel"},
