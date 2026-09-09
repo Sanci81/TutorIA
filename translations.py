@@ -279,6 +279,23 @@ TRANSLATIONS = {
     "chat_now_learning": {"hu": "🎯 Most ezt tanulod", "es": "🎯 Ahora estás aprendiendo"},
     "chat_minutes_suffix": {"hu": "perc", "es": "min"},
 
+    # ── Munkatér: rövid utasítás feladattípusonként ──────────────────────
+    # Ezt a felolvasó is kimondja hangos módban, ezért legyen kimondható.
+    "utasitas_szamolo": {"hu": "Töltsd ki jobbról balra.",
+                         "es": "Complétalo de derecha a izquierda."},
+    "utasitas_parosit": {"hu": "Húzd egymáshoz, ami összetartozik.",
+                         "es": "Une lo que va junto."},
+    "utasitas_sorrend": {"hu": "Rakd őket helyes sorrendbe.",
+                         "es": "Ponlos en el orden correcto."},
+    "utasitas_hianyzo": {"hu": "Írd be a hiányzó szót.",
+                         "es": "Escribe la palabra que falta."},
+    "utasitas_valaszt": {"hu": "Válaszd ki a helyes megoldást.",
+                         "es": "Elige la respuesta correcta."},
+    "utasitas_szoveg": {"hu": "Kattints rá a szövegben.",
+                       "es": "Pulsa la palabra en el texto."},
+    "utasitas_altalanos": {"hu": "Oldd meg a feladatot.",
+                           "es": "Resuelve el ejercicio."},
+
     # ── Lecke-sín: hol tart a gyerek a leckében ──────────────────────────
     "lecke_tanulas": {"hu": "Tanulás", "es": "Aprender"},
     "lecke_gyakorlas": {"hu": "Gyakorlás", "es": "Practicar"},

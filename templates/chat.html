@@ -106,6 +106,25 @@
   .kor-nagy .munkater .feladat input,
   .kor-nagy .munkater .feladat .fsz-jegy{background:#141a21;border-color:#33404f;
                                           color:#eef4fa}
+  /* ══ SZÖVEG-FELÜLET ══════════════════════════════════════════════════
+     A gyerek a szavakra kattint. A jelölt szó ALÁHÚZVA marad – ugyanaz a
+     gesztus, mint a füzetben, ezért nem kell magyarázni. */
+  .feladat-szoveg{width:100%}
+  .fsz-kerdes{margin:0 0 14px;font-size:14.5px;line-height:1.5;font-weight:600}
+  .fszoveg-mondat{font-size:20px;line-height:2;margin-bottom:18px}
+  .fszoveg-szo{font:inherit;color:inherit;background:none;border:none;
+               border-bottom:3px solid transparent;border-radius:4px;
+               padding:2px 1px;margin:0;cursor:pointer}
+  .fszoveg-szo:hover{background:rgba(63,168,143,.12)}
+  .fszoveg-szo.jelolt{border-bottom-color:#3fa88f;background:rgba(63,168,143,.16);
+                      font-weight:700}
+  .feladat-kesz .fszoveg-szo{cursor:default}
+
+  .kor-kicsi .fszoveg-mondat{font-size:24px;line-height:2.1}
+  .kor-nagy  .fszoveg-mondat{font-size:17px;line-height:1.9}
+  .kor-nagy  .fszoveg-szo:hover{background:rgba(159,199,240,.14)}
+  .kor-nagy  .fszoveg-szo.jelolt{border-bottom-color:#4a9f7e;
+                                 background:rgba(74,159,126,.2)}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -481,6 +500,7 @@
         utasitasSorrend: {{ t('utasitas_sorrend')|tojson }},
         utasitasHianyzo: {{ t('utasitas_hianyzo')|tojson }},
         utasitasValaszt: {{ t('utasitas_valaszt')|tojson }},
+        utasitasSzoveg: {{ t('utasitas_szoveg')|tojson }},
         utasitasAltalanos: {{ t('utasitas_altalanos')|tojson }},
         gombNehezebb: {{ t('gomb_nehezebb')|tojson }},
         gombPelda: {{ t('gomb_pelda')|tojson }},
@@ -909,6 +929,7 @@
         if (tipus === 'sorrend') { return L.utasitasSorrend; }
         if (tipus === 'hianyzo') { return L.utasitasHianyzo; }
         if (tipus === 'valaszt') { return L.utasitasValaszt; }
+        if (tipus === 'szoveg') { return L.utasitasSzoveg; }
         return L.utasitasAltalanos;
     }
 
@@ -1032,7 +1053,88 @@
         if (f.tipus === 'parosit') { return parositas(f); }
         if (f.tipus === 'sorrend') { return sorbarendezes(f); }
         if (f.tipus === 'hianyzo') { return hianyzoSzo(f); }
+        if (f.tipus === 'szoveg') { return szovegJelolo(f); }
         return null;
+    }
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // SZÖVEG-FELÜLET
+    //
+    // A gyerek nem gépel, hanem BELEJELÖL a szövegbe: rákattint a szóra.
+    // Ez oldja meg a magyar nyelvtant (húzd alá az állítmányt), az
+    // irodalmat (hol fordul a történet) és az idegen nyelvet (melyik szó
+    // a hibás) – három tantárgy egyetlen felülettel.
+    //
+    // A jelölt szavak sima üzenetként mennek vissza, ezért a haladás, a
+    // pontozás és a témakör-lezárás pontosan úgy működik, mint eddig.
+    // ══════════════════════════════════════════════════════════════════
+    function szovegJelolo(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-szoveg';
+
+        if (f.kerdes) {
+            var k = document.createElement('p');
+            k.className = 'fsz-kerdes';
+            k.textContent = f.kerdes;
+            doboz.appendChild(k);
+        }
+
+        var mondat = document.createElement('div');
+        mondat.className = 'fszoveg-mondat';
+
+        // Szavakra bontás ÚGY, hogy az írásjel ne ragadjon a szóhoz: a
+        // gyerek a "kertben" szót jelölje meg, ne a "kertben."-t.
+        var darabok = String(f.szoveg || '').split(/(\s+)/);
+        var jeloltek = [];
+
+        darabok.forEach(function (d) {
+            if (/^\s+$/.test(d)) {
+                mondat.appendChild(document.createTextNode(d));
+                return;
+            }
+            if (!d) { return; }
+            var elozo = d.match(/^[^\wáéíóöőúüűÁÉÍÓÖŐÚÜŰñÑ]+/);
+            var utana = d.match(/[^\wáéíóöőúüűÁÉÍÓÖŐÚÜŰñÑ]+$/);
+            var mag = d.slice(elozo ? elozo[0].length : 0,
+                              d.length - (utana ? utana[0].length : 0));
+            if (elozo) { mondat.appendChild(document.createTextNode(elozo[0])); }
+            if (mag) {
+                var sz = document.createElement('button');
+                sz.type = 'button';
+                sz.className = 'fszoveg-szo';
+                sz.textContent = mag;
+                sz.addEventListener('click', function () {
+                    if (doboz.classList.contains('feladat-kesz')) { return; }
+                    if (!f.tobb) {
+                        // Egy szó: az előző jelölés lekerül.
+                        mondat.querySelectorAll('.fszoveg-szo.jelolt')
+                            .forEach(function (e) { e.classList.remove('jelolt'); });
+                        jeloltek = [];
+                    }
+                    var most = sz.classList.toggle('jelolt');
+                    var hol = jeloltek.indexOf(mag);
+                    if (most && hol < 0) { jeloltek.push(mag); }
+                    if (!most && hol >= 0) { jeloltek.splice(hol, 1); }
+                    kesz.disabled = jeloltek.length === 0;
+                });
+                mondat.appendChild(sz);
+            }
+            if (utana) { mondat.appendChild(document.createTextNode(utana[0])); }
+        });
+        doboz.appendChild(mondat);
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.disabled = true;
+        kesz.addEventListener('click', function () {
+            if (!jeloltek.length) { return; }
+            feladatKuld(doboz, jeloltek.join(', '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
     }
 
     function feladatKuld(doboz, szoveg) {

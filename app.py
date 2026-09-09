@@ -2763,6 +2763,20 @@ def _feladat_parse(text: str, *, grade: int | None = None,
             kinalat = [str(x).strip()[:40] for x in szavak if str(x).strip()][:6]
         return {"tipus": "hianyzo", "mondat": mondat, "szavak": kinalat}
 
+    if tipus == "szoveg":
+        # SZÖVEG-FELÜLET: a gyerek nem beír, hanem BELEJELÖL a szövegbe.
+        # Erre épül a magyar nyelvtan (húzd alá az állítmányt), az irodalom
+        # (hol fordul a történet) és az idegen nyelv (melyik szó a hibás).
+        # A megoldást NEM a modelltől kérjük: a gyerek jelölése ugyanúgy
+        # üzenetként megy vissza, és a tanár értékeli — így nem tud egy
+        # elszámolt gép rossz megoldást „helyesnek" mutatni.
+        szoveg = str(adat.get("szoveg") or "").strip()[:400]
+        if len(szoveg.split()) < 2:
+            return None
+        kerdes = str(adat.get("kerdes") or "").strip()[:140]
+        return {"tipus": "szoveg", "szoveg": szoveg, "kerdes": kerdes,
+                "tobb": bool(adat.get("tobb"))}
+
     if tipus == "valaszt":
         opciok = adat.get("opciok")
         if not isinstance(opciok, list):
@@ -4996,6 +5010,15 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    <FELADAT>{"tipus":"hianyzo","mondat":"A Duna Magyarország leg___ folyója.","szavak":["hosszabb","hosszab"]}</FELADAT>
    A "szavak" elhagyható — akkor a gyerek beírja.
 
+7) SZÖVEGBE JELÖLÉS — magyar nyelvtan, irodalom, idegen nyelv, bármi,
+   ahol egy MONDATON belül kell megtalálni valamit. A gyerek a képernyőn
+   rákattint a szavakra; nem gépel:
+   <FELADAT>{"tipus":"szoveg","szoveg":"A kutya vidáman futott a kertben.","kerdes":"Melyik szó az állítmány?"}</FELADAT>
+   Több szót is kérhetsz: "tobb":true —
+   <FELADAT>{"tipus":"szoveg","szoveg":"The cat are sleeping on the sofa.","kerdes":"Melyik két szó nem illik össze?","tobb":true}</FELADAT>
+   A "kerdes" rövid, egy mondat: ez kerül a feladat fölé, és hangos módban
+   ezt mondja ki a felolvasó. A megoldást NE írd bele.
+
 ⛔ SZÁMOLÁSNÁL SOHA NE ADJ VÁLASZGOMBOKAT.
 Ha a kérdés az, hogy MENNYI valami, a "szamolo" vagy a "szam" típust
 használd. A felkínált lehetőségekből a gyerek kitalálja az eredményt
@@ -5053,6 +5076,15 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    extranjera. El hueco se marca con TRES GUIONES BAJOS:
    <FELADAT>{"tipus":"hianyzo","mondat":"El Nilo es el río más ___ de África.","szavak":["largo","largos"]}</FELADAT>
    "szavak" es opcional: sin él, el niño lo escribe.
+
+7) MARCAR EN EL TEXTO — lengua, literatura, lengua extranjera: todo lo que
+   hay que ENCONTRAR dentro de una frase. El niño pulsa las palabras en la
+   pantalla; no escribe:
+   <FELADAT>{"tipus":"szoveg","szoveg":"El perro corría alegremente por el jardín.","kerdes":"¿Cuál es el verbo?"}</FELADAT>
+   Puedes pedir varias palabras con "tobb":true —
+   <FELADAT>{"tipus":"szoveg","szoveg":"The cat are sleeping on the sofa.","kerdes":"¿Qué dos palabras no concuerdan?","tobb":true}</FELADAT>
+   "kerdes" es una sola frase corta: aparece encima del ejercicio y el
+   lector la dice en voz alta. NO incluyas la solución.
 
 ⛔ EN UN CÁLCULO NUNCA DES BOTONES. Si preguntas CUÁNTO es algo, usa
 "szamolo" o "szam". Con botones el niño adivina en vez de calcular.
