@@ -2884,6 +2884,65 @@ def _feladat_parse(text: str, *, grade: int | None = None,
     return None
 
 
+
+# ── HA A TANÁR ELFELEJTI A JELÖLŐT ──────────────────────────────────────────
+# Élesben ez volt a fő baj: a felületek készen álltak, de a tanár sima
+# szövegben kérdezett ("Mennyi a 7400 - 650?", "A lány énekel. ___ vidám."),
+# és így minden maradt csevegésnek. A promptban most kötelező a jelölő, de a
+# modellre nem támaszkodunk: a két leggyakoribb esetet MI ismerjük fel a
+# szövegből, determinisztikusan.
+#
+# Csak olyat alakítunk át, amit BIZTOSAN tudunk: a hiányjeles mondatot és a
+# kétoperandusú alapműveletet. Az eredményt itt is MI számoljuk ki
+# (_szamolo_feladat), sosem a modell.
+
+_SZOVEG_MUVELET = re.compile(
+    r"(?:mennyi|számold\s+ki|szamold\s+ki|cuánto|cuanto|calcula)\b[^0-9\n]{0,40}"
+    r"(\d[\d\s]{0,8})\s*([+\-−*x×/:÷])\s*(\d[\d\s]{0,8})",
+    re.IGNORECASE)
+
+# „A lány énekel. ___ vidám." – legalább három aláhúzás egy mondatban.
+_SZOVEG_HIANY = re.compile(r"[^\n]*_{3,}[^\n]*")
+
+
+def _feladat_szovegbol(szoveg: str, *, grade: int | None = None,
+                       es_tanterv: bool = False,
+                       temakor: str | None = None) -> dict | None:
+    """Feladat kinyerése a tanár SZÖVEGÉBŐL, jelölő nélkül."""
+    if not szoveg:
+        return None
+
+    # 1) Hiányzó szó: a mondatban ott a ___
+    m = _SZOVEG_HIANY.search(szoveg)
+    if m:
+        mondat = m.group(0).strip()[:200]
+        # A tanár néha maga is aláhúzással díszít ("_____" elválasztóként).
+        # Csak akkor feladat, ha van körülötte igazi szöveg is.
+        csupasz = mondat.replace("_", "").strip()
+        if len(csupasz) >= 8:
+            return {"tipus": "hianyzo", "mondat": mondat, "szavak": []}
+
+    # 2) Kétoperandusú alapművelet: „Mennyi a 7400 - 650?"
+    m = _SZOVEG_MUVELET.search(szoveg)
+    if m:
+        jel = _FELADAT_JELEK.get(m.group(2).strip())
+        a_ert = m.group(1).replace(" ", "")
+        b_ert = m.group(3).replace(" ", "")
+        # Írásbeli témakörben és kisiskolásnak OSZLOPBA, egyébként beírós
+        # mező – pontosan ugyanaz a szabály, mint a jelölős úton.
+        if jel is not None:
+            if _irasbeli_temakor(temakor) or not _fejben_szamolhat(grade, es_tanterv):
+                oszlopos = _szamolo_feladat(jel, a_ert, b_ert)
+                if oszlopos:
+                    return oszlopos
+            try:
+                return {"tipus": "szam",
+                        "muvelet": f"{int(a_ert)} {jel} {int(b_ert)}"}
+            except Exception:
+                return None
+    return None
+
+
 _CHAT_MARKER_TOPIC = re.compile(r"<TOPIC_COMPLETE>", re.IGNORECASE)
 _CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
 _CHAT_MARKER_VOCAB = re.compile(
@@ -5130,6 +5189,27 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    különben a feladat megoldhatatlan, és a program eldobja.
    Az "egyseg" elhagyható (cm, kg, N, ml).
 
+🔴 A LEGFONTOSABB SZABÁLY EZEN A LISTÁN
+Ha a válaszodban BÁRMIT kérsz a gyerektől — számolást, kiválasztást,
+kiegészítést, sorbarendezést, megnevezést —, akkor azt KÖTELEZŐ <FELADAT>
+jelölővel kiadni. Sima szövegben feltett kérdés helyett MINDIG a megfelelő
+felületet használd. Enélkül a gyerek csak egy csevegőablakot lát, és pár
+perc alatt megunja.
+
+Így válassz felületet:
+  „Mennyi 7400 − 650?"                → szamolo (vagy szam)
+  „Melyik szó az állítmány?"          → szoveg
+  „A lány énekel. ___ vidám."         → hianyzo
+  „Rakd sorba az eseményeket"         → sorrend
+  „Rakd össze a mondatot"             → epito
+  „Melyik rész a gyökér?"             → abra   (NEM sima <ABRA> rajz!)
+  „Mi történik, ha nagyobb az erő?"   → modell
+  fogalom és jelentése párban         → parosit
+  eldöntendő, NEM számolós kérdés     → valaszt
+
+Egy válaszban EGY feladat legyen. Ha csak magyarázol és nem kérsz semmit,
+akkor nem kell feladat — de akkor kérdést se tegyél fel a végén.
+
 ⛔ SZÁMOLÁSNÁL SOHA NE ADJ VÁLASZGOMBOKAT.
 Ha a kérdés az, hogy MENNYI valami, a "szamolo" vagy a "szam" típust
 használd. A felkínált lehetőségekből a gyerek kitalálja az eredményt
@@ -5222,6 +5302,27 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    entre "szorzo" y el resultado debe caber en el rango; si no, el
    ejercicio sería irresoluble y el programa lo descarta.
    "egyseg" es opcional (cm, kg, N, ml).
+
+🔴 LA REGLA MÁS IMPORTANTE DE ESTA LISTA
+Si en tu respuesta pides CUALQUIER COSA al niño — calcular, elegir,
+completar, ordenar, nombrar —, es OBLIGATORIO darlo con la marca <FELADAT>.
+En lugar de una pregunta en texto normal, usa SIEMPRE la superficie que
+corresponda. Sin esto el niño solo ve una ventana de chat y se aburre en
+pocos minutos.
+
+Cómo elegir la superficie:
+  «¿Cuánto es 7400 − 650?»              → szamolo (o szam)
+  «¿Cuál es el verbo?»                  → szoveg
+  «La niña canta. ___ está contenta.»   → hianyzo
+  «Ordena los acontecimientos»          → sorrend
+  «Construye la frase»                  → epito
+  «¿Qué parte es la raíz?»              → abra  (¡NO un <ABRA> normal!)
+  «¿Qué pasa si la fuerza es mayor?»    → modell
+  concepto y significado en pareja      → parosit
+  pregunta cerrada que NO es cálculo    → valaszt
+
+Un ejercicio por respuesta. Si solo explicas y no pides nada, no hace falta
+ejercicio — pero entonces tampoco termines con una pregunta.
 
 ⛔ EN UN CÁLCULO NUNCA DES BOTONES. Si preguntas CUÁNTO es algo, usa
 "szamolo" o "szam". Con botones el niño adivina en vez de calcular.
@@ -7828,10 +7929,20 @@ def child_chat_send(child_id: int):
     _remember_fl_words(raw_reply)
     # A gyakorló feladatot a NYERS válaszból olvassuk ki, mielőtt a jelölők
     # eltűnnének a szövegből.
+    _es_tanterv = (_active_curriculum() or "HU").upper() == "ES"
     feladat = _feladat_parse(
         raw_reply, grade=grade_num,
-        es_tanterv=(_active_curriculum() or "HU").upper() == "ES",
+        es_tanterv=_es_tanterv,
         temakor=current_topic)
+    if not feladat:
+        # A tanár szövegben kérdezett, jelölő nélkül. Ilyenkor mi csináljuk
+        # meg a feladatot – enélkül az egész oldal marad csevegésnek.
+        feladat = _feladat_szovegbol(
+            raw_reply, grade=grade_num, es_tanterv=_es_tanterv,
+            temakor=current_topic)
+        if feladat:
+            print(f"[FELADAT] jelolo nelkul, szovegbol: {feladat.get('tipus')}",
+                  flush=True)
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:
