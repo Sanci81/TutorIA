@@ -51,40 +51,49 @@
                background:#f0b8b0}
   .lyukak{position:absolute;top:14px;left:30px;right:16px;display:flex;
           justify-content:center;gap:26px}
-  .lyukak i{width:9px;height:9px;border-radius:50%;background:#eef2ee;display:block}
+  .lyukak i{width:9px;height:9px;border-radius:50%;background:rgba(15,63,43,.1);display:block}
 
   /* ── LAPONKÉNTI SZÍN ──────────────────────────────────────────────
-     Eddig csak az ajánlott lap volt színes, a másik három fehéren
-     beleolvadt a háttérbe. Most mindegyiknek saját fejléc-sávja és
-     kerete van: a Próba semleges, az Alap a márka zöldje (ez az
-     ajánlott), a Pro ezüst, a Max arany. A törzs marad fehér, mert a
-     fémes háttéren a szöveg olvashatatlan lenne. */
-  .lap-fej-sav{position:absolute;top:0;left:0;right:0;height:88px;
-               border-radius:6px 18px 0 0;pointer-events:none}
-  .lap-free .lap-fej-sav{background:linear-gradient(160deg,#eef4f0,#fff)}
-  .lap-pro  .lap-fej-sav{background:linear-gradient(160deg,#dfe6ec,#fff)}
-  .lap-max  .lap-fej-sav{background:linear-gradient(160deg,#f6e7c2,#fff)}
-  .lap-free{border-top:4px solid #b9c9c0}
-  .lap-pro {border-top:4px solid #93a3b3}
-  .lap-max {border-top:4px solid #d4a017}
-  .lap-free .avatar-kor{border-color:#eef4f0}
-  .lap-pro  .avatar-kor{border-color:#e6ecf1}
-  .lap-max  .avatar-kor{border-color:#f6e7c2}
-  .lap-pro  .ar{color:#3f5568}
-  .lap-max  .ar{color:#8a6410}
-  .lap-pro  .gomb{background:#3f5568}
-  .lap-pro  .gomb:hover{background:#2e4052}
-  .lap-max  .gomb{background:#8a6410}
-  .lap-max  .gomb:hover{background:#6d4f0c}
-  .lap-pro  .jellemzok li::before{color:#3f5568}
-  .lap-max  .jellemzok li::before{color:#8a6410}
-  .lap-max  .ido i{background:#e8cf93}
-  .lap-pro  .ido i{background:#cdd8e1}
+     AZ EGÉSZ LAP színes, nem csak egy sáv a tetején: a korábbi felső
+     sáv rátakart a csomag nevére. A háttér halvány marad, hogy a sötét
+     szöveg olvasható legyen rajta; az ajánlott lap fordítva működik,
+     sötét háttér és világos szöveg. */
+  .lap-free{background:#f1f6f3;border-top:5px solid #a8bcb1}
+  .lap-pro {background:#e9eff5;border-top:5px solid #7f93a6}
+  .lap-max {background:#fdf3e0;border-top:5px solid #d4a017}
+
+  .lap-free .avatar-kor{border-color:#f1f6f3;background:#fff}
+  .lap-pro  .avatar-kor{border-color:#e9eff5;background:#fff}
+  .lap-max  .avatar-kor{border-color:#fdf3e0;background:#fff}
+
+  /* A szöveg a laphoz igazodik: a hidegebb lapon hidegebb, a melegen
+     melegebb sötét árnyalat – így mindenhol jó a kontraszt. */
+  .lap-pro  h2, .lap-pro  .ido-szoveg{color:#26384a}
+  .lap-max  h2, .lap-max  .ido-szoveg{color:#5b420a}
+  .lap-pro  .ar{color:#26384a}
+  .lap-max  .ar{color:#7a5a0e}
+  .lap-pro  .jellemzok li{color:#3d4d5c;border-bottom-color:rgba(38,56,74,.09)}
+  .lap-max  .jellemzok li{color:#5d4d2c;border-bottom-color:rgba(91,66,10,.1)}
+  .lap-free .jellemzok li{border-bottom-color:rgba(15,63,43,.07)}
+  .lap-pro  .jellemzok li::before{color:#3f6f96}
+  .lap-max  .jellemzok li::before{color:#a17a12}
+  .lap-pro  .ar-alatt, .lap-pro .ido-alatt{color:#5b6b7a}
+  .lap-max  .ar-alatt, .lap-max .ido-alatt{color:#7a6a45}
+
+  .lap-pro  .gomb{background:#26384a}
+  .lap-pro  .gomb:hover{background:#182635}
+  .lap-max  .gomb{background:#7a5a0e}
+  .lap-max  .gomb:hover{background:#5b420a}
+  .lap-pro  .ido i{background:#b9c9d6}
+  .lap-max  .ido i{background:#e5c987}
+  /* A havi/éves váltó háttere is a laphoz igazodik. */
+  .lap-pro  .ar-valto{background:#dae3ec}
+  .lap-max  .ar-valto{background:#f5e6c8}
+  .lap-free .ar-valto{background:#e4ece7}
 
   .lap.ki{background:#0f3f2b;color:#fff;
           box-shadow:0 3px 0 #082a1c, 0 18px 38px rgba(15,63,43,.3)}
   .lap.ki::before{background:#3ddc97}
-  .lap.ki .lap-fej-sav{background:linear-gradient(160deg,rgba(61,220,151,.16),transparent)}
   .lap.ki .lyukak i{background:rgba(255,255,255,.16)}
   .lap.talalat{outline:3px solid #e8a33d;outline-offset:3px}
 
@@ -201,7 +210,6 @@
   <div class="kartyak">
     {% for cs in csomag_lista %}
     <div class="lap lap-{{ cs.kulcs }}{% if cs.ajanlott %} ki{% endif %}{% if cs.kulcs == sajat_csomag %} enyem{% endif %}">
-      <span class="lap-fej-sav" aria-hidden="true"></span>
       <div class="lyukak"><i></i><i></i><i></i></div>
       <span class="avatar-kor">
         <img src="{{ url_for('avatar_kep', kulcs=csomag_avatar[cs.kulcs]) }}" alt="">
