@@ -208,6 +208,18 @@
   .kor-nagy .fmod-sav{background:#232c37}
   .kor-nagy .fmod-cel{color:#d6b25e}
   .kor-nagy .fmod-talalt .fmod-kijelzo{color:#6fd0a2}
+  /* Az alsó szám jegyei átírhatók: kölcsönkérés után a 2-ből 3 lesz.
+     Alapból ugyanúgy néznek ki, mint a nyomtatott számjegyek – csak akkor
+     látszik, hogy mező, ha a gyerek beleáll. */
+  .fsz-jegy-mezo{border:2px solid transparent;background:transparent;
+                 text-align:center;padding:0;border-radius:8px;cursor:text;
+                 /* A .fsz-jegy méretét és vastagságát MEG KELL TARTANI:
+                    az input alapból vékonyabb betűt örököl, és az alsó sor
+                    halványabbnak látszott, mint a felső. */
+                 font-family:inherit;font-size:30px;font-weight:800;
+                 color:#16241d;line-height:1.15;height:48px}
+  .fsz-jegy-mezo:hover{border-color:#e3ebf2}
+  .fsz-jegy-mezo:focus{outline:none;border-color:#3fa88f;background:#f2fbf8}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -1548,6 +1560,24 @@
                     s.appendChild(u);
                     continue;
                 }
+                if (irhato) {
+                    // Átírható számjegy: a gyerek a kölcsönkérés után
+                    // megnöveli (2 → 3). Nem ellenőrizzük és nem küldjük el,
+                    // ez a gyerek levezetése.
+                    var ji = document.createElement('input');
+                    ji.type = 'text';
+                    ji.inputMode = 'numeric';
+                    ji.maxLength = 1;
+                    ji.className = 'fsz-jegy fsz-jegy-mezo';
+                    ji.value = sz[i];
+                    ji.setAttribute('aria-label', L.feladatMaradek);
+                    ji.addEventListener('input', function () {
+                        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                    });
+                    ji.addEventListener('focus', function () { this.select(); });
+                    s.appendChild(ji);
+                    continue;
+                }
                 var c = document.createElement('span');
                 c.className = 'fsz-jegy';
                 c.textContent = sz[i];
@@ -1556,31 +1586,39 @@
             return s;
         }
 
-        // MARADÉKSOR (átvitel / kölcsönkérés). Összeadásnál ide írja a
-        // gyerek a fölvitt egyest, kivonásnál a kölcsönkérést — pont úgy,
-        // mint a füzetben. Nem kötelező kitölteni: ez a gyerek jegyzete,
-        // nem küldjük el, és nem is ellenőrizzük.
-        var maradek = document.createElement('div');
-        maradek.className = 'fsz-sor fsz-maradek';
-        var mUres = document.createElement('span');
-        mUres.className = 'fsz-jel';
-        maradek.appendChild(mUres);
-        for (var mi = 0; mi < szelesseg; mi++) {
-            var mm = document.createElement('input');
-            mm.type = 'text';
-            mm.inputMode = 'numeric';
-            mm.maxLength = 1;
-            mm.className = 'fsz-maradek-mezo';
-            mm.title = L.feladatMaradek;
-            mm.setAttribute('aria-label', L.feladatMaradek);
-            mm.addEventListener('input', function () {
-                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
-            });
-            maradek.appendChild(mm);
+        // JEGYZETSOR (átvitel / kölcsönkérés). A gyerek füzetében is van:
+        // nem kötelező kitölteni, nem küldjük el, és nem ellenőrizzük.
+        function jegyzetSor() {
+            var sorEl = document.createElement('div');
+            sorEl.className = 'fsz-sor fsz-maradek';
+            var ures = document.createElement('span');
+            ures.className = 'fsz-jel';
+            sorEl.appendChild(ures);
+            for (var mi = 0; mi < szelesseg; mi++) {
+                var mm = document.createElement('input');
+                mm.type = 'text';
+                mm.inputMode = 'numeric';
+                mm.maxLength = 1;
+                mm.className = 'fsz-maradek-mezo';
+                mm.title = L.feladatMaradek;
+                mm.setAttribute('aria-label', L.feladatMaradek);
+                mm.addEventListener('input', function () {
+                    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                });
+                sorEl.appendChild(mm);
+            }
+            return sorEl;
         }
-        doboz.appendChild(maradek);
 
+        // A jegyzetsor MINDIG FELÜL van — oda írja a gyerek a kölcsönkért
+        // egyest, ahogy a füzetben is.
+        doboz.appendChild(jegyzetSor());
         doboz.appendChild(sor(f.a, ''));
+        // AZ ALSÓ SZÁM SZÁMJEGYEI ÁTÍRHATÓK. 5300 − 260 esetén a tízeseknél
+        // 0-ból nem lehet 6-ot kivonni: felülre kerül az egyes, alulra a 4,
+        // majd a következő oszlopban az egyest az ALSÓ szám 2-eséhez kell
+        // adni — vagyis a 2-t 3-ra kell ÁTÍRNI. Enélkül ezt a lépést csak
+        // fejben lehetett megcsinálni.
         doboz.appendChild(sor(f.b, f.jel, true));
 
         var vonal = document.createElement('div');
