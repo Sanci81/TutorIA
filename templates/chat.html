@@ -1509,14 +1509,38 @@
         return doboz;
     }
 
+    /* HANGOS MÓDBAN a sendMessage() azonnal visszafordul (nincs beviteli
+       mező), ezért a hangos küldőt külön el kell érni. A hangos blokk
+       töltögeti fel ezt a változót. */
+    var hangosKuldo = null;
+
     function feladatKuld(doboz, szoveg) {
         if (!szoveg) { return; }
+
+        // ELŐSZÖR KÜLDÜNK, csak utána tüntetjük el a feladatot. Élesben ez
+        // ment félre: hangos módban a sendMessage() némán visszafordult, a
+        // feladat viszont már eltűnt a munkatérről — a gyereknek úgy tűnt,
+        // hogy a program letörölte a feladatát, és csak beszélni hagyja.
+        var elment = false;
+        if (chatMode === 'voice') {
+            if (typeof hangosKuldo === 'function') {
+                hangosKuldo(szoveg);
+                elment = true;
+            }
+        } else {
+            sendMessage(szoveg);
+            elment = true;
+        }
+
+        if (!elment) {
+            // Nem tudtuk elküldeni: a feladat MARADJON a képernyőn, és
+            // maradjon megoldhatónak. Jobb újrapróbálni, mint elveszíteni.
+            return;
+        }
+
         doboz.classList.add('feladat-kesz');
         doboz.querySelectorAll('button, input').forEach(function (e) { e.disabled = true; });
-        // A megoldott feladat lekerül a munkatérről: a következő feladatig
-        // a beszélgetés kapja vissza a teljes szélességet.
         setTimeout(munkaterUres, 400);
-        sendMessage(szoveg);
     }
 
     // Oszlopos számolás: a két szám egymás alatt, alul üres kockák.
@@ -2767,6 +2791,10 @@
             var el = document.getElementById(id);
             return el ? el.value : '';
         }
+
+        /* A munkatéren megoldott feladat is ezen az úton megy el hangos
+           módban – lásd feladatKuld(). */
+        hangosKuldo = function (szoveg) { return sendVoiceChat(szoveg); };
 
         function sendVoiceChat(userText) {
             appendBubble('user', userText);

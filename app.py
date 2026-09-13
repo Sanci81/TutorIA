@@ -2695,9 +2695,17 @@ def _feladat_parse(text: str, *, grade: int | None = None,
     tipus = str(adat.get("tipus") or "").strip().lower()
 
     if tipus == "szamolo":
-        return _szamolo_feladat(
-            _FELADAT_JELEK.get(str(adat.get("jel") or "").strip()),
-            adat.get("a"), adat.get("b"))
+        _jel = _FELADAT_JELEK.get(str(adat.get("jel") or "").strip())
+        # OSZTÁSNÁL AZ OSZLOPOS TÁBLA ÉRTELMETLEN. A 7200 : 100 nem oszlopos
+        # eljárás; a négy üres kocka semmit nem segít, csak összezavar.
+        # Osztásnál beírós mezőt adunk, ott a gyerek a hányadost írja be.
+        if _jel == "÷":
+            try:
+                return {"tipus": "szam",
+                        "muvelet": f"{int(adat['a'])} ÷ {int(adat['b'])}"}
+            except Exception:
+                return None
+        return _szamolo_feladat(_jel, adat.get("a"), adat.get("b"))
 
     if tipus == "szam":
         # EGY SZÁMOT KELL KISZÁMOLNI ÉS BEÍRNI. Fejben számoláshoz ez való,
@@ -2722,7 +2730,15 @@ def _feladat_parse(text: str, *, grade: int | None = None,
             if oszlopos:
                 return oszlopos
         if not muvelet:
-            muvelet = str(adat.get("muvelet") or "").strip()[:40]
+            # NE VÁGJUK EL SZÓ KÖZEPÉN. Élesben ez jelent meg a gyereknek:
+            # „Kb. mennyi 31 × 19, ha kerekítéssel becs =" — a 40 karakteres
+            # korlát a mondat közepén vágott. Nagyobb keret, és ha mégis
+            # vágni kell, szóhatáron tesszük.
+            muvelet = str(adat.get("muvelet") or "").strip()
+            if len(muvelet) > 120:
+                vagott = muvelet[:120]
+                szokoz = vagott.rfind(" ")
+                muvelet = (vagott[:szokoz] if szokoz > 60 else vagott) + "…"
         return {"tipus": "szam", "muvelet": muvelet}
 
     if tipus == "parosit":
@@ -2930,6 +2946,11 @@ def _feladat_szovegbol(szoveg: str, *, grade: int | None = None,
         b_ert = m.group(3).replace(" ", "")
         # Írásbeli témakörben és kisiskolásnak OSZLOPBA, egyébként beírós
         # mező – pontosan ugyanaz a szabály, mint a jelölős úton.
+        if jel == "÷":
+            try:
+                return {"tipus": "szam", "muvelet": f"{int(a_ert)} ÷ {int(b_ert)}"}
+            except Exception:
+                return None
         if jel is not None:
             if _irasbeli_temakor(temakor) or not _fejben_szamolhat(grade, es_tanterv):
                 oszlopos = _szamolo_feladat(jel, a_ert, b_ert)
