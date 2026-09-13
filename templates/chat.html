@@ -1107,6 +1107,7 @@
             || alapUtasitas(feladat && feladat.tipus);
         munkater.hidden = false;
         if (munkaSav) { munkaSav.classList.add('van-munka'); }
+        if (typeof kabalaVillan === 'function') { kabalaVillan('gepies', 2500); }
         return true;
     }
 
@@ -2145,9 +2146,10 @@
         nezelodik:   'O11Y-Sleepy',      /* ha sokáig tart: elálmosodik*/
         orul:        'O1Y-Excited',      /* jó válasz                  */
         szomoru:     'O11Y-Sad',         /* rossz válasz               */
-        bosszus:     'O11Y-Upset',       /* sokadik rossz válasz       */
-        kivancsi:    'O11Y-Suspicious',  /* nyitott feladat            */
-        cuki:        'O1Y-Happy',        /* lecke kész                 */
+        bosszus:     'O11Y-Upset',       /* harmadik rossz válasz      */
+        kivancsi:    'O11Y-Suspicious',  /* figyeli, mit írsz           */
+        cuki:        'O11Y-Cute',        /* érme, tasak, kis öröm      */
+        gepies:      'O11Y-AI',          /* feladat érkezik a munkatérre*/
         kesz:        'O1Y-Happy'
     };
 
@@ -2229,10 +2231,56 @@
         + 'sajnos nem|casi|no exactamente|no es correcto|inténtalo|'
         + 'volvamos|revisemos)', 'i');
 
+    var kabalaRontas = 0;          /* egymás utáni rossz válaszok */
+
     function kabalaValaszra(szoveg) {
         if (!szoveg) { return; }
-        if (KABALA_JAVIT.test(szoveg)) { kabalaSzomoru(); }
-        else if (KABALA_DICSER.test(szoveg)) { kabalaOrul(); }
+        if (KABALA_JAVIT.test(szoveg)) {
+            kabalaRontas += 1;
+            /* Harmadszorra már bosszús – de csak egy pillanatra, a
+               gyereket nem büntetni akarjuk, csak érezze, hogy számít. */
+            if (kabalaRontas >= 3) {
+                kabalaRontas = 0;
+                kabalaAllapot('bosszus');
+                setTimeout(function () { kabalaAllapot('alap'); }, 3000);
+            } else {
+                kabalaSzomoru();
+            }
+        } else if (KABALA_DICSER.test(szoveg)) {
+            kabalaRontas = 0;
+            kabalaOrul();
+        }
+    }
+
+    /* RÖVID KÖZBESZÓLÁS: egy arc pár másodpercre, utána alaphelyzet. */
+    function kabalaVillan(nev, ido) {
+        kabalaAllapot(nev);
+        setTimeout(function () { kabalaAllapot('alap'); }, ido || 2500);
+    }
+
+    /* ÜRESJÁRAT. Ha percekig nem történik semmi, a figura MAGÁTÓL vált
+       arcot. Enélkül a tizenegy mozgásból a gyerek kettőt látna: a
+       többi csak ritka eseményhez kötődik (teszt vége, hosszú
+       várakozás), és a figura halottnak tűnne. */
+    var KABALA_UNALOM = ['cuki', 'kivancsi', 'koszon', 'gepies', 'alap'];
+    var kabalaUnalomOra = null;
+
+    function kabalaUnatkozik() {
+        if (kabalaUnalomOra) { clearTimeout(kabalaUnalomOra); }
+        kabalaUnalomOra = setTimeout(function () {
+            if (kabalaKert === 'alap') {
+                var i = Math.floor(Math.random() * KABALA_UNALOM.length);
+                kabalaVillan(KABALA_UNALOM[i], 3500);
+            }
+            kabalaUnatkozik();
+        }, 9000 + Math.floor(Math.random() * 7000));
+    }
+
+    /* A gyerek ÍR – a figura odafigyel. */
+    if (input) {
+        input.addEventListener('input', function () {
+            if (kabalaKert === 'alap') { kabalaVillan('kivancsi', 2500); }
+        });
     }
 
     /* A tanár gondolkodik. Ha sokáig tart, a figura nézelődni kezd —
@@ -2267,6 +2315,7 @@
             /* Az óra elején a figura KÖSZÖN, utána nyugodt alaphelyzet. */
             kabalaAllapot('koszon');
             setTimeout(function () { kabalaAllapot('alap'); }, 3500);
+            kabalaUnatkozik();
         }
     }
 
