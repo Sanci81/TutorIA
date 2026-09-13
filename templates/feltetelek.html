@@ -117,5 +117,15 @@
     {{ t('terms_privacy_box_text') }}
     <a href="{{ url_for('adatvedelem') }}">{{ t('privacy_title') }}</a>
   </div>
+
+  {# FELHASZNÁLT MŰVEK. A CC BY licenc egyetlen kikötése a névfeltüntetés:
+     a szerző neve, a mű címe, a licenc és annak linkje, továbbá annak
+     jelzése, ha változtattunk rajta. Ez a doboz ezt teljesíti. #}
+  <h2 style="margin-top:2rem">{{ t('terms_credits_title') }}</h2>
+  <p style="font-size:.92em;color:#5f7c99">
+    {{ t('terms_credits_mascot') }}
+    <a href="https://creativecommons.org/licenses/by/4.0/deed.hu"
+       target="_blank" rel="noopener">CC BY 4.0</a>.
+  </p>
 </div>
 {% endblock %}

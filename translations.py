@@ -281,6 +281,16 @@ TRANSLATIONS = {
 
     # ── Munkatér: rövid utasítás feladattípusonként ──────────────────────
     # Ezt a felolvasó is kimondja hangos módban, ezért legyen kimondható.
+    # ── Felhasznált művek (CC BY névfeltüntetés) ─────────────────────────
+    "terms_credits_title": {"hu": "Felhasznált művek",
+                            "es": "Obras utilizadas"},
+    "terms_credits_mascot": {
+        "hu": ("A mozgó kabala figura: \u201eO11Y\u201d, k\u00e9sz\u00edtette "
+               "Patgrivet, a rive.app piacter\u00e9r\u0151l. Licenc:"),
+        "es": ("La mascota animada: \u00abO11Y\u00bb, creada por Patgrivet, "
+               "del marketplace de rive.app. Licencia:"),
+    },
+
     "utasitas_szamolo": {"hu": "Töltsd ki jobbról balra.",
                          "es": "Complétalo de derecha a izquierda."},
     "utasitas_parosit": {"hu": "Húzd egymáshoz, ami összetartozik.",
@@ -1139,6 +1149,7 @@ TRANSLATIONS = {
     "nem_cimke": {"hu": "A gyerek neme", "es": "Niño o niña"},
     "nem_fiu": {"hu": "Fiú", "es": "Niño"},
     "nem_lany": {"hu": "Lány", "es": "Niña"},
+    "nem_robot": {"hu": "Robot (mozg\u00f3)", "es": "Robot (animado)"},
     "nem_nincs": {"hu": "Nem adom meg", "es": "Prefiero no decirlo"},
     "nem_miert": {
         "hu": "Csak azt dönti el, melyik rajzfigura kíséri a tanulásban. "

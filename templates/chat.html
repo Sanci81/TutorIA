@@ -220,6 +220,8 @@
                  color:#16241d;line-height:1.15;height:48px}
   .fsz-jegy-mezo:hover{border-color:#e3ebf2}
   .fsz-jegy-mezo:focus{outline:none;border-color:#3fa88f;background:#f2fbf8}
+  /* A mozgó kabala pontosan akkora helyet kap, mint az állókép volt. */
+  .chat-kabala-rive{display:block;width:100%;height:auto;max-width:100%}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -446,9 +448,17 @@
        ne takarjon el se szöveget, se gombot. Nem mozog és nem villog: a
        gyerek a feladatra figyeljen. Csak akkor van, ha a szülő megadta a
        gyerek nemét; keskeny képernyőn nem jelenik meg. #}
-    {% if kabala_kep %}
+    {# KABALA: a szülő négy közül választ a profilban — fiú, lány, mozgó
+       robot, vagy semmi. A fiú és a lány állókép marad, a robot mozog. #}
+    {% if kabala_kep or kabala_robot %}
     <div class="chat-kabala-oszlop" aria-hidden="true">
-        <img class="chat-kabala" src="{{ url_for('static', filename=kabala_kep) }}" alt="">
+        {% if kabala_robot %}
+        <canvas class="chat-kabala chat-kabala-rive" id="kabala-rive"
+                width="440" height="440"></canvas>
+        {% else %}
+        <img class="chat-kabala" id="kabala-kep"
+             src="{{ url_for('static', filename=kabala_kep) }}" alt="">
+        {% endif %}
     </div>
     {% endif %}
 
@@ -484,6 +494,9 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+{# A mozgó kabala futtatója. Ha nem tölt be, a chat.html-ben lévő
+   kabalaAllapot() csendben kihagyja magát, és marad az állókép. #}
+<script src="https://unpkg.com/@rive-app/canvas@2.17.3"></script>
 <script>
     // ── A teszt ablak és a teljes képernyő ─────────────────────────────
     // A böngésző teljes képernyő módjában CSAK a kinagyított elem tartalma
@@ -2071,7 +2084,87 @@
         }
     }
 
+
+    // ══════════════════════════════════════════════════════════════════
+    // MOZGÓ KABALA (Rive)
+    //
+    // A figura ASZERINT vált arcot, hogy mi történik éppen:
+    //   gondolkodik  – amíg a tanár válaszára várunk
+    //   nézelődik    – ha a válasz sokáig tart (8 mp fölött)
+    //   örül         – sikeres teszt, befejezett lecke
+    //   alap         – egyébként
+    //
+    // FONTOS: ha a Rive futtató bármiért nem tölt be (nincs net, régi
+    // böngésző, letiltott CDN), akkor NEM történik semmi rossz: marad a
+    // régi állókép, és a tanulás zavartalanul megy tovább. A figura dísz,
+    // nem lehet tőle függeni.
+    // ══════════════════════════════════════════════════════════════════
+    var KABALA_FAJL = {{ url_for('static', filename='o11y.riv')|tojson }};
+    var KABALA_ALLAPOT = {
+        alap:        'O11Y-Homepage',
+        gondolkodik: 'O11Y-Thinking',
+        nezelodik:   'O11Y-Investigate',
+        orul:        'O1Y-Happy',
+        szomoru:     'O11Y-Sad',
+        kesz:        'O11Y-Done'
+    };
+
+    var kabalaVaszon = document.getElementById('kabala-rive');
+    var kabalaPeldany = null;
+    var kabalaMost = '';
+    var kabalaLassuOra = null;
+
+    function kabalaAllapot(nev) {
+        if (!kabalaVaszon || typeof rive === 'undefined') { return; }
+        var tabla = KABALA_ALLAPOT[nev] || KABALA_ALLAPOT.alap;
+        if (tabla === kabalaMost) { return; }
+        kabalaMost = tabla;
+        try {
+            if (kabalaPeldany) { kabalaPeldany.cleanup(); }
+            kabalaPeldany = new rive.Rive({
+                src: KABALA_FAJL,
+                canvas: kabalaVaszon,
+                artboard: tabla,
+                autoplay: true,
+                fit: rive.Fit.Contain,
+                onLoad: function () {
+                    try { kabalaPeldany.resizeDrawingSurfaceToCanvas(); }
+                    catch (e) {}
+                },
+                onLoadError: function () {
+                    // A vászon üresen marad. Nem szólunk a gyereknek: a
+                    // figura dísz, a tanulás nem múlik rajta.
+                    kabalaPeldany = null;
+                }
+            });
+        } catch (e) {
+            kabalaPeldany = null;
+        }
+    }
+
+    /* A tanár gondolkodik. Ha sokáig tart, a figura nézelődni kezd —
+       ez adja vissza a gyereknek, hogy a program ÉL, nem lefagyott. */
+    function kabalaVar(be) {
+        if (kabalaLassuOra) { clearTimeout(kabalaLassuOra); kabalaLassuOra = null; }
+        if (be) {
+            kabalaAllapot('gondolkodik');
+            kabalaLassuOra = setTimeout(function () {
+                kabalaAllapot('nezelodik');
+            }, 8000);
+        } else {
+            kabalaAllapot('alap');
+        }
+    }
+
+    /* Öröm — sikeres teszt, befejezett lecke. Pár másodperc után
+       visszaáll, hogy ne váljon tapétává. */
+    function kabalaOrul() {
+        kabalaAllapot('orul');
+        setTimeout(function () { kabalaAllapot('alap'); }, 4500);
+    }
+
     function setLoading(on) {
+        kabalaVar(on);
         typing.hidden = !on;
         typing.dataset.mikor = on ? String(Date.now()) : '';
         if (sendBtn) sendBtn.disabled = on;
@@ -2551,6 +2644,7 @@
                 if (d.passed) {
                     // A lecke CSAK a sikeres teszttel zárul – a sín is itt ér célba.
                     leckeVege = true; leckeAllomasra(4);
+                    kabalaOrul();
                     var congratsHtml = '';
                     if (d.congrats_message) {
                         congratsHtml = '<div class="chat-bubble chat-bubble-assistant"><div class="chat-bubble-inner">' +
@@ -3015,7 +3109,7 @@
                     if (d.vocabulary) updateVocabulary(d.vocabulary, d.topic_name);
                     updateGamification(d.xp, d.game_level, d.coins, d.penztarca);
                     // Hangos teszt: a sín ugyanúgy célba ér, mint írásban.
-                    if (d.passed) { leckeVege = true; leckeAllomasra(4); }
+                    if (d.passed) { leckeVege = true; leckeAllomasra(4); kabalaOrul(); }
                     if (d.topic_done) {
                         setTimeout(function () {
                             confetti({
