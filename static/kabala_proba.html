@@ -1,0 +1,45 @@
+<meta charset="utf-8">
+<title>Kabala próba</title>
+<style>
+ body{font-family:system-ui,sans-serif;background:#eef4f1;margin:0;padding:20px}
+ h1{font-size:18px}
+ .racs{display:flex;flex-wrap:wrap;gap:18px}
+ .db{background:
+   repeating-conic-gradient(#ddd 0 25%, #fff 0 50%) 0 0/16px 16px;
+   border:1px solid #cbd6d1;border-radius:10px;padding:8px;width:230px}
+ .db p{margin:6px 0 0;font-size:12px;text-align:center;color:#234}
+ canvas{display:block;width:210px;height:210px}
+</style>
+<h1>Melyik rajztábla jó? (a kockás minta = átlátszó háttér)</h1>
+<div class="racs" id="racs"></div>
+<script src="rive.js"></script>
+<script>
+var TABLAK = [
+  ['O11Y-Expression',  'O11Y-Wink'],
+  ['O11Y-Expression',  'O11Y-Thinking'],
+  ['O11Y-Expression',  'O1Y-Excited'],
+  ['O11Y-Expression',  'O11Y-Sleepy'],
+  ['O11Y-Interactive', 'O11Y-Interact-Idle01'],
+  ['O11Y-Interactive', 'O11Y-Interact-Idle02'],
+  ['O11Y',             'O11Y-Homepage'],
+  ['O11Y',             'O11Y-Thinking'],
+  ['O11Y',             'O1Y-Happy'],
+  ['O11Y',             'O11Y-Investigate'],
+  ['O11Y-Thumbnail',   'O11Y-Homepage']
+];
+var racs = document.getElementById('racs');
+TABLAK.forEach(function (t) {
+  var d = document.createElement('div'); d.className = 'db';
+  var c = document.createElement('canvas'); c.width = 600; c.height = 600;
+  var p = document.createElement('p'); p.textContent = t[0] + ' / ' + t[1];
+  d.appendChild(c); d.appendChild(p); racs.appendChild(d);
+  try {
+    var r = new rive.Rive({
+      src: "o11y.riv", canvas: c, artboard: t[0],
+      stateMachines: t[1], autoplay: true, fit: rive.Fit.Contain,
+      onLoad: function () { r.resizeDrawingSurfaceToCanvas(); },
+      onLoadError: function () { p.textContent += '  – NEM MEGY'; }
+    });
+  } catch (e) { p.textContent += '  – HIBA'; }
+});
+</script>

@@ -221,7 +221,7 @@
   .fsz-jegy-mezo:hover{border-color:#e3ebf2}
   .fsz-jegy-mezo:focus{outline:none;border-color:#3fa88f;background:#f2fbf8}
   /* A mozgó kabala pontosan akkora helyet kap, mint az állókép volt. */
-  .chat-kabala-rive{display:block;width:100%;height:auto;max-width:140px}
+  .chat-kabala-rive{display:block;width:100%;height:auto;max-width:190px}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -997,6 +997,13 @@
     function valasztoGombokBe(szoveg) {
         valasztoGombokKi();                       // csak a LEGUTÓBBI alatt
         if (chatMode === 'voice') { return; }
+        /* NYITOTT FELADAT MELLETT SEMMILYEN GOMB NINCS. A munkatéren
+           ott a megoldatlan feladat – ilyenkor a gyereknek egy dolga
+           van: megoldani. A „Mehetünk tovább" itt kibújás lenne. */
+        if (munkater && !munkater.hidden && munkaterTest
+                && munkaterTest.querySelector('.feladat:not(.feladat-kesz)')) {
+            return;
+        }
         var doboz = document.createElement('div');
         doboz.className = 'chat-valaszto';
         var gombok = tanarKerdez(szoveg)
@@ -2118,28 +2125,36 @@
         kesz:        'O1Y-Happy'
     };
 
+    /* Minden hangulat EGY-EGY állapotgép ugyanazon a táblán. Ezért a
+       fájlt EGYSZER töltjük be, mind a hattal együtt, és utána csak
+       átkapcsolunk köztük. Korábban minden váltásnál újratöltöttük a
+       700 kB-os fájlt – mire betöltött, a tanár már régen válaszolt,
+       ezért látszott úgy, hogy a figura nem reagál semmire. */
+    var KABALA_GEPEK = ['O11Y-Wink', 'O11Y-Thinking', 'O11Y-Sleepy',
+                        'O1Y-Excited', 'O11Y-Sad', 'O1Y-Happy'];
+
     var kabalaVaszon = document.getElementById('kabala-rive');
     var kabalaPeldany = null;
+    var kabalaKesz = false;
     var kabalaMost = '';
+    var kabalaKert = 'alap';
     var kabalaLassuOra = null;
 
-    function kabalaAllapot(nev) {
+    function kabalaIndit() {
         if (!kabalaVaszon || typeof rive === 'undefined') { return; }
-        var gep = KABALA_ALLAPOT[nev] || KABALA_ALLAPOT.alap;
-        if (gep === kabalaMost) { return; }
-        kabalaMost = gep;
         try {
-            if (kabalaPeldany) { kabalaPeldany.cleanup(); }
             kabalaPeldany = new rive.Rive({
                 src: KABALA_FAJL,
                 canvas: kabalaVaszon,
                 artboard: KABALA_TABLA,
-                stateMachines: gep,
-                autoplay: true,
+                stateMachines: KABALA_GEPEK,
+                autoplay: false,
                 fit: rive.Fit.Contain,
                 onLoad: function () {
+                    kabalaKesz = true;
                     try { kabalaPeldany.resizeDrawingSurfaceToCanvas(); }
                     catch (e) {}
+                    kabalaAllapot(kabalaKert);   // amit közben kértek
                 },
                 onLoadError: function () {
                     // A vászon üresen marad. Nem szólunk a gyereknek: a
@@ -2150,6 +2165,20 @@
         } catch (e) {
             kabalaPeldany = null;
         }
+    }
+
+    function kabalaAllapot(nev) {
+        kabalaKert = nev;
+        if (!kabalaPeldany || !kabalaKesz) { return; }
+        var gep = KABALA_ALLAPOT[nev] || KABALA_ALLAPOT.alap;
+        if (gep === kabalaMost) { return; }
+        kabalaMost = gep;
+        try {
+            KABALA_GEPEK.forEach(function (g) {
+                if (g !== gep) { try { kabalaPeldany.pause(g); } catch (e) {} }
+            });
+            kabalaPeldany.play(gep);
+        } catch (e) {}
     }
 
     /* A tanár gondolkodik. Ha sokáig tart, a figura nézelődni kezd —
@@ -2180,7 +2209,7 @@
             console.warn('TutorIA: a Rive futtato (static/rive.js) '
                          + 'nem toltott be, a kabala kimarad.');
         } else {
-            kabalaAllapot('alap');
+            kabalaIndit();
         }
     }
 
