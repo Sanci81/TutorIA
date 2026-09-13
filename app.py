@@ -8957,6 +8957,15 @@ def child_chat_test_generate(child_id: int):
         if phase == 2 and elozo_fazis == 1:
             varakozas_kell = False
 
+        logger.warning(
+            'KAPU_DEBUG topic=%s ora_szam=%s total_req=%s tanult=%s '
+            'phase=%s attempts=%s elozo_perc=%s elozo_fazis=%s '
+            'varakozas_kell=%s completed_at=%s',
+            topic_id, ora_szam, total_req_minutes, topic_learning_minutes,
+            phase, topic_attempts, elozo_perc, elozo_fazis,
+            varakozas_kell, (existing or {}).get("completed_at"),
+        )
+
         if varakozas_kell and existing and existing.get("completed_at"):
             try:
                 last_test_dt = datetime.fromisoformat(existing["completed_at"])
@@ -8966,6 +8975,10 @@ def child_chat_test_generate(child_id: int):
                 learned_since = database.get_topic_learning_minutes_since(
                     child_id, progress_subject, topic_id,
                     last_test_dt,
+                )
+                logger.warning(
+                    'KAPU_DEBUG2 learned_since=%s kell=%s',
+                    learned_since, TEST_RETRY_STUDY_MINUTES,
                 )
                 if learned_since < TEST_RETRY_STUDY_MINUTES:
                     need = TEST_RETRY_STUDY_MINUTES - int(learned_since)
