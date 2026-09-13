@@ -220,8 +220,16 @@
                  color:#16241d;line-height:1.15;height:48px}
   .fsz-jegy-mezo:hover{border-color:#e3ebf2}
   .fsz-jegy-mezo:focus{outline:none;border-color:#3fa88f;background:#f2fbf8}
-  /* A mozgó kabala pontosan akkora helyet kap, mint az állókép volt. */
-  .chat-kabala-rive{display:block;width:100%;height:auto;max-width:380px}
+  /* A MOZGÓ KABALA MÉRETE.
+     A rajztáblán a robot körül sok az üres hely: 380 képpontos helyen
+     is csak 155 képpont volt maga a figura. Ezért a vásznat a doboznál
+     NAGYOBBRA vesszük, és a dobozzal levágjuk a szélét – így ugyanabban
+     a helyben a robot majdnem kétszer akkora. */
+  .chat-kabala-doboz{position:sticky;bottom:14px;display:block;
+                     width:100%;max-width:300px;aspect-ratio:1/1;
+                     overflow:hidden}
+  .chat-kabala-rive{display:block;position:relative;
+                    width:190%;height:190%;left:-45%;top:-45%}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -453,8 +461,10 @@
     {% if kabala_kep or kabala_robot %}
     <div class="chat-kabala-oszlop" aria-hidden="true">
         {% if kabala_robot %}
-        <canvas class="chat-kabala chat-kabala-rive" id="kabala-rive"
-                width="440" height="440"></canvas>
+        <div class="chat-kabala chat-kabala-doboz">
+            <canvas class="chat-kabala-rive" id="kabala-rive"
+                    width="600" height="600"></canvas>
+        </div>
         {% else %}
         <img class="chat-kabala" id="kabala-kep"
              src="{{ url_for('static', filename=kabala_kep) }}" alt="">
@@ -1099,6 +1109,12 @@
 
     function appendBubble(role, text, figures, feladat) {
         text = tisztitBuborekSzoveg(text);
+        /* A kabala a tanár válaszára reagál. Késleltetve, mert a
+           setLoading(false) közvetlenül utána alaphelyzetbe állítaná. */
+        if (role === 'assistant' && typeof kabalaValaszra === 'function') {
+            var _kv = text;
+            setTimeout(function () { kabalaValaszra(_kv); }, 90);
+        }
         var wrap = document.createElement('div');
         wrap.className = 'chat-bubble chat-bubble-' + role;
         if (chatMode === 'voice' && role === 'assistant') {
@@ -2127,13 +2143,14 @@
         kesz:        'O11Y-Done'
     };
 
-    /* Minden hangulat EGY-EGY állapotgép ugyanazon a táblán. Ezért a
-       fájlt EGYSZER töltjük be, mind a hattal együtt, és utána csak
-       átkapcsolunk köztük. Korábban minden váltásnál újratöltöttük a
-       700 kB-os fájlt – mire betöltött, a tanár már régen válaszolt,
-       ezért látszott úgy, hogy a figura nem reagál semmire. */
-    var KABALA_GEPEK = ['O11Y-Homepage', 'O11Y-Thinking', 'O11Y-Investigate',
-                        'O1Y-Happy', 'O11Y-Sad', 'O11Y-Done'];
+    /* Minden hangulat EGY-EGY állapotgép UGYANAZON a táblán. Ezért
+       egyszerre CSAK EGY futhat: ha többet indítunk el, mind ugyanarra
+       a rajztáblára ír, és a leállított is otthagyja az utolsó
+       beállítását. Pont ez ment félre: válasz után csillag villant,
+       majd csukott szem maradt, akármit felelt a gyerek.
+       Megoldás: a fájlt EGYSZER letöltjük a memóriába, és onnan
+       váltunk – hálózat nélkül, azonnal, mindig egyetlen géppel. */
+    var kabalaPuffer = null;
 
     var kabalaVaszon = document.getElementById('kabala-rive');
     var kabalaPeldany = null;
@@ -2144,43 +2161,70 @@
 
     function kabalaIndit() {
         if (!kabalaVaszon || typeof rive === 'undefined') { return; }
+        fetch(KABALA_FAJL)
+            .then(function (v) { return v.arrayBuffer(); })
+            .then(function (buf) {
+                kabalaPuffer = buf;
+                kabalaBetolt(KABALA_ALLAPOT[kabalaKert]
+                             || KABALA_ALLAPOT.alap);
+            })
+            .catch(function () { kabalaPuffer = null; });
+    }
+
+    function kabalaBetolt(gep) {
+        if (!kabalaPuffer) { return; }
+        var beallitas = {
+            buffer: kabalaPuffer,
+            canvas: kabalaVaszon,
+            artboard: KABALA_TABLA,
+            stateMachines: gep,
+            autoplay: true,
+            fit: rive.Fit.Cover,
+            onLoad: function () {
+                kabalaKesz = true;
+                try { kabalaPeldany.resizeDrawingSurfaceToCanvas(); }
+                catch (e) {}
+            }
+        };
         try {
-            kabalaPeldany = new rive.Rive({
-                src: KABALA_FAJL,
-                canvas: kabalaVaszon,
-                artboard: KABALA_TABLA,
-                stateMachines: KABALA_GEPEK,
-                autoplay: false,
-                fit: rive.Fit.Cover,
-                onLoad: function () {
-                    kabalaKesz = true;
-                    try { kabalaPeldany.resizeDrawingSurfaceToCanvas(); }
-                    catch (e) {}
-                    kabalaAllapot(kabalaKert);   // amit közben kértek
-                },
-                onLoadError: function () {
-                    // A vászon üresen marad. Nem szólunk a gyereknek: a
-                    // figura dísz, a tanulás nem múlik rajta.
-                    kabalaPeldany = null;
-                }
-            });
-        } catch (e) {
-            kabalaPeldany = null;
-        }
+            if (kabalaPeldany) {
+                kabalaPeldany.load(beallitas);   // ugyanaz a példány
+            } else {
+                kabalaPeldany = new rive.Rive(beallitas);
+            }
+        } catch (e) {}
     }
 
     function kabalaAllapot(nev) {
         kabalaKert = nev;
-        if (!kabalaPeldany || !kabalaKesz) { return; }
         var gep = KABALA_ALLAPOT[nev] || KABALA_ALLAPOT.alap;
         if (gep === kabalaMost) { return; }
         kabalaMost = gep;
-        try {
-            KABALA_GEPEK.forEach(function (g) {
-                if (g !== gep) { try { kabalaPeldany.pause(g); } catch (e) {} }
-            });
-            kabalaPeldany.play(gep);
-        } catch (e) {}
+        kabalaBetolt(gep);
+    }
+
+    /* SZOMORÚ – rossz válasz után. Nem sokáig: a gyereket nem büntetni
+       kell, csak jelezni, hogy még nem stimmel. */
+    function kabalaSzomoru() {
+        kabalaAllapot('szomoru');
+        setTimeout(function () { kabalaAllapot('alap'); }, 3000);
+    }
+
+    /* MI TÖRTÉNT? A tanár szövegéből olvassuk ki, hogy dicsér-e vagy
+       javít. Nincs rá külön jelzés a válaszban, ezért a jellemző
+       fordulatokra figyelünk – magyarul és spanyolul is. */
+    var KABALA_DICSER = new RegExp('(ügyes|szuper|remek|pontosan|bravó|'
+        + 'nagyszerű|kitűnő|így van|helyes|eltaláltad|muy bien|excelente|'
+        + 'perfecto|correcto|genial|así es|eso es)', 'i');
+    var KABALA_JAVIT = new RegExp('(nem egészen|nem pontosan|majdnem|'
+        + 'nézzük újra|nézzük meg újra|próbáld|próbáljuk|nem stimmel|'
+        + 'sajnos nem|casi|no exactamente|no es correcto|inténtalo|'
+        + 'volvamos|revisemos)', 'i');
+
+    function kabalaValaszra(szoveg) {
+        if (!szoveg) { return; }
+        if (KABALA_JAVIT.test(szoveg)) { kabalaSzomoru(); }
+        else if (KABALA_DICSER.test(szoveg)) { kabalaOrul(); }
     }
 
     /* A tanár gondolkodik. Ha sokáig tart, a figura nézelődni kezd —
