@@ -3591,6 +3591,12 @@ def _teszt_kapu_uzenet(child_id: int, progress_subject: str, grade_num: int,
         if not (phase == 2 or topic_attempts >= 3):
             return None            # jár még próbálkozás várakozás nélkül
 
+        # A szintfelmérő bukásai nem zárják el a leckezárót (lásd a
+        # teszt indításánál lévő hosszabb magyarázatot).
+        elozo_perc = existing.get("topic_learning_minutes") or 0
+        if phase == 2 and elozo_perc < total_req_minutes:
+            return None
+
         last_test_dt = datetime.fromisoformat(existing["completed_at"])
         ota = database.get_topic_learning_minutes_since(
             child_id, progress_subject, topic_id, last_test_dt
@@ -7659,8 +7665,6 @@ def child_chat(child_id: int):
         get_topic_from_catalog(catalog, current_topic_id),
         current_topic_id,
     )
-    if teszt_zar_uzenet:
-        show_early_test = False
 
     # Ábrák kinyerése a régi asszisztens üzenetekből (DB-ből betöltött előzmény).
     # Az ABRA blokkokat eltávolítjuk a szövegből, az SVG-ket sanitizáljuk,
@@ -8937,6 +8941,21 @@ def child_chat_test_generate(child_id: int):
         # 3. esélyhez sosem lehetett eljutni: egy hiba után azonnal jött az
         # egy óra. Ezért nézzük meg előbb, hogy jár-e még próbálkozás.
         varakozas_kell = (phase == 2) or (topic_attempts >= 3)
+
+        # A SZINTFELMÉRŐN ELBUKOTT PRÓBÁK NE ZÁRJÁK EL A LECKEZÁRÓT.
+        #
+        # Ez volt a hiba: a gyerek háromszor elbukta a SZINTFELMÉRŐT
+        # (1. fázis, 100%-os küszöb), utána rendesen végigtanulta a
+        # leckét — és a LECKEZÁRÓ tesztre (2. fázis, 70%) azt kapta,
+        # hogy előbb tanuljon még egy órát. Pedig épp azt tette.
+        #
+        # A két teszt nem ugyanaz. Ha az előző próba még az 1. fázisban
+        # volt, a 2. fázis ELSŐ próbája várakozás nélkül jár. Ha aztán
+        # a leckezárót bukja el, onnantól él a szokásos várakozás.
+        elozo_perc = (existing or {}).get("topic_learning_minutes") or 0
+        elozo_fazis = 1 if elozo_perc < total_req_minutes else 2
+        if phase == 2 and elozo_fazis == 1:
+            varakozas_kell = False
 
         if varakozas_kell and existing and existing.get("completed_at"):
             try:

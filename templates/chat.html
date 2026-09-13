@@ -225,10 +225,6 @@
      is csak 155 képpont volt maga a figura. Ezért a vásznat a doboznál
      NAGYOBBRA vesszük, és a dobozzal levágjuk a szélét – így ugyanabban
      a helyben a robot majdnem kétszer akkora. */
-  .chat-teszt-zar{display:inline-block;padding:7px 14px;border-radius:999px;
-                  background:#fff6e0;border:1px solid #f0d9a8;color:#8a6a1f;
-                  font-size:13px;font-weight:600;line-height:1.25;
-                  max-width:360px}
   .chat-kabala-doboz{position:sticky;bottom:14px;display:block;
                      width:100%;max-width:300px;aspect-ratio:1/1;
                      overflow:hidden}
@@ -349,11 +345,6 @@
                 <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
                     {{ t('chat_test_start') }}
                 </button>
-                {% elif teszt_zar_uzenet %}
-                {# A teszt most nem indítható. A gomb helyén AZ OK áll –
-                   korábban a gomb ott volt, és csak kattintás után derült
-                   ki, hogy nem működik. #}
-                <span class="chat-teszt-zar">🔒 {{ teszt_zar_uzenet }}</span>
                 {% endif %}
             </div>
         </header>
