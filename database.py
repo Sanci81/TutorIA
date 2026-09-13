@@ -2395,13 +2395,37 @@ def get_learning_time_total(child_id: int, subject: str) -> float:
         db.close()
 
 
+def _tanulas_targy_kulcsok(subject: str) -> list[str]:
+    """A tanulási idő tárgy-kulcsának minden érvényes alakja.
+
+    MIÉRT KELL EZ
+        A tanulási időt a /api/learning/start a NYERS tárgynévvel menti
+        ("Matematika_1_4.json"), a haladás és a teszt kapuja viszont a
+        haladás-kulccsal kérdezi ("Matematika_1_4.json@HU"). Két külön
+        kulcs ugyanarra a dologra — ezért a témakörre eső tanulási idő
+        MINDIG nulla volt, a 60 perces várakozás soha nem telt le, és a
+        témakör véglegesen bezárult.
+
+        Itt mind a két alakot elfogadjuk, így a régi adat sem vész el.
+    """
+    s = (subject or "").strip()
+    if not s:
+        return []
+    kulcsok = [s]
+    if "@" in s:
+        alap = s.split("@", 1)[0]
+        if alap and alap not in kulcsok:
+            kulcsok.append(alap)
+    return kulcsok
+
+
 def get_topic_learning_minutes(child_id: int, subject: str, topic_id: str) -> float:
     """Visszaadja a témakörhöz tartozó összes tanulási percet."""
     db = _session()
     try:
         q = select(ChildLearningTime).where(
             ChildLearningTime.child_id == child_id,
-            ChildLearningTime.subject == subject,
+            ChildLearningTime.subject.in_(_tanulas_targy_kulcsok(subject)),
             ChildLearningTime.topic_id == topic_id,
         )
         rows = db.scalars(q).all()
@@ -2418,7 +2442,7 @@ def get_topic_learning_minutes_since(
     try:
         q = select(ChildLearningTime).where(
             ChildLearningTime.child_id == child_id,
-            ChildLearningTime.subject == subject,
+            ChildLearningTime.subject.in_(_tanulas_targy_kulcsok(subject)),
             ChildLearningTime.topic_id == topic_id,
             ChildLearningTime.session_start >= since_dt,
         )
