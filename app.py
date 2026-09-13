@@ -3554,61 +3554,6 @@ def elvalaszt_filter(value: str) -> str:
     return _ELVALASZTAS.get(szoveg, szoveg)
 
 
-def _teszt_kapu_uzenet(child_id: int, progress_subject: str, grade_num: int,
-                       topic: dict | None, topic_id) -> str | None:
-    """Ha a leckezáró teszt MOST nem indítható, visszaadja az okot.
-
-    MIÉRT KELL EZ
-        A tanár a lecke végén kiírta, hogy „most jöhet a teszt, kattints a
-        gombra" — a gombra kattintva viszont a szerver azt felelte, hogy
-        előbb tanulni kell még egy órát. A gyerek szemében ez ellentmondás:
-        a tanár küldi oda, ahonnan a program visszafordítja.
-
-        Ezért a chat válasza előtt UGYANAZT a kaput megnézzük, amit a
-        teszt indítása néz. Ha zárva van, a tanár mondata mellé odakerül
-        az igazi ok, és a teszt gomb nem jelenik meg.
-
-        Ez a függvény csak OLVAS: a tényleges tiltás továbbra is a teszt
-        indításánál dől el, itt csak előre megmutatjuk.
-    """
-    if not topic or topic_id is None:
-        return None
-    try:
-        existing = database.get_topic_score(
-            child_id, progress_subject, grade_num, topic_id
-        )
-        if existing and existing.get("passed"):
-            return None            # már megvan – gyakorlás mindig mehet
-        if not (existing and existing.get("completed_at")):
-            return None            # még sosem tesztelt – nincs várakozás
-
-        total_req_minutes = (topic.get("ora_szam", 0) or 0) * 60
-        tanult = database.get_topic_learning_minutes(
-            child_id, progress_subject, topic_id
-        )
-        topic_attempts = existing.get("topic_attempts", 0) or 0
-        phase = 1 if tanult < total_req_minutes else 2
-        if not (phase == 2 or topic_attempts >= 3):
-            return None            # jár még próbálkozás várakozás nélkül
-
-        # A szintfelmérő bukásai nem zárják el a leckezárót (lásd a
-        # teszt indításánál lévő hosszabb magyarázatot).
-        elozo_perc = existing.get("topic_learning_minutes") or 0
-        if phase == 2 and elozo_perc < total_req_minutes:
-            return None
-
-        last_test_dt = datetime.fromisoformat(existing["completed_at"])
-        ota = database.get_topic_learning_minutes_since(
-            child_id, progress_subject, topic_id, last_test_dt
-        )
-        if ota >= TEST_RETRY_STUDY_MINUTES:
-            return None
-        need = TEST_RETRY_STUDY_MINUTES - int(ota)
-        return i18n.t("test_gate_study_more", g.lang).format(minutes=need)
-    except Exception:
-        return None                # a kapu ellenőrzése soha ne dobjon hibát
-
-
 def _chat_progress_subject(subject: str, language: str | None) -> str:
     """Haladás / teszt pontok: tantárgy + nyelv + TANTERV külön scope."""
     subj = (subject or "").strip()
@@ -7647,24 +7592,29 @@ def child_chat(child_id: int):
     voice_switch_url = url_for("child_chat", **voice_switch_params)
 
     learning_today = database.get_learning_time_today(child_id, subject)
-    attempts = progress.get("early_placement_attempts", 0)
-    if attempts < 3:
-        show_early_test = True
-    else:
-        learning_total = database.get_learning_time_total(child_id, subject)
-        show_early_test = learning_total >= 60
 
-    # A TESZT GOMB NE LEGYEN OTT, HA A TESZT NEM INDÍTHATÓ.
-    #
-    # Ez a gomb eddig CSAK a korai szintfelmérő szabályát nézte, a témakör
-    # saját kapuját nem. Ezért ott volt akkor is, amikor a gyereknek még
-    # tanulnia kellett – rákattintott, és egy felugró ablak közölte, hogy
-    # mégsem. A gombnak és a szabálynak ugyanazt kell mondania.
-    teszt_zar_uzenet = _teszt_kapu_uzenet(
-        child_id, progress_subject, grade_num,
-        get_topic_from_catalog(catalog, current_topic_id),
-        current_topic_id,
+    # A TESZT GOMB. A szabály témakörönként szól:
+    #   – ha letelt a leckéhez tartozó idő, jön a LECKEZÁRÓ: a gomb ott van;
+    #   – különben a KORAI SZINTFELMÉRŐ jár, legfeljebb háromszor;
+    #   – ha a három próba elfogyott, a gomb ELTŰNIK: végig kell tanulni.
+    # Hogy indítható-e MOST (kell-e még az első óra tanulás), azt a teszt
+    # indítása mondja meg — a gomb ott marad, csak kiírja, mi hiányzik.
+    _teszt_tanult = database.get_topic_learning_minutes(
+        child_id, progress_subject, current_topic_id
     )
+    _teszt_topic = get_topic_from_catalog(catalog, current_topic_id)
+    _teszt_req = ((_teszt_topic or {}).get("ora_szam", 0) or 0) * 60
+    _teszt_score = database.get_topic_score(
+        child_id, progress_subject, grade_num, current_topic_id
+    )
+    _teszt_probak = (_teszt_score or {}).get("topic_attempts", 0) or 0
+    if _teszt_req and _teszt_tanult >= _teszt_req:
+        show_early_test = True                    # leckezáró
+    elif (_teszt_score or {}).get("passed"):
+        show_early_test = True                    # gyakorlás
+    else:
+        show_early_test = _teszt_probak < 3
+
 
     # Ábrák kinyerése a régi asszisztens üzenetekből (DB-ből betöltött előzmény).
     # Az ABRA blokkokat eltávolítjuk a szövegből, az SVG-ket sanitizáljuk,
@@ -7744,7 +7694,6 @@ def child_chat(child_id: int):
         show_chat_switch=chat_profile != _CHAT_PROFILE_VOICE_ONLY,
         learning_today=learning_today,
         show_early_test=show_early_test,
-        teszt_zar_uzenet=teszt_zar_uzenet,
         progress=progress,
         # Az érme és a pont a PÉNZTÁRCÁBÓL jön – egy szám az egész appban.
         coins=_penztarca.get("erme", 0),
@@ -8500,18 +8449,6 @@ def child_chat_send(child_id: int):
         print(f"[LASSU] chat kor {_eltelt:.1f}s child={child_id} "
               f"targy={subject!r} tema={current_topic!r}", flush=True)
 
-    # A TANÁR NE KÜLDJE A GYEREKET OLYAN TESZTRE, AMI NEM INDÍTHATÓ.
-    _teszt_zar = None
-    if tanulas_kesz or "teszt" in reply.lower():
-        _teszt_zar = _teszt_kapu_uzenet(
-            child_id, progress_subject, grade_num,
-            get_topic_from_catalog(catalog, current_topic_id),
-            current_topic_id,
-        )
-        if _teszt_zar:
-            reply = (reply.rstrip() + "\n\n" + _teszt_zar).strip()
-            tanulas_kesz = False
-
     return jsonify(
         {
             "reply": reply,
@@ -8528,9 +8465,8 @@ def child_chat_send(child_id: int):
             # megemlítette, felugrott; ha "próbát" mondott, nem. Mostantól
             # a tananyag végigmenetele nyitja meg, és ha egyszer kinyílt,
             # nyitva is marad, amíg a gyerek le nem teszi.
-            "show_test_offer": (bool(tanulas_kesz)
-                                or "tesztet" in reply.lower())
-            and not _teszt_zar,
+            "show_test_offer": bool(tanulas_kesz)
+            or "tesztet" in reply.lower(),
             "xp": progress.get("xp", 0),
             "game_level": progress.get("game_level", 1),
             "topic_done": topic_done,
@@ -8915,7 +8851,21 @@ def child_chat_test_generate(child_id: int):
     if not topic:
         return jsonify({"error": "topic_not_found"}), 404
 
-    # ── Gate: próbálkozás- és tanulás-korlátozás szerver oldalon ────────
+    # ── A TESZT KAPUJA ──────────────────────────────────────────────
+    #
+    # KÉT TESZT VAN, KÉT KÜLÖN SZABÁLLYAL.
+    #
+    # 1) KORAI SZINTFELMÉRŐ — előreugrás. Akkor indítható, ha a gyerek
+    #    EBBŐL A LECKÉBŐL már tanult legalább egy órát. Három próbája
+    #    van, a küszöb 100%. Ha háromszor sem sikerül, nincs több korai
+    #    próba: végig kell tanulni a leckét.
+    #
+    # 2) LECKEZÁRÓ — ha letelt a leckéhez tartozó idő (óraszám × 60
+    #    perc), innentől ez jön, 70%-os küszöbbel, korlátozás nélkül.
+    #
+    # Ami eddig rossz volt: a tanulási időt a program NULLÁNAK látta
+    # (más kulccsal kereste, mint amivel mentette), ezért egyik feltétel
+    # sem tudott teljesülni, és a témakör véglegesen bezárult.
     progress_subject = _chat_progress_subject(subject, language or None)
     grade_num = _chat_grade_num(child)
     ora_szam = topic.get("ora_szam", 0)
@@ -8923,73 +8873,41 @@ def child_chat_test_generate(child_id: int):
     topic_learning_minutes = database.get_topic_learning_minutes(
         child_id, progress_subject, topic_id
     )
+    existing = database.get_topic_score(
+        child_id, progress_subject, grade_num, topic_id
+    )
+    topic_attempts = (existing or {}).get("topic_attempts", 0) or 0
 
-    existing = database.get_topic_score(child_id, progress_subject, grade_num, topic_id)
-    if existing and existing.get("passed"):
-        pass  # gyakorlás — mindig engedélyezett
-    else:
-        topic_attempts = existing.get("topic_attempts", 0) if existing else 0
-        phase = 1 if topic_learning_minutes < total_req_minutes else 2
+    logger.warning(
+        'KAPU_DEBUG topic=%s ora_szam=%s total_req=%s tanult=%s attempts=%s '
+        'passed=%s',
+        topic_id, ora_szam, total_req_minutes, topic_learning_minutes,
+        topic_attempts, (existing or {}).get("passed"),
+    )
 
-        # Az ELSŐ HÁROM próbálkozás egymás után megy, várakozás nélkül.
-        # Csak ha ezek elfogytak, akkor kell tanulni a következő esélyért –
-        # de akkor is jár egy újabb esély óránként, tehát a gyerek soha nem
-        # ragad be véglegesen egy témakörnél.
-        #
-        # Korábban ez a tanulási várakozás MINDEN bukott teszt után életbe
-        # lépett, függetlenül attól, maradt-e még próbálkozás. Emiatt a 2. és
-        # 3. esélyhez sosem lehetett eljutni: egy hiba után azonnal jött az
-        # egy óra. Ezért nézzük meg előbb, hogy jár-e még próbálkozás.
-        varakozas_kell = (phase == 2) or (topic_attempts >= 3)
+    leckezaro = (
+        total_req_minutes > 0 and topic_learning_minutes >= total_req_minutes
+    )
+    mar_megvan = bool(existing and existing.get("passed"))
 
-        # A SZINTFELMÉRŐN ELBUKOTT PRÓBÁK NE ZÁRJÁK EL A LECKEZÁRÓT.
-        #
-        # Ez volt a hiba: a gyerek háromszor elbukta a SZINTFELMÉRŐT
-        # (1. fázis, 100%-os küszöb), utána rendesen végigtanulta a
-        # leckét — és a LECKEZÁRÓ tesztre (2. fázis, 70%) azt kapta,
-        # hogy előbb tanuljon még egy órát. Pedig épp azt tette.
-        #
-        # A két teszt nem ugyanaz. Ha az előző próba még az 1. fázisban
-        # volt, a 2. fázis ELSŐ próbája várakozás nélkül jár. Ha aztán
-        # a leckezárót bukja el, onnantól él a szokásos várakozás.
-        elozo_perc = (existing or {}).get("topic_learning_minutes") or 0
-        elozo_fazis = 1 if elozo_perc < total_req_minutes else 2
-        if phase == 2 and elozo_fazis == 1:
-            varakozas_kell = False
-
-        logger.warning(
-            'KAPU_DEBUG topic=%s ora_szam=%s total_req=%s tanult=%s '
-            'phase=%s attempts=%s elozo_perc=%s elozo_fazis=%s '
-            'varakozas_kell=%s completed_at=%s',
-            topic_id, ora_szam, total_req_minutes, topic_learning_minutes,
-            phase, topic_attempts, elozo_perc, elozo_fazis,
-            varakozas_kell, (existing or {}).get("completed_at"),
-        )
-
-        if varakozas_kell and existing and existing.get("completed_at"):
-            try:
-                last_test_dt = datetime.fromisoformat(existing["completed_at"])
-            except (ValueError, TypeError):
-                last_test_dt = None
-            if last_test_dt:
-                learned_since = database.get_topic_learning_minutes_since(
-                    child_id, progress_subject, topic_id,
-                    last_test_dt,
-                )
-                logger.warning(
-                    'KAPU_DEBUG2 learned_since=%s kell=%s',
-                    learned_since, TEST_RETRY_STUDY_MINUTES,
-                )
-                if learned_since < TEST_RETRY_STUDY_MINUTES:
-                    need = TEST_RETRY_STUDY_MINUTES - int(learned_since)
-                    return jsonify({
-                        "ok": False,
-                        "reason": "study_more",
-                        "minutes_needed": need,
-                        "message": i18n.t("test_gate_study_more", g.lang).format(
-                            minutes=need
-                        ),
-                    }), 200
+    if not (leckezaro or mar_megvan):
+        # Korai szintfelmérő — itt van a két feltétel.
+        if topic_attempts >= 3:
+            return jsonify({
+                "ok": False,
+                "reason": "attempts_exhausted",
+                "message": i18n.t("test_gate_attempts_exhausted", g.lang),
+            }), 200
+        if topic_learning_minutes < 60:
+            need = 60 - int(topic_learning_minutes)
+            return jsonify({
+                "ok": False,
+                "reason": "study_first_hour",
+                "minutes_needed": need,
+                "message": i18n.t("test_gate_elso_ora", g.lang).format(
+                    minutes=need
+                ),
+            }), 200
 
     try:
         all_ora_szamok = [t.get("ora_szam", 0) for t in catalog]
@@ -9159,12 +9077,14 @@ def child_chat_test_submit(child_id: int):
         child_id, progress_subject, topic_id
     )
 
-    if topic_learning_minutes < total_req_minutes:
-        phase = 1
-        phase_pass_threshold = 100
-    else:
+    # 1. fázis = korai szintfelmérő (előreugrás), 100%-os küszöb.
+    # 2. fázis = leckezáró: a leckéhez tartozó idő letelt, küszöb 70%.
+    if total_req_minutes and topic_learning_minutes >= total_req_minutes:
         phase = 2
         phase_pass_threshold = 70
+    else:
+        phase = 1
+        phase_pass_threshold = 100
 
     passed = score >= phase_pass_threshold
 
