@@ -7648,6 +7648,20 @@ def child_chat(child_id: int):
         learning_total = database.get_learning_time_total(child_id, subject)
         show_early_test = learning_total >= 60
 
+    # A TESZT GOMB NE LEGYEN OTT, HA A TESZT NEM INDÍTHATÓ.
+    #
+    # Ez a gomb eddig CSAK a korai szintfelmérő szabályát nézte, a témakör
+    # saját kapuját nem. Ezért ott volt akkor is, amikor a gyereknek még
+    # tanulnia kellett – rákattintott, és egy felugró ablak közölte, hogy
+    # mégsem. A gombnak és a szabálynak ugyanazt kell mondania.
+    teszt_zar_uzenet = _teszt_kapu_uzenet(
+        child_id, progress_subject, grade_num,
+        get_topic_from_catalog(catalog, current_topic_id),
+        current_topic_id,
+    )
+    if teszt_zar_uzenet:
+        show_early_test = False
+
     # Ábrák kinyerése a régi asszisztens üzenetekből (DB-ből betöltött előzmény).
     # Az ABRA blokkokat eltávolítjuk a szövegből, az SVG-ket sanitizáljuk,
     # és üzenetenként egy "figures" listában adjuk át a template-nek.
@@ -7726,6 +7740,7 @@ def child_chat(child_id: int):
         show_chat_switch=chat_profile != _CHAT_PROFILE_VOICE_ONLY,
         learning_today=learning_today,
         show_early_test=show_early_test,
+        teszt_zar_uzenet=teszt_zar_uzenet,
         progress=progress,
         # Az érme és a pont a PÉNZTÁRCÁBÓL jön – egy szám az egész appban.
         coins=_penztarca.get("erme", 0),
