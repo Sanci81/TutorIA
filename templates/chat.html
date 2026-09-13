@@ -2112,17 +2112,19 @@
 
     /* A .riv fájlban ÖT rajztábla van. Amit korábban használtunk
        (O11Y-Homepage), az egy 1920×1080-as fekvő banner: a robot azon
-       csak egy apró részlet, ezért látszott pirinyónak. Az O11Y-Expression
-       tábla 500×500, négyzetes, és a robot kitölti.
+       csak egy apró részlet, ezért látszott pirinyónak. Az O11Y tábla
+       600×400, nincs rajta háttér, és mind a hat hangulat megvan rajta.
+       A Fit.Cover levágja a két oldalsó üres sávot, így a robot
+       ugyanakkora helyen másfélszer nagyobb.
        A hangulatokat NEM tábla-, hanem ÁLLAPOTGÉP-váltás adja. */
-    var KABALA_TABLA = 'O11Y-Expression';
+    var KABALA_TABLA = 'O11Y';
     var KABALA_ALLAPOT = {
-        alap:        'O11Y-Wink',
+        alap:        'O11Y-Homepage',
         gondolkodik: 'O11Y-Thinking',
-        nezelodik:   'O11Y-Sleepy',
-        orul:        'O1Y-Excited',
+        nezelodik:   'O11Y-Investigate',
+        orul:        'O1Y-Happy',
         szomoru:     'O11Y-Sad',
-        kesz:        'O1Y-Happy'
+        kesz:        'O11Y-Done'
     };
 
     /* Minden hangulat EGY-EGY állapotgép ugyanazon a táblán. Ezért a
@@ -2130,8 +2132,8 @@
        átkapcsolunk köztük. Korábban minden váltásnál újratöltöttük a
        700 kB-os fájlt – mire betöltött, a tanár már régen válaszolt,
        ezért látszott úgy, hogy a figura nem reagál semmire. */
-    var KABALA_GEPEK = ['O11Y-Wink', 'O11Y-Thinking', 'O11Y-Sleepy',
-                        'O1Y-Excited', 'O11Y-Sad', 'O1Y-Happy'];
+    var KABALA_GEPEK = ['O11Y-Homepage', 'O11Y-Thinking', 'O11Y-Investigate',
+                        'O1Y-Happy', 'O11Y-Sad', 'O11Y-Done'];
 
     var kabalaVaszon = document.getElementById('kabala-rive');
     var kabalaPeldany = null;
@@ -2149,7 +2151,7 @@
                 artboard: KABALA_TABLA,
                 stateMachines: KABALA_GEPEK,
                 autoplay: false,
-                fit: rive.Fit.Contain,
+                fit: rive.Fit.Cover,
                 onLoad: function () {
                     kabalaKesz = true;
                     try { kabalaPeldany.resizeDrawingSurfaceToCanvas(); }
