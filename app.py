@@ -3554,6 +3554,55 @@ def elvalaszt_filter(value: str) -> str:
     return _ELVALASZTAS.get(szoveg, szoveg)
 
 
+def _teszt_kapu_uzenet(child_id: int, progress_subject: str, grade_num: int,
+                       topic: dict | None, topic_id) -> str | None:
+    """Ha a leckezáró teszt MOST nem indítható, visszaadja az okot.
+
+    MIÉRT KELL EZ
+        A tanár a lecke végén kiírta, hogy „most jöhet a teszt, kattints a
+        gombra" — a gombra kattintva viszont a szerver azt felelte, hogy
+        előbb tanulni kell még egy órát. A gyerek szemében ez ellentmondás:
+        a tanár küldi oda, ahonnan a program visszafordítja.
+
+        Ezért a chat válasza előtt UGYANAZT a kaput megnézzük, amit a
+        teszt indítása néz. Ha zárva van, a tanár mondata mellé odakerül
+        az igazi ok, és a teszt gomb nem jelenik meg.
+
+        Ez a függvény csak OLVAS: a tényleges tiltás továbbra is a teszt
+        indításánál dől el, itt csak előre megmutatjuk.
+    """
+    if not topic or topic_id is None:
+        return None
+    try:
+        existing = database.get_topic_score(
+            child_id, progress_subject, grade_num, topic_id
+        )
+        if existing and existing.get("passed"):
+            return None            # már megvan – gyakorlás mindig mehet
+        if not (existing and existing.get("completed_at")):
+            return None            # még sosem tesztelt – nincs várakozás
+
+        total_req_minutes = (topic.get("ora_szam", 0) or 0) * 60
+        tanult = database.get_topic_learning_minutes(
+            child_id, progress_subject, topic_id
+        )
+        topic_attempts = existing.get("topic_attempts", 0) or 0
+        phase = 1 if tanult < total_req_minutes else 2
+        if not (phase == 2 or topic_attempts >= 3):
+            return None            # jár még próbálkozás várakozás nélkül
+
+        last_test_dt = datetime.fromisoformat(existing["completed_at"])
+        ota = database.get_topic_learning_minutes_since(
+            child_id, progress_subject, topic_id, last_test_dt
+        )
+        if ota >= TEST_RETRY_STUDY_MINUTES:
+            return None
+        need = TEST_RETRY_STUDY_MINUTES - int(ota)
+        return i18n.t("test_gate_study_more", g.lang).format(minutes=need)
+    except Exception:
+        return None                # a kapu ellenőrzése soha ne dobjon hibát
+
+
 def _chat_progress_subject(subject: str, language: str | None) -> str:
     """Haladás / teszt pontok: tantárgy + nyelv + TANTERV külön scope."""
     subj = (subject or "").strip()
@@ -8432,6 +8481,18 @@ def child_chat_send(child_id: int):
         print(f"[LASSU] chat kor {_eltelt:.1f}s child={child_id} "
               f"targy={subject!r} tema={current_topic!r}", flush=True)
 
+    # A TANÁR NE KÜLDJE A GYEREKET OLYAN TESZTRE, AMI NEM INDÍTHATÓ.
+    _teszt_zar = None
+    if tanulas_kesz or "teszt" in reply.lower():
+        _teszt_zar = _teszt_kapu_uzenet(
+            child_id, progress_subject, grade_num,
+            get_topic_from_catalog(catalog, current_topic_id),
+            current_topic_id,
+        )
+        if _teszt_zar:
+            reply = (reply.rstrip() + "\n\n" + _teszt_zar).strip()
+            tanulas_kesz = False
+
     return jsonify(
         {
             "reply": reply,
@@ -8448,8 +8509,9 @@ def child_chat_send(child_id: int):
             # megemlítette, felugrott; ha "próbát" mondott, nem. Mostantól
             # a tananyag végigmenetele nyitja meg, és ha egyszer kinyílt,
             # nyitva is marad, amíg a gyerek le nem teszi.
-            "show_test_offer": bool(tanulas_kesz)
-            or "tesztet" in reply.lower(),
+            "show_test_offer": (bool(tanulas_kesz)
+                                or "tesztet" in reply.lower())
+            and not _teszt_zar,
             "xp": progress.get("xp", 0),
             "game_level": progress.get("game_level", 1),
             "topic_done": topic_done,
