@@ -496,7 +496,9 @@
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 {# A mozgó kabala futtatója. Ha nem tölt be, a chat.html-ben lévő
    kabalaAllapot() csendben kihagyja magát, és marad az állókép. #}
-<script src="https://unpkg.com/@rive-app/canvas@2.17.3"></script>
+{# A futtatót MAGUNK tároljuk (static/rive.js). Így nem függ idegen
+   szervertől, reklámszűrőtől, és nem kell külön .wasm fájlt letöltenie. #}
+<script src="{{ url_for('static', filename='rive.js') }}"></script>
 <script>
     // ── A teszt ablak és a teljes képernyő ─────────────────────────────
     // A böngésző teljes képernyő módjában CSAK a kinagyított elem tartalma
@@ -2161,6 +2163,17 @@
     function kabalaOrul() {
         kabalaAllapot('orul');
         setTimeout(function () { kabalaAllapot('alap'); }, 4500);
+    }
+
+    /* INDULÁSKOR IS RAJZOLJUK KI. Enélkül a vászon üresen áll addig,
+       amíg a gyerek nem ír először — ezért nem látszott semmi. */
+    if (kabalaVaszon) {
+        if (typeof rive === 'undefined') {
+            console.warn('TutorIA: a Rive futtato (static/rive.js) '
+                         + 'nem toltott be, a kabala kimarad.');
+        } else {
+            kabalaAllapot('alap');
+        }
     }
 
     function setLoading(on) {
