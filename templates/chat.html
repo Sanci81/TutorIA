@@ -221,7 +221,7 @@
   .fsz-jegy-mezo:hover{border-color:#e3ebf2}
   .fsz-jegy-mezo:focus{outline:none;border-color:#3fa88f;background:#f2fbf8}
   /* A mozgó kabala pontosan akkora helyet kap, mint az állókép volt. */
-  .chat-kabala-rive{display:block;width:100%;height:auto;max-width:100%}
+  .chat-kabala-rive{display:block;width:100%;height:auto;max-width:140px}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -2102,13 +2102,20 @@
     // nem lehet tőle függeni.
     // ══════════════════════════════════════════════════════════════════
     var KABALA_FAJL = {{ url_for('static', filename='o11y.riv')|tojson }};
+
+    /* A .riv fájlban ÖT rajztábla van. Amit korábban használtunk
+       (O11Y-Homepage), az egy 1920×1080-as fekvő banner: a robot azon
+       csak egy apró részlet, ezért látszott pirinyónak. Az O11Y-Expression
+       tábla 500×500, négyzetes, és a robot kitölti.
+       A hangulatokat NEM tábla-, hanem ÁLLAPOTGÉP-váltás adja. */
+    var KABALA_TABLA = 'O11Y-Expression';
     var KABALA_ALLAPOT = {
-        alap:        'O11Y-Homepage',
+        alap:        'O11Y-Wink',
         gondolkodik: 'O11Y-Thinking',
-        nezelodik:   'O11Y-Investigate',
-        orul:        'O1Y-Happy',
+        nezelodik:   'O11Y-Sleepy',
+        orul:        'O1Y-Excited',
         szomoru:     'O11Y-Sad',
-        kesz:        'O11Y-Done'
+        kesz:        'O1Y-Happy'
     };
 
     var kabalaVaszon = document.getElementById('kabala-rive');
@@ -2118,15 +2125,16 @@
 
     function kabalaAllapot(nev) {
         if (!kabalaVaszon || typeof rive === 'undefined') { return; }
-        var tabla = KABALA_ALLAPOT[nev] || KABALA_ALLAPOT.alap;
-        if (tabla === kabalaMost) { return; }
-        kabalaMost = tabla;
+        var gep = KABALA_ALLAPOT[nev] || KABALA_ALLAPOT.alap;
+        if (gep === kabalaMost) { return; }
+        kabalaMost = gep;
         try {
             if (kabalaPeldany) { kabalaPeldany.cleanup(); }
             kabalaPeldany = new rive.Rive({
                 src: KABALA_FAJL,
                 canvas: kabalaVaszon,
-                artboard: tabla,
+                artboard: KABALA_TABLA,
+                stateMachines: gep,
                 autoplay: true,
                 fit: rive.Fit.Contain,
                 onLoad: function () {

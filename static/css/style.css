@@ -3194,10 +3194,10 @@ body.gyerek-hatter .back-link {
 /* Szójegyzék NÉLKÜL: 1121 képponttól fér el a figura. */
 @media (min-width: 1121px) {
     .chat-layout:has(.chat-kabala-oszlop) {
-        grid-template-columns: 260px 1fr 130px;
+        grid-template-columns: 260px 1fr 152px;
     }
     .chat-layout.teljes-mod:has(.chat-kabala-oszlop) {
-        grid-template-columns: 1fr 130px;
+        grid-template-columns: 1fr 152px;
     }
     .chat-kabala-oszlop { display: flex; }
 }
