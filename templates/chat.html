@@ -2128,19 +2128,24 @@
 
     /* A .riv fájlban ÖT rajztábla van. Amit korábban használtunk
        (O11Y-Homepage), az egy 1920×1080-as fekvő banner: a robot azon
-       csak egy apró részlet, ezért látszott pirinyónak. Az O11Y tábla
-       600×400, nincs rajta háttér, és mind a hat hangulat megvan rajta.
-       A Fit.Cover levágja a két oldalsó üres sávot, így a robot
-       ugyanakkora helyen másfélszer nagyobb.
+       csak egy apró részlet, ezért látszott pirinyónak. Az O11Y-Expression
+       táblán van a LEGTÖBB arc (tizenegy), ezért arra váltottunk. A rajta
+       lévő bézs hátteret a static/o11y.riv-ben átlátszóra állítottuk, a
+       „Click me!" feliratot és a „Hi!" buborékot pedig a vászon kivágása
+       takarja el.
        A hangulatokat NEM tábla-, hanem ÁLLAPOTGÉP-váltás adja. */
-    var KABALA_TABLA = 'O11Y';
+    var KABALA_TABLA = 'O11Y-Expression';
     var KABALA_ALLAPOT = {
-        alap:        'O11Y-Homepage',
-        gondolkodik: 'O11Y-Thinking',
-        nezelodik:   'O11Y-Investigate',
-        orul:        'O1Y-Happy',
-        szomoru:     'O11Y-Sad',
-        kesz:        'O11Y-Done'
+        alap:        'O11Y-Wink',        /* nyugodt, pislog            */
+        koszon:      'O11Y-Hello',       /* óra elején integet         */
+        gondolkodik: 'O11Y-Thinking',    /* amíg a tanárra várunk      */
+        nezelodik:   'O11Y-Sleepy',      /* ha sokáig tart: elálmosodik*/
+        orul:        'O1Y-Excited',      /* jó válasz                  */
+        szomoru:     'O11Y-Sad',         /* rossz válasz               */
+        bosszus:     'O11Y-Upset',       /* sokadik rossz válasz       */
+        kivancsi:    'O11Y-Suspicious',  /* nyitott feladat            */
+        cuki:        'O1Y-Happy',        /* lecke kész                 */
+        kesz:        'O1Y-Happy'
     };
 
     /* Minden hangulat EGY-EGY állapotgép UGYANAZON a táblán. Ezért
@@ -2256,6 +2261,9 @@
                          + 'nem toltott be, a kabala kimarad.');
         } else {
             kabalaIndit();
+            /* Az óra elején a figura KÖSZÖN, utána nyugodt alaphelyzet. */
+            kabalaAllapot('koszon');
+            setTimeout(function () { kabalaAllapot('alap'); }, 3500);
         }
     }
 
