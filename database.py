@@ -778,7 +778,11 @@ def ensure_chat_messages_feladat_column() -> None:
 
 
 def ensure_children_neme_column() -> None:
-    """children.gyerek_neme – „fiu" vagy „lany", a kabala figurához."""
+    """children.gyerek_neme – a kabala figura választása.
+
+    Lehetséges értékek: „fiu", „lany", „robot" (a mozgó figura), vagy
+    NULL/üres, ha a szülő nem ad meg semmit — akkor nincs kabala.
+    """
     from sqlalchemy import text
 
     try:
@@ -1418,7 +1422,8 @@ def create_child(
             country=country,
             curriculum=curriculum,
             region=region,
-            gyerek_neme=gyerek_neme if gyerek_neme in ("fiu", "lany") else None,
+            gyerek_neme=(gyerek_neme
+                         if gyerek_neme in ("fiu", "lany", "robot") else None),
         )
         db.add(child)
         db.commit()
@@ -1472,7 +1477,8 @@ def update_child(
             child.voice_gender_es = voice_gender_es
         # Üres érték = „nem adom meg"; ilyenkor törlődik a korábbi választás.
         if gyerek_neme is not None:
-            child.gyerek_neme = gyerek_neme if gyerek_neme in ("fiu", "lany") else None
+            child.gyerek_neme = (
+                gyerek_neme if gyerek_neme in ("fiu", "lany", "robot") else None)
         db.commit()
         return True
     finally:
