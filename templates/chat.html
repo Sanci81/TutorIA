@@ -1035,6 +1035,22 @@
         return L.utasitasAltalanos;
     }
 
+    /* A gyerek VÁLASZOLT – akár beírta, akár kimondta. A feladat ilyenkor
+       lezárul. Élesben ez ment félre: a gyerek kimondta, hogy „hatszáz",
+       a tanár el is fogadta, de a feladat ott maradt a munkatéren
+       megoldatlanul, mintha nem számítana. Mindkét út ugyanannyit ér. */
+    function munkaterLezar() {
+        if (!munkater || munkater.hidden) { return; }
+        var f = munkaterTest.querySelector('.feladat');
+        if (f && !f.classList.contains('feladat-kesz')) {
+            f.classList.add('feladat-kesz');
+            f.querySelectorAll('button, input').forEach(function (e) {
+                e.disabled = true;
+            });
+        }
+        setTimeout(munkaterUres, 400);
+    }
+
     function munkaterUres() {
         if (!munkater) { return; }
         munkater.hidden = true;
@@ -1134,6 +1150,7 @@
         // gombok csak elvinnék a figyelmet.
         if (role === 'user') {
             valasztoGombokKi();
+            munkaterLezar();
         } else if (role === 'assistant' && !feladat) {
             valasztoGombokBe(text);
         }
@@ -1542,6 +1559,7 @@
         doboz.querySelectorAll('button, input').forEach(function (e) { e.disabled = true; });
         setTimeout(munkaterUres, 400);
     }
+
 
     // Oszlopos számolás: a két szám egymás alatt, alul üres kockák.
     function szamoloTabla(f) {
