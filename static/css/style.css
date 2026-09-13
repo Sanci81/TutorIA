@@ -3194,12 +3194,24 @@ body.gyerek-hatter .back-link {
 /* Szójegyzék NÉLKÜL: 1121 képponttól fér el a figura. */
 @media (min-width: 1121px) {
     .chat-layout:has(.chat-kabala-oszlop) {
-        grid-template-columns: 260px 1fr 152px;
+        grid-template-columns: 260px 1fr 200px;
     }
     .chat-layout.teljes-mod:has(.chat-kabala-oszlop) {
-        grid-template-columns: 1fr 152px;
+        grid-template-columns: 1fr 200px;
     }
     .chat-kabala-oszlop { display: flex; }
+}
+
+/* NAGY KÉPERNYŐN a kabala jóval nagyobb lehet: 1600 képpont fölött
+   bőven van hely a beszélgetés mellett, és 200 képpontnál a figura
+   elveszett a sarokban. */
+@media (min-width: 1600px) {
+    .chat-layout:has(.chat-kabala-oszlop) {
+        grid-template-columns: 260px 1fr 380px;
+    }
+    .chat-layout.teljes-mod:has(.chat-kabala-oszlop) {
+        grid-template-columns: 1fr 380px;
+    }
 }
 
 /* Szójegyzékkel (nyelvóra) négy oszlop kell – ehhez több hely. */
