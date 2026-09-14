@@ -2161,6 +2161,41 @@ def add_child():
     return render_template("add_child.html", form={})
 
 
+@app.route("/children/<int:child_id>/torles", methods=["POST"])
+@pin_required
+def delete_child_route(child_id: int):
+    """EGYETLEN GYEREK törlése. Az előfizetéshez NEM nyúlunk.
+
+    Az előfizetés a szülő rekordján van (csomag, csomag_lejar,
+    csomag_tanterv), ez az útvonal pedig kizárólag a gyerek sorát törli.
+    A parents táblához egyetlen sor sem ér hozzá — sem itt, sem a
+    database.delete_child()-ben.
+
+    A véletlen törlés ellen: a szülőnek BE KELL ÍRNIA a gyerek nevét.
+    """
+    child = database.get_child_by_id(child_id, session["parent_id"])
+    if not child:
+        abort(404)
+
+    beirt = (request.form.get("nev_megerosites") or "").strip()
+    if beirt.casefold() != (child.get("name") or "").strip().casefold():
+        flash(i18n.t("child_delete_bad_name", g.lang), "error")
+        return redirect(url_for("edit_child", child_id=child_id))
+
+    nev = child.get("name") or ""
+    if not database.delete_child(child_id, session["parent_id"]):
+        flash(i18n.t("child_delete_bad_name", g.lang), "error")
+        return redirect(url_for("edit_child", child_id=child_id))
+
+    # A törölt gyerek ne maradjon ott a munkamenetben.
+    for _k in ("child_id", "chat_child_id"):
+        if session.get(_k) == child_id:
+            session.pop(_k, None)
+
+    flash(i18n.t("child_delete_done", g.lang).format(nev=nev), "success")
+    return redirect(url_for("dashboard"))
+
+
 @app.route("/children/<int:child_id>/edit", methods=["GET", "POST"])
 @pin_required
 def edit_child(child_id: int):

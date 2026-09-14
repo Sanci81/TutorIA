@@ -497,6 +497,31 @@ TRANSLATIONS = {
              "Estudia la lección completa y al final tendrás la prueba de "
              "cierre, donde podrás demostrar lo que sabes!",
     },
+    # ── Gyerek törlése (az előfizetés érintetlen marad) ─────────────────
+    "child_delete_title": {"hu": "Gyerek törlése",
+                           "es": "Eliminar al niño"},
+    "child_delete_info": {
+        "hu": ("Ez CSAK ezt a gyereket törli, a hozzá tartozó "
+               "beszélgetésekkel és haladással együtt. Az előfizetésed "
+               "megmarad, és bármikor felvehetsz új gyereket."),
+        "es": ("Esto elimina SOLO a este niño, junto con sus "
+               "conversaciones y su progreso. Tu suscripción se mantiene "
+               "y puedes añadir otro niño cuando quieras."),
+    },
+    "child_delete_confirm": {
+        "hu": "A megerősítéshez írd be a gyerek nevét: {nev}",
+        "es": "Para confirmar, escribe el nombre del niño: {nev}",
+    },
+    "child_delete_btn": {"hu": "Végleges törlés",
+                         "es": "Eliminar definitivamente"},
+    "child_delete_done": {
+        "hu": "{nev} törölve. Az előfizetésed érintetlen maradt.",
+        "es": "{nev} ha sido eliminado. Tu suscripción no ha cambiado.",
+    },
+    "child_delete_bad_name": {
+        "hu": "A beírt név nem egyezik, ezért nem töröltünk semmit.",
+        "es": "El nombre no coincide, asi que no se ha eliminado nada.",
+    },
     "test_gate_elso_ora": {
         "hu": "A szintfelmérőhöz előbb tanulj ebből a leckéből legalább "
              "egy órát — még kb. {minutes} perc hiányzik!",

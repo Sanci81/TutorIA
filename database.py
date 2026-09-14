@@ -2419,6 +2419,38 @@ def _tanulas_targy_kulcsok(subject: str) -> list[str]:
     return kulcsok
 
 
+def delete_child(child_id: int, parent_id: int) -> bool:
+    """Egyetlen GYEREK törlése. Az előfizetést NEM érinti.
+
+    MIÉRT BIZTONSÁGOS
+        Az előfizetés (csomag, csomag_lejar, csomag_tanterv, csomag_kezdet)
+        a SZÜLŐ rekordján van, nem a gyerekén. Ez a függvény kizárólag a
+        children tábla EGY sorát törli — a parents táblához hozzá sem nyúl.
+        A gyerekhez tartozó adatok (beszélgetések, tanulási idő, pontok,
+        kártyák, eredmények) az adatbázis saját CASCADE szabályai szerint
+        mennek vele.
+
+        A parent_id nem dísz: ha valaki más azonosítójával próbálkozik,
+        a lekérdezés nem talál semmit, és nem törlünk semmit.
+    """
+    db = _session()
+    try:
+        child = db.scalars(
+            select(Child).where(Child.id == child_id,
+                                Child.parent_id == parent_id)
+        ).first()
+        if not child:
+            return False
+        db.delete(child)
+        db.commit()
+        return True
+    except Exception:
+        db.rollback()
+        return False
+    finally:
+        db.close()
+
+
 def get_topic_learning_minutes(child_id: int, subject: str, topic_id: str) -> float:
     """Visszaadja a témakörhöz tartozó összes tanulási percet."""
     db = _session()

@@ -236,3 +236,30 @@ Ami HÁTRAVAN — ezeket Sándor kérte, sorrendben:
 
 - [ ] **Domain.** Még nincs eldöntve, magyar vagy spanyol névre.
       Évi 10-15 euró körül.
+
+
+## NYITOTT KÉRDÉS: a haladás üteme (2026-09-14, Sándor)
+
+A probléma, ahogy Sándor megfogalmazta:
+
+- Ne tanuljon egy névelőt 8 órán át — de honnan tudjuk, hogy tényleg megértette?
+- Ne lehessen 3 hónap alatt végigpörgetni 8 évet: akkor nincs miért fizetni.
+- Ne legyen unalmas, és a tanár ne kérdezze meg 100-szor ugyanazt.
+
+Jelenlegi állapot: a lecke hossza a kerettanterv `javasolt_óraszám` mezőjéből
+jön (tehát tantervi súly szerint van elosztva egy évre), a szorzó viszont
+óraszám × 60 perc. Ez kétszeresen túl sok: egy tanóra 45 perc, és az egy az
+egyben tanítás gyorsabb, mint az osztályterem. A szorzó még nincs eldöntve.
+
+Claude javaslata (még nincs jóváhagyva):
+
+1. NE AZ IDŐ ZÁRJON, HANEM A TELJESÍTMÉNY. A lecke akkor zárható, ha a
+   gyerek egymás után N gyakorlófeladatot hibátlanul megold. Az idő csak
+   alsó korlát maradjon a visszaélés ellen (pl. 10 perc), ne felső.
+   Aki tényleg tudja, haladjon gyorsan — erre való a szintfelmérő is.
+2. AZ ISMÉTLÉS TILTÁSA. A szerver tartsa számon, mit kérdezett már a tanár
+   ebben a témakörben, és ne engedje ugyanazt újra. Ez szünteti meg a
+   „századszor kérdezi ugyanazt" érzést, nem az időzár.
+3. A BEVÉTEL nem az időn múlik, hanem azon, hogy van-e még mit tanulni.
+   Nyolc évfolyamnyi tananyagot érdemi teszteléssel nem lehet három hónap
+   alatt letudni; ha valaki mégis tudja, annak joga is van hozzá.

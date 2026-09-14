@@ -3673,3 +3673,33 @@ html, body {
     transform: translateY(-1px);
 }
 .feladat-opcio:disabled { cursor: default; transform: none; }
+
+
+/* ── GYEREK TÖRLÉSE ────────────────────────────────────────────────
+   Külön, visszafogottan piros sáv az űrlap alján. Nem harsány, de
+   egyértelmű, hogy ez más műfaj, mint a mentés. */
+.gyerek-torles {
+    margin-top: 28px;
+    padding: 18px 20px;
+    border: 1px solid #f0cdcd;
+    border-radius: 14px;
+    background: #fff7f7;
+}
+.gyerek-torles-cim {
+    margin: 0 0 6px;
+    font-size: 16px;
+    color: #9b2c2c;
+}
+.gyerek-torles-info {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 1.45;
+    color: #6b4a4a;
+}
+.gyerek-torles .form-input { margin-bottom: 12px; }
+.gyerek-torles-gomb {
+    background: #c53030;
+    color: #fff;
+    border: none;
+}
+.gyerek-torles-gomb:hover { background: #9b2c2c; }

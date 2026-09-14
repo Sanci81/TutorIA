@@ -145,6 +145,25 @@
                 <button type="submit" class="btn btn-primary">{{ t('btn_save_child') }}</button>
             </div>
         </form>
+
+        {# GYEREK TÖRLÉSE. Külön űrlap, hogy a mentés gombja soha ne
+           törölhessen. A névbeírás a véletlen kattintás ellen van.
+           Az ELŐFIZETÉST ez nem érinti: az a szülő rekordján van. #}
+        <div class="gyerek-torles">
+            <h3 class="gyerek-torles-cim">{{ t('child_delete_title') }}</h3>
+            <p class="gyerek-torles-info">{{ t('child_delete_info') }}</p>
+            <form method="post"
+                  action="{{ url_for('delete_child_route', child_id=child['id']) }}">
+                <label class="form-label" for="nev_megerosites">
+                    {{ t('child_delete_confirm').replace('{nev}', child['name']) }}
+                </label>
+                <input type="text" id="nev_megerosites" name="nev_megerosites"
+                       class="form-input" autocomplete="off" required>
+                <button type="submit" class="btn gyerek-torles-gomb">
+                    {{ t('child_delete_btn') }}
+                </button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
