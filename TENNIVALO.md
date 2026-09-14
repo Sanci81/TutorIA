@@ -263,3 +263,26 @@ Claude javaslata (még nincs jóváhagyva):
 3. A BEVÉTEL nem az időn múlik, hanem azon, hogy van-e még mit tanulni.
    Nyolc évfolyamnyi tananyagot érdemi teszteléssel nem lehet három hónap
    alatt letudni; ha valaki mégis tudja, annak joga is van hozzá.
+
+
+## NYITOTT KÉRDÉS: mikor kell egyáltalán szintfelmérő? (2026-09-14, Sándor)
+
+A probléma: Sándor elkezdett egy 7. osztályos KÉMIA leckét tanulni. A program
+`placement_mode`-ba tette (mert ebből a tantárgyból még nem volt szintfelmérője),
+és emiatt eltűnt a lecke-sín és a témakör címe is — miközben ő rendesen leckét
+tanult. A megjelenítést javítottuk (a sín és a cím mostantól MINDIG látszik),
+de az alatta lévő szabály még nincs kitalálva.
+
+Sándor megfogalmazása:
+
+- Ha valaki 7. osztályt állít be és a KÉMIA csak 7.-ben indul, akkor NINCS
+  korábbi anyag — nincs mit felmérni, egyszerűen kezdjük a tanítást.
+- Ha a tantárgy korábban indul (pl. matek 1. osztálytól) és a gyerek 7.-ben
+  csatlakozik, AKKOR van értelme szintfelmérőnek, vagy a korábbi leckékből
+  kérdezni.
+- Ehhez a rendszernek tudnia kell: (a) mikortól indul az adott tantárgy a
+  tantervben, (b) tanult-e már a gyerek NÁLUNK ebből a tantárgyból.
+
+Teendő: a `placement_mode` ne pusztán a `level == 0`-ból jöjjön, hanem ebből a
+két adatból. A tanterv JSON-ban benne van, melyik évfolyamon van egyáltalán
+tananyag az adott tantárgyból — ebből kiszámolható, van-e korábbi anyag.

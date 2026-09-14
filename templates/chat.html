@@ -329,10 +329,12 @@
             </div>
 
             <div class="chat-header-also">
-                {% if not placement_mode %}
+                {# A TÉMAKÖR CÍME MINDIG LÁTSZIK.
+                   Korábban eltűnt, ha a gyereknek még nem volt
+                   szintfelmérője ebből a tantárgyból — közben viszont
+                   rendesen tanulta a leckét, csak nem látta, melyiket. #}
                 <span class="chat-also-jel" aria-hidden="true">🎯</span>
                 <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
-                {% endif %}
                 <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> {{ t('chat_minutes_suffix') }}</span>
                 <span class="chat-mini-stat">🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
                 {% if streak_days and streak_days > 0 %}
@@ -350,9 +352,13 @@
         </header>
 
         {# ── LECKE-SÍN ─────────────────────────────────────────────────
-           Négy állomás, és a gyerek avatarja csúszik rajtuk. A szintfelmérő
-           alatt nincs értelme (ott nincs „lecke”), ezért ott elhagyjuk. #}
-        {% if not placement_mode %}
+           Négy állomás, és a gyerek avatarja csúszik rajtuk.
+
+           MINDIG OTT VAN. Korábban eltűnt, ha a gyereknek még nem volt
+           szintfelmérője ebből a tantárgyból. Csakhogy attól ő még
+           ugyanúgy leckét tanul — egy új tantárgy első óráján pont hogy
+           HASZNOS látni, hol tart. A szintfelmérő ettől függetlenül
+           elindítható a fejléc gombjával. #}
         <div class="lecke-sin-doboz" id="lecke-sin-doboz">
             <div class="lecke-sin">
                 <div class="lecke-sin-kesz" id="lecke-sin-kesz"></div>
@@ -372,7 +378,6 @@
                 <span id="erme-szoveg"></span>
             </div>
         </div>
-        {% endif %}
 
         {# ── MUNKATÉR ────────────────────────────────────────────────
            A feladat eddig BENT volt a zöld buborékban – ettől olvasódott
