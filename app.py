@@ -3589,6 +3589,106 @@ def elvalaszt_filter(value: str) -> str:
     return _ELVALASZTAS.get(szoveg, szoveg)
 
 
+def _tanterv_fajlnev_reszei(fajlnev: str) -> tuple[str, list[int]]:
+    """A tanterv fájlnevéből kiszedi a tantárgyat és az évfolyam-sávot.
+
+    Kétféle írásmód van, mind a kettőt értenünk kell:
+        Matematika_1_4.json            → ("matematika", [1, 4])
+        Kemia_7_8.json                 → ("kemia", [7, 8])
+        es_LOMLOE_Matematicas_1-6.json → ("es_lomloe_matematicas", [1, 6])
+        es_LOMLOE_Valores_5-6.json     → ("es_lomloe_valores", [5, 6])
+    """
+    torzs = re.sub(r"\.json$", "", (fajlnev or "").strip(),
+                   flags=re.IGNORECASE)
+    if not torzs:
+        return "", []
+    reszek = torzs.split("_")
+    szamok: list[int] = []
+    # A név VÉGÉRŐL szedjük le az évfolyamokat: "_4", vagy "_1-6".
+    while reszek:
+        utolso = reszek[-1]
+        if utolso.isdigit():
+            szamok.insert(0, int(reszek.pop()))
+            continue
+        m = re.fullmatch(r"(\d+)\s*-\s*(\d+)", utolso)
+        if m:
+            reszek.pop()
+            szamok = [int(m.group(1)), int(m.group(2))] + szamok
+            continue
+        break
+    return "_".join(reszek).casefold(), szamok
+
+
+_TANTARGY_KEZDET_GYORSITO: dict[str, int | None] = {}
+
+
+def _tantargy_kezdo_evfolyam(subject_file: str) -> int | None:
+    """Melyik évfolyamon INDUL ez a tantárgy a tantervben?
+
+    MIÉRT KELL
+        A szintfelmérő azt hivatott megmutatni, hol tart a becsatlakozó
+        gyerek a KORÁBBI anyagban. Ha nincs korábbi anyag — a kémia a
+        7. évfolyamon kezdődik, tehát egy hetedikesnek nincs mit felmérni
+        —, akkor a szintfelmérő értelmetlen, és csak elveszi a kedvét.
+
+    HONNAN TUDJUK
+        A tanterv fájlneve hordozza az évfolyam-sávot:
+            Kemia_7_8.json        → 7-től
+            Matematika_1_4.json   → 1-től
+            Matematika_5_8.json   → 5-től
+        Egy tantárgyhoz több fájl is tartozhat; ilyenkor a LEGKORÁBBI
+        számít, mert a matek egy ötödikesnek sem „most kezdődik".
+
+    Ha nem tudjuk kiolvasni (pl. a spanyol tanterv más elnevezésű),
+    None-t adunk vissza, és a hívó a régi viselkedést tartja meg.
+    """
+    nev = (subject_file or "").strip()
+    if not nev:
+        return None
+    if nev in _TANTARGY_KEZDET_GYORSITO:
+        return _TANTARGY_KEZDET_GYORSITO[nev]
+
+    alap, szamok = _tanterv_fajlnev_reszei(nev)
+    if not alap:
+        _TANTARGY_KEZDET_GYORSITO[nev] = None
+        return None
+
+    kezdetek: list[int] = []
+    try:
+        from pathlib import Path as _Path
+        gyoker = _Path(__file__).parent
+        for ut in gyoker.rglob("*.json"):
+            masik_alap, masik_szamok = _tanterv_fajlnev_reszei(ut.name)
+            if masik_szamok and masik_alap == alap:
+                kezdetek.append(masik_szamok[0])
+    except Exception:
+        kezdetek = []
+
+    ered = min(kezdetek) if kezdetek else None
+    _TANTARGY_KEZDET_GYORSITO[nev] = ered
+    return ered
+
+
+def _kell_szintfelmero(progress: dict, subject_file: str,
+                       grade_num: int) -> bool:
+    """Van-e értelme szintfelmérőnek ebben a tantárgyban?
+
+    Három eset, pontosan úgy, ahogy Sándor leírta:
+      – a gyerek már tanult nálunk ebből a tantárgyból  → nincs
+      – a tantárgy ÉPP AZ Ő ÉVFOLYAMÁN indul            → nincs
+      – van korábbi anyag, de nálunk még nem tanulta    → VAN
+    """
+    if (progress or {}).get("level", 0) != 0:
+        return False                      # már tanult nálunk belőle
+    kezdo = _tantargy_kezdo_evfolyam(subject_file)
+    if kezdo is None:
+        return True                       # nem tudjuk – maradjon a régi
+    try:
+        return int(grade_num) > int(kezdo)
+    except (TypeError, ValueError):
+        return True
+
+
 def _chat_progress_subject(subject: str, language: str | None) -> str:
     """Haladás / teszt pontok: tantárgy + nyelv + TANTERV külön scope."""
     subj = (subject or "").strip()
@@ -7396,7 +7496,7 @@ def child_chat(child_id: int):
         )
         messages = []
 
-    placement_mode = progress.get("level", 0) == 0
+    placement_mode = _kell_szintfelmero(progress, subject, grade_num)
     active_curr = _active_curriculum()      # "HU" vagy "ES"
 
     # A tanár hangja + neve a profilból → session, hogy a TTS végpont
@@ -8492,7 +8592,8 @@ def child_chat_send(child_id: int):
             "current_topic": current_topic,
             "current_topic_id": current_topic_id,
             "level": progress.get("level", 0),
-            "placement_mode": progress.get("level", 0) == 0,
+            "placement_mode": _kell_szintfelmero(progress, subject,
+                                                 grade_num),
             "sidebar": sidebar,
             "vocabulary": vocabulary,
             # A TESZT GOMB nem szókeresésen múlik többé. Eddig az döntött,
