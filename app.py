@@ -1262,11 +1262,34 @@ def _jogi_adatok() -> dict[str, str]:
         #   RESEND_REGIO = "Európai Unió (Írország)"
         "resend_regio": os.environ.get(
             "RESEND_REGIO", "Egyesült Államok"),
-        "frissitve": JOGI_FRISSITVE,
+        # Mindkét nyelv megkapja a sajátját; a sablon a lang szerint választ.
+        "frissitve": _jogi_datum("hu"),
+        "frissitve_es": _jogi_datum("es"),
     }
 
 
-JOGI_FRISSITVE = "2026. szeptember 15."
+# A jogi oldalak frissítési dátuma. EGY helyen kell átírni (ISO alakban),
+# a magyar és a spanyol szöveg innen kapja a saját nyelvének megfelelő
+# formát – így nem fordulhat elő, hogy a spanyol oldalon magyar dátum áll.
+JOGI_FRISSITVE_ISO = "2026-09-15"
+
+_HO_HU = ("január", "február", "március", "április", "május", "június",
+          "július", "augusztus", "szeptember", "október", "november",
+          "december")
+_HO_ES = ("enero", "febrero", "marzo", "abril", "mayo", "junio",
+          "julio", "agosto", "septiembre", "octubre", "noviembre",
+          "diciembre")
+
+
+def _jogi_datum(nyelv: str) -> str:
+    """'2026-09-15' → '2026. szeptember 15.' / '15 de septiembre de 2026'."""
+    try:
+        ev, ho, nap = (int(x) for x in JOGI_FRISSITVE_ISO.split("-"))
+    except Exception:
+        return JOGI_FRISSITVE_ISO
+    if (nyelv or "").lower().startswith("es"):
+        return f"{nap} de {_HO_ES[ho - 1]} de {ev}"
+    return f"{ev}. {_HO_HU[ho - 1]} {nap}."
 
 
 # ── A szülő utolsó aktivitása ───────────────────────────────────────────────
