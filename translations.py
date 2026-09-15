@@ -501,7 +501,12 @@ TRANSLATIONS = {
     # ── Értesítés-beállítás (NEM fióktörlés!) ───────────────────────────
     # Ez az űrlap korábban a fióktörlés hibaüzenetét mutatta, és rossz
     # jelszónál azzal ijesztgetett, hogy "a fiók nem lett törölve".
-    "notify_password": {"hu": "A jelszavad", "es": "Tu contraseña"},
+    "notify_password": {
+        "hu": "A belépési jelszavad (amivel a TutorIA-ba lépsz be)",
+        "es": "Tu contraseña de acceso (con la que entras en TutorIA)",
+    },
+    "notify_password_show": {"hu": "Jelszó megmutatása",
+                             "es": "Mostrar la contraseña"},
     "notify_bad_password": {
         "hu": "A jelszó nem stimmel – a beállítás nem változott.",
         "es": "La contraseña no coincide: el ajuste no ha cambiado.",

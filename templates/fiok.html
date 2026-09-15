@@ -104,9 +104,17 @@
         {% endfor %}
       </div>
       <p class="adat" style="margin:2px 0 12px">{{ t('notify_daily_note') }}</p>
+      {# A JELSZÓ MEZŐ: legyen egyértelmű, MELYIK jelszó kell, és lehessen
+         megnézni, amit beírtunk. Enélkül a szülő a szülői kódot próbálta
+         beírni, és csak a hibaüzenetből derült ki, hogy nem az kell. #}
       <label for="ertesites_jelszo">{{ t('notify_password') }}</label>
-      <input type="password" id="ertesites_jelszo" name="jelszo" required
-             autocomplete="current-password">
+      <div class="jelszo-sor">
+        <input type="password" id="ertesites_jelszo" name="jelszo" required
+               autocomplete="current-password">
+        <button type="button" class="jelszo-szem" id="jelszo-szem"
+                aria-label="{{ t('notify_password_show') }}"
+                title="{{ t('notify_password_show') }}">👁</button>
+      </div>
       <button type="submit" class="gomb">{{ t('notify_save') }}</button>
     </form>
   </div>
@@ -144,4 +152,22 @@
     <a href="{{ url_for('feltetelek') }}">{{ t('terms_title') }}</a>
   </p>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  /* A szem gomb: megmutatja, mit gépelt be a szülő. Elgépelt jelszónál
+     különben csak találgat, hogy a jelszó rossz-e, vagy elütötte. */
+  (function () {
+      var gomb = document.getElementById('jelszo-szem');
+      var mezo = document.getElementById('ertesites_jelszo');
+      if (!gomb || !mezo) { return; }
+      gomb.addEventListener('click', function () {
+          var rejtve = mezo.type === 'password';
+          mezo.type = rejtve ? 'text' : 'password';
+          gomb.textContent = rejtve ? '🙈' : '👁';
+          mezo.focus();
+      });
+  })();
+</script>
 {% endblock %}

@@ -1774,6 +1774,19 @@ def feladat_ertesites():
         nev, _, dom = cim.partition("@")
         return f"{nev[:2]}***@{dom}"
 
+    # TAKARÍTÁS: a fél évnél régebbi beszélgetések törlése.
+    #
+    # A napi futtatáshoz kötjük, mert úgyis fut minden nap, és nem kell
+    # hozzá külön időzítő. Próbában NEM töröl semmit.
+    if not proba:
+        try:
+            _takaritas = database.regi_beszelgetesek_torlese()
+            if _takaritas.get("torolt"):
+                logger.warning("MEGORZES: %s regi beszelgetes torolve (%s elott)",
+                               _takaritas["torolt"], _takaritas["hatar"])
+        except Exception as _exc:
+            logger.warning("MEGORZES: a takaritas kimaradt: %s", _exc)
+
     # PRÓBÁHOZ: mindenkit listázunk, esedékességtől függetlenül.
     #
     # A levél a regisztráció napjához igazodik (hogy ne menjen ki minden
@@ -5696,6 +5709,12 @@ Tema actual: {current_topic}
             prompt += (
                 "\nMODO EVALUACIÓN DE NIVEL: Haz 5 preguntas divertidas del material, "
                 "luego indica: <LEVEL:X> (X=1-5).\n"
+                # Después de la evaluación NO puedes pararte: el niño solo
+                # veía que la conversación se cortaba.
+                "EN EL MISMO MENSAJE, DESPUÉS del marcador, sigue: dile al "
+                "niño con palabras sencillas que la evaluación ha terminado "
+                "y qué ha hecho bien, y EMPIEZA la primera lección. Nunca "
+                "termines el mensaje con el marcador.\n"
             )
 
         prompt += (
@@ -5936,6 +5955,12 @@ Tema actual: {current_topic}
             prompt += (
                 "\nMODO EVALUACIÓN DE NIVEL: Haz 5 preguntas divertidas del material, "
                 "luego indica: <LEVEL:X> (X=1-5).\n"
+                # Después de la evaluación NO puedes pararte: el niño solo
+                # veía que la conversación se cortaba.
+                "EN EL MISMO MENSAJE, DESPUÉS del marcador, sigue: dile al "
+                "niño con palabras sencillas que la evaluación ha terminado "
+                "y qué ha hecho bien, y EMPIEZA la primera lección. Nunca "
+                "termines el mensaje con el marcador.\n"
             )
 
         prompt += (
@@ -6298,7 +6323,18 @@ Jelenlegi témakör: {current_topic}
         prompt += f"Már elvégzett témakörök: {', '.join(completed_topics)}\n"
 
     if level == 0:
-        prompt += "\nSZINTFELMÉRŐ MÓD: Tegyél fel 5 játékos kérdést az anyagból, majd add meg: <LEVEL:X> (X=1-5).\n"
+        prompt += (
+            "\nSZINTFELMÉRŐ MÓD: Tegyél fel 5 játékos kérdést az anyagból,"
+            " majd add meg: <LEVEL:X> (X=1-5).\n"
+            # A FELMÉRÉS UTÁN NEM ÁLLHATSZ MEG. Élesben ez ment félre: a
+            # tanár kiadta a <LEVEL:4>-et, és utána semmi nem történt. A
+            # gyerek csak annyit látott, hogy a beszélgetés abbamarad —
+            # nem tudta, hogy kész a felmérés, se azt, hogy mi jön.
+            "UGYANEBBEN AZ ÜZENETBEN, a jelölő UTÁN folytasd: mondd el a"
+            " gyereknek egyszerű szavakkal, hogy kész a felmérés és mit"
+            " tudott jól, majd KEZDD EL az első leckét. Soha ne fejezd be"
+            " az üzenetet a jelölővel.\n"
+        )
 
     prompt += (
         "\nHa VÉGIGVETTED a témakör anyagát (rejtett): <TOPIC_COMPLETE>\n"

@@ -1,0 +1,3524 @@
+{% extends "base.html" %}
+
+{% block title %}{{ subject_label }} · {{ child['name'] }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<style>
+  /* A gyerek által megvásárolt kinézet. A háttér a kinezet.py-ból jön, és
+     ugyanaz a CSS érték, amit a kinézet-boltban előnézetként lát. */
+  .chat-messages{background:{{ kinezet_hatter|safe }} !important}
+  .chat-coins-pill{cursor:pointer;text-decoration:none;color:inherit}
+
+  /* ══ LECKE-SÍN ═══════════════════════════════════════════════════════
+     Eddig a gyerek nem tudta, hol tart és mikor lesz vége — csak
+     görgetett lefelé egy végtelen chatben. Itt négy állomás látszik, és
+     a SAJÁT avatarja csúszik végig rajtuk. Ez adja meg a leckének azt,
+     ami eddig hiányzott: hogy van eleje és van vége. */
+  .lecke-sin-doboz{padding:26px 22px 10px;background:rgba(255,255,255,.92);
+                   border-bottom:1px solid rgba(0,0,0,.07)}
+  .lecke-sin{position:relative;height:9px;background:#e3ebf2;border-radius:6px;
+             margin:0 8px}
+  .lecke-sin-kesz{position:absolute;left:0;top:0;bottom:0;width:8%;
+                  border-radius:6px;background:linear-gradient(90deg,#5bc0a8,#3fa88f);
+                  transition:width .6s ease}
+  .lecke-allomas{position:absolute;top:50%;width:20px;height:20px;
+                 margin:-10px 0 0 -10px;border-radius:50%;background:#fff;
+                 border:3px solid #cdd9e3;transition:border-color .4s,background .4s}
+  .lecke-allomas.kesz{border-color:#3fa88f;background:#3fa88f}
+  .lecke-allomas.kesz::after{content:"✓";color:#fff;font-size:11px;font-weight:700;
+                             position:absolute;inset:0;display:flex;
+                             align-items:center;justify-content:center}
+  .lecke-allomas b{position:absolute;top:22px;left:50%;transform:translateX(-50%);
+                   font-size:10.5px;color:#7b8fa3;white-space:nowrap;font-weight:600}
+  .lecke-avatar{position:absolute;top:-24px;transform:translateX(-50%);
+                width:40px;height:40px;border-radius:50%;background:#ffd77a;
+                border:3px solid #fff;box-shadow:0 4px 12px rgba(0,0,0,.22);
+                display:flex;align-items:center;justify-content:center;
+                font-size:22px;font-weight:700;color:#7a5c14;overflow:hidden;
+                transition:left .7s cubic-bezier(.4,1.4,.5,1);z-index:2}
+  .lecke-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* ══ ÉRME-CSÍK ═══════════════════════════════════════════════════════
+     A kártya NEM jár a leckéért — érméért veszi meg a boltban. Ez a csík
+     csak azt mutatja, mennyi hiányzik még a legolcsóbb tasakhoz. */
+  .erme-csik{display:flex;align-items:center;gap:11px;margin:30px 8px 0;
+             font-size:12.5px;color:#7a5c14}
+  .erme-sav{flex:1;height:7px;background:#f0e2c2;border-radius:5px;overflow:hidden}
+  .erme-sav i{display:block;height:100%;width:0;border-radius:5px;
+              background:linear-gradient(90deg,#f5c451,#e8a317);
+              transition:width .6s ease}
+
+  /* ══ VÁLASZTÓGOMBOK ══════════════════════════════════════════════════
+     Eddig a gyerek csak VÁLASZOLT. Ezekkel dönt is: kérhet nehezebbet,
+     példát, vagy továbbmehet. Nem AI-logika, csak három előre megírt
+     mondat — de a gyerek irányít, és ettől lesz játék a chatből. */
+  .chat-valaszto{display:flex;gap:8px;flex-wrap:wrap;margin:2px 0 10px 8px}
+  .chat-valaszto-gomb{border:1.5px solid #cfdce7;background:#fff;color:#2c4a68;
+                      font:600 13.5px/1.2 inherit;padding:9px 15px;
+                      border-radius:20px;cursor:pointer}
+  .chat-valaszto-gomb:hover{border-color:#3fa88f;background:#f2fbf8}
+  .chat-valaszto-gomb:disabled{opacity:.5;cursor:default}
+
+  @media (max-width:600px){
+    .lecke-sin-doboz{padding:24px 12px 10px}
+    .lecke-allomas b{font-size:9.5px}
+    .lecke-avatar{width:34px;height:34px;top:-21px}
+  }
+  /* ══ MUNKATÉR ════════════════════════════════════════════════════════
+     A feladat kikerül a buborékból, és saját felületet kap. Ha van
+     feladat, a beszélgetés jobbra szorul, keskeny kommentár-oszlopba.
+     Ha nincs, minden marad a régiben – a .van-munka osztály kapcsol. */
+  .munka-sav{display:flex;flex-direction:column;min-height:0;flex:1}
+  .munka-sav.van-munka{display:grid;grid-template-columns:1fr minmax(280px,340px);
+                       gap:14px;align-items:stretch}
+  .munkater{background:#fff;border:1px solid #e2e9f0;border-radius:14px;
+            padding:20px 22px;min-width:0;overflow:auto}
+  .munkater-cim{margin:0 0 3px;font-size:17px;line-height:1.3}
+  .munkater-utasitas{margin:0 0 18px;font-size:13.5px;line-height:1.5;color:#61788f}
+  .munkater-test{display:flex;justify-content:flex-start}
+  /* a feladat a munkatérben ne örökölje a buborék szűk méreteit */
+  .munkater .feladat{margin:0;max-width:none}
+
+  .munka-sav.van-munka .chat-messages{min-width:0}
+
+  /* Telefonon nincs két oszlop: a munkatér FELÜL van, a beszélgetés alatta. */
+  @media (max-width:820px){
+    .munka-sav.van-munka{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+    .munkater{padding:16px 14px}
+  }
+
+  /* ── 6–8 év: nagy elemek, meleg felület, kevés szó ── */
+  .kor-kicsi .munkater{background:#fffdf6;border-color:#f0e2c2;border-radius:18px}
+  .kor-kicsi .munkater-cim{font-size:20px;color:#6b5416}
+  .kor-kicsi .munkater-utasitas{font-size:15px;color:#8a7440}
+  .kor-kicsi .munkater .feladat{font-size:118%}
+
+  /* ── 9–11 év: tárgyszerű, világos, a lépések látszanak ── */
+  .kor-kozep .munkater{background:#fbfcfd;border-color:#dae4ee}
+  .kor-kozep .munkater-cim{color:#22364b}
+
+  /* ── 12–14 év: szerszám, nem játék. Sötét, sűrű, komoly. ── */
+  .kor-nagy .munkater{background:#171c24;border-color:#2c3744;color:#dde5ee;
+                      border-radius:10px}
+  .kor-nagy .munkater-cim{color:#eef4fa;font-size:15.5px;font-weight:600}
+  .kor-nagy .munkater-utasitas{color:#8296ab;font-size:12.5px}
+  .kor-nagy .munkater .feladat{color:#dde5ee}
+  .kor-nagy .munkater .feladat input,
+  .kor-nagy .munkater .feladat .fsz-jegy{background:#141a21;border-color:#33404f;
+                                          color:#eef4fa}
+  /* ══ SZÖVEG-FELÜLET ══════════════════════════════════════════════════
+     A gyerek a szavakra kattint. A jelölt szó ALÁHÚZVA marad – ugyanaz a
+     gesztus, mint a füzetben, ezért nem kell magyarázni. */
+  .feladat-szoveg{width:100%}
+  .fsz-kerdes{margin:0 0 14px;font-size:14.5px;line-height:1.5;font-weight:600}
+  .fszoveg-mondat{font-size:20px;line-height:2;margin-bottom:18px}
+  .fszoveg-szo{font:inherit;color:inherit;background:none;border:none;
+               border-bottom:3px solid transparent;border-radius:4px;
+               padding:2px 1px;margin:0;cursor:pointer}
+  .fszoveg-szo:hover{background:rgba(63,168,143,.12)}
+  .fszoveg-szo.jelolt{border-bottom-color:#3fa88f;background:rgba(63,168,143,.16);
+                      font-weight:700}
+  .feladat-kesz .fszoveg-szo{cursor:default}
+
+  .kor-kicsi .fszoveg-mondat{font-size:24px;line-height:2.1}
+  .kor-nagy  .fszoveg-mondat{font-size:17px;line-height:1.9}
+  .kor-nagy  .fszoveg-szo:hover{background:rgba(159,199,240,.14)}
+  .kor-nagy  .fszoveg-szo.jelolt{border-bottom-color:#4a9f7e;
+                                 background:rgba(74,159,126,.2)}
+  /* ══ ÉPÍTŐ-FELÜLET ═══════════════════════════════════════════════════
+     Fent a mondat épül, lent a kártyakészlet. Koppintásra mozognak – nincs
+     húzogatás, mert az telefonon és kis kézzel megbízhatatlan. */
+  .feladat-epito{width:100%}
+  .fepito-sor{min-height:56px;display:flex;flex-wrap:wrap;gap:8px;
+              padding:10px;border:2px dashed #c6d5e2;border-radius:12px;
+              margin-bottom:14px;align-content:flex-start}
+  .fepito-sor[data-ures="1"]::before{content:"";flex:1}
+  .fepito-keszlet{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .fepito-kartya{font:600 16px/1.2 inherit;color:#22364b;background:#fff;
+                 border:1.5px solid #c6d5e2;border-radius:10px;
+                 padding:10px 14px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .fepito-kartya:hover{border-color:#3fa88f}
+  .fepito-sor .fepito-kartya{background:#eaf6f2;border-color:#3fa88f}
+  .feladat-kesz .fepito-kartya{cursor:default}
+
+  .kor-kicsi .fepito-kartya{font-size:19px;padding:13px 17px}
+  .kor-kicsi .fepito-sor{min-height:66px}
+  .kor-nagy .fepito-kartya{background:#1d2530;border-color:#33404f;color:#dde5ee;
+                           font-size:14.5px;padding:8px 12px}
+  .kor-nagy .fepito-sor{border-color:#33404f}
+  .kor-nagy .fepito-sor .fepito-kartya{background:#24404a;border-color:#4a9f7e}
+  /* ══ ÁBRA-FELÜLET ════════════════════════════════════════════════════
+     Fent a rajz a számokkal, alatta a számozott sorok, legalul a
+     névkártyák. Koppintásra mozognak, mint az építő-felületen. */
+  .feladat-abra{width:100%}
+  /* A rajz ne nyomja le a címkéket a képernyőről: kap egy magassági
+     korlátot is, nem csak szélességit. */
+  .fabra-rajz{max-width:260px;margin:0 auto 18px;background:#fff;
+              border-radius:10px;padding:10px;text-align:center}
+  .fabra-rajz svg{max-height:280px}
+  .fabra-sorok{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+  .fabra-sor{display:flex;align-items:center;gap:10px}
+  .fabra-jel{flex:0 0 30px;height:30px;border-radius:50%;background:#3fa88f;
+             color:#fff;font:700 15px/30px inherit;text-align:center}
+  .fabra-hely{flex:1;min-height:42px;border:2px dashed #c6d5e2;border-radius:10px;
+              display:flex;align-items:center;padding:4px 6px}
+  .fabra-keszlet{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .fabra-kartya{font:600 15px/1.2 inherit;color:#22364b;background:#fff;
+                border:1.5px solid #c6d5e2;border-radius:10px;padding:9px 13px;
+                cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .fabra-kartya:hover{border-color:#3fa88f}
+  .fabra-hely .fabra-kartya{background:#eaf6f2;border-color:#3fa88f;box-shadow:none}
+  .feladat-kesz .fabra-kartya{cursor:default}
+
+  .kor-kicsi .fabra-kartya{font-size:18px;padding:12px 16px}
+  .kor-kicsi .fabra-jel{flex:0 0 36px;height:36px;font-size:18px;line-height:36px}
+  .kor-nagy .fabra-rajz{background:#e9eef4}
+  .kor-nagy .fabra-kartya{background:#1d2530;border-color:#33404f;color:#dde5ee;
+                          font-size:14px}
+  .kor-nagy .fabra-hely{border-color:#33404f}
+  .kor-nagy .fabra-hely .fabra-kartya{background:#24404a;border-color:#4a9f7e}
+  .kor-nagy .fabra-jel{background:#4a9f7e}
+  /* A kivonandó sor üres helyiértéke BEÍRHATÓ – 5600 − 800 esetén a 800
+     elé eső hely a kölcsönkérés jegyzetének a helye. */
+  .fsz-ures-mezo{border:2px dashed #cbd8e2;border-radius:8px;background:#fcfdfe;
+                 text-align:center;font:inherit;color:#7a5c14;padding:0}
+  .fsz-ures-mezo:focus{outline:none;border-color:#3fa88f;background:#f2fbf8}
+  /* ══ MODELL-FELÜLET ══════════════════════════════════════════════════
+     Csúszka + növekvő oszlop. A célvonal végig látszik, hogy a gyereknek
+     legyen mihez igazodnia, és lássa, MERRE kell mozdulnia. */
+  .feladat-modell{width:100%}
+  .fmod-cel{font-size:14px;font-weight:700;color:#8a6a14;margin-bottom:10px}
+  .fmod-sav{position:relative;height:30px;background:#eef3f8;border-radius:8px;
+            overflow:hidden;margin-bottom:12px}
+  .fmod-sav i{display:block;height:100%;width:0;border-radius:8px;
+              background:linear-gradient(90deg,#7fc4b2,#3fa88f);
+              transition:width .12s linear}
+  .fmod-celvonal{position:absolute;top:0;bottom:0;width:3px;background:#e8a317;
+                 border-radius:2px}
+  .fmod-kijelzo{font:700 26px/1.2 inherit;color:#22364b;margin-bottom:14px;
+                text-align:center}
+  .fmod-talalt .fmod-kijelzo{color:#2f8f60}
+  .fmod-talalt .fmod-sav i{background:linear-gradient(90deg,#6fd0a2,#2f8f60)}
+  .fmod-csuszka{width:100%;margin:0 0 18px;accent-color:#3fa88f}
+
+  .kor-kicsi .fmod-kijelzo{font-size:32px}
+  .kor-kicsi .fmod-sav{height:38px}
+  .kor-nagy .fmod-kijelzo{font-size:20px;color:#eef4fa;
+                          font-family:"Consolas",monospace}
+  .kor-nagy .fmod-sav{background:#232c37}
+  .kor-nagy .fmod-cel{color:#d6b25e}
+  .kor-nagy .fmod-talalt .fmod-kijelzo{color:#6fd0a2}
+  /* Az alsó szám jegyei átírhatók: kölcsönkérés után a 2-ből 3 lesz.
+     Alapból ugyanúgy néznek ki, mint a nyomtatott számjegyek – csak akkor
+     látszik, hogy mező, ha a gyerek beleáll. */
+  .fsz-jegy-mezo{border:2px solid transparent;background:transparent;
+                 text-align:center;padding:0;border-radius:8px;cursor:text;
+                 /* A .fsz-jegy méretét és vastagságát MEG KELL TARTANI:
+                    az input alapból vékonyabb betűt örököl, és az alsó sor
+                    halványabbnak látszott, mint a felső. */
+                 font-family:inherit;font-size:30px;font-weight:800;
+                 color:#16241d;line-height:1.15;height:48px}
+  .fsz-jegy-mezo:hover{border-color:#e3ebf2}
+  .fsz-jegy-mezo:focus{outline:none;border-color:#3fa88f;background:#f2fbf8}
+  /* A MOZGÓ KABALA MÉRETE.
+     A rajztáblán a robot körül sok az üres hely: 380 képpontos helyen
+     is csak 155 képpont volt maga a figura. Ezért a vásznat a doboznál
+     NAGYOBBRA vesszük, és a dobozzal levágjuk a szélét – így ugyanabban
+     a helyben a robot majdnem kétszer akkora. */
+  .chat-kabala-doboz{position:sticky;bottom:14px;display:block;
+                     width:100%;max-width:300px;aspect-ratio:1/1;
+                     overflow:hidden}
+  /* CSAK a rajztábla legszélét vágjuk le – ott van a „Click me!"
+     felirat. 190% korábban a robot fejét is levágta, ezért nézett ki
+     úgy, mintha dobozban ülne. */
+  .chat-kabala-rive{display:block;position:relative;
+                    width:118%;height:118%;left:-9%;top:-9%}
+</style>
+{# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
+   és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
+   Az effective_age már jön a szerverről, nem kell hozzá új adat. #}
+{% set korsav = "kor-kicsi" if (effective_age or 10) <= 8
+                else ("kor-kozep" if (effective_age or 10) <= 11 else "kor-nagy") %}
+<section class="chat-layout {{ korsav }}{% if chat_mode == 'voice' %} chat-layout-voice{% endif %}" id="chat-page">
+    <button type="button" class="chat-sidebar-toggle" id="sidebar-toggle" aria-label="{{ t('chat_topics_title') }}">☰</button>
+
+    <aside class="topic-sidebar" id="topic-sidebar">
+        <div class="topic-sidebar-card">
+            <h2 class="topic-sidebar-title">{{ t('chat_topics_title') }}</h2>
+            <p class="topic-sidebar-summary" id="topic-summary">
+                {{ sidebar.completed_count }} / {{ sidebar.total_count }} {{ t('chat_topics_done_suffix') }}
+            </p>
+            <div class="topic-sidebar-progress">
+                <div class="topic-sidebar-progress-fill" id="sidebar-progress-fill"
+                     style="width: {{ (100 * sidebar.completed_count / sidebar.total_count) if sidebar.total_count else 0 }}%"></div>
+            </div>
+            <ul class="topic-sidebar-list" id="topic-sidebar-list">
+                {% for item in sidebar.topics %}
+                <li>
+                    {% if item.state == 'locked' %}
+                    <div class="topic-item topic-item-locked">
+                        <span class="topic-num">{{ item.index }}.</span>
+                        <span class="topic-lock">🔒</span>
+                        <span class="topic-name">{{ item.name }}</span>
+                    </div>
+                    {% elif item.state == 'completed' %}
+                    <button type="button" class="topic-item topic-item-done"
+                            data-topic-id="{{ item.id }}" data-topic-name="{{ item.name }}">
+                        <span class="topic-num">{{ item.index }}.</span>
+                        <span class="topic-badge">✓ {{ item.score }}%</span>
+                        <span class="topic-name">{{ item.name }}</span>
+                    </button>
+                    {% elif item.state == 'active' %}
+                    <div class="topic-item topic-item-active">
+                        <span class="topic-num">{{ item.index }}.</span>
+                        <span class="topic-name">{{ item.name }}</span>
+                    </div>
+                    {% else %}
+                    <button type="button" class="topic-item topic-item-open"
+                            data-topic-id="{{ item.id }}" data-topic-name="{{ item.name }}">
+                        <span class="topic-num">{{ item.index }}.</span>
+                        <span class="topic-name">{{ item.name }}</span>
+                    </button>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            <p class="topic-sidebar-avg" id="topic-avg">
+                {{ t('chat_average_label') }}: {{ sidebar.average_score }}%
+            </p>
+        </div>
+    </aside>
+
+    <div class="chat-main">
+        {# ── FEJLÉC: KÉT SÁV ───────────────────────────────────────────
+           Korábban öt sáv volt egymás alatt (váltógombok, névkártya, „Most
+           ezt tanulod” doboz, percek, Szintfelmérő gomb), együtt közel 290
+           képpont. Egy laptopon ez a képernyő harmada, mielőtt a gyerek egy
+           szót elolvasna — telefonon még rosszabb. Ugyanez az információ
+           elfér két sorban: fent KI tanul és MIVEL, lent MIT tanul éppen. #}
+        <header class="chat-header chat-header-playful">
+            <div class="chat-header-topbar">
+                {# Bal oldalt MINDIG a visszalépés, jobb oldalt EGYETLEN váltógomb,
+                   ami azt írja ki, HOVÁ visz — nem azt, hol vagyunk éppen. #}
+                <a class="chat-back" href="{{ url_for('select_tasks', child_id=child['id']) }}">← {{ t('btn_back_dashboard') }}</a>
+                <div class="chat-avatar-circle">
+                    {% if aktiv_gyerek and aktiv_gyerek.avatar %}
+                    <img src="{{ url_for('avatar_kep', kulcs=aktiv_gyerek.avatar) }}" alt="">
+                    {% else %}{{ child['name'][0]|upper }}{% endif %}
+                </div>
+                <div class="chat-header-identity-text">
+                    <h1 class="chat-child-name">{{ child['name'] }}</h1>
+                    <p class="chat-subject">{{ subject_label }}</p>
+                </div>
+                <span class="chat-header-ter"></span>
+                {# CSAK az egyenleg látszik tanulás közben – a boltot és az
+                   albumot a profilról nyitja, hogy a lecke ne szakadjon meg. #}
+                <div class="chat-coins-pill" title="{{ t('coin_hint') }}">🪙
+                   <span id="coins-display">{{ coins }}</span>
+                   <span id="pont-display" hidden>{{ pont }}</span></div>
+                <button type="button" class="chat-teljes-gomb" id="chat-teljes"
+                        title="{{ t('chat_fullscreen') }}"
+                        aria-label="{{ t('chat_fullscreen') }}">⛶</button>
+                {% if not show_chat_switch %}
+                    <span class="chat-mode-toggle chat-mode-voice">{{ t('chat_mode_voice') }}</span>
+                {% elif chat_mode == 'voice' %}
+                    <a class="chat-mode-toggle chat-mode-chat" href="{{ chat_switch_url }}">{{ t('chat_mode_chat') }}</a>
+                {% else %}
+                    <a class="chat-mode-toggle chat-mode-voice" href="{{ voice_switch_url }}">{{ t('chat_mode_voice') }}</a>
+                {% endif %}
+            </div>
+
+            <div class="chat-header-also">
+                {# A TÉMAKÖR CÍME MINDIG LÁTSZIK.
+                   Korábban eltűnt, ha a gyereknek még nem volt
+                   szintfelmérője ebből a tantárgyból — közben viszont
+                   rendesen tanulta a leckét, csak nem látta, melyiket. #}
+                <span class="chat-also-jel" aria-hidden="true">🎯</span>
+                <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
+                <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> {{ t('chat_minutes_suffix') }}</span>
+                <span class="chat-mini-stat">🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
+                {% if streak_days and streak_days > 0 %}
+                <span class="chat-mini-stat chat-mini-stat-sorozat" id="streak-bar">
+                    {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
+                </span>
+                {% endif %}
+                <span class="chat-header-ter"></span>
+                {% if show_early_test %}
+                <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
+                    {{ t('chat_test_start') }}
+                </button>
+                {% endif %}
+            </div>
+        </header>
+
+        {# ── LECKE-SÍN ─────────────────────────────────────────────────
+           Négy állomás, és a gyerek avatarja csúszik rajtuk.
+
+           MINDIG OTT VAN. Korábban eltűnt, ha a gyereknek még nem volt
+           szintfelmérője ebből a tantárgyból. Csakhogy attól ő még
+           ugyanúgy leckét tanul — egy új tantárgy első óráján pont hogy
+           HASZNOS látni, hol tart. A szintfelmérő ettől függetlenül
+           elindítható a fejléc gombjával. #}
+        <div class="lecke-sin-doboz" id="lecke-sin-doboz">
+            <div class="lecke-sin">
+                <div class="lecke-sin-kesz" id="lecke-sin-kesz"></div>
+                <div class="lecke-allomas" data-all="1" style="left:8%"><b>{{ t('lecke_tanulas') }}</b></div>
+                <div class="lecke-allomas" data-all="2" style="left:36%"><b>{{ t('lecke_gyakorlas') }}</b></div>
+                <div class="lecke-allomas" data-all="3" style="left:64%"><b>{{ t('lecke_teszt') }}</b></div>
+                <div class="lecke-allomas" data-all="4" style="left:92%"><b>{{ t('lecke_kesz') }}</b></div>
+                <div class="lecke-avatar" id="lecke-avatar" style="left:8%">
+                    {% if aktiv_gyerek and aktiv_gyerek.avatar %}
+                    <img src="{{ url_for('avatar_kep', kulcs=aktiv_gyerek.avatar) }}" alt="">
+                    {% else %}{{ child['name'][0]|upper }}{% endif %}
+                </div>
+            </div>
+            <div class="erme-csik">
+                <span>🪙</span>
+                <div class="erme-sav"><i id="erme-sav-belso"></i></div>
+                <span id="erme-szoveg"></span>
+            </div>
+        </div>
+
+        {# ── MUNKATÉR ────────────────────────────────────────────────
+           A feladat eddig BENT volt a zöld buborékban – ettől olvasódott
+           az egész chatnek. Innentől saját felülete van a képernyő bal
+           oldalán, a beszélgetés pedig mellé szorul, kommentárként.
+           Ha nincs feladat, a munkatér rejtve marad, és minden ugyanaz,
+           mint eddig. #}
+        <div class="munka-sav" id="munka-sav">
+        <section class="munkater" id="munkater" hidden aria-live="polite">
+            <div class="munkater-fej">
+                <h2 class="munkater-cim" id="munkater-cim"></h2>
+                <p class="munkater-utasitas" id="munkater-utasitas"></p>
+            </div>
+            <div class="munkater-test" id="munkater-test"></div>
+        </section>
+
+        <div class="chat-messages" id="chat-messages" aria-live="polite">
+            {% for msg in messages %}
+                <div class="chat-bubble chat-bubble-{{ msg['role'] }}">
+                    {# A buborék szövege „pre-wrap”, tehát MINDEN sortörés
+                       látszik. A sablon behúzásai is azok lennének: emiatt
+                       nyúlt le a buborék üresen. A {{- -}} jelek levágják a
+                       kiírás körüli üres helyet, a |trim pedig a szöveg
+                       végén maradt üres sorokat. Ezeket ne vedd ki. #}
+                    <div class="chat-bubble-inner">{{- msg['content']|trim -}}
+                    {%- if msg['role'] == 'assistant' and msg.get('figures') %}
+                        {% for svg in msg['figures'] %}
+                            <div class="chat-figure" style="max-width:320px;width:100%;margin:8px auto;background:#fff;border-radius:8px;padding:8px;">{{ svg | safe }}</div>
+                        {% endfor %}
+                    {% endif -%}
+                    {# A gyakorló feladat újratöltés után is megmarad. Csak a
+                       LEGUTOLSÓ tanári üzenetnél van kitöltve — arra vár most
+                       választ a tanár. #}
+                    {%- if msg['role'] == 'assistant' and msg.get('feladat') %}
+                        <div class="feladat-hely" data-feladat="{{ msg['feladat']|tojson|forceescape }}"></div>
+                    {% endif -%}
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="chat-bubble chat-bubble-assistant chat-typing" id="typing-indicator" hidden>
+                <div class="chat-bubble-inner">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
+            </div>
+        </div>
+        </div><!-- /munka-sav -->
+
+        {% if chat_mode == 'voice' %}
+        <input type="hidden" id="chat-subject" value="{{ subject }}">
+        <input type="hidden" id="chat-session-id" value="{{ session_id }}">
+        <input type="hidden" id="chat-language" value="{{ language or '' }}">
+        <input type="hidden" id="chat-frame" value="{{ 'es' if active_curriculum == 'ES' else 'hu' }}">
+        <input type="hidden" id="chat-topic-id" value="{{ current_topic_id }}">
+        {# Ezen a nyelven nézzük meg, mennyire érthető, amit a gyerek mond. #}
+        <input type="hidden" id="chat-kiejtes-nyelv" value="{{ kiejtes_nyelv }}">
+
+        <div class="voice-panel" id="voice-panel">
+            <p class="voice-status" id="voice-status">{{ t('chat_voice_status_idle') }}</p>
+            <button type="button" class="voice-mic-btn" id="voice-mic-btn" aria-label="{{ t('chat_mic_label') }}">
+                <span class="voice-mic-icon" aria-hidden="true">🎙️</span>
+            </button>
+            <p class="voice-unsupported" id="voice-unsupported" hidden>
+                {{ t('chat_voice_unsupported') }}
+                <a href="{{ chat_switch_url if show_chat_switch else url_for('select_tasks', child_id=child['id']) }}">{{ t('chat_voice_try_text') }}</a>.
+            </p>
+        </div>
+        {% else %}
+        <form class="chat-input-bar" id="chat-form">
+            <input type="hidden" id="chat-subject" value="{{ subject }}">
+            <input type="hidden" id="chat-session-id" value="{{ session_id }}">
+            <input type="hidden" id="chat-language" value="{{ language }}">
+            <input type="hidden" id="chat-topic-id" value="{{ current_topic_id }}">
+            <input type="hidden" id="chat-mode" value="chat">
+            <label class="visually-hidden" for="chat-input">{{ t('chat_input_label') }}</label>
+            <textarea id="chat-input" rows="2" placeholder="{{ t('chat_input_placeholder') }}" required></textarea>
+            <button type="submit" class="btn btn-primary chat-send-btn" id="chat-send-btn">{{ t('chat_send') }}</button>
+        </form>
+        {% endif %}
+    </div>
+
+    {# KABALA FIGURA. SAJÁT oszlopot kap a beszélgetés mellett, hogy soha
+       ne takarjon el se szöveget, se gombot. Nem mozog és nem villog: a
+       gyerek a feladatra figyeljen. Csak akkor van, ha a szülő megadta a
+       gyerek nemét; keskeny képernyőn nem jelenik meg. #}
+    {# KABALA: a szülő négy közül választ a profilban — fiú, lány, mozgó
+       robot, vagy semmi. A fiú és a lány állókép marad, a robot mozog. #}
+    {% if kabala_kep or kabala_robot %}
+    <div class="chat-kabala-oszlop" aria-hidden="true">
+        {% if kabala_robot %}
+        <div class="chat-kabala chat-kabala-doboz">
+            <canvas class="chat-kabala-rive" id="kabala-rive"
+                    width="600" height="600"></canvas>
+        </div>
+        {% else %}
+        <img class="chat-kabala" id="kabala-kep"
+             src="{{ url_for('static', filename=kabala_kep) }}" alt="">
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if is_foreign_language and language %}
+    <aside class="chat-sidebar chat-sidebar-vocab">
+        <h2 class="chat-sidebar-title">{{ t('chat_vocab_title') }}</h2>
+        <p class="chat-vocab-lang">{{ language|display_language }}</p>
+        <ul class="chat-vocab-list" id="vocab-list">
+            {% for w in vocabulary %}
+                <li>
+                    <span class="vocab-native">{{ w['word_native'] }}</span>
+                    <span class="vocab-arrow">→</span>
+                    <span class="vocab-foreign">{{ w['word_foreign'] }}</span>
+                </li>
+            {% endfor %}
+        </ul>
+        <p class="chat-vocab-empty" id="vocab-empty" {% if vocabulary %}hidden{% endif %}>
+            {{ t('chat_vocab_empty') }}
+        </p>
+    </aside>
+    {% endif %}
+</section>
+
+<div class="test-overlay" id="test-overlay" hidden>
+    <div class="test-modal">
+        <button type="button" class="test-close" id="test-close" aria-label="{{ t('test_close') }}">×</button>
+        <h3 class="test-title" id="test-title">{{ t('test_title') }}</h3>
+        <div id="test-body"></div>
+        <div id="test-result" hidden></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+{# A mozgó kabala futtatója. Ha nem tölt be, a chat.html-ben lévő
+   kabalaAllapot() csendben kihagyja magát, és marad az állókép. #}
+{# A futtatót MAGUNK tároljuk (static/rive.js). Így nem függ idegen
+   szervertől, reklámszűrőtől, és nem kell külön .wasm fájlt letöltenie. #}
+<script src="{{ url_for('static', filename='rive.js') }}"></script>
+<script>
+    // ── A teszt ablak és a teljes képernyő ─────────────────────────────
+    // A böngésző teljes képernyő módjában CSAK a kinagyított elem tartalma
+    // látszik. A teszt ablaka viszont a <section> MELLETT állt, nem benne –
+    // ezért nagyításban egyszerűen nem jelent meg. Beköltöztetjük a chat
+    // dobozába: normál nézetben ez semmit nem változtat (az ablak úgyis a
+    // képernyőhöz van rögzítve), nagyításban viszont láthatóvá válik.
+    (function () {
+        var lap = document.getElementById('chat-page');
+        var ablak = document.getElementById('test-overlay');
+        if (lap && ablak && ablak.parentElement !== lap) {
+            lap.appendChild(ablak);
+        }
+    })();
+
+    // ── Teljes képernyő ────────────────────────────────────────────────
+    // Előbb a böngésző valódi teljes képernyőjét kérjük (mint a videóknál).
+    // Ha az nem megy, akkor is kitesszük a chatet az egész ablakra egy
+    // osztállyal – így a gomb soha nem tehetetlen.
+    (function () {
+        var gomb = document.getElementById('chat-teljes');
+        var lap = document.getElementById('chat-page');
+        if (!gomb || !lap) return;
+        var kerhet = lap.requestFullscreen || lap.webkitRequestFullscreen;
+        var kilep = document.exitFullscreen || document.webkitExitFullscreen;
+        function jelol() {
+            var benne = lap.classList.contains('teljes-mod');
+            gomb.textContent = benne ? '\u2715' : '\u26f6';
+        }
+        gomb.addEventListener('click', function () {
+            if (lap.classList.contains('teljes-mod')) {
+                lap.classList.remove('teljes-mod');
+                if (document.fullscreenElement || document.webkitFullscreenElement) {
+                    try { kilep.call(document); } catch (e) {}
+                }
+            } else {
+                lap.classList.add('teljes-mod');
+                if (kerhet) { try { kerhet.call(lap); } catch (e) {} }
+            }
+            jelol();
+        });
+        function valtozott() {
+            if (!(document.fullscreenElement || document.webkitFullscreenElement)) {
+                lap.classList.remove('teljes-mod');
+                jelol();
+            }
+        }
+        document.addEventListener('fullscreenchange', valtozott);
+        document.addEventListener('webkitfullscreenchange', valtozott);
+        jelol();
+    })();
+
+(function () {
+    var childId = {{ child['id']|tojson }};
+    var sendUrl = {{ url_for('child_chat_send', child_id=child['id'])|tojson }};
+    var progressUrl = {{ url_for('child_chat_progress', child_id=child['id'])|tojson }};
+    var testGenUrl = {{ url_for('child_chat_test_generate', child_id=child['id'])|tojson }};
+    var testSubmitUrl = {{ url_for('child_chat_test_submit', child_id=child['id'])|tojson }};
+    var subject = {{ subject|tojson }};
+    var passThreshold = {{ pass_threshold|tojson }};
+    var currentTopicId = {{ current_topic_id|tojson }};
+    var currentTopicName = {{ current_topic|tojson }};
+    var currentOraSzam = 0;
+    var chatMode = {{ chat_mode|tojson }};
+    var chatProfile = {{ chat_profile|tojson }};
+    var isVoiceOnlyTest = (chatProfile === 'voice_only' && chatMode === 'voice');
+    var transcribeUrl = {{ url_for('api_voice_transcribe')|tojson }};
+    var speakUrl = {{ url_for('api_voice_speak')|tojson }};
+
+    // ── Napi hangkeret ──────────────────────────────────────────────────
+    // Ha ma elfogyott a felolvasás, EGYSZER szólunk a gyereknek, utána
+    // csendben maradunk. A tanulás írásban zavartalanul megy tovább – a
+    // gyerek soha nem lát hibaüzenetet, és nem is akad el.
+    var hangKeretElfogyott = false;
+    function hangKeretVege() {
+        if (hangKeretElfogyott) return;
+        hangKeretElfogyott = true;
+        try { appendBubble('assistant', L.voiceBudgetSpent); } catch (e) {}
+    }
+
+    // A buborékok 🔊 gombja. Ugyanaz a keret- és hibakezelés, mint a hangos
+    // módban, és a lejátszás után elengedjük a memóriát.
+    function ujraOlvas(szoveg) {
+        if (hangKeretElfogyott) return;
+        fetch(speakUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: szoveg, child_id: childId })
+        })
+            .then(function (r) {
+                if (r.status === 429) { hangKeretVege(); return null; }
+                if (!r.ok) return null;
+                return r.blob();
+            })
+            .then(function (blob) {
+                if (!blob) return;
+                var url = URL.createObjectURL(blob);
+                var audio = new Audio(url);
+                audio.onended = function () { URL.revokeObjectURL(url); };
+                audio.play();
+            })
+            .catch(function () {});
+    }
+
+    // Feliratok az aktív tanterv nyelvén (HU/ES) – a t() az aktív g.lang alapján ad vissza.
+    var L = {
+        utasitasSzamolo: {{ t('utasitas_szamolo')|tojson }},
+        utasitasParosit: {{ t('utasitas_parosit')|tojson }},
+        utasitasSorrend: {{ t('utasitas_sorrend')|tojson }},
+        utasitasHianyzo: {{ t('utasitas_hianyzo')|tojson }},
+        utasitasValaszt: {{ t('utasitas_valaszt')|tojson }},
+        utasitasSzoveg: {{ t('utasitas_szoveg')|tojson }},
+        utasitasEpito: {{ t('utasitas_epito')|tojson }},
+        utasitasAbra: {{ t('utasitas_abra')|tojson }},
+        utasitasModell: {{ t('utasitas_modell')|tojson }},
+        modellCel: {{ t('modell_cel')|tojson }},
+        utasitasAltalanos: {{ t('utasitas_altalanos')|tojson }},
+        gombNehezebb: {{ t('gomb_nehezebb')|tojson }},
+        gombPelda: {{ t('gomb_pelda')|tojson }},
+        gombTovabb: {{ t('gomb_tovabb')|tojson }},
+        ermeTasakig: {{ t('erme_tasakig')|tojson }},
+        ermeEleg: {{ t('erme_eleg')|tojson }},
+        topicsDoneSuffix: {{ t('chat_topics_done_suffix')|tojson }},
+        averageLabel: {{ t('chat_average_label')|tojson }},
+        levelFmt: {{ t('chat_level_fmt')|tojson }},
+        testStartShort: {{ t('chat_test_start_short')|tojson }},
+        testGenerating: {{ t('chat_test_generating')|tojson }},
+        testTitle: {{ t('test_title')|tojson }},
+        testTitleFmt: {{ t('test_title_fmt')|tojson }},
+        quizSubmit: {{ t('quiz_submit')|tojson }},
+        quizAnswerPlaceholder: {{ t('quiz_answer_placeholder')|tojson }},
+        quizCreateFailed: {{ t('quiz_create_failed')|tojson }},
+        quizAdvance: {{ t('quiz_advance')|tojson }},
+        quizPracticeMore: {{ t('quiz_practice_more')|tojson }},
+        quizRetry: {{ t('quiz_retry')|tojson }},
+        quizNextFmt: {{ t('quiz_next_fmt')|tojson }},
+        quizNextHint: {{ t('quiz_next_hint')|tojson }},
+        quizAllDone: {{ t('quiz_all_done')|tojson }},
+        quizTryAgainFmt: {{ t('quiz_try_again_fmt')|tojson }},
+        quizAttemptsLeftFmt: {{ t('quiz_attempts_left_fmt')|tojson }},
+        quizAttemptsLeftNowFmt: {{ t('quiz_attempts_left_now_fmt')|tojson }},
+        quizStudyMoreFmt: {{ t('quiz_study_more_fmt')|tojson }},
+        quizStudy60Retry: {{ t('quiz_study_60_retry')|tojson }},
+        gateRetryHint: {{ t('gate_retry_hint')|tojson }},
+        timeAboutHoursFmt: {{ t('time_about_hours_fmt')|tojson }},
+        timeHoursMinutesFmt: {{ t('time_hours_minutes_fmt')|tojson }},
+        timeMinutesFmt: {{ t('time_minutes_fmt')|tojson }},
+        reviewTitle: {{ t('review_title')|tojson }},
+        reviewYourAnswer: {{ t('review_your_answer')|tojson }},
+        reviewCorrectAnswer: {{ t('review_correct_answer')|tojson }},
+        reviewNoAnswer: {{ t('review_no_answer')|tojson }},
+        reviewExplanation: {{ t('review_explanation')|tojson }},
+        errNoReply: {{ t('chat_err_no_reply')|tojson }},
+        errNetwork: {{ t('chat_err_network')|tojson }},
+        errTimeout: {{ t('chat_err_timeout')|tojson }},
+        kiCim:      {{ t('kiejtes_cim')|tojson }},
+        kiSugo:     {{ t('kiejtes_sugo')|tojson }},
+        kiHallgasd: {{ t('kiejtes_hallgasd')|tojson }},
+        kiUjra:     {{ t('kiejtes_ujra')|tojson }},
+        kiFigyelek: {{ t('kiejtes_figyelek')|tojson }},
+        kiNezem:    {{ t('kiejtes_nezem')|tojson }},
+        kiNemMent:  {{ t('kiejtes_nem_ment')|tojson }},
+        voiceTooShort: {{ t('chat_voice_too_short')|tojson }},
+        errNotUnderstood: {{ t('chat_err_not_understood')|tojson }},
+        voiceStatusIdle: {{ t('chat_voice_status_idle')|tojson }},
+        voiceListening: {{ t('chat_voice_listening')|tojson }},
+        voiceProcessing: {{ t('chat_voice_processing')|tojson }},
+        voiceMicPermission: {{ t('chat_voice_mic_permission')|tojson }},
+        replayTitle: {{ t('chat_replay_title')|tojson }},
+        feladatKesz: {{ t('feladat_kesz')|tojson }},
+        feladatMaradek: {{ t('feladat_maradek')|tojson }},
+        voiceBudgetSpent: {{ t('voice_budget_spent')|tojson }},
+        think: [
+            {{ t('chat_think_1')|tojson }},
+            {{ t('chat_think_2')|tojson }},
+            {{ t('chat_think_3')|tojson }},
+            {{ t('chat_think_4')|tojson }}
+        ]
+    };
+    function fmt(tpl, vars) {
+        return String(tpl).replace(/\{(\w+)\}/g, function (_, k) {
+            return (vars && vars[k] !== undefined) ? vars[k] : '';
+        });
+    }
+
+    var form = document.getElementById('chat-form');
+    var input = document.getElementById('chat-input');
+    var messagesEl = document.getElementById('chat-messages');
+    var typing = document.getElementById('typing-indicator');
+    var sendBtn = document.getElementById('chat-send-btn');
+    var topicIdInput = document.getElementById('chat-topic-id');
+    var topicTitle = document.getElementById('current-topic-title');
+    var btnTest = document.getElementById('btn-test-start');
+    var testOverlay = document.getElementById('test-overlay');
+    var testBody = document.getElementById('test-body');
+    var testResult = document.getElementById('test-result');
+    var testTitle = document.getElementById('test-title');
+    var sidebarList = document.getElementById('topic-sidebar-list');
+    var sidebarToggle = document.getElementById('sidebar-toggle');
+    var topicSidebar = document.getElementById('topic-sidebar');
+
+    var quizQuestions = [];
+    var quizAnswers = [];
+
+    /* ---------- Tanulási idő követés ----------
+       CSAK AZ AKTÍV IDŐ SZÁMÍT. A szülő percet fizet, ezért pontosan
+       meghatározható kell legyen, mi számít bele: az az idő, amíg a gyerek
+       ténylegesen dolgozik. Ha öt percig nem történik semmi – nem ír, nem
+       kattint, nem görget –, vagy ha átvált egy másik lapra, az óra megáll,
+       és csak akkor indul újra, amikor megint csinál valamit.
+
+       A SZAKASZOKAT ÖSSZEADJUK. A korábbi megoldás a szünet után nulláról
+       kezdte a számolást, így a szünet előtti idő elveszett – a mérés tehát
+       hibás volt. Most az aktív szakaszok hossza gyűlik össze. */
+    var learningSessionId = null;
+    var inactivityTimer = null;
+    var heartbeatTimer = null;
+    var learningPaused = false;
+    var aktivPercek = 0;              // a lezárt aktív szakaszok összege
+    var szakaszKezdet = Date.now();   // a most futó aktív szakasz kezdete
+    var learningMinutesEl = document.getElementById('learning-minutes-today');
+    var INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 perc
+
+    // Mennyi aktív idő telt el eddig, percben.
+    function eltelIdo() {
+        if (learningPaused) return aktivPercek;
+        return aktivPercek + (Date.now() - szakaszKezdet) / 60000;
+    }
+
+    // Az óra megállítása: a most futó szakaszt hozzáadjuk az összeghez.
+    function oraMegall() {
+        if (learningPaused) return;
+        aktivPercek += (Date.now() - szakaszKezdet) / 60000;
+        learningPaused = true;
+    }
+
+    function oraIndul() {
+        if (!learningPaused) return;
+        learningPaused = false;
+        szakaszKezdet = Date.now();
+    }
+
+    function startLearningSession() {
+        fetch('/api/learning/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                child_id: childId,
+                subject: subject,
+                topic_id: currentTopicId
+            })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            if (data.id) learningSessionId = data.id;
+        });
+    }
+
+    function endLearningSession() {
+        if (!learningSessionId) return;
+        oraMegall();
+        var elapsed = aktivPercek;
+        fetch('/api/learning/end', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                session_id: learningSessionId,
+                minutes: elapsed
+            })
+        });
+        learningSessionId = null;
+    }
+
+    function heartbeat() {
+        if (!learningSessionId) return;
+        var elapsed = eltelIdo();
+        fetch('/api/learning/heartbeat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                session_id: learningSessionId,
+                minutes: elapsed
+            })
+        });
+        // Update display
+        if (learningMinutesEl) {
+            learningMinutesEl.textContent = Math.round(elapsed);
+        }
+    }
+
+    function resetInactivity() {
+        oraIndul();
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(function () {
+            oraMegall();
+            heartbeat();
+        }, INACTIVITY_LIMIT);
+    }
+
+    // Start session on load
+    startLearningSession();
+    heartbeatTimer = setInterval(heartbeat, 30000);
+    resetInactivity();
+
+    // Track user activity
+    document.addEventListener('click', resetInactivity);
+    document.addEventListener('keydown', resetInactivity);
+    document.addEventListener('touchstart', resetInactivity);
+    document.addEventListener('scroll', resetInactivity);
+
+    // Ha a gyerek átvált másik lapra vagy kis méretre teszi az ablakot, az
+    // óra AZONNAL megáll – nem várunk vele öt percet. Visszatéréskor indul.
+    document.addEventListener('visibilitychange', function () {
+        if (document.hidden) { oraMegall(); heartbeat(); }
+        else { resetInactivity(); }
+    });
+
+    // End on unload
+    window.addEventListener('beforeunload', function () {
+        clearInterval(heartbeatTimer);
+        clearTimeout(inactivityTimer);
+        endLearningSession();
+    });
+
+    // Hangszóró gomb a meglévő (betöltött) assistant üzenetekhez
+    document.querySelectorAll('.chat-bubble-assistant .chat-bubble-inner').forEach(function(inner) {
+        var text = inner.textContent;
+        if (!text.trim()) return;
+        var replayBtn = document.createElement('button');
+        replayBtn.className = 'bubble-replay-btn';
+        replayBtn.innerHTML = '🔊';
+        replayBtn.title = L.replayTitle;
+        replayBtn.setAttribute('data-text', text);
+        replayBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var t = this.getAttribute('data-text');
+            ujraOlvas(t);
+        });
+        var wrap = inner.closest('.chat-bubble-assistant');
+        if (wrap) {
+            var replayWrap = document.createElement('div');
+            replayWrap.className = 'bubble-replay-wrap';
+            replayWrap.appendChild(replayBtn);
+            wrap.appendChild(replayWrap);
+        }
+    });
+
+    // SVG ábrák átméretezése a régi (betöltött) asszisztens üzeneteknél
+    document.querySelectorAll('.chat-figure svg').forEach(function(svgEl) {
+        svgEl.setAttribute('width', '100%');
+        svgEl.removeAttribute('height');
+        svgEl.style.width = '100%';
+        svgEl.style.maxWidth = '100%';
+        svgEl.style.height = 'auto';
+        svgEl.style.display = 'block';
+    });
+
+    function scrollToBottom() {
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    // A buborék „pre-wrap”, tehát minden sortörés látszik benne. Az AI és a
+    // gyerek szövege végén is maradhat üres sor — attól nyúlt le üresen a
+    // buborék. Itt vágjuk le: a sor végi szóközöket, a 2-nél több egymás
+    // utáni sortörést, és az elején-végén az üres helyet.
+    function tisztitBuborekSzoveg(t) {
+        return String(t == null ? '' : t)
+            .replace(/[ \t]+$/gm, '')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // LECKE-SÍN
+    //
+    // MIÉRT: egy végtelenül görgethető chatnek nincs se eleje, se vége.
+    // A gyerek nem tudja, mennyi van hátra, ezért unja. Négy állomás és
+    // egy csúszó avatar ezt oldja meg.
+    //
+    // MI IGAZ ÉS MI BECSLÉS – fontos, hogy tudd:
+    //   • a 3. állomás (Teszt) és a 4. (Kész) VALÓDI szerverjelzés:
+    //     a show_test_offer és a topic_done mezőből jön;
+    //   • az 1.→2. lépés (Tanulás → Gyakorlás) BECSLÉS a váltások
+    //     számából, mert a szerver ma nem méri, hogy a gyerek hol tart a
+    //     leckén belül. Ezért az avatar az állomások KÖZÖTT is csak
+    //     óvatosan kúszik előre, sosem ugrik a következő állomásig.
+    //   Ha pontos akar lenni, azt az app.py-ban kell megmérni – szólj,
+    //   és megcsinálom.
+    // ══════════════════════════════════════════════════════════════════
+    var ALLOMAS_X = [8, 36, 64, 92];   // az állomások helye százalékban
+    var GYAKORLAS_UTAN = 3;            // ennyi váltás után lép Gyakorlásra
+    var leckeAllomas = 1;
+    var leckeValtas = 0;
+    var leckeVege = false;   // a témakör kész – ilyenkor MIND a négy pipa
+
+    function leckeSinFrissit() {
+        var av = document.getElementById('lecke-avatar');
+        if (!av) { return; }                 // szintfelmérőnél nincs sín
+        var bub = document.getElementById('lecke-buborek');
+        var kesz = document.getElementById('lecke-sin-kesz');
+
+        var alap = ALLOMAS_X[leckeAllomas - 1];
+        var kovetkezo = ALLOMAS_X[Math.min(leckeAllomas, ALLOMAS_X.length - 1)];
+
+        // Kúszás az állomások között: legfeljebb a táv 60%-áig megyünk,
+        // hogy soha ne látsszon késznek egy állomás, ami még nincs kész.
+        var kuszas = 0;
+        if (leckeAllomas < ALLOMAS_X.length) {
+            var arany = Math.min(leckeValtas / GYAKORLAS_UTAN, 1) * 0.6;
+            kuszas = (kovetkezo - alap) * arany;
+        }
+        var x = alap + kuszas;
+
+        av.style.left = x + '%';
+        if (bub) { bub.style.left = x + '%'; }
+        if (kesz) { kesz.style.width = x + '%'; }
+
+        document.querySelectorAll('.lecke-allomas').forEach(function (e) {
+            var n = Number(e.getAttribute('data-all') || 0);
+            e.classList.toggle('kesz', leckeVege || n < leckeAllomas);
+        });
+    }
+
+    function leckeAllomasra(n) {
+        if (n <= leckeAllomas) { return; }
+        leckeAllomas = n;
+        leckeValtas = 0;
+        leckeSinFrissit();
+    }
+
+    // Új témakör = új lecke: a sín visszaáll az elejére.
+    function leckeUjrakezd() {
+        leckeAllomas = 1;
+        leckeValtas = 0;
+        leckeVege = false;
+        leckeSinFrissit();
+    }
+
+    /* A szerver válaszából olvassuk ki, hol tart a lecke. */
+    function leckeSinValasz(d) {
+        if (!d) { return; }
+        leckeValtas += 1;
+        if (leckeAllomas === 1 && leckeValtas >= GYAKORLAS_UTAN) {
+            leckeAllomasra(2);
+        }
+        if (d.show_test_offer) { leckeAllomasra(3); }
+        if (d.topic_done) { leckeVege = true; leckeAllomasra(4); }
+        leckeSinFrissit();
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // ÉRME-CSÍK
+    // A kártya NEM jár a leckéért – a boltban veszi meg érméért. Ez a
+    // csík csak azt mutatja, mennyi hiányzik a legolcsóbb tasakhoz.
+    // A 100 a tasak.py legolcsóbb tasakjának ára; ha ott átírod, itt is
+    // írd át.
+    // ══════════════════════════════════════════════════════════════════
+    var TASAK_AR = 100;
+
+    function ermeCsikFrissit(erme) {
+        var sav = document.getElementById('erme-sav-belso');
+        var szov = document.getElementById('erme-szoveg');
+        if (!sav || !szov) { return; }
+        var n = Number(erme);
+        if (!isFinite(n) || n < 0) { n = 0; }
+        var arany = Math.min(100, Math.round(100 * n / TASAK_AR));
+        sav.style.width = arany + '%';
+        if (n >= TASAK_AR) {
+            szov.textContent = L.ermeEleg;
+        } else {
+            szov.textContent = (TASAK_AR - n) + ' ' + L.ermeTasakig;
+        }
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // VÁLASZTÓGOMBOK
+    // Három előre megírt mondat gombra kötve. A gyerek így nem csak
+    // felel, hanem DÖNT is – ettől lesz a chatből játék.
+    // ══════════════════════════════════════════════════════════════════
+    function valasztoGombokKi() {
+        document.querySelectorAll('.chat-valaszto').forEach(function (e) {
+            e.parentNode && e.parentNode.removeChild(e);
+        });
+    }
+
+    /* Kérdez-e a tanár? Ha igen, a gyerek NEM ugorhat tovább.
+       Élesben pont ez ment félre: a tanár feltette, hogy „Mennyi a
+       5600 - 800?", alá odakerült a „Mehetünk tovább" gomb, és a gyerek
+       ezzel megkerülte a válaszolást. Kérdés mellett csak a SEGÍTŐ gomb
+       maradhat – segítséget kérni nem kibújás. */
+    function tanarKerdez(szoveg) {
+        return /\?\s*$|\?[^?]{0,60}$/.test((szoveg || '').trim());
+    }
+
+    function valasztoGombokBe(szoveg) {
+        valasztoGombokKi();                       // csak a LEGUTÓBBI alatt
+        if (chatMode === 'voice') { return; }
+        /* NYITOTT FELADAT MELLETT SEMMILYEN GOMB NINCS. A munkatéren
+           ott a megoldatlan feladat – ilyenkor a gyereknek egy dolga
+           van: megoldani. A „Mehetünk tovább" itt kibújás lenne. */
+        if (munkater && !munkater.hidden && munkaterTest
+                && munkaterTest.querySelector('.feladat:not(.feladat-kesz)')) {
+            return;
+        }
+        var doboz = document.createElement('div');
+        doboz.className = 'chat-valaszto';
+        /* CSAK A SEGÍTSÉG MARAD.
+           A „Nehezebbet kérek" és a „Mehetünk tovább" a tanulás
+           megkerülésére csábított: a gyerek végignyomkodta őket, a tanár
+           újra felajánlotta, és közben nem tanult semmit. Segítséget
+           kérni viszont nem kibújás, ezért a példa gomb marad. */
+        var gombok = [['💡', L.gombPelda]];
+        gombok
+            .forEach(function (p) {
+                var g = document.createElement('button');
+                g.type = 'button';
+                g.className = 'chat-valaszto-gomb';
+                g.textContent = p[0] + ' ' + p[1];
+                g.addEventListener('click', function () {
+                    valasztoGombokKi();
+                    sendMessage(p[1]);            // sima üzenetként megy el
+                });
+                doboz.appendChild(g);
+            });
+        messagesEl.insertBefore(doboz, typing);
+        scrollToBottom();
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // MUNKATÉR
+    //
+    // A feladat eddig a zöld buborékon BELÜL jelent meg. Ettől olvasódott
+    // az egész oldal chatnek: a munka a beszélgetés része volt, nem a
+    // beszélgetés a munka kísérője. Innentől fordítva van – a feladat
+    // saját felületet kap, a tanár szövege mellé kerül.
+    //
+    // Hangos módban is működik: a feladat ugyanúgy megjelenik, az
+    // utasítást pedig a felolvasó mondja ki (munkaterUtasitas).
+    // ══════════════════════════════════════════════════════════════════
+    var munkaSav = document.getElementById('munka-sav');
+    var munkater = document.getElementById('munkater');
+    var munkaterTest = document.getElementById('munkater-test');
+    var munkaterCim = document.getElementById('munkater-cim');
+    var munkaterUtasitas = document.getElementById('munkater-utasitas');
+
+    /* Rövid utasítás feladattípusonként. A tanár később saját szöveget is
+       küldhet az "utasitas" mezőben – az mindig erősebb ennél. */
+    function alapUtasitas(tipus) {
+        if (tipus === 'szamolo') { return L.utasitasSzamolo; }
+        if (tipus === 'parosit') { return L.utasitasParosit; }
+        if (tipus === 'sorrend') { return L.utasitasSorrend; }
+        if (tipus === 'hianyzo') { return L.utasitasHianyzo; }
+        if (tipus === 'valaszt') { return L.utasitasValaszt; }
+        if (tipus === 'szoveg') { return L.utasitasSzoveg; }
+        if (tipus === 'epito') { return L.utasitasEpito; }
+        if (tipus === 'abra') { return L.utasitasAbra; }
+        if (tipus === 'modell') { return L.utasitasModell; }
+        return L.utasitasAltalanos;
+    }
+
+    /* A gyerek VÁLASZOLT – akár beírta, akár kimondta. A feladat ilyenkor
+       lezárul. Élesben ez ment félre: a gyerek kimondta, hogy „hatszáz",
+       a tanár el is fogadta, de a feladat ott maradt a munkatéren
+       megoldatlanul, mintha nem számítana. Mindkét út ugyanannyit ér. */
+    function munkaterLezar() {
+        if (!munkater || munkater.hidden) { return; }
+        var f = munkaterTest.querySelector('.feladat');
+        if (f && !f.classList.contains('feladat-kesz')) {
+            f.classList.add('feladat-kesz');
+            f.querySelectorAll('button, input').forEach(function (e) {
+                e.disabled = true;
+            });
+        }
+        setTimeout(munkaterUres, 400);
+    }
+
+    function munkaterUres() {
+        if (!munkater) { return; }
+        munkater.hidden = true;
+        munkaterTest.innerHTML = '';
+        if (munkaSav) { munkaSav.classList.remove('van-munka'); }
+    }
+
+    /* A feladatot a munkatérbe teszi. A "cim" a témakör neve, hogy a
+       gyerek lássa, MIN dolgozik éppen. */
+    function munkaterBe(feladat) {
+        if (!munkater) { return false; }
+        var elem = feladatElem(feladat);
+        if (!elem) { return false; }
+        munkaterTest.innerHTML = '';
+        munkaterTest.appendChild(elem);
+        munkaterCim.textContent = (feladat && feladat.cim)
+            || currentTopicName || '';
+        munkaterUtasitas.textContent = (feladat && feladat.utasitas)
+            || alapUtasitas(feladat && feladat.tipus);
+        munkater.hidden = false;
+        if (munkaSav) { munkaSav.classList.add('van-munka'); }
+        if (typeof kabalaVillan === 'function') { kabalaVillan('gepies', 2500); }
+        return true;
+    }
+
+    function appendBubble(role, text, figures, feladat) {
+        text = tisztitBuborekSzoveg(text);
+        /* A kabala a tanár válaszára reagál. Késleltetve, mert a
+           setLoading(false) közvetlenül utána alaphelyzetbe állítaná. */
+        if (role === 'assistant' && typeof kabalaValaszra === 'function') {
+            var _kv = text;
+            setTimeout(function () { kabalaValaszra(_kv); }, 90);
+        }
+        var wrap = document.createElement('div');
+        wrap.className = 'chat-bubble chat-bubble-' + role;
+        if (chatMode === 'voice' && role === 'assistant') {
+            wrap.classList.add('voice-assistant-card');
+        }
+        var inner = document.createElement('div');
+        inner.className = 'chat-bubble-inner';
+        inner.textContent = text;
+        wrap.appendChild(inner);
+
+        if (role === 'assistant') {
+            var replayBtn = document.createElement('button');
+            replayBtn.className = 'bubble-replay-btn';
+            replayBtn.innerHTML = '🔊';
+            replayBtn.title = L.replayTitle;
+            replayBtn.setAttribute('data-text', text);
+            replayBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var t = this.getAttribute('data-text');
+                ujraOlvas(t);
+            });
+            var replayWrap = document.createElement('div');
+            replayWrap.className = 'bubble-replay-wrap';
+            replayWrap.appendChild(replayBtn);
+            wrap.appendChild(replayWrap);
+        }
+
+        // Ábrák megjelenítése az asszisztens buborék BELSEJÉBEN
+        // A ZÖLD buborék a .chat-bubble-inner (inner) elem – ide fűzzük a figurát,
+        // NEM a külső .chat-bubble (wrap) sorhoz, különben a buborék MELLÉ kerül.
+        if (role === 'assistant' && figures && figures.length) {
+            figures.forEach(function(svg) {
+                var figDiv = document.createElement('div');
+                figDiv.className = 'chat-figure';
+                figDiv.innerHTML = svg;
+                // Inline méretezés – biztos ami biztos (régi cache-elt CSS ellen is)
+                figDiv.style.maxWidth = "320px";
+                figDiv.style.width = "100%";
+                figDiv.style.margin = "8px auto";
+                figDiv.style.background = "#fff";
+                figDiv.style.borderRadius = "8px";
+                figDiv.style.padding = "8px";
+                var svgEl = figDiv.querySelector("svg");
+                if (svgEl) {
+                    svgEl.setAttribute("width", "100%");
+                    svgEl.removeAttribute("height");
+                    svgEl.style.width = "100%";
+                    svgEl.style.maxWidth = "100%";
+                    svgEl.style.height = "auto";
+                    svgEl.style.display = "block";
+                }
+                inner.appendChild(figDiv);
+            });
+        }
+
+        // GYAKORLÓ FELADAT: a MUNKATÉRBE megy, nem a buborékba. Ha a
+        // munkatér valamiért nem elérhető, marad a régi viselkedés, hogy
+        // a feladat semmiképp ne vesszen el.
+        if (role === 'assistant' && feladat) {
+            if (!munkaterBe(feladat)) {
+                var fel = feladatElem(feladat);
+                if (fel) { inner.appendChild(fel); }
+            }
+        }
+
+        messagesEl.insertBefore(wrap, typing);
+
+        // A választógombok MINDIG csak a legutolsó tanári üzenet alatt
+        // vannak. Ha a tanár feladatot küldött, azt oldja meg – ott a
+        // gombok csak elvinnék a figyelmet.
+        if (role === 'user') {
+            valasztoGombokKi();
+            munkaterLezar();
+        } else if (role === 'assistant' && !feladat) {
+            valasztoGombokBe(text);
+        }
+
+        scrollToBottom();
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // GYAKORLÓ FELADATOK
+    // Nem külön képernyő: a beszélgetésbe épül. Amit a gyerek beír vagy
+    // kiválaszt, az sima üzenetként megy vissza a tanárnak, tehát a
+    // haladás és a pontozás pont ugyanúgy működik, mint eddig.
+    // ══════════════════════════════════════════════════════════════════
+    function feladatElem(f) {
+        if (!f || !f.tipus) { return null; }
+        if (f.tipus === 'szamolo') { return szamoloTabla(f); }
+        if (f.tipus === 'szam') { return szamMezo(f); }
+        if (f.tipus === 'valaszt') { return valasztGombok(f); }
+        if (f.tipus === 'parosit') { return parositas(f); }
+        if (f.tipus === 'sorrend') { return sorbarendezes(f); }
+        if (f.tipus === 'hianyzo') { return hianyzoSzo(f); }
+        if (f.tipus === 'szoveg') { return szovegJelolo(f); }
+        if (f.tipus === 'epito') { return epitoKartyak(f); }
+        if (f.tipus === 'abra') { return abraCimkezo(f); }
+        if (f.tipus === 'modell') { return modellCsuszka(f); }
+        return null;
+    }
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // SZÖVEG-FELÜLET
+    //
+    // A gyerek nem gépel, hanem BELEJELÖL a szövegbe: rákattint a szóra.
+    // Ez oldja meg a magyar nyelvtant (húzd alá az állítmányt), az
+    // irodalmat (hol fordul a történet) és az idegen nyelvet (melyik szó
+    // a hibás) – három tantárgy egyetlen felülettel.
+    //
+    // A jelölt szavak sima üzenetként mennek vissza, ezért a haladás, a
+    // pontozás és a témakör-lezárás pontosan úgy működik, mint eddig.
+    // ══════════════════════════════════════════════════════════════════
+    function szovegJelolo(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-szoveg';
+
+        if (f.kerdes) {
+            var k = document.createElement('p');
+            k.className = 'fsz-kerdes';
+            k.textContent = f.kerdes;
+            doboz.appendChild(k);
+        }
+
+        var mondat = document.createElement('div');
+        mondat.className = 'fszoveg-mondat';
+
+        // Szavakra bontás ÚGY, hogy az írásjel ne ragadjon a szóhoz: a
+        // gyerek a "kertben" szót jelölje meg, ne a "kertben."-t.
+        var darabok = String(f.szoveg || '').split(/(\s+)/);
+        var jeloltek = [];
+
+        darabok.forEach(function (d) {
+            if (/^\s+$/.test(d)) {
+                mondat.appendChild(document.createTextNode(d));
+                return;
+            }
+            if (!d) { return; }
+            var elozo = d.match(/^[^\wáéíóöőúüűÁÉÍÓÖŐÚÜŰñÑ]+/);
+            var utana = d.match(/[^\wáéíóöőúüűÁÉÍÓÖŐÚÜŰñÑ]+$/);
+            var mag = d.slice(elozo ? elozo[0].length : 0,
+                              d.length - (utana ? utana[0].length : 0));
+            if (elozo) { mondat.appendChild(document.createTextNode(elozo[0])); }
+            if (mag) {
+                var sz = document.createElement('button');
+                sz.type = 'button';
+                sz.className = 'fszoveg-szo';
+                sz.textContent = mag;
+                sz.addEventListener('click', function () {
+                    if (doboz.classList.contains('feladat-kesz')) { return; }
+                    if (!f.tobb) {
+                        // Egy szó: az előző jelölés lekerül.
+                        mondat.querySelectorAll('.fszoveg-szo.jelolt')
+                            .forEach(function (e) { e.classList.remove('jelolt'); });
+                        jeloltek = [];
+                    }
+                    var most = sz.classList.toggle('jelolt');
+                    var hol = jeloltek.indexOf(mag);
+                    if (most && hol < 0) { jeloltek.push(mag); }
+                    if (!most && hol >= 0) { jeloltek.splice(hol, 1); }
+                    kesz.disabled = jeloltek.length === 0;
+                });
+                mondat.appendChild(sz);
+            }
+            if (utana) { mondat.appendChild(document.createTextNode(utana[0])); }
+        });
+        doboz.appendChild(mondat);
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.disabled = true;
+        kesz.addEventListener('click', function () {
+            if (!jeloltek.length) { return; }
+            feladatKuld(doboz, jeloltek.join(', '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
+    }
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // ÉPÍTŐ-FELÜLET
+    //
+    // A gyerek kártyákból rak össze egy mondatot. Nincs húzogatás: a
+    // kártyára koppint, és felkerül a sorba; a sorban lévőre koppint, és
+    // visszakerül a készletbe. Ez telefonon is működik, és egy hatéves is
+    // megérti egy próbálkozásból.
+    // ══════════════════════════════════════════════════════════════════
+    function epitoKartyak(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-epito';
+
+        if (f.kerdes) {
+            var k = document.createElement('p');
+            k.className = 'fsz-kerdes';
+            k.textContent = f.kerdes;
+            doboz.appendChild(k);
+        }
+
+        var sor = document.createElement('div');
+        sor.className = 'fepito-sor';
+        sor.setAttribute('data-ures', '1');
+        doboz.appendChild(sor);
+
+        var keszlet = document.createElement('div');
+        keszlet.className = 'fepito-keszlet';
+        doboz.appendChild(keszlet);
+
+        function frissit() {
+            var van = sor.querySelectorAll('.fepito-kartya').length > 0;
+            sor.setAttribute('data-ures', van ? '0' : '1');
+            kesz.disabled = !van;
+        }
+
+        function kartya(szo, hova) {
+            var g = document.createElement('button');
+            g.type = 'button';
+            g.className = 'fepito-kartya';
+            g.textContent = szo;
+            g.addEventListener('click', function () {
+                if (doboz.classList.contains('feladat-kesz')) { return; }
+                // A sorból vissza a készletbe, a készletből a sor végére.
+                (g.parentNode === sor ? keszlet : sor).appendChild(g);
+                frissit();
+            });
+            hova.appendChild(g);
+            return g;
+        }
+
+        keverd(f.elemek || []).forEach(function (szo) { kartya(szo, keszlet); });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.disabled = true;
+        kesz.addEventListener('click', function () {
+            var szavak = [];
+            sor.querySelectorAll('.fepito-kartya').forEach(function (e) {
+                szavak.push(e.textContent);
+            });
+            if (!szavak.length) { return; }
+            feladatKuld(doboz, szavak.join(' '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
+    }
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // ÁBRA-FELÜLET
+    //
+    // A rajzon SZÁMOK vannak, alatta a nevek kártyaként. A gyerek a
+    // kártyára koppint, és az beugrik a soron következő üres helyre; a
+    // betett kártyára koppintva visszakerül. Ugyanaz a gesztus, mint az
+    // építő-felületen – egyszer kell megtanulni, mindenhol működik.
+    //
+    // Környezetismeret, biológia, földrajz, fizika: minden, aminek részei
+    // vannak.
+    // ══════════════════════════════════════════════════════════════════
+    function abraCimkezo(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-abra';
+
+        if (f.kerdes) {
+            var k = document.createElement('p');
+            k.className = 'fsz-kerdes';
+            k.textContent = f.kerdes;
+            doboz.appendChild(k);
+        }
+
+        var rajz = document.createElement('div');
+        rajz.className = 'fabra-rajz';
+        rajz.innerHTML = f.svg || '';
+        var svgEl = rajz.querySelector('svg');
+        if (svgEl) {
+            svgEl.setAttribute('width', '100%');
+            svgEl.removeAttribute('height');
+            svgEl.style.width = '100%';
+            svgEl.style.height = 'auto';
+            svgEl.style.display = 'block';
+        }
+        doboz.appendChild(rajz);
+
+        var sorok = document.createElement('div');
+        sorok.className = 'fabra-sorok';
+        doboz.appendChild(sorok);
+
+        var helyek = [];
+        (f.cimkek || []).forEach(function (c) {
+            var sor = document.createElement('div');
+            sor.className = 'fabra-sor';
+            var jel = document.createElement('span');
+            jel.className = 'fabra-jel';
+            jel.textContent = c.jel;
+            sor.appendChild(jel);
+            var hely = document.createElement('div');
+            hely.className = 'fabra-hely';
+            hely.setAttribute('data-jel', c.jel);
+            sor.appendChild(hely);
+            sorok.appendChild(sor);
+            helyek.push(hely);
+        });
+
+        var keszlet = document.createElement('div');
+        keszlet.className = 'fabra-keszlet';
+        doboz.appendChild(keszlet);
+
+        function frissit() {
+            var kesz_e = helyek.every(function (h) {
+                return h.querySelector('.fabra-kartya');
+            });
+            kesz.disabled = !kesz_e;
+        }
+
+        function elsoUres() {
+            for (var i = 0; i < helyek.length; i++) {
+                if (!helyek[i].querySelector('.fabra-kartya')) { return helyek[i]; }
+            }
+            return null;
+        }
+
+        keverd((f.cimkek || []).map(function (c) { return c.nev; }))
+            .forEach(function (nev) {
+                var g = document.createElement('button');
+                g.type = 'button';
+                g.className = 'fabra-kartya';
+                g.textContent = nev;
+                g.addEventListener('click', function () {
+                    if (doboz.classList.contains('feladat-kesz')) { return; }
+                    if (g.parentNode && g.parentNode.classList.contains('fabra-hely')) {
+                        keszlet.appendChild(g);        // vissza a készletbe
+                    } else {
+                        var hova = elsoUres();
+                        if (hova) { hova.appendChild(g); }
+                    }
+                    frissit();
+                });
+                keszlet.appendChild(g);
+            });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.disabled = true;
+        kesz.addEventListener('click', function () {
+            var reszek = [];
+            helyek.forEach(function (h) {
+                var kartya = h.querySelector('.fabra-kartya');
+                if (kartya) {
+                    reszek.push(h.getAttribute('data-jel') + ' = ' + kartya.textContent);
+                }
+            });
+            if (!reszek.length) { return; }
+            feladatKuld(doboz, reszek.join(', '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
+    }
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // MODELL-FELÜLET
+    //
+    // A gyerek húz egy csúszkát, és AZONNAL LÁTJA, mi történik: nő az
+    // oszlop, változik a szám. Ez az egyetlen felület, ami olyat mutat
+    // meg, amit szöveggel nem lehet elmondani — hogy két mennyiség
+    // EGYÜTT mozog.
+    //
+    // A szorzót és a célt a szerver ellenőrizte: a feladat biztosan
+    // megoldható egész csúszkaállásból.
+    // ══════════════════════════════════════════════════════════════════
+    function modellCsuszka(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-modell';
+
+        if (f.kerdes) {
+            var k = document.createElement('p');
+            k.className = 'fsz-kerdes';
+            k.textContent = f.kerdes;
+            doboz.appendChild(k);
+        }
+
+        var egyseg = f.egyseg ? (' ' + f.egyseg) : '';
+
+        // A CÉL végig látszik, hogy legyen mihez igazodni.
+        var cel = document.createElement('div');
+        cel.className = 'fmod-cel';
+        cel.textContent = L.modellCel + ' ' + f.cel + egyseg;
+        doboz.appendChild(cel);
+
+        // Az oszlop: ez teszi láthatóvá az összefüggést.
+        var savKeret = document.createElement('div');
+        savKeret.className = 'fmod-sav';
+        var sav = document.createElement('i');
+        savKeret.appendChild(sav);
+        var celVonal = document.createElement('b');
+        celVonal.className = 'fmod-celvonal';
+        savKeret.appendChild(celVonal);
+        doboz.appendChild(savKeret);
+
+        var kijelzo = document.createElement('div');
+        kijelzo.className = 'fmod-kijelzo';
+        doboz.appendChild(kijelzo);
+
+        var csuszka = document.createElement('input');
+        csuszka.type = 'range';
+        csuszka.className = 'fmod-csuszka';
+        csuszka.min = String(f.min);
+        csuszka.max = String(f.max);
+        csuszka.step = '1';
+        csuszka.value = String(f.min);
+        doboz.appendChild(csuszka);
+
+        // A sáv skálája: a legnagyobb elérhető érték és a cél közül a
+        // nagyobbik – így a célvonal mindig a sávon BELÜL van.
+        var teto = Math.max(Math.abs(f.max * f.szorzo),
+                            Math.abs(f.min * f.szorzo), Math.abs(f.cel)) || 1;
+        celVonal.style.left = (100 * Math.abs(f.cel) / teto) + '%';
+
+        function frissit() {
+            var x = Number(csuszka.value);
+            var ered = x * f.szorzo;
+            kijelzo.textContent = x + ' × ' + f.szorzo + ' = ' + ered + egyseg;
+            sav.style.width = Math.min(100, 100 * Math.abs(ered) / teto) + '%';
+            var talalt = (ered === f.cel);
+            doboz.classList.toggle('fmod-talalt', talalt);
+            kesz.disabled = false;      // rossz állással is beküldhet
+        }
+        csuszka.addEventListener('input', frissit);
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var x = Number(csuszka.value);
+            feladatKuld(doboz, x + ' × ' + f.szorzo + ' = ' + (x * f.szorzo) + egyseg);
+        });
+        doboz.appendChild(kesz);
+
+        frissit();
+        return doboz;
+    }
+
+    /* HANGOS MÓDBAN a sendMessage() azonnal visszafordul (nincs beviteli
+       mező), ezért a hangos küldőt külön el kell érni. A hangos blokk
+       töltögeti fel ezt a változót. */
+    var hangosKuldo = null;
+
+    function feladatKuld(doboz, szoveg) {
+        if (!szoveg) { return; }
+
+        // ELŐSZÖR KÜLDÜNK, csak utána tüntetjük el a feladatot. Élesben ez
+        // ment félre: hangos módban a sendMessage() némán visszafordult, a
+        // feladat viszont már eltűnt a munkatérről — a gyereknek úgy tűnt,
+        // hogy a program letörölte a feladatát, és csak beszélni hagyja.
+        var elment = false;
+        if (chatMode === 'voice') {
+            if (typeof hangosKuldo === 'function') {
+                hangosKuldo(szoveg);
+                elment = true;
+            }
+        } else {
+            sendMessage(szoveg);
+            elment = true;
+        }
+
+        if (!elment) {
+            // Nem tudtuk elküldeni: a feladat MARADJON a képernyőn, és
+            // maradjon megoldhatónak. Jobb újrapróbálni, mint elveszíteni.
+            return;
+        }
+
+        doboz.classList.add('feladat-kesz');
+        doboz.querySelectorAll('button, input').forEach(function (e) { e.disabled = true; });
+        setTimeout(munkaterUres, 400);
+    }
+
+
+    // Oszlopos számolás: a két szám egymás alatt, alul üres kockák.
+    function szamoloTabla(f) {
+        var szelesseg = Math.max(String(f.a).length, String(f.b).length,
+                                 String(f.eredmeny).length);
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-szamolo';
+
+        function sor(szam, jel, irhato) {
+            var s = document.createElement('div');
+            s.className = 'fsz-sor';
+            var j = document.createElement('span');
+            j.className = 'fsz-jel';
+            j.textContent = jel || '';
+            s.appendChild(j);
+            var sz = String(szam).padStart(szelesseg, ' ');
+            for (var i = 0; i < sz.length; i++) {
+                if (sz[i] === ' ') {
+                    // ÜRES HELYIÉRTÉK a kivonandó (rövidebb) sorban.
+                    // 5600 − 800 esetén a 800 elé egy hely kimarad, és a
+                    // kölcsönkérésnél épp ide kell jegyzetelni – ezért ez
+                    // nem néma kocka, hanem BEÍRHATÓ mező, mint a füzetben.
+                    // Nem küldjük el és nem ellenőrizzük: a gyerek jegyzete.
+                    if (irhato) {
+                        var ui = document.createElement('input');
+                        ui.type = 'text';
+                        ui.inputMode = 'numeric';
+                        ui.maxLength = 1;
+                        ui.className = 'fsz-jegy fsz-ures fsz-ures-mezo';
+                        ui.title = L.feladatMaradek;
+                        ui.setAttribute('aria-label', L.feladatMaradek);
+                        ui.addEventListener('input', function () {
+                            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                        });
+                        s.appendChild(ui);
+                        continue;
+                    }
+                    var u = document.createElement('span');
+                    u.className = 'fsz-jegy fsz-ures';
+                    s.appendChild(u);
+                    continue;
+                }
+                if (irhato) {
+                    // Átírható számjegy: a gyerek a kölcsönkérés után
+                    // megnöveli (2 → 3). Nem ellenőrizzük és nem küldjük el,
+                    // ez a gyerek levezetése.
+                    var ji = document.createElement('input');
+                    ji.type = 'text';
+                    ji.inputMode = 'numeric';
+                    ji.maxLength = 1;
+                    ji.className = 'fsz-jegy fsz-jegy-mezo';
+                    ji.value = sz[i];
+                    ji.setAttribute('aria-label', L.feladatMaradek);
+                    ji.addEventListener('input', function () {
+                        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                    });
+                    ji.addEventListener('focus', function () { this.select(); });
+                    s.appendChild(ji);
+                    continue;
+                }
+                var c = document.createElement('span');
+                c.className = 'fsz-jegy';
+                c.textContent = sz[i];
+                s.appendChild(c);
+            }
+            return s;
+        }
+
+        // JEGYZETSOR (átvitel / kölcsönkérés). A gyerek füzetében is van:
+        // nem kötelező kitölteni, nem küldjük el, és nem ellenőrizzük.
+        function jegyzetSor() {
+            var sorEl = document.createElement('div');
+            sorEl.className = 'fsz-sor fsz-maradek';
+            var ures = document.createElement('span');
+            ures.className = 'fsz-jel';
+            sorEl.appendChild(ures);
+            for (var mi = 0; mi < szelesseg; mi++) {
+                var mm = document.createElement('input');
+                mm.type = 'text';
+                mm.inputMode = 'numeric';
+                mm.maxLength = 1;
+                mm.className = 'fsz-maradek-mezo';
+                mm.title = L.feladatMaradek;
+                mm.setAttribute('aria-label', L.feladatMaradek);
+                mm.addEventListener('input', function () {
+                    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                });
+                sorEl.appendChild(mm);
+            }
+            return sorEl;
+        }
+
+        // A jegyzetsor MINDIG FELÜL van — oda írja a gyerek a kölcsönkért
+        // egyest, ahogy a füzetben is.
+        doboz.appendChild(jegyzetSor());
+        doboz.appendChild(sor(f.a, ''));
+        // AZ ALSÓ SZÁM SZÁMJEGYEI ÁTÍRHATÓK. 5300 − 260 esetén a tízeseknél
+        // 0-ból nem lehet 6-ot kivonni: felülre kerül az egyes, alulra a 4,
+        // majd a következő oszlopban az egyest az ALSÓ szám 2-eséhez kell
+        // adni — vagyis a 2-t 3-ra kell ÁTÍRNI. Enélkül ezt a lépést csak
+        // fejben lehetett megcsinálni.
+        doboz.appendChild(sor(f.b, f.jel, true));
+
+        var vonal = document.createElement('div');
+        vonal.className = 'fsz-vonal';
+        doboz.appendChild(vonal);
+
+        var valaszSor = document.createElement('div');
+        valaszSor.className = 'fsz-sor fsz-valasz';
+        var ures = document.createElement('span');
+        ures.className = 'fsz-jel';
+        valaszSor.appendChild(ures);
+        var mezok = [];
+        for (var i = 0; i < szelesseg; i++) {
+            var be = document.createElement('input');
+            be.type = 'text';
+            be.inputMode = 'numeric';
+            be.maxLength = 1;
+            be.className = 'fsz-mezo';
+            be.setAttribute('aria-label', (szelesseg - i) + '.');
+            valaszSor.appendChild(be);
+            mezok.push(be);
+        }
+        doboz.appendChild(valaszSor);
+
+        // A gyerek jobbról balra tölti ki, ahogy a füzetben számol.
+        mezok.forEach(function (be, idx) {
+            be.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                if (this.value && idx < mezok.length - 1) { mezok[idx + 1].focus(); }
+            });
+            be.addEventListener('keydown', function (e) {
+                if (e.key === 'Backspace' && !this.value && idx > 0) { mezok[idx - 1].focus(); }
+                if (e.key === 'ArrowLeft' && idx > 0) { mezok[idx - 1].focus(); }
+                if (e.key === 'ArrowRight' && idx < mezok.length - 1) { mezok[idx + 1].focus(); }
+                if (e.key === 'Enter') { e.preventDefault(); kesz.click(); }
+            });
+        });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var ertek = mezok.map(function (m) { return m.value || ''; }).join('');
+            ertek = ertek.replace(/^0+(?=\d)/, '');
+            if (!ertek) { mezok[mezok.length - 1].focus(); return; }
+            feladatKuld(doboz, ertek);
+        });
+        doboz.appendChild(kesz);
+
+        setTimeout(function () { mezok[mezok.length - 1].focus(); }, 60);
+        return doboz;
+    }
+
+    // EGY SZÁM BEÍRÁSA. Fejben számoláshoz ez való: a gyereknek tényleg ki
+    // kell számolnia, nem tud tippelni a felkínált lehetőségek közül.
+    function szamMezo(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-szam';
+
+        if (f.muvelet) {
+            var m = document.createElement('div');
+            m.className = 'fszam-muvelet';
+            m.textContent = f.muvelet + ' =';
+            doboz.appendChild(m);
+        }
+
+        var be = document.createElement('input');
+        be.type = 'text';
+        be.inputMode = 'numeric';
+        be.className = 'fszam-mezo';
+        be.setAttribute('aria-label', f.muvelet || '');
+        be.addEventListener('input', function () {
+            this.value = this.value.replace(/[^0-9-]/g, '').slice(0, 12);
+        });
+        be.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); kesz.click(); }
+        });
+        doboz.appendChild(be);
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var ertek = (be.value || '').trim();
+            if (!ertek) { be.focus(); return; }
+            feladatKuld(doboz, ertek);
+        });
+        doboz.appendChild(kesz);
+
+        setTimeout(function () { be.focus(); }, 60);
+        return doboz;
+    }
+
+    // Válaszgombok: minden tantárgynál működik, nem csak matekban.
+    function valasztGombok(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-valaszt';
+        f.opciok.forEach(function (opcio) {
+            var g = document.createElement('button');
+            g.type = 'button';
+            g.className = 'feladat-opcio';
+            g.textContent = opcio;
+            g.addEventListener('click', function () { feladatKuld(doboz, opcio); });
+            doboz.appendChild(g);
+        });
+        return doboz;
+    }
+
+    // Az oldal betöltésekor a MENTETT feladatot is kirakjuk (újratöltés után
+    // ne tűnjön el, amire a tanár épp választ vár).
+    (function mentettFeladatok() {
+        var helyek = document.querySelectorAll('.feladat-hely');
+        var utolso = helyek.length ? helyek[helyek.length - 1] : null;
+        helyek.forEach(function (hely) {
+            var adat = null;
+            try { adat = JSON.parse(hely.getAttribute('data-feladat') || 'null'); }
+            catch (e) { adat = null; }
+            // CSAK a legutolsó feladat él tovább – arra vár most a tanár.
+            // A régebbiek helyét kivesszük, hogy ne lógjanak üresen a
+            // beszélgetésben. Az élő feladat a MUNKATÉRBE kerül.
+            if (hely === utolso && adat && munkaterBe(adat)) {
+                hely.remove();
+                return;
+            }
+            var elem = feladatElem(adat);
+            if (elem && hely === utolso) { hely.replaceWith(elem); }
+            else { hely.remove(); }
+        });
+    })();
+
+    // Véletlen sorrend – hogy ne a megadott sorrend legyen a megoldás.
+    function keverd(t) {
+        var m = t.slice();
+        for (var i = m.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var cs = m[i]; m[i] = m[j]; m[j] = cs;
+        }
+        return m;
+    }
+
+    // PÁROSÍTÁS. Bal oldalon a szavak, jobb oldalon a jelentések keverve.
+    // A gyerek rákattint egy balra, majd egy jobbra – összekapcsolódnak,
+    // és azonos színt kapnak. Nyelvtől történelemig minden tárgyhoz jó.
+    function parositas(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-parosit';
+        var racs = document.createElement('div');
+        racs.className = 'fpar-racs';
+        doboz.appendChild(racs);
+
+        var balOszlop = document.createElement('div');
+        var jobbOszlop = document.createElement('div');
+        balOszlop.className = 'fpar-oszlop';
+        jobbOszlop.className = 'fpar-oszlop';
+        racs.appendChild(balOszlop);
+        racs.appendChild(jobbOszlop);
+
+        var SZINEK = ['#2f8fd8', '#ef5f5f', '#17b8a6', '#7b5bd6', '#f5a623', '#e0609b'];
+        var kivalasztottBal = null;
+        var parok = {};          // bal szöveg -> jobb szöveg
+        var kovSzin = 0;
+
+        function gomb(szoveg, oldal) {
+            var g = document.createElement('button');
+            g.type = 'button';
+            g.className = 'fpar-elem';
+            g.textContent = szoveg;
+            g.dataset.oldal = oldal;
+            g.addEventListener('click', function () {
+                if (doboz.classList.contains('feladat-kesz')) { return; }
+                if (oldal === 'bal') {
+                    if (kivalasztottBal) { kivalasztottBal.classList.remove('fpar-aktiv'); }
+                    kivalasztottBal = (kivalasztottBal === g) ? null : g;
+                    if (kivalasztottBal) { g.classList.add('fpar-aktiv'); }
+                } else if (kivalasztottBal) {
+                    var szin = SZINEK[kovSzin % SZINEK.length];
+                    kovSzin++;
+                    kivalasztottBal.classList.remove('fpar-aktiv');
+                    kivalasztottBal.classList.add('fpar-kesz');
+                    g.classList.add('fpar-kesz');
+                    kivalasztottBal.style.borderColor = szin;
+                    g.style.borderColor = szin;
+                    kivalasztottBal.style.color = szin;
+                    g.style.color = szin;
+                    parok[kivalasztottBal.textContent] = g.textContent;
+                    kivalasztottBal = null;
+                }
+            });
+            return g;
+        }
+
+        f.parok.forEach(function (p) { balOszlop.appendChild(gomb(p[0], 'bal')); });
+        keverd(f.parok).forEach(function (p) { jobbOszlop.appendChild(gomb(p[1], 'jobb')); });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var lista = Object.keys(parok).map(function (b) { return b + ' – ' + parok[b]; });
+            if (!lista.length) { return; }
+            feladatKuld(doboz, lista.join(', '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
+    }
+
+    // SORBARENDEZÉS. A gyerek a helyes sorrendben kattint rájuk; minden
+    // kattintás sorszámot ad. Események időrendje, mese lépései, egy
+    // kísérlet menete, mondatrészek – sok tárgynál ez a természetes feladat.
+    function sorbarendezes(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-sorrend';
+        var sorrend = [];
+
+        var lista = document.createElement('div');
+        lista.className = 'fsor-lista';
+        doboz.appendChild(lista);
+
+        keverd(f.elemek).forEach(function (szoveg) {
+            var g = document.createElement('button');
+            g.type = 'button';
+            g.className = 'fsor-elem';
+            var jel = document.createElement('span');
+            jel.className = 'fsor-szam';
+            var cim = document.createElement('span');
+            cim.textContent = szoveg;
+            g.appendChild(jel);
+            g.appendChild(cim);
+            g.addEventListener('click', function () {
+                if (doboz.classList.contains('feladat-kesz')) { return; }
+                var hol = sorrend.indexOf(szoveg);
+                if (hol >= 0) { sorrend.splice(hol, 1); } else { sorrend.push(szoveg); }
+                lista.querySelectorAll('.fsor-elem').forEach(function (e) {
+                    var sz = e.lastChild.textContent;
+                    var i = sorrend.indexOf(sz);
+                    e.firstChild.textContent = i >= 0 ? (i + 1) : '';
+                    e.classList.toggle('fsor-valasztott', i >= 0);
+                });
+            });
+            lista.appendChild(g);
+        });
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            if (sorrend.length < f.elemek.length) { return; }
+            feladatKuld(doboz, sorrend.map(function (x, i) {
+                return (i + 1) + '. ' + x;
+            }).join(' '));
+        });
+        doboz.appendChild(kesz);
+        return doboz;
+    }
+
+    // HIÁNYZÓ SZÓ. A mondatban ___ jelöli a hiányt. Ha vannak felkínált
+    // szavak, azokra kattint; ha nincsenek, beírja.
+    function hianyzoSzo(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-hianyzo';
+
+        var mondat = document.createElement('div');
+        mondat.className = 'fhi-mondat';
+        var reszek = f.mondat.split('___');
+        var lyuk = document.createElement('span');
+        lyuk.className = 'fhi-lyuk';
+        var beirt = '';
+
+        mondat.appendChild(document.createTextNode(reszek[0] || ''));
+        mondat.appendChild(lyuk);
+        mondat.appendChild(document.createTextNode(reszek.slice(1).join('___') || ''));
+        doboz.appendChild(mondat);
+
+        var mezo = null;
+        if (f.szavak && f.szavak.length) {
+            var sor = document.createElement('div');
+            sor.className = 'fhi-szavak';
+            keverd(f.szavak).forEach(function (sz) {
+                var g = document.createElement('button');
+                g.type = 'button';
+                g.className = 'feladat-opcio';
+                g.textContent = sz;
+                g.addEventListener('click', function () {
+                    if (doboz.classList.contains('feladat-kesz')) { return; }
+                    beirt = sz;
+                    lyuk.textContent = sz;
+                    sor.querySelectorAll('.feladat-opcio').forEach(function (e) {
+                        e.classList.toggle('fhi-valasztott', e === g);
+                    });
+                });
+                sor.appendChild(g);
+            });
+            doboz.appendChild(sor);
+        } else {
+            mezo = document.createElement('input');
+            mezo.type = 'text';
+            mezo.className = 'fhi-mezo';
+            mezo.addEventListener('input', function () {
+                beirt = this.value.trim();
+                lyuk.textContent = beirt;
+            });
+            mezo.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); kesz.click(); }
+            });
+            doboz.appendChild(mezo);
+        }
+
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            if (!beirt) { if (mezo) { mezo.focus(); } return; }
+            feladatKuld(doboz, f.mondat.replace('___', beirt));
+        });
+        doboz.appendChild(kesz);
+        if (mezo) { setTimeout(function () { mezo.focus(); }, 60); }
+        return doboz;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // TELEFON: A BILLENTYŰZET NE TAKARJA EL, AMIT ÍRUNK
+    // Androidon a felugró billentyűzet ráült a beírómezőre, és a gyerek
+    // nem látta, mit gépel. Amikor bármelyik mező fókuszt kap – a chat
+    // beírója vagy egy feladat kockája –, begörgetjük a látható részbe.
+    // ══════════════════════════════════════════════════════════════════
+    (function billentyuzetKezeles() {
+        function lathatova() {
+            var a = document.activeElement;
+            if (!a || !a.matches || !a.matches('input, textarea')) { return; }
+            try { a.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+            catch (e) { try { a.scrollIntoView(false); } catch (e2) {} }
+        }
+        document.addEventListener('focusin', function (e) {
+            if (e.target && e.target.matches && e.target.matches('input, textarea')) {
+                setTimeout(lathatova, 320);
+            }
+        });
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', function () {
+                setTimeout(lathatova, 60);
+            });
+        }
+    })();
+
+    function playTts(text) {
+        if (hangKeretElfogyott) return Promise.reject(new Error('keret'));
+        return fetch(speakUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text, child_id: childId })
+        })
+            .then(function (r) {
+                if (r.status === 429) { hangKeretVege(); throw new Error('keret'); }
+                if (!r.ok) throw new Error('tts');
+                return r.blob();
+            })
+            .then(function (blob) {
+                if (currentAudio) {
+                    currentAudio.pause();
+                    URL.revokeObjectURL(currentAudio.src);
+                }
+                var url = URL.createObjectURL(blob);
+                currentAudio = new Audio(url);
+                setVoiceUi('speaking');
+                currentAudio.onended = function () {
+                    URL.revokeObjectURL(url);
+                    currentAudio = null;
+                    setVoiceUi('idle');
+                };
+                currentAudio.onerror = function () {
+                    setVoiceUi('idle');
+                };
+                return currentAudio.play();
+            });
+    }
+
+    var thinkingMessages = L.think;
+    var thinkingTimer = null;
+    var thinkingIndex = 0;
+
+    function startThinkingMessages() {
+        var inner = typing ? typing.querySelector('.chat-bubble-inner') : null;
+        if (!inner) return;
+        thinkingIndex = 0;
+        inner.classList.add('chat-thinking-text');
+        inner.innerHTML = '<span class="thinking-label">' + thinkingMessages[0] + '</span>';
+        thinkingTimer = setInterval(function () {
+            thinkingIndex = (thinkingIndex + 1) % thinkingMessages.length;
+            var label = inner.querySelector('.thinking-label');
+            if (label) label.textContent = thinkingMessages[thinkingIndex];
+        }, 2000);
+    }
+
+    function stopThinkingMessages() {
+        if (thinkingTimer) {
+            clearInterval(thinkingTimer);
+            thinkingTimer = null;
+        }
+        var inner = typing ? typing.querySelector('.chat-bubble-inner') : null;
+        if (inner) {
+            inner.classList.remove('chat-thinking-text');
+            inner.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+        }
+    }
+
+
+    // ══════════════════════════════════════════════════════════════════
+    // MOZGÓ KABALA (Rive)
+    //
+    // A figura ASZERINT vált arcot, hogy mi történik éppen:
+    //   gondolkodik  – amíg a tanár válaszára várunk
+    //   nézelődik    – ha a válasz sokáig tart (8 mp fölött)
+    //   örül         – sikeres teszt, befejezett lecke
+    //   alap         – egyébként
+    //
+    // FONTOS: ha a Rive futtató bármiért nem tölt be (nincs net, régi
+    // böngésző, letiltott CDN), akkor NEM történik semmi rossz: marad a
+    // régi állókép, és a tanulás zavartalanul megy tovább. A figura dísz,
+    // nem lehet tőle függeni.
+    // ══════════════════════════════════════════════════════════════════
+    var KABALA_FAJL = {{ url_for('static', filename='o11y.riv')|tojson }};
+
+    /* A .riv fájlban ÖT rajztábla van. Amit korábban használtunk
+       (O11Y-Homepage), az egy 1920×1080-as fekvő banner: a robot azon
+       csak egy apró részlet, ezért látszott pirinyónak. Az O11Y-Expression
+       táblán van a LEGTÖBB arc (tizenegy), ezért arra váltottunk. A rajta
+       lévő bézs hátteret a static/o11y.riv-ben átlátszóra állítottuk, a
+       „Click me!" feliratot és a „Hi!" buborékot pedig a vászon kivágása
+       takarja el.
+       A hangulatokat NEM tábla-, hanem ÁLLAPOTGÉP-váltás adja. */
+    var KABALA_TABLA = 'O11Y-Expression';
+    var KABALA_ALLAPOT = {
+        alap:        'O11Y-Wink',        /* nyugodt, pislog            */
+        koszon:      'O11Y-Hello',       /* óra elején integet         */
+        gondolkodik: 'O11Y-Thinking',    /* amíg a tanárra várunk      */
+        nezelodik:   'O11Y-Sleepy',      /* ha sokáig tart: elálmosodik*/
+        orul:        'O1Y-Excited',      /* jó válasz                  */
+        szomoru:     'O11Y-Sad',         /* rossz válasz               */
+        bosszus:     'O11Y-Upset',       /* harmadik rossz válasz      */
+        kivancsi:    'O11Y-Suspicious',  /* figyeli, mit írsz           */
+        cuki:        'O11Y-Cute',        /* érme, tasak, kis öröm      */
+        gepies:      'O11Y-AI',          /* feladat érkezik a munkatérre*/
+        kesz:        'O1Y-Happy'
+    };
+
+    /* Minden hangulat EGY-EGY állapotgép UGYANAZON a táblán. Ezért
+       egyszerre CSAK EGY futhat: ha többet indítunk el, mind ugyanarra
+       a rajztáblára ír, és a leállított is otthagyja az utolsó
+       beállítását. Pont ez ment félre: válasz után csillag villant,
+       majd csukott szem maradt, akármit felelt a gyerek.
+       Megoldás: a fájlt EGYSZER letöltjük a memóriába, és onnan
+       váltunk – hálózat nélkül, azonnal, mindig egyetlen géppel. */
+    var kabalaPuffer = null;
+
+    var kabalaVaszon = document.getElementById('kabala-rive');
+    var kabalaPeldany = null;
+    var kabalaKesz = false;
+    var kabalaMost = '';
+    var kabalaKert = 'alap';
+    var kabalaLassuOra = null;
+
+    function kabalaIndit() {
+        if (!kabalaVaszon || typeof rive === 'undefined') { return; }
+        fetch(KABALA_FAJL)
+            .then(function (v) { return v.arrayBuffer(); })
+            .then(function (buf) {
+                kabalaPuffer = buf;
+                kabalaBetolt(KABALA_ALLAPOT[kabalaKert]
+                             || KABALA_ALLAPOT.alap);
+            })
+            .catch(function () { kabalaPuffer = null; });
+    }
+
+    function kabalaBetolt(gep) {
+        if (!kabalaPuffer) { return; }
+        var beallitas = {
+            buffer: kabalaPuffer,
+            canvas: kabalaVaszon,
+            artboard: KABALA_TABLA,
+            stateMachines: gep,
+            autoplay: true,
+            fit: rive.Fit.Cover,
+            onLoad: function () {
+                kabalaKesz = true;
+                try { kabalaPeldany.resizeDrawingSurfaceToCanvas(); }
+                catch (e) {}
+            }
+        };
+        try {
+            if (kabalaPeldany) {
+                kabalaPeldany.load(beallitas);   // ugyanaz a példány
+            } else {
+                kabalaPeldany = new rive.Rive(beallitas);
+            }
+        } catch (e) {}
+    }
+
+    function kabalaAllapot(nev) {
+        kabalaKert = nev;
+        var gep = KABALA_ALLAPOT[nev] || KABALA_ALLAPOT.alap;
+        if (gep === kabalaMost) { return; }
+        kabalaMost = gep;
+        kabalaBetolt(gep);
+    }
+
+    /* SZOMORÚ – rossz válasz után. Nem sokáig: a gyereket nem büntetni
+       kell, csak jelezni, hogy még nem stimmel. */
+    function kabalaSzomoru() {
+        kabalaAllapot('szomoru');
+        setTimeout(function () { kabalaAllapot('alap'); }, 3000);
+    }
+
+    /* MI TÖRTÉNT? A tanár szövegéből olvassuk ki, hogy dicsér-e vagy
+       javít. Nincs rá külön jelzés a válaszban, ezért a jellemző
+       fordulatokra figyelünk – magyarul és spanyolul is. */
+    var KABALA_DICSER = new RegExp('(ügyes|szuper|remek|pontosan|bravó|'
+        + 'nagyszerű|kitűnő|így van|helyes|eltaláltad|muy bien|excelente|'
+        + 'perfecto|correcto|genial|así es|eso es)', 'i');
+    var KABALA_JAVIT = new RegExp('(nem egészen|nem pontosan|majdnem|'
+        + 'nézzük újra|nézzük meg újra|próbáld|próbáljuk|nem stimmel|'
+        + 'sajnos nem|casi|no exactamente|no es correcto|inténtalo|'
+        + 'volvamos|revisemos)', 'i');
+
+    var kabalaRontas = 0;          /* egymás utáni rossz válaszok */
+
+    function kabalaValaszra(szoveg) {
+        if (!szoveg) { return; }
+        if (KABALA_JAVIT.test(szoveg)) {
+            kabalaRontas += 1;
+            /* Harmadszorra már bosszús – de csak egy pillanatra, a
+               gyereket nem büntetni akarjuk, csak érezze, hogy számít. */
+            if (kabalaRontas >= 3) {
+                kabalaRontas = 0;
+                kabalaAllapot('bosszus');
+                setTimeout(function () { kabalaAllapot('alap'); }, 3000);
+            } else {
+                kabalaSzomoru();
+            }
+        } else if (KABALA_DICSER.test(szoveg)) {
+            kabalaRontas = 0;
+            kabalaOrul();
+        }
+    }
+
+    /* RÖVID KÖZBESZÓLÁS: egy arc pár másodpercre, utána alaphelyzet. */
+    function kabalaVillan(nev, ido) {
+        kabalaAllapot(nev);
+        setTimeout(function () { kabalaAllapot('alap'); }, ido || 2500);
+    }
+
+    /* ÜRESJÁRAT. Ha percekig nem történik semmi, a figura MAGÁTÓL vált
+       arcot. Enélkül a tizenegy mozgásból a gyerek kettőt látna: a
+       többi csak ritka eseményhez kötődik (teszt vége, hosszú
+       várakozás), és a figura halottnak tűnne. */
+    var KABALA_UNALOM = ['cuki', 'kivancsi', 'koszon', 'gepies', 'alap'];
+    var kabalaUnalomOra = null;
+
+    function kabalaUnatkozik() {
+        if (kabalaUnalomOra) { clearTimeout(kabalaUnalomOra); }
+        kabalaUnalomOra = setTimeout(function () {
+            if (kabalaKert === 'alap') {
+                var i = Math.floor(Math.random() * KABALA_UNALOM.length);
+                kabalaVillan(KABALA_UNALOM[i], 3500);
+            }
+            kabalaUnatkozik();
+        }, 9000 + Math.floor(Math.random() * 7000));
+    }
+
+    /* A gyerek ÍR – a figura odafigyel. */
+    if (input) {
+        input.addEventListener('input', function () {
+            if (kabalaKert === 'alap') { kabalaVillan('kivancsi', 2500); }
+        });
+    }
+
+    /* A tanár gondolkodik. Ha sokáig tart, a figura nézelődni kezd —
+       ez adja vissza a gyereknek, hogy a program ÉL, nem lefagyott. */
+    function kabalaVar(be) {
+        if (kabalaLassuOra) { clearTimeout(kabalaLassuOra); kabalaLassuOra = null; }
+        if (be) {
+            kabalaAllapot('gondolkodik');
+            kabalaLassuOra = setTimeout(function () {
+                kabalaAllapot('nezelodik');
+            }, 8000);
+        } else {
+            kabalaAllapot('alap');
+        }
+    }
+
+    /* Öröm — sikeres teszt, befejezett lecke. Pár másodperc után
+       visszaáll, hogy ne váljon tapétává. */
+    function kabalaOrul() {
+        kabalaAllapot('orul');
+        setTimeout(function () { kabalaAllapot('alap'); }, 4500);
+    }
+
+    /* INDULÁSKOR IS RAJZOLJUK KI. Enélkül a vászon üresen áll addig,
+       amíg a gyerek nem ír először — ezért nem látszott semmi. */
+    if (kabalaVaszon) {
+        if (typeof rive === 'undefined') {
+            console.warn('TutorIA: a Rive futtato (static/rive.js) '
+                         + 'nem toltott be, a kabala kimarad.');
+        } else {
+            kabalaIndit();
+            /* Az óra elején a figura KÖSZÖN, utána nyugodt alaphelyzet. */
+            kabalaAllapot('koszon');
+            setTimeout(function () { kabalaAllapot('alap'); }, 3500);
+            kabalaUnatkozik();
+        }
+    }
+
+    function setLoading(on) {
+        kabalaVar(on);
+        typing.hidden = !on;
+        typing.dataset.mikor = on ? String(Date.now()) : '';
+        if (sendBtn) sendBtn.disabled = on;
+        if (input) input.disabled = on;
+        if (on) {
+            startThinkingMessages();
+            scrollToBottom();
+        } else {
+            stopThinkingMessages();
+        }
+    }
+
+    /* ── EGY KÉRÉS SEM VÁRHAT ÖRÖKKÉ ────────────────────────────────────
+       Ha a szerver nem válaszol (elakadt hívás, elszállt folyamat), a régi
+       kódban a "•••" ott maradt, a beviteli mező tiltva maradt, és a
+       gyereknek úgy tűnt, lefagyott a program – pontosan ezt jelentette a
+       teszt: "megáll, nem történik semmi". Innentől 90 másodperc után
+       megszakítjuk a kérést, és a gyerek kap egy értelmes üzenetet. */
+    var KERES_IDOKORLAT = 90000;
+
+    function fetchIdovel(url, opts, ms) {
+        var beallitas = {};
+        for (var k in (opts || {})) { if (opts.hasOwnProperty(k)) beallitas[k] = opts[k]; }
+        var vezerlo = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+        if (vezerlo) beallitas.signal = vezerlo.signal;
+        var ora = setTimeout(function () { if (vezerlo) { vezerlo.abort(); } },
+                             ms || KERES_IDOKORLAT);
+        return fetch(url, beallitas).then(
+            function (r) { clearTimeout(ora); return r; },
+            function (e) { clearTimeout(ora); throw e; }
+        );
+    }
+
+    function halozatiUzenet(e) {
+        return (e && e.name === 'AbortError') ? L.errTimeout : L.errNetwork;
+    }
+
+    /* Végső biztosíték: ha a gépelés-jelző valamiért mégis ott ragadna
+       (olyan úton, amire nem gondoltunk), 110 másodperc után magától
+       eltűnik, és a gyerek újra tud írni. Inkább tűnjön el korán, mint
+       hogy a program haltnak látsszon. */
+    setInterval(function () {
+        if (!typing || typing.hidden) { return; }
+        var mikor = Number(typing.dataset.mikor || 0);
+        if (!mikor) { typing.dataset.mikor = String(Date.now()); return; }
+        if (Date.now() - mikor > 110000) {
+            typing.dataset.mikor = '';
+            setLoading(false);
+            appendBubble('assistant', L.errTimeout);
+        }
+    }, 5000);
+
+    /* ── KIEJTÉS-GYAKORLÁS ────────────────────────────────────────────
+       A tanár <MONDD> jelölővel kér egy "mondd utánam" gyakorlatot. A gyerek
+       kimondja, az Azure szavanként megnézi, és a gyerek SZÍNEKET lát —
+       számot nem. Egy hatévesnek a "61 pont" ítélet, a "gyakoroljuk még ezt
+       a két szót" viszont feladat. */
+    var KI_MINTAVETEL = 16000;
+
+    /* A böngésző webm/opus-t vesz fel, az Azure 16 kHz mono PCM WAV-ot vár.
+       Az átalakítás itt történik, így a szerverre nem kell ffmpeg. */
+    /* EGYETLEN AudioContext az egész oldalra. A böngésző legfeljebb hat
+       darabot enged megnyitni; amíg ez csak a "mondd utánam" kártyán futott,
+       ez sosem állt elő, de hangos módban MINDEN válasz erre megy át — a
+       hetedik felvételnél a böngésző megtagadná az újabb létrehozását, és a
+       kiejtés-elemzés némán leállna. */
+    var kiAC = null;
+    function kiAudioContext() {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!kiAC) { kiAC = new AC(); }
+        return kiAC;
+    }
+
+    function kiWav(abuf) {
+        return kiAudioContext().decodeAudioData(abuf).then(function (buf) {
+            var OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+            var off = new OAC(1, Math.ceil(buf.duration * KI_MINTAVETEL), KI_MINTAVETEL);
+            var f = off.createBufferSource();
+            f.buffer = buf; f.connect(off.destination); f.start();
+            return off.startRendering();
+        }).then(function (kesz) {
+            var m = kesz.getChannelData(0);
+            var pu = new ArrayBuffer(44 + m.length * 2), n = new DataView(pu), i = 0;
+            function sz(t) { for (var k = 0; k < t.length; k++) n.setUint8(i++, t.charCodeAt(k)); }
+            function u32(v) { n.setUint32(i, v, true); i += 4; }
+            function u16(v) { n.setUint16(i, v, true); i += 2; }
+            sz('RIFF'); u32(36 + m.length * 2); sz('WAVE'); sz('fmt ');
+            u32(16); u16(1); u16(1); u32(KI_MINTAVETEL); u32(KI_MINTAVETEL * 2);
+            u16(2); u16(16); sz('data'); u32(m.length * 2);
+            for (var j = 0; j < m.length; j++) {
+                var v = Math.max(-1, Math.min(1, m[j]));
+                n.setInt16(i, v < 0 ? v * 0x8000 : v * 0x7fff, true); i += 2;
+            }
+            return new Blob([pu], { type: 'audio/wav' });
+        });
+    }
+
+    function kiejtesKartya(mondd) {
+        if (!mondd || !mondd.mondat) { return; }
+        var k = document.createElement('div');
+        k.className = 'kiejtes-kartya';
+        k.innerHTML =
+            '<div class="ki-fejlec">🗣️ ' + escapeHtml(L.kiCim) + '</div>' +
+            '<div class="ki-mondat"></div>' +
+            '<div class="ki-vissza" hidden></div>' +
+            '<div class="ki-also">' +
+              '<button type="button" class="ki-mikro">🎙</button>' +
+              '<span class="ki-sugo">' + escapeHtml(L.kiSugo) + '</span>' +
+            '</div>';
+        k.querySelector('.ki-mondat').textContent = mondd.mondat;
+        messagesEl.insertBefore(k, typing);
+        scrollToBottom();
+
+        var mikro = k.querySelector('.ki-mikro');
+        var sugo = k.querySelector('.ki-sugo');
+        var rogz = null, darab = [], folyam = null, vesz = false;
+
+        mikro.onclick = function () {
+            if (vesz) { if (rogz && rogz.state !== 'inactive') { rogz.stop(); } return; }
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(function (st) {
+                folyam = st; darab = [];
+                rogz = new MediaRecorder(st);
+                rogz.ondataavailable = function (e) { if (e.data.size) { darab.push(e.data); } };
+                rogz.onstop = function () {
+                    folyam.getTracks().forEach(function (t) { t.stop(); });
+                    vesz = false; mikro.classList.remove('vesz');
+                    mikro.disabled = true; sugo.textContent = L.kiNezem;
+                    new Blob(darab).arrayBuffer().then(kiWav).then(function (wav) {
+                        return kiKuld(k, mondd, wav);
+                    }).catch(function () {
+                        sugo.textContent = L.kiNemMent; mikro.disabled = false;
+                    });
+                };
+                rogz.start(); vesz = true;
+                mikro.classList.add('vesz'); sugo.textContent = L.kiFigyelek;
+            }).catch(function () { sugo.textContent = L.voiceMicPermission; });
+        };
+    }
+
+    function kiKuld(k, mondd, wav) {
+        var fd = new FormData();
+        fd.append('hang', wav, 'felvetel.wav');
+        fd.append('mondat', mondd.mondat);
+        fd.append('nyelv', mondd.nyelv || 'hu-HU');
+        return fetchIdovel('/api/kiejtes/ertekel', { method: 'POST', body: fd })
+            .then(function (r) { return r.json(); })
+            .then(function (d) { kiMutat(k, mondd, d); });
+    }
+
+    /* ── A GYEREK SAJÁT VÁLASZA ──────────────────────────────────────────
+       Hangos módban minden szabad választ elküldünk elemzésre — ugyanazt a
+       felvételt, amit a szövegfelismerő is kapott. Viszonyítási szövegnek a
+       felismert szöveg megy: így derül ki, melyik szó nem jött ki tisztán.
+
+       SEMMIT NEM MUTATUNK BELŐLE. Ha volt nehezen érthető szó, a tanár a
+       KÖVETKEZŐ válaszában kérdez vissza rá — a kártya és a pontszám itt
+       csak elterelné a figyelmet a leckéről. */
+    function kiejtesValasz(blob, szoveg) {
+        if (!blob || !szoveg || szoveg.split(/\s+/).length < 3) { return; }
+        var nyelv = (document.getElementById('chat-kiejtes-nyelv') || {}).value;
+        if (!nyelv) { return; }
+        blob.arrayBuffer().then(kiWav).then(function (wav) {
+            var fd = new FormData();
+            fd.append('hang', wav, 'valasz.wav');
+            fd.append('szoveg', szoveg);
+            fd.append('nyelv', nyelv);
+            /* Sima fetch, nem fetchIdovel: ez a hívás nem tartozik a
+               lecke menetéhez, ezért nem is szabad hibát dobnia rá. */
+            return fetch('/api/kiejtes/valasz', { method: 'POST', body: fd });
+        }).catch(function () { /* csendben */ });
+    }
+
+    function kiMutat(k, mondd, d) {
+        var mikro = k.querySelector('.ki-mikro');
+        var sugo = k.querySelector('.ki-sugo');
+        var vissza = k.querySelector('.ki-vissza');
+        mikro.disabled = false; sugo.textContent = '';
+
+        if (d && d.ok && d.szavak && d.szavak.length) {
+            var m = k.querySelector('.ki-mondat');
+            m.innerHTML = '';
+            d.szavak.forEach(function (w) {
+                var e = document.createElement('span');
+                /* KÉT szín van, piros nincs: "jó" és "gyakoroljuk még". */
+                e.className = 'ki-szo ' + (w.jo ? 'jo' : 'gyak');
+                e.textContent = w.szo;
+                m.appendChild(e);
+            });
+        }
+        vissza.textContent = (d && d.biztato) || L.kiNemMent;
+        vissza.hidden = false;
+
+        if (!k.querySelector('.ki-gombsor')) {
+            var g = document.createElement('div');
+            g.className = 'ki-gombsor';
+            g.innerHTML =
+                '<button type="button" class="ki-g ki-feher">' + escapeHtml(L.kiHallgasd) + '</button>' +
+                '<button type="button" class="ki-g ki-zold">' + escapeHtml(L.kiUjra) + '</button>';
+            k.appendChild(g);
+            g.children[0].onclick = function () { playTts(mondd.mondat).catch(function () {}); };
+            g.children[1].onclick = function () { k.querySelector('.ki-mikro').click(); };
+        }
+        scrollToBottom();
+    }
+
+    function renderSidebar(sidebar) {
+        if (!sidebar || !sidebarList) return;
+        document.getElementById('topic-summary').textContent =
+            sidebar.completed_count + ' / ' + sidebar.total_count + ' ' + L.topicsDoneSuffix;
+        document.getElementById('topic-avg').textContent = L.averageLabel + ': ' + sidebar.average_score + '%';
+        var pct = sidebar.total_count ? (100 * sidebar.completed_count / sidebar.total_count) : 0;
+        document.getElementById('sidebar-progress-fill').style.width = pct + '%';
+
+        sidebarList.innerHTML = '';
+        sidebar.topics.forEach(function (item) {
+            var li = document.createElement('li');
+            if (item.state === 'locked') {
+                li.innerHTML = '<div class="topic-item topic-item-locked"><span class="topic-num">' +
+                    item.index + '.</span><span class="topic-lock">🔒</span><span class="topic-name">' +
+                    escapeHtml(item.name) + '</span></div>';
+            } else if (item.state === 'completed') {
+                li.innerHTML = '<button type="button" class="topic-item topic-item-done" data-topic-id="' +
+                    item.id + '" data-topic-name="' + escapeAttr(item.name) + '"><span class="topic-num">' +
+                    item.index + '.</span><span class="topic-badge">✓ ' + item.score + '%</span><span class="topic-name">' +
+                    escapeHtml(item.name) + '</span></button>';
+            } else if (item.state === 'active') {
+                li.innerHTML = '<div class="topic-item topic-item-active"><span class="topic-num">' +
+                    item.index + '.</span><span class="topic-name">' + escapeHtml(item.name) + '</span></div>';
+            } else {
+                li.innerHTML = '<button type="button" class="topic-item topic-item-open" data-topic-id="' +
+                    item.id + '" data-topic-name="' + escapeAttr(item.name) + '"><span class="topic-num">' +
+                    item.index + '.</span><span class="topic-name">' + escapeHtml(item.name) + '</span></button>';
+            }
+            sidebarList.appendChild(li);
+        });
+        bindTopicClicks();
+        if (sidebar.current_topic_id) {
+            currentTopicId = sidebar.current_topic_id;
+            if (topicIdInput) topicIdInput.value = currentTopicId;
+        }
+    }
+
+    function escapeHtml(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+    function escapeAttr(s) {
+        return String(s).replace(/"/g, '&quot;');
+    }
+
+    function openTopic(topicId, topicName) {
+        // Új témakör = új chat ablak: teljes oldal-újratöltés új topic_id-vel.
+        var params = new URLSearchParams();
+        params.set('subject', subject);
+        params.set('topic_id', topicId);
+        params.set('mode', chatMode);
+        var lang = getChatLanguage();
+        if (lang) params.set('language', lang);
+        window.location.href = '/children/' + childId + '/chat?' + params.toString();
+    }
+
+    function bindTopicClicks() {
+        sidebarList.querySelectorAll('[data-topic-id]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                openTopic(btn.getAttribute('data-topic-id'), btn.getAttribute('data-topic-name'));
+                topicSidebar.classList.remove('open');
+            });
+        });
+    }
+    bindTopicClicks();
+
+    if (sidebarToggle && topicSidebar) {
+        sidebarToggle.addEventListener('click', function () {
+            topicSidebar.classList.toggle('open');
+        });
+    }
+
+    function updateVocabulary(vocabArray, topicName) {
+        var list = document.getElementById('vocab-list');
+        var emptyMsg = document.getElementById('vocab-empty');
+        if (!list) return;
+
+        list.innerHTML = '';
+
+        if (!vocabArray || vocabArray.length === 0) {
+            if (emptyMsg) emptyMsg.hidden = false;
+            return;
+        }
+
+        if (emptyMsg) emptyMsg.hidden = true;
+
+        if (topicName) {
+            var titleLi = document.createElement('li');
+            titleLi.style.fontWeight = 'bold';
+            titleLi.style.marginTop = '10px';
+            titleLi.style.marginBottom = '5px';
+            titleLi.style.borderBottom = '1px solid #ddd';
+            titleLi.textContent = topicName;
+            list.appendChild(titleLi);
+        }
+
+        vocabArray.forEach(function(w) {
+            var li = document.createElement('li');
+            li.innerHTML = '<span class="vocab-native">' + (w.word_native || '') + '</span>' +
+                           '<span class="vocab-arrow"> - </span>' +
+                           '<span class="vocab-foreign">' + (w.word_foreign || '') + '</span>';
+            list.appendChild(li);
+        });
+    }
+
+    function updateGamification(xp, gameLevel, coins, penztarca) {
+        var xpEl = document.getElementById('xp-display');
+        var levelEl = document.getElementById('level-display');
+        var coinsEl = document.getElementById('coins-display');
+        var pontEl = document.getElementById('pont-display');
+        if (xpEl) xpEl.textContent = xp;
+        if (levelEl) levelEl.textContent = gameLevel;
+        if (coinsEl && coins !== undefined) coinsEl.textContent = coins;
+        /* A pont a tasakbolt fizetőeszköze – a pénztárcából jön, hogy a
+           gyerek rögtön lássa, mennyivel került közelebb a következő laphoz. */
+        if (pontEl && penztarca && penztarca.pont !== undefined) {
+            pontEl.textContent = penztarca.pont;
+        }
+        if (coins !== undefined) { ermeCsikFrissit(coins); }
+    }
+
+    function sendMessage(text, topicId) {
+        if (chatMode === 'voice' || !form || !input) return;
+        appendBubble('user', text);
+        input.value = '';
+        setLoading(true);
+        fetchIdovel(sendUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: text,
+                subject: subject,
+                session_id: document.getElementById('chat-session-id').value,
+                language: document.getElementById('chat-language').value,
+                topic_id: topicId || currentTopicId
+            })
+        })
+            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+            .then(function (res) {
+                setLoading(false);
+                if (!res.ok) {
+                    appendBubble('assistant', L.errNoReply);
+                    return;
+                }
+                console.log('Teljes backend válasz:', res.data);
+                if (res.data.session_id) {
+                    document.getElementById('chat-session-id').value = res.data.session_id;
+                }
+                var aiMessage = res.data.reply || '';
+                if (res.data.topic_done) {
+                    setTimeout(function () {
+                        confetti({
+                            particleCount: 150,
+                            spread: 100,
+                            origin: { y: 0.6 },
+                            colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+                        });
+                    }, 200);
+                }
+                appendBubble('assistant', aiMessage, res.data.figures, res.data.feladat);
+                if (res.data.mondd) { kiejtesKartya(res.data.mondd); }
+                if (res.data.current_topic_id) {
+                    // Új témakör = új lecke: a sín visszaáll az elejére.
+                    if (currentTopicId && res.data.current_topic_id !== currentTopicId) {
+                        leckeUjrakezd();
+                    }
+                    currentTopicId = res.data.current_topic_id;
+                    if (topicIdInput) topicIdInput.value = currentTopicId;
+                }
+                if (res.data.current_topic && topicTitle) {
+                    topicTitle.textContent = res.data.current_topic;
+                    currentTopicName = res.data.current_topic;
+                }
+                if (res.data.sidebar) renderSidebar(res.data.sidebar);
+                if (res.data.show_test_offer && btnTest) btnTest.hidden = false;
+                leckeSinValasz(res.data);
+                updateVocabulary(res.data.vocabulary, res.data.current_topic);
+                updateGamification(res.data.xp, res.data.game_level, res.data.coins, res.data.penztarca);
+            })
+            .catch(function (e) {
+                setLoading(false);
+                appendBubble('assistant', halozatiUzenet(e));
+            });
+    }
+
+    function closeTestModal() {
+        if (!testOverlay) return;
+        testOverlay.hidden = true;
+        if (testBody) {
+            testBody.hidden = false;
+            testBody.innerHTML = '';
+        }
+        if (testResult) {
+            testResult.hidden = true;
+            testResult.innerHTML = '';
+        }
+    }
+
+    function renderQuestion(q, index) {
+        if (q.type === "fill" || q.type === "sent") {
+            return '<div class="quiz-question" data-index="' + index + '" data-type="' + q.type + '" data-answer="' + escapeAttr(q.answer) + '">' +
+                '<p class="question-text">' + (index + 1) + '. ' + escapeHtml(q.q) + '</p>' +
+                '<input type="text" class="fill-answer-input" placeholder="' + escapeAttr(L.quizAnswerPlaceholder) + '" autocomplete="off">' +
+                '</div>';
+        }
+        // MC (multiple choice) — existing logic unchanged
+        var html = '<div class="quiz-q" data-q="' + index + '"><p class="quiz-q-text">' +
+            (index + 1) + '. ' + escapeHtml(q.q) + '</p><div class="quiz-options">';
+        (q.options || []).forEach(function (opt, oi) {
+            html += '<label class="quiz-opt"><input type="radio" name="q' + index +
+                '" value="' + oi + '"> ' + escapeHtml(opt) + '</label>';
+        });
+        html += '</div></div>';
+        return html;
+    }
+
+    // checkFillAnswer és recordAnswer már nem szükségesek —
+    // a submitQuiz közvetlenül a mezőkből olvas beküldéskor
+
+    function showQuiz(questions, topicName) {
+        if (!questions || !questions.length) {
+            closeTestModal();
+            return;
+        }
+        quizQuestions = questions;
+        quizAnswers = new Array(questions.length).fill(null);
+        testResult.hidden = true;
+        testBody.hidden = false;
+        testTitle.textContent = fmt(L.testTitleFmt, { topic: topicName });
+        var html = '';
+        questions.forEach(function (q, qi) {
+            html += renderQuestion(q, qi);
+        });
+        html += '<button type="button" class="btn btn-primary btn-quiz-submit" id="quiz-submit">' + escapeHtml(L.quizSubmit) + '</button>';
+        testBody.innerHTML = html;
+        testOverlay.hidden = false;
+        document.getElementById('quiz-submit').addEventListener('click', submitQuiz);
+    }
+
+    function submitQuiz() {
+        quizQuestions.forEach(function (q, qi) {
+            if (q.type === "fill" || q.type === "sent") {
+                var qEl = document.querySelector('.quiz-question[data-index="' + qi + '"]');
+                var input = qEl ? qEl.querySelector('.fill-answer-input') : null;
+                var val = input ? input.value.trim() : '';
+                quizAnswers[qi] = val || null;
+            } else {
+                var picked = document.querySelector('input[name="q' + qi + '"]:checked');
+                quizAnswers[qi] = picked ? parseInt(picked.value, 10) : -1;
+            }
+        });
+        fetchIdovel(testSubmitUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                subject: subject,
+                topic_id: currentTopicId,
+                questions: quizQuestions,
+                answers: quizAnswers,
+                language: getChatLanguage(),
+                ora_szam: currentOraSzam
+            })
+        })
+            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+            .then(function (res) {
+                if (!res.ok) return;
+                testBody.hidden = true;
+                testResult.hidden = false;
+                var d = res.data;
+                var reviewHtml = buildReviewHtml(d.review);
+                if (d.passed) {
+                    // A lecke CSAK a sikeres teszttel zárul – a sín is itt ér célba.
+                    leckeVege = true; leckeAllomasra(4);
+                    kabalaOrul();
+                    var congratsHtml = '';
+                    if (d.congrats_message) {
+                        congratsHtml = '<div class="chat-bubble chat-bubble-assistant"><div class="chat-bubble-inner">' +
+                            escapeHtml(d.congrats_message) + '</div></div>';
+                    }
+                    if (d.phase === 2) {
+                        // Phase 2 pass — offer choice
+                        testResult.innerHTML = congratsHtml +
+                            '<div class="result-box result-pass">✓ ' + escapeHtml(d.topic_name) +
+                            ' — ' + d.score + '%</div>' + reviewHtml +
+                            '<button type="button" class="btn btn-primary" id="quiz-advance" style="margin:4px">' + escapeHtml(L.quizAdvance) + '</button>' +
+                            '<button type="button" class="btn btn-outline" id="quiz-practice" style="margin:4px">' + escapeHtml(L.quizPracticeMore) + '</button>';
+                        document.getElementById('quiz-advance').addEventListener('click', function () {
+                            var nextBtn = document.querySelector('.sidebar-item:not(.sidebar-item-passed) .sidebar-item-link');
+                            if (nextBtn) nextBtn.click();
+                            closeTestModal();
+                        });
+                        document.getElementById('quiz-practice').addEventListener('click', function () {
+                            startTest();
+                        });
+                    } else {
+                        // Phase 1 pass (100%) — normal pass view
+                        var nextTopicId = d.next_topic_id || null;
+                        var nextTopicName = d.next_topic_name || null;
+                        if (nextTopicId) {
+                            testResult.innerHTML = congratsHtml +
+                                '<button type="button" class="result-box result-pass" data-topic-id="' + nextTopicId +
+                                '" data-topic-name="' + escapeAttr(nextTopicName) + '">' + escapeHtml(fmt(L.quizNextFmt, { topic: nextTopicName })) +
+                                '</button><p class="result-hint">' + escapeHtml(L.quizNextHint) + '</p>' + reviewHtml;
+                        } else {
+                            testResult.innerHTML = congratsHtml +
+                                '<div class="result-box result-pass">✓ ' + escapeHtml(d.topic_name) + ' — ' + d.score + '%</div>' +
+                                '<p class="result-hint">' + escapeHtml(L.quizAllDone) + '</p>' + reviewHtml;
+                        }
+                    }
+                } else {
+                    var failMsg = '';
+                    if (d.phase === 1) {
+                        if (d.attempts_remaining > 0) {
+                            /* Ha nincs várakozás (0 perc), ne írjuk ki, hogy
+                               tanulnia kell – rögtön újrapróbálhatja. */
+                            var hatra = d.minutes_needed > 0
+                                ? fmt(L.quizAttemptsLeftFmt, { n: d.attempts_remaining, time: formatMinutes(d.minutes_needed) })
+                                : fmt(L.quizAttemptsLeftNowFmt, { n: d.attempts_remaining });
+                            failMsg = '<p class="result-hint">' + escapeHtml(hatra) + '</p>';
+                        } else {
+                            failMsg = '<p class="result-hint">' + escapeHtml(fmt(L.quizStudyMoreFmt, { time: formatMinutes(d.minutes_needed) })) + '</p>';
+                        }
+                    } else {
+                        failMsg = '<p class="result-hint">' + escapeHtml(L.quizStudy60Retry) + '</p>';
+                    }
+                    testResult.innerHTML =
+                        '<div class="result-box result-fail">' + escapeHtml(fmt(L.quizTryAgainFmt, { score: d.score })) + '</div>' +
+                        failMsg + reviewHtml +
+                        (d.can_retry ? '<button type="button" class="btn btn-primary" id="quiz-retry">' + escapeHtml(L.quizRetry) + '</button>' : '');
+                    if (d.can_retry) {
+                        document.getElementById('quiz-retry').addEventListener('click', startTest);
+                    }
+                }
+                if (d.sidebar) renderSidebar(d.sidebar);
+                if (d.congrats_message) {
+                    appendBubble('assistant', d.congrats_message);
+                }
+                if (d.vocabulary) updateVocabulary(d.vocabulary, d.topic_name);
+                updateGamification(d.xp, d.game_level, d.coins, d.penztarca);
+                if (d.topic_done) {
+                    setTimeout(function () {
+                        confetti({
+                            particleCount: 150,
+                            spread: 100,
+                            origin: { y: 0.6 },
+                            colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+                        });
+                    }, 200);
+                }
+                var passBtn = testResult.querySelector('.result-pass');
+                if (passBtn) {
+                    passBtn.addEventListener('click', function (e) {
+                        var btn = e.currentTarget;
+                        openTopic(btn.getAttribute('data-topic-id'), btn.getAttribute('data-topic-name'));
+                        closeTestModal();
+                    });
+                }
+            });
+    }
+
+    function formatMinutes(mins) {
+        mins = Math.round(mins);
+        if (mins >= 60) {
+            var h = Math.floor(mins / 60);
+            var m = mins % 60;
+            if (m === 0) return fmt(L.timeAboutHoursFmt, { h: h });
+            return fmt(L.timeHoursMinutesFmt, { h: h, m: m });
+        }
+        return fmt(L.timeMinutesFmt, { m: mins });
+    }
+
+    function buildReviewHtml(review) {
+        if (!review || !review.length) return '';
+        var html = '<div class="quiz-review"><h4 class="quiz-review-title">' +
+            escapeHtml(L.reviewTitle) + '</h4>';
+        review.forEach(function (r, i) {
+            var cls = r.is_correct ? 'quiz-review-item correct' : 'quiz-review-item incorrect';
+            var mark = r.is_correct ? '✅' : '❌';
+            html += '<div class="' + cls + '">' +
+                '<p class="quiz-review-q">' + mark + ' ' + (i + 1) + '. ' + escapeHtml(r.q || '') + '</p>';
+            var userAns = (r.user_answer !== undefined && r.user_answer !== null && String(r.user_answer) !== '')
+                ? escapeHtml(String(r.user_answer)) : escapeHtml(L.reviewNoAnswer);
+            var userCls = r.is_correct ? 'quiz-review-user-correct' : 'quiz-review-user-wrong';
+            html += '<p class="quiz-review-answer ' + userCls + '">' +
+                escapeHtml(L.reviewYourAnswer) + ': ' + userAns + '</p>';
+            if (!r.is_correct && r.correct_answer !== undefined && r.correct_answer !== null && String(r.correct_answer) !== '') {
+                html += '<p class="quiz-review-answer quiz-review-correct">' +
+                    escapeHtml(L.reviewCorrectAnswer) + ': ' + escapeHtml(String(r.correct_answer)) + '</p>';
+            }
+            if (r.explanation) {
+                html += '<p class="quiz-review-explanation">' +
+                    escapeHtml(L.reviewExplanation) + ': ' + escapeHtml(String(r.explanation)) + '</p>';
+            }
+            html += '</div>';
+        });
+        html += '</div>';
+        return html;
+    }
+
+    function getChatLanguage() {
+        var el = document.getElementById('chat-language');
+        return el ? el.value : '';
+    }
+
+    function startTest() {
+        if (isVoiceOnlyTest && typeof startVoiceTest === 'function') {
+            startVoiceTest();
+            return;
+        }
+        closeTestModal();
+        if (btnTest) { btnTest.disabled = true; btnTest.textContent = L.testGenerating; }
+        fetchIdovel(testGenUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                subject: subject,
+                topic_id: currentTopicId,
+                language: getChatLanguage()
+            })
+        })
+            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+            .then(function (res) {
+                if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
+                if (res.data && res.data.ok === false) {
+                    var resultBoxClass = (res.data.reason === 'attempts_exhausted')
+                        ? 'result-box result-fail'
+                        : 'result-box result-pass';
+                    testBody.hidden = true;
+                    testResult.hidden = false;
+                    testResult.innerHTML =
+                        '<div class="' + resultBoxClass + '">' +
+                        escapeHtml(res.data.message) + '</div>' +
+                        '<p class="result-hint">' +
+                        escapeHtml(L.gateRetryHint) + '</p>';
+                    testOverlay.hidden = false;
+                    return;
+                }
+                if (!res.ok || !res.data.questions || !res.data.questions.length) {
+                    testBody.hidden = true;
+                    testResult.hidden = false;
+                    testResult.innerHTML =
+                        '<div class="result-box result-fail">' +
+                        escapeHtml(L.quizCreateFailed) + '</div>';
+                    testOverlay.hidden = false;
+                    return;
+                }
+                showQuiz(res.data.questions, res.data.topic_name || currentTopicName);
+                if (res.data.ora_szam) currentOraSzam = res.data.ora_szam;
+            })
+            .catch(function () {
+                if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
+                testBody.hidden = true;
+                testResult.hidden = false;
+                testResult.innerHTML =
+                    '<div class="result-box result-fail">' +
+                    escapeHtml(L.errNetwork) + '</div>';
+                testOverlay.hidden = false;
+            });
+    }
+
+    if (btnTest) btnTest.addEventListener('click', startTest);
+    var testCloseBtn = document.getElementById('test-close');
+    if (testCloseBtn) {
+        testCloseBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            closeTestModal();
+        });
+    }
+    if (testOverlay) {
+        testOverlay.addEventListener('click', function (e) {
+            if (e.target === testOverlay) closeTestModal();
+        });
+    }
+
+    if (form && input) {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var text = (input.value || '').trim();
+            if (!text) return;
+            if (text.toLowerCase().indexOf('teszt') !== -1 && btnTest) startTest();
+            else sendMessage(text, currentTopicId);
+        });
+    }
+
+    if (input && form) {
+        input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                form.requestSubmit();
+            }
+        });
+    }
+
+    /* ---------- Hangos mód ---------- */
+    if (chatMode === 'voice') {
+        var voiceMicBtn = document.getElementById('voice-mic-btn');
+        var voiceMicIcon = voiceMicBtn ? voiceMicBtn.querySelector('.voice-mic-icon') : null;
+        var voiceStatus = document.getElementById('voice-status');
+        var voiceUnsupported = document.getElementById('voice-unsupported');
+        var voicePanel = document.getElementById('voice-panel');
+        var voiceState = 'idle';
+        var mediaRecorder = null;
+        var mediaStream = null;
+        var audioChunks = [];
+        var currentAudio = null;
+
+        function setVoiceUi(state) {
+            voiceState = state;
+            if (!voiceMicBtn || !voiceStatus) return;
+            voiceMicBtn.classList.remove('recording', 'disabled');
+            /* Felvétel közben a gomb megállító jelre vált, hogy a gyerek
+               lássa: ugyanaz a gomb fejezi is be. */
+            if (voiceMicIcon) {
+                voiceMicIcon.textContent = (state === 'recording') ? '⏹️' : '🎙️';
+            }
+            if (state === 'recording') {
+                voiceMicBtn.classList.add('recording');
+                voiceStatus.textContent = L.voiceListening;
+            } else if (state === 'processing') {
+                voiceStatus.textContent = L.voiceProcessing;
+            } else if (state === 'speaking') {
+                voiceStatus.textContent = L.voiceProcessing;
+            } else {
+                voiceStatus.textContent = L.voiceStatusIdle;
+            }
+        }
+
+        function getHidden(id) {
+            var el = document.getElementById(id);
+            return el ? el.value : '';
+        }
+
+        /* A munkatéren megoldott feladat is ezen az úton megy el hangos
+           módban – lásd feladatKuld(). */
+        hangosKuldo = function (szoveg) { return sendVoiceChat(szoveg); };
+
+        function sendVoiceChat(userText) {
+            appendBubble('user', userText);
+            setVoiceUi('processing');
+            typing.hidden = false;
+            startThinkingMessages();
+            scrollToBottom();
+            return fetchIdovel(sendUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    message: userText,
+                    subject: getHidden('chat-subject'),
+                    session_id: getHidden('chat-session-id'),
+                    language: getHidden('chat-language'),
+                    topic_id: getHidden('chat-topic-id') || currentTopicId,
+                    mode: 'voice'
+                })
+            })
+                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (res) {
+                    typing.hidden = true;
+                    stopThinkingMessages();
+                    if (!res.ok) {
+                        appendBubble('assistant', L.errNoReply);
+                        setVoiceUi('idle');
+                        return;
+                    }
+                    console.log('Teljes backend válasz:', res.data);
+                    var sessInput = document.getElementById('chat-session-id');
+                    if (res.data.session_id && sessInput) {
+                        sessInput.value = res.data.session_id;
+                    }
+                    var reply = res.data.reply || '';
+                    if (res.data.topic_done) {
+                        setTimeout(function () {
+                            confetti({
+                                particleCount: 150,
+                                spread: 100,
+                                origin: { y: 0.6 },
+                                colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+                            });
+                        }, 200);
+                    }
+                    appendBubble('assistant', reply, res.data.figures, res.data.feladat);
+                    if (res.data.mondd) { kiejtesKartya(res.data.mondd); }
+                    if (res.data.current_topic_id) {
+                        currentTopicId = res.data.current_topic_id;
+                        var tid = document.getElementById('chat-topic-id');
+                        if (tid) tid.value = currentTopicId;
+                    }
+                    if (res.data.current_topic && topicTitle) {
+                        topicTitle.textContent = res.data.current_topic;
+                    }
+                    if (res.data.sidebar) renderSidebar(res.data.sidebar);
+                    updateVocabulary(res.data.vocabulary, res.data.current_topic);
+                    updateGamification(res.data.xp, res.data.game_level, res.data.coins, res.data.penztarca);
+                    setVoiceUi('idle');
+                    if (!reply.trim()) {
+                        setVoiceUi('idle');
+                        return;
+                    }
+                    return playTts(reply).catch(function () {
+                        setVoiceUi('idle');
+                    });
+                })
+                .catch(function (e) {
+                    typing.hidden = true;
+                    stopThinkingMessages();
+                    appendBubble('assistant', halozatiUzenet(e));
+                    setVoiceUi('idle');
+                });
+        }
+
+        function uploadAndProcess(blob) {
+            if (!blob || blob.size < 1000) {
+                setVoiceUi('idle');
+                return;
+            }
+            setVoiceUi('processing');
+            var fd = new FormData();
+            fd.append('file', blob, 'recording.webm');
+            var chatLang = document.getElementById('chat-language');
+            if (chatLang && chatLang.value) {
+                fd.append('language', chatLang.value);
+            }
+            var chatFrame = document.getElementById('chat-frame');
+            if (chatFrame && chatFrame.value) {
+                fd.append('frame', chatFrame.value);
+            }
+            fetchIdovel(transcribeUrl, { method: 'POST', body: fd })
+                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (res) {
+                    if (!res.ok || !res.data.text) {
+                        appendBubble('assistant', L.errNotUnderstood);
+                        setVoiceUi('idle');
+                        return;
+                    }
+                    var text = res.data.text.trim();
+                    if (voiceTestActive) {
+                        return handleVoiceTestAnswer(text);
+                    }
+                    /* A kiejtés-elemzés a HÁTTÉRBEN indul, és nem várunk rá:
+                       a lecke ettől egy pillanatot sem lassul. Ha elbukik,
+                       arról a gyerek nem tud meg semmit. */
+                    kiejtesValasz(blob, text);
+                    return sendVoiceChat(text);
+                })
+                .catch(function (e) {
+                    typing.hidden = true;
+                    stopThinkingMessages();
+                    appendBubble('assistant', halozatiUzenet(e));
+                    setVoiceUi('idle');
+                });
+        }
+
+        /* ---------- Szóbeli (hangos) teszt: nem-olvasó gyerekeknek ---------- */
+        /* A teszt itt NEM modalban, hanem a chat-beszélgetésben zajlik:      */
+        /* minden kérdést az asszisztens felolvas (TTS), a gyerek szóban      */
+        /* válaszol a meglévő mikrofon-felvétel úton.                         */
+        var voiceTestActive = false;
+        var voiceTestQuestions = [];
+        var voiceTestAnswers = [];
+        var voiceTestIndex = 0;
+        var voiceTestOraSzam = 0;
+
+        function buildVoiceQuestionText(q, index) {
+            var text = (index + 1) + '. ' + q.q;
+            if (q.type === 'mc' && q.options && q.options.length) {
+                text += ' ' + q.options.join(', ');
+            }
+            return text;
+        }
+
+        function askVoiceTestQuestion() {
+            if (voiceTestIndex >= voiceTestQuestions.length) {
+                finishVoiceTest();
+                return;
+            }
+            var text = buildVoiceQuestionText(voiceTestQuestions[voiceTestIndex], voiceTestIndex);
+            appendBubble('assistant', text);
+            setVoiceUi('speaking');
+            playTts(text)
+                .then(function () { setVoiceUi('idle'); })
+                .catch(function () { setVoiceUi('idle'); });
+        }
+
+        function handleVoiceTestAnswer(text) {
+            appendBubble('user', text);
+            voiceTestAnswers[voiceTestIndex] = text;
+            voiceTestIndex += 1;
+            setVoiceUi('idle');
+            askVoiceTestQuestion();
+        }
+
+        function buildVoiceResultMessage(d) {
+            if (d.congrats_message) return d.congrats_message;
+            if (d.passed) {
+                if (d.next_topic_name) return fmt(L.quizNextFmt, { topic: d.next_topic_name });
+                return L.quizAllDone;
+            }
+            if (d.phase === 1) {
+                if (d.attempts_remaining > 0) {
+                    return d.minutes_needed > 0
+                        ? fmt(L.quizAttemptsLeftFmt, { n: d.attempts_remaining, time: formatMinutes(d.minutes_needed) })
+                        : fmt(L.quizAttemptsLeftNowFmt, { n: d.attempts_remaining });
+                }
+                return fmt(L.quizStudyMoreFmt, { time: formatMinutes(d.minutes_needed) });
+            }
+            return L.quizStudy60Retry;
+        }
+
+        function finishVoiceTest() {
+            setVoiceUi('processing');
+            fetchIdovel(testSubmitUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    subject: subject,
+                    topic_id: currentTopicId,
+                    questions: voiceTestQuestions,
+                    answers: voiceTestAnswers,
+                    language: getChatLanguage(),
+                    ora_szam: voiceTestOraSzam,
+                    oral: true
+                })
+            })
+                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (res) {
+                    voiceTestActive = false;
+                    typing.hidden = true;          /* semmikepp ne maradjon ott */
+                    stopThinkingMessages();
+                    if (!res.ok) {
+                        appendBubble('assistant', L.errNoReply);
+                        setVoiceUi('idle');
+                        return;
+                    }
+                    var d = res.data;
+                    if (d.sidebar) renderSidebar(d.sidebar);
+                    if (d.vocabulary) updateVocabulary(d.vocabulary, d.topic_name);
+                    updateGamification(d.xp, d.game_level, d.coins, d.penztarca);
+                    // Hangos teszt: a sín ugyanúgy célba ér, mint írásban.
+                    if (d.passed) { leckeVege = true; leckeAllomasra(4); kabalaOrul(); }
+                    if (d.topic_done) {
+                        setTimeout(function () {
+                            confetti({
+                                particleCount: 150,
+                                spread: 100,
+                                origin: { y: 0.6 },
+                                colors: ['#26ccff', '#a25afd', '#ff5e7e', '#88ff5a', '#fcff42', '#ffa62d', '#ff36ff']
+                            });
+                        }, 200);
+                    }
+                    var message = buildVoiceResultMessage(d);
+                    appendBubble('assistant', message);
+                    var fullSpeech = message;
+                    if (d.voice_feedback) {
+                        appendBubble('assistant', d.voice_feedback);
+                        fullSpeech += ' ' + d.voice_feedback;
+                    }
+                    setVoiceUi('speaking');
+                    playTts(fullSpeech)
+                        .then(function () { setVoiceUi('idle'); })
+                        .catch(function () { setVoiceUi('idle'); });
+                })
+                .catch(function (e) {
+                    voiceTestActive = false;
+                    typing.hidden = true;
+                    stopThinkingMessages();
+                    appendBubble('assistant', halozatiUzenet(e));
+                    setVoiceUi('idle');
+                });
+        }
+
+        function startVoiceTest() {
+            if (btnTest) { btnTest.disabled = true; btnTest.textContent = L.testGenerating; }
+            fetchIdovel(testGenUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    subject: subject,
+                    topic_id: currentTopicId,
+                    language: getChatLanguage()
+                })
+            })
+                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (res) {
+                    if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
+                    if (res.data && res.data.ok === false) {
+                        var msg = res.data.message || L.quizCreateFailed;
+                        appendBubble('assistant', msg);
+                        playTts(msg).catch(function () {});
+                        return;
+                    }
+                    if (!res.ok || !res.data.questions || !res.data.questions.length) {
+                        appendBubble('assistant', L.quizCreateFailed);
+                        playTts(L.quizCreateFailed).catch(function () {});
+                        return;
+                    }
+                    voiceTestQuestions = res.data.questions;
+                    voiceTestAnswers = new Array(voiceTestQuestions.length).fill(null);
+                    voiceTestIndex = 0;
+                    voiceTestOraSzam = res.data.ora_szam || 0;
+                    voiceTestActive = true;
+                    askVoiceTestQuestion();
+                })
+                .catch(function (e) {
+                    if (btnTest) { btnTest.disabled = false; btnTest.textContent = L.testStartShort; }
+                    typing.hidden = true;
+                    stopThinkingMessages();
+                    appendBubble('assistant', halozatiUzenet(e));
+                });
+        }
+
+        /* A MIKROFONGOMB KAPCSOLÓ: egy nyomás indít, a következő leállít.
+           A gombot NEM kell nyomva tartani – a nyomva tartás elvonta a
+           gyerek figyelmét a beszédről, és ha az ujja lecsúszott a gombról,
+           a mondat közepén elvágta a felvételt. */
+        var mikrofonIndul = false;         /* a mikrofon még nyílik (getUserMedia) */
+        var megallitasKerve = false;       /* a leállítás korábban jött, mint a mikrofon */
+        var felvetelKezdet = 0;
+        var hosszOra = null;
+        var LEGROVIDEBB_FELVETEL = 350;    /* ennél rövidebb: véletlen dupla koppintás */
+        var LEGHOSSZABB_FELVETEL = 90000;  /* ha elfelejti leállítani, magától lezárul */
+
+        function stopRecording() {
+            /* A getUserMedia lassú (engedélykérés, eszköznyitás). Ha a
+               leállítás közben érkezik, jegyezzük meg: az indulás végén
+               azonnal le fog állni. */
+            if (mikrofonIndul) { megallitasKerve = true; return; }
+            if (hosszOra) { clearTimeout(hosszOra); hosszOra = null; }
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+            }
+        }
+
+        function startRecording() {
+            if (voiceState === 'recording' || mikrofonIndul) return;
+            mikrofonIndul = true;
+            megallitasKerve = false;
+            if (currentAudio) {
+                currentAudio.pause();
+                URL.revokeObjectURL(currentAudio.src);
+                currentAudio = null;
+            }
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(function (stream) {
+                    mediaStream = stream;
+                    audioChunks = [];
+                    var mime = 'audio/webm';
+                    if (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported) {
+                        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
+                            mime = 'audio/webm;codecs=opus';
+                        } else if (!MediaRecorder.isTypeSupported('audio/webm')) {
+                            mime = '';
+                        }
+                    }
+                    var options = mime ? { mimeType: mime } : undefined;
+                    mediaRecorder = new MediaRecorder(stream, options);
+                    mediaRecorder.ondataavailable = function (e) {
+                        if (e.data && e.data.size > 0) audioChunks.push(e.data);
+                    };
+                    mediaRecorder.onstop = function () {
+                        if (hosszOra) { clearTimeout(hosszOra); hosszOra = null; }
+                        if (mediaStream) {
+                            mediaStream.getTracks().forEach(function (t) { t.stop(); });
+                            mediaStream = null;
+                        }
+                        var type = (mediaRecorder && mediaRecorder.mimeType) || 'audio/webm';
+                        var blob = new Blob(audioChunks, { type: type });
+                        /* Fél másodpercnél rövidebb felvételből csak egy
+                           szótöredék lesz ("Ba.", "Ott…"), amire a tanár
+                           aztán komolyan válaszol. Inkább kérjük újra. */
+                        if (Date.now() - felvetelKezdet < LEGROVIDEBB_FELVETEL) {
+                            setVoiceUi('idle');
+                            if (voiceStatus) { voiceStatus.textContent = L.voiceTooShort; }
+                            return;
+                        }
+                        uploadAndProcess(blob);
+                    };
+                    mediaRecorder.start();
+                    felvetelKezdet = Date.now();
+                    mikrofonIndul = false;
+                    setVoiceUi('recording');
+                    /* Ha a gyerek elfelejti leállítani, ne vegyen fel a
+                       végtelenségig. */
+                    hosszOra = setTimeout(function () {
+                        hosszOra = null;
+                        stopRecording();
+                    }, LEGHOSSZABB_FELVETEL);
+                    /* Ha a második nyomás már megtörtént, amíg a mikrofon
+                       nyílt, most azonnal álljunk le. */
+                    if (megallitasKerve) { stopRecording(); }
+                })
+                .catch(function () {
+                    mikrofonIndul = false;
+                    alert(L.voiceMicPermission);
+                    setVoiceUi('idle');
+                });
+        }
+
+        /* Egyetlen nyomás: ha nem vesz fel, indít; ha vesz fel, leállít. */
+        function toggleRecording() {
+            if (voiceState === 'recording' || mikrofonIndul) {
+                stopRecording();
+                return;
+            }
+            startRecording();
+        }
+
+        if (typeof navigator === 'undefined' || !navigator.mediaDevices ||
+            typeof MediaRecorder === 'undefined') {
+            if (voiceMicBtn) voiceMicBtn.hidden = true;
+            if (voiceUnsupported) voiceUnsupported.hidden = false;
+            if (voicePanel) voicePanel.classList.add('unsupported');
+        } else if (voiceMicBtn) {
+            /* EGY esemény kezeli az indítást és a leállítást is. A
+               pointerdown azonnal reagál (nincs koppintás-késleltetés), és
+               nem duplázódik a click-kel, mint a touchstart tenné. */
+            if (window.PointerEvent) {
+                voiceMicBtn.addEventListener('pointerdown', function (e) {
+                    e.preventDefault();
+                    toggleRecording();
+                });
+            } else {
+                voiceMicBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    toggleRecording();
+                });
+            }
+            /* Ha a lap elveszti a fókuszt (értesítés, más ablak), a
+               mikrofon ne maradjon élőben a háttérben. A mikrofon nyílása
+               közben viszont hagyjuk békén: az engedélykérő ablak maga is
+               fókuszvesztést okoz, és ez levágná a felvétel elejét. */
+            window.addEventListener('blur', function () {
+                if (mikrofonIndul) { return; }
+                stopRecording();
+            });
+        }
+
+        // Belépéskor olvassuk fel a legutolsó (üdvözlő) asszisztens üzenetet,
+        // hogy egy nem-olvasó gyerek is értse, mi történik. Ha a böngésző
+        // letiltja az automatikus lejátszást, maradjunk csendben.
+        (function playWelcomeMessage() {
+            // A lecke elején KÉT asszisztens-üzenet van egymás után: a bemutatkozó
+            // köszönés és az első tanítás. Mindkettőt fel kell olvasni, ezért a
+            // végéről visszafelé összeszedjük az egymást követő asszisztens
+            // buborékokat az utolsó gyerek-üzenetig (beszélgetés közben ez
+            // értelemszerűen csak a legfrissebb választ jelenti).
+            var allBubbles = messagesEl.querySelectorAll(
+                '.chat-bubble-assistant:not(.chat-typing), .chat-bubble-user'
+            );
+            if (!allBubbles.length) return;
+            var texts = [];
+            for (var i = allBubbles.length - 1; i >= 0; i--) {
+                var b = allBubbles[i];
+                if (!b.classList.contains('chat-bubble-assistant')) break;
+                var innerEl = b.querySelector('.chat-bubble-inner');
+                if (!innerEl) continue;
+                var clone = innerEl.cloneNode(true);
+                clone.querySelectorAll('.chat-figure').forEach(function (f) { f.remove(); });
+                var t = (clone.textContent || '').trim();
+                if (t) texts.unshift(t);
+            }
+            if (!texts.length) return;
+            playTts(texts.join(' ')).catch(function () {});
+        })();
+    }
+
+    // ── Induló állapot: a sín és az érme-csík az oldal betöltésekor ──
+    leckeSinFrissit();
+    ermeCsikFrissit(
+        (document.getElementById('coins-display') || {}).textContent || 0);
+
+    // Az oldal betöltésekor is legyen három választógomb a legutolsó tanári
+    // üzenet alatt – ne csak akkor, ha közben érkezett új válasz.
+    (function () {
+        var utolso = messagesEl.querySelectorAll(
+            '.chat-bubble-assistant:not(.chat-typing), .chat-bubble-user');
+        var v = utolso.length ? utolso[utolso.length - 1] : null;
+        if (v && v.classList.contains('chat-bubble-assistant') &&
+            !v.querySelector('.feladat')) {
+            var belso = v.querySelector('.chat-bubble-inner');
+            valasztoGombokBe(belso ? belso.textContent : '');
+        }
+    })();
+
+    scrollToBottom();
+})();
+</script>
+{% endblock %}

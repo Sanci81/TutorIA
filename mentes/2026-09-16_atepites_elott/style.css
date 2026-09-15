@@ -3703,24 +3703,3 @@ html, body {
     border: none;
 }
 .gyerek-torles-gomb:hover { background: #9b2c2c; }
-
-
-/* ── JELSZÓ MEZŐ SZEM GOMBBAL ──────────────────────────────────────
-   A szülő lássa, mit gépelt. A gomb a mező jobb szélén ül, nem tolja
-   el a szerkezetet. */
-.jelszo-sor { position: relative; }
-.jelszo-sor input { width: 100%; padding-right: 46px; }
-.jelszo-szem {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    border: 0;
-    background: none;
-    font-size: 18px;
-    line-height: 1;
-    padding: 6px 8px;
-    cursor: pointer;
-    opacity: .65;
-}
-.jelszo-szem:hover { opacity: 1; }

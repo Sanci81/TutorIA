@@ -1239,6 +1239,44 @@ def ertesitendo_szulok(ma: date | None = None) -> list[dict[str, Any]]:
         db.close()
 
 
+MEGORZES_HONAP = 12   # ennyi ideig őrizzük meg a beszélgetéseket
+
+
+def regi_beszelgetesek_torlese(honap: int = MEGORZES_HONAP) -> dict[str, int]:
+    """A megadott hónapnál régebbi BESZÉLGETÉSEK végleges törlése.
+
+    MIÉRT
+        A GDPR nem ír elő konkrét határidőt, de azt igen, hogy ne tároljunk
+        többet és tovább, mint amennyi indokolt. Egy gyerek egy évnél
+        régebbi chatje már semmire nem kell: a haladást külön táblák
+        őrzik, azokhoz NEM nyúlunk.
+
+    MIT NEM TÖRÖL
+        Tanulási időt, teszteredményeket, pontokat, kártyákat, szójegyzéket
+        — csak és kizárólag a chat_sessions sorokat, és velük (az
+        adatbázis CASCADE szabálya szerint) a hozzájuk tartozó üzeneteket.
+
+    Visszaad: hány beszélgetést törölt, és mi volt a határnap.
+    """
+    hatar = datetime.now(timezone.utc) - timedelta(days=int(honap) * 30)
+    db = _session()
+    try:
+        regiek = db.scalars(
+            select(ChatSession).where(ChatSession.created_at < hatar)
+        ).all()
+        db_szam = 0
+        for sor in regiek:
+            db.delete(sor)
+            db_szam += 1
+        db.commit()
+        return {"torolt": db_szam, "hatar": hatar.date().isoformat()}
+    except Exception:
+        db.rollback()
+        return {"torolt": 0, "hatar": hatar.date().isoformat()}
+    finally:
+        db.close()
+
+
 def osszes_ertesitheto_szulo() -> list[dict[str, Any]]:
     """MINDEN szülő, aki kért értesítést – az esedékességtől függetlenül.
 
