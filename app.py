@@ -1250,7 +1250,7 @@ def register():
 def _jogi_adatok() -> dict[str, str]:
     return {
         "uzemelteto": os.environ.get("UZEMELTETO", "Vigh Sándor"),
-        "kapcsolat": os.environ.get("KAPCSOLAT_EMAIL", "vigh.sandor81@gmail.com"),
+        "kapcsolat": os.environ.get("KAPCSOLAT_EMAIL", "info@tutoriacademia.com"),
         # A Railway régiója MÉRT adat, nem tipp: a projekt beállításainál
         # "US West (California, USA)" áll. Ha egyszer EU-ba költözik az
         # adatbázis, elég ezt az egy sort átírni – vagy a RAILWAY_REGIO
@@ -1266,7 +1266,7 @@ def _jogi_adatok() -> dict[str, str]:
     }
 
 
-JOGI_FRISSITVE = "2026. augusztus 25."
+JOGI_FRISSITVE = "2026. szeptember 15."
 
 
 # ── A szülő utolsó aktivitása ───────────────────────────────────────────────
