@@ -1257,6 +1257,11 @@ def _jogi_adatok() -> dict[str, str]:
         # környezeti változót beállítani, az felülírja.
         "railway_regio": os.environ.get(
             "RAILWAY_REGIO", "US West (Kalifornia, USA)"),
+        # A Resend régiója a Resend fiókban, a domainnél látszik. Ha az
+        # EU-t választottuk, állítsd be a RESEND_REGIO változót:
+        #   RESEND_REGIO = "Európai Unió (Írország)"
+        "resend_regio": os.environ.get(
+            "RESEND_REGIO", "Egyesült Államok"),
         "frissitve": JOGI_FRISSITVE,
     }
 
