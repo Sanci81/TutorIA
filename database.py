@@ -1239,6 +1239,27 @@ def ertesitendo_szulok(ma: date | None = None) -> list[dict[str, Any]]:
         db.close()
 
 
+def osszes_ertesitheto_szulo() -> list[dict[str, Any]]:
+    """MINDEN szülő, aki kért értesítést – az esedékességtől függetlenül.
+
+    Kizárólag a PRÓBA-futtatáshoz van: abból derül ki, hogy a levél
+    összeáll-e és jó címre menne-e. Valódi küldésre soha nem használjuk,
+    mert az szétlőné az ütemezést (mindenki ugyanaznap kapna levelet).
+    """
+    db = _session()
+    try:
+        ki: list[dict[str, Any]] = []
+        for p in db.scalars(select(Parent)).all():
+            mod = (p.ertesites or "heti").strip().lower()
+            if mod not in _ERTESITES_NAPOK:
+                continue
+            ki.append({"id": p.id, "email": p.email, "mod": mod,
+                       "utolso": p.utolso_ertesites})
+        return ki
+    finally:
+        db.close()
+
+
 def ertesites_elkuldve(parent_id: int, nap: date | None = None) -> None:
     """Feljegyzi, hogy ma ment ki jelentés. Enélkül holnap újra kimenne."""
     db = _session()

@@ -1773,8 +1773,18 @@ def feladat_ertesites():
         nev, _, dom = cim.partition("@")
         return f"{nev[:2]}***@{dom}"
 
+    # PRÓBÁHOZ: mindenkit listázunk, esedékességtől függetlenül.
+    #
+    # A levél a regisztráció napjához igazodik (hogy ne menjen ki minden
+    # szülőnek ugyanazon a napon), ezért a legtöbb napon "nincs esedékes"
+    # a válasz — és így nem lehetne kipróbálni, hogy egyáltalán működik-e.
+    # Ez a kapcsoló CSAK próbában él: küldeni sosem küld tőle semmi.
+    _mind = proba and request.args.get("mind") == "1"
+    _szulok = (database.osszes_ertesitheto_szulo() if _mind
+               else database.ertesitendo_szulok())
+
     kimenet = []
-    for szulo in database.ertesitendo_szulok():
+    for szulo in _szulok:
         napok = {"napi": 1, "heti": 7, "havi": 30}.get(szulo["mod"], 7)
         jelentes = database.szuloi_jelentes(szulo["id"], napok=napok)
         # Napi módban üres napról NE küldjünk – abból lesz a spam-jelölés.
