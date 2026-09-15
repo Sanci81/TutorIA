@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}{{ t('hogymegy_cim') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+{# ── „HOGY MEGY?” – a szülői haladás-oldal ─────────────────────────────
+   Ugyanazt mutatja, mint a haladás-jelentés levél. Szándékosan: a
+   szülőnek ne kelljen kétféle számot összevetnie. A különbség csak az,
+   hogy itt ő választja meg az időszakot.
+
+   Ha a gyerek nem tanult, azt IS kiírjuk. Az elhallgatott rossz hír
+   később mondja fel az előfizetést, nem a rossz hír maga. #}
+<style>
+  .hm{max-width:720px;margin:0 auto;padding:24px 16px 64px}
+  .hm h1{font-size:1.8rem;margin:0 0 8px}
+  .hm .bevezeto{color:#4b5563;line-height:1.6;margin:0 0 20px}
+
+  .hm-valaszto{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .hm-valaszto a{display:inline-block;padding:9px 18px;border-radius:999px;
+                 border:1px solid #d9dee7;background:#fff;color:#1f3a63;
+                 text-decoration:none;font-size:.95rem;font-weight:600}
+  .hm-valaszto a.aktiv{background:#1f3a63;border-color:#1f3a63;color:#fff}
+
+  .hm-gyerek{border:1px solid #d9dee7;border-radius:14px;background:#fff;
+             padding:18px 20px;margin-bottom:16px}
+  .hm-nev{font-size:1.15rem;font-weight:700;margin:0 0 10px}
+  .hm-perc{font-size:1.9rem;font-weight:800;color:#16a34a;line-height:1.1}
+  .hm-napon{color:#6b7280;margin-left:6px;font-size:1rem;font-weight:400}
+  .hm-sor{margin:12px 0 0;color:#4b5563;line-height:1.6}
+  .hm-sor b{color:#1a1f2b}
+
+  .hm-jo{margin:12px 0 0;padding:10px 14px;background:#f0fdf4;
+         border-left:3px solid #16a34a;border-radius:0 8px 8px 0;line-height:1.6}
+  .hm-gyenge{margin:12px 0 0;padding:10px 14px;background:#fff8e6;
+             border-left:3px solid #e8a33d;border-radius:0 8px 8px 0;line-height:1.6}
+  .hm-gyenge small{display:block;color:#8a6a1f;margin-top:4px}
+
+  .hm-gyujtemeny{margin:14px 0 0;color:#6b7280;font-size:.92rem}
+  .hm-semmi{margin:0;color:#6b7280}
+  .hm-lab{color:#6b7280;font-size:.92rem;margin-top:22px}
+</style>
+
+<div class="hm">
+  <h1>{{ t('hogymegy_cim') }}</h1>
+  <p class="bevezeto">{{ t('hogymegy_bevezeto') }}</p>
+
+  {# IDŐSZAK-VÁLASZTÓ. Sima linkek, nem JavaScript: így a szülő vissza
+     tud lépni a böngésző gombjával, és a cím is megjegyezhető. #}
+  <div class="hm-valaszto">
+    {% for kulcs in idoszakok %}
+    <a href="{{ url_for('hogy_megy', idoszak=kulcs) }}"
+       class="{{ 'aktiv' if kulcs == idoszak else '' }}">
+      {{ t('hogymegy_' ~ kulcs) }}
+    </a>
+    {% endfor %}
+  </div>
+
+  {% if not jelentes.gyerekek %}
+    <div class="hm-gyerek">
+      <p class="hm-semmi">{{ t('hogymegy_nincs_gyerek') }}</p>
+    </div>
+  {% endif %}
+
+  {% for gy in jelentes.gyerekek %}
+  <div class="hm-gyerek">
+    <h2 class="hm-nev">{{ gy.nev }}</h2>
+
+    {% if gy.perc and gy.perc > 0 %}
+      <div>
+        <span class="hm-perc">{{ gy.perc }} {{ t('hogymegy_perc') }}</span>
+        <span class="hm-napon">
+          {{ t('hogymegy_napon').replace('{napok}', gy.napok|string) }}
+        </span>
+      </div>
+
+      {% if gy.tantargyak %}
+      <p class="hm-sor">
+        <b>{{ t('hogymegy_mivel') }}:</b>
+        {% for nev, perc in gy.tantargyak[:5] %}
+          {{ nev }} <b>{{ perc|round|int }}p</b>{% if not loop.last %} · {% endif %}
+        {% endfor %}
+      </p>
+      {% endif %}
+
+      {% if gy.teljesitett %}
+      <p class="hm-jo">
+        <b>{{ t('hogymegy_sikerult') }}:</b>
+        {% for t_ in gy.teljesitett %}
+          {{ t_.nev }} ({{ t_.pont }}%){% if not loop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+      {% endif %}
+
+      {% if gy.gyenge %}
+      <p class="hm-gyenge">
+        <b>{{ t('hogymegy_kuzd') }}:</b>
+        {% for t_ in gy.gyenge %}
+          {{ t_.nev }} ({{ t_.pont }}%){% if not loop.last %}, {% endif %}
+        {% endfor %}
+        <small>{{ t('hogymegy_kuzd_alcim') }}</small>
+      </p>
+      {% endif %}
+
+      <p class="hm-gyujtemeny">
+        {{ t('hogymegy_gyujtemeny')
+             .replace('{szavak}', gy.szavak|string)
+             .replace('{kartyak}', gy.kartyak|string) }}
+      </p>
+    {% else %}
+      <p class="hm-semmi">{{ t('hogymegy_nincs') }}</p>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <p class="hm-lab">
+    {{ t('hogymegy_levelrol') }}
+    <a href="{{ url_for('fiok') }}">{{ t('nav_account') }}</a>
+  </p>
+</div>
+{% endblock %}

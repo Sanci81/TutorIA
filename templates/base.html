@@ -74,6 +74,9 @@
                     </span>
                     {% endif %}
                     <a href="{{ url_for('dashboard') }}">{{ t('nav_dashboard') }}</a>
+                    {# A haladás a szülőnek a legfontosabb kérdés: amiért
+                       fizet, az működik-e. Ezért a Csomagok ELŐTT áll. #}
+                    <a href="{{ url_for('hogy_megy') }}">{{ t('hogymegy_cim') }}</a>
                     <a href="{{ url_for('csomagok_oldal') }}">{{ t('csomag_cim') }}</a>
                     <a href="{{ url_for('fiok') }}">{{ t('nav_account') }}</a>
                     <a href="{{ url_for('logout') }}">{{ t('nav_logout') }}</a>

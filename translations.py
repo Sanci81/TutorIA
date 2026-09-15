@@ -498,6 +498,45 @@ TRANSLATIONS = {
              "cierre, donde podrás demostrar lo que sabes!",
     },
     # ── Gyerek törlése (az előfizetés érintetlen marad) ─────────────────
+    # ── „Hogy megy?” – a szülői haladás-oldal ───────────────────────────
+    "hogymegy_cim": {"hu": "Hogy megy?", "es": "¿Cómo va?"},
+    "hogymegy_bevezeto": {
+        "hu": ("Itt látod, mit tanult a gyereked, mi ment jól, és mivel "
+               "küzd még. Ugyanaz, ami a levélben is megy — csak itt te "
+               "választod ki az időszakot."),
+        "es": ("Aquí ves qué ha estudiado tu hijo o hija, qué le ha salido "
+               "bien y qué le cuesta todavía. Es lo mismo que enviamos por "
+               "correo; aquí eliges tú el período."),
+    },
+    "hogymegy_nap": {"hu": "Ma", "es": "Hoy"},
+    "hogymegy_het": {"hu": "Ez a hét", "es": "Esta semana"},
+    "hogymegy_honap": {"hu": "Ez a hónap", "es": "Este mes"},
+    "hogymegy_nincs": {
+        "hu": "Ebben az időszakban nem volt tanulás.",
+        "es": "En este período no ha habido estudio.",
+    },
+    "hogymegy_nincs_gyerek": {
+        "hu": "Még nincs felvett gyerek.",
+        "es": "Todavía no has añadido ningún niño.",
+    },
+    "hogymegy_perc": {"hu": "perc", "es": "minutos"},
+    "hogymegy_napon": {"hu": "{napok} napon", "es": "en {napok} días"},
+    "hogymegy_mivel": {"hu": "Mivel foglalkozott", "es": "Qué ha trabajado"},
+    "hogymegy_sikerult": {"hu": "Ami sikerült", "es": "Lo que ha conseguido"},
+    "hogymegy_kuzd": {"hu": "Amivel még küzd", "es": "Lo que aún le cuesta"},
+    "hogymegy_kuzd_alcim": {
+        "hu": "Ezeket érdemes vele átnézni.",
+        "es": "Merece la pena repasarlo con él o ella.",
+    },
+    "hogymegy_gyujtemeny": {
+        "hu": "{szavak} szó a szójegyzékben · {kartyak} kártya a gyűjteményben",
+        "es": "{szavak} palabras en el vocabulario · {kartyak} cartas",
+    },
+    "hogymegy_levelrol": {
+        "hu": "A levél gyakoriságát a Fiókom oldalon állíthatod.",
+        "es": "Puedes cambiar la frecuencia del correo en Mi cuenta.",
+    },
+
     # ── Értesítés-beállítás (NEM fióktörlés!) ───────────────────────────
     # Ez az űrlap korábban a fióktörlés hibaüzenetét mutatta, és rossz
     # jelszónál azzal ijesztgetett, hogy "a fiók nem lett törölve".

@@ -1338,6 +1338,32 @@ def fiok():
     )
 
 
+@app.route("/hogy-megy")
+@pin_required
+def hogy_megy():
+    """A szülő itt megnézheti a haladást, levél nélkül is.
+
+    UGYANAZT az adatot mutatja, mint a haladás-jelentés levél — nem
+    számoljuk másodszor is, mert akkor a kettő idővel elcsúszna
+    egymástól. A különbség csak annyi, hogy itt a szülő maga
+    választhatja meg az időszakot.
+    """
+    _valaszthato = {"nap": 1, "het": 7, "honap": 30}
+    idoszak = (request.args.get("idoszak") or "het").strip().lower()
+    if idoszak not in _valaszthato:
+        idoszak = "het"
+
+    jelentes = database.szuloi_jelentes(
+        session["parent_id"], napok=_valaszthato[idoszak]
+    )
+    return render_template(
+        "hogy_megy.html",
+        jelentes=jelentes,
+        idoszak=idoszak,
+        idoszakok=list(_valaszthato.keys()),
+    )
+
+
 @app.route("/fiok/adatok")
 @pin_required
 def fiok_export():
