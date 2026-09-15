@@ -1728,7 +1728,8 @@ def ertesites_beallit():
     jelszo = request.form.get("jelszo") or ""
     mod = (request.form.get("mod") or "").strip().lower()
     if not szulo or not check_password_hash(szulo.get("password_hash") or "", jelszo):
-        flash(i18n.t("account_delete_bad_password", g.lang), "error")
+        # SAJÁT üzenet: ez az űrlap nem töröl semmit, csak beállít.
+        flash(i18n.t("notify_bad_password", g.lang), "error")
     elif mod == "napi" and not csomagok.napi_jelentes(_szulo_csomag()):
         # A heti és a havi mindenkinek jár; a napi a nagyobb csomagokban.
         flash(i18n.t("notify_daily_csomag", g.lang), "error")

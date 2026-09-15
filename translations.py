@@ -498,6 +498,14 @@ TRANSLATIONS = {
              "cierre, donde podrás demostrar lo que sabes!",
     },
     # ── Gyerek törlése (az előfizetés érintetlen marad) ─────────────────
+    # ── Értesítés-beállítás (NEM fióktörlés!) ───────────────────────────
+    # Ez az űrlap korábban a fióktörlés hibaüzenetét mutatta, és rossz
+    # jelszónál azzal ijesztgetett, hogy "a fiók nem lett törölve".
+    "notify_password": {"hu": "A jelszavad", "es": "Tu contraseña"},
+    "notify_bad_password": {
+        "hu": "A jelszó nem stimmel – a beállítás nem változott.",
+        "es": "La contraseña no coincide: el ajuste no ha cambiado.",
+    },
     "child_delete_title": {"hu": "Gyerek törlése",
                            "es": "Eliminar al niño"},
     "child_delete_info": {
