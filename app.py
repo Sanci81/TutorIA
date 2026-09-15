@@ -7400,6 +7400,21 @@ def child_vocabulary(child_id: int):
     return jsonify({"words": words})
 
 
+# ── AZ ÚJ MUNKAFELÜLET KAPCSOLÓJA ──────────────────────────────────────────
+# Külön cím, hogy ne kelljen a chat hosszú webcímét kézzel toldozni. Elég
+# egyszer meglátogatni, és onnantól a munkamenet végéig az új felület megy:
+#     tutoriacademia.com/uj-felulet     → bekapcsol
+#     tutoriacademia.com/regi-felulet   → visszakapcsol
+# A chat oldalon a ?felulet=uj / ?felulet=regi is működik, ez csak kényelem.
+@app.route("/uj-felulet")
+@app.route("/regi-felulet")
+@login_required
+def uj_felulet_kapcsolo():
+    session["uj_felulet"] = request.path.rstrip("/").endswith("uj-felulet")
+    # Oda megy vissza, ahonnan jött. Ha a címsorba írták be, a vezérlőpultra.
+    return redirect(request.referrer or url_for("dashboard"))
+
+
 @app.route("/children/<int:child_id>/chat")
 @login_required
 def child_chat(child_id: int):
