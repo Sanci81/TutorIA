@@ -23,7 +23,12 @@ SZOVEG = {
     "hu": {
         "targy_van": "TutorIA – {nev} haladása",
         "targy_tobb": "TutorIA – a gyerekek haladása",
-        "targy_ures": "TutorIA – ezen a héten nem volt tanulás",
+        # A tárgy a BEÁLLÍTOTT gyakorisághoz igazodik. Korábban akkor is
+        # "ezen a héten" állt benne, ha a szülő napi vagy havi jelentést
+        # kért — és a levél így mást állított, mint amit ő beállított.
+        "targy_ures_napi": "TutorIA – ma nem volt tanulás",
+        "targy_ures_heti": "TutorIA – ezen a héten nem volt tanulás",
+        "targy_ures_havi": "TutorIA – ebben a hónapban nem volt tanulás",
         "koszones": "Kedves Szülő!",
         "bevezeto_van": "Itt van, mi történt {idoszak}.",
         "bevezeto_ures": (
@@ -49,7 +54,9 @@ SZOVEG = {
     "es": {
         "targy_van": "TutorIA – el progreso de {nev}",
         "targy_tobb": "TutorIA – el progreso de tus hijos",
-        "targy_ures": "TutorIA – esta semana no ha habido estudio",
+        "targy_ures_napi": "TutorIA – hoy no ha habido estudio",
+        "targy_ures_heti": "TutorIA – esta semana no ha habido estudio",
+        "targy_ures_havi": "TutorIA – este mes no ha habido estudio",
         "koszones": "Hola:",
         "bevezeto_van": "Esto es lo que ha pasado {idoszak}.",
         "bevezeto_ures": (
@@ -77,7 +84,14 @@ SZOVEG = {
 _KERET = """<!doctype html><html><body style="margin:0;padding:0;background:#f6f8fb">
 <div style="max-width:560px;margin:0 auto;padding:26px 18px 40px;
      font:16px/1.6 -apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#1a1f2b">
-  <div style="font-size:1.25rem;font-weight:700;color:#1f3a63;margin-bottom:18px">TutorIA</div>
+  <!-- A fejléc: az égő és a név egymás mellett. A levelezők nem tudnak
+       SVG-t megjeleníteni, ezért PNG-t használunk, abszolút címmel. -->
+  <div style="margin-bottom:18px">
+    <img src="{app}/static/img/tutoria_logo.png" width="34" height="34" alt=""
+         style="vertical-align:middle;border:0;border-radius:9px">
+    <span style="vertical-align:middle;font-size:1.25rem;font-weight:700;
+                 color:#1f3a63;margin-left:9px">TutorIA</span>
+  </div>
   {torzs}
   <div style="margin-top:26px;text-align:center">
     <a href="{app}" style="display:inline-block;background:#16a34a;color:#fff;
@@ -140,7 +154,8 @@ def keszit(jelentes: dict, *, nyelv: str = "hu",
     idoszak = sz.get(jelentes.get("mod", "heti"), sz["heti"])
 
     if not jelentes.get("van_tanulas"):
-        targy = sz["targy_ures"]
+        targy = sz.get("targy_ures_" + jelentes.get("mod", "heti"),
+                       sz["targy_ures_heti"])
         bevezeto = sz["bevezeto_ures"].format(idoszak=idoszak.capitalize())
     else:
         tanulok = [g for g in gyerekek if g["perc"] > 0]
