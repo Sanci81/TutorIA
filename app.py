@@ -7902,8 +7902,19 @@ def child_chat(child_id: int):
     # kabala megmarad, a "nem adom meg" pedig továbbra is üres oszlopot ad.
     _kabala_robot = (_neme == "robot")
 
+    # ── ÚJ MUNKAFELÜLET (próbamód) ──────────────────────────────────────
+    # A tanítás a munkatérre kerül, a beszélgetés keskeny sávba szorul
+    # mellé. Egyelőre KAPCSOLÓVAL: a ?felulet=uj bekapcsolja, a
+    # ?felulet=regi visszakapcsolja, és a választás a munkamenetben marad.
+    # Amíg nincs bekapcsolva, a chat oldal minden bájtja a régi.
+    _fel = (request.args.get("felulet") or "").strip().lower()
+    if _fel in ("uj", "regi"):
+        session["uj_felulet"] = (_fel == "uj")
+    _uj_felulet = bool(session.get("uj_felulet"))
+
     return render_template(
         "chat.html",
+        uj_felulet=_uj_felulet,
         kabala_kep=_kabala,
         kabala_robot=_kabala_robot,
         child=child,

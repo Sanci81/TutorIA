@@ -499,6 +499,13 @@ TRANSLATIONS = {
     },
     # ── Gyerek törlése (az előfizetés érintetlen marad) ─────────────────
     # ── „Hogy megy?” – a szülői haladás-oldal ───────────────────────────
+    # ── ÚJ MUNKAFELÜLET ────────────────────────────────────────────────
+    # A keskeny beszélgetés-sáv feliratai. Csak akkor látszanak, ha az
+    # új felület be van kapcsolva.
+    "uj_beszelgetes": {"hu": "Beszélgetés", "es": "Conversación"},
+    "uj_csuk": {"hu": "Összecsukom", "es": "Plegar"},
+    "uj_nyit": {"hu": "Kinyitom", "es": "Desplegar"},
+
     "hogymegy_cim": {"hu": "Hogy megy?", "es": "¿Cómo va?"},
     "hogymegy_bevezeto": {
         "hu": ("Itt látod, mit tanult a gyereked, mi ment jól, és mivel "

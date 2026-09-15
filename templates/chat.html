@@ -87,6 +87,92 @@
     .munkater{padding:16px 14px}
   }
 
+{% if uj_felulet %}
+  /* ══ ÚJ MUNKAFELÜLET ═════════════════════════════════════════════════
+     Megfordítjuk a képernyőt: ami eddig a beszélgetésben folyt – a tanár
+     magyarázata –, az átkerül a munkatérre, nagy betűvel, és a
+     beszélgetés szorul mellé keskeny oszlopba. A gyerek így nem egy
+     végtelen chatet görget, hanem egy táblát néz.
+
+     MINDEN szabály a .uj-felulet osztály alatt van, azt pedig csak a
+     ?felulet=uj kapcsolja be. Kikapcsolva az oldal egy pixelt sem
+     változik – ezért lehet élesben kipróbálni. */
+  .munka-sav.uj-felulet,
+  .munka-sav.uj-felulet.van-munka{
+      display:grid;grid-template-columns:1fr minmax(260px,320px);
+      grid-template-areas:"tanit beszelo" "munka beszelo";
+      grid-template-rows:auto auto;gap:16px;align-items:start}
+  .munka-sav.uj-felulet.csukva,
+  .munka-sav.uj-felulet.csukva.van-munka{grid-template-columns:1fr 54px}
+
+  .uj-felulet #tanit{grid-area:tanit}
+  .uj-felulet #munkater{grid-area:munka}
+  .uj-felulet #beszelo{grid-area:beszelo}
+
+  /* ── a tábla: itt tanít a tanár ── */
+  .uj-felulet .tanit{background:#fff;border:1px solid #e2e9f0;
+      border-radius:18px;padding:22px 26px 20px;min-width:0}
+  .uj-felulet .tanit-fej{display:flex;align-items:center;gap:10px;
+      margin:0 0 12px}
+  .uj-felulet .tanit-cim{margin:0;font-size:15px;font-weight:700;
+      color:#7a5cc4;letter-spacing:.02em;flex:1;min-width:0}
+  .uj-felulet .tanit-hang{border:0;background:#eef4f1;border-radius:9px;
+      width:30px;height:30px;cursor:pointer;font-size:15px;flex:0 0 auto}
+  .uj-felulet .tanit-szoveg{margin:0;font-size:17.5px;line-height:1.62;
+      white-space:pre-wrap;max-width:58ch;color:#1f2d3a}
+  .uj-felulet .tanit-abra{margin:16px 0 0;max-width:340px}
+  .uj-felulet .tanit-abra svg{width:100%;height:auto;display:block;
+      background:#fff;border-radius:8px}
+  .uj-felulet .tanit-var{color:#8aa0b2;font-style:italic}
+
+  /* ── a keskeny beszélgetés-sáv ── */
+  .uj-felulet .beszelo{background:#fff;border:1px solid #e2e9f0;
+      border-radius:18px;padding:14px 12px;display:flex;
+      flex-direction:column;min-width:0;max-height:72vh}
+  .uj-felulet .beszelo-fej{display:flex;align-items:center;gap:8px;
+      margin-bottom:8px}
+  .uj-felulet .beszelo-cim{flex:1;min-width:0;font:700 11.5px/1.2 inherit;
+      letter-spacing:.06em;text-transform:uppercase;color:#7b8fa3}
+  .uj-felulet .beszelo-csuk{border:0;background:#eef4f1;border-radius:8px;
+      width:28px;height:28px;cursor:pointer;color:#61788f;font-size:15px;
+      flex:0 0 auto}
+  .uj-felulet .beszelo .chat-messages{max-height:none;min-height:0;flex:1;
+      padding:2px;background:transparent !important}
+  .uj-felulet .beszelo .chat-bubble{max-width:100%}
+  .uj-felulet .beszelo .chat-bubble-inner{font-size:14px;line-height:1.45;
+      padding:.6rem .75rem;border-radius:14px}
+  .uj-felulet .beszelo .chat-figure{display:none}
+  .uj-felulet .beszelo .chat-input-bar{margin-top:8px;padding-top:10px}
+  .uj-felulet .beszelo .chat-input-bar textarea{font-size:14px;
+      min-height:2.6rem;padding:.55rem .7rem;border-radius:14px}
+  .uj-felulet .beszelo .chat-send-btn{padding:.6rem .9rem;font-size:13.5px}
+  .uj-felulet .beszelo .chat-valaszto{margin-left:0}
+  .uj-felulet .beszelo .chat-valaszto-gomb{font-size:12.5px;padding:7px 12px}
+
+  .uj-felulet .beszelo-fuggoleges{display:none;writing-mode:vertical-rl;
+      margin:10px auto 0;font:600 12px/1 inherit;color:#7b8fa3;
+      letter-spacing:.06em}
+  .uj-felulet.csukva .beszelo{padding:12px 6px;align-items:center}
+  .uj-felulet.csukva .beszelo-cim,
+  .uj-felulet.csukva .beszelo .chat-messages,
+  .uj-felulet.csukva .beszelo .chat-input-bar,
+  .uj-felulet.csukva .beszelo .voice-panel{display:none}
+  .uj-felulet.csukva .beszelo-fuggoleges{display:block}
+
+  /* Telefonon egymás alatt: tábla, feladat, beszélgetés. */
+  @media (max-width:900px){
+    .munka-sav.uj-felulet,
+    .munka-sav.uj-felulet.van-munka,
+    .munka-sav.uj-felulet.csukva,
+    .munka-sav.uj-felulet.csukva.van-munka{
+        grid-template-columns:1fr;
+        grid-template-areas:"tanit" "munka" "beszelo"}
+    .uj-felulet .beszelo{max-height:none}
+    .uj-felulet .beszelo-csuk{display:none}
+    .uj-felulet .tanit{padding:18px 16px}
+  }
+{% endif %}
+
   /* ── 6–8 év: nagy elemek, meleg felület, kevés szó ── */
   .kor-kicsi .munkater{background:#fffdf6;border-color:#f0e2c2;border-radius:18px}
   .kor-kicsi .munkater-cim{font-size:20px;color:#6b5416}
@@ -385,7 +471,7 @@
            oldalán, a beszélgetés pedig mellé szorul, kommentárként.
            Ha nincs feladat, a munkatér rejtve marad, és minden ugyanaz,
            mint eddig. #}
-        <div class="munka-sav" id="munka-sav">
+        <div class="munka-sav{% if uj_felulet %} uj-felulet{% endif %}" id="munka-sav">
         <section class="munkater" id="munkater" hidden aria-live="polite">
             <div class="munkater-fej">
                 <h2 class="munkater-cim" id="munkater-cim"></h2>
@@ -3521,4 +3607,193 @@
     scrollToBottom();
 })();
 </script>
+
+{% if uj_felulet %}
+<script>
+/* ══ ÚJ MUNKAFELÜLET – a képernyő megfordítása ═══════════════════════════
+   KÜLÖN script, szándékosan. Nem nyúl a fenti kódhoz, nem hív meg belőle
+   semmit, és nem is olvas belőle egyetlen változót sem – csak a kész
+   HTML-t rendezi át. Ezért nem tud elrontani semmit abból, ami eddig
+   működött: ha ez a blokk hibára futna, a chat attól még megy tovább.
+
+   Amit csinál:
+     1. Csinál egy TÁBLÁT a munkasáv tetején, és oda másolja a tanár
+        legutolsó üzenetét – nagy betűvel, az ábrájával együtt.
+     2. A beszélgetést és a beíró mezőt beteszi egy keskeny oszlopba
+        jobbra, amit a gyerek össze is csukhat.
+     3. Figyeli a beszélgetést: valahányszor új tanári üzenet érkezik,
+        a tábla magától frissül. Hangos módban is, mert ugyanabba a
+        listába kerülnek az üzenetek.                                   */
+(function () {
+    "use strict";
+    try {
+        var sav = document.getElementById('munka-sav');
+        var uzenetek = document.getElementById('chat-messages');
+        if (!sav || !uzenetek || !sav.classList.contains('uj-felulet')) {
+            return;
+        }
+
+        /* ── 1. A TÁBLA ─────────────────────────────────────────────── */
+        var tanit = document.createElement('section');
+        tanit.className = 'tanit';
+        tanit.id = 'tanit';
+        tanit.setAttribute('aria-live', 'polite');
+
+        var fej = document.createElement('div');
+        fej.className = 'tanit-fej';
+        var cim = document.createElement('span');
+        cim.className = 'tanit-cim';
+        var cimElem = document.getElementById('current-topic-title');
+        cim.textContent = cimElem ? (cimElem.textContent || '').trim() : '';
+        fej.appendChild(cim);
+
+        /* Felolvasó gomb. Ugyanazt a szöveget adja a meglévő buborék-gomb
+           kezelőjének – nem írunk új hangkezelést, csak megnyomjuk azt,
+           ami már ott van a buborékban. */
+        var hang = document.createElement('button');
+        hang.type = 'button';
+        hang.className = 'tanit-hang';
+        hang.textContent = '\uD83D\uDD0A';
+        hang.title = {{ t('chat_replay_title')|tojson }};
+        hang.addEventListener('click', function () {
+            var b = utolsoTanari();
+            var g = b && b.querySelector('.bubble-replay-btn');
+            if (g) { g.click(); }
+        });
+        fej.appendChild(hang);
+        tanit.appendChild(fej);
+
+        var szoveg = document.createElement('div');
+        szoveg.className = 'tanit-szoveg';
+        szoveg.id = 'tanit-szoveg';
+        tanit.appendChild(szoveg);
+
+        var abra = document.createElement('div');
+        abra.className = 'tanit-abra';
+        abra.id = 'tanit-abra';
+        tanit.appendChild(abra);
+
+        sav.insertBefore(tanit, sav.firstChild);
+
+        /* ── 2. A KESKENY BESZÉLGETÉS-OSZLOP ────────────────────────── */
+        var beszelo = document.createElement('aside');
+        beszelo.className = 'beszelo';
+        beszelo.id = 'beszelo';
+
+        var bfej = document.createElement('div');
+        bfej.className = 'beszelo-fej';
+        var bcim = document.createElement('span');
+        bcim.className = 'beszelo-cim';
+        bcim.textContent = {{ t('uj_beszelgetes')|tojson }};
+        bfej.appendChild(bcim);
+
+        var csuk = document.createElement('button');
+        csuk.type = 'button';
+        csuk.className = 'beszelo-csuk';
+        bfej.appendChild(csuk);
+        beszelo.appendChild(bfej);
+
+        /* A beszélgetést és a beíró mezőt ÁTMOZGATJUK ide. Mozgatunk, nem
+           másolunk: így minden rájuk kötött esemény érintetlen marad. */
+        uzenetek.parentNode.removeChild(uzenetek);
+        beszelo.appendChild(uzenetek);
+
+        var beiro = document.getElementById('chat-form')
+                 || document.getElementById('voice-panel');
+        if (beiro && beiro.parentNode) {
+            beiro.parentNode.removeChild(beiro);
+            beszelo.appendChild(beiro);
+        }
+
+        var fugg = document.createElement('span');
+        fugg.className = 'beszelo-fuggoleges';
+        fugg.textContent = bcim.textContent;
+        beszelo.appendChild(fugg);
+
+        sav.appendChild(beszelo);
+
+        /* Összecsukás. A választás megmarad a következő órára is. */
+        var CSUK = {{ t('uj_csuk')|tojson }};
+        var NYIT = {{ t('uj_nyit')|tojson }};
+        function csukAllapot(zarva) {
+            sav.classList.toggle('csukva', !!zarva);
+            csuk.textContent = zarva ? '\u2039' : '\u203A';
+            csuk.title = zarva ? NYIT : CSUK;
+            csuk.setAttribute('aria-label', csuk.title);
+        }
+        var mentett = null;
+        try { mentett = localStorage.getItem('tutoria_beszelo_csukva'); }
+        catch (e) { mentett = null; }
+        csukAllapot(mentett === '1');
+        csuk.addEventListener('click', function () {
+            var zarva = !sav.classList.contains('csukva');
+            csukAllapot(zarva);
+            try {
+                localStorage.setItem('tutoria_beszelo_csukva', zarva ? '1' : '0');
+            } catch (e) { /* privát mód: nem baj, csak nem jegyzi meg */ }
+        });
+
+        /* ── 3. A TÁBLA FRISSÍTÉSE ──────────────────────────────────── */
+        function utolsoTanari() {
+            var lista = uzenetek.querySelectorAll(
+                '.chat-bubble-assistant:not(.chat-typing)');
+            return lista.length ? lista[lista.length - 1] : null;
+        }
+
+        function frissit() {
+            var b = utolsoTanari();
+            if (!b) { return; }
+            var belso = b.querySelector('.chat-bubble-inner');
+            if (!belso) { return; }
+
+            /* A szöveghez MÁSOLATON dolgozunk, és kiszedjük belőle az
+               ábrát meg a feladatot – azoknak saját helyük van. Az
+               eredeti buborékhoz nem nyúlunk. */
+            var masolat = belso.cloneNode(true);
+            var kiszed = masolat.querySelectorAll(
+                '.chat-figure, .feladat-hely, .feladat,' +
+                ' .bubble-replay-wrap, .bubble-replay-btn,' +
+                ' .chat-valaszto');
+            for (var i = 0; i < kiszed.length; i++) {
+                kiszed[i].parentNode.removeChild(kiszed[i]);
+            }
+            szoveg.textContent = (masolat.textContent || '').trim();
+
+            abra.innerHTML = '';
+            var abrak = belso.querySelectorAll('.chat-figure svg');
+            for (var j = 0; j < abrak.length; j++) {
+                abra.appendChild(abrak[j].cloneNode(true));
+            }
+
+            var c = document.getElementById('current-topic-title');
+            if (c) { cim.textContent = (c.textContent || '').trim(); }
+        }
+
+        frissit();
+
+        /* Minden változásra frissítünk, de képkockánként legfeljebb
+           egyszer – a gépelés-animáció alatt másodpercenként sokszor
+           változik a lista. */
+        var varakozik = false;
+        var figyelo = new MutationObserver(function () {
+            if (varakozik) { return; }
+            varakozik = true;
+            window.requestAnimationFrame(function () {
+                varakozik = false;
+                frissit();
+            });
+        });
+        figyelo.observe(uzenetek, {
+            childList: true, subtree: true, characterData: true
+        });
+    } catch (e) {
+        /* Ha bármi félrement, a régi felület marad – a gyerek ne álljon
+           üres képernyő előtt. */
+        if (window.console) { console.error('uj-felulet:', e); }
+        var s2 = document.getElementById('munka-sav');
+        if (s2) { s2.classList.remove('uj-felulet'); }
+    }
+})();
+</script>
+{% endif %}
 {% endblock %}
