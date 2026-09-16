@@ -113,8 +113,14 @@
   .uj-felulet #beszelo{grid-area:beszelo}
 
   /* ── a tábla: itt tanít a tanár ── */
-  .uj-felulet .tanit{background:#fff;border:1px solid #e2e9f0;
-      border-radius:18px;padding:22px 26px 20px;min-width:0}
+  /* A BOLTBAN VETT KINÉZET a táblát díszíti. Eddig a beszélgetés
+     hátterét festette – csakhogy az új felületen a beszélgetés egy
+     keskeny sáv, ott alig látszott, amit a gyerek megvett. A tábla a
+     legnagyobb felület, ott van értelme. Minden kinézet világos
+     színátmenet, tehát a fekete szöveg olvasható marad rajta. */
+  .uj-felulet .tanit{background:{{ kinezet_hatter|safe }};
+      border:1px solid #e2e9f0;border-radius:18px;padding:22px 26px 20px;
+      min-width:0}
   .uj-felulet .tanit-fej{display:flex;align-items:center;gap:10px;
       margin:0 0 12px}
   .uj-felulet .tanit-cim{margin:0;font-size:15px;font-weight:700;
@@ -206,13 +212,32 @@
     .chat-layout.teljes-mod:has(.uj-felulet):has(.chat-sidebar-vocab){
         grid-template-columns:minmax(0,1fr) minmax(180px,240px)}
   }
+  /* Ha a figura is látszik, kap egy keskenyebb oszlopot – és a
+     beszélgetés-sáv is szűkebb lehet, hogy a táblának maradjon hely. */
+  @media (min-width:1000px){
+    .chat-layout:has(.uj-felulet):has(.chat-kabala-oszlop){
+        grid-template-columns:240px minmax(0,1fr) 160px}
+    .chat-layout.teljes-mod:has(.uj-felulet):has(.chat-kabala-oszlop){
+        grid-template-columns:minmax(0,1fr) 160px}
+  }
+  @media (min-width:1000px) and (max-width:1279px){
+    .munka-sav.uj-felulet,
+    .munka-sav.uj-felulet.van-munka{
+        grid-template-columns:minmax(0,1fr) minmax(230px,260px)}
+  }
+  @media (min-width:1600px){
+    .chat-layout:has(.uj-felulet):has(.chat-kabala-oszlop){
+        grid-template-columns:260px minmax(0,1fr) 240px}
+    .chat-layout.teljes-mod:has(.uj-felulet):has(.chat-kabala-oszlop){
+        grid-template-columns:minmax(0,1fr) 240px}
+  }
 
-  .uj-felulet .chat-kabala-oszlop{display:flex !important;margin-top:10px;
-      padding-top:10px;border-top:1px solid #edf1f5;justify-content:center}
-  .uj-felulet .chat-kabala{position:static;max-width:96px;margin:0 auto}
-  .uj-felulet.csukva .chat-kabala-oszlop{display:none !important}
-  @media (max-width:900px){
-    .uj-felulet .chat-kabala-oszlop{display:none !important}
+  /* A KABALA MARAD A JOBB OLDALI SAJÁT OSZLOPÁBAN, ahogy eddig is.
+     Csak azt orvosoljuk, ami miatt hol volt, hol nem: a régi szabály
+     1121 képpont alatt elrejtette. Az új felületen a beszélgetés keskeny
+     sáv, tehát 1000 képponttól már elfér mellette a figura is. */
+  @media (min-width:1000px) and (max-width:1120px){
+    .chat-kabala-oszlop{display:flex}
   }
 
   /* Telefonon egymás alatt: tábla, feladat, beszélgetés. */
@@ -3786,19 +3811,6 @@
         fugg.className = 'beszelo-fuggoleges';
         fugg.textContent = bcim.textContent;
         beszelo.appendChild(fugg);
-
-        /* A kabala a sáv aljára kerül. Mozgatjuk, nem másoljuk, hogy a
-           mozgó robotot rajzoló kód ugyanazt a vásznat lássa. A végén
-           küldünk egy ablakméret-eseményt, hogy a rajz újraméretezze
-           magát az új helyén. */
-        var kabala = document.querySelector('.chat-kabala-oszlop');
-        if (kabala && kabala.parentNode) {
-            kabala.parentNode.removeChild(kabala);
-            beszelo.appendChild(kabala);
-            window.setTimeout(function () {
-                window.dispatchEvent(new Event('resize'));
-            }, 60);
-        }
 
         sav.appendChild(beszelo);
 
