@@ -20,9 +20,11 @@ from __future__ import annotations
 # Nincs szükség kódolásra: a mintákat valódi SVG fájlként szolgáljuk ki.
 
 # ── árak ────────────────────────────────────────────────────────────────────
-AR_SZIN = 150      # sima színátmenet
-AR_MINTA = 350     # rajzos minta
-AR_KULON = 600     # különleges
+# Az árak szándékosan alacsonyak. A kinézet nem jutalom, hanem apró öröm:
+# az a jó, ha a gyerek hetente cserélgeti, nem az, ha hónapokig gyűjt rá.
+AR_SZIN = 50       # sima színátmenet
+AR_MINTA = 80      # rajzos minta
+AR_KULON = 150     # különleges
 
 INGYEN = "alap"    # ezt mindenki megkapja
 
@@ -79,6 +81,41 @@ _TUDOMANY = ('<path d="M16 8h10v10l7 16a3 3 0 0 1-3 4H12a3 3 0 0 1-3-4l7-16z" fi
              '<circle cx="48" cy="46" r="1.8" stroke="none"/>')
 
 
+_ZENE = ('<path d="M14 34V12l14-3v22" fill="none" stroke-width="2.4"/>'
+         '<circle cx="10" cy="34" r="4.4" stroke="none"/>'
+         '<circle cx="24" cy="31" r="4.4" stroke="none"/>'
+         '<path d="M44 56V42l10-2v14" fill="none" stroke-width="2" '
+         'stroke-opacity="0.55"/>'
+         '<circle cx="41" cy="56" r="3.2" stroke="none" fill-opacity="0.09"/>'
+         '<circle cx="51" cy="54" r="3.2" stroke="none" fill-opacity="0.09"/>')
+
+_MANCS = ('<g transform="translate(19 20)">'
+          '<ellipse cx="0" cy="4" rx="7" ry="5.6" stroke="none"/>'
+          '<circle cx="-7" cy="-5" r="3.1" stroke="none"/>'
+          '<circle cx="-2.4" cy="-8" r="3.1" stroke="none"/>'
+          '<circle cx="2.4" cy="-8" r="3.1" stroke="none"/>'
+          '<circle cx="7" cy="-5" r="3.1" stroke="none"/></g>'
+          '<g transform="translate(47 47) scale(0.6)" fill-opacity="0.09">'
+          '<ellipse cx="0" cy="4" rx="7" ry="5.6" stroke="none"/>'
+          '<circle cx="-7" cy="-5" r="3.1" stroke="none"/>'
+          '<circle cx="-2.4" cy="-8" r="3.1" stroke="none"/>'
+          '<circle cx="2.4" cy="-8" r="3.1" stroke="none"/>'
+          '<circle cx="7" cy="-5" r="3.1" stroke="none"/></g>')
+
+_HULLAM = ('<path d="M2 20q8-7 16 0t16 0 16 0 16 0" fill="none" stroke-width="2.4"/>'
+           '<path d="M2 36q8-7 16 0t16 0 16 0 16 0" fill="none" stroke-width="2.4" '
+           'stroke-opacity="0.55"/>'
+           '<path d="M2 52q8-7 16 0t16 0 16 0 16 0" fill="none" stroke-width="2.4" '
+           'stroke-opacity="0.30"/>')
+
+_LEVEL = ('<path d="M20 8c9 4 12 12 8 20-4 8-12 9-18 5 1-11 4-19 10-25z" stroke="none"/>'
+          '<path d="M18 12c-2 8-3 14-3 20" fill="none" stroke-width="1.8" '
+          'stroke-opacity="0.45"/>'
+          '<g transform="translate(46 42) scale(0.55)" fill-opacity="0.10">'
+          '<path d="M0 -12c9 4 12 12 8 20-4 8-12 9-18 5 1-11 4-19 10-25z" '
+          'stroke="none"/></g>')
+
+
 # ── a kiszolgálható minták ──────────────────────────────────────────────────
 # id -> kész SVG szöveg. Az app.py a /kinezet/minta/<id>.svg útvonalon adja
 # vissza ezeket, image/svg+xml fejléccel.
@@ -89,6 +126,10 @@ MINTAK: dict[str, str] = {
     "virag":     _svg(_VIRAG,    "#c04b8f", 0.15),
     "urhajo":    _svg(_UR,       "#4a4b9c", 0.16),
     "tudomany":  _svg(_TUDOMANY, "#0f7b86", 0.17),
+    "zene":      _svg(_ZENE,     "#7a4bb8", 0.16),
+    "mancs":     _svg(_MANCS,    "#a96c2e", 0.16),
+    "hullam":    _svg(_HULLAM,   "#1d7aa8", 0.17),
+    "level":     _svg(_LEVEL,    "#2f8a4e", 0.16),
 }
 
 
@@ -127,6 +168,26 @@ KINEZETEK: list[dict] = [
         "nev": "Levendula", "nev_es": "Lavanda",
         "hatter": "linear-gradient(160deg,#f2ecfb,#ddd0f2)",
     },
+    {
+        "id": "menta", "ar": AR_SZIN, "fajta": "szin",
+        "nev": "Menta", "nev_es": "Menta",
+        "hatter": "linear-gradient(160deg,#e9faf7,#c9ede5)",
+    },
+    {
+        "id": "homok", "ar": AR_SZIN, "fajta": "szin",
+        "nev": "Homok", "nev_es": "Arena",
+        "hatter": "linear-gradient(160deg,#fcf6e9,#f0e2c4)",
+    },
+    {
+        "id": "rozsaszin", "ar": AR_SZIN, "fajta": "szin",
+        "nev": "Rózsaszín", "nev_es": "Rosa",
+        "hatter": "linear-gradient(160deg,#fdeef4,#f7d7e5)",
+    },
+    {
+        "id": "grafit", "ar": AR_SZIN, "fajta": "szin",
+        "nev": "Grafit", "nev_es": "Grafito",
+        "hatter": "linear-gradient(160deg,#f2f4f7,#dfe4ea)",
+    },
     # ── mintások ───────────────────────────────────────────────────────────
     {
         "id": "szivek", "ar": AR_MINTA, "fajta": "minta",
@@ -152,6 +213,26 @@ KINEZETEK: list[dict] = [
         "id": "urhajo", "ar": AR_MINTA, "fajta": "minta",
         "nev": "Űrutazás", "nev_es": "Viaje espacial",
         "hatter": _minta("urhajo") + ",linear-gradient(160deg,#f0eefb,#dcd8f4)",
+    },
+    {
+        "id": "zene", "ar": AR_MINTA, "fajta": "minta",
+        "nev": "Zenés", "nev_es": "Música",
+        "hatter": _minta("zene") + ",linear-gradient(160deg,#f5f0fd,#e3d8f7)",
+    },
+    {
+        "id": "mancs", "ar": AR_MINTA, "fajta": "minta",
+        "nev": "Mancsok", "nev_es": "Huellas",
+        "hatter": _minta("mancs") + ",linear-gradient(160deg,#fdf5ec,#f5e3cd)",
+    },
+    {
+        "id": "hullam", "ar": AR_MINTA, "fajta": "minta",
+        "nev": "Hullámok", "nev_es": "Olas",
+        "hatter": _minta("hullam") + ",linear-gradient(160deg,#ecf7fd,#cfe8f7)",
+    },
+    {
+        "id": "level", "ar": AR_MINTA, "fajta": "minta",
+        "nev": "Levelek", "nev_es": "Hojas",
+        "hatter": _minta("level") + ",linear-gradient(160deg,#eefaf0,#d4eeda)",
     },
     # ── különleges ─────────────────────────────────────────────────────────
     {

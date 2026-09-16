@@ -97,6 +97,12 @@
      MINDEN szabály a .uj-felulet osztály alatt van, azt pedig csak a
      ?felulet=uj kapcsolja be. Kikapcsolva az oldal egy pixelt sem
      változik – ezért lehet élesben kipróbálni. */
+  /* A MEGVÁSÁROLT KINÉZET A KERETET FESTI, nem a szöveg alját.
+     Így a gyerek látja, mit vett, a tábla viszont tiszta fehér marad,
+     és egyetlen betű sem lesz olvashatatlan – akármilyen mintát teszünk
+     be később. */
+  .munka-sav.uj-felulet{background:{{ kinezet_hatter|safe }};
+      border-radius:22px;padding:14px}
   .munka-sav.uj-felulet,
   .munka-sav.uj-felulet.van-munka{
       display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,360px);
@@ -118,33 +124,19 @@
      keskeny sáv, ott alig látszott, amit a gyerek megvett. A tábla a
      legnagyobb felület, ott van értelme. Minden kinézet világos
      színátmenet, tehát a fekete szöveg olvasható marad rajta. */
-  .uj-felulet .tanit{background:{{ kinezet_hatter|safe }};
-      border:1px solid #e2e9f0;border-radius:18px;padding:22px 26px 20px;
-      min-width:0}
+  .uj-felulet .tanit{background:#fff;border:1px solid #e2e9f0;
+      border-radius:18px;padding:22px 26px 20px;min-width:0}
   .uj-felulet .tanit-fej{display:flex;align-items:center;gap:10px;
       margin:0 0 12px}
   .uj-felulet .tanit-cim{margin:0;font-size:15px;font-weight:700;
-      color:#5b3fa8;letter-spacing:.02em;flex:1;min-width:0;
-      background:rgba(255,255,255,.95);border-radius:10px;padding:6px 10px}
+      color:#5b3fa8;letter-spacing:.02em;flex:1;min-width:0}
   .uj-felulet .tanit-hang{border:0;background:#eef4f1;border-radius:9px;
       width:30px;height:30px;cursor:pointer;font-size:15px;flex:0 0 auto}
-  /* A SZÖVEG SAJÁT VILÁGOS LAPON ÜL. A mintás kinézetek (foci, csillagok,
-     szívek) alatt a betű olvashatatlanná vált. Nem a betű színét
-     állítgatjuk kinézetenként – az húszféle beállítás lenne, és az
-     ábrákra úgyis rossz maradna. Helyette a szöveg kap egy majdnem
-     tömör fehér lapot: a kinézet körben látszik, a betű mindig sötét
-     marad világos alapon. Bármilyen új kinézet jön később, ez is
-     működni fog. */
   .uj-felulet .tanit-szoveg{margin:0;font-size:17.5px;line-height:1.62;
-      white-space:pre-wrap;max-width:58ch;color:#1f2d3a;
-      background:rgba(255,255,255,.95);border-radius:14px;
-      padding:16px 18px;box-shadow:0 1px 3px rgba(20,50,40,.07)}
-  /* Az ábra is fehér lapon ül, különben a minta átüt a vonalak közt. */
+      white-space:pre-wrap;max-width:58ch;color:#1f2d3a}
   .uj-felulet .tanit-abra{margin:16px 0 0;max-width:340px}
-  .uj-felulet .tanit-abra:not(:empty){background:rgba(255,255,255,.96);
-      border-radius:14px;padding:10px}
   .uj-felulet .tanit-abra svg{width:100%;height:auto;display:block;
-      background:transparent;border-radius:8px}
+      background:#fff;border-radius:8px}
   .uj-felulet .tanit-var{color:#8aa0b2;font-style:italic}
 
   /* ── a keskeny beszélgetés-sáv ── */
@@ -202,55 +194,19 @@
       overflow-y:auto;overflow-x:hidden;padding-right:4px}
   .chat-layout.teljes-mod .uj-felulet .beszelo{max-height:100%}
 
-  /* A KABALA A BESZÉLGETÉS-SÁV ALJÁRA KÖLTÖZIK.
-     A régi felületen saját oszlopa volt jobbra, és 1121 képpont alatt
-     egyszerűen eltűnt – ezért hiányzott hol itt, hol ott, attól függően,
-     mekkora az ablak. Az új felületen a beszélgetés amúgy is keskeny sáv:
-     a figura odafér a végére. Így nem kér külön helyet, nem tud kifogyni
-     a képernyőből, és ott van, ahol a gyerek válaszol.
-     A régi felületet ez nem érinti – az egész blokk csak akkor él, ha az
-     új felület be van kapcsolva. */
-  /* A figura ELKÖLTÖZÖTT a sávba, de a régi rács még mindig fenntartana
-     neki egy üres oszlopot jobbra (a :has() a mozgatás után is talál
-     .chat-kabala-oszlop-ot valahol a lapon). Ezért az új felületen mi
-     mondjuk meg, hány oszlop van – így a tábla visszakapja azt a
-     150–300 képpontot. */
-  @media (min-width:901px){
-    .chat-layout:has(.uj-felulet){
-        grid-template-columns:260px minmax(0,1fr)}
-    .chat-layout:has(.uj-felulet):has(.chat-sidebar-vocab){
-        grid-template-columns:260px minmax(0,1fr) minmax(160px,200px)}
-    .chat-layout.teljes-mod:has(.uj-felulet){
-        grid-template-columns:minmax(0,1fr)}
-    .chat-layout.teljes-mod:has(.uj-felulet):has(.chat-sidebar-vocab){
-        grid-template-columns:minmax(0,1fr) minmax(180px,240px)}
-  }
-  /* Ha a figura is látszik, kap egy keskenyebb oszlopot – és a
-     beszélgetés-sáv is szűkebb lehet, hogy a táblának maradjon hely. */
-  @media (min-width:1000px){
-    .chat-layout:has(.uj-felulet):has(.chat-kabala-oszlop){
-        grid-template-columns:240px minmax(0,1fr) 160px}
-    .chat-layout.teljes-mod:has(.uj-felulet):has(.chat-kabala-oszlop){
-        grid-template-columns:minmax(0,1fr) 160px}
-  }
+  /* A KABALA OSZLOPÁHOZ NEM NYÚLUNK.
+     Volt egy köröm, amikor átraktam a beszélgetés-sávba, és ehhez
+     felülírtam a .chat-layout oszlopait. A figurát visszatettem a
+     helyére, de a felülírás ott maradt – és az ütötte ki a kabalát:
+     két oszlopot írt elő ott, ahol négy elem van (témalista, tanulás,
+     figura, szójegyzék), így a figura egy új sorba csúszott le, a
+     képernyőn kívülre. Az eredeti stíluslap minden esetet helyesen
+     kezel, ezért itt már nem írunk felül semmit.
+     A tábla szélességéért cserébe csak a BELSŐ osztást hangoljuk. */
   @media (min-width:1000px) and (max-width:1279px){
     .munka-sav.uj-felulet,
     .munka-sav.uj-felulet.van-munka{
         grid-template-columns:minmax(0,1fr) minmax(230px,260px)}
-  }
-  @media (min-width:1600px){
-    .chat-layout:has(.uj-felulet):has(.chat-kabala-oszlop){
-        grid-template-columns:260px minmax(0,1fr) 240px}
-    .chat-layout.teljes-mod:has(.uj-felulet):has(.chat-kabala-oszlop){
-        grid-template-columns:minmax(0,1fr) 240px}
-  }
-
-  /* A KABALA MARAD A JOBB OLDALI SAJÁT OSZLOPÁBAN, ahogy eddig is.
-     Csak azt orvosoljuk, ami miatt hol volt, hol nem: a régi szabály
-     1121 képpont alatt elrejtette. Az új felületen a beszélgetés keskeny
-     sáv, tehát 1000 képponttól már elfér mellette a figura is. */
-  @media (min-width:1000px) and (max-width:1120px){
-    .chat-kabala-oszlop{display:flex}
   }
 
   /* Telefonon egymás alatt: tábla, feladat, beszélgetés. */
