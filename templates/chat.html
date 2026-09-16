@@ -99,14 +99,17 @@
      változik – ezért lehet élesben kipróbálni. */
   .munka-sav.uj-felulet,
   .munka-sav.uj-felulet.van-munka{
-      display:grid;grid-template-columns:1fr minmax(260px,320px);
-      grid-template-areas:"tanit beszelo" "munka beszelo";
-      grid-template-rows:auto auto;gap:16px;align-items:start}
+      display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,320px);
+      grid-template-areas:"bal beszelo";
+      grid-template-rows:minmax(0,1fr);gap:16px;align-items:start}
+  /* A tábla és a feladat EGY oszlopban, saját görgetéssel. Enélkül
+     nagyításban a hosszú magyarázat alja levágódott, és oda sem
+     lehetett görgetni. */
+  .uj-felulet .bal-oszlop{grid-area:bal;display:flex;flex-direction:column;
+      gap:14px;min-width:0;min-height:0}
   .munka-sav.uj-felulet.csukva,
   .munka-sav.uj-felulet.csukva.van-munka{grid-template-columns:1fr 54px}
 
-  .uj-felulet #tanit{grid-area:tanit}
-  .uj-felulet #munkater{grid-area:munka}
   .uj-felulet #beszelo{grid-area:beszelo}
 
   /* ── a tábla: itt tanít a tanár ── */
@@ -174,9 +177,10 @@
   /* TELJES KÉPERNYŐN a tábla is kapjon saját görgetést. Enélkül a
      .chat-layout.teljes-mod overflow:hidden szabálya egyszerűen levágja
      az ábra alját, és oda sem lehet görgetni. */
-  .chat-layout.teljes-mod .munka-sav.uj-felulet{min-height:0;height:100%}
-  .chat-layout.teljes-mod .uj-felulet #tanit,
-  .chat-layout.teljes-mod .uj-felulet #munkater{min-height:0;overflow:auto}
+  .chat-layout.teljes-mod .munka-sav.uj-felulet{min-height:0;height:100%;
+      align-items:stretch}
+  .chat-layout.teljes-mod .uj-felulet .bal-oszlop{height:100%;min-height:0;
+      overflow-y:auto;overflow-x:hidden;padding-right:4px}
   .chat-layout.teljes-mod .uj-felulet .beszelo{max-height:100%}
 
   /* Telefonon egymás alatt: tábla, feladat, beszélgetés. */
@@ -186,7 +190,8 @@
     .munka-sav.uj-felulet.csukva,
     .munka-sav.uj-felulet.csukva.van-munka{
         grid-template-columns:1fr;
-        grid-template-areas:"tanit" "munka" "beszelo"}
+        grid-template-rows:auto auto;
+        grid-template-areas:"bal" "beszelo"}
     .uj-felulet .beszelo{max-height:none}
     .uj-felulet .beszelo-csuk{display:none}
     .uj-felulet .tanit{padding:18px 16px}
@@ -3693,7 +3698,18 @@
         abra.id = 'tanit-abra';
         tanit.appendChild(abra);
 
-        sav.insertBefore(tanit, sav.firstChild);
+        /* A tábla és a feladat EGY oszlopba kerül, hogy együtt tudjanak
+           görgetni. A feladatot mozgatjuk, nem másoljuk: minden rá kötött
+           esemény érintetlen marad. */
+        var bal = document.createElement('div');
+        bal.className = 'bal-oszlop';
+        bal.appendChild(tanit);
+        var munka = document.getElementById('munkater');
+        if (munka && munka.parentNode) {
+            munka.parentNode.removeChild(munka);
+            bal.appendChild(munka);
+        }
+        sav.insertBefore(bal, sav.firstChild);
 
         /* ── 2. A KESKENY BESZÉLGETÉS-OSZLOP ────────────────────────── */
         var beszelo = document.createElement('aside');
