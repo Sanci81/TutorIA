@@ -3777,4 +3777,19 @@ html, body {
 @media (min-width: 821px) {
     .task-actions .task-actions-cimke { display: none; }
     .task-actions .gomb-rovid { display: none; }
+
+    /* ASZTALI GÉPEN AZ INDÍTÓSÁV MINDIG OTT VAN. Amíg nincs kiválasztott
+       tantárgy, a gombok halványak és nem kattinthatók – a gyerek látja,
+       mi vár rá, de nem tud üresbe indulni. Telefonon marad a ragadós
+       sáv, ami csak választás után jön föl. */
+    .task-actions[hidden] { display: flex !important; }
+    .task-actions[hidden] .btn-ai-chat,
+    .task-actions[hidden] .btn-ai-voice,
+    .task-actions[hidden] .btn-ai-placement,
+    .task-actions[hidden] .btn-task-practice {
+        display: block !important;
+        opacity: .42;
+        pointer-events: none;
+        box-shadow: none;
+    }
 }

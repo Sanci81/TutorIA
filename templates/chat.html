@@ -183,6 +183,38 @@
       overflow-y:auto;overflow-x:hidden;padding-right:4px}
   .chat-layout.teljes-mod .uj-felulet .beszelo{max-height:100%}
 
+  /* A KABALA A BESZÉLGETÉS-SÁV ALJÁRA KÖLTÖZIK.
+     A régi felületen saját oszlopa volt jobbra, és 1121 képpont alatt
+     egyszerűen eltűnt – ezért hiányzott hol itt, hol ott, attól függően,
+     mekkora az ablak. Az új felületen a beszélgetés amúgy is keskeny sáv:
+     a figura odafér a végére. Így nem kér külön helyet, nem tud kifogyni
+     a képernyőből, és ott van, ahol a gyerek válaszol.
+     A régi felületet ez nem érinti – az egész blokk csak akkor él, ha az
+     új felület be van kapcsolva. */
+  /* A figura ELKÖLTÖZÖTT a sávba, de a régi rács még mindig fenntartana
+     neki egy üres oszlopot jobbra (a :has() a mozgatás után is talál
+     .chat-kabala-oszlop-ot valahol a lapon). Ezért az új felületen mi
+     mondjuk meg, hány oszlop van – így a tábla visszakapja azt a
+     150–300 képpontot. */
+  @media (min-width:901px){
+    .chat-layout:has(.uj-felulet){
+        grid-template-columns:260px minmax(0,1fr)}
+    .chat-layout:has(.uj-felulet):has(.chat-sidebar-vocab){
+        grid-template-columns:260px minmax(0,1fr) minmax(160px,200px)}
+    .chat-layout.teljes-mod:has(.uj-felulet){
+        grid-template-columns:minmax(0,1fr)}
+    .chat-layout.teljes-mod:has(.uj-felulet):has(.chat-sidebar-vocab){
+        grid-template-columns:minmax(0,1fr) minmax(180px,240px)}
+  }
+
+  .uj-felulet .chat-kabala-oszlop{display:flex !important;margin-top:10px;
+      padding-top:10px;border-top:1px solid #edf1f5;justify-content:center}
+  .uj-felulet .chat-kabala{position:static;max-width:96px;margin:0 auto}
+  .uj-felulet.csukva .chat-kabala-oszlop{display:none !important}
+  @media (max-width:900px){
+    .uj-felulet .chat-kabala-oszlop{display:none !important}
+  }
+
   /* Telefonon egymás alatt: tábla, feladat, beszélgetés. */
   @media (max-width:900px){
     .munka-sav.uj-felulet,
@@ -3754,6 +3786,19 @@
         fugg.className = 'beszelo-fuggoleges';
         fugg.textContent = bcim.textContent;
         beszelo.appendChild(fugg);
+
+        /* A kabala a sáv aljára kerül. Mozgatjuk, nem másoljuk, hogy a
+           mozgó robotot rajzoló kód ugyanazt a vásznat lássa. A végén
+           küldünk egy ablakméret-eseményt, hogy a rajz újraméretezze
+           magát az új helyén. */
+        var kabala = document.querySelector('.chat-kabala-oszlop');
+        if (kabala && kabala.parentNode) {
+            kabala.parentNode.removeChild(kabala);
+            beszelo.appendChild(kabala);
+            window.setTimeout(function () {
+                window.dispatchEvent(new Event('resize'));
+            }, 60);
+        }
 
         sav.appendChild(beszelo);
 
