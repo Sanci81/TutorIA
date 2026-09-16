@@ -99,7 +99,7 @@
      változik – ezért lehet élesben kipróbálni. */
   .munka-sav.uj-felulet,
   .munka-sav.uj-felulet.van-munka{
-      display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,320px);
+      display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,360px);
       grid-template-areas:"bal beszelo";
       grid-template-rows:minmax(0,1fr);gap:16px;align-items:start}
   /* A tábla és a feladat EGY oszlopban, saját görgetéssel. Enélkül
@@ -124,14 +124,27 @@
   .uj-felulet .tanit-fej{display:flex;align-items:center;gap:10px;
       margin:0 0 12px}
   .uj-felulet .tanit-cim{margin:0;font-size:15px;font-weight:700;
-      color:#7a5cc4;letter-spacing:.02em;flex:1;min-width:0}
+      color:#5b3fa8;letter-spacing:.02em;flex:1;min-width:0;
+      background:rgba(255,255,255,.95);border-radius:10px;padding:6px 10px}
   .uj-felulet .tanit-hang{border:0;background:#eef4f1;border-radius:9px;
       width:30px;height:30px;cursor:pointer;font-size:15px;flex:0 0 auto}
+  /* A SZÖVEG SAJÁT VILÁGOS LAPON ÜL. A mintás kinézetek (foci, csillagok,
+     szívek) alatt a betű olvashatatlanná vált. Nem a betű színét
+     állítgatjuk kinézetenként – az húszféle beállítás lenne, és az
+     ábrákra úgyis rossz maradna. Helyette a szöveg kap egy majdnem
+     tömör fehér lapot: a kinézet körben látszik, a betű mindig sötét
+     marad világos alapon. Bármilyen új kinézet jön később, ez is
+     működni fog. */
   .uj-felulet .tanit-szoveg{margin:0;font-size:17.5px;line-height:1.62;
-      white-space:pre-wrap;max-width:58ch;color:#1f2d3a}
+      white-space:pre-wrap;max-width:58ch;color:#1f2d3a;
+      background:rgba(255,255,255,.95);border-radius:14px;
+      padding:16px 18px;box-shadow:0 1px 3px rgba(20,50,40,.07)}
+  /* Az ábra is fehér lapon ül, különben a minta átüt a vonalak közt. */
   .uj-felulet .tanit-abra{margin:16px 0 0;max-width:340px}
+  .uj-felulet .tanit-abra:not(:empty){background:rgba(255,255,255,.96);
+      border-radius:14px;padding:10px}
   .uj-felulet .tanit-abra svg{width:100%;height:auto;display:block;
-      background:#fff;border-radius:8px}
+      background:transparent;border-radius:8px}
   .uj-felulet .tanit-var{color:#8aa0b2;font-style:italic}
 
   /* ── a keskeny beszélgetés-sáv ── */
@@ -148,8 +161,8 @@
   .uj-felulet .beszelo .chat-messages{max-height:none;min-height:0;flex:1;
       padding:2px;background:transparent !important}
   .uj-felulet .beszelo .chat-bubble{max-width:100%}
-  .uj-felulet .beszelo .chat-bubble-inner{font-size:14px;line-height:1.45;
-      padding:.6rem .75rem;border-radius:14px}
+  .uj-felulet .beszelo .chat-bubble-inner{font-size:15px;line-height:1.5;
+      padding:.7rem .85rem;border-radius:14px}
   .uj-felulet .beszelo .chat-figure{display:none}
   .uj-felulet .beszelo .chat-input-bar{margin-top:8px;padding-top:10px}
   .uj-felulet .beszelo .chat-input-bar textarea{font-size:14px;
