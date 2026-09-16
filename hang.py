@@ -24,10 +24,13 @@ import os
 import re
 
 # ── 1. a felolvasott szöveg hossza ──────────────────────────────────────────
-# SZÖVEGMÓDBAN a felolvasás kiegészítés: a gyerek olvassa is a választ, ezért
-# 420 karakter után mondathatáron elvágjuk – így nem fizetünk azért, amit a
-# gyerek amúgy is lát.
-MAX_KARAKTER = 420
+# A FELOLVASÁS VÉGIGMEGY. Korábban szövegmódban 420 karakter után vágtunk,
+# abból a megfontolásból, hogy a gyerek úgyis olvassa a szöveget. A gyakorlat
+# megcáfolta: a magyarázat vége – és sokszor maga a KÉRDÉS – egyszerűen nem
+# hangzott el, se hangos, se szöveges módban. Aki hallgatni akarta, annak
+# félbeszakadt. A 3000 karakter csak azért van, hogy egy elszabadult, több
+# oldalas válasz ne vigye el egyetlen körben a napi keretet.
+MAX_KARAKTER = 3_000
 
 # HANGOS MÓDBAN viszont a felolvasás MAGA a tanítás. Ott a levágás azt
 # jelentette, hogy a magyarázat vége – sokszor maga a kérdés – soha nem

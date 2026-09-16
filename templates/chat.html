@@ -159,6 +159,26 @@
   .uj-felulet.csukva .beszelo .voice-panel{display:none}
   .uj-felulet.csukva .beszelo-fuggoleges{display:block}
 
+  /* A LEGUTOLSÓ tanári üzenet csak a TÁBLÁN áll. A sávban a helyén egy
+     halvány sor mutat a táblára – különben ugyanaz a kérdés kétszer
+     szerepel, és nem derül ki, hol kell válaszolni. Amint a gyerek
+     válaszol, ez a jelölés a KÖVETKEZŐ üzenetre ugrik, az előző pedig
+     visszakerül a naplóba. Semmi nem vész el. */
+  .uj-felulet .beszelo .chat-bubble.tablan{display:none}
+  .uj-felulet .beszelo-utalas{border:1px dashed #cfdce7;background:#f8fbfd;
+      color:#6b7c74;border-radius:13px;padding:11px 12px;font-size:13px;
+      line-height:1.45;margin:2px 0 8px}
+  .uj-felulet .beszelo-utalas b{color:#2c4a68;display:block}
+  .uj-felulet .beszelo-utalas[hidden]{display:none}
+
+  /* TELJES KÉPERNYŐN a tábla is kapjon saját görgetést. Enélkül a
+     .chat-layout.teljes-mod overflow:hidden szabálya egyszerűen levágja
+     az ábra alját, és oda sem lehet görgetni. */
+  .chat-layout.teljes-mod .munka-sav.uj-felulet{min-height:0;height:100%}
+  .chat-layout.teljes-mod .uj-felulet #tanit,
+  .chat-layout.teljes-mod .uj-felulet #munkater{min-height:0;overflow:auto}
+  .chat-layout.teljes-mod .uj-felulet .beszelo{max-height:100%}
+
   /* Telefonon egymás alatt: tábla, feladat, beszélgetés. */
   @media (max-width:900px){
     .munka-sav.uj-felulet,
@@ -3705,6 +3725,15 @@
             beszelo.appendChild(beiro);
         }
 
+        /* Ide kerül a „a kérdés a táblán van" sor, a beíró mező fölé. */
+        var utalas = document.createElement('div');
+        utalas.className = 'beszelo-utalas';
+        utalas.hidden = true;
+        utalas.innerHTML = '<b></b><span></span>';
+        utalas.firstChild.textContent = {{ t('uj_tablan_van')|tojson }};
+        utalas.lastChild.textContent = {{ t('uj_ide_valasz')|tojson }};
+        beszelo.insertBefore(utalas, uzenetek.nextSibling);
+
         var fugg = document.createElement('span');
         fugg.className = 'beszelo-fuggoleges';
         fugg.textContent = bcim.textContent;
@@ -3767,6 +3796,15 @@
 
             var c = document.getElementById('current-topic-title');
             if (c) { cim.textContent = (c.textContent || '').trim(); }
+
+            /* Ami a táblán van, azt a sávban elrejtjük. A jelölést mindig
+               csak EGY buborék viseli, ezért előbb mindenkiről levesszük. */
+            var regi = uzenetek.querySelectorAll('.chat-bubble.tablan');
+            for (var k = 0; k < regi.length; k++) {
+                regi[k].classList.remove('tablan');
+            }
+            b.classList.add('tablan');
+            utalas.hidden = false;
         }
 
         frissit();

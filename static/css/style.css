@@ -3724,3 +3724,57 @@ html, body {
     opacity: .65;
 }
 .jelszo-szem:hover { opacity: 1; }
+
+
+/* ══ INDÍTÓSÁV TELEFONON ═══════════════════════════════════════════════════
+   A két indítógomb a tantárgylista ALATT van. Telefonon a lista hosszú:
+   a gyerek felül kiválaszt egy tantárgyat, aztán végiggörgeti az egészet,
+   hogy elindulhasson. Keskeny képernyőn ezért a képernyő aljához tapad.
+
+   CSAK 820 képpont alatt. Fekvő tabletet és asztali gépet nem érint –
+   ott a lista elfér, nincs mit megoldani. */
+@media (max-width: 820px) {
+    .task-actions:not([hidden]) {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 60;
+        flex-direction: row;
+        gap: 8px;
+        margin: 0;
+        padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+        background: #fff;
+        border-top: 1px solid var(--border);
+        box-shadow: 0 -6px 18px rgba(20, 40, 60, .10);
+    }
+    /* A sáv kétsoros: fölötte a kiválasztott tantárgy neve. */
+    .task-actions:not([hidden]) { flex-wrap: wrap; }
+    .task-actions .task-actions-cimke {
+        flex: 1 0 100%;
+        margin: 0 0 2px;
+        font-size: .82rem;
+        color: var(--text-muted, #6b7c74);
+    }
+    .task-actions .btn-ai-chat:not([hidden]),
+    .task-actions .btn-ai-voice:not([hidden]) {
+        flex: 1 1 0;
+        width: auto;
+        min-width: 0;
+        text-align: center;
+        padding-left: .5rem;
+        padding-right: .5rem;
+        font-size: .92rem;
+    }
+    /* Hogy a lista utolsó eleme ne bújjon a sáv alá. */
+    body.van-inditosav { padding-bottom: 116px; }
+    /* Telefonon a rövid felirat megy – a hosszú három sorba törne. */
+    .task-actions .gomb-hosszu { display: none; }
+    .task-actions .gomb-rovid { display: inline; }
+}
+/* Nagy képernyőn a felirat nem kell: ott a gomb a lista alatt áll,
+   közvetlenül a választás mellett. */
+@media (min-width: 821px) {
+    .task-actions .task-actions-cimke { display: none; }
+    .task-actions .gomb-rovid { display: none; }
+}

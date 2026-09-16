@@ -503,6 +503,15 @@ TRANSLATIONS = {
     # A keskeny beszélgetés-sáv feliratai. Csak akkor látszanak, ha az
     # új felület be van kapcsolva.
     "uj_beszelgetes": {"hu": "Beszélgetés", "es": "Conversación"},
+    "uj_tablan_van": {"hu": "A kérdés a táblán van.",
+                      "es": "La pregunta está en la pizarra."},
+    "uj_ide_valasz": {"hu": "Ide írd a választ.",
+                      "es": "Escribe aquí tu respuesta."},
+    # A telefonos indítósáv felirata: „Kiválasztva: Földrajz”.
+    "tasks_selected_prefix": {"hu": "Kiválasztva:", "es": "Seleccionado:"},
+    # Telefonon a hosszú gombfelirat három sorba törne. Ott ez a rövid megy.
+    "btn_ai_chat_rovid": {"hu": "💬 Chat", "es": "💬 Chat"},
+    "btn_ai_voice_rovid": {"hu": "🎙️ Hangos", "es": "🎙️ Voz"},
     "uj_csuk": {"hu": "Összecsukom", "es": "Plegar"},
     "uj_nyit": {"hu": "Kinyitom", "es": "Desplegar"},
 

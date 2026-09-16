@@ -408,4 +408,67 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 </script>
+
+<script>
+/* ══ INDÍTÓSÁV TELEFONON ═══════════════════════════════════════════════════
+   Külön blokk, nem nyúl a fenti kódhoz. Csak annyit tesz, hogy kiírja a
+   sávba, MELYIK tantárgy van kiválasztva, és megjelöli a body-t, hogy a
+   lista alá kerüljön elég hely a ragadós sáv miatt. A megjelenítést
+   továbbra is a meglévő updateTaskActions() intézi. */
+(function () {
+    "use strict";
+    try {
+        var sav = document.getElementById('task-actions');
+        var valaszto = document.getElementById('subject-select');
+        if (!sav || !valaszto) { return; }
+
+        var cimke = document.createElement('p');
+        cimke.className = 'task-actions-cimke';
+        sav.insertBefore(cimke, sav.firstChild);
+
+        var ELOTAG = {{ t('tasks_selected_prefix')|tojson }};
+
+        /* A hosszú gombfelirat telefonon három sorba törne. Mindkét
+           változatot betesszük, és a CSS dönti el, melyik látszik. */
+        var ROVID = {
+            'ai-chat-link': {{ t('btn_ai_chat_rovid')|tojson }},
+            'ai-voice-link': {{ t('btn_ai_voice_rovid')|tojson }}
+        };
+        Object.keys(ROVID).forEach(function (id) {
+            var g = document.getElementById(id);
+            if (!g || g.querySelector('.gomb-rovid')) { return; }
+            var hosszu = document.createElement('span');
+            hosszu.className = 'gomb-hosszu';
+            hosszu.textContent = (g.textContent || '').trim();
+            var rovid = document.createElement('span');
+            rovid.className = 'gomb-rovid';
+            rovid.textContent = ROVID[id];
+            g.textContent = '';
+            g.appendChild(hosszu);
+            g.appendChild(rovid);
+        });
+
+        function frissit() {
+            var v = valaszto.options[valaszto.selectedIndex];
+            cimke.textContent = (v && v.value) ? (ELOTAG + ' ' + v.text) : '';
+            document.body.classList.toggle('van-inditosav', !sav.hidden);
+        }
+
+        valaszto.addEventListener('change', function () {
+            /* A meglévő kezelő előbb fut le és állítja a sáv rejtettségét;
+               egy képkockával később már a végleges állapotot látjuk. */
+            window.requestAnimationFrame(frissit);
+        });
+        frissit();
+
+        /* Ha a sávot más kód rejti el vagy hozza vissza, a body jelölése
+           kövesse azt is. */
+        new MutationObserver(frissit).observe(sav, {
+            attributes: true, attributeFilter: ['hidden']
+        });
+    } catch (e) {
+        if (window.console) { console.error('inditosav:', e); }
+    }
+})();
+</script>
 {% endblock %}
