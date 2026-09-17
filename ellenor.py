@@ -110,6 +110,9 @@ def _tanterv_fajlok() -> list[tuple[str, tuple[int, ...]]]:
         ("hu_kerettanterv_1_4_TELJES/hu_kerettanterv_1_4_TELJES/*.json", (1, 2, 3, 4)),
         ("hu_kerettanterv_1_4_TELJES/*.json", (1, 2, 3, 4)),
         ("hu_kerettanterv_5_8_TELJES/*.json", (5, 6, 7, 8)),
+        # A SPANYOL TANTERV IS. Enélkül a jelentés csak a magyar oldalról
+        # szólt volna, és pont az a kérdés, hogy a spanyol lemarad-e.
+        ("es_kerettanterv/*.json", (1, 2, 3, 4, 5, 6)),
     ):
         for f in sorted(glob.glob(os.path.join(GYOKER, minta))):
             if os.path.basename(f) == "index.json":

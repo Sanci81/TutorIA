@@ -627,9 +627,31 @@ def kepletjelek(szoveg: str, nyelv: str = "hu") -> str:
     return _KEPLET_BETU.sub(csere, szoveg)
 
 
+# ── SZERKESZTŐJELEK, AMIK NEM A GYEREKNEK SZÓLNAK ──────────────────────────
+# A kerettantervek Word-ből és PDF-ből lettek szöveggé alakítva, és ottmaradtak
+# bennük a lábjegyzet-jelölők ([^1]) meg a félkövér csillagok (**). A felolvasó
+# ezeket betűzi: "szögletes zárójel kalap egy". A gyerek ebből semmit nem ért,
+# és a szöveg közepén hangzik el. Kiszedjük, mielőtt bármi mást csinálnánk.
+_LABJEGYZET_HIV = re.compile(r"\[\^[^\]\s]{1,12}\]")
+_LABJEGYZET_SOR = re.compile(r"(?m)^\s*\[\^[^\]\s]{1,12}\]:.*$")
+_FELKOVER = re.compile(r"\*{1,3}(?=\S)|(?<=\S)\*{1,3}")
+_ALHUZAS_CIM = re.compile(r"(?m)^#{1,6}\s*")
+
+
+def szerkesztojelek_le(szoveg: str) -> str:
+    """Markdown-maradványok eltávolítása a felolvasandó szövegből."""
+    szoveg = _LABJEGYZET_SOR.sub("", szoveg or "")
+    szoveg = _LABJEGYZET_HIV.sub("", szoveg)
+    szoveg = _ALHUZAS_CIM.sub("", szoveg)
+    szoveg = _FELKOVER.sub("", szoveg)
+    # A táblázatokból maradt tabulátorok és a sok üres sor is zavaró.
+    szoveg = szoveg.replace("\t", " ")
+    return re.sub(r"\n{3,}", "\n\n", szoveg)
+
+
 def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
     """A felolvasás előtti utolsó simítás: jelekből szavak."""
-    szoveg = szoveg or ""
+    szoveg = szerkesztojelek_le(szoveg or "")
     jelek = _MUVELET.get(nyelv) or _MUVELET["hu"]
 
     # A képletjel ELŐBB, amíg az egyenlőségjel még a helyén van: erről

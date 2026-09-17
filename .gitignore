@@ -6,3 +6,15 @@ tutoria.db
 *.db
 cache/
 hangcache/
+
+# ── Munkaanyagok, amik nem részei a programnak ──────────────────────────
+# A "Claude outputs" mappába kerülnek a látványtervek, képernyőképek és
+# próbaoldalak. Nem tartoznak a kódhoz, viszont minden "git status"-ban
+# ott lógtak, és elfedték az igazi változásokat.
+Claude outputs/
+kartya_kepek_uj/
+
+# Próbaképek, letöltött szerződések
+minta*.png
+teszt_kep.png
+*.pdf
