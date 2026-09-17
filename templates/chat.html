@@ -249,7 +249,7 @@
        Egyszer a szójegyzékes oszlopszabályt nem zártam ki innen, és
        nagyításban a szójegyzék széthúzódott az egész képernyőre. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet){
-        height:var(--munka-magas, calc(100vh - 210px));min-height:520px}
+        height:var(--munka-magas, calc(100vh - 210px));min-height:660px}
     .chat-layout:not(.teljes-mod):has(.uj-felulet) .chat-main{
         min-height:0;display:flex;flex-direction:column}
     .chat-layout:not(.teljes-mod):has(.uj-felulet) .munka-sav.uj-felulet{
@@ -267,23 +267,37 @@
     /* A TÉMALISTA rövidebb lesz, hogy a figurának saját helye legyen alul:
        így nem lóg bele a szövegbe. A lista magától görög tovább. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet) .topic-sidebar{
-        align-self:start;height:calc(100% - 300px);max-height:none}
+        align-self:start;height:calc(100% - 320px);max-height:none}
 
     /* A FIGURA EGY HELYBEN: a felület bal alsó sarkában, a témalista alatt. */
     .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{
         position:absolute;left:0;bottom:8px;right:auto;top:auto;
-        width:280px;height:auto;z-index:5;pointer-events:none;
+        width:280px;height:300px;z-index:5;pointer-events:none;
         display:flex;align-items:flex-end;justify-content:center}
     /* KÉP (kisfiú, kislány): 150 képpont jó rá.
        ROBOT: a rajzvászon körül sok az üres hely, ezért a DOBOZA 280. */
-    .chat-layout:has(.uj-felulet) .chat-kabala{position:static;max-width:150px}
-    .chat-layout:has(.uj-felulet) .chat-kabala-doboz{position:static;max-width:280px}
+    /* A figura MAGASSÁGA is korlátos (300), nem csak a szélessége. Enélkül
+       a kisfiú képe kb. 325 magas lett, kilógott a neki fenntartott sávból,
+       és rálógott a témalistára, illetve nagyításban a szójegyzékre. */
+    .chat-layout:has(.uj-felulet) .chat-kabala{position:static;max-width:150px;
+        max-height:100%;width:auto;object-fit:contain}
+    .chat-layout:has(.uj-felulet) .chat-kabala-doboz{position:static;
+        max-width:280px;max-height:100%}
 
     /* CSAK a rendes nézet lesz szélesebb. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet){
         grid-template-columns:260px minmax(0,1fr)}
     .chat-layout:not(.teljes-mod):has(.uj-felulet):has(.chat-sidebar-vocab){
         grid-template-columns:260px minmax(0,1fr) minmax(160px,200px)}
+
+    /* ALACSONY ABLAK: ha a felület 560 képpontnál alacsonyabb, a figura
+       elveszi a helyet a témalista elől. Ilyenkor inkább nincs figura –
+       ugyanaz az elv, mint a keskeny képernyőn. */
+    .chat-layout.alacsony:has(.uj-felulet) .chat-kabala-oszlop{display:none}
+    .chat-layout.alacsony:not(.teljes-mod):has(.uj-felulet) .topic-sidebar{
+        height:100%}
+    .chat-layout.alacsony.teljes-mod:has(.uj-felulet) .chat-sidebar-vocab{
+        height:100%}
 
     /* Nagyításban a jobb oldali üres sávban, középen. */
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
@@ -295,7 +309,7 @@
        Ez CSAK a szójegyzékes órákra vonatkozik – magyar és spanyol
        oldalon egyformán, mert ugyanez a sablon szolgálja ki mindkettőt. */
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-sidebar-vocab{
-        align-self:start;height:calc(100% - 290px);max-height:none}
+        align-self:start;height:calc(100% - 340px);max-height:none}
   }
   @media (min-width:1600px){
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
@@ -4006,6 +4020,9 @@
         try {
             if (window.innerWidth < 901 || lap.classList.contains('teljes-mod')) {
                 lap.style.removeProperty('--munka-magas');
+                if (lap.classList.contains('alacsony')) {
+                    lap.classList.remove('alacsony');
+                }
                 return;
             }
             lap.style.setProperty('--munka-magas', 'auto');
@@ -4013,14 +4030,20 @@
             var lab = document.querySelector('footer.footer');
             var labMagas = lab ? lab.offsetHeight : 0;
             var h = window.innerHeight - teto - labMagas - 18;
-            if (h < 520) { h = 520; }
+            if (h < 660) { h = 660; }
             lap.style.setProperty('--munka-magas', h + 'px');
             /* Utólagos igazítás: ha a lapon maradt még görgetés (belső
                margók, szegélyek miatt), pontosan annyival vesszük lejjebb.
                Így soha nem marad görgősáv az oldalon. */
             var tul = document.documentElement.scrollHeight - window.innerHeight;
-            if (tul > 0 && h - tul >= 520) {
-                lap.style.setProperty('--munka-magas', (h - tul) + 'px');
+            if (tul > 0 && h - tul >= 660) {
+                h = h - tul;
+                lap.style.setProperty('--munka-magas', h + 'px');
+            }
+            /* Alacsony ablakban a figura elveszi a témalista helyét. */
+            var kell = (h < 560);
+            if (kell !== lap.classList.contains('alacsony')) {
+                lap.classList.toggle('alacsony', kell);
             }
         } catch (e) {
             lap.style.removeProperty('--munka-magas');
