@@ -249,7 +249,7 @@
        Egyszer a szójegyzékes oszlopszabályt nem zártam ki innen, és
        nagyításban a szójegyzék széthúzódott az egész képernyőre. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet){
-        height:var(--munka-magas, calc(100vh - 210px));min-height:660px}
+        height:var(--munka-magas, calc(100vh - 210px));min-height:800px}
     .chat-layout:not(.teljes-mod):has(.uj-felulet) .chat-main{
         min-height:0;display:flex;flex-direction:column}
     .chat-layout:not(.teljes-mod):has(.uj-felulet) .munka-sav.uj-felulet{
@@ -4030,13 +4030,13 @@
             var lab = document.querySelector('footer.footer');
             var labMagas = lab ? lab.offsetHeight : 0;
             var h = window.innerHeight - teto - labMagas - 18;
-            if (h < 660) { h = 660; }
+            if (h < 800) { h = 800; }
             lap.style.setProperty('--munka-magas', h + 'px');
             /* Utólagos igazítás: ha a lapon maradt még görgetés (belső
                margók, szegélyek miatt), pontosan annyival vesszük lejjebb.
                Így soha nem marad görgősáv az oldalon. */
             var tul = document.documentElement.scrollHeight - window.innerHeight;
-            if (tul > 0 && h - tul >= 660) {
+            if (tul > 0 && h - tul >= 800) {
                 h = h - tul;
                 lap.style.setProperty('--munka-magas', h + 'px');
             }
