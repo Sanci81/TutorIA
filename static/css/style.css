@@ -2136,6 +2136,17 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
    marad a régi szélességen. */
 body:has(.chat-layout) .content { max-width: 1560px; }
 
+/* SZÉLES KÉPERNYŐN NE MARADJON ÜRES SÁV. A tanulás felülete 1560 képpontnál
+   megállt, és a kabala mellett tenyérnyi üres hely maradt a képernyő szélén.
+   1500 képpont fölött engedjük 1860-ig – a rács oszlopai NEM változnak,
+   csak a doboz lesz szélesebb, tehát a figura és a szójegyzék a helyén
+   marad. (Az oszlopokhoz nem szabad nyúlni: egyszer már azzal esett ki a
+   kabala.) */
+@media (min-width: 1500px) {
+    body:has(.chat-layout) .content { max-width: 1860px; }
+    .chat-layout { max-width: 1860px; }
+}
+
 /* A teljes képernyő gombja a felső sávban, a jobb szélen – a „Hangos mód"
    mellett. Kicsi és félreeső, de mindig kéznél. */
 .chat-teljes-gomb {
