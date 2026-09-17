@@ -5576,6 +5576,70 @@ REGLAS:
 """
 
 
+# ── A TESZT KAPUJA ──────────────────────────────────────────────────────────
+# Ennyi perc tanulás után indíthatja el a gyerek MAGA a szintfelmérőt, akkor
+# is, ha a tanár nem szólt. Korábban 60 perc volt, de a leckék hossza nagyon
+# különböző: van, amelyik rövidebb ennél. A LECKEZÁRÓ tesztet továbbra is az
+# adott lecke saját ideje nyitja, nem ez a szám.
+TESZT_MIN_PERC = 30
+
+
+def _teszt_kapu_szoveg(
+    child_id: int,
+    progress_subject: str,
+    grade_num: int,
+    topic_id: str,
+    catalog: list | None,
+) -> str:
+    """Amit a TANÁRNAK tudnia kell a tesztről, mielőtt beszél róla.
+
+    MIÉRT VAN EZ. A kapu és a tanár eddig nem tudott egymásról. A tanár a
+    saját megítélése szerint kijelentette, hogy kész a lecke, és a gyereket
+    egy csillagos gombra küldte – amelyik nem is volt ott, mert a kapu még
+    zárva volt. A gyerek keresett valamit, ami nincs. Innentől a tanár
+    megkapja a kapu ÁLLAPOTÁT, és csak azt mondhatja, ami igaz.
+    """
+    try:
+        tanult = database.get_topic_learning_minutes(
+            child_id, progress_subject, topic_id
+        )
+        topic = get_topic_from_catalog(catalog, topic_id)
+        req = ((topic or {}).get("ora_szam", 0) or 0) * 60
+        pont = database.get_topic_score(
+            child_id, progress_subject, grade_num, topic_id
+        )
+        probak = (pont or {}).get("topic_attempts", 0) or 0
+        kesz = bool((pont or {}).get("passed"))
+    except Exception:
+        # Ha bármi félremegy, inkább hallgasson a tesztről, mint hogy
+        # rosszat mondjon.
+        return ("\nA TESZTRŐL: most nem tudjuk, indítható-e. NE említsd a"
+                " tesztet, és ne küldd a gyereket semmilyen gombra.\n")
+
+    fej = "\nA TESZT ÁLLAPOTA (a gyerek ezt látja, te ehhez igazodj):\n"
+    zaras = ("SOHA ne küldd a gyereket olyan gombra, amiről itt nem írtuk,"
+             " hogy ott van.\n")
+
+    if kesz:
+        return (fej + "Ezt a leckét már sikeresen lezárta. Most gyakorol."
+                " Ne beszélj újabb tesztről.\n" + zaras)
+    if req and tanult >= req:
+        return (fej + "A lecke ideje letelt, a LECKEZÁRÓ teszt gombja OTT VAN"
+                " a fejlécben. Mondd el neki, hogy jöhet a lecke záró tesztje,"
+                " és biztasd rá.\n" + zaras)
+    if probak >= 3:
+        return (fej + "Elfogyott a három próbálkozás, a gomb NINCS OTT."
+                " A leckét végig kell tanulni. NE említsd a tesztet.\n"
+                + zaras)
+    if tanult < TESZT_MIN_PERC:
+        return (fej + f"Még {TESZT_MIN_PERC - int(tanult)} perc tanulás kell,"
+                " mire a teszt egyáltalán elindítható. NE említsd a tesztet,"
+                " és ne mondd, hogy kész a lecke – taníts tovább.\n" + zaras)
+    return (fej + f"A gyerek {int(probak)}/3 próbálkozást használt el. A gomb"
+            " ott van, de a döntés az övé: legfeljebb EGYSZER említheted meg,"
+            " hogy ki is próbálhatja, ha szeretné. Ne sürgesd.\n" + zaras)
+
+
 def _build_chat_system_prompt(
     child: dict,
     *,
@@ -5588,6 +5652,7 @@ def _build_chat_system_prompt(
     teaching_language: str | None = None,
     szokincs: list | None = None,
     spiralis: bool = False,
+    teszt_info: str = "",
 ) -> str:
     age = _child_effective_age(child)
     grade = int(_chat_grade_num(child))
@@ -6389,10 +6454,14 @@ Jelenlegi témakör: {current_topic}
         "\nHa VÉGIGVETTED a témakör anyagát (rejtett): <TOPIC_COMPLETE>\n"
         "Ez NEM zárja le a leckét, csak elindítja a záró tesztet. A leckét\n"
         "egyedül a sikeres teszt zárja le, és a következő lecke is csak\n"
-        "akkor nyílik ki. Ezért: amikor kiadod ezt a jelölőt, mondd meg a\n"
-        "gyereknek, hogy jöhet a lecke záró tesztje, és biztasd rá.\n"
+        "akkor nyílik ki.\n"
         "SOHA ne mondd neki, hogy kész a lecke, amíg a tesztet le nem tette.\n"
     )
+    # A kapu állapota. Ez ERŐSEBB a fentinél: ha a teszt nem indítható,
+    # a tanár nem beszélhet róla, akkor sem, ha szerinte végigvették az
+    # anyagot. Enélkül a gyereket egy nem létező gombra küldi.
+    if teszt_info:
+        prompt += teszt_info
 
     if is_foreign_language and lang:
         prompt += f"""
@@ -7674,6 +7743,9 @@ def child_chat(child_id: int):
                         is_foreign_language=is_foreign,
                         teaching_language=language if is_foreign else None,
                         spiralis=bool(chat_curriculum.get("spiralis")),
+                        teszt_info=_teszt_kapu_szoveg(
+                            child_id, progress_subject, grade_num,
+                            current_topic_id, catalog),
                     )
                     trigger = (
                         "NE köszönj és NE mutatkozz be — a gyerek az előző "
@@ -7768,6 +7840,9 @@ def child_chat(child_id: int):
                         is_foreign_language=is_foreign,
                         teaching_language=language if is_foreign else None,
                         spiralis=bool(chat_curriculum.get("spiralis")),
+                        teszt_info=_teszt_kapu_szoveg(
+                            child_id, progress_subject, grade_num,
+                            current_topic_id, catalog),
                     )
                     trigger = (
                         "NE köszönj és NE mutatkozz be — a gyerek az előző "
@@ -8104,6 +8179,8 @@ def child_chat_send(child_id: int):
         teaching_language=teaching_language,
         szokincs=current_topic_item.get("szokincs") if is_foreign and current_topic_item else None,
         spiralis=bool(chat_curriculum.get("spiralis")),
+        teszt_info=_teszt_kapu_szoveg(
+            child_id, progress_subject, grade_num, current_topic_id, catalog),
     )
     system_prompt += _topic_teaching_prompt_block(
         current_topic_item,
@@ -9161,8 +9238,8 @@ def child_chat_test_generate(child_id: int):
                 "reason": "attempts_exhausted",
                 "message": i18n.t("test_gate_attempts_exhausted", g.lang),
             }), 200
-        if topic_learning_minutes < 60:
-            need = 60 - int(topic_learning_minutes)
+        if topic_learning_minutes < TESZT_MIN_PERC:
+            need = TESZT_MIN_PERC - int(topic_learning_minutes)
             return jsonify({
                 "ok": False,
                 "reason": "study_first_hour",

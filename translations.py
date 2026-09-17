@@ -592,8 +592,8 @@ TRANSLATIONS = {
     },
     "test_gate_elso_ora": {
         "hu": "A szintfelmérőhöz előbb tanulj ebből a leckéből legalább "
-             "egy órát — még kb. {minutes} perc hiányzik!",
-        "es": "Para la evaluación inicial estudia al menos una hora de esta "
+             "fél órát — még kb. {minutes} perc hiányzik!",
+        "es": "Para la evaluación inicial estudia al menos media hora de esta "
              "lección — te faltan unos {minutes} minutos!",
     },
     "test_gate_study_more": {
