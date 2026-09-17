@@ -38,7 +38,7 @@ SZOVEG = {
         "napi": "az elmúlt napban", "heti": "az elmúlt héten",
         "havi": "az elmúlt hónapban",
         "perc": "{perc} perc", "napon": "{napok} napon",
-        "nem_tanult": "Ezen az időszakon nem tanult.",
+        "nem_tanult": "Ebben az időszakban nem tanult.",
         "tantargyak": "Mivel foglalkozott",
         "teljesitett": "Ami sikerült",
         "gyenge": "Amivel még küzd",
