@@ -241,52 +241,51 @@
      felülírtam, a figura egy új sorba csúszott a képernyőn kívülre. */
   @media (min-width:901px){
     /* ══ A LAP NE GÖRÖGJÖN – CSAK A TÁBLA BELSEJE ═══════════════════════
-       Ez az oka annak, hogy a figura eddig "elúszott". Ha az EGÉSZ lap
-       görög, akkor a figurának csak két rossz lehetősége van: vagy a
-       lappal megy (és hosszú leckén lecsúszik a képernyő alá), vagy a
-       képernyőhöz tapad (és úgy néz ki, mintha csúszkálna a szöveg
-       fölött). Ha a lap nem görög, egyik sem történik meg: a figura egy
-       helyben marad, és mindig látszik.
+       A magasságot a lap alján lévő kis szkript méri ki (--munka-magas),
+       mert a fejléc és a lábléc magassága oldalanként más. Ha a lap nem
+       görög, a figura egy helyben marad és mindig látszik.
 
-       Nagyításban ugyanez már működik, ott a .bal-oszlop görög. Most a
-       rendes nézet is így csinálja. A 140 képpont ugyanaz a fejléc-
-       magasság, amivel az oldalsáv (.chat-sidebar) is számol.
-
-       A :not(.teljes-mod) FONTOS: nagyításban a lap 100dvh magas, azt
-       nem szabad felülírni. */
+       MINDEN szabály :not(.teljes-mod) – nagyításban SEMMIHEZ nem nyúlunk.
+       Egyszer a szójegyzékes oszlopszabályt nem zártam ki innen, és
+       nagyításban a szójegyzék széthúzódott az egész képernyőre. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet){
-        height:calc(100vh - 140px);min-height:580px}
-    .chat-layout:has(.uj-felulet) .chat-main{
+        height:var(--munka-magas, calc(100vh - 210px));min-height:520px}
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .chat-main{
         min-height:0;display:flex;flex-direction:column}
-    .chat-layout:has(.uj-felulet) .munka-sav.uj-felulet{
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .munka-sav.uj-felulet{
         min-height:0;flex:1 1 auto;align-items:stretch}
-    .chat-layout:has(.uj-felulet) .uj-felulet .bal-oszlop{
-        min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:4px}
-    .chat-layout:has(.uj-felulet) .uj-felulet .beszelo{max-height:100%}
 
-    /* A FIGURA EGY HELYBEN: a felület bal alsó sarkában. Mivel a lap
-       nem görög, az "absolute" itt tényleg fix helyet jelent. */
+    /* A tábla ÉS a feladat EGY görgetésben. A .munkater eddig külön
+       görgetődött, ezért látszott alul egy külön kis doboz levágva. */
+    .chat-layout:has(.uj-felulet) .uj-felulet .bal-oszlop{
+        min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:6px}
+    .chat-layout:has(.uj-felulet) .uj-felulet .munkater{
+        overflow:visible;flex:0 0 auto}
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .uj-felulet .beszelo{
+        max-height:100%}
+
+    /* A TÉMALISTA rövidebb lesz, hogy a figurának saját helye legyen alul:
+       így nem lóg bele a szövegbe. A lista magától görög tovább. */
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .topic-sidebar{
+        align-self:start;height:calc(100% - 300px);max-height:none}
+
+    /* A FIGURA EGY HELYBEN: a felület bal alsó sarkában, a témalista alatt. */
     .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{
-        position:absolute;left:0;bottom:12px;right:auto;top:auto;
+        position:absolute;left:0;bottom:8px;right:auto;top:auto;
         width:280px;height:auto;z-index:5;pointer-events:none;
         display:flex;align-items:flex-end;justify-content:center}
     /* KÉP (kisfiú, kislány): 150 képpont jó rá.
-       ROBOT: a rajzvászon körül sok az üres hely, ezért a DOBOZA 280 –
-       csak így lesz maga a figura akkora, mint a kisfiú. Egy közös
-       max-width mindkettőre a robotot felezte meg. */
+       ROBOT: a rajzvászon körül sok az üres hely, ezért a DOBOZA 280. */
     .chat-layout:has(.uj-felulet) .chat-kabala{position:static;max-width:150px}
     .chat-layout:has(.uj-felulet) .chat-kabala-doboz{position:static;max-width:280px}
 
-    /* CSAK a rendes nézet lesz szélesebb. NAGYÍTÁSBAN az oszlopokhoz
-       NEM nyúlunk – ott minden marad úgy, ahogy eddig volt. */
-    .chat-layout:has(.uj-felulet){
+    /* CSAK a rendes nézet lesz szélesebb. */
+    .chat-layout:not(.teljes-mod):has(.uj-felulet){
         grid-template-columns:260px minmax(0,1fr)}
-    .chat-layout:has(.uj-felulet):has(.chat-sidebar-vocab){
+    .chat-layout:not(.teljes-mod):has(.uj-felulet):has(.chat-sidebar-vocab){
         grid-template-columns:260px minmax(0,1fr) minmax(160px,200px)}
 
-    /* Nagyításban a jobb oldali üres sávban, PONTOSAN középen: a sáv a
-       fenntartott oszlop (200, 1600 fölött 300) és a 16 képpontos
-       belső szegély. */
+    /* Nagyításban a jobb oldali üres sávban, középen. */
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
         left:auto;right:16px;width:200px;bottom:12px}
   }
@@ -3982,6 +3981,49 @@
         var s2 = document.getElementById('munka-sav');
         if (s2) { s2.classList.remove('uj-felulet'); }
     }
+})();
+</script>
+<script>
+/* A MUNKAFELÜLET MAGASSÁGA.
+   Pontosan annyi, amennyi a fejléc alatt és a lábléc fölött elfér – így
+   az oldal nem görög, csak a tábla belseje, és a kabala figura egy
+   helyben marad. Nagyításban és telefonon nem csinál semmit.
+   Ha hibára fut, a felület a CSS-ben megadott tartalék magasságot kapja,
+   tehát nem törik el semmi. */
+(function () {
+    var lap = document.getElementById('chat-page');
+    if (!lap) { return; }
+
+    function meret() {
+        try {
+            if (window.innerWidth < 901 || lap.classList.contains('teljes-mod')) {
+                lap.style.removeProperty('--munka-magas');
+                return;
+            }
+            lap.style.setProperty('--munka-magas', 'auto');
+            var teto = lap.getBoundingClientRect().top + window.scrollY;
+            var lab = document.querySelector('footer.footer');
+            var labMagas = lab ? lab.offsetHeight : 0;
+            var h = window.innerHeight - teto - labMagas - 18;
+            if (h < 520) { h = 520; }
+            lap.style.setProperty('--munka-magas', h + 'px');
+            /* Utólagos igazítás: ha a lapon maradt még görgetés (belső
+               margók, szegélyek miatt), pontosan annyival vesszük lejjebb.
+               Így soha nem marad görgősáv az oldalon. */
+            var tul = document.documentElement.scrollHeight - window.innerHeight;
+            if (tul > 0 && h - tul >= 520) {
+                lap.style.setProperty('--munka-magas', (h - tul) + 'px');
+            }
+        } catch (e) {
+            lap.style.removeProperty('--munka-magas');
+        }
+    }
+
+    meret();
+    window.addEventListener('resize', meret);
+    new MutationObserver(meret).observe(lap, {
+        attributes: true, attributeFilter: ['class']
+    });
 })();
 </script>
 {% endif %}
