@@ -2142,7 +2142,7 @@ body:has(.chat-layout) .content { max-width: 1560px; }
    csak a doboz lesz szélesebb, tehát a figura és a szójegyzék a helyén
    marad. (Az oszlopokhoz nem szabad nyúlni: egyszer már azzal esett ki a
    kabala.) */
-@media (min-width: 1500px) {
+@media (min-width: 1200px) {
     body:has(.chat-layout) .content { max-width: 1860px; }
     .chat-layout { max-width: 1860px; }
 }
@@ -2176,7 +2176,19 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     width: 100vw;
     height: 100dvh;
     padding: 10px 16px;
-    background: var(--green-50);
+    /* NAGYÍTÁSBAN UGYANAZ A HÁTTÉR, mint egyébként. Korábban egy sima
+       zöld felület volt, hogy semmi ne vonja el a figyelmet – de a
+       gyerek számára úgy nézett ki, mintha másik oldalra került volna.
+       A jelkészlet és a színátmenet ugyanaz, mint a body-n. */
+    background-color: #f2f7fb;
+    background-image:
+        url("/static/img/hatter_jelek.svg"),
+        radial-gradient(760px 520px at 8% 0%, rgba(47, 143, 216, .16), transparent 62%),
+        radial-gradient(700px 520px at 100% 22%, rgba(23, 184, 166, .15), transparent 60%),
+        radial-gradient(620px 460px at 50% 100%, rgba(245, 166, 35, .12), transparent 62%);
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+    background-position: center, 0 0, 0 0, 0 0;
+    background-size: 100% auto, auto, auto, auto;
     box-sizing: border-box;
     overflow: hidden;
 }
