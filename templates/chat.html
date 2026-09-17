@@ -295,8 +295,18 @@
        NAGYÍTÁSBAN ez NEM érvényes – ott marad az oszlop. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet):has(.chat-sidebar-vocab){
         grid-template-columns:260px minmax(0,1fr)}
+    /* A fejléc ÉS a lecke-sín doboza is itt áll meg – a sín egy külön
+       doboz a fejlécen KÍVÜL, ezért kellett neki is a szabály.
+       Enélkül a csúszka benyúlt a szójegyzék alá. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet):has(.chat-sidebar-vocab)
-        .chat-header{margin-right:214px}
+        .chat-header,
+    .chat-layout:not(.teljes-mod):has(.uj-felulet):has(.chat-sidebar-vocab)
+        .lecke-sin-doboz{margin-right:214px}
+
+    /* Az érme-csík közvetlenül a sín alatt: az állomások feliratai
+       (Tanulás, Gyakorlás…) a sín alá lógnak, és a csík átment rajtuk.
+       Csak akkor kap több helyet, ha nincs közte a „még ennyi perc" sor. */
+    .chat-layout:has(.uj-felulet) .lecke-sin + .erme-csik{margin-top:30px}
     .chat-layout:not(.teljes-mod):has(.uj-felulet) .chat-sidebar-vocab{
         position:absolute;right:0;top:0;width:200px;
         height:var(--fejlec-magas,240px);max-height:none;
