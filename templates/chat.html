@@ -288,6 +288,14 @@
     /* Nagyításban a jobb oldali üres sávban, középen. */
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
         left:auto;right:16px;width:200px;bottom:12px}
+
+    /* NYELVÓRÁN nagyításban a szójegyzék ugyanabban a sávban van, mint a
+       figura, ezért a figura rálógott a szavakra. A szójegyzék rövidebb
+       lesz (magától görög tovább), a figura alatta kap helyet.
+       Ez CSAK a szójegyzékes órákra vonatkozik – magyar és spanyol
+       oldalon egyformán, mert ugyanez a sablon szolgálja ki mindkettőt. */
+    .chat-layout.teljes-mod:has(.uj-felulet) .chat-sidebar-vocab{
+        align-self:start;height:calc(100% - 290px);max-height:none}
   }
   @media (min-width:1600px){
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
