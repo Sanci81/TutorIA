@@ -2119,7 +2119,10 @@ a.chat-mode-toggle:hover { background: #15803d; text-decoration: none; }
 }
 .chat-thinking-text {
     font-style: italic;
-    color: var(--green-700, #15803d);
+    /* A "gondolkodom..." szöveg a ZÖLD buborékon belül van, ezért a zöld
+       betű majdnem olvashatatlan volt rajta – a keskeny sávban végképp.
+       Fehér betű kell, ahogy a buborék többi szövege is fehér. */
+    color: #ffffff;
     font-weight: 600;
 }
 .chat-thinking-text .thinking-label {

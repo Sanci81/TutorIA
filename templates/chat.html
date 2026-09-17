@@ -228,15 +228,37 @@
       overflow-y:auto;overflow-x:hidden;padding-right:4px}
   .chat-layout.teljes-mod .uj-felulet .beszelo{max-height:100%}
 
-  /* A KABALA OSZLOPÁHOZ NEM NYÚLUNK.
-     Volt egy köröm, amikor átraktam a beszélgetés-sávba, és ehhez
-     felülírtam a .chat-layout oszlopait. A figurát visszatettem a
-     helyére, de a felülírás ott maradt – és az ütötte ki a kabalát:
-     két oszlopot írt elő ott, ahol négy elem van (témalista, tanulás,
-     figura, szójegyzék), így a figura egy új sorba csúszott le, a
-     képernyőn kívülre. Az eredeti stíluslap minden esetet helyesen
-     kezel, ezért itt már nem írunk felül semmit.
-     A tábla szélességéért cserébe csak a BELSŐ osztást hangoljuk. */
+  /* ══ A KABALA HELYE ═══════════════════════════════════════════════════
+     Sándor kérése: rendes nézetben a lap BAL ALSÓ sarkában, nagyításban a
+     JOBB ALSÓ sarokban legyen a figura.
+
+     Ehhez kivesszük a rácsból (position:absolute), és így a rácsnak nem
+     kell neki külön oszlopot fenntartania – a tanulás felülete megkapja
+     azt a 200-300 képpontot, ami eddig üresen állt mellette.
+
+     FIGYELEM: az oszlopszámot CSAK azért írjuk felül, mert a figura már
+     nem rácselem. Amikor korábban rácselemként hagytam és mégis
+     felülírtam, a figura egy új sorba csúszott a képernyőn kívülre. */
+  @media (min-width:901px){
+    .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{
+        position:absolute;left:10px;bottom:10px;right:auto;top:auto;
+        width:150px;height:auto;z-index:5;pointer-events:none}
+    .chat-layout:has(.uj-felulet) .chat-kabala{position:static;max-width:150px}
+
+    .chat-layout:has(.uj-felulet){
+        grid-template-columns:260px minmax(0,1fr)}
+    .chat-layout:has(.uj-felulet):has(.chat-sidebar-vocab){
+        grid-template-columns:260px minmax(0,1fr) minmax(160px,200px)}
+    .chat-layout.teljes-mod:has(.uj-felulet){
+        grid-template-columns:minmax(0,1fr)}
+    .chat-layout.teljes-mod:has(.uj-felulet):has(.chat-sidebar-vocab){
+        grid-template-columns:minmax(0,1fr) minmax(180px,240px)}
+
+    /* Nagyításban a jobb alsó sarok. */
+    .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
+        left:auto;right:18px;bottom:18px}
+  }
+
   @media (min-width:1000px) and (max-width:1279px){
     .munka-sav.uj-felulet,
     .munka-sav.uj-felulet.van-munka{

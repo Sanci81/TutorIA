@@ -60,22 +60,50 @@ MEGLEVO = GYOKER / "static" / "kartyak"
 # HA MÁSMILYEN STÍLUST AKARSZ, csak ezt a szöveget írd át – a script többi
 # részéhez nem kell hozzányúlni.
 STILUS = (
-    "Painterly digital illustration in the style of a collectible trading card. "
-    "Waist-up portrait, subject turned slightly to one side, looking off-camera "
-    "with a calm, serious expression. Rich oil-paint brushwork with visible "
-    "strokes. Dramatic lighting: a warm golden key light on the face and hands, "
-    "set against a deep teal and dark blue background. Strong rim light along "
-    "the hair and shoulders. Saturated but harmonious colours. Period-accurate "
-    "clothing and setting, historically researched. No text, no letters, no "
-    "numbers, no watermark, no signature, no border, no frame. Square "
-    "composition, the head in the upper third."
+    "Oil painting on canvas, painterly digital illustration for a collectible "
+    "trading card. THICK VISIBLE BRUSHWORK: impasto strokes, palette-knife "
+    "texture, visible canvas grain, edges left rough and unblended. NOT smooth, "
+    "NOT airbrushed, NOT a clean studio render.\n"
+    "COMPOSITION: waist-up or three-quarter figure placed INSIDE the real "
+    "environment where this person worked — never a plain studio backdrop. The "
+    "surroundings must be visible and readable: the room, the landscape, the "
+    "instruments, the workshop. The person is caught mid-action, absorbed in "
+    "the work, looking off-camera rather than at the viewer.\n"
+    "LIGHT AND COLOUR: strong warm golden light falling on the face and hands, "
+    "against cool deep teal and blue shadow. Dramatic, cinematic, high contrast, "
+    "as if lit by a single window, lamp or setting sun. Saturated but harmonious.\n"
+    "NO text, letters, numbers, watermark, signature, border or frame. "
+    "Square composition."
+)
+
+# A hasonlóságról: ahol VAN korabeli arckép (Newton, Curie, Darwin, Linné,
+# Beethoven), ott a modellnek érdemes szólni, hogy azt idézze fel. Ahol NINCS
+# (Bolyai János, Pitagorasz, Eukleidész), ott minden kép találmány – bármelyik
+# programmal. Ilyenkor inkább a KORHŰ megjelenést és a jelenetet kérjük.
+HASONLOSAG_VAN = (
+    "Follow the known historical likeness of this person as closely as "
+    "possible: the face should be recognisable from the surviving portraits."
+)
+HASONLOSAG_NINCS = (
+    "No authenticated contemporary portrait of this person survives, so do not "
+    "imitate any modern invented likeness. Instead show a historically "
+    "plausible person of the right period, age, build and dress, absorbed in "
+    "the work they are known for."
 )
 
 # Amit biztosan NE csináljon. A kép-modellek egy része figyelembe veszi.
 TILTOTT = (
-    "Avoid: cartoon, anime, 3D render, photograph, modern clothing, "
-    "text or lettering anywhere in the image, deformed hands, extra fingers."
+    "Avoid: cartoon, anime, 3D render, photograph, modern clothing, plain or "
+    "empty background, smooth airbrushed skin, glossy CGI finish, symmetrical "
+    "studio portrait lighting, text or lettering anywhere in the image, "
+    "deformed hands, extra fingers."
 )
+
+# Akikről NINCS hiteles korabeli arckép. Bővítsd, ha újabb kártya kerül be.
+NINCS_ARCKEP = {
+    "bolyai", "pitagorasz", "pitágorasz", "euklidesz", "eukleidesz",
+    "arkhimedesz", "koroscsoma", "korosi csoma",
+}
 
 
 def _stilus_prompt(kartya: dict) -> str:
@@ -91,7 +119,13 @@ def _stilus_prompt(kartya: dict) -> str:
         fej += f" ({alnev})"
     fej += "."
 
-    return f"{fej} {sajat}\n\n{STILUS}\n\n{TILTOTT}"
+    kulcs = (kartya.get("kep") or "") + " " + nev.lower()
+    kulcs = kulcs.lower()
+    hasonlosag = (HASONLOSAG_NINCS
+                  if any(k in kulcs for k in NINCS_ARCKEP)
+                  else HASONLOSAG_VAN)
+
+    return f"{fej} {sajat}\n\n{hasonlosag}\n\n{STILUS}\n\n{TILTOTT}"
 
 
 # ── A KÁRTYALISTA ÖSSZESZEDÉSE ──────────────────────────────────────────────
@@ -126,7 +160,11 @@ def _van_mar_kepe(kartya: dict) -> bool:
 
 # ── A GENERÁLÁS ─────────────────────────────────────────────────────────────
 def _kliens():
-    kulcs = os.environ.get("OPENAI_API_KEY")
+    # A .strip() NEM felesleges: ha a kulcsot bemásolod a PowerShellbe, a
+    # sortörés is bemegy vele, a HTTP-fejlécben pedig nem lehet sortörés.
+    # Az OpenAI csomag ezt "Connection error"-ként adja vissza, ami órákra
+    # elviszi az embert rossz irányba. Ezért itt levágjuk.
+    kulcs = (os.environ.get("OPENAI_API_KEY") or "").strip()
     if not kulcs:
         print("HIBA: nincs OPENAI_API_KEY környezeti változó.\n"
               "Windows PowerShell-ben egy alkalomra:\n"

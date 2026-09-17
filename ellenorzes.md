@@ -1,0 +1,425 @@
+# TutorIA – ellenőrzés
+
+## Hibák (349)
+
+**Tanterv**
+
+- Digitalis_kultura_1_4.json / 1. évf. / „A digitális világ körülöttünk”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 1. évf. / „A számítógép és a tablet használata”: 7 óra = 420 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 1. évf. / „Fájlok, mentés és adattárolás”: 7 óra = 420 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 1. évf. / „Rajzolás a számítógépen”: 9 óra = 540 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 1. évf. / „Képek szerkesztése és digitális fotó”: 9 óra = 540 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 2. évf. / „A digitális világ körülöttünk”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 2. évf. / „A számítógép és a tablet használata”: 7 óra = 420 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 2. évf. / „Fájlok, mentés és adattárolás”: 7 óra = 420 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 2. évf. / „Rajzolás a számítógépen”: 9 óra = 540 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 2. évf. / „Képek szerkesztése és digitális fotó”: 9 óra = 540 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 3. évf. / „A digitális világ körülöttünk”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 3. évf. / „A számítógép és a tablet használata”: 7 óra = 420 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 3. évf. / „Fájlok, mentés és adattárolás”: 7 óra = 420 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 3. évf. / „Rajzolás a számítógépen”: 9 óra = 540 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 3. évf. / „Képek szerkesztése és digitális fotó”: 9 óra = 540 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 4. évf. / „Keresés az interneten”: 5 óra = 300 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 4. évf. / „Biztonság az interneten”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 4. évf. / „Lépésről lépésre: az algoritmus”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Digitalis_kultura_1_4.json / 4. évf. / „Kódolás és a robot irányítása”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 1. évf. / „Themen und Situationen im persönlichen Ber”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 1. évf. / „Themen und Situationen im Bereich des Klas”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 1. évf. / „Fächerübergreifende Themen und Situationen”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 1. évf. / „Bezüge zur Zielsprache”: 5 óra = 300 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 1. évf. / „Bezüge zu interkulturellen und landeskundl”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 1. évf. / „Spielerisches Lernen”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 1. évf. / „Unterhaltung”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 2. évf. / „Themen und Situationen im persönlichen Ber”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 2. évf. / „Themen und Situationen im Bereich des Klas”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 2. évf. / „Fächerübergreifende Themen und Situationen”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 2. évf. / „Bezüge zur Zielsprache”: 5 óra = 300 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 2. évf. / „Bezüge zu interkulturellen und landeskundl”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 2. évf. / „Spielerisches Lernen”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 2. évf. / „Unterhaltung”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 3. évf. / „Themen und Situationen im persönlichen Ber”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 3. évf. / „Themen und Situationen im Bereich des Klas”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 3. évf. / „Fächerübergreifende Themen und Situationen”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 3. évf. / „Bezüge zur Zielsprache”: 5 óra = 300 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 3. évf. / „Bezüge zu interkulturellen und landeskundl”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 3. évf. / „Spielerisches Lernen”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 3. évf. / „Unterhaltung”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 4. évf. / „Themen und Situationen im persönlichen Ber”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 4. évf. / „Themen und Situationen im Bereich des Klas”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 4. évf. / „Fächerübergreifende Themen und Situationen”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 4. évf. / „Bezüge zur Zielsprache”: 5 óra = 300 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 4. évf. / „Bezüge zu interkulturellen und landeskundl”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 4. évf. / „Spielerisches Lernen”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Elo_idegen_nyelv_1_4.json / 4. évf. / „Unterhaltung”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 1. évf. / „Zeneművek/Énekes anyag”: 70 óra = 4200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 1. évf. / „Zeneművek/Zenehallgatás”: 27 óra = 1620 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 1. évf. / „Zenei ismeretek/ Ritmikai fejlesztés”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 1. évf. / „Zenei ismeretek/Hallásfejlesztés”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 1. évf. / „Zenei ismeretek/ Zenei írás, olvasás”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 2. évf. / „Zeneművek/Énekes anyag”: 70 óra = 4200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 2. évf. / „Zeneművek/Zenehallgatás”: 27 óra = 1620 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 2. évf. / „Zenei ismeretek/ Ritmikai fejlesztés”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 2. évf. / „Zenei ismeretek/Hallásfejlesztés”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 2. évf. / „Zenei ismeretek/ Zenei írás, olvasás”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 3. évf. / „Zeneművek/Énekes anyag”: 70 óra = 4200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 3. évf. / „Zeneművek/ Zenehallgatás”: 27 óra = 1620 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 3. évf. / „Zenei ismeretek /Ritmikai fejlesztés”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 3. évf. / „Zenei ismeretek/ Hallásfejlesztés”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 3. évf. / „Zenei ismeretek/ Zenei írás-olvasás”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 4. évf. / „Zeneművek/Énekes anyag”: 70 óra = 4200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 4. évf. / „Zeneművek/ Zenehallgatás”: 27 óra = 1620 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 4. évf. / „Zenei ismeretek /Ritmikai fejlesztés”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 4. évf. / „Zenei ismeretek/ Hallásfejlesztés”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Enek_zene_1_4.json / 4. évf. / „Zenei ismeretek/ Zenei írás-olvasás”: 13 óra = 780 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 1. évf. / „Éntudat – Önismeret”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 1. évf. / „Család – Helyem a családban”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 1. évf. / „Helyem az osztály közösségében”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 1. évf. / „A társas együttélés kulturális gyökerei: N”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 1. évf. / „A természet rendjének megőrzése a fenntart”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 1. évf. / „Az európai kultúra hatása az egyén értékre”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 2. évf. / „Éntudat – Önismeret”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 2. évf. / „Család – Helyem a családban”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 2. évf. / „Helyem az osztály közösségében”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 2. évf. / „A társas együttélés kulturális gyökerei: N”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 2. évf. / „A természet rendjének megőrzése a fenntart”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 2. évf. / „Az európai kultúra hatása az egyén értékre”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 3. évf. / „Éntudat – Önismeret”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 3. évf. / „Család – Helyem a családban”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 3. évf. / „Helyem az osztály közösségében”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 3. évf. / „A társas együttélés kulturális gyökerei: N”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 3. évf. / „A természet rendjének megőrzése a fenntart”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 3. évf. / „Az európai kultúra hatása az egyén értékre”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 4. évf. / „Éntudat – Önismeret”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 4. évf. / „Család – Helyem a családban”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 4. évf. / „Helyem az osztály közösségében”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 4. évf. / „A társas együttélés kulturális gyökerei: N”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 4. évf. / „A természet rendjének megőrzése a fenntart”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Etika_1_4.json / 4. évf. / „Az európai kultúra hatása az egyén értékre”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 1. évf. / „Élő és élettelen a környezetünkben”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 1. évf. / „Mérünk: hosszúság, tömeg, űrtartalom, idő”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 1. évf. / „Halmazállapotok és változásaik”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 1. évf. / „Az idő: napszakok, hónapok, évszakok”: 5 óra = 300 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 2. évf. / „Élő és élettelen a környezetünkben”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 2. évf. / „Mérünk: hosszúság, tömeg, űrtartalom, idő”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 2. évf. / „Halmazállapotok és változásaik”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 2. évf. / „Az idő: napszakok, hónapok, évszakok”: 5 óra = 300 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 3. évf. / „Élő és élettelen a környezetünkben”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 3. évf. / „Mérünk: hosszúság, tömeg, űrtartalom, idő”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 3. évf. / „Halmazállapotok és változásaik”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 3. évf. / „Az idő: napszakok, hónapok, évszakok”: 5 óra = 300 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 4. évf. / „Tájékozódás a térben: alaprajz és térkép”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 4. évf. / „Hazánk, Magyarország”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 4. évf. / „Az erdő életközössége”: 7 óra = 420 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 4. évf. / „A mező, a rét és a mesterséges életközössé”: 7 óra = 420 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 4. évf. / „A víz és a vízpart élővilága, tápláléklánc”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Kornyezetismeret_1_4.json / 4. évf. / „Testünk és egészségünk”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 1. évf. / „Beszéd és kommunikáció”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 1. évf. / „Betűtanítás kezdete. Olvasási készséget me”: 60 óra = 3600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 1. évf. / „Betűtanítás. Olvasási készséget megalapozó”: 70 óra = 4200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 1. évf. / „Népmesék, műmesék”: 40 óra = 2400 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 1. évf. / „Versek, népköltészeti alkotások”: 28 óra = 1680 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 1. évf. / „Helyem a közösségben – család, iskola”: 18 óra = 1080 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 1. évf. / „Állatok, növények, emberek”: 24 óra = 1440 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 2. évf. / „Óvodából iskolába – írás-előkészítés, írás”: 32 óra = 1920 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 2. évf. / „Írás jelrendszere”: 58 óra = 3480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 2. évf. / „A nyelv építő kövei: hang/betű, szótag, sz”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 2. évf. / „A nyelv építő kövei: szó, szókapcsolat, mo”: 25 óra = 1500 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 2. évf. / „Kisbetű – nagybetű”: 18 óra = 1080 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 2. évf. / „A magyar ábécé – a betűrend”: 18 óra = 1080 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 2. évf. / „Hangok időtartamának jelentés-megkülönbözt”: 32 óra = 1920 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 3. évf. / „Beszéd és kommunikáció”: 22 óra = 1320 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 3. évf. / „Mondák, regék”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 3. évf. / „Versek, népköltészeti alkotások”: 25 óra = 1500 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 3. évf. / „Helyem a világban”: 25 óra = 1500 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 3. évf. / „Ünnepkörök, hagyományok, mesterségek”: 25 óra = 1500 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 3. évf. / „Növények, állatok, emberek, találmányok”: 35 óra = 2100 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 3. évf. / „Olvassunk együtt! Közös olvasmányok”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 3. évf. / „A nyelv építő kövei: hang/betű, szótag, sz”: 15 óra = 900 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 4. évf. / „A nyelv építő kövei: Az írásbeli szövegalk”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 4. évf. / „A nyelv építő kövei: szó, szókapcsolat, mo”: 25 óra = 1500 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 4. évf. / „Szótő és toldalék, szóelemzés”: 16 óra = 960 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 4. évf. / „Hangalak és jelentés kapcsolata, állandósu”: 15 óra = 900 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 4. évf. / „Élőlények, tárgyak, gondolati dolgok neve”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 4. évf. / „Tulajdonságokat kifejező szavak”: 15 óra = 900 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 4. évf. / „Mennyiségeket kifejező szavak”: 15 óra = 900 perc egy leckére. Ez évi óraszám, nem lecke.
+- Magyar_nyelv_es_irodalom_1_4.json / 4. évf. / „Cselekvés, történés a múltban, jelenben, j”: 25 óra = 1500 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Válogatás, halmazok alkotása, vizsgálata”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Rendszerezés, rendszerképzés”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Állítások”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Problémamegoldás”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Szöveges feladatok megoldása”: 11 óra = 660 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Szám és valóság kapcsolata”: 19 óra = 1140 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Számlálás, becslés”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Számok rendezése”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Számok tulajdonságai”: 18 óra = 1080 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Számok helyi értékes alakja”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 1. évf. / „Mérőeszköz használata, mérési módszerek”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Alapműveletek értelmezése”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Alapműveletek tulajdonságai”: 16 óra = 960 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Szóbeli számolási eljárások”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Fejben számolás”: 18 óra = 1080 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Alkotás térben és síkon”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Alakzatok geometriai tulajdonságai”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Transzformációk”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Tájékozódás térben és síkon”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Összefüggések, kapcsolatok, szabályszerűsé”: 18 óra = 1080 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Adatok megfigyelése”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 2. évf. / „Valószínűségi gondolkodás”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Válogatás, halmazok alkotása, vizsgálata”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Rendszerezés, rendszerképzés”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Állítások”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Problémamegoldás”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Szöveges feladatok megoldása”: 16 óra = 960 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Szám és valóság kapcsolata”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Számlálás, becslés”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Számok rendezése”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Számok tulajdonságai”: 17 óra = 1020 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Számok helyi értékes alakja”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Mérőeszköz használata, mérési módszerek”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Alapműveletek értelmezése”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 3. évf. / „Alapműveletek tulajdonságai”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Szóbeli számolási eljárások”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Fejben számolás”: 15 óra = 900 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Írásbeli összeadás és kivonás”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Írásbeli szorzás és osztás”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Törtrészek”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Negatív számok”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Alkotás térben és síkon”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Alakzatok geometriai tulajdonságai”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Transzformációk”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Tájékozódás térben és síkon”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Összefüggések, kapcsolatok, szabályszerűsé”: 18 óra = 1080 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Adatok megfigyelése”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Matematika_1_4.json / 4. évf. / „Valószínűségi gondolkodás”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 1. évf. / „Anyagok a környezetünkben”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 1. évf. / „Tárgykészítés különböző anyagokból, építés”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 1. évf. / „Otthon – család – életmód”: 14 óra = 840 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 1. évf. / „Jeles napok, ünnepek”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 1. évf. / „Közlekedés”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 2. évf. / „Anyagok a környezetünkben”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 2. évf. / „Tárgykészítés különböző anyagokból, építés”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 2. évf. / „Otthon – család – életmód”: 14 óra = 840 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 2. évf. / „Jeles napok, ünnepek”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 2. évf. / „Közlekedés”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 3. évf. / „Anyagok a környezetünkben”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 3. évf. / „Tárgykészítés különböző anyagokból, építés”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 3. évf. / „Otthon – család – életmód”: 16 óra = 960 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 3. évf. / „Jeles napok, ünnepek”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 3. évf. / „Közlekedés”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 4. évf. / „Anyagok a környezetünkben”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 4. évf. / „Tárgykészítés különböző anyagokból, építés”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 4. évf. / „Otthon – család – életmód”: 16 óra = 960 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 4. évf. / „Jeles napok, ünnepek”: 8 óra = 480 perc egy leckére. Ez évi óraszám, nem lecke.
+- Technika_es_tervezes_1_4.json / 4. évf. / „Közlekedés”: 6 óra = 360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Gimnasztika és rendgyakorlatok – prevenció”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Kúszások és mászások”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Járások, futások”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Szökdelések, ugrások”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Dobások, ütések”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Támasz-, függés- és egyensúlygyakorlatok”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Labdás gyakorlatok”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Testnevelési és népi játékok”: 32 óra = 1920 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Küzdőfeladatok és -játékok”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Foglalkozások alternatív környezetben”: 46 óra = 2760 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 1. évf. / „Úszás (Amennyiben adottak a feltételek.)”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Gimnasztika és rendgyakorlatok – prevenció”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Kúszások és mászások”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Járások, futások”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Szökdelések, ugrások”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Dobások, ütések”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Támasz-, függés- és egyensúlygyakorlatok”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Labdás gyakorlatok”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Testnevelési és népi játékok”: 32 óra = 1920 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Küzdőfeladatok és -játékok”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Foglalkozások alternatív környezetben”: 46 óra = 2760 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 2. évf. / „Úszás (Amennyiben adottak a feltételek.)”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Gimnasztika és rendgyakorlatok – prevenció”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Kúszások és mászások”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Járások, futások”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Szökdelések, ugrások”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Dobások, ütések”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Támasz-, függés- és egyensúlygyakorlatok”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Labdás gyakorlatok”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Testnevelési és népi játékok”: 32 óra = 1920 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Küzdőfeladatok és -játékok”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Foglalkozások alternatív környezetben”: 46 óra = 2760 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 3. évf. / „Úszás (Amennyiben adottak a feltételek.)”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Gimnasztika és rendgyakorlatok – prevenció”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Kúszások és mászások”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Járások, futások”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Szökdelések, ugrások”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Dobások, ütések”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Támasz-, függés- és egyensúlygyakorlatok”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Labdás gyakorlatok”: 26 óra = 1560 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Testnevelési és népi játékok”: 32 óra = 1920 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Küzdőfeladatok és -játékok”: 30 óra = 1800 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Foglalkozások alternatív környezetben”: 46 óra = 2760 perc egy leckére. Ez évi óraszám, nem lecke.
+- Testneveles_1_4.json / 4. évf. / „Úszás (Amennyiben adottak a feltételek.)”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 1. évf. / „Síkbeli és térbeli alkotások – Mese, fantá”: 56 óra = 3360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 1. évf. / „Vizuális információ – Vizuális jelek a kör”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 1. évf. / „Médiahasználat – Valós és virtuális inform”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 1. évf. / „Álló- és mozgókép – Kép, hang, történet”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 1. évf. / „Természetes és mesterséges környezet – Val”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 1. évf. / „Természetes és mesterséges környezet – Köz”: 24 óra = 1440 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 2. évf. / „Síkbeli és térbeli alkotások – Mese, fantá”: 56 óra = 3360 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 2. évf. / „Vizuális információ – Vizuális jelek a kör”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 2. évf. / „Médiahasználat – Valós és virtuális inform”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 2. évf. / „Álló- és mozgókép – Kép, hang, történet”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 2. évf. / „Természetes és mesterséges környezet – Val”: 20 óra = 1200 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 2. évf. / „Természetes és mesterséges környezet – Köz”: 24 óra = 1440 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 3. évf. / „Síkbeli és térbeli alkotások – Mese, fantá”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 3. évf. / „Vizuális információ – Vizuális jelek a kör”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 3. évf. / „Médiahasználat – Valós és virtuális inform”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 3. évf. / „Álló- és mozgókép – Kép, hang, történet”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 3. évf. / „Természetes és mesterséges környezet – Val”: 16 óra = 960 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 3. évf. / „Természetes és mesterséges környezet – Köz”: 16 óra = 960 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 4. évf. / „Síkbeli és térbeli alkotások – Mese, fantá”: 36 óra = 2160 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 4. évf. / „Vizuális információ – Vizuális jelek a kör”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 4. évf. / „Médiahasználat – Valós és virtuális inform”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 4. évf. / „Álló- és mozgókép – Kép, hang, történet”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 4. évf. / „Természetes és mesterséges környezet – Val”: 16 óra = 960 perc egy leckére. Ez évi óraszám, nem lecke.
+- Vizualis_kultura_1_4.json / 4. évf. / „Természetes és mesterséges környezet – Köz”: 16 óra = 960 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 1. évf. / „Greetings – Köszönés és bemutatkozás”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 1. évf. / „Numbers 1–10 – Számok”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 1. évf. / „Colours – Színek”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 1. évf. / „My body – A testem”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 1. évf. / „My family – A családom”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 1. évf. / „Animals – Állatok”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 2. évf. / „My toys – A játékaim”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 2. évf. / „Food and drink – Étel és ital”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 2. évf. / „My clothes – A ruháim”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 2. évf. / „In the classroom – A tanteremben”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 2. évf. / „Numbers 11–20 and age – Számok és életkor”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 2. évf. / „Weather and seasons – Időjárás és évszakok”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 3. évf. / „At school – Az iskolában”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 3. évf. / „My home – Az otthonom”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 3. évf. / „Meals of the day – Napi étkezések”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 3. évf. / „My day – A napirendem”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 3. évf. / „Free time and hobbies – Szabadidő és hobbi”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 3. évf. / „Days and months – Napok és hónapok”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 4. évf. / „My town – A városom”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 4. évf. / „Shopping – Vásárlás”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 4. évf. / „My favourites – A kedvenceim”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 4. évf. / „Nature and the seasons – A természet”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 4. évf. / „Festivals – Ünnepek”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- angol_1-4.json / 4. évf. / „Yesterday and today – Tegnap és ma”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 1. évf. / „Begrüßung – Köszönés és bemutatkozás”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 1. évf. / „Zahlen 1–10 – Számok”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 1. évf. / „Farben – Színek”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 1. évf. / „Mein Körper – A testem”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 1. évf. / „Meine Familie – A családom”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 1. évf. / „Tiere – Állatok”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 2. évf. / „Mein Spielzeug – A játékaim”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 2. évf. / „Essen und Trinken – Étel és ital”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 2. évf. / „Meine Kleidung – A ruháim”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 2. évf. / „Im Klassenzimmer – A tanteremben”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 2. évf. / „Zahlen 11–20 und Alter – Számok és életkor”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 2. évf. / „Wetter und Jahreszeiten – Időjárás és évsz”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 3. évf. / „Die Schule – Az iskolában”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 3. évf. / „Mein Zuhause – Az otthonom”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 3. évf. / „Mahlzeiten – Napi étkezések”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 3. évf. / „Mein Tag – A napirendem”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 3. évf. / „Freizeit und Hobbys – Szabadidő és hobbi”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 3. évf. / „Wochentage und Monate – Napok és hónapok”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 4. évf. / „Meine Stadt – A városom”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 4. évf. / „Einkaufen – Vásárlás”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 4. évf. / „Meine Lieblingssachen – A kedvenceim”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 4. évf. / „Natur und Jahreszeiten – A természet”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 4. évf. / „Feste – Ünnepek”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- nemet_1-4.json / 4. évf. / „Gestern und heute – Tegnap és ma”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 1. évf. / „Saludos – Köszönés és bemutatkozás”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 1. évf. / „Números 1–10 – Számok”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 1. évf. / „Los colores – Színek”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 1. évf. / „Mi cuerpo – A testem”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 1. évf. / „Mi familia – A családom”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 1. évf. / „Los animales – Állatok”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 2. évf. / „Mis juguetes – A játékaim”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 2. évf. / „La comida y la bebida – Étel és ital”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 2. évf. / „Mi ropa – A ruháim”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 2. évf. / „En clase – A tanteremben”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 2. évf. / „Números 11–20 y la edad – Számok és életko”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 2. évf. / „El tiempo y las estaciones – Időjárás és é”: 10 óra = 600 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 3. évf. / „El colegio – Az iskolában”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 3. évf. / „Mi casa – Az otthonom”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 3. évf. / „Las comidas – Napi étkezések”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 3. évf. / „Mi día – A napirendem”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 3. évf. / „El tiempo libre – Szabadidő és hobbi”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 3. évf. / „Días y meses – Napok és hónapok”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 4. évf. / „Mi ciudad – A városom”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 4. évf. / „De compras – Vásárlás”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 4. évf. / „Mis cosas favoritas – A kedvenceim”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 4. évf. / „La naturaleza – A természet”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 4. évf. / „Las fiestas – Ünnepek”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+- spanyol_1-4.json / 4. évf. / „Ayer y hoy – Tegnap és ma”: 12 óra = 720 perc egy leckére. Ez évi óraszám, nem lecke.
+**Fordítások**
+
+- „chat_welcome_placement”: a helyettesítők nem egyeznek – magyar ['{article}', '{name}', '{subject}', '{teacher}'], spanyol ['{name}', '{subject}', '{teacher}']. A spanyol szövegbe nem kerül bele az érték.
+- „chat_welcome_continue”: a helyettesítők nem egyeznek – magyar ['{article}', '{name}', '{subject}', '{topic}'], spanyol ['{name}', '{subject}', '{topic}']. A spanyol szövegbe nem kerül bele az érték.
+
+## Figyelmeztetések (44)
+
+**Tanterv**
+
+- 300 leckénél nincs óraszám (0). Ezeknél nem tudjuk, mikor van vége a leckének.
+- 8 tantárgy-évfolyam párnál üres a leckelista. Ezeket a gyerek nem látja.
+**Kiejtés**
+
+- hatványjel: 4 leckeszövegben marad bent a felolvasás után. Például: „en rögzítettnek megfelelően[^egy]  Tanulási eredmények  A”
+**Kártyák**
+
+- 42 kártyának NINCS képe (52-ból). A gyerek sziluettet lát.
+-     Bolyai János → static/kartyak/hu/matematika_7_bolyai.png
+-     Pitagorasz → static/kartyak/hu/matematika_7_pitagorasz.png
+-     Szent-Györgyi Albert → static/kartyak/hu/biologia_7_szentgyorgyi.png
+-     Kolumbusz Kristóf → static/kartyak/hu/foldrajz_7_kolumbusz.png
+-     Kőrösi Csoma Sándor → static/kartyak/hu/foldrajz_7_koroscsoma.png
+-     Széchenyi István → static/kartyak/hu/tortenelem_7_szechenyi.png
+-     Semmelweis Ignác → static/kartyak/hu/tortenelem_7_semmelweis.png
+-     Guglielmo Marconi → static/kartyak/hu/tortenelem_7_marconi.png
+-     Petőfi Sándor → static/kartyak/hu/magyar_7_petofi.png
+-     Arany János → static/kartyak/hu/magyar_7_arany.png
+-     Johann Sebastian Bach → static/kartyak/hu/enekzene_7_bach.png
+-     Ludwig van Beethoven → static/kartyak/hu/enekzene_7_beethoven.png
+-     Bartók Béla → static/kartyak/hu/enekzene_7_bartok.png
+-     Neumann János → static/kartyak/hu/digitalis_7_neumann.png
+-     Ada Lovelace → static/kartyak/hu/digitalis_7_lovelace.png
+-     Alan Turing → static/kartyak/hu/digitalis_7_turing.png
+-     Santiago Ramón y Cajal → static/kartyak/es/medio_3_cajal.png
+-     José Celestino Mutis → static/kartyak/es/medio_2_mutis.png
+-     Fausto Elhuyar → static/kartyak/es/medio_3_elhuyar.png
+-     Isaac Peral → static/kartyak/es/medio_3_peral.png
+-     Blas Cabrera → static/kartyak/es/medio_3_cabrera.png
+-     Leonardo Torres Quevedo → static/kartyak/es/medio_3_torres.png
+-     Juan Sebastián Elcano → static/kartyak/es/medio_3_elcano.png
+-     Alfonso X el Sabio → static/kartyak/es/medio_3_alfonsox.png
+-     Bartolomé de las Casas → static/kartyak/es/medio_3_lascasas.png
+-     Al-Juarismi → static/kartyak/es/matematicas_3_juarismi.png
+-     Azarquiel → static/kartyak/es/matematicas_3_azarquiel.png
+-     Jorge Juan → static/kartyak/es/matematicas_3_jorgejuan.png
+-     Hipatia de Alejandría → static/kartyak/es/matematicas_3_hipatia.png
+-     Abbás Ibn Firnás → static/kartyak/es/matematicas_2_firnas.png
+-     Miguel de Cervantes → static/kartyak/es/lengua_3_cervantes.png
+-     Elio Antonio de Nebrija → static/kartyak/es/lengua_3_nebrija.png
+-     Federico García Lorca → static/kartyak/es/lengua_3_lorca.png
+-     Rosalía de Castro → static/kartyak/es/lengua_2_rosalia.png
+-     Sor Juana Inés de la Cruz → static/kartyak/es/lengua_3_sorjuana.png
+-     Diego Velázquez → static/kartyak/es/artistica_3_velazquez.png
+-     Francisco de Goya → static/kartyak/es/artistica_3_goya.png
+-     Joaquín Sorolla → static/kartyak/es/artistica_2_sorolla.png
+-     Manuel de Falla → static/kartyak/es/artistica_3_falla.png
+-     Isaac Albéniz → static/kartyak/es/artistica_2_albeniz.png
+
+## Rendben (4)
+
+**Tanterv**
+
+- Összesen 655 lecke, 23 tantárgyfájl.
+**Fordítások**
+
+- Mind a 477 kulcs megvan mindkét nyelven.
+**Sablonok**
+
+- Mind a 29 sablon értelmes.
+**Kiejtés**
+
+- 655 leckeszöveget néztem át.
