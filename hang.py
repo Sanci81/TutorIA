@@ -247,10 +247,16 @@ def szorzoszam(n: int) -> str:
 # "8 × 5", "4 × 10-re", "12x3" — a toldalékot is magához veszi, különben
 # a csere után árván maradna: "négyszer tíz-re".
 _SZORZAS = re.compile(
-    r"(?<!\d)(\d{1,6})\s*[×⋅*]\s*(\d{1,6})(-[a-záéíóöőúüű]{1,6})?")
+    # Az "x" és a "*" is szorzásjel, ha KÉT SZÁM között áll. Enélkül a
+    # "3 x 4"-ből "három szorozva négy" lett, a "3 × 4"-ből viszont
+    # "háromszor négy" – ugyanaz a művelet kétféleképpen hangzott el,
+    # attól függően, melyik jelet írta le éppen a tanár.
+    r"(?<!\d)(\d{1,6})\s*[×⋅*xX]\s*(\d{1,6})(-[a-záéíóöőúüű]{1,6})?")
 
 # Képletben a második tag betű: "K = 4 × a" → "négyszer a".
 _SZORZAS_BETU = re.compile(r"(?<!\w)(\d{1,6})\s*[×⋅]\s*([a-zA-Z])(?!\w)")
+# A középpont (·) is szorzásjel a magyar matekban: "2·5".
+_KOZEPPONT = re.compile(r"(?<!\d)(\d{1,6})\s*·\s*(\d{1,6})(-[a-záéíóöőúüű]{1,6})?")
 
 # Toldalékos szám: "10-re", "4-hez", "1848-ban". A toldalékot a szöveg írója
 # már helyesen választotta meg, ezért elég a számot szóvá írni és hozzáragasztani.
@@ -267,6 +273,7 @@ def szorzas_szoval(szoveg: str) -> str:
         return ki + told[1:] if told else ki
 
     szoveg = _SZORZAS.sub(csere, szoveg)
+    szoveg = _KOZEPPONT.sub(csere, szoveg)
     return _SZORZAS_BETU.sub(
         lambda m: f"{szorzoszam(int(m.group(1)))} {m.group(2)}", szoveg)
 

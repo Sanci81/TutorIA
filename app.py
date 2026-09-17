@@ -4595,10 +4595,22 @@ def _detect_foreign_words(text: str, base_lang: str) -> dict[str, str]:
                     f"Egyetlen idegen szónál a TOLDALÉK NÉLKÜLI alakot add vissza: "
                     f"\"Münchenben\" → \"München\"; \"Shakespeare-t\" → \"Shakespeare\".\n"
                     f"Ide tartoznak: idegen mondatok és kifejezések, idegen "
-                    f"személynevek, idegen földrajzi nevek, idegen szakszavak.\n"
-                    f"NE vedd fel: a {base_name} szöveget, a {base_name} "
-                    f"tulajdonneveket (pl. Budapest, Petőfi), és a meghonosodott "
-                    f"jövevényszavakat (sport, telefon).\n"
+                    f"személynevek, idegen földrajzi nevek, és idegen ÍRÁSMÓDÚ "
+                    f"szakszavak (pl. software, laissez-faire).\n"
+                    # A LEGGYAKORIBB HIBA: a felismerő a magyar szaknyelvi
+                    # szavakat idegennek vette, mert latin eredetűek. A
+                    # matekórán így lett a "metszet"-ből és az "unió"-ból
+                    # ANGOL kiejtés. Ezt itt külön tiltjuk, példákkal.
+                    f"SOHA NE vedd fel: a {base_name} szöveget; a {base_name} "
+                    f"tulajdonneveket (pl. Budapest, Petőfi); a meghonosodott "
+                    f"jövevényszavakat (sport, telefon); és a {base_name} "
+                    f"SZAKSZAVAKAT akkor sem, ha latin vagy görög eredetűek — "
+                    f"ezek {base_name} szavak, {base_name} kiejtéssel: metszet, "
+                    f"unió, halmaz, energia, atom, funkció, periódus, régió, "
+                    f"tangens, izom, vulkán, demokrácia.\n"
+                    f"DÖNTÉSI SZABÁLY: ha a szó a {base_name} helyesírás "
+                    f"szerint van leírva (ékezetekkel, {base_name} toldalékkal), "
+                    f"akkor {base_name} szó — NE vedd fel.\n"
                     "A részletet PONTOSAN úgy add vissza, ahogy a szövegben áll.\n"
                     'Válasz KIZÁRÓLAG ilyen JSON: {"segments":[{"t":"I have a dog",'
                     '"lang":"en"},{"t":"München","lang":"de"}]}\n'
@@ -9975,6 +9987,9 @@ def api_voice_speak():
     if not text:
         return jsonify({"error": "no_text"}), 400
     # Idegen szavak felismerése a felolvasás előtt — így NEM a fő prompton múlik.
+    # MINDEN tantárgynál fut: ha egy fizikaórán elhangzik egy német név, azt
+    # németül kell kimondani. A magyar szavakat viszont magyarul — lásd a
+    # felismerő utasítását.
     try:
         _base = "es" if (_active_curriculum() or "HU").upper() == "ES" else "hu"
         _found = _detect_foreign_words(text, _base)
