@@ -545,7 +545,13 @@
             </div>
             {# MENNYI VAN MÉG HÁTRA. A csúszka eddig csak a helyet mutatta,
                az időt nem — a gyerek nem tudta, mikor lesz vége. #}
-            {% if lecke_hossz_perc %}
+            {# CSAK ÉRTELMES SZÁMOT ÍRUNK KI. A tanterv óraszáma több
+               tantárgynál az EGÉSZ ÉVI blokkra vonatkozik (Ének-zene:
+               70 óra), abból 4200 perc jön ki, ami egy leckére nyilván
+               értelmetlen. Amíg a lecke hosszának szorzója nincs
+               eldöntve, a három óránál hosszabb értéket elhallgatjuk,
+               semmint hogy hülyeséget mutassunk a gyereknek. #}
+            {% if lecke_hossz_perc and lecke_hossz_perc <= 180 %}
             <p class="lecke-hatra">
                 {% if lecke_hatra_perc > 0 %}
                     ⏳ {{ t('lecke_hatra').replace('{perc}', lecke_hatra_perc|string) }}
