@@ -240,11 +240,34 @@
      nem rácselem. Amikor korábban rácselemként hagytam és mégis
      felülírtam, a figura egy új sorba csúszott a képernyőn kívülre. */
   @media (min-width:901px){
-    /* A KÉPERNYŐHÖZ kötve (fixed), NEM a lap aljához. Korábban a lap
-       aljához kötöttem: rövid leckén (földrajz) látszott, hosszún
-       (matek, feladattal) 1700 képpont mélyre került, és eltűnt. */
+    /* ══ A LAP NE GÖRÖGJÖN – CSAK A TÁBLA BELSEJE ═══════════════════════
+       Ez az oka annak, hogy a figura eddig "elúszott". Ha az EGÉSZ lap
+       görög, akkor a figurának csak két rossz lehetősége van: vagy a
+       lappal megy (és hosszú leckén lecsúszik a képernyő alá), vagy a
+       képernyőhöz tapad (és úgy néz ki, mintha csúszkálna a szöveg
+       fölött). Ha a lap nem görög, egyik sem történik meg: a figura egy
+       helyben marad, és mindig látszik.
+
+       Nagyításban ugyanez már működik, ott a .bal-oszlop görög. Most a
+       rendes nézet is így csinálja. A 140 képpont ugyanaz a fejléc-
+       magasság, amivel az oldalsáv (.chat-sidebar) is számol.
+
+       A :not(.teljes-mod) FONTOS: nagyításban a lap 100dvh magas, azt
+       nem szabad felülírni. */
+    .chat-layout:not(.teljes-mod):has(.uj-felulet){
+        height:calc(100vh - 140px);min-height:580px}
+    .chat-layout:has(.uj-felulet) .chat-main{
+        min-height:0;display:flex;flex-direction:column}
+    .chat-layout:has(.uj-felulet) .munka-sav.uj-felulet{
+        min-height:0;flex:1 1 auto;align-items:stretch}
+    .chat-layout:has(.uj-felulet) .uj-felulet .bal-oszlop{
+        min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:4px}
+    .chat-layout:has(.uj-felulet) .uj-felulet .beszelo{max-height:100%}
+
+    /* A FIGURA EGY HELYBEN: a felület bal alsó sarkában. Mivel a lap
+       nem görög, az "absolute" itt tényleg fix helyet jelent. */
     .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{
-        position:fixed;left:0;bottom:12px;right:auto;top:auto;
+        position:absolute;left:0;bottom:12px;right:auto;top:auto;
         width:280px;height:auto;z-index:5;pointer-events:none;
         display:flex;align-items:flex-end;justify-content:center}
     /* KÉP (kisfiú, kislány): 150 képpont jó rá.
@@ -261,9 +284,15 @@
     .chat-layout:has(.uj-felulet):has(.chat-sidebar-vocab){
         grid-template-columns:260px minmax(0,1fr) minmax(160px,200px)}
 
-    /* Nagyításban a jobb oldali üres sávban, középen. */
+    /* Nagyításban a jobb oldali üres sávban, PONTOSAN középen: a sáv a
+       fenntartott oszlop (200, 1600 fölött 300) és a 16 képpontos
+       belső szegély. */
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
-        left:auto;right:0;bottom:12px}
+        left:auto;right:16px;width:200px;bottom:12px}
+  }
+  @media (min-width:1600px){
+    .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
+        width:300px}
   }
 
   @media (min-width:1000px) and (max-width:1279px){
