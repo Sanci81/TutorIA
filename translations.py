@@ -502,6 +502,11 @@ TRANSLATIONS = {
     # ── ÚJ MUNKAFELÜLET ────────────────────────────────────────────────
     # A keskeny beszélgetés-sáv feliratai. Csak akkor látszanak, ha az
     # új felület be van kapcsolva.
+    # A lecke-sín alatt: mennyi van még hátra ebből a leckéből.
+    "lecke_hatra": {"hu": "Még {perc} perc ebből a leckéből",
+                    "es": "Quedan {perc} minutos de esta lección"},
+    "lecke_ideje_letelt": {"hu": "A lecke ideje letelt — jöhet a záró teszt!",
+                           "es": "El tiempo de la lección ha terminado — ¡ya puedes hacer la prueba!"},
     "uj_beszelgetes": {"hu": "Beszélgetés", "es": "Conversación"},
     "uj_tablan_van": {"hu": "A kérdés a táblán van.",
                       "es": "La pregunta está en la pizarra."},

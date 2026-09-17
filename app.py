@@ -7941,6 +7941,11 @@ def child_chat(child_id: int):
     else:
         show_early_test = _teszt_probak < 3
 
+    # MENNYI VAN MÉG HÁTRA A LECKÉBŐL. A csúszka eddig csak azt mutatta,
+    # hol tart – azt nem, hogy mikor lesz vége. A gyerek így nem tudta,
+    # mire számítson, és a szülő sem.
+    _hatra_perc = max(0, int(_teszt_req) - int(_teszt_tanult)) if _teszt_req else 0
+
 
     # Ábrák kinyerése a régi asszisztens üzenetekből (DB-ből betöltött előzmény).
     # Az ABRA blokkokat eltávolítjuk a szövegből, az SVG-ket sanitizáljuk,
@@ -8031,6 +8036,9 @@ def child_chat(child_id: int):
         show_chat_switch=chat_profile != _CHAT_PROFILE_VOICE_ONLY,
         learning_today=learning_today,
         show_early_test=show_early_test,
+        lecke_hossz_perc=int(_teszt_req or 0),
+        lecke_tanult_perc=int(_teszt_tanult or 0),
+        lecke_hatra_perc=_hatra_perc,
         progress=progress,
         # Az érme és a pont a PÉNZTÁRCÁBÓL jön – egy szám az egész appban.
         coins=_penztarca.get("erme", 0),
