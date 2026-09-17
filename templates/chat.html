@@ -240,23 +240,30 @@
      nem rácselem. Amikor korábban rácselemként hagytam és mégis
      felülírtam, a figura egy új sorba csúszott a képernyőn kívülre. */
   @media (min-width:901px){
+    /* A KÉPERNYŐHÖZ kötve (fixed), NEM a lap aljához. Korábban a lap
+       aljához kötöttem: rövid leckén (földrajz) látszott, hosszún
+       (matek, feladattal) 1700 képpont mélyre került, és eltűnt. */
     .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{
-        position:absolute;left:10px;bottom:10px;right:auto;top:auto;
-        width:150px;height:auto;z-index:5;pointer-events:none}
+        position:fixed;left:0;bottom:12px;right:auto;top:auto;
+        width:280px;height:auto;z-index:5;pointer-events:none;
+        display:flex;align-items:flex-end;justify-content:center}
+    /* KÉP (kisfiú, kislány): 150 képpont jó rá.
+       ROBOT: a rajzvászon körül sok az üres hely, ezért a DOBOZA 280 –
+       csak így lesz maga a figura akkora, mint a kisfiú. Egy közös
+       max-width mindkettőre a robotot felezte meg. */
     .chat-layout:has(.uj-felulet) .chat-kabala{position:static;max-width:150px}
+    .chat-layout:has(.uj-felulet) .chat-kabala-doboz{position:static;max-width:280px}
 
+    /* CSAK a rendes nézet lesz szélesebb. NAGYÍTÁSBAN az oszlopokhoz
+       NEM nyúlunk – ott minden marad úgy, ahogy eddig volt. */
     .chat-layout:has(.uj-felulet){
         grid-template-columns:260px minmax(0,1fr)}
     .chat-layout:has(.uj-felulet):has(.chat-sidebar-vocab){
         grid-template-columns:260px minmax(0,1fr) minmax(160px,200px)}
-    .chat-layout.teljes-mod:has(.uj-felulet){
-        grid-template-columns:minmax(0,1fr)}
-    .chat-layout.teljes-mod:has(.uj-felulet):has(.chat-sidebar-vocab){
-        grid-template-columns:minmax(0,1fr) minmax(180px,240px)}
 
-    /* Nagyításban a jobb alsó sarok. */
+    /* Nagyításban a jobb oldali üres sávban, középen. */
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
-        left:auto;right:18px;bottom:18px}
+        left:auto;right:0;bottom:12px}
   }
 
   @media (min-width:1000px) and (max-width:1279px){
