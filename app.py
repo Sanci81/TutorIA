@@ -5596,6 +5596,72 @@ REGLAS:
 TESZT_MIN_PERC = 30
 
 
+# ══ EGY LECKE HOSSZA ═══════════════════════════════════════════════════
+# A tantervi „javasolt óraszám" az EGÉSZ ÉVRE szól (Ének-zene: 70 óra),
+# ezért a régi `óraszám × 60` képlet 4200 perces leckét adott. Nem is
+# lehetett jó: egy leckét nem az évi keret hossza határoz meg.
+#
+# Amit helyette csinálunk: a lecke hossza a NEHÉZSÉGÉHEZ igazodik, és a
+# nehézséget a témakör SAJÁT tartalmából olvassuk ki:
+#   – mennyi a tananyag szövege,
+#   – hány szó és nyelvtani pont tartozik hozzá (nyelvórán),
+#   – és mennyi órát szán rá a tanterv a TÖBBI témaköréhez képest.
+#
+# Az utolsó a lényeg: az óraszámot NEM szorzóként használjuk, hanem
+# arányként. Ha egy témakörre kétszer annyi órát szán a tanterv, mint a
+# tantárgy átlagára, akkor az nehezebb – de attól még nem lesz kétszer
+# olyan hosszú a lecke, mert a végén 30 és 90 perc közé vágjuk.
+#
+# Az alap az évfolyamból jön: egy másodikos nem bír el annyit egy ülésben,
+# mint egy nyolcadikos.
+LECKE_MIN_PERC = 30
+LECKE_MAX_PERC = 90
+
+
+def _temakor_suly(t: dict) -> float:
+    """Egy témakör „mérete" – ebből lesz a nehézség a többihez képest."""
+    if not isinstance(t, dict):
+        return 1.0
+    szoveg = len(str(t.get("text") or ""))
+    ora = float(t.get("ora_szam") or 0)
+    tetelek = 0
+    for mezo in ("szokincs", "nyelvtan", "kommunikacios_szandekok",
+                 "javasolt_tevekenysegek"):
+        ertek = t.get(mezo)
+        if isinstance(ertek, list):
+            tetelek += len(ertek)
+    # A három forrás egy nagyságrendbe hozva. A +1 azért kell, hogy egy
+    # üres témakör se nullázza le az átlagot.
+    return (szoveg / 400.0) + ora + (tetelek / 3.0) + 1.0
+
+
+def _lecke_hossz_perc(topic: dict | None, catalog: list | None,
+                      grade_num: int | None) -> int:
+    """Egy lecke hossza percben, a témakör nehézsége szerint (30–90)."""
+    try:
+        evf = int(grade_num or 5)
+    except Exception:
+        evf = 5
+    alap = 30 if evf <= 4 else (40 if evf <= 6 else 45)
+
+    if not isinstance(topic, dict):
+        return alap
+
+    sulyok = [_temakor_suly(t) for t in (catalog or []) if isinstance(t, dict)]
+    atlag = (sum(sulyok) / len(sulyok)) if sulyok else 0.0
+    if atlag <= 0:
+        return alap
+
+    arany = _temakor_suly(topic) / atlag
+    # A szélsőségeket levágjuk: se fél leckét, se dupla leckét ne adjon
+    # egyetlen kiugró témakör miatt.
+    arany = max(0.75, min(1.75, arany))
+
+    perc = int(round((alap * arany) / 5.0)) * 5
+    return max(LECKE_MIN_PERC, min(LECKE_MAX_PERC, perc))
+
+
+
 def _teszt_kapu_szoveg(
     child_id: int,
     progress_subject: str,
@@ -5616,7 +5682,7 @@ def _teszt_kapu_szoveg(
             child_id, progress_subject, topic_id
         )
         topic = get_topic_from_catalog(catalog, topic_id)
-        req = ((topic or {}).get("ora_szam", 0) or 0) * 60
+        req = _lecke_hossz_perc(topic, catalog, grade_num)
         pont = database.get_topic_score(
             child_id, progress_subject, grade_num, topic_id
         )
@@ -7941,7 +8007,7 @@ def child_chat(child_id: int):
         child_id, progress_subject, current_topic_id
     )
     _teszt_topic = get_topic_from_catalog(catalog, current_topic_id)
-    _teszt_req = ((_teszt_topic or {}).get("ora_szam", 0) or 0) * 60
+    _teszt_req = _lecke_hossz_perc(_teszt_topic, catalog, grade_num)
     _teszt_score = database.get_topic_score(
         child_id, progress_subject, grade_num, current_topic_id
     )
@@ -9229,7 +9295,7 @@ def child_chat_test_generate(child_id: int):
     progress_subject = _chat_progress_subject(subject, language or None)
     grade_num = _chat_grade_num(child)
     ora_szam = topic.get("ora_szam", 0)
-    total_req_minutes = ora_szam * 60
+    total_req_minutes = _lecke_hossz_perc(topic, catalog, grade_num)
     topic_learning_minutes = database.get_topic_learning_minutes(
         child_id, progress_subject, topic_id
     )
@@ -9432,7 +9498,7 @@ def child_chat_test_submit(child_id: int):
     ora_szam = topic.get("ora_szam", 0) if topic else data.get("ora_szam", 0)
 
     # ── Determine phase and pass threshold (before save) ─────────────
-    total_req_minutes = ora_szam * 60
+    total_req_minutes = _lecke_hossz_perc(topic, catalog, grade_num)
     topic_learning_minutes = database.get_topic_learning_minutes(
         child_id, progress_subject, topic_id
     )
