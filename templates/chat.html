@@ -287,8 +287,20 @@
     /* CSAK a rendes nézet lesz szélesebb. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet){
         grid-template-columns:260px minmax(0,1fr)}
+    /* NYELVÓRÁN a szójegyzék a FEJLÉC sávjába kerül, jobb oldalra – és a
+       tanulás felülete alatta TELJES szélességben kimegy a szélig, pont
+       úgy, mint egy sima tantárgynál. A magasságát a lap alján lévő
+       szkript méri ki (--fejlec-magas). Ugyanaz a fogás, mint a
+       kabala figuránál: kivesszük a rácsból, és odatesszük, ahova kell.
+       NAGYÍTÁSBAN ez NEM érvényes – ott marad az oszlop. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet):has(.chat-sidebar-vocab){
-        grid-template-columns:260px minmax(0,1fr) minmax(160px,200px)}
+        grid-template-columns:260px minmax(0,1fr)}
+    .chat-layout:not(.teljes-mod):has(.uj-felulet):has(.chat-sidebar-vocab)
+        .chat-header{margin-right:214px}
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .chat-sidebar-vocab{
+        position:absolute;right:0;top:0;width:200px;
+        height:var(--fejlec-magas,240px);max-height:none;
+        overflow-y:auto;margin:0;z-index:4}
 
     /* ALACSONY ABLAK: ha a felület 560 képpontnál alacsonyabb, a figura
        elveszi a helyet a témalista elől. Ilyenkor inkább nincs figura –
@@ -4039,6 +4051,13 @@
             if (tul > 0 && h - tul >= 800) {
                 h = h - tul;
                 lap.style.setProperty('--munka-magas', h + 'px');
+            }
+            /* A szójegyzék doboza pont a fejléc sávjáig ér. */
+            var sav = document.getElementById('munka-sav');
+            if (sav) {
+                var fm = Math.round(sav.getBoundingClientRect().top
+                                    - lap.getBoundingClientRect().top - 10);
+                if (fm > 80) { lap.style.setProperty('--fejlec-magas', fm + 'px'); }
             }
             /* Alacsony ablakban a figura elveszi a témalista helyét. */
             var kell = (h < 560);
