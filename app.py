@@ -1329,6 +1329,14 @@ def feltetelek():
     return render_template("feltetelek.html", **_jogi_adatok())
 
 
+@app.route("/gyik")
+def gyik():
+    """Gyakori kérdések. NEM jogi oldal: a működés szabályait magyarázza el
+    a szülőnek (tanulási idő, leckehossz, teszt), hogy ne az ÁSZF-be kelljen
+    beleírni azt, ami menet közben változhat."""
+    return render_template("gyik.html", **_jogi_adatok())
+
+
 @app.route("/fiok/pin", methods=["POST"])
 @pin_required
 def fiok_pin():
@@ -4065,6 +4073,14 @@ Válaszaidat RÖVIDEN fogalmazd (max 2-3 mondat, összesen legfeljebb 400 karakt
 A felolvasott hosszú monológ a gyereket elveszíti: mondj egy gondolatot, aztán kérdezz.
 Csak egyszerű szavakat használj, amit egy {effective_age} éves megért.
 Ne tegyél fel egyszerre több kérdést.
+
+SZÓKÉRDEZÉS HANGOSAN — EZ A LEGFONTOSABB SZABÁLY ITT:
+Egyszerre LEGFELJEBB KÉT szót kérdezz vagy mondass ki. SOHA ne sorolj fel
+egy kérdésben öt-tíz szót ("Mit jelent a la ciudad, la calle, la tienda,
+el parque…"): egy {effective_age} évesnek ennyit fejben tartani és hangosan
+visszamondani lehetetlen, és a beszédfelismerő sem tud vele mit kezdeni.
+Ha több szót akarsz átvenni, egyenként kérdezd őket, egymás után, és mindig
+várd meg a választ. Az egész szólista felolvasása TILOS.
 """
 
 
@@ -5929,6 +5945,12 @@ Si en una respuesta enseñas 3 palabras nuevas, necesitas 3 marcadores:
 PALABRAS A ENSEÑAR EN ESTA LECCIÓN (enseña solo estas y márcalas con VOCAB):
 {chr(10).join(f'- {szo}' for szo in szokincs)}
 Debes enseñar todas las palabras anteriores en esta lección. ¡Si el niño pregunta por ellas, incluye siempre el marcador <VOCAB>!
+
+DOSIFICACIÓN — OBLIGATORIO:
+En una respuesta enseña COMO MÁXIMO 3 palabras nuevas, y pregunta al final
+por UNA sola. NUNCA copies la lista anterior en tu respuesta, y NUNCA la
+añadas detrás de la pregunta como enumeración ("¿Qué significa vivir en?
+la ciudad, la calle, la tienda…"). La lista es para ti, no para el niño.
 """
 
         prompt += f"""
@@ -6532,6 +6554,13 @@ Te vezeted az órát, nem a gyerek. Minden válaszodban TANÍTS: mondd meg, mi a
 EBBEN A LECKÉBEN TANULANDÓ SZAVAK (csak ezeket tanítsd és jelöld VOCAB markerrel):
 {chr(10).join(f'- {szo}' for szo in szokincs)}
 Minden fenti szót tanítanod kell ebben a leckében. Ha a gyerek kérdez róluk, mindig add meg a <VOCAB> markert!
+
+ADAGOLÁS — KÖTELEZŐ:
+Egy válaszban LEGFELJEBB 3 új szót taníts, és a végén EGYETLEN szóra kérdezz rá.
+A fenti listát SOHA ne másold be a válaszodba, és SOHA ne fűzd a kérdés mögé
+felsorolásként ("Mit jelent a vivir en? la ciudad, la calle, la tienda…").
+A lista neked szól, nem a gyereknek: ő egyszerre néhány szót bír el, és a
+többit a következő válaszokban kapja meg.
 """
     elif lang == "spanyol":
         # Spanyol tanterv — spanyol nyelvű oktatás (nem idegen nyelv, hanem anyanyelvi tantárgy ES tanterv esetén)

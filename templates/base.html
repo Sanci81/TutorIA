@@ -121,6 +121,8 @@
             <a href="{{ url_for('adatvedelem') }}">{{ t('privacy_title') }}</a>
             &nbsp;·&nbsp;
             <a href="{{ url_for('feltetelek') }}">{{ t('terms_title') }}</a>
+            &nbsp;·&nbsp;
+            <a href="{{ url_for('gyik') }}">{{ 'Preguntas frecuentes' if lang == 'es' else 'Gyakori kérdések' }}</a>
         </p>
     </footer>
 

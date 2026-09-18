@@ -344,6 +344,20 @@
         grid-template-columns:minmax(0,1fr) minmax(230px,260px)}
   }
 
+  /* ══ KÉSZ TÉMAKÖR JELZÉSE A ☰ GOMBON ═══════════════════════════════
+     Ha a gyerek befejez egy témakört, a bal szélen lévő zöld gomb
+     ARANYSZÍNŰ lesz és pipát kap. Így ott, ahol a témalista amúgy is
+     nyílik, egy pillantással látszik, hogy történt valami. A jelzés
+     akkor tűnik el, amikor a gyerek kinyitja a listát. */
+  .chat-sidebar-toggle.tema-kesz{
+      background:linear-gradient(135deg,#f5c451,#e8a317);color:#4a3406;
+      box-shadow:0 0 0 3px rgba(245,196,81,.35),0 6px 18px rgba(0,0,0,.2)}
+  .chat-sidebar-toggle.tema-kesz::after{
+      content:"✓";position:absolute;top:-6px;right:-6px;width:19px;height:19px;
+      border-radius:50%;background:#1f6f43;color:#fff;font-size:12px;
+      font-weight:700;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 2px 6px rgba(0,0,0,.25)}
+
   /* A fiók fölötti sötét felület: erre koppintva is becsukódik. */
   .sidebar-fatyol{position:fixed;inset:0;background:rgba(12,38,28,.38);
       z-index:45;display:none}
@@ -1357,7 +1371,13 @@
             leckeAllomasra(2);
         }
         if (d.show_test_offer) { leckeAllomasra(3); }
-        if (d.topic_done) { leckeVege = true; leckeAllomasra(4); }
+        if (d.topic_done) {
+            leckeVege = true;
+            leckeAllomasra(4);
+            /* A témalista gombja aranyszínű lesz: „itt van valami új". */
+            var fg = document.getElementById('sidebar-toggle');
+            if (fg) { fg.classList.add('tema-kesz'); }
+        }
         leckeSinFrissit();
     }
 
@@ -3021,6 +3041,7 @@
         document.body.appendChild(fatyol);
 
         function fiokAllit(nyitva) {
+            if (nyitva) { sidebarToggle.classList.remove('tema-kesz'); }
             topicSidebar.classList.toggle('open', nyitva);
             fatyol.classList.toggle('lathato', nyitva);
             sidebarToggle.textContent = nyitva ? '\u2715' : '\u2630';
