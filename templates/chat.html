@@ -448,6 +448,15 @@
     .mobil-gomb .pott{display:none;width:8px;height:8px;border-radius:50%;
         background:#f5a623;margin:3px auto 0}
     .mobil-gomb.uzenet .pott{display:block}
+
+    /* A fejlécben lévő mód-váltó és a mikrofon ikon telefonon KÉTSZER
+       lenne ott, mert az alsó sávban feliratos gombot kapott. */
+    .chat-layout:has(.uj-felulet) .chat-header-topbar .chat-mode-toggle{
+        display:none}
+    /* A lecke neve ne legyen levágva: két sorban is elfér. */
+    .chat-layout:has(.uj-felulet) .chat-current-topic{
+        white-space:normal;overflow:visible;text-overflow:clip;
+        font-size:15px;line-height:1.3}
   }
 {% endif %}
 
@@ -1505,6 +1514,17 @@
 
     function appendBubble(role, text, figures, feladat) {
         text = tisztitBuborekSzoveg(text);
+        /* BIZTOSÍTÉK: ha megjött egy tanári üzenet, a gondolkodás-jelzőnek
+           semmi keresnivalója a képernyőn. Több úton is ottragadt (hangos
+           módban, félbeszakadt válasznál), ezért itt egy helyen zárjuk le,
+           akármelyik úton jött a válasz. */
+        if (role === 'assistant' && typing) {
+            typing.hidden = true;
+            typing.dataset.mikor = '';
+            if (typeof stopThinkingMessages === 'function') {
+                try { stopThinkingMessages(); } catch (e) {}
+            }
+        }
         /* A kabala a tanár válaszára reagál. Késleltetve, mert a
            setLoading(false) közvetlenül utána alaphelyzetbe állítaná. */
         if (role === 'assistant' && typeof kabalaValaszra === 'function') {
@@ -4170,6 +4190,10 @@
     var hangpanel = document.getElementById('voice-panel');
     var fiokGomb = document.getElementById('sidebar-toggle');
     var uzenetek = document.getElementById('chat-messages');
+    var sav2 = document.getElementById('munka-sav');
+    var kabala = document.querySelector('.chat-kabala-oszlop');
+    var kabalaSzulo = kabala ? kabala.parentNode : null;
+    var kabalaUtan = kabala ? kabala.nextSibling : null;
     if (!lap || !beszelo) { return; }
 
     var sav = null, gBeszel = null, eredetiSzulo = null, eredetiUtan = null;
@@ -4211,14 +4235,9 @@
             gombok.appendChild(gMod);
         }
 
-        if (fiokGomb) {
-            var gTema = document.createElement('button');
-            gTema.type = 'button';
-            gTema.className = 'mobil-gomb';
-            gTema.innerHTML = '\u{1F4DA} T\u00e9mak\u00f6r\u00f6k';
-            gTema.addEventListener('click', function () { fiokGomb.click(); });
-            gombok.appendChild(gTema);
-        }
+        /* A TÉMAKÖRÖK GOMB NEM KELL IDE. Ugyanaz a lista nyílik a bal
+           szélen lévő zöld ☰ jellel, és Sándor szerint az a jobb hely:
+           az alsó sávban csak zsúfolta a gombokat. */
 
         sav.appendChild(gombok);
         document.body.appendChild(sav);
@@ -4238,10 +4257,18 @@
             if (mozgo && mozgo.parentNode !== sav) {
                 sav.insertBefore(mozgo, sav.firstChild);
             }
+            /* A FIGURA a magyarázat dobozába kerül. A rácsban a lap
+               legaljára esett, a szójegyzék alá, egy üres sávba. */
+            if (kabala && sav2 && kabala.parentNode !== sav2) {
+                sav2.appendChild(kabala);
+            }
             magassag();
         } else if (sav) {
             if (mozgo && eredetiSzulo && mozgo.parentNode === sav) {
                 eredetiSzulo.insertBefore(mozgo, eredetiUtan);
+            }
+            if (kabala && kabalaSzulo && kabala.parentNode !== kabalaSzulo) {
+                kabalaSzulo.insertBefore(kabala, kabalaUtan);
             }
             beszelo.classList.remove('nyitva');
             lap.style.removeProperty('--sav-magas');
