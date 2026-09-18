@@ -1080,7 +1080,9 @@
     var aktivPercek = 0;              // a lezárt aktív szakaszok összege
     var szakaszKezdet = Date.now();   // a most futó aktív szakasz kezdete
     var learningMinutesEl = document.getElementById('learning-minutes-today');
-    var INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 perc
+    /* Tétlenség után megáll az óra. Sándor kérése: 5 helyett 3 perc –
+       a nyitva felejtett lapból így legfeljebb ennyi számít bele. */
+    var INACTIVITY_LIMIT = 3 * 60 * 1000; // 3 perc
 
     // Mennyi aktív idő telt el eddig, percben.
     function eltelIdo() {
