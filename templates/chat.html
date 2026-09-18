@@ -344,7 +344,24 @@
         grid-template-columns:minmax(0,1fr) minmax(230px,260px)}
   }
 
-  /* Telefonon egymás alatt: tábla, feladat, beszélgetés. */
+  /* A fiók fölötti sötét felület: erre koppintva is becsukódik. */
+  .sidebar-fatyol{position:fixed;inset:0;background:rgba(12,38,28,.38);
+      z-index:45;display:none}
+  .sidebar-fatyol.lathato{display:block}
+  @media (max-width:900px){
+    /* A ☰ / ✕ gomb a fiók FÖLÖTT van, különben a kinyílt fiók eltakarja. */
+    .chat-sidebar-toggle{position:relative;z-index:60}
+    .topic-sidebar.open{box-shadow:0 0 40px rgba(0,0,0,.25)}
+  }
+
+  /* ══ TELEFON ÉS TABLET ═══════════════════════════════════════════════
+     Egymás alatt: tábla, feladat, beszélgetés.
+
+     A LÉNYEG a magasságkorlát. Enélkül a tábla akkora lett, amekkora a
+     lecke (mértem: egy telefonon 1371 képpont), a válaszmező pedig 1600
+     képpont mélyre került – a gyerek végiggörgette az egész magyarázatot,
+     mire odaért, hogy válaszoljon. Így a tábla a képernyő felét kapja,
+     saját görgetéssel, és a válaszmező egy képernyőn belül marad. */
   @media (max-width:900px){
     .munka-sav.uj-felulet,
     .munka-sav.uj-felulet.van-munka,
@@ -352,10 +369,19 @@
     .munka-sav.uj-felulet.csukva.van-munka{
         grid-template-columns:1fr;
         grid-template-rows:auto auto;
-        grid-template-areas:"bal" "beszelo"}
+        grid-template-areas:"bal" "beszelo";
+        gap:10px;padding:10px}
+    .uj-felulet .bal-oszlop{max-height:46vh;overflow-y:auto;overflow-x:hidden;
+        -webkit-overflow-scrolling:touch}
     .uj-felulet .beszelo{max-height:none}
+    .uj-felulet .beszelo .chat-messages{max-height:30vh;overflow-y:auto}
     .uj-felulet .beszelo-csuk{display:none}
     .uj-felulet .tanit{padding:18px 16px}
+    .uj-felulet .tanit-szoveg{font-size:16.5px;max-width:none}
+    /* A figura telefonon nem fér el, és amúgy sem ő a lényeg. */
+    .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{display:none}
+    /* A szójegyzék a lap alján, összébb húzva – görgethető marad. */
+    .chat-layout:has(.uj-felulet) .chat-sidebar-vocab{max-height:150px}
   }
 {% endif %}
 
@@ -704,11 +730,14 @@
                     </div>
                 </div>
             {% endfor %}
+            {# A GONDOLKODÁS-JELZŐ ALAPBÓL SZÖVEG, nem pötty. Sándor szerint
+               korábban szöveg volt, aztán pöttyök lettek. A szkript ugyan
+               kicseréli szövegre, de ha bármelyik úton mégsem fut le, a
+               gyerek pöttyöket látott. Így az alapállapot maga a szöveg:
+               akkor is az látszik, ha a szkript nem ér oda. #}
             <div class="chat-bubble chat-bubble-assistant chat-typing" id="typing-indicator" hidden>
-                <div class="chat-bubble-inner">
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
-                    <span class="typing-dot"></span>
+                <div class="chat-bubble-inner chat-thinking-text">
+                    <span class="thinking-label">{{ t('chat_think_1') }}</span>
                 </div>
             </div>
         </div>
@@ -2401,10 +2430,14 @@
             clearInterval(thinkingTimer);
             thinkingTimer = null;
         }
+        /* NEM pöttyökre állunk vissza: az alapállapot is a szöveg.
+           Így ha a jelző valamiért mégis látszana, akkor is mondat van
+           benne, nem három pötty. */
         var inner = typing ? typing.querySelector('.chat-bubble-inner') : null;
         if (inner) {
-            inner.classList.remove('chat-thinking-text');
-            inner.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+            inner.classList.add('chat-thinking-text');
+            inner.innerHTML = '<span class="thinking-label">'
+                            + thinkingMessages[0] + '</span>';
         }
     }
 
@@ -2888,9 +2921,37 @@
     }
     bindTopicClicks();
 
+    /* ── A TÉMALISTA FIÓKJA TELEFONON ────────────────────────────────
+       Eddig ki lehetett nyitni, de becsukni nem: a kinyílt fiók eltakarta
+       a ☰ gombot, és semmi más nem zárta be. Most négyféleképpen csukódik:
+       ugyanazzal a gombbal (ami ✕-re vált), a mellette lévő sötét
+       felületre koppintva, egy témakör választásakor, és Esc-re. */
     if (sidebarToggle && topicSidebar) {
+        var fatyol = document.createElement('div');
+        fatyol.className = 'sidebar-fatyol';
+        fatyol.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(fatyol);
+
+        function fiokAllit(nyitva) {
+            topicSidebar.classList.toggle('open', nyitva);
+            fatyol.classList.toggle('lathato', nyitva);
+            sidebarToggle.textContent = nyitva ? '\u2715' : '\u2630';
+            sidebarToggle.setAttribute('aria-expanded', nyitva ? 'true' : 'false');
+        }
+        fiokAllit(false);
+
         sidebarToggle.addEventListener('click', function () {
-            topicSidebar.classList.toggle('open');
+            fiokAllit(!topicSidebar.classList.contains('open'));
+        });
+        fatyol.addEventListener('click', function () { fiokAllit(false); });
+        topicSidebar.addEventListener('click', function (e) {
+            /* Ha témakörre koppintott, a fiók dolga véget ért. */
+            if (e.target.closest('li, button, a')) {
+                setTimeout(function () { fiokAllit(false); }, 120);
+            }
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') { fiokAllit(false); }
         });
     }
 
