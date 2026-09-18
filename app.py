@@ -8083,7 +8083,10 @@ def child_chat(child_id: int):
     _fel = (request.args.get("felulet") or "").strip().lower()
     if _fel in ("uj", "regi"):
         session["uj_felulet"] = (_fel == "uj")
-    _uj_felulet = bool(session.get("uj_felulet"))
+    # ALAPBÓL AZ ÚJ FELÜLET. A kapcsoló megmarad: a /regi-felulet cím
+    # visszavált, és a választás a munkamenetben marad, amíg a gyerek
+    # vissza nem kapcsolja. Így egy tesztelő is bármikor válthat.
+    _uj_felulet = bool(session.get("uj_felulet", True))
 
     return render_template(
         "chat.html",
