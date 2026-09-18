@@ -349,8 +349,11 @@
       z-index:45;display:none}
   .sidebar-fatyol.lathato{display:block}
   @media (max-width:900px){
-    /* A ☰ / ✕ gomb a fiók FÖLÖTT van, különben a kinyílt fiók eltakarja. */
-    .chat-sidebar-toggle{position:relative;z-index:60}
+    /* A ☰ / ✕ gomb a fiók FÖLÖTT van, különben a kinyílt fiók eltakarja.
+       A HELYÉT nem szabad átírni: az eredeti szabály a bal szélre, függőleges
+       közepére rögzíti (position:fixed). Egyszer relative-re vettem, és a
+       gomb beesett a lap folyamába – egy zöld sáv lett a lista közepén. */
+    .chat-sidebar-toggle{z-index:60}
     .topic-sidebar.open{box-shadow:0 0 40px rgba(0,0,0,.25)}
   }
 
@@ -4129,7 +4132,7 @@
         var gTabla = document.createElement('button');
         gTabla.type = 'button';
         gTabla.className = 'mobil-ful aktiv';
-        gTabla.innerHTML = '\u{1F4D8} T\u00e1bla<span class="ful-pott"></span>';
+        gTabla.innerHTML = '\u{1F4D8} Magyar\u00e1zat<span class="ful-pott"></span>';
         var gChat = document.createElement('button');
         gChat.type = 'button';
         gChat.className = 'mobil-ful';
