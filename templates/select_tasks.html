@@ -314,11 +314,31 @@ document.addEventListener('DOMContentLoaded', function () {
         return val === eloFile || val.indexOf('Elo_idegen') !== -1 || text === 'Idegen nyelv';
     }
 
+    /* ODAGÖRDÜLÉS. Telefonon a nyelvek a tantárgylista ALATT jelennek meg,
+       a képernyőn kívül – a gyerek azt hitte, nem történt semmi, mert nem
+       tudta, hogy le kell görgetnie. Ha most jelenik meg a nyelvválasztó,
+       a lap magától odavisz. Ugyanez a nyelv kiválasztása után az
+       indítógombokkal. */
+    function odagordul(elem) {
+        if (!elem || elem.hidden) { return; }
+        try {
+            window.requestAnimationFrame(function () {
+                elem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        } catch (e) {
+            try { elem.scrollIntoView(); } catch (e2) {}
+        }
+    }
+
     function updateLanguageSelector() {
         if (!langDiv || !langSelect) return;
+        var eddigRejtve = langDiv.hidden;
         if (isIdegenNyelvSelected()) {
             langDiv.hidden = false;
             langSelect.required = true;
+            /* Csak akkor gördülünk, ha MOST jelent meg – különben minden
+               apró változásnál ugrálna a lap. */
+            if (eddigRejtve) { odagordul(langDiv); }
         } else {
             langDiv.hidden = true;
             langSelect.required = false;
@@ -342,7 +362,9 @@ document.addEventListener('DOMContentLoaded', function () {
         var langOk = !isIdegenNyelvSelected() || (langSelect && langSelect.value);
         var show = hasSubject && langOk;
 
+        var gombokEddigRejtve = taskActions.hidden;
         taskActions.hidden = !show;
+        if (show && gombokEddigRejtve) { odagordul(taskActions); }
         if (taskChatAlt) {
             taskChatAlt.hidden = !show;
             if (chatAltReveal) chatAltReveal.hidden = true;
