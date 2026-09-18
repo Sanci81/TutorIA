@@ -371,43 +371,83 @@
     .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{display:none}
   }
 
-  /* ══ TELEFON (760 alatt) – KÉT FÜL ═══════════════════════════════════
-     Eddig a magyarázat és a beszélgetés egymás alatt volt, és a gyerek
-     sokat görgetett: mértem, a válaszmező 1006 képpont mélyen volt.
-     Most egyszerre csak az egyiket látja, teljes magasságban. Ha a másik
-     fülön új tanári üzenet érkezik, egy pötty jelzi.
-     A fülek CSAK telefonon léteznek – tableten és gépen nincsenek. */
-  .uj-felulet .mobil-fulek{display:none}
+  /* ══ TELEFON (760 alatt) ═════════════════════════════════════════════
+     Egy felület, három állapot – nincs oda-vissza kapcsolgatás:
+
+       felül   a lecke fejléce és a csúszka,
+       középen a MAGYARÁZAT (a megvásárolt háttérrel a keretén),
+       alul    egy sáv, ami MINDIG ott van: írásos módban a válaszmező és
+               a Küldés, hangos módban a mikrofon; alattuk három feliratos
+               gomb (Beszélgetés, másik mód, Témakörök).
+
+     A beszélgetés egy FELHÚZHATÓ lap: a lecke ott marad mögötte, tehát a
+     kérdés nem tűnik el, és a gyereknek soha nem kell görgetnie ahhoz,
+     hogy válaszolni tudjon. Korábban a válaszmező 1006 képpont mélyen volt.
+
+     A sáv magasságát a szkript méri ki (--sav-magas), mert írásos és
+     hangos módban más. */
+  .mobil-sav{display:none}
   @media (max-width:759px){
+    .chat-layout:has(.uj-felulet){padding-bottom:var(--sav-magas,170px)}
     .munka-sav.uj-felulet,
     .munka-sav.uj-felulet.van-munka,
     .munka-sav.uj-felulet.csukva,
     .munka-sav.uj-felulet.csukva.van-munka{
-        grid-template-columns:1fr;
-        grid-template-rows:auto auto auto;
-        grid-template-areas:"fulek" "bal" "beszelo";
-        gap:10px;padding:10px}
-    .uj-felulet .mobil-fulek{grid-area:fulek;display:flex;gap:8px;margin:0}
-    .uj-felulet .mobil-ful{flex:1;border:0;border-radius:14px;padding:12px 8px;
-        font:700 14.5px/1.2 inherit;background:#e6f1ea;color:#23503a;
-        cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
-    .uj-felulet .mobil-ful.aktiv{background:#1f6f43;color:#fff}
-    .uj-felulet .mobil-ful .ful-pott{position:absolute;top:7px;right:11px;
-        width:10px;height:10px;border-radius:50%;background:#f5a623;display:none}
-    .uj-felulet .mobil-ful.uzenet .ful-pott{display:block}
-
-    /* Egyszerre csak az egyik oldal. */
-    .munka-sav.uj-felulet.ful-tabla .beszelo{display:none}
-    .munka-sav.uj-felulet.ful-chat .bal-oszlop{display:none}
-
+        grid-template-columns:1fr;grid-template-rows:auto;
+        grid-template-areas:"bal";gap:10px;padding:12px;position:relative}
     .uj-felulet .bal-oszlop{max-height:none;overflow:visible}
-    .uj-felulet .beszelo{max-height:none}
-    .uj-felulet .beszelo .chat-messages{max-height:none}
-    .uj-felulet .beszelo-csuk{display:none}
-    .uj-felulet .tanit{padding:18px 16px}
+    /* A lap ÁTTETSZŐ, hogy a megvásárolt háttér telefonon is látsszon. */
+    .uj-felulet .tanit{background:rgba(255,255,255,.93);
+        padding:18px 16px 96px}
     .uj-felulet .tanit-szoveg{font-size:16.5px;max-width:none}
-    .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{display:none}
-    .chat-layout:has(.uj-felulet) .chat-sidebar-vocab{max-height:150px}
+    .uj-felulet .beszelo-csuk{display:none}
+
+    /* A FIGURA a magyarázat bal alsó sarkában – ott csak üres hely van,
+       a szövegbe nem lóg bele (a lap alján 96 képpont a belső szegély). */
+    .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{
+        display:flex;position:absolute;left:20px;bottom:10px;top:auto;
+        right:auto;width:84px;height:84px;z-index:3;pointer-events:none;
+        align-items:flex-end;justify-content:center}
+    .chat-layout:has(.uj-felulet) .chat-kabala{position:static;
+        max-width:84px;max-height:84px;width:auto}
+    .chat-layout:has(.uj-felulet) .chat-kabala-doboz{position:static;
+        max-width:84px;max-height:84px}
+
+    /* A BESZÉLGETÉS felhúzható lap. */
+    .uj-felulet .beszelo{position:fixed;left:0;right:0;top:auto;
+        bottom:var(--sav-magas,170px);height:56vh;max-height:none;
+        border-radius:22px 22px 0 0;z-index:48;
+        transform:translateY(125%);transition:transform .25s ease;
+        box-shadow:0 -12px 34px rgba(20,60,40,.18)}
+    .uj-felulet .beszelo.nyitva{transform:none}
+    .uj-felulet .beszelo .chat-messages{max-height:none;flex:1;
+        overflow-y:auto}
+
+    /* AZ ALSÓ SÁV. */
+    .mobil-sav{display:block;position:fixed;left:0;right:0;bottom:0;
+        z-index:49;background:#fff;border-top:1px solid #e4eee8;
+        padding:9px 12px 12px;box-shadow:0 -8px 24px rgba(20,60,40,.10)}
+    /* A telefonos szabály függőlegesbe rakja a beíró sávot, és a Küldés
+       gombot teljes szélességűre – attól lett a sáv 240 képpont magas.
+       Itt egy sorban maradnak. */
+    .mobil-sav .chat-input-bar{margin:0;padding:0;display:flex;gap:10px;
+        border:0;flex-direction:row;align-items:stretch}
+    .mobil-sav .chat-input-bar textarea{flex:1;font-size:15px;
+        height:50px;min-height:50px;max-height:50px;padding:13px 14px}
+    .mobil-sav .chat-send-btn{width:auto;padding:0 18px;font-size:15px;
+        white-space:nowrap}
+    .mobil-sav .voice-panel{display:flex;align-items:center;gap:14px;
+        margin:0;padding:0;background:none;box-shadow:none;min-height:0}
+    .mobil-sav .voice-status{margin:0;font-size:14.5px;text-align:left}
+    .mobil-gombok{display:flex;gap:8px;margin-top:9px}
+    .mobil-gomb{flex:1;text-align:center;background:#eef4f1;border:0;
+        border-radius:12px;padding:10px 6px;font:700 13px/1.25 inherit;
+        color:#23503a;cursor:pointer;text-decoration:none;display:block;
+        -webkit-tap-highlight-color:transparent}
+    .mobil-gomb.aktiv{background:#1f6f43;color:#fff}
+    .mobil-gomb .pott{display:none;width:8px;height:8px;border-radius:50%;
+        background:#f5a623;margin:3px auto 0}
+    .mobil-gomb.uzenet .pott{display:block}
   }
 {% endif %}
 
@@ -4115,59 +4155,117 @@
 })();
 </script>
 <script>
-/* ══ KÉT FÜL TELEFONON ═══════════════════════════════════════════════
-   760 képpont alatt a tábla és a beszélgetés nem fér el egymás alatt
-   görgetés nélkül, ezért egyszerre csak az egyiket mutatjuk. A fülsáv
-   csak telefonon látszik (a CSS rejti el nagyobb képernyőn), és a
-   fülek maguktól nem váltanak – a gyerek dönt. Ha a másik oldalon új
-   tanári üzenet érkezik, azon a fülön egy pötty jelenik meg.
-   Ha bármi hibára fut, a fülek egyszerűen nem jelennek meg, és minden
-   marad úgy, ahogy eddig volt. */
+/* ══ TELEFONOS ALSÓ SÁV ══════════════════════════════════════════════
+   760 képpont alatt a válaszmező (vagy hangos módban a mikrofon) egy
+   rögzített alsó sávba kerül, hogy soha ne kelljen érte görgetni. A
+   beszélgetés pedig felhúzható lappá válik a lecke fölé.
+   Nagyobb képernyőn ez a szkript nem csinál semmit: a sávot a CSS
+   elrejti, és a mozgatás is csak telefonon történik meg.
+   Ha bármi hibára fut, minden marad úgy, ahogy eddig volt. */
 (function () {
-    try {
-        var sav = document.getElementById('munka-sav');
-        var uzenetek = document.getElementById('chat-messages');
-        if (!sav || !sav.classList.contains('uj-felulet')) { return; }
+    var TELEFON = 759;
+    var lap = document.getElementById('chat-page');
+    var beszelo = document.getElementById('beszelo');
+    var urlap = document.getElementById('chat-form');
+    var hangpanel = document.getElementById('voice-panel');
+    var fiokGomb = document.getElementById('sidebar-toggle');
+    var uzenetek = document.getElementById('chat-messages');
+    if (!lap || !beszelo) { return; }
 
-        var sor = document.createElement('div');
-        sor.className = 'mobil-fulek';
-        var gTabla = document.createElement('button');
-        gTabla.type = 'button';
-        gTabla.className = 'mobil-ful aktiv';
-        gTabla.innerHTML = '\u{1F4D8} Magyar\u00e1zat<span class="ful-pott"></span>';
-        var gChat = document.createElement('button');
-        gChat.type = 'button';
-        gChat.className = 'mobil-ful';
-        gChat.innerHTML = '\u{1F4AC} Besz\u00e9lget\u00e9s<span class="ful-pott"></span>';
-        sor.appendChild(gTabla);
-        sor.appendChild(gChat);
-        sav.insertBefore(sor, sav.firstChild);
-        sav.classList.add('ful-tabla');
+    var sav = null, gBeszel = null, eredetiSzulo = null, eredetiUtan = null;
+    var mozgo = urlap || hangpanel;
+    if (mozgo) { eredetiSzulo = mozgo.parentNode; eredetiUtan = mozgo.nextSibling; }
 
-        function valt(melyik) {
-            var chat = (melyik === 'chat');
-            sav.classList.toggle('ful-chat', chat);
-            sav.classList.toggle('ful-tabla', !chat);
-            gChat.classList.toggle('aktiv', chat);
-            gTabla.classList.toggle('aktiv', !chat);
-            (chat ? gChat : gTabla).classList.remove('uzenet');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    function savEpit() {
+        if (sav) { return; }
+        sav = document.createElement('div');
+        sav.className = 'mobil-sav';
+
+        var gombok = document.createElement('div');
+        gombok.className = 'mobil-gombok';
+
+        gBeszel = document.createElement('button');
+        gBeszel.type = 'button';
+        gBeszel.className = 'mobil-gomb';
+        gBeszel.innerHTML = '\u{1F4AC} Besz\u00e9lget\u00e9s<span class="pott"></span>';
+        gBeszel.addEventListener('click', function () {
+            var nyit = !beszelo.classList.contains('nyitva');
+            beszelo.classList.toggle('nyitva', nyit);
+            gBeszel.classList.toggle('aktiv', nyit);
+            if (nyit) {
+                gBeszel.classList.remove('uzenet');
+                if (uzenetek) { uzenetek.scrollTop = uzenetek.scrollHeight; }
+            }
+        });
+        gombok.appendChild(gBeszel);
+
+        /* A MÁSIK MÓD – feliratos gomb, nem apró ikon a fejlécben. */
+        var modLink = document.querySelector('.chat-mode-toggle');
+        if (modLink) {
+            var gMod = document.createElement(modLink.tagName === 'A' ? 'a' : 'button');
+            gMod.className = 'mobil-gomb';
+            if (modLink.tagName === 'A') { gMod.href = modLink.getAttribute('href'); }
+            var ikon = modLink.classList.contains('chat-mode-chat')
+                       ? '\u{2328}\u{FE0F} ' : '\u{1F399}\u{FE0F} ';
+            gMod.textContent = ikon + (modLink.textContent || '').trim();
+            gombok.appendChild(gMod);
         }
-        gTabla.addEventListener('click', function () { valt('tabla'); });
-        gChat.addEventListener('click', function () { valt('chat'); });
 
-        /* Új tanári üzenet a másik fülön → pötty. */
+        if (fiokGomb) {
+            var gTema = document.createElement('button');
+            gTema.type = 'button';
+            gTema.className = 'mobil-gomb';
+            gTema.innerHTML = '\u{1F4DA} T\u00e9mak\u00f6r\u00f6k';
+            gTema.addEventListener('click', function () { fiokGomb.click(); });
+            gombok.appendChild(gTema);
+        }
+
+        sav.appendChild(gombok);
+        document.body.appendChild(sav);
+    }
+
+    function magassag() {
+        if (!sav) { return; }
+        var m = Math.round(sav.getBoundingClientRect().height);
+        if (m > 40) { lap.style.setProperty('--sav-magas', (m + 6) + 'px'); }
+    }
+
+    function rendez() {
+        var telefon = window.innerWidth <= TELEFON
+                      && !lap.classList.contains('teljes-mod');
+        if (telefon) {
+            savEpit();
+            if (mozgo && mozgo.parentNode !== sav) {
+                sav.insertBefore(mozgo, sav.firstChild);
+            }
+            magassag();
+        } else if (sav) {
+            if (mozgo && eredetiSzulo && mozgo.parentNode === sav) {
+                eredetiSzulo.insertBefore(mozgo, eredetiUtan);
+            }
+            beszelo.classList.remove('nyitva');
+            lap.style.removeProperty('--sav-magas');
+            sav.remove();
+            sav = null;
+        }
+    }
+
+    try {
+        rendez();
+        window.addEventListener('resize', rendez);
+        new MutationObserver(rendez).observe(lap, {
+            attributes: true, attributeFilter: ['class']
+        });
         if (uzenetek) {
             new MutationObserver(function () {
-                if (sav.classList.contains('ful-chat')) {
-                    gTabla.classList.add('uzenet');
-                } else {
-                    gChat.classList.add('uzenet');
+                if (gBeszel && !beszelo.classList.contains('nyitva')) {
+                    gBeszel.classList.add('uzenet');
                 }
+                magassag();
             }).observe(uzenetek, { childList: true });
         }
     } catch (e) {
-        if (window.console) { console.error('mobil-fulek:', e); }
+        if (window.console) { console.error('mobil-sav:', e); }
     }
 })();
 </script>
