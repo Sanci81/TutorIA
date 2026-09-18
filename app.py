@@ -4075,10 +4075,12 @@ Csak egyszerű szavakat használj, amit egy {effective_age} éves megért.
 Ne tegyél fel egyszerre több kérdést.
 
 SZÓKÉRDEZÉS HANGOSAN — EZ A LEGFONTOSABB SZABÁLY ITT:
-Egyszerre LEGFELJEBB KÉT szót kérdezz vagy mondass ki. SOHA ne sorolj fel
-egy kérdésben öt-tíz szót ("Mit jelent a la ciudad, la calle, la tienda,
-el parque…"): egy {effective_age} évesnek ennyit fejben tartani és hangosan
-visszamondani lehetetlen, és a beszédfelismerő sem tud vele mit kezdeni.
+Egy kérésben vagy EGY RÖVID MONDAT szerepeljen, vagy LEGFELJEBB KÉT szó.
+Egy mondat rendben van, azt a gyerek meg tudja jegyezni – a szófelsorolás
+viszont nem: SOHA ne sorolj fel egy kérdésben öt-tíz szót ("Mit jelent a
+la ciudad, la calle, la tienda, el parque…"). Ennyit fejben tartani és
+hangosan visszamondani egy {effective_age} évesnek lehetetlen, és a
+beszédfelismerő sem tud vele mit kezdeni.
 Ha több szót akarsz átvenni, egyenként kérdezd őket, egymás után, és mindig
 várd meg a választ. Az egész szólista felolvasása TILOS.
 """
