@@ -3097,6 +3097,51 @@ _CHAT_MARKER_VOCAB_EGY = re.compile(
     re.IGNORECASE,
 )
 
+
+# EGY EGÉSZ SOR, AMI CSAK SZÓJEGYZÉK-JELÖLŐ. A tanár a magyarázat végére
+# külön sorba is kiírja az új szót, hogy bekerüljön a szójegyzékbe:
+#     Mit jelent a vivir en?
+#     <VOCAB>vivir en=valahol élni</VOCAB>
+# A jelölőből eddig a puszta szó maradt, ezért a gyerek ezt látta:
+#     Mit jelent a vivir en?
+#     vivir en
+# Vagyis a kérdés alatt ott állt a válasz fele, magyarázat nélkül. Az ilyen
+# SORT egészben kivesszük – a szó a szójegyzékbe így is bekerül, mert azt
+# a NYERS szövegből gyűjtjük, nem ebből.
+_VOCAB_ONALLO_SOR = re.compile(
+    r"^[ \t]*[<\[]\s*VOCAB\s*[>\]][^\n]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+# IDEGEN ÍRÁSRENDSZEREK. A modell néha héber, cirill vagy arab betűket
+# kever a magyarázatba ("Nagyon ügyes! כמעט minden jó volt") – a gyerek
+# ilyenkor egy értelmezhetetlen jelet lát a lecke közepén. Ezeket az
+# írásokat SEHOL nem tanítjuk, tehát ki lehet venni.
+# A görög betűk BENNE MARADNAK: a matek és a fizika használja őket (π, Δ).
+_IDEGEN_IRAS = re.compile(
+    "[\u0400-\u04FF"      # cirill
+    "\u0500-\u052F"       # kiegészítő cirill
+    "\u0590-\u05FF"       # héber
+    "\u0600-\u06FF"       # arab
+    "\u0700-\u074F"       # szír
+    "\u0900-\u097F"       # dévanágari
+    "\u0E00-\u0E7F"       # thai
+    "\u3040-\u30FF"       # japán kana
+    "\u4E00-\u9FFF"       # kínai/kandzsi
+    "\uAC00-\uD7AF]+"     # koreai
+)
+
+
+def _idegen_iras_le(szoveg: str) -> str:
+    """Kiszedi az olyan írásrendszerek betűit, amiket sehol nem tanítunk."""
+    if not szoveg or not _IDEGEN_IRAS.search(szoveg):
+        return szoveg
+    tiszta = _IDEGEN_IRAS.sub("", szoveg)
+    # A kiesett szó helyén maradt dupla szóköz és a lógó írásjelek rendbe.
+    tiszta = re.sub(r"[ \t]{2,}", " ", tiszta)
+    tiszta = re.sub(r"[ \t]+([,.;:!?])", r"\1", tiszta)
+    return tiszta
+
 # Idegen szó jelölő: <FL:de>Wasser</FL> — a felolvasásnál anyanyelvi hangot kap,
 # a chatben csak a szó látszik, a jelölő nem.
 # A ZÁRÓ TAG NYELVKÓDDAL IS JÖHET: a tanár gyakran </FL:en>-t ír </FL> helyett.
@@ -3283,6 +3328,7 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     # Vagyis épp az a szó hiányzott, amit tanulnia kellett volna. Minden
     # nyelvórán, minden új szónál. Mostantól az IDEGEN szó marad a helyén:
     #     - hoy = azt jelenti, hogy ma.
+    clean = _VOCAB_ONALLO_SOR.sub("", clean)
     clean = _CHAT_MARKER_VOCAB.sub(lambda m: m.group(2).strip(), clean)
     clean = _CHAT_MARKER_VOCAB_EGY.sub(lambda m: m.group(1).strip(), clean)
     clean = _CHAT_MARKER_SVG.sub("", clean)
@@ -3291,6 +3337,7 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     clean = _BARE_SVG_RE.sub("", clean)
     # A rajz körüli üres ```svg / ``` sorok eltakarítása
     clean = _EMPTY_FENCE_RE.sub("", clean)
+    clean = _idegen_iras_le(clean)
     clean = re.sub(r"\n{3,}", "\n\n", clean).strip()
     topic_done = bool(_CHAT_MARKER_TOPIC.search(text))
     return clean, topic_done, level_val, vocab_pairs, svg_list
