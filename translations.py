@@ -523,7 +523,7 @@ TRANSLATIONS = {
     "hogymegy_cim": {"hu": "Hogy megy?", "es": "¿Cómo va?"},
     "hogymegy_bevezeto": {
         "hu": ("Itt látod, mit tanult a gyereked, mi ment jól, és mivel "
-               "küzd még. Ugyanaz, ami a levélben is megy — csak itt te "
+               "küzd még. Ugyanaz, ami a levélben is szerepel — csak itt te "
                "választod ki az időszakot."),
         "es": ("Aquí ves qué ha estudiado tu hijo o hija, qué le ha salido "
                "bien y qué le cuesta todavía. Es lo mismo que enviamos por "
@@ -1125,7 +1125,7 @@ TRANSLATIONS = {
                              "es": "Informe diario, semanal y mensual"},
     "csomag_heti_jelentes": {"hu": "Heti és havi jelentés",
                              "es": "Informe semanal y mensual"},
-    "csomag_gyik_mikor_cim": {"hu": "Mikor vonjátok le a díjat?",
+    "csomag_gyik_mikor_cim": {"hu": "Mikor vonjuk le a díjat?",
                               "es": "¿Cuándo se cobra?"},
     "csomag_gyik_mikor": {
         "hu": "Havi előfizetésnél minden hónapban azon a napon, amelyiken "

@@ -274,8 +274,12 @@
 
     /* A TÉMALISTA rövidebb lesz, hogy a figurának saját helye legyen alul:
        így nem lóg bele a szövegbe. A lista magától görög tovább. */
+    /* A min-height nélkül alacsony ablakban a calc() nullára vagy negatívra
+       futhat, és a lista NÉMÁN eltűnik – úgy néz ki, mintha az adott
+       tantárgyhoz nem is volna témakör. Innentől mindig marad hely neki. */
     .chat-layout:not(.teljes-mod):has(.uj-felulet) .topic-sidebar{
-        align-self:start;height:calc(100% - 320px);max-height:none}
+        align-self:start;height:calc(100% - 320px);min-height:220px;
+        max-height:none}
 
     /* A FIGURA EGY HELYBEN: a felület bal alsó sarkában, a témalista alatt. */
     .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{
@@ -687,6 +691,16 @@
                     {% endif %}
                 </li>
                 {% endfor %}
+                {# Ha valamiért mégsem jön témakör, ne egy néma üres doboz
+                   legyen: mondja meg, hogy nincs, mert így derül ki, hogy
+                   hiba van, és nem a gyerek keresi hiába a listát. #}
+                {% if not sidebar.topics %}
+                <li class="topic-sidebar-ures">
+                    {{ 'Esta asignatura todavía no tiene temas.'
+                       if lang == 'es' else
+                       'Ehhez a tantárgyhoz még nincs témakör.' }}
+                </li>
+                {% endif %}
             </ul>
             <p class="topic-sidebar-avg" id="topic-avg">
                 {{ t('chat_average_label') }}: {{ sidebar.average_score }}%
