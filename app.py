@@ -435,16 +435,10 @@ def _resend_from_address() -> str:
 
 
 def _reset_password_url(token: str) -> str:
-    """Visszaállító link – Railway-en APP_URL env ajánlott."""
-    app_url = (os.environ.get("APP_URL") or os.environ.get("RAILWAY_PUBLIC_DOMAIN") or "").rstrip(
-        "/"
-    )
-    path = url_for("reset_password", token=token, _external=False)
-    if app_url:
-        if not app_url.startswith("http"):
-            app_url = f"https://{app_url}"
-        return f"{app_url}{path}"
-    return url_for("reset_password", token=token, _external=True)
+    """Visszaállító link. UGYANAZT a címet használja, mint a többi levél:
+    a jelszóhelyreállító linkben végképp nem szabad idegen gépnévnek
+    szerepelnie — pont az a levél, amire a legjobban kell figyelni."""
+    return _oldal_url(url_for("reset_password", token=token, _external=False))
 
 
 def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
@@ -481,14 +475,23 @@ def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
     )
 
 
+# AZ OLDAL SAJÁT CÍME. Ez az, amit a szülő a levélben lát és amire kattint.
+#
+# A RAILWAY_PUBLIC_DOMAIN a Railway belső, gépi neve
+# (web-production-d406e.up.railway.app). Ez működik, csak épp úgy néz ki a
+# levélben, mint egy átverés — a szülő nem erre a névre regisztrált. Ezért
+# a saját domain az alapértelmezés, és a Railway gépi neve csak a legvégső
+# mentsvár. A próba oldalon az APP_URL írja felül, ott az a helyes.
+SAJAT_DOMAIN = "https://tutoriacademia.com"
+
+
 def _oldal_url(utvonal: str = "/") -> str:
-    """Az oldal teljes címe levélbe. Railway-en az APP_URL a megbízható."""
-    alap = (os.environ.get("APP_URL")
-            or os.environ.get("RAILWAY_PUBLIC_DOMAIN") or "").rstrip("/")
-    if alap and not alap.startswith("http"):
-        alap = f"https://{alap}"
+    """Az oldal teljes címe levélbe."""
+    alap = (os.environ.get("APP_URL") or "").strip().rstrip("/")
     if not alap:
-        alap = "https://tutoriacademia.com"
+        alap = SAJAT_DOMAIN
+    if not alap.startswith("http"):
+        alap = f"https://{alap}"
     return alap + (utvonal if utvonal.startswith("/") else "/" + utvonal)
 
 
