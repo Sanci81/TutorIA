@@ -18,11 +18,15 @@ MIN ALAPUL AZ ÁRAZÁS
     tanul — nem ötször annyit kap.
 
 A TESZTIDŐSZAK
-    A "teszt" csomag bő keretű, és CSAK annak jár, akinek kézzel beállítjuk
-    az adatbázisban (parents.csomag = 'teszt'). Aki magától regisztrál — egy
-    Facebook-posztból például —, az az INGYENES PRÓBÁT kapja. Korábban
-    fordítva volt, és ötven idegen regisztráló fejenként 3000 hangos percet
-    kapott volna: a számlát mi álltuk volna.
+    A "teszt" csomag bő keretű. Automatikusan az üzemeltetői címek kapják
+    (app.py: _admin_cimek), más csak akkor, ha kézzel beállítjuk neki az
+    adatbázisban (parents.csomag = 'teszt'). Aki magától regisztrál — egy
+    Facebook-posztból például —, az az INGYENES PRÓBÁT kapja.
+
+    MIÉRT FONTOS EZ: a create_parent nem tölti ki a csomag mezőt, tehát az
+    üresen marad. Korábban az üres mező a teszt csomagot jelentette, vagyis
+    minden idegen regisztráló 3000 percet kapott, hangosan is — ötven
+    regisztrációnál ezt mi fizettük volna.
 """
 
 from __future__ import annotations
@@ -33,6 +37,7 @@ ES = "ES"
 
 TESZT = "teszt"
 FREE = "free"
+LEJART = "lejart"
 
 # Az árak euróban. Az éves díj tíz hónap ára: aki előre fizet, két hónapot
 # nyer, mi pedig előre megkapjuk a pénzt — az induláskor ez tartja el a
@@ -77,6 +82,28 @@ CSOMAGOK: dict[str, dict] = {
         "ar_honap": 0.0,
         "ar_ev": 0.0,
         "egyszeri": True,
+    },
+
+    # ── LEJÁRT ELŐFIZETÉS: nem tanulhat tovább. ──
+    # MIÉRT NEM ESIK VISSZA A FREE-RE: az ingyenes próba EGYSZER jár, és
+    # aki egyszer előfizetett, azt már rég elhasználta. Ha lejáráskor
+    # visszakapná, akkor minden hónapban kapna egy újabb ingyen kört —
+    # sosem kellene fizetnie.
+    # AMIT TOVÁBBRA IS ELÉR: belép, látja a haladását, nyitja az albumot, és
+    # ha van érméje, vásárol is. CSAK ÚJ TANULÁS NEM INDUL. Nem zárjuk ki a
+    # gyereket abból, amit már összegyűjtött — az az övé.
+    LEJART: {
+        "nev_hu": "Lejárt előfizetés",
+        "nev_es": "Suscripción caducada",
+        "tantervek": (HU, ES),
+        "havi_perc": 0,
+        "hangos_perc": 0,
+        # A profilok száma marad, különben a meglévő gyerekek eltűnnének.
+        "profil": 5,
+        "napi_jelentes": False,
+        "ar_honap": 0.0,
+        "ar_ev": 0.0,
+        "rejtett": True,
     },
 
     "alap": {

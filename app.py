@@ -10663,16 +10663,23 @@ def _szulo_csomag(parent_id: int | None = None) -> str:
         szulo = database.get_parent_by_id(pid) or {}
         kulcs = (szulo.get("csomag") or "").strip()
         lejar = szulo.get("csomag_lejar")
-        # LEJÁRT ELŐFIZETÉS: nem zárjuk ki a szülőt, csak visszaesik az
-        # ingyenes próbára — a fizetés bekötéséig ez a helyes viselkedés.
+        # AZ ÜZEMELTETŐ MINDIG A BŐ TESZT KERETET KAPJA, adatbázis-piszkálás
+        # nélkül. Ugyanaz a két cím, ami az áttekintő oldalt is nyitja.
+        if (szulo.get("email") or "").strip().lower() in _admin_cimek():
+            return csomagok.TESZT
+        # LEJÁRT ELŐFIZETÉS: belép, látja a haladását, nyitja az albumot és a
+        # boltot — de ÚJ TANULÁS NEM INDUL. Nem esik vissza az ingyenes
+        # próbára: azt egyszer kapja az ember, és aki előfizetett, az már rég
+        # elhasználta. Különben minden lejáratkor kapna egy újabb ingyen
+        # kört, és soha nem kellene fizetnie.
         if lejar and lejar < date.today():
-            return csomagok.FREE
+            return csomagok.LEJART
         # AKINEK NINCS CSOMAGJA, AZ AZ INGYENES PRÓBÁT KAPJA, nem a teszt
-        # csomagot. Eddig fordítva volt: egy vadidegen regisztráló 3000
-        # percet kapott hangosan is — egy Facebook-posztból ötven ilyen
-        # regisztráció akkora OpenAI- és Azure-számlát hozna, amit senki nem
-        # akar kifizetni. A teszt csomag mostantól csak annak jár, akinek
-        # KÉZZEL beállítjuk az adatbázisban (csomag = 'teszt').
+        # csomagot. Eddig fordítva volt: a create_parent nem tölti ki a
+        # csomag mezőt, tehát üresen marad, és az üres mező a 3000 perces
+        # teszt csomagot jelentette — hangosan is. Egy Facebook-posztból
+        # ötven ilyen regisztráció akkora számlát hozna, amit senki nem akar
+        # kifizetni.
         return kulcs or csomagok.FREE
     except Exception:                                      # pragma: no cover
         app.logger.exception("A szülő csomagját nem sikerült lekérni")
