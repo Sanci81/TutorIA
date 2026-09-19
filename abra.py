@@ -75,11 +75,15 @@ def _felirat_doboza(el, szulok: dict) -> tuple[float, float, float, float] | Non
     szoveg = "".join(el.itertext()).strip()
     if not szoveg:
         return None
-    meret = _oroklott_betumeret(el, szulok)
-    x = _szam(el.get("x"), 0.0)
-    y = _szam(el.get("y"), 0.0)
+    return _doboz(szoveg, _oroklott_betumeret(el, szulok),
+                  _szam(el.get("x"), 0.0), _szam(el.get("y"), 0.0),
+                  (el.get("text-anchor") or "start").strip().lower())
+
+
+def _doboz(szoveg: str, meret: float, x: float, y: float,
+           horgony: str) -> tuple[float, float, float, float]:
+    """Egy felirat befoglaló téglalapja a megadott helyen és betűmérettel."""
     szeles = len(szoveg) * meret * _BETU_ARANY
-    horgony = (el.get("text-anchor") or "start").strip().lower()
     if horgony == "middle":
         bal = x - szeles / 2
     elif horgony == "end":
@@ -147,22 +151,103 @@ def _alakzat_doboza(el) -> tuple[float, float, float, float] | None:
     return (min(xs), min(ys), max(xs), max(ys))
 
 
-def _elek(el) -> list[tuple[float, float, float, float]]:
-    """Az alakzat VONALAI vékony dobozként – a feliratnak ezekre nem szabad
-    rácsúsznia. A téglalapnál a négy oldal, a vonalnál maga a szakasz."""
-    d = _alakzat_doboza(el)
-    if not d:
-        return []
-    bal, teto, jobb, alj = d
-    v = 2.5                                   # a vonal fél vastagsága
-    if _tag(el) == "rect":
+_VONAL_FELVASTAG = 3.0                        # a rajzolt vonal fél vastagsága
+
+
+def _szakasz_dobozai(x1, y1, x2, y2,
+                     v: float = _VONAL_FELVASTAG) -> list[tuple[float, float, float, float]]:
+    """Egy egyenes szakasz vékony dobozok láncaként.
+
+    A szakasz BEFOGLALÓ téglalapja átlós vonalnál sokkal nagyobb, mint maga a
+    vonal – emiatt régen a sarokba írt feliratot is hibásnak láttuk. Ezért a
+    vonalat végigpontozzuk, és minden pont köré egy kis dobozt teszünk.
+    """
+    hossz = ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+    db = max(1, min(240, int(hossz / v) + 1))
+    ki = []
+    for i in range(db + 1):
+        t = i / db
+        px, py = x1 + (x2 - x1) * t, y1 + (y2 - y1) * t
+        ki.append((px - v, py - v, px + v, py + v))
+    return ki
+
+
+def _alakzat_vonalai(el) -> list[tuple[float, float, float, float]]:
+    """Az alakzat RAJZOLT vonalai vékony dobozokként – a feliratnak ezekre
+    nem szabad rácsúsznia. Kör és ellipszis nincs itt: azokat képlettel
+    vizsgáljuk (_ellipszis_vonalan), mert dobozokkal pontatlan volna."""
+    t = _tag(el)
+    v = _VONAL_FELVASTAG
+    if t == "rect":
+        d = _alakzat_doboza(el)
+        if not d:
+            return []
+        bal, teto, jobb, alj = d
         return [(bal - v, teto - v, jobb + v, teto + v),
                 (bal - v, alj - v, jobb + v, alj + v),
                 (bal - v, teto - v, bal + v, alj + v),
                 (jobb - v, teto - v, jobb + v, alj + v)]
-    if _tag(el) == "line":
-        return [(bal - v, teto - v, jobb + v, alj + v)]
-    return []                                 # körnél/útnál nem kockáztatunk
+    if t == "line":
+        return _szakasz_dobozai(_szam(el.get("x1")), _szam(el.get("y1")),
+                                _szam(el.get("x2")), _szam(el.get("y2")))
+    if t in ("polygon", "polyline"):
+        sz = [float(k) for k in
+              re.findall(r"-?\d+(?:\.\d+)?", el.get("points") or "")]
+        pontok = list(zip(sz[0::2], sz[1::2]))
+        if len(pontok) < 2:
+            return []
+        if t == "polygon":
+            pontok.append(pontok[0])
+        ki = []
+        for i in range(len(pontok) - 1):
+            ki.extend(_szakasz_dobozai(pontok[i][0], pontok[i][1],
+                                       pontok[i + 1][0], pontok[i + 1][1]))
+            if len(ki) > 1500:
+                break
+        return ki
+    return []                                 # path: nem kockáztatunk
+
+
+# a régi név, ha máshonnan hivatkoznának rá
+_elek = _alakzat_vonalai
+
+
+def _ellipszis_vonalan(doboz, cx: float, cy: float, rx: float, ry: float,
+                       v: float = _VONAL_FELVASTAG) -> bool:
+    """Átmetszi-e a felirat doboza a kör / ellipszis VONALÁT.
+
+    Ez volt a lyuk a hálón: a Venn-diagram köreire ráírt felirat („közös
+    rész") eddig átment, mert csak téglalapot és egyenest néztünk.
+    """
+    if rx <= 0 or ry <= 0:
+        return False
+    bal, teto, jobb, alj = doboz
+
+    def norm(px, py) -> float:
+        return (((px - cx) / rx) ** 2 + ((py - cy) / ry) ** 2) ** 0.5
+
+    # a dobozból a középponthoz legközelebbi, illetve legtávolabbi pont
+    kozel = norm(min(max(cx, bal), jobb), min(max(cy, teto), alj))
+    tavol = max(norm(px, py) for px in (bal, jobb) for py in (teto, alj))
+    t = v / min(rx, ry)
+    return kozel <= 1 + t and tavol >= 1 - t
+
+
+def _vonalra_esik(doboz, el) -> bool:
+    """A felirat doboza rajta ül-e ennek az alakzatnak a vonalán."""
+    t = _tag(el)
+    if t in ("circle", "ellipse"):
+        if t == "circle":
+            r = _szam(el.get("r"))
+            cx, cy, rx, ry = _szam(el.get("cx")), _szam(el.get("cy")), r, r
+        else:
+            cx, cy = _szam(el.get("cx")), _szam(el.get("cy"))
+            rx, ry = _szam(el.get("rx")), _szam(el.get("ry"))
+        return _ellipszis_vonalan(doboz, cx, cy, rx, ry)
+    for e in _alakzat_vonalai(el):
+        if _melyen_fedik(doboz, e):
+            return True
+    return False
 
 
 _SZAM_A_FELIRATBAN = re.compile(r"\d+")
@@ -252,6 +337,119 @@ def _rossz_meretaranyu(el, sajat_feliratok) -> bool:
     return abs(rajzolt - felirt) / max(rajzolt, felirt) > 0.20
 
 
+# ── a felirat elhúzása a rajzról ────────────────────────────────────────
+# Kis lépésekkel próbálkozunk, mindig a legkisebb elmozdítást választva:
+# előbb fel-le, aztán jobbra-balra, végül átlósan. Ha semmi sem jó, marad
+# a régi szabály: inkább ne lásson a gyerek ábrát, mint zavarosat.
+_ELTOLASOK: list[tuple[float, float]] = []
+for _lepes in (7, 12, 18, 25, 34, 44):
+    for _ix, _iy in ((0, -1), (0, 1), (-1, 0), (1, 0),
+                     (-1, -1), (1, -1), (-1, 1), (1, 1)):
+        _ELTOLASOK.append((_ix * _lepes, _iy * _lepes))
+
+
+def _mozgathato_felirat(el) -> bool:
+    """Csak azt a feliratot mozdítjuk el, aminél ez biztosan nem tör el
+    semmit: saját x/y-a van, nincs elforgatva, és a tspanjai sem helyezik
+    el magukat külön."""
+    if (el.get("transform") or "").strip():
+        return False
+    if el.get("x") is None or el.get("y") is None:
+        return False
+    if (el.get("dx") or el.get("dy")):
+        return False
+    for gy in el.iter():
+        if gy is el:
+            continue
+        if gy.get("x") or gy.get("y") or gy.get("dx") or gy.get("dy") \
+                or (gy.get("transform") or "").strip():
+            return False
+    return True
+
+
+def _akadalyok(alakzatok) -> list:
+    """A rajzvonalak egyszer kiszámolva – a próbálgatás így nem lassú."""
+    ki = []
+    for el in alakzatok:
+        t = _tag(el)
+        if t == "circle":
+            r = _szam(el.get("r"))
+            if r > 0:
+                ki.append(("kor", (_szam(el.get("cx")), _szam(el.get("cy")), r, r)))
+        elif t == "ellipse":
+            rx, ry = _szam(el.get("rx")), _szam(el.get("ry"))
+            if rx > 0 and ry > 0:
+                ki.append(("kor", (_szam(el.get("cx")), _szam(el.get("cy")), rx, ry)))
+        else:
+            vonalak = _alakzat_vonalai(el)
+            if vonalak:
+                ki.append(("vonalak", vonalak))
+    return ki
+
+
+def _utkozik(doboz, akadalyok, mas_dobozok) -> bool:
+    """Ezen a helyen a felirat rálóg-e másik feliratra vagy egy rajzvonalra."""
+    for m in mas_dobozok:
+        if m is not None and _fedik_egymast(doboz, m):
+            return True
+    for fajta, adat in akadalyok:
+        if fajta == "kor":
+            if _ellipszis_vonalan(doboz, *adat):
+                return True
+        else:
+            for e in adat:
+                if _melyen_fedik(doboz, e):
+                    return True
+    return False
+
+
+# Ha az elmozdítás nem elég (pl. a Venn-diagram metszete keskenyebb, mint a
+# ráírt szó), a feliratot egy kicsit kisebb betűvel is megpróbáljuk. Ennél
+# jobban nem kicsinyítünk: az olvashatatlan felirat semmivel sem jobb.
+_KICSINYITES = (1.0, 0.85, 0.72)
+_LEGKISEBB_BETU = 10.0
+
+
+def _feliratok_elhuzasa(feliratok, dobozok, akadalyok, szulok) -> list:
+    """Az ütköző feliratokat elhúzza a rajzról. A helyükre kerülő dobozokat
+    adja vissza. Ami eddig is rendben volt, ahhoz hozzá sem nyúl."""
+    for i, el in enumerate(feliratok):
+        d = dobozok[i]
+        if d is None:
+            continue
+        masok = [dobozok[j] for j in range(len(dobozok)) if j != i]
+        if not _utkozik(d, akadalyok, masok):
+            continue
+        if not _mozgathato_felirat(el):
+            continue
+        szoveg = "".join(el.itertext()).strip()
+        meret = _oroklott_betumeret(el, szulok)
+        x, y = _szam(el.get("x"), 0.0), _szam(el.get("y"), 0.0)
+        horgony = (el.get("text-anchor") or "start").strip().lower()
+        kesz = False
+        for arany in _KICSINYITES:
+            uj_meret = meret * arany
+            if arany < 1.0 and uj_meret < _LEGKISEBB_BETU:
+                continue
+            for dx, dy in ((0.0, 0.0),) + tuple(_ELTOLASOK):
+                if arany == 1.0 and dx == 0 and dy == 0:
+                    continue                  # ezt a helyet már elvetettük
+                uj = _doboz(szoveg, uj_meret, x + dx, y + dy, horgony)
+                if _utkozik(uj, akadalyok, masok):
+                    continue
+                if dx or dy:
+                    el.set("x", f"{x + dx:g}")
+                    el.set("y", f"{y + dy:g}")
+                if arany < 1.0:
+                    el.set("font-size", f"{uj_meret:g}")
+                dobozok[i] = uj
+                kesz = True
+                break
+            if kesz:
+                break
+    return dobozok
+
+
 def javit(svg: str, *, max_feliratok: int = 40) -> str | None:
     """Ellenőrzi és megjavítja az AI ábráját.
 
@@ -315,34 +513,16 @@ def javit(svg: str, *, max_feliratok: int = 40) -> str | None:
     if len(feliratok) > max_feliratok:
         return None                       # zsúfolt, olvashatatlan
 
-    # ── 3. egymásra csúszó feliratok → inkább semmi ─────────────────────
-    dobozok = []
-    for el in feliratok:
-        d = _felirat_doboza(el, szulok)
-        if d:
-            dobozok.append(d)
-    for i in range(len(dobozok)):
-        for j in range(i + 1, len(dobozok)):
-            if _fedik_egymast(dobozok[i], dobozok[j]):
-                return None
+    # a feliratok dobozai – a listában ugyanannyi elem, mint a feliratokban
+    dobozok = [_felirat_doboza(el, szulok) for el in feliratok]
+    alakzatok = [el for el in gyoker.iter()
+                 if _tag(el) in _ALAKZATOK + _VONALAK]
 
-    # ── 3/b. felirat AZ ALAKZAT VONALÁN → inkább semmi ──────────────────
-    # Élesben egy "3 cm" felirat pont a négyzet oldalára esett: se a szám,
-    # se a vonal nem volt olvasható.
-    for el in gyoker.iter():
-        if _tag(el) not in _ALAKZATOK + _VONALAK:
-            continue
-        for el_doboz in _elek(el):
-            for d in dobozok:
-                if _melyen_fedik(d, el_doboz):
-                    return None
-
-    # ── 3/c. a ráírt méret mond ellent a rajznak → inkább semmi ─────────
-    parban = []
-    for el in feliratok:
-        d = _felirat_doboza(el, szulok)
-        if d:
-            parban.append((d, "".join(el.itertext())))
+    # ── 3. a ráírt méret mond ellent a rajznak → inkább semmi ───────────
+    # Ez az EREDETI helyeken dől el, mielőtt bármit elmozdítanánk: a szám
+    # ahhoz az oldalhoz tartozik, amelyik mellé az AI odaírta.
+    parban = [(d, "".join(el.itertext()))
+              for el, d in zip(feliratok, dobozok) if d]
     _teglalapok = [(el, _alakzat_doboza(el)) for el in gyoker.iter()
                    if _tag(el) == "rect" and _alakzat_doboza(el)]
     if _teglalapok:
@@ -350,6 +530,24 @@ def javit(svg: str, *, max_feliratok: int = 40) -> str | None:
         for el, _ in _teglalapok:
             if _rossz_meretaranyu(el, _gazda.get(id(el), [])):
                 return None
+
+    # ── 3/b. a rajzba lógó feliratot ELHÚZZUK ───────────────────────────
+    # Eddig csak eldobtuk az ilyen ábrát. Most előbb megpróbáljuk kicsit
+    # arrébb tenni a feliratot – így a gyerek látja a rajzot is, a szöveget
+    # is. Ami eddig is hibátlan volt, az változatlan marad.
+    akadalyok = _akadalyok(alakzatok)
+    dobozok = _feliratok_elhuzasa(feliratok, dobozok, akadalyok, szulok)
+
+    # ── 3/c. ami így sem lett olvasható → inkább semmi ──────────────────
+    ervenyes = [d for d in dobozok if d]
+    for i in range(len(ervenyes)):
+        for j in range(i + 1, len(ervenyes)):
+            if _fedik_egymast(ervenyes[i], ervenyes[j]):
+                return None
+    for d in ervenyes:
+        if _utkozik(d, akadalyok, []):
+            return None
+    dobozok = ervenyes
 
     # ── 4. kilógó felirat → a rajzterület kitágítása ────────────────────
     vb = (gyoker.get("viewBox") or "").replace(",", " ").split()

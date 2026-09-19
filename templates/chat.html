@@ -107,8 +107,16 @@
      Így a gyerek látja, mit vett, a tábla viszont tiszta fehér marad,
      és egyetlen betű sem lesz olvashatatlan – akármilyen mintát teszünk
      be később. */
-  .munka-sav.uj-felulet{background:{{ kinezet_hatter|safe }};
-      border-radius:22px;padding:14px;position:relative}
+  /* A MEGVÁSÁROLT KINÉZET AZ EGÉSZ OLDALT FESTI.
+     Eddig csak a munkatér 14 pixeles kerete volt az, amit a gyerek megvett –
+     alig lehetett észrevenni, hogy egyáltalán van kinézete. Mögötte ráadásul
+     ott futott a mindenkinek egyforma iskolai háttér, ami el is nyomta.
+     Innentől az egész lap az övé, a tábla és a beszélgetés pedig egy
+     hajszálnyit áttetsző, így a minta halványan átsejlik alattuk is. */
+  body.gyerek-hatter{background:{{ kinezet_hatter|safe }} !important;
+      background-attachment:fixed !important}
+  .munka-sav.uj-felulet{background:transparent;
+      border-radius:22px;padding:16px;position:relative}
   .munka-sav.uj-felulet,
   .munka-sav.uj-felulet.van-munka{
       display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,360px);
@@ -130,7 +138,7 @@
      keskeny sáv, ott alig látszott, amit a gyerek megvett. A tábla a
      legnagyobb felület, ott van értelme. Minden kinézet világos
      színátmenet, tehát a fekete szöveg olvasható marad rajta. */
-  .uj-felulet .tanit{background:#fff;border:1px solid #e2e9f0;
+  .uj-felulet .tanit{background:rgba(255,255,255,.90);border:1px solid #e2e9f0;
       border-radius:18px;padding:22px 26px 20px;min-width:0}
   .uj-felulet .tanit-fej{display:flex;align-items:center;gap:10px;
       margin:0 0 12px}
@@ -146,7 +154,7 @@
   .uj-felulet .tanit-var{color:#8aa0b2;font-style:italic}
 
   /* ── a keskeny beszélgetés-sáv ── */
-  .uj-felulet .beszelo{background:#fff;border:1px solid #e2e9f0;
+  .uj-felulet .beszelo{background:rgba(255,255,255,.90);border:1px solid #e2e9f0;
       border-radius:18px;padding:14px 12px;display:flex;
       flex-direction:column;min-width:0;max-height:72vh}
   .uj-felulet .beszelo-fej{display:flex;align-items:center;gap:8px;
@@ -430,6 +438,9 @@
     /* A BESZÉLGETÉS felhúzható lap. */
     .uj-felulet .beszelo{position:fixed;left:0;right:0;top:auto;
         bottom:var(--sav-magas,170px);height:56vh;max-height:none;
+        /* Telefonon ez a lap FÖLÉ felhúzható fiók: itt nem lehet áttetsző,
+           mert alatta a tábla szövege ütne át rajta. */
+        background:#fff;
         border-radius:22px 22px 0 0;z-index:48;
         transform:translateY(125%);transition:transform .25s ease;
         box-shadow:0 -12px 34px rgba(20,60,40,.18)}
