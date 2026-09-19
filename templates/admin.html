@@ -110,6 +110,32 @@
         <td>{{ e.datum.strftime('%Y. %m. %d.') if e.datum else '—' }}</td></tr>
       {% endfor %}
     </table>
+
+    {# AZ INDULÁS-LEVÉL. Ezt a szülő KÉRTE, amikor a „Szólj, ha indul"
+       gombra kattintott – ez a beváltása. Egy kattintás az egész lista,
+       és akinek kiment, az többé nem kapja meg. #}
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid #eef2f6">
+      {% if ertesitendo %}
+      <form method="post" action="{{ url_for('admin_indulas_level') }}"
+            style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <button type="submit" style="background:#1e7a4d;color:#fff;border:none;
+                border-radius:10px;padding:10px 16px;font:600 14px system-ui;
+                cursor:pointer">
+          Indulás-levél kiküldése ({{ ertesitendo }})
+        </button>
+        <span style="color:#6b7280;font-size:.88rem">
+          {{ ertesitendo }} szülő várja. Mindenki egyszer kapja meg.
+          {% if not fizetes_el %}
+          <b style="color:#a15c00">A fizetés még nincs élesítve
+          (FIZETES_ELERHETO) – előbb azt kapcsold be.</b>
+          {% endif %}
+        </span>
+      </form>
+      {% else %}
+      <span style="color:#6b7280;font-size:.88rem">
+        Indulás-levél: nincs kinek küldeni, mindenki megkapta már.</span>
+      {% endif %}
+    </div>
   </div>
   {% endif %}
 

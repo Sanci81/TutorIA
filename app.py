@@ -481,6 +481,99 @@ def _send_password_reset_email(recipient: str, token: str, lang: str) -> None:
     )
 
 
+def _oldal_url(utvonal: str = "/") -> str:
+    """Az oldal teljes címe levélbe. Railway-en az APP_URL a megbízható."""
+    alap = (os.environ.get("APP_URL")
+            or os.environ.get("RAILWAY_PUBLIC_DOMAIN") or "").rstrip("/")
+    if alap and not alap.startswith("http"):
+        alap = f"https://{alap}"
+    if not alap:
+        alap = "https://tutoriacademia.com"
+    return alap + (utvonal if utvonal.startswith("/") else "/" + utvonal)
+
+
+def _level_kuld(cimzett: str, targy: str, szoveg: str) -> bool:
+    """Egy sima szöveges levél. SOHA nem dob hibát a hívóra.
+
+    A levél SEGÉDLET, nem a művelet lényege: ha a Resend épp nem elérhető,
+    attól még a szülő kattintását eltároltuk, és a lapon is látja, hogy
+    sikerült. Egy levélhiba nem boríthatja fel a kérést.
+    """
+    api_key = os.environ.get("RESEND_API_KEY")
+    if not api_key or not cimzett:
+        return False
+    try:
+        resend.api_key = api_key
+        resend.Emails.send({
+            "from": _resend_from_address(),
+            "to": [cimzett],
+            "subject": targy,
+            "text": szoveg,
+        })
+        return True
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("A levelet nem sikerült elküldeni: %s", targy)
+        return False
+
+
+def _erdeklodes_visszaigazolas(cimzett: str, kulcs: str, nyelv: str) -> None:
+    """„Felírtunk a listára." Erre a levélre a szülő később is vissza tud
+    nézni – a lapon villanó üzenet két nap múlva már nem bizonyít semmit."""
+    nev = csomagok.nev(kulcs, nyelv)
+    if nyelv == "es":
+        targy = "TutorIA – te avisaremos cuando abramos"
+        szoveg = (
+            "¡Gracias!\n\n"
+            f"Hemos anotado que te interesa el plan {nev}. En cuanto se pueda "
+            "suscribir, te escribimos a esta dirección — antes no.\n\n"
+            "Esto no es un pago ni un compromiso: puedes cambiar de opinión "
+            "cuando quieras.\n\n"
+            f"{_oldal_url('/csomagok')}\n\nTutorIA"
+        )
+    else:
+        targy = "TutorIA – szólunk, amikor indul"
+        szoveg = (
+            "Köszönjük!\n\n"
+            f"Feljegyeztük, hogy a(z) {nev} csomag érdekelne. Amint elő lehet "
+            "fizetni, erre a címre írunk — addig nem küldünk semmit.\n\n"
+            "Ez nem fizetés és nem kötelezettség: bármikor meggondolhatod "
+            "magad.\n\n"
+            f"{_oldal_url('/csomagok')}\n\nTutorIA"
+        )
+    _level_kuld(cimzett, targy, szoveg)
+
+
+def _indulas_level(cimzett: str, kulcs: str, nyelv: str, leiratkozo: str) -> bool:
+    """AZ INDULÁS-LEVÉL. Ezt kérte a szülő, amikor a „Szólj, ha indul"
+    gombra kattintott — most váltjuk be."""
+    nev = csomagok.nev(kulcs, nyelv)
+    if nyelv == "es":
+        targy = "TutorIA – ya se puede suscribir"
+        szoveg = (
+            "¡Hola!\n\n"
+            "Nos pediste que te avisáramos cuando se pudiera suscribir a "
+            f"TutorIA. Ya está: el plan {nev} —y los demás— se pueden "
+            "contratar desde aquí:\n\n"
+            f"{_oldal_url('/csomagok')}\n\n"
+            "El progreso, las monedas y las cartas de tu hijo o hija siguen "
+            "donde estaban.\n\nTutorIA"
+        )
+    else:
+        targy = "TutorIA – mostantól elő lehet fizetni"
+        szoveg = (
+            "Szia!\n\n"
+            "Kérted, hogy szóljunk, amikor el lehet fizetni a TutorIA-ra. "
+            f"Most már lehet: a(z) {nev} csomag — és a többi is — itt "
+            "érhető el:\n\n"
+            f"{_oldal_url('/csomagok')}\n\n"
+            "A gyereked haladása, érméi és kártyái ott vannak, ahol "
+            "hagytátok.\n\nTutorIA"
+        )
+    if leiratkozo:
+        szoveg += ("\n\n—\nHa nem kérsz több levelet: " + leiratkozo)
+    return _level_kuld(cimzett, targy, szoveg)
+
+
 def _active_curriculum() -> str:
     """Az aktív tanterv a felső nyelvkapcsoló alapján ('HU' vagy 'ES')."""
     return "ES" if g.lang == "es" else "HU"
@@ -1473,7 +1566,7 @@ def csomag_most_nem():
     """„Most nem." Ez IS válasz, és pont annyira fontos, mint az igen:
     ebből tudjuk meg, hányan nem fizetnének. Elrejti a kérdést, hogy ne
     kelljen még egyszer látnia."""
-    database.set_erdeklodes(session["parent_id"], "nem")
+    database.set_erdeklodes(session["parent_id"], "nem", g.lang)
     flash(i18n.t("csomag_most_nem_koszonjuk", g.lang), "success")
     return redirect(request.referrer or url_for("dashboard"))
 
@@ -1486,7 +1579,11 @@ def csomag_erdekel():
     kulcs = (request.form.get("csomag") or "").strip()
     if kulcs not in csomagok.CSOMAGOK:
         abort(400)
-    database.set_erdeklodes(session["parent_id"], kulcs)
+    database.set_erdeklodes(session["parent_id"], kulcs, g.lang)
+    # VISSZAIGAZOLÁS. Enélkül a szülő csak egy villanó üzenetet lát a lapon,
+    # és két nap múlva már nem tudja, felkerült-e egyáltalán a listára.
+    # A levél a bizonyíték a kezében, és egyben az első levelünk tőlünk.
+    _erdeklodes_visszaigazolas(_belepett_szulo_email(), kulcs, g.lang)
     flash(i18n.t("csomag_erdekel_koszonjuk", g.lang), "success")
     return redirect(url_for("csomagok_oldal"))
 
@@ -11262,6 +11359,9 @@ def admin_attekintes():
         csucs_koltseg=csucs_koltseg, csucs_nev=csucs_nev,
         erdeklodok=_erdeklodok_honnannal(),
         erdeklodo_kell=_nullszaldo_csalad(),
+        # Hányan VÁRJÁK az indulás-levelet, és még nem kapták meg.
+        ertesitendo=len(database.ertesitendo_erdeklodok()),
+        fizetes_el=FIZETES_ELERHETO,
     )
 
 
@@ -11322,6 +11422,47 @@ def admin_meres_torles():
           "success")
     return redirect(url_for("admin_attekintes",
                             napok=request.form.get("napok") or 30))
+
+
+@app.route("/admin/indulas-level", methods=["POST"])
+@login_required
+def admin_indulas_level():
+    """AZ INDULÁS-LEVÉL KIKÜLDÉSE mindenkinek, aki kérte.
+
+    MIÉRT GOMB ÉS NEM MAGÁTÓL INDUL: ha a telepítéskor menne ki magától,
+    akkor egy visszaállítás, egy próbálgatás vagy egy elgépelt környezeti
+    változó is kiküldené — és egy levelet nem lehet visszaszívni. Így egy
+    kattintás az egész lista, de csak akkor, amikor te akarod.
+
+    KÉTSZER SENKI NEM KAPJA MEG: akinek kiment, az kap egy dátumot, és
+    kiesik a listából. Ha a küldés közben megszakad, a maradék a következő
+    kattintásra megy ki — a már értesítettek nem kapják újra.
+    """
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
+    if not _mail_is_configured():
+        flash("Nincs RESEND_API_KEY beállítva – így nem megy ki levél.",
+              "error")
+        return redirect(url_for("admin_attekintes"))
+
+    varok = database.ertesitendo_erdeklodok()
+    ment, nem_ment = 0, 0
+    for sor in varok:
+        if _indulas_level(sor["email"], sor["csomag"], sor["nyelv"],
+                          _leiratkozo_url(sor["id"])):
+            database.erdeklodes_ertesitve_jelol(sor["id"])
+            ment += 1
+        else:
+            nem_ment += 1
+    if not varok:
+        flash("Nincs kinek küldeni: mindenki megkapta már.", "success")
+    elif nem_ment:
+        flash(f"Kiment {ment} levél, {nem_ment} nem sikerült – "
+              "azok a következő kattintásra újra sorra kerülnek.", "error")
+    else:
+        flash(f"Kiment {ment} indulás-levél.", "success")
+    return redirect(url_for("admin_attekintes"))
 
 
 @app.route("/koltseg")

@@ -148,6 +148,11 @@ class Parent(Base):
     # bárki rábök, csak hogy tovább taníttathasson.
     erdeklodes: Mapped[str | None] = mapped_column(String(32), nullable=True)
     erdeklodes_datum: Mapped[date | None] = mapped_column(Date, nullable=True)
+    # Milyen nyelven kattintott – ezen a nyelven kapja az indulás-levelet.
+    erdeklodes_nyelv: Mapped[str | None] = mapped_column(String(2), nullable=True)
+    # Mikor ment ki neki az indulás-levél. Amíg üres, még nem kapott.
+    # Ez akadályozza meg, hogy bárki kétszer kapja meg ugyanazt.
+    erdeklodes_ertesitve: Mapped[date | None] = mapped_column(Date, nullable=True)
 
     children: Mapped[list["Child"]] = relationship(
         back_populates="parent", cascade="all, delete-orphan"
@@ -590,7 +595,14 @@ def ensure_parents_csomag_columns() -> None:
                           ("csomag_kezdet", "DATE"),
                           ("csomag_tanterv", "VARCHAR(2)"),
                           ("erdeklodes", "VARCHAR(32)"),
-                          ("erdeklodes_datum", "DATE")):
+                          ("erdeklodes_datum", "DATE"),
+                          # Milyen nyelven kattintott – ezen a nyelven kapja
+                          # majd az indulás-levelet is.
+                          ("erdeklodes_nyelv", "VARCHAR(2)"),
+                          # Mikor ment ki neki az indulás-levél. Amíg üres,
+                          # még nem kapott – így egy újratelepítés sem tudja
+                          # kétszer kiküldeni ugyanannak.
+                          ("erdeklodes_ertesitve", "DATE")):
         try:
             with _get_engine().begin() as conn:
                 conn.execute(text(
@@ -634,7 +646,49 @@ def set_parent_csomag(parent_id: int, csomag: str | None,
         db.close()
 
 
-def set_erdeklodes(parent_id: int, csomag_kulcs: str) -> bool:
+def ertesitendo_erdeklodok() -> list[dict]:
+    """Kik VÁRJÁK az indulás-levelet, és még nem kapták meg.
+
+    Csak az, aki tényleg azt mondta, hogy kérné — a „most nem" válasz nem
+    kérés, annak nem küldünk semmit. Aki egyszer megkapta, az kiesik a
+    listából, tehát egy újratelepítés sem tudja kétszer kiküldeni.
+    """
+    db = _session()
+    try:
+        sorok = db.scalars(
+            select(Parent)
+            .where(Parent.erdeklodes.is_not(None))
+            .where(Parent.erdeklodes != "nem")
+            .where(Parent.erdeklodes_ertesitve.is_(None))
+            .order_by(Parent.erdeklodes_datum)).all()
+        return [{"id": p.id, "email": p.email, "csomag": p.erdeklodes,
+                 "nyelv": (p.erdeklodes_nyelv or "hu")} for p in sorok]
+    except Exception:                                      # pragma: no cover
+        logger.exception("ertesitendo_erdeklodok(): nem sikerült lekérni")
+        return []
+    finally:
+        db.close()
+
+
+def erdeklodes_ertesitve_jelol(parent_id: int) -> bool:
+    """Kiment neki az indulás-levél – többet ne kapja meg."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if not p:
+            return False
+        p.erdeklodes_ertesitve = date.today()
+        db.commit()
+        return True
+    except Exception:                                      # pragma: no cover
+        db.rollback()
+        logger.exception("erdeklodes_ertesitve_jelol(%s)", parent_id)
+        return False
+    finally:
+        db.close()
+
+
+def set_erdeklodes(parent_id: int, csomag_kulcs: str, nyelv: str = "hu") -> bool:
     """„Szólj, amikor indul" – a szülő megjelölte, melyik csomag kellene.
 
     Az ELSŐ jelölést tartjuk meg dátummal együtt; ha később másikra vált,
@@ -649,6 +703,7 @@ def set_erdeklodes(parent_id: int, csomag_kulcs: str) -> bool:
         p.erdeklodes = (csomag_kulcs or "").strip()[:32] or None
         if p.erdeklodes and not p.erdeklodes_datum:
             p.erdeklodes_datum = date.today()
+        p.erdeklodes_nyelv = (nyelv or "hu").strip().lower()[:2] or "hu"
         db.commit()
         return True
     finally:
