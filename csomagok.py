@@ -146,7 +146,17 @@ SORREND = (FREE, "alap", "pro", "max")
 
 # Melyiket emeljük ki. Nem a legdrágább: azt ajánljuk, ami a legtöbb
 # családnak tényleg jó — a hamis ajánlás egyszer működik, utána soha.
-AJANLOTT = "alap"
+#
+# MIÉRT A PRO ÉS NEM A MAX: a Max 1800 perce napi 84 perc. Egy általános
+# iskolás ennyit nem tanul a gépnél; aki mégis azt venné meg, egy hónap
+# múlva látná, hogy a keret harmadát használta el, és lemondana. A Pro 900
+# perce napi 42 perc — ez az, ami egy rendszeresen tanuló gyereknél tényleg
+# összejön. A Max ott marad annak, akinek három gyereke tanul.
+#
+# MIÉRT NEM AZ ALAP: percre vetítve a Pro a legjobb vétel (10 euróval több
+# pénzért több mint dupla perc), tehát a kiemelés nem terelés, hanem
+# ugyanaz, amit egy tisztességes eladó is mondana.
+AJANLOTT = "pro"
 
 
 def csomag(kulcs: str | None) -> dict:
