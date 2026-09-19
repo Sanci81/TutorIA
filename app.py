@@ -10303,7 +10303,14 @@ def api_voice_speak():
     # A gyorstár NEM a static alatt van: a felolvasott mondatban ott lehet
     # a gyerek neve ("Ügyes vagy, Leila!"), és a static mappát a világ is
     # látja. Így a mentett hangot csak a szerver éri el.
-    _tar = hang.Gyorstar(os.path.join(app.root_path, "hangcache"))
+    # A HELYE KÖRNYEZETI VÁLTOZÓBÓL. A Railway a telepítéskor ÚJ tárolót ad, és
+    # a régi lemez tartalma elvész — vagyis a gyorstár minden push után
+    # kiürült, és ugyanazokat a mondatokat újra meg újra kifizettük. Ha a
+    # HANG_CACHE_DIR egy csatolt Railway Volume-ra mutat, a mentett hang
+    # átéli a telepítést, és a "Nagyon ügyes vagy!" életében egyszer kerül
+    # pénzbe. Beállítás nélkül marad a régi viselkedés.
+    _tar = hang.Gyorstar(os.environ.get("HANG_CACHE_DIR")
+                         or os.path.join(app.root_path, "hangcache"))
     _kesz = _tar.olvas(text, _hangnev)
     if _kesz is not None:
         print(f"[TTS] gyorstarbol ({len(text)} karakter megsporolva)", flush=True)
@@ -11410,10 +11417,17 @@ def _nullszaldo_csalad() -> int:
     fix = _dij("HAVI_FIX_EUR", 404.0)          # járulék + Railway + könyvelő + domain
     cent_perc = _dij("PERC_CENT_HANG", 0.6)    # egy hangos tanulási perc, centben
     jutalek = _dij("FIZETESI_JUTALEK", 3.0)    # százalék
+    # ÁFA. A csomaglapon szereplő ár BRUTTÓ: a szülő ennyit fizet, de ebből
+    # az áfa nem a miénk, hanem az államé. Enélkül a nullszaldó szebbnek
+    # látszott, mint amilyen — kb. negyedével kevesebb előfizetőt mutatott.
+    # Spanyol magánszemély vásárlónál 21%, magyarnál 27%; a vegyes körre a
+    # 21 óvatos alsó becslés, és az AFA_SZAZALEK változóval állítható.
+    afa = _dij("AFA_SZAZALEK", 21.0)
     c = csomagok.CSOMAGOK.get("alap") or {}
     ar = float(c.get("ar_honap") or 0) or 14.90
     perc = int(c.get("havi_perc") or 400)
-    fedezet = ar - (ar * jutalek / 100.0) - (perc * cent_perc / 100.0)
+    netto = ar / (1.0 + afa / 100.0) if afa > 0 else ar
+    fedezet = netto - (ar * jutalek / 100.0) - (perc * cent_perc / 100.0)
     if fedezet <= 0:
         return 0
     return int(fix / fedezet) + 1
