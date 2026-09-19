@@ -10663,11 +10663,17 @@ def _szulo_csomag(parent_id: int | None = None) -> str:
         szulo = database.get_parent_by_id(pid) or {}
         kulcs = (szulo.get("csomag") or "").strip()
         lejar = szulo.get("csomag_lejar")
-        # LEJÁRT ELŐFIZETÉS: nem zárjuk ki a szülőt, csak visszaesik a
-        # tesztidőszakra — a fizetés bekötéséig ez a helyes viselkedés.
+        # LEJÁRT ELŐFIZETÉS: nem zárjuk ki a szülőt, csak visszaesik az
+        # ingyenes próbára — a fizetés bekötéséig ez a helyes viselkedés.
         if lejar and lejar < date.today():
-            return csomagok.TESZT
-        return kulcs or csomagok.TESZT
+            return csomagok.FREE
+        # AKINEK NINCS CSOMAGJA, AZ AZ INGYENES PRÓBÁT KAPJA, nem a teszt
+        # csomagot. Eddig fordítva volt: egy vadidegen regisztráló 3000
+        # percet kapott hangosan is — egy Facebook-posztból ötven ilyen
+        # regisztráció akkora OpenAI- és Azure-számlát hozna, amit senki nem
+        # akar kifizetni. A teszt csomag mostantól csak annak jár, akinek
+        # KÉZZEL beállítjuk az adatbázisban (csomag = 'teszt').
+        return kulcs or csomagok.FREE
     except Exception:                                      # pragma: no cover
         app.logger.exception("A szülő csomagját nem sikerült lekérni")
         return csomagok.TESZT

@@ -18,9 +18,11 @@ MIN ALAPUL AZ ÁRAZÁS
     tanul — nem ötször annyit kap.
 
 A TESZTIDŐSZAK
-    Akinek nincs csomagja, az a "teszt" csomagot kapja: mindent elér, bő
-    kerettel. A teszt végén elég a szülőket "free"-re állítani, és
-    mindenki a kis keretre esik vissza — senkit nem zárunk ki.
+    A "teszt" csomag bő keretű, és CSAK annak jár, akinek kézzel beállítjuk
+    az adatbázisban (parents.csomag = 'teszt'). Aki magától regisztrál — egy
+    Facebook-posztból például —, az az INGYENES PRÓBÁT kapja. Korábban
+    fordítva volt, és ötven idegen regisztráló fejenként 3000 hangos percet
+    kapott volna: a számlát mi álltuk volna.
 """
 
 from __future__ import annotations
@@ -59,12 +61,17 @@ CSOMAGOK: dict[str, dict] = {
         "nev_hu": "Ingyenes próba",
         "nev_es": "Prueba gratuita",
         "tantervek": (HU, ES),
-        # 50 perc: két-három tanóra. Ennyiből a szülő el tudja dönteni,
-        # megéri-e, de egy tanévhez meg sem közelíti az elegendőt.
-        "havi_perc": 50,
+        # 120 perc. MIÉRT NEM KEVESEBB: egy lecke 30–90 perc, tehát 50
+        # perccel a szülő EGYETLEN leckét sem tudott végigvinni — nem látta
+        # a lecke végét, a tesztet, sem azt, hogy a gyerek érmét kap és
+        # tasakot bont. Pont az a pillanat maradt ki, ami eladja az oldalt.
+        # 120 percből egy teljes lecke kijön, és marad egy második nekifutás.
+        # Egy tanévhez ez így sem közelít — a próbának nem az a dolga.
+        "havi_perc": 120,
         # Hang AZÉRT van benne, mert enélkül a szülő nem tudja, mit venne
-        # meg. Csak kevés: a hangos perc tizenkétszer annyiba kerül.
-        "hangos_perc": 15,
+        # meg. Csak a keret negyede: a hangos perc tizenkétszer annyiba
+        # kerül, mint a néma — a költség itt dől el, nem az összes percnél.
+        "hangos_perc": 30,
         "profil": 1,
         "napi_jelentes": False,
         "ar_honap": 0.0,
