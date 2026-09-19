@@ -100,11 +100,13 @@
     <div style="font-weight:600;margin-bottom:10px">Kik jelezték, hogy fizetnének</div>
     <table style="width:100%;border-collapse:collapse;font-size:.92rem">
       <tr style="text-align:left;color:#6b7280">
-        <th style="padding:6px 4px">E-mail</th><th>Csomag</th><th>Mikor</th></tr>
+        <th style="padding:6px 4px">E-mail</th><th>Csomag</th><th>Honnan</th>
+        <th>Mikor</th></tr>
       {% for e in erdeklodok %}
       <tr style="border-top:1px solid #eef2f6">
         <td style="padding:6px 4px">{{ e.email }}</td>
         <td>{{ e.csomag }}</td>
+        <td>{{ e.honnan_szoveg or '—' }}</td>
         <td>{{ e.datum.strftime('%Y. %m. %d.') if e.datum else '—' }}</td></tr>
       {% endfor %}
     </table>

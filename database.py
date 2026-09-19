@@ -68,7 +68,21 @@ _SessionLocal = None
 def _get_engine():
     global _engine
     if _engine is None:
-        _engine = create_engine(_database_url(), pool_pre_ping=True)
+        # KAPCSOLATOK SZÁMA. A SQLAlchemy alapból 5 kapcsolatot tart és 10-et
+        # enged fölé — ez kevés, mióta a gunicorn 2 munkással és munkásonként
+        # 12 szállal fut (lásd Procfile). Ha elfogynak a kapcsolatok, a szálak
+        # sorban állnak, és a gyerek számára ez úgy néz ki, hogy lefagyott az
+        # oldal. Munkásonként 12+8 = 20, két munkással 40 — a Railway
+        # Postgresének ez bőven belefér.
+        # pool_recycle: a Railway a sokáig tétlen kapcsolatot elvágja, és a
+        # következő lekérdezés hibára futna; fél óránként magától újít.
+        _url = _database_url()
+        _opciok: dict = {"pool_pre_ping": True}
+        # Csak a valódi adatbázis-kiszolgálónál van értelme: az SQLite egy
+        # fájl, ott ezek a beállítások hibát okoznának.
+        if not _url.startswith("sqlite"):
+            _opciok.update(pool_size=12, max_overflow=8, pool_recycle=1800)
+        _engine = create_engine(_url, **_opciok)
     return _engine
 
 
@@ -652,8 +666,22 @@ def erdeklodok(napok: int = 365) -> list[dict]:
             .where(Parent.erdeklodes.is_not(None))
             .where(Parent.erdeklodes_datum >= hatar)
             .order_by(Parent.erdeklodes_datum.desc())).all()
+        # HONNAN VAN A CSALÁD. A gyerek profiljában ott az ország, spanyol
+        # oldalon az autonóm közösség is. Enélkül csak azt látnánk, hogy
+        # valaki fizetne — azt nem, hogy hol érdemes hirdetni.
+        honnan: dict[int, list] = {}
+        if sorok:
+            gyerekek = db.scalars(
+                select(Child).where(
+                    Child.parent_id.in_([p.id for p in sorok]))).all()
+            for gy in gyerekek:
+                par = honnan.setdefault(gy.parent_id, [])
+                jel = (gy.country or "", gy.region or "")
+                if jel not in par:
+                    par.append(jel)
         return [{"email": p.email, "csomag": p.erdeklodes,
-                 "datum": p.erdeklodes_datum} for p in sorok]
+                 "datum": p.erdeklodes_datum,
+                 "honnan": honnan.get(p.id, [])} for p in sorok]
     except Exception:                                      # pragma: no cover
         logger.exception("erdeklodok(): nem sikerült lekérni")
         return []

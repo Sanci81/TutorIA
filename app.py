@@ -11260,9 +11260,30 @@ def admin_attekintes():
         hang_szazalek=round(100 * ossz_hang / _ismert) if _ismert else 0,
         ossz_koltseg=round(ossz_koltseg, 2),
         csucs_koltseg=csucs_koltseg, csucs_nev=csucs_nev,
-        erdeklodok=database.erdeklodok(napok=365),
+        erdeklodok=_erdeklodok_honnannal(),
         erdeklodo_kell=_nullszaldo_csalad(),
     )
+
+
+def _erdeklodok_honnannal() -> list[dict]:
+    """Az érdeklődők listája, kiegészítve azzal, HONNAN valók.
+
+    A gyerek profiljában ott az ország, a spanyol oldalon az autonóm közösség
+    is. Ezt a kódot itt fordítjuk olvasható névre, mert az i18n a sablonból
+    nem érhető el. Így egy pillantásra látszik, melyik tartományból jön a
+    kereslet — ez dönti el, hol érdemes hirdetni.
+    """
+    lista = database.erdeklodok(napok=365)
+    for sor in lista:
+        nevek = []
+        for orszag, tartomany in (sor.get("honnan") or []):
+            o = (orszag or "").upper()
+            if o == "ES" and tartomany:
+                nevek.append("ES · " + i18n.region_name(tartomany, "hu"))
+            elif o:
+                nevek.append(o)
+        sor["honnan_szoveg"] = ", ".join(nevek) or "—"
+    return lista
 
 
 def _nullszaldo_csalad() -> int:
