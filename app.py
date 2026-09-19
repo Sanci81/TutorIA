@@ -486,8 +486,18 @@ SAJAT_DOMAIN = "https://tutoriacademia.com"
 
 
 def _oldal_url(utvonal: str = "/") -> str:
-    """Az oldal teljes címe levélbe."""
-    alap = (os.environ.get("APP_URL") or "").strip().rstrip("/")
+    """Az oldal teljes címe levélbe.
+
+    A RAILWAY.APP GÉPNEVET SOHA NEM ÍRJUK LEVÉLBE, akkor sem, ha valaki az
+    APP_URL változóba azt állította be — élesben pont ez történt, és a
+    szülő egy olyan linket kapott, amit épeszű ember nem nyit meg. Ha
+    tényleg egy railway.app címre kell mutatni (pl. próba oldal), akkor azt
+    a LEVEL_DOMAIN változóval lehet kimondottan kérni.
+    """
+    alap = (os.environ.get("LEVEL_DOMAIN")
+            or os.environ.get("APP_URL") or "").strip().rstrip("/")
+    if "railway.app" in alap and not os.environ.get("LEVEL_DOMAIN"):
+        alap = ""
     if not alap:
         alap = SAJAT_DOMAIN
     if not alap.startswith("http"):
