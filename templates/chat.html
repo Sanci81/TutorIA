@@ -334,8 +334,11 @@
         height:100%}
 
     /* Nagyításban a jobb oldali üres sávban, középen. */
+    /* NAGYÍTÁSBAN NE ZSUGORODJON A FIGURA. Korábban 200 képpont volt, a
+       rendes nézetben viszont 280 — ezért tűnt a teljes képernyős mód
+       ellenére KISEBBNEK. Most ugyanakkora, mint a rendes nézetben. */
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
-        left:auto;right:16px;width:200px;bottom:12px}
+        left:auto;right:16px;width:280px;bottom:12px}
 
     /* NYELVÓRÁN nagyításban a szójegyzék ugyanabban a sávban van, mint a
        figura, ezért a figura rálógott a szavakra. A szójegyzék rövidebb
@@ -347,7 +350,7 @@
   }
   @media (min-width:1600px){
     .chat-layout.teljes-mod:has(.uj-felulet) .chat-kabala-oszlop{
-        width:300px}
+        width:340px}
   }
 
   @media (min-width:1000px) and (max-width:1279px){
@@ -1573,6 +1576,7 @@
            pedig a feladat már megérkezett. Itt zárjuk le ezt az utat is:
            amint munka kerül a táblára, a jelző eltűnik, és a gyerek újra
            tud írni. */
+        valaszVarakozik = false;
         if (typing) {
             typing.hidden = true;
             typing.dataset.mikor = '';
@@ -1593,6 +1597,7 @@
            módban, félbeszakadt válasznál), ezért itt egy helyen zárjuk le,
            akármelyik úton jött a válasz. */
         if (role === 'assistant' && typing) {
+            valaszVarakozik = false;
             typing.hidden = true;
             typing.dataset.mikor = '';
             if (typeof stopThinkingMessages === 'function') {
@@ -1692,8 +1697,23 @@
     // kiválaszt, az sima üzenetként megy vissza a tanárnak, tehát a
     // haladás és a pontozás pont ugyanúgy működik, mint eddig.
     // ══════════════════════════════════════════════════════════════════
+    /* FEJBEN SZÁMOLÁS = NINCS EGYMÁS ALÁ ÍRÁS.
+       A tanár néha akkor is az írásbeli, egymás alá írós táblát kéri, ha a
+       témakör a FEJBEN számolás vagy a becslés. Ez félrevezeti a gyereket:
+       a szöveg azt mondja, számoljon fejben, a tábla meg átvitel-kockákat
+       tesz elé. Ilyen témakörnél egyszerű válaszmezőt adunk helyette — a
+       művelet ugyanúgy ott van, csak egy sorban. */
+    function fejbenSzamolosTemakor() {
+        var nev = (typeof currentTopicName === 'string' ? currentTopicName : '') || '';
+        return /fejben|szóbeli|szobeli|becsl|kerekít|kerekit|mental|oral|estimaci/i.test(nev);
+    }
+
     function feladatElem(f) {
         if (!f || !f.tipus) { return null; }
+        if (f.tipus === 'szamolo' && fejbenSzamolosTemakor()) {
+            var jel = f.jel || '+';
+            return szamMezo({ muvelet: String(f.a) + ' ' + jel + ' ' + String(f.b) });
+        }
         if (f.tipus === 'szamolo') { return szamoloTabla(f); }
         if (f.tipus === 'szam') { return szamMezo(f); }
         if (f.tipus === 'valaszt') { return valasztGombok(f); }
@@ -2825,6 +2845,10 @@
     }
 
     function setLoading(on) {
+        /* Ha a jelzőt levesszük, akkor nem is várunk többé válaszra.
+           Így minden útvonal — buborék, tábla, hiba, időtúllépés —
+           egyetlen helyen zárja le a várakozást. */
+        if (!on) { valaszVarakozik = false; }
         kabalaVar(on);
         typing.hidden = !on;
         typing.dataset.mikor = on ? String(Date.now()) : '';
@@ -2857,9 +2881,19 @@
        számoljuk a folyamatban lévő kéréseket. */
     var varakozoKeresek = 0;
 
+    /* ── VÁRUNK-E A TANÁR VÁLASZÁRA? ────────────────────────────────────
+       A „Gondolkodom…" CSAK akkor látszhat, amíg a TANÁR VÁLASZÁRA várunk.
+       Eddig minden folyamatban lévő kérés életben tartotta a jelzőt — így
+       egy hang-lekérés vagy bármilyen háttérhívás is ott tudta tartani,
+       pedig a válasz és az új feladat már rég kint volt a táblán. Sándor
+       pontosan ezt látta. Innentől EGY kapcsoló dönt: a küldéskor igaz
+       lesz, a válasz (vagy a hiba) megérkezésekor hamis. Semmi más nem
+       tudja életben tartani. */
+    var valaszVarakozik = false;
+
     function jelzoEllenoriz() {
         if (!typing || typing.hidden) { return; }
-        if (varakozoKeresek > 0) { return; }       // tényleg várunk valamire
+        if (valaszVarakozik) { return; }           // a tanár válaszára várunk
         typing.hidden = true;
         typing.dataset.mikor = '';
         try { stopThinkingMessages(); } catch (e) {}
@@ -3245,6 +3279,7 @@
         if (chatMode === 'voice' || !form || !input) return;
         appendBubble('user', text);
         input.value = '';
+        valaszVarakozik = true;
         setLoading(true);
         fetchIdovel(sendUrl, {
             method: 'POST',
@@ -3660,6 +3695,7 @@
         function sendVoiceChat(userText) {
             appendBubble('user', userText);
             setVoiceUi('processing');
+            valaszVarakozik = true;      // hangos módban is a tanár válaszára várunk
             typing.hidden = false;
             startThinkingMessages();
             scrollToBottom();
@@ -3677,6 +3713,7 @@
             })
                 .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
                 .then(function (res) {
+                    valaszVarakozik = false;
                     typing.hidden = true;
                     stopThinkingMessages();
                     if (!res.ok) {
