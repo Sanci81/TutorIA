@@ -2876,11 +2876,34 @@
        (olyan úton, amire nem gondoltunk), 110 másodperc után magától
        eltűnik, és a gyerek újra tud írni. Inkább tűnjön el korán, mint
        hogy a program haltnak látsszon. */
+    /* HA SOKÁIG TART. A gyerek eddig csak annyit látott, hogy „Gondolkodom…",
+       és közben a beírómező tiltva volt: nem tudott se várni értelmesen, se
+       újrapróbálni. Húsz másodperc után ezért MEGMONDJUK neki, hogy ez most
+       lassabb, és VISSZAADJUK a beírást — így nem ragad be a képernyő akkor
+       sem, ha a válasz tényleg késik. A kérés közben fut tovább; ha megjön,
+       a válasz ugyanúgy kikerül a táblára. */
+    var LASSU_SZOVEG = (document.documentElement.lang === 'es')
+        ? 'Esto tarda más de lo normal… puedes volver a escribirlo.'
+        : 'Ez most tovább tart a szokásosnál… nyugodtan írd be újra.';
+
+    function lassuJelzes() {
+        var cimke = typing ? typing.querySelector('.thinking-label') : null;
+        if (cimke && cimke.textContent !== LASSU_SZOVEG) {
+            try { stopThinkingMessages(); } catch (e) {}
+            cimke = typing.querySelector('.thinking-label');
+            if (cimke) { cimke.textContent = LASSU_SZOVEG; }
+        }
+        if (sendBtn) { sendBtn.disabled = false; }
+        if (input) { input.disabled = false; }
+    }
+
     setInterval(function () {
         if (!typing || typing.hidden) { return; }
         var mikor = Number(typing.dataset.mikor || 0);
         if (!mikor) { typing.dataset.mikor = String(Date.now()); return; }
-        if (Date.now() - mikor > 110000) {
+        var eltelt = Date.now() - mikor;
+        if (eltelt > 20000 && eltelt <= 110000) { lassuJelzes(); }
+        if (eltelt > 110000) {
             typing.dataset.mikor = '';
             setLoading(false);
             appendBubble('assistant', L.errTimeout);
