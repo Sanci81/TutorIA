@@ -2675,6 +2675,21 @@
 
     function kabalaAllapot(nev) {
         kabalaKert = nev;
+        /* EZ VOLT A HIBA, AMITŐL ÜRESEN MARADT A BAL OLDAL.
+           A böngésző ezt a függvényt már a fájl elején is "látja", a hozzá
+           tartozó KABALA_ALLAPOT táblázat viszont csak lejjebb kap értéket.
+           A mentett feladat visszatöltése (mentettFeladatok → munkaterBe)
+           ELŐBB fut le, és 'gepies' állapotot kért — olyankor a táblázat
+           még üres volt, és a következő sor HIBÁRA FUTOTT:
+               TypeError: Cannot read properties of undefined ('gepies')
+           A hiba nem csak a kabalát ölte meg: megállította az EGÉSZ
+           oldalbetöltést ott, ahol tartott, ezért maradt a bal oldal üres,
+           ezért nem jelent meg a figura, és ezért tűnt az egész oldal
+           félkésznek.
+           Most, ha a táblázat még nincs kész, csak megjegyezzük, mit
+           kértek, és csendben visszatérünk — a kabala induláskor úgyis
+           beáll a helyes állapotba. */
+        if (typeof KABALA_ALLAPOT === 'undefined' || !KABALA_ALLAPOT) { return; }
         var gep = KABALA_ALLAPOT[nev] || KABALA_ALLAPOT.alap;
         if (gep === kabalaMost) { return; }
         kabalaMost = gep;
