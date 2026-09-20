@@ -81,7 +81,12 @@ def _get_engine():
         # Csak a valódi adatbázis-kiszolgálónál van értelme: az SQLite egy
         # fájl, ott ezek a beállítások hibát okoznának.
         if not _url.startswith("sqlite"):
-            _opciok.update(pool_size=12, max_overflow=8, pool_recycle=1800)
+            # NÉGY MUNKÁS × 14 kapcsolat = 56. A Postgres alapból 100
+            # kapcsolatot enged, tehát marad hely a karbantartó eszközöknek
+            # és a Railway saját lekérdezéseinek is. Ha a munkások számát
+            # emeled, EZT IS csökkentsd — különben a szálak nem a
+            # processzorra, hanem egy szabad kapcsolatra várnának.
+            _opciok.update(pool_size=10, max_overflow=4, pool_recycle=1800)
         _engine = create_engine(_url, **_opciok)
     return _engine
 
@@ -646,41 +651,45 @@ def set_parent_csomag(parent_id: int, csomag: str | None,
         db.close()
 
 
-def teljes_mentes() -> dict:
-    """AZ EGÉSZ ADATBÁZIS egyetlen szótárban, visszaállítható formában.
+def _json_sor(sor) -> dict:
+    """Egy adatbázissor JSON-ba írható alakra. A dátum és a Decimal nem megy
+    magától, a bájtsor sem."""
+    tiszta = {}
+    for kulcs, ertek in dict(sor).items():
+        if hasattr(ertek, "isoformat"):
+            tiszta[kulcs] = ertek.isoformat()
+        elif isinstance(ertek, (bytes, bytearray)):
+            tiszta[kulcs] = ertek.decode("utf-8", "replace")
+        elif ertek is None or isinstance(ertek, (str, int, float, bool)):
+            tiszta[kulcs] = ertek
+        else:
+            tiszta[kulcs] = str(ertek)
+    return tiszta
+
+
+def mentes_sorok():
+    """AZ EGÉSZ ADATBÁZIS, sorról sorra kiadagolva.
 
     MIÉRT KELL: a Railway csomagjában nincs automatikus mentés. Ha az
-    adatbázis elszáll, kétszáz gyerek egész éves haladása vész el, és nincs
-    mit visszaállítani. Ez a legolcsóbb biztosíték: egy letölthető fájl.
+    adatbázis elszáll, a gyerekek egész éves haladása vész el, és nincs mit
+    visszaállítani. Ez a legolcsóbb biztosíték: egy letölthető fájl.
 
-    NEM ez váltja ki a rendes mentést — ha a Railway ad backupot, azt is
-    kapcsold be. Ez a MÁSODIK példány, ami akkor is megvan, ha a
-    szolgáltatónál történik a baj.
+    MIÉRT NEM EGYBEN: az adatbázis már most 122 MB. Ha az egészet egyszerre
+    húznánk a memóriába és egyetlen szöveggé fűznénk, a kérés vagy
+    időtúllépésbe futna, vagy megenné a munkás teljes memóriáját. Így
+    táblánként, soronként megy ki, és a letöltés azonnal elindul.
 
-    A tartalma VALÓDI GYEREKADAT. Aki letölti, felelős érte: ne küldd el
-    senkinek, ne tedd nyilvános mappába.
+    Ad egy ("TABLA", név) jelzést minden tábla elején, utána ("SOR", adat)
+    párokat. A hívó ebből rak össze JSON-t.
     """
-    ki: dict = {"keszult": datetime.now(timezone.utc).isoformat(), "tablak": {}}
     db = _session()
     try:
         for tabla in Base.metadata.sorted_tables:
-            sorok = []
-            for sor in db.execute(select(tabla)).mappings():
-                # A dátum és a Decimal nem megy JSON-ba magától.
-                tiszta = {}
-                for kulcs, ertek in dict(sor).items():
-                    if hasattr(ertek, "isoformat"):
-                        tiszta[kulcs] = ertek.isoformat()
-                    elif isinstance(ertek, (bytes, bytearray)):
-                        tiszta[kulcs] = ertek.decode("utf-8", "replace")
-                    elif ertek is None or isinstance(ertek, (str, int, float, bool)):
-                        tiszta[kulcs] = ertek
-                    else:
-                        tiszta[kulcs] = str(ertek)
-                sorok.append(tiszta)
-            ki["tablak"][tabla.name] = sorok
-        ki["osszesen"] = sum(len(v) for v in ki["tablak"].values())
-        return ki
+            yield ("TABLA", tabla.name)
+            eredmeny = db.execute(
+                select(tabla).execution_options(yield_per=500)).mappings()
+            for sor in eredmeny:
+                yield ("SOR", _json_sor(sor))
     finally:
         db.close()
 

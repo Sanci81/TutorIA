@@ -11475,16 +11475,30 @@ def admin_mentes():
     tiltas = _admin_kapu()
     if tiltas is not None:
         return tiltas
-    try:
-        adat = database.teljes_mentes()
-    except Exception:                                      # pragma: no cover
-        app.logger.exception("A mentés nem készült el")
-        flash("A mentés nem sikerült – a naplóban van a részlet.", "error")
-        return redirect(url_for("admin_attekintes"))
 
-    szoveg = json.dumps(adat, ensure_ascii=False, indent=1)
+    def folyam():
+        """A JSON darabonként megy ki. Így a letöltés azonnal elindul, és
+        soha nincs az egész adatbázis egyszerre a memóriában."""
+        yield ('{"keszult": '
+               + json.dumps(datetime.now(timezone.utc).isoformat())
+               + ', "tablak": {')
+        elso_tabla, elso_sor = True, True
+        try:
+            for fajta, adat in database.mentes_sorok():
+                if fajta == "TABLA":
+                    yield ("" if elso_tabla else "],") + json.dumps(adat) + ":["
+                    elso_tabla, elso_sor = False, True
+                else:
+                    yield ("" if elso_sor else ",") + json.dumps(
+                        adat, ensure_ascii=False)
+                    elso_sor = False
+        except Exception:                                  # pragma: no cover
+            # A fájl így csonka marad, de a naplóból kiderül, hol állt meg.
+            app.logger.exception("A mentés közben hiba történt")
+        yield ("" if elso_tabla else "]") + "}}"
+
     nev = "tutoria_mentes_" + datetime.now().strftime("%Y%m%d_%H%M") + ".json"
-    valasz = Response(szoveg, mimetype="application/json; charset=utf-8")
+    valasz = Response(folyam(), mimetype="application/json; charset=utf-8")
     valasz.headers["Content-Disposition"] = f'attachment; filename="{nev}"'
     return valasz
 
