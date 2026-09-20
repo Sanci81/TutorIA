@@ -11295,7 +11295,12 @@ def admin_attekintes():
     napok = max(1, min(365, int(request.args.get("napok", 30) or 30)))
     csaladok = database.admin_csaladok(napok=napok)
     most = datetime.now(timezone.utc)
-    ar = _dij("HAVI_AR", 7.99)
+    # A VISZONYÍTÁSI ÁR: a legkisebb fizetős csomag havi díja. Eddig 7,99 volt
+    # beégetve — egy rég elvetett árból maradt itt —, és emiatt a táblázat már
+    # 8 eurós gyerekköltségnél pirosat mutatott, pedig a szülő 14,90-et fizet.
+    # Mostantól magától követi a csomagok.py-t, nem kell két helyen átírni.
+    ar = _dij("HAVI_AR", float(
+        (csomagok.CSOMAGOK.get("alap") or {}).get("ar_honap") or 14.90))
 
     def _targynev(nyers: str) -> str:
         """A tanulási sorokban a tanterv FÁJLNEVE áll ("Matematika_1_4.json").
@@ -11414,8 +11419,12 @@ def _nullszaldo_csalad() -> int:
     perc árát környezeti változóból olvassuk, hogy ne kelljen kódot írni,
     ha változik a Railway számlája vagy a járulék.
     """
-    fix = _dij("HAVI_FIX_EUR", 404.0)          # járulék + Railway + könyvelő + domain
-    cent_perc = _dij("PERC_CENT_HANG", 0.6)    # egy hangos tanulási perc, centben
+    # A SAJÁT SZÁMAID a kalkulátorodból: 300 járulék + 40 Railway + 50 könyvelő
+    # + 20 domain/levél = 410, és a hangos perc 0,84 cent (a korábbi 404 és 0,6
+    # régebbi becslés volt). Mindkettő környezeti változóval felülírható, ha az
+    # /admin oldal MÉRT fogyasztása mást mutat majd a teszt után.
+    fix = _dij("HAVI_FIX_EUR", 410.0)          # járulék + Railway + könyvelő + domain
+    cent_perc = _dij("PERC_CENT_HANG", 0.84)   # egy hangos tanulási perc, centben
     jutalek = _dij("FIZETESI_JUTALEK", 3.0)    # százalék
     # ÁFA. A csomaglapon szereplő ár BRUTTÓ: a szülő ennyit fizet, de ebből
     # az áfa nem a miénk, hanem az államé. Enélkül a nullszaldó szebbnek
