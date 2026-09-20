@@ -814,6 +814,18 @@ TRANSLATIONS = {
         "es": "He leído y acepto las condiciones de uso y la política de "
               "privacidad.",
     },
+    "og_cim": {
+        "hu": "TutorIA – tanulótárs a gyereknek, magyar és spanyol tanterv szerint",
+        "es": "TutorIA – un compañero de estudio con currículo español y húngaro",
+    },
+    "og_leiras": {
+        "hu": "A gyerek leckéről leckére halad: a rendszer elmagyarázza, kérdez "
+              "tőle, és a végén ellenőrzi, mit értett meg. 1–8. osztály, hangosan "
+              "vagy írásban. 120 perc ingyen kipróbálható, bankkártya nélkül.",
+        "es": "El niño avanza lección a lección: el sistema se lo explica, le "
+              "pregunta y al final comprueba qué ha entendido. De 1.º a 8.º, "
+              "hablando o escribiendo. 120 minutos de prueba gratis, sin tarjeta.",
+    },
     "register_tanterv_cimke": {
         "hu": "Melyik tanterv szerint tanuljon?",
         "es": "¿Según qué currículo quiere estudiar?",
