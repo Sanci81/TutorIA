@@ -646,6 +646,45 @@ def set_parent_csomag(parent_id: int, csomag: str | None,
         db.close()
 
 
+def teljes_mentes() -> dict:
+    """AZ EGÉSZ ADATBÁZIS egyetlen szótárban, visszaállítható formában.
+
+    MIÉRT KELL: a Railway csomagjában nincs automatikus mentés. Ha az
+    adatbázis elszáll, kétszáz gyerek egész éves haladása vész el, és nincs
+    mit visszaállítani. Ez a legolcsóbb biztosíték: egy letölthető fájl.
+
+    NEM ez váltja ki a rendes mentést — ha a Railway ad backupot, azt is
+    kapcsold be. Ez a MÁSODIK példány, ami akkor is megvan, ha a
+    szolgáltatónál történik a baj.
+
+    A tartalma VALÓDI GYEREKADAT. Aki letölti, felelős érte: ne küldd el
+    senkinek, ne tedd nyilvános mappába.
+    """
+    ki: dict = {"keszult": datetime.now(timezone.utc).isoformat(), "tablak": {}}
+    db = _session()
+    try:
+        for tabla in Base.metadata.sorted_tables:
+            sorok = []
+            for sor in db.execute(select(tabla)).mappings():
+                # A dátum és a Decimal nem megy JSON-ba magától.
+                tiszta = {}
+                for kulcs, ertek in dict(sor).items():
+                    if hasattr(ertek, "isoformat"):
+                        tiszta[kulcs] = ertek.isoformat()
+                    elif isinstance(ertek, (bytes, bytearray)):
+                        tiszta[kulcs] = ertek.decode("utf-8", "replace")
+                    elif ertek is None or isinstance(ertek, (str, int, float, bool)):
+                        tiszta[kulcs] = ertek
+                    else:
+                        tiszta[kulcs] = str(ertek)
+                sorok.append(tiszta)
+            ki["tablak"][tabla.name] = sorok
+        ki["osszesen"] = sum(len(v) for v in ki["tablak"].values())
+        return ki
+    finally:
+        db.close()
+
+
 def ertesitendo_erdeklodok() -> list[dict]:
     """Kik VÁRJÁK az indulás-levelet, és még nem kapták meg.
 

@@ -139,6 +139,21 @@
   </div>
   {% endif %}
 
+  {# ADATBÁZIS-MENTÉS. A Railway csomagjában nincs automatikus mentés; ez a
+     másodpéldány. Heti egyszer érdemes lehúzni, és NEM megosztott mappába
+     tenni — valódi gyerekadat van benne. #}
+  <div class="csalad">
+    <div style="font-weight:600;margin-bottom:6px">Adatbázis-mentés</div>
+    <div style="color:#6b7280;font-size:.88rem;margin-bottom:10px">
+      A teljes adatbázis egy fájlban. Heti egyszer húzd le, és tartsd
+      biztonságos helyen — valódi gyerekadat van benne.
+    </div>
+    <a href="{{ url_for('admin_mentes') }}"
+       style="display:inline-block;background:#1e7a4d;color:#fff;
+              border-radius:10px;padding:10px 16px;font:600 14px system-ui;
+              text-decoration:none">Mentés letöltése</a>
+  </div>
+
   {% if napi %}
   <div class="csalad">
     <div style="font-weight:600;margin-bottom:10px">Naponta</div>

@@ -11460,6 +11460,35 @@ def admin_meres_torles():
                             napok=request.form.get("napok") or 30))
 
 
+@app.route("/admin/mentes")
+@login_required
+def admin_mentes():
+    """AZ ADATBÁZIS LETÖLTÉSE egy fájlba.
+
+    A Railway csomagjában nincs automatikus mentés. Ez a másodpéldány: egy
+    kattintás, és a teljes adatbázis lejön egy JSON fájlba a gépedre. Ha a
+    szolgáltatónál baj van, ebből vissza lehet állítani.
+
+    VALÓDI GYEREKADAT van benne. A letöltött fájlért te felelsz: ne küldd
+    el senkinek, és ne tedd megosztott mappába.
+    """
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
+    try:
+        adat = database.teljes_mentes()
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("A mentés nem készült el")
+        flash("A mentés nem sikerült – a naplóban van a részlet.", "error")
+        return redirect(url_for("admin_attekintes"))
+
+    szoveg = json.dumps(adat, ensure_ascii=False, indent=1)
+    nev = "tutoria_mentes_" + datetime.now().strftime("%Y%m%d_%H%M") + ".json"
+    valasz = Response(szoveg, mimetype="application/json; charset=utf-8")
+    valasz.headers["Content-Disposition"] = f'attachment; filename="{nev}"'
+    return valasz
+
+
 @app.route("/admin/indulas-level", methods=["POST"])
 @login_required
 def admin_indulas_level():
