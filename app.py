@@ -15,6 +15,7 @@ import logging
 import os
 import random
 import re
+import threading
 import time
 import traceback
 import unicodedata
@@ -34,6 +35,7 @@ from flask import (
     redirect,
     render_template,
     request,
+    send_from_directory,
     session,
     url_for,
 )
@@ -11387,7 +11389,21 @@ def admin_attekintes():
         # Hányan VÁRJÁK az indulás-levelet, és még nem kapták meg.
         ertesitendo=len(database.ertesitendo_erdeklodok()),
         fizetes_el=FIZETES_ELERHETO,
+        mentesek=_mentes_lista(),
+        mentes_orakent=MENTES_ORAKENT,
     )
+
+
+def _mentes_lista() -> list[dict]:
+    """A meglévő automatikus mentések, névvel és mérettel."""
+    ki = []
+    for nev in _mentes_fajlok():
+        try:
+            meret = os.path.getsize(os.path.join(MENTES_DIR, nev))
+        except OSError:                                    # pragma: no cover
+            meret = 0
+        ki.append({"nev": nev, "meret": f"{meret / 1048576:.1f} MB"})
+    return ki
 
 
 def _erdeklodok_honnannal() -> list[dict]:
@@ -11458,6 +11474,163 @@ def admin_meres_torles():
           "success")
     return redirect(url_for("admin_attekintes",
                             napok=request.form.get("napok") or 30))
+
+
+# ══ AUTOMATIKUS MENTÉS ══════════════════════════════════════════════════
+# A Railway csomagjában csak a Pro szinten van automatikus mentés. Addig ez
+# csinálja meg helyette: a program magától kiírja az adatbázist egy fájlba,
+# és a régieket takarítja. A kézi letöltés gomb ettől függetlenül megmarad.
+#
+# HOVA ÍRJA: a MENTES_DIR környezeti változóban megadott mappába. Ennek egy
+# Railway Volume-ra kell mutatnia, különben a következő telepítéskor elvész
+# — a Railway minden telepítéskor új, üres gépet ad. Ha a változó nincs
+# beállítva, az automatikus mentés KI VAN KAPCSOLVA, és minden marad a
+# régiben.
+#
+# AMI ELLEN VÉD: elrontott migráció, véletlen törlés, adatbázis-hiba. Ami
+# ellen NEM: ha magát a Railway-fiókot veszítenéd el — ezért kell havonta
+# egyszer kézzel is lehúzni egy példányt a saját gépedre.
+MENTES_DIR = (os.environ.get("MENTES_DIR") or "").strip()
+MENTES_ORAKENT = max(1, int(os.environ.get("MENTES_ORAKENT", "24") or 24))
+MENTES_DARAB = max(1, int(os.environ.get("MENTES_DARAB", "7") or 7))
+_MENTES_NEV = re.compile(r"^mentes_\d{8}_\d{4}\.json$")
+
+
+def _mentes_fajlok() -> list[str]:
+    """A meglévő automatikus mentések, a legfrissebb elöl."""
+    if not MENTES_DIR or not os.path.isdir(MENTES_DIR):
+        return []
+    try:
+        nevek = [n for n in os.listdir(MENTES_DIR) if _MENTES_NEV.match(n)]
+        return sorted(nevek, reverse=True)
+    except OSError:                                        # pragma: no cover
+        return []
+
+
+def _mentes_kiir() -> str | None:
+    """Egy mentés kiírása. A nevét adja vissza, vagy None-t, ha nem ment."""
+    os.makedirs(MENTES_DIR, exist_ok=True)
+    nev = "mentes_" + datetime.now().strftime("%Y%m%d_%H%M") + ".json"
+    ideiglenes = os.path.join(MENTES_DIR, nev + ".resz")
+    try:
+        with open(ideiglenes, "w", encoding="utf-8") as f:
+            f.write('{"keszult": '
+                    + json.dumps(datetime.now(timezone.utc).isoformat())
+                    + ', "tablak": {')
+            elso_tabla, elso_sor = True, True
+            for fajta, adat in database.mentes_sorok():
+                if fajta == "TABLA":
+                    f.write(("" if elso_tabla else "],")
+                            + json.dumps(adat) + ":[")
+                    elso_tabla, elso_sor = False, True
+                else:
+                    f.write(("" if elso_sor else ",")
+                            + json.dumps(adat, ensure_ascii=False))
+                    elso_sor = False
+            f.write(("" if elso_tabla else "]") + "}}")
+        # ÁTNEVEZÉS A VÉGÉN: amíg íródik, .resz a neve. Így egy félbeszakadt
+        # mentés sosem néz ki késznek — abból visszaállítani katasztrófa.
+        os.replace(ideiglenes, os.path.join(MENTES_DIR, nev))
+        return nev
+    except Exception:                                      # pragma: no cover
+        app.logger.exception("Az automatikus mentés nem sikerült")
+        try:
+            os.remove(ideiglenes)
+        except OSError:
+            pass
+        return None
+
+
+def _mentes_takarit() -> None:
+    """A legfrissebb MENTES_DARAB példányt tartjuk meg."""
+    for nev in _mentes_fajlok()[MENTES_DARAB:]:
+        try:
+            os.remove(os.path.join(MENTES_DIR, nev))
+        except OSError:                                    # pragma: no cover
+            pass
+
+
+def _mentes_ha_esedekes() -> None:
+    """Kell-e most mentés, és ha igen, EGYETLEN munkás csinálja meg.
+
+    Négy gunicorn-munkás fut egymás mellett, és mind a négyben ott ez a
+    szál. Zár nélkül egyszerre négyen kezdenének el kiírni egy 122 MB-os
+    fájlt ugyanabba a mappába. A zár egy fájl, amit csak az tud létrehozni,
+    aki elsőként ér oda.
+    """
+    if not MENTES_DIR:
+        return
+    legutobbi = _mentes_fajlok()
+    if legutobbi:
+        ut = os.path.join(MENTES_DIR, legutobbi[0])
+        try:
+            kor = time.time() - os.path.getmtime(ut)
+            if kor < MENTES_ORAKENT * 3600:
+                return
+        except OSError:                                    # pragma: no cover
+            pass
+
+    os.makedirs(MENTES_DIR, exist_ok=True)
+    zar = os.path.join(MENTES_DIR, ".mentes.zar")
+    try:
+        # Ha egy korábbi futás elszállt, a zár ott maradna örökre. Két óra
+        # után elavultnak tekintjük és elvesszük.
+        if os.path.exists(zar) and time.time() - os.path.getmtime(zar) > 7200:
+            os.remove(zar)
+    except OSError:                                        # pragma: no cover
+        pass
+    try:
+        fd = os.open(zar, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        os.close(fd)
+    except FileExistsError:
+        return                                             # más munkás csinálja
+    except OSError:                                        # pragma: no cover
+        return
+    try:
+        nev = _mentes_kiir()
+        if nev:
+            app.logger.warning("Automatikus mentés kész: %s", nev)
+            _mentes_takarit()
+    finally:
+        try:
+            os.remove(zar)
+        except OSError:                                    # pragma: no cover
+            pass
+
+
+def _mentes_szal_indit() -> None:
+    """Félóránként ránéz, esedékes-e a mentés. Ha a MENTES_DIR nincs
+    beállítva, el sem indul — akkor minden marad a régiben."""
+    if not MENTES_DIR:
+        return
+
+    def fut():
+        time.sleep(60)          # induláskor hagyjuk békén a szervert
+        while True:
+            try:
+                _mentes_ha_esedekes()
+            except Exception:                              # pragma: no cover
+                app.logger.exception("A mentés-ütemező hibára futott")
+            time.sleep(1800)
+
+    threading.Thread(target=fut, name="mentes", daemon=True).start()
+
+
+_mentes_szal_indit()
+
+
+@app.route("/admin/mentes/<nev>")
+@login_required
+def admin_mentes_letolt(nev: str):
+    """Egy KORÁBBI automatikus mentés letöltése."""
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
+    # A nevet szigorúan ellenőrizzük: enélkül egy ügyes név bármelyik fájlt
+    # letölthetővé tenné a szerverről.
+    if not _MENTES_NEV.match(nev or "") or nev not in _mentes_fajlok():
+        abort(404)
+    return send_from_directory(MENTES_DIR, nev, as_attachment=True)
 
 
 @app.route("/admin/mentes")
