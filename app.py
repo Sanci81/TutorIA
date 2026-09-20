@@ -11316,6 +11316,8 @@ def admin_attekintes():
         return nev[:1].upper() + nev[1:] if nev else "—"
 
     ossz_tts = 0
+    ossz_token = 0
+    ossz_keres = 0
     ossz_perc = ossz_hang = ossz_koltseg = 0.0
     gyerek_szam = tanult_gyerek = aktiv_csalad = 0
     csucs_koltseg, csucs_nev = 0.0, ""
@@ -11351,6 +11353,8 @@ def admin_attekintes():
             ossz_hang += gy["perc_hang"]
             ossz_koltseg += _gyerek_koltseg(gy)
             ossz_tts += gy["tts_karakter"]
+            ossz_token += (gy["be_token"] or 0) + (gy["ki_token"] or 0)
+            ossz_keres += gy["keres"] or 0
             if gy["perc_ossz"] > 0:
                 tanult_gyerek += 1
             if gy["havi_koltseg"] > csucs_koltseg:
@@ -11375,6 +11379,23 @@ def admin_attekintes():
     fizetendo = round(max(0.0, ossz_koltseg - min(ossz_tts, _ingyen) * _tts_ar), 2)
 
     csaladok = _csalad_szuro(csaladok, szuro)
+
+    # ── HÁNY GYEREK TANULHAT EGYSZERRE ──────────────────────────────────
+    # Nem a szerver a szűk keresztmetszet, hanem az OpenAI percenkénti
+    # TOKEN-kerete. Ezt eddig becsültem; innentől a MÉRT fogyasztásból jön,
+    # tehát magától pontosodik, ahogy gyűlik az adat.
+    #
+    # A számítás: egy gyerek nagyjából 45 másodpercenként küld egy üzenetet
+    # (olvas, gondolkodik, gépel), az percenként 1,33 kérés. A percenkénti
+    # token-keretet elosztjuk azzal, amennyit egy kérés fogyaszt, és
+    # megnézzük, hány gyerek fér bele.
+    token_per_keres = int(ossz_token / ossz_keres) if ossz_keres else 0
+    tpm_keret = _dij("OPENAI_TPM", 200_000.0)      # Tier 1 a gpt-5.4-mini-n
+    keres_percenkent = _dij("KERES_PERCENKENT", 1.33)
+    if token_per_keres > 0 and keres_percenkent > 0:
+        egyszerre = int(tpm_keret / token_per_keres / keres_percenkent)
+    else:
+        egyszerre = 0
 
     # A statisztikában a tanterv FÁJLNEVE áll ("matematika_5-8.json") —
     # olvashatatlan. Ugyanazzal fordítjuk emberi névre, mint a táblázatot.
@@ -11402,6 +11423,9 @@ def admin_attekintes():
         mentesek=_mentes_lista(),
         mentes_orakent=MENTES_ORAKENT,
         stat=_stat,
+        token_per_keres=token_per_keres,
+        egyszerre=egyszerre,
+        tpm_keret=int(tpm_keret),
         szuro=szuro,
         szurt_db=len(csaladok),
         hetnap_nevek=("H", "K", "Sze", "Cs", "P", "Szo", "V"),
@@ -11640,9 +11664,88 @@ def _mentes_ha_esedekes() -> None:
             pass
 
 
+# ══ „ELFOGYOTT A TANULÁSI IDŐ" LEVÉL ════════════════════════════════════
+# A gyerek látja, hogy elfogyott — a SZÜLŐ viszont nem, mert ő nem ül ott.
+# Előfordulhatna, hogy a gyerek hétfőn elhasználja a keretet, és a szülő
+# pénteken veszi észre, hogy négy napja nem tanult senki. Ez a levél szól
+# neki aznap.
+#
+# EGYSZER MEGY KI: akinek szóltunk, az kap egy dátumot. Havi csomagnál a
+# következő hónapban újra szólhatunk, az ingyenes próbánál soha többé —
+# az egyszer jár.
+def _keret_level(cimzett: str, nyelv: str, ingyenes: bool) -> bool:
+    if nyelv == "es":
+        targy = "TutorIA – se ha agotado el tiempo de estudio"
+        szoveg = (
+            "¡Hola!\n\n"
+            "El tiempo de estudio de esta cuenta se ha agotado, así que por "
+            "ahora no se pueden empezar lecciones nuevas.\n\n"
+            "Lo que sigue disponible: el progreso, el álbum, las cartas y las "
+            "monedas que ya ganó tu hijo o hija. Eso no se pierde.\n\n"
+            + ("La prueba gratuita es de una sola vez. Si queréis seguir, "
+               "aquí están los planes:\n"
+               if ingyenes else
+               "El tiempo se renueva en la fecha de renovación. Si hace falta "
+               "más, aquí están los planes:\n")
+            + f"{_oldal_url('/csomagok')}\n\nTutorIA"
+        )
+    else:
+        targy = "TutorIA – elfogyott a tanulási idő"
+        szoveg = (
+            "Szia!\n\n"
+            "Ezen a fiókon elfogyott a tanulási idő, ezért új leckét egyelőre "
+            "nem tud kezdeni a gyereked.\n\n"
+            "Ami megmarad: a haladása, az albuma, a kártyái és az érméi. "
+            "Azokat nem veszíti el.\n\n"
+            + ("Az ingyenes próba egyszer jár. Ha folytatnátok, itt vannak a "
+               "csomagok:\n"
+               if ingyenes else
+               "A keret a fordulónapon újraindul. Ha addig is kellene több, "
+               "itt vannak a csomagok:\n")
+            + f"{_oldal_url('/csomagok')}\n\nTutorIA"
+        )
+    return _level_kuld(cimzett, targy, szoveg)
+
+
+def _keret_ertesito_kor() -> None:
+    """Végignézi a szülőket, és akinek elfogyott a kerete, annak szól."""
+    if not _mail_is_configured():
+        return
+    ma = date.today()
+    for sz in database.szulok_keret_allapota():
+        kulcs = (sz.get("csomag") or "").strip()
+        # Az üzemeltetői címeknek soha nem szólunk — ők a teszt csomagon
+        # vannak, és amúgy is látják az admin oldalt.
+        if (sz.get("email") or "").strip().lower() in _admin_cimek():
+            continue
+        lejar = sz.get("csomag_lejar")
+        if lejar and lejar < ma:
+            kulcs = csomagok.LEJART
+        kulcs = kulcs or csomagok.FREE
+        keret = csomagok.havi_perc(kulcs)
+        if keret <= 0:
+            continue                       # lejárt csomag: külön levél való rá
+        egyszeri = csomagok.egyszeri(kulcs)
+        elhasznalt = sz["perc_ossz"] if egyszeri else sz["perc_ho"]
+        if elhasznalt < keret:
+            continue
+        mikor = sz.get("keret_ertesitve")
+        if mikor:
+            if egyszeri:
+                continue                   # az ingyenes próba egyszer jár
+            if mikor.year == ma.year and mikor.month == ma.month:
+                continue                   # ebben a hónapban már szóltunk
+        if _keret_level(sz["email"], sz.get("nyelv") or "hu", egyszeri):
+            database.keret_ertesitve_jelol(sz["id"])
+            app.logger.warning("Keret-elfogyott levél kiment: %s", sz["email"])
+
+
 def _mentes_szal_indit() -> None:
-    """Félóránként ránéz, esedékes-e a mentés. Ha a MENTES_DIR nincs
-    beállítva, el sem indul — akkor minden marad a régiben."""
+    """Félóránként ránéz, mi esedékes: mentés és keret-értesítés.
+
+    A ZÁR MIATT csak EGY munkás dolgozik ténylegesen — négy gunicorn-munkás
+    fut, és zár nélkül négyszer menne ki ugyanaz a levél.
+    """
     if not MENTES_DIR:
         return
 
@@ -11653,9 +11756,36 @@ def _mentes_szal_indit() -> None:
                 _mentes_ha_esedekes()
             except Exception:                              # pragma: no cover
                 app.logger.exception("A mentés-ütemező hibára futott")
+            try:
+                if _munka_zar("keret", 3600):
+                    with app.app_context():
+                        _keret_ertesito_kor()
+            except Exception:                              # pragma: no cover
+                app.logger.exception("A keret-értesítő hibára futott")
             time.sleep(1800)
 
-    threading.Thread(target=fut, name="mentes", daemon=True).start()
+    threading.Thread(target=fut, name="hatter", daemon=True).start()
+
+
+def _munka_zar(nev: str, masodperc: int) -> bool:
+    """Igaz, ha EZ a munkás viheti a feladatot, és régebben futott le,
+    mint `masodperc`. A zár egy fájl a Volume-on — ugyanaz az elv, mint a
+    mentésnél, csak itt az IDŐ is benne van a fájl korában."""
+    if not MENTES_DIR:
+        return False
+    try:
+        os.makedirs(MENTES_DIR, exist_ok=True)
+        ut = os.path.join(MENTES_DIR, f".{nev}.futott")
+        if os.path.exists(ut) and time.time() - os.path.getmtime(ut) < masodperc:
+            return False
+        # Atomi: aki elsőként tudja létrehozni/frissíteni, az viszi.
+        ideiglenes = ut + f".{os.getpid()}"
+        with open(ideiglenes, "w") as f:
+            f.write(str(time.time()))
+        os.replace(ideiglenes, ut)
+        return True
+    except OSError:                                        # pragma: no cover
+        return False
 
 
 _mentes_szal_indit()

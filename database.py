@@ -155,6 +155,9 @@ class Parent(Base):
     erdeklodes_datum: Mapped[date | None] = mapped_column(Date, nullable=True)
     # Milyen nyelven kattintott – ezen a nyelven kapja az indulás-levelet.
     erdeklodes_nyelv: Mapped[str | None] = mapped_column(String(2), nullable=True)
+    # Mikor szóltunk utoljára, hogy elfogyott a tanulási kerete. Enélkül
+    # minden órában újraküldenénk ugyanazt a levelet.
+    keret_ertesitve: Mapped[date | None] = mapped_column(Date, nullable=True)
     # Mikor ment ki neki az indulás-levél. Amíg üres, még nem kapott.
     # Ez akadályozza meg, hogy bárki kétszer kapja meg ugyanazt.
     erdeklodes_ertesitve: Mapped[date | None] = mapped_column(Date, nullable=True)
@@ -604,6 +607,7 @@ def ensure_parents_csomag_columns() -> None:
                           # Milyen nyelven kattintott – ezen a nyelven kapja
                           # majd az indulás-levelet is.
                           ("erdeklodes_nyelv", "VARCHAR(2)"),
+                          ("keret_ertesitve", "DATE"),
                           # Mikor ment ki neki az indulás-levél. Amíg üres,
                           # még nem kapott – így egy újratelepítés sem tudja
                           # kétszer kiküldeni ugyanannak.
@@ -690,6 +694,73 @@ def mentes_sorok():
                 select(tabla).execution_options(yield_per=500)).mappings()
             for sor in eredmeny:
                 yield ("SOR", _json_sor(sor))
+    finally:
+        db.close()
+
+
+def szulok_keret_allapota() -> list[dict]:
+    """Minden szülő: melyik csomag, mennyit tanultak, szóltunk-e már.
+
+    Ebből dönti el az app, kinek fogyott el a kerete. A csomagok szabályai
+    (mennyi jár, egyszeri-e) az app oldalán vannak — ide csak a NYERS
+    adatot adjuk, hogy a két hely ne mondjon mást.
+    """
+    db = _session()
+    try:
+        ma = date.today()
+        ho_eleje = ma.replace(day=1)
+        perc_ossz: dict[int, float] = {}
+        perc_ho: dict[int, float] = {}
+        gyerek_szulo = {c.id: c.parent_id for c in db.scalars(select(Child)).all()}
+        tantervek: dict[int, set] = {}
+        for c in db.scalars(select(Child)).all():
+            tantervek.setdefault(c.parent_id, set()).add(
+                (getattr(c, "curriculum", None) or c.country or "HU").upper())
+        for t in db.scalars(select(ChildLearningTime)).all():
+            pid = gyerek_szulo.get(t.child_id)
+            if pid is None:
+                continue
+            perc = float(t.minutes or 0.0)
+            perc_ossz[pid] = perc_ossz.get(pid, 0.0) + perc
+            if t.date and t.date >= ho_eleje:
+                perc_ho[pid] = perc_ho.get(pid, 0.0) + perc
+
+        ki = []
+        for p in db.scalars(select(Parent)).all():
+            tant = tantervek.get(p.id) or {"HU"}
+            ki.append({
+                "id": p.id,
+                "email": p.email,
+                "csomag": (p.csomag or "").strip(),
+                "csomag_lejar": p.csomag_lejar,
+                "keret_ertesitve": p.keret_ertesitve,
+                "perc_ossz": round(perc_ossz.get(p.id, 0.0), 1),
+                "perc_ho": round(perc_ho.get(p.id, 0.0), 1),
+                # Ha a családnak CSAK spanyol tantervű gyereke van, spanyolul írunk.
+                "nyelv": "es" if tant == {"ES"} else "hu",
+            })
+        return ki
+    except Exception:                                      # pragma: no cover
+        logger.exception("szulok_keret_allapota(): nem sikerült")
+        return []
+    finally:
+        db.close()
+
+
+def keret_ertesitve_jelol(parent_id: int) -> bool:
+    """Szóltunk neki, hogy elfogyott a kerete — ma többet ne."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if not p:
+            return False
+        p.keret_ertesitve = date.today()
+        db.commit()
+        return True
+    except Exception:                                      # pragma: no cover
+        db.rollback()
+        logger.exception("keret_ertesitve_jelol(%s)", parent_id)
+        return False
     finally:
         db.close()
 
