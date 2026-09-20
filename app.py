@@ -238,7 +238,24 @@ def load_language():
 def inject_helpers():
     """Sablonokban elérhetővé teszi a fordítót, a nyelvi adatokat, és az aktív tantervet."""
     active_curriculum = "ES" if g.lang == "es" else "HU"
+    # ── AMIT A FACEBOOK LÁT ──────────────────────────────────────────────
+    # A Railway ELŐTT egy átjáró végzi a titkosítást, és a program ezért a
+    # kérést sima http-nek látja. Ha a Flask maga írná ki a teljes címet, a
+    # meta sorokba "http://tutoriacademia.com" kerülne — az oldal viszont
+    # https-re irányít át. A Facebook ilyenkor körbe-körbe jár (http → 301 →
+    # https → a lapon megint http), feladja, és a megosztás ÜRES lesz.
+    # Pont ez történt. Ezért nem a kérésből, hanem a saját domainünkből
+    # építjük fel: az mindig https.
+    og_kepfajl = "img/og_es.png" if g.lang == "es" else "img/og_hu.png"
+    try:
+        og_url = _oldal_url(request.path or "/")
+        og_kep = _oldal_url(url_for("static", filename=og_kepfajl))
+    except Exception:                                      # pragma: no cover
+        og_url = SAJAT_DOMAIN + "/"
+        og_kep = f"{SAJAT_DOMAIN}/static/{og_kepfajl}"
     return {
+        "og_url": og_url,
+        "og_kep": og_kep,
         "t": lambda key: i18n.t(key, g.lang),
         "lang": g.lang,
         "active_curriculum": active_curriculum,
