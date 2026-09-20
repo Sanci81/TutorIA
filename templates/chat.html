@@ -1560,6 +1560,22 @@
             || alapUtasitas(feladat && feladat.tipus);
         munkater.hidden = false;
         if (munkaSav) { munkaSav.classList.add('van-munka'); }
+        /* HA A FELADAT MÁR KINT VAN A TÁBLÁN, NINCS MIRE VÁRNI.
+           Sándor pontosan ezt látta: a tanár válasza a TÁBLÁRA ment (nem a
+           beszélgetés-oszlopba), ezért az appendBubble-ben lévő biztosíték
+           nem futott le, és a „Gondolkodom…" ottragadt a beszélgetésnél —
+           pedig a feladat már megérkezett. Itt zárjuk le ezt az utat is:
+           amint munka kerül a táblára, a jelző eltűnik, és a gyerek újra
+           tud írni. */
+        if (typing) {
+            typing.hidden = true;
+            typing.dataset.mikor = '';
+            if (typeof stopThinkingMessages === 'function') {
+                try { stopThinkingMessages(); } catch (e) {}
+            }
+        }
+        if (typeof sendBtn !== 'undefined' && sendBtn) { sendBtn.disabled = false; }
+        if (typeof input !== 'undefined' && input) { input.disabled = false; }
         if (typeof kabalaVillan === 'function') { kabalaVillan('gepies', 2500); }
         return true;
     }
