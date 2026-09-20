@@ -93,6 +93,16 @@
     <div class="csempe"><div class="cim">Fizetne</div>
       <div class="ertek">{{ erdeklodok|length }}</div>
       <div class="alatta">{{ erdeklodo_kell }} kell a nullszaldóhoz</div></div>
+    {# HÁNY GYEREK TANULHAT EGYSZERRE. Nem a szerver a korlát, hanem az
+       OpenAI percenkénti token-kerete — ez a MÉRT fogyasztásból jön, tehát
+       magától pontosodik, ahogy gyűlik az adat. #}
+    <div class="csempe"><div class="cim">Egyszerre tanulhat</div>
+      <div class="ertek">{{ egyszerre if egyszerre else '—' }}</div>
+      <div class="alatta">
+        {% if token_per_keres %}
+        {{ token_per_keres }} token/kérés mérve · az OpenAI
+        {{ '{:,}'.format(tpm_keret)|replace(',', ' ') }} TPM keretéből
+        {% else %}még nincs elég mért adat{% endif %}</div></div>
   </div>
 
   {% if erdeklodok %}

@@ -649,6 +649,11 @@ def _sync_switch_on_child_change(child: dict) -> None:
         return
     session["last_child_id"] = child_id
     saved = child.get("curriculum")
+    # MÁSODIK AJTÓ. A gyerekhez elmentett tanterv is átállíthatná a nyelvet,
+    # megkerülve a felső kapcsoló ellenőrzését. Ha a fiók egy tantervhez
+    # tartozik, itt sem léphetünk át a másikra.
+    if saved in ("HU", "ES") and not _csomag_engedi_tantervet(saved):
+        saved = None
     if saved == "ES":
         session["lang"] = "es"
         g.lang = "es"

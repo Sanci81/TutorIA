@@ -1321,15 +1321,24 @@ def ensure_password_reset_table() -> None:
 
 
 def create_parent(email: str, password_hash: str,
-                  szuloi_pin: str | None = None) -> int | None:
+                  szuloi_pin: str | None = None,
+                  tanterv: str | None = None) -> int | None:
     """Új szülő létrehozása. Visszaadja az id-t, vagy None ha az email foglalt.
 
     A `szuloi_pin` MÁR TITKOSÍTVA érkezik – nyers számjegyet ide soha ne adj.
+
+    A `tanterv` ("HU" vagy "ES") AZT RÖGZÍTI, melyik tantervet éri el ez a
+    fiók. A két tanterv külön termék: külön előfizetés tartozik hozzájuk.
+    Azért itt dől el, a regisztrációkor, mert utólag a leckék és a haladás
+    már össze lennének keverve. Üresen hagyva mind a kettő nyitva marad —
+    a RÉGI fiókok emiatt maradnak változatlanul.
     """
     db = _session()
     try:
+        curr = (tanterv or "").strip().upper()[:2]
         parent = Parent(email=email.strip().lower(), password_hash=password_hash,
-                        szuloi_pin=szuloi_pin)
+                        szuloi_pin=szuloi_pin,
+                        csomag_tanterv=curr if curr in ("HU", "ES") else None)
         db.add(parent)
         db.commit()
         db.refresh(parent)

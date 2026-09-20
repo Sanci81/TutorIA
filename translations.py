@@ -814,6 +814,28 @@ TRANSLATIONS = {
         "es": "He leído y acepto las condiciones de uso y la política de "
               "privacidad.",
     },
+    "register_tanterv_cimke": {
+        "hu": "Melyik tanterv szerint tanuljon?",
+        "es": "¿Según qué currículo quiere estudiar?",
+    },
+    "register_tanterv_hu": {
+        "hu": "Magyar tanterv",
+        "es": "Currículo húngaro",
+    },
+    "register_tanterv_es": {
+        "hu": "Spanyol tanterv",
+        "es": "Currículo español",
+    },
+    "register_tanterv_sugo": {
+        "hu": "Egy fiók egy tantervhez tartozik. Ha a másikat is szeretnéd, "
+              "írj nekünk — külön előfizetés tartozik hozzá.",
+        "es": "Cada cuenta pertenece a un currículo. Si también quiere el otro, "
+              "escríbanos: lleva una suscripción aparte.",
+    },
+    "register_tanterv_kell": {
+        "hu": "Válaszd ki, melyik tanterv szerint tanuljon a gyereked.",
+        "es": "Elija según qué currículo va a estudiar su hijo o hija.",
+    },
     "register_accept_required": {
         "hu": "A regisztrációhoz el kell fogadnod a feltételeket.",
         "es": "Para registrarse debe aceptar las condiciones.",

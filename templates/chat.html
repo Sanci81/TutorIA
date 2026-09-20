@@ -2809,6 +2809,28 @@
        megszakítjuk a kérést, és a gyerek kap egy értelmes üzenetet. */
     var KERES_IDOKORLAT = 90000;
 
+    /* ── HÁNY KÉRÉS VAN ÉPPEN ÚTON ──────────────────────────────────────
+       A „Gondolkodom…" jelzőt eddig minden válaszútvonalnak KÜLÖN kellett
+       eltüntetnie, és amelyikről megfeledkeztünk, ott ott ragadt: a tanár
+       válasza már kint volt a táblán, a gyerek meg még mindig azt látta,
+       hogy gondolkodik. Egyesével keresgélni az útvonalakat reménytelen.
+
+       Innentől egy SZABÁLY dönt, nem az útvonal: ha nincs úton egyetlen
+       kérés sem, akkor nincs mire várni, tehát a jelző sem látszhat. Itt
+       számoljuk a folyamatban lévő kéréseket. */
+    var varakozoKeresek = 0;
+
+    function jelzoEllenoriz() {
+        if (!typing || typing.hidden) { return; }
+        if (varakozoKeresek > 0) { return; }       // tényleg várunk valamire
+        typing.hidden = true;
+        typing.dataset.mikor = '';
+        try { stopThinkingMessages(); } catch (e) {}
+        try { kabalaVar(false); } catch (e) {}
+        if (sendBtn) sendBtn.disabled = false;
+        if (input) input.disabled = false;
+    }
+
     function fetchIdovel(url, opts, ms) {
         var beallitas = {};
         for (var k in (opts || {})) { if (opts.hasOwnProperty(k)) beallitas[k] = opts[k]; }
@@ -2816,9 +2838,18 @@
         if (vezerlo) beallitas.signal = vezerlo.signal;
         var ora = setTimeout(function () { if (vezerlo) { vezerlo.abort(); } },
                              ms || KERES_IDOKORLAT);
+        varakozoKeresek++;
+        function lezar() {
+            clearTimeout(ora);
+            varakozoKeresek = Math.max(0, varakozoKeresek - 1);
+            /* Kis késleltetés: előbb fusson le a hívó saját .then-je, mert
+               az indíthat új kérést (pl. a tanár válasza után egy másodikat).
+               Csak utána nézzük meg, maradt-e ott a jelző. */
+            setTimeout(jelzoEllenoriz, 60);
+        }
         return fetch(url, beallitas).then(
-            function (r) { clearTimeout(ora); return r; },
-            function (e) { clearTimeout(ora); throw e; }
+            function (r) { lezar(); return r; },
+            function (e) { lezar(); throw e; }
         );
     }
 
@@ -2840,6 +2871,11 @@
             appendBubble('assistant', L.errTimeout);
         }
     }, 5000);
+
+    /* A MÁSODIK BIZTOSÍTÉK, másodpercenként: ha egyetlen kérés sincs úton,
+       a jelző nem maradhat kint. Ez az, ami az ismeretlen útvonalakat is
+       lefedi — nem kell tudnunk, hol felejtettük ott. */
+    setInterval(jelzoEllenoriz, 1000);
 
     /* ── KIEJTÉS-GYAKORLÁS ────────────────────────────────────────────
        A tanár <MONDD> jelölővel kér egy "mondd utánam" gyakorlatot. A gyerek
