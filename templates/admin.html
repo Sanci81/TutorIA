@@ -151,7 +151,32 @@
     <a href="{{ url_for('admin_mentes') }}"
        style="display:inline-block;background:#1e7a4d;color:#fff;
               border-radius:10px;padding:10px 16px;font:600 14px system-ui;
-              text-decoration:none">Mentés letöltése</a>
+              text-decoration:none">Mentés letöltése most</a>
+
+    {# AZ AUTOMATIKUS MENTÉSEK. Csak akkor van itt bármi, ha a MENTES_DIR
+       be van állítva egy Railway Volume-ra. #}
+    <div style="margin-top:14px">
+      {% if mentesek %}
+      <div style="font-weight:600;font-size:.9rem;margin-bottom:6px">
+        Automatikus mentések ({{ mentes_orakent }} óránként,
+        {{ mentesek|length }} példány)
+      </div>
+      <ul style="list-style:none;margin:0;padding:0;font-size:.9rem">
+        {% for m in mentesek %}
+        <li style="padding:4px 0;border-top:1px solid #eef2f6">
+          <a href="{{ url_for('admin_mentes_letolt', nev=m.nev) }}"
+             style="color:#1e7a4d">{{ m.nev }}</a>
+          <span style="color:#6b7280"> · {{ m.meret }}</span>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <div style="color:#a15c00;font-size:.88rem">
+        Automatikus mentés nincs bekapcsolva. Ehhez a Railway-en kell egy
+        Volume, és a <code>MENTES_DIR</code> változó, ami rá mutat.
+      </div>
+      {% endif %}
+    </div>
   </div>
 
   {% if napi %}
@@ -171,12 +196,112 @@
   </div>
   {% endif %}
 
+  {# ══ MIKOR ÉS MIT TANULNAK ══════════════════════════════════════════
+     Ez az, amiből dolgozni lehet: mikor van a csúcs (szerverterhelés),
+     melyik tantárgyat használják tényleg, és mennyi a hangos mód — mert
+     az a költség java. #}
+  {% if stat and stat.ossz_perc %}
+  <div class="csalad">
+    <div style="font-weight:600;margin-bottom:4px">Mikor tanulnak</div>
+    <div class="kicsi" style="margin-bottom:10px">Napszak szerint, helyi
+      idő. Összesen {{ stat.ossz_perc|round(0)|int }} perc
+      {{ napok }} nap alatt.</div>
+    <div style="display:flex;align-items:flex-end;gap:2px;height:90px">
+      {% for o in stat.orak %}
+      <div style="flex:1;display:flex;flex-direction:column;
+                  justify-content:flex-end;height:100%"
+           title="{{ o.ora }}:00 – {{ o.perc|round(0)|int }} perc">
+        <div style="background:{{ '#1e7a4d' if o.perc else '#e8eeea' }};
+                    border-radius:3px 3px 0 0;
+                    height:{{ (100 * o.perc / stat.ora_csucs)|round(0)|int if stat.ora_csucs else 2 }}%;
+                    min-height:2px"></div>
+      </div>
+      {% endfor %}
+    </div>
+    <div style="display:flex;gap:2px;margin-top:4px" class="kicsi">
+      {% for o in stat.orak %}
+      <div style="flex:1;text-align:center">{{ o.ora if o.ora % 3 == 0 else '' }}</div>
+      {% endfor %}
+    </div>
+
+    <div style="display:flex;gap:26px;flex-wrap:wrap;margin-top:18px">
+      <div style="min-width:180px">
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:6px">A hét napjai</div>
+        <div style="display:flex;align-items:flex-end;gap:5px;height:56px">
+          {% for h in stat.hetnapok %}
+          <div style="flex:1;display:flex;flex-direction:column;
+                      justify-content:flex-end;height:100%"
+               title="{{ h.perc|round(0)|int }} perc">
+            <div style="background:#3fa88f;border-radius:3px 3px 0 0;
+                        height:{{ (100 * h.perc / stat.hetnap_csucs)|round(0)|int if stat.hetnap_csucs else 2 }}%;
+                        min-height:2px"></div>
+          </div>
+          {% endfor %}
+        </div>
+        <div style="display:flex;gap:5px;margin-top:3px" class="kicsi">
+          {% for n in hetnap_nevek %}<div style="flex:1;text-align:center">{{ n }}</div>{% endfor %}
+        </div>
+      </div>
+
+      <div style="min-width:220px">
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:6px">Hangos / szöveges</div>
+        {% set _oss = stat.hangos_perc + stat.szoveges_perc + stat.ismeretlen_perc %}
+        <div class="sav" style="height:14px">
+          <i class="h" style="width:{{ (100 * stat.hangos_perc / _oss)|round(0)|int if _oss else 0 }}%"></i>
+        </div>
+        <div class="kicsi" style="margin-top:6px">
+          Hangos: <b>{{ stat.hangos_perc|round(0)|int }} perc</b>
+          ({{ (100 * stat.hangos_perc / _oss)|round(0)|int if _oss else 0 }}%) ·
+          szöveges: <b>{{ stat.szoveges_perc|round(0)|int }} perc</b><br>
+          A hangos perc a drága — ebből lesz a számla.
+        </div>
+      </div>
+
+      <div style="flex:1;min-width:240px">
+        <div style="font-weight:600;font-size:.9rem;margin-bottom:6px">Mit tanulnak</div>
+        {% for t in stat.tantargyak %}
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <div class="kicsi" style="width:130px;overflow:hidden;
+               text-overflow:ellipsis;white-space:nowrap">{{ t.nev }}</div>
+          <div style="flex:1;height:8px;background:#eef2f6;border-radius:5px">
+            <i style="display:block;height:100%;border-radius:5px;background:#5bc0a8;
+                      width:{{ (100 * t.perc / stat.tantargy_csucs)|round(0)|int if stat.tantargy_csucs else 0 }}%"></i>
+          </div>
+          <div class="kicsi" style="width:52px;text-align:right">{{ t.perc|round(0)|int }} p</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ══ SZŰRŐ ══════════════════════════════════════════════════════════
+     200 családnál a teljes felsorolás használhatatlan. Egy kattintás, és
+     csak az látszik, ami érdekel. #}
+  <div class="csalad" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <span class="kicsi" style="margin-right:4px">Kik látszanak:</span>
+    {% for kulcs, cimke in (('mind','Mind'), ('ma','Ma tanult'),
+                            ('het','Héten tanult'), ('uj','Új regisztráló'),
+                            ('nema','Még el sem kezdte')) %}
+    <a href="{{ url_for('admin_attekintes', napok=napok, szuro=kulcs) }}"
+       style="padding:6px 12px;border-radius:16px;font:600 13px system-ui;
+              text-decoration:none;
+              {% if szuro == kulcs %}background:#1e7a4d;color:#fff
+              {% else %}background:#eef2f6;color:#3a4a5a{% endif %}">{{ cimke }}</a>
+    {% endfor %}
+    <span class="kicsi" style="margin-left:auto">{{ szurt_db }} család</span>
+  </div>
+
   {% if not csaladok %}
-    <div class="ures">Még nincs egyetlen regisztrált család sem.</div>
+    <div class="ures">
+      {% if szuro == 'mind' %}Még nincs egyetlen regisztrált család sem.
+      {% else %}Ebben a szűrőben nincs család.{% endif %}
+    </div>
   {% endif %}
 
   {% for cs in csaladok %}
-  <div class="csalad">
+  <details class="csalad">
+    <summary style="cursor:pointer;list-style:none">
     <div class="cfej">
       <div>
         <div class="email">{{ cs.email }}</div>
@@ -194,6 +319,7 @@
         <span class="meta">&nbsp;{{ cs.havi_koltseg }} €</span>
       </div>
     </div>
+    </summary>
 
     {% if cs.gyerekek %}
     <table>
@@ -243,7 +369,7 @@
       </div>
     </div>
     {% endif %}
-  </div>
+  </details>
   {% endfor %}
 
   <div class="lab">

@@ -11295,6 +11295,7 @@ def admin_attekintes():
         return tiltas
 
     napok = max(1, min(365, int(request.args.get("napok", 30) or 30)))
+    szuro = (request.args.get("szuro") or "mind").strip()
     csaladok = database.admin_csaladok(napok=napok)
     most = datetime.now(timezone.utc)
     # A VISZONYÍTÁSI ÁR: a legkisebb fizetős csomag havi díja. Eddig 7,99 volt
@@ -11373,6 +11374,15 @@ def admin_attekintes():
     _tts_ar = _dij("TTS_1M", 16.0) / 1_000_000 * _dij("EUR_USD", 0.92)
     fizetendo = round(max(0.0, ossz_koltseg - min(ossz_tts, _ingyen) * _tts_ar), 2)
 
+    csaladok = _csalad_szuro(csaladok, szuro)
+
+    # A statisztikában a tanterv FÁJLNEVE áll ("matematika_5-8.json") —
+    # olvashatatlan. Ugyanazzal fordítjuk emberi névre, mint a táblázatot.
+    _stat = database.admin_statisztika(
+        napok=napok, ora_eltolas=int(os.environ.get("ORA_ELTOLAS", "2") or 2))
+    for _t in (_stat.get("tantargyak") or []):
+        _t["nev"] = _targynev(_t["nev"])
+
     return render_template(
         "admin.html",
         csaladok=csaladok, napok=napok, ar=ar,
@@ -11391,7 +11401,39 @@ def admin_attekintes():
         fizetes_el=FIZETES_ELERHETO,
         mentesek=_mentes_lista(),
         mentes_orakent=MENTES_ORAKENT,
+        stat=_stat,
+        szuro=szuro,
+        szurt_db=len(csaladok),
+        hetnap_nevek=("H", "K", "Sze", "Cs", "P", "Szo", "V"),
     )
+
+
+def _csalad_szuro(csaladok: list[dict], szuro: str) -> list[dict]:
+    """A családlista szűrése. 200 családnál a teljes felsorolás
+    használhatatlan — ezért lehet egy kattintással arra nézni, ami érdekel:
+    ki tanult ma, ki új, és ki az, aki regisztrált, de hozzá se kezdett."""
+    if szuro not in ("ma", "het", "uj", "nema"):
+        return csaladok
+    ma = date.today()
+    het = ma - timedelta(days=7)
+    ki = []
+    for cs in csaladok:
+        utolso = None
+        for gy in cs.get("gyerekek") or []:
+            u = gy.get("utolso_tanulas")
+            if u and (utolso is None or u > utolso):
+                utolso = u
+        reg = cs.get("regisztralt")
+        reg_nap = reg.date() if hasattr(reg, "date") else reg
+        if szuro == "ma" and utolso == ma:
+            ki.append(cs)
+        elif szuro == "het" and utolso and utolso >= het:
+            ki.append(cs)
+        elif szuro == "uj" and reg_nap and reg_nap >= het:
+            ki.append(cs)
+        elif szuro == "nema" and utolso is None:
+            ki.append(cs)
+    return ki
 
 
 def _mentes_lista() -> list[dict]:

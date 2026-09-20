@@ -2841,6 +2841,87 @@ def get_usage(child_id: int | None = None, napok: int = 30) -> list[dict[str, An
 # ---------------------------------------------------------------------------
 
 
+def admin_statisztika(napok: int = 30, ora_eltolas: int = 2) -> dict[str, Any]:
+    """ÖSSZKÉP a tanulásról: mikor, mit és hogyan tanulnak.
+
+    MIÉRT KELL: a családok listája önmagában csak felsorolás. Ebből derül
+    ki, ami döntést befolyásol — hogy délután négykor van-e a csúcs, hogy
+    melyik tantárgyat használják tényleg, és hogy a hangos módot kérik-e
+    egyáltalán (mert az a költség java).
+
+    Az ÓRA a session kezdetéből jön, ami UTC-ben tárolódik. Az `ora_eltolas`
+    igazítja spanyol/magyar helyi időre — különben a délutáni csúcs két
+    órával korábbra csúszna.
+    """
+    db = _session()
+    try:
+        ma = datetime.now(timezone.utc).date()
+        hatar = ma - timedelta(days=max(1, napok))
+        het_hatar = ma - timedelta(days=7)
+
+        orak = {o: 0.0 for o in range(24)}
+        hetnapok = {n: 0.0 for n in range(7)}          # 0 = hétfő
+        tantargyak: dict[str, float] = {}
+        modok = {"hangos": 0.0, "szoveges": 0.0, "ismeretlen": 0.0}
+        aktiv_ma: set[int] = set()
+        aktiv_het: set[int] = set()
+        aktiv_ossz: set[int] = set()
+        ossz_perc = 0.0
+
+        for t in db.scalars(select(ChildLearningTime)
+                            .where(ChildLearningTime.date >= hatar)).all():
+            perc = float(t.minutes or 0.0)
+            if perc <= 0:
+                continue
+            ossz_perc += perc
+            if t.session_start is not None:
+                orak[(t.session_start.hour + ora_eltolas) % 24] += perc
+            if t.date is not None:
+                hetnapok[t.date.weekday()] += perc
+                if t.date == ma:
+                    aktiv_ma.add(t.child_id)
+                if t.date >= het_hatar:
+                    aktiv_het.add(t.child_id)
+            aktiv_ossz.add(t.child_id)
+            tantargyak[t.subject or "—"] = tantargyak.get(t.subject or "—", 0.0) + perc
+            kulcs = {"voice": "hangos", "text": "szoveges"}.get(
+                (t.mode or "").strip(), "ismeretlen")
+            modok[kulcs] += perc
+
+        hatar_ido = datetime.combine(hatar, datetime.min.time(), timezone.utc)
+        uj_szulo = db.scalar(select(func.count(Parent.id))
+                             .where(Parent.created_at >= hatar_ido)) or 0
+        het_ido = datetime.combine(het_hatar, datetime.min.time(), timezone.utc)
+        uj_szulo_het = db.scalar(select(func.count(Parent.id))
+                                 .where(Parent.created_at >= het_ido)) or 0
+
+        return {
+            "ossz_perc": round(ossz_perc, 1),
+            "orak": [{"ora": o, "perc": round(orak[o], 1)} for o in range(24)],
+            "ora_csucs": round(max(orak.values()) if orak else 0.0, 1),
+            "hetnapok": [{"nap": n, "perc": round(hetnapok[n], 1)}
+                         for n in range(7)],
+            "hetnap_csucs": round(max(hetnapok.values()) if hetnapok else 0.0, 1),
+            "tantargyak": sorted(
+                ({"nev": k, "perc": round(v, 1)} for k, v in tantargyak.items()),
+                key=lambda x: -x["perc"])[:12],
+            "tantargy_csucs": round(max(tantargyak.values()) if tantargyak else 0.0, 1),
+            "hangos_perc": round(modok["hangos"], 1),
+            "szoveges_perc": round(modok["szoveges"], 1),
+            "ismeretlen_perc": round(modok["ismeretlen"], 1),
+            "aktiv_ma": len(aktiv_ma),
+            "aktiv_het": len(aktiv_het),
+            "aktiv_ossz": len(aktiv_ossz),
+            "uj_szulo": int(uj_szulo),
+            "uj_szulo_het": int(uj_szulo_het),
+        }
+    except Exception:                                      # pragma: no cover
+        logger.exception("admin_statisztika(): nem sikerült")
+        return {}
+    finally:
+        db.close()
+
+
 def admin_csaladok(napok: int = 30) -> list[dict[str, Any]]:
     """Minden család, gyerekeivel, tanulási idejével és fogyasztásával."""
     db = _session()
