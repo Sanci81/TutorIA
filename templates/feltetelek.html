@@ -48,12 +48,43 @@
   <strong>No tienen valor económico</strong>, no se pueden canjear por dinero y
   desaparecen al borrar la cuenta.</p>
 
-  <h2>7. Cancelación</h2>
+  <h2>7. Suscripción y pago</h2>
+  <p>Mientras dure la fase de prueba el uso es gratuito y no pedimos datos de
+  pago. Cuando la suscripción esté disponible, se aplicará lo siguiente.</p>
+  <p>Los planes, los minutos incluidos y los precios figuran en la página
+  <a href="{{ url_for('csomagok_oldal') }}">Planes</a>. Los precios son finales, con el
+  IVA incluido. El tiempo de estudio pertenece a la familia: todos los perfiles
+  consumen de la misma bolsa, que se repone en la fecha de renovación. La prueba
+  gratuita es de una sola vez y no se repone.</p>
+  <p>La suscripción se <strong>renueva automáticamente</strong> —cada mes o cada
+  año, según el plan elegido— hasta que usted la cancele. Puede cancelarla en
+  cualquier momento desde <a href="{{ url_for('fiok') }}">Mi cuenta</a>: seguirá
+  usando el servicio hasta el final del periodo ya pagado y no le volveremos a
+  cobrar. Enviamos la factura por correo electrónico.</p>
+  <p>Si cambiamos los precios, se lo comunicaremos por correo electrónico al
+  menos <strong>30 días antes</strong>. El precio nuevo solo se aplica a partir
+  de la siguiente renovación, y hasta esa fecha puede cancelar.</p>
+
+  <h2>8. Derecho de desistimiento</h2>
+  <p>Al tratarse de un contrato a distancia, dispone de <strong>14 días
+  naturales</strong> desde la contratación para desistir, sin necesidad de
+  justificarlo. Basta con escribirnos a
+  <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a>.</p>
+  <p>Si nos pide empezar a usar el servicio de inmediato —es decir, antes de que
+  terminen esos 14 días— y desiste después, le devolvemos lo pagado descontando
+  la parte proporcional a los días que haya tenido el servicio disponible. Si el
+  servicio ya se hubiera prestado por completo con su consentimiento previo y
+  expreso, el derecho de desistimiento se extingue.</p>
+  <p>La prueba gratuita no genera pago alguno, por lo que no hay nada que
+  reembolsar.</p>
+
+  <h2>9. Cancelación y borrado de la cuenta</h2>
   <p>Puede borrar su cuenta en cualquier momento desde
   <a href="{{ url_for('fiok') }}">Mi cuenta</a>, sin dar explicaciones. El borrado
-  es inmediato y definitivo.</p>
+  es inmediato y definitivo. Borrar la cuenta no sustituye a la cancelación de la
+  suscripción ni da derecho por sí solo a la devolución del periodo ya pagado.</p>
 
-  <h2>8. Disponibilidad y mantenimiento</h2>
+  <h2>10. Disponibilidad y mantenimiento</h2>
   <p>Nos esforzamos por que el servicio funcione de forma continua, pero no
   podemos prometer un funcionamiento ininterrumpido ni libre de errores. El
   sistema puede detenerse temporalmente por mantenimiento, por mejoras o por
@@ -68,13 +99,18 @@
   falta de conformidad es grave, puede además resolver el contrato. Esto no
   afecta a los derechos que la ley le reconoce.</p>
 
-  <h2>9. Responsabilidad</h2>
+  <h2>11. Responsabilidad</h2>
   <p>Ofrecemos el servicio en su estado actual y con los límites descritos más
   arriba. No excluimos ni limitamos ninguna responsabilidad que la ley nos
   atribuya, y nada de lo aquí escrito limita los derechos que la ley reconoce a
   los consumidores.</p>
 
-  <h2>10. Ley aplicable</h2>
+  <h2>12. Reclamaciones</h2>
+  <p>Si algo no ha ido bien, escríbanos a
+  <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a>. Contestamos a toda
+  reclamación en el plazo máximo de un mes.</p>
+
+  <h2>13. Ley aplicable</h2>
   <p>Se aplica el Derecho español y el de la Unión Europea. Si usted reside en
   otro Estado miembro, conserva la protección de las normas imperativas de su
   país de residencia.</p>
@@ -113,11 +149,41 @@
   <strong>Nincs pénzben kifejezhető értékük</strong>, pénzre nem válthatók, és a
   fiók törlésével megszűnnek.</p>
 
-  <h2>7. Felmondás</h2>
-  <p>A fiókodat bármikor törölheted a <a href="{{ url_for('fiok') }}">Fiókom</a>
-  oldalon, indoklás nélkül. A törlés azonnali és végleges.</p>
+  <h2>7. Előfizetés és fizetés</h2>
+  <p>A tesztidőszak alatt a használat ingyenes, fizetési adatot nem kérünk.
+  Amikor az előfizetés elindul, az alábbiak érvényesek.</p>
+  <p>A csomagokat, a bennük foglalt perceket és az árakat a
+  <a href="{{ url_for('csomagok_oldal') }}">Csomagok</a> oldal tartalmazza. Az árak
+  véglegesek, az áfát tartalmazzák. A tanulási idő a CSALÁDÉ: minden profil
+  ugyanabból a keretből fogyaszt, és a keret a fordulónapon áll vissza. Az
+  ingyenes próba egyszer jár, az nem töltődik újra.</p>
+  <p>Az előfizetés <strong>automatikusan megújul</strong> — a választott
+  csomagtól függően havonta vagy évente —, amíg fel nem mondod. Felmondani
+  bármikor tudsz a <a href="{{ url_for('fiok') }}">Fiókom</a> oldalon: a már
+  kifizetett időszak végéig használhatod a szolgáltatást, és utána nem terhelünk
+  többet. A számlát e-mailben küldjük.</p>
+  <p>Ha árat változtatunk, arról <strong>legalább 30 nappal előbb</strong>
+  e-mailben szólunk. Az új ár csak a következő megújulástól él, addig pedig
+  felmondhatsz.</p>
 
-  <h2>8. Elérhetőség és karbantartás</h2>
+  <h2>8. Elállási jog</h2>
+  <p>Mivel távollévők között kötött szerződésről van szó, a szerződéskötéstől
+  számított <strong>14 naptári napon belül</strong> indoklás nélkül elállhatsz.
+  Elég írnod a <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a> címre.</p>
+  <p>Ha azt kéred, hogy a szolgáltatás azonnal — tehát még a 14 nap letelte
+  előtt — induljon, és utóbb elállsz, a befizetett díjat visszaadjuk, levonva
+  belőle azt az arányos részt, ameddig a szolgáltatás a rendelkezésedre állt. Ha
+  a szolgáltatást az előzetes és kifejezett kérésedre már teljes egészében
+  teljesítettük, az elállási jog megszűnik.</p>
+  <p>Az ingyenes próbánál nincs fizetés, így visszatéríteni sincs mit.</p>
+
+  <h2>9. Felmondás és a fiók törlése</h2>
+  <p>A fiókodat bármikor törölheted a <a href="{{ url_for('fiok') }}">Fiókom</a>
+  oldalon, indoklás nélkül. A törlés azonnali és végleges. A fiók törlése nem
+  helyettesíti az előfizetés felmondását, és önmagában nem jogosít a már
+  kifizetett időszak visszatérítésére.</p>
+
+  <h2>10. Elérhetőség és karbantartás</h2>
   <p>Arra törekszünk, hogy a szolgáltatás folyamatosan működjön, de
   megszakításmentes, hibamentes működést nem tudunk ígérni. A rendszer
   átmenetileg leállhat karbantartás, fejlesztés, vagy rajtunk kívül álló ok
@@ -130,13 +196,18 @@
   a hiba súlyos, a szerződést fel is mondhatod. Ez nem érinti a jogszabály
   alapján egyébként megillető jogaidat.</p>
 
-  <h2>9. Felelősség</h2>
+  <h2>11. Felelősség</h2>
   <p>A szolgáltatást adott állapotában, a fent leírt korlátokkal nyújtjuk. Nem
   zárjuk ki és nem korlátozzuk azt a felelősséget, amelyet jogszabály ránk
   telepít, és az itt írtak nem korlátozzák a fogyasztókat a jogszabály alapján
   megillető jogaikban.</p>
 
-  <h2>10. Alkalmazandó jog</h2>
+  <h2>12. Panasz</h2>
+  <p>Ha valami nem stimmel, írj a
+  <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a> címre. Minden panaszra
+  legkésőbb egy hónapon belül válaszolunk.</p>
+
+  <h2>13. Alkalmazandó jog</h2>
   <p>A spanyol és az uniós jog alkalmazandó. Ha más tagállamban laksz, a
   lakóhelyed szerinti ország kötelező fogyasztóvédelmi szabályainak védelme
   továbbra is megillet.</p>
