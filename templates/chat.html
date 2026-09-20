@@ -1282,6 +1282,12 @@
 
     // Hangszóró gomb a meglévő (betöltött) assistant üzenetekhez
     document.querySelectorAll('.chat-bubble-assistant .chat-bubble-inner').forEach(function(inner) {
+        /* A GONDOLKODÁS-JELZŐ NEM ÜZENET. Ugyanolyan „assistant buborék",
+           mint a tanár válasza, ezért ez a sor eddig NEKI IS adott hangszóró
+           gombot — és ettől a várakozás úgy nézett ki a képernyőn, mintha a
+           tanár küldött volna egy üzenetet „Gondolkodom…" szöveggel, ami
+           ottragadt. Sándor pontosan ezt látta. A jelzőt kihagyjuk. */
+        if (inner.closest('#typing-indicator') || inner.closest('.chat-typing')) { return; }
         var text = inner.textContent;
         if (!text.trim()) return;
         var replayBtn = document.createElement('button');
