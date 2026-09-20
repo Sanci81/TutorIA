@@ -246,7 +246,11 @@ def inject_helpers():
     # https → a lapon megint http), feladja, és a megosztás ÜRES lesz.
     # Pont ez történt. Ezért nem a kérésből, hanem a saját domainünkből
     # építjük fel: az mindig https.
-    og_kepfajl = "img/og_es.png" if g.lang == "es" else "img/og_hu.png"
+    # A FÁJLNÉV VÉGÉN SZÁM VAN. A Facebook a képet a CÍME alapján jegyzi meg,
+    # és a régit hónapokig őrzi — hiába írjuk felül a fájlt, a telefonon a
+    # régi vágott kép marad. Ha új képet csinálunk, a szám nő eggyel, és
+    # onnantól a Facebooknak le KELL töltenie, mert még sosem látta.
+    og_kepfajl = "img/og_es2.png" if g.lang == "es" else "img/og_hu2.png"
     try:
         og_url = _oldal_url(request.path or "/")
         og_kep = _oldal_url(url_for("static", filename=og_kepfajl))
