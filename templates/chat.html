@@ -812,7 +812,16 @@
                évi óraszámból. Ezért nincs többé 4200 perc, és nem kell
                elhallgatni semmit. #}
             {% if lecke_hossz_perc %}
-            <p class="lecke-hatra">
+            {# A SZÁM EDDIG BEÉGETT AZ OLDALBA. Az app.py kiszámolta betöltéskor,
+               és soha nem frissült – a gyerek tanult 10 percet, de a "még 30 perc"
+               ugyanaz maradt. A percek 30 másodpercenként mentődnek, csak a
+               kijelzés nem követte. Most a data- mezőkből a böngésző maga
+               újraszámolja minden szívverésnél (lásd: hatraFrissit). #}
+            <p class="lecke-hatra" id="lecke-hatra"
+               data-hossz="{{ lecke_hossz_perc }}"
+               data-tanult="{{ lecke_tanult_perc }}"
+               data-sablon="{{ t('lecke_hatra') }}"
+               data-kesz="{{ t('lecke_ideje_letelt') }}">
                 {% if lecke_hatra_perc > 0 %}
                     ⏳ {{ t('lecke_hatra').replace('{perc}', lecke_hatra_perc|string) }}
                 {% else %}
@@ -1257,6 +1266,27 @@
         // Update display
         if (learningMinutesEl) {
             learningMinutesEl.textContent = Math.round(elapsed);
+        }
+        hatraFrissit();
+    }
+
+    /* MENNYI VAN MÉG HÁTRA A LECKÉBŐL.
+       A szerver csak a betöltéskori állapotot ismeri, ezért innentől a
+       böngésző számolja: a korábban tanult percekhez hozzáadjuk a most
+       eltelt aktív időt. Ha valami hiányzik, a függvény csendben kilép,
+       és minden marad a régiben. */
+    function hatraFrissit() {
+        var el = document.getElementById('lecke-hatra');
+        if (!el) { return; }
+        var hossz = parseFloat(el.getAttribute('data-hossz') || '0');
+        if (!hossz) { return; }
+        var tanult = parseFloat(el.getAttribute('data-tanult') || '0');
+        var hatra = Math.max(0, Math.ceil(hossz - (tanult + eltelIdo())));
+        if (hatra > 0) {
+            var sablon = el.getAttribute('data-sablon') || '';
+            el.textContent = '⏳ ' + sablon.replace('{perc}', String(hatra));
+        } else {
+            el.textContent = '✅ ' + (el.getAttribute('data-kesz') || '');
         }
     }
 
