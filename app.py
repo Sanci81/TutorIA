@@ -2955,6 +2955,26 @@ def _feladat_parse(text: str, *, grade: int | None = None,
     if not isinstance(adat, dict):
         return None
 
+    # ── A JELÖLŐK NEM KERÜLHETNEK A GYEREK ELÉ ──────────────────────────
+    # ÉLES HIBA volt: a nyelvórán a tanár a válaszlehetőségekbe is beírta az
+    # idegen szó jelölőjét, és a gyerek EZT látta a gombon:
+    #     <FL:es>La tienda está cerca.</FL>
+    # A beszélgetés szövegéből ezeket kitakarítjuk, a feladat JSON-jából
+    # viszont eddig nem — pedig ugyanúgy a képernyőre kerül. Itt most
+    # minden szövegből kivesszük, bármilyen mélyen is van.
+    def _jelolo_nelkul(ertek):
+        if isinstance(ertek, str):
+            tiszta = _CHAT_MARKER_FL.sub(lambda mm: mm.group(2), ertek)
+            tiszta = _FL_MARADEK.sub("", tiszta)
+            return tiszta.strip()
+        if isinstance(ertek, list):
+            return [_jelolo_nelkul(e) for e in ertek]
+        if isinstance(ertek, dict):
+            return {k: _jelolo_nelkul(v) for k, v in ertek.items()}
+        return ertek
+
+    adat = _jelolo_nelkul(adat)
+
     tipus = str(adat.get("tipus") or "").strip().lower()
 
     if tipus == "szamolo":
