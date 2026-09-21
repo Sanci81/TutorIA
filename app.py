@@ -198,9 +198,17 @@ _TTS_BLANK_SENTINEL = "\u0001"
 _TTS_BLANK_RE = re.compile(r"[_\u2013\u2014-]{2,}|\.{3,}")
 
 
+# IDÉZŐJELEK. A felolvasó a „ és a ” jelet HANGKÉNT ejtette ki – ezért
+# hangzott a „Jó reggelt!” úgy, hogy „akh Jó reggelt”. A gyerek füle ezt
+# hibának hallja. Az aposztróf (’) NEM kerül bele: a don't, l'école és
+# társaik miatt kell maradnia.
+_TTS_QUOTE_RE = re.compile('["„“”‟«»‹›]')
+
+
 def _strip_emoji_for_tts(text: str) -> str:
-    """Emoji eltávolítása + a kitöltendő vonalak szünetté alakítása."""
+    """Emoji és idézőjelek eltávolítása + a kitöltendő vonalak szünetté alakítása."""
     out = _TTS_EMOJI_RE.sub("", text)
+    out = _TTS_QUOTE_RE.sub("", out)
     return _TTS_BLANK_RE.sub(_TTS_BLANK_SENTINEL, out)
 
 
