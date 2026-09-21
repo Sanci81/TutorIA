@@ -167,6 +167,17 @@
   .uj-felulet .beszelo .chat-messages{max-height:none;min-height:0;flex:1;
       padding:2px;background:transparent !important}
   .uj-felulet .beszelo .chat-bubble{max-width:100%}
+
+  /* ══ EZ VOLT A „GONDOLKODOM" IGAZI HIBÁJA ═══════════════════════════
+     A programban a jelző elrejtése így történik:  typing.hidden = true;
+     A `hidden` attribútum viszont csak addig hat, amíg valamelyik
+     stíluslap rá nem ír egy `display` értéket — és a buborékok stílusa
+     pont ezt teszi (display:flex). A böngésző ilyenkor a stíluslapnak
+     hisz, nem a `hidden`-nek, ezért a jelző AKKOR IS a képernyőn maradt,
+     amikor a program már rég elrejtette. Hiába volt jó a JavaScript.
+     Ez a sor mondja ki, hogy az elrejtett jelző TÉNYLEG tűnjön el. */
+  #typing-indicator[hidden]{display:none !important}
+  .chat-bubble[hidden]{display:none !important}
   .uj-felulet .beszelo .chat-bubble-inner{font-size:15px;line-height:1.5;
       padding:.7rem .85rem;border-radius:14px}
   .uj-felulet .beszelo .chat-figure{display:none}
