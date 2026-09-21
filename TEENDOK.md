@@ -21,9 +21,17 @@ Utolsó frissítés: 2026-09-21
 - [ ] **Választós feladatnál hiányzik a mondat.** A tanár azt írja
       „nézd meg a mondatot", de csak a két szó jelenik meg, mondat nélkül.
       Így a kérdés megválaszolhatatlan. (Nyelvóra, 2026-09-21)
-- [ ] **„Még 30 perc ebből a leckéből" nem csökken.** 10 perc tanulás után
-      is 30 percet ír. Vagy csökkenjen, vagy ne perc legyen a felirata.
-      MÉG NINCS MEGNÉZVE, hogy hol számolódik.
+- [ ] **„Még 30 perc ebből a leckéből" nem csökken.** MEGNÉZVE 2026-09-21,
+      az ok tisztázva:
+      * A szám = a lecke ajánlott hossza mínusz az ebben a témakörben
+        eltöltött percek (`app.py`: `_hatra_perc`, a `child_chat` nézetben).
+      * A tanult perceket 30 másodpercenként MENTI a program
+        (`/api/learning/heartbeat`), tehát az adatbázisban HELYESEN nő.
+      * A felirat viszont a Jinja sablonba van beégetve OLDALBETÖLTÉSKOR
+        (`chat.html` 816-817. sor), és utána SOHA nem frissül. Ezért áll
+        egy helyben, akármennyit tanul a gyerek.
+      * JAVÍTÁS: a heartbeat válasza adja vissza a hátralévő percet, és a
+        `.lecke-hatra` felirat frissüljön belőle. Kb. 15 perc munka.
 - [ ] **Írásos módban túl sok szót kérdez egyszerre.** Egy kérdésben tíz
       szó is szerepelt. A HANGOS módra ez már meg van oldva, az írásosra
       nem. Ugyanott javítható.
