@@ -5902,7 +5902,7 @@ def _teszt_kapu_szoveg(
     """
     try:
         tanult = database.get_topic_learning_minutes(
-            child_id, progress_subject, topic_id
+            child_id, progress_subject, topic_id, grade_num
         )
         topic = get_topic_from_catalog(catalog, topic_id)
         req = _lecke_hossz_perc(topic, catalog, grade_num)
@@ -8240,7 +8240,7 @@ def child_chat(child_id: int):
     # Hogy indítható-e MOST (kell-e még az első óra tanulás), azt a teszt
     # indítása mondja meg — a gomb ott marad, csak kiírja, mi hiányzik.
     _teszt_tanult = database.get_topic_learning_minutes(
-        child_id, progress_subject, current_topic_id
+        child_id, progress_subject, current_topic_id, grade_num
     )
     _teszt_topic = get_topic_from_catalog(catalog, current_topic_id)
     _teszt_req = _lecke_hossz_perc(_teszt_topic, catalog, grade_num)
@@ -9536,7 +9536,7 @@ def child_chat_test_generate(child_id: int):
     ora_szam = topic.get("ora_szam", 0)
     total_req_minutes = _lecke_hossz_perc(topic, catalog, grade_num)
     topic_learning_minutes = database.get_topic_learning_minutes(
-        child_id, progress_subject, topic_id
+        child_id, progress_subject, topic_id, grade_num
     )
     existing = database.get_topic_score(
         child_id, progress_subject, grade_num, topic_id
@@ -9739,7 +9739,7 @@ def child_chat_test_submit(child_id: int):
     # ── Determine phase and pass threshold (before save) ─────────────
     total_req_minutes = _lecke_hossz_perc(topic, catalog, grade_num)
     topic_learning_minutes = database.get_topic_learning_minutes(
-        child_id, progress_subject, topic_id
+        child_id, progress_subject, topic_id, grade_num
     )
 
     # 1. fázis = korai szintfelmérő (előreugrás), 100%-os küszöb.
@@ -10409,7 +10409,12 @@ def api_learning_start():
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         return jsonify({"error": "child not found"}), 404
-    result = database.start_learning_session(child_id, subject, topic_id, mode=mode)
+    # Az ÉVFOLYAM a gyerek adatlapjáról jön, nem a böngészőből – így nem
+    # hamisítható, és osztályváltás után az új évfolyamon nulláról indul a
+    # lecke ideje, a régi percek pedig érintetlenül megmaradnak.
+    result = database.start_learning_session(
+        child_id, subject, topic_id, mode=mode, grade=_chat_grade_num(child)
+    )
     if not result:
         return jsonify({"error": "failed"}), 500
 

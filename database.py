@@ -297,6 +297,12 @@ class ChildLearningTime(Base):
     )
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
     topic_id: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    # ÉVFOLYAM. A topic_id csak sorszám ("t1", "t2"…) az adott évfolyam
+    # listájában, a témakörök NEVE pedig a hivatalos tantervben spirálisan
+    # visszatér (pl. "Válogatás, halmazok" az 1. és a 3. osztályban is).
+    # Évfolyam nélkül tehát az 1. osztály t1-e és a 3. osztály t1-e UGYANAZ
+    # a kulcs volt, és a tanult percek átfolytak egyik osztályból a másikba.
+    grade: Mapped[int | None] = mapped_column(Integer, nullable=True)
     date: Mapped[date] = mapped_column(Date, nullable=False)
     minutes: Mapped[float] = mapped_column(
         Float, nullable=False, default=0.0
@@ -587,6 +593,7 @@ def init_db() -> None:
     ensure_child_usage_table()
     ensure_parents_last_seen_column()
     ensure_learning_time_mode_column()
+    ensure_learning_time_grade_column()
     ensure_parents_ertesites_columns()
     ensure_parents_pin_column()
     ensure_children_neme_column()
@@ -1061,6 +1068,31 @@ def ensure_learning_time_mode_column() -> None:
                 "mode VARCHAR(10)"))
     except Exception as exc:
         logger.warning("ensure_learning_time_mode_column: kihagyva: %s", exc)
+
+
+def ensure_learning_time_grade_column() -> None:
+    """child_learning_time.grade – melyik ÉVFOLYAMON gyűlt a tanult idő.
+
+    Enélkül a tanult percek átfolytak az évfolyamok között: a topic_id csak
+    sorszám az adott évfolyam listájában, a témakörnevek pedig a hivatalos
+    tantervben spirálisan visszatérnek. A régi soroknak a gyerek mostani
+    évfolyamát adjuk – ez a lehető legjobb visszamenőleges becslés, és csak
+    egyszer fut le, mert utána már nincs üres érték.
+    """
+    from sqlalchemy import text
+
+    try:
+        with _get_engine().begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE child_learning_time ADD COLUMN IF NOT EXISTS "
+                "grade INTEGER"))
+            conn.execute(text(
+                "UPDATE child_learning_time AS clt SET grade = "
+                "COALESCE(c.grade_hu, c.grade_es) "
+                "FROM children AS c "
+                "WHERE clt.child_id = c.id AND clt.grade IS NULL"))
+    except Exception as exc:
+        logger.warning("ensure_learning_time_grade_column: kihagyva: %s", exc)
 
 
 def ensure_children_voice_columns() -> None:
@@ -2499,6 +2531,7 @@ def start_learning_session(
     subject: str,
     topic_id: str | None = None,
     mode: str | None = None,
+    grade: int | None = None,
 ) -> dict[str, Any] | None:
     """Rögzíti a tanulási session kezdetét. Visszaadja a session adatait."""
     db = _session()
@@ -2508,6 +2541,7 @@ def start_learning_session(
             child_id=child_id,
             subject=subject,
             topic_id=topic_id,
+            grade=grade,
             date=now.date(),
             minutes=0.0,
             session_start=now,
@@ -2721,8 +2755,15 @@ def delete_child(child_id: int, parent_id: int) -> bool:
         db.close()
 
 
-def get_topic_learning_minutes(child_id: int, subject: str, topic_id: str) -> float:
-    """Visszaadja a témakörhöz tartozó összes tanulási percet."""
+def get_topic_learning_minutes(
+    child_id: int, subject: str, topic_id: str, grade: int | None = None
+) -> float:
+    """Visszaadja a témakörhöz tartozó összes tanulási percet.
+
+    Ha megkapja az évfolyamot, CSAK azon az évfolyamon gyűlt perceket adja
+    vissza. Enélkül az 1. és a 3. osztály azonos sorszámú leckéje ugyanaz a
+    kulcs volt, és a percek átfolytak – osztályváltás után nem nullázódtak.
+    """
     db = _session()
     try:
         q = select(ChildLearningTime).where(
@@ -2730,6 +2771,8 @@ def get_topic_learning_minutes(child_id: int, subject: str, topic_id: str) -> fl
             ChildLearningTime.subject.in_(_tanulas_targy_kulcsok(subject)),
             ChildLearningTime.topic_id == topic_id,
         )
+        if grade is not None:
+            q = q.where(ChildLearningTime.grade == grade)
         rows = db.scalars(q).all()
         return round(sum(r.minutes for r in rows), 1)
     finally:
@@ -2737,7 +2780,11 @@ def get_topic_learning_minutes(child_id: int, subject: str, topic_id: str) -> fl
 
 
 def get_topic_learning_minutes_since(
-    child_id: int, subject: str, topic_id: str, since_dt: datetime
+    child_id: int,
+    subject: str,
+    topic_id: str,
+    since_dt: datetime,
+    grade: int | None = None,
 ) -> float:
     """Visszaadja a témakörben `since_dt` utáni tanulási perceket."""
     db = _session()
@@ -2748,6 +2795,8 @@ def get_topic_learning_minutes_since(
             ChildLearningTime.topic_id == topic_id,
             ChildLearningTime.session_start >= since_dt,
         )
+        if grade is not None:
+            q = q.where(ChildLearningTime.grade == grade)
         rows = db.scalars(q).all()
         return round(sum(r.minutes for r in rows), 1)
     finally:
