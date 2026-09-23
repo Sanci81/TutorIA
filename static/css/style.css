@@ -2422,8 +2422,10 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 
 /* A korválasztó: az első dolog egy kérdés, nem szöveg. */
 .bem-valaszto {
-    background: #fff;
-    border: 1px solid #dbe5df;
+    background: rgba(255, 255, 255, 0.7);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 20px;
     padding: 26px;
     box-shadow: 0 12px 34px rgba(20, 60, 40, 0.08);
@@ -2437,7 +2439,7 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     text-align: center;
     font-weight: 800;
     font-size: 19px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.45);
     color: #16241d;
     text-decoration: none;
     transition: 0.15s;
@@ -2757,7 +2759,13 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 
 .bem-hero h1 { font-size: 48px; }
 
-.bem-valaszto { border: 0; box-shadow: 0 18px 46px rgba(20, 60, 40, 0.14); }
+.bem-valaszto {
+    background: rgba(255, 255, 255, 0.7);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 18px 46px rgba(20, 60, 40, 0.14);
+}
 .bem-ev { border-width: 2px; }
 .bem-ev:nth-child(1) { border-color: rgba(239, 95, 95, 0.42); color: var(--b-korall); }
 .bem-ev:nth-child(2) { border-color: rgba(245, 166, 35, 0.45); color: #c77f10; }

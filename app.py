@@ -3786,10 +3786,12 @@ _ABRA_RULES_HU = (
     "és </svg>-vel végződjön. SEMMI szöveg előtte vagy utána, ``` sem.\n"
     "- Csak rect, circle, line, path, polygon, text elem. Script, külső kép, "
     "hivatkozás SOHA.\n"
-    '- Vonalak: stroke="#222" stroke-width="3" fill="none".\n'
-    '- A fill="none" KÖTELEZŐ minden rect, circle, ellipse, polygon és path '
-    "elemen. Ha kimarad, a böngésző feketére tölti, és tömör fekete folt lesz "
-    "a rajz helyén.\n"
+    '- Vonalak: vastag és színes, stroke-width="3". Egy alakzat egy szín, '
+    "ebből válassz: #1e7a4d, #2f8fd8, #e07a3d, #7b5ea7. Fekete és #222 vonal tilos.\n"
+    "- Zárt alakzat (rect, circle, ellipse, polygon) kitöltése VILÁGOS pasztell: "
+    "#e7f6ee, #e7f3fc, #fff4e0 vagy #f3eef8. A fill kiírása kötelező. Sötét "
+    "kitöltés tilos: a böngésző a hiányzó vagy sötét színt feketére festi, és "
+    "tömör folt lesz. A line és a nyitott path maradjon fill=\"none\".\n"
     "- Ha a fogalom absztrakt (valószínűség, véletlen, nyelvtani fogalom) és "
     "nem tudsz olyan rajzot adni, ami MÉR vagy MEGMUTAT valami valóságosat, "
     "add vissza azt, hogy NINCS. A kitalált ikon rosszabb, mint a semmi.\n"
@@ -3813,12 +3815,12 @@ _ABRA_RULES_HU = (
     "cseréld. Kézzel rajzolva a hátsó élek rendre elcsúsznak, ezért ne "
     "improvizálj:\n"
     '<svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">\n'
-    '<rect x="100" y="100" width="140" height="70" fill="none" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="100" y1="100" x2="142" y2="66" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="240" y1="100" x2="282" y2="66" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="240" y1="170" x2="282" y2="136" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="142" y1="66" x2="282" y2="66" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="282" y1="66" x2="282" y2="136" stroke="#222" stroke-width="3"/>\n'
+    '<rect x="100" y="100" width="140" height="70" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="100" y1="100" x2="142" y2="66" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="240" y1="100" x2="282" y2="66" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="240" y1="170" x2="282" y2="136" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="142" y1="66" x2="282" y2="66" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="282" y1="66" x2="282" y2="136" stroke="#1e7a4d" stroke-width="3"/>\n'
     '<text x="170" y="192" text-anchor="middle" font-size="16" fill="#222">a = 4 m</text>\n'
     '<text x="92" y="140" text-anchor="end" font-size="16" fill="#222">m = 2 m</text>\n'
     '<text x="272" y="192" text-anchor="middle" font-size="16" fill="#222">b = 3 m</text>\n'
@@ -3843,9 +3845,12 @@ _ABRA_RULES_ES = (
     "y termina por </svg>. NADA de texto antes o después, sin ```.\n"
     "- Solo rect, circle, line, path, polygon, text. Nunca script, imagen "
     "externa ni enlaces.\n"
-    '- Trazos: stroke="#222" stroke-width="3" fill="none".\n'
-    '- fill="none" es OBLIGATORIO en cada rect, circle, ellipse, polygon y '
-    "path. Si falta, el navegador lo rellena de negro y sale una mancha.\n"
+    "- Trazos gruesos y de color, stroke-width=\"3\". Un color por forma, "
+    "elige entre: #1e7a4d, #2f8fd8, #e07a3d, #7b5ea7. Prohibido el negro y #222.\n"
+    "- Las formas cerradas (rect, circle, ellipse, polygon) llevan relleno "
+    "pastel CLARO: #e7f6ee, #e7f3fc, #fff4e0 o #f3eef8. El fill es obligatorio. "
+    "Un relleno oscuro o ausente se pinta de negro y sale una mancha. La line "
+    "y el path abierto quedan fill=\"none\".\n"
     "- Si el concepto es abstracto (probabilidad, azar, gramática) y no puedes "
     "hacer un dibujo que MIDA o MUESTRE algo real, devuelve NINGUNO. Un icono "
     "inventado es peor que nada.\n"
@@ -3868,12 +3873,12 @@ _ABRA_RULES_ES = (
     "los números. Dibujadas a mano las aristas traseras siempre se "
     "desalinean, así que no improvises:\n"
     '<svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">\n'
-    '<rect x="100" y="100" width="140" height="70" fill="none" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="100" y1="100" x2="142" y2="66" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="240" y1="100" x2="282" y2="66" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="240" y1="170" x2="282" y2="136" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="142" y1="66" x2="282" y2="66" stroke="#222" stroke-width="3"/>\n'
-    '<line x1="282" y1="66" x2="282" y2="136" stroke="#222" stroke-width="3"/>\n'
+    '<rect x="100" y="100" width="140" height="70" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="100" y1="100" x2="142" y2="66" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="240" y1="100" x2="282" y2="66" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="240" y1="170" x2="282" y2="136" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="142" y1="66" x2="282" y2="66" stroke="#1e7a4d" stroke-width="3"/>\n'
+    '<line x1="282" y1="66" x2="282" y2="136" stroke="#1e7a4d" stroke-width="3"/>\n'
     '<text x="170" y="192" text-anchor="middle" font-size="16" fill="#222">a = 4 m</text>\n'
     '<text x="92" y="140" text-anchor="end" font-size="16" fill="#222">m = 2 m</text>\n'
     '<text x="272" y="192" text-anchor="middle" font-size="16" fill="#222">b = 3 m</text>\n'
@@ -6190,25 +6195,25 @@ Tema actual: {current_topic}
 Si un concepto se entiende mejor con una IMAGEN, dibuja una. Añade la imagen al final de tu respuesta así:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">...</svg></ABRA>
 Por ejemplo, si enseñas el perímetro de un rectángulo, añade al final:
-<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="none" stroke="black" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
+<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Reglas:
 - SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
 - DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas, líneas de tiempo o mapas. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
-- Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- Trazos gruesos y de color, stroke-width="3". Un color por forma: #1e7a4d, #2f8fd8, #e07a3d o #7b5ea7. Prohibido el negro y #222.
 - EN UN ORTOEDRO (caja, habitación, cubo): la altura (m) es la arista VERTICAL, la horizontal de delante es a, la oblicua de profundidad es b. Las tres aristas oblicuas apuntan TODAS hacia arriba-derecha y miden lo mismo; si una baja, la caja se rompe.
 - EL DIBUJO DEBE MOSTRAR EL EJERCICIO QUE EL NIÑO TIENE QUE RESOLVER AHORA.
   Si al final propones un ejercicio nuevo con otros números, dibuja los números
   NUEVOS, no los del ejemplo ya resuelto. El niño ve el dibujo DEBAJO de la
   pregunta: si muestra el ejemplo anterior, creerá que preguntas por ese.
-- OBLIGATORIO escribir fill="none" en CADA rect, circle, ellipse, polygon y path. Si lo olvidas, el navegador lo rellena de NEGRO y sale una mancha negra en vez del dibujo. Sin excepción.
+- En cada forma cerrada (rect, circle, ellipse, polygon) el fill es OBLIGATORIO y pastel claro: #e7f6ee, #e7f3fc, #fff4e0 o #f3eef8. Si lo omites o pones un color oscuro, el navegador lo rellena de NEGRO y sale una mancha. La line y el path abierto quedan fill="none".
 - Si el concepto es ABSTRACTO (probabilidad, azar, conceptos gramaticales, sentimientos) y no puedes hacer un dibujo que MIDA o MUESTRE algo real, NO dibujes nada. Un icono inventado (un sol, un árbol, una cara) confunde al niño más que la ausencia de dibujo.
 - Las etiquetas: font-size="16" fill="#222" text-anchor="middle", y colócalas SIEMPRE FUERA de la figura, a al menos 12 píxeles de distancia.
 - Las proporciones de las figuras deben ser realistas: un rectángulo de 6 cm × 3 cm debe ser el doble de ancho que de alto.
 - Si indicas medidas, escribe el valor junto a la letra (ej. "a = 6 cm").
 - Usa un dibujo claro y limpio: sin decoración innecesaria, sombras ni gradientes.
-- El dibujo debe ser SIMPLE y etiquetado: líneas gruesas, letras grandes (font-size 14-18), dibujo negro sobre fondo claro, con etiquetas en español.
+- El dibujo debe ser SIMPLE y etiquetado: líneas gruesas de color, letras grandes (font-size 14-18), relleno pastel claro, etiquetas en español.
 - Usa elementos SVG simples: rect, circle, line, path, polygon, text.
 - NUNCA añadas scripts, imágenes externas ni enlaces al SVG.
 - NUNCA preguntes si debe mostrarse una imagen, ni la ofrezcas ("si quieres, te muestro un dibujo"). Si el tema requiere una imagen, simplemente INCLÚYELA en tu respuesta, sin preguntar.
@@ -6461,25 +6466,25 @@ Tema actual: {current_topic}
 Si un concepto se entiende mejor con una IMAGEN, dibuja una. Añade la imagen al final de tu respuesta así:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">...</svg></ABRA>
 Por ejemplo, si enseñas el perímetro de un rectángulo, añade al final:
-<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="none" stroke="black" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
+<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Reglas:
 - SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
 - DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas, líneas de tiempo o mapas. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
-- Las líneas: stroke="#222" stroke-width="3", sin relleno (fill="none").
+- Trazos gruesos y de color, stroke-width="3". Un color por forma: #1e7a4d, #2f8fd8, #e07a3d o #7b5ea7. Prohibido el negro y #222.
 - EN UN ORTOEDRO (caja, habitación, cubo): la altura (m) es la arista VERTICAL, la horizontal de delante es a, la oblicua de profundidad es b. Las tres aristas oblicuas apuntan TODAS hacia arriba-derecha y miden lo mismo; si una baja, la caja se rompe.
 - EL DIBUJO DEBE MOSTRAR EL EJERCICIO QUE EL NIÑO TIENE QUE RESOLVER AHORA.
   Si al final propones un ejercicio nuevo con otros números, dibuja los números
   NUEVOS, no los del ejemplo ya resuelto. El niño ve el dibujo DEBAJO de la
   pregunta: si muestra el ejemplo anterior, creerá que preguntas por ese.
-- OBLIGATORIO escribir fill="none" en CADA rect, circle, ellipse, polygon y path. Si lo olvidas, el navegador lo rellena de NEGRO y sale una mancha negra en vez del dibujo. Sin excepción.
+- En cada forma cerrada (rect, circle, ellipse, polygon) el fill es OBLIGATORIO y pastel claro: #e7f6ee, #e7f3fc, #fff4e0 o #f3eef8. Si lo omites o pones un color oscuro, el navegador lo rellena de NEGRO y sale una mancha. La line y el path abierto quedan fill="none".
 - Si el concepto es ABSTRACTO (probabilidad, azar, conceptos gramaticales, sentimientos) y no puedes hacer un dibujo que MIDA o MUESTRE algo real, NO dibujes nada. Un icono inventado (un sol, un árbol, una cara) confunde al niño más que la ausencia de dibujo.
 - Las etiquetas: font-size="16" fill="#222" text-anchor="middle", y colócalas SIEMPRE FUERA de la figura, a al menos 12 píxeles de distancia.
 - Las proporciones de las figuras deben ser realistas: un rectángulo de 6 cm × 3 cm debe ser el doble de ancho que de alto.
 - Si indicas medidas, escribe el valor junto a la letra (ej. "a = 6 cm").
 - Usa un dibujo claro y limpio: sin decoración innecesaria, sombras ni gradientes.
-- El dibujo debe ser SIMPLE y etiquetado: líneas gruesas, letras grandes (font-size 14-18), dibujo negro sobre fondo claro, con etiquetas en español.
+- El dibujo debe ser SIMPLE y etiquetado: líneas gruesas de color, letras grandes (font-size 14-18), relleno pastel claro, etiquetas en español.
 - Usa elementos SVG simples: rect, circle, line, path, polygon, text.
 - NUNCA añadas scripts, imágenes externas ni enlaces al SVG.
 - NUNCA preguntes si debe mostrarse una imagen, ni la ofrezcas ("si quieres, te muestro un dibujo"). Si el tema requiere una imagen, simplemente INCLÚYELA en tu respuesta, sin preguntar.
@@ -6672,15 +6677,15 @@ FONTOS SZABÁLYOK – MINDIG tartsd be:
 Ha egy fogalom ÁBRÁVAL érthetőbb, rajzolj egyet. Az ábrát a válaszod végén add meg így:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">...</svg></ABRA>
 Például, ha a téglalap kerületét tanítod, a válaszod végére tedd:
-<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="none" stroke="black" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
+<ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Szabályok:
 - CSAK ott rajzolj, ahol tényleg segít: geometria (idom oldalakkal, jelölésekkel), számegyenes, halmazábra, fizikai ábra (erők, áramkör), kémiai szerkezet, kottavonal hangjegyekkel, idővonal történelemhez, egyszerű térképvázlat, diagram.
 - KÖTELEZŐ ábrát rajzolnod, ha geometriai alakzatról, mértékegységről, számegyenesről, halmazról, áramkörről, kémiai szerkezetről, kottáról, idővonalról vagy térképről tanítasz. Ilyenkor mindig legyen ábra, akkor is, ha szöveggel is elmondható.
 - Egyéb esetben csak akkor rajzolj, ha tényleg segít, és ne minden válaszban.
 - Az ábra rajzterülete legyen viewBox="0 0 320 220", és HAGYJ 30 pixel margót minden oldalon, hogy a feliratok ne lógjanak ki.
-- A vonalak: stroke="#222" stroke-width="3", kitöltés nélkül (fill="none").
+- A vonalak vastagok és színesek, stroke-width="3". Egy alakzat egy szín: #1e7a4d, #2f8fd8, #e07a3d vagy #7b5ea7. Fekete és #222 vonal tilos.
 - TÉGLATESTNÉL (doboz, szoba, kocka): a magasság (m) a FÜGGŐLEGES él, az elülső vízszintes él az a, a ferde mélységi él a b. A három ferde élnek MIND jobbra-fel kell mutatnia és egyforma hosszúnak lennie – ha az egyik lefelé áll, a doboz eltörik.
-- KÖTELEZŐ kiírnod a fill="none"-t MINDEN rect, circle, ellipse, polygon és path elemre. Ha kihagyod, a böngésző FEKETÉRE tölti ki, és a rajz helyén tömör fekete folt lesz. Kivétel nincs.
+- Minden zárt alakzaton (rect, circle, ellipse, polygon) a fill KÖTELEZŐ, és világos pasztell: #e7f6ee, #e7f3fc, #fff4e0 vagy #f3eef8. Ha kihagyod, vagy sötét színt írsz, a böngésző FEKETÉRE tölti, és tömör folt lesz. A line és a nyitott path maradjon fill="none".
 - Ha a fogalom ABSZTRAKT (valószínűség, véletlen, nyelvtani fogalom, érzelem), és nem tudsz olyan rajzot adni, ami MÉR vagy MEGMUTAT valami valóságosat, akkor NE rajzolj semmit. A kitalált ikon (nap, fa, arc) jobban összezavarja a gyereket, mint ha nincs ábra.
 - A feliratok: font-size="16" fill="#222" text-anchor="middle", és MINDIG az alakzaton KÍVÜL, tőle legalább 12 pixelre helyezd el őket.
 - Az alakzat arányai legyenek valósághűek: egy 6 cm × 3 cm-es téglalap kétszer olyan széles legyen, mint amilyen magas.
@@ -6690,7 +6695,7 @@ Szabályok:
   látja: ha ott a régi példa van, azt hiszi, arra kérdezel rá.
 - Ha méreteket is jelölsz, írd ki az értéket is a betűjel mellé (pl. "a = 6 cm").
 - Használj világos, letisztult rajzot: felesleges díszítés, árnyék, gradiens nélkül.
-- Az ábra legyen EGYSZERŰ és feliratozott: vastag vonalak, nagy betűk (font-size 14-18), fekete rajz világos háttéren, magyar feliratokkal.
+- Az ábra legyen EGYSZERŰ és feliratozott: vastag színes vonalak, nagy betűk (font-size 14-18), világos pasztell kitöltés, magyar feliratokkal.
 - Használj sima SVG elemeket: rect, circle, line, path, polygon, text.
 - SOHA ne tegyél az SVG-be scriptet, külső képet vagy hivatkozást.
 - SOHA ne kérdezd meg, hogy mutass-e ábrát, és soha ne ajánld fel ("ha akarod, mutatok egy ábrát"). Ha a téma ábrát kíván, egyszerűen TEDD BELE a válaszodba, kérdezés nélkül.

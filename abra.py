@@ -450,6 +450,35 @@ def _feliratok_elhuzasa(feliratok, dobozok, akadalyok, szulok) -> list:
     return dobozok
 
 
+_FEKETE_VONAL = {"#222", "#000", "#000000", "black", "#111", "#333"}
+_KOR_SZIN = ("#1e7a4d", "#2f8fd8", "#e07a3d", "#7b5ea7")
+_KOR_TOLT = ("#e7f6ee", "#e7f3fc", "#fff4e0", "#f3eef8")
+
+
+def _szinez(el, t, korok):
+    """A fekete vázlatvonalat színesre cseréli.
+
+    A körök külön színt és világos kitöltést kapnak, hogy egy halmazábra
+    ne üres fekete karika maradjon. A többi vonal egy zöld: egy doboz
+    élei ne legyenek szivárványosak. A már színes vonalat békén hagyja.
+    """
+    vonal = (el.get("stroke") or "").strip().lower()
+    if t in ("circle", "ellipse"):
+        i = korok[0]
+        korok[0] += 1
+        if (el.get("fill") or "none").strip().lower() in ("", "none"):
+            el.set("fill", _KOR_TOLT[i % 4])
+        if vonal in _FEKETE_VONAL or not vonal:
+            el.set("stroke", _KOR_SZIN[i % 4])
+            if not (el.get("stroke-width") or "").strip():
+                el.set("stroke-width", "3")
+        return
+    if vonal in _FEKETE_VONAL or not vonal:
+        el.set("stroke", "#1e7a4d")
+        if not (el.get("stroke-width") or "").strip():
+            el.set("stroke-width", "3")
+
+
 def javit(svg: str, *, max_feliratok: int = 40) -> str | None:
     """Ellenőrzi és megjavítja az AI ábráját.
 
@@ -475,6 +504,7 @@ def javit(svg: str, *, max_feliratok: int = 40) -> str | None:
             szulok[id(gy)] = el
 
     # ── 1. a fekete kocka kiiktatása ────────────────────────────────────
+    korok = [0]
     for el in gyoker.iter():
         t = _tag(el)
         if t in _ALAKZATOK:
@@ -491,15 +521,9 @@ def javit(svg: str, *, max_feliratok: int = 40) -> str | None:
                     _ter = (_d[2] - _d[0]) * (_d[3] - _d[1])
                     if _ter > 400:
                         el.set("fill", "none")
-            if not (el.get("stroke") or "").strip():
-                el.set("stroke", "#222")
-                if not (el.get("stroke-width") or "").strip():
-                    el.set("stroke-width", "3")
+            _szinez(el, t, korok)
         elif t in _VONALAK:
-            if not (el.get("stroke") or "").strip():
-                el.set("stroke", "#222")
-                if not (el.get("stroke-width") or "").strip():
-                    el.set("stroke-width", "3")
+            _szinez(el, t, korok)
         elif t == "text":
             if not (el.get("fill") or "").strip():
                 el.set("fill", "#222")
