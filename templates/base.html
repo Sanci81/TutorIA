@@ -38,6 +38,19 @@
     <meta name="twitter:title" content="{{ t('og_cim') }}">
     <meta name="twitter:description" content="{{ t('og_leiras') }}">
     <meta name="twitter:image" content="{{ og_kep }}">
+
+    {# ═══ MELYIK NYELVEN HOL VAN EZ A LAP (hreflang) ═════════════════════
+       A magyar a gyökéren van, a spanyol az /es/ alatt. Enélkül a Google
+       csak az egyik változatot találná meg, és a spanyol oldalt soha nem
+       ajánlaná spanyol keresésre.
+
+       A HÁROM SOR MINDKÉT NYELVEN UGYANAZ – ez nem hiba, hanem szabály: a
+       keresőnek minden változatnál látnia kell az összes többit, különben
+       nem fűzi őket össze. Csak a nyilvános oldalakon írjuk ki; a lista az
+       app.py-ban van (inject_helpers). #}
+    {%- for kod, cim in hreflang %}
+    <link rel="alternate" hreflang="{{ kod }}" href="{{ cim }}">
+    {%- endfor %}
 </head>
 {# A gyerek háttere CSAK a gyerek saját oldalain van. A bemutató oldalon
    nincs (ott a felső szakasz mögött van a saját mintája), különben a jelek

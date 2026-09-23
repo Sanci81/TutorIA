@@ -53,6 +53,7 @@ import level
 import kartyak
 import kiejtes
 import kinezet
+import nyelv_utvonal
 import oraterv
 import avatarok
 import csomagok
@@ -223,6 +224,30 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-insecure-key")
 # Railway HTTPS linkekhez (elfelejtett jelszó e-mail)
 app.config["PREFERRED_URL_SCHEME"] = os.environ.get("PREFERRED_URL_SCHEME", "https")
 
+# ── A NYELV A CÍMBEN ─────────────────────────────────────────────────────
+# A spanyol oldal az /es/ alatt is elérhető, hogy a keresőnek külön címe
+# legyen — enélkül a Google csak a magyar változatot találja meg, és
+# hreflanget sem lehetne kiírni. A réteg a Flask ELŐTT fut: leszedi az
+# előtagot, így minden meglévő útvonal mindkét címen működik, és egyet sem
+# kellett megduplázni. A részletek a nyelv_utvonal.py-ban vannak.
+app.wsgi_app = nyelv_utvonal.NyelvElotag(app.wsgi_app)
+
+# A CSS és a képek viszont EGY címen éljenek. A fenti réteg a lapokra
+# ráteszi az előtagot (ez a cél), de a fájloknál ez csak annyit érne el,
+# hogy aki mindkét nyelvet megnézi, kétszer töltse le ugyanazt a CSS-t.
+# Ezért a sablonokban a statikus fájlok címéről levesszük az előtagot.
+_eredeti_url_for = url_for
+
+
+def _url_for_statikus_nelkul(endpoint, **ertekek):
+    cim = _eredeti_url_for(endpoint, **ertekek)
+    if endpoint == "static":
+        return nyelv_utvonal.statikus_elotag_nelkul(cim)
+    return cim
+
+
+app.jinja_env.globals["url_for"] = _url_for_statikus_nelkul
+
 try:
     database.init_db()
 except Exception:
@@ -235,8 +260,17 @@ except Exception:
 
 @app.before_request
 def load_language():
-    """Beállítja az aktuális nyelvet (session alapján)."""
-    lang = session.get("lang", i18n.DEFAULT_LANG)
+    """Beállítja az aktuális nyelvet.
+
+    A CÍM ERŐSEBB A MUNKAMENETNÉL. Ha a látogató a /es/ alatti címet nyitja
+    meg, akkor spanyolt akar látni, akármit is mond a munkamenete — ez az,
+    amit a keresőnek és a megosztott linknek is adni kell. Előtag nélküli
+    címen marad a régi viselkedés: a munkamenet dönt, tehát a meglévő
+    nyelvváltó gomb és minden korábbi link változatlanul működik.
+    """
+    lang = nyelv_utvonal.nyelv_a_cimbol(request.environ)
+    if lang not in i18n.LANGUAGES:
+        lang = session.get("lang", i18n.DEFAULT_LANG)
     if lang not in i18n.LANGUAGES:
         lang = i18n.DEFAULT_LANG
     g.lang = lang
@@ -261,13 +295,42 @@ def inject_helpers():
     og_kepfajl = "img/og_es2.png" if g.lang == "es" else "img/og_hu2.png"
     try:
         og_url = _oldal_url(request.path or "/")
-        og_kep = _oldal_url(url_for("static", filename=og_kepfajl))
+        # A Python-beli url_for NINCS átkötve: a Jinja-s igen. Itt ezért
+        # kézzel kell levenni az /es előtagot, különben a Facebook-kép
+        # /es/static/ alá kerül, és a gyorstár kétszer töltené.
+        og_kep = nyelv_utvonal.statikus_elotag_nelkul(
+            _oldal_url(url_for("static", filename=og_kepfajl)))
     except Exception:                                      # pragma: no cover
         og_url = SAJAT_DOMAIN + "/"
         og_kep = f"{SAJAT_DOMAIN}/static/{og_kepfajl}"
+
+    # ── AMIT A KERESŐ A NYELVEKRŐL TUD (hreflang) ────────────────────────
+    # Megmondja a Google-nek, hogy ennek a lapnak van magyar ÉS spanyol
+    # változata, és melyik hol van. Mindkét nyelven UGYANEZT a három sort
+    # kell kiírni, ezért a címről előbb leszedjük a nyelvi előtagot.
+    #
+    # CSAK A NYILVÁNOS OLDALAKON. A belépés mögötti lapokat a robots.txt
+    # amúgy is tiltja: ott a hreflang olyan címeket ajánlana a keresőnek,
+    # amiket meg sem nyithat.
+    try:
+        _alap = nyelv_utvonal.alap_utvonal(request.path or "/")
+        if any(_alap == _ut for _ut, _ in KERESO_OLDALAK):
+            _gyoker = _kereso_alap_url()
+            _magyar = _gyoker + nyelv_utvonal.nyelvi_cim(_alap, "hu")
+            hreflang = [
+                ("hu", _magyar),
+                ("es", _gyoker + nyelv_utvonal.nyelvi_cim(_alap, "es")),
+                ("x-default", _magyar),
+            ]
+        else:
+            hreflang = []
+    except Exception:                                      # pragma: no cover
+        hreflang = []
+
     return {
         "og_url": og_url,
         "og_kep": og_kep,
+        "hreflang": hreflang,
         "t": lambda key: i18n.t(key, g.lang),
         "lang": g.lang,
         "active_curriculum": active_curriculum,
@@ -339,6 +402,21 @@ def _aktiv_gyerek_adat() -> dict | None:
         return None
 
 
+def _nyelvi_atiranyitas(cim: str, nyelv: str) -> str:
+    """Nyelvváltás után a CÍM ELŐTAGJA IS VÁLTOZZON.
+
+    A gomb eddig csak a munkamenetet állította át. Mióta a címben is benne
+    van a nyelv – és a cím az erősebb –, a spanyol lapon a „magyar" gomb
+    nem vitt volna át magyarra: a /es/ előtag ott maradt, és újra spanyolt
+    adott vissza. A mintában pont ez bukott ki. Teljes és sima címmel is
+    számolunk, mert a visszahivatkozás (referrer) teljes cím.
+    """
+    reszek = urllib.parse.urlsplit(cim or "/")
+    uj_ut = nyelv_utvonal.nyelvi_cim(reszek.path or "/", nyelv)
+    return urllib.parse.urlunsplit(
+        (reszek.scheme, reszek.netloc, uj_ut, reszek.query, reszek.fragment))
+
+
 @app.route("/lang/<lang_code>")
 def set_language(lang_code):
     # AMELYIK TANTERVRE NINCS ELŐFIZETÉSE, ARRA NEM VÁLTHAT.
@@ -369,10 +447,10 @@ def set_language(lang_code):
         session.pop("chat_subject", None)
         session.pop("language", None)
         session.pop("subject", None)
-        return redirect(url_for("dashboard"))
+        return redirect(_nyelvi_atiranyitas(url_for("dashboard"), lang_code))
 
     next_url = request.args.get("next") or request.referrer
-    return redirect(next_url or url_for("index"))
+    return redirect(_nyelvi_atiranyitas(next_url or url_for("index"), lang_code))
 
 
 # ---------------------------------------------------------------------------
@@ -1550,14 +1628,18 @@ def sitemap_xml():
     mai = date.today().isoformat()
     sorok = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    # Mindkét nyelvi cím felkerül. Enélkül a Google csak a magyart látná
+    # a sitemapben, és a hreflang spanyol felét soha nem követné.
     for utvonal, suly in KERESO_OLDALAK:
-        sorok.append(
-            "  <url>"
-            f"<loc>{_xml_escape_mod.escape(alap + utvonal)}</loc>"
-            f"<lastmod>{mai}</lastmod>"
-            "<changefreq>weekly</changefreq>"
-            f"<priority>{suly}</priority>"
-            "</url>")
+        for nyelv in ("hu", "es"):
+            cim = alap + nyelv_utvonal.nyelvi_cim(utvonal, nyelv)
+            sorok.append(
+                "  <url>"
+                f"<loc>{_xml_escape_mod.escape(cim)}</loc>"
+                f"<lastmod>{mai}</lastmod>"
+                "<changefreq>weekly</changefreq>"
+                f"<priority>{suly}</priority>"
+                "</url>")
     sorok.append("</urlset>")
     return Response("\n".join(sorok) + "\n", mimetype="application/xml")
 
