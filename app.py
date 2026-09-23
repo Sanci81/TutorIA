@@ -3792,6 +3792,9 @@ _ABRA_RULES_HU = (
     "#e7f6ee, #e7f3fc, #fff4e0 vagy #f3eef8. A fill kiírása kötelező. Sötét "
     "kitöltés tilos: a böngésző a hiányzó vagy sötét színt feketére festi, és "
     "tömör folt lesz. A line és a nyitott path maradjon fill=\"none\".\n"
+    "- Stílus: tiszta, kártyaszerű ábra, nem kézi vázlat. "
+    'stroke-linecap="round" stroke-linejoin="round". A téglalap sarka '
+    'lekerekített (rx="12"). Egyenletes vonalvastagság, kevés elem, sok levegő.\n'
     "- Ha a fogalom absztrakt (valószínűség, véletlen, nyelvtani fogalom) és "
     "nem tudsz olyan rajzot adni, ami MÉR vagy MEGMUTAT valami valóságosat, "
     "add vissza azt, hogy NINCS. A kitalált ikon rosszabb, mint a semmi.\n"
@@ -3851,6 +3854,9 @@ _ABRA_RULES_ES = (
     "pastel CLARO: #e7f6ee, #e7f3fc, #fff4e0 o #f3eef8. El fill es obligatorio. "
     "Un relleno oscuro o ausente se pinta de negro y sale una mancha. La line "
     "y el path abierto quedan fill=\"none\".\n"
+    "- Estilo: dibujo limpio, como una tarjeta, no un boceto a mano. "
+    'stroke-linecap="round" stroke-linejoin="round". Esquinas redondeadas '
+    '(rx="12"). Grosor uniforme, pocos elementos, mucho aire.\n'
     "- Si el concepto es abstracto (probabilidad, azar, gramática) y no puedes "
     "hacer un dibujo que MIDA o MUESTRE algo real, devuelve NINGUNO. Un icono "
     "inventado es peor que nada.\n"
@@ -6202,6 +6208,7 @@ Reglas:
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Trazos gruesos y de color, stroke-width="3". Un color por forma: #1e7a4d, #2f8fd8, #e07a3d o #7b5ea7. Prohibido el negro y #222.
+- Estilo de tarjeta, no boceto: stroke-linecap="round", stroke-linejoin="round", esquinas rx="12", grosor uniforme, mucho aire.
 - EN UN ORTOEDRO (caja, habitación, cubo): la altura (m) es la arista VERTICAL, la horizontal de delante es a, la oblicua de profundidad es b. Las tres aristas oblicuas apuntan TODAS hacia arriba-derecha y miden lo mismo; si una baja, la caja se rompe.
 - EL DIBUJO DEBE MOSTRAR EL EJERCICIO QUE EL NIÑO TIENE QUE RESOLVER AHORA.
   Si al final propones un ejercicio nuevo con otros números, dibuja los números
@@ -6473,6 +6480,7 @@ Reglas:
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Trazos gruesos y de color, stroke-width="3". Un color por forma: #1e7a4d, #2f8fd8, #e07a3d o #7b5ea7. Prohibido el negro y #222.
+- Estilo de tarjeta, no boceto: stroke-linecap="round", stroke-linejoin="round", esquinas rx="12", grosor uniforme, mucho aire.
 - EN UN ORTOEDRO (caja, habitación, cubo): la altura (m) es la arista VERTICAL, la horizontal de delante es a, la oblicua de profundidad es b. Las tres aristas oblicuas apuntan TODAS hacia arriba-derecha y miden lo mismo; si una baja, la caja se rompe.
 - EL DIBUJO DEBE MOSTRAR EL EJERCICIO QUE EL NIÑO TIENE QUE RESOLVER AHORA.
   Si al final propones un ejercicio nuevo con otros números, dibuja los números
@@ -6684,6 +6692,7 @@ Szabályok:
 - Egyéb esetben csak akkor rajzolj, ha tényleg segít, és ne minden válaszban.
 - Az ábra rajzterülete legyen viewBox="0 0 320 220", és HAGYJ 30 pixel margót minden oldalon, hogy a feliratok ne lógjanak ki.
 - A vonalak vastagok és színesek, stroke-width="3". Egy alakzat egy szín: #1e7a4d, #2f8fd8, #e07a3d vagy #7b5ea7. Fekete és #222 vonal tilos.
+- Stílus: kártyaszerű, tiszta ábra, nem kézi vázlat. stroke-linecap="round", stroke-linejoin="round", a téglalap sarka rx="12", egyenletes vonalvastagság, sok levegő.
 - TÉGLATESTNÉL (doboz, szoba, kocka): a magasság (m) a FÜGGŐLEGES él, az elülső vízszintes él az a, a ferde mélységi él a b. A három ferde élnek MIND jobbra-fel kell mutatnia és egyforma hosszúnak lennie – ha az egyik lefelé áll, a doboz eltörik.
 - Minden zárt alakzaton (rect, circle, ellipse, polygon) a fill KÖTELEZŐ, és világos pasztell: #e7f6ee, #e7f3fc, #fff4e0 vagy #f3eef8. Ha kihagyod, vagy sötét színt írsz, a böngésző FEKETÉRE tölti, és tömör folt lesz. A line és a nyitott path maradjon fill="none".
 - Ha a fogalom ABSZTRAKT (valószínűség, véletlen, nyelvtani fogalom, érzelem), és nem tudsz olyan rajzot adni, ami MÉR vagy MEGMUTAT valami valóságosat, akkor NE rajzolj semmit. A kitalált ikon (nap, fa, arc) jobban összezavarja a gyereket, mint ha nincs ábra.

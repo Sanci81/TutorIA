@@ -455,28 +455,51 @@ _KOR_SZIN = ("#1e7a4d", "#2f8fd8", "#e07a3d", "#7b5ea7")
 _KOR_TOLT = ("#e7f6ee", "#e7f3fc", "#fff4e0", "#f3eef8")
 
 
-def _szinez(el, t, korok):
-    """A fekete vázlatvonalat színesre cseréli.
+def _fekete_vonal(el):
+    return (el.get("stroke") or "").strip().lower() in _FEKETE_VONAL | {""}
 
-    A körök külön színt és világos kitöltést kapnak, hogy egy halmazábra
-    ne üres fekete karika maradjon. A többi vonal egy zöld: egy doboz
-    élei ne legyenek szivárványosak. A már színes vonalat békén hagyja.
+
+def _vastag(el):
+    if not (el.get("stroke-width") or "").strip():
+        el.set("stroke-width", "3")
+    el.set("stroke-linecap", "round")
+    el.set("stroke-linejoin", "round")
+
+
+def _szinez(el, t, korok):
+    """A fekete vázlatot tiszta, színes ábrára cseréli.
+
+    A kör és a kisebb téglalap világos pasztell mezőt kap. A nagy,
+    egész lapot betöltő téglalapot nem festjük ki, mert az eltakarná
+    a rajzot. A doboz élei egy zöldben maradnak. A már színes vonalat
+    békén hagyja.
     """
-    vonal = (el.get("stroke") or "").strip().lower()
+    _vastag(el)
     if t in ("circle", "ellipse"):
         i = korok[0]
         korok[0] += 1
         if (el.get("fill") or "none").strip().lower() in ("", "none"):
             el.set("fill", _KOR_TOLT[i % 4])
-        if vonal in _FEKETE_VONAL or not vonal:
+        if _fekete_vonal(el):
             el.set("stroke", _KOR_SZIN[i % 4])
-            if not (el.get("stroke-width") or "").strip():
-                el.set("stroke-width", "3")
         return
-    if vonal in _FEKETE_VONAL or not vonal:
+    if t == "rect":
+        doboz = _alakzat_doboza(el)
+        ter = 0
+        if doboz:
+            ter = (doboz[2] - doboz[0]) * (doboz[3] - doboz[1])
+        if 400 < ter < 50000:
+            i = korok[0]
+            korok[0] += 1
+            if (el.get("fill") or "none").strip().lower() in ("", "none"):
+                el.set("fill", _KOR_TOLT[i % 4])
+            if _fekete_vonal(el):
+                el.set("stroke", _KOR_SZIN[i % 4])
+            if not (el.get("rx") or "").strip():
+                el.set("rx", "12")
+            return
+    if _fekete_vonal(el):
         el.set("stroke", "#1e7a4d")
-        if not (el.get("stroke-width") or "").strip():
-            el.set("stroke-width", "3")
 
 
 def javit(svg: str, *, max_feliratok: int = 40) -> str | None:

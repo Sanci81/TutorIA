@@ -2422,13 +2422,14 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 
 /* A korválasztó: az első dolog egy kérdés, nem szöveg. */
 .bem-valaszto {
-    background: rgba(255, 255, 255, 0.7);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.65);
+    background-color: rgba(255, 255, 255, 0.65);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
     border-radius: 20px;
     padding: 26px;
-    box-shadow: 0 12px 34px rgba(20, 60, 40, 0.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 }
 .bem-valaszto h3 { font-size: 17px; margin: 0 0 16px; }
 .bem-evek { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -2439,7 +2440,7 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     text-align: center;
     font-weight: 800;
     font-size: 19px;
-    background: rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.28);
     color: #16241d;
     text-decoration: none;
     transition: 0.15s;
@@ -2686,10 +2687,12 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     inset: -40px -50vw -10px;
     z-index: -2;
     background:
+        radial-gradient(42% 62% at 58% 50%, rgba(47, 143, 216, 0.32), transparent 68%),
+        radial-gradient(36% 50% at 48% 82%, rgba(23, 184, 166, 0.28), transparent 70%),
         radial-gradient(52% 60% at 12% 18%, rgba(245, 166, 35, 0.24), transparent 70%),
         radial-gradient(46% 55% at 88% 12%, rgba(47, 143, 216, 0.22), transparent 70%),
         radial-gradient(50% 60% at 72% 95%, rgba(23, 184, 166, 0.22), transparent 70%),
-        linear-gradient(180deg, #f2f9f5, #f6f9f7);
+        linear-gradient(180deg, #e7f3fb, #e7f6ee);
 }
 /* A HERO HÁTTERE.
    Korábban egy ISMÉTLŐDŐ mértani csempe volt itt (kör, négyzet, plusz jel),
@@ -2760,11 +2763,12 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 .bem-hero h1 { font-size: 48px; }
 
 .bem-valaszto {
-    background: rgba(255, 255, 255, 0.7);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 18px 46px rgba(20, 60, 40, 0.14);
+    background: rgba(255, 255, 255, 0.65);
+    background-color: rgba(255, 255, 255, 0.65);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 }
 .bem-ev { border-width: 2px; }
 .bem-ev:nth-child(1) { border-color: rgba(239, 95, 95, 0.42); color: var(--b-korall); }
@@ -3826,4 +3830,88 @@ html, body {
         pointer-events: none;
         box-shadow: none;
     }
+}
+
+/* Az osztálykártya és a leckeábrák kerete.
+   Ezek a sorok a fájl végén vannak, és !important, mert korábban
+   fehér hátteret kapott a kártya, a chat pedig inline stílussal
+   fehérre festi az ábra dobozát. */
+.bem-valaszto {
+    background: rgba(255, 255, 255, 0.65) !important;
+    background-color: rgba(255, 255, 255, 0.65) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
+}
+.chat-figure,
+.tanit-abra,
+.fabra-rajz {
+    background: rgba(255, 255, 255, 0.72) !important;
+    background-color: rgba(255, 255, 255, 0.72) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.85) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 16px 36px rgba(15, 40, 30, 0.08) !important;
+}
+.chat-figure svg,
+.tanit-abra svg,
+.uj-felulet .tanit-abra svg,
+.fabra-rajz svg {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+.chat-figure svg :is(line, polyline, polygon, path, rect),
+.tanit-abra svg :is(line, polyline, polygon, path, rect),
+.fabra-rajz svg :is(line, polyline, polygon, path, rect) {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.chat-figure svg [stroke="#222"],
+.chat-figure svg [stroke="#000"],
+.chat-figure svg [stroke="black"],
+.tanit-abra svg [stroke="#222"],
+.tanit-abra svg [stroke="#000"],
+.tanit-abra svg [stroke="black"],
+.fabra-rajz svg [stroke="#222"],
+.fabra-rajz svg [stroke="#000"],
+.fabra-rajz svg [stroke="black"] {
+    stroke: #1e7a4d;
+}
+.chat-figure svg circle:nth-of-type(4n+1),
+.tanit-abra svg circle:nth-of-type(4n+1),
+.fabra-rajz svg circle:nth-of-type(4n+1),
+.chat-figure svg ellipse:nth-of-type(4n+1),
+.tanit-abra svg ellipse:nth-of-type(4n+1),
+.fabra-rajz svg ellipse:nth-of-type(4n+1) {
+    stroke: #1e7a4d;
+    fill: #e7f6ee;
+}
+.chat-figure svg circle:nth-of-type(4n+2),
+.tanit-abra svg circle:nth-of-type(4n+2),
+.fabra-rajz svg circle:nth-of-type(4n+2),
+.chat-figure svg ellipse:nth-of-type(4n+2),
+.tanit-abra svg ellipse:nth-of-type(4n+2),
+.fabra-rajz svg ellipse:nth-of-type(4n+2) {
+    stroke: #2f8fd8;
+    fill: #e7f3fc;
+}
+.chat-figure svg circle:nth-of-type(4n+3),
+.tanit-abra svg circle:nth-of-type(4n+3),
+.fabra-rajz svg circle:nth-of-type(4n+3),
+.chat-figure svg ellipse:nth-of-type(4n+3),
+.tanit-abra svg ellipse:nth-of-type(4n+3),
+.fabra-rajz svg ellipse:nth-of-type(4n+3) {
+    stroke: #e07a3d;
+    fill: #fff4e0;
+}
+.chat-figure svg circle:nth-of-type(4n+4),
+.tanit-abra svg circle:nth-of-type(4n+4),
+.fabra-rajz svg circle:nth-of-type(4n+4),
+.chat-figure svg ellipse:nth-of-type(4n+4),
+.tanit-abra svg ellipse:nth-of-type(4n+4),
+.fabra-rajz svg ellipse:nth-of-type(4n+4) {
+    stroke: #7b5ea7;
+    fill: #f3eef8;
 }
