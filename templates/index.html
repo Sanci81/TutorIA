@@ -13,49 +13,55 @@
      A kép háttere átlátszó, a fej nincs levágva. */
   .bem-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(380px, 460px) auto;
+    grid-template-columns: minmax(280px, 1.15fr) minmax(420px, 480px) auto;
     align-items: center;
-    gap: 28px;
+    gap: 36px;
     max-width: 1180px;
     padding-bottom: 28px;
     max-height: none;
   }
   .bem-hero-szoveg { align-self: center; }
+  .bem-hero-szoveg h1 { line-height: 1.2; }
   /* A mondat a pontnál törik, a „Ha a” nem kerül külön sorba. */
-  .bem-alcim { max-width: none; }
-  /* Szélesebb kártya, három sor. Üveg: a pasztell háttér átüt rajta. */
+  .bem-alcim {
+    max-width: 22em;
+    margin: 22px 0 28px;
+    line-height: 1.55;
+  }
+  /* Téglalap kártya, 4×2 csempe. Üveg, nem teli fehér doboz. */
   .bem-valaszto {
     height: auto;
     align-self: center;
     box-sizing: border-box;
-    padding: 28px 26px 26px;
-    background: rgba(255, 255, 255, 0.48);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
+    padding: 26px 22px 22px;
+    background: rgba(255, 255, 255, 0.75);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.55);
     box-shadow: 0 10px 28px rgba(20, 60, 40, 0.06);
   }
-  .bem-valaszto h3 { margin-bottom: 18px; }
-  /* Három oszlop. A 6-os rács azért van, hogy az utolsó két csempe középre ülhessen. */
+  .bem-valaszto h3 { margin-bottom: 16px; }
   .bem-evek {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
   }
-  .bem-ev { grid-column: span 2; }
-  .bem-ev:nth-child(7) { grid-column: 2 / span 2; }
-  .bem-ev:nth-child(8) { grid-column: 4 / span 2; }
+  .bem-ev,
+  .bem-ev:nth-child(7),
+  .bem-ev:nth-child(8) { grid-column: auto; }
   .bem-ev {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 78px;
-    padding: 14px 6px;
-    font-size: 22px;
-    background: rgba(255, 255, 255, 0.38);
-    border-color: rgba(30, 122, 77, 0.14);
+    min-height: 84px;
+    padding: 12px 4px;
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 1;
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(30, 122, 77, 0.16);
   }
-  .bem-ev small { font-size: 12px; }
+  .bem-ev small { font-size: 12px; margin-top: 4px; font-weight: 600; }
   .bem-diak {
     display: block;
     align-self: end;
@@ -72,8 +78,8 @@
   @media (max-width: 900px) {
     .bem-hero { grid-template-columns: 1fr; justify-items: start; }
     .bem-valaszto { height: auto; padding: 26px; }
-    .bem-evek { flex: none; grid-template-rows: none; gap: 10px; }
-    .bem-ev { min-height: 64px; font-size: 20px; }
+    .bem-evek { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .bem-ev { min-height: 68px; font-size: 26px; }
     .bem-diak { max-height: 340px; }
   }
 </style>
