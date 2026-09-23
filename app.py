@@ -1479,6 +1479,89 @@ def gyik():
     return render_template("gyik.html", **_jogi_adatok())
 
 
+# ── AMIT A KERESŐK LÁTNAK ────────────────────────────────────────────────
+# A robots.txt és a sitemap.xml nem statikus fájl, mert UGYANEZ a program
+# két helyen fut: a tutoriacademia.com-on és a Railway próba címén. Egy
+# beégetett gépnévvel az egyik helyen mindig hibás lenne.
+
+# A NYILVÁNOS OLDALAK. Csak az kerülhet ide, amit bejelentkezés NÉLKÜL is
+# meg lehet nyitni – amit a kereső amúgy sem ér el, azt felsorolni káros.
+# A súly a fontosságot mondja meg: a főoldal 1.0, a többi 0.8.
+#
+# A /hogy-megy SZÁNDÉKOSAN NINCS ITT. A neve marketingoldalnak látszik, de
+# a szülő SAJÁT haladás-jelentése, PIN mögött: keresőnek átirányítást adna.
+# Ha új nyilvános oldal készül, ide kell felvenni – magától nem kerül be.
+KERESO_OLDALAK: list[tuple[str, str]] = [
+    ("/", "1.0"),
+    ("/csomagok", "0.8"),
+    ("/gyik", "0.8"),
+    ("/login", "0.8"),
+    ("/register", "0.8"),
+    ("/feltetelek", "0.8"),
+    ("/adatvedelem", "0.8"),
+]
+
+
+def _kereso_alap_url() -> str:
+    """Az a cím, AMIN A KÉRÉS BEJÖTT – nem a SAJAT_DOMAIN.
+
+    A Google elutasítja a sitemapot, ha másik gépnévre mutat, mint ahonnan
+    letöltötte. Ezért itt nem a levelek címét használjuk: a próba oldalnak
+    a railway.app nevét, az élesnek a tutoriacademia.com-ot kell kiírnia.
+
+    A sémát is meg kell kérdezni. A titkosítást a Railway előtti átjáró
+    végzi, ezért a program a kérést sima http-nek látja; ha ezt írnánk ki,
+    a kereső http → 301 → https körbe futna. Pontosan ez ejtette el a
+    Facebook-előnézetet is. Az igazi sémát az átjáró az X-Forwarded-Proto
+    fejlécben adja meg.
+    """
+    sema = (request.headers.get("X-Forwarded-Proto") or "").split(",")[0].strip()
+    if sema not in ("http", "https"):
+        sema = "https"
+    return f"{sema}://{request.host}"
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    """Mit nézhet meg a kereső, és mit nem.
+
+    Az /admin PERJEL NÉLKÜL áll itt: perjellel csak az alatta lévő címeket
+    tiltaná, magát az /admin lapot nem. A gyerekek oldalai belépés mögött
+    vannak, de itt is felsoroljuk – a keresőnek így dolga sincs velük.
+    """
+    sorok = [
+        "User-agent: *",
+        "Allow: /",
+        "Disallow: /admin",
+        "Disallow: /api/",
+        "Disallow: /dashboard",
+        "Disallow: /fiok",
+        "Disallow: /children/",
+        "Disallow: /hogy-megy",
+        f"Sitemap: {_kereso_alap_url()}/sitemap.xml",
+    ]
+    return Response("\n".join(sorok) + "\n", mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    """A nyilvános oldalak listája a keresőnek."""
+    alap = _kereso_alap_url()
+    mai = date.today().isoformat()
+    sorok = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for utvonal, suly in KERESO_OLDALAK:
+        sorok.append(
+            "  <url>"
+            f"<loc>{_xml_escape_mod.escape(alap + utvonal)}</loc>"
+            f"<lastmod>{mai}</lastmod>"
+            "<changefreq>weekly</changefreq>"
+            f"<priority>{suly}</priority>"
+            "</url>")
+    sorok.append("</urlset>")
+    return Response("\n".join(sorok) + "\n", mimetype="application/xml")
+
+
 @app.route("/fiok/pin", methods=["POST"])
 @pin_required
 def fiok_pin():
