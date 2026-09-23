@@ -1408,6 +1408,16 @@ def index():
     return render_template("index.html", gyerek_menu_nelkul=True)
 
 
+@app.route("/demo")
+def demo():
+    """Nyilvános demó lecke. Belépés nélkül, AI-hívás nélkül.
+
+    A válasz ellenőrzése a böngészőben történik, ezért ez az oldal
+    semmibe nem kerül, és a próba oldalon is nyugodtan megosztható.
+    """
+    return render_template("demo.html", gyerek_menu_nelkul=True)
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     # Aki már be van lépve, annak nincs dolga a regisztrációval. Enélkül a
@@ -1571,6 +1581,7 @@ def gyik():
 # Ha új nyilvános oldal készül, ide kell felvenni – magától nem kerül be.
 KERESO_OLDALAK: list[tuple[str, str]] = [
     ("/", "1.0"),
+    ("/demo", "0.8"),
     ("/csomagok", "0.8"),
     ("/gyik", "0.8"),
     ("/login", "0.8"),

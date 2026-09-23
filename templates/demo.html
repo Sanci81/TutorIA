@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{# NYILVÁNOS DEMÓ LECKE. Belépés nélkül megnyílik, és NEM hív AI-t:
+   a helyes válasz (5900) a böngészőben dől el. A stílus a főoldal
+   zöld színeit használja, külön fájl nélkül, hogy a többi oldal
+   kinézetéhez ne nyúljunk. #}
+
+{% block title %}{% if lang == 'es' %}Práctica de matemáticas con profesor de IA · TutorIAcademia{% else %}Matematika gyakorlás AI tanárral · TutorIAcademia{% endif %}{% endblock %}
+
+{% block meta_description %}{% if lang == 'es' %}Prueba una lección de práctica de matemáticas con un profesor de IA. Aprendizaje en línea para niños: redondeo, cálculo mental y respuesta al momento.{% else %}Próbáld ki a matematika gyakorlást egy AI tanárral. Online tanulás gyerekeknek: kerekítés, fejszámolás, azonnali visszajelzés. TutorIAcademia demó lecke.{% endif %}{% endblock %}
+
+{% block content %}
+<style>
+  .demo { max-width: 680px; margin: 0 auto; }
+  .demo-bevezeto {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.25rem;
+  }
+  .demo-bevezeto h1 {
+    color: var(--green-900);
+    font-size: clamp(1.6rem, 4vw, 2.1rem);
+    line-height: 1.2;
+    margin-bottom: 0.6rem;
+  }
+  .demo-bevezeto p { color: var(--muted); margin: 0; }
+  .demo-feladat {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-top: 5px solid var(--green-600);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .demo-feladat h2 {
+    color: var(--green-900);
+    font-size: 1.25rem;
+    margin-bottom: 0.4rem;
+  }
+  .demo-kerdes {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0.8rem 0 1rem;
+  }
+  .demo-sor { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .demo-sor input {
+    flex: 1;
+    min-width: 10rem;
+    font: inherit;
+    font-size: 1.05rem;
+    padding: 0.7rem 0.9rem;
+    border: 2px solid var(--border);
+    border-radius: 999px;
+  }
+  .demo-sor input:focus { outline: none; border-color: var(--green-600); }
+  .demo-vissza {
+    margin-top: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+  }
+  .demo-vissza.jo { background: var(--green-100); color: var(--green-900); }
+  .demo-vissza.nem { background: var(--danger-bg); color: var(--danger); }
+  .demo-cta { margin-top: 1.5rem; text-align: center; }
+  .demo-cta p { color: var(--muted); margin-top: 0.6rem; font-size: 0.95rem; }
+</style>
+
+<div class="demo">
+  <div class="demo-bevezeto">
+    {% if lang == 'es' %}
+      <h1>Así es una lección en TutorIAcademia</h1>
+      <p>Esta es una demostración del aprendizaje en línea: una sola pregunta de práctica de matemáticas, y el profesor de IA dice al momento si la respuesta es correcta. No hace falta registrarse para probarla.</p>
+    {% else %}
+      <h1>Így néz ki egy lecke a TutorIAcademián</h1>
+      <p>Ez egy demó a tanulási folyamatból: egyetlen matematika gyakorló kérdés, és az AI tanár azonnal megmondja, helyes-e a válasz. A kipróbáláshoz nem kell regisztrálni.</p>
+    {% endif %}
+  </div>
+
+  <div class="demo-feladat">
+    <h2>{% if lang == 'es' %}Práctica de matemáticas{% else %}Matematika gyakorlás{% endif %}</h2>
+    <p class="demo-kerdes">
+      {% if lang == 'es' %}
+        ¿Cuánto es aproximadamente 4210 + 1680, si redondeas a centenas?
+      {% else %}
+        Kb. mennyi 4210 + 1680, ha százasokra kerekítesz?
+      {% endif %}
+    </p>
+    <form class="demo-sor" id="demo-urlap">
+      <input id="demo-valasz" type="text" inputmode="numeric" autocomplete="off"
+             placeholder="{% if lang == 'es' %}Escribe tu respuesta{% else %}Írd ide a válaszod{% endif %}"
+             aria-label="{% if lang == 'es' %}Respuesta{% else %}Válasz{% endif %}">
+      <button class="btn btn-primary" type="submit">
+        {% if lang == 'es' %}Comprobar{% else %}Ellenőrzés{% endif %}
+      </button>
+    </form>
+    <p class="demo-vissza" id="demo-vissza" hidden></p>
+  </div>
+
+  <div class="demo-cta">
+    <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">
+      {% if lang == 'es' %}Pruebo el mes gratis{% else %}Kipróbálom az ingyenes hónapot{% endif %}
+    </a>
+    <p>{% if lang == 'es' %}Sin tarjeta. Una lección de verdad, con el profesor de IA.{% else %}Bankkártya nélkül. Egy igazi lecke, az AI tanárral.{% endif %}</p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var form = document.getElementById('demo-urlap');
+  var mezo = document.getElementById('demo-valasz');
+  var vissza = document.getElementById('demo-vissza');
+  var es = document.documentElement.lang === 'es';
+  if (!form || !mezo || !vissza) return;
+
+  function szam(s) {
+    return String(s || '').replace(/\s/g, '').replace(/\./g, '').replace(/[^\d]/g, '');
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var n = szam(mezo.value);
+    vissza.hidden = false;
+    if (n === '5900') {
+      vissza.className = 'demo-vissza jo';
+      vissza.textContent = es
+        ? '¡Correcto! 4210 se redondea a 4200, 1680 a 1700, y 4200 + 1700 = 5900.'
+        : 'Helyes! A 4210 százasra 4200, a 1680 pedig 1700. 4200 + 1700 = 5900.';
+    } else if (n === '5890') {
+      vissza.className = 'demo-vissza nem';
+      vissza.textContent = es
+        ? 'Ese es el resultado exacto. La pregunta pide redondear cada número a centenas y luego sumar.'
+        : 'Ez a pontos összeg. A kérdés az, hogy százasra kerekítve mennyi: kerekítsd külön a két számot, aztán add össze.';
+    } else {
+      vissza.className = 'demo-vissza nem';
+      vissza.textContent = es
+        ? 'Todavía no. Redondea 4210 y 1680 por separado a centenas, y suma esos dos números.'
+        : 'Még nem. Kerekítsd külön a 4210-et és a 1680-at százasra, majd add össze a két kerek számot.';
+    }
+  });
+})();
+</script>
+{% endblock %}

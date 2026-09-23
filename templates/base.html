@@ -21,12 +21,12 @@
        app.py, inject_helpers): a Railway előtt egy átjáró titkosít, ezért a
        program http-nek látja a kérést, és a Facebook a http → https
        átirányítást körbejárásnak vette — üres lett a megosztás. #}
-    <meta name="description" content="{{ t('og_leiras') }}">
+    <meta name="description" content="{% block meta_description %}{{ t('og_leiras') }}{% endblock %}">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="TutorIAcademia">
     <meta property="og:locale" content="{{ 'es_ES' if lang == 'es' else 'hu_HU' }}">
     <meta property="og:title" content="TutorIAcademia">
-    <meta property="og:description" content="{{ t('og_leiras') }}">
+    <meta property="og:description" content="{{ self.meta_description() }}">
     <meta property="og:url" content="{{ og_url }}">
     <meta property="og:image" content="{{ og_kep }}">
     <meta property="og:image:secure_url" content="{{ og_kep }}">
@@ -36,7 +36,7 @@
     <meta property="og:image:alt" content="{{ t('og_cim') }}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="TutorIAcademia">
-    <meta name="twitter:description" content="{{ t('og_leiras') }}">
+    <meta name="twitter:description" content="{{ self.meta_description() }}">
     <meta name="twitter:image" content="{{ og_kep }}">
 
     {# ═══ MELYIK NYELVEN HOL VAN EZ A LAP (hreflang) ═════════════════════
