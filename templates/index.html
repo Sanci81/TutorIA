@@ -23,22 +23,39 @@
   .bem-hero-szoveg { align-self: center; }
   /* A mondat a pontnál törik, a „Ha a” nem kerül külön sorba. */
   .bem-alcim { max-width: none; }
-  /* A kártya a diák magasságáig ér, a gombok szellősen töltik ki. */
+  /* A kártya a diák magasságáig ér. Üveg: a pasztell háttér átüt rajta. */
   .bem-valaszto {
     height: 100%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 36px 28px;
+    padding: 32px 22px;
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 12px 32px rgba(20, 60, 40, 0.07);
   }
-  .bem-valaszto h3 { margin-bottom: 22px; }
+  .bem-valaszto h3 { margin-bottom: 20px; }
   .bem-evek {
     flex: 1;
-    align-content: space-evenly;
-    gap: 16px;
+    grid-template-rows: 1fr 1fr;
+    align-content: stretch;
+    gap: 14px;
   }
-  .bem-ev { padding: 16px 0; }
+  .bem-ev {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 76px;
+    padding: 16px 4px;
+    font-size: 23px;
+    background: rgba(255, 255, 255, 0.55);
+    border-color: rgba(30, 122, 77, 0.16);
+  }
+  .bem-ev small { font-size: 12px; }
   .bem-diak {
     display: block;
     align-self: end;
@@ -55,7 +72,8 @@
   @media (max-width: 900px) {
     .bem-hero { grid-template-columns: 1fr; justify-items: start; }
     .bem-valaszto { height: auto; padding: 26px; }
-    .bem-evek { flex: none; gap: 10px; }
+    .bem-evek { flex: none; grid-template-rows: none; gap: 10px; }
+    .bem-ev { min-height: 64px; font-size: 20px; }
     .bem-diak { max-height: 340px; }
   }
 </style>
