@@ -13,8 +13,8 @@
      A kép háttere átlátszó, a fej nincs levágva. */
   .bem-hero {
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(250px, 300px) auto;
-    align-items: stretch;
+    grid-template-columns: minmax(0, 1fr) minmax(380px, 460px) auto;
+    align-items: center;
     gap: 28px;
     max-width: 1180px;
     padding-bottom: 28px;
@@ -23,37 +23,37 @@
   .bem-hero-szoveg { align-self: center; }
   /* A mondat a pontnál törik, a „Ha a” nem kerül külön sorba. */
   .bem-alcim { max-width: none; }
-  /* A kártya a diák magasságáig ér. Üveg: a pasztell háttér átüt rajta. */
+  /* Szélesebb kártya, három sor. Üveg: a pasztell háttér átüt rajta. */
   .bem-valaszto {
-    height: 100%;
+    height: auto;
+    align-self: center;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 32px 22px;
-    background: rgba(255, 255, 255, 0.85);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 0 12px 32px rgba(20, 60, 40, 0.07);
+    padding: 28px 26px 26px;
+    background: rgba(255, 255, 255, 0.48);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow: 0 10px 28px rgba(20, 60, 40, 0.06);
   }
-  .bem-valaszto h3 { margin-bottom: 20px; }
+  .bem-valaszto h3 { margin-bottom: 18px; }
+  /* Három oszlop. A 6-os rács azért van, hogy az utolsó két csempe középre ülhessen. */
   .bem-evek {
-    flex: 1;
-    grid-template-rows: 1fr 1fr;
-    align-content: stretch;
-    gap: 14px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
   }
+  .bem-ev { grid-column: span 2; }
+  .bem-ev:nth-child(7) { grid-column: 2 / span 2; }
+  .bem-ev:nth-child(8) { grid-column: 4 / span 2; }
   .bem-ev {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 76px;
-    padding: 16px 4px;
-    font-size: 23px;
-    background: rgba(255, 255, 255, 0.55);
-    border-color: rgba(30, 122, 77, 0.16);
+    min-height: 78px;
+    padding: 14px 6px;
+    font-size: 22px;
+    background: rgba(255, 255, 255, 0.38);
+    border-color: rgba(30, 122, 77, 0.14);
   }
   .bem-ev small { font-size: 12px; }
   .bem-diak {
