@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{{ t('app_name') }}{% endblock %}</title>
+    <title>{% block title %}TutorIAcademia{% endblock %}</title>
     {# A betűtípust SAJÁT szerverről szolgáljuk ki. A Google-tól betöltött
        webfont minden látogató IP-címét elküldi a Google-nek – emiatt már
        volt EU-s bírósági marasztalás. Így nincs külső kérés. #}
@@ -23,9 +23,9 @@
        átirányítást körbejárásnak vette — üres lett a megosztás. #}
     <meta name="description" content="{{ t('og_leiras') }}">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="{{ t('app_name') }}">
+    <meta property="og:site_name" content="TutorIAcademia">
     <meta property="og:locale" content="{{ 'es_ES' if lang == 'es' else 'hu_HU' }}">
-    <meta property="og:title" content="{{ t('og_cim') }}">
+    <meta property="og:title" content="TutorIAcademia">
     <meta property="og:description" content="{{ t('og_leiras') }}">
     <meta property="og:url" content="{{ og_url }}">
     <meta property="og:image" content="{{ og_kep }}">
@@ -35,22 +35,17 @@
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt" content="{{ t('og_cim') }}">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="{{ t('og_cim') }}">
+    <meta name="twitter:title" content="TutorIAcademia">
     <meta name="twitter:description" content="{{ t('og_leiras') }}">
     <meta name="twitter:image" content="{{ og_kep }}">
 
     {# ═══ MELYIK NYELVEN HOL VAN EZ A LAP (hreflang) ═════════════════════
-       A magyar a gyökéren van, a spanyol az /es/ alatt. Enélkül a Google
-       csak az egyik változatot találná meg, és a spanyol oldalt soha nem
-       ajánlaná spanyol keresésre.
-
-       A HÁROM SOR MINDKÉT NYELVEN UGYANAZ – ez nem hiba, hanem szabály: a
-       keresőnek minden változatnál látnia kell az összes többit, különben
-       nem fűzi őket össze. Csak a nyilvános oldalakon írjuk ki; a lista az
-       app.py-ban van (inject_helpers). #}
-    {%- for kod, cim in hreflang %}
-    <link rel="alternate" hreflang="{{ kod }}" href="{{ cim }}">
-    {%- endfor %}
+       A magyar a gyökéren van, a spanyol az /es/ alatt. Az útvonalról
+       mindig levesszük az /es előtagot, hogy mindkét nyelven UGYANEZ a
+       három sor kerüljön ki – ez a kereső szabálya. #}
+    <link rel="alternate" hreflang="hu" href="https://web-production-fb5a05.up.railway.app{{ request.path | replace('/es', '') }}">
+    <link rel="alternate" hreflang="es" href="https://web-production-fb5a05.up.railway.app/es{{ request.path | replace('/es', '') }}">
+    <link rel="alternate" hreflang="x-default" href="https://web-production-fb5a05.up.railway.app{{ request.path | replace('/es', '') }}">
 </head>
 {# A gyerek háttere CSAK a gyerek saját oldalain van. A bemutató oldalon
    nincs (ott a felső szakasz mögött van a saját mintája), különben a jelek
@@ -85,7 +80,7 @@
                     </g>
                   </svg>
                 </span>
-                <span class="brand-name">{{ t('app_name') }}</span>
+                <span class="brand-name">TutorIAcademia</span>
             </a>
 
             <nav class="nav-links">
