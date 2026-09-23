@@ -9,24 +9,41 @@
 
 {% block content %}
 <style>
-  /* A hero alján a két rajzolt figurának volt fenntartva üres sáv.
-     Azok kikerültek, a sáv ne maradjon üresen. */
-  .bem-hero { padding-bottom: 48px; max-height: none; }
-  .bem-jobb { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  /* Három oszlop: szöveg, osztálykártya, a diák a jobb szélen.
+     A kép háttere átlátszó, a fej nincs levágva. */
+  .bem-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(250px, 300px) auto;
+    align-items: center;
+    gap: 28px;
+    max-width: 1180px;
+    padding-bottom: 28px;
+    max-height: none;
+  }
+  /* A mondat a pontnál törik, a „Ha a” nem kerül külön sorba. */
+  .bem-alcim { max-width: none; }
   .bem-diak {
-    width: 100%;
-    height: 240px;
-    object-fit: cover;
-    object-position: 82% center;
-    border-radius: 20px;
     display: block;
-    background: #fff;
+    height: auto;
+    width: auto;
+    max-height: 460px;
+    max-width: 280px;
+    object-fit: contain;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  @media (max-width: 900px) {
+    .bem-hero { grid-template-columns: 1fr; justify-items: start; }
+    .bem-diak { max-height: 340px; }
   }
 </style>
 <section class="bem-hero">
   <div class="bem-hero-szoveg">
     <h1>{{ t('bem_cim_1') }} <em>{{ t('bem_cim_kiemelt') }}</em> {{ t('bem_cim_2') }}</h1>
-    <p class="bem-alcim">{{ t('bem_alcim') }}</p>
+    {# A pontnál törünk, ne a „Ha a” közepén. #}
+    <p class="bem-alcim">{{ t('bem_alcim')|replace('. ', '.<br>')|safe }}</p>
     {% if session.get('parent_id') %}
       <a class="bem-gomb" href="{{ url_for('dashboard') }}">{{ t('landing_cta') }}</a>
     {% else %}
@@ -35,22 +52,18 @@
     {% endif %}
   </div>
 
-  {# A Novakid legjobb ötlete: az első dolog egy KÉRDÉS, nem szöveg.
-     A fotó a kártya FÖLÖTT van, ugyanabban az oszlopban, ugyanolyan szélesen. #}
-  <div class="bem-jobb">
-    <img class="bem-diak" src="{{ url_for('static', filename='img/diak.png') }}"
-         alt="{{ 'Chico con cuadernos' if lang == 'es' else 'Kisfiú füzetekkel' }}">
-    <div class="bem-valaszto">
-      <h3>{{ t('bem_osztaly_kerdes') }}</h3>
-      <div class="bem-evek">
-        {% for evf in range(1, 9) %}
-          {# Ha a szülő már be van lépve, az évfolyam-gomb ne küldje újra
-             regisztrálni — vigye a saját gyerekeihez. #}
-          <a class="bem-ev" href="{{ url_for('dashboard') if session.get('parent_id') else url_for('register') }}">{{ evf }}<small>{{ t('bem_osztaly') }}</small></a>
-        {% endfor %}
-      </div>
+  <div class="bem-valaszto">
+    <h3>{{ t('bem_osztaly_kerdes') }}</h3>
+    <div class="bem-evek">
+      {% for evf in range(1, 9) %}
+        {# Ha a szülő már be van lépve, az évfolyam-gomb ne küldje újra
+           regisztrálni — vigye a saját gyerekeihez. #}
+        <a class="bem-ev" href="{{ url_for('dashboard') if session.get('parent_id') else url_for('register') }}">{{ evf }}<small>{{ t('bem_osztaly') }}</small></a>
+      {% endfor %}
     </div>
   </div>
+  <img class="bem-diak" src="{{ url_for('static', filename='img/diak.png') }}"
+       alt="{{ 'Chico con cuadernos' if lang == 'es' else 'Kisfiú füzetekkel' }}">
 </section>
 
 <section class="bem-szakasz">
