@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}{% if lang == 'es' %}Cómo ayuda la IA en el aprendizaje de los niños · TutorIAcademia{% else %}Hogyan segít az AI a gyerekek tanulásában? · TutorIAcademia{% endif %}{% endblock %}
+
+{% block meta_description %}{% if lang == 'es' %}La inteligencia artificial en la educación: aprendizaje personalizado, feedback paciente y un entorno seguro. Práctica de matemáticas y aprendizaje en línea con un profesor de IA.{% else %}Hogyan segít az AI a gyerekek tanulásában: személyre szabott tanulás, türelmes visszajelzés, biztonságos környezet. Matematika gyakorlás és online tanulás AI tanárral.{% endif %}{% endblock %}
+
+{% block content %}
+<style>
+  .cikk { max-width: 720px; margin: 0 auto; }
+  .cikk-fej h1 {
+    color: var(--green-900);
+    font-size: clamp(1.7rem, 4vw, 2.25rem);
+    line-height: 1.2;
+    margin-bottom: 0.45rem;
+  }
+  .cikk-meta { color: var(--muted); font-size: 0.95rem; margin-bottom: 1.25rem; }
+  .cikk-test {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.5rem 1.6rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .cikk-test p { margin: 0 0 1rem; }
+  .cikk-test h2 {
+    color: var(--green-900);
+    font-size: 1.28rem;
+    margin: 1.6rem 0 0.55rem;
+  }
+  .cikk-cta {
+    margin-top: 1.4rem;
+    padding: 1.15rem 1.2rem;
+    background: var(--green-50);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--green-100);
+  }
+  .cikk-cta p { margin-bottom: 0.8rem; }
+  .kapcsolodo { margin-top: 2rem; }
+  .kapcsolodo h2 { color: var(--green-900); font-size: 1.25rem; margin-bottom: 0.8rem; }
+  .kapcsolodo-racs { display: grid; gap: 0.8rem; }
+  .kapcsolodo a {
+    display: block;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--green-600);
+    border-radius: var(--radius-sm);
+    padding: 0.9rem 1rem;
+    color: inherit;
+  }
+  .kapcsolodo a:hover { text-decoration: none; box-shadow: var(--shadow-sm); }
+  .kapcsolodo a strong { display: block; color: var(--green-900); margin-bottom: 0.15rem; }
+  .kapcsolodo a span { color: var(--muted); font-size: 0.95rem; }
+</style>
+
+<article class="cikk">
+  <header class="cikk-fej">
+    {% if lang == 'es' %}
+      <h1>Cómo ayuda la IA en el aprendizaje de los niños</h1>
+      <p class="cikk-meta">23 de septiembre de 2026 · TutorIAcademia</p>
+    {% else %}
+      <h1>Hogyan segít az AI a gyerekek tanulásában?</h1>
+      <p class="cikk-meta">2026. szeptember 23. · TutorIAcademia</p>
+    {% endif %}
+  </header>
+
+  <div class="cikk-test">
+    {% if lang == 'es' %}
+      <p>Un niño no se cansa a la misma hora que su compañero, no se atasca en el mismo sitio y no entiende la misma explicación. En clase, un maestro reparte su atención entre veinte o treinta alumnos. En casa, el padre suele sentarse con los deberes después del trabajo, mientras cocina o atiende al hermano pequeño. Ahí es donde la inteligencia artificial puede ser útil: no sustituye al maestro ni al padre. Ofrece un lugar tranquilo para practicar otra vez, cuando al niño todavía le hace falta una vuelta más.</p>
+      <p>Este artículo explica en qué ayuda la IA en el aprendizaje de los niños, y en qué no. Miramos tres cosas de cerca: el aprendizaje personalizado, el feedback paciente y un entorno seguro. Al final se ve cómo aparece esto en una herramienta concreta de aprendizaje en línea, TutorIAcademia.</p>
+
+      <h2>Qué significa el aprendizaje personalizado</h2>
+      <p>El aprendizaje personalizado no significa que la máquina «adivine» al niño. Significa que el siguiente ejercicio sigue el curso, la asignatura y lo que el niño ya ha mostrado en la vuelta anterior. Las matemáticas de cuarto no son las de séptimo. En una clase de español, el ritmo de un principiante no es el de quien ya dice frases. Si todos reciben la misma ficha, el rápido se aburre y el lento se queda atrás.</p>
+      <p>La IA ayuda aquí porque no recorre a ciegas una lista impresa. Si el niño duda al redondear a centenas, la siguiente pregunta puede quedarse en esa destreza, con números más sencillos. Si responde con seguridad, puede llegar un ejemplo más difícil. Ese es el sentido de estudiar en casa: un paso pequeño, una sola cosa cada vez, y después la siguiente.</p>
+      <p>La medida importa. A un niño no le sirve que el programa le suelte diez palabras nuevas o tres reglas a la vez. Una clase en el colegio también se construye así: primero un concepto, luego un ejemplo, luego lo prueba el niño. El aprendizaje en línea es útil cuando guarda ese ritmo y no convierte los clics en una carrera.</p>
+      <p>La personalización también está en la lengua y en el plan de estudios. Un niño en Hungría estudia matemáticas, lengua o conocimiento del medio según el currículo húngaro. Un niño en España espera las palabras y los temas del currículo español. La IA solo ayuda si la pregunta está atada a lo que el niño ve en el colegio, no a un cuaderno genérico y ajeno.</p>
+      <p>Hay otro detalle que los padres notan enseguida. El niño no necesita un examen largo para que el programa sepa por dónde seguir. Basta con la respuesta de ahora: si estuvo bien, se avanza; si no, se queda el mismo tipo de tarea. Eso es más honesto que una etiqueta de «nivel» que nadie explica. La personalización, bien hecha, se nota en la siguiente pregunta, no en un gráfico.</p>
+
+      <h2>La paciencia que una tarde cansada no siempre tiene</h2>
+      <p>La segunda ventaja es el feedback paciente. Después de una respuesta mala, el niño a menudo se calla, porque cree que ha dicho una tontería. Un profesor de IA no suspira, no mira el reloj y no dice «esto ya lo pregunté ayer». El mismo paso se puede explicar otra vez, con otras palabras, en un ejemplo nuevo.</p>
+      <p>Un buen comentario no es solo «incorrecto». El niño tiene que ver dónde se desvió. Si en 4210 + 1680 escribe la suma exacta, 5890, pero la pregunta pedía redondear a centenas, no falló la cuenta: leyó la tarea de otra manera. La ayuda entonces es decirlo claro: esa es la suma exacta; ahora redondea cada número y luego súmalos. El elogio vale cuando es verdad, y la corrección vale cuando también muestra el siguiente paso.</p>
+      <p>La paciencia también está en la voz. Muchos niños prefieren decir la respuesta antes que escribirla. Un sitio de aprendizaje en línea con micrófono y lectura en voz alta ayuda a quien todavía duda con las letras, pero ya tiene la idea. La explicación leída se puede oír de nuevo. No existe el «ahora no tengo tiempo de repetirlo».</p>
+      <p>Esto no es magia. La paciencia es paciencia porque el niño no recibe un tono de castigo y no tiene que correr contra el tiempo del hermano o del padre. El programa espera. Mañana se puede seguir en el mismo punto donde hoy se paró.</p>
+      <p>También importa el tamaño de la respuesta del programa. Un párrafo enorme, con tres ideas nuevas, no es feedback: es otra lección encimada. Una frase de qué estuvo bien, una frase de qué cambiar, y una sola pregunta nueva. Así el niño sabe qué hacer con la mano, no solo qué «debería entender».</p>
+
+      <h2>Entorno seguro: no es un chat abierto</h2>
+      <p>El tercer punto es la seguridad, y para muchos padres pesa más que cualquier función. En las noticias, la inteligencia artificial suele ser una ventana de chat abierta: se escribe cualquier cosa y la máquina habla de cualquier tema. Para un niño eso no es un entorno de estudio. Es una aventura, un riesgo, y es difícil de seguir.</p>
+      <p>El aprendizaje en línea seguro se ve distinto. El niño está en una lección, en una asignatura, en un curso. La pregunta sale del material, no de un mensaje libre sobre cualquier cosa. La cuenta es del padre: él se registra, él ve el avance, él decide qué perfil de niño se abre. El niño no escribe a un desconocido en internet. Resuelve una tarea acotada.</p>
+      <p>También forma parte de la seguridad que el padre entienda qué pasa. Un resumen semanal o mensual, los minutos estudiados y el nombre del tema valen más que un «usó la aplicación». La seguridad no es solo un cierre técnico. También es seguridad poder mirar en qué se fue el tiempo.</p>
+      <p>Conviene ser sincero con los límites. La IA se equivoca. Una explicación puede ser torpe, una pregunta puede ser demasiado difícil para esa edad. Por eso no se deja a un niño pequeño con la idea de que «la máquina ya le enseñará», sin nadie al lado. La herramienta es un compañero de práctica. El maestro y el padre siguen siendo la referencia. Si algo contradice lo que se aprendió en el colegio, manda la explicación del colegio, y el ejercicio conviene señalarlo.</p>
+      <p>Con los datos la regla es simple. El nombre del niño, el curso y el avance pertenecen a la cuenta de la familia, no a un perfil público. En una página de demostración, con una sola pregunta, ni siquiera hace falta cuenta. Cuando empieza una lección de verdad, el acceso evita que se mezclen los niños.</p>
+
+      <h2>Dónde cabe esto en un día normal</h2>
+      <p>Practicar con IA no es una segunda escuela. La dosis útil es corta. Diez o veinte minutos de un tema, mientras el niño todavía atiende, valen más que una hora en la que al final solo hace clic. En matemáticas puede ser un redondeo, una multiplicación, un problema con texto. En un idioma, una palabra o una frase corta, con su significado al lado, para que el niño no solo repita, sino que entienda.</p>
+      <p>El mejor momento suele ser cuando los deberes se atascan en un punto y nadie tiene ganas de explicar lo mismo por vigésima vez. Entonces una vuelta paciente y personalizada baja la tensión de la mesa. No hace los deberes en lugar del niño —eso tiene que hacerlo él—, sino que practica la destreza que los deberes piden.</p>
+      <p>TutorIAcademia junta estos tres puntos así. La lección sigue el curso del niño y el currículo elegido, en la parte húngara o en la española. El profesor explica un paso, da un ejemplo y hace una pregunta. A la respuesta llega un comentario: si está bien, se puede avanzar; si no, se queda la explicación. El padre ve desde su cuenta el tiempo y el avance. La práctica con voz es para quien quiere decir la respuesta, no solo escribirla.</p>
+      <p>Si quieres verlo antes de decidir, hay una demostración corta: una sola pregunta de matemáticas, redondeo a centenas, con respuesta al momento y sin registro. La prueba gratuita abre después una lección de verdad, en el curso de tu hijo.</p>
+      <p>La inteligencia artificial ayuda en el aprendizaje de los niños cuando personaliza, corrige con paciencia y se queda en un entorno cerrado que el padre puede seguir. Esa es la promesa usable. Ni más, ni menos.</p>
+
+      <div class="cikk-cta">
+        <p>Si quieres probar una lección de verdad con el profesor de IA, el registro es el siguiente paso. La demostración de matemáticas se puede abrir sin cuenta.</p>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Quiero probarlo gratis</a>
+      </div>
+    {% else %}
+      <p>Egy gyerek nem ugyanakkor fárad el, nem ugyanott akad el, és nem ugyanazt a magyarázatot érti meg, mint a padtársa. Az iskolában egy tanár húsz-harminc gyerek között osztja meg a figyelmét. Otthon a szülő gyakran munka után ül le a lecke mellé, és közben főz, vagy a kisebb testvérre is figyel. Ebben a résben tud hasznos lenni a mesterséges intelligencia: nem helyettesíti a tanárt és a szülőt. Ad egy nyugodt helyet, ahol még egy kört lehet gyakorolni, amikor a gyereknek éppen arra van szüksége.</p>
+      <p>Ez a cikk arról szól, miben segít az AI a gyerekek tanulásában, és miben nem. Három dolgot nézünk meg közelebbről: a személyre szabott tanulást, a türelmes visszajelzést, és a biztonságos környezetet. A végén azt is megmutatjuk, hogyan jelenik meg mindez egy konkrét online tanulási eszközben, a TutorIAcademiában.</p>
+
+      <h2>Mit jelent a személyre szabott tanulás?</h2>
+      <p>A személyre szabott tanulás nem azt jelenti, hogy a gép „kitalálja” a gyereket. Azt jelenti, hogy a következő feladat a gyerek évfolyamához, tantárgyához és ahhoz igazodik, amit az előző körben már megmutatott. Egy negyedikesnek más a matematika, mint egy hetedikesnek. Egy nyelvórán más a tempó egy kezdőnek, mint annak, aki már mondatokat mond. Ha mindenki ugyanazt a munkalapot kapja, a gyorsabb unatkozik, a lassabb lemarad.</p>
+      <p>Az AI itt abban tud segíteni, hogy nem egy előre kinyomtatott soron megy végig vakon. Ha a gyerek a százasra kerekítésnél bizonytalan, a következő kérdés még ezen a készségen maradhat, egyszerűbb számokkal. Ha magabiztosan válaszol, jöhet a nehezebb példa. Ez a tanulás lényege otthon: kis lépés, egy dolog egyszerre, aztán a következő.</p>
+      <p>Fontos a mérték. Egy gyereknek nem az a jó, ha a program egyszerre tíz új szót vagy három új szabályt zúdít rá. Az iskolai óra is így épül: először egy fogalom, aztán egy példa, aztán a gyerek próbálja ki. Az online tanulás akkor hasznos, ha ezt a ritmust megtartja, és nem versenyt csinál a kattintásokból.</p>
+      <p>A személyre szabás a nyelvben és a tantervben is számít. Egy magyar gyerek a magyar kerettanterv szerint tanul matematikát, nyelvtant vagy környezetismeretet. Egy Spanyolországban élő gyerek a spanyol tanterv szavait és témáit várja. A mesterséges intelligencia csak akkor segít, ha a kérdés ahhoz a tananyaghoz kötődik, amit a gyerek az iskolában is lát, nem egy általános, idegen példatárhoz.</p>
+      <p>Van egy részlet, amit a szülők hamar észrevesznek. Nem kell hosszú felmérő ahhoz, hogy a program tudja, merre menjen tovább. Elég a mostani válasz: ha jó volt, jöhet a következő lépés, ha nem, marad ugyanez a fajta feladat. Ez őszintébb, mint egy „szint”, amit senki nem magyaráz el. A személyre szabott tanulás akkor látszik, ha a következő kérdés más, nem egy grafikonon.</p>
+
+      <h2>A türelem, amit egy fáradt este nem mindig bír</h2>
+      <p>A második előny a türelmes visszajelzés. Egy rossz válasz után a gyerek gyakran elhallgat, mert azt hiszi, hogy butaságot mondott. Egy AI tanár nem sóhajt, nem néz az órára, és nem mondja azt, hogy „ezt már tegnap is kérdeztem”. Ugyanazt a lépést nyugodtan el lehet mondani még egyszer, más szavakkal, egy új példán.</p>
+      <p>A jó visszajelzés nem csak annyi, hogy „helytelen”. A gyereknek látnia kell, hol csúszott el. Ha a 4210 + 1680 feladatnál a pontos összeget írja be, az 5890-et, pedig a kérdés a százasra kerekítés volt, akkor nem a számolása rossz, hanem a feladatot olvasta másképp. Ilyenkor az a segítség, ha ezt ki is mondjuk: ez a pontos összeg, most kerekítsd külön a két számot, aztán add össze. A dicséret akkor ér valamit, ha igaz. A javítás akkor ér valamit, ha a következő lépést is megmutatja.</p>
+      <p>A türelem a beszédben is számít. Sok gyerek szívesebben mondja ki a választ, mint írja. Egy online tanulós felület, ahol a mikrofon és a felolvasás is működik, azoknak segít, akik a betűknél még bizonytalanok, de a gondolatuk kész. A felolvasott magyarázatot újra meg lehet hallgatni. Nincs olyan, hogy „most nem érek rá még egyszer elmondani”.</p>
+      <p>Ez nem varázslat. A türelem attól türelem, hogy a gyerek nem kap büntető hangnemet, és nem kell sietnie a testvére vagy a szülő ideje miatt. A program megvárja. Holnap ugyanott folytatható, ahol ma abbamaradt.</p>
+      <p>Számít a válasz hossza is. Egy hatalmas bekezdés, benne három új ötlettel, nem visszajelzés, hanem egy újabb lecke a nyakába. Egy mondat arról, mi volt jó, egy mondat arról, min kell változtatni, és egyetlen új kérdés. Így a gyerek tudja, mit csináljon a kezével, nem csak azt, mit „kellene értenie”.</p>
+
+      <h2>Biztonságos környezet: nem egy nyílt csevegés</h2>
+      <p>A harmadik szempont a biztonság, és ez a szülőknek gyakran fontosabb, mint bármelyik funkció. A hírekben a mesterséges intelligencia gyakran egy nyílt csevegőablak, ahová bármit be lehet írni, és a gép bármiről hajlandó beszélgetni. Egy gyereknek ez nem tanulási környezet. Kaland, kockázat, és nehezen követhető.</p>
+      <p>A biztonságos online tanulás másképp néz ki. A gyerek egy leckében van, egy tantárgynál, egy évfolyamon. A kérdés a tananyagból jön, nem egy szabad, bármilyen témájú üzenetből. A fiók a szülőé: ő regisztrál, ő látja a haladást, ő dönti el, melyik gyerek profilja nyílik meg. A gyerek nem egy idegennel levelezik az interneten, hanem egy kötött feladatot old meg.</p>
+      <p>Ide tartozik az is, hogy a szülő értse, mi történik. Egy heti vagy havi összegzés, a tanult percek és a témakör neve többet ér, mint egy üres „használta a programot” mondat. A biztonság nem csak technikai zár. Az is biztonság, ha vissza lehet nézni, mivel telt az idő.</p>
+      <p>Érdemes őszintének lenni a határokról. Az AI tévedhet. Egy magyarázat lehet ügyetlen, egy kérdés lehet túl nehéz az adott korosztálynak. Ezért nem szabad felügyelet nélkül, azzal a gondolattal otthagyni egy kisgyereket, hogy „majd a gép megtanítja”. Az eszköz gyakorlótárs. A tanító és a szülő marad a viszonyítási pont. Ha valami ellentmond annak, amit az iskolában tanultak, az iskolai magyarázat a mérvadó, és a feladatot érdemes jelezni.</p>
+      <p>Az adatoknál is egyszerű a szabály. A gyerek neve, az évfolyama és a haladása a család fiókjához tartozik, nem egy nyilvános profilhoz. Egy bemutató oldalon, egyetlen kérdéssel, fiók sem kell. Amint igazi lecke indul, a belépés védi, hogy ne keveredjenek a gyerekek.</p>
+
+      <h2>Hol fér el ez egy hétköznapban?</h2>
+      <p>Az AI-os gyakorlás nem egy második iskola. A hasznos adag rövid. Tíz-húsz perc egy témakörből, amikor a gyerek még figyel, többet ér, mint egy óra, aminek a végén már csak kattint. Matematikából ez lehet egy kerekítés, egy szorzás, egy szöveges feladat. A matematika gyakorlás attól válik nyugodttá, hogy egy készségen maradunk, amíg az meg nem ül. Nyelvből egy szó vagy egy rövid mondat elég, mellé a jelentésével, hogy a gyerek ne csak ismételjen, hanem értse is.</p>
+      <p>A legjobb pillanat gyakran az, amikor a házi feladat egy ponton elakad, és senkinek nincs kedve huszadszor elmagyarázni ugyanazt. Ekkor egy türelmes, személyre szabott kör leveheti a feszültséget az asztalról. Nem a szülő helyett dolgozza meg a házi feladatot — azt a gyereknek kell megcsinálnia —, hanem a készséget gyakoroltatja, ami a házihoz kell.</p>
+      <p>A TutorIAcademia ezt a három szempontot így köti össze. A lecke a gyerek évfolyamához és a választott tantervhez igazodik, a magyar vagy a spanyol oldalon. Az AI tanár egy lépést magyaráz, példát mond, és egy kérdést tesz fel. A válaszra visszajelzés érkezik: ha jó, tovább lehet lépni, ha nem, marad a magyarázat. A szülő a saját fiókjából látja az időt és a haladást. A hangos gyakorlás azoknak szól, akik ki akarják mondani a választ, nem csak begépelni.</p>
+      <p>Ha szeretnéd megnézni, mielőtt döntesz, van egy rövid demó: egyetlen matematika kérdés, százasra kerekítés, azonnali visszajelzéssel, regisztráció nélkül. Az ingyenes próba aztán egy igazi leckét nyit meg, a saját gyereked évfolyamán. Az online tanulás ettől lesz kézzelfogható: nem egy ígéret, hanem egy feladat, amire a gyerek válaszol, és kap rá egy nyugodt mondatot.</p>
+      <p>A mesterséges intelligencia a gyerekek tanulásában akkor segít, ha személyre szab, türelmesen javít, és közben egy zárt, a szülő által átlátható környezetben marad. Ennyi a használható ígéret. Nem több, és nem is kevesebb.</p>
+
+      <div class="cikk-cta">
+        <p>Ha egy igazi leckét is ki szeretnél próbálni az AI tanárral, a regisztráció a következő lépés. A matematika demót fiók nélkül is meg lehet nyitni.</p>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Kipróbálom ingyen</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <section class="kapcsolodo">
+    <h2>{% if lang == 'es' %}Artículos relacionados{% else %}Kapcsolódó cikkek{% endif %}</h2>
+    <div class="kapcsolodo-racs">
+      <a href="{{ url_for('demo') }}">
+        <strong>{% if lang == 'es' %}Prueba: redondear a centenas{% else %}Demó: kerekítés százasra{% endif %}</strong>
+        <span>{% if lang == 'es' %}Una sola pregunta de práctica de matemáticas, con respuesta al momento.{% else %}Egyetlen matematika gyakorló kérdés, azonnali visszajelzéssel.{% endif %}</span>
+      </a>
+      <a href="{{ url_for('gyik') }}">
+        <strong>{% if lang == 'es' %}Preguntas frecuentes para padres{% else %}Gyakori kérdések szülőknek{% endif %}</strong>
+        <span>{% if lang == 'es' %}Tiempo de estudio, lecciones y qué ve el padre.{% else %}Tanulási idő, leckék, és mit lát a szülő.{% endif %}</span>
+      </a>
+      <a href="{{ url_for('csomagok_oldal') }}">
+        <strong>{% if lang == 'es' %}La prueba gratuita y los planes{% else %}Az ingyenes próba és a csomagok{% endif %}</strong>
+        <span>{% if lang == 'es' %}Qué incluye el aprendizaje en línea antes de decidir.{% else %}Mit tartalmaz az online tanulás, mielőtt döntesz.{% endif %}</span>
+      </a>
+    </div>
+  </section>
+</article>
+{% endblock %}

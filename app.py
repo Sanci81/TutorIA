@@ -1418,6 +1418,18 @@ def demo():
     return render_template("demo.html", gyerek_menu_nelkul=True)
 
 
+@app.route("/blog")
+def blog():
+    """A cikkek listája. Belépés nélkül, hogy a kereső és a megosztott link is elérje."""
+    return render_template("blog.html", gyerek_menu_nelkul=True)
+
+
+@app.route("/blog/hogyan-segit-az-ai-a-gyerekek-tanulasaban")
+def blog_ai_tanulas():
+    """Nyilvános cikk. Nincs benne AI-hívás: a szöveg előre megírt."""
+    return render_template("blog_ai.html", gyerek_menu_nelkul=True)
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     # Aki már be van lépve, annak nincs dolga a regisztrációval. Enélkül a
@@ -1582,6 +1594,8 @@ def gyik():
 KERESO_OLDALAK: list[tuple[str, str]] = [
     ("/", "1.0"),
     ("/demo", "0.8"),
+    ("/blog", "0.8"),
+    ("/blog/hogyan-segit-az-ai-a-gyerekek-tanulasaban", "0.8"),
     ("/csomagok", "0.8"),
     ("/gyik", "0.8"),
     ("/login", "0.8"),

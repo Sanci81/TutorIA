@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}{% if lang == 'es' %}Blog · TutorIAcademia{% else %}Blog · TutorIAcademia{% endif %}{% endblock %}
+
+{% block meta_description %}{% if lang == 'es' %}Artículos sobre el aprendizaje en línea y el profesor de IA para niños: práctica de matemáticas, feedback paciente y un entorno seguro.{% else %}Cikkek az online tanulásról és az AI tanárról gyerekeknek: matematika gyakorlás, türelmes visszajelzés, biztonságos környezet.{% endif %}{% endblock %}
+
+{% block content %}
+<style>
+  .blog { max-width: 720px; margin: 0 auto; }
+  .blog h1 { color: var(--green-900); font-size: clamp(1.7rem, 4vw, 2.2rem); line-height: 1.2; margin-bottom: 0.5rem; }
+  .blog .bevezeto { color: var(--muted); margin-bottom: 1.5rem; }
+  .blog-lista { display: grid; gap: 1rem; }
+  .blog-lap {
+    display: block;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-top: 5px solid var(--green-600);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.4rem;
+    box-shadow: var(--shadow-sm);
+    color: inherit;
+  }
+  .blog-lap:hover { text-decoration: none; box-shadow: var(--shadow-md); }
+  .blog-lap h2 { color: var(--green-900); font-size: 1.25rem; margin-bottom: 0.35rem; }
+  .blog-lap p { color: var(--muted); margin: 0; }
+</style>
+
+<div class="blog">
+  <h1>Blog</h1>
+  {% if lang == 'es' %}
+    <p class="bevezeto">Textos para padres sobre el aprendizaje en línea y el uso de la inteligencia artificial con niños.</p>
+  {% else %}
+    <p class="bevezeto">Írások szülőknek az online tanulásról, és arról, miben tud segíteni a mesterséges intelligencia egy gyereknek.</p>
+  {% endif %}
+
+  <div class="blog-lista">
+    <a class="blog-lap" href="{{ url_for('blog_ai_tanulas') }}">
+      {% if lang == 'es' %}
+        <h2>Cómo ayuda la IA en el aprendizaje de los niños</h2>
+        <p>Aprendizaje personalizado, feedback paciente y un entorno cerrado, que el padre puede seguir.</p>
+      {% else %}
+        <h2>Hogyan segít az AI a gyerekek tanulásában?</h2>
+        <p>Személyre szabott tanulás, türelmes visszajelzés, és egy zárt környezet, amit a szülő átlát.</p>
+      {% endif %}
+    </a>
+  </div>
+</div>
+{% endblock %}
