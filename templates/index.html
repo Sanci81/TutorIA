@@ -13,7 +13,10 @@
      A kép háttere átlátszó, a fej nincs levágva. */
   .bem-hero {
     display: grid;
-    grid-template-columns: minmax(520px, 1.15fr) auto auto;
+    /* Az első oszlop nem nő a szövegnél szélesebbre, így a kártya
+       és a fiú balra húzódik. A szöveg saját szélessége változatlan. */
+    grid-template-columns: minmax(520px, 36rem) auto auto;
+    justify-content: start;
     align-items: end;
     gap: 36px;
     max-width: 1280px;
