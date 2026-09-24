@@ -3979,8 +3979,9 @@ html, body {
     .bem-hero-szoveg { max-width: 100%; padding-right: 8px; box-sizing: border-box; }
     .bem-hero .bem-alcim {
         white-space: normal !important;
-        max-width: 22rem;
-        padding-right: 4px;
+        max-width: min(22rem, 100%);
+        padding-right: 0;
+        box-sizing: border-box;
     }
     .bem-hero .bem-alcim br { display: none !important; }
 }

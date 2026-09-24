@@ -1410,12 +1410,87 @@ def index():
 
 @app.route("/demo")
 def demo():
-    """Nyilvános demó lecke. Belépés nélkül, AI-hívás nélkül.
+    """Nyilvános demó lecke. A matekfeladat a böngészőben dől el.
 
-    A válasz ellenőrzése a böngészőben történik, ezért ez az oldal
-    semmibe nem kerül, és a próba oldalon is nyugodtan megosztható.
+    A rajzoló mező külön végpontot hív, és csak akkor kerül pénzbe,
+    ha valaki tényleg kér egy képet.
     """
     return render_template("demo.html", gyerek_menu_nelkul=True)
+
+
+# A rajzoló mező nyilvános. Enélkül egy bot percek alatt sok képet
+# kérhetne, és minden kép pénzbe kerül.
+_kep_keresek: dict[str, list[float]] = {}
+_KEP_MAX = 5
+_KEP_ORA = 3600
+
+
+def _kep_meg_fer(ip: str) -> bool:
+    most = time.time()
+    idok = [t for t in _kep_keresek.get(ip, []) if most - t < _KEP_ORA]
+    if len(idok) >= _KEP_MAX:
+        _kep_keresek[ip] = idok
+        return False
+    idok.append(most)
+    _kep_keresek[ip] = idok
+    if len(_kep_keresek) > 500:
+        regi = [k for k, v in _kep_keresek.items() if not v or most - v[-1] > _KEP_ORA]
+        for k in regi:
+            _kep_keresek.pop(k, None)
+    return True
+
+
+def _kep_hiba(lang: str, ures: bool = False, sok: bool = False) -> str:
+    es = (lang or "").lower().startswith("es")
+    if ures:
+        return "Escribe qué quieres que dibuje." if es else "Írd le, mit rajzoljak."
+    if sok:
+        return "Ahora descanso un poco. Inténtalo más tarde." if es else "Most pihenek egy kicsit. Próbáld meg később."
+    return "Ahora no he podido dibujar. Inténtalo un poco más tarde." if es else "Most nem sikerült a rajz. Próbáld meg egy kicsit később."
+
+
+@app.route("/api/generate-image", methods=["POST"])
+def generate_image():
+    """Egy gyerekmondatból egy illusztráció. A kulcs csak a környezetből jön."""
+    adat = request.get_json(silent=True) or {}
+    lang = str(adat.get("lang") or request.args.get("lang") or "hu")
+    szoveg = str(adat.get("prompt") or "").strip()
+    szoveg = re.sub(r"\s+", " ", szoveg)[:200]
+    if not szoveg:
+        return jsonify(ok=False, error=_kep_hiba(lang, ures=True)), 400
+    ip = request.headers.get("X-Forwarded-For", request.remote_addr or "")
+    ip = ip.split(",")[0].strip() or "ismeretlen"
+    if not _kep_meg_fer(ip):
+        return jsonify(ok=False, error=_kep_hiba(lang, sok=True)), 429
+
+    api_key = _openai_api_key()
+    if not api_key or "\n" in api_key or "\r" in api_key:
+        logger.error("Képgenerálás: OPENAI_API_KEY hiányzik vagy sortörést tartalmaz")
+        return jsonify(ok=False, error=_kep_hiba(lang)), 503
+
+    try:
+        kliens = _openai_client(api_key, request_timeout=90.0, max_retries=0)
+        # A DALL-E 2 és 3 ezen a kulcson már nincs. A gpt-image-1-mini
+        # ugyanazt a images.generate hívást használja, és olcsóbb.
+        valasz = kliens.images.generate(
+            model="gpt-image-1-mini",
+            prompt=(
+                "Barátságos, egyszerű gyerekillusztráció, pasztell színekkel, "
+                "szöveg nélkül a képen. A kérés: " + szoveg
+            ),
+            size="1024x1024",
+            quality="low",
+            n=1,
+        )
+        kep = valasz.data[0]
+        if getattr(kep, "b64_json", None):
+            return jsonify(ok=True, url="data:image/png;base64," + kep.b64_json)
+        if getattr(kep, "url", None):
+            return jsonify(ok=True, url=kep.url)
+        raise RuntimeError("üres képválasz")
+    except Exception:
+        logger.exception("Képgenerálás sikertelen")
+        return jsonify(ok=False, error=_kep_hiba(lang)), 502
 
 
 @app.route("/blog")

@@ -12,12 +12,18 @@
 {% block content %}
 <style>
   .demo { max-width: 680px; margin: 0 auto; }
+  .demo-illu {
+    display: block;
+    width: min(240px, 70%);
+    height: auto;
+    margin: 0 auto 1rem;
+  }
   .demo-bevezeto {
     background: var(--white);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 12px;
     padding: 1.4rem 1.5rem;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     margin-bottom: 1.25rem;
   }
   .demo-bevezeto h1 {
@@ -31,9 +37,9 @@
     background: var(--white);
     border: 1px solid var(--border);
     border-top: 5px solid var(--green-600);
-    border-radius: var(--radius);
+    border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
   .demo-feladat h2 {
     color: var(--green-900);
@@ -50,13 +56,39 @@
   .demo-sor input {
     flex: 1;
     min-width: 10rem;
+    height: 40px;
     font: inherit;
-    font-size: 1.05rem;
-    padding: 0.7rem 0.9rem;
-    border: 2px solid var(--border);
-    border-radius: 999px;
+    font-size: 1rem;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
   }
-  .demo-sor input:focus { outline: none; border-color: var(--green-600); }
+  .demo-sor input:focus {
+    outline: none;
+    border-color: #1e7a4d;
+    box-shadow: 0 0 0 3px rgba(30, 122, 77, 0.22);
+  }
+  .demo .btn {
+    height: 40px;
+    border-radius: 10px;
+    padding: 0 16px;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    transform: none;
+  }
+  .demo .btn:hover { transform: none; }
+  .demo .btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 122, 77, 0.28);
+  }
+  .demo .btn-lg { height: 44px; padding: 0 20px; }
+  @media (max-width: 520px) {
+    .demo-sor { flex-direction: column; align-items: stretch; }
+    .demo-sor input { width: 100%; min-width: 0; }
+    .demo .btn { width: 100%; }
+  }
   .demo-vissza {
     margin-top: 1rem;
     padding: 0.85rem 1rem;
@@ -67,9 +99,49 @@
   .demo-vissza.nem { background: var(--danger-bg); color: var(--danger); }
   .demo-cta { margin-top: 1.5rem; text-align: center; }
   .demo-cta p { color: var(--muted); margin-top: 0.6rem; font-size: 0.95rem; }
+  .demo-rajz {
+    margin-top: 1.25rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  .demo-rajz h2 { color: var(--green-900); font-size: 1.25rem; margin-bottom: 0.4rem; }
+  .demo-rajz > p { color: var(--muted); margin: 0 0 1rem; }
+  .demo-rajz form { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .demo-rajz input {
+    flex: 1;
+    min-width: 10rem;
+    height: 40px;
+    font: inherit;
+    font-size: 1rem;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+  .demo-rajz input:focus {
+    outline: none;
+    border-color: #1e7a4d;
+    box-shadow: 0 0 0 3px rgba(30, 122, 77, 0.22);
+  }
+  .demo-var { display: flex; align-items: center; gap: 0.6rem; margin-top: 1rem; color: var(--muted); font-weight: 600; }
+  .demo-var[hidden], .demo-rajz-hiba[hidden], .demo-kep[hidden] { display: none; }
+  .demo-porg { width: 18px; height: 18px; border: 2px solid #d7e6de; border-top-color: #1e7a4d; border-radius: 50%; animation: demo-porog 0.7s linear infinite; }
+  @keyframes demo-porog { to { transform: rotate(360deg); } }
+  .demo-kep { display: block; width: min(100%, 420px); height: auto; margin: 1rem auto 0; border-radius: 12px; border: 1px solid var(--border); }
+  .demo-rajz-hiba { margin-top: 1rem; color: var(--danger); font-weight: 700; }
+  @media (max-width: 520px) {
+    .demo-rajz form { flex-direction: column; }
+    .demo-rajz input, .demo-rajz .btn { width: 100%; }
+  }
 </style>
 
 <div class="demo">
+  <img class="demo-illu" src="{{ url_for('static', filename='img/demo_illustration.svg') }}"
+       alt="{{ 'Ilustración de matemáticas' if lang == 'es' else 'Matematika illusztráció' }}">
   <div class="demo-bevezeto">
     {% if lang == 'es' %}
       <h1>Así es una lección en TutorIAcademia</h1>
@@ -98,6 +170,25 @@
       </button>
     </form>
     <p class="demo-vissza" id="demo-vissza" hidden></p>
+  </div>
+
+  <div class="demo-rajz">
+    <h2>{% if lang == 'es' %}Dibuja con el profesor{% else %}Rajzolj a tanárral{% endif %}</h2>
+    <p>{% if lang == 'es' %}Escribe qué te gustaría ver. El dibujo tarda un momento.{% else %}Írd le, mit szeretnél látni. A rajz egy pillanatig készül.{% endif %}</p>
+    <form id="demo-rajz-urlap">
+      <input id="demo-rajz-szoveg" type="text" maxlength="200" autocomplete="off"
+             placeholder="{% if lang == 'es' %}Por ejemplo: una manzana roja{% else %}Például: egy piros alma{% endif %}"
+             aria-label="{% if lang == 'es' %}Qué dibujar{% else %}Mit rajzoljunk{% endif %}">
+      <button class="btn btn-primary" type="submit">
+        {% if lang == 'es' %}Dibujar{% else %}Rajzolás{% endif %}
+      </button>
+    </form>
+    <p class="demo-var" id="demo-rajz-var" hidden>
+      <span class="demo-porg" aria-hidden="true"></span>
+      {% if lang == 'es' %}Estoy dibujando…{% else %}Rajzolok…{% endif %}
+    </p>
+    <p class="demo-rajz-hiba" id="demo-rajz-hiba" hidden></p>
+    <img class="demo-kep" id="demo-rajz-kep" alt="" hidden>
   </div>
 
   <div class="demo-cta">
@@ -142,6 +233,56 @@
         ? 'Todavía no. Redondea 4210 y 1680 por separado a centenas, y suma esos dos números.'
         : 'Még nem. Kerekítsd külön a 4210-et és a 1680-at százasra, majd add össze a két kerek számot.';
     }
+  });
+})();
+
+(function () {
+  var form = document.getElementById('demo-rajz-urlap');
+  var mezo = document.getElementById('demo-rajz-szoveg');
+  var varakozas = document.getElementById('demo-rajz-var');
+  var hiba = document.getElementById('demo-rajz-hiba');
+  var kep = document.getElementById('demo-rajz-kep');
+  var es = document.documentElement.lang === 'es';
+  if (!form || !mezo || !varakozas || !hiba || !kep) return;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var szoveg = (mezo.value || '').trim();
+    hiba.hidden = true;
+    kep.hidden = true;
+    if (!szoveg) {
+      hiba.hidden = false;
+      hiba.textContent = es ? 'Escribe qué quieres que dibuje.' : 'Írd le, mit rajzoljak.';
+      return;
+    }
+    var gomb = form.querySelector('button');
+    if (gomb) gomb.disabled = true;
+    varakozas.hidden = false;
+    fetch('/api/generate-image', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: szoveg, lang: es ? 'es' : 'hu' })
+    }).then(function (r) {
+      return r.json().then(function (adat) { return { ok: r.ok, adat: adat }; });
+    }).then(function (csomag) {
+      if (csomag.ok && csomag.adat && csomag.adat.url) {
+        kep.alt = szoveg;
+        kep.src = csomag.adat.url;
+        kep.hidden = false;
+        return;
+      }
+      hiba.hidden = false;
+      hiba.textContent = (csomag.adat && csomag.adat.error)
+        || (es ? 'Ahora no he podido dibujar. Inténtalo un poco más tarde.' : 'Most nem sikerült a rajz. Próbáld meg egy kicsit később.');
+    }).catch(function () {
+      hiba.hidden = false;
+      hiba.textContent = es
+        ? 'Ahora no he podido dibujar. Inténtalo un poco más tarde.'
+        : 'Most nem sikerült a rajz. Próbáld meg egy kicsit később.';
+    }).finally(function () {
+      varakozas.hidden = true;
+      if (gomb) gomb.disabled = false;
+    });
   });
 })();
 </script>
