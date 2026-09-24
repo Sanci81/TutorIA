@@ -133,7 +133,7 @@
 </style>
 <section class="bem-hero">
   <div class="bem-hero-szoveg">
-    <h1>{{ t('bem_cim_1') }}<br><em>{{ t('bem_cim_kiemelt') }}</em> {{ t('bem_cim_2') }}</h1>
+    <h1>{{ t('bem_cim_1') }} <em>{{ t('bem_cim_kiemelt') }}</em><br>{{ t('bem_cim_2') }}</h1>
     {# A pontnál törünk, ne a „Ha a” közepén. #}
     <p class="bem-alcim">{{ t('bem_alcim')|replace('. ', '.<br>')|safe }}</p>
     {% if session.get('parent_id') %}
