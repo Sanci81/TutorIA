@@ -738,7 +738,7 @@
                     {% if aktiv_gyerek and aktiv_gyerek.avatar %}
                     <img src="{{ url_for('avatar_kep', kulcs=aktiv_gyerek.avatar) }}" alt="">
                     {% else %}{{ child['name'][0]|upper }}{% endif %}
-                </div>
+            </div>
                 <div class="chat-header-identity-text">
                     <h1 class="chat-child-name">{{ child['name'] }}</h1>
                     <p class="chat-subject">{{ subject_label }}</p>
@@ -770,11 +770,11 @@
                 <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
                 <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> {{ t('chat_minutes_suffix') }}</span>
                 <span class="chat-mini-stat">🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
-                {% if streak_days and streak_days > 0 %}
+            {% if streak_days and streak_days > 0 %}
                 <span class="chat-mini-stat chat-mini-stat-sorozat" id="streak-bar">
-                    {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
+                {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
                 </span>
-                {% endif %}
+            {% endif %}
                 <span class="chat-header-ter"></span>
                 {% if show_early_test %}
                 <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
@@ -4115,12 +4115,12 @@
                nem duplázódik a click-kel, mint a touchstart tenné. */
             if (window.PointerEvent) {
                 voiceMicBtn.addEventListener('pointerdown', function (e) {
-                    e.preventDefault();
+                e.preventDefault();
                     toggleRecording();
-                });
+            });
             } else {
                 voiceMicBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
+                e.preventDefault();
                     toggleRecording();
                 });
             }

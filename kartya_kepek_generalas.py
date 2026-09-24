@@ -53,8 +53,19 @@ sys.path.insert(0, GYOKER)
 
 CEL_MAPPA = os.path.join(GYOKER, "kartya_kepek_uj")
 
-# A modell neve. Ha a fiókodon más érhető el, EZT az egy sort kell átírni.
-MODELL = "gpt-image-1"
+# A MODELL NEVE. Ha a fiókodon más érhető el, EZT az egy sort kell átírni.
+#
+# 2026-09-21: gpt-image-1-ről váltva. Az volt a régi generáció, és annak
+# a rajzkészsége okozta a zavaros, sötét, „varázslós" képeket is.
+#
+#   gpt-image-2            ← most ezt használjuk. Jóval jobb rajz, és
+#                            pontosabban követi, amit a prompt kér.
+#   gpt-image-2.5-flare    ← újabb és drágább. Ha a kettes sem elég jó,
+#   gpt-image-2.5-sunburst    írd át erre az egy sort, és futtasd újra.
+#
+# Ha a fiókod valamelyiket nem éri el, a szkript hibát ír ki a nevével –
+# olyankor lépj vissza a listában eggyel.
+MODELL = "gpt-image-2"
 MERET = "1024x1024"
 
 # ── A KÖZÖS STÍLUS ─────────────────────────────────────────────────────────
@@ -62,15 +73,46 @@ MERET = "1024x1024"
 # kapja meg, szóról szóra ugyanúgy. Ha a szett stílusát változtatni akarod,
 # CSAK ezt írd át – és akkor az egészet újra kell generálni, mert félig
 # régi, félig új stílusú szett rosszabb, mint bármelyik önmagában.
+# 2026-09-21: átírva a MÁR MEGLÉVŐ tíz kártya kinézetére (Newton, Curie,
+# Galilei…). Azok festett portrék: vastag ecsetnyomok, erős színek, a fej
+# mögül szivárványos fénysugarak, sötét háttér, félalak. A korábbi szöveg
+# ettől eltérő, akciódúsabb irányt írt le, ezért lett volna kétféle szett.
+# 2026-09-21, MÁSODIK TANULSÁG (Sándor vette észre, és igaza volt):
+# a Newton-kártyán a szivárvány NEM dísz – az a felfedezése, a prizmából
+# jön. A közös stílusba ezért NEM szabad színes fénysugarat írni, mert
+# akkor Széchenyi mögé is odakerül egy naplemente, Marconi mögé meg egy
+# szivárvány, aminek semmi köze a rádióhoz. A színt és a fényt MINDIG a
+# kártya saját leírása adja (kartyak.py „prompt"), a közös stílus csak
+# a festésmódot és a kivágást mondja meg.
+# 2026-09-21, HARMADIK NEKIFUTÁS. Most a MEGLÉVŐ TÍZ KÁRTYÁRÓL írtam le
+# a stílust, nem fejből: Darwin a pinttyel, Curie a világító lombikkal,
+# Watt a gőzgéppel, Mengyelejev a periódusos táblával. Ami közös bennük:
+# vastag, szögletes ecsetfoltok; türkiz-zöld árnyék és meleg borostyán
+# fény; a személy a SAJÁT munkahelyén, munka közben, a saját eszközével;
+# erős peremfény, jól megvilágított arc. Nem fotó, nem olajfestmény.
+# 2026-09-21, NEGYEDIK NEKIFUTÁS – IRÁNYVÁLTÁS.
+# A harmadik kör technikailag jó lett, de Sándor kimondta a lényeget:
+# egy nyugodt portré öltönyös férfiról nem érdekel egy gyereket. A
+# gyűjtőkártya attól izgalmas, hogy a figura CSINÁL valamit, hősies
+# beállításban, és a „képessége" látványosan ott ragyog a kezében.
+# A háttér ezért EGYSZERŰ: a figura ugorjon ki belőle, ne kelljen
+# kitalálni, mi az a sok üvegcső a fal mellett.
+# 2026-09-21, ÖTÖDIK NEKIFUTÁS – EL A VALÓSÁGHŰSÉGTŐL.
+# Sándor megmutatta a két gyerekének: nem tetszett nekik. A negyedik kör
+# még mindig fényképszerű arcot adott, csak mosolygósat. A gyűjtőkártyán
+# viszont RAJZOLT hős van: tiszta körvonal, egyszerűsített forma, nagy
+# kifejező szem, cel-árnyékolás, mögötte robbanó energia. Ez szándékosan
+# NEM a meglévő tíz kártya stílusa – ha beválik, azokat is újra kell majd
+# csinálni, hogy a szett egységes legyen.
 STILUS = (
-    "dynamic trading card hero art, a decisive moment of discovery, "
-    "three-quarter action pose, low heroic camera angle, the subject caught "
-    "mid-gesture and leaning into the light, strong dramatic key light with "
-    "deep shadows, glowing energy swirling around their hands and their "
-    "work, sparks and drifting light motes, bold saturated colours, high "
-    "contrast, painterly digital illustration, visible brush strokes, "
-    "cinematic depth, the whole figure and head inside a square frame with "
-    "margin, centred composition"
+    "stylised comic book hero illustration for a collectible card, "
+    "graphic novel art, bold clean black linework, adult realistic "
+    "proportions, simplified stylised face that is not cartoonish, "
+    "dramatic high contrast lighting with deep shadows and bright "
+    "highlights, rich deep saturated colours, energetic confident pose, "
+    "the discovery glowing strongly in their hands, simple bold "
+    "background with a burst of light behind the figure, upper body, "
+    "square composition with margin"
 )
 
 # Amit SOHA nem akarunk a képen. A modell hajlamos aláírni a művét, és
@@ -78,7 +120,23 @@ STILUS = (
 TILTAS = (
     "No text, no letters, no numbers, no words, no captions, no signature, "
     "no watermark, no logo, no border, no frame, no modern clothing, "
-    "not a photograph."
+    "not a photograph. "
+    # 2026-09-21: az első kör tanulsága. A „szivárvány" szótól a modell
+    # SZIVÁRVÁNYT FESTETT Széchenyi mögé, a „painterly / brush strokes"
+    # szavaktól pedig múzeumi olajfestmény lett mind, barnás tónusokkal.
+    # A kártyáink nem ilyenek: azok világosak, élénkek, tiszták.
+    "Not an oil painting, no canvas texture, no visible thick brush "
+    "strokes, no rainbow arc or rainbow stripes, no muted brown or sepia "
+    "tones, not a 19th century museum portrait. "
+    # A második kör hibái: mindenki körül lángoló aranyszínű örvény
+    # kavargott, a jelenet sötét és zavaros lett, az arc árnyékban maradt.
+    "No murky dark scene, no cluttered busy background, the face must be "
+    "clearly lit and easy to see, not a calm static museum portrait, "
+    "not photorealistic, no realistic skin texture, "
+    "not a painting of a real photograph, "
+    # Az ötödik kör hibája: teljesen mesebe fordult.
+    "not anime, not manga, no big round eyes, no pastel colours, "
+    "not a soft children storybook illustration, not cute."
 )
 
 

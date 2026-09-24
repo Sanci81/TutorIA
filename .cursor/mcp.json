@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "undraw": {
+      "command": "npx",
+      "args": ["-y", "@dawipong/mcp-undraw@latest"]
+    }
+  }
+}

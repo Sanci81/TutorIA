@@ -3,7 +3,7 @@
 Ez a fájl azért van, hogy semmi ne egy beszélgetés emlékezetén múljon.
 Ha egy tétel elkészült, húzd át vagy töröld. Ha újat találsz, írd ide.
 
-Utolsó frissítés: 2026-09-21
+Utolsó frissítés: 2026-09-23
 
 ---
 
@@ -35,6 +35,30 @@ Utolsó frissítés: 2026-09-21
 - [ ] **Írásos módban túl sok szót kérdez egyszerre.** Egy kérdésben tíz
       szó is szerepelt. A HANGOS módra ez már meg van oldva, az írásosra
       nem. Ugyanott javítható.
+- [ ] **A „Gondolkodom…" jelző kint ragad.** ELHALASZTVA, NEM MEGOLDOTT.
+      Félbehagyva 2026-09-20, akkor kellett a vizsgálatot abbahagyni.
+      A tanár válasza már kint van a táblán, a gyerek mégis azt látja,
+      hogy a tanár gondolkodik. Amit már KIZÁRTUNK, hogy ne kelljen újra:
+      * NEM elmentett üzenet, hanem tényleg a jelző. A tanári buborék
+        zöld és balra igazított (`static/css/style.css` 1889. és 1903.
+        sor), és a jelző ezt az osztályt viseli (`chat.html` 859. sor).
+      * A frontend mindkét küldési útvonalán VAN hibakezelés, és
+        mindkettő a válasz elején elrejti a jelzőt (`chat.html`: szöveges
+        `sendMessage` 3217. és 3257. sor, hangos `sendVoiceChat` 3634. és
+        3680. sor). Tehát ha a válasz megjön, a jelző eltűnik — vagyis a
+        beragadás azt jelenti, hogy a VÁLASZ NEM JÖTT MEG.
+      * Két védőháló van rá (`chat.html` 2812–2878. sor): egy
+        másodpercenkénti és egy 110 másodperces. Ezeket Claude tette be
+        2026-09-20-án a `2eeae18` commitban — nem mértük meg, segít-e.
+      KÖVETKEZŐ LÉPÉS, mérés előbb: idézd elő, és NE nyúlj hozzá, csak
+      figyeld az órát. Ha 1-2 másodpercen belül eltűnik, nincs hiba (a
+      kép készült rossz pillanatban). Ha 30 mp-en túl is ott van, de 2
+      perc körül eltűnik, akkor a kérésszámláló ragadt be, és a javítás
+      helye a `chat.html` 2850. sora (a `fetch` hívás try/catch-be).
+      GYANÚ, amit nem vizsgáltunk végig: a `Procfile`-ban 4 munkás × 12
+      szál fut a Railway-en. Ha a memória elfogy, a munkást kilövik, és a
+      kérés válasz nélkül hal meg — ez pontosan ezt a tünetet adná.
+      (A kabala-figura eltűnése ehhez NEM tartozik, azt Sándor megtalálta.)
 
 ## Tartalom
 
@@ -89,3 +113,30 @@ Utolsó frissítés: 2026-09-21
 - Az `<FL:xx>` nyelvjelölők nem kerülnek ki a feladatok gombjaira.
 - ÁSZF: előfizetés, elállási jog, elérhetőség/karbantartás, panasz.
 - Facebook-előnézet (Open Graph) + 1200x630-as, középre komponált kép.
+
+## 2026-09-22 – új ötletek, amiket NEM szabad elfelejteni
+
+### 1. Elakadás-lista az admin oldalra  (kb. 1-1,5 óra)
+Aggregált, névtelen kimutatás a MÁR MEGLÉVŐ adatokból: témakörönként
+hányan kezdték el, hányan fejezték be, mennyi az átlagos idő, hányan
+buktak el a teszten. Ebből látszik, hol akad el mindenki.
+ÁSZF nem kell hozzá (nincs új adatgyűjtés). Az adatvédelmi
+tájékoztatóba viszont kell egy mondat a névtelen statisztikáról.
+NEM külső hőtérkép-szolgáltatás (Hotjar és társai) – gyerekoldalon
+az külön adatfeldolgozói szerződést és tájékoztatást igényelne.
+
+### 2. Kiejtés-javítás felolvasással  (közepes munka)
+Az Azure Speech "Pronunciation Assessment" szolgáltatásával: a gyerek
+felolvas egy ismert szöveget, a program szavanként pontozza, és
+megmutatja, hol akadt meg.
+FIGYELEM, két dolog:
+  – a magyar nyelvi támogatást még ELLENŐRIZNI kell az Azure
+    nyelvlistáján; a spanyol és az angol biztosan megy;
+  – a modellek felnőtt beszéden tanultak, ezért gyereknél hamis hibát
+    jelezhetnek. Csak NAGYON alacsony pontszámnál szóljon, és akkor is
+    biztatva: "mondjuk ki még egyszer együtt", soha nem azt, hogy rossz.
+
+### 3. Egy mondat az album oldalra (apró)
+Halványan, kicsiben, az album alján:
+"A kártyák képei művészi ábrázolások, nem hiteles portrék."
+Fontos, mert pl. Bolyai Jánosról nem maradt fenn hiteles arckép.
