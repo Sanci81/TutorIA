@@ -3919,3 +3919,81 @@ html, body {
     stroke: #7b5ea7;
     fill: #f3eef8;
 }
+
+/* Főoldal, telefon: szöveg, kártya, fiú egymás alatt.
+   A kényszerített sortörés itt zavar, a mondat magától törik. */
+@media (max-width: 768px) {
+    .bem-hero {
+        grid-template-columns: minmax(0, 1fr) !important;
+        justify-content: stretch !important;
+        justify-items: stretch;
+        column-gap: 0 !important;
+        row-gap: 22px;
+        width: 100%;
+        max-width: 100%;
+    }
+    .bem-hero-szoveg { max-width: 100%; padding-right: 0; }
+    .bem-hero h1 br,
+    .bem-hero .bem-alcim br { display: none !important; }
+    .bem-hero h1,
+    .bem-alcim {
+        max-width: 100% !important;
+        overflow-wrap: normal;
+        word-break: normal;
+    }
+    .bem-hero h1 { font-size: 30px !important; line-height: 1.25; }
+    .bem-alcim { font-size: 17px; line-height: 1.55; margin: 14px 0 18px; }
+    .bem-valaszto {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box;
+        padding: 16px 14px;
+    }
+    .bem-evek {
+        width: 100%;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px;
+    }
+    .bem-ev {
+        width: 100% !important;
+        max-width: 100%;
+        height: 58px;
+        box-sizing: border-box;
+        font-size: 26px;
+    }
+    .bem-diak {
+        display: block !important;
+        width: 40%;
+        max-width: 40% !important;
+        height: auto;
+        margin: 0 auto !important;
+        justify-self: center;
+        align-self: center;
+    }
+}
+
+/* Fekvő telefon: a fiú a kártya jobb oldalán, a kártya a saját oszlopában marad. */
+@media (max-height: 500px) and (max-width: 900px) {
+    .bem-hero {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 30%) !important;
+        grid-template-areas: "szoveg szoveg" "kartya diak" !important;
+        column-gap: 12px !important;
+        row-gap: 12px;
+        align-items: end;
+    }
+    .bem-hero-szoveg { grid-area: szoveg; }
+    .bem-valaszto {
+        grid-area: kartya;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .bem-diak {
+        grid-area: diak;
+        display: block !important;
+        width: 100%;
+        max-width: 100% !important;
+        margin: 0 !important;
+        justify-self: end;
+        align-self: end;
+    }
+}
