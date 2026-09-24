@@ -2725,8 +2725,9 @@ body:has(.chat-layout) .content { max-width: 1560px; }
    se lógjon ki görgetés nélkül. */
 .bem-hero {
     padding-top: 40px;
-    padding-bottom: 178px;
-    max-height: calc(100vh - 74px);
+    padding-bottom: 28px;
+    max-height: none;
+    overflow: visible;
     box-sizing: border-box;
 }
 .bem-figura {
