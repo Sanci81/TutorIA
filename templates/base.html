@@ -27,9 +27,9 @@
     <meta property="og:locale" content="{{ 'es_ES' if lang == 'es' else 'hu_HU' }}">
     <meta property="og:title" content="TutorIAcademia">
     <meta property="og:description" content="{{ self.meta_description() }}">
-    <meta property="og:url" content="{{ og_url }}">
-    <meta property="og:image" content="{{ og_kep }}">
-    <meta property="og:image:secure_url" content="{{ og_kep }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:image" content="{{ request.url_root }}static/img/og_hu2.png">
+    <meta property="og:image:secure_url" content="{{ request.url_root }}static/img/og_hu2.png">
     <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -37,12 +37,13 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="TutorIAcademia">
     <meta name="twitter:description" content="{{ self.meta_description() }}">
-    <meta name="twitter:image" content="{{ og_kep }}">
+    <meta name="twitter:image" content="{{ request.url_root }}static/img/og_hu2.png">
 
     {# ═══ MELYIK NYELVEN HOL VAN EZ A LAP (hreflang) ═════════════════════
        A magyar a gyökéren van, a spanyol az /es/ alatt. Az útvonalról
        mindig levesszük az /es előtagot, hogy mindkét nyelven UGYANEZ a
        három sor kerüljön ki – ez a kereső szabálya. #}
+    <link rel="canonical" href="{{ request.url }}">
     <link rel="alternate" hreflang="hu" href="https://web-production-fb5a05.up.railway.app{{ request.path | replace('/es', '') }}">
     <link rel="alternate" hreflang="es" href="https://web-production-fb5a05.up.railway.app/es{{ request.path | replace('/es', '') }}">
     <link rel="alternate" hreflang="x-default" href="https://web-production-fb5a05.up.railway.app{{ request.path | replace('/es', '') }}">
