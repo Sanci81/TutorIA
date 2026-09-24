@@ -13,10 +13,10 @@
      A kép háttere átlátszó, a fej nincs levágva. */
   .bem-hero {
     display: grid;
-    grid-template-columns: minmax(420px, 1.45fr) minmax(280px, 340px) auto;
+    grid-template-columns: minmax(340px, 1fr) minmax(440px, 500px) auto;
     align-items: stretch;
-    gap: 40px;
-    max-width: 1180px;
+    gap: 36px;
+    max-width: 1280px;
     padding-bottom: 28px;
     max-height: none;
   }
@@ -45,13 +45,14 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 28px 22px;
+    padding: 28px 26px;
     background: rgba(255, 255, 255, 0.65) !important;
     background-color: rgba(255, 255, 255, 0.65) !important;
     -webkit-backdrop-filter: blur(16px) !important;
     backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 16px 36px rgba(20, 60, 40, 0.07) !important;
   }
   /* Színes fátyol a kártya saját háttere mögött, hogy az üveg
      ne egy fehér falra simuljon. A kattintást nem fogja el. */
@@ -71,7 +72,7 @@
     flex: 1;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(4, 1fr);
-    gap: 12px;
+    gap: 14px;
   }
   .bem-ev,
   .bem-ev:nth-child(7),
@@ -81,9 +82,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 72px;
-    padding: 10px 4px;
-    font-size: 30px;
+    min-height: 88px;
+    padding: 14px 10px;
+    font-size: 42px;
     font-weight: 800;
     line-height: 1;
     background: rgba(255, 255, 255, 0.28) !important;

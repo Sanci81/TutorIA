@@ -2426,10 +2426,10 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     background-color: rgba(255, 255, 255, 0.65);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
+    border: none;
     border-radius: 20px;
     padding: 26px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 16px 36px rgba(20, 60, 40, 0.07);
 }
 .bem-valaszto h3 { font-size: 17px; margin: 0 0 16px; }
 .bem-evek { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -2767,8 +2767,8 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     background-color: rgba(255, 255, 255, 0.65);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    border: none;
+    box-shadow: 0 16px 36px rgba(20, 60, 40, 0.07);
 }
 .bem-ev { border-width: 2px; }
 .bem-ev:nth-child(1) { border-color: rgba(239, 95, 95, 0.42); color: var(--b-korall); }
@@ -3841,8 +3841,9 @@ html, body {
     background-color: rgba(255, 255, 255, 0.65) !important;
     -webkit-backdrop-filter: blur(16px) !important;
     backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.8) !important;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05) !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 16px 36px rgba(20, 60, 40, 0.07) !important;
 }
 .chat-figure,
 .tanit-abra,
