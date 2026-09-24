@@ -3986,13 +3986,15 @@ html, body {
         flex-wrap: wrap;
         align-items: center;
         justify-content: flex-start;
-        column-gap: 8px;
+        column-gap: 0;
         row-gap: 12px;
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
     }
     .bem-hero-szoveg { flex: 1 1 100%; min-width: 0; max-width: 100%; }
+    .bem-hero .bem-alcim { white-space: normal !important; }
+    .bem-hero .bem-alcim br { display: none !important; }
     .bem-valaszto {
         width: 55% !important;
         max-width: 55% !important;
@@ -4020,5 +4022,6 @@ html, body {
         object-fit: contain;
         flex: 0 1 40%;
         margin: 0 !important;
+        object-position: left center;
     }
 }
