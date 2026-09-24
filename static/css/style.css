@@ -3970,14 +3970,19 @@ html, body {
     }
 }
 
-/* Asztalon csak a két soros cím, mobilon csak a három soros. */
-@media (min-width: 821px) {
-    .bem-hero .cim-asztal { display: inline !important; }
-    .bem-hero .cim-mobil { display: none !important; }
-}
-@media (max-width: 820px) {
+/* 1024-től csak a két soros cím. Alatta, fekvő telefonon is, csak a három soros. */
+.bem-hero .cim-asztal { display: inline !important; }
+.bem-hero .cim-mobil { display: none !important; }
+@media (max-width: 1023px) {
     .bem-hero .cim-asztal { display: none !important; }
     .bem-hero .cim-mobil { display: inline !important; }
+    .bem-hero-szoveg { max-width: 100%; padding-right: 8px; box-sizing: border-box; }
+    .bem-hero .bem-alcim {
+        white-space: normal !important;
+        max-width: 22rem;
+        padding-right: 4px;
+    }
+    .bem-hero .bem-alcim br { display: none !important; }
 }
 
 /* Fekvő telefon: a szöveg felül, a kártya és a fiú egy sorban.
