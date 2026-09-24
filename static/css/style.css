@@ -3972,28 +3972,46 @@ html, body {
     }
 }
 
-/* Fekvő telefon: a fiú a kártya jobb oldalán, a kártya a saját oszlopában marad. */
-@media (max-height: 500px) and (max-width: 900px) {
+/* Fekvő telefon: a szöveg felül, a kártya és a fiú egy sorban.
+   55% + 40% + a köz elfér, a kártya nem lóg ki. */
+@media (max-height: 500px) and (orientation: landscape) {
     .bem-hero {
-        grid-template-columns: minmax(0, 1fr) minmax(0, 30%) !important;
-        grid-template-areas: "szoveg szoveg" "kartya diak" !important;
-        column-gap: 12px !important;
-        row-gap: 12px;
-        align-items: end;
+        display: flex !important;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
-    .bem-hero-szoveg { grid-area: szoveg; }
+    .bem-hero-szoveg { flex: 1 1 100%; min-width: 0; max-width: 100%; }
     .bem-valaszto {
-        grid-area: kartya;
+        width: 55% !important;
+        max-width: 55% !important;
+        padding: 15px !important;
+        box-sizing: border-box;
+        flex: 0 1 55%;
+        min-width: 0;
+    }
+    .bem-evek {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 5px !important;
+        width: 100%;
+    }
+    .bem-ev {
         width: 100% !important;
-        max-width: 100% !important;
+        min-width: 0;
+        box-sizing: border-box;
     }
     .bem-diak {
-        grid-area: diak;
         display: block !important;
-        width: 100%;
-        max-width: 100% !important;
+        width: 40% !important;
+        max-width: 40% !important;
+        max-height: 80vh !important;
+        height: auto;
+        object-fit: contain;
+        flex: 0 1 40%;
         margin: 0 !important;
-        justify-self: end;
-        align-self: end;
     }
 }
