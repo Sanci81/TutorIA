@@ -13,23 +13,23 @@
      A kép háttere átlátszó, a fej nincs levágva. */
   .bem-hero {
     display: grid;
-    grid-template-columns: minmax(340px, 1fr) minmax(440px, 500px) auto;
+    grid-template-columns: minmax(520px, 1.15fr) minmax(420px, 480px) auto;
     align-items: stretch;
     gap: 36px;
     max-width: 1280px;
     padding-bottom: 28px;
     max-height: none;
   }
-  .bem-hero-szoveg { align-self: center; padding-right: 12px; }
+  .bem-hero-szoveg { align-self: center; padding-right: 8px; max-width: 36rem; }
   .bem-hero-szoveg h1 {
-    max-width: none;
-    font-size: 44px;
-    line-height: 1.28;
+    max-width: 16em;
+    font-size: 42px;
+    line-height: 1.22;
     margin-bottom: 6px;
   }
-  /* A mondat a pontnál törik, a „Ha a” nem kerül külön sorba. */
+  /* Mindkét mondat elfér egy sorban, a törés csak a pontnál van. */
   .bem-alcim {
-    max-width: 36em;
+    max-width: 40em;
     margin: 22px 0 30px;
     line-height: 1.65;
   }
@@ -39,8 +39,8 @@
   .bem-valaszto {
     position: relative;
     overflow: hidden;
-    height: 100%;
-    align-self: stretch;
+    height: auto;
+    align-self: center;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
@@ -69,10 +69,12 @@
   .bem-valaszto > * { position: relative; z-index: 1; }
   .bem-valaszto h3 { margin-bottom: 18px; }
   .bem-evek {
-    flex: 1;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(4, 1fr);
-    gap: 14px;
+    flex: none;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: 16px;
+    align-content: center;
   }
   .bem-ev,
   .bem-ev:nth-child(7),
@@ -82,8 +84,12 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 88px;
-    padding: 14px 10px;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    padding: 8px;
+    border-radius: 22px;
     font-size: 42px;
     font-weight: 800;
     line-height: 1;
@@ -100,22 +106,24 @@
     max-height: 460px;
     max-width: 280px;
     object-fit: contain;
-    background: transparent;
-    border: 0;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
     border-radius: 0;
-    box-shadow: none;
+    box-shadow: none !important;
+    mix-blend-mode: normal;
   }
   @media (max-width: 900px) {
     .bem-hero { grid-template-columns: 1fr; justify-items: start; }
     .bem-valaszto { height: auto; padding: 26px; }
     .bem-evek { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .bem-ev { min-height: 68px; font-size: 26px; }
+    .bem-ev { min-height: 0; font-size: 34px; aspect-ratio: 1 / 1; }
     .bem-diak { max-height: 340px; }
   }
 </style>
 <section class="bem-hero">
   <div class="bem-hero-szoveg">
-    <h1>{{ t('bem_cim_1') }} <em>{{ t('bem_cim_kiemelt') }}</em> {{ t('bem_cim_2') }}</h1>
+    <h1>{{ t('bem_cim_1') }}<br><em>{{ t('bem_cim_kiemelt') }}</em> {{ t('bem_cim_2') }}</h1>
     {# A pontnál törünk, ne a „Ha a” közepén. #}
     <p class="bem-alcim">{{ t('bem_alcim')|replace('. ', '.<br>')|safe }}</p>
     {% if session.get('parent_id') %}
