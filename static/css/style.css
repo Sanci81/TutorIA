@@ -3920,8 +3920,10 @@ html, body {
     fill: #f3eef8;
 }
 
+.bem-hero .cim-mobil { display: none; }
+
 /* Főoldal, telefon: szöveg, kártya, fiú egymás alatt.
-   A kényszerített sortörés itt zavar, a mondat magától törik. */
+   Álló módban a cím három külön sor. */
 @media (max-width: 768px) {
     .bem-hero {
         grid-template-columns: minmax(0, 1fr) !important;
@@ -3933,8 +3935,6 @@ html, body {
         max-width: 100%;
     }
     .bem-hero-szoveg { max-width: 100%; padding-right: 0; }
-    .bem-hero h1 br,
-    .bem-hero .bem-alcim br { display: none !important; }
     .bem-hero h1,
     .bem-alcim {
         max-width: 100% !important;
@@ -3972,6 +3972,11 @@ html, body {
     }
 }
 
+@media (max-width: 768px) and (orientation: portrait) {
+    .bem-hero .cim-asztal { display: none !important; }
+    .bem-hero .cim-mobil { display: block !important; }
+}
+
 /* Fekvő telefon: a szöveg felül, a kártya és a fiú egy sorban.
    55% + 40% + a köz elfér, a kártya nem lóg ki. */
 @media (max-height: 500px) and (orientation: landscape) {
@@ -3980,7 +3985,9 @@ html, body {
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
-        gap: 20px;
+        justify-content: flex-start;
+        column-gap: 8px;
+        row-gap: 12px;
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
