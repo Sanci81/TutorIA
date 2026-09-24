@@ -3920,8 +3920,6 @@ html, body {
     fill: #f3eef8;
 }
 
-.bem-hero .cim-mobil { display: none; }
-
 /* Főoldal, telefon: szöveg, kártya, fiú egymás alatt.
    Álló módban a cím három külön sor. */
 @media (max-width: 768px) {
@@ -3972,9 +3970,14 @@ html, body {
     }
 }
 
-@media (max-width: 768px) and (orientation: portrait) {
+/* Asztalon csak a két soros cím, mobilon csak a három soros. */
+@media (min-width: 821px) {
+    .bem-hero .cim-asztal { display: inline !important; }
+    .bem-hero .cim-mobil { display: none !important; }
+}
+@media (max-width: 820px) {
     .bem-hero .cim-asztal { display: none !important; }
-    .bem-hero .cim-mobil { display: block !important; }
+    .bem-hero .cim-mobil { display: inline !important; }
 }
 
 /* Fekvő telefon: a szöveg felül, a kártya és a fiú egy sorban.
