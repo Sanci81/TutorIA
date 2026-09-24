@@ -15,10 +15,11 @@
     display: grid;
     /* Az első oszlop nem nő a szövegnél szélesebbre, így a kártya
        és a fiú balra húzódik. A szöveg saját szélessége változatlan. */
-    grid-template-columns: minmax(520px, 36rem) auto auto;
-    justify-content: start;
+    grid-template-columns: max-content auto auto !important;
+    justify-content: start !important;
     align-items: end;
-    gap: 36px;
+    column-gap: 16px !important;
+    row-gap: 36px;
     max-width: 1280px;
     padding-bottom: 28px !important;
     max-height: none !important;

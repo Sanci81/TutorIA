@@ -2385,9 +2385,11 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 
 .bem-hero {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 52px;
-    align-items: center;
+    grid-template-columns: max-content auto auto;
+    justify-content: start;
+    column-gap: 16px;
+    row-gap: 36px;
+    align-items: end;
     padding: 56px 0 60px;
 }
 .bem-hero h1 {
