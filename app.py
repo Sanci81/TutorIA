@@ -1440,6 +1440,32 @@ def _kep_meg_fer(ip: str) -> bool:
     return True
 
 
+def _kep_szemelyiseg(lang: str) -> str:
+    """A rajzoló személyisége. A konkrét kérés csak ezután jön.
+
+    A képmodellnek nincs külön rendszerüzenete, ezért ez a szöveg
+    a kérés elejére kerül. Magyar oldalon 6–14 év, spanyolon 6–12.
+    """
+    es = (lang or "").lower().startswith("es")
+    if es:
+        kor = "niños de 6 a 12 años (1.º a 6.º de primaria)"
+        nyelv = "español"
+    else:
+        kor = "6–14 éves gyerekeknek (1–8. osztály)"
+        nyelv = "magyar"
+    return (
+        f"Te egy gyerekkönyv-illusztrátor vagy, aki {kor} készít oktató jellegű képeket. "
+        "A stílusod mindig színes, vidám, pasztell árnyalatú, modern vektorgrafikus vagy rajzfilmes. "
+        "Soha ne használj fekete-fehér vonalrajzot, szürkeárnyalatot vagy komor színeket. "
+        "A háttér mindig világos pasztell: krém, halványzöld vagy égkék. Fekete vagy sötét háttér tilos. "
+        "A képek legyenek játékosak, barátságosak, és segítsenek megérteni a tananyagot. "
+        "Ez a stílus minden tantárgyra vonatkozik: matek, történelem, földrajz, kémia, biológia, nyelvtan. "
+        "Kerüld a bonyolult, technikai ábrázolásmódot. "
+        "Ne írj semmilyen szöveget, betűt, számot vagy feliratot a képre. "
+        f"A magyarázatot a felület írja ki, nem a kép. A kérés nyelve: {nyelv}."
+    )
+
+
 def _kep_hiba(lang: str, ures: bool = False, sok: bool = False) -> str:
     es = (lang or "").lower().startswith("es")
     if ures:
@@ -1469,17 +1495,14 @@ def generate_image():
         return jsonify(ok=False, error=_kep_hiba(lang)), 503
 
     try:
-        kliens = _openai_client(api_key, request_timeout=90.0, max_retries=0)
-        # A DALL-E 2 és 3 ezen a kulcson már nincs. A gpt-image-1-mini
-        # ugyanazt a images.generate hívást használja, és olcsóbb.
+        kliens = _openai_client(api_key, request_timeout=120.0, max_retries=0)
+        # A DALL-E modellek ezen a kulcson nincsenek. A gpt-image-1
+        # a jobb minőség; a „hd” megfelelője itt a high.
         valasz = kliens.images.generate(
-            model="gpt-image-1-mini",
-            prompt=(
-                "Barátságos, egyszerű gyerekillusztráció, pasztell színekkel, "
-                "szöveg nélkül a képen. A kérés: " + szoveg
-            ),
+            model="gpt-image-1",
+            prompt=_kep_szemelyiseg(lang) + " A kérés: " + szoveg,
             size="1024x1024",
-            quality="low",
+            quality="high",
             n=1,
         )
         kep = valasz.data[0]
