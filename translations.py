@@ -861,7 +861,7 @@ TRANSLATIONS = {
         "es": "Salir de pantalla completa",
     },
     "footer_text": {
-        "hu": "TutorIA — Tanulás, személyre szabva.",
+        "hu": "TutorIAcademia — Tanulás, személyre szabva.",
         "es": "TutorIA — Aprendizaje, personalizado.",
     },
     # ── BEMUTATÓ (főoldal) ────────────────────────────────────────────────
