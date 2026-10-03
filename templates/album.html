@@ -136,23 +136,30 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
  border-radius:5px;background:linear-gradient(195deg,#232c5c,#161d42 60%,#0d1226)}
 .fl .ar{position:absolute;inset:0;background:#04060d;opacity:0;pointer-events:none}
 /* A forduló lap a gerincen túlra, az album BAL oldalára fordul ki.
-   Enélkül vízszintes görgetősáv jelenne meg alatta. */
-body{overflow-x:hidden}
+   Enélkül vízszintes görgetősáv jelenne meg alatta.
+   FIGYELEM: itt „clip" kell, nem „hidden". A „hidden" bármelyik ősön
+   görgetődobozt csinál, és attól a tapadó gombsor (position:sticky)
+   MEGSZŰNIK működni – pontosan ezt rontottam el egy körrel korábban. */
+body{overflow-x:clip}
 
-/* ══ A KÖNYV FÉRJEN KI A KÉPERNYŐRE ═══════════════════════════════════
-   Eddig le kellett görgetni ahhoz, hogy a lapozógombokhoz elérj. Most a
-   program megméri, mennyi hely van, és ha kell, ARÁNYOSAN kisebbre veszi
-   az albumot – semmi nem csúszik el benne, csak kisebb lesz. */
-.szinpad{transform-origin:top center}
+/* ══ A LAPOZÓGOMBOK MINDIG KÉZNÉL ═════════════════════════════════════
+   Előbb azzal próbálkoztam, hogy az egész albumot kisebbre veszem, hogy
+   kiférjen a képernyőre. Rossz út volt: széles képernyőn apró lett, két
+   oldalt rengeteg üres hellyel, és a portré is elveszett benne.
+
+   Ezért az album marad a teljes méretében — a GOMBSOR tapad a képernyő
+   aljára, és ott is marad, bárhol jársz az oldalon. Így lapozáshoz soha
+   nem kell legörgetni, és semmi nem zsugorodik össze. */
+.lapozo{position:sticky;bottom:10px;z-index:40;
+  background:rgba(12,16,34,.92);border-radius:14px;padding:10px 16px;
+  box-shadow:0 8px 24px rgba(0,0,0,.5);backdrop-filter:blur(3px)}
 
 /* ══ TELEFON ══════════════════════════════════════════════════════════
    Kis képernyőn a gombsor a képernyő aljára tapad, így lapozáshoz nem
    kell görgetni. A 3D forgás ott elmarad: lassú volna, és a keskeny
    lapon úgysem látszik. */
 @media (max-width:760px){
-  .lapozo{position:sticky;bottom:0;z-index:40;padding:9px 10px;
-    background:rgba(12,16,34,.93);border-radius:12px;
-    box-shadow:0 -6px 18px rgba(0,0,0,.45);flex-wrap:wrap;justify-content:center}
+  .lapozo{bottom:6px;padding:9px 10px;flex-wrap:wrap;justify-content:center}
   .kozepgomb{order:3;width:100%;justify-content:center;margin-top:2px}
   .gomb{padding:9px 14px;font-size:.8rem}
   .tj .sorok{grid-template-columns:1fr}
@@ -834,30 +841,7 @@ const IDO = 1000;   /* a lapozás hossza ezredmásodpercben */
 
 const _lapDoboz = document.getElementById('lapdoboz');
 const _albumDoboz = document.querySelector('.album');
-const _szinpad = document.querySelector('.szinpad');
 
-/* A KÖNYV MÉRETE. Megnézzük, mennyi hely marad a képernyőn, és ha az
-   album magasabb nála, arányosan kisebbre vesszük. Semmi nem csúszik el
-   benne: ugyanaz a lap, csak kisebb. Telefonon nem kicsinyítünk, ott a
-   gombsor tapad a képernyő aljára. */
-function albumMeret(){
-  if(!_szinpad) return;
-  _szinpad.style.transform=''; _szinpad.style.height='';
-  if(window.innerWidth<=760) return;
-  const termeszetes=_albumDoboz.offsetHeight;
-  if(!termeszetes) return;
-  /* Nem becslünk: megmérjük, hol KEZDŐDIK az album, és mennyi hely kell
-     alatta a gombsornak. Ami marad, abba kell beleférnie. */
-  const teteje=_szinpad.getBoundingClientRect().top+window.scrollY;
-  const lapozo=document.querySelector('.lapozo');
-  const alatta=(lapozo?lapozo.offsetHeight:48)+34;
-  const fer=window.innerHeight-teteje-alatta;
-  const k=Math.min(1,Math.max(0.5,fer/termeszetes));
-  if(k>0.995) return;
-  _szinpad.style.transform='scale('+k.toFixed(4)+')';
-  _szinpad.style.height=Math.round(termeszetes*k)+'px';
-}
-window.addEventListener('resize',albumMeret);
 
 function klonKeszit(){
   const fl=document.createElement('div'); fl.className='fl';
@@ -882,17 +866,26 @@ function klonKeszit(){
 function konnyit(t){ return 0.5-0.5*Math.cos(Math.PI*t); }
 
 let _lapozasFut=false;
-const _nyugodt=()=>(window.innerWidth<=760)
-  || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+/* A lapozás telefonon is fordul: EGYETLEN elem forog, nem huszonnégy,
+   ezért ott sem terheli meg a készüléket. Csak az marad ki belőle, aki a
+   gépén kikapcsolta a mozgó felületeket. */
+const _nyugodt=()=>window.matchMedia
+  && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function lapra(uj_oldal){
   if(uj_oldal<0 || uj_oldal>OLDALAK.length-1 || uj_oldal===oldal) return;
   /* A lap tetejére görgetünk: enélkül a képernyő ott marad, ahol volt, és a
      gyerek azt hiszi, nem lépett semmit – pedig lapozott. */
-  const gorget=()=>{ if(window.innerWidth>760)
-    _albumDoboz.scrollIntoView({behavior:'smooth',block:'start'}); };
+  /* Eddig minden lapozás a lap tetejére görgetett. Most, hogy a gombsor
+     tapad, erre nincs szükség: a görgetés csak elrántaná a képet az
+     olvasó elől. Csak akkor görgetünk, ha az album TETEJE már kiment a
+     képernyőről. */
+  const gorget=()=>{
+    const r=_albumDoboz.getBoundingClientRect();
+    if(r.top<-40) _albumDoboz.scrollIntoView({behavior:'smooth',block:'start'});
+  };
   if(_lapozasFut || _nyugodt()){
-    oldal=uj_oldal; rajzol(); albumMeret(); lapHang(); gorget(); return;
+    oldal=uj_oldal; rajzol(); lapHang(); gorget(); return;
   }
   _lapozasFut=true; lapHang();
   const elore = uj_oldal>oldal;
@@ -919,7 +912,7 @@ function lapra(uj_oldal){
     if(t<1){ requestAnimationFrame(kocka); }
     else{
       if(!elore){ oldal=uj_oldal; rajzol(); }
-      fl.remove(); _lapozasFut=false; albumMeret();
+      fl.remove(); _lapozasFut=false;
     }
   }
   fl.style.transform='rotateY('+(elore?0:-180)+'deg)';
@@ -974,7 +967,7 @@ document.getElementById('tjZar').addEventListener('click',tartalomZar);
 _tjHatter.addEventListener('click',e=>{ if(e.target===_tjHatter) tartalomZar(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') tartalomZar(); });
 
-rajzol(); pakli(); albumMeret();
+rajzol(); pakli();
 
 /* csak azok a lapok kerulnek a pakliba, amelyeknek tenyleg van kepuk */
 (async () => {
