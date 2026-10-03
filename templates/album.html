@@ -124,21 +124,40 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
 .szinpad{perspective:3200px;perspective-origin:50% 42%}
 .album{transform-style:preserve-3d;transform-origin:50% 100%}
 .lapdoboz{position:relative;transform-style:preserve-3d}
-.fl{position:absolute;inset:0;transform-style:preserve-3d;pointer-events:none;z-index:5}
-.fl .csik{position:absolute;left:0;top:0;height:100%;
- transform-origin:left center;transform-style:preserve-3d}
-.fl .e{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden}
-/* border-box KELL: a lapnak belső margója van, és content-box mellett az
-   hozzáadódna a megadott szélességhez – a másolat szélesebb lenne az
-   eredetinél, és benne a szöveg odébb csúszna. */
-.fl .tart{position:absolute;top:0;box-sizing:border-box;box-shadow:none;min-height:0}
-.fl .ar{position:absolute;inset:0;background:transparent}
-/* a hátoldal SZÍNE az oldaléhoz igazítva: ha kékebb volna, átforduláskor
-   egy idegen színű felület söpörne végig a képen */
-.fl .h{position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);
+.fl{position:absolute;inset:0;transform-origin:left center;
+ transform-style:preserve-3d;pointer-events:none;z-index:5;will-change:transform}
+.fl .arc{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;
+ border-radius:5px;box-shadow:0 0 34px rgba(0,0,0,.5)}
+.fl .tart{position:absolute;inset:0;box-sizing:border-box;box-shadow:none;min-height:0}
+/* a lap HÁTOLDALA – 90 fok után ezt látni, ahogy igazi könyvben is.
+   A színe az oldaléhoz igazítva: ha kékebb volna, átforduláskor egy
+   idegen színű felület söpörne végig a képen. */
+.fl .hat{position:absolute;inset:0;backface-visibility:hidden;transform:rotateY(180deg);
  border-radius:5px;background:linear-gradient(195deg,#232c5c,#161d42 60%,#0d1226)}
-.vetettArny{position:absolute;left:0;top:0;height:100%;z-index:4;pointer-events:none;
- border-radius:5px;background:linear-gradient(to right,rgba(0,0,0,.34),rgba(0,0,0,0) 62%);opacity:0}
+.fl .ar{position:absolute;inset:0;background:#04060d;opacity:0;pointer-events:none}
+/* A forduló lap a gerincen túlra, az album BAL oldalára fordul ki.
+   Enélkül vízszintes görgetősáv jelenne meg alatta. */
+body{overflow-x:hidden}
+
+/* ══ A KÖNYV FÉRJEN KI A KÉPERNYŐRE ═══════════════════════════════════
+   Eddig le kellett görgetni ahhoz, hogy a lapozógombokhoz elérj. Most a
+   program megméri, mennyi hely van, és ha kell, ARÁNYOSAN kisebbre veszi
+   az albumot – semmi nem csúszik el benne, csak kisebb lesz. */
+.szinpad{transform-origin:top center}
+
+/* ══ TELEFON ══════════════════════════════════════════════════════════
+   Kis képernyőn a gombsor a képernyő aljára tapad, így lapozáshoz nem
+   kell görgetni. A 3D forgás ott elmarad: lassú volna, és a keskeny
+   lapon úgysem látszik. */
+@media (max-width:760px){
+  .lapozo{position:sticky;bottom:0;z-index:40;padding:9px 10px;
+    background:rgba(12,16,34,.93);border-radius:12px;
+    box-shadow:0 -6px 18px rgba(0,0,0,.45);flex-wrap:wrap;justify-content:center}
+  .kozepgomb{order:3;width:100%;justify-content:center;margin-top:2px}
+  .gomb{padding:9px 14px;font-size:.8rem}
+  .tj .sorok{grid-template-columns:1fr}
+}
+
 
 /* ══ TARTALOMJEGYZÉK ══════════════════════════════════════════════════
    Eddig végig kellett lapozni az albumot ahhoz, hogy a gyerek megnézze,
@@ -801,128 +820,109 @@ function lapHang(){
   }catch(e){ /* a hang sosem lehet hiba oka */ }
 }
 
-/* ══ A HAJLÓ LAP ══════════════════════════════════════════════════════
-   Kis képernyőn kevesebb szelet: ott a telefon huszonnégy réteget
-   számolna, és inkább akadna, mint szép lenne. */
-const CSIK   = (window.innerWidth||1200) < 760 ? 12 : 24;
-const IDO    = 2600;   /* a lapozás hossza ezredmásodpercben            */
-const HAJLAT = 0.62;   /* a hajlat szélessége az oldaléhoz képest       */
-const DOLES  = 5;      /* ennyit dől hátra a könyv lapozás közben       */
-const ATFED  = 1.5;    /* ennyivel lógnak egymásra a szeletek (képpont) */
+/* ══ A FORDULÓ LAP ════════════════════════════════════════════════════
+   KORÁBBAN a lap huszonnégy keskeny, LAPOS szeletből állt, és azok
+   együtt adták ki a hajlatot. Egyszínű lapon ez szép volt, fényképen
+   viszont a szomszédos szeletek dőlése közt ~18 fok a különbség, és a
+   kép minden illesztésnél megtört – ezek voltak a függőleges csíkok.
+   Valóban sima ívhez WebGL kellene, CSS-sel nem megy.
+
+   Ezért a lap most EGY DARABBAN fordul át a gerinc körül, mint egy
+   igazi könyvlap: van előlapja (a mostani oldal) és hátlapja (papír).
+   Nincs mit illeszteni, tehát nincs min megtörnie. */
+const IDO = 1000;   /* a lapozás hossza ezredmásodpercben */
 
 const _lapDoboz = document.getElementById('lapdoboz');
 const _albumDoboz = document.querySelector('.album');
+const _szinpad = document.querySelector('.szinpad');
+
+/* A KÖNYV MÉRETE. Megnézzük, mennyi hely marad a képernyőn, és ha az
+   album magasabb nála, arányosan kisebbre vesszük. Semmi nem csúszik el
+   benne: ugyanaz a lap, csak kisebb. Telefonon nem kicsinyítünk, ott a
+   gombsor tapad a képernyő aljára. */
+function albumMeret(){
+  if(!_szinpad) return;
+  _szinpad.style.transform=''; _szinpad.style.height='';
+  if(window.innerWidth<=760) return;
+  const termeszetes=_albumDoboz.offsetHeight;
+  if(!termeszetes) return;
+  /* Nem becslünk: megmérjük, hol KEZDŐDIK az album, és mennyi hely kell
+     alatta a gombsornak. Ami marad, abba kell beleférnie. */
+  const teteje=_szinpad.getBoundingClientRect().top+window.scrollY;
+  const lapozo=document.querySelector('.lapozo');
+  const alatta=(lapozo?lapozo.offsetHeight:48)+34;
+  const fer=window.innerHeight-teteje-alatta;
+  const k=Math.min(1,Math.max(0.5,fer/termeszetes));
+  if(k>0.995) return;
+  _szinpad.style.transform='scale('+k.toFixed(4)+')';
+  _szinpad.style.height=Math.round(termeszetes*k)+'px';
+}
+window.addEventListener('resize',albumMeret);
 
 function klonKeszit(){
-  const teljes=_lapDoboz.clientWidth, sw=teljes/CSIK;
   const fl=document.createElement('div'); fl.className='fl';
-  fl._teljes=teljes; fl._sw=sw;
-
-  /* A másolatot NEM szövegből rakjuk össze, hanem DOM-ból.
-     A lap hátterét a saját style attribútuma hordozza, és abban
-     IDÉZŐJELES url("…") áll. Szöveges összefűzésnél az idézőjel idő
-     előtt lezárta volna a style attribútumot, és a megadott szélesség
-     elveszett volna – a másolat kisebb lett, mint az oldal, és benne
-     minden odébb csúszott. Így nincs mit elrontani. */
-  const minta=document.createElement('div');
-  minta.className='tart '+lap.className;
-  minta.style.cssText=lap.style.cssText;
-  minta.style.width=teljes+'px';
-  minta.style.height='100%';
-  minta.innerHTML=lap.innerHTML;
-
-  for(let i=0;i<CSIK;i++){
-    const csik=document.createElement('div');
-    csik.className='csik';
-    csik.style.width=(sw+ATFED).toFixed(2)+'px';
-
-    const e=document.createElement('div'); e.className='e';
-    const tart=minta.cloneNode(true);
-    tart.style.left=(-i*sw).toFixed(2)+'px';
-    const ar=document.createElement('div'); ar.className='ar';
-    e.appendChild(tart); e.appendChild(ar);
-
-    const hat=document.createElement('div'); hat.className='h';
-    const hatAr=document.createElement('div'); hatAr.className='ar';
-    hat.appendChild(hatAr);
-
-    csik.appendChild(e); csik.appendChild(hat);
-    fl.appendChild(csik);
-  }
+  const arc=document.createElement('div'); arc.className='arc';
+  /* A másolatot DOM-ból készítjük, nem szövegből: a lap hátterében
+     idézőjeles url("…") áll, ami szöveges összefűzésnél lezárná a
+     style attribútumot. */
+  const tart=document.createElement('div');
+  tart.className='tart '+lap.className;
+  tart.style.cssText=lap.style.cssText;
+  tart.innerHTML=lap.innerHTML;
+  const ar=document.createElement('div'); ar.className='ar';
+  arc.appendChild(tart); arc.appendChild(ar);
+  const hat=document.createElement('div'); hat.className='hat';
+  const har=document.createElement('div'); har.className='ar';
+  hat.appendChild(har);
+  fl.appendChild(arc); fl.appendChild(hat);
+  fl._ar=ar; fl._har=har;
   return fl;
 }
 
 function konnyit(t){ return 0.5-0.5*Math.cos(Math.PI*t); }
-function simalep(x){ x=Math.min(1,Math.max(0,x)); return x*x*(3-2*x); }
-const _arny  = n => Math.min(.74,Math.max(0,.54*(1-n))).toFixed(3);
-const _hatny = n => Math.min(.62,Math.max(0,.46*(1+n))).toFixed(3);
-
-/* A hajlat közepe végigvándorol az oldalon. Ami mögötte van, az még
-   laposan fekszik; ami előtte, az már átfordult. A kettő közt lágy
-   átmenet – ez maga a hajlat. */
-function allapot(fl,csikok,vetett,t,elore){
-  const e=konnyit(t), W=fl._teljes, b=HAJLAT*W, sw=fl._sw;
-  const kozep = elore ? (W+0.5*b)-e*(W+b) : (-0.5*b)+e*(W+b);
-  _albumDoboz.style.transform='rotateX('+(DOLES*Math.sin(Math.PI*t)).toFixed(2)+'deg)';
-  const szog=[];
-  for(let i=0;i<=CSIK;i++){ szog.push(-180*simalep((i*sw-kozep)/b+0.5)); }
-  let x=0,z=0,legkulso=0;
-  for(let i=0;i<CSIK;i++){
-    const r=szog[i]*Math.PI/180, c=csikok[i];
-    c.style.transform='translate3d('+x.toFixed(2)+'px,0,'+z.toFixed(2)
-      +'px) rotateY('+szog[i].toFixed(2)+'deg)';
-    const n1=Math.cos(r), n2=Math.cos(szog[i+1]*Math.PI/180);
-    c._ar.style.background='linear-gradient(to right,rgba(4,6,13,'+_arny(n1)
-      +'),rgba(4,6,13,'+_arny(n2)+'))';
-    /* a hátoldal tükrözve áll, ezért ott fordítva fut az átmenet */
-    c._hr.style.background='linear-gradient(to right,rgba(4,6,13,'+_hatny(n2)
-      +'),rgba(4,6,13,'+_hatny(n1)+'))';
-    x+=sw*Math.cos(r); z-=sw*Math.sin(r);
-    if(x>legkulso) legkulso=x;
-  }
-  vetett.style.width=Math.min(W,Math.max(0,legkulso)*0.55+W*0.1).toFixed(1)+'px';
-  vetett.style.opacity=(Math.sin(Math.PI*t)*0.55).toFixed(3);
-}
 
 let _lapozasFut=false;
-const _nyugodt=()=>window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const _nyugodt=()=>(window.innerWidth<=760)
+  || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
 function lapra(uj_oldal){
   if(uj_oldal<0 || uj_oldal>OLDALAK.length-1 || uj_oldal===oldal) return;
   /* A lap tetejére görgetünk: enélkül a képernyő ott marad, ahol volt, és a
      gyerek azt hiszi, nem lépett semmit – pedig lapozott. */
-  const gorget=()=>_albumDoboz.scrollIntoView({behavior:'smooth',block:'start'});
-  if(_lapozasFut || _nyugodt()){ oldal=uj_oldal; rajzol(); gorget(); return; }
+  const gorget=()=>{ if(window.innerWidth>760)
+    _albumDoboz.scrollIntoView({behavior:'smooth',block:'start'}); };
+  if(_lapozasFut || _nyugodt()){
+    oldal=uj_oldal; rajzol(); albumMeret(); lapHang(); gorget(); return;
+  }
   _lapozasFut=true; lapHang();
   const elore = uj_oldal>oldal;
   let fl;
   if(elore){
-    fl=klonKeszit();               /* a mostani lap hajlik át…              */
-    oldal=uj_oldal; rajzol();      /* …alatta már az új látszik             */
+    fl=klonKeszit();               /* a mostani lap fordul át…             */
+    oldal=uj_oldal; rajzol();      /* …alatta már az új látszik            */
   }else{
     const regi=oldal; oldal=uj_oldal; rajzol();
-    fl=klonKeszit();               /* visszafelé az ELŐZŐ lap hajlik vissza */
+    fl=klonKeszit();               /* visszafelé az ELŐZŐ lap fordul vissza */
     oldal=regi; rajzol();
   }
-  const vetett=document.createElement('div');
-  vetett.className='vetettArny';
-  _lapDoboz.appendChild(vetett); _lapDoboz.appendChild(fl);
-  const csikok=[].slice.call(fl.querySelectorAll('.csik'));
-  csikok.forEach(c=>{ c._ar=c.querySelector('.e .ar'); c._hr=c.querySelector('.h .ar'); });
+  _lapDoboz.appendChild(fl);
   gorget();
 
   const indul=performance.now();
   function kocka(most){
     const t=Math.min(1,(most-indul)/IDO);
-    allapot(fl,csikok,vetett,t,elore);
+    const e=konnyit(elore?t:1-t);
+    fl.style.transform='rotateY('+(-180*e).toFixed(2)+'deg)';
+    const iv=Math.sin(Math.PI*e);
+    fl._ar.style.opacity=(iv*0.55).toFixed(3);
+    fl._har.style.opacity=((1-iv)*0.20+0.08).toFixed(3);
     if(t<1){ requestAnimationFrame(kocka); }
     else{
       if(!elore){ oldal=uj_oldal; rajzol(); }
-      _albumDoboz.style.transform='';
-      fl.remove(); vetett.remove(); _lapozasFut=false;
+      fl.remove(); _lapozasFut=false; albumMeret();
     }
   }
-  allapot(fl,csikok,vetett,0,elore);
+  fl.style.transform='rotateY('+(elore?0:-180)+'deg)';
   requestAnimationFrame(kocka);
 }
 
@@ -974,7 +974,7 @@ document.getElementById('tjZar').addEventListener('click',tartalomZar);
 _tjHatter.addEventListener('click',e=>{ if(e.target===_tjHatter) tartalomZar(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') tartalomZar(); });
 
-rajzol(); pakli();
+rajzol(); pakli(); albumMeret();
 
 /* csak azok a lapok kerulnek a pakliba, amelyeknek tenyleg van kepuk */
 (async () => {
