@@ -3,7 +3,7 @@
 Ez a fájl azért van, hogy semmi ne egy beszélgetés emlékezetén múljon.
 Ha egy tétel elkészült, húzd át vagy töröld. Ha újat találsz, írd ide.
 
-Utolsó frissítés: 2026-09-23
+Utolsó frissítés: 2026-10-03
 
 ---
 
@@ -17,6 +17,24 @@ Utolsó frissítés: 2026-09-23
       Amíg nincs, minden push azonnal az éles oldalra megy.
 
 ## Leckeoldal — megtalált, még javítatlan hibák
+
+- [ ] **Nincs feladat az "oldd meg ezt" után.** A tábla azzal zárul, hogy
+      "Most figyelj jól, és oldd meg ezt!", és NEM JÖN utána semmi. Közben
+      a jobb oldali doboz azt írja: "A kérdés a táblán van. Ide írd a
+      választ." A gyerek tehát válaszolni köteles, de nincs mire.
+      (Matek, 2026-10-03, képernyőkép Sándortól.)
+      GYANÚ: a tábla szövege és a feladat külön lépésben érkezik, és a
+      feladat elvész. Ott kell nézni, ahol a tábla tartalma összeáll.
+- [ ] **A halmazos ábra három hibát vét egyszerre.** (2026-10-03)
+      * a szilva a NAGY KÖRÖN KÍVÜL van, pedig a lecke szerint eleme a
+        halmaznak — az ábra az ellenkezőjét tanítja a szövegnek;
+      * az "alma" és a "körte" felirat nem tapad a saját köréhez, köztük
+        egy harmadik, névtelen kör áll;
+      * az ábra alján ott a MEGOLDÁS ("Az alma benne van"), közvetlenül a
+        kérdés alatt, hogy "Az alma elem a gyümölcsök halmazában?".
+      Ez nem stíluskérdés. Szabály kell: felirat mindig a saját alakzata
+      mellé, elem mindig a halmazon BELÜLRE, és megoldás SOHA nem kerülhet
+      az ábrára.
 
 - [ ] **Választós feladatnál hiányzik a mondat.** A tanár azt írja
       „nézd meg a mondatot", de csak a két szó jelenik meg, mondat nélkül.
@@ -59,6 +77,54 @@ Utolsó frissítés: 2026-09-23
       szál fut a Railway-en. Ha a memória elfogy, a munkást kilövik, és a
       kérés válasz nélkül hal meg — ez pontosan ezt a tünetet adná.
       (A kabala-figura eltűnése ehhez NEM tartozik, azt Sándor megtalálta.)
+
+## Bemutató oldal (index) — még javítatlan
+
+- [ ] **"Az első hónap ingyenes" — nem igaz.** A hero ezt írja, a meta
+      leírás, a GYIK és a regisztráció viszont már a helyes 120 percet.
+      Így ugyanazon az oldalon mond mást a nagybetűs ígéret és a többi.
+      JAVASLAT a szövegre: "Négy teljes lecke ingyen. Bankkártya nem kell."
+      — ugyanaz a keret, de nem hangzik kicsinek, és igaz.
+- [ ] **A nyolc évfolyamgomb mind a regisztrációra visz**, és a választott
+      évfolyamot nem viszi magával. A szülő választ egyet, aztán újra
+      elkérünk tőle mindent. Legalább legyen előre kitöltve.
+- [ ] **A szülői kód a legelső űrlapon van.** Ki lehetne kérni később,
+      amikor először benéz a szülői részbe — kevesebb gondolkodás az
+      első képernyőn.
+
+## Demó oldal
+
+- [ ] **A mostani demó nem jó, és ZÁRVA van az éles cím elől.**
+      (2026-10-03) Egy kerekítős feladat és egy rajzoló mező — ez nem
+      mutatja meg, amit a TutorIA tud. A program maga zárja ki az éles
+      gépnéven: `_demo_engedve()` az `app.py`-ban, és a "/demo" kikerült
+      a `KERESO_OLDALAK` listából, hogy a Google se indexelje.
+      AMI IDE KÉNE HELYETTE: egy 60-90 másodperces képernyőfelvétel egy
+      igazi leckéről. Ha az megvan, az `_demo_engedve()` függvényt ki kell
+      venni, és a "/demo" sort visszatenni a `KERESO_OLDALAK` listába.
+      FIGYELEM a költségre: a rajzoló mező `gpt-image-1`, 1024x1024,
+      quality="high" — ez képenként nagyságrendileg 0,17-0,19 dollár, nem
+      pár cent. IP-nként óránként 5 kép a korlát (`_KEP_MAX`).
+
+## Album
+
+- [ ] **A könyv-érzés nincs feltéve.** Megcsináltuk és le is teszteltük
+      (gördülő lapozás a gerinc körül, halk papírhang, "Tartalom" gomb
+      ugrólistával), de a gépre NEM került fel, mert megszakadt a
+      kapcsolat. Újra el kell végezni az `album.html`-en.
+
+## SEO — amit a 2026-09-27-i kör NEM ért el
+
+- [ ] **Hreflang sehol nincs kint.** A magyar főoldalon, a spanyol
+      főoldalon és a blogcikken sem találtam. A sitemapban sincsenek
+      `xhtml:link` sorok. Enélkül a Google két különálló, azonos tartalmú
+      oldalnak látja a magyart és a spanyolt.
+- [ ] **A blogra semmi nem linkel.** Se a főoldalról, se a láblécből.
+      Csak a sitemapból érhető el, azt meg nem ember olvassa.
+- [ ] A `/login` és a `/register` fölösleges a sitemapban.
+- [ ] A spanyol oldalak magyar útvonalneveket használnak (`/es/csomagok`,
+      `/es/gyik`). Spanyol keresésre rossz; később `/es/precios`,
+      `/es/preguntas`.
 
 ## Tartalom
 

@@ -1408,6 +1408,18 @@ def index():
     return render_template("index.html", gyerek_menu_nelkul=True)
 
 
+# ── A DEMÓ OLDAL CSAK A PRÓBA CÍMEN ÉL ──────────────────────────────────
+# 2026-10-03: a mostani demó (egy kerekítős feladat és egy rajzoló mező)
+# nem mutatja meg, amit a TutorIA tud, ezért EBBEN A FORMÁBAN nem kerülhet
+# a tutoriacademia.com-ra. Hogy ez ne egy beszélgetés emlékezetén múljon,
+# a program maga zárja ki: az éles gépnéven a /demo és a rajzoló végpont
+# nem létezik. Ha elkészül a videós demó, EZT AZ EGY függvényt kell
+# kivenni, és visszatenni a "/demo" sort a KERESO_OLDALAK listába.
+def _demo_engedve() -> bool:
+    gepnev = (request.host or "").split(":")[0].lower()
+    return not gepnev.endswith("tutoriacademia.com")
+
+
 @app.route("/demo")
 def demo():
     """Nyilvános demó lecke. A matekfeladat a böngészőben dől el.
@@ -1415,6 +1427,8 @@ def demo():
     A rajzoló mező külön végpontot hív, és csak akkor kerül pénzbe,
     ha valaki tényleg kér egy képet.
     """
+    if not _demo_engedve():
+        abort(404)
     return render_template("demo.html", gyerek_menu_nelkul=True)
 
 
@@ -1478,6 +1492,10 @@ def _kep_hiba(lang: str, ures: bool = False, sok: bool = False) -> str:
 @app.route("/api/generate-image", methods=["POST"])
 def generate_image():
     """Egy gyerekmondatból egy illusztráció. A kulcs csak a környezetből jön."""
+    # A rajzoló mező a demó oldal része, és minden kép PÉNZBE KERÜL.
+    # Ahol nincs demó, ott ez a végpont sincs.
+    if not _demo_engedve():
+        abort(404)
     adat = request.get_json(silent=True) or {}
     lang = str(adat.get("lang") or request.args.get("lang") or "hu")
     szoveg = str(adat.get("prompt") or "").strip()
@@ -1691,7 +1709,6 @@ def gyik():
 # Ha új nyilvános oldal készül, ide kell felvenni – magától nem kerül be.
 KERESO_OLDALAK: list[tuple[str, str]] = [
     ("/", "1.0"),
-    ("/demo", "0.8"),
     ("/blog", "0.8"),
     ("/blog/hogyan-segit-az-ai-a-gyerekek-tanulasaban", "0.8"),
     ("/csomagok", "0.8"),
