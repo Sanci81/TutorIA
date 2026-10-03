@@ -3252,6 +3252,33 @@ def _fejben_szamolhat(grade: int | None, es_tanterv: bool) -> bool:
 
 def _feladat_parse(text: str, *, grade: int | None = None,
                    es_tanterv: bool = False, temakor: str | None = None) -> dict | None:
+    """Mint a belső változat, de NAPLÓZZA, ha a feladat elveszett.
+
+    2026-10-03, Sándor képernyőképe: a tábla azzal zárult, hogy „Most
+    figyelj jól, és oldd meg ezt!", és nem jött utána semmi. A gyerek
+    válaszolni köteles, de nincs mire.
+
+    Az ok: a tanár kiírta a <FELADAT> jelölőt, a belső ellenőrzés viszont
+    elutasította (hibás JSON, ismeretlen típus, gyanús érték), és a
+    jelölő utána kikerül a szövegből. A bevezető mondat ottmarad, a
+    feladat eltűnik. Addig nem tudjuk megjavítani, amíg nem látjuk, MI
+    volt a hibás jelölőben — ezt írja ki ez a sor a Railway naplójába.
+    """
+    eredmeny = _feladat_parse_belso(text, grade=grade, es_tanterv=es_tanterv,
+                                    temakor=temakor)
+    if eredmeny is None:
+        m = _CHAT_MARKER_FELADAT.search(text or "")
+        if m:
+            logger.warning(
+                "FELADAT ELVESZETT: a tanar kiirta a jelolot, de nem lett "
+                "belole feladat. temakor=%r evfolyam=%r jelolo=%s",
+                temakor, grade, m.group(1)[:300])
+    return eredmeny
+
+
+def _feladat_parse_belso(text: str, *, grade: int | None = None,
+                         es_tanterv: bool = False,
+                         temakor: str | None = None) -> dict | None:
     """A <FELADAT> jelölőből épít egy ellenőrzött feladatleírást.
 
     A HELYES EREDMÉNYT MINDIG MI SZÁMOLJUK KI, sosem a nyelvi modell —
