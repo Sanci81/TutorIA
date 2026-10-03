@@ -3,7 +3,7 @@
 Ez a fájl azért van, hogy semmi ne egy beszélgetés emlékezetén múljon.
 Ha egy tétel elkészült, húzd át vagy töröld. Ha újat találsz, írd ide.
 
-Utolsó frissítés: 2026-10-03
+Utolsó frissítés: 2026-10-03 (este)
 
 ---
 
@@ -112,6 +112,81 @@ Utolsó frissítés: 2026-10-03
       (gördülő lapozás a gerinc körül, halk papírhang, "Tartalom" gomb
       ugrólistával), de a gépre NEM került fel, mert megszakadt a
       kapcsolat. Újra el kell végezni az `album.html`-en.
+
+## Oktatási ötletek — ezeket NE felejtsük el (2026-10-03)
+
+Négy ötlet, sorrendben aszerint, hogy mennyit ad vissza. Egyik sem
+"még egy funkció": mind a jelenlegi fájó pontokra válasz.
+
+### 1. Élő tábla — a tanár RAJZOL, nem képet mutat
+Ne kész képet tegyen ki a rendszer, hanem a gyerek szeme előtt rajzolja
+meg, vonalról vonalra, miközben magyarázza — ahogy egy tanár a táblánál.
+Technikailag az AI NEM képet készít, hanem néhány egyszerű utasítást küld
+(kör ide, nyíl oda, felirat alá), és a böngésző kirajzolja.
+MIÉRT EZ A JÓ VÁLASZ az ábrás gondra:
+  * nem kell sablon minden témához — az AI összerakja az alapelemekből
+    bármit, amit a gyerek kérdez;
+  * nem kerül pénzbe, mert szöveg megy át, nem kép;
+  * nem tud rossz számot a képre írni, mert a parancskészletet mi
+    szabjuk meg;
+  * SOHA nem árulhatja el a megoldást, mert azt a parancskészlet tiltja.
+  * a mostani halmazos hibák (szilva kívül, felirat elcsúszva, megoldás
+    a képen) ezzel mind megszűnnek.
+
+### 2. A gyerek is a táblához megy
+Ne csak nézze az ábrát: húzza be az almát a halmazba, jelölje be a 3/4-et
+a számegyenesen, tegye sorba a számokat. A helyességet a GEOMETRIA dönti
+el, nem AI — ingyen van és azonnal válaszol. Ez a különbség az
+"elolvastam" és az "én csináltam" között.
+
+### 3. "Most te magyarázd el nekem."
+A lecke végén a tanár szerepet cserél: megjátssza, hogy ő a kisebb, aki
+nem érti, és a gyerek tanítja meg neki ("De miért kell ott kerekíteni?").
+A tanítás a legerősebb ismert tanulási mód, és gyerekeknek szinte senki
+nem építette meg. Egy AI-hívásba kerül. Ez egyben kész demóvideó is:
+ebben a pillanatban mondja azt egy szülő, hogy ilyet máshol nem látott.
+
+### 4. A felejtés elleni gép
+Minden lecke EGYETLEN kérdéssel kezdődjön egy három hete tanult témából.
+Nem külön gyakorlás, nem plusz feladat — egy kérdés. A szülői jelentés
+pedig ne azt mondja, hogy "befejezte", hanem hogy "a három hete tanult
+törtek még megvannak". A szülőt nem az érdekli, hogy haladt-e, hanem
+hogy MEGMARADT-e. Ezt senki nem mondja meg neki — és ezért fizet tovább
+a második hónapban.
+Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy tábla.
+
+### Amit megvizsgáltunk és ELVETETTÜNK
+- **Tanulási stílusok** (vizuális / auditív / olvasó / cselekvő szerinti
+  személyre szabás): ez az oktatás legszívósabb tévhite, sokszor
+  megvizsgálták, és NEM javítja a tanulást. Hónapokat vinne el. Helyette
+  a gyerek VÁLASSZON az adott pillanatban: "mutassam képpel? mondjam el
+  máshogy?".
+- **Globális osztályterem** (magyar és spanyol gyerekek közös munkája):
+  gyerekek kapcsolatba lépnének idegen gyerekekkel — gyermekvédelmi és
+  GDPR-kockázat egy egyszemélyes cégnek, és pont azt rombolja le, amin a
+  bizalom áll: "Nincs benne idegen. Se csevegés más gyerekekkel."
+- **Játékosítás, hangos beszélgetés**: ezek NAGYRÉSZT MÁR MEGVANNAK
+  (érme, kártya, album; hangmód kiejtés-visszajelzéssel). Nem új
+  fejlesztés kell, hanem hogy LÁTSZÓDJANAK az oldalon.
+
+## Album — a lapozás még nem jó (2026-10-03 este)
+
+- [ ] **Függőleges csíkok a fényképen lapozás közben.** MEGMÉRVE:
+      egyszínű lapon EGYETLEN vonal sem jelenik meg, tehát NEM hézag van
+      a szeletek közt. A hajló lap 24 LAPOS szeletből áll, és a hajlat
+      közepén a szomszédos szeletek dőlése közt ~18 fok a különbség —
+      fényképen ez töréspontként látszik. Teljesen sima ívhez WebGL
+      kellene, CSS-sel nem megy.
+      VÁLASZTÁS: (a) több szelet + szélesebb hajlat (kisebb törés, de nem
+      tűnik el, telefonon lassabb); (b) hajlás nélkül, egy darabban
+      forduló lap — nulla törés, gyors; (c) címsor-kapcsoló
+      (`?csik=40`, `?hajlat=0.9`, `?lapozas=egyszeru`), hogy Sándor a
+      valódi kártyáin próbálhassa ki.
+- [ ] **A lapozógombokhoz le kell görgetni.** A lap 640 képpont magas, a
+      gombok alatta vannak. Letapadó (sticky) gombsor kell, ami a
+      képernyő alján marad, miközben az albumot görgeti.
+- [ ] **Telefonon nem jó.** Pontosítani kell, mi romlik el: a 3D hajlás,
+      az elrendezés, vagy mindkettő.
 
 ## SEO — amit a 2026-09-27-i kör NEM ért el
 
