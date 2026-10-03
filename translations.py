@@ -874,9 +874,13 @@ TRANSLATIONS = {
         "es": "Avanza paso a paso con el temario escolar. Si la respuesta no es correcta, no sigue adelante.",
     },
     "bem_cta": {"hu": "Kipróbálom", "es": "Quiero probarlo"},
+    # 2026-10-03: EZ NEM VOLT IGAZ. A próba 120 PERC, egyszeri keret –
+    # így írja a csomagok oldal, a GYIK és a regisztráció is. Aki itt
+    # ingyenes hónapot olvasott, aztán két órát talált, nem kevesellte:
+    # becsapva érezte magát, pont a döntés pillanatában.
     "bem_apro": {
-        "hu": "Az első hónap ingyenes. Bankkártya nem kell.",
-        "es": "El primer mes es gratis. No hace falta tarjeta.",
+        "hu": "Az első 120 perc ingyen. Bankkártya nem kell.",
+        "es": "Los primeros 120 minutos son gratis. No hace falta tarjeta.",
     },
     "bem_osztaly_kerdes": {
         "hu": "Hányadik osztályos a gyereked?",
