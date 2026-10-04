@@ -11702,6 +11702,26 @@ def admin_attekintes():
     napok = max(1, min(365, int(request.args.get("napok", 30) or 30)))
     szuro = (request.args.get("szuro") or "mind").strip()
     csaladok = database.admin_csaladok(napok=napok)
+
+    # HONNAN JÖN A CSALÁD. Az országkód és a tartománykód önmagában
+    # olvashatatlan ("ES", "AN"), ezért itt fordítjuk névre – ugyanúgy,
+    # ahogy az érdeklődők táblájánál. A családsorba a gyerekek helyei
+    # kerülnek, ismétlés nélkül.
+    for _cs in csaladok:
+        _helyek = []
+        for _gy in (_cs.get("gyerekek") or []):
+            _o = (_gy.get("orszag") or "").upper()
+            _r = _gy.get("regio")
+            if _o == "ES" and _r:
+                _gy["honnan"] = "ES · " + i18n.region_name(_r, "hu")
+            elif _o:
+                _gy["honnan"] = _o
+            else:
+                _gy["honnan"] = "—"
+            if _gy["honnan"] != "—" and _gy["honnan"] not in _helyek:
+                _helyek.append(_gy["honnan"])
+        _cs["honnan"] = ", ".join(_helyek) or "—"
+
     most = datetime.now(timezone.utc)
     # A VISZONYÍTÁSI ÁR: a legkisebb fizetős csomag havi díja. Eddig 7,99 volt
     # beégetve — egy rég elvetett árból maradt itt —, és emiatt a táblázat már

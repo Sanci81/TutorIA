@@ -3072,6 +3072,12 @@ def admin_csaladok(napok: int = 30) -> list[dict[str, Any]]:
             csaladok[c.parent_id]["gyerekek"].append({
                 "id": c.id, "nev": c.name, "osztaly": c.grade,
                 "tanterv": (c.curriculum or "HU"),
+                # HOL LAKIK A CSALÁD. Eddig csak annál látszott, aki
+                # rányomott a „fizetnék"-re – vagyis gyakorlatilag senkinél.
+                # Pedig ez dönti el, hol érdemes hirdetni: egy Spanyolországban
+                # élő, magyar tanterven tanuló gyerek MÁS, mint egy itthoni.
+                "orszag": (c.country or "").upper(),
+                "regio": c.region,
                 "perc_hang": 0.0, "perc_szoveg": 0.0, "perc_ismeretlen": 0.0,
                 "napi": {},
                 "tantargyak": {},

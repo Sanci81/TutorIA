@@ -316,7 +316,7 @@
       <div>
         <div class="email">{{ cs.email }}</div>
         <div class="meta">Regisztrált: {{ cs.regisztralt.strftime('%Y. %m. %d.') if cs.regisztralt else '—' }}
-          · {{ cs.gyerekek|length }} gyerek</div>
+          · {{ cs.gyerekek|length }} gyerek · {{ cs.honnan }}</div>
       </div>
       <div>
         <form method="post" action="{{ url_for('admin_meres_torles') }}"
@@ -337,7 +337,7 @@
           <th>Tantárgyak</th><th class="szam">Költség</th></tr>
       {% for gy in cs.gyerekek %}
       <tr>
-        <td>{{ gy.nev }}<br><span class="kicsi">{{ gy.osztaly }}. {{ gy.tanterv }}</span></td>
+        <td>{{ gy.nev }}<br><span class="kicsi">{{ gy.osztaly }}. {{ gy.tanterv }} · {{ gy.honnan }}</span></td>
         <td class="szam">{{ gy.perc_ossz|round(0)|int }} perc
           <br><span class="kicsi">{{ gy.utolso_tanulas.strftime('%m. %d.') if gy.utolso_tanulas else '—' }}</span></td>
         <td>
