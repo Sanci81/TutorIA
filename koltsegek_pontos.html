@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TutorIA – pontos költségszámítás csomagonként</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#0b0f22;color:#e9e4d6;font-family:system-ui,Segoe UI,sans-serif;
+       padding:26px 22px 80px}
+  h1{font-size:1.55rem;margin:0 0 4px}
+  .alcim{opacity:.65;font-size:.93rem;margin:0 0 20px;max-width:880px;line-height:1.6}
+  h2{font-size:1rem;margin:26px 0 10px;color:#f0c869;letter-spacing:.4px}
+  .racs{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px;
+        align-items:start}
+  .kartya{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.11);
+          border-radius:13px;padding:16px 18px}
+  .sor{display:flex;justify-content:space-between;align-items:center;gap:12px;
+       padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+  .sor:last-child{border-bottom:0}
+  .sor label{font-size:.87rem;flex:1}
+  .sor small{display:block;opacity:.45;font-size:.72rem;margin-top:2px;line-height:1.35}
+  input[type=number]{width:104px;background:#141a34;color:#f4ecd8;
+    border:1px solid rgba(240,200,105,.3);border-radius:7px;padding:6px 9px;
+    font-size:.88rem;text-align:right;font-variant-numeric:tabular-nums}
+  input:focus{outline:none;border-color:#f0c869}
+  .jel{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;
+       vertical-align:middle}
+  .ok{background:#2f8f60}.becsles{background:#c9782a}
+  .magyarazat{font-size:.8rem;opacity:.6;margin-top:10px;line-height:1.55}
+  .eredmeny{background:linear-gradient(150deg,rgba(240,200,105,.13),rgba(240,200,105,.05));
+            border:1px solid rgba(240,200,105,.35)}
+  .nagy{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+        padding:9px 0;border-bottom:1px solid rgba(240,200,105,.18)}
+  .nagy:last-child{border-bottom:0}
+  .nagy b{font-size:1.4rem;font-variant-numeric:tabular-nums}
+  .nagy span{font-size:.87rem;opacity:.8}
+  .zold{color:#7fe0ab}.piros{color:#ff9aa2}.arany{color:#f0c869}
+  table{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:6px}
+  th{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;opacity:.5;
+     text-align:right;padding:5px 0;font-weight:700}
+  th:first-child{text-align:left}
+  td{padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);text-align:right;
+     font-variant-numeric:tabular-nums}
+  td:first-child{text-align:left;font-variant-numeric:normal}
+  .figy{background:rgba(180,53,63,.12);border:1px solid rgba(180,53,63,.4);
+        border-radius:12px;padding:15px 17px;margin-top:26px;line-height:1.65;
+        font-size:.88rem;max-width:900px}
+  .figy b{color:#ff9aa2}
+  .csomagfej{color:#f0c869;font-weight:700;font-size:.92rem;
+             border-bottom:1px solid rgba(240,200,105,.25);padding-bottom:5px;
+             margin:14px 0 2px}
+  .csomagfej:first-child{margin-top:0}
+</style>
+</head>
+<body>
+
+<h1>Pontos költségszámítás — csomagonként</h1>
+<p class="alcim">
+  Itt <b>minden szám átírható</b>, semmi nincs beégetve. A lényeg, hogy a gyerekenkénti
+  költség nem egy fejből vett összeg, hanem az <b>elhasznált percből</b> jön ki — és
+  külön látszik, miből áll egy perc ára. Ha egy hónap múlva megnézed az OpenAI és az
+  Azure számlát, elég három-négy számot átírnod itt, és minden más magától pontosodik.
+  <span class="jel ok"></span>zöld = tudott érték ·
+  <span class="jel becsles"></span>narancs = becslés, élesben meg kell mérni.
+</p>
+
+<div class="racs">
+
+  <!-- ══ CSOMAGOK ═══════════════════════════════════════════════════════ -->
+  <div class="kartya">
+    <h2 style="margin-top:0">Csomagok</h2>
+
+    <div class="csomagfej">Alap</div>
+    <div class="sor"><label>Havi ár (€)</label><input type="number" id="alap_ho" value="14.90" step="0.1"></div>
+    <div class="sor"><label>Éves ár (€)</label><input type="number" id="alap_ev" value="149" step="1"></div>
+    <div class="sor"><label>Havi perckeret</label><input type="number" id="alap_perc" value="400"></div>
+    <div class="sor"><label>Havi fizetők</label><input type="number" id="alap_dbh" value="0"></div>
+    <div class="sor"><label>Éves fizetők</label><input type="number" id="alap_dbe" value="0"></div>
+
+    <div class="csomagfej">Pro</div>
+    <div class="sor"><label>Havi ár (€)</label><input type="number" id="pro_ho" value="24.90" step="0.1"></div>
+    <div class="sor"><label>Éves ár (€)</label><input type="number" id="pro_ev" value="249" step="1"></div>
+    <div class="sor"><label>Havi perckeret</label><input type="number" id="pro_perc" value="900"></div>
+    <div class="sor"><label>Havi fizetők</label><input type="number" id="pro_dbh" value="0"></div>
+    <div class="sor"><label>Éves fizetők</label><input type="number" id="pro_dbe" value="0"></div>
+
+    <div class="csomagfej">Max</div>
+    <div class="sor"><label>Havi ár (€)</label><input type="number" id="max_ho" value="39.90" step="0.1"></div>
+    <div class="sor"><label>Éves ár (€)</label><input type="number" id="max_ev" value="399" step="1"></div>
+    <div class="sor"><label>Havi perckeret</label><input type="number" id="max_perc" value="1800"></div>
+    <div class="sor"><label>Havi fizetők</label><input type="number" id="max_dbh" value="0"></div>
+    <div class="sor"><label>Éves fizetők</label><input type="number" id="max_dbe" value="0"></div>
+
+    <div class="magyarazat">Az éves ár tíz hónap ára, a perc viszont tizenkét hónapra
+      jár — a program ezzel számol. Ezért hoz egy éves előfizető kevesebbet, mint
+      ugyanaz a csomag havi fizetéssel.</div>
+  </div>
+
+  <!-- ══ EGY PERC ÁRA ═══════════════════════════════════════════════════ -->
+  <div class="kartya">
+    <h2 style="margin-top:0">Mibe kerül egy perc</h2>
+    <div class="magyarazat" style="margin:0 0 8px">
+      Ez a doboz válaszol arra, amit kérdeztél: az OpenAI és az Azure nem
+      „gyerekenként" kerül pénzbe, hanem <b>percenként</b>. Innen jön minden más szám.
+    </div>
+
+    <div class="sor"><label><span class="jel becsles"></span>Felolvasott karakter / hangos perc
+      <small>A tanár beszéde. Egy párbeszédben a tanár az idő negyedében beszél,
+      ezért kevesebb, mint a folyamatos beszéd.</small></label>
+      <input type="number" id="tts_kar" value="266"></div>
+    <div class="sor"><label><span class="jel ok"></span>Felolvasás ára ($ / 1M karakter)</label>
+      <input type="number" id="tts_ar" value="16" step="0.5"></div>
+    <div class="sor"><label><span class="jel ok"></span>Beszédfelismerés ($ / perc)</label>
+      <input type="number" id="stt_ar" value="0.0045" step="0.0001"></div>
+    <div class="sor"><label><span class="jel becsles"></span>Bemenő token / perc
+      <small>A rendszerprompt, a tananyag és az eddigi beszélgetés.</small></label>
+      <input type="number" id="be_tok" value="2000"></div>
+    <div class="sor"><label><span class="jel becsles"></span>Kimenő token / perc
+      <small>A tanár válasza. Az ábrák (SVG) is ebben vannak, nem külön tétel.</small></label>
+      <input type="number" id="ki_tok" value="300"></div>
+    <div class="sor"><label><span class="jel ok"></span>Bemenő token ára ($ / 1M)</label>
+      <input type="number" id="be_ar" value="0.10" step="0.01"></div>
+    <div class="sor"><label><span class="jel ok"></span>Kimenő token ára ($ / 1M)</label>
+      <input type="number" id="ki_ar" value="0.60" step="0.01"></div>
+    <div class="sor"><label>Árfolyam (€ egy dollárért)</label>
+      <input type="number" id="eur_usd" value="0.92" step="0.01"></div>
+
+    <table id="t_perc"></table>
+  </div>
+
+  <!-- ══ HASZNÁLAT, ADÓ, JUTALÉK ════════════════════════════════════════ -->
+  <div class="kartya">
+    <h2 style="margin-top:0">Használat, adó, jutalék</h2>
+    <div class="sor"><label>Kihasználtság (%)
+      <small>A keretéből mennyit használ el átlagosan. 100% a legrosszabb eset.</small></label>
+      <input type="number" id="kihasznalt" value="100" step="5"></div>
+    <div class="sor"><label>Ebből hangos (%)
+      <small>Ez dönti el a költséget. Elsőben gyakorlatilag 100%, feljebb kevesebb.</small></label>
+      <input type="number" id="hangos" value="100" step="5"></div>
+    <div class="sor"><label><span class="jel ok"></span>Áfa (%)
+      <small>Spanyol magánszemély vásárlónál 21%, magyarnál 27%.</small></label>
+      <input type="number" id="afa" value="21" step="0.5"></div>
+    <div class="sor"><label><span class="jel ok"></span>Fizetési jutalék (%)
+      <small>Stripe európai kártyánál jellemzően 1,5%, nem európainál több.</small></label>
+      <input type="number" id="jutalek" value="1.5" step="0.1"></div>
+    <div class="sor"><label><span class="jel ok"></span>Fix díj tranzakciónként (€)
+      <small>Stripe-nál kártyánként egy fix tétel. Az éves fizetőnél ez évente
+      egyszer van, nem havonta — a program így is számolja.</small></label>
+      <input type="number" id="fix_dij" value="0.25" step="0.01"></div>
+  </div>
+
+  <!-- ══ ÁLLANDÓ KÖLTSÉG ════════════════════════════════════════════════ -->
+  <div class="kartya">
+    <h2 style="margin-top:0">Havi állandó költség</h2>
+    <div class="magyarazat" style="margin:0 0 8px">
+      Ezek <b>nem</b> gyerekenkéntiek: akkor is kifizeted őket, ha egy előfizetőd van,
+      és akkor is, ha száz. Ezért csökken a gyerekenkénti költség, ahogy nő a létszám.
+    </div>
+    <div class="sor"><label>Autónomo járulék (€ / hó)</label>
+      <input type="number" id="autonomo" value="300"></div>
+    <div class="sor"><label>Könyvelő (€ / hó)
+      <small>Bizonytalan tétel: két főre 60 volt. Írd át, ha megtudod.</small></label>
+      <input type="number" id="konyvelo" value="50"></div>
+    <div class="sor"><label><span class="jel becsles"></span>Railway alap (€ / hó)
+      <small>Flask + Postgres folyamatosan futva.</small></label>
+      <input type="number" id="railway" value="40"></div>
+    <div class="sor"><label>GitHub (€ / hó)
+      <small>Privát repóhoz az ingyenes csomag is elég.</small></label>
+      <input type="number" id="github" value="0"></div>
+    <div class="sor"><label>Domain + e-mail (€ / év)</label>
+      <input type="number" id="domain_ev" value="8"></div>
+    <div class="sor"><label>Railway pótlék (€)
+      <small>Ennyivel drágul a szerver minden X gyerek után. Ez az egyetlen
+      „állandó" költség, ami tényleg nő a létszámmal — de lépcsőben, nem fejenként.</small></label>
+      <input type="number" id="rw_potlek" value="10" step="1"></div>
+    <div class="sor"><label>…minden ennyi gyerek után</label>
+      <input type="number" id="rw_lepcso" value="50"></div>
+  </div>
+</div>
+
+<!-- ══ EREDMÉNY ═════════════════════════════════════════════════════════ -->
+<h2>Eredmény</h2>
+<div class="racs">
+  <div class="kartya eredmeny">
+    <div class="nagy"><span>Előfizetők</span><b class="arany" id="r_db">–</b></div>
+    <div class="nagy"><span>Bruttó bevétel / hó</span><b id="r_brutto">–</b></div>
+    <div class="nagy"><span>Ebből áfa (nem a tiéd)</span><b id="r_afa">–</b></div>
+    <div class="nagy"><span>Havi eredmény</span><b id="r_ered">–</b></div>
+    <div class="nagy"><span>Éves eredmény</span><b id="r_eves">–</b></div>
+    <div class="magyarazat" id="r_megj"></div>
+  </div>
+
+  <div class="kartya">
+    <h2 style="margin-top:0">Mi hova megy havonta</h2>
+    <table id="t_bontas"></table>
+  </div>
+
+  <div class="kartya">
+    <h2 style="margin-top:0">Mennyi marad egy előfizetőből</h2>
+    <table id="t_fejenkent"></table>
+    <div class="magyarazat">Bruttó ár mínusz áfa, mínusz jutalék, mínusz a percek
+      költsége. Ami marad, az megy az állandó költségre — és ami azon felül van,
+      az a tiéd.</div>
+  </div>
+</div>
+
+<!-- ══ SKÁLÁZÁS ═════════════════════════════════════════════════════════ -->
+<h2>Hogyan változik a haszon, ahogy nő a létszám</h2>
+<div class="racs">
+  <div class="kartya" style="grid-column:1/-1">
+    <div class="magyarazat" style="margin:0 0 10px">
+      Mi lenne a havi eredmény, ha ennyi előfizetőd volna, és mind ugyanazt a csomagot
+      választaná (a fenti beállításokkal)? A haszon azért nő gyorsabban, mint a létszám,
+      mert az állandó költség nem nő vele — csak a Railway lépcsőzik.
+    </div>
+    <table id="t_skala"></table>
+  </div>
+</div>
+
+<div class="figy">
+<b>Amit ez a tábla NEM tud megmondani.</b><br><br>
+<b>1. Hány karakter és hány token megy el egy percben.</b> A „Mibe kerül egy perc"
+doboz narancs sorai becslések. Ez a három szám dönti el az egész gyerekenkénti
+költséget, és csak éles méréssel lehet pontos: egy hónap után nézd meg az OpenAI és
+az Azure számlát, oszd el a tényleg eltanult percek számával, és írd be ide. Addig
+minden más szám ezen a lapon csak irány.<br><br>
+<b>2. Hányan maradnak.</b> Aki két hónap után lemond, annál a megszerzési költség
+nem térül meg. Ezért ér többet az éves előfizető, még akkor is, ha kevesebbet hoz.<br><br>
+<b>3. Mennyi a könyvelő és az autónomo pontosan.</b> Ezt a könyvelőd mondja meg, nem én.
+Az autónomo sáv választható, és új vállalkozónak az első évben jóval kevesebb is lehet.
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const MEZOK = [
+  "alap_ho","alap_ev","alap_perc","alap_dbh","alap_dbe",
+  "pro_ho","pro_ev","pro_perc","pro_dbh","pro_dbe",
+  "max_ho","max_ev","max_perc","max_dbh","max_dbe",
+  "tts_kar","tts_ar","stt_ar","be_tok","ki_tok","be_ar","ki_ar","eur_usd",
+  "kihasznalt","hangos","afa","jutalek","fix_dij",
+  "autonomo","konyvelo","railway","github","domain_ev","rw_potlek","rw_lepcso"];
+const CSOMAGOK = [
+  {k:"alap", nev:"Alap"}, {k:"pro", nev:"Pro"}, {k:"max", nev:"Max"}];
+const eur = n => (Math.round(n*100)/100).toLocaleString('hu-HU',
+  {minimumFractionDigits:2, maximumFractionDigits:2}) + " €";
+const cent = n => (Math.round(n*10000)/100).toLocaleString('hu-HU',
+  {minimumFractionDigits:2, maximumFractionDigits:2}) + " cent";
+
+function szamol(){
+  const v = {}; MEZOK.forEach(m => v[m] = parseFloat($(m).value) || 0);
+
+  /* ── EGY PERC ÁRA ────────────────────────────────────────────────────
+     A hangos perc három tételből áll: felolvasás, beszédfelismerés, és a
+     beszélgetés tokenjei. A néma percből az első kettő kimarad — ezért
+     olcsóbb nagyságrenddel. */
+  const tok_usd = v.be_tok/1e6*v.be_ar + v.ki_tok/1e6*v.ki_ar;
+  const hang_usd = v.tts_kar/1e6*v.tts_ar + v.stt_ar + tok_usd;
+  const hang_eur = hang_usd * v.eur_usd;
+  const nema_eur = tok_usd  * v.eur_usd;
+
+  $("t_perc").innerHTML =
+    `<tr><th>Egy perc ára</th><th>hangos</th><th>néma</th></tr>`
+  + `<tr><td>Felolvasás</td><td>${cent(v.tts_kar/1e6*v.tts_ar*v.eur_usd)}</td><td>–</td></tr>`
+  + `<tr><td>Beszédfelismerés</td><td>${cent(v.stt_ar*v.eur_usd)}</td><td>–</td></tr>`
+  + `<tr><td>Beszélgetés (token)</td><td>${cent(tok_usd*v.eur_usd)}</td><td>${cent(tok_usd*v.eur_usd)}</td></tr>`
+  + `<tr><td><b>Összesen</b></td><td><b class="arany">${cent(hang_eur)}</b></td>`
+  + `<td><b class="arany">${cent(nema_eur)}</b></td></tr>`
+  + `<tr><td>Arány</td><td colspan="2">a hangos perc ${(nema_eur ? hang_eur/nema_eur : 0).toFixed(1)}&times; a néma</td></tr>`;
+
+  /* ── EGY ELŐFIZETŐ ───────────────────────────────────────────────────
+     A havi és az éves fizető UGYANANNYI percet használ. A különbség csak
+     annyi, hogy az éves tíz hónap árát fizeti tizenkét hónapnyi percért,
+     és a fix tranzakciós díj nála évente egyszer van, nem havonta. */
+  function percKoltseg(perc){
+    const h = perc * v.kihasznalt/100;
+    const hang = h * v.hangos/100;
+    return hang*hang_eur + (h-hang)*nema_eur;
+  }
+  function fedezet(brutto_havi, trx_havonta, perc){
+    const netto = brutto_havi / (1 + v.afa/100);
+    const jut = brutto_havi * v.jutalek/100 + v.fix_dij * trx_havonta;
+    return {netto: netto, jut: jut, ai: percKoltseg(perc),
+            marad: netto - jut - percKoltseg(perc)};
+  }
+
+  /* ── ÁLLANDÓ KÖLTSÉG ─────────────────────────────────────────────── */
+  function allando(gyerek){
+    const alap = v.autonomo + v.konyvelo + v.railway + v.github + v.domain_ev/12;
+    const lepcso = v.rw_lepcso > 0
+      ? Math.floor(gyerek / v.rw_lepcso) * v.rw_potlek : 0;
+    return alap + lepcso;
+  }
+
+  /* ── A MOSTANI ÁLLOMÁNY ──────────────────────────────────────────── */
+  let db=0, brutto=0, netto=0, ai=0, jut=0;
+  const fejsorok = [];
+  CSOMAGOK.forEach(cs => {
+    const perc = v[cs.k+"_perc"];
+    [["havi", v[cs.k+"_dbh"], v[cs.k+"_ho"], 1],
+     ["éves", v[cs.k+"_dbe"], v[cs.k+"_ev"]/12, 1/12]].forEach(([mod,n,br,trx]) => {
+      if(!n) return;
+      const f = fedezet(br, trx, perc);
+      db += n; brutto += n*br; netto += n*f.netto; ai += n*f.ai; jut += n*f.jut;
+      fejsorok.push([cs.nev+" ("+mod+")", n, f.marad, n*f.marad]);
+    });
+  });
+  const fix = allando(db);
+  const ered = netto - jut - ai - fix;
+
+  $("r_db").textContent = db + " fő";
+  $("r_brutto").textContent = eur(brutto);
+  $("r_afa").textContent = eur(brutto - netto);
+  const e1 = $("r_ered"); e1.textContent = eur(ered);
+  e1.className = ered >= 0 ? "zold" : "piros";
+  const e2 = $("r_eves"); e2.textContent = eur(ered*12);
+  e2.className = ered >= 0 ? "zold" : "piros";
+
+  $("t_bontas").innerHTML =
+    `<tr><td>Bruttó bevétel</td><td class="zold">${eur(brutto)}</td></tr>`
+  + `<tr><td>Áfa</td><td class="piros">${eur(-(brutto-netto))}</td></tr>`
+  + `<tr><td>Fizetési jutalék</td><td class="piros">${eur(-jut)}</td></tr>`
+  + `<tr><td>OpenAI + Azure (a percekből)</td><td class="piros">${eur(-ai)}</td></tr>`
+  + `<tr><td>Autónomo + könyvelő</td><td class="piros">${eur(-(v.autonomo+v.konyvelo))}</td></tr>`
+  + `<tr><td>Railway + GitHub + domain</td><td class="piros">${eur(-(fix-v.autonomo-v.konyvelo))}</td></tr>`
+  + `<tr><td><b>Marad</b></td><td class="${ered<0?'piros':'zold'}"><b>${eur(ered)}</b></td></tr>`;
+
+  $("t_fejenkent").innerHTML = fejsorok.length
+    ? `<tr><th>Csomag</th><th>fő</th><th>/ fő</th><th>együtt</th></tr>`
+      + fejsorok.map(([n,f,egy,ossz]) =>
+        `<tr><td>${n}</td><td>${f}</td><td class="${egy<0?'piros':'zold'}">${eur(egy)}</td>`
+        + `<td class="${ossz<0?'piros':'zold'}">${eur(ossz)}</td></tr>`).join('')
+    : `<tr><td style="opacity:.5">Írj be előfizetőszámot a Csomagok dobozba.</td></tr>`;
+
+  $("r_megj").textContent = db === 0
+    ? "Írj be előfizetőszámokat a Csomagok dobozba."
+    : (ered >= 0
+      ? `Megvan a nullszaldó: ${db} előfizetővel ${eur(ered)} marad havonta.`
+      : `${db} előfizetővel még ${eur(-ered)} hiányzik havonta.`);
+
+  /* ── SKÁLÁZÁS ────────────────────────────────────────────────────── */
+  const LETSZAM = [10, 25, 50, 100, 200, 500];
+  let fej = `<tr><th>Előfizető</th>`;
+  CSOMAGOK.forEach(cs => fej += `<th>csak ${cs.nev}</th>`);
+  fej += `</tr>`;
+  const sorok = LETSZAM.map(n => {
+    let s = `<tr><td>${n} fő</td>`;
+    CSOMAGOK.forEach(cs => {
+      const f = fedezet(v[cs.k+"_ho"], 1, v[cs.k+"_perc"]);
+      const e = n*f.marad - allando(n);
+      s += `<td class="${e<0?'piros':'zold'}">${eur(e)}</td>`;
+    });
+    return s + `</tr>`;
+  }).join('');
+  /* Nullszaldó: hány fő kell, ha mind ugyanazt a csomagot választaná. A
+     Railway-lépcső miatt ezt kipróbálni kell, nem egyszerű osztás. */
+  let nulls = `<tr><td><b>Nullszaldóhoz kell</b></td>`;
+  CSOMAGOK.forEach(cs => {
+    const f = fedezet(v[cs.k+"_ho"], 1, v[cs.k+"_perc"]);
+    let kell = null;
+    if(f.marad > 0){
+      for(let n=1; n<=100000; n++){
+        if(n*f.marad - allando(n) >= 0){ kell = n; break; }
+      }
+    }
+    nulls += `<td><b>${kell ? kell+" fő" : "soha"}</b></td>`;
+  });
+  nulls += `</tr>`;
+  $("t_skala").innerHTML = fej + sorok + nulls;
+}
+MEZOK.forEach(m => $(m).addEventListener("input", szamol));
+szamol();
+</script>
+</body>
+</html>

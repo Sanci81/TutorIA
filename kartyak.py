@@ -322,7 +322,7 @@ KARTYAK: list[dict] = [
         # sotet belso teret a modell mindig olajfestmenybe vitte at - ez
         # rontotta el Aranyt es Bolyait is. A szotar (a kartya KEPESSEGE)
         # marad, de a fenyt a nyitott ajto es a ho adja, nem a mecses.
-        "prompt": "Sandor Korosi Csoma, gaunt bearded face, worn dark travelling coat, holding open a huge handwritten Tibetan dictionary. Standing in the open doorway of a Himalayan monastery, bright cold daylight, snow-covered peaks and prayer flags behind him, clear blue sky.",
+        "prompt": "Sandor Korosi Csoma as in the 1840s engraving: a Hungarian scholar about forty-five, gaunt face, NEATLY COMBED SHORT DARK HAIR, full dark beard and moustache, 1840s dark buttoned frock coat with a high collar and a white cravat. He holds open a huge handwritten dictionary, the pages COVERED IN HANDWRITTEN TIBETAN SCRIPT. Standing in the open doorway of a Himalayan monastery, bright cold daylight, snow-covered peaks and prayer flags behind him. NOT a modern hiker, NOT long loose hair, NOT blank pages.",
     },
     {
         "id": "hu_tortenel_7_szechenyi",
