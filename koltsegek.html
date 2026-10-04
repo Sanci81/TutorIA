@@ -161,6 +161,188 @@
   </div>
 </div>
 
+
+<!-- ══ CSOMAGONKÉNT, ÁFÁVAL ═══════════════════════════════════════════════
+     MIÉRT KELLETT EZ A SZAKASZ. A fenti számolás egyetlen átlagárral és egy
+     fejből vett „gyerekenkénti AI-költséggel" dolgozik. Két dolog hiányzott
+     belőle, és mindkettő sokat számít:
+
+       1. ÁFA. A csomaglapon szereplő ár BRUTTÓ – abból 21% az államé, nem a
+          tiéd. Enélkül a nullszaldó szebbnek látszik, mint amilyen.
+       2. A PERC CSOMAGONKÉNT MÁS: Alap 400, Pro 900, Max 1800. A költséget
+          nem a gyerek száma hajtja, hanem az elhasznált perc – és egy hangos
+          perc tizenkétszer annyiba kerül, mint egy néma.
+
+     A fenti szakaszt szándékosan nem bántottam: az maradt, ahogy volt. Ez
+     itt külön számol, a saját mezőiből, és az állandó költséget a FENTI
+     mezőkből veszi át, hogy ne kelljen kétszer karbantartanod. -->
+<h2>Csomagonként — áfával, percalapon</h2>
+<p class="alcim" style="margin:-4px 0 14px">
+  Az árak és a percek a <code>csomagok.py</code>-ból valók, a perc ára az
+  <code>app.py</code> költségállandóiból. Az állandó költséget a fenti
+  „Havi állandó költség" dobozból olvassa. Ha ezek ketten eltérnek, EZT hidd el.
+</p>
+
+<div class="racs" id="csomagracs">
+  <div class="kartya">
+    <h2 style="margin-top:0">Előfizetők csomagonként</h2>
+    <div class="sor"><label><b>Alap</b> — 14,90 € / hó · 400 perc
+      <small>Havi fizetők száma, majd éves fizetőké (149 €/év).</small></label>
+      <input type="number" id="c_alap_h" value="0"></div>
+    <div class="sor"><label>Alap — éves fizetők</label>
+      <input type="number" id="c_alap_e" value="0"></div>
+    <div class="sor"><label><b>Pro</b> — 24,90 € / hó · 900 perc</label>
+      <input type="number" id="c_pro_h" value="0"></div>
+    <div class="sor"><label>Pro — éves fizetők (249 €/év)</label>
+      <input type="number" id="c_pro_e" value="0"></div>
+    <div class="sor"><label><b>Max</b> — 39,90 € / hó · 1800 perc</label>
+      <input type="number" id="c_max_h" value="0"></div>
+    <div class="sor"><label>Max — éves fizetők (399 €/év)</label>
+      <input type="number" id="c_max_e" value="0"></div>
+    <div class="magyarazat">Az éves ár tíz hónap ára, a perc viszont tizenkét
+      hónapra jár. Ezért hoz egy éves előfizető kevesebbet, mint ugyanaz a
+      csomag havi fizetéssel – cserébe előre fizet, és ritkábban mond le.</div>
+  </div>
+
+  <div class="kartya">
+    <h2 style="margin-top:0">Használat és adó</h2>
+    <div class="sor"><label><span class="jel ok"></span>Áfa (%)
+      <small>Spanyol magánszemély vásárlónál 21%, magyarnál 27%. A vegyes
+      körre a 21 óvatos alsó becslés.</small></label>
+      <input type="number" id="c_afa" value="21" step="0.5"></div>
+    <div class="sor"><label>Kihasználtság (%)
+      <small>A keretéből mennyit használ el átlagosan. 100% a legrosszabb
+      eset: mindenki az utolsó percig elhasználja.</small></label>
+      <input type="number" id="c_kihasznalt" value="100" step="5"></div>
+    <div class="sor"><label>Ebből hangos (%)
+      <small>Ez dönti el a költséget. Elsőben gyakorlatilag 100%, mert a
+      gyerek még nem olvas; feljebb kevesebb.</small></label>
+      <input type="number" id="c_hangos" value="100" step="5"></div>
+    <div class="sor"><label><span class="jel becsles"></span>Hangos perc ára (cent)
+      <small>Becslés, nem mérés. Az /admin oldal mért fogyasztásából fog
+      pontosodni.</small></label>
+      <input type="number" id="c_hang_cent" value="0.84" step="0.01"></div>
+    <div class="sor"><label><span class="jel becsles"></span>Néma perc ára (cent)
+      <small>Nagyjából a hangos tizenketted része: nincs felolvasás és nincs
+      beszédfelismerés, csak a beszélgetés.</small></label>
+      <input type="number" id="c_nema_cent" value="0.07" step="0.01"></div>
+    <div class="sor"><label>Fizetési jutalék (%)</label>
+      <input type="number" id="c_jutalek" value="3" step="0.1"></div>
+  </div>
+
+  <div class="kartya eredmeny">
+    <div class="nagy"><span>Havi nettó bevétel</span><b class="arany" id="c_bev">–</b></div>
+    <div class="nagy"><span>Ebből áfa (nem a tiéd)</span><b id="c_afa_ki">–</b></div>
+    <div class="nagy"><span>Havi eredmény</span><b id="c_ered">–</b></div>
+    <div class="nagy"><span>Éves eredmény</span><b id="c_eves">–</b></div>
+    <div class="magyarazat" id="c_megj"></div>
+  </div>
+</div>
+
+<div class="racs" style="margin-top:18px">
+  <div class="kartya">
+    <h2 style="margin-top:0">Mennyi marad egy előfizetőből</h2>
+    <table id="c_tabla"></table>
+    <div class="magyarazat">Bruttó ár mínusz áfa, mínusz fizetési jutalék,
+      mínusz a percek költsége. Ami marad, az megy az állandó költségre.</div>
+  </div>
+  <div class="kartya">
+    <h2 style="margin-top:0">Nullszaldó</h2>
+    <table id="c_null"></table>
+    <div class="magyarazat">Hány előfizető kell a havi állandó költség
+      fedezéséhez, ha mindenki ugyanazt a csomagot választaná.</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const $c = id => document.getElementById(id);
+  const CSOMAG = [
+    {kulcs:"alap", nev:"Alap", ho:14.90, ev:149.0, perc:400},
+    {kulcs:"pro",  nev:"Pro",  ho:24.90, ev:249.0, perc:900},
+    {kulcs:"max",  nev:"Max",  ho:39.90, ev:399.0, perc:1800},
+  ];
+  const C_MEZOK = ["c_alap_h","c_alap_e","c_pro_h","c_pro_e","c_max_h","c_max_e",
+    "c_afa","c_kihasznalt","c_hangos","c_hang_cent","c_nema_cent","c_jutalek"];
+  /* Az állandó költség mezői a FENTI dobozból – egy helyen kell karbantartani. */
+  const FIX_MEZOK = ["autonomo","railway","github","egyeb","konyvelo"];
+  const ceur = n => (Math.round(n*100)/100).toLocaleString('hu-HU',
+    {minimumFractionDigits:2, maximumFractionDigits:2}) + " \u20ac";
+
+  /* Egy előfizető havi percköltsége. A havi és az éves előfizető UGYANANNYI
+     percet használ – az éves csak kevesebbet fizet érte. */
+  function percKoltseg(perc, v){
+    const hasznalt = perc * v.c_kihasznalt/100;
+    const hangos = hasznalt * v.c_hangos/100;
+    const nema   = hasznalt - hangos;
+    return (hangos * v.c_hang_cent + nema * v.c_nema_cent) / 100;
+  }
+
+  function cszamol(){
+    const v = {}; C_MEZOK.forEach(m => v[m] = parseFloat($c(m).value) || 0);
+    let fix = 0;
+    FIX_MEZOK.forEach(m => { const e = $c(m); if(e) fix += parseFloat(e.value) || 0; });
+
+    let brutto = 0, netto = 0, kolt = 0, db = 0;
+    const sorok = [], nullsorok = [];
+
+    CSOMAG.forEach(cs => {
+      const hdb = v["c_"+cs.kulcs+"_h"], edb = v["c_"+cs.kulcs+"_e"];
+      const pk = percKoltseg(cs.perc, v);
+      /* Az éves díj egy hónapra jutó része: ár / 12, NEM / 10. Tíz hónap árát
+         fizeti, de tizenkét hónapig használja – pont ez a különbség. */
+      const hb = cs.ho, eb = cs.ev/12;
+      [[hdb,hb,"havi"],[edb,eb,"éves"]].forEach(([n, ar, mod]) => {
+        if(!n) return;
+        const nt = ar/(1+v.c_afa/100);
+        const ju = ar*v.c_jutalek/100;
+        const marad = nt - ju - pk;
+        brutto += n*ar; netto += n*nt; kolt += n*(ju+pk); db += n;
+        sorok.push([cs.nev+" ("+mod+") \u00d7"+n, marad*n, marad]);
+      });
+      /* a nullszaldó-tábla mindig mind a hármat mutatja, akkor is, ha 0 fő */
+      const nt = hb/(1+v.c_afa/100), ju = hb*v.c_jutalek/100;
+      const marad = nt - ju - pk;
+      nullsorok.push([cs.nev, marad]);
+    });
+
+    const afa = brutto - netto;
+    const ered = netto - kolt - fix;
+
+    $c("c_bev").textContent = ceur(netto);
+    $c("c_afa_ki").textContent = ceur(afa);
+    const e1 = $c("c_ered"); e1.textContent = ceur(ered);
+    e1.className = ered >= 0 ? "zold" : "piros";
+    const e2 = $c("c_eves"); e2.textContent = ceur(ered*12);
+    e2.className = ered >= 0 ? "zold" : "piros";
+
+    $c("c_tabla").innerHTML = sorok.length
+      ? sorok.map(([n,ossz,egy]) =>
+          `<tr><td>${n}<br><small style="opacity:.5">${ceur(egy)} / fő</small></td>`
+          + `<td class="${ossz<0?'piros':'zold'}">${ceur(ossz)}</td></tr>`).join('')
+      : '<tr><td style="opacity:.5">Írj be előfizetőszámot.</td><td></td></tr>';
+
+    $c("c_null").innerHTML = nullsorok.map(([n,marad]) => {
+      const kell = marad > 0 ? Math.ceil(fix/marad) + " előfizető" : "soha";
+      return `<tr><td>Csak ${n}<br><small style="opacity:.5">${ceur(marad)} marad fejenként</small></td>`
+           + `<td>${kell}</td></tr>`;
+    }).join('') + `<tr><td>Havi állandó költség<br>`
+      + `<small style="opacity:.5">a fenti dobozból</small></td><td>${ceur(fix)}</td></tr>`;
+
+    $c("c_megj").textContent = db === 0
+      ? "Írj be előfizetőszámokat a bal oldali dobozba."
+      : (ered >= 0
+        ? `Megvan a nullszaldó: ${db} előfizetővel ${ceur(ered)} marad havonta.`
+        : `${db} előfizetővel még ${ceur(-ered)} hiányzik havonta.`);
+  }
+
+  C_MEZOK.concat(FIX_MEZOK).forEach(m => {
+    const el = $c(m); if(el) el.addEventListener("input", cszamol);
+  });
+  cszamol();
+})();
+</script>
+
 <div class="figy">
 <b>Két szám dönti el az egészet, és egyiket sem tudom megmondani helyetted.</b><br><br>
 <b>1. Mennyi az AI egy gyerekre.</b> Ez függ attól, mennyit chatel, milyen hosszúak a

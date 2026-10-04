@@ -176,11 +176,37 @@ KARTYAK: list[dict] = [
         "ritkasag": 'nagyon_ritka', "ero": 440,
         "kepesseg": 'Új geometria', "kepesseg_ero": 370,
         "becenev": 'A VILÁGTEREMTŐ',
-        "leiras": 'Kitalált egy geometriát, ahol a párhuzamosok mégis találkozhatnak. Kétezer év után ő mondta ki, hogy a tér másmilyen is lehet.',
+        # 2026-10-04: AZ ELŐZŐ SZÖVEG MATEMATIKAILAG HIBÁS VOLT. Bolyai
+        # geometriájában a párhuzamosok NEM találkoznak – épp ellenkezőleg:
+        # egy ponton át VÉGTELEN SOK párhuzamos húzható. (Az a geometria,
+        # ahol minden egyenes metszi egymást, a gömbi – az nem Bolyaié.)
+        # Sándor szúrta ki, az ő megfogalmazása került ide.
+        "leiras": 'Kitalált egy geometriát, ahol egy ponton át nemcsak egy, hanem végtelen sok párhuzamos húzható. Kétezer év után ő mondta ki, hogy a tér másmilyen is lehet.',
         "teny": 'Az egész új geometriát huszonnégy oldalon írta le. Ez a rövid függelék az apja könyve mögött jelent meg, és megváltoztatta a matematikát.',
         "erdekesseg": 'Kiváló hegedűs és vívó volt. A hagyomány szerint egyszer tizenhárom tisztet hívott ki egymás után, és a szünetekben hegedült.',
         "idezet": 'Semmiből egy új, más világot teremtettem.',
-        "prompt": "Janos Bolyai, young hussar officer, blue eyes, narrow face, short dark hair, clean-shaven, dark blue jacket with gold braid. Drawing glowing curves on a dark wall with a compass. Cool indigo light.",
+        # 2026-10-04: az előző prompt egy SÖTÉT SZOBÁT és „glowing curves"-t
+        # kért – és egy fényes, játékhős-szerű arcot kaptunk neonvonalakkal,
+        # könyvespolccal, földgömbbel. A szett stílusa ettől messze van.
+        # A jóváhagyott lapok KINT vannak, erős égbolt alatt, és mögöttük
+        # OTT A TÖRTÉNET. Bolyainál a történet maga a görbült tér.
+        # (Hiteles arcképe nincs, ezért nem hasonlóságra törekszünk.)
+        "prompt": "Janos Bolyai, Hungarian mathematician, MIDDLE-AGED, about "
+        "forty. HALF-FIGURE from the waist up, LOOKING STRAIGHT AT THE VIEWER, "
+        "face large and clearly lit. Broad face with a FULL DARK BEARD and a "
+        "thick moustache, dark hair combed back, calm steady eyes. He wears a "
+        "plain dark civilian coat with a white shirt collar showing at the "
+        "neck - NO uniform, NO gold braid, NO epaulettes, NO cape. In ONE hand, "
+        "lowered and relaxed, he holds a large open pair of brass compasses, as "
+        "if he had just drawn an arc; both hands complete and inside the frame. "
+        "He stands OUTDOORS at night on a wide plain under an enormous starry "
+        "sky. Behind him SPACE ITSELF IS CURVED: a vast grid of pale luminous "
+        "lines, like chalk drawn on the sky, bends over the horizon, and two "
+        "lines that start out parallel curve towards each other and meet far "
+        "away. Deep blue and violet night sky with strong painterly brushwork "
+        "and a warm glow on his face. Dramatic, awe-inspiring composition. "
+        "NOT an interior, NO room, NO bookshelf, NO globe, NO candle, NO desk, "
+        "NO neon or sci-fi look.",
     },
     {
         "id": "hu_matemati_7_euklidesz",
@@ -292,7 +318,11 @@ KARTYAK: list[dict] = [
         "teny": 'Éveket töltött jéghideg kolostorcellákban, napi néhány csésze vajas tea mellett, kéziratok fölé hajolva.',
         "erdekesseg": 'Japánban buddhista szentként tisztelik. A világ első nyugati tibetológusa lett egy magyar székely fiúból.',
         "idezet": 'Elindultam, hogy megkeressem a nemzetem bölcsőjét.',
-        "prompt": "Sandor Korosi Csoma, gaunt bearded face, worn dark travelling coat. Writing in a huge handwritten dictionary by a butter lamp. Cold stone monastery cell.",
+        # 2026-10-04: a korabbi szoveg "cold stone monastery cell"-t kert, es a
+        # sotet belso teret a modell mindig olajfestmenybe vitte at - ez
+        # rontotta el Aranyt es Bolyait is. A szotar (a kartya KEPESSEGE)
+        # marad, de a fenyt a nyitott ajto es a ho adja, nem a mecses.
+        "prompt": "Sandor Korosi Csoma, gaunt bearded face, worn dark travelling coat, holding open a huge handwritten Tibetan dictionary. Standing in the open doorway of a Himalayan monastery, bright cold daylight, snow-covered peaks and prayer flags behind him, clear blue sky.",
     },
     {
         "id": "hu_tortenel_7_szechenyi",
@@ -372,7 +402,28 @@ KARTYAK: list[dict] = [
         "teny": 'A balladáiban sosem mondja ki, mi történt – az olvasónak kell rájönnie. Ezért hívják a magyar ballada mesterének.',
         "erdekesseg": 'Barátja, Petőfi halála után évekig szinte semmit nem írt. A gyász hallgatásba fordult nála.',
         "idezet": 'Ki nem tud írni, olvasni sem tud igazán.',
-        "prompt": "Janos Arany, 19th-century HUNGARIAN poet, long narrow face, very high domed forehead with receding dark hair, deep-set melancholy eyes, a thick drooping dark moustache and NO BEARD, clean-shaven chin and cheeks, dark hair combed back over the ears, plain dark buttoned coat with a simple black neckcloth. Seated at a plain dark wooden writing desk in a MODEST Hungarian small-town study with whitewashed walls, writing with a goose quill on a half-written sheet of a ballad, a simple brass oil lamp and a small stack of loose papers beside him. No globe, no marble bust, no gilded framed paintings, no grand library. Quiet warm lamplight.",
+        # 2026-10-04: AZ ELŐZŐ PROMPT SÖTÉT SZOBÁT ÍRT ELŐ, és pontosan azt
+        # is kaptuk: egy lehajtott fejű ember egy barna szobában, lámpafénynél.
+        # Összehasonlítva a jóváhagyott lapokkal (Kolumbusz a fedélzeten,
+        # Petőfi a tömeg fölött) a szett stílusa EZ: félalak, SZEMBENÉZ,
+        # odakint, erős naplementében, és MÖGÖTTE OTT A TÖRTÉNET. Ezért a
+        # sötét szoba kikerült, és bejött a ballada világa.
+        "prompt": "Janos Arany, 19th-century HUNGARIAN ballad poet. HALF-FIGURE "
+        "from the waist up, body turned slightly but LOOKING STRAIGHT AT THE "
+        "VIEWER, face large, clearly lit and fully visible. Long narrow face, "
+        "very high domed forehead, dark hair receding and combed back over the "
+        "ears, deep-set melancholy eyes, a thick drooping dark moustache and NO "
+        "BEARD - chin and cheeks clean-shaven. Plain dark buttoned coat with a "
+        "simple black neckcloth. He holds up in one hand a large handwritten "
+        "sheet of a ballad; both hands complete and inside the frame. He stands "
+        "OUTDOORS at dramatic sunset on the wide Hungarian plain. Behind him, "
+        "smaller and further away, the world of his ballad is suggested: three "
+        "old bards in long robes holding harps, standing against the glow of a "
+        "distant fire, and a small village church tower on the horizon. Bold "
+        "saturated sky of orange, deep blue and violet with strong brushwork. "
+        "Dramatic, exciting, story-telling composition. NOT a quiet man sitting "
+        "at a writing desk, NOT a dark brown interior, NO oil lamp, NO room, "
+        "NO window, NO bookshelf, NO globe, NO marble bust.",
     },
     {
         "id": "hu_enek_zen_7_bach",
