@@ -4372,12 +4372,18 @@
                 regi[k].classList.remove('tablan');
             }
             b.classList.add('tablan');
-            /* „A kérdés a táblán van. Ide írd a választ." — ezt EDDIG
-               mindig kiírtuk. Ha viszont a feladat elveszett, a gyerek azt
-               olvasta, hogy válaszoljon, és közben nem volt mire. Ezért
-               csak akkor írjuk ki, ha tényleg van kint élő feladat. */
+            /* „A kérdés a táblán van. Ide írd a választ."
+               ELŐSZÖR mindig kiírtuk — akkor is, ha nem volt mire
+               válaszolni. Aztán csak akkor, ha kattintható feladat volt
+               kint — de ettől a sima kérdéseknél (pl. „A körte gyümölcs?")
+               eltűnt az egyetlen útmutatás, és a gyerek nem tudta, hova
+               írjon. Ezért most: akkor írjuk ki, ha van kint élő feladat,
+               VAGY ha a táblán tényleg kérdés áll. */
             var mt = document.querySelector('.munkater');
-            utalas.hidden = !(mt && !mt.hidden);
+            var vanFeladat = !!(mt && !mt.hidden);
+            var tablaSzoveg = (szoveg.textContent || '').trim();
+            var vanKerdes = /[?？]$/.test(tablaSzoveg);
+            utalas.hidden = !(vanFeladat || vanKerdes);
         }
 
         frissit();
