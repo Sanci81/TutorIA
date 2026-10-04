@@ -114,15 +114,28 @@
     <div class="sor"><label><span class="jel ok"></span>Beszédfelismerés ($ / perc)</label>
       <input type="number" id="stt_ar" value="0.0045" step="0.0001"></div>
     <div class="sor"><label><span class="jel becsles"></span>Bemenő token / perc
-      <small>A rendszerprompt, a tananyag és az eddigi beszélgetés.</small></label>
-      <input type="number" id="be_tok" value="2000"></div>
+      <small>A rendszerprompt, a tananyag és az eddigi beszélgetés. Ez a
+      szám az /admin oldal MÉRT költségéből van visszaszámolva (42 perc =
+      0,19 €), 10:1 be-ki aránnyal. Az arány még tipp – az admin oldalon
+      mostantól ott a valódi token is, abból pontosítható.</small></label>
+      <input type="number" id="be_tok" value="30000"></div>
     <div class="sor"><label><span class="jel becsles"></span>Kimenő token / perc
       <small>A tanár válasza. Az ábrák (SVG) is ebben vannak, nem külön tétel.</small></label>
-      <input type="number" id="ki_tok" value="300"></div>
-    <div class="sor"><label><span class="jel ok"></span>Bemenő token ára ($ / 1M)</label>
-      <input type="number" id="be_ar" value="0.10" step="0.01"></div>
+      <input type="number" id="ki_tok" value="3000"></div>
+    <div class="sor"><label><span class="jel ok"></span>Bemenő token ára ($ / 1M)
+      <small>A gpt-5.4-mini listaára. A program app.py-ában 0,10 állt –
+      az egy régebbi, olcsóbb modell ára volt.</small></label>
+      <input type="number" id="be_ar" value="0.75" step="0.01"></div>
     <div class="sor"><label><span class="jel ok"></span>Kimenő token ára ($ / 1M)</label>
-      <input type="number" id="ki_ar" value="0.60" step="0.01"></div>
+      <input type="number" id="ki_ar" value="4.50" step="0.05"></div>
+    <div class="sor"><label><span class="jel ok"></span>Gyorsítótárazott bemenő ára ($ / 1M)
+      <small>Az ismétlődő rendszerprompt tizedannyiba kerül.</small></label>
+      <input type="number" id="cache_ar" value="0.075" step="0.005"></div>
+    <div class="sor"><label><span class="jel becsles"></span>Bemenő tokenből gyorsítótárazott (%)
+      <small>EZ DÖNTI EL, hogy nyereséges-e. A tananyag minden kérésnél
+      újra elmegy; ha a szolgáltató felismeri, tized árat fizetsz érte.
+      Nullán a legrosszabb eset látszik.</small></label>
+      <input type="number" id="cache_szaz" value="0" step="5"></div>
     <div class="sor"><label>Árfolyam (€ egy dollárért)</label>
       <input type="number" id="eur_usd" value="0.92" step="0.01"></div>
 
@@ -237,7 +250,8 @@ const MEZOK = [
   "alap_ho","alap_ev","alap_perc","alap_dbh","alap_dbe",
   "pro_ho","pro_ev","pro_perc","pro_dbh","pro_dbe",
   "max_ho","max_ev","max_perc","max_dbh","max_dbe",
-  "tts_kar","tts_ar","stt_ar","be_tok","ki_tok","be_ar","ki_ar","eur_usd",
+  "tts_kar","tts_ar","stt_ar","be_tok","ki_tok","be_ar","ki_ar","cache_ar",
+  "cache_szaz","eur_usd",
   "kihasznalt","hangos","afa","jutalek","fix_dij",
   "autonomo","konyvelo","railway","github","domain_ev","rw_potlek","rw_lepcso"];
 const CSOMAGOK = [
@@ -254,7 +268,10 @@ function szamol(){
      A hangos perc három tételből áll: felolvasás, beszédfelismerés, és a
      beszélgetés tokenjei. A néma percből az első kettő kimarad — ezért
      olcsóbb nagyságrenddel. */
-  const tok_usd = v.be_tok/1e6*v.be_ar + v.ki_tok/1e6*v.ki_ar;
+  /* A bemenő tokenek egy része gyorsítótárból jön, és tizedannyiba kerül.
+     Ez a különbség nyereség és veszteség között dönt, ezért külön mező. */
+  const be_atlag_ar = v.be_ar*(1 - v.cache_szaz/100) + v.cache_ar*(v.cache_szaz/100);
+  const tok_usd = v.be_tok/1e6*be_atlag_ar + v.ki_tok/1e6*v.ki_ar;
   const hang_usd = v.tts_kar/1e6*v.tts_ar + v.stt_ar + tok_usd;
   const hang_eur = hang_usd * v.eur_usd;
   const nema_eur = tok_usd  * v.eur_usd;

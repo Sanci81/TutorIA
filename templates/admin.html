@@ -478,8 +478,19 @@
             {{ nev }} <b>{{ perc|round(0)|int }}p</b>{% if not loop.last %} · {% endif %}
           {% else %}—{% endfor %}
         </td>
+        {# A KÖLTSÉG MÖGÉ ODAÍRJUK A TOKENT IS.
+           A gyerekenkénti költséget nem a percek hajtják, hanem a tokenek:
+           hányszor szólalt meg a gyerek, és milyen hosszú volt közben az
+           előzmény. E nélkül csak az látszott, hogy a kevesebbet tanuló
+           gyerek drágább – és nem lehetett megmondani, miért. #}
         <td class="szam {% if gy.havi_koltseg > ar %}dragabb{% endif %}">
-          {{ gy.havi_koltseg }} €</td>
+          {{ gy.havi_koltseg }} €
+          <div class="kicsi" style="font-weight:400">
+            be {{ '{:,}'.format(gy.be_token).replace(',', ' ') }}<br>
+            ki {{ '{:,}'.format(gy.ki_token).replace(',', ' ') }}<br>
+            {{ gy.keres }} kérés
+          </div>
+        </td>
       </tr>
       {% endfor %}
     </table>
@@ -492,7 +503,7 @@
       <div class="kicsi" style="margin-bottom:5px">Naponta ennél a családnál:</div>
       <div class="napok">
         {% for n in cs.napi %}
-        <div class="nap" title="{{ n.nap }} · {{ n.keres }} kérés · {{ n.tts_karakter }} felolvasott karakter">
+        <div class="nap" title="{{ n.nap }} · {{ n.keres }} kérés · {{ n.be_token }} be-token · {{ n.ki_token }} ki-token · {{ n.tts_karakter }} felolvasott karakter">
           <div class="oszlop" style="height:44px">
             <i style="height:{{ (100 * n.koltseg / cs.napi_csucs)|round(0)|int if cs.napi_csucs else 0 }}%"></i>
           </div>

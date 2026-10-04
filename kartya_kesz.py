@@ -66,6 +66,26 @@ TILTAS = ("No text, no letters, no numbers, no words, no captions, no "
           "signature, no watermark, no logo, no border, no frame, "
           "no modern clothing.")
 
+# AZ ÁTRAJZOLÁS SAJÁT TILTÁSA.
+#
+# 2026-10-04, Kőrösi Csoma: az 1. lépés tökéletes képet adott – a szótár
+# lapjain ott volt a kézzel írt tibeti írás. A 2. lépés után a lapok ÜRESEK
+# lettek. Az ok a kódban volt: az átrajzolás is megkapta a TILTAS-t, abban
+# pedig ott áll, hogy „no text, no letters, no numbers, no words". A modell
+# tehát utasítást kapott arra, hogy tüntesse el az írást – és eltüntette.
+#
+# A TILTAS eredeti dolga az, hogy ne bélyegezzen feliratot, aláírást vagy
+# keretet a kártyára. Ez továbbra is kell. Ami NEM kell: az, hogy a képen
+# MÁR OTT LÉVŐ írást is letörölje. Ezért az átrajzolásnak külön tiltása van,
+# ami a feliratot tiltja, a tartalmat viszont megőrzi.
+ATRAJZ_TILTAS = (
+    "No added caption, no title, no signature, no watermark, no logo, no "
+    "border, no frame, no modern clothing. KEEP every marking that is "
+    "already present in the first image: handwriting on pages, letters and "
+    "symbols on instruments, scale marks and diagrams must stay clearly "
+    "visible and must NOT be smoothed away or left blank."
+)
+
 # 2. LÉPÉS – az átrajzolás utasítása.
 ATRAJZ = (
     "The FIRST image is the artwork to restyle. Redraw it completely, "
@@ -77,7 +97,7 @@ ATRAJZ = (
     "their strong coloured rim light, their level of stylisation. "
     "The result must look like it belongs to the same card set as the "
     "reference images, not like a realistic oil painting or photograph. "
-    + TILTAS
+    + ATRAJZ_TILTAS
 )
 
 
@@ -130,6 +150,17 @@ def main() -> int:
     ert = argparse.ArgumentParser(description="Egy kártyakép, két lépésben")
     ert.add_argument("kartya", nargs="?", default="",
                      help="a kártya fájlneve, pl. magyar_7_petofi")
+    # CSAK AZ ÁTRAJZOLÁS ÚJRA.
+    #
+    # 2026-10-04: a Kőrösi Csoma kártyánál az 1. lépés tökéletes képet adott,
+    # a 2. lépés viszont letörölte az írást a szótár lapjairól. Az egészet
+    # újrafuttatni kétszeres pazarlás lett volna: eldobta volna a jó 1. lépést,
+    # és új, talán rosszabb kompozíciót adott volna helyette. Ezzel a
+    # kapcsolóval a MEGLÉVŐ 1. lépés képét lehet újra átrajzoltatni – fele
+    # pénzért, és a jó kompozíció megmarad.
+    ert.add_argument("--atrajzol", default="",
+                     help="Csak a 2. lepest futtatja, a megadott meglevo "
+                          "kepen (fajlnev a kartya_kepek_uj/kesz mappabol).")
     ert.add_argument("--hiany", action="store_true",
                      help="csak kiírja, mi hiányzik – nem kerül semmibe")
     args = ert.parse_args()
@@ -150,7 +181,7 @@ def main() -> int:
         return 1
     k = talalt[0]
 
-    if os.path.exists(vegleges_ut(k)):
+    if os.path.exists(vegleges_ut(k)) and not args.atrajzol:
         print(f"Ennek MÁR VAN végleges képe: {vegleges_ut(k)}")
         print("Ha mégis újat akarsz, előbb nevezd át a meglévőt.")
         return 0
@@ -176,28 +207,41 @@ def main() -> int:
     alany = (k.get("prompt") or "").strip() or \
         f"{k.get('nev','')}, {k.get('alnev','')}".strip(" ,")
 
-    print(f"{k.get('nev')} – két lépés, kb. hat cent.\n")
+    if args.atrajzol:
+        # Nincs 1. lépés: a megadott, már meglévő képet rajzoljuk át.
+        ut1 = args.atrajzol
+        if not os.path.isabs(ut1):
+            ut1 = os.path.join(CEL_MAPPA, ut1)
+        if not ut1.lower().endswith(".png"):
+            ut1 += ".png"
+        if not os.path.exists(ut1):
+            print(f"Nincs ilyen kép: {ut1}")
+            return 1
+        print(f"{k.get('nev')} – csak átrajzolás, kb. három cent.")
+        print(f"     alap: {os.path.basename(ut1)}\n")
+    else:
+        print(f"{k.get('nev')} – két lépés, kb. hat cent.\n")
 
-    # ── 1. lépés ───────────────────────────────────────────────────────
-    print("1/2  A kompozíció készül…", flush=True)
-    try:
-        v1 = kliens.images.generate(
-            model=MODELL, prompt=f"{STILUS}. {alany} {TILTAS}",
-            size=MERET, n=1)
-        adat1 = kep_bajtok(v1)
-    except Exception as exc:
-        print(f"     HIBA: {exc}")
-        return 1
+        # ── 1. lépés ───────────────────────────────────────────────────
+        print("1/2  A kompozíció készül…", flush=True)
+        try:
+            v1 = kliens.images.generate(
+                model=MODELL, prompt=f"{STILUS}. {alany} {TILTAS}",
+                size=MERET, n=1)
+            adat1 = kep_bajtok(v1)
+        except Exception as exc:
+            print(f"     HIBA: {exc}")
+            return 1
 
-    ut1 = szabad_nev(os.path.join(CEL_MAPPA, f"{k.get('kep')}__1_alap.png"))
-    try:
-        with open(ut1, "wb") as f:
-            f.write(adat1)
-    except Exception as exc:
-        print(f"     HIBA a mentésnél: {exc}")
-        print("     Zárd be a képnézegetőt, és futtasd újra.")
-        return 1
-    print(f"     -> {os.path.basename(ut1)}")
+        ut1 = szabad_nev(os.path.join(CEL_MAPPA, f"{k.get('kep')}__1_alap.png"))
+        try:
+            with open(ut1, "wb") as f:
+                f.write(adat1)
+        except Exception as exc:
+            print(f"     HIBA a mentésnél: {exc}")
+            print("     Zárd be a képnézegetőt, és futtasd újra.")
+            return 1
+        print(f"     -> {os.path.basename(ut1)}")
 
     # ── 2. lépés ───────────────────────────────────────────────────────
     print("2/2  Átrajzolás a szett stílusára…", flush=True)

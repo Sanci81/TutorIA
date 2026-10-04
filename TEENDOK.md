@@ -281,3 +281,80 @@ FIGYELEM, két dolog:
 Halványan, kicsiben, az album alján:
 "A kártyák képei művészi ábrázolások, nem hiteles portrék."
 Fontos, mert pl. Bolyai Jánosról nem maradt fenn hiteles arckép.
+
+
+---
+
+# A LEGFONTOSABB NYITOTT KÉRDÉS: MEGÉRI-E? (2026-10-04)
+
+Ezt HOLNAP kell végigszámolni, mindennel együtt. Itt van minden, ami
+eddig kiderült, hogy ne kelljen újrakezdeni a gondolkodást.
+
+## Mi derült ki ma
+
+**1. A tokenárak a programban rosszak voltak.**
+Az `app.py` a `gpt-5.4-mini` modellt hívja, a költségszámításban viszont
+`BE_1M = 0.10` és `KI_1M = 0.60` állt. A gpt-5.4-mini valódi listaára
+ennél jóval magasabb: nagyjából **0,75 dollár / millió bemenő token** és
+**4,50 dollár / millió kimenő token**, a gyorsítótárazott bemenő pedig
+**0,075**. A kimenőnél tehát HÉTSZERES az eltérés.
+
+Következmény: az /admin oldal eurói ALACSONYABBAK a valóságnál. A
+"0,19 €" és a "0,22 €" nem a tényleges költség.
+
+Javítás kód nélkül, mert a program környezeti változóból olvassa:
+Railway → a `web` szolgáltatás → Variables:
+    BE_1M = 0.75
+    KI_1M = 4.5
+
+**2. A többi ár viszont stimmel.** Ellenőrizve:
+  – Azure felolvasás: 16 USD / 1M karakter, és a havi 500 000 karakter
+    ingyenes keret valós;
+  – beszédfelismerés: a kód a `gpt-transcribe` modellt hívja, annak a
+    közzétett ára pontosan 0,0045 USD / perc — a konstans helyes;
+  – EUR/USD 0,92 — nagyjából rendben, néha ellenőrizni kell.
+
+**3. A költséget nem a PERC hajtja, hanem a TOKEN.**
+Az admin oldalon az egyik gyerek 42 percet tanult 0,19 €-ért, a másik
+25 percet 0,22 €-ért. Nem hiba: a tokenek száma attól függ, hányszor
+szólalt meg a gyerek, és milyen hosszú volt közben az előzmény, amit
+minden kérésnél újraküldünk. A történelem hosszú magyarázatokat ad, a
+kimenő token pedig hatszor drágább a bemenőnél.
+
+**4. A veszély nem az átlagos gyerek, hanem a MEGÍGÉRT PERCKERET.**
+A két mért gyerek az Alap keretének kb. a TIZEDÉT használta el 30 nap
+alatt. Ennyi használatnál minden csomag bőven nyereséges. De ha valaki
+TÉNYLEG elhasználja a keretét:
+  – 100% kihasználtságnál, a valódi tokenárakkal, mind a három csomag
+    VESZTESÉGES — még 90% gyorsítótárazással is;
+  – a Max a legrosszabb, mert ott a legtöbb a perc.
+
+## Amit holnap meg kell nézni
+
+**a) Mennyi megy gyorsítótárból.** Ez dönti el a kérdést. A tananyag
+minden kérésnél újra elmegy; ha a szolgáltató felismeri az ismétlődést,
+tized árat fizetünk érte. A kód jelenleg NEM méri a `cached_tokens`
+értéket — ezt be kellene vezetni a ChildUsage-be.
+
+**b) A valódi be/ki token arány.** Az /admin oldalon mostantól ott van a
+gyerek sorában a bemenő és a kimenő token, meg a kérések száma. Ebből
+pontosan kiszámolható a valódi perc-költség, nem kell becsülni. ELŐBB
+ezt kell leolvasni, és csak utána dönteni bármiről.
+
+**c) Három lehetséges válasz, ha tényleg veszteséges:**
+  – lejjebb vinni a perckereteket (400 / 900 / 1800 helyett kevesebb);
+  – feljebb vinni az árat;
+  – olcsóbbra venni a beszélgetést: rövidebb rendszerprompt, kevesebb
+    előzmény visszaküldése, kisebb modell a könnyű kérdésekre.
+
+**d) A számolólap.** `koltsegek_pontos.html` — minden mező átírható,
+a valódi tokenárakkal és a gyorsítótár-százalékkal. A régi
+`koltsegek.html` érintetlen maradt.
+
+## Amit MÁR TUDUNK a saját adatainkból
+  – autónomo 300 €/hó, könyvelő kb. 50 €/hó (bizonytalan, két főre 60
+    volt), Railway kb. 40 €/hó, domain 8 €/év;
+  – áfa 21% (spanyol magánszemély vásárlónál), fizetési jutalék
+    kb. 1,5% + 0,25 € fix tranzakciónként;
+  – az ingyenes próba 30 hangos perce gyerekenként kb. 31 cent — ez NEM
+    az a tétel, ami megfog; a havi fix az.
