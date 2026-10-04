@@ -3144,6 +3144,157 @@ def admin_csaladok(napok: int = 30) -> list[dict[str, Any]]:
         db.close()
 
 
+def admin_elakadas() -> dict[str, Any]:
+    """Hol akadnak el a gyerekek – témakörönként és gyerekenként.
+
+    Miért kell: a tanulási percekből látszik, MENNYIT tanulnak, de nem az,
+    hogy MIVEL nem boldogulnak. Ha egy témakörnél tízből nyolc gyerek
+    elindul és egy teljesíti, akkor nem a gyerekekkel van baj, hanem azzal
+    a témakörrel – vagy a hozzá tartozó magyarázattal.
+
+    SZÁNDÉKOSAN NINCS IDŐSZŰRŐ. Egy teljesített témakör teljesített marad,
+    egy elakadás pedig addig elakadás, amíg a gyerek nem jut túl rajta.
+    Ha a tanulási időt az utolsó 30 napra szűrném, a scores táblából viszont
+    mindent beszámítanék, akkor az „elkezdte" kisebb lehetne a
+    „teljesítette"-nél – vagyis értelmetlen számokat adna.
+
+    Két forrásból áll össze:
+      child_learning_time – ki töltött időt a témakörrel (= elkezdte),
+      child_topic_scores  – ki írt belőle tesztet, és átment-e.
+
+    A tanulási sorok egy részében a topic_id üres (régi sorok, illetve az
+    olyan óra, ahol a gyerek nem témakörből tanult). Ezeket NEM osztjuk szét
+    találomra: külön megszámoljuk őket, és a „perc_temakor_nelkul"-ben
+    visszaadjuk, hogy látszódjon, mennyi adat marad a képen kívül.
+    """
+    db = _session()
+    try:
+        # A gyerekek neve és osztálya a gyerekenkénti bontáshoz.
+        gyerekek_adat: dict[int, dict[str, Any]] = {}
+        for c in db.scalars(select(Child)).all():
+            gyerekek_adat[c.id] = {
+                "gyerek_id": c.id,
+                "nev": c.name,
+                "osztaly": c.grade,
+                "tanterv": (c.curriculum or "HU"),
+            }
+
+        # kulcs = (tantargy, evfolyam, topic_id). Az évfolyam azért kell a
+        # kulcsba, mert a topic_id csak sorszám ("t1") az adott évfolyam
+        # listájában: nélküle az 1. és a 3. osztály első témaköre összefolyna.
+        temak: dict[tuple, dict[str, Any]] = {}
+
+        def _tema(tantargy: str, evfolyam: int, topic_id: str) -> dict[str, Any]:
+            k = (tantargy or "", int(evfolyam or 0), topic_id or "")
+            t = temak.get(k)
+            if t is None:
+                t = {
+                    "tantargy": k[0], "evfolyam": k[1], "topic_id": k[2],
+                    "nev": "",              # a scores tábla adja, ha van
+                    "kezdok": set(),        # ki töltött vele időt
+                    "tesztelok": set(),     # ki írt belőle tesztet
+                    "atmenok": set(),       # ki ment át
+                    "perc": 0.0,
+                    "probalkozas": 0,
+                    "pont_ossz": 0,
+                    "pont_db": 0,
+                }
+                temak[k] = t
+            return t
+
+        perc_temakor_nelkul = 0.0
+        for t in db.scalars(select(ChildLearningTime)).all():
+            perc = float(t.minutes or 0.0)
+            if not t.topic_id:
+                perc_temakor_nelkul += perc
+                continue
+            tema = _tema(t.subject, t.grade or 0, t.topic_id)
+            tema["perc"] += perc
+            tema["kezdok"].add(t.child_id)
+
+        for s in db.scalars(select(ChildTopicScore)).all():
+            tema = _tema(s.subject, s.grade, s.topic_id)
+            if s.topic_name:
+                tema["nev"] = s.topic_name
+            tema["tesztelok"].add(s.child_id)
+            if s.passed:
+                tema["atmenok"].add(s.child_id)
+            tema["probalkozas"] += int(s.topic_attempts or 0)
+            tema["pont_ossz"] += int(s.score or 0)
+            tema["pont_db"] += 1
+            # Ha a tanulási sorban nem volt topic_id, a tesztből akkor is
+            # tudjuk, hogy ez a gyerek elkezdte ezt a témakört.
+            tema["kezdok"].add(s.child_id)
+            if s.topic_learning_minutes and not tema["perc"]:
+                tema["perc"] += float(s.topic_learning_minutes or 0.0)
+
+        # ── Gyerekenkénti bontás ugyanabból az adatból ──────────────────
+        # Ugyanaz a három szám gyerekre szűkítve: mit kezdett el, mit vitt
+        # végig, és hol áll most. Így a szülőnek is lehet mit mondani.
+        gy_sorok: dict[int, list[dict[str, Any]]] = {}
+        for k, t in temak.items():
+            for cid in t["kezdok"]:
+                gy_sorok.setdefault(cid, []).append({
+                    "tantargy": t["tantargy"],
+                    "evfolyam": t["evfolyam"],
+                    "topic_id": t["topic_id"],
+                    "nev": t["nev"],
+                    "tesztelt": cid in t["tesztelok"],
+                    "atmeno": cid in t["atmenok"],
+                })
+
+        gyerekek: list[dict[str, Any]] = []
+        for cid, sorok in gy_sorok.items():
+            alap = gyerekek_adat.get(cid) or {
+                "gyerek_id": cid, "nev": "#%d" % cid,
+                "osztaly": "—", "tanterv": "—"}
+            atmeno = sum(1 for s in sorok if s["atmeno"])
+            sorok.sort(key=lambda s: (s["tantargy"], s["evfolyam"], s["topic_id"]))
+            gyerekek.append({
+                **alap,
+                "elkezdte": len(sorok),
+                "teljesitette": atmeno,
+                "elakadt": len(sorok) - atmeno,
+                "sorok": sorok,
+            })
+        # Az kerül előre, akinél a legtöbb a nyitott témakör: ott kell
+        # először utánanézni, nem a listában elöl álló névnél.
+        gyerekek.sort(key=lambda g: (-g["elakadt"], -g["elkezdte"], g["nev"] or ""))
+
+        # ── Témakörönkénti összesítés ───────────────────────────────────
+        temakorok: list[dict[str, Any]] = []
+        for t in temak.values():
+            kezdo = len(t["kezdok"])
+            atmeno = len(t["atmenok"])
+            temakorok.append({
+                "tantargy": t["tantargy"],
+                "evfolyam": t["evfolyam"],
+                "topic_id": t["topic_id"],
+                "nev": t["nev"],
+                "elkezdte": kezdo,
+                "tesztelte": len(t["tesztelok"]),
+                "teljesitette": atmeno,
+                "elakadt": kezdo - atmeno,
+                "perc": round(t["perc"], 1),
+                "atlag_perc": round(t["perc"] / kezdo, 1) if kezdo else 0.0,
+                "atlag_pont": round(t["pont_ossz"] / t["pont_db"]) if t["pont_db"] else None,
+                "probalkozas": t["probalkozas"],
+            })
+        # A legtöbb elakadás legyen a lista elején – ez a kérdés lényege.
+        temakorok.sort(key=lambda x: (-x["elakadt"], -x["elkezdte"],
+                                      x["tantargy"], x["evfolyam"], x["topic_id"]))
+
+        return {
+            "temakorok": temakorok,
+            "gyerekek": gyerekek,
+            "perc_temakor_nelkul": round(perc_temakor_nelkul, 1),
+            "ossz_temakor": len(temakorok),
+            "ossz_elakadt": sum(x["elakadt"] for x in temakorok),
+            "ossz_teljesitett": sum(x["teljesitette"] for x in temakorok),
+        }
+    finally:
+        db.close()
+
 def napi_fogyasztas(napok: int = 30) -> list[dict[str, Any]]:
     """Naponkénti összesítés az egész szolgáltatásra. Ebből látszik, mikor
     ugrik meg a használat – és mikor a számla."""

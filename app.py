@@ -11829,6 +11829,84 @@ def admin_attekintes():
     for _t in (_stat.get("tantargyak") or []):
         _t["nev"] = _targynev(_t["nev"])
 
+    # ══ HOL AKADNAK EL A GYEREKEK ═══════════════════════════════════════
+    # A tanulási percekből eddig csak az látszott, mennyit tanulnak. Azt
+    # nem, hogy MIVEL nem boldogulnak. Ez a blokk témakörönként és
+    # gyerekenként is megmutatja, hol áll meg a haladás.
+    try:
+        elakadas = database.admin_elakadas()
+    except Exception:
+        logger.warning("admin_elakadas sikertelen", exc_info=True)
+        elakadas = {"temakorok": [], "gyerekek": [], "perc_temakor_nelkul": 0.0,
+                    "ossz_temakor": 0, "ossz_elakadt": 0, "ossz_teljesitett": 0}
+
+    # A TÉMAKÖR NEVE. Az adatbázisban csak sorszám áll ("t3"), a név pedig
+    # csak akkor került be, ha a gyerek már írt belőle tesztet. Aki elindult
+    # és elakadt a teszt ELŐTT, annál üres marad — épp az, akit keresünk.
+    # Ezért a kerettanterv JSON-ból pótoljuk, tantárgy+évfolyam párokra
+    # egyszer betöltve. Ha nem sikerül (pl. idegen nyelv, ahol a nyelvet is
+    # tudni kellene), a sorszám marad: üres helyett az is mond valamit.
+    _kat_gyorsito: dict = {}
+
+    def _temakor_nev(tantargy: str, evfolyam: int, topic_id: str) -> str:
+        kulcs = (tantargy or "", int(evfolyam or 0))
+        nevek = _kat_gyorsito.get(kulcs)
+        if nevek is None:
+            nevek = {}
+            try:
+                _c = get_curriculum_for_chat(tantargy, evfolyam)
+                for _t in (_c.get("topic_catalog") or []):
+                    if _t.get("id"):
+                        nevek[str(_t["id"])] = _t.get("name") or ""
+            except Exception:
+                nevek = {}
+            _kat_gyorsito[kulcs] = nevek
+        return nevek.get(str(topic_id or ""), "")
+
+    for _t in (elakadas.get("temakorok") or []):
+        _t["targy_nev"] = _targynev(_t["tantargy"])
+        if not _t["nev"]:
+            _t["nev"] = _temakor_nev(_t["tantargy"], _t["evfolyam"], _t["topic_id"])
+        _t["cimke"] = _t["nev"] or _t["topic_id"]
+    for _gy in (elakadas.get("gyerekek") or []):
+        for _t in _gy["sorok"]:
+            _t["targy_nev"] = _targynev(_t["tantargy"])
+            if not _t["nev"]:
+                _t["nev"] = _temakor_nev(_t["tantargy"], _t["evfolyam"], _t["topic_id"])
+            _t["cimke"] = _t["nev"] or _t["topic_id"]
+
+    # MÁSOLHATÓ SZÖVEG. A képernyőfotó küldése lassú és drága; ez a blokk
+    # egyetlen kijelöléssel átvihető bárhová, és ugyanazt mondja el.
+    _sorok = ["TutorIA elakadas-kimutatas (teljes idoszak)"]
+    _sorok.append("Temakor osszesen: %d | elakadt: %d | teljesitett: %d"
+                  % (elakadas.get("ossz_temakor", 0),
+                     elakadas.get("ossz_elakadt", 0),
+                     elakadas.get("ossz_teljesitett", 0)))
+    if elakadas.get("perc_temakor_nelkul"):
+        _sorok.append("Temakor nelkuli tanulasi perc: %s"
+                      % elakadas["perc_temakor_nelkul"])
+    _sorok.append("")
+    _sorok.append("TEMAKORONKENT (elkezdte / teljesitette / elakadt / atlag perc / atlag pont)")
+    for _t in (elakadas.get("temakorok") or [])[:40]:
+        _sorok.append("  %s %d. %s | %d / %d / %d | %s perc | %s"
+                      % (_t["targy_nev"], _t["evfolyam"], _t["cimke"],
+                         _t["elkezdte"], _t["teljesitette"], _t["elakadt"],
+                         _t["atlag_perc"],
+                         ("%d pont" % _t["atlag_pont"]) if _t["atlag_pont"] is not None
+                         else "nem irt tesztet"))
+    _sorok.append("")
+    _sorok.append("GYEREKENKENT (elkezdte / teljesitette / elakadt)")
+    for _gy in (elakadas.get("gyerekek") or []):
+        _sorok.append("  %s (%s. %s) | %d / %d / %d"
+                      % (_gy["nev"], _gy["osztaly"], _gy["tanterv"],
+                         _gy["elkezdte"], _gy["teljesitette"], _gy["elakadt"]))
+        for _t in _gy["sorok"]:
+            if not _t["atmeno"]:
+                _sorok.append("      nyitva: %s %d. %s%s"
+                              % (_t["targy_nev"], _t["evfolyam"], _t["cimke"],
+                                 " (tesztet irt, nem ment at)" if _t["tesztelt"] else ""))
+    elakadas_szoveg = "\n".join(_sorok)
+
     return render_template(
         "admin.html",
         csaladok=csaladok, napok=napok, ar=ar,
@@ -11848,6 +11926,8 @@ def admin_attekintes():
         mentesek=_mentes_lista(),
         mentes_orakent=MENTES_ORAKENT,
         stat=_stat,
+        elakadas=elakadas,
+        elakadas_szoveg=elakadas_szoveg,
         token_per_keres=token_per_keres,
         egyszerre=egyszerre,
         tpm_keret=int(tpm_keret),

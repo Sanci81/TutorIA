@@ -52,6 +52,22 @@
   .adm .torol{background:#fff;border:1px solid #e6b3b3;color:#a12b2b;border-radius:999px;
               padding:3px 11px;font-size:.78rem;cursor:pointer;margin-right:6px}
   .adm .torol:hover{background:#fff5f5}
+  /* ══ ELAKADÁS-KIMUTATÁS ═════════════════════════════════════════════
+     A sáv a témakör sorsát mutatja egyetlen pillantásra: zöld, akik
+     teljesítették, borostyán, akik elindultak és még nem jutottak túl rajta. */
+  .adm .el{display:flex;height:9px;border-radius:5px;overflow:hidden;background:#eef1f6;min-width:70px}
+  .adm .el i{display:block}
+  .adm .el .j{background:#1e7a4d}
+  .adm .el .n{background:#e8a33d}
+  .adm tr.gond td{background:#fffaf0}
+  .adm .pirosul{color:#a12b2b;font-weight:700}
+  .adm .gysor{border-bottom:1px solid #eef1f6;padding:9px 0}
+  .adm .gysor:last-child{border-bottom:none}
+  .adm .gynev{font-weight:600}
+  .adm .nyitva{color:#92400e;font-size:.85rem;margin:3px 0 0 12px;line-height:1.5}
+  .adm .masol{width:100%;box-sizing:border-box;font:12px/1.5 ui-monospace,Menlo,Consolas,monospace;
+              border:1px solid #d9dee7;border-radius:10px;padding:10px 12px;background:#f8fafc;
+              color:#1f2937;resize:vertical}
   .adm .lab{margin-top:26px;color:#6b7280;font-size:.86rem;line-height:1.6;
             background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px 15px}
 </style>
@@ -282,6 +298,114 @@
         {% endfor %}
       </div>
     </div>
+  </div>
+  {% endif %}
+
+
+  {# ══ HOL AKADNAK EL A GYEREKEK ══════════════════════════════════════
+     Két nézet ugyanarról: témakörönként (hol áll meg a legtöbb gyerek) és
+     gyerekenként (kinél mi van nyitva). A lista a legtöbb elakadással
+     kezdődik, mert ott van dolgunk. #}
+  {% if elakadas and elakadas.temakorok %}
+  <div class="csalad">
+    <div class="cfej">
+      <div class="email">Hol akadnak el</div>
+      <div class="meta">
+        {{ elakadas.ossz_temakor }} megkezdett témakör ·
+        {{ elakadas.ossz_teljesitett }} teljesítés ·
+        <b class="pirosul">{{ elakadas.ossz_elakadt }} nyitva</b>
+      </div>
+    </div>
+
+    <p class="kicsi" style="margin:0 0 12px">
+      Ez a tábla a TELJES időszakot nézi, nem az utolsó {{ napok }} napot: egy
+      teljesített témakör teljesített marad, egy elakadás pedig addig elakadás,
+      amíg a gyerek nem jut túl rajta.
+      {% if elakadas.perc_temakor_nelkul %}
+      Van még {{ elakadas.perc_temakor_nelkul|round(0)|int }} perc tanulás,
+      aminél nem jegyeztük fel a témakört – az itt nem látszik.
+      {% endif %}
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Témakör</th>
+          <th class="szam">Elkezdte</th>
+          <th class="szam">Teljesítette</th>
+          <th class="szam">Nyitva</th>
+          <th style="width:110px">Arány</th>
+          <th class="szam">Átlag perc</th>
+          <th class="szam">Átlag pont</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in elakadas.temakorok %}
+        {# Azt a sort emeljük ki, ahol legalább ketten elindultak, és a
+           többségük nem jutott túl rajta. Egyetlen elakadt gyerek még nem
+           a témakör hibája. #}
+        <tr {% if t.elkezdte > 1 and t.elakadt * 2 >= t.elkezdte %}class="gond"{% endif %}>
+          <td>
+            <b>{{ t.cimke }}</b><br>
+            <span class="kicsi">{{ t.targy_nev }} · {{ t.evfolyam }}. osztály</span>
+          </td>
+          <td class="szam">{{ t.elkezdte }}</td>
+          <td class="szam">{{ t.teljesitette }}</td>
+          <td class="szam {% if t.elkezdte > 1 and t.elakadt * 2 >= t.elkezdte %}pirosul{% endif %}">{{ t.elakadt }}</td>
+          <td>
+            <span class="el">
+              <i class="j" style="width:{{ (100 * t.teljesitette / t.elkezdte)|round(0)|int if t.elkezdte else 0 }}%"></i>
+              <i class="n" style="width:{{ (100 * t.elakadt / t.elkezdte)|round(0)|int if t.elkezdte else 0 }}%"></i>
+            </span>
+          </td>
+          <td class="szam">{{ t.atlag_perc }}</td>
+          <td class="szam">
+            {% if t.atlag_pont is not none %}{{ t.atlag_pont }}
+            {% else %}<span class="kicsi">nem írt tesztet</span>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {# ══ UGYANEZ GYEREKENKÉNT ═══════════════════════════════════════════
+     Ebből lehet a szülőnek mondani valamit: nem azt, hogy „tanult 40 percet",
+     hanem azt, hogy melyik témakörnél áll meg. #}
+  <div class="csalad">
+    <div class="cfej">
+      <div class="email">Gyerekenként</div>
+      <div class="meta">{{ elakadas.gyerekek|length }} gyerek kezdett témakört</div>
+    </div>
+    {% for gy in elakadas.gyerekek %}
+    <div class="gysor">
+      <div>
+        <span class="gynev">{{ gy.nev }}</span>
+        <span class="kicsi">· {{ gy.osztaly }}. {{ gy.tanterv }}</span>
+        <span class="kicsi">· elkezdte: {{ gy.elkezdte }} ·
+          teljesítette: {{ gy.teljesitette }} ·
+          {% if gy.elakadt %}<b class="pirosul">nyitva: {{ gy.elakadt }}</b>
+          {% else %}nincs nyitott témaköre{% endif %}
+        </span>
+      </div>
+      {% for t in gy.sorok %}{% if not t.atmeno %}
+      <div class="nyitva">
+        ↳ {{ t.cimke }} <span class="kicsi">({{ t.targy_nev }} · {{ t.evfolyam }}. osztály){% if t.tesztelt %} · tesztet írt, de nem ment át{% endif %}</span>
+      </div>
+      {% endif %}{% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+
+  {# ══ MÁSOLHATÓ SZÖVEG ═══════════════════════════════════════════════
+     Képernyőfotó helyett: egy kijelölés, és a számok átvihetők bárhová. #}
+  <div class="csalad">
+    <div class="cfej">
+      <div class="email">Másolható összegzés</div>
+      <div class="meta">kijelölés + Ctrl+C</div>
+    </div>
+    <textarea class="masol" rows="14" readonly
+              onclick="this.select()">{{ elakadas_szoveg }}</textarea>
   </div>
   {% endif %}
 
