@@ -145,6 +145,19 @@
     border: 1px solid #e4ebe7;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
+
+  /* ══ A FŐCÍM KÉT VÁLTOZATBAN ═══════════════════════════════════════
+     Két változat van a jelölésben: az asztali a „megvárja" után törik,
+     a telefonos három sorban áll. Mindig CSAK AZ EGYIK látszódhat.
+     2026-10-04: ez a két szabály HIÁNYZOTT a stíluslapból, ezért az
+     éles oldalon MINDKETTŐ megjelent, és a főcím kétszer, egymás alatt
+     olvasódott. A többi bemutató-szabály 900 képpontnál vált, ezért
+     itt is ott vált. */
+  .cim-mobil { display: none; }
+  @media (max-width: 900px) {
+    .cim-asztal { display: none; }
+    .cim-mobil  { display: inline; }
+  }
 </style>
 <section class="bem-hero">
   <div class="bem-hero-szoveg">
