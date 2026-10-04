@@ -120,7 +120,13 @@ a:hover { text-decoration: underline; }
 }
 
 /* ---------- Flash ---------- */
-.flash-container { margin-bottom: 1.25rem; display: grid; gap: 0.6rem; }
+/* A hero háttere 40 képponttal FÖLÉ nyúlik a saját szakaszának
+   (.bem-hero::before, inset: -40px -50vw -10px), és mivel a hero a
+   jelölésben KÉSŐBB jön, rápaintelt a fölötte álló üzenetre: a
+   „Sikeresen kijelentkeztél." doboz alsó fele eltűnt alatta.
+   Egy saját rétegsorrend elég hozzá, hogy az üzenet mindig látszódjon. */
+.flash-container { margin-bottom: 1.25rem; display: grid; gap: 0.6rem;
+                   position: relative; z-index: 1; }
 .flash {
     padding: 0.8rem 1rem;
     border-radius: var(--radius-sm);
@@ -2385,11 +2391,9 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 
 .bem-hero {
     display: grid;
-    grid-template-columns: max-content auto auto;
-    justify-content: start;
-    column-gap: 16px;
-    row-gap: 36px;
-    align-items: end;
+    grid-template-columns: 1fr 1fr;
+    gap: 52px;
+    align-items: center;
     padding: 56px 0 60px;
 }
 .bem-hero h1 {
@@ -2424,14 +2428,11 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 
 /* A korválasztó: az első dolog egy kérdés, nem szöveg. */
 .bem-valaszto {
-    background: rgba(255, 255, 255, 0.65);
-    background-color: rgba(255, 255, 255, 0.65);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    border: none;
+    background: #fff;
+    border: 1px solid #dbe5df;
     border-radius: 20px;
     padding: 26px;
-    box-shadow: 0 16px 36px rgba(20, 60, 40, 0.07);
+    box-shadow: 0 12px 34px rgba(20, 60, 40, 0.08);
 }
 .bem-valaszto h3 { font-size: 17px; margin: 0 0 16px; }
 .bem-evek { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
@@ -2442,7 +2443,7 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     text-align: center;
     font-weight: 800;
     font-size: 19px;
-    background: rgba(255, 255, 255, 0.28);
+    background: #fff;
     color: #16241d;
     text-decoration: none;
     transition: 0.15s;
@@ -2689,12 +2690,10 @@ body:has(.chat-layout) .content { max-width: 1560px; }
     inset: -40px -50vw -10px;
     z-index: -2;
     background:
-        radial-gradient(42% 62% at 58% 50%, rgba(47, 143, 216, 0.32), transparent 68%),
-        radial-gradient(36% 50% at 48% 82%, rgba(23, 184, 166, 0.28), transparent 70%),
         radial-gradient(52% 60% at 12% 18%, rgba(245, 166, 35, 0.24), transparent 70%),
         radial-gradient(46% 55% at 88% 12%, rgba(47, 143, 216, 0.22), transparent 70%),
         radial-gradient(50% 60% at 72% 95%, rgba(23, 184, 166, 0.22), transparent 70%),
-        linear-gradient(180deg, #e7f3fb, #e7f6ee);
+        linear-gradient(180deg, #f2f9f5, #f6f9f7);
 }
 /* A HERO HÁTTERE.
    Korábban egy ISMÉTLŐDŐ mértani csempe volt itt (kör, négyzet, plusz jel),
@@ -2727,9 +2726,8 @@ body:has(.chat-layout) .content { max-width: 1560px; }
    se lógjon ki görgetés nélkül. */
 .bem-hero {
     padding-top: 40px;
-    padding-bottom: 28px;
-    max-height: none;
-    overflow: visible;
+    padding-bottom: 178px;
+    max-height: calc(100vh - 74px);
     box-sizing: border-box;
 }
 .bem-figura {
@@ -2765,14 +2763,7 @@ body:has(.chat-layout) .content { max-width: 1560px; }
 
 .bem-hero h1 { font-size: 48px; }
 
-.bem-valaszto {
-    background: rgba(255, 255, 255, 0.65);
-    background-color: rgba(255, 255, 255, 0.65);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    border: none;
-    box-shadow: 0 16px 36px rgba(20, 60, 40, 0.07);
-}
+.bem-valaszto { border: 0; box-shadow: 0 18px 46px rgba(20, 60, 40, 0.14); }
 .bem-ev { border-width: 2px; }
 .bem-ev:nth-child(1) { border-color: rgba(239, 95, 95, 0.42); color: var(--b-korall); }
 .bem-ev:nth-child(2) { border-color: rgba(245, 166, 35, 0.45); color: #c77f10; }
@@ -3832,205 +3823,5 @@ html, body {
         opacity: .42;
         pointer-events: none;
         box-shadow: none;
-    }
-}
-
-/* Az osztálykártya és a leckeábrák kerete.
-   Ezek a sorok a fájl végén vannak, és !important, mert korábban
-   fehér hátteret kapott a kártya, a chat pedig inline stílussal
-   fehérre festi az ábra dobozát. */
-.bem-valaszto {
-    background: rgba(255, 255, 255, 0.65) !important;
-    background-color: rgba(255, 255, 255, 0.65) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    backdrop-filter: blur(16px) !important;
-    border: none !important;
-    outline: none !important;
-    box-shadow: 0 16px 36px rgba(20, 60, 40, 0.07) !important;
-}
-.chat-figure,
-.tanit-abra,
-.fabra-rajz {
-    background: rgba(255, 255, 255, 0.72) !important;
-    background-color: rgba(255, 255, 255, 0.72) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.85) !important;
-    border-radius: 18px !important;
-    box-shadow: 0 16px 36px rgba(15, 40, 30, 0.08) !important;
-}
-.chat-figure svg,
-.tanit-abra svg,
-.uj-felulet .tanit-abra svg,
-.fabra-rajz svg {
-    background: transparent !important;
-    background-color: transparent !important;
-}
-.chat-figure svg :is(line, polyline, polygon, path, rect),
-.tanit-abra svg :is(line, polyline, polygon, path, rect),
-.fabra-rajz svg :is(line, polyline, polygon, path, rect) {
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-.chat-figure svg [stroke="#222"],
-.chat-figure svg [stroke="#000"],
-.chat-figure svg [stroke="black"],
-.tanit-abra svg [stroke="#222"],
-.tanit-abra svg [stroke="#000"],
-.tanit-abra svg [stroke="black"],
-.fabra-rajz svg [stroke="#222"],
-.fabra-rajz svg [stroke="#000"],
-.fabra-rajz svg [stroke="black"] {
-    stroke: #1e7a4d;
-}
-.chat-figure svg circle:nth-of-type(4n+1),
-.tanit-abra svg circle:nth-of-type(4n+1),
-.fabra-rajz svg circle:nth-of-type(4n+1),
-.chat-figure svg ellipse:nth-of-type(4n+1),
-.tanit-abra svg ellipse:nth-of-type(4n+1),
-.fabra-rajz svg ellipse:nth-of-type(4n+1) {
-    stroke: #1e7a4d;
-    fill: #e7f6ee;
-}
-.chat-figure svg circle:nth-of-type(4n+2),
-.tanit-abra svg circle:nth-of-type(4n+2),
-.fabra-rajz svg circle:nth-of-type(4n+2),
-.chat-figure svg ellipse:nth-of-type(4n+2),
-.tanit-abra svg ellipse:nth-of-type(4n+2),
-.fabra-rajz svg ellipse:nth-of-type(4n+2) {
-    stroke: #2f8fd8;
-    fill: #e7f3fc;
-}
-.chat-figure svg circle:nth-of-type(4n+3),
-.tanit-abra svg circle:nth-of-type(4n+3),
-.fabra-rajz svg circle:nth-of-type(4n+3),
-.chat-figure svg ellipse:nth-of-type(4n+3),
-.tanit-abra svg ellipse:nth-of-type(4n+3),
-.fabra-rajz svg ellipse:nth-of-type(4n+3) {
-    stroke: #e07a3d;
-    fill: #fff4e0;
-}
-.chat-figure svg circle:nth-of-type(4n+4),
-.tanit-abra svg circle:nth-of-type(4n+4),
-.fabra-rajz svg circle:nth-of-type(4n+4),
-.chat-figure svg ellipse:nth-of-type(4n+4),
-.tanit-abra svg ellipse:nth-of-type(4n+4),
-.fabra-rajz svg ellipse:nth-of-type(4n+4) {
-    stroke: #7b5ea7;
-    fill: #f3eef8;
-}
-
-/* Főoldal, telefon: szöveg, kártya, fiú egymás alatt.
-   Álló módban a cím három külön sor. */
-@media (max-width: 768px) {
-    .bem-hero {
-        grid-template-columns: minmax(0, 1fr) !important;
-        justify-content: stretch !important;
-        justify-items: stretch;
-        column-gap: 0 !important;
-        row-gap: 22px;
-        width: 100%;
-        max-width: 100%;
-    }
-    .bem-hero-szoveg { max-width: 100%; padding-right: 0; }
-    .bem-hero h1,
-    .bem-alcim {
-        max-width: 100% !important;
-        overflow-wrap: normal;
-        word-break: normal;
-    }
-    .bem-hero h1 { font-size: 30px !important; line-height: 1.25; }
-    .bem-alcim { font-size: 17px; line-height: 1.55; margin: 14px 0 18px; }
-    .bem-valaszto {
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
-        padding: 16px 14px;
-    }
-    .bem-evek {
-        width: 100%;
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 10px;
-    }
-    .bem-ev {
-        width: 100% !important;
-        max-width: 100%;
-        height: 58px;
-        box-sizing: border-box;
-        font-size: 26px;
-    }
-    .bem-diak {
-        display: block !important;
-        width: 40%;
-        max-width: 40% !important;
-        height: auto;
-        margin: 0 auto !important;
-        justify-self: center;
-        align-self: center;
-    }
-}
-
-/* 1024-től csak a két soros cím. Alatta, fekvő telefonon is, csak a három soros. */
-.bem-hero .cim-asztal { display: inline !important; }
-.bem-hero .cim-mobil { display: none !important; }
-@media (max-width: 1023px) {
-    .bem-hero .cim-asztal { display: none !important; }
-    .bem-hero .cim-mobil { display: inline !important; }
-    .bem-hero-szoveg { max-width: 100%; padding-right: 8px; box-sizing: border-box; }
-    .bem-hero .bem-alcim {
-        white-space: normal !important;
-        max-width: min(22rem, 100%);
-        padding-right: 0;
-        box-sizing: border-box;
-    }
-    .bem-hero .bem-alcim br { display: none !important; }
-}
-
-/* Fekvő telefon: a szöveg felül, a kártya és a fiú egy sorban.
-   55% + 40% + a köz elfér, a kártya nem lóg ki. */
-@media (max-height: 500px) and (orientation: landscape) {
-    .bem-hero {
-        display: flex !important;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: flex-start;
-        column-gap: 0;
-        row-gap: 12px;
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-    }
-    .bem-hero-szoveg { flex: 1 1 100%; min-width: 0; max-width: 100%; }
-    .bem-hero .bem-alcim { white-space: normal !important; }
-    .bem-hero .bem-alcim br { display: none !important; }
-    .bem-valaszto {
-        width: 55% !important;
-        max-width: 55% !important;
-        padding: 15px !important;
-        box-sizing: border-box;
-        flex: 0 1 55%;
-        min-width: 0;
-    }
-    .bem-evek {
-        grid-template-columns: repeat(4, 1fr) !important;
-        gap: 5px !important;
-        width: 100%;
-    }
-    .bem-ev {
-        width: 100% !important;
-        min-width: 0;
-        box-sizing: border-box;
-    }
-    .bem-diak {
-        display: block !important;
-        width: 40% !important;
-        max-width: 40% !important;
-        max-height: 80vh !important;
-        height: auto;
-        object-fit: contain;
-        flex: 0 1 40%;
-        margin: 0 !important;
-        object-position: left center;
     }
 }
