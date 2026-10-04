@@ -43,10 +43,20 @@
        A magyar a gyökéren van, a spanyol az /es/ alatt. Az útvonalról
        mindig levesszük az /es előtagot, hogy mindkét nyelven UGYANEZ a
        három sor kerüljön ki – ez a kereső szabálya. #}
-    <link rel="canonical" href="{{ request.url }}">
-    <link rel="alternate" hreflang="hu" href="https://web-production-fb5a05.up.railway.app{{ request.path | replace('/es', '') }}">
-    <link rel="alternate" hreflang="es" href="https://web-production-fb5a05.up.railway.app/es{{ request.path | replace('/es', '') }}">
-    <link rel="alternate" hreflang="x-default" href="https://web-production-fb5a05.up.railway.app{{ request.path | replace('/es', '') }}">
+    {# A CÍM NEM A request.url-BŐL JÖN. A Railway előtti átjáró végzi a
+       titkosítást, ezért a program a kérést sima http-nek látja: a
+       request.url „http://…"-t adna, az oldal viszont https-re irányít át.
+       Az og_url a helyes sémával épül, és nincs benne keresősor. #}
+    <link rel="canonical" href="{{ og_url }}">
+    {# A hreflang sorok EDDIG BE VOLTAK ÉGETVE a próba (railway.app) címre.
+       Így az éles oldal azt üzente volna a Google-nek, hogy a nyelvi
+       változatai a próbacímen vannak. A listát most a program állítja elő
+       (app.py, inject_helpers), abból a gépnévből, AMIN A KÉRÉS BEJÖTT –
+       tehát a próbán a railway cím, élesen a tutoriacademia.com.
+       Csak a nyilvános oldalakon kerül ki; máshol a lista üres. #}
+    {% for _kod, _cim in hreflang %}
+    <link rel="alternate" hreflang="{{ _kod }}" href="{{ _cim }}">
+    {%- endfor %}
 </head>
 {# A gyerek háttere CSAK a gyerek saját oldalain van. A bemutató oldalon
    nincs (ott a felső szakasz mögött van a saját mintája), különben a jelek
