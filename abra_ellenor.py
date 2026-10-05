@@ -207,6 +207,45 @@ def szamutkozes(svg: str, szoveg: str) -> list[tuple[str, str, str]]:
             if betu in doku and doku[betu] != ertek]
 
 
+# ---------------------------------------------------------------------------
+# IDEGEN SZÁMOK A RAJZON
+#
+# 2026-10-06, halmazok, 5. osztály. A tábla kérdése a 3, 5, 7 és az 5, 7, 9
+# elemű halmazok metszetéről szólt – a rajzon viszont 2, 4, 6, 8 állt.
+# A gyerek nem tudta megoldani, mert a rajz MÁSRÓL szólt, mint a kérdés.
+#
+# A fenti szamutkozes() ezt NEM fogta meg: az csak a betűjeles értékeket
+# nézi („a = 6"), itt pedig puszta számok álltak, betűjel nélkül.
+#
+# A SZABÁLY SZÁNDÉKOSAN SZIGORÚ FELTÉTELŰ: csak akkor szólunk, ha a rajzon
+# legalább HÁROM önálló szám van, és azok közül EGY SEM szerepel a
+# szövegben. Egyetlen eltérő szám még lehet jogos (tengelybeosztás, sorszám);
+# három, és köztük egy sem közös – az már biztosan másik feladat rajza.
+_PUSZTA_SZAM = re.compile(r"(?<![\w.,])(\d+(?:[.,]\d+)?)(?![\w.,])")
+_IDEGEN_KELL = 3          # ennyi szám alatt nem szólunk
+
+
+def _szamhalmaz(szoveg: str) -> set[str]:
+    """A szövegben előforduló számok, egységes alakra hozva."""
+    ki = set()
+    for sz in _PUSZTA_SZAM.findall(szoveg or ""):
+        sz = sz.replace(",", ".")
+        if "." in sz:
+            sz = sz.rstrip("0").rstrip(".")
+        ki.add(sz or "0")
+    return ki
+
+
+def idegen_szamok(svg: str, szoveg: str) -> list[str]:
+    """A rajz számai, ha EGYIK SEM szerepel a szövegben. Üres = rendben."""
+    rajz = _szamhalmaz(svg_feliratok(svg))
+    if len(rajz) < _IDEGEN_KELL:
+        return []
+    if rajz & _szamhalmaz(szoveg):
+        return []
+    return sorted(rajz, key=lambda x: (len(x), x))
+
+
 def utkozes_leiras(utkozesek: list[tuple[str, str, str]]) -> str:
     """Rövid, ember számára olvasható összefoglaló a naplóhoz."""
     return "; ".join(f"{b}: rajzon {r}, szövegben {s}" for b, r, s in utkozesek)
@@ -340,6 +379,20 @@ def tartalmi_hiba(svg: str, szoveg: str, *, es: bool = False) -> tuple[str, str]
     if utkozes:
         return (utkozes_leiras(utkozes),
                 eloiras_szoveg(kivant_ertekek(svg, szoveg), es=es))
+    # A rajz SZÁMAI közül egy sem szerepel a szövegben → másik feladat rajza.
+    idegen = idegen_szamok(svg, szoveg)
+    if idegen:
+        indok = ("a rajz szamai (%s) közül egy sem szerepel a szövegben"
+                 % ", ".join(idegen))
+        if es:
+            return indok, (
+                "IMPORTANTE: el dibujo debe mostrar EXACTAMENTE los números "
+                "del ejercicio que el niño tiene que resolver AHORA, los que "
+                "aparecen en el texto. No inventes otros números.")
+        return indok, (
+            "FONTOS: a rajzon PONTOSAN annak a feladatnak a számai "
+            "szerepeljenek, amit a gyereknek MOST meg kell oldania – azok, "
+            "amik a szövegben is ott vannak. Ne találj ki más számokat.")
     magassag = magassag_rossz_elen(svg)
     if magassag:
         if es:
