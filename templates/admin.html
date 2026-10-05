@@ -499,6 +499,19 @@
           {% for nev, perc in gy.tantargyak[:4] %}
             {{ nev }} <b>{{ perc|round(0)|int }}p</b>{% if not loop.last %} · {% endif %}
           {% else %}—{% endfor %}
+          {# MILYEN KÉSZÜLÉKRŐL TANULT. A „?" a mérés bevezetése ELŐTTI
+             sorokat jelenti: azoknál nem tudjuk, és nem is derülhet ki. #}
+          {% if gy.keszulek %}
+          <div style="margin-top:4px;color:#64748b">
+            {% for mi, perc in gy.keszulek %}
+              {% if mi == 'telefon' %}📱 telefon
+              {% elif mi == 'tablet' %}▭ tablet
+              {% elif mi == 'asztali' %}🖥 gép
+              {% else %}? mérés előtt{% endif %}
+              <b>{{ perc|round(0)|int }}p</b>{% if not loop.last %} · {% endif %}
+            {% endfor %}
+          </div>
+          {% endif %}
         </td>
         {# A KÖLTSÉG MÖGÉ ODAÍRJUK A TOKENT IS.
            A gyerekenkénti költséget nem a percek hajtják, hanem a tokenek:
