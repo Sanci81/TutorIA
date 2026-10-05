@@ -3298,6 +3298,44 @@ def _fejben_szamolhat(grade: int | None, es_tanterv: bool) -> bool:
     return grade >= 5 if es_tanterv else grade >= 7
 
 
+# ── A FELADAT SZÖVEGÉBŐL IS TŰNJENEK EL A JELÖLŐK ──────────────────────
+#
+# ÉLES HIBA, 2026-10-06. A spanyolórán a válaszgombokon ez állt:
+#     <FL:es>Hay un parque.</FL>
+# A beszélgetés szövegéből a program kitakarítja ezeket a jelölőket, a
+# FELADAT-ból kiolvasott mezőkből viszont NEM: azok külön úton, JSON-ként
+# érkeznek, és egyenesen a gombokra kerültek.
+#
+# A tisztítás ezért ITT, egy helyen történik, a feladat ÖSSZES szöveges
+# mezőjére. Így ha később új feladattípus kerül be, azt sem lehet elfelejteni.
+# Az "svg" mezőt kihagyjuk: az rajz, nem a gyereknek szóló szöveg.
+_FELADAT_NYERS_MEZOK = frozenset({"svg"})
+
+
+def _jelolo_nelkul(szoveg: str) -> str:
+    """Egyetlen szövegből kiszedi a tanári jelölőket, a TARTALMAT meghagyva."""
+    t = _CHAT_MARKER_FL.sub(lambda m: m.group(2), szoveg or "")
+    t = _FL_MARADEK.sub("", t)
+    t = _CHAT_MARKER_VOCAB.sub(lambda m: m.group(2).strip(), t)
+    t = _CHAT_MARKER_VOCAB_EGY.sub(lambda m: m.group(1).strip(), t)
+    t = _CHAT_MARKER_TOPIC.sub("", t)
+    t = _CHAT_MARKER_LEVEL.sub("", t)
+    return t.strip()
+
+
+def _feladat_jelolok_nelkul(feladat):
+    """A feladat minden szöveges mezőjét megtisztítja, mélységben is."""
+    if isinstance(feladat, str):
+        return _jelolo_nelkul(feladat)
+    if isinstance(feladat, list):
+        return [_feladat_jelolok_nelkul(e) for e in feladat]
+    if isinstance(feladat, dict):
+        return {k: (v if k in _FELADAT_NYERS_MEZOK
+                    else _feladat_jelolok_nelkul(v))
+                for k, v in feladat.items()}
+    return feladat
+
+
 def _feladat_parse(text: str, *, grade: int | None = None,
                    es_tanterv: bool = False, temakor: str | None = None) -> dict | None:
     """Mint a belső változat, de NAPLÓZZA, ha a feladat elveszett.
@@ -3314,6 +3352,7 @@ def _feladat_parse(text: str, *, grade: int | None = None,
     """
     eredmeny = _feladat_parse_belso(text, grade=grade, es_tanterv=es_tanterv,
                                     temakor=temakor)
+    eredmeny = _feladat_jelolok_nelkul(eredmeny)
     if eredmeny is None:
         m = _CHAT_MARKER_FELADAT.search(text or "")
         if m:
@@ -5361,8 +5400,65 @@ def _azure_post(region: str, key: str, ssml: str) -> bytes | None:
     return data or None
 
 
+# ── AZ EGYENLŐSÉGJEL FELOLVASÁSA ───────────────────────────────────────
+#
+# ÉLES HIBA, 2026-10-06. A spanyolórán a tábla ezt írta ki:
+#     enfrente de = szemben
+# a felolvasás pedig ezt mondta: „enfrente de EGYENLŐ szemben". Szótári
+# párnál ez zavaró — ott az „=" nem egyenlőséget jelent, hanem azt, hogy
+# „ez ezt jelenti", és a természetes olvasat egy rövid szünet.
+#
+# A szabály SZŰK, hogy a matematikát ne rontsa el: csak akkor cseréljük
+# szünetre, ha az egyenlőségjel MINDKÉT oldalán BETŰ áll. A „2 + 3 = 5"
+# tehát érintetlen marad, ott az „egyenlő" a helyes olvasat.
+# Legalább az egyik oldalon KÉTBETŰS szó álljon: így az "x = y" a képletben
+# marad „egyenlő", a "la calle = utca" viszont szünetet kap.
+_SZOTARI_EGYENLO = re.compile(
+    r"(?<=[^\W\d_]{2})\s*=\s*(?=[^\W\d_])"
+    r"|(?<=[^\W\d_])\s*=\s*(?=[^\W\d_]{2})", re.UNICODE)
+
+
+def _felolvasasra(text: str) -> str:
+    """Apró igazítások, hogy a felolvasás természetesen szóljon."""
+    return _SZOTARI_EGYENLO.sub(" – ", text or "")
+
+
+# ── MILYEN KÉSZÜLÉKRŐL TANUL A GYEREK ──────────────────────────────────
+#
+# Eddig semmi nem jegyezte fel, ezért a telefonos fejlesztés vakrepülés
+# volt: lehet, hogy mindenki laptopról tanul, és hetekig a rossz dolgon
+# dolgoznánk. Most az óra indításakor egyszer eldöntjük, és elmentjük.
+#
+# A böngésző azonosítója nem tökéletes — hazudni is lehet vele, és új
+# készülékek folyton jönnek. Nekünk viszont nem kell pontosság, csak az,
+# hogy nagyjából lássuk az arányt, ezért a három legfontosabb esetet
+# választjuk szét, és semmi mást.
+#
+# A SORREND SZÁMÍT: az iPad azonosítójában nincs benne a „mobile", az
+# Android tabletében viszont NINCS benne a „mobile" sem — ezért előbb a
+# tabletre jellemző jeleket nézzük, és csak utána a telefonra valókat.
+_TABLET_JEL = ("ipad", "tablet", "kindle", "playbook", "silk")
+_TELEFON_JEL = ("iphone", "ipod", "mobile", "windows phone", "blackberry")
+
+
+def _keszulek_tipus(azonosito: str | None) -> str:
+    """A böngésző azonosítójából: "tablet", "telefon" vagy "asztali"."""
+    a = (azonosito or "").lower()
+    if not a:
+        return "asztali"
+    if any(j in a for j in _TABLET_JEL):
+        return "tablet"
+    # Android tablet: van benne „android", de NINCS benne „mobile".
+    if "android" in a and "mobile" not in a:
+        return "tablet"
+    if any(j in a for j in _TELEFON_JEL):
+        return "telefon"
+    return "asztali"
+
+
 def _azure_tts_speak(text: str) -> bytes | None:
     """Azure Speech TTS → mp3 bytes, vagy None hiba/hiányzó config esetén."""
+    text = _felolvasasra(text)
     try:
         key = (os.environ.get("AZURE_SPEECH_KEY") or "").strip()
         region = (os.environ.get("AZURE_SPEECH_REGION") or "").strip()
@@ -10815,7 +10911,8 @@ def api_learning_start():
     # hamisítható, és osztályváltás után az új évfolyamon nulláról indul a
     # lecke ideje, a régi percek pedig érintetlenül megmaradnak.
     result = database.start_learning_session(
-        child_id, subject, topic_id, mode=mode, grade=_chat_grade_num(child)
+        child_id, subject, topic_id, mode=mode, grade=_chat_grade_num(child),
+        keszulek=_keszulek_tipus(request.headers.get("User-Agent")),
     )
     if not result:
         return jsonify({"error": "failed"}), 500

@@ -484,3 +484,117 @@ Az 1., 2., 4., 5., 6. pont a rendszerpromptból és az ábragenerálásból jön
 a 7. tiszta felületi hiba. Ezek a régi modellel is megvoltak. A Luna
 felelősségét csak úgy lehet eldönteni, ha ugyanazt a leckét lefuttatjuk a
 két modellel — a MODELL_TANAR változó átírásával ez öt perc.
+
+---
+
+# EL NE FELEJTSÜK (2026-10-06)
+
+## A Luna az éles oldalon
+A `gpt-6-luna` most CSAK a próbán fut. Az élesen marad a `gpt-5.4-mini`,
+mert ott nincs beállítva MODELL_TANAR. Ha a próbán kiderül, hogy a Luna
+elég jól tanít, akkor az ÉLES Railway projektben kell felvenni:
+    MODELL_TANAR = gpt-6-luna
+    MODELL_SEGED = gpt-6-luna
+    BE_1M = 0.1      (most 0.75, a mini ára)
+    KI_1M = 0.5      (most 4.5, a mini ára)
+A négyet EGYSZERRE kell átírni, különben az admin hibás eurót mutat.
+
+## Ami a hét hibából megvan
+  1. rossz ábra (a rajz számai idegenek)  — KÉSZ (abra_ellenor.py)
+  7. lassú/nem reagáló indítógombok       — KÉSZ (select_tasks.html)
+Marad: tábla és chat külön úton jár; a „mondd utánam" kártyán csak egy szó;
+értelmetlen ábrák elvont fogalmaknál; összecsúszó feliratok; magyartalan
+kérdés. Mind a négy-öt a rendszerpromptból jön — egy menetben érdemes.
+
+## Az ábra-ellenőr NAGY lépése, ami még hátravan
+Az `abra_ellenor.py` DETERMINISZTIKUS szabályai csak a számos hibákat
+fogják meg. Ami nem szám (kémia jelölés, fizikai ábra, kottakép, elvont
+fogalom), azt csak az AI-ellenőr (`rendben()`) tudja megítélni — az pedig
+MOST "naplo" módban fut, vagyis lát mindent, de nem dob el semmit.
+A következő lépés NEM az, hogy élesre kapcsoljuk, hanem hogy MEGNÉZZÜK a
+próbán az /abra-naplo oldalt: mit ítélne hibásnak. Ha a napló szerint a
+rossz rajzokat fogja meg és nem a jókat, akkor jöhet az ABRA_ELLENOR=1.
+(Ezt a leckét egyszer már drágán megtanultuk: élesre állítva az ábrák
+mérés nélkül eltűntek.)
+
+## MOBIL ÉS TABLET — a legnagyobb nyitott kérdés
+Már használják az oldalt, tehát ez most számít, nem majd.
+
+ELŐSZÖR MÉRNI KELL. Jelenleg SEMMI nem jegyzi fel, ki milyen készülékről
+tanul — se az app.py, se az adatbázis. Amíg ez nincs, minden mobilos
+fejlesztés vakrepülés. Egy oszlop a tanulási sorba (telefon / tablet /
+asztali) és egy sor az admin oldalra: fél nap, és utána tudjuk, hol
+érdemes dolgozni.
+
+HÁROM KÜLÖN BAJ, HÁROM KÜLÖN JAVÍTÁS:
+  a) A GÉPELÉS maga rossz input egy gyereknek telefonon. Erre már VAN
+     válaszunk: a hangos mód. Telefonon a hangos legyen az ELSŐ,
+     felkínált út, ne a második gomb. Emellett ahol lehet, koppintható
+     válaszlehetőség legyen gépelés helyett — a kvízkártyák már így
+     mennek, a beszélgetésben nem.
+  b) A BILLENTYŰZET feljövetelekor elcsúszik a kép. Ez tiszta CSS/JS
+     kérdés: dvh egységek és a visualViewport figyelése. Kicsi munka.
+  c) AZ ELRENDEZÉS asztali gépre készült: három hasáb (leckelista, tábla,
+     beszélgetés) összenyomva egy telefonra. A valódi válasz egy
+     telefonra tervezett lecke-nézet: a tábla teljes szélességben, a
+     beszélgetés alulról felhúzható lapon, a leckelista menü mögött.
+     Ez a legnagyobb munka a háromból.
+
+SORREND JAVASLAT: mérés → b) billentyűzet → a) hangos mód előre →
+c) elrendezés. Az a) adja a legtöbbet a befektetett munkához képest.
+
+---
+
+# MOBILOS VÉGIGNÉZÉS (2026-10-06, Sándor telefonján)
+
+## Amit MOST megjavítottam
+  - A FELADAT mezőiből (válaszgombok, kérdés, szöveg) eltűnnek a tanári
+    jelölők. Élesben `<FL:es>Hay un parque.</FL>` állt a gombokon. A
+    beszélgetés szövegét eddig is tisztítottuk, a feladatot nem — most
+    EGY helyen, minden típusra, hogy új típusnál se lehessen elfelejteni.
+  - A felolvasás nem mondja ki az „egyenlő"-t szótári párnál.
+    „enfrente de = szemben" → rövid szünet. A matematika érintetlen:
+    „2 + 3 = 5" továbbra is „egyenlő".
+
+## Amit még meg kell csinálni — SORBAN
+
+1. BESZÉLGETÉS VISSZANÉZÉSE (6. kép). Telefonon nem lehet visszagörgetni
+   a beszélgetésben, nincs görgetősáv. A gyerek nem tudja újraolvasni,
+   mit magyarázott a tanár. Ez komoly: tanulni nem lehet enélkül.
+
+2. A KABALA FIGURA BELELÓG A SZÖVEGBE (4., 5. kép). Telefonon és
+   tableten legyen MOZGATHATÓ, vagy tűnjön el, ha szöveg kerül alá.
+
+3. SOK AZ ÜRES HELY A KÉPERNYŐ ALJÁN (4., 5. kép). A tábla alatt nagy
+   üres sáv marad, a tartalom felül összezsúfolódik.
+
+4. A SZÓJEGYZÉK ÖSSZE VAN TOLVA (5. kép), alig olvasható telefonon.
+
+5. HIBÁS MAGYAR FORDÍTÁS (7. kép): „A kórház a bolt szemben van."
+   Helyesen: „A kórház a bolttal szemben van." A promptban kell egy
+   szabály a RAGOZÁSRA a példamondatok fordításánál.
+
+6. A VÁLASZLEHETŐSÉGEK NEM LÁTSZANAK (4. kép). „Melyik dal inkább
+   párosító dal?" — és nincs mire kattintani.
+
+## ALBUM (nem sürgős, de ne vesszen el)
+  - A lapozás egyre rosszabb, az 1. képen a fél lap fekete.
+  - A személyek FÜGGŐLEGESEN vannak, ezért nagyon hosszú az album.
+    VÍZSZINTES elrendezés kellene.
+
+## A KÉSZÜLÉK MÉRÉSÉRŐL — FONTOS TUDNI
+Ha bevezetjük (telefon / tablet / laptop-asztali), az CSAK AZ ÚJ
+tanulásokra fog látszani. A már meglévő tanulási sorokban nincs ilyen
+adat, és visszamenőleg nem lehet kitalálni. Tehát minél hamarabb kerül
+be, annál hamarabb lesz belőle használható kép.
+
+## A KONKURENCIÁRÓL (Smartick, KooBits, MindED)
+Sándor képeket küldött. Amiben ők jobbak, és amit érdemes elirigyelni:
+  - a feladat MAGA a kép: mérleg, szobrok, tárgyak — nem szöveg + ábra,
+    hanem egyetlen, rajzolt jelenet, amire koppintani kell;
+  - minden válasz KOPPINTÁS, nem gépelés;
+  - felolvasás-gomb minden feladatnál (a kicsik nem olvasnak);
+  - látható haladás: csillagok, sáv, szint.
+Ezek nem AI-kérdések, hanem FELÜLET-kérdések. A mi erősségünk (igazi
+tanár, aki magyaráz) megmarad mellettük — de a feladatok megjelenítésén
+sokat lehetne javítani anélkül, hogy a tanítást elrontanánk.
