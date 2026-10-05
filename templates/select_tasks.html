@@ -493,4 +493,76 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 })();
 </script>
+
+{# ══ AZ INDÍTÓGOMBOK VISSZAJELZÉSE ════════════════════════════════════
+   A BAJ: a két indítógomb sima hivatkozás. Kattintásra a böngésző elindul
+   a chat oldalra, az viszont lassan áll össze (tananyag betöltése, az első
+   tanári üzenet legenerálása). Addig a képernyőn SEMMI nem történik, ezért
+   az ember azt hiszi, nem fogta a kattintást, és újra rányom. Az újabb
+   kattintás viszont MEGSZAKÍTJA az elsőt, és kezdődik elölről – így lett
+   abból, hogy „nem reagál" vagy „nagyon lassú".
+
+   A JAVÍTÁS: kattintáskor a gomb azonnal átvált „Indítom…"-ra, kap egy
+   forgó jelet, és a további kattintásokat elnyeli. A navigáció megy
+   tovább. Ha a gyerek visszalép a böngésző vissza gombjával, a lap
+   újratölt – enélkül a gomb örökre „Indítom…" maradna. #}
+<style>
+  .btn-ai-chat.indul, .btn-ai-voice.indul { opacity:.82; cursor:progress; }
+  .gomb-porgo{display:inline-block;width:1em;height:1em;margin-right:.5em;
+    border:2px solid currentColor;border-right-color:transparent;border-radius:50%;
+    vertical-align:-.15em;animation:gombPorog .7s linear infinite}
+  @keyframes gombPorog{to{transform:rotate(360deg)}}
+  /* Akinek a gépén ki van kapcsolva a mozgás, annak ne pörögjön semmi. */
+  @media (prefers-reduced-motion: reduce){ .gomb-porgo{animation:none} }
+</style>
+<script>
+(function () {
+    "use strict";
+    try {
+        var VAR = {{ t('btn_inditom')|tojson }};
+        var gombok = ['ai-chat-link', 'ai-voice-link'].map(function (id) {
+            return document.getElementById(id);
+        }).filter(Boolean);
+
+        gombok.forEach(function (g) {
+            g.addEventListener('click', function (e) {
+                /* Másodszori kattintás: elnyeljük, hogy ne szakítsa meg
+                   az első betöltést. */
+                if (g.classList.contains('indul')) {
+                    e.preventDefault();
+                    return;
+                }
+                /* Üres hivatkozásnál (még nincs tantárgy) ne csináljunk
+                   semmit – azt a meglévő kód kezeli. */
+                var cel = g.getAttribute('href');
+                if (!cel || cel === '#') { return; }
+
+                g.classList.add('indul');
+                g.setAttribute('aria-busy', 'true');
+                var porgo = document.createElement('span');
+                porgo.className = 'gomb-porgo';
+                g.textContent = '';
+                g.appendChild(porgo);
+                g.appendChild(document.createTextNode(VAR));
+                /* A másik gombot is letiltjuk: egyszerre egy óra indul. */
+                gombok.forEach(function (m) {
+                    if (m !== g) { m.classList.add('indul'); }
+                });
+            });
+        });
+
+        /* VISSZALÉPÉS. A böngésző a lapot gyorsítótárból hozza vissza, a
+           gombok pedig „Indítom…" állapotban ragadnának. Újratöltjük. */
+        window.addEventListener('pageshow', function (ev) {
+            if (ev.persisted && gombok.some(function (g) {
+                return g.classList.contains('indul');
+            })) {
+                window.location.reload();
+            }
+        });
+    } catch (e) {
+        if (window.console) { console.error('inditogomb:', e); }
+    }
+})();
+</script>
 {% endblock %}

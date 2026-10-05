@@ -517,6 +517,10 @@ TRANSLATIONS = {
     # Telefonon a hosszú gombfelirat három sorba törne. Ott ez a rövid megy.
     "btn_ai_chat_rovid": {"hu": "💬 Chat", "es": "💬 Chat"},
     "btn_ai_voice_rovid": {"hu": "🎙️ Hangos", "es": "🎙️ Voz"},
+    # Amit a gomb kattintás UTÁN mutat, amíg az óra betölt. E nélkül a
+    # gomb néma maradt, az ember újra rányomott, és az új kattintás
+    # megszakította az elsőt.
+    "btn_inditom": {"hu": "Indítom…", "es": "Empezando…"},
     "uj_csuk": {"hu": "Összecsukom", "es": "Plegar"},
     "uj_nyit": {"hu": "Kinyitom", "es": "Desplegar"},
 
