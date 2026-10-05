@@ -11974,6 +11974,13 @@ def admin_attekintes():
         mentesek=_mentes_lista(),
         mentes_orakent=MENTES_ORAKENT,
         stat=_stat,
+        # MELYIK MODELL FUT. A Railway-en szolgáltatásonként más lehet, és
+        # eddig semmiből nem derült ki, melyik van érvényben.
+        modellek={
+            "tanar": MODELL_TANAR, "seged": MODELL_SEGED,
+            "abra": MODELL_ABRA, "stt": STT_MODEL,
+            "be_ar": _dij("BE_1M", 0.10), "ki_ar": _dij("KI_1M", 0.60),
+        },
         elakadas=elakadas,
         elakadas_szoveg=elakadas_szoveg,
         token_per_keres=token_per_keres,

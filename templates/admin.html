@@ -76,6 +76,28 @@
   <h1>Áttekintés</h1>
   <p class="alcim">Ki tanul, mit, hogyan — és mibe kerül. Csak te látod ezt az oldalt.</p>
 
+  {# ══ MELYIK MODELL FUT ÉPPEN ════════════════════════════════════════
+     A modellek környezeti változóból jönnek, és Railway-en szolgáltatásonként
+     mások lehetnek. Enélkül nem lehetett megmondani, mi fut valójában —
+     csak találgatni. Most itt látszik, és a tokenár is mellette van, hogy
+     rögtön kiderüljön, ha a kettő nem egymáshoz való. #}
+  <div class="csalad" style="padding:12px 16px">
+    <div class="kicsi" style="margin-bottom:7px">Most ezek futnak:</div>
+    <table style="font-size:.86rem">
+      <tr><th>szerep</th><th>modell</th><th class="szam">ár / 1M token</th></tr>
+      <tr><td>Tanár (a beszélgetés)</td><td><b>{{ modellek.tanar }}</b></td>
+          <td class="szam">be {{ modellek.be_ar }} · ki {{ modellek.ki_ar }} $</td></tr>
+      <tr><td>Segédmunkák</td><td>{{ modellek.seged }}</td><td class="szam">—</td></tr>
+      <tr><td>Ábra</td><td>{{ modellek.abra }}</td><td class="szam">—</td></tr>
+      <tr><td>Beszédfelismerés</td><td>{{ modellek.stt }}</td><td class="szam">—</td></tr>
+    </table>
+    <div class="kicsi" style="margin-top:8px">
+      A tanár modelljét a <code>MODELL_TANAR</code> változó állítja a Railway-en.
+      Ha modellt váltasz, a <code>BE_1M</code> és <code>KI_1M</code> árat is
+      állítsd hozzá, különben a fenti költségek hibásak.
+    </div>
+  </div>
+
   <div class="idosav">
     <span class="kicsi">Időszak:</span>
     {% for n in [1, 7, 30, 90] %}

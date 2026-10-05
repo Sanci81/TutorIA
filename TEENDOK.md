@@ -285,6 +285,72 @@ Fontos, mert pl. Bolyai Jánosról nem maradt fenn hiteles arckép.
 
 ---
 
+# MEGÉRI-E? — A VÁLASZ MEGVAN (2026-10-05)
+
+A teljes, forrásolt számítás külön lapon: `megerie.html` (nyisd meg
+böngészőben). Itt csak a lényeg.
+
+## A válasz: IGEN, de nem úgy, ahogy most fut
+
+A kód a `gpt-5.4-mini` modellt hívja. Ez ma már "legacy", és DRÁGA:
+0,75 $ bemenő és 4,50 $ kimenő millió tokenenként. Teljes perckeret-
+használat mellett ezzel MIND A HÁROM CSOMAG VESZTESÉGES.
+
+A mai olcsó modellen (`gpt-6-luna`, 0,05 / 0,25 $ millió tokenenként)
+ugyanez a szolgáltatás MINDEN csomagnál nyereséges, teljes hangos
+használat mellett is:
+
+    csomag        gpt-5.4-mini      gpt-6-luna     nullszaldo (luna)
+    Alap havi        +1,09 EUR       +8,26 EUR          48 fo
+    Alap eves        -0,70 EUR       +6,47 EUR          61 fo
+    Pro  havi        -4,24 EUR      +11,89 EUR          33 fo
+    Pro  eves        -7,38 EUR       +8,75 EUR          45 fo
+    Max  havi       -16,27 EUR      +16,00 EUR          25 fo
+    Max  eves       -21,44 EUR      +10,83 EUR          37 fo
+
+(75% gyorsítótárral számolva, havi 390,67 EUR állandó költség mellett.
+Az éves azért hoz kevesebbet, mert tíz hónap árát fizeti tizenkét
+hónapnyi percért — ez a kedvezmény ára.)
+
+## Miért nem vészes MOST
+
+A két mért gyerek az Alap keretének 6 és 10 százalékát használta el
+harminc nap alatt. Ennyinél még a drága modellel is 11-29 EUR marad
+csomagtól függően. A veszély a MEGÍGÉRT KERET: a mostani modellen a Pro
+75%, a Max már 50% körüli kihasználtságnál fordul veszteségbe.
+
+## Teendők, fontossági sorrendben
+
+1. MODELLVÁLTÁS KIPRÓBÁLÁSA. Ez önmagában megoldja a kérdést. DE előbb
+   tanítási minőségre tesztelni kell — egy butább tanár nem ér 15 eurót.
+   Fél napos munka. A modellnév az app.py-ban több helyen szerepel.
+2. A ROSSZ ÁRAK JAVÍTÁSA az adminban, hogy a jövőben a valóságot lásd.
+   Railway -> web szolgáltatás -> Variables: BE_1M és KI_1M a választott
+   modell árára. (Most 0.10 és 0.60 áll ott, ami egyik modellhez sem
+   tartozik.)
+3. RÖVIDEBB RENDSZERPROMPT. Percenként kb. 30 000 bemenő token megy el,
+   mert a TELJES tananyag minden kérésnél újra elmegy. Ha csak az
+   aktuális témakör menne, a költség töredékére esne — modellváltás
+   nélkül is. Ez a második legnagyobb tétel.
+4. A gyorsítótár (`cached_tokens`) mérése — a kód most nem tárolja.
+5. A be:ki token arány leolvasása az admin oldalról (mostantól kiírja).
+   A számítás 10:1-et feltételez; ez az egyetlen maradék becslés.
+
+## Amit NEM kell tenni
+
+Árat emelni vagy perckeretet vágni. A számok szerint nem az árazás a
+baj, hanem egy drága, elavult modell és egy túl hosszú prompt.
+
+## Ellenőrzött árak (2026-10-05)
+
+  - Azure felolvasas: 16 $/1M karakter, havi 500 000 ingyen — HELYES
+  - gpt-transcribe: 0,0045 $/perc (OpenAI hivatalos) — HELYES, es a kod
+    tenyleg ezt a modellt hivja
+  - arfolyam: 1 EUR = 1,119 $ — a kodban levo 0,92 ovatos, rendben
+  - afa 21%, Stripe 1,5% + 0,25 EUR tranzakciónként
+
+---
+
 # A LEGFONTOSABB NYITOTT KÉRDÉS: MEGÉRI-E? (2026-10-04)
 
 Ezt HOLNAP kell végigszámolni, mindennel együtt. Itt van minden, ami
@@ -358,3 +424,63 @@ a valódi tokenárakkal és a gyorsítótár-százalékkal. A régi
     kb. 1,5% + 0,25 € fix tranzakciónként;
   – az ingyenes próba 30 hangos perce gyerekenként kb. 31 cent — ez NEM
     az a tétel, ami megfog; a havi fix az.
+
+---
+
+# A PRÓBA OLDAL VÉGIGNÉZÉSE LUNÁVAL (2026-10-06)
+
+Sorrendben, amit Sándor talált. A legtöbb NEM modellfüggő: ugyanígy
+megvolt a régi modellel is. Külön jelölve, melyik mitől van.
+
+## 1. SÚLYOS: az ábra MÁST mutat, mint a kérdés  [kód / prompt hiba]
+Matek, halmazok. A tábla kérdése: "Melyik számok vannak közösen a 3, 5, 7
+elemeit tartalmazó és az 5, 7, 9 elemeit tartalmazó halmazban?"
+A RAJZON viszont 2, 4, 6, 8 szerepel — semmi köze a kérdéshez. A
+válaszlehetőségek pedig megint mások: "5 és 7", "3 és 9", "3, 5, 7 és 9".
+Három különböző dolog egyszerre. A gyerek nem tudja megoldani, mert a
+rajz ellentmond a szövegnek.
+A promptban MÁR BENNE VAN a szabály ("a rajznak azt a feladatot kell
+mutatnia, amit a gyereknek MOST kell megoldania") — mégsem tartja be.
+Ez a legfontosabb javítandó: inkább NE legyen rajz, mint rossz rajz.
+
+## 2. A tábla és a beszélgetés külön úton jár  [kód / prompt hiba]
+Többször is: a táblán az egyik kérdés áll, a chatben a tanár egy másikról
+beszél (halmazoknál a táblán a metszet, a chatben a részhalmaz és a piros
+alma). A gyerek nem tudja, melyikre válaszoljon.
+
+## 3. A "MONDD UTÁNAM" kártya nem mondja meg, mit kell kimondani
+Angolóra: a táblán két mondat van ("What is your name?" és "My name is
+Sam."), a kártyán viszont csak ennyi: "name". Nem derül ki, melyiket kell
+kimondani. A kártyán a TELJES kimondandó mondatnak kell állnia.
+
+## 4. Értelmetlen ábrák elvont fogalmakra  [prompt hiba]
+Hon- és népismeret: három doboz "Családfa / Közösség / Rokon" felirattal,
+bennük értelmetlen karika-vonal rajzok. Nem magyaráz semmit.
+A prompt EZT IS tiltja már ("ha a fogalom elvont és nem tudsz valódi
+dolgot mutatni, NE rajzolj") — nem tartja be.
+
+## 5. Összecsúszó feliratok az ábrán  [prompt / abra.py]
+Történelem, "Fénykép / Emléktárgy / Elbeszélés": a dobozok feliratai és
+az alattuk lévő magyarázó sor egymásba lógnak.
+
+## 6. Magyartalan kérdés  [prompt hiba]
+"Ha valaki integet, az arcjátékot, gesztust vagy testhelyzetet használ?"
+Így magyarul nem kérdezünk. Helyesen: "Ha valaki integet, arcjátékot,
+gesztust vagy testtartást használ?"
+
+## 7. A gombok lassan vagy egyáltalán nem reagálnak  [kód hiba, RÉGI]
+A tantárgyválasztó alján az "AI tanulás és beszélgetés (chat)" és a
+"(hangos)" gombra többször rá kell nyomni. Nem a modell lassú: a gomb
+kattintáskor nem ad SEMMI visszajelzést, közben a szerver dolgozik, ezért
+az ember újra rányom — és néha az újbóli kattintás szakítja meg az
+elsőt. MEGOLDÁS: kattintáskor azonnal tiltsuk le a gombot és írjuk ki,
+hogy "Indítom…". Ez tiszta felületi javítás, nem kell hozzá modell.
+
+## Nyitott kérdés
+A spanyol oldalon ugyanezek megvannak-e? Nem néztük meg.
+
+## Mit NEM okozott a modellváltás
+Az 1., 2., 4., 5., 6. pont a rendszerpromptból és az ábragenerálásból jön,
+a 7. tiszta felületi hiba. Ezek a régi modellel is megvoltak. A Luna
+felelősségét csak úgy lehet eldönteni, ha ugyanazt a leckét lefuttatjuk a
+két modellel — a MODELL_TANAR változó átírásával ez öt perc.
