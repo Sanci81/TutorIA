@@ -3487,7 +3487,25 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         kinalat = []
         if isinstance(szavak, list):
             kinalat = [str(x).strip()[:40] for x in szavak if str(x).strip()][:6]
-        return {"tipus": "hianyzo", "mondat": mondat, "szavak": kinalat}
+        # EGYETLEN FELKÍNÁLT SZÓ = a kész válasz.
+        #
+        # ÉLES HIBA, 2026-10-06, spanyolóra: a tábla azt kérdezte, melyik
+        # szó hiányzik a „Me ___ Leila." mondatból, és EGYETLEN gomb volt
+        # alatta: „llamo". Nem feladat, hanem ajándék – a gyerek nem gondol
+        # semmit, csak rákoppint.
+        #
+        # Ilyenkor NEM dobjuk el a feladatot, csak a felkínált szavakat:
+        # a gyerek beírja a hiányzót. Ugyanazt tanulja, csak tényleg
+        # gondolkodnia kell hozzá.
+        #
+        # Két azonos szó sem ér semmit, ezért előbb kiszedjük az ismétlést.
+        egyedi = []
+        for sz in kinalat:
+            if sz.casefold() not in [e.casefold() for e in egyedi]:
+                egyedi.append(sz)
+        if len(egyedi) < 2:
+            egyedi = []
+        return {"tipus": "hianyzo", "mondat": mondat, "szavak": egyedi}
 
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
@@ -6122,6 +6140,8 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    A hiányt HÁROM ALÁHÚZÁS jelöli:
    <FELADAT>{"tipus":"hianyzo","mondat":"A Duna Magyarország leg___ folyója.","szavak":["hosszabb","hosszab"]}</FELADAT>
    A "szavak" elhagyható — akkor a gyerek beírja.
+   HA FELKÍNÁLSZ SZAVAKAT, LEGALÁBB KETTŐ LEGYEN, és mind különböző.
+   EGYETLEN felkínált szó nem feladat, hanem kész válasz.
 
 7) SZÖVEGBE JELÖLÉS — magyar nyelvtan, irodalom, idegen nyelv, bármi,
    ahol egy MONDATON belül kell megtalálni valamit. A gyerek a képernyőn
