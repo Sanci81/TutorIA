@@ -95,6 +95,54 @@ AZURE_VOICE_ES = "es-ES-ElviraNeural"
 # gyerek beszédét felismerni a rendszer leggyengébb pontja, ezért megéri.
 # Ha az új modell bármiért nem elérhető (fiókjogosultság, elutasított
 # paraméter), a TARTALEK-ra esünk vissza – a felvétel ne veszjen el.
+# ══ MINDEN MODELLNÉV EGY HELYEN ═══════════════════════════════════════
+#
+# MIÉRT VAN EZ.
+# Eddig a modellek neve TIZENKILENC helyen volt beégetve ebbe a fájlba,
+# három különböző nemzedékből (gpt-5.4-mini, gpt-4o-mini, gpt-4o). Egyik
+# váltás sem lett végigvíve, ezért úgy tűnt, mintha folyton váltanánk –
+# pedig egyszer sem fejeztük be. Innentől a váltás EGY környezeti változó
+# a Railway-en, nem kódmódosítás, és vissza is lehet állni azonnal.
+#
+# MIÉRT NEM EGYETLEN MODELL MINDENRE.
+# A tanári beszélgetés adja a számla túlnyomó részét, és ott számít a
+# minőség. A kis segédmunkák (kvízkérdés, válaszellenőrzés, szófelismerés)
+# rövidek és egyszerűek – ott a drága modell kidobott pénz. Ezért külön
+# állítható a kettő.
+#
+# A VÁLTÁS MENETE: Railway → a `web` szolgáltatás → Variables → vedd fel a
+# megfelelő változót. Üresen hagyva marad az alapértelmezés.
+#
+# FIGYELEM: ha modellt váltasz, az /admin költségszámítását is állítsd át!
+# A BE_1M és KI_1M változók a modell tokenárát tartalmazzák; ha nem
+# igazítod hozzá, az admin oldal hibás eurót fog mutatni.
+
+# A TANÁR. Ez beszélget a gyerekkel – innen jön a számla java.
+MODELL_TANAR = os.environ.get("MODELL_TANAR", "gpt-5.4-mini")
+
+# SEGÉDMUNKÁK: gyakorlófeladat, válaszellenőrzés, kvíz, szófelismerés,
+# szóbeli válasz értékelése. Rövid, egyszerű kérések. (11 hívás.)
+MODELL_SEGED = os.environ.get("MODELL_SEGED", "gpt-4o-mini")
+
+# NEHÉZ KVÍZ. Az idegennyelvi kvíznél a kis modell gyenge volt, ezért
+# ennél az EGY ágnál nagyobb modell dolgozik.
+MODELL_KVIZ_NAGY = os.environ.get("MODELL_KVIZ_NAGY", "gpt-4o")
+
+# ÁBRA. A magyarázó rajzot (SVG) készíti. Külön állítható, mert a rajz
+# más képességet kér, mint a beszélgetés.
+MODELL_ABRA = os.environ.get("MODELL_ABRA", "gpt-5.4-mini")
+
+# HANGHOZ KAPCSOLÓDÓ SZÖVEGMUNKA: a hangot értő átírás, és az idegen
+# szavak megjelölése a felolvasáshoz.
+MODELL_HANG_SZOVEG = os.environ.get("MODELL_HANG_SZOVEG", "gpt-5.4-mini")
+
+# FELOLVASÁS az OpenAI-nál (az Azure a fő út, ez a tartalék).
+MODELL_TTS = os.environ.get("MODELL_TTS", "gpt-4o-mini-tts")
+MODELL_TTS_TARTALEK = os.environ.get("MODELL_TTS_TARTALEK", "tts-1")
+
+# KÉPGENERÁLÁS (a bemutató oldal rajzolója).
+MODELL_KEP = os.environ.get("MODELL_KEP", "gpt-image-1")
+
 STT_MODEL = os.environ.get("STT_MODEL", "gpt-transcribe")
 STT_MODEL_TARTALEK = os.environ.get("STT_MODEL_TARTALEK", "gpt-4o-mini-transcribe")
 
@@ -1043,7 +1091,7 @@ KERETTANTERV ({grade_num}. osztály, {subject_label}):
     try:
         client = _openai_client(api_key, request_timeout=90.0)
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=MODELL_SEGED,
             response_format={"type": "json_object"},
             messages=[
                 {
@@ -1355,7 +1403,7 @@ def _call_ai_check_task_answer(
 
     client = _openai_client(api_key, request_timeout=45.0)
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model=MODELL_SEGED,
         response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": system},
@@ -1390,7 +1438,7 @@ def test_openai():
 
         client = _openai_client(api_key, request_timeout=30.0)
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=MODELL_SEGED,
             messages=[{"role": "user", "content": "Say hello in one word."}],
             max_tokens=10,
         )
@@ -1517,7 +1565,7 @@ def generate_image():
         # A DALL-E modellek ezen a kulcson nincsenek. A gpt-image-1
         # a jobb minőség; a „hd” megfelelője itt a high.
         valasz = kliens.images.generate(
-            model="gpt-image-1",
+            model=MODELL_KEP,
             prompt=_kep_szemelyiseg(lang) + " A kérés: " + szoveg,
             size="1024x1024",
             quality="high",
@@ -4087,7 +4135,7 @@ def _generate_illustration(
     try:
         client = _openai_client(api_key, request_timeout=45.0)
         resp = client.chat.completions.create(
-            model="gpt-5.4-mini",
+            model=MODELL_ABRA,
             reasoning_effort="low",
             messages=[
                 {"role": "system", "content": system},
@@ -4755,7 +4803,7 @@ def _transcribe_via_chat(
 
         client = _openai_client(api_key, request_timeout=60.0)
         response = client.chat.completions.create(
-            model="gpt-5.4-mini",
+            model=MODELL_HANG_SZOVEG,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": [{"type": "input_audio", "input_audio": {"data": b64, "format": fmt}}]},
@@ -5058,7 +5106,7 @@ def _mark_foreign_segments(text: str, base_lang: str) -> str | None:
                     f"részek szinte biztosan {_HINT[lesson_lang]} nyelvűek.\n")
         client = _openai_client(api_key, request_timeout=25.0)
         resp = client.chat.completions.create(
-            model="gpt-5.4-mini",
+            model=MODELL_HANG_SZOVEG,
             reasoning_effort="low",
             messages=[
                 {"role": "system", "content": (
@@ -5154,7 +5202,7 @@ def _detect_foreign_words(text: str, base_lang: str) -> dict[str, str]:
         base_name = "spanyol" if base_lang == "es" else "magyar"
         client = _openai_client(api_key, request_timeout=15.0)
         resp = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=MODELL_SEGED,
             response_format={"type": "json_object"},
             messages=[
                 {"role": "system", "content": (
@@ -5431,7 +5479,7 @@ def _openai_tts_speak(text: str) -> bytes:
         )
     try:
         response = client.audio.speech.create(
-            model="gpt-4o-mini-tts",
+            model=MODELL_TTS,
             voice="coral",
             input=text[:4096],
             instructions=instructions,
@@ -5441,7 +5489,7 @@ def _openai_tts_speak(text: str) -> bytes:
     except Exception as exc:
         print(f"[TTS-DEBUG] gpt-4o-mini-tts hiba, fallback tts-1/nova: {exc!r}", flush=True)
         response = client.audio.speech.create(
-            model="tts-1",
+            model=MODELL_TTS_TARTALEK,
             voice="nova",
             input=text[:4096],
             speed=TTS_TEMPO_OPENAI,
@@ -7393,7 +7441,7 @@ def _call_ai_for_quiz(
                 f"Return ONLY: {{\"questions\": [{{\"type\":\"fill\",\"q\":\"...\","
                 f"\"answer\":\"...\",\"explanation\":\"...\"}}]}}"
             )
-            model = "gpt-4o-mini"
+            model = MODELL_SEGED
             temperature = 0.3
         elif active_curr == "ES":
             oral_rule = (
@@ -7438,7 +7486,7 @@ def _call_ai_for_quiz(
                 'Devuelve SOLO: {"questions": [{"type":"fill","q":"¿Cuántas patas tiene un gato?",'
                 '"answer":"cuatro","explanation":"El gato tiene cuatro patas: dos delanteras y dos traseras."}]}'
             )
-            model = "gpt-4o-mini"
+            model = MODELL_SEGED
             temperature = 0.5
         else:
             oral_rule = (
@@ -7483,7 +7531,7 @@ def _call_ai_for_quiz(
                 'Return ONLY: {"questions": [{"type":"fill","q":"Hány lába van egy macskának?",'
                 '"answer":"négy","explanation":"A macskának négy lába van: két első és két hátsó."}]}'
             )
-            model = "gpt-4o-mini"
+            model = MODELL_SEGED
             temperature = 0.5
 
         client = _openai_client(api_key, request_timeout=60.0)
@@ -7782,7 +7830,7 @@ def _call_ai_for_quiz(
             f"Generate exactly {q_count} questions total.\n"
             'Return ONLY this JSON: {"questions": [...]}'
         )
-        model = "gpt-4o"
+        model = MODELL_KVIZ_NAGY
         temperature = 0.3
     elif active_curr == "ES":
         # Spanyol tanterv — spanyol nyelvű kvíz (NEM idegen nyelv óra).
@@ -7829,7 +7877,7 @@ def _call_ai_for_quiz(
             'Devuelve SOLO este JSON: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
             "CRÍTICO: Cada opción debe ser una respuesta completa en español, nunca una sola letra."
         )
-        model = "gpt-4o-mini"
+        model = MODELL_SEGED
         temperature = 0.5
         lang_display = "Spanish"
     else:
@@ -7874,7 +7922,7 @@ def _call_ai_for_quiz(
             'Return ONLY this JSON: {"questions": [{"type":"mc","q":"...","options":["a","b","c"],"correct":0}]}\n'
             "CRITICAL: Every option must be a full meaningful Hungarian answer, never single letters."
         )
-        model = "gpt-4o-mini"
+        model = MODELL_SEGED
         temperature = 0.5
 
     client = _openai_client(api_key, request_timeout=60.0)
@@ -7988,7 +8036,7 @@ def _call_ai_for_chat(
     client = _openai_client(api_key, request_timeout=max(8.0, idokorlat),
                             max_retries=max(0, ujra))
     response = client.chat.completions.create(
-        model="gpt-5.4-mini",
+        model=MODELL_TANAR,
         messages=messages,
         reasoning_effort="low",
     )
@@ -9830,7 +9878,7 @@ def _evaluate_oral_answers(
     try:
         client = _openai_client(api_key, request_timeout=30.0)
         resp = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model=MODELL_SEGED,
             response_format={"type": "json_object"},
             messages=[{"role": "user", "content": prompt}],
             temperature=0.0,
@@ -10272,7 +10320,7 @@ def child_chat_test_submit(child_id: int):
                     )
                     client = _openai_client(api_key, request_timeout=15.0)
                     resp = client.chat.completions.create(
-                        model="gpt-4o-mini",
+                        model=MODELL_SEGED,
                         response_format={"type": "json_object"},
                         messages=[{"role": "user", "content": prompt}],
                         temperature=0.0,
