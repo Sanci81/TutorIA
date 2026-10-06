@@ -649,6 +649,34 @@ def szerkesztojelek_le(szoveg: str) -> str:
     return re.sub(r"\n{3,}", "\n\n", szoveg)
 
 
+# ── FOK ────────────────────────────────────────────────────────────────────
+# A „30°"-ot eddig érintetlenül hagytuk (a maradék-szám szabály a ° előtt
+# szándékosan megáll), így a felolvasó találgatott. A tanári tesztben
+# (2026-10-06, földrajz, fokhálózat) kétszer is előjött. Most szóvá írjuk:
+#   „30°" → „30 fok", „30°-os" → „30 fokos", „20 °C" → „20 fok Celsius";
+#   spanyolul „grados", egynél „grado". A számot utána a többi szabály
+#   mondja ki, ahogy eddig.
+_FOK_C = re.compile(r"(\d+(?:[.,]\d+)?)\s*°\s*C\b")
+_FOK_TOLDALEK = re.compile(r"(\d+(?:[.,]\d+)?)\s*°-([a-záéíóöőúüű]{1,5})")
+_FOK = re.compile(r"(\d+(?:[.,]\d+)?)\s*°")
+
+
+def fokok(szoveg: str, nyelv: str = "hu") -> str:
+    if "°" not in szoveg:
+        return szoveg
+    if nyelv == "es":
+        def egy(m, t1, t2):
+            return f"{m.group(1)} {t1 if m.group(1) in ('1', '1,0', '1.0') else t2}"
+        szoveg = _FOK_C.sub(lambda m: egy(m, "grado centígrado",
+                                          "grados centígrados"), szoveg)
+        return _FOK.sub(lambda m: egy(m, "grado", "grados"), szoveg)
+    # „fok Celsius", nem „Celsius-fok": így a szám elé „két" kerül, nem
+    # „kettő" („két fok Celsius"), mert a fok megszámlált főnév.
+    szoveg = _FOK_C.sub(lambda m: f"{m.group(1)} fok Celsius", szoveg)
+    szoveg = _FOK_TOLDALEK.sub(lambda m: f"{m.group(1)} fok{m.group(2)}", szoveg)
+    return _FOK.sub(lambda m: f"{m.group(1)} fok", szoveg)
+
+
 def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
     """A felolvasás előtti utolsó simítás: jelekből szavak."""
     szoveg = szerkesztojelek_le(szoveg or "")
@@ -663,6 +691,7 @@ def kiejtes(szoveg: str, nyelv: str = "hu") -> str:
                         lambda m: " százalék" + m.group(1), szoveg)
     # A mértékegység is ELŐBB: az "×" cseréje után az "5 m × 3 m" alakban
     # a szám és az egység közé beékelődne a "szorozva".
+    szoveg = fokok(szoveg, nyelv)
     szoveg = mertekegysegek(szoveg, nyelv)
 
     # A SZORZÁS még a jelcserék előtt: utána a "×" már " szorozva " lenne.

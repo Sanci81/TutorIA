@@ -273,6 +273,60 @@ def _gepi_ellenorzes(szoveg: str) -> list[str]:
     return talalatok
 
 
+# ══ AMIT A GYEREK A KÉPERNYŐN LÁT ═══════════════════════════════════════
+# 2026-10-06, az első Lunás futás: az ellenőrző hat „biztos" vagy „gyanús"
+# hibát jelzett arra, hogy a tanár kérdez, de nincs mire válaszolni, illetve
+# rajzra hivatkozik, de nincs rajz. Mind a hat TÉVES volt: a tanár odaírta a
+# válaszgombokat (<FELADAT>) és a rajzot (<ABRA>) is – csak az ellenőrző
+# a jelölők NÉLKÜLI szöveget kapta, mert ezeket a program a szövegből
+# kiveszi, és külön, a táblán mutatja meg. Így a mérés magát a programot
+# büntette azért, amit jól csinált.
+# Mostantól az ellenőrző azt kapja, amit a gyerek valóban lát: a szöveget,
+# ALATTA a feladatot (ugyanazzal az ellenőrzéssel, mint élesben), és egy
+# sort arról, ha ábra is van.
+def _feladat_leiras(f: dict) -> str:
+    tipus = f.get("tipus")
+    if tipus == "valaszt":
+        return "választható gombok: " + " / ".join(f.get("opciok") or [])
+    if tipus == "hianyzo":
+        szavak = f.get("szavak") or []
+        return (f"hiányzó szó a mondatban: „{f.get('mondat', '')}”"
+                + (" – gombok: " + " / ".join(szavak) if szavak
+                   else " – a gyerek beírja"))
+    if tipus == "parosit":
+        return "párosítás (a gyereknél MEGKEVERVE jelenik meg): " + "; ".join(
+            f"{a} ↔ {b}" for a, b in (f.get("parok") or []))
+    if tipus == "sorrend":
+        return ("sorba rendezés (a gyereknél MEGKEVERVE): "
+                + " / ".join(f.get("elemek") or []))
+    if tipus == "epito":
+        return ("mondat kártyákból (a gyereknél MEGKEVERVE): "
+                + " / ".join(f.get("elemek") or []))
+    if tipus in ("szam", "szamolo"):
+        return "szám beírása egy mezőbe"
+    if tipus == "szoveg":
+        return f"szavak kijelölése a szövegben: „{f.get('szoveg', '')}”"
+    return f"feladat ({tipus})"
+
+
+def _lathato(tanar_valasz: str, evfolyam) -> str:
+    try:
+        tiszta, _, _, _, abrak = app._parse_chat_markers(tanar_valasz)
+    except Exception:
+        return tanar_valasz
+    sorok = [tiszta.strip()]
+    if abrak:
+        sorok.append("[A szöveg mellett a táblán egy ÁBRA is megjelenik.]")
+    try:
+        feladat = app._feladat_parse(tanar_valasz, grade=evfolyam)
+    except Exception:
+        feladat = None
+    if feladat:
+        sorok.append("[A szöveg alatt ez a feladat jelenik meg – "
+                     + _feladat_leiras(feladat) + "]")
+    return "\n".join(sorok)
+
+
 def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
          fordulok, naplo_ki):
     nev, kor, jellem = gyerek_adat
@@ -322,10 +376,7 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
         # kapja, nem a nyerset: az első futásnál a nyers <VOCAB>magyar=idegen</VOCAB>
         # párokat látva azt hitte, a válasz másolható a kérdésből, holott a
         # gyerek a magyar megfelelőt sosem látja.
-        try:
-            latott.append(app._parse_chat_markers(tanar_valasz)[0].strip())
-        except Exception:
-            latott.append(tanar_valasz)
+        latott.append(_lathato(tanar_valasz, evfolyam))
 
         gyerek_tortenet.append({"role": "user", "content": tanar_valasz})
         try:

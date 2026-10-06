@@ -4095,9 +4095,18 @@ _EMPTY_FENCE_RE = re.compile(r"^\s*`{3,}[a-zA-Z]*\s*$", re.MULTILINE)
 _VOCAB_JELOLO_EGY_DARAB = (
     r"[<\[]\s*VOCAB\s*[>\]][^<\[\n]*?[<\[]\s*/\s*VOCAB\s*[>\]]"
 )
+# A kérdőjel és a jelölő között ÁLLHAT egy feladat, ábra vagy kiejtés-blokk:
+#     Mikor illik ezt mondani? <FELADAT>{…}</FELADAT><VOCAB>jó napot=guten Tag</VOCAB>
+# (a 2026-10-06-i tanári tesztben pont így jött, és a kérdés után ottmaradt a
+# „guten Tag"). Ezeket a blokkokat MEGHAGYJUK – azokat később a saját
+# szabályuk kezeli –, csak a mögöttük álló szójegyzék-jelölő esik ki.
+_KERDES_UTANI_BLOKK = (
+    r"(?:\s*<\s*(?:FELADAT|MONDD|ABRA)\s*>.*?<\s*/\s*(?:FELADAT|MONDD|ABRA)\s*>)"
+)
 _VOCAB_KERDES_UTAN = re.compile(
-    r"(\?[\"”»)\]]*)((?:[ \t]*" + _VOCAB_JELOLO_EGY_DARAB + r")+)",
-    re.IGNORECASE,
+    r"(\?[\"”»)\]]*" + _KERDES_UTANI_BLOKK + r"*)((?:[ \t]*"
+    + _VOCAB_JELOLO_EGY_DARAB + r")+)",
+    re.IGNORECASE | re.DOTALL,
 )
 _VOCAB_MONDATVEGEN = re.compile(
     r"([.!…][\"”»)\]]*)((?:[ \t]*" + _VOCAB_JELOLO_EGY_DARAB + r")+)[ \t]*$",
@@ -4926,6 +4935,46 @@ def _tanitasi_sorrend(topic: dict, *, spanyol: bool) -> str:
     return "\n".join(sorok) + "\n"
 
 
+# ══ A TANTERV NYELVE NEM A GYEREK NYELVE ═══════════════════════════════
+# A 2026-10-06-i tanári teszt (Luna) leggyakoribb valódi hibája: a tanár
+# SZÓ SZERINT átvette a kerettanterv kifejezéseit. Negyedikesnek ezt
+# mondta: „a dallam egymás után következő hangjait lineáris történésnek
+# nevezzük, ha egyszerre több hang szól, az vertikális történés". Ötödikesnek:
+# „alkotói törekvések", „rekonstrukció", „szekvencia"; nyolcadikosnak:
+# „pályaérdeklődésed feltárása". Ezek a tanterv szavai – a tantervet
+# tanároknak írták, nem gyerekeknek.
+# A szabály közvetlenül a tantervi szöveg UTÁN áll, mert ott a legerősebb a
+# kísértés a szó szerinti átvételre.
+def _tanterv_nyelv_szabaly(grade, *, spanyol: bool) -> str:
+    try:
+        evf = int(str(grade).strip()) if grade not in (None, "") else None
+    except (TypeError, ValueError):
+        evf = None
+    if spanyol:
+        kinek = (f"un niño de {evf}º de Primaria" if evf else
+                 "un niño de esa edad")
+        return (
+            "\nEL TEXTO CURRICULAR DE ARRIBA ESTÁ ESCRITO PARA EL DOCENTE, NO "
+            "PARA EL NIÑO. NO copies sus expresiones técnicas tal cual. Explica "
+            f"lo mismo como lo haría un buen maestro con {kinek}: con palabras "
+            "cotidianas y un ejemplo conocido. Si el niño TIENE que aprender un "
+            "término, primero explícalo con sencillez y SOLO DESPUÉS di su "
+            "nombre («Cuando los sonidos suenan uno detrás de otro, como las "
+            "cuentas de un collar, eso es la melodía»).\n"
+        )
+    kinek = f"egy {evf}. osztályosnak" if evf else "egy ilyen korú gyereknek"
+    return (
+        "\nA FENTI TANTERVI SZÖVEG A TANÁRNAK SZÓL, NEM A GYEREKNEK. A "
+        "kifejezéseit (például „lineáris történés”, „alkotói törekvések”, "
+        "„szekvencia”, „pályaérdeklődés feltárása”) NE vedd át szó szerint. "
+        f"Mondd el ugyanazt úgy, ahogy egy jó tanító mondaná {kinek}: "
+        "hétköznapi szavakkal, egy ismerős példával. Ha egy szakszót a "
+        "gyereknek is meg kell tanulnia, ELŐBB magyarázd el egyszerűen, és "
+        "csak UTÁNA mondd ki a nevét („Amikor a hangok egymás után szólnak, "
+        "mint a gyöngyök egy fonalon, azt dallamnak hívjuk.”).\n"
+    )
+
+
 def _topic_teaching_prompt_block(
     topic: dict | None,
     *,
@@ -4955,6 +5004,7 @@ def _topic_teaching_prompt_block(
         return (
             f"\n\nAhora estáis en el siguiente tema: {topic.get('name', '')}.\n"
             f"Contenido curricular del tema:\n{text}\n"
+            f"{_tanterv_nyelv_szabaly(grade, spanyol=True)}"
             f"{sorrend}{terv}"
             "Enséñale al niño paso a paso a partir de este contenido, "
             "y ofrécele el test cuando creas que está preparado (o si el niño lo pide).\n"
@@ -4962,6 +5012,7 @@ def _topic_teaching_prompt_block(
     return (
         f"\n\nMost a következő témán vagytok: {topic.get('name', '')}.\n"
         f"Témakör tananyaga (kerettanterv):\n{text}\n"
+        f"{_tanterv_nyelv_szabaly(grade, spanyol=False)}"
         f"{sorrend}{terv}"
         "Ebből tanítsd a gyereket lépésről lépésre, majd kínáld fel a tesztet, "
         "ha úgy érzed, készen áll (vagy ha a gyerek kéri).\n"
