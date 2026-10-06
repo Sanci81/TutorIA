@@ -63,7 +63,13 @@ except Exception as hiba:                          # pragma: no cover
     sys.exit(1)
 
 
-TANAR_MODELL = "gpt-5.4-mini"      # amit a gyerek is kap élesben
+# A TANÁR MODELLJE UGYANAZ, AMIT AZ APP HASZNÁL: az app MODELL_TANAR
+# beállítását követi (Railway-en a MODELL_TANAR változó). Korábban itt be
+# volt égetve a gpt-5.4-mini, így egy új modellt (pl. a próbán futó
+# gpt-6-luna-t) nem lehetett vele lemérni. Kipróbálni PowerShellben:
+#     $env:MODELL_TANAR = "gpt-6-luna"
+TANAR_MODELL = (os.environ.get("MODELL_TANAR")
+                or getattr(app, "MODELL_TANAR", None) or "gpt-5.4-mini")
 GYEREK_MODELL = "gpt-5.4-mini"     # aki a gyereket játssza
 ELLENOR_MODELL = "gpt-5.4"         # aki átnézi – ő legyen az okosabb
 
@@ -621,6 +627,7 @@ def _jelentes(eredmenyek: list[dict], ido: str) -> None:
                  "> Ha a modell neve a baj, írd át az ELLENOR_MODELL sort a "
                  "tanar_teszt.py tetején.\n")
     s += [
+         f"Tanár modellje: **{TANAR_MODELL}**  ",
          f"Lejátszott órák: **{len(eredmenyek)}**  ",
          f"Gépi találat (számtan, felolvasás — ez NEM vélemény): **{gepi_db}**  ",
          f"Az ellenőrző szerint biztos hiba: **{biztos}**  ",
@@ -658,6 +665,11 @@ def _jelentes(eredmenyek: list[dict], ido: str) -> None:
         s.append("Semmit. Ez jó jel, de nem bizonyíték — futtasd több órával.\n")
 
     s.append("\n---\n\nA teljes beszélgetések: `tanar_teszt_beszelgetesek.txt`\n")
+    # A korábbi jelentés NE vesszen el: egy dátumos másolat is készül, így
+    # két futás eredménye összevethető (melyik modell, melyik javítás után).
+    datumos = "tanar_teszt_jelentes_" + datetime.now().strftime("%Y-%m-%d_%H%M") + ".md"
+    with open(datumos, "w", encoding="utf-8") as f:
+        f.write("\n".join(s))
     with open("tanar_teszt_jelentes.md", "w", encoding="utf-8") as f:
         f.write("\n".join(s))
 
