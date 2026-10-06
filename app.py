@@ -1873,17 +1873,33 @@ def fiok():
 #
 # Ugyanaz a két adatforrás (levél és lap) ugyanazt a függvényt hívja, ezért
 # itt, a hívás után javítjuk — egy helyen, mindkettőnek.
+def _jelentes_targynev(nyers: str) -> str:
+    """Egy tanterv-fájlnév olvasható tantárgynévként, MAGYAR és SPANYOL
+    oldalon is. A spanyol fájlok neve „es_LOMLOE_Matematicas_1-6.json" –
+    abból a magyar szabály „es LOMLOE Matematicas"-t csinált volna a
+    spanyol szülő levelében."""
+    try:
+        import curriculum_loader as _cl
+        for kulcs, fajl in _cl.ES_LOE_FILES.items():
+            if fajl == nyers:
+                return _cl._ES_LOE_SUBJECT_LABELS.get(kulcs) or nyers
+    except Exception:
+        pass
+    try:
+        nev = _display_subject_name(nyers)
+    except Exception:
+        nev = nyers
+    nev = nev.replace(".json", "").replace("_", " ").strip()
+    return nev[:1].upper() + nev[1:] if nev else ""
+
+
 def _jelentes_nevek(jelentes: dict) -> dict:
     """A jelentésben a fájlneveket olvasható tantárgynévre cseréli."""
     try:
         for gy in (jelentes or {}).get("gyerekek") or []:
             uj = []
             for nev, perc in gy.get("tantargyak") or []:
-                try:
-                    olvashato = _display_subject_name(str(nev or ""))
-                except Exception:
-                    olvashato = str(nev or "")
-                olvashato = olvashato.replace(".json", "").replace("_", " ").strip()
+                olvashato = _jelentes_targynev(str(nev or ""))
                 uj.append((olvashato or "\u2014", perc))
             gy["tantargyak"] = uj
     except Exception as _exc:
@@ -3714,6 +3730,124 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
 
 
 
+# ══ VÁLASZTÓS KÉRDÉS, VÁLASZLEHETŐSÉG NÉLKÜL ═══════════════════════════
+# ÉLES HIBA, 2026-10-07, ének-zene, Sándor telefonján. A tábla így zárult:
+#     „Most figyelj egy kicsit! Melyik mondat igaz a népdalra?"
+# – és nem volt alatta SEMMI, amire koppintani lehetett volna. A tanár
+# megkérdezte, melyik mondat igaz, de a mondatokat nem írta oda. A gyerek
+# nem tud mit csinálni: telefonon begépelni egy egész mondatot nem fog, és
+# nem is tudja, melyik mondatokra gondolt a tanár.
+#
+# A promptban kötelező a <FELADAT> jelölő, de erre a modellre nem
+# támaszkodunk – ugyanaz az elv, mint az ábráknál: ha a fő válaszból
+# hiányzik valami, egy KÜLÖN, RÖVID hívás pótolja.
+#
+# CSAK akkor hívjuk, ha:
+#   - a válaszban NINCS feladat (se jelölővel, se szövegből kiolvasva),
+#   - az utolsó mondat KÉRDÉS, és VÁLASZTÓS fajta („Melyik…?", „Igaz vagy
+#     hamis…?", „¿Cuál…?") – nyitott kérdéshez nem gyártunk opciókat,
+#   - van még idő a válaszra szánt keretből.
+# Az eredmény UGYANAZON az ellenőrzésen megy át, mint a tanár saját
+# feladata (_feladat_parse_belso), tehát rossz alakú válasz nem jut ki.
+# Bármi hiba esetén minden marad úgy, ahogy eddig volt.
+_VALASZTOS_KERDES = re.compile(
+    r"\b(melyik\w*|igaz\s+vagy\s+hamis|mi\s+igaz|válaszd|valaszd|"
+    r"cu[áa]l(?:es)?|verdadero\s+o\s+falso|qu[ée]\s+opci[óo]n|elige)\b",
+    re.IGNORECASE)
+
+_FELADAT_POTLAS_HU = (
+    "Feladatkészítő vagy egy gyerekeknek szóló oktatóprogramban. Kapsz egy "
+    "tanári üzenetet, ami egy VÁLASZTÓS kérdéssel végződik, de a tanár nem "
+    "írta oda a válaszlehetőségeket.\n"
+    "Írj PONTOSAN HÁROM rövid válaszlehetőséget (egyenként legfeljebb 70 "
+    "karakter). PONTOSAN EGY legyen helyes – a tanár saját magyarázata "
+    "alapján –, a másik kettő hihető, de egyértelműen hibás. Ugyanazon a "
+    "nyelven írd, mint a kérdést. Ne számozd, ne írj elé betűt.\n"
+    "Kizárólag ezt a JSON-t add vissza, semmi mást:\n"
+    '{"opciok": ["…", "…", "…"], "helyes": 0}\n'
+    "ahol a helyes a jó válasz sorszáma (0, 1 vagy 2).\n"
+    "Ha a kérdés valójában nem választós, vagy a magyarázatból nem dönthető "
+    'el egyértelműen a helyes válasz, ezt add vissza: {"opciok": []}'
+)
+_FELADAT_POTLAS_ES = (
+    "Eres el creador de ejercicios de un programa educativo para niños. "
+    "Recibes un mensaje del profesor que termina con una pregunta de OPCIÓN, "
+    "pero el profesor no escribió las opciones.\n"
+    "Escribe EXACTAMENTE TRES opciones cortas (máximo 70 caracteres cada "
+    "una). EXACTAMENTE UNA debe ser correcta según la propia explicación del "
+    "profesor; las otras dos, creíbles pero claramente incorrectas. Usa el "
+    "mismo idioma que la pregunta. Sin números ni letras delante.\n"
+    "Devuelve SOLO este JSON, nada más:\n"
+    '{"opciok": ["…", "…", "…"], "helyes": 0}\n'
+    "donde helyes es el índice de la respuesta correcta (0, 1 o 2).\n"
+    "Si la pregunta no es de opción, o la explicación no permite decidir "
+    'con claridad la respuesta correcta, devuelve: {"opciok": []}'
+)
+
+
+def _utolso_kerdes(szoveg: str) -> str:
+    """A szöveg utolsó nem üres sora, ha kérdés; különben üres."""
+    for sor in reversed((szoveg or "").splitlines()):
+        sor = sor.strip()
+        if not sor:
+            continue
+        return sor if sor.rstrip("\"”»)] ").endswith("?") else ""
+    return ""
+
+
+def _feladat_potlas(reply_text: str, *, es: bool, idokorlat: float,
+                    grade: int | None = None,
+                    temakor: str | None = None) -> dict | None:
+    """Választós kérdéshez, ha a tanár kihagyta, válaszlehetőségeket kér."""
+    if idokorlat < 3.0:
+        return None
+    kerdes = _utolso_kerdes(reply_text)
+    if not kerdes or not _VALASZTOS_KERDES.search(kerdes):
+        return None
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    try:
+        client = _openai_client(api_key, request_timeout=idokorlat,
+                                max_retries=0)
+        resp = client.chat.completions.create(
+            model=MODELL_SEGED,
+            messages=[
+                {"role": "system",
+                 "content": _FELADAT_POTLAS_ES if es else _FELADAT_POTLAS_HU},
+                {"role": "user", "content": (reply_text or "")[:2500]},
+            ],
+        )
+        out = (resp.choices[0].message.content or "").strip()
+    except Exception as exc:
+        print(f"[FELADAT] potlas hiba: {exc}", flush=True)
+        return None
+    m = re.search(r"\{.*\}", out, re.DOTALL)
+    if not m:
+        return None
+    try:
+        adat = json.loads(m.group(0))
+    except Exception:
+        return None
+    opciok = [str(o).strip()[:70] for o in (adat.get("opciok") or [])
+              if str(o).strip()]
+    if len(opciok) < 2 or len({o.casefold() for o in opciok}) != len(opciok):
+        return None
+    # A helyes ne mindig ugyanott álljon: megkeverjük.
+    random.shuffle(opciok)
+    # UGYANAZ az ellenőrzés, mint a tanár saját feladatánál.
+    jelolo = "<FELADAT>" + json.dumps(
+        {"tipus": "valaszt", "opciok": opciok}, ensure_ascii=False
+    ) + "</FELADAT>"
+    feladat = _feladat_parse_belso(jelolo, grade=grade, es_tanterv=es,
+                                   temakor=temakor)
+    if feladat:
+        feladat = _feladat_jelolok_nelkul(feladat)
+        print(f"[FELADAT] potolva masodik hivassal: {len(opciok)} lehetoseg",
+              flush=True)
+    return feladat
+
+
 # ── HA A TANÁR ELFELEJTI A JELÖLŐT ──────────────────────────────────────────
 # Élesben ez volt a fő baj: a felületek készen álltak, de a tanár sima
 # szövegben kérdezett ("Mennyi a 7400 - 650?", "A lány énekel. ___ vidám."),
@@ -3935,6 +4069,70 @@ _BARE_SVG_RE = re.compile(r"<svg\b.*?</svg\s*>", re.IGNORECASE | re.DOTALL)
 _EMPTY_FENCE_RE = re.compile(r"^\s*`{3,}[a-zA-Z]*\s*$", re.MULTILINE)
 
 
+# ══ A MONDAT VÉGÉRE ÍRT SZÓJEGYZÉK-JELÖLŐ NE ÁRULJA EL A VÁLASZT ══════
+# ÉLES HIBA, 2026-10-07, spanyolóra, Sándor telefonján. A tábla ezt mutatta:
+#     Melyik szó jelenti azt, hogy „örvendek”?
+#     encantado
+# A kérdés alatt ott állt a megoldás. És ugyanígy:
+#     el país = ország. Például: España. el país
+#
+# AZ OK: a tanári utasítás azt kéri, hogy minden új szónál a válasz VÉGÉRE
+# írja oda a <VOCAB>magyar=idegen</VOCAB> jelölőt – ebből épül a szójegyzék.
+# A tanár ezt meg is teszi, csak gyakran UGYANABBA a sorba, a kérdés vagy a
+# mondat után. A tisztító viszont minden jelölőből a szót hagyja meg (erre
+# a mondat KÖZEPÉN álló jelölők miatt van szükség: „- hoy = azt jelenti…").
+# Így a mondat végére írt jelölőből egy odavetett szó lett – kérdés után
+# pedig maga a megoldás.
+#
+# A JAVÍTÁS a jelölő HELYÉT nézi, nem a tartalmát:
+#   - KÉRDŐJEL UTÁN álló jelölő mindig kimarad. Kérdés után egyetlen szó
+#     nem választék, hanem a válasz. (Kettő vagy több jelölőből a
+#     _vocab_valaszlehetosegek már előbb választékot csinált.)
+#   - Pont / felkiáltójel után, a SOR VÉGÉN álló jelölő akkor marad ki, ha a
+#     szó a szövegben már előbb elhangzott – akkor csak ismétlés.
+#   - Minden más eset (mondat közepén, kettőspont után) változatlan marad.
+# A szójegyzékbe mindegyik ugyanúgy bekerül: azt a NYERS szövegből gyűjtjük.
+_VOCAB_JELOLO_EGY_DARAB = (
+    r"[<\[]\s*VOCAB\s*[>\]][^<\[\n]*?[<\[]\s*/\s*VOCAB\s*[>\]]"
+)
+_VOCAB_KERDES_UTAN = re.compile(
+    r"(\?[\"”»)\]]*)((?:[ \t]*" + _VOCAB_JELOLO_EGY_DARAB + r")+)",
+    re.IGNORECASE,
+)
+_VOCAB_MONDATVEGEN = re.compile(
+    r"([.!…][\"”»)\]]*)((?:[ \t]*" + _VOCAB_JELOLO_EGY_DARAB + r")+)[ \t]*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+
+def _vocab_jelolo_szava(jelolo: str) -> str:
+    """Egy <VOCAB> jelölőből az idegen szó (párnál a második fele)."""
+    m = _CHAT_MARKER_VOCAB.search(jelolo)
+    if m:
+        return m.group(2).strip()
+    m = _CHAT_MARKER_VOCAB_EGY.search(jelolo)
+    return m.group(1).strip() if m else ""
+
+
+def _vocab_zaro_jelolok(szoveg: str) -> str:
+    """A kérdés vagy mondat végére írt szójegyzék-jelölők eltávolítása."""
+    if not szoveg or "VOCAB" not in szoveg.upper():
+        return szoveg
+    szoveg = _VOCAB_KERDES_UTAN.sub(lambda m: m.group(1), szoveg)
+
+    def mondatvegi(m: "re.Match[str]") -> str:
+        elotte = szoveg[:m.start()].casefold()
+        maradnak = []
+        for j in re.finditer(_VOCAB_JELOLO_EGY_DARAB, m.group(2), re.IGNORECASE):
+            szo = _vocab_jelolo_szava(j.group(0))
+            if szo and szo.casefold() in elotte:
+                continue                    # már elhangzott: csak ismétlés
+            maradnak.append(j.group(0))
+        return m.group(1) + ("".join(" " + x for x in maradnak))
+
+    return _VOCAB_MONDATVEGEN.sub(mondatvegi, szoveg)
+
+
 def _vocab_valaszlehetosegek(szoveg: str) -> str:
     """A kérdőjel után álló <VOCAB> jelölőkből látható választék lesz.
 
@@ -4019,6 +4217,8 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     # választékként — a magyar megfelelőt viszont NEM, mert az elárulná a
     # választ. Így a törött kérdésből működő feleletválasztós lesz.
     clean = _vocab_valaszlehetosegek(clean)
+    # A kérdés / mondat végére írt jelölő ne árulja el a választ.
+    clean = _vocab_zaro_jelolok(clean)
     # A SZÓ MARAD, CSAK A JELÖLÉS TŰNIK EL — ugyanúgy, ahogy az <FL> jelölőnél.
     #
     # ÉLES HIBA, amit a lejátszott órák hoztak elő. A tanár ezt írta:
@@ -9268,6 +9468,16 @@ def child_chat_send(child_id: int):
         if feladat:
             print(f"[FELADAT] jelolo nelkul, szovegbol: {feladat.get('tipus')}",
                   flush=True)
+    if not feladat:
+        # Választós kérdés, válaszlehetőség nélkül: külön hívással pótoljuk.
+        try:
+            feladat = _feladat_potlas(
+                _parse_chat_markers(raw_reply)[0], es=_es_tanterv,
+                idokorlat=min(10.0, _maradek() - 4),
+                grade=grade_num, temakor=current_topic)
+        except Exception:
+            logger.exception("Feladat-potlas hiba")
+            feladat = None
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:

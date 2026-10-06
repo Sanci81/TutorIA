@@ -4449,7 +4449,10 @@
         gBeszel = document.createElement('button');
         gBeszel.type = 'button';
         gBeszel.className = 'mobil-gomb';
-        gBeszel.innerHTML = '\u{1F4AC} Besz\u00e9lget\u00e9s<span class="pott"></span>';
+        /* A felirat a FORDÍTÁSBÓL jön: korábban magyarul be volt égetve, így a
+           spanyol oldalon is „Beszélgetés" állt a gombon. */
+        gBeszel.innerHTML = '\u{1F4AC} ' + {{ t('uj_beszelgetes')|tojson }}
+                          + '<span class="pott"></span>';
         gBeszel.addEventListener('click', function () {
             var nyit = !beszelo.classList.contains('nyitva');
             beszelo.classList.toggle('nyitva', nyit);
