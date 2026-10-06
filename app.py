@@ -3955,6 +3955,9 @@ _VOCAB_ONALLO_SOR = re.compile(
 _IDEGEN_IRAS = re.compile(
     "[\u0400-\u04FF"      # cirill
     "\u0500-\u052F"       # kiegészítő cirill
+    "\u0530-\u058F"       # örmény – 2026-10-06, tanári teszt: „amelyet այսօր
+                          # készített egy művész" (այսօր = ma, örményül)
+    "\u10A0-\u10FF"       # grúz – ugyanaz a fajta csúszás, előre kizárva
     "\u0590-\u05FF"       # héber
     "\u0600-\u06FF"       # arab
     "\u0700-\u074F"       # szír
