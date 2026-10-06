@@ -122,3 +122,34 @@ body.gyerek-hatter .lang-switch{background:rgba(255,255,255,.16);border-color:tr
 body.gyerek-hatter .lang-btn{color:#fff !important}
 body.gyerek-hatter .lang-btn.active{background:#fff;color:#167A5E !important}
 @media (max-width:760px){body.gyerek-hatter,body.gyerek-hatter.hatter-es{background-size:760px auto}}
+
+/* ══ TANTÁRGYVÁLASZTÓ (select_tasks) – csak kinézet, a működés ugyanaz ══
+   Vastag, „megnyomható" tantárgycsempék a saját színükkel, és két nagy
+   indítógomb: narancs (írós) és zöld (hangos) – mint a főoldal gombjai. */
+.select-tasks-page .select-tasks-card{border:0;border-radius:26px;
+  box-shadow:0 2px 0 #F4EAD6,0 14px 30px rgba(22,58,46,.10)}
+.select-tasks-page .targyracs{gap:14px}
+.select-tasks-page .targy{border:2px solid color-mix(in srgb,var(--tszin) 22%,#fff);border-radius:20px;
+  padding:14px 14px;box-shadow:0 5px 0 color-mix(in srgb,var(--tszin) 28%,#fff);background:#fff}
+.select-tasks-page .targy:hover{transform:translateY(-2px);
+  box-shadow:0 7px 0 color-mix(in srgb,var(--tszin) 35%,#fff),0 14px 24px rgba(20,60,40,.10)}
+.select-tasks-page .targy:active{transform:translateY(3px);box-shadow:0 2px 0 color-mix(in srgb,var(--tszin) 35%,#fff)}
+.select-tasks-page .targy.kivalasztva{position:relative;border-color:var(--tszin);
+  background:color-mix(in srgb,var(--tszin) 12%,#fff);box-shadow:0 5px 0 var(--tszin)}
+.select-tasks-page .targy.kivalasztva::after{content:"✓";position:absolute;top:-9px;right:-9px;width:26px;height:26px;
+  border-radius:50%;background:var(--tszin);color:#fff;font-weight:900;font-size:14px;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.select-tasks-page .targy-jel{width:48px;height:48px;border-radius:15px;transform:rotate(-5deg)}
+.select-tasks-page .targy-jel svg{width:26px;height:26px}
+.select-tasks-page .targy-nev{font-weight:800;color:#0E2A1E}
+.select-tasks-page .task-actions{gap:16px;margin-top:22px}
+.select-tasks-page .btn-ai-chat,.select-tasks-page .btn-ai-voice{border-radius:999px;padding:17px 22px;font-size:17px;
+  font-weight:800;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .1s,box-shadow .1s}
+.select-tasks-page .btn-ai-chat{background:#F5A01E;box-shadow:0 5px 0 #D27E0B,0 12px 22px rgba(213,126,11,.25)}
+.select-tasks-page .btn-ai-voice{background:#167A5E;box-shadow:0 5px 0 #0E5A45,0 12px 22px rgba(14,90,69,.25)}
+.select-tasks-page .btn-ai-chat:hover{box-shadow:0 5px 0 #D27E0B,0 14px 26px rgba(213,126,11,.32)}
+.select-tasks-page .btn-ai-voice:hover{box-shadow:0 5px 0 #0E5A45,0 14px 26px rgba(14,90,69,.32)}
+.select-tasks-page .btn-ai-chat:active,.select-tasks-page .btn-ai-voice:active{transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.select-tasks-page .select-tasks-cancel .btn-ghost{border-radius:999px;border:2px solid #E9DFCB;background:#fff;
+  color:#17604A;font-weight:800}
+.select-tasks-page .learning-time-toggle{border-radius:16px}
