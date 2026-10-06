@@ -4604,4 +4604,199 @@
 })();
 </script>
 {% endif %}
+
+{# ══ A KABALA FIGURA ODAHÚZHATÓ, AHOVA A GYEREK AKARJA ═════════════════
+   A BAJ: a figura a munkaterület bal alsó sarkához van rögzítve. Amíg
+   alatta üres hely van, ez jó – de amint oda kerül egy válaszkártya vagy
+   a szójegyzék, a figura RÁÜL. Egy fix hely ellen nem lehet mit tenni:
+   hol ide kéne, hol oda.
+
+   A MEGOLDÁS: érintős készüléken a gyerek odahúzhatja, ahova akarja.
+   A hely megmarad a következő órára is. Dupla koppintás: vissza.
+
+   MIRE KELLETT FIGYELNI (ez a nehezebb fele):
+
+   1) A FIGURA EDDIG ÁTENGEDTE A KOPPINTÁST (pointer-events:none). Ha most
+      elkapná, a mögötte lévő válaszgombra nem lehetne rákoppintani –
+      vagyis épp azt a hibát tennénk rosszabbá, amit javítani akarunk.
+      Ezért a pointer-events MARAD none, és az ujjat a dokumentumon
+      figyeljük: ha a koppintás a figura területére esett, MI kezdünk
+      húzni – de a sima koppintás ugyanúgy átmegy, mint eddig.
+   2) ÉRINTÉS-ESEMÉNYEKKEL dolgozunk, nem pointer-eseményekkel. A böngésző
+      az első elmozdulás után a pointermove-ot ELHALLGATTATJA, és görgetni
+      kezd; csak a touchmove lemondásával (preventDefault) lehet nála
+      maradni. Enélkül a figura egyetlen apró ugrás után megállt – ezt
+      próbán mértem: 10 touchmove-ra 1 pointermove jutott.
+   3) A GÖRGETÉS ne romoljon el. Csak akkor kezdünk húzni, ha az ujj már
+      elmozdult 8 képpontot; addig a böngésző görgethet.
+   4) HÚZÁS UTÁN ne induljon el semmi a figura alatt: a húzást követő
+      egyetlen kattintást elnyeljük.
+   5) A figura NE tűnhessen el a képernyőn kívül: minden elengedésnél és
+      elforgatásnál visszahúzzuk a látható területre.
+   6) Asztali gépen (egér) semmi nem változik: ott be sem kapcsoljuk.
+   7) A telefonos szkript ÁTHELYEZI a figurát a magyarázat dobozába, és
+      visszateszi, ha nagyobb lesz az ablak. A beállításaink az elemen
+      vannak, tehát követik – de nagy képernyőre visszatérve letöröljük
+      őket, hogy ott a régi, megszokott helyén legyen. #}
+<style>
+  /* A fogás alatt kicsit kiemelkedik, hogy LÁTSZÓDJON: ez mozog. */
+  .chat-kabala-oszlop.huzas{filter:drop-shadow(0 8px 14px rgba(20,60,40,.30))}
+  @media (prefers-reduced-motion:reduce){.chat-kabala-oszlop.huzas{filter:none}}
+</style>
+<script>
+(function () {
+    "use strict";
+    try {
+        var oszlop = document.querySelector('.chat-kabala-oszlop');
+        if (!oszlop) { return; }
+
+        var TAROLO = 'tutoria-kabala-hely';
+        var KUSZOB = 8;          /* ennyi képpont alatt még görgetés */
+        var SZEL = 10;           /* ennyit hagyunk a képernyő szélén */
+
+        /* Csak érintős készüléken. Egérrel a figura marad ott, ahol volt. */
+        function mozgathatoE() {
+            try {
+                return window.matchMedia('(pointer: coarse)').matches;
+            } catch (e) { return false; }
+        }
+
+        var fog = false, huz = false, elnyel = false;
+        var indulX = 0, indulY = 0, kezdX = 0, kezdY = 0;
+
+        function hatarok(x, y) {
+            var r = oszlop.getBoundingClientRect();
+            var sz = r.width || 84, m = r.height || 84;
+            var maxX = Math.max(SZEL, window.innerWidth - sz - SZEL);
+            var maxY = Math.max(SZEL, window.innerHeight - m - SZEL);
+            return { x: Math.min(Math.max(x, SZEL), maxX),
+                     y: Math.min(Math.max(y, SZEL), maxY) };
+        }
+
+        function odatesz(x, y, ment) {
+            var h = hatarok(x, y);
+            oszlop.style.position = 'fixed';
+            oszlop.style.left = h.x + 'px';
+            oszlop.style.top = h.y + 'px';
+            oszlop.style.right = 'auto';
+            oszlop.style.bottom = 'auto';
+            oszlop.style.zIndex = '47';   /* a felhúzható lap alatt marad */
+            if (ment) {
+                try {
+                    localStorage.setItem(TAROLO,
+                        JSON.stringify({ x: h.x, y: h.y }));
+                } catch (e) { /* privát ablakban nincs tárolás – nem baj */ }
+            }
+        }
+
+        /* A SAJÁT beállításaink törlése. A mentett helyet NEM dobjuk el:
+           ha a gyerek visszatér telefonra, ott legyen, ahova tette. */
+        function levesz() {
+            oszlop.style.position = '';
+            oszlop.style.left = '';
+            oszlop.style.top = '';
+            oszlop.style.right = '';
+            oszlop.style.bottom = '';
+            oszlop.style.zIndex = '';
+        }
+
+        function betolt() {
+            if (!mozgathatoE()) { return; }
+            var r = oszlop.getBoundingClientRect();
+            if (r.width <= 0 || r.height <= 0) { return; }  /* el van rejtve */
+            try {
+                var m = JSON.parse(localStorage.getItem(TAROLO) || 'null');
+                if (m && typeof m.x === 'number' && typeof m.y === 'number') {
+                    odatesz(m.x, m.y, false);
+                }
+            } catch (e) {}
+        }
+
+        function rajtaVanE(x, y) {
+            var r = oszlop.getBoundingClientRect();
+            if (r.width <= 0 || r.height <= 0) { return false; }
+            return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+        }
+
+        document.addEventListener('touchstart', function (ev) {
+            fog = false; huz = false;
+            if (!mozgathatoE() || ev.touches.length !== 1) { return; }
+            var t = ev.touches[0];
+            if (!rajtaVanE(t.clientX, t.clientY)) { return; }
+            fog = true;
+            indulX = t.clientX; indulY = t.clientY;
+            var r = oszlop.getBoundingClientRect();
+            kezdX = r.left; kezdY = r.top;
+        }, { passive: true, capture: true });
+
+        document.addEventListener('touchmove', function (ev) {
+            if (!fog) { return; }
+            if (ev.touches.length !== 1) { return; }
+            var t = ev.touches[0];
+            var dx = t.clientX - indulX, dy = t.clientY - indulY;
+            if (!huz) {
+                if (Math.abs(dx) < KUSZOB && Math.abs(dy) < KUSZOB) { return; }
+                huz = true;
+                oszlop.classList.add('huzas');
+            }
+            /* EZ A LÉNYEG: enélkül a böngésző görgetni kezd, és elveszi
+               tőlünk az ujjat. */
+            if (ev.cancelable) { ev.preventDefault(); }
+            odatesz(kezdX + dx, kezdY + dy, false);
+        }, { passive: false, capture: true });
+
+        function elenged() {
+            if (!fog) { return; }
+            if (huz) {
+                var r = oszlop.getBoundingClientRect();
+                odatesz(r.left, r.top, true);
+                /* A húzás végén a böngésző még kiadhat egy kattintást a
+                   figura alatti elemre. Azt az egyet elnyeljük. */
+                elnyel = true;
+                setTimeout(function () { elnyel = false; }, 500);
+            }
+            fog = false; huz = false;
+            oszlop.classList.remove('huzas');
+        }
+        document.addEventListener('touchend', elenged, true);
+        document.addEventListener('touchcancel', elenged, true);
+
+        document.addEventListener('click', function (ev) {
+            if (!elnyel) { return; }
+            elnyel = false;
+            ev.preventDefault();
+            ev.stopPropagation();
+        }, true);
+
+        /* DUPLA KOPPINTÁS: vissza az eredeti helyre. Csak akkor csinál
+           bármit, ha a figurát tényleg elmozdították – különben a figura
+           alatti elemek dupla koppintása ne jelentsen semmit. */
+        document.addEventListener('dblclick', function (ev) {
+            if (!mozgathatoE() || oszlop.style.position !== 'fixed') { return; }
+            if (!rajtaVanE(ev.clientX, ev.clientY)) { return; }
+            ev.preventDefault();
+            levesz();
+            try { localStorage.removeItem(TAROLO); } catch (e) {}
+        }, true);
+
+        function ujrameres() {
+            if (!mozgathatoE()) { levesz(); return; }
+            if (oszlop.style.position === 'fixed') {
+                var r = oszlop.getBoundingClientRect();
+                odatesz(r.left, r.top, true);
+            } else {
+                betolt();
+            }
+        }
+        window.addEventListener('resize', ujrameres);
+        window.addEventListener('orientationchange', function () {
+            setTimeout(ujrameres, 250);
+        });
+        betolt();
+    } catch (e) {
+        if (window.console) { console.error('kabala-huzas:', e); }
+    }
+})();
+</script>
+
 {% endblock %}

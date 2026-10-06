@@ -3363,6 +3363,63 @@ def _feladat_parse(text: str, *, grade: int | None = None,
     return eredmeny
 
 
+# ══ A HIÁNYZÓ SZÓ VÁLASZTÉKA ══════════════════════════════════════════
+# ÉLES HIBA, spanyolóra: a tábla azt kérdezte, melyik szó hiányzik a
+# „Me ___ Leila." mondatból, és EGYETLEN gomb volt alatta: „llamo".
+# Az nem feladat, hanem ajándék – a gyerek nem gondol semmit, csak
+# rákoppint.
+#
+# ELŐSZÖR a gépelést tettem a helyére. ROSSZ IRÁNY VOLT: telefonon és
+# tableten épp a gépelést akarjuk elkerülni, egy hétéves ott nem ír be
+# semmit. A helyes megoldás az, hogy LEGYEN MIBŐL VÁLASZTANI.
+#
+# Honnan vegyünk további lehetőségeket? Ugyanabból az üzenetből. A tanár
+# a szójegyzék-jelölőkben (<VOCAB>magyar=idegen</VOCAB>) felsorolja az
+# órán tanított szavakat; azok VALÓDI, az órához tartozó szavak – jobb
+# zavaró válaszok, mint bármi kitalált. Kihagyjuk azt, ami már benne van
+# a mondatban (abból látszana a megoldás), és azt, ami ugyanaz, mint a
+# helyes válasz.
+#
+# Csak ha így sem jön össze KETTŐ, akkor marad a beírás – de akkor már
+# tényleg nincs miből választani.
+_HIANYZO_CEL = 3          # ennyi lehetőséget szeretnénk
+_HIANYZO_MIN = 2          # ennyi alatt nincs értelme a választásnak
+
+
+def _hianyzo_szavak(mondat: str, kinalat: list, text: str | None) -> list:
+    """A felkínált szavak listája, szükség esetén feltöltve."""
+    egyedi: list[str] = []
+    latott: set[str] = set()
+    for sz in kinalat or ():
+        sz = str(sz).strip()[:40]
+        if not sz or sz.casefold() in latott:
+            continue
+        latott.add(sz.casefold())
+        egyedi.append(sz)
+
+    if len(egyedi) < _HIANYZO_CEL:
+        # A mondatban MÁR SZEREPLŐ szavakat ne kínáljuk fel: azokról a
+        # gyerek látja, hogy nem oda kellenek, tehát nem zavarnak, csak
+        # töltelékek.
+        mondatban = {w.strip('.,!?;:¿¡„"\'()').casefold()
+                     for w in mondat.replace("___", " ").split()}
+        mondatban.discard("")
+        for _hu, _idegen in _CHAT_MARKER_VOCAB.findall(text or ""):
+            jelolt = _idegen.strip()[:40]
+            if not jelolt or " " in jelolt:
+                continue
+            if jelolt.casefold() in latott or jelolt.casefold() in mondatban:
+                continue
+            latott.add(jelolt.casefold())
+            egyedi.append(jelolt)
+            if len(egyedi) >= _HIANYZO_CEL:
+                break
+
+    if len(egyedi) < _HIANYZO_MIN:
+        return []
+    return egyedi[:6]
+
+
 def _feladat_parse_belso(text: str, *, grade: int | None = None,
                          es_tanterv: bool = False,
                          temakor: str | None = None) -> dict | None:
@@ -3494,18 +3551,18 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         # alatta: „llamo". Nem feladat, hanem ajándék – a gyerek nem gondol
         # semmit, csak rákoppint.
         #
-        # Ilyenkor NEM dobjuk el a feladatot, csak a felkínált szavakat:
-        # a gyerek beírja a hiányzót. Ugyanazt tanulja, csak tényleg
-        # gondolkodnia kell hozzá.
+        # ELŐSZÖR a gépelést próbáltam megoldásnak. ROSSZ IRÁNY VOLT:
+        # telefonon és tableten épp a gépelést akarjuk elkerülni, egy
+        # hétéves ott nem ír be semmit. A helyes megoldás az, hogy LEGYEN
+        # miből választani.
         #
-        # Két azonos szó sem ér semmit, ezért előbb kiszedjük az ismétlést.
-        egyedi = []
-        for sz in kinalat:
-            if sz.casefold() not in [e.casefold() for e in egyedi]:
-                egyedi.append(sz)
-        if len(egyedi) < 2:
-            egyedi = []
-        return {"tipus": "hianyzo", "mondat": mondat, "szavak": egyedi}
+        # Honnan vegyünk további lehetőségeket? Ugyanabból az üzenetből:
+        # a tanár a szójegyzék-jelölőkben (<VOCAB>magyar=idegen</VOCAB>)
+        # felsorolja az órán tanított szavakat. Azok VALÓDI, az órához
+        # tartozó szavak – jobb zavaró válaszok, mint bármi kitalált.
+        # Csak ha így sem jön össze kettő, akkor marad a beírás.
+        return {"tipus": "hianyzo", "mondat": mondat,
+                "szavak": _hianyzo_szavak(mondat, kinalat, text)}
 
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
@@ -3664,7 +3721,11 @@ def _feladat_szovegbol(szoveg: str, *, grade: int | None = None,
         # Csak akkor feladat, ha van körülötte igazi szöveg is.
         csupasz = mondat.replace("_", "").strip()
         if len(csupasz) >= 8:
-            return {"tipus": "hianyzo", "mondat": mondat, "szavak": []}
+            # Jelölő nélkül a tanár nem adott választékot. A szójegyzékből
+            # viszont össze tudunk szedni néhányat – jobb koppintani,
+            # mint telefonon begépelni.
+            return {"tipus": "hianyzo", "mondat": mondat,
+                    "szavak": _hianyzo_szavak(mondat, [], szoveg)}
 
     # 2) Kétoperandusú alapművelet: „Mennyi a 7400 - 650?"
     m = _SZOVEG_MUVELET.search(szoveg)
@@ -6140,8 +6201,12 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    A hiányt HÁROM ALÁHÚZÁS jelöli:
    <FELADAT>{"tipus":"hianyzo","mondat":"A Duna Magyarország leg___ folyója.","szavak":["hosszabb","hosszab"]}</FELADAT>
    A "szavak" elhagyható — akkor a gyerek beírja.
-   HA FELKÍNÁLSZ SZAVAKAT, LEGALÁBB KETTŐ LEGYEN, és mind különböző.
-   EGYETLEN felkínált szó nem feladat, hanem kész válasz.
+   MINDIG KÍNÁLJ FEL SZAVAKAT, LEGALÁBB HÁRMAT, és mind különböző legyen.
+   EGYETLEN felkínált szó nem feladat, hanem kész válasz. A gyerek
+   telefonon tanul: ott KOPPINTANI tud, gépelni alig – ezért a választás
+   mindig jobb, mint a beírás.
+   IGÉNÉL a zavaró válaszok ugyanannak az igének MÁS ALAKJAI legyenek:
+   <FELADAT>{"tipus":"hianyzo","mondat":"Me ___ Leila.","szavak":["llamo","llamas","llama"]}</FELADAT>
 
 7) SZÖVEGBE JELÖLÉS — magyar nyelvtan, irodalom, idegen nyelv, bármi,
    ahol egy MONDATON belül kell megtalálni valamit. A gyerek a képernyőn
@@ -6253,8 +6318,12 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
 
 6) PALABRA QUE FALTA en la frase — gramática, ortografía, lengua
    extranjera. El hueco se marca con TRES GUIONES BAJOS:
-   <FELADAT>{"tipus":"hianyzo","mondat":"El Nilo es el río más ___ de África.","szavak":["largo","largos"]}</FELADAT>
-   "szavak" es opcional: sin él, el niño lo escribe.
+   <FELADAT>{"tipus":"hianyzo","mondat":"Me ___ Leila.","szavak":["llamo","llamas","llama"]}</FELADAT>
+   OFRECE SIEMPRE PALABRAS, AL MENOS TRES, y todas distintas. UNA SOLA
+   palabra ofrecida no es ejercicio, es la respuesta regalada. El niño
+   estudia en el móvil: ahí sabe PULSAR, escribir casi nada – elegir es
+   siempre mejor que escribir.
+   EN LOS VERBOS los distractores sean OTRAS FORMAS del mismo verbo.
 
 7) MARCAR EN EL TEXTO — lengua, literatura, lengua extranjera: todo lo que
    hay que ENCONTRAR dentro de una frase. El niño pulsa las palabras en la
