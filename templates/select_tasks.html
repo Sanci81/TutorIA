@@ -18,9 +18,11 @@
                 {{ t('select_tasks_subtitle').format(name=child['name']) }}
             </p>
             <p class="select-tasks-meta">
+                {# Ha a gyereknek nincs megadva életkora, ne írjuk ki, hogy
+                   „None éves" – csak az osztályt. #}
                 {% if child['grade'] %}
-                    {{ t('grade_display_fmt').format(grade=active_grade) }} / {{ child['age'] }} {{ t('years_old') }}
-                {% else %}
+                    {{ t('grade_display_fmt').format(grade=active_grade) }}{% if child['age'] %} / {{ child['age'] }} {{ t('years_old') }}{% endif %}
+                {% elif child['age'] %}
                     {{ child['age'] }} {{ t('years_old') }}
                 {% endif %}
             </p>
