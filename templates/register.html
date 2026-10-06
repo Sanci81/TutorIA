@@ -3,17 +3,82 @@
 {% block title %}{{ t('register_title') }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
+{# ÚJ KINÉZET (2026-10): a közös rész a css/fo_oldalak.css-ben.
+   EGYEDI ELEM: „beiratkozási lap" – a kártya sarkában egy pecsét
+   („120 perc ingyen"), fölötte a három lépés, amiből ez az első.
+   Az űrlap mezői, nevei és ellenőrzései VÁLTOZATLANOK. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
 <style>
   /* A hozzájárulás jelölőnégyzete. Szándékosan NINCS előre bepipálva:
      az előre bepipált hozzájárulás a GDPR szerint érvénytelen. */
   .elfogado{display:flex;align-items:flex-start;gap:10px;margin:16px 0 18px;
             font-size:.92rem;line-height:1.5;color:#4b5563}
   .elfogado input{margin-top:3px;flex:0 0 auto;width:18px;height:18px}
+
+  .fp-reg .fp-sav{padding-bottom:140px}
+  .fp-reg .fp-alap{padding-top:0}
+  .fp-racs{max-width:980px;margin:-110px auto 0;display:grid;grid-template-columns:1fr 1.15fr;
+    gap:26px;align-items:start}
+  /* bal oldal: mit kapsz */
+  .fp-mit{background:var(--zold-sotet);color:#fff;border-radius:26px;padding:28px 26px 0;
+    position:relative;overflow:hidden;box-shadow:0 14px 30px rgba(14,42,30,.22)}
+  .fp-mit h2{font-size:22px;margin:0 0 16px;font-weight:800}
+  .fp-mit ul{list-style:none;margin:0;padding:0}
+  .fp-mit li{display:flex;gap:12px;align-items:flex-start;margin:0 0 14px;font-size:16px;line-height:1.45}
+  .fp-mit li i{flex:0 0 28px;height:28px;border-radius:50%;background:var(--menta);color:#08321f;
+    font-style:normal;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .fp-mit img{display:block;height:190px;margin:6px auto 0}
+  /* jobb oldal: a lap */
+  .fp-reg .fp-kartya{padding:26px 26px 24px;position:relative}
+  .fp-lepesek{display:flex;gap:6px;margin:0 0 20px;padding:0 96px 0 0;list-style:none}
+  .fp-lepesek li{flex:1;font-size:12.5px;font-weight:800;color:#9AA79F;text-align:center;line-height:1.25}
+  .fp-lepesek li b{display:block;margin:0 auto 5px;width:30px;height:30px;border-radius:50%;
+    background:#EFE7D6;color:#8C7B5B;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .fp-lepesek li.most{color:var(--zold)}
+  .fp-lepesek li.most b{background:var(--narancs);color:#fff;box-shadow:0 3px 0 var(--narancs-alja)}
+  .fp-reg h1.fp-lapcim{font-size:24px;margin:0 0 4px;color:var(--zold-sotet);font-weight:800}
+  .fp-reg .fp-lapal{margin:0 0 18px;color:var(--halvany);font-size:15.5px}
+  /* a pecsét */
+  .fp-pecset{position:absolute;top:16px;right:16px;width:92px;height:92px;border-radius:50%;
+    border:3px solid #D9573B;color:#D9573B;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;transform:rotate(-12deg);font-weight:900;line-height:1.05;
+    box-shadow:inset 0 0 0 3px #fff,inset 0 0 0 5px rgba(217,87,59,.55);background:rgba(255,255,255,.6)}
+  .fp-pecset b{font-size:27px}
+  .fp-pecset span{font-size:10.5px;letter-spacing:.6px;text-transform:uppercase}
+  .fp-reg .elfogado{color:var(--halvany)}
+  .fp-reg .elfogado a{color:var(--zold);font-weight:700}
+  @media (max-width:860px){
+    .fp-racs{grid-template-columns:1fr;max-width:520px}
+    .fp-kartya{order:1}.fp-mit{order:2}
+  }
+  @media (max-width:760px){
+    .fp-reg .fp-sav{padding-bottom:120px}
+    .fp-racs{margin-top:-96px}
+    .fp-reg .fp-kartya{padding:22px 18px 20px}
+    .fp-pecset{width:78px;height:78px;top:12px;right:10px}
+    .fp-pecset b{font-size:22px}.fp-pecset span{font-size:9px}
+    .fp-lepesek{padding-right:80px}
+  }
 </style>
-<div class="auth-wrapper">
-    <div class="card auth-card">
-        <h1 class="card-title">{{ t('register_title') }}</h1>
-        <p class="card-subtitle">{{ t('register_subtitle') }}</p>
+
+{% set es = (lang == 'es') %}
+<div class="fo fp fp-reg">
+  <section class="fp-sav">
+    <h1>{{ 'Empezad hoy' if es else 'Kezdjétek el még ma' }}</h1>
+    <p>{{ 'Un minuto para la cuenta, y tu hijo ya puede empezar la primera clase.' if es else 'Egy perc a fiók, és a gyerek már kezdheti is az első órát.' }}</p>
+  </section>
+
+  <section class="fp-alap">
+    <div class="fp-racs">
+      <div class="fp-kartya">
+        <div class="fp-pecset"><b>120</b><span>{{ 'min gratis' if es else 'perc ingyen' }}</span></div>
+        <ol class="fp-lepesek">
+          <li class="most"><b>1</b>{{ 'Tu cuenta' if es else 'Fiók' }}</li>
+          <li><b>2</b>{{ 'Tu hijo' if es else 'A gyerek' }}</li>
+          <li><b>3</b>{{ 'Primera clase' if es else 'Első óra' }}</li>
+        </ol>
+        <h1 class="fp-lapcim">{{ t('register_title') }}</h1>
+        <p class="fp-lapal">{{ t('register_subtitle') }}</p>
 
         <form method="post" action="{{ url_for('register') }}" novalidate>
             <div class="field">
@@ -78,13 +143,33 @@
                      <a href="{{ url_for('adatvedelem') }}" target="_blank">{{ t('privacy_title') }}</a>)</span>
             </label>
 
-            <button type="submit" class="btn btn-primary btn-block">{{ t('btn_register') }}</button>
+            <button type="submit" class="fp-gomb fp-teli">{{ t('btn_register') }} <span>→</span></button>
         </form>
 
-        <p class="auth-alt">
+        <p class="fp-also">
             {{ t('have_account') }}
             <a href="{{ url_for('login') }}">{{ t('nav_login') }}</a>
         </p>
+      </div>
+
+      <div class="fp-mit">
+        <h2>{{ '¿Qué recibes?' if es else 'Mit kapsz?' }}</h2>
+        <ul>
+          {% if es %}
+          <li><i>✓</i><span><b>Los primeros 120 minutos son gratis.</b> No hace falta tarjeta.</span></li>
+          <li><i>✓</i><span>Un profesor paciente para todas las asignaturas del curso.</span></li>
+          <li><i>✓</i><span>Un código de padres protege tu cuenta y los ajustes.</span></li>
+          <li><i>✓</i><span>Cada semana un correo: cuánto ha estudiado y qué ha ido bien.</span></li>
+          {% else %}
+          <li><i>✓</i><span><b>Az első 120 perc ingyen.</b> Bankkártya nem kell.</span></li>
+          <li><i>✓</i><span>Türelmes tanár az évfolyam összes tantárgyához.</span></li>
+          <li><i>✓</i><span>Szülői kód védi a fiókodat és a beállításokat.</span></li>
+          <li><i>✓</i><span>Hetente e-mail: mennyit tanult, mi ment jól.</span></li>
+          {% endif %}
+        </ul>
+        <img src="{{ url_for('static', filename='bemutato/lany_integet.png') }}" alt="">
+      </div>
     </div>
+  </section>
 </div>
 {% endblock %}

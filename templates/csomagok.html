@@ -3,6 +3,7 @@
 {% block title %}{{ t('csomag_oldal_cim') }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
 {# Az árak MINDENKINEK látszanak, belépés nélkül is: a szülő az árat akarja
    megnézni, mielőtt regisztrál. A gyerek viszont soha nem látja ezt az
    oldalt – neki nem adunk el semmit.
@@ -183,11 +184,65 @@
     .segito-racs{grid-template-columns:1fr}
     .ar-alatt{min-height:0}
   }
+
+  /* ══ ÚJ KINÉZET (2026-10) ══════════════════════════════════════════
+     A közös rész a css/fo_oldalak.css-ben. EGYEDI ELEMEK ezen az oldalon:
+     a füzetlapok (maradnak), a „Melyik csomag kell?" segítő mint egy
+     sárga VONALZÓ, és a garancia mint egy felragasztott CETLI.
+     Csak színek és formák változnak – a számolás és a gombok ugyanazok. */
+  .fp-csom .fp-sav{padding-bottom:110px}
+  .fp-csom .fp-alap{padding-top:0}
+  .fp-csom .csom{padding-top:0;margin-top:-40px}
+  .fp-csom .lap.ki{background:#167A5E;box-shadow:0 4px 0 #0E5A45,0 18px 38px rgba(14,42,30,.28)}
+  .fp-csom .lap.ki .avatar-kor{border-color:#167A5E}
+  .fp-csom .lap.ki::before{background:#F5A01E}
+  .fp-csom .lap.ki .ar,.fp-csom .lap.ki .megtakaritas{color:#fff}
+  .fp-csom .lap.ki .ar small,.fp-csom .lap.ki .ido-alatt,.fp-csom .lap.ki .ar-alatt,
+  .fp-csom .lap.ki .jellemzok li{color:#E6F4EE}
+  .fp-csom .lap.ki .ido i{background:#F5A01E}
+  .fp-csom .lap.ki .jellemzok li::before{color:#FFD58A}
+  .fp-csom .lap.ki .ar-valto button.be{background:#fff;color:#167A5E}
+  .fp-csom .lap.ki .ar-valto button{color:#E6F4EE}
+  .fp-csom .cimke{background:#F5A01E;color:#fff;text-shadow:0 1px 2px rgba(120,62,0,.55)}
+  .fp-csom .gomb{border-radius:999px;background:#0E2A1E;box-shadow:0 4px 0 #000}
+  .fp-csom .gomb:hover{background:#0E2A1E}
+  .fp-csom .lap.ki .gomb{background:#F5A01E;color:#fff;box-shadow:0 4px 0 #D27E0B;
+    text-shadow:0 1px 2px rgba(120,62,0,.55)}
+  .fp-csom .lap.ki .gomb:hover{background:#F5A01E}
+  .fp-csom .gomb.mar,.fp-csom .gomb.enyem{box-shadow:none}
+  .fp-csom .lap.talalat{outline-color:#F5A01E}
+  .fp-csom .mindben{color:#17604A;font-weight:700}
+  /* a vonalzó */
+  .fp-csom .segito{background:#F7D774;border:0;border-radius:14px;padding:38px 26px 24px;position:relative;
+    box-shadow:0 4px 0 #D9B648,0 16px 30px rgba(120,90,10,.18);transform:rotate(-.6deg)}
+  .fp-csom .segito::before{content:"";position:absolute;left:14px;right:14px;top:0;height:22px;
+    background:repeating-linear-gradient(90deg,#6B5310 0 2px,transparent 2px 12px) top/100% 10px no-repeat,
+               repeating-linear-gradient(90deg,#6B5310 0 2px,transparent 2px 60px) top/100% 20px no-repeat}
+  .fp-csom .segito h2,.fp-csom .segito-mezo b,.fp-csom .segito-eredmeny{color:#4A3A08}
+  .fp-csom .segito-leiras,.fp-csom .segito-mezo span{color:#5C4A12}
+  .fp-csom .segito-mezo input[type=range]{accent-color:#167A5E}
+  .fp-csom .segito-eredmeny .ajanl{background:#167A5E}
+  /* a cetli */
+  .fp-csom .garancia{background:#FFF1A8;border:0;border-radius:4px;color:#4A3A08;transform:rotate(1deg);
+    box-shadow:0 12px 22px rgba(120,90,10,.18);position:relative;padding:24px 22px 18px}
+  .fp-csom .garancia::before{content:"";position:absolute;top:-12px;left:50%;width:110px;height:24px;
+    margin-left:-55px;background:rgba(255,255,255,.65);transform:rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .fp-csom .magyarazat{background:#fff;border-radius:26px;padding:10px 28px 18px;
+    box-shadow:0 2px 0 #F4EAD6,0 14px 30px rgba(22,58,46,.08)}
+  .fp-csom .magyarazat h3{color:#0E2A1E}
+  .fp-csom .magyarazat p{color:#17604A}
+  .fp-csom .sajat{background:#fff;border:2px dashed #F5A01E}
+  /* egymás alatti lapoknál az avatar ne lógjon bele a fölötte lévő lapba */
+  .fp-csom .kartyak{row-gap:62px}
 </style>
 
-<div class="csom">
+<div class="fo fp fp-csom">
+<section class="fp-sav">
   <h1>{{ t('csomag_oldal_cim') }}</h1>
-  <p class="bevezeto">{{ t('csomag_oldal_bevezeto') }}</p>
+  <p>{{ t('csomag_oldal_bevezeto') }}</p>
+</section>
+<section class="fp-alap">
+<div class="csom">
 
   {% if keret %}
   <div class="sajat">
@@ -354,6 +409,8 @@
     <h3>{{ t('csomag_gyik_valtas_cim') }}</h3>
     <p>{{ t('csomag_gyik_valtas') }}</p>
   </div>
+</div>
+</section>
 </div>
 
 <script>

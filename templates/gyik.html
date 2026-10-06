@@ -3,116 +3,212 @@
 {% block title %}{{ 'Preguntas frecuentes' if lang == 'es' else 'Gyakori kérdések' }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
+{# ÚJ KINÉZET (2026-10): a közös rész a css/fo_oldalak.css-ben.
+   EGYEDI ELEM: a kis gyík (a GYIK szóra kacsint) nagyban ül a fejsávon,
+   a kérdések pedig színes fülű, lenyitható kártyák – az első nyitva van.
+   A kérdések és válaszok szövege VÁLTOZATLAN. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
 <style>
-  .gyik{max-width:760px;margin:0 auto;padding:24px 16px 64px;line-height:1.65}
-  .gyik-fej{display:flex;align-items:center;gap:14px;margin-bottom:4px}
-  .gyik-fej h1{font-size:1.9rem;margin:0}
-  .gyik-allat{width:54px;height:54px;flex:0 0 auto}
-  .gyik .frissitve{color:#6b7280;font-size:.9rem;margin-bottom:28px}
-  .gyik h2{font-size:1.15rem;margin:30px 0 6px;color:#14532d}
-  .gyik p{margin:0 0 12px}
-  .gyik .kiemelt{background:#f1faf4;border-left:4px solid #3fa88f;
-                 padding:12px 14px;margin:18px 0;border-radius:0 10px 10px 0}
+  .fp-gyik .fp-sav h1{display:flex;align-items:center;justify-content:center;gap:14px}
+  .fp-gyik-allat{width:78px;height:78px;flex:0 0 auto;background:#fff;border-radius:50%;padding:8px;
+    box-shadow:0 6px 0 rgba(0,0,0,.12);transform:rotate(-8deg)}
+  .fp-gyik .fp-sav p{opacity:1}
+  .fp-gyik .fp-alap{padding-top:0}
+  .fp-lista{max-width:780px;margin:-56px auto 0}
+  .fp-k{background:#fff;border-radius:22px;margin:0 0 14px;overflow:hidden;
+    box-shadow:0 2px 0 var(--bezs-2),0 10px 22px rgba(22,58,46,.08);border-left:10px solid var(--fs)}
+  .fp-k0{--fs:#3DDC97}.fp-k1{--fs:#F5A01E}.fp-k2{--fs:#2F8FD8}.fp-k3{--fs:#E0609B}
+  .fp-k summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:18px 20px;
+    font-weight:800;font-size:18px;color:var(--zold-sotet)}
+  .fp-k summary::-webkit-details-marker{display:none}
+  .fp-ki{flex:0 0 42px;height:42px;border-radius:14px;background:color-mix(in srgb,var(--fs) 18%,#fff);
+    display:flex;align-items:center;justify-content:center;font-size:21px}
+  .fp-kq{flex:1}
+  .fp-nyil{flex:0 0 30px;height:30px;border-radius:50%;background:var(--bezs);position:relative;transition:transform .2s}
+  .fp-nyil::before{content:"";position:absolute;left:10px;top:8px;width:8px;height:8px;
+    border-right:3px solid var(--zold);border-bottom:3px solid var(--zold);transform:rotate(45deg)}
+  .fp-k[open] .fp-nyil{transform:rotate(180deg)}
+  .fp-v{padding:0 22px 18px 76px;font-size:16px;line-height:1.65;color:var(--halvany)}
+  .fp-v p{margin:0 0 10px}
+  .fp-v a{color:var(--zold);font-weight:700}
+  .fp-frissitve{text-align:center;color:var(--halvany);font-size:14px;margin:16px 0 0}
+  .fp-irj{max-width:780px;margin:26px auto 0;background:var(--zold-sotet);color:#fff;border-radius:26px;
+    padding:24px 26px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-content:space-between}
+  .fp-irj b{display:block;font-size:20px;margin-bottom:4px}
+  .fp-irj span{font-size:15.5px;line-height:1.5}
+  .fp-irj a.fp-mail{color:var(--menta);font-weight:800}
+  @media (max-width:760px){
+    .fp-gyik-allat{width:58px;height:58px}
+    .fp-lista{margin-top:-44px}
+    .fp-k summary{font-size:16.5px;padding:15px 14px;gap:10px}
+    .fp-ki{flex-basis:36px;height:36px;font-size:18px}
+    .fp-v{padding:0 16px 16px 16px;font-size:15.5px}
+    .fp-irj .fp-gomb{width:100%}
+  }
 </style>
 
-<div class="gyik">
-  <div class="gyik-fej">
-    {# A kis gyík csak dísz: a GYIK szó magyar rövidítésére kacsint vissza.
-       A cím ettől függetlenül egyértelmű marad, hogy a szülő megtalálja. #}
-    <svg class="gyik-allat" viewBox="0 0 64 64" aria-hidden="true">
-      <g fill="#3fa88f">
-        <ellipse cx="22" cy="26" rx="13" ry="9"/>
-        <path d="M33 28c6 0 10 3 13 7s4 9 1 12-8 2-10-2-1-8 2-9 5 1 5 3"
-              fill="none" stroke="#3fa88f" stroke-width="5"
-              stroke-linecap="round"/>
-        <circle cx="15" cy="23" r="3.6" fill="#fff"/>
-        <circle cx="15" cy="23" r="1.7"/>
-        <path d="M12 33l-5 5M20 34l-3 6M28 33l5 5" stroke="#3fa88f"
-              stroke-width="4" stroke-linecap="round" fill="none"/>
-      </g>
-    </svg>
-    <h1>{{ 'Preguntas frecuentes' if lang == 'es' else 'Gyakori kérdések' }}</h1>
-  </div>
+{% set es = (lang == 'es') %}
+<div class="fo fp fp-gyik">
+  <section class="fp-sav">
+    <h1><svg class="fp-gyik-allat" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <!-- farok: vastagból vékonyba, a végén kunkor -->
+    <path d="M40 50 C40 60 36 66 28 69 C20 72 13 68 14 62 C15 57 21 57 22 61" fill="none" stroke="#2E8B6E" stroke-width="7"/>
+    <path d="M28 69 C20 72 13 68 14 62 C15 57 21 57 22 61" fill="none" stroke="#2E8B6E" stroke-width="4"/>
+    <!-- lábak, ujjakkal -->
+    <g fill="none" stroke="#2E8B6E" stroke-width="5">
+      <path d="M34 26 L24 22 L19 15"/><path d="M46 26 L56 22 L61 15"/>
+      <path d="M35 44 L25 49 L22 57"/><path d="M45 44 L55 49 L58 57"/>
+    </g>
+    <g fill="none" stroke="#2E8B6E" stroke-width="2.4">
+      <path d="M19 15 l-4 -2 M19 15 l-1 -5 M19 15 l3 -4"/>
+      <path d="M61 15 l4 -2 M61 15 l1 -5 M61 15 l-3 -4"/>
+      <path d="M22 57 l-5 1 M22 57 l-2 5 M22 57 l2 5"/>
+      <path d="M58 57 l5 1 M58 57 l2 5 M58 57 l-2 5"/>
+    </g>
+    <!-- test -->
+    <path d="M40 16 C48 18 49 30 48 38 C47 46 44 52 40 53 C36 52 33 46 32 38 C31 30 32 18 40 16 Z" fill="#3DAA85"/>
+    <!-- fej -->
+    <path d="M40 3 C46 3 49 8 48 13 C47 18 44 20 40 20 C36 20 33 18 32 13 C31 8 34 3 40 3 Z" fill="#3DAA85"/>
+    <!-- pettyek a hátán -->
+    <g fill="#9BE3C4"><circle cx="40" cy="25" r="2.2"/><circle cx="37" cy="32" r="1.8"/><circle cx="43" cy="33" r="1.8"/>
+      <circle cx="40" cy="40" r="2"/><circle cx="38" cy="46" r="1.5"/><circle cx="42" cy="47" r="1.4"/></g>
+    <!-- szemek -->
+    <circle cx="35" cy="9" r="3.4" fill="#fff"/><circle cx="45" cy="9" r="3.4" fill="#fff"/>
+    <circle cx="35" cy="9" r="1.8" fill="#123"/><circle cx="45" cy="9" r="1.8" fill="#123"/>
+  </g>
+</svg><span>{{ 'Preguntas frecuentes' if es else 'Gyakori kérdések' }}</span></h1>
+    <p>{{ 'Lo que suelen preguntar los padres antes de empezar.' if es else 'Amit a szülők a kezdés előtt kérdezni szoktak.' }}</p>
+  </section>
 
-{% if lang == 'es' %}
-  <p class="frissitve">Última actualización: {{ frissitve_es }}</p>
-
-  <h2>¿Cómo se cuenta el tiempo de estudio?</h2>
+  <section class="fp-alap">
+  <div class="fp-lista">
+{% if es %}
+  <details class="fp-k fp-k0" open>
+    <summary><span class="fp-ki">⏱️</span><span class="fp-kq">¿Cómo se cuenta el tiempo de estudio?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>El reloj corre mientras el niño realmente trabaja. Si pasan tres minutos
   sin escribir, hablar ni pulsar nada, el reloj se detiene, y también se detiene
   si cambia de pestaña o deja el dispositivo —da igual que sea un móvil, una
   tableta o un ordenador—. Vuelve a arrancar en cuanto sigue trabajando. Por eso
   una página abierta y olvidada no suma tiempo.</p>
-
-  <h2>¿Cuánto dura una lección?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k1">
+    <summary><span class="fp-ki">📚</span><span class="fp-kq">¿Cuánto dura una lección?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>Entre 30 y 90 minutos, según la dificultad del tema. No lo decidimos a ojo:
   lo calculamos a partir del propio contenido del tema —cuánta materia tiene,
   cuántas palabras y puntos gramaticales incluye, y cuántas horas le dedica el
   currículo en comparación con los demás temas de la asignatura—. El curso
   escolar también cuenta: un niño de segundo aguanta menos tiempo sentado que
   uno de octavo.</p>
-
-  <h2>¿Cuándo puede hacer el test?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k2">
+    <summary><span class="fp-ki">✅</span><span class="fp-kq">¿Cuándo puede hacer el test?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>El test de nivel se puede intentar como máximo tres veces. Si no lo aprueba
   las tres veces, hay que estudiar la lección hasta el final; entonces llega el
   test de cierre, sin límite de intentos. Así el test no es un atajo, pero
   tampoco castiga a quien ya sabe la materia.</p>
-
-  <h2>¿Guarda TutorIA lo que escribe mi hijo?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k3">
+    <summary><span class="fp-ki">🔒</span><span class="fp-kq">¿Guarda TutorIA lo que escribe mi hijo?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>Las conversaciones se conservan durante doce meses y después se borran.
   El progreso —nivel, puntos, temas terminados— se conserva mientras exista la
   cuenta. Los detalles están en el
   <a href="{{ url_for('adatvedelem') }}">aviso de privacidad</a>.</p>
-
-  <h2>¿En qué dispositivos funciona?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k0">
+    <summary><span class="fp-ki">📱</span><span class="fp-kq">¿En qué dispositivos funciona?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>En ordenador, tableta y móvil, en la misma dirección y sin instalar nada.
   En pantalla pequeña la explicación queda arriba y abajo hay una barra fija con
   el campo de respuesta o el micrófono, para que el niño no tenga que
   desplazarse para contestar.</p>
-
-  <h2>¿Qué hago si algo no funciona?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k1">
+    <summary><span class="fp-ki">✉️</span><span class="fp-kq">¿Qué hago si algo no funciona?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>Escríbenos a <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a>. Cuenta
   qué hacía el niño y, si puedes, envía una captura de pantalla: con eso se
   encuentra el fallo mucho más rápido.</p>
+    </div>
+  </details>
 {% else %}
-  <p class="frissitve">Frissítve: {{ frissitve }}</p>
-
-  <h2>Hogyan számoljuk a tanulási időt?</h2>
+  <details class="fp-k fp-k0" open>
+    <summary><span class="fp-ki">⏱️</span><span class="fp-kq">Hogyan számoljuk a tanulási időt?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>Az óra addig jár, amíg a gyerek tényleg dolgozik. Ha három percig nem ír,
   nem beszél és nem nyom meg semmit, az óra megáll – és megáll akkor is, ha
   másik lapra vált vagy otthagyja az eszközt, mindegy, hogy telefon, tablet vagy
   számítógép. Amint folytatja, újraindul. Ezért a nyitva felejtett oldal nem
   számít bele a tanulási időbe.</p>
-
-  <h2>Meddig tart egy lecke?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k1">
+    <summary><span class="fp-ki">📚</span><span class="fp-kq">Meddig tart egy lecke?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>30 és 90 perc között, a témakör nehézségétől függően. Ezt nem hasra ütve
   döntjük el: a témakör saját tartalmából számoljuk – mennyi a tananyag, hány
   szó és nyelvtani pont tartozik hozzá, és a tanterv mennyi órát szán rá a
   tantárgy többi témaköréhez képest. Az évfolyam is számít: egy másodikos
   kevesebbet bír egy helyben ülni, mint egy nyolcadikos.</p>
-
-  <h2>Mikor mehet a gyerek tesztelni?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k2">
+    <summary><span class="fp-ki">✅</span><span class="fp-kq">Mikor mehet a gyerek tesztelni?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>A szintfelmérő legfeljebb háromszor próbálható. Ha háromszor sem sikerül,
   a leckét végig kell tanulni – utána jön a leckezáró teszt, azt már korlátlanul
   lehet próbálni. Így a teszt nem rövidít le semmit, de azt sem bünteti, aki
   már tudja az anyagot.</p>
-
-  <h2>Megőrzi a TutorIA, amit a gyerek ír?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k3">
+    <summary><span class="fp-ki">🔒</span><span class="fp-kq">Megőrzi a TutorIA, amit a gyerek ír?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>A beszélgetéseket tizenkét hónapig őrizzük, utána törlődnek. A haladás –
   szint, pont, kész témakörök – addig marad meg, amíg a fiók létezik. A
   részletek az <a href="{{ url_for('adatvedelem') }}">adatkezelési
   tájékoztatóban</a> vannak.</p>
-
-  <h2>Milyen eszközön használható?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k0">
+    <summary><span class="fp-ki">📱</span><span class="fp-kq">Milyen eszközön használható?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>Számítógépen, tableten és telefonon egyaránt, ugyanazon a címen, telepíteni
   nem kell semmit. Kis képernyőn a magyarázat van felül, alul pedig egy rögzített
   sáv a válaszmezővel vagy a mikrofonnal – így a gyereknek nem kell görgetnie
   ahhoz, hogy válaszoljon.</p>
-
-  <h2>Mit tegyek, ha valami nem működik?</h2>
+    </div>
+  </details>
+  <details class="fp-k fp-k1">
+    <summary><span class="fp-ki">✉️</span><span class="fp-kq">Mit tegyek, ha valami nem működik?</span><span class="fp-nyil" aria-hidden="true"></span></summary>
+    <div class="fp-v">
   <p>Írj nekünk a <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a> címre.
   Írd meg, mit csinált éppen a gyerek, és ha tudsz, küldj képernyőképet – azzal
   sokkal gyorsabban megtaláljuk a hibát.</p>
+    </div>
+  </details>
 {% endif %}
+  <p class="fp-frissitve">{{ ('Última actualización: ' ~ frissitve_es) if es else ('Frissítve: ' ~ frissitve) }}</p>
+  </div>
+
+  <div class="fp-irj">
+    <div>
+      <b>{{ '¿No encuentras la respuesta?' if es else 'Nem találtad a választ?' }}</b>
+      <span>{{ 'Escríbenos:' if es else 'Írj nekünk:' }} <a class="fp-mail" href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a></span>
+    </div>
+    {% if not session.get('parent_id') %}
+    <a class="fp-gomb" href="{{ url_for('register') }}">{{ 'Quiero probarlo gratis' if es else 'Kipróbálom ingyen' }} <span>→</span></a>
+    {% endif %}
+  </div>
+  </section>
 </div>
 {% endblock %}
