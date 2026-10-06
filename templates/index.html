@@ -1,324 +1,489 @@
 {% extends "base.html" %}
 
-{# BEMUTATÓ OLDAL
-   Ez az, amit a szülő ELŐSZÖR lát. Szándékosan rövid: egy főoldalon senki
-   nem olvas bekezdéseket. Minden kártyán EGY mondat van.
-   A stílusa a style.css végén van, `bem-` előtaggal, hogy a program többi
-   részének kinézetéhez ne nyúljon hozzá. A két integető figura
-   kikerült erről az oldalról. A profilban választott figura a chatben marad. #}
+{# ══ BEMUTATÓ OLDAL – 2026-10-06, ÚJ KINÉZET ════════════════════════════
+   A jóváhagyott terv (bézs alap, halvány rajzos háttér, szakadt papírszél,
+   zöld sávok) alapján. Ez az, amit a szülő ELŐSZÖR lát.
+
+   MINDEN osztály „fo-" előtaggal, és minden szabály a .fo dobozon belül
+   érvényes – így ennek az oldalnak a stílusa a program többi oldalához
+   nem nyúl, és a style.css sem rontja el ezt.
+
+   A felső menüsáv (base.html) UGYANAZ, mint minden oldalon; csak a színe
+   más ITT, a body:has(.fo) szabállyal – máshol fehér marad.
+
+   Spanyol oldalon: a program képernyőképei magyar feliratúak, ezért ott a
+   telefonok helyett a felsorolás látszik, a 2–3. lépés képe helyett pedig
+   ugyanaz HTML-ben, spanyolul. Kártya és album CSAK a magyar oldalon van,
+   ahogy eddig is (spanyol kártya még nincs). #}
 
 {% block content %}
+{% set es = (lang == 'es') %}
+{% set belepve = session.get('parent_id') %}
+{% set cel = url_for('dashboard') if belepve else url_for('register') %}
 <style>
-  /* Három oszlop: szöveg, osztálykártya, a diák a jobb szélen.
-     A kép háttere átlátszó, a fej nincs levágva. */
-  .bem-hero {
-    display: grid;
-    /* Az első oszlop nem nő a szövegnél szélesebbre, így a kártya
-       és a fiú balra húzódik. A szöveg saját szélessége változatlan. */
-    grid-template-columns: max-content auto auto;
-    justify-content: start;
-    align-items: end;
-    column-gap: 16px;
-    row-gap: 36px;
-    max-width: 1280px;
-    padding-bottom: 28px !important;
-    max-height: none !important;
-    overflow: visible !important;
-  }
-  .bem-hero-szoveg { align-self: center; padding-right: 8px; max-width: 36rem; }
-  .bem-hero-szoveg h1 {
-    max-width: 16em;
-    font-size: 42px;
-    line-height: 1.22;
-    margin-bottom: 6px;
-  }
-  /* Mindkét mondat elfér egy sorban, a törés csak a pontnál van. */
-  .bem-alcim {
-    max-width: 40em;
-    margin: 22px 0 30px;
-    line-height: 1.65;
-  }
-  /* Két oszlop, négy sor, a fiú magasságáig.
-     A háttér szándékosan nem teli fehér: a közös stílus fehér
-     szabályát minden tulajdonság !important-tal üti felül. */
-  .bem-valaszto {
-    position: relative;
-    overflow: hidden;
-    height: auto;
-    align-self: center;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 292px;
-    padding: 20px 18px;
-    background: rgba(255, 255, 255, 0.65) !important;
-    background-color: rgba(255, 255, 255, 0.65) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
-    backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(30, 122, 77, 0.12) !important;
-    outline: none !important;
-    border-radius: 12px !important;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 16px 36px rgba(20, 60, 40, 0.07) !important;
-  }
-  /* Színes fátyol a kártya saját háttere mögött, hogy az üveg
-     ne egy fehér falra simuljon. A kattintást nem fogja el. */
-  .bem-valaszto::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background:
-      radial-gradient(90% 70% at 0% 0%, rgba(47, 143, 216, 0.34), transparent 68%),
-      radial-gradient(80% 70% at 100% 100%, rgba(23, 184, 166, 0.32), transparent 70%);
-  }
-  .bem-valaszto > * { position: relative; z-index: 1; }
-  .bem-valaszto h3 { margin-bottom: 18px; }
-  .bem-evek {
-    flex: none;
-    width: auto;
-    grid-template-columns: repeat(2, 112px);
-    grid-template-rows: none;
-    gap: 12px;
-    justify-content: center;
-    align-content: center;
-  }
-  .bem-ev,
-  .bem-ev:nth-child(7),
-  .bem-ev:nth-child(8) { grid-column: auto; }
-  .bem-ev {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: auto;
-    width: 112px;
-    height: 72px;
-    min-height: 0;
-    padding: 6px 4px;
-    border-radius: 10px;
-    border: 1px solid rgba(30, 122, 77, 0.16);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-    font-size: 30px;
-    font-weight: 800;
-    line-height: 1;
-    background: rgba(255, 255, 255, 0.28) !important;
-    background-color: rgba(255, 255, 255, 0.28) !important;
-    border-color: rgba(30, 122, 77, 0.18);
-  }
-  .bem-ev small { font-size: 12px; margin-top: 4px; font-weight: 600; }
-  .bem-diak {
-    display: block;
-    align-self: end;
-    height: auto;
-    width: auto;
-    max-height: none;
-    max-width: 250px;
-    object-fit: contain;
-    object-position: center bottom;
-    background: transparent !important;
-    background-color: transparent !important;
-    border: 0 !important;
-    border-radius: 0;
-    box-shadow: none !important;
-    mix-blend-mode: normal;
-  }
-  /* A gomb és a kártya a Basecoat / shadcn mintát követi:
-     10–12 px sarok, vékony keret, finom árnyék. Csak ezen az oldalon. */
-  .bem-gomb {
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-weight: 600;
-    border: 1px solid transparent;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-  }
-  .bem-gomb:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(30, 122, 77, 0.28);
-  }
-  .bem-gomb-vilagos {
-    border: 1px solid rgba(21, 92, 58, 0.22);
-  }
-  .bem-kartya {
-    border-radius: 12px;
-    border: 1px solid #e4ebe7;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  }
+.fo{--bezs:#FBF5EA;          
+  --bezs-2:#F4EAD6;
+  --zold:#167A5E;          
+  --zold-sotet:#0E2A1E;    
+  --menta:#3DDC97;         
+  --narancs:#F5A01E;       
+  --narancs-alja:#D27E0B;
+  --szoveg:#163A2E;
+  --halvany:#17604A;}
+.fo *{box-sizing:border-box}
+.fo html{margin:0}
+.fo .fo-gomb{display:inline-flex;align-items:center;gap:10px;background:var(--narancs);color:#fff;
+  font-weight:800;font-size:18px;border-radius:999px;padding:15px 30px;text-decoration:none;
+  box-shadow:0 5px 0 var(--narancs-alja),0 12px 22px rgba(213,126,11,.25);
+  border:0;letter-spacing:.2px}
+.fo .fo-gomb .fo-nyil{font-size:20px;line-height:1}
+.fo .fo-gomb-ures{display:inline-flex;align-items:center;gap:8px;color:var(--zold);font-weight:800;
+  font-size:17px;border:2.5px solid var(--zold);border-radius:999px;padding:12px 24px;
+  text-decoration:none;background:#fff}
+.fo .fo-hero{position:relative;overflow:hidden;background:var(--bezs);padding:54px 22px 120px}
+.fo .fo-hero::before,.fo .fo-boxok::before,.fo .fo-lepesek::before,.fo .fo-osztaly::before,.fo .fo-album::before{content:"";position:absolute;inset:0;
+  background:url({{ url_for('static', filename='bemutato/rajzos_hatter.svg') }}) 0 0/1250px auto repeat;opacity:.55;pointer-events:none;z-index:0}
+.fo .fo-boxok,.fo .fo-lepesek,.fo .fo-osztaly,.fo .fo-album{position:relative}
+.fo .fo-boxok>*,.fo .fo-lepesek>*,.fo .fo-osztaly>*,.fo .fo-album>*{position:relative;z-index:1}
+.fo .fo-hero-belso{position:relative;max-width:1160px;margin:0 auto;display:grid;
+  grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.fo .fo-cimke{display:inline-block;background:#fff;border:2px solid var(--bezs-2);color:var(--zold);
+  font-weight:800;font-size:13.5px;border-radius:999px;padding:6px 14px;margin-bottom:18px}
+.fo h1{font-size:54px;line-height:1.08;margin:0 0 18px;font-weight:800;color:var(--zold-sotet);letter-spacing:-.5px}
+.fo h1 em{font-style:normal;color:var(--narancs)}
+.fo .fo-alcim{font-size:19px;line-height:1.55;color:var(--halvany);max-width:30em;margin:0 0 28px}
+.fo .fo-gombok{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.fo .fo-apro{margin-top:18px;font-size:15px;color:var(--halvany);font-weight:700}
+.fo .fo-apro b{color:var(--zold)}
+.fo .fo-kep{position:relative;height:430px}
+.fo .fo-folt{position:absolute;right:0;bottom:0;width:400px;height:400px;
+  background:var(--menta);border-radius:58% 42% 47% 53%/52% 46% 54% 48%;opacity:.9}
+.fo .fo-folt2{position:absolute;right:250px;top:20px;width:120px;height:120px;background:var(--narancs);
+  border-radius:50%;opacity:.95}
+.fo .fo-kep img.fo-diak{position:absolute;right:46px;bottom:0;height:430px;filter:drop-shadow(0 16px 20px rgba(14,42,30,.18))}
+.fo .fo-forma{position:absolute}
+.fo .fo-kocka{left:20px;bottom:40px;width:70px;height:70px;background:#2F8FD8;border-radius:12px;transform:rotate(-10deg);
+  color:#fff;font-weight:800;font-size:30px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 0 #1f6aa6}
+.fo .fo-haromszog{left:110px;top:30px;width:0;height:0;border-left:30px solid transparent;border-right:30px solid transparent;
+  border-bottom:52px solid #E0609B;transform:rotate(14deg)}
+.fo .fo-bubor{right:10px;top:10px;background:#fff;border-radius:18px;padding:12px 15px;font-weight:800;font-size:15px;
+  box-shadow:0 10px 24px rgba(14,42,30,.12);color:var(--zold-sotet);max-width:220px;line-height:1.35}
+.fo .fo-bubor small{display:block;font-weight:700;color:var(--halvany);font-size:12.5px;margin-bottom:3px}
+.fo .fo-szel{position:absolute;left:0;right:0;bottom:-1px;height:90px;z-index:2}
+.fo .fo-szel svg{display:block;width:100%;height:100%}
+.fo .fo-sav{position:relative;background:var(--zold);color:#fff;padding:20px 22px 70px;overflow:hidden}
+.fo .fo-sav::before{content:"";position:absolute;inset:0;opacity:.22;pointer-events:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.fo .fo-sav-belso{position:relative;max-width:1160px;margin:0 auto;text-align:center}
+.fo .fo-sav h2{font-size:36px;margin:10px 0 10px;font-weight:800}
+.fo .fo-sav p.fo-al{font-size:18px;max-width:40em;margin:0 auto 34px;line-height:1.55}
+.fo .fo-telefonok{display:flex;justify-content:center;gap:28px;flex-wrap:wrap}
+.fo .fo-telefon{width:236px}
+.fo .fo-keret{background:#10241b;border-radius:34px;padding:9px;box-shadow:0 18px 34px rgba(0,0,0,.28)}
+.fo .fo-keret img{display:block;width:100%;border-radius:26px;aspect-ratio:9/17.5;object-fit:cover;object-position:top}
+.fo .fo-telefon b{display:block;margin-top:14px;font-size:17px}
+.fo .fo-telefon span{display:block;font-size:14.5px;margin-top:3px;line-height:1.4}
+.fo .fo-boxok{padding:70px 22px 40px;position:relative}
+.fo .fo-boxok h2{text-align:center;font-size:36px;margin:0 0 8px;color:var(--zold-sotet);font-weight:800}
+.fo .fo-boxok .fo-al{text-align:center;color:var(--halvany);font-size:18px;margin:0 0 36px}
+.fo .fo-racs{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.fo .fo-box{background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 2px 0 var(--bezs-2),0 14px 30px rgba(22,58,46,.08)}
+.fo .fo-box .fo-kepresz{height:170px;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.fo .fo-box h3{font-size:19px;margin:18px 20px 6px;color:var(--zold-sotet)}
+.fo .fo-box p{font-size:15.5px;line-height:1.5;color:var(--halvany);margin:0 20px 22px}
+.fo .fo-k1{background:#E3F4EC}
+.fo .fo-k2{background:#FFF0D6}
+.fo .fo-k3{background:#E8EEFB}
+.fo .fo-k4{background:#FBE6EF}
+.fo .fo-mini-tabla{background:#fff;border-radius:14px;margin:0 18px 18px;padding:12px 14px;font-weight:700;font-size:14px;
+  color:var(--zold-sotet);box-shadow:0 6px 14px rgba(0,0,0,.08);width:100%}
+.fo .fo-mini-tabla .fo-gombsor{display:flex;gap:6px;margin-top:9px}
+.fo .fo-mini-tabla .fo-gombsor i{font-style:normal;flex:1;text-align:center;background:#E3F4EC;border-radius:9px;padding:6px 0;font-size:13px}
+.fo .fo-mini-tabla .fo-gombsor i.fo-jo{background:var(--menta);color:#08321f}
+.fo .fo-k2 img{height:160px}
+.fo .fo-legyezo{position:relative;width:200px;height:150px}
+.fo .fo-legyezo img{position:absolute;bottom:-10px;width:92px;border-radius:9px;box-shadow:0 8px 16px rgba(0,0,0,.2);border:3px solid #fff}
+.fo .fo-legyezo img:nth-child(1){left:6px;transform:rotate(-12deg)}
+.fo .fo-legyezo img:nth-child(2){left:54px;z-index:2;bottom:-4px}
+.fo .fo-legyezo img:nth-child(3){left:102px;transform:rotate(12deg)}
+.fo .fo-jelentes{background:#fff;border-radius:14px;margin:0 18px 18px;padding:12px 14px;width:100%;box-shadow:0 6px 14px rgba(0,0,0,.08)}
+.fo .fo-jelentes b{font-size:13px;color:var(--halvany)}
+.fo .fo-jelentes .fo-perc{font-size:26px;font-weight:800;color:var(--zold)}
+.fo .fo-jelentes .fo-sor{font-size:13px;color:var(--szoveg);font-weight:700}
+.fo .fo-osztaly{padding:30px 22px 70px;text-align:center}
+.fo .fo-osztaly h2{font-size:30px;margin:0 0 22px;color:var(--zold-sotet)}
+.fo .fo-pillek{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;max-width:760px;margin:0 auto}
+.fo .fo-pill{min-width:150px;background:var(--narancs);color:#fff;font-weight:800;font-size:20px;border-radius:999px;
+  padding:13px 22px;box-shadow:0 5px 0 var(--narancs-alja);text-decoration:none}
+.fo .fo-pill small{font-weight:700;font-size:14px}
+.fo .fo-zaro{position:relative;background:var(--zold-sotet);color:#fff;text-align:center;padding:90px 22px 70px}
+.fo .fo-zaro .fo-szel-fent{position:absolute;left:0;right:0;top:-1px;height:90px}
+.fo .fo-zaro .fo-szel-fent svg{display:block;width:100%;height:100%}
+.fo .fo-zaro h2{font-size:34px;margin:0 0 10px}
+.fo .fo-zaro p{font-size:18px;margin:0 0 28px}
+.fo .fo-zaro img{position:absolute;bottom:0;height:150px}
+.fo .fo-zaro .fo-bal{left:4%}
+.fo .fo-zaro .fo-jobb{right:4%}
+@media (max-width:760px){
+  .fo .fo-hero{padding:30px 18px 96px}
+  .fo .fo-hero-belso{grid-template-columns:1fr;gap:6px}
+  .fo h1{font-size:38px}
+  .fo .fo-alcim{font-size:17px;margin-bottom:22px}
+  .fo .fo-gomb{width:100%;justify-content:center}
+  .fo .fo-gomb-ures{width:100%;justify-content:center}
+  .fo .fo-kep{height:300px;margin-top:16px}
+  .fo .fo-folt{width:270px;height:270px;right:10px}
+  .fo .fo-folt2{width:80px;height:80px;right:220px;top:10px}
+  .fo .fo-kep img.fo-diak{height:300px;right:40px}
+  .fo .fo-bubor{display:none}
+  .fo .fo-kocka{width:52px;height:52px;font-size:22px;left:6px;bottom:20px}
+  .fo .fo-haromszog{left:60px;top:6px;border-left-width:20px;border-right-width:20px;border-bottom-width:36px}
+  .fo .fo-sav h2,.fo .fo-boxok h2{font-size:28px}
+  .fo .fo-telefonok{position:relative;height:420px;display:block;margin:0 auto;max-width:360px}
+  .fo .fo-telefon{position:absolute;width:170px;top:30px}
+  .fo .fo-telefon:nth-child(1){left:0;transform:rotate(-9deg);z-index:1}
+  .fo .fo-telefon:nth-child(3){right:0;transform:rotate(9deg);z-index:1}
+  .fo .fo-telefon:nth-child(2){left:50%;width:196px;margin-left:-98px;top:0;z-index:2}
+  .fo .fo-telefon b,.fo .fo-telefon span{display:none}
+  .fo .fo-tel-lista{display:block}
+  .fo .fo-racs{grid-template-columns:1fr;gap:16px}
+  .fo .fo-pill{min-width:130px;font-size:18px}
+  .fo .fo-zaro img{height:96px}
+  .fo .fo-zaro h2{font-size:27px}
+}
+.fo .fo-bubor{right:auto;left:0;top:70px}
+.fo .fo-biz{position:relative;background:var(--zold);color:#fff;padding:90px 22px 110px;overflow:hidden}
+.fo .fo-biz .fo-sz-fent,.fo .fo-biz .fo-sz-lent{position:absolute;left:0;right:0;height:90px;z-index:1}
+.fo .fo-biz .fo-sz-fent{top:-1px}
+.fo .fo-biz .fo-sz-lent{bottom:-1px}
+.fo .fo-biz svg{display:block;width:100%;height:100%}
+.fo .fo-biz-belso{position:relative;max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.fo .fo-biz h2{font-size:36px;margin:0 0 10px}
+.fo .fo-biz .fo-al{font-size:18px;margin:0 0 26px;line-height:1.5}
+.fo .fo-pont{display:flex;gap:14px;margin:0 0 18px;align-items:flex-start}
+.fo .fo-pont .fo-ik{flex:0 0 46px;height:46px;border-radius:14px;background:rgba(255,255,255,.14);display:flex;
+  align-items:center;justify-content:center}
+.fo .fo-pont .fo-ik svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fo .fo-pont b{display:block;font-size:18px}
+.fo .fo-pont span{font-size:15.5px;line-height:1.45}
+.fo .fo-csevegés{background:var(--bezs);border-radius:28px;padding:22px;color:var(--szoveg);
+  box-shadow:0 20px 40px rgba(0,0,0,.25)}
+.fo .fo-bub{border-radius:18px;padding:12px 15px;font-size:15.5px;line-height:1.45;margin:0 0 12px;max-width:88%}
+.fo .fo-bub small{display:block;font-weight:800;font-size:12px;margin-bottom:3px}
+.fo .fo-bub.fo-t{background:#fff}
+.fo .fo-bub.fo-gy{background:var(--menta);margin-left:auto;color:#08321f}
+.fo .fo-lepesek{padding:70px 22px 30px;text-align:center}
+.fo .fo-lepesek h2{font-size:34px;margin:0 0 30px;color:var(--zold-sotet)}
+.fo .fo-lsor{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.fo .fo-lep .fo-szam{width:64px;height:64px;margin:0 auto 12px;border-radius:50%;background:#fff;
+  border:3px dashed var(--narancs);display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:26px;color:var(--narancs)}
+.fo .fo-lep b{display:block;font-size:18px;color:var(--zold-sotet)}
+.fo .fo-lep span{color:var(--halvany);font-size:15px;line-height:1.45}
+.fo .fo-album{padding:50px 22px 20px;text-align:center}
+.fo .fo-album h2{font-size:32px;margin:0 0 6px;color:var(--zold-sotet)}
+.fo .fo-album .fo-al{color:var(--halvany);margin:0 0 26px;font-size:17px}
+.fo .fo-lapok{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.fo .fo-lapok img{width:130px;border-radius:12px;border:4px solid #fff;box-shadow:0 10px 20px rgba(0,0,0,.15)}
+.fo .fo-lapok img:nth-child(odd){transform:rotate(-3deg)}
+.fo .fo-lapok img:nth-child(even){transform:rotate(3deg)}
+@media (max-width:760px){
+  .fo .fo-biz{padding:76px 18px 96px}
+  .fo .fo-biz-belso{grid-template-columns:1fr;gap:26px}
+  .fo .fo-biz h2,.fo .fo-lepesek h2{font-size:28px}
+  .fo .fo-lsor{grid-template-columns:1fr 1fr;gap:20px}
+  .fo .fo-lapok img{width:96px}
+  .fo .fo-zaro{padding-bottom:130px}
+  .fo .fo-zaro .fo-gomb{width:auto}
+  .fo .fo-zaro img{height:86px}
+}
+.fo .fo-sav{padding-bottom:110px}
+.fo .fo-sav-lent{position:absolute;left:0;right:0;bottom:-1px;height:90px;z-index:1}
+.fo .fo-sav-lent svg{display:block;width:100%;height:100%}
+.fo .fo-album-sor{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:460px 1fr;gap:44px;align-items:center}
+.fo .fo-album-sor .fo-borito{width:460px;border-radius:16px;box-shadow:0 22px 40px rgba(14,42,30,.25),0 0 0 6px #fff;transform:rotate(-2deg)}
+.fo .fo-album-sor .fo-lapok{display:grid;grid-template-columns:repeat(3,132px);gap:16px 20px;justify-content:start}
+.fo .fo-album-sor .fo-lapok img{width:132px}
+@media (max-width:760px){
+  .fo .fo-album-sor{grid-template-columns:1fr;gap:26px;justify-items:center}
+  .fo .fo-album-sor .fo-borito{width:300px}
+  .fo .fo-album-sor .fo-lapok{grid-template-columns:repeat(3,96px);gap:14px;justify-content:center}
+  .fo .fo-album-sor .fo-lapok img{width:96px}
+}
+@media (max-width:760px){
+  .fo .fo-hero::before,.fo .fo-boxok::before,.fo .fo-lepesek::before,.fo .fo-osztaly::before,.fo .fo-album::before{background-size:760px auto;opacity:.7}
+}
+.fo .fo-abc{left:0;bottom:30px;display:flex;align-items:flex-end;gap:4px;transform:rotate(-6deg)}
+.fo .fo-abc span{width:58px;height:58px;border-radius:12px;color:#fff;font-weight:800;font-size:30px;
+  display:flex;align-items:center;justify-content:center}
+.fo .fo-abc .fo-k-a{background:#2F8FD8;box-shadow:0 6px 0 #1f6aa6}
+.fo .fo-abc .fo-k-b{background:#E0609B;box-shadow:0 6px 0 #b13e74;transform:translateY(-22px) rotate(8deg)}
+.fo .fo-abc .fo-k-c{background:#F5A01E;box-shadow:0 6px 0 #c97d0c}
+@media (max-width:760px){
+  .fo .fo-abc{bottom:14px;left:0}
+  .fo .fo-abc span{width:42px;height:42px;font-size:22px;border-radius:10px}
+  .fo .fo-abc .fo-k-b{transform:translateY(-16px) rotate(8deg)}
+}
+.fo .fo-tel-lista{display:none;list-style:none;padding:0;margin:26px auto 0;max-width:340px;text-align:left}
+.fo .fo-tel-lista li{padding:9px 0 9px 30px;position:relative;font-size:16px;line-height:1.45}
+.fo .fo-tel-lista li::before{content:"";position:absolute;left:4px;top:15px;width:12px;height:12px;border-radius:50%;background:var(--narancs)}
+.fo .fo-lepesek .fo-al{color:var(--halvany);font-size:18px;margin:-18px 0 34px}
+.fo .fo-osveny{position:relative;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.fo .fo-osveny .fo-ut{position:absolute;left:0;right:0;top:0;width:100%;height:60px;z-index:0}
+.fo .fo-allomas{position:relative;z-index:1;text-align:center}
+.fo .fo-jelvény{width:56px;height:56px;margin:0 auto 14px;border-radius:50%;background:var(--narancs);color:#fff;
+  font-weight:800;font-size:26px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 5px 0 var(--narancs-alja),0 0 0 6px var(--bezs)}
+.fo .fo-allomas .fo-lap{height:170px;background:#fff;border-radius:22px;margin-bottom:14px;overflow:hidden;
+  box-shadow:0 2px 0 var(--bezs-2),0 14px 26px rgba(22,58,46,.10);display:flex;align-items:center;justify-content:center;
+  transform:rotate(-1.5deg)}
+.fo .fo-allomas:nth-child(odd) .fo-lap{transform:rotate(1.5deg)}
+.fo .fo-allomas .fo-lap.fo-kep img{width:100%;height:100%;object-fit:cover;object-position:top}
+.fo .fo-allomas b{display:block;font-size:18px;color:var(--zold-sotet)}
+.fo .fo-allomas span{display:block;color:var(--halvany);font-size:15px;line-height:1.45;margin-top:4px}
+.fo .fo-mini-urlap{width:82%;text-align:left}
+.fo .fo-mini-urlap .fo-sor{display:flex;justify-content:space-between;border-bottom:1.5px dashed #e6dcc8;padding:7px 0;font-size:14px}
+.fo .fo-mini-urlap .fo-sor span{color:var(--halvany)}
+.fo .fo-mini-urlap .fo-mentes{margin-top:10px;background:var(--menta);color:#08321f;font-weight:800;text-align:center;border-radius:999px;padding:6px;font-size:14px}
+.fo .fo-jutalom{position:relative}
+.fo .fo-jutalom img{height:140px;border-radius:10px;border:3px solid #fff;box-shadow:0 8px 16px rgba(0,0,0,.2);transform:rotate(6deg)}
+.fo .fo-ermek{position:absolute;left:18px;top:22px;display:flex;flex-direction:column;gap:2px;font-size:30px}
+.fo .fo-ermek i{font-style:normal}
+@media (max-width:760px){
+  .fo .fo-osveny{grid-template-columns:1fr;gap:34px;max-width:330px}
+  .fo .fo-osveny .fo-ut{display:none}
+  .fo .fo-allomas:not(:last-child)::after{content:"";position:absolute;left:50%;bottom:-32px;height:28px;border-left:4px dotted var(--narancs)}
+  .fo .fo-allomas .fo-lap{height:180px}
+}
+.fo .fo-kep::before{content:"";position:absolute;right:-70px;top:-70px;width:580px;height:720px;
+  background:radial-gradient(closest-side,var(--bezs) 72%,rgba(251,245,234,0) 100%);z-index:0}
+.fo .fo-kep>*{z-index:1}
+@media (max-width:760px){
+  .fo .fo-kep::before{right:-40px;top:-40px;width:400px;height:400px}
+}
+.fo .fo-gomb,.fo .fo-pill,.fo .fo-pill small,.fo .fo-jelvény,.fo .fo-k-a,.fo .fo-k-b,.fo .fo-k-c{text-shadow:0 1px 2px rgba(120,62,0,.55)}
+.fo .fo-hero h1 em{color:#E08600}
+.fo .fo-hero-belso>:not(.fo-kep){position:relative;z-index:2}
+.fo .fo-hero h1,.fo .fo-hero .fo-alcim,.fo .fo-apro,.fo .fo-boxok h2,.fo .fo-boxok .fo-al,.fo .fo-lepesek h2,.fo .fo-lepesek .fo-al,.fo .fo-album h2,.fo .fo-album .fo-al,.fo .fo-osztaly h2,.fo .fo-allomas b,.fo .fo-allomas span,.fo .fo-lep b,.fo .fo-lep span{text-shadow:0 0 3px var(--bezs),0 0 6px var(--bezs),0 0 10px var(--bezs)}
 
-  /* ══ A FŐCÍM KÉT VÁLTOZATBAN ═══════════════════════════════════════
-     Két változat van a jelölésben: az asztali a „megvárja" után törik,
-     a telefonos három sorban áll. Mindig CSAK AZ EGYIK látszódhat.
-     2026-10-04: ez a két szabály HIÁNYZOTT a stíluslapból, ezért az
-     éles oldalon MINDKETTŐ megjelent, és a főcím kétszer, egymás alatt
-     olvasódott. A többi bemutató-szabály 900 képpontnál vált, ezért
-     itt is ott vált. */
-  .cim-mobil { display: none; }
-  @media (max-width: 900px) {
-    .cim-asztal { display: none; }
-    .cim-mobil  { display: inline; }
-  }
+.fo{font-family:Nunito,system-ui,sans-serif;color:var(--szoveg);background:var(--bezs);line-height:normal}
+.fo a:hover{text-decoration:none}
+.fo img{max-width:none}
+/* spanyol oldal: nincs kártyás doboz, a képernyőképek helyett felsorolás */
+.fo-es .fo-racs{grid-template-columns:repeat(3,1fr);max-width:900px}
+.fo-es .fo-tel-lista{display:block;color:#fff}
+.fo .fo-targyak{width:84%;text-align:left}
+.fo .fo-targy-cim{font-weight:800;font-size:14px;margin-bottom:8px;color:var(--szoveg)}
+.fo .fo-targy{display:flex;align-items:center;gap:10px;border:1.5px solid #e6e6e6;border-radius:12px;padding:8px 10px;
+  font-weight:800;font-size:14px;margin-bottom:8px;background:#fff}
+.fo .fo-targy i{font-style:normal;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.fo .fo-ti1{background:#FDE3E3}.fo .fo-ti2{background:#E2EEFB}
+.fo .fo-minichat{width:86%;text-align:left;font-size:13.5px;line-height:1.45;color:#1f2937}
+.fo .fo-mc-cim{color:#6D3FC0;font-weight:800;font-size:13.5px;margin-bottom:6px}
+.fo .fo-ermek-nagy{font-size:46px;letter-spacing:4px}
+@media (max-width:760px){.fo-es .fo-racs{grid-template-columns:1fr}}
 
-  /* ══ TELEFON ÉS TABLET (900 ALATT) ═══════════════════════════════════
-     A fenti .bem-hero szabály HÁROM oszlopot kér, az elsőt max-content
-     szélességűre: vagyis a szövegoszlop olyan széles, mint a leghosszabb
-     sora. Asztali gépen ez a szándék. Telefonon 969 képpont lett belőle
-     egy 390 képpontos képernyőn: az alcím le volt vágva a jobb szélen, az
-     osztályválasztó kártya és a kisfiú pedig teljesen kiesett a képből.
-     A style.css-ben VAN erre telefonos szabály, csak ez az oldalon belüli
-     stílus később áll a lapon, ezért felülütötte azt is.
-     900 fölött egyetlen képpont sem változik. */
-  @media (max-width: 900px) {
-    .bem-hero {
-      grid-template-columns: 1fr;
-      justify-items: start;
-      column-gap: 0;
-      row-gap: 22px;
-    }
-    .bem-hero-szoveg { max-width: 100%; padding-right: 0; }
-    .bem-hero-szoveg h1 { max-width: 100%; }
-    .bem-alcim { max-width: 100%; }
-    .bem-valaszto { width: 100%; max-width: 340px; }
-  }
+/* ── A FELSŐ MENÜSÁV CSAK EZEN AZ OLDALON ZÖLD (mint a terven). ── */
+body:has(.fo) .content{max-width:none;padding:0}
+body:has(.fo) .flash-container{max-width:1100px;margin:12px auto;padding:0 16px}
+body:has(.fo) .navbar{background:#167A5E;border-bottom:0;box-shadow:none}
+body:has(.fo) .brand-name{color:#fff}
+body:has(.fo) .nav-links > a:not(.nav-cta):not(.pin-nyitva){color:#fff;font-weight:700}
+body:has(.fo) .nav-cta{background:#F5A01E;font-weight:800;box-shadow:0 3px 0 #D27E0B;
+  text-shadow:0 1px 2px rgba(120,62,0,.55)}
+body:has(.fo) .nav-cta:hover{background:#F5A01E}
+body:has(.fo) .lang-switch{background:rgba(255,255,255,.16);border-color:transparent}
+body:has(.fo) .lang-btn{color:#fff !important}
+body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
 
-  /* ══ CSAK TELEFON (760 ALATT): AZ ALCÍM FOLYAMATOSAN FUSSON ══════════
-     Asztali gépen a két mondat külön sorban áll – ott ez a szándék.
-     Telefonon viszont a kényszerített sortörés után egyetlen szó maradt
-     egy sorban („anyaggal."), ami csonkának látszik. Itt a szöveg
-     magától tördel, mint egy rendes bekezdés.
-     A sortörés körül mindkét oldalon ott a szóköz (lásd lent a
-     replace-t), ezért elrejtve sem tapad össze a két mondat
-     („anyaggal.Ha" – ez volt a régi próbaoldal hibája).
-     760 a határ, mint a program többi részén: a tablet ebből kimarad. */
-  @media (max-width: 759px) {
-    .bem-alcim br { display: none; }
-  }
 </style>
-<section class="bem-hero">
-  <div class="bem-hero-szoveg">
-    <h1>
-      <span class="cim-asztal">{{ t('bem_cim_1') }} <em>{{ t('bem_cim_kiemelt') }}</em> <br> {{ t('bem_cim_2') }}</span>
-      <span class="cim-mobil">{% if lang == 'es' %}Un profesor,<br>que <em>espera</em><br>a tu hijo.{% else %}Egy tanár,<br>aki <em>megvárja</em><br>a gyerekedet.{% endif %}</span>
-    </h1>
-    {# A pontnál törünk, ne a „Ha a” közepén. #}
-    <p class="bem-alcim">{{ t('bem_alcim')|replace('. ', '. <br> ')|safe }}</p>
-    {% if session.get('parent_id') %}
-      <a class="bem-gomb" href="{{ url_for('dashboard') }}">{{ t('landing_cta') }}</a>
-    {% else %}
-      <a class="bem-gomb" href="{{ url_for('register') }}">{{ t('bem_cta') }}</a>
-      <p class="bem-apro">{{ t('bem_apro') }}</p>
-    {% endif %}
-  </div>
 
-  <div class="bem-valaszto">
-    <h3>{{ t('bem_osztaly_kerdes') }}</h3>
-    <div class="bem-evek">
-      {% for evf in range(1, 9) %}
-        {# Ha a szülő már be van lépve, az évfolyam-gomb ne küldje újra
-           regisztrálni — vigye a saját gyerekeihez. #}
-        <a class="bem-ev" href="{{ url_for('dashboard') if session.get('parent_id') else url_for('register') }}">{{ evf }}<small>{{ t('bem_osztaly') }}</small></a>
+<div class="fo{% if es %} fo-es{% endif %}">
+
+<section class="fo-hero">
+  <div class="fo-hero-belso">
+    <div>
+      <span class="fo-cimke">{{ 'Según el currículo escolar (LOMLOE) · de 1.º a 8.º' if es else 'Magyar és spanyol tanterv szerint · 1–8. osztály' }}</span>
+      <h1>{{ t('bem_cim_1') }} <em>{{ t('bem_cim_kiemelt') }}</em> {{ t('bem_cim_2') }}</h1>
+      <p class="fo-alcim">{{ 'Avanza paso a paso con el temario escolar. Si la respuesta no es correcta, no sigue adelante: lo explica de otra manera.' if es else 'Lépésről lépésre halad az iskolai anyaggal. Ha a válasz nem jó, nem megy tovább — elmagyarázza másképp.' }}</p>
+      <div class="fo-gombok">
+        {% if belepve %}
+        <a class="fo-gomb" href="{{ url_for('dashboard') }}">{{ t('landing_cta') }} <span class="fo-nyil">→</span></a>
+        {% else %}
+        <a class="fo-gomb" href="{{ url_for('register') }}">{{ 'Quiero probarlo gratis' if es else 'Kipróbálom ingyen' }} <span class="fo-nyil">→</span></a>
+        {% endif %}
+        <a class="fo-gomb-ures" href="#hogyan">{{ '¿Cómo funciona?' if es else 'Hogyan működik?' }}</a>
+      </div>
+      {% if not belepve %}
+      <div class="fo-apro">{% if es %}<b>Los primeros 120 minutos son gratis.</b> No hace falta tarjeta.{% else %}<b>Az első 120 perc ingyen.</b> Bankkártya nem kell.{% endif %}</div>
+      {% endif %}
+    </div>
+    <div class="fo-kep">
+      <div class="fo-folt"></div><div class="fo-folt2"></div>
+      <div class="fo-forma fo-haromszog"></div>
+      <div class="fo-forma fo-abc"><span class="fo-k-a">A</span><span class="fo-k-b">B</span><span class="fo-k-c">C</span></div>
+      <img class="fo-diak" src="{{ url_for('static', filename='img/diak.png') }}" alt="{{ 'Chico con cuadernos' if es else 'Kisfiú füzetekkel' }}">
+      <div class="fo-forma fo-bubor"><small>{{ 'El profesor pregunta:' if es else 'A tanár kérdezi:' }}</small>{{ '¿Cuánto es 3 × 5? ¡Piénsalo con calma!' if es else 'Mennyi 3 × 5? Gondold végig nyugodtan!' }}</div>
+    </div>
+  </div>
+  <div class="fo-szel"><svg viewBox="0 0 1440 90" preserveAspectRatio="none"><path fill="#E9DFCB" d="M0,90 L0,34.0 L7,32.1 L22,28.4 L35,28.1 L46,28.9 L54,29.7 L66,35.5 L77,43.6 L75,35.3 L85,23.8 L87,43.3 L85,34.5 L92,33.5 L98,36.4 L110,37.2 L118,42.4 L123,30.1 L123,37.9 L137,32.6 L137,43.2 L150,47.9 L163,51.9 L177,48.7 L185,44.2 L194,42.5 L199,48.2 L206,54.4 L214,65.8 L212,56.6 L225,57.0 L232,54.7 L243,53.2 L257,65.6 L255,58.5 L260,46.8 L260,54.6 L270,56.9 L278,59.2 L289,57.3 L296,56.7 L302,51.5 L311,53.6 L326,57.1 L340,51.9 L348,53.3 L361,48.1 L373,50.3 L381,52.9 L390,49.9 L403,47.4 L410,50.0 L424,42.4 L424,48.9 L436,53.5 L447,58.2 L461,58.5 L467,52.7 L482,53.2 L488,47.6 L503,44.4 L512,44.5 L526,46.8 L531,44.1 L538,41.0 L553,44.7 L560,47.6 L565,42.3 L565,52.0 L576,53.5 L591,54.0 L596,45.4 L596,55.7 L612,55.7 L610,49.5 L615,44.7 L629,40.1 L641,36.6 L653,34.2 L663,33.6 L677,33.0 L682,35.1 L693,32.2 L700,26.1 L700,31.9 L706,32.1 L719,35.5 L732,39.5 L742,44.6 L756,38.8 L761,35.7 L771,32.8 L786,33.1 L793,33.6 L799,33.5 L806,32.4 L819,28.2 L824,28.2 L838,27.9 L845,32.2 L856,30.3 L864,31.0 L879,36.6 L891,22.2 L891,30.6 L904,27.5 L912,27.2 L925,25.2 L925,31.6 L936,30.4 L947,32.6 L961,36.4 L967,34.7 L980,38.9 L987,42.6 L999,44.1 L1008,43.1 L1013,44.7 L1024,55.4 L1022,45.4 L1031,42.9 L1045,39.1 L1053,42.4 L1059,38.1 L1059,44.6 L1067,41.9 L1076,41.8 L1091,35.8 L1099,33.5 L1112,28.2 L1118,24.7 L1125,17.7 L1125,25.4 L1139,23.9 L1148,24.5 L1163,31.7 L1161,23.2 L1167,23.3 L1174,26.0 L1184,30.3 L1199,35.2 L1211,36.2 L1224,38.3 L1236,26.1 L1236,32.5 L1249,37.2 L1256,31.9 L1264,35.4 L1278,38.0 L1288,37.2 L1300,33.8 L1306,28.8 L1318,23.0 L1329,16.8 L1339,16.5 L1351,16.1 L1364,20.2 L1371,6.3 L1371,17.5 L1386,18.5 L1392,15.2 L1404,16.4 L1412,14.9 L1424,8.1 L1424,16.6 L1437,19.9 L1440,19.9 L1440,90 Z"/><path fill="#228166" d="M0,90 L0,59.4 L11,54.0 L21,58.7 L28,54.4 L39,53.9 L50,49.9 L61,41.7 L61,49.3 L71,52.7 L85,50.2 L97,50.7 L108,55.9 L118,61.8 L132,64.7 L143,70.3 L158,71.4 L172,56.5 L172,68.3 L181,65.9 L188,65.7 L197,61.9 L203,60.9 L209,60.2 L219,57.6 L231,57.9 L244,58.5 L252,58.8 L260,63.2 L270,59.5 L282,62.2 L296,64.2 L304,67.7 L310,64.0 L319,65.3 L334,51.2 L334,63.5 L341,50.8 L341,60.4 L352,65.4 L357,68.4 L363,68.4 L372,65.4 L384,70.6 L396,65.4 L403,54.5 L403,60.9 L411,57.4 L411,65.1 L419,70.3 L426,65.2 L436,61.4 L436,66.9 L451,60.1 L464,64.9 L470,64.2 L479,62.8 L494,58.3 L507,60.9 L520,61.3 L534,64.3 L548,74.5 L546,67.6 L553,67.0 L565,65.8 L579,64.5 L588,71.4 L586,62.7 L595,50.1 L595,59.3 L601,57.6 L614,51.5 L628,55.1 L636,58.4 L648,53.8 L659,65.9 L657,57.4 L666,66.3 L664,57.8 L673,57.3 L686,54.7 L694,51.8 L702,49.7 L711,44.5 L724,41.0 L730,39.2 L739,34.8 L752,35.3 L766,38.1 L781,34.4 L790,40.2 L797,41.5 L809,41.3 L816,45.3 L830,41.8 L840,40.4 L846,41.2 L852,44.2 L861,39.6 L868,43.0 L875,43.1 L883,47.3 L894,49.9 L908,54.9 L920,56.3 L934,55.5 L947,45.5 L947,56.7 L961,56.9 L972,57.0 L978,57.1 L988,44.7 L988,56.5 L994,51.7 L1007,46.5 L1020,42.7 L1034,37.6 L1045,40.8 L1050,44.3 L1065,29.6 L1065,40.4 L1076,24.7 L1076,35.6 L1088,37.7 L1097,38.4 L1107,41.8 L1114,35.6 L1125,35.3 L1136,32.8 L1145,35.2 L1159,40.4 L1170,34.0 L1182,30.1 L1197,18.4 L1197,29.2 L1205,34.0 L1217,38.5 L1230,34.3 L1242,32.4 L1254,32.1 L1268,35.1 L1282,37.2 L1289,37.7 L1298,36.6 L1311,30.9 L1319,27.8 L1334,14.5 L1334,24.8 L1342,22.8 L1351,23.6 L1360,26.1 L1369,27.8 L1379,15.7 L1379,23.8 L1389,24.0 L1398,23.2 L1408,24.8 L1419,31.1 L1432,28.0 L1440,28.0 L1440,90 Z"/></svg></div>
+</section>
+
+<section class="fo-sav">
+  <div class="fo-sav-belso">
+    <h2>{{ '¿Qué es TutorIA?' if es else 'Mi a TutorIA?' }}</h2>
+    <p class="fo-al">{{ 'Un profesor paciente en el móvil, la tableta o el ordenador. Enseña lo mismo que en el colegio: pregunta, espera la respuesta y se queda en cada paso hasta que tu hijo lo entiende.' if es else 'Egy türelmes tanár a telefonon, a tableten vagy a gépen. Ugyanazt tanítja, amit a suliban vesznek — kérdez, megvárja a választ, és addig marad egy lépésnél, amíg a gyerek meg nem érti.' }}</p>
+    {% if not es %}
+    <div class="fo-telefonok">
+      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_matek.jpg') }}" alt="Matekóra a programban"></div><b>Lépésenként tanít</b><span>Egy gondolat, egy kérdés.</span></div>
+      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_nyelv.jpg') }}" alt="Nyelvóra a programban"></div><b>Nyelvet is</b><span>Saját szójegyzéke van minden órának.</span></div>
+      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_hang.jpg') }}" alt="Beszélgetés hanggal"></div><b>Beszélni is lehet vele</b><span>Gépelés helyett mondja a választ.</span></div>
+    </div>
+    {% endif %}
+    <ul class="fo-tel-lista">
+      {% if es %}
+      <li><b>Enseña paso a paso</b> – una idea, una pregunta.</li>
+      <li><b>También idiomas</b> – cada clase tiene su propio vocabulario.</li>
+      <li><b>También se le puede hablar</b> – dice la respuesta en vez de escribirla.</li>
+      {% else %}
+      <li><b>Lépésenként tanít</b> – egy gondolat, egy kérdés.</li>
+      <li><b>Nyelvet is</b> – saját szójegyzéke van minden órának.</li>
+      <li><b>Beszélni is lehet vele</b> – gépelés helyett mondja a választ.</li>
+      {% endif %}
+    </ul>
+  </div>
+  <div class="fo-sav-lent"><svg viewBox="0 0 1440 90" preserveAspectRatio="none"><path fill="#E9DFCB" d="M0,90 L0,39.3 L8,43.7 L21,46.1 L32,48.7 L39,51.3 L51,53.1 L58,54.0 L69,49.9 L76,38.8 L76,50.4 L81,51.0 L93,54.0 L101,55.3 L109,54.3 L124,53.5 L124,60.4 L138,62.2 L143,62.8 L154,62.0 L167,64.3 L172,58.8 L184,62.4 L191,55.1 L191,66.4 L198,66.8 L205,67.2 L213,64.8 L225,60.0 L234,65.1 L243,61.2 L250,62.5 L259,50.9 L259,58.7 L268,41.3 L268,54.1 L273,45.0 L273,57.0 L283,61.0 L293,64.4 L298,64.2 L304,66.4 L314,60.7 L319,54.5 L334,54.0 L347,54.3 L354,57.1 L366,47.7 L366,55.1 L373,59.0 L378,58.0 L391,59.0 L400,54.1 L413,49.2 L424,38.7 L424,50.5 L429,46.7 L436,42.6 L448,40.3 L458,43.9 L464,42.7 L475,38.5 L485,39.3 L497,32.8 L497,44.4 L507,42.0 L515,37.6 L524,28.1 L524,36.2 L536,39.7 L543,41.5 L554,40.3 L561,37.3 L572,38.9 L579,36.5 L589,37.0 L599,26.9 L599,33.3 L606,24.0 L606,36.9 L615,33.1 L629,43.5 L627,33.0 L635,33.0 L647,33.0 L656,33.0 L667,35.6 L681,34.1 L692,39.0 L704,40.0 L718,36.9 L730,37.9 L737,33.7 L746,39.5 L759,34.2 L773,38.5 L782,34.4 L796,37.7 L806,36.5 L816,40.6 L828,38.2 L842,40.3 L856,37.6 L868,36.9 L881,39.4 L891,34.6 L898,37.1 L904,34.3 L913,33.3 L924,37.8 L930,42.1 L944,36.0 L959,22.1 L959,29.3 L967,29.5 L975,17.4 L975,30.3 L980,27.7 L994,29.3 L1001,30.9 L1007,34.4 L1018,28.5 L1028,28.8 L1037,29.5 L1051,18.7 L1051,30.4 L1059,17.3 L1059,25.6 L1065,19.7 L1079,18.9 L1088,21.3 L1104,32.8 L1102,26.4 L1110,23.7 L1110,29.3 L1119,23.5 L1130,27.3 L1143,29.2 L1152,26.0 L1165,20.4 L1174,18.8 L1182,13.1 L1188,2.0 L1188,9.7 L1195,6.7 L1195,15.5 L1210,15.2 L1223,18.1 L1232,13.7 L1243,10.6 L1255,11.1 L1266,12.0 L1276,12.2 L1281,16.7 L1292,32.5 L1290,21.8 L1304,21.9 L1314,18.3 L1320,21.1 L1328,10.8 L1328,23.4 L1343,24.8 L1350,23.1 L1361,29.6 L1368,33.8 L1377,36.1 L1386,36.7 L1394,33.3 L1401,39.3 L1411,42.1 L1425,41.3 L1435,40.7 L1435,46.0 L1442,52.0 L1440,41.9 L1440,41.9 L1440,90 Z"/><path fill="#FBF5EA" d="M0,90 L2,51.6 L0,41.5 L15,42.5 L21,29.1 L21,40.3 L30,35.3 L41,33.3 L47,24.0 L47,34.3 L62,39.3 L73,36.2 L73,41.6 L87,46.7 L94,45.3 L108,46.8 L118,51.7 L116,43.8 L127,41.1 L135,46.9 L144,47.3 L150,46.1 L156,43.8 L156,51.3 L163,46.0 L163,53.9 L176,48.1 L181,46.8 L189,47.4 L196,51.2 L205,45.4 L216,37.4 L216,44.9 L227,47.4 L237,45.9 L250,49.8 L262,49.7 L270,47.5 L282,47.7 L297,49.0 L302,43.7 L308,39.5 L316,29.4 L316,42.4 L328,44.8 L344,49.1 L342,42.7 L352,47.3 L364,44.2 L371,44.7 L385,43.8 L394,49.4 L406,49.9 L422,61.1 L420,50.7 L431,41.3 L431,51.4 L438,40.1 L440,59.2 L438,50.7 L448,47.7 L455,44.1 L455,49.7 L462,48.7 L473,51.8 L481,52.7 L492,52.6 L502,48.2 L514,48.1 L524,43.8 L530,48.5 L544,45.4 L552,43.6 L558,44.3 L568,48.0 L576,46.4 L587,52.5 L598,43.3 L598,50.0 L611,55.6 L620,53.0 L632,50.7 L632,59.2 L645,56.4 L657,61.4 L664,60.7 L676,57.9 L685,61.6 L696,62.7 L704,49.8 L704,61.5 L711,63.5 L717,68.6 L731,58.1 L731,69.2 L743,72.0 L758,83.7 L756,76.3 L764,76.7 L770,76.6 L784,73.8 L799,75.8 L808,75.4 L824,80.6 L822,72.3 L829,66.7 L840,70.1 L855,66.8 L863,65.1 L869,65.3 L883,70.3 L893,71.2 L908,71.1 L923,70.6 L937,70.2 L950,67.6 L958,68.3 L964,69.8 L977,66.8 L990,68.2 L1003,68.0 L1015,60.4 L1015,67.2 L1022,65.2 L1028,61.4 L1037,60.7 L1050,64.8 L1063,63.0 L1063,69.3 L1071,65.6 L1071,71.8 L1078,72.1 L1089,60.2 L1089,71.7 L1098,66.9 L1111,64.5 L1121,68.8 L1134,64.4 L1147,60.0 L1160,56.6 L1172,49.0 L1172,56.0 L1183,49.8 L1183,56.3 L1189,56.4 L1201,56.6 L1211,62.6 L1227,66.3 L1225,58.8 L1239,56.6 L1246,56.5 L1258,56.2 L1272,55.7 L1278,55.4 L1285,55.0 L1299,54.2 L1305,53.8 L1310,53.4 L1323,52.4 L1330,44.0 L1330,51.9 L1341,55.9 L1349,54.9 L1357,51.8 L1365,55.3 L1377,54.3 L1383,44.9 L1383,55.2 L1397,58.8 L1408,56.2 L1421,59.2 L1431,60.9 L1436,60.3 L1440,60.3 L1440,90 Z"/></svg></div>
+</section>
+
+<section class="fo-boxok">
+  <h2>{{ '¿Por qué les gusta a los niños?' if es else 'Miért szeretik a gyerekek?' }}</h2>
+  <p class="fo-al">{{ 'Y por qué los padres están tranquilos.' if es else 'És miért nyugodt közben a szülő.' }}</p>
+  <div class="fo-racs">
+    <div class="fo-box"><div class="fo-kepresz fo-k1">
+        {% if es %}
+        <div class="fo-mini-tabla">¿Qué palabra significa «ciudad»?
+          <div class="fo-gombsor"><i>the country</i><i class="fo-jo">the city</i><i>the street</i></div></div></div>
+      <h3>Toca, no teclea</h3><p>Resuelve los ejercicios con botones: fácil también en el móvil, incluso con siete años.</p></div>
+        {% else %}
+        <div class="fo-mini-tabla">Melyik szó jelenti azt, hogy „város”?
+          <div class="fo-gombsor"><i>el país</i><i class="fo-jo">la ciudad</i><i>la calle</i></div></div></div>
+      <h3>Koppintás, nem gépelés</h3><p>A feladatokat gombokkal oldja meg — telefonon is könnyen, egy hétévesnek is.</p></div>
+        {% endif %}
+    <div class="fo-box"><div class="fo-kepresz fo-k2"><img loading="lazy" src="{{ url_for('static', filename='bemutato/lany_integet.png') }}" alt=""></div>
+      {% if es %}<h3>Paciente como un buen maestro</h3><p>No tiene prisa ni regaña. Si no le sale, se lo explica de otra forma.</p>
+      {% else %}<h3>Türelmes, mint egy jó tanító</h3><p>Nem siet, nem szid. Ha nem megy, máshonnan magyarázza el.</p>{% endif %}</div>
+    {% if not es %}
+    <div class="fo-box"><div class="fo-kepresz fo-k3"><div class="fo-legyezo"><img loading="lazy" src="{{ url_for('static', filename='bemutato/curie.jpg') }}" alt=""><img loading="lazy" src="{{ url_for('static', filename='bemutato/newton.jpg') }}" alt=""><img loading="lazy" src="{{ url_for('static', filename='bemutato/darwin.jpg') }}" alt=""></div></div>
+      <h3>Kártyákat gyűjt érte</h3><p>Minden kész témakörért érme jár, abból híres tudósok kártyái lesznek.</p></div>
+    {% endif %}
+    <div class="fo-box"><div class="fo-kepresz fo-k4"><div class="fo-jelentes">
+      {% if es %}<b>Informe semanal · Lucía</b><div class="fo-perc">42 min</div><div class="fo-sor">Matemáticas · Inglés · Música</div>
+      {% else %}<b>Heti jelentés · Anna</b><div class="fo-perc">42 perc</div><div class="fo-sor">Matematika · Spanyol · Ének</div>{% endif %}</div></div>
+      {% if es %}<h3>Tú lo ves todo</h3><p>Cada semana recibes un correo: cuánto ha estudiado, qué ha ido bien y dónde se ha atascado.</p>
+      {% else %}<h3>Te mindent látsz</h3><p>Hetente e-mailt kapsz: mennyit tanult, mi ment jól, hol akadt el.</p>{% endif %}</div>
+  </div>
+</section>
+
+<section class="fo-biz">
+  <div class="fo-sz-fent"><svg viewBox="0 0 1440 90" preserveAspectRatio="none"><path fill="#E9DFCB" d="M0,0 L1440,0 L1440,51.7 L1437,51.7 L1427,55.4 L1418,55.9 L1405,56.6 L1394,57.1 L1385,57.5 L1380,58.0 L1366,58.6 L1351,59.3 L1338,59.8 L1338,47.5 L1332,60.0 L1322,56.3 L1314,51.4 L1300,47.1 L1293,41.4 L1280,47.1 L1275,47.2 L1260,50.6 L1251,46.8 L1237,42.1 L1228,45.2 L1219,49.5 L1208,55.6 L1193,60.1 L1181,62.4 L1176,62.5 L1162,62.5 L1164,69.8 L1162,55.3 L1157,59.2 L1144,62.6 L1134,61.1 L1129,56.8 L1129,45.5 L1115,52.8 L1115,46.0 L1104,48.5 L1099,54.1 L1099,43.9 L1085,57.8 L1078,56.5 L1071,55.8 L1057,58.1 L1059,65.2 L1048,61.9 L1035,57.1 L1029,57.0 L1023,60.6 L1011,56.3 L997,58.4 L989,62.9 L979,62.0 L970,61.1 L959,62.5 L961,70.3 L952,65.1 L945,59.7 L936,65.6 L926,66.0 L912,66.4 L900,66.9 L902,76.6 L900,58.2 L888,62.6 L888,55.4 L878,60.3 L866,61.4 L851,63.4 L843,63.3 L845,72.8 L834,62.2 L825,56.8 L827,66.5 L817,61.2 L806,59.6 L800,56.8 L800,48.7 L788,54.7 L782,58.9 L773,59.1 L760,60.4 L754,64.3 L742,63.5 L744,71.5 L727,60.0 L720,57.2 L711,61.0 L711,48.3 L704,58.4 L693,57.1 L693,49.4 L686,52.6 L681,52.6 L674,52.6 L666,56.0 L654,55.6 L642,56.4 L627,53.6 L622,51.6 L614,51.7 L601,51.7 L603,60.6 L595,50.6 L588,50.2 L588,44.3 L579,49.8 L574,52.4 L566,49.0 L561,52.3 L553,52.7 L544,56.5 L533,60.1 L519,60.9 L521,68.1 L513,54.7 L501,57.0 L491,57.1 L485,52.9 L471,50.9 L456,46.3 L444,47.0 L431,45.6 L426,44.4 L419,42.8 L419,32.9 L410,41.2 L397,41.9 L391,41.8 L379,40.4 L364,39.6 L354,41.8 L344,37.9 L333,32.8 L318,32.4 L320,42.4 L307,33.4 L295,37.7 L282,42.1 L270,36.6 L258,33.4 L253,38.2 L246,32.4 L235,29.8 L227,26.7 L213,31.3 L206,25.3 L198,24.0 L192,22.2 L178,18.6 L171,18.5 L163,18.4 L148,20.7 L136,23.1 L122,28.6 L115,33.6 L109,27.8 L111,38.3 L103,31.9 L92,31.7 L84,37.0 L76,32.3 L61,29.4 L54,26.9 L49,23.8 L51,29.8 L41,26.0 L33,27.6 L20,33.9 L7,30.8 L0,33.1 L0,25.0 Z"/><path fill="#FBF5EA" d="M0,0 L1440,0 L1440,50.1 L1431,50.1 L1423,55.2 L1415,49.6 L1404,45.8 L1394,45.3 L1385,44.8 L1372,46.7 L1359,50.4 L1346,45.6 L1333,46.2 L1322,43.0 L1313,41.9 L1300,37.9 L1294,31.8 L1294,25.2 L1286,34.9 L1279,29.7 L1265,23.9 L1265,17.7 L1251,22.4 L1242,21.5 L1242,11.3 L1234,23.6 L1228,25.4 L1222,22.2 L1222,15.3 L1216,22.3 L1209,25.3 L1202,29.3 L1193,25.5 L1182,23.0 L1168,25.9 L1158,20.7 L1158,13.0 L1146,18.8 L1140,23.5 L1129,26.1 L1116,23.8 L1107,21.8 L1100,21.4 L1100,16.3 L1090,21.3 L1090,12.1 L1079,15.9 L1071,18.7 L1071,8.7 L1058,22.3 L1060,32.8 L1058,12.5 L1044,25.6 L1037,27.8 L1027,30.0 L1019,27.2 L1021,33.6 L1019,20.0 L1013,29.8 L999,30.7 L1001,37.1 L992,34.4 L979,34.5 L969,33.1 L961,37.3 L946,36.7 L935,33.4 L935,22.9 L920,31.6 L914,26.5 L900,29.7 L893,34.0 L880,36.9 L880,27.8 L871,34.2 L871,23.4 L858,34.3 L850,30.5 L842,34.6 L828,40.2 L819,39.6 L806,35.8 L794,33.3 L794,27.2 L786,37.8 L772,33.5 L767,38.4 L753,33.3 L753,27.8 L745,37.4 L745,29.1 L736,36.9 L730,36.6 L723,36.2 L710,35.5 L697,30.6 L692,25.0 L694,31.5 L684,26.3 L674,23.7 L660,18.6 L649,18.4 L637,19.9 L637,7.1 L624,18.9 L613,22.1 L613,16.4 L600,20.1 L593,20.0 L593,8.0 L587,20.2 L587,15.2 L576,21.5 L578,32.2 L568,19.5 L568,11.6 L561,25.1 L561,14.5 L555,27.1 L546,24.7 L546,16.7 L533,26.1 L519,32.0 L506,30.2 L508,40.1 L500,25.0 L491,23.5 L478,24.6 L473,27.3 L463,30.4 L449,27.6 L442,26.6 L432,27.1 L421,26.6 L421,16.0 L409,32.9 L395,37.3 L386,35.6 L379,32.5 L370,28.2 L370,17.0 L360,28.5 L347,29.7 L340,30.3 L333,32.3 L335,38.4 L333,23.8 L319,36.8 L310,34.5 L300,34.0 L300,28.0 L288,34.4 L278,39.2 L266,45.5 L252,44.2 L252,37.8 L239,39.2 L229,39.4 L219,37.0 L206,37.4 L208,45.0 L192,39.6 L181,44.6 L173,42.0 L159,39.5 L146,40.5 L138,39.4 L123,41.2 L123,28.4 L111,41.0 L99,44.1 L85,46.6 L77,51.4 L67,48.6 L60,43.1 L51,39.8 L37,39.9 L25,40.0 L25,33.0 L14,44.9 L0,40.3 Z"/></svg></div>
+  <div class="fo-biz-belso">
+    <div>
+      <h2>{{ t('bem_biz_cim') }}</h2>
+      <p class="fo-al">{{ t('bem_biz_alcim') }}</p>
+      <div class="fo-pont"><div class="fo-ik"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6Z"/></svg></div><div><b>{{ t('bem_biz_1_cim') }}</b><span>{{ t('bem_biz_1') }}</span></div></div>
+      <div class="fo-pont"><div class="fo-ik"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><div><b>{{ t('bem_biz_2_cim') }}</b><span>{{ t('bem_biz_2') }}</span></div></div>
+      <div class="fo-pont"><div class="fo-ik"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div><div><b>{{ t('bem_biz_3_cim') }}</b><span>{{ t('bem_biz_3') }}</span></div></div>
+    </div>
+    <div class="fo-csevegés">
+      <div class="fo-bub fo-t"><small>{{ t('bem_cimke_tanar') }}</small>{{ t('bem_pelda_1') }}</div>
+      <div class="fo-bub fo-gy"><small>{{ t('bem_cimke_gyerek') }}</small>{{ t('bem_pelda_2') }}</div>
+      <div class="fo-bub fo-t"><small>{{ t('bem_cimke_tanar') }}</small>{{ t('bem_pelda_3') }}</div>
+    </div>
+  </div>
+  <div class="fo-sz-lent"><svg viewBox="0 0 1440 90" preserveAspectRatio="none"><path fill="#E9DFCB" d="M0,90 L0,49.7 L13,39.2 L13,47.2 L19,48.7 L29,45.7 L38,50.2 L45,49.7 L53,55.1 L62,54.5 L77,50.7 L88,50.2 L102,54.8 L117,55.4 L124,50.1 L135,55.7 L146,53.6 L153,57.9 L167,61.2 L182,59.5 L194,43.5 L194,54.1 L204,50.6 L204,59.1 L212,58.8 L224,58.4 L237,60.2 L243,64.4 L255,64.0 L268,67.8 L282,67.2 L296,66.3 L309,65.3 L315,64.9 L329,54.2 L329,63.5 L336,63.1 L349,54.4 L349,61.9 L354,61.4 L365,54.4 L382,64.4 L380,57.7 L390,53.1 L402,48.1 L411,36.3 L411,42.6 L427,57.0 L425,46.7 L431,49.7 L445,43.7 L452,47.0 L459,43.5 L467,45.6 L480,47.5 L494,48.6 L492,40.5 L506,42.5 L518,43.6 L523,32.1 L523,39.1 L532,42.3 L538,41.3 L547,36.9 L555,22.2 L555,33.1 L561,32.5 L568,32.4 L579,29.2 L592,32.8 L607,32.7 L620,36.7 L631,31.4 L638,35.7 L647,35.9 L656,30.5 L665,24.6 L674,22.3 L682,16.9 L690,24.1 L688,15.6 L697,20.2 L705,18.5 L717,18.4 L723,3.2 L723,16.0 L732,16.1 L743,25.3 L741,16.3 L754,12.5 L754,22.5 L762,28.4 L775,17.8 L775,28.0 L788,40.6 L786,30.5 L801,25.7 L806,10.1 L806,21.3 L817,19.0 L823,19.3 L837,19.8 L853,26.6 L851,20.4 L861,20.8 L869,25.2 L881,21.9 L894,24.8 L901,28.2 L913,24.9 L921,24.6 L928,24.2 L937,25.1 L952,23.6 L960,23.8 L971,32.6 L969,25.0 L980,18.5 L980,28.1 L986,25.4 L986,34.2 L1000,34.8 L1007,25.2 L1007,34.1 L1013,32.4 L1022,32.2 L1033,22.4 L1033,33.8 L1040,31.6 L1051,33.2 L1056,31.9 L1070,27.1 L1081,30.4 L1091,21.8 L1091,32.5 L1104,37.6 L1111,34.9 L1124,32.0 L1138,37.8 L1152,43.0 L1163,44.7 L1168,44.7 L1175,38.9 L1189,37.6 L1204,44.8 L1202,37.3 L1217,43.5 L1215,37.4 L1223,38.3 L1239,41.8 L1237,33.1 L1248,37.0 L1256,40.8 L1269,38.4 L1278,40.0 L1285,38.2 L1295,32.8 L1307,35.6 L1315,33.9 L1330,31.3 L1339,31.9 L1353,27.3 L1353,33.0 L1363,33.8 L1374,34.7 L1382,35.4 L1388,38.4 L1398,51.2 L1396,42.9 L1407,30.8 L1407,43.0 L1417,50.5 L1415,42.1 L1425,54.8 L1423,45.4 L1428,40.1 L1428,49.2 L1434,44.3 L1440,33.5 L1440,46.2 L1440,46.2 L1440,90 Z"/><path fill="#FBF5EA" d="M0,90 L0,65.0 L7,48.8 L7,60.9 L19,56.1 L28,58.7 L37,52.6 L45,54.1 L60,51.3 L70,48.3 L76,48.9 L82,52.4 L97,54.5 L111,43.4 L111,48.9 L121,41.1 L121,54.1 L128,50.9 L139,55.5 L151,60.3 L149,52.8 L155,55.9 L163,50.1 L170,37.4 L170,50.1 L181,52.4 L190,40.0 L190,47.2 L197,45.5 L208,47.0 L218,50.6 L226,46.9 L237,45.8 L251,46.2 L260,49.2 L272,51.9 L286,55.0 L293,51.6 L293,61.0 L304,52.1 L304,59.8 L314,59.3 L319,63.4 L336,68.5 L334,59.7 L349,57.2 L360,61.1 L367,57.3 L379,55.9 L389,60.2 L404,62.5 L415,68.1 L428,68.5 L442,74.1 L448,75.8 L455,79.8 L461,74.2 L475,80.3 L486,77.9 L495,80.6 L502,81.8 L516,78.0 L530,74.3 L538,69.4 L544,67.1 L558,72.9 L556,65.7 L571,70.9 L569,64.3 L576,61.5 L583,64.7 L590,69.2 L600,65.3 L609,70.2 L619,67.5 L630,61.7 L636,60.7 L642,59.1 L647,59.2 L653,56.7 L667,55.6 L679,54.6 L689,58.9 L703,57.6 L714,59.2 L721,56.7 L729,60.6 L734,65.1 L747,63.7 L752,64.2 L764,63.5 L770,60.2 L776,59.0 L791,55.1 L797,39.4 L797,50.5 L805,38.2 L805,48.9 L819,49.2 L832,46.1 L839,44.6 L847,43.0 L854,42.8 L862,48.3 L868,53.1 L875,49.7 L889,45.2 L904,45.2 L910,34.1 L910,42.6 L917,43.3 L923,37.1 L925,49.6 L923,42.8 L936,43.0 L944,43.3 L957,47.6 L965,51.2 L974,46.6 L983,47.2 L990,45.5 L1002,48.2 L1017,45.0 L1030,46.5 L1044,45.5 L1053,45.6 L1067,51.1 L1073,54.3 L1085,41.9 L1085,53.7 L1099,52.0 L1105,51.3 L1117,53.3 L1127,52.2 L1127,57.4 L1140,61.6 L1152,58.4 L1161,42.5 L1161,53.6 L1169,49.4 L1177,45.1 L1183,44.2 L1194,43.4 L1209,39.3 L1215,38.4 L1226,43.3 L1240,44.9 L1246,43.5 L1256,47.5 L1268,42.0 L1282,45.1 L1292,46.4 L1300,50.2 L1306,49.7 L1317,46.2 L1326,40.7 L1338,41.9 L1355,50.7 L1353,43.1 L1362,40.3 L1374,32.4 L1374,38.8 L1386,36.6 L1399,39.1 L1408,39.4 L1419,36.7 L1432,34.8 L1440,34.8 L1440,90 Z"/></svg></div>
+</section>
+
+<section class="fo-lepesek" id="hogyan">
+  <h2>{{ '¿Cómo funciona?' if es else 'Hogyan működik?' }}</h2>
+  <p class="fo-al">{{ 'Cuatro pasos y tu hijo ya está aprendiendo.' if es else 'Négy lépés, és a gyerek már tanul.' }}</p>
+  <div class="fo-osveny">
+    <svg class="fo-ut" viewBox="0 0 1100 60" preserveAspectRatio="none"><path d="M138,28 C220,4 290,52 412,28 S600,4 688,28 S880,52 962,28" fill="none" stroke="#F5A01E" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/></svg>
+    <div class="fo-allomas">
+      <div class="fo-jelvény">1</div>
+      <div class="fo-lap">
+        {% if es %}
+        <div class="fo-mini-urlap"><div class="fo-sor"><span>Nombre</span><b>Lucía</b></div><div class="fo-sor"><span>Curso</span><b>3.º</b></div><div class="fo-sor"><span>Voz del profesor</span><b>Elvira 🔊</b></div><div class="fo-mentes">Listo ✓</div></div>
+        {% else %}
+        <div class="fo-mini-urlap"><div class="fo-sor"><span>Név</span><b>Anna</b></div><div class="fo-sor"><span>Osztály</span><b>3.</b></div><div class="fo-sor"><span>Tanár hangja</span><b>Noémi 🔊</b></div><div class="fo-mentes">Kész ✓</div></div>
+        {% endif %}
+      </div>
+      <b>{{ t('bem_l1_cim') }}</b><span>{{ t('bem_l1') }}</span>
+    </div>
+    <div class="fo-allomas">
+      <div class="fo-jelvény">2</div>
+      {% if es %}
+      <div class="fo-lap"><div class="fo-targyak"><div class="fo-targy-cim">Asignatura</div>
+        <div class="fo-targy"><i class="fo-ti1">📖</i>Lengua Castellana</div>
+        <div class="fo-targy"><i class="fo-ti2">➕</i>Matemáticas</div></div></div>
+      {% else %}
+      <div class="fo-lap fo-kep"><img loading="lazy" src="{{ url_for('static', filename='bemutato/lepes2.png') }}" alt=""></div>
+      {% endif %}
+      <b>{{ t('bem_l2_cim') }}</b><span>{{ 'Los temas se abren en orden, como en el colegio.' if es else 'A témakörök sorban nyílnak, mint a suliban.' }}</span>
+    </div>
+    <div class="fo-allomas">
+      <div class="fo-jelvény">3</div>
+      {% if es %}
+      <div class="fo-lap"><div class="fo-minichat"><div class="fo-mc-cim">Las tablas de multiplicar</div>
+        ¡Muy bien! 👏 Multiplicar es sumar varias veces: 3 × 4 significa sumar el cuatro tres veces.<br>¿Cuánto es 3 × 5?</div></div>
+      {% else %}
+      <div class="fo-lap fo-kep"><img loading="lazy" src="{{ url_for('static', filename='bemutato/lepes3.png') }}" alt=""></div>
+      {% endif %}
+      <b>{{ t('bem_l3_cim') }}</b><span>{{ t('bem_l3') }}</span>
+    </div>
+    <div class="fo-allomas">
+      <div class="fo-jelvény">4</div>
+      {% if es %}
+      <div class="fo-lap"><div class="fo-ermek-nagy">🪙🪙🪙</div></div>
+      {% else %}
+      <div class="fo-lap fo-jutalom"><div class="fo-ermek"><i>🪙</i><i>🪙</i><i>🪙</i></div><img loading="lazy" src="{{ url_for('static', filename='bemutato/curie.jpg') }}" alt=""></div>
+      {% endif %}
+      <b>{{ t('bem_l4_cim') }}</b><span>{{ 'Por cada tema terminado gana monedas.' if es else 'Abból lesz kártya, háttér és avatar.' }}</span>
+    </div>
+  </div>
+</section>
+
+{% if not es %}
+<section class="fo-album">
+  <h2>{{ t('bem_album_cim') }}</h2><p class="fo-al">{{ t('bem_album_alcim') }}</p>
+  <div class="fo-album-sor">
+    <img class="fo-borito" loading="lazy" src="{{ url_for('static', filename='bemutato/album_borito.jpg') }}" alt="{{ t('bem_album_cim') }}">
+    <div class="fo-lapok">
+      {% for kep, nev in [('curie.jpg', 'Marie Curie'), ('newton.jpg', 'Isaac Newton'), ('galilei.jpg', 'Galileo Galilei'),
+                          ('mengyelejev.jpg', 'Mengyelejev'), ('euklidesz.jpg', 'Eukleidész'), ('darwin.jpg', 'Charles Darwin')] %}
+      <img loading="lazy" src="{{ url_for('static', filename='bemutato/' ~ kep) }}" alt="{{ nev }}">
       {% endfor %}
     </div>
-  </div>
-  <img class="bem-diak" src="{{ url_for('static', filename='img/diak.png') }}"
-       alt="{{ 'Chico con cuadernos' if lang == 'es' else 'Kisfiú füzetekkel' }}">
-</section>
-
-<section class="bem-szakasz">
-  <div class="bem-fejlec"><h2>{{ t('bem_mi_cim') }}</h2></div>
-  <div class="bem-racs3">
-    <div class="bem-kartya">
-      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 1-2-2Z"/><path d="M8 7h7M8 11h7"/></svg></div>
-      <h3>{{ t('bem_mi_1_cim') }}</h3>
-      <p>{{ t('bem_mi_1') }}</p>
-    </div>
-    <div class="bem-kartya">
-      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg></div>
-      <h3>{{ t('bem_mi_2_cim') }}</h3>
-      <p>{{ t('bem_mi_2') }}</p>
-    </div>
-    <div class="bem-kartya">
-      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/><circle cx="12" cy="12" r="4"/></svg></div>
-      <h3>{{ t('bem_mi_3_cim') }}</h3>
-      <p>{{ t('bem_mi_3') }}</p>
-    </div>
-  </div>
-</section>
-
-{# A legerősebb érv, ezért ez a legfeltűnőbb blokk. #}
-<section class="bem-szakasz bem-biztonsag">
-  <div class="bem-fejlec">
-    <h2>{{ t('bem_biz_cim') }}</h2>
-    <p>{{ t('bem_biz_alcim') }}</p>
-  </div>
-  <div class="bem-racs3">
-    <div class="bem-kartya">
-      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6Z"/></svg></div>
-      <h3>{{ t('bem_biz_1_cim') }}</h3>
-      <p>{{ t('bem_biz_1') }}</p>
-    </div>
-    <div class="bem-kartya">
-      <div class="bem-ikon"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
-      <h3>{{ t('bem_biz_2_cim') }}</h3>
-      <p>{{ t('bem_biz_2') }}</p>
-    </div>
-    <div class="bem-kartya">
-      <div class="bem-ikon"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div>
-      <h3>{{ t('bem_biz_3_cim') }}</h3>
-      <p>{{ t('bem_biz_3') }}</p>
-    </div>
-  </div>
-
-  {# Nem állít, hanem MEGMUTAT. Ez többet ér, mint a fölötte lévő három kártya. #}
-  <div class="bem-beszelgetes">
-    <div class="bem-bub bem-bub-t"><span class="bem-ki">{{ t('bem_cimke_tanar') }}</span>{{ t('bem_pelda_1') }}</div>
-    <div class="bem-bub bem-bub-gy"><span class="bem-ki">{{ t('bem_cimke_gyerek') }}</span>{{ t('bem_pelda_2') }}</div>
-    <div class="bem-bub bem-bub-t"><span class="bem-ki">{{ t('bem_cimke_tanar') }}</span>{{ t('bem_pelda_3') }}</div>
-  </div>
-</section>
-
-<section class="bem-szakasz">
-  <div class="bem-fejlec"><h2>{{ t('bem_hogyan_cim') }}</h2></div>
-  <div class="bem-lepesek">
-    <div class="bem-lepes"><h3>{{ t('bem_l1_cim') }}</h3><p>{{ t('bem_l1') }}</p></div>
-    <div class="bem-lepes"><h3>{{ t('bem_l2_cim') }}</h3><p>{{ t('bem_l2') }}</p></div>
-    <div class="bem-lepes"><h3>{{ t('bem_l3_cim') }}</h3><p>{{ t('bem_l3') }}</p></div>
-    <div class="bem-lepes"><h3>{{ t('bem_l4_cim') }}</h3><p>{{ t('bem_l4') }}</p></div>
-  </div>
-</section>
-
-{# Az album CSAK a magyar oldalon jelenik meg: spanyol kártya még nincs.
-   A borító az album SAJÁT fedlapja (album.html), változtatás nélkül. #}
-{% if lang == 'hu' %}
-<section class="bem-szakasz bem-album-sav">
-  <div class="bem-fejlec">
-    <h2>{{ t('bem_album_cim') }}</h2>
-    <p>{{ t('bem_album_alcim') }}</p>
-  </div>
-
-  <img class="bem-borito" loading="lazy" alt="{{ t('bem_album_cim') }}"
-       src="{{ url_for('static', filename='bemutato/album_borito.jpg') }}">
-
-  {# ...és alatta a lapok, amiket a gyerek gyűjt. #}
-  <h3 class="bem-lapok-cim">{{ t('bem_lapok_cim') }}</h3>
-  <div class="bem-album">
-    {% for kep, nev in [('curie.jpg', 'Marie Curie'),
-                        ('mengyelejev.jpg', 'Mengyelejev'),
-                        ('newton.jpg', 'Isaac Newton'),
-                        ('galilei.jpg', 'Galileo Galilei'),
-                        ('euklidesz.jpg', 'Eukleidész'),
-                        ('darwin.jpg', 'Charles Darwin')] %}
-      <img class="bem-lap" loading="lazy" alt="{{ nev }}"
-           src="{{ url_for('static', filename='bemutato/' ~ kep) }}">
-    {% endfor %}
   </div>
 </section>
 {% endif %}
 
-<section class="bem-zaro">
+<section class="fo-osztaly">
+  <h2>{{ t('bem_osztaly_kerdes') }}</h2>
+  <div class="fo-pillek">
+    {% for evf in range(1, 9) %}
+    <a class="fo-pill" href="{{ cel }}">{{ evf }}{{ '.º' if es else '.' }} <small>{{ t('bem_osztaly') }}</small></a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="fo-zaro">
+  <div class="fo-szel-fent"><svg viewBox="0 0 1440 90" preserveAspectRatio="none"><path fill="#E9DFCB" d="M0,0 L1440,0 L1440,40.5 L1430,40.5 L1421,43.5 L1408,42.4 L1398,44.3 L1388,38.9 L1382,39.5 L1369,34.9 L1358,28.4 L1346,27.6 L1348,33.9 L1341,32.0 L1335,36.4 L1329,31.5 L1320,28.9 L1312,25.3 L1303,25.9 L1290,23.8 L1283,23.3 L1277,24.1 L1277,13.5 L1269,27.3 L1257,31.0 L1246,24.6 L1238,23.9 L1240,33.5 L1232,28.4 L1227,25.9 L1216,25.3 L1203,21.3 L1196,21.8 L1186,20.4 L1188,28.2 L1177,21.0 L1163,25.4 L1152,20.7 L1144,22.2 L1135,20.3 L1135,14.1 L1128,26.2 L1121,30.2 L1115,30.0 L1106,27.6 L1093,23.6 L1078,22.0 L1078,11.5 L1070,18.9 L1072,27.2 L1070,8.8 L1055,25.0 L1045,21.1 L1032,20.3 L1032,8.0 L1026,20.7 L1013,21.4 L1013,10.5 L1002,22.7 L1002,15.7 L993,28.7 L986,33.6 L972,32.0 L967,33.5 L957,29.0 L950,35.2 L938,35.8 L932,30.7 L920,30.1 L922,40.8 L908,30.0 L894,33.3 L884,30.8 L874,34.1 L867,32.1 L856,33.0 L841,37.5 L831,40.5 L819,45.8 L804,46.4 L797,47.6 L784,50.3 L770,56.8 L765,57.8 L756,59.6 L747,58.7 L734,54.6 L723,50.8 L708,56.2 L699,61.9 L693,60.5 L684,62.3 L673,62.5 L666,58.5 L668,65.4 L653,58.3 L639,62.5 L633,60.4 L623,63.1 L617,63.0 L603,60.1 L592,63.1 L585,63.0 L576,63.0 L576,55.6 L563,59.3 L565,70.1 L554,53.5 L547,59.1 L549,67.8 L536,56.8 L523,53.3 L510,56.9 L498,62.2 L484,61.3 L473,56.0 L461,56.3 L449,53.6 L437,56.8 L437,44.7 L430,61.7 L415,56.9 L415,45.9 L407,57.4 L399,57.5 L401,64.4 L399,44.5 L389,57.7 L383,62.0 L376,61.1 L363,56.8 L363,46.8 L353,52.1 L353,42.8 L344,47.7 L333,43.4 L318,49.7 L318,39.0 L307,47.7 L299,44.1 L289,46.3 L281,44.8 L281,38.7 L269,47.0 L263,48.5 L263,43.0 L258,46.6 L260,53.1 L250,50.7 L244,53.5 L236,55.7 L230,51.8 L215,50.5 L204,52.2 L196,55.6 L188,61.2 L177,67.3 L163,71.1 L155,71.5 L143,67.7 L137,67.1 L126,67.6 L112,68.6 L99,64.8 L90,62.4 L77,63.1 L67,65.9 L67,54.1 L54,71.6 L48,75.1 L48,63.5 L36,70.8 L26,67.0 L14,68.7 L5,66.0 L0,71.7 L0,60.4 Z"/><path fill="#FBF5EA" d="M0,0 L1440,0 L1440,18.4 L1437,18.4 L1429,16.4 L1420,11.9 L1409,12.2 L1399,12.5 L1393,12.6 L1384,13.0 L1386,20.5 L1376,13.4 L1376,3.4 L1364,16.1 L1354,21.1 L1346,15.8 L1346,10.7 L1333,15.9 L1323,18.9 L1315,21.2 L1306,18.0 L1301,20.8 L1288,21.5 L1282,24.8 L1271,30.5 L1257,27.7 L1243,24.1 L1233,27.8 L1226,29.8 L1220,35.5 L1210,35.3 L1212,41.3 L1210,25.7 L1196,41.4 L1186,42.1 L1188,50.5 L1186,29.5 L1173,44.4 L1159,50.9 L1145,54.4 L1137,55.2 L1129,55.9 L1118,56.8 L1113,57.3 L1108,57.7 L1110,63.7 L1094,58.0 L1096,67.4 L1083,59.5 L1078,59.9 L1063,57.9 L1054,57.8 L1045,57.0 L1036,61.4 L1027,62.4 L1027,50.4 L1020,61.0 L1009,56.4 L998,57.4 L992,62.5 L992,54.3 L984,59.5 L977,60.8 L969,61.3 L969,52.9 L954,61.0 L954,55.7 L942,63.2 L933,63.1 L935,69.2 L933,58.0 L921,62.0 L914,62.7 L903,58.4 L894,58.3 L883,61.7 L883,49.8 L869,61.2 L860,58.6 L851,55.4 L842,54.3 L836,59.1 L831,59.6 L822,59.3 L824,69.3 L808,58.7 L802,56.0 L802,46.3 L791,50.4 L777,44.0 L769,39.5 L756,36.7 L748,40.3 L738,36.2 L729,36.1 L722,35.7 L722,29.3 L712,36.3 L699,35.3 L693,35.3 L682,40.4 L677,35.0 L666,35.0 L652,34.9 L641,37.3 L635,39.7 L622,40.0 L617,35.1 L612,35.2 L602,35.9 L592,35.4 L586,35.5 L573,35.7 L564,39.3 L556,41.9 L550,44.9 L542,46.6 L535,44.0 L526,46.9 L512,49.3 L512,37.5 L499,44.7 L491,49.4 L480,50.9 L468,51.5 L459,51.9 L446,52.5 L441,52.2 L434,47.0 L434,37.2 L426,48.0 L418,42.2 L408,43.8 L394,47.5 L387,51.9 L381,47.6 L371,44.1 L360,42.7 L350,41.2 L336,45.2 L328,43.0 L328,31.9 L320,42.9 L312,45.3 L306,42.3 L291,39.9 L286,45.0 L275,41.0 L264,36.8 L259,30.9 L253,28.3 L241,27.1 L243,36.0 L234,26.5 L226,28.2 L214,30.5 L201,34.7 L189,31.3 L174,29.2 L160,26.1 L150,21.1 L140,20.4 L130,24.4 L119,21.7 L105,21.1 L96,14.7 L84,14.4 L74,11.9 L62,11.1 L62,2.9 L47,10.4 L36,13.9 L30,10.9 L20,14.8 L20,3.3 L12,16.6 L0,14.9 Z"/></svg></div>
+  <img class="fo-bal" loading="lazy" src="{{ url_for('static', filename='bemutato/fiu_integet.png') }}" alt=""><img class="fo-jobb" loading="lazy" src="{{ url_for('static', filename='bemutato/lany_integet.png') }}" alt="">
   <h2>{{ t('bem_zaro_cim') }}</h2>
   <p>{{ t('bem_zaro_alcim') }}</p>
-  <a class="bem-gomb bem-gomb-vilagos"
-     href="{{ url_for('dashboard') if session.get('parent_id') else url_for('register') }}">{{ t('bem_zaro_cta') }}</a>
+  <a class="fo-gomb" href="{{ cel }}">{{ t('bem_zaro_cta') }} <span class="fo-nyil">→</span></a>
 </section>
+
+</div>
 {% endblock %}
