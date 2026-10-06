@@ -158,6 +158,28 @@
     .cim-asztal { display: none; }
     .cim-mobil  { display: inline; }
   }
+
+  /* ══ TELEFON ÉS TABLET (900 ALATT) ═══════════════════════════════════
+     A fenti .bem-hero szabály HÁROM oszlopot kér, az elsőt max-content
+     szélességűre: vagyis a szövegoszlop olyan széles, mint a leghosszabb
+     sora. Asztali gépen ez a szándék. Telefonon 969 képpont lett belőle
+     egy 390 képpontos képernyőn: az alcím le volt vágva a jobb szélen, az
+     osztályválasztó kártya és a kisfiú pedig teljesen kiesett a képből.
+     A style.css-ben VAN erre telefonos szabály, csak ez az oldalon belüli
+     stílus később áll a lapon, ezért felülütötte azt is.
+     900 fölött egyetlen képpont sem változik. */
+  @media (max-width: 900px) {
+    .bem-hero {
+      grid-template-columns: 1fr;
+      justify-items: start;
+      column-gap: 0;
+      row-gap: 22px;
+    }
+    .bem-hero-szoveg { max-width: 100%; padding-right: 0; }
+    .bem-hero-szoveg h1 { max-width: 100%; }
+    .bem-alcim { max-width: 100%; }
+    .bem-valaszto { width: 100%; max-width: 340px; }
+  }
 </style>
 <section class="bem-hero">
   <div class="bem-hero-szoveg">

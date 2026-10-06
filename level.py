@@ -101,6 +101,18 @@ _KERET = """<!doctype html><html><body style="margin:0;padding:0;background:#f6f
 </div></body></html>"""
 
 
+
+def _perc(p) -> str:
+    """Perc a jelentésbe. A fél percből eddig „0p" lett – az úgy néz ki,
+    mintha a gyerek nem csinált volna semmit, pedig tanult."""
+    try:
+        ertek = float(p or 0)
+    except Exception:
+        return "0p"
+    if ertek > 0 and ertek < 1:
+        return "<1p"
+    return "%dp" % int(ertek)
+
 def _gyerek_blokk(gy: dict, sz: dict) -> str:
     if gy["perc"] <= 0:
         belso = (f'<p style="margin:0;color:#6b7280">{escape(sz["nem_tanult"])}</p>')
@@ -114,7 +126,7 @@ def _gyerek_blokk(gy: dict, sz: dict) -> str:
         ]
         if gy["tantargyak"]:
             lista = " · ".join(
-                f'{escape(str(n))} <b>{int(p)}p</b>' for n, p in gy["tantargyak"][:5])
+                f'{escape(str(n))} <b>{_perc(p)}</b>' for n, p in gy["tantargyak"][:5])
             sorok.append(f'<p style="margin:0 0 10px;color:#4b5563">'
                          f'<b>{escape(sz["tantargyak"])}:</b> {lista}</p>')
         if gy["teljesitett"]:
@@ -181,7 +193,7 @@ def keszit(jelentes: dict, *, nyelv: str = "hu",
                          f'{sz["napon"].format(napok=g["napok"])}')
             if g["tantargyak"]:
                 sorok.append("  " + sz["tantargyak"] + ": " + ", ".join(
-                    f'{n} {int(p)}p' for n, p in g["tantargyak"][:5]))
+                    f'{n} {_perc(p)}' for n, p in g["tantargyak"][:5]))
             if g["teljesitett"]:
                 sorok.append("  " + sz["teljesitett"] + ": " + ", ".join(
                     f'{x["nev"]} ({x["pont"]}%)' for x in g["teljesitett"]))

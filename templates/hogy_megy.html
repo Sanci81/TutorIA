@@ -77,7 +77,7 @@
       <p class="hm-sor">
         <b>{{ t('hogymegy_mivel') }}:</b>
         {% for nev, perc in gy.tantargyak[:5] %}
-          {{ nev }} <b>{{ perc|round|int }}p</b>{% if not loop.last %} · {% endif %}
+          {{ nev }} <b>{% if perc > 0 and perc < 1 %}&lt;1p{% else %}{{ perc|round|int }}p{% endif %}</b>{% if not loop.last %} · {% endif %}
         {% endfor %}
       </p>
       {% endif %}

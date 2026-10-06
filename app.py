@@ -1864,6 +1864,33 @@ def fiok():
     )
 
 
+# ══ A JELENTÉSBEN EMBERI TANTÁRGYNÉV ÁLLJON ═══════════════════════════
+# A tanulási sorokban a tanterv FÁJLNEVE szerepel ("Matematika_1_4.json").
+# Az admin oldalon ezt már emberi névre fordítottuk, a SZÜLŐI JELENTÉSBEN
+# viszont nem: a heti levélben és a „Hogy megy?" lapon ott állt nyersen,
+# hogy „Matematika_1_4.json". A szülő ebből nem ért semmit, és az egész
+# levél gépiesnek látszik tőle.
+#
+# Ugyanaz a két adatforrás (levél és lap) ugyanazt a függvényt hívja, ezért
+# itt, a hívás után javítjuk — egy helyen, mindkettőnek.
+def _jelentes_nevek(jelentes: dict) -> dict:
+    """A jelentésben a fájlneveket olvasható tantárgynévre cseréli."""
+    try:
+        for gy in (jelentes or {}).get("gyerekek") or []:
+            uj = []
+            for nev, perc in gy.get("tantargyak") or []:
+                try:
+                    olvashato = _display_subject_name(str(nev or ""))
+                except Exception:
+                    olvashato = str(nev or "")
+                olvashato = olvashato.replace(".json", "").replace("_", " ").strip()
+                uj.append((olvashato or "\u2014", perc))
+            gy["tantargyak"] = uj
+    except Exception as _exc:
+        logger.warning("JELENTES: a tantargynevek nem lettek lecserelve: %s", _exc)
+    return jelentes
+
+
 @app.route("/hogy-megy")
 @pin_required
 def hogy_megy():
@@ -1879,9 +1906,9 @@ def hogy_megy():
     if idoszak not in _valaszthato:
         idoszak = "het"
 
-    jelentes = database.szuloi_jelentes(
+    jelentes = _jelentes_nevek(database.szuloi_jelentes(
         session["parent_id"], napok=_valaszthato[idoszak]
-    )
+    ))
     return render_template(
         "hogy_megy.html",
         jelentes=jelentes,
@@ -2356,7 +2383,8 @@ def feladat_ertesites():
     kimenet = []
     for szulo in _szulok:
         napok = {"napi": 1, "heti": 7, "havi": 30}.get(szulo["mod"], 7)
-        jelentes = database.szuloi_jelentes(szulo["id"], napok=napok)
+        jelentes = _jelentes_nevek(
+            database.szuloi_jelentes(szulo["id"], napok=napok))
         # Napi módban üres napról NE küldjünk – abból lesz a spam-jelölés.
         if szulo["mod"] == "napi" and not jelentes["van_tanulas"]:
             szam["kihagyva"] += 1
