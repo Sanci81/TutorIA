@@ -11,10 +11,9 @@
    A felső menüsáv (base.html) UGYANAZ, mint minden oldalon; csak a színe
    más ITT, a body:has(.fo) szabállyal – máshol fehér marad.
 
-   Spanyol oldalon: a program képernyőképei magyar feliratúak, ezért ott a
-   telefonok helyett a felsorolás látszik, a 2–3. lépés képe helyett pedig
-   ugyanaz HTML-ben, spanyolul. Kártya és album CSAK a magyar oldalon van,
-   ahogy eddig is (spanyol kártya még nincs). #}
+   Spanyol oldalon: a telefonok, a kártyák és az album UGYANAZOK, mint a
+   magyaron (amíg nincs spanyol képernyőkép és kártya). A 2–3. lépés képe
+   helyett ugyanaz HTML-ben, spanyolul. Spanyol osztályok: 1–6. #}
 
 {% block content %}
 {% set es = (lang == 'es') %}
@@ -270,9 +269,6 @@
 .fo{font-family:Nunito,system-ui,sans-serif;color:var(--szoveg);background:var(--bezs);line-height:normal}
 .fo a:hover{text-decoration:none}
 .fo img{max-width:none}
-/* spanyol oldal: nincs kártyás doboz, a képernyőképek helyett felsorolás */
-.fo-es .fo-racs{grid-template-columns:repeat(3,1fr);max-width:900px}
-.fo-es .fo-tel-lista{display:block;color:#fff}
 .fo .fo-targyak{width:84%;text-align:left}
 .fo .fo-targy-cim{font-weight:800;font-size:14px;margin-bottom:8px;color:var(--szoveg)}
 .fo .fo-targy{display:flex;align-items:center;gap:10px;border:1.5px solid #e6e6e6;border-radius:12px;padding:8px 10px;
@@ -281,8 +277,6 @@
 .fo .fo-ti1{background:#FDE3E3}.fo .fo-ti2{background:#E2EEFB}
 .fo .fo-minichat{width:86%;text-align:left;font-size:13.5px;line-height:1.45;color:#1f2937}
 .fo .fo-mc-cim{color:#6D3FC0;font-weight:800;font-size:13.5px;margin-bottom:6px}
-.fo .fo-ermek-nagy{font-size:46px;letter-spacing:4px}
-@media (max-width:760px){.fo-es .fo-racs{grid-template-columns:1fr}}
 
 /* ── A FELSŐ MENÜSÁV CSAK EZEN AZ OLDALON ZÖLD (mint a terven). ── */
 body:has(.fo) .content{max-width:none;padding:0}
@@ -304,7 +298,7 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
 <section class="fo-hero">
   <div class="fo-hero-belso">
     <div>
-      <span class="fo-cimke">{{ 'Según el currículo escolar (LOMLOE) · de 1.º a 8.º' if es else 'Magyar és spanyol tanterv szerint · 1–8. osztály' }}</span>
+      <span class="fo-cimke">{{ 'Según el currículo escolar (LOMLOE) · de 1.º a 6.º de Primaria' if es else 'Magyar és spanyol tanterv szerint · 1–8. osztály' }}</span>
       <h1>{{ t('bem_cim_1') }} <em>{{ t('bem_cim_kiemelt') }}</em> {{ t('bem_cim_2') }}</h1>
       <p class="fo-alcim">{{ 'Avanza paso a paso con el temario escolar. Si la respuesta no es correcta, no sigue adelante: lo explica de otra manera.' if es else 'Lépésről lépésre halad az iskolai anyaggal. Ha a válasz nem jó, nem megy tovább — elmagyarázza másképp.' }}</p>
       <div class="fo-gombok">
@@ -334,13 +328,13 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
   <div class="fo-sav-belso">
     <h2>{{ '¿Qué es TutorIA?' if es else 'Mi a TutorIA?' }}</h2>
     <p class="fo-al">{{ 'Un profesor paciente en el móvil, la tableta o el ordenador. Enseña lo mismo que en el colegio: pregunta, espera la respuesta y se queda en cada paso hasta que tu hijo lo entiende.' if es else 'Egy türelmes tanár a telefonon, a tableten vagy a gépen. Ugyanazt tanítja, amit a suliban vesznek — kérdez, megvárja a választ, és addig marad egy lépésnél, amíg a gyerek meg nem érti.' }}</p>
-    {% if not es %}
+    {# A képernyőképek magyar feliratúak; amíg nincs spanyol, a spanyol
+       oldalon is ezek látszanak (Sándor kérése, 2026-10-06). #}
     <div class="fo-telefonok">
-      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_matek.jpg') }}" alt="Matekóra a programban"></div><b>Lépésenként tanít</b><span>Egy gondolat, egy kérdés.</span></div>
-      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_nyelv.jpg') }}" alt="Nyelvóra a programban"></div><b>Nyelvet is</b><span>Saját szójegyzéke van minden órának.</span></div>
-      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_hang.jpg') }}" alt="Beszélgetés hanggal"></div><b>Beszélni is lehet vele</b><span>Gépelés helyett mondja a választ.</span></div>
+      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_matek.jpg') }}" alt="{{ 'Clase de matemáticas' if es else 'Matekóra a programban' }}"></div>{% if es %}<b>Enseña paso a paso</b><span>Una idea, una pregunta.</span>{% else %}<b>Lépésenként tanít</b><span>Egy gondolat, egy kérdés.</span>{% endif %}</div>
+      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_nyelv.jpg') }}" alt="{{ 'Clase de idiomas' if es else 'Nyelvóra a programban' }}"></div>{% if es %}<b>También idiomas</b><span>Cada clase tiene su propio vocabulario.</span>{% else %}<b>Nyelvet is</b><span>Saját szójegyzéke van minden órának.</span>{% endif %}</div>
+      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_hang.jpg') }}" alt="{{ 'Hablando con el profesor' if es else 'Beszélgetés hanggal' }}"></div>{% if es %}<b>También se le puede hablar</b><span>Dice la respuesta en vez de escribirla.</span>{% else %}<b>Beszélni is lehet vele</b><span>Gépelés helyett mondja a választ.</span>{% endif %}</div>
     </div>
-    {% endif %}
     <ul class="fo-tel-lista">
       {% if es %}
       <li><b>Enseña paso a paso</b> – una idea, una pregunta.</li>
@@ -373,10 +367,9 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
     <div class="fo-box"><div class="fo-kepresz fo-k2"><img loading="lazy" src="{{ url_for('static', filename='bemutato/lany_integet.png') }}" alt=""></div>
       {% if es %}<h3>Paciente como un buen maestro</h3><p>No tiene prisa ni regaña. Si no le sale, se lo explica de otra forma.</p>
       {% else %}<h3>Türelmes, mint egy jó tanító</h3><p>Nem siet, nem szid. Ha nem megy, máshonnan magyarázza el.</p>{% endif %}</div>
-    {% if not es %}
     <div class="fo-box"><div class="fo-kepresz fo-k3"><div class="fo-legyezo"><img loading="lazy" src="{{ url_for('static', filename='bemutato/curie.jpg') }}" alt=""><img loading="lazy" src="{{ url_for('static', filename='bemutato/newton.jpg') }}" alt=""><img loading="lazy" src="{{ url_for('static', filename='bemutato/darwin.jpg') }}" alt=""></div></div>
-      <h3>Kártyákat gyűjt érte</h3><p>Minden kész témakörért érme jár, abból híres tudósok kártyái lesznek.</p></div>
-    {% endif %}
+      {% if es %}<h3>Colecciona cromos</h3><p>Cada tema terminado da monedas, y con ellas consigue cromos de científicos famosos.</p>
+      {% else %}<h3>Kártyákat gyűjt érte</h3><p>Minden kész témakörért érme jár, abból híres tudósok kártyái lesznek.</p>{% endif %}</div>
     <div class="fo-box"><div class="fo-kepresz fo-k4"><div class="fo-jelentes">
       {% if es %}<b>Informe semanal · Lucía</b><div class="fo-perc">42 min</div><div class="fo-sor">Matemáticas · Inglés · Música</div>
       {% else %}<b>Heti jelentés · Anna</b><div class="fo-perc">42 perc</div><div class="fo-sor">Matematika · Spanyol · Ének</div>{% endif %}</div></div>
@@ -443,17 +436,14 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
     </div>
     <div class="fo-allomas">
       <div class="fo-jelvény">4</div>
-      {% if es %}
-      <div class="fo-lap"><div class="fo-ermek-nagy">🪙🪙🪙</div></div>
-      {% else %}
       <div class="fo-lap fo-jutalom"><div class="fo-ermek"><i>🪙</i><i>🪙</i><i>🪙</i></div><img loading="lazy" src="{{ url_for('static', filename='bemutato/curie.jpg') }}" alt=""></div>
-      {% endif %}
-      <b>{{ t('bem_l4_cim') }}</b><span>{{ 'Por cada tema terminado gana monedas.' if es else 'Abból lesz kártya, háttér és avatar.' }}</span>
+      <b>{{ t('bem_l4_cim') }}</b><span>{{ 'Con ellas consigue cromos, fondos y avatares.' if es else 'Abból lesz kártya, háttér és avatar.' }}</span>
     </div>
   </div>
 </section>
 
-{% if not es %}
+{# Az album a spanyol oldalon is látszik – amíg nincs spanyol kártya,
+   ugyanazokkal a lapokkal, mint a magyar oldalon. #}
 <section class="fo-album">
   <h2>{{ t('bem_album_cim') }}</h2><p class="fo-al">{{ t('bem_album_alcim') }}</p>
   <div class="fo-album-sor">
@@ -466,12 +456,12 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
     </div>
   </div>
 </section>
-{% endif %}
 
 <section class="fo-osztaly">
   <h2>{{ t('bem_osztaly_kerdes') }}</h2>
   <div class="fo-pillek">
-    {% for evf in range(1, 9) %}
+    {# Spanyol tanterv: 1–6. (Primaria) #}
+    {% for evf in range(1, 7 if es else 9) %}
     <a class="fo-pill" href="{{ cel }}">{{ evf }}{{ '.º' if es else '.' }} <small>{{ t('bem_osztaly') }}</small></a>
     {% endfor %}
   </div>
