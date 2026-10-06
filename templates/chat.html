@@ -4637,7 +4637,10 @@
    7) A telefonos szkript ÁTHELYEZI a figurát a magyarázat dobozába, és
       visszateszi, ha nagyobb lesz az ablak. A beállításaink az elemen
       vannak, tehát követik – de nagy képernyőre visszatérve letöröljük
-      őket, hogy ott a régi, megszokott helyén legyen. #}
+      őket, hogy ott a régi, megszokott helyén legyen.
+   8) Ha a figura FÖLÖTT van valami (felhúzott beszélgetés, alsó
+      gombsor), az ujj ahhoz tartozik, nem a figurához – ezt a böngésző
+      saját rétegsorrendjéből döntjük el (elementFromPoint). #}
 <style>
   /* A fogás alatt kicsit kiemelkedik, hogy LÁTSZÓDJON: ez mozog. */
   .chat-kabala-oszlop.huzas{filter:drop-shadow(0 8px 14px rgba(20,60,40,.30))}
@@ -4723,6 +4726,22 @@
             if (!mozgathatoE() || ev.touches.length !== 1) { return; }
             var t = ev.touches[0];
             if (!rajtaVanE(t.clientX, t.clientY)) { return; }
+            /* VALÓBAN A FIGURÁT ÉRTE AZ UJJ, vagy valami FÖLÖTTE lévőt?
+               A figura alatt is lehet fedőréteg: a felhúzott Beszélgetés-
+               lap, az alsó gombsor (mikrofon, Beszélgetés), a leckelista.
+               Ha csak a helyét néznénk, akkor a lap görgetése vagy a gomb
+               megnyomása helyett a láthatatlan figurát húznánk – épp a
+               beszélgetés visszanézését rontanánk el vele.
+               A böngészőt kérdezzük meg: egy pillanatra „tapinthatóvá"
+               tesszük a figurát, és megnézzük, mi van legfelül az ujj
+               alatt. Ha nem a figura, akkor nem a mi dolgunk. */
+            var legfelul = null;
+            try {
+                oszlop.style.pointerEvents = 'auto';
+                legfelul = document.elementFromPoint(t.clientX, t.clientY);
+            } catch (e) { legfelul = null; }
+            oszlop.style.pointerEvents = '';
+            if (!legfelul || !oszlop.contains(legfelul)) { return; }
             fog = true;
             indulX = t.clientX; indulY = t.clientY;
             var r = oszlop.getBoundingClientRect();
@@ -4774,6 +4793,13 @@
         document.addEventListener('dblclick', function (ev) {
             if (!mozgathatoE() || oszlop.style.position !== 'fixed') { return; }
             if (!rajtaVanE(ev.clientX, ev.clientY)) { return; }
+            var fent = null;
+            try {
+                oszlop.style.pointerEvents = 'auto';
+                fent = document.elementFromPoint(ev.clientX, ev.clientY);
+            } catch (e) { fent = null; }
+            oszlop.style.pointerEvents = '';
+            if (!fent || !oszlop.contains(fent)) { return; }
             ev.preventDefault();
             levesz();
             try { localStorage.removeItem(TAROLO); } catch (e) {}

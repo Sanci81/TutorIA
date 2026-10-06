@@ -180,6 +180,19 @@
     .bem-alcim { max-width: 100%; }
     .bem-valaszto { width: 100%; max-width: 340px; }
   }
+
+  /* ══ CSAK TELEFON (760 ALATT): AZ ALCÍM FOLYAMATOSAN FUSSON ══════════
+     Asztali gépen a két mondat külön sorban áll – ott ez a szándék.
+     Telefonon viszont a kényszerített sortörés után egyetlen szó maradt
+     egy sorban („anyaggal."), ami csonkának látszik. Itt a szöveg
+     magától tördel, mint egy rendes bekezdés.
+     A sortörés körül mindkét oldalon ott a szóköz (lásd lent a
+     replace-t), ezért elrejtve sem tapad össze a két mondat
+     („anyaggal.Ha" – ez volt a régi próbaoldal hibája).
+     760 a határ, mint a program többi részén: a tablet ebből kimarad. */
+  @media (max-width: 759px) {
+    .bem-alcim br { display: none; }
+  }
 </style>
 <section class="bem-hero">
   <div class="bem-hero-szoveg">
