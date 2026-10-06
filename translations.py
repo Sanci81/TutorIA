@@ -963,8 +963,10 @@ TRANSLATIONS = {
     "bem_album_alcim": {"hu": "Ezért ül le holnap is.", "es": "Por esto se sienta también mañana."},
 
     "bem_lapok_cim": {"hu": "Néhány lap az albumból", "es": "Algunos cromos del álbum"},
-    "bem_zaro_cim": {"hu": "Ülj le vele egy órára.", "es": "Siéntate con él una clase."},
-    "bem_zaro_alcim": {"hu": "Utána mondd meg, mit gondolsz.", "es": "Después dime qué te parece."},
+    "bem_zaro_cim": {"hu": "Ülj le vele egy órára!", "es": "¡Siéntate con él una clase!"},
+    # 2026-10-06: a régi szöveg („mondd meg, mit gondolsz") véleményt kért,
+    # de az oldalon nem volt hol elmondani. Most a döntésről szól.
+    "bem_zaro_alcim": {"hu": "Utána döntsd el, folytatjátok-e.", "es": "Después decidid si seguís."},
     "bem_zaro_cta": {"hu": "Elkezdem", "es": "Empezar"},
 
     # ── SZÜLŐI PIN ────────────────────────────────────────────────────────
