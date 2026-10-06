@@ -3,6 +3,25 @@
 {% block title %}{{ t('dashboard_title') }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+{# ÚJ KINÉZET (2026-10): zöld fejsáv a címmel, bézs rajzos alap. A régi
+   cím a lapon belül rejtve marad (a fejsáv mutatja), minden más – mezők,
+   gombok, adatok – VÁLTOZATLAN. #}
+<style>
+  .fp.fp-dash .dashboard-header h1,.fp.fp-dash .dashboard-header .welcome{display:none}
+  .fp.fp-dash .dashboard-header{justify-content:flex-end;margin-bottom:18px}
+  /* EGYEDI: a gyerekek kártyái kis „diákigazolványok" – színes fejjel */
+  .fp.fp-dash .children-grid > *{border-radius:26px;overflow:hidden;border:0;
+    box-shadow:0 2px 0 #F4EAD6,0 14px 30px rgba(22,58,46,.10)}
+</style>
+<div class="fo fp fp-szulo fp-dash">
+<section class="fp-sav">
+  <div class="fp-ikon"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c1-3.5 3.3-5.5 6-5.5s5 2 6 5.5M14 19c.6-2.6 2.2-4 4-4s3.2 1.4 3.8 4"/></svg></div>
+  <h1>{{ t('dashboard_title') }}</h1>
+  <p>{{ t('dashboard_welcome') ~ ', ' ~ parent['email'] }}</p>
+</section>
+<section class="fp-alap">
+<div class="fp-belso">
 <section class="dashboard-header">
     <div>
         <p class="welcome">{{ t('dashboard_welcome') }}, <strong>{{ parent['email'] }}</strong></p>
@@ -146,4 +165,7 @@
         <a class="btn btn-primary" href="{{ url_for('add_child') }}">{{ t('btn_add_child') }}</a>
     </section>
 {% endif %}
+</div>
+</section>
+</div>
 {% endblock %}

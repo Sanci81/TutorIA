@@ -80,3 +80,45 @@ body:has(.fp) .lang-btn.active{background:#fff;color:#167A5E !important}
   .fp-alap::before{background-size:760px auto;opacity:.7}
 }
 .fp .password-field input{padding-right:48px !important}
+
+/* ── A régi gombok (btn btn-primary) is az új ruhát kapják ezeken az oldalakon ── */
+.fp .btn.btn-primary{background:var(--narancs);color:#fff;border:0;border-radius:999px;font-weight:800;
+  box-shadow:0 4px 0 var(--narancs-alja);text-shadow:0 1px 2px rgba(120,62,0,.55)}
+.fp .btn.btn-primary:hover{background:var(--narancs);transform:none;box-shadow:0 4px 0 var(--narancs-alja)}
+
+/* ── Kerek ikon a fejsáv címe fölött ── */
+.fp-ikon{width:76px;height:76px;margin:0 auto 12px;border-radius:50%;background:#fff;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 6px 0 rgba(0,0,0,.12);transform:rotate(-6deg)}
+.fp-ikon svg{width:44px;height:44px;fill:none;stroke:var(--zold);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:760px){.fp-ikon{width:62px;height:62px}.fp-ikon svg{width:36px;height:36px}}
+
+/* ── Kis űrlapkártya (jelszó, leiratkozás…) a fejsávba csúszva ── */
+.fp-kis .fp-sav{padding-bottom:130px}
+.fp-kis .fp-alap{padding-top:0}
+.fp-kis .fp-kartya{max-width:440px;margin:-100px auto 0;padding:30px 26px 24px}
+.fp-kis .fp-kartya p.fp-szoveg{font-size:16.5px;line-height:1.6;color:var(--halvany);margin:0 0 20px}
+
+/* ══ SZÜLŐI OLDALAK: a fejsávba csúszó tartalom, régi kártyák új ruhában ══ */
+.fp-belso{max-width:1000px;margin:-80px auto 0}
+.fp .card{border:0;border-radius:26px;box-shadow:0 2px 0 #F4EAD6,0 14px 30px rgba(22,58,46,.10)}
+.fp .auth-wrapper{min-height:0;padding:0}
+.fp .field input[type=date],.fp .field input[type=number],.fp .field select{
+  font:inherit;font-size:16px;padding:12px 14px;border-radius:14px;border:2px solid #E6DCC8;background:#FFFDF8;color:var(--szoveg)}
+.fp .btn.btn-outline{border-color:var(--zold);color:var(--zold);border-radius:999px;font-weight:800}
+.fp .btn.btn-secondary,.fp .btn.btn-ghost{border-radius:999px}
+@media (max-width:760px){.fp-belso{margin-top:-70px}}
+
+/* ══ A GYEREK OLDALAI (tantárgyválasztó, album, bolt, kinézet, lecke) ══
+   Ugyanaz a bézs alap halvány rajzokkal és zöld menüsáv, mint a szülői
+   és a bemutató oldalakon. CSAK színek és háttér – a gyerek oldalain
+   egyetlen gomb, mező vagy elrendezés sem változik. */
+body.gyerek-hatter,body.gyerek-hatter.hatter-es{
+  background-color:#FBF5EA;
+  background-image:url(../bemutato/rajzos_hatter_halvany.svg);
+  background-repeat:repeat;background-position:0 0;background-size:1250px auto;background-attachment:scroll}
+body.gyerek-hatter .navbar{background:#167A5E;border-bottom:0;box-shadow:none}
+body.gyerek-hatter .brand-name{color:#fff}
+body.gyerek-hatter .lang-switch{background:rgba(255,255,255,.16);border-color:transparent}
+body.gyerek-hatter .lang-btn{color:#fff !important}
+body.gyerek-hatter .lang-btn.active{background:#fff;color:#167A5E !important}
+@media (max-width:760px){body.gyerek-hatter,body.gyerek-hatter.hatter-es{background-size:760px auto}}

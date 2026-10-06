@@ -3,6 +3,7 @@
 {% block title %}{{ t('terms_title') }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
 <style>
   .jogi{max-width:760px;margin:0 auto;padding:24px 16px 64px;line-height:1.65}
   .jogi h1{font-size:1.9rem;margin-bottom:4px}
@@ -10,8 +11,52 @@
   .jogi h2{font-size:1.2rem;margin:32px 0 8px}
   .jogi p{margin:0 0 12px}
   .jogi .kiemelt{background:#fff8e6;border-left:4px solid #e8a33d;padding:12px 14px;margin:16px 0}
+
+  /* ══ ÚJ KINÉZET (2026-10) – a szöveg VÁLTOZATLAN, csak a keret új ══
+     EGYEDI ELEM: tartalomjegyzék (a fejezetcímekből magától épül),
+     asztali gépen az irat mellett végig látszik, telefonon lenyitható. */
+  .fp-jogi .fp-sav{padding-bottom:120px}
+  .fp-jogi .fp-alap{padding-top:0}
+  .fp-jogi-racs{max-width:1080px;margin:-80px auto 0;display:grid;grid-template-columns:250px 1fr;gap:24px;align-items:start}
+  .fp-jogi .jogi{background:#fff;border-radius:26px;padding:34px 40px 40px;max-width:none;margin:0;
+    box-shadow:0 2px 0 #F4EAD6,0 14px 30px rgba(22,58,46,.10);color:#163A2E}
+  .fp-jogi .jogi > h1{display:none}
+  .fp-jogi .jogi .frissitve{display:inline-block;background:#FBF5EA;border-radius:999px;padding:5px 14px;
+    color:#17604A;font-weight:700;font-size:14px}
+  .fp-jogi .jogi h2{color:#0E2A1E;font-size:1.25rem;margin:34px 0 10px;padding-left:14px;
+    border-left:5px solid #F5A01E;scroll-margin-top:96px}
+  .fp-jogi .jogi a{color:#167A5E;font-weight:700}
+  .fp-jogi .jogi th{background:#F4EAD6;color:#0E2A1E}
+  .fp-jogi .jogi th,.fp-jogi .jogi td{border-color:#E9DFCB}
+  .fp-jogi .jogi .kiemelt{background:#FFF1A8;border-left:0;border-radius:6px;transform:rotate(-.4deg);
+    box-shadow:0 8px 16px rgba(120,90,10,.12)}
+  .fp-tartalom{position:sticky;top:90px;background:#0E2A1E;color:#fff;border-radius:22px;padding:16px 18px;
+    box-shadow:0 14px 30px rgba(14,42,30,.22)}
+  .fp-tartalom summary{font-weight:800;font-size:17px;cursor:pointer;list-style:none}
+  .fp-tartalom summary::-webkit-details-marker{display:none}
+  .fp-tartalom ol{list-style:none;margin:10px 0 0;padding:0;max-height:calc(100vh - 190px);overflow:auto}
+  .fp-tartalom li a{display:block;color:#E6F4EE;font-size:14px;line-height:1.35;padding:6px 8px;border-radius:10px}
+  .fp-tartalom li a:hover{background:rgba(255,255,255,.1);color:#fff}
+  @media (max-width:900px){
+    .fp-jogi-racs{grid-template-columns:1fr;margin-top:-90px}
+    .fp-tartalom{position:static}
+    .fp-tartalom summary::after{content:" ▾"}
+    .fp-jogi .jogi{padding:24px 18px 28px}
+  }
 </style>
 
+<div class="fo fp fp-jogi">
+<section class="fp-sav">
+  <div class="fp-ikon"><svg viewBox="0 0 24 24"><path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 12h6M10 16h6"/></svg></div>
+  <h1>{{ t('terms_title') }}</h1>
+  <p>{{ "Las reglas del uso, en lenguaje claro." if lang == 'es' else "A használat szabályai, érthetően." }}</p>
+</section>
+<section class="fp-alap">
+<div class="fp-jogi-racs">
+<details class="fp-tartalom" id="fp-tartalom" open>
+  <summary>{{ 'Contenido' if lang == 'es' else 'Tartalom' }}</summary>
+  <ol id="fp-tartalom-lista"></ol>
+</details>
 <div class="jogi">
 {% if lang == 'es' %}
   <h1>Condiciones de uso</h1>
@@ -241,4 +286,25 @@
        target="_blank" rel="noopener">CC BY 4.0</a>.
   </p>
 </div>
+</div>
+</section>
+</div>
+
+<script>
+// Tartalomjegyzék a fejezetcímekből. A szöveghez nem nyúl, csak
+// horgonyt tesz a címekre, és a listát építi fel belőlük.
+(function () {
+  var lista = document.getElementById('fp-tartalom-lista');
+  var dobozz = document.getElementById('fp-tartalom');
+  if (!lista) return;
+  document.querySelectorAll('.fp-jogi .jogi h2').forEach(function (h, i) {
+    if (!h.id) h.id = 'pont-' + (i + 1);
+    var li = document.createElement('li'), a = document.createElement('a');
+    a.href = '#' + h.id; a.textContent = h.textContent;
+    li.appendChild(a); lista.appendChild(li);
+  });
+  if (dobozz && window.matchMedia('(max-width: 900px)').matches) dobozz.removeAttribute('open');
+})();
+</script>
+
 {% endblock %}

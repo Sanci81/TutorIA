@@ -5,36 +5,40 @@
 {% block meta_description %}{% if lang == 'es' %}Artículos sobre el aprendizaje en línea y el profesor de IA para niños: práctica de matemáticas, feedback paciente y un entorno seguro.{% else %}Cikkek az online tanulásról és az AI tanárról gyerekeknek: matematika gyakorlás, türelmes visszajelzés, biztonságos környezet.{% endif %}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+{# ÚJ KINÉZET (2026-10). EGYEDI ELEM: a cikkek kártyái füzetborítók –
+   a tetejükön a rajzos minta, rajta egy „Cikk" címke. A szöveg VÁLTOZATLAN. #}
 <style>
-  .blog { max-width: 720px; margin: 0 auto; }
-  .blog h1 { color: var(--green-900); font-size: clamp(1.7rem, 4vw, 2.2rem); line-height: 1.2; margin-bottom: 0.5rem; }
-  .blog .bevezeto { color: var(--muted); margin-bottom: 1.5rem; }
-  .blog-lista { display: grid; gap: 1rem; }
-  .blog-lap {
-    display: block;
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-top: 5px solid var(--green-600);
-    border-radius: var(--radius);
-    padding: 1.25rem 1.4rem;
-    box-shadow: var(--shadow-sm);
-    color: inherit;
-  }
-  .blog-lap:hover { text-decoration: none; box-shadow: var(--shadow-md); }
-  .blog-lap h2 { color: var(--green-900); font-size: 1.25rem; margin-bottom: 0.35rem; }
-  .blog-lap p { color: var(--muted); margin: 0; }
+  .fp-blog .fp-sav{padding-bottom:120px}
+  .fp-blog .fp-alap{padding-top:0}
+  .fp-blog-lista{max-width:760px;margin:-80px auto 0;display:grid;gap:22px}
+  .fp-blog .blog-lap{display:block;background:#fff;border-radius:26px;overflow:hidden;color:inherit;
+    box-shadow:0 2px 0 #F4EAD6,0 14px 30px rgba(22,58,46,.10);transition:transform .15s}
+  .fp-blog .blog-lap:hover{transform:translateY(-3px);text-decoration:none}
+  .fp-borito{position:relative;height:130px;background:#E3F4EC;overflow:hidden}
+  .fp-borito::before{content:"";position:absolute;inset:0;opacity:.8;
+    background:url({{ url_for('static', filename='bemutato/rajzos_hatter.svg') }}) 0 0/700px auto repeat}
+  .fp-borito span{position:absolute;left:22px;bottom:16px;background:#F5A01E;color:#fff;font-weight:800;font-size:13px;
+    border-radius:999px;padding:5px 14px;box-shadow:0 3px 0 #D27E0B;text-shadow:0 1px 2px rgba(120,62,0,.55)}
+  .fp-blog .blog-lap h2{color:#0E2A1E;font-size:1.35rem;margin:18px 24px 6px}
+  .fp-blog .blog-lap p{color:#17604A;margin:0 24px 22px;line-height:1.55}
+  .fp-blog .fp-olvas{display:inline-block;margin:0 24px 22px;color:#167A5E;font-weight:800}
 </style>
 
-<div class="blog">
-  <h1>Blog</h1>
-  {% if lang == 'es' %}
-    <p class="bevezeto">Textos para padres sobre el aprendizaje en línea y el uso de la inteligencia artificial con niños.</p>
-  {% else %}
-    <p class="bevezeto">Írások szülőknek az online tanulásról, és arról, miben tud segíteni a mesterséges intelligencia egy gyereknek.</p>
-  {% endif %}
+<div class="fo fp fp-blog">
+  <section class="fp-sav">
+    <h1>Blog</h1>
+    {% if lang == 'es' %}
+      <p>Textos para padres sobre el aprendizaje en línea y el uso de la inteligencia artificial con niños.</p>
+    {% else %}
+      <p>Írások szülőknek az online tanulásról, és arról, miben tud segíteni a mesterséges intelligencia egy gyereknek.</p>
+    {% endif %}
+  </section>
 
-  <div class="blog-lista">
+  <section class="fp-alap">
+  <div class="fp-blog-lista">
     <a class="blog-lap" href="{{ url_for('blog_ai_tanulas') }}">
+      <div class="fp-borito"><span>{{ 'Artículo' if lang == 'es' else 'Cikk' }}</span></div>
       {% if lang == 'es' %}
         <h2>Cómo ayuda la IA en el aprendizaje de los niños</h2>
         <p>Aprendizaje personalizado, feedback paciente y un entorno cerrado, que el padre puede seguir.</p>
@@ -42,7 +46,9 @@
         <h2>Hogyan segít az AI a gyerekek tanulásában?</h2>
         <p>Személyre szabott tanulás, türelmes visszajelzés, és egy zárt környezet, amit a szülő átlát.</p>
       {% endif %}
+      <span class="fp-olvas">{{ 'Leer →' if lang == 'es' else 'Elolvasom →' }}</span>
     </a>
   </div>
+  </section>
 </div>
 {% endblock %}

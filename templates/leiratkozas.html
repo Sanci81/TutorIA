@@ -3,13 +3,18 @@
 {% block title %}{{ t('notify_unsub_title') }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
-<div style="max-width:560px;margin:60px auto;padding:0 20px;line-height:1.65">
-  <h1 style="font-size:1.4rem;margin:0 0 10px">{{ t('notify_unsub_title') }}</h1>
-  <p style="color:#4b5563">{{ t('notify_unsub_text') }}</p>
-  <p style="margin-top:22px">
-    <a href="{{ url_for('index') }}"
-       style="display:inline-block;background:#1f3a63;color:#fff;text-decoration:none;
-              padding:10px 20px;border-radius:8px">{{ t('app_name') }}</a>
-  </p>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+{# ÚJ KINÉZET (2026-10). EGYEDI ELEM: egy boríték a fejsávon. A szöveg VÁLTOZATLAN. #}
+<div class="fo fp fp-kis">
+<section class="fp-sav">
+  <div class="fp-ikon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+  <h1>{{ t('notify_unsub_title') }}</h1>
+</section>
+<section class="fp-alap">
+  <div class="fp-kartya" style="text-align:center">
+    <p class="fp-szoveg">{{ t('notify_unsub_text') }}</p>
+    <a class="fp-gomb" href="{{ url_for('index') }}">{{ t('app_name') }}</a>
+  </div>
+</section>
 </div>
 {% endblock %}

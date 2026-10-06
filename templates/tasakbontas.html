@@ -162,6 +162,14 @@
     cursor:pointer;background:linear-gradient(150deg,#f0c869,#c99424);color:#241d06;display:none}
   .zar.lat{display:inline-block}
 </style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/betutipus.css') }}">
+<style>
+  /* ÚJ KINÉZET (2026-10): a sötétkék háttér helyett a logó mély zöldje és
+     a Nunito betű – ugyanaz, mint a program többi részén. A lapok, gombok
+     és az elrendezés VÁLTOZATLANOK. */
+  body{font-family:Nunito,"Segoe UI",system-ui,sans-serif;
+    background:radial-gradient(circle at 50% -10%,#1f6b52,#0E2A1E 48%,#06140e)}
+</style>
 </head>
 <body>
 {% include "_gyerek_menu.html" %}

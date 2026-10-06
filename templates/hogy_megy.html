@@ -3,6 +3,27 @@
 {% block title %}{{ t('hogymegy_cim') }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+{# ÚJ KINÉZET (2026-10): zöld fejsáv a címmel, bézs rajzos alap. A régi
+   cím a lapon belül rejtve marad (a fejsáv mutatja), minden más – mezők,
+   gombok, adatok – VÁLTOZATLAN. #}
+<style>
+  .fp.fp-hm .hm > h1,.fp.fp-hm .hm > .bevezeto{display:none}
+  .fp.fp-hm .hm{padding-top:0}
+  /* EGYEDI: minden gyerek lapja egy „bizonyítvány" – szaggatott kerettel */
+  .fp.fp-hm .hm-gyerek{background:#fff;border:2px dashed #E9DFCB;border-radius:22px;
+    box-shadow:0 12px 26px rgba(22,58,46,.08)}
+  .fp.fp-hm .hm-nev{color:#0E2A1E}
+  .fp.fp-hm .hm-valaszto a.aktiv{background:#F5A01E;color:#fff;border-color:#F5A01E}
+</style>
+<div class="fo fp fp-szulo fp-hm">
+<section class="fp-sav">
+  <div class="fp-ikon"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+  <h1>{{ t('hogymegy_cim') }}</h1>
+  <p>{{ t('hogymegy_bevezeto') }}</p>
+</section>
+<section class="fp-alap">
+<div class="fp-belso">
 {# ── „HOGY MEGY?” – a szülői haladás-oldal ─────────────────────────────
    Ugyanazt mutatja, mint a haladás-jelentés levél. Szándékosan: a
    szülőnek ne kelljen kétféle számot összevetnie. A különbség csak az,
@@ -116,5 +137,8 @@
     {{ t('hogymegy_levelrol') }}
     <a href="{{ url_for('fiok') }}">{{ t('nav_account') }}</a>
   </p>
+</div>
+</div>
+</section>
 </div>
 {% endblock %}

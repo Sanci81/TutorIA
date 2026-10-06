@@ -105,6 +105,14 @@
   .av-kev-gomb:disabled{opacity:.5;cursor:default}
   .av-uzenet{margin-top:10px;font-size:.82rem;color:#ffb4b4;min-height:1em}
 </style>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/betutipus.css') }}">
+<style>
+  /* ÚJ KINÉZET (2026-10): a sötétkék háttér helyett a logó mély zöldje és
+     a Nunito betű – ugyanaz, mint a program többi részén. A lapok, gombok
+     és az elrendezés VÁLTOZATLANOK. */
+  body{font-family:Nunito,"Segoe UI",system-ui,sans-serif;
+    background:radial-gradient(circle at 50% -10%,#1f6b52,#0E2A1E 48%,#06140e)}
+</style>
 </head>
 <body>
 {% include "_gyerek_menu.html" %}

@@ -323,7 +323,15 @@ body{overflow-x:clip}
   .checklist h2{font-size:1.6rem}
   .clracs{grid-template-columns:repeat(auto-fill,minmax(62px,1fr));gap:6px}
 }
-</style></head><body>
+</style><link rel="stylesheet" href="{{ url_for('static', filename='css/betutipus.css') }}">
+<style>
+  /* ÚJ KINÉZET (2026-10): a sötétkék háttér helyett a logó mély zöldje és
+     a Nunito betű – ugyanaz, mint a program többi részén. A lapok, gombok
+     és az elrendezés VÁLTOZATLANOK. */
+  body{font-family:Nunito,"Segoe UI",system-ui,sans-serif;
+    background:radial-gradient(circle at 50% -10%,#1f6b52,#0E2A1E 48%,#06140e)}
+</style>
+</head><body>
 {% include "_gyerek_menu.html" %}
 
 

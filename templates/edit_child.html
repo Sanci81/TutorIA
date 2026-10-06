@@ -3,6 +3,21 @@
 {% block title %}{{ t('edit_child_title') }} · {{ t('app_name') }}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+{# ÚJ KINÉZET (2026-10): zöld fejsáv a címmel, bézs rajzos alap. A régi
+   cím a lapon belül rejtve marad (a fejsáv mutatja), minden más – mezők,
+   gombok, adatok – VÁLTOZATLAN. #}
+<style>
+  .fp.fp-urlap .form-card > .card-title,.fp.fp-urlap .form-card > .card-subtitle{display:none}
+</style>
+<div class="fo fp fp-szulo fp-urlap">
+<section class="fp-sav">
+  <div class="fp-ikon"><svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M14 6l3 3"/></svg></div>
+  <h1>{{ t('edit_child_title') }}</h1>
+  <p>{{ t('edit_child_subtitle') }}</p>
+</section>
+<section class="fp-alap">
+<div class="fp-belso">
 <div class="auth-wrapper">
     <div class="card form-card">
         <h1 class="card-title">{{ t('edit_child_title') }}</h1>
@@ -165,6 +180,9 @@
             </form>
         </div>
     </div>
+</div>
+</div>
+</section>
 </div>
 {% endblock %}
 

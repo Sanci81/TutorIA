@@ -5,6 +5,7 @@
 {% block meta_description %}{% if lang == 'es' %}La inteligencia artificial en la educación: aprendizaje personalizado, feedback paciente y un entorno seguro. Práctica de matemáticas y aprendizaje en línea con un profesor de IA.{% else %}Hogyan segít az AI a gyerekek tanulásában: személyre szabott tanulás, türelmes visszajelzés, biztonságos környezet. Matematika gyakorlás és online tanulás AI tanárral.{% endif %}{% endblock %}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
 <style>
   .cikk { max-width: 720px; margin: 0 auto; }
   .cikk-fej h1 {
@@ -50,9 +51,33 @@
   .kapcsolodo a:hover { text-decoration: none; box-shadow: var(--shadow-sm); }
   .kapcsolodo a strong { display: block; color: var(--green-900); margin-bottom: 0.15rem; }
   .kapcsolodo a span { color: var(--muted); font-size: 0.95rem; }
+
+  /* ══ ÚJ KINÉZET (2026-10) – a cikk szövege VÁLTOZATLAN ══
+     EGYEDI ELEMEK: díszes kezdőbetű, és egy narancs olvasás-csík a lap
+     tetején, ami mutatja, hol tart az olvasó. */
+  .fp-olvaso{position:fixed;left:0;top:0;height:4px;width:0;background:#F5A01E;z-index:100}
+  .fp-cikk .fp-sav{padding-bottom:120px}
+  .fp-cikk .cikk-fej h1{color:#fff;font-size:clamp(1.8rem,4vw,2.5rem);max-width:22em;margin:0 auto 8px}
+  .fp-cikk .cikk-meta{color:#E6F4EE;margin:0}
+  .fp-cikk .fp-alap{padding-top:0}
+  .fp-cikk .cikk{max-width:780px;margin:-80px auto 0}
+  .fp-cikk .cikk-test{border:0;border-radius:26px;padding:36px 42px 34px;font-size:17px;line-height:1.75;color:#163A2E;
+    box-shadow:0 2px 0 #F4EAD6,0 14px 30px rgba(22,58,46,.10)}
+  .fp-cikk .cikk-test > p:first-of-type::first-letter{float:left;font-size:3.6em;line-height:.85;font-weight:800;
+    color:#F5A01E;margin:6px 10px 0 0}
+  .fp-cikk .cikk-test h2{color:#0E2A1E;padding-left:14px;border-left:5px solid #F5A01E}
+  .fp-cikk .cikk-cta{background:#0E2A1E;color:#fff;border:0;border-radius:22px;padding:22px 24px}
+  .fp-cikk .kapcsolodo h2{color:#0E2A1E}
+  .fp-cikk .kapcsolodo a{border:0;border-left:6px solid #F5A01E;border-radius:18px;
+    box-shadow:0 2px 0 #F4EAD6,0 8px 18px rgba(22,58,46,.08)}
+  .fp-cikk .kapcsolodo a strong{color:#0E2A1E}
+  .fp-cikk .kapcsolodo a span{color:#17604A}
+  @media (max-width:760px){.fp-cikk .cikk-test{padding:24px 18px;font-size:16px}}
 </style>
 
-<article class="cikk">
+<div class="fo fp fp-cikk">
+<div class="fp-olvaso" id="fp-olvaso" aria-hidden="true"></div>
+<section class="fp-sav">
   <header class="cikk-fej">
     {% if lang == 'es' %}
       <h1>Cómo ayuda la IA en el aprendizaje de los niños</h1>
@@ -62,6 +87,9 @@
       <p class="cikk-meta">2026. szeptember 23. · TutorIAcademia</p>
     {% endif %}
   </header>
+</section>
+<section class="fp-alap">
+<article class="cikk">
 
   <div class="cikk-test">
     {% if lang == 'es' %}
@@ -142,10 +170,11 @@
   <section class="kapcsolodo">
     <h2>{% if lang == 'es' %}Artículos relacionados{% else %}Kapcsolódó cikkek{% endif %}</h2>
     <div class="kapcsolodo-racs">
-      <a href="{{ url_for('demo') }}">
+{# A demó egyelőre ki van kapcsolva – a linkje se látszódjon. #}
+      {% if false %}      <a href="{{ url_for('demo') }}">
         <strong>{% if lang == 'es' %}Prueba: redondear a centenas{% else %}Demó: kerekítés százasra{% endif %}</strong>
         <span>{% if lang == 'es' %}Una sola pregunta de práctica de matemáticas, con respuesta al momento.{% else %}Egyetlen matematika gyakorló kérdés, azonnali visszajelzéssel.{% endif %}</span>
-      </a>
+      </a>{% endif %}
       <a href="{{ url_for('gyik') }}">
         <strong>{% if lang == 'es' %}Preguntas frecuentes para padres{% else %}Gyakori kérdések szülőknek{% endif %}</strong>
         <span>{% if lang == 'es' %}Tiempo de estudio, lecciones y qué ve el padre.{% else %}Tanulási idő, leckék, és mit lát a szülő.{% endif %}</span>
@@ -157,4 +186,21 @@
     </div>
   </section>
 </article>
+</section>
+</div>
+<script>
+// Olvasás-csík: a lap tetején egy narancs vonal mutatja, hol tart a cikkben.
+(function () {
+  var csik = document.getElementById('fp-olvaso');
+  var cikk = document.querySelector('.fp-cikk .cikk-test');
+  if (!csik || !cikk) return;
+  function frissit() {
+    var r = cikk.getBoundingClientRect(), h = window.innerHeight;
+    var ossz = r.height - h * 0.6, megvan = Math.min(Math.max(-r.top + h * 0.3, 0), ossz);
+    csik.style.width = (ossz > 0 ? megvan / ossz * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', frissit, { passive: true });
+  frissit();
+})();
+</script>
 {% endblock %}

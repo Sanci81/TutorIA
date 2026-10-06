@@ -5,6 +5,23 @@
    nem az övé – ezért lakat és semmi játékos elem. #}
 
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+{# ÚJ KINÉZET (2026-10): zöld fejsáv a címmel, bézs rajzos alap. A régi
+   cím a lapon belül rejtve marad (a fejsáv mutatja), minden más – mezők,
+   gombok, adatok – VÁLTOZATLAN. #}
+<style>
+  .fp.fp-pin .pin-doboz h1,.fp.fp-pin .pin-alcim,.fp.fp-pin .pin-lakat{display:none}
+  .fp.fp-pin .pin-lap{min-height:0;padding:0;background:none}
+  .fp.fp-pin .pin-doboz{border-radius:26px;box-shadow:0 2px 0 #F4EAD6,0 14px 30px rgba(22,58,46,.10);margin:0 auto}
+</style>
+<div class="fo fp fp-szulo fp-pin">
+<section class="fp-sav">
+  <div class="fp-ikon"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><circle cx="12" cy="16" r="1.5"/></svg></div>
+  <h1>{{ t('pin_cim') }}</h1>
+  <p>{{ t('pin_alcim') }}</p>
+</section>
+<section class="fp-alap">
+<div class="fp-belso">
 <section class="pin-lap">
   <div class="pin-doboz">
     <div class="pin-lakat" aria-hidden="true">
@@ -27,4 +44,7 @@
     </a>
   </div>
 </section>
+</div>
+</section>
+</div>
 {% endblock %}
