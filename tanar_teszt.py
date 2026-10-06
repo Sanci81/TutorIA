@@ -101,6 +101,33 @@ GYEREKEK = [
 # magáról, hogy német — és én a programot hibáztattam érte.
 NYELVEK = ("angol", "nemet", "spanyol")
 
+# ══ MELYIK OLDALT TESZTELJÜK ═══════════════════════════════════════════
+# "hu": a magyar tanterv (eddig csak ez volt). "es": a spanyol LOMLOE
+# tanterv, spanyol gyerekkel, spanyol nyelvű órákkal. A --oldal kapcsoló
+# állítja be. Minden, ami oldalfüggő, ezt a változót nézi.
+OLDAL = "hu"
+GYEREK_NEVEK_ES = {"Bence": "Pablo", "Anna": "Lucía", "Viki": "Martina",
+                   "Máté": "Hugo"}
+
+
+def _tantargy_matrix_es(evfolyamok) -> list[tuple]:
+    """(érték, címke, évfolyam, nyelv) a spanyol LOMLOE tantárgyakra, 1–6."""
+    parok: list[tuple] = []
+    for evf in evfolyamok:
+        if not 1 <= evf <= 6:
+            continue
+        try:
+            _, opciok = cl.get_subject_options_for_ui("ES", evf, None, "es")
+        except Exception:
+            continue
+        for o in opciok:
+            ertek, cimke = o.get("value"), o.get("label")
+            if not ertek:
+                continue
+            # Az idegen nyelv a spanyol gyereknek az angol.
+            parok.append((ertek, cimke, evf, "angol" if ertek == "extranjera" else None))
+    return parok
+
 
 def _tantargy_matrix(evfolyamok) -> list[tuple]:
     """(fájl, címke, évfolyam, nyelv) az ÖSSZES létező tantárgyra."""
@@ -206,8 +233,11 @@ def _temakor(tantargy_fajl: str, evfolyam: int, nyelv: str | None):
     try:
         # UGYANAZ az út, amit a chat használ – nem külön betöltő, hogy ne
         # egy másik tananyagot teszteljünk, mint amit a gyerek kap.
-        adat = app._chat_load_curriculum(
-            tantargy_fajl, evfolyam, language=nyelv)
+        from flask import g as _g
+        with app.app.test_request_context():
+            _g.lang = OLDAL
+            adat = app._chat_load_curriculum(
+                tantargy_fajl, evfolyam, language=nyelv)
     except Exception:
         adat = None
     if not adat:
@@ -228,7 +258,7 @@ def _tanari_prompt(gyerek: dict, tantargy: str, nyelv: str | None,
     """
     from flask import g as _g
     with app.app.test_request_context():
-        _g.lang = "hu"
+        _g.lang = OLDAL
         return _tanari_prompt_belul(gyerek, tantargy, nyelv, adat, temakor)
 
 
@@ -246,7 +276,8 @@ def _tanari_prompt_belul(gyerek: dict, tantargy: str, nyelv: str | None,
         szokincs=temakor.get("szokincs"),
         spiralis=bool(adat.get("spiralis")),
     )
-    prompt += app._topic_teaching_prompt_block(temakor, es_curriculum=False)
+    prompt += app._topic_teaching_prompt_block(
+        temakor, es_curriculum=(OLDAL == "es"), grade=gyerek.get("grade"))
     return prompt
 
 
@@ -259,7 +290,7 @@ def _gepi_ellenorzes(szoveg: str) -> list[str]:
     except Exception as hiba:
         talalatok.append(f"[számtan] a vizsgálat elszállt: {hiba}")
     try:
-        kimondva = hang.kiejtes(szoveg, "hu")
+        kimondva = hang.kiejtes(szoveg, "es" if OLDAL == "es" else "hu")
         # Ami SZÁMJEGY maradt a felolvasandó szövegben, azt a hangmotor
         # találgatja. A hang.py-nak mindent szóvá kellene írnia.
         import re
@@ -318,7 +349,8 @@ def _lathato(tanar_valasz: str, evfolyam) -> str:
     if abrak:
         sorok.append("[A szöveg mellett a táblán egy ÁBRA is megjelenik.]")
     try:
-        feladat = app._feladat_parse(tanar_valasz, grade=evfolyam)
+        feladat = app._feladat_parse(tanar_valasz, grade=evfolyam,
+                                     es_tanterv=(OLDAL == "es"))
     except Exception:
         feladat = None
     if feladat:
@@ -341,8 +373,13 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
               "grade_hu": evfolyam, "grade_es": evfolyam}
     rendszer = _tanari_prompt(gyerek, cimke, nyelv, adat, temakor)
 
+    if OLDAL == "es":
+        nev = GYEREK_NEVEK_ES.get(nev, nev)
     gyerek_rendszer = (
-        f"Egy {kor} éves magyar gyereket játszol, akit {nev}-nek hívnak. "
+        (f"Egy {kor} éves SPANYOL gyereket játszol, akit {nev}-nek hívnak. "
+         "MINDIG SPANYOLUL válaszolj, ahogy egy spanyol iskolás. "
+         if OLDAL == "es" else
+         f"Egy {kor} éves magyar gyereket játszol, akit {nev}-nek hívnak. ") +
         f"{jellem}\n"
         f"Épp {cimke} órád van"
         + (f" ({nyelv})" if nyelv else "")
@@ -358,7 +395,7 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
     gepi: list[str] = []
 
     # Az első lépést a tanár teszi, ahogy élesben is.
-    gyerek_uzenet = "Szia! Kezdhetjük?"
+    gyerek_uzenet = "¡Hola! ¿Empezamos?" if OLDAL == "es" else "Szia! Kezdhetjük?"
     for _ in range(fordulok):
         uzenetek = ([{"role": "system", "content": rendszer}] + tortenet
                     + [{"role": "user", "content": gyerek_uzenet}])
@@ -409,7 +446,13 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
     ellenor_keres = (
         f"Egy {kor} éves gyerek {cimke} óráját olvasod"
         + (f" ({nyelv} nyelv)" if nyelv else "")
-        + f". Témakör: {temakor['name']}.{sorrend_szoveg}\n\n"
+        + f". Témakör: {temakor['name']}.{sorrend_szoveg}\n"
+        + ("EZ A SPANYOL OLDAL: a gyerek Spanyolországban tanul, a spanyol "
+           "tanterv (LOMLOE) szerint, és az óra SPANYOLUL folyik. A 8. pontot "
+           "(magyartalan mondat) itt a SPANYOL mondatokra alkalmazd: "
+           "nyelvtanilag hibás vagy természetellenes spanyol. A „miert” mezőt "
+           "viszont MAGYARUL írd.\n" if OLDAL == "es" else "")
+        + "\n"
         f"Keresd meg a TANÁR hibáit ez alapján:\n{ELLENORZO_LISTA}\n"
         "Adj vissza egy json választ ebben az alakban: "
         "{\"talalatok\": [{\"pont\": <1-12>, "
@@ -592,6 +635,8 @@ def main() -> int:
                    help="szűrés a tantárgy nevére, részlet is elég")
     p.add_argument("--proba", action="store_true",
                    help="csak négy apró hívás: hol akad el? (majdnem ingyen)")
+    p.add_argument("--oldal", choices=["hu", "es"], default="hu",
+                   help="melyik tantervet: hu (magyar) vagy es (spanyol LOMLOE)")
     p.add_argument("--mind", action="store_true",
                    help="MINDEN tantárgy és évfolyam – drága, de teljes")
     a = p.parse_args()
@@ -601,8 +646,14 @@ def main() -> int:
     if a.gyors:
         a.ora, a.fordulo = 3, 4
 
-    evfolyamok = a.evfolyam or [1, 2, 3, 4, 5, 6, 7, 8]
-    matrix = _tantargy_matrix(evfolyamok)
+    global OLDAL
+    OLDAL = a.oldal
+    if OLDAL == "es":
+        evfolyamok = a.evfolyam or [1, 2, 3, 4, 5, 6]
+        matrix = _tantargy_matrix_es(evfolyamok)
+    else:
+        evfolyamok = a.evfolyam or [1, 2, 3, 4, 5, 6, 7, 8]
+        matrix = _tantargy_matrix(evfolyamok)
     if a.tantargy:
         keres = a.tantargy.lower()
         matrix = [m for m in matrix if keres in (m[1] or "").lower()]
@@ -679,6 +730,7 @@ def _jelentes(eredmenyek: list[dict], ido: str) -> None:
                  "tanar_teszt.py tetején.\n")
     s += [
          f"Tanár modellje: **{TANAR_MODELL}**  ",
+         f"Oldal: **{'spanyol (LOMLOE)' if OLDAL == 'es' else 'magyar'}**  ",
          f"Lejátszott órák: **{len(eredmenyek)}**  ",
          f"Gépi találat (számtan, felolvasás — ez NEM vélemény): **{gepi_db}**  ",
          f"Az ellenőrző szerint biztos hiba: **{biztos}**  ",
@@ -718,7 +770,8 @@ def _jelentes(eredmenyek: list[dict], ido: str) -> None:
     s.append("\n---\n\nA teljes beszélgetések: `tanar_teszt_beszelgetesek.txt`\n")
     # A korábbi jelentés NE vesszen el: egy dátumos másolat is készül, így
     # két futás eredménye összevethető (melyik modell, melyik javítás után).
-    datumos = "tanar_teszt_jelentes_" + datetime.now().strftime("%Y-%m-%d_%H%M") + ".md"
+    datumos = ("tanar_teszt_jelentes_" + OLDAL + "_"
+               + datetime.now().strftime("%Y-%m-%d_%H%M") + ".md")
     with open(datumos, "w", encoding="utf-8") as f:
         f.write("\n".join(s))
     with open("tanar_teszt_jelentes.md", "w", encoding="utf-8") as f:
