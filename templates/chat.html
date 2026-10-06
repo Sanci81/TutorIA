@@ -4608,6 +4608,178 @@
 </script>
 {% endif %}
 
+{# ══ TELEFON: A SZÓJEGYZÉK FELHÚZHATÓ LAP, A TÁBLA KITÖLTI A KÉPERNYŐT ══
+   Sándor telefonos képei (2026-10-07) alapján, három baj egyszerre:
+
+   1) ÜRES SÁV A LAP ALJÁN, minden tantárgynál. Lemérve: 155 képpont üres
+      háttér a tartalom és az alsó gombsor között. Az ok: a lap alja
+      KÉTSZER volt lefoglalva – egyszer a gombsor magasságával (hogy ne
+      takarja el a tartalmat), egyszer a webhely lábléce és a lap belső
+      szegélye. A lábléc telefonon amúgy is a gombsor MÖGÖTT van, nem
+      látszik – csak a helyét foglalta. Itt elrejtjük.
+   2) A SZÓJEGYZÉK a tábla alatt állt, összenyomva, belső görgetéssel, és
+      alatta megint üres hely. Mostantól egy gomb az alsó sávban
+      („📖 Szójegyzék"), és ugyanolyan felhúzható lap nyílik, mint a
+      Beszélgetésnél. Új szónál a gombon pötty jelenik meg.
+   3) A TÁBLA rövid szövegnél félúton véget ért. Most legalább az alsó
+      gombsorig ér.
+
+   HÁROM GOMBNÁL (nyelvórán) az ikon FELÜL, a felirat alatta – Sándor
+   ezt választotta („B" változat), mert így egyik felirat sem törik két
+   sorba. Két gombnál (minden más tárgy) a gombsor változatlan.
+
+   CSAK TELEFONON (760 alatt), és nagyított nézetben nem. Tablethez és
+   asztali géphez nem nyúl. Az oldalsó ☰ leckelistához SEM: az a saját
+   helyén, a saját gombjával működik tovább. A szójegyzék-elem nem
+   másolódik: ugyanazt az elemet mutatjuk lapként, így az új szavak
+   ugyanúgy bekerülnek. #}
+<style>
+  @media (max-width:759px){
+    body:has(#munka-sav.uj-felulet) > footer.footer{display:none}
+    body:has(#munka-sav.uj-felulet) > main.content{padding-bottom:0}
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .tanit{
+        min-height:var(--tabla-min,0px)}
+
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .chat-sidebar-vocab.szolap{
+        display:none}
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .chat-sidebar-vocab.szolap.nyitva{
+        display:block;position:fixed;left:0;right:0;top:auto;
+        bottom:var(--sav-magas,170px);height:auto;max-height:58vh;
+        overflow-y:auto;margin:0;z-index:48;background:#fff;
+        border-radius:22px 22px 0 0;padding:18px 22px 20px;
+        box-shadow:0 -12px 34px rgba(20,60,40,.18);
+        grid-column:auto;grid-row:auto;align-self:auto}
+    .chat-sidebar-vocab.szolap.nyitva .chat-vocab-list li{
+        font-size:17px;padding:11px 0}
+    .chat-sidebar-vocab.szolap.nyitva .chat-sidebar-title{margin-top:0}
+
+    .mobil-gombok.harom .mobil-gomb{display:flex;flex-direction:column;
+        align-items:center;justify-content:center;gap:3px;
+        padding:8px 4px;font-size:12.5px;line-height:1.15}
+    .mobil-gombok.harom .mobil-gomb .ik{font-size:22px;line-height:1}
+  }
+</style>
+<script>
+(function () {
+    "use strict";
+    try {
+        var TELEFON = 759;
+        var lap = document.getElementById('chat-page');
+        var tanit = document.getElementById('tanit');
+        var szavak = document.querySelector('.chat-sidebar-vocab');
+        var lista = document.getElementById('vocab-list');
+        if (!lap || !tanit) { return; }
+
+        function telefonE() {
+            return window.innerWidth <= TELEFON
+                && !lap.classList.contains('teljes-mod');
+        }
+
+        /* ── A TÁBLA LEÉR AZ ALSÓ GOMBSORIG ─────────────────────────── */
+        function tablaMeret() {
+            if (!telefonE()) { lap.style.removeProperty('--tabla-min'); return; }
+            var sav = document.querySelector('.mobil-sav');
+            var savM = sav ? sav.getBoundingClientRect().height : 0;
+            var teteje = tanit.getBoundingClientRect().top + window.scrollY;
+            var kell = Math.floor(window.innerHeight - teteje - savM - 14);
+            if (kell > 120) { lap.style.setProperty('--tabla-min', kell + 'px'); }
+            else { lap.style.removeProperty('--tabla-min'); }
+        }
+
+        /* ── IKON FELÜL, FELIRAT ALATTA (csak három gombnál) ────────── */
+        function ikonFelul(sor) {
+            sor.classList.add('harom');
+            Array.prototype.forEach.call(sor.children, function (g) {
+                if (g.querySelector('.ik')) { return; }
+                var pott = g.querySelector('.pott');
+                var szoveg = (g.firstChild && g.firstChild.nodeType === 3)
+                    ? g.firstChild.nodeValue : (g.textContent || '');
+                szoveg = szoveg.trim();
+                var hely = szoveg.indexOf(' ');
+                if (hely < 1) { return; }
+                var ik = document.createElement('span');
+                ik.className = 'ik';
+                ik.textContent = szoveg.slice(0, hely);
+                var fel = document.createElement('span');
+                fel.textContent = szoveg.slice(hely + 1);
+                g.textContent = '';
+                g.appendChild(ik);
+                g.appendChild(fel);
+                if (pott) { g.appendChild(pott); }
+            });
+        }
+
+        /* ── A SZÓJEGYZÉK GOMB ÉS LAP ───────────────────────────────── */
+        var gomb = null;
+        function bezar() {
+            if (!szavak) { return; }
+            szavak.classList.remove('nyitva');
+            if (gomb) { gomb.classList.remove('aktiv'); }
+        }
+        function gombBetesz() {
+            if (!szavak) { return; }
+            if (!telefonE()) {
+                szavak.classList.remove('szolap', 'nyitva');
+                return;
+            }
+            szavak.classList.add('szolap');
+            var sor = document.querySelector('.mobil-sav .mobil-gombok');
+            if (!sor) { return; }
+            if (gomb && gomb.parentNode === sor) { return; }
+            gomb = document.createElement('button');
+            gomb.type = 'button';
+            gomb.className = 'mobil-gomb mobil-szavak';
+            gomb.innerHTML = '📖 ' + {{ t('chat_vocab_title')|tojson }}
+                           + '<span class="pott"></span>';
+            gomb.addEventListener('click', function () {
+                var nyit = !szavak.classList.contains('nyitva');
+                /* Egyszerre egy lap legyen nyitva. */
+                var besz = document.getElementById('beszelo');
+                if (nyit && besz && besz.classList.contains('nyitva')) {
+                    var bg = sor.querySelector('.mobil-gomb.aktiv:not(.mobil-szavak)');
+                    if (bg) { bg.click(); }
+                }
+                szavak.classList.toggle('nyitva', nyit);
+                gomb.classList.toggle('aktiv', nyit);
+                if (nyit) { gomb.classList.remove('uzenet'); }
+            });
+            /* A Beszélgetés gomb UTÁN, a mód-váltó elé. */
+            var elso = sor.firstChild;
+            sor.insertBefore(gomb, elso ? elso.nextSibling : null);
+            ikonFelul(sor);
+        }
+
+        /* Ha a sáv másik gombját nyomják meg, a szavak lapja csukódjon be. */
+        document.addEventListener('click', function (ev) {
+            var g = ev.target && ev.target.closest
+                    ? ev.target.closest('.mobil-gomb') : null;
+            if (g && g !== gomb) { bezar(); }
+        }, true);
+
+        /* Új szó érkezett: pötty a gombon, ha a lap épp csukva van. */
+        if (lista && szavak) {
+            new MutationObserver(function () {
+                if (gomb && !szavak.classList.contains('nyitva')) {
+                    gomb.classList.add('uzenet');
+                }
+            }).observe(lista, { childList: true });
+        }
+
+        function rendez() { gombBetesz(); tablaMeret(); }
+        rendez();
+        window.addEventListener('resize', function () {
+            window.requestAnimationFrame(rendez);
+        });
+        new MutationObserver(function () {
+            window.requestAnimationFrame(rendez);
+        }).observe(lap, { attributes: true, attributeFilter: ['class'] });
+        window.addEventListener('load', tablaMeret);
+    } catch (e) {
+        if (window.console) { console.error('szolap:', e); }
+    }
+})();
+</script>
+
 {# ══ A KABALA FIGURA ODAHÚZHATÓ, AHOVA A GYEREK AKARJA ═════════════════
    A BAJ: a figura a munkaterület bal alsó sarkához van rögzítve. Amíg
    alatta üres hely van, ez jó – de amint oda kerül egy válaszkártya vagy
