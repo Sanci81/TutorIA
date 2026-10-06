@@ -3723,7 +3723,17 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             return bool(re.fullmatch(r"-?\d[\d\s.,]*", sz))
 
         if all(_szam_e(o) for o in tiszta):
-            return {"tipus": "szam", "muvelet": ""}
+            # KIVÉTEL (a 20 órás spanyol teszt hozta elő, 5-ször): ha a kérdés
+            # maga VÁLASZTÓS — „¿Cuál de estos números es divisible entre 2?",
+            # „Melyik szám páros?" — és nincs benne művelet, akkor a számok a
+            # választék, nem a számolás eredménye. Beírós mezővel a gyerek nem
+            # is látta volna, melyik számok közül kell választania.
+            elotte = (text or "")[:m.start()]
+            kerdesek = re.findall(r"[^.!?\n]*\?", elotte)
+            kerdes = kerdesek[-1] if kerdesek else ""
+            muvelet = re.search(r"\d\s*[+\-−×x*·:/÷=]\s*\d", kerdes)
+            if not (kerdes and _VALASZTOS_KERDES.search(kerdes) and not muvelet):
+                return {"tipus": "szam", "muvelet": ""}
         return {"tipus": "valaszt", "opciok": tiszta}
 
     return None
@@ -4155,6 +4165,7 @@ def _vocab_valaszlehetosegek(szoveg: str) -> str:
     """
     if "<VOCAB" not in szoveg:
         return szoveg
+    feladat_van = bool(_CHAT_MARKER_FELADAT.search(szoveg))
 
     def csere(m: "re.Match[str]") -> str:
         blokk = m.group(0)
@@ -4165,10 +4176,15 @@ def _vocab_valaszlehetosegek(szoveg: str) -> str:
         szavak = [f.strip() for _, f in parok if f.strip()]
         if not szavak:
             return blokk
-        elotte = szoveg[:m.start()]
+        # HA VAN <FELADAT>, a választékot az adja (gombokkal). A jelölők ilyenkor
+        # csak a szójegyzéknek szólnak — a 20 órás spanyol teszt hozta elő:
+        # a kérdés után ott állt „dear, friend", ALATTA pedig a gombok.
+        if feladat_van:
+            return ""
+        elotte = szoveg[:m.start()].casefold()
         # ÖSSZEFOGLALÓ: ha a mondat már kimondta mindegyik szót, a felsorolás
         # csak ismétlés — a szójegyzékbe ettől még bekerül, a képernyőre nem.
-        if all(sz in elotte for sz in szavak):
+        if all(sz.casefold() in elotte for sz in szavak):
             return ""
         # VÁLASZTÉK vagy új szavak: vesszővel elválasztva, olvashatóan.
         return " " + ", ".join(szavak)
@@ -4184,6 +4200,9 @@ def _vocab_valaszlehetosegek(szoveg: str) -> str:
         r"((?:\s*<\s*VOCAB\s*>[^<]*<\s*/\s*VOCAB\s*>){2,})",
         re.IGNORECASE)
     return minta.sub(csere, szoveg)
+
+
+_MODELL_TOKEN = re.compile(r"<\|[A-Za-z_][A-Za-z0-9_]{1,30}\|>")
 
 
 def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[str, str]], list[str]]:
@@ -4211,8 +4230,11 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     for m_bare in _BARE_SVG_RE.finditer(_CHAT_MARKER_SVG.sub("", text)):
         svg_list.append(m_bare.group(0).strip())
 
+    # MODELL-BELSŐ TOKENEK: a 20 órás magyar teszt (gpt-6-luna) a gyerek
+    # elé tett ilyeneket: <|im_end|>, <|fim_suffix|>. Soha nem tartalom.
+    clean = _MODELL_TOKEN.sub("", text)
     # Az <FL:xx>szó</FL> jelölőből csak a jelölés tűnik el, a SZÓ marad.
-    clean = _CHAT_MARKER_FL.sub(lambda m: m.group(2), text)
+    clean = _CHAT_MARKER_FL.sub(lambda m: m.group(2), clean)
     clean = _FL_MARADEK.sub("", clean)      # a hibás párok maradéka
     clean = _CHAT_MARKER_TOPIC.sub("", clean)
     clean = _CHAT_MARKER_LEVEL.sub("", clean)

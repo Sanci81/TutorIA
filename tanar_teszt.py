@@ -106,6 +106,7 @@ NYELVEK = ("angol", "nemet", "spanyol")
 # tanterv, spanyol gyerekkel, spanyol nyelvű órákkal. A --oldal kapcsoló
 # állítja be. Minden, ami oldalfüggő, ezt a változót nézi.
 OLDAL = "hu"
+NAPLO_FAJL = "tanar_teszt_beszelgetesek.txt"   # futáskor oldal+dátum kerül bele
 GYEREK_NEVEK_ES = {"Bence": "Pablo", "Anna": "Lucía", "Viki": "Martina",
                    "Máté": "Hugo"}
 
@@ -295,7 +296,9 @@ def _gepi_ellenorzes(szoveg: str) -> list[str]:
         # találgatja. A hang.py-nak mindent szóvá kellene írnia.
         import re
         maradek = re.findall(r"(?<![\w:/,.-])\d{1,6}(?![\w:/,.-])", kimondva)
-        if maradek:
+        # A spanyol hangmotor a számjegyeket helyesen olvassa fel — ott ez
+        # nem hiba (a 20 órás spanyol futás 12 téves találatot adott így).
+        if maradek and OLDAL != "es":
             talalatok.append(
                 f"[felolvasás] számjegy maradt a kimondandó szövegben: "
                 f"{maradek[:5]} — a hangmotor ezt találgatja")
@@ -369,15 +372,20 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
     # A gyerek-adatlap ugyanolyan alakú, mint az adatbázisban: az évfolyamot a
     # promptépítő a grade_hu mezőből olvassa, nem a "grade"-ből. Enélkül minden
     # órát elsősnek hitt volna, és a teszt hamis képet adott volna.
+    # A spanyol név MÁR a tanári prompt előtt kell: korábban a tanár „Bencét"
+    # tanította, a gyerek pedig „Pablóként" válaszolt — ezt az ellenőrző
+    # joggal jelölte hibának, pedig a teszt okozta.
+    if OLDAL == "es":
+        nev = GYEREK_NEVEK_ES.get(nev, nev)
     gyerek = {"name": nev, "age": kor, "grade": evfolyam,
               "grade_hu": evfolyam, "grade_es": evfolyam}
     rendszer = _tanari_prompt(gyerek, cimke, nyelv, adat, temakor)
-
-    if OLDAL == "es":
-        nev = GYEREK_NEVEK_ES.get(nev, nev)
     gyerek_rendszer = (
         (f"Egy {kor} éves SPANYOL gyereket játszol, akit {nev}-nek hívnak. "
          "MINDIG SPANYOLUL válaszolj, ahogy egy spanyol iskolás. "
+         "A jellemed alább magyarul van leírva, de te SOHA ne írj magyarul: "
+         "pl. 'ez uncsi' helyett 'qué aburrido', 'ezt nem értem' helyett "
+         "'no lo entiendo'. "
          if OLDAL == "es" else
          f"Egy {kor} éves magyar gyereket játszol, akit {nev}-nek hívnak. ") +
         f"{jellem}\n"
@@ -415,7 +423,10 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
         # gyerek a magyar megfelelőt sosem látja.
         latott.append(_lathato(tanar_valasz, evfolyam))
 
-        gyerek_tortenet.append({"role": "user", "content": tanar_valasz})
+        # A GYEREK IS AZT KAPJA, AMIT LÁT, nem a nyers jelölőket. Korábban a
+        # nyers <FL:en>…</FL> szöveget kapta, és visszaírta a jelölőt — az
+        # ellenőrző ezt a gyerek „hibájaként" jelezte, holott a teszt okozta.
+        gyerek_tortenet.append({"role": "user", "content": latott[-1]})
         try:
             gyerek_uzenet = _valaszol(
                 kliens, GYEREK_MODELL,
@@ -673,7 +684,10 @@ def main() -> int:
     eredmenyek: list[dict] = []
     print(f"{len(matrix)} óra lejátszása, óránként {a.fordulo} forduló.\n")
 
-    with open("tanar_teszt_beszelgetesek.txt", "w", encoding="utf-8") as naplo:
+    global NAPLO_FAJL
+    NAPLO_FAJL = ("tanar_teszt_beszelgetesek_" + OLDAL + "_"
+                  + datetime.now().strftime("%Y-%m-%d_%H%M") + ".txt")
+    with open(NAPLO_FAJL, "w", encoding="utf-8") as naplo:
         naplo.write(f"TutorIA – lejátszott órák, {ido}\n")
         for i, (fajl, cimke, evf, nyelv) in enumerate(matrix, 1):
             gyerek = GYEREKEK[i % len(GYEREKEK)]
@@ -708,7 +722,7 @@ def main() -> int:
         return 1
     _jelentes(eredmenyek, ido)
     print("\nKész. Olvasd el: tanar_teszt_jelentes.md")
-    print("A teljes beszélgetések: tanar_teszt_beszelgetesek.txt")
+    print("A teljes beszélgetések: " + NAPLO_FAJL)
     return 0
 
 
@@ -767,7 +781,7 @@ def _jelentes(eredmenyek: list[dict], ido: str) -> None:
     if ures:
         s.append("Semmit. Ez jó jel, de nem bizonyíték — futtasd több órával.\n")
 
-    s.append("\n---\n\nA teljes beszélgetések: `tanar_teszt_beszelgetesek.txt`\n")
+    s.append(f"\n---\n\nA teljes beszélgetések: `{NAPLO_FAJL}`\n")
     # A korábbi jelentés NE vesszen el: egy dátumos másolat is készül, így
     # két futás eredménye összevethető (melyik modell, melyik javítás után).
     datumos = ("tanar_teszt_jelentes_" + OLDAL + "_"
