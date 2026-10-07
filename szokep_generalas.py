@@ -26,7 +26,7 @@ HASZNÁLAT
     python szokep_generalas.py
         Legyártja az összes hiányzó képet (kb. 176 db).
 
-    Utána nyisd meg: szokep_uj/attekinto.html
+    Utána nyisd meg: szokep_uj/Idegen nyelvek/attekinto.html
         Pipáld ki, ami JÓ, és a lap alján lévő gomb kiírja a parancsot,
         amit be kell másolnod. Például:
     python szokep_generalas.py --jovahagy apple,cat,dog
@@ -55,7 +55,9 @@ import sys
 import time
 
 GYOKER = os.path.dirname(os.path.abspath(__file__))
-UJ_MAPPA = os.path.join(GYOKER, "szokep_uj")
+# Sándor 2026-10-07-én a nyelvi képeket a szokep_uj\Idegen nyelvek
+# mappába tette – innentől ott dolgozunk, a többi tárgy a saját mappájában.
+UJ_MAPPA = os.path.join(GYOKER, "szokep_uj", "Idegen nyelvek")
 # TANTÁRGYANKÉNT külön mappa: ez a nyelvórák képes szótára. A többi tárgy
 # képei majd a saját mappájukba kerülnek (static/szokepek/kornyezet, …).
 VEGLEGES = os.path.join(GYOKER, "static", "szokepek", "nyelv")
@@ -111,7 +113,7 @@ ALANY = {
  "cow":"a cow","rabbit":"a rabbit","mouse":"a small mouse","big":"a big elephant next to a tiny mouse",
  # játékok
  "toy":"a pile of toys","ball":"a colourful ball","doll":"a doll","car":"a small toy car","teddy bear":"a teddy bear",
- "game":"a board game with dice","play":"children playing with a ball",
+ "game":"a board game with dice","new":"a clothes shop rail with T-shirts, one bright new T-shirt in front has a shiny tag with a big sparkle star on it and small sparkles around it","play":"children playing with a ball",
  # étel, ital
  "bread":"a loaf of bread","milk":"a milk carton with a cow picture on it pouring white milk into a glass","water":"a glass of water","apple":"a red apple",
  "banana":"a banana","cheese":"a piece of cheese","egg":"an egg","juice":"an orange cut in half next to a glass of orange juice with a straw, so it is clear the juice is made from the fruit",
@@ -155,13 +157,13 @@ ALANY = {
  # ünnepek, idő
  "Christmas":"a decorated Christmas tree","Easter":"colourful Easter eggs in a basket",
  "birthday":"a birthday cake with candles","present":"a wrapped present","party":"a party with balloons",
- "card":"an open folded greeting card standing upright, decorated with a big heart and flowers, nothing written on it","celebrate":"children celebrating with confetti",
+ "card":"an open folded greeting card standing upright, decorated with a big heart and flowers, nothing written on it","celebrate":"children celebrating with confetti","week":"a simple weekly planner: seven coloured columns side by side, each column has a small doodle (sun, ball, book, music note, apple, bike, star), no words and no letters","month":"a simple wall calendar page for one month: a grid of thirty small numbered squares, with a colourful picture strip at the top, no words",
  
  # város
  "town":"a small town","street":"a street with houses","shop":"a small shop front","park":"a park with trees and a bench",
  "hospital":"a hospital building","bus":"a bus","near":"a house close to a tree","far":"a house far away on a hill",
  # vásárlás
- "money":"coins and banknotes","buy":"a child buying fruit at a market stall","price":"a price tag",
+ "money":"coins and banknotes","buy":"a child buying fruit at a market stall","price":"a price tag","cheap":"two identical toy cars side by side on a shop shelf: the left car has a small price tag with one single coin drawn on it, the right car has a big price tag with a big pile of gold coins drawn on it, a big green circle is drawn around the left car",
  "expensive":"a price tag with a big price and gold coins","pay":"a hand paying with coins",
  # kedvencek
  "food":"a plate of healthy food","colour":"a colourful paint palette","animal":"a group of animals",
@@ -217,8 +219,16 @@ def fogalmak() -> list[dict]:
     return lista
 
 
+# Ahol a SZÁM maga a lényeg (havi naptár), ott a számokat megengedjük –
+# a számjegy minden nyelven ugyanaz.
+SZAM_MEHET = {"month"}
+
+
 def prompt(f: dict) -> str:
-    return f"{f['alany'].capitalize()}. {STILUS}. {TILTAS}"
+    tiltas = TILTAS
+    if f["kulcs"] in SZAM_MEHET:
+        tiltas = tiltas.replace("no numbers written anywhere, ", "")
+    return f"{f['alany'].capitalize()}. {STILUS}. {tiltas}"
 
 
 def uj_ut(f: dict) -> str:
@@ -306,7 +316,12 @@ def main() -> int:
     p.add_argument("--csak", default="", help="vesszővel elválasztott kulcsok")
     p.add_argument("--ujra", action="store_true", help="a meglévő képet is újragyártja")
     p.add_argument("--jovahagy", default="", help="vesszővel elválasztott kulcsok, vagy MIND")
+    p.add_argument("--attekinto", action="store_true", help="csak az átnéző lapot készíti el újra")
     a = p.parse_args()
+    if a.attekinto:
+        attekinto(fogalmak())
+        print("Kész: szokep_uj/Idegen nyelvek/attekinto.html")
+        return 0
 
     lista = fogalmak()
     if a.csak:
@@ -354,7 +369,7 @@ def main() -> int:
                 return 1
             time.sleep(2)
     attekinto(lista)
-    print(f"\nKész ({hiba} hiba). Nyisd meg: szokep_uj/attekinto.html")
+    print(f"\nKész ({hiba} hiba). Nyisd meg: szokep_uj/Idegen nyelvek/attekinto.html")
     return 0
 
 

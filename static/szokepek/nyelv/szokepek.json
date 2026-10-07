@@ -1,0 +1,872 @@
+{
+ "animal": {
+  "de": "Tier",
+  "en": "animal",
+  "es": "el animal"
+ },
+ "apple": {
+  "de": "Apfel",
+  "en": "apple",
+  "es": "la manzana"
+ },
+ "arm": {
+  "de": "Arm",
+  "en": "arm",
+  "es": "el brazo"
+ },
+ "autumn": {
+  "de": "Herbst",
+  "en": "autumn",
+  "es": "el otoño"
+ },
+ "baby": {
+  "de": "Baby",
+  "en": "baby",
+  "es": "el bebé"
+ },
+ "bag": {
+  "de": "Tasche",
+  "en": "bag",
+  "es": "la mochila"
+ },
+ "ball": {
+  "de": "der Ball",
+  "en": "ball",
+  "es": "la pelota"
+ },
+ "banana": {
+  "de": "Banane",
+  "en": "banana",
+  "es": "el plátano"
+ },
+ "bathroom": {
+  "de": "Bad",
+  "en": "bathroom",
+  "es": "el baño"
+ },
+ "bed": {
+  "de": "Bett",
+  "en": "bed",
+  "es": "la cama"
+ },
+ "big": {
+  "de": "groß",
+  "en": "big",
+  "es": "grande"
+ },
+ "bird": {
+  "de": "Vogel",
+  "en": "bird",
+  "es": "el pájaro"
+ },
+ "birthday": {
+  "de": "Geburtstag",
+  "en": "birthday",
+  "es": "el cumpleaños"
+ },
+ "black": {
+  "de": "schwarz",
+  "en": "black",
+  "es": "negro"
+ },
+ "blue": {
+  "de": "blau",
+  "en": "blue",
+  "es": "azul"
+ },
+ "board": {
+  "de": "Tafel",
+  "en": "board",
+  "es": "la pizarra"
+ },
+ "book": {
+  "de": "Buch",
+  "en": "book",
+  "es": "el libro"
+ },
+ "bread": {
+  "de": "Brot",
+  "en": "bread",
+  "es": "el pan"
+ },
+ "break": {
+  "de": "Pause",
+  "en": "break",
+  "es": "el recreo"
+ },
+ "breakfast": {
+  "de": "Frühstück",
+  "en": "breakfast",
+  "es": "el desayuno"
+ },
+ "brother": {
+  "de": "Bruder",
+  "en": "brother",
+  "es": "el hermano"
+ },
+ "brown": {
+  "de": "braun",
+  "en": "brown",
+  "es": "marrón"
+ },
+ "bus": {
+  "de": "Bus",
+  "en": "bus",
+  "es": "el autobús"
+ },
+ "buy": {
+  "de": "kaufen",
+  "en": "buy",
+  "es": "comprar"
+ },
+ "car": {
+  "de": "das Auto",
+  "en": "car",
+  "es": "el coche"
+ },
+ "card": {
+  "de": "Karte",
+  "en": "card",
+  "es": "la tarjeta"
+ },
+ "cat": {
+  "de": "Katze",
+  "en": "cat",
+  "es": "el gato"
+ },
+ "celebrate": {
+  "de": "feiern",
+  "en": "celebrate",
+  "es": "celebrar"
+ },
+ "chair": {
+  "de": "Stuhl",
+  "en": "chair",
+  "es": "la silla"
+ },
+ "cheap": {
+  "de": "billig",
+  "en": "cheap",
+  "es": "barato"
+ },
+ "cheese": {
+  "de": "Käse",
+  "en": "cheese",
+  "es": "el queso"
+ },
+ "christmas": {
+  "de": "Weihnachten",
+  "en": "Christmas",
+  "es": "la Navidad"
+ },
+ "classroom": {
+  "de": "Klassenzimmer",
+  "en": "classroom",
+  "es": "el aula"
+ },
+ "close": {
+  "de": "schließe",
+  "en": "close",
+  "es": "cierra"
+ },
+ "cloudy": {
+  "de": "wolkig",
+  "en": "cloudy",
+  "es": "nublado"
+ },
+ "cold": {
+  "de": "kalt",
+  "en": "cold",
+  "es": "hace frío"
+ },
+ "colour": {
+  "de": "Farbe",
+  "en": "colour",
+  "es": "el color"
+ },
+ "count": {
+  "de": "zählen",
+  "en": "count",
+  "es": "contar"
+ },
+ "cow": {
+  "de": "Kuh",
+  "en": "cow",
+  "es": "la vaca"
+ },
+ "cup": {
+  "de": "Tasse",
+  "en": "cup",
+  "es": "la taza"
+ },
+ "dad": {
+  "de": "Papa",
+  "en": "dad",
+  "es": "papá"
+ },
+ "dance": {
+  "de": "tanzen",
+  "en": "dance",
+  "es": "bailar"
+ },
+ "desk": {
+  "de": "Tisch",
+  "en": "desk",
+  "es": "la mesa"
+ },
+ "dinner": {
+  "de": "Abendessen",
+  "en": "dinner",
+  "es": "la cena"
+ },
+ "dog": {
+  "de": "Hund",
+  "en": "dog",
+  "es": "el perro"
+ },
+ "doll": {
+  "de": "die Puppe",
+  "en": "doll",
+  "es": "la muñeca"
+ },
+ "door": {
+  "de": "Tür",
+  "en": "door",
+  "es": "la puerta"
+ },
+ "draw": {
+  "de": "malen",
+  "en": "draw",
+  "es": "dibujar"
+ },
+ "dress": {
+  "de": "Kleid",
+  "en": "dress",
+  "es": "el vestido"
+ },
+ "drink": {
+  "de": "trinken",
+  "en": "drink",
+  "es": "beber"
+ },
+ "ear": {
+  "de": "Ohr",
+  "en": "ear",
+  "es": "la oreja"
+ },
+ "easter": {
+  "de": "Ostern",
+  "en": "Easter",
+  "es": "la Pascua"
+ },
+ "eat": {
+  "de": "essen",
+  "en": "eat",
+  "es": "comer"
+ },
+ "egg": {
+  "de": "Ei",
+  "en": "egg",
+  "es": "el huevo"
+ },
+ "eight": {
+  "de": "acht",
+  "en": "eight",
+  "es": "ocho"
+ },
+ "evening": {
+  "de": "Abend",
+  "en": "evening",
+  "es": "la noche"
+ },
+ "expensive": {
+  "de": "teuer",
+  "en": "expensive",
+  "es": "caro"
+ },
+ "eye": {
+  "de": "Auge",
+  "en": "eye",
+  "es": "el ojo"
+ },
+ "family": {
+  "de": "Familie",
+  "en": "family",
+  "es": "la familia"
+ },
+ "far": {
+  "de": "weit",
+  "en": "far",
+  "es": "lejos"
+ },
+ "film": {
+  "de": "Film",
+  "en": "film",
+  "es": "la película"
+ },
+ "fish": {
+  "de": "Fisch",
+  "en": "fish",
+  "es": "el pez"
+ },
+ "five": {
+  "de": "fünf",
+  "en": "five",
+  "es": "cinco"
+ },
+ "flower": {
+  "de": "Blume",
+  "en": "flower",
+  "es": "la flor"
+ },
+ "food": {
+  "de": "Essen",
+  "en": "food",
+  "es": "la comida"
+ },
+ "foot": {
+  "de": "Fuß",
+  "en": "foot",
+  "es": "el pie"
+ },
+ "football": {
+  "de": "Fußball",
+  "en": "football",
+  "es": "el fútbol"
+ },
+ "forest": {
+  "de": "Wald",
+  "en": "forest",
+  "es": "el bosque"
+ },
+ "four": {
+  "de": "vier",
+  "en": "four",
+  "es": "cuatro"
+ },
+ "game": {
+  "de": "das Spiel",
+  "en": "game",
+  "es": "el juego"
+ },
+ "garden": {
+  "de": "Garten",
+  "en": "garden",
+  "es": "el jardín"
+ },
+ "get_up": {
+  "de": "aufstehen",
+  "en": "get up",
+  "es": "levantarse"
+ },
+ "go_to_school": {
+  "de": "zur Schule gehen",
+  "en": "go to school",
+  "es": "ir al colegio"
+ },
+ "grandma": {
+  "de": "Oma",
+  "en": "grandma",
+  "es": "la abuela"
+ },
+ "grandpa": {
+  "de": "Opa",
+  "en": "grandpa",
+  "es": "el abuelo"
+ },
+ "green": {
+  "de": "grün",
+  "en": "green",
+  "es": "verde"
+ },
+ "grow": {
+  "de": "wachsen",
+  "en": "grow",
+  "es": "crecer"
+ },
+ "hair": {
+  "de": "Haare",
+  "en": "hair",
+  "es": "el pelo"
+ },
+ "hand": {
+  "de": "Hand",
+  "en": "hand",
+  "es": "la mano"
+ },
+ "happy": {
+  "de": "froh",
+  "en": "happy",
+  "es": "contento"
+ },
+ "hat": {
+  "de": "Mütze",
+  "en": "hat",
+  "es": "la gorra"
+ },
+ "head": {
+  "de": "Kopf",
+  "en": "head",
+  "es": "la cabeza"
+ },
+ "hobby": {
+  "de": "Hobby",
+  "en": "hobby",
+  "es": "el hobby"
+ },
+ "homework": {
+  "de": "Hausaufgabe",
+  "en": "homework",
+  "es": "los deberes"
+ },
+ "horse": {
+  "de": "Pferd",
+  "en": "horse",
+  "es": "el caballo"
+ },
+ "hospital": {
+  "de": "Krankenhaus",
+  "en": "hospital",
+  "es": "el hospital"
+ },
+ "hot": {
+  "de": "heiß",
+  "en": "hot",
+  "es": "hace calor"
+ },
+ "house": {
+  "de": "Haus",
+  "en": "house",
+  "es": "la casa"
+ },
+ "hungry": {
+  "de": "hungrig",
+  "en": "hungry",
+  "es": "tener hambre"
+ },
+ "in": {
+  "de": "in",
+  "en": "in",
+  "es": "en"
+ },
+ "jacket": {
+  "de": "Jacke",
+  "en": "jacket",
+  "es": "la chaqueta"
+ },
+ "juice": {
+  "de": "Saft",
+  "en": "juice",
+  "es": "el zumo"
+ },
+ "kitchen": {
+  "de": "Küche",
+  "en": "kitchen",
+  "es": "la cocina"
+ },
+ "leaf": {
+  "de": "Blatt",
+  "en": "leaf",
+  "es": "la hoja"
+ },
+ "learn": {
+  "de": "lernen",
+  "en": "learn",
+  "es": "aprender"
+ },
+ "less": {
+  "de": "weniger",
+  "en": "less",
+  "es": "menos"
+ },
+ "lesson": {
+  "de": "Stunde",
+  "en": "lesson",
+  "es": "la clase"
+ },
+ "love": {
+  "de": "lieb",
+  "en": "love",
+  "es": "querer"
+ },
+ "lunch": {
+  "de": "Mittagessen",
+  "en": "lunch",
+  "es": "la comida"
+ },
+ "maths": {
+  "de": "Mathe",
+  "en": "maths",
+  "es": "las mates"
+ },
+ "milk": {
+  "de": "Milch",
+  "en": "milk",
+  "es": "la leche"
+ },
+ "money": {
+  "de": "Geld",
+  "en": "money",
+  "es": "el dinero"
+ },
+ "month": {
+  "de": "Monat",
+  "en": "month",
+  "es": "el mes"
+ },
+ "more": {
+  "de": "mehr",
+  "en": "more",
+  "es": "más"
+ },
+ "morning": {
+  "de": "Morgen",
+  "en": "morning",
+  "es": "la mañana"
+ },
+ "mountain": {
+  "de": "Berg",
+  "en": "mountain",
+  "es": "la montaña"
+ },
+ "mouse": {
+  "de": "Maus",
+  "en": "mouse",
+  "es": "el ratón"
+ },
+ "mouth": {
+  "de": "Mund",
+  "en": "mouth",
+  "es": "la boca"
+ },
+ "mum": {
+  "de": "Mama",
+  "en": "mum",
+  "es": "mamá"
+ },
+ "music": {
+  "de": "Musik",
+  "en": "music",
+  "es": "la música"
+ },
+ "nature": {
+  "de": "Natur",
+  "en": "nature",
+  "es": "la naturaleza"
+ },
+ "new": {
+  "de": "neu",
+  "en": "new",
+  "es": "nuevo"
+ },
+ "nine": {
+  "de": "neun",
+  "en": "nine",
+  "es": "nueve"
+ },
+ "nose": {
+  "de": "Nase",
+  "en": "nose",
+  "es": "la nariz"
+ },
+ "on": {
+  "de": "auf",
+  "en": "on",
+  "es": "sobre"
+ },
+ "one": {
+  "de": "eins",
+  "en": "one",
+  "es": "uno"
+ },
+ "open": {
+  "de": "öffne",
+  "en": "open",
+  "es": "abre"
+ },
+ "orange": {
+  "de": "orange",
+  "en": "orange",
+  "es": "naranja"
+ },
+ "park": {
+  "de": "Park",
+  "en": "park",
+  "es": "el parque"
+ },
+ "party": {
+  "de": "Party",
+  "en": "party",
+  "es": "la fiesta"
+ },
+ "pay": {
+  "de": "bezahlen",
+  "en": "pay",
+  "es": "pagar"
+ },
+ "pencil": {
+  "de": "Stift",
+  "en": "pencil",
+  "es": "el lápiz"
+ },
+ "pink": {
+  "de": "rosa",
+  "en": "pink",
+  "es": "rosa"
+ },
+ "plate": {
+  "de": "Teller",
+  "en": "plate",
+  "es": "el plato"
+ },
+ "play": {
+  "de": "spielen",
+  "en": "play",
+  "es": "jugar"
+ },
+ "present": {
+  "de": "Geschenk",
+  "en": "present",
+  "es": "el regalo"
+ },
+ "rabbit": {
+  "de": "Hase",
+  "en": "rabbit",
+  "es": "el conejo"
+ },
+ "rain": {
+  "de": "Regen",
+  "en": "rain",
+  "es": "la lluvia"
+ },
+ "rainy": {
+  "de": "regnerisch",
+  "en": "rainy",
+  "es": "llueve"
+ },
+ "read": {
+  "de": "lesen",
+  "en": "read",
+  "es": "leer"
+ },
+ "red": {
+  "de": "rot",
+  "en": "red",
+  "es": "rojo"
+ },
+ "ride_a_bike": {
+  "de": "Rad fahren",
+  "en": "ride a bike",
+  "es": "montar en bici"
+ },
+ "river": {
+  "de": "Fluss",
+  "en": "river",
+  "es": "el río"
+ },
+ "room": {
+  "de": "Zimmer",
+  "en": "room",
+  "es": "la habitación"
+ },
+ "school": {
+  "de": "Schule",
+  "en": "school",
+  "es": "el colegio"
+ },
+ "school_trip": {
+  "de": "Ausflug",
+  "en": "school trip",
+  "es": "la excursión"
+ },
+ "seven": {
+  "de": "sieben",
+  "en": "seven",
+  "es": "siete"
+ },
+ "shoes": {
+  "de": "Schuhe",
+  "en": "shoes",
+  "es": "los zapatos"
+ },
+ "shop": {
+  "de": "Geschäft",
+  "en": "shop",
+  "es": "la tienda"
+ },
+ "sing": {
+  "de": "singen",
+  "en": "sing",
+  "es": "cantar"
+ },
+ "sister": {
+  "de": "Schwester",
+  "en": "sister",
+  "es": "la hermana"
+ },
+ "six": {
+  "de": "sechs",
+  "en": "six",
+  "es": "seis"
+ },
+ "sleep": {
+  "de": "schlafen",
+  "en": "sleep",
+  "es": "dormir"
+ },
+ "snow": {
+  "de": "Schnee",
+  "en": "snow",
+  "es": "la nieve"
+ },
+ "socks": {
+  "de": "Socken",
+  "en": "socks",
+  "es": "los calcetines"
+ },
+ "song": {
+  "de": "Lied",
+  "en": "song",
+  "es": "la canción"
+ },
+ "spring": {
+  "de": "Frühling",
+  "en": "spring",
+  "es": "la primavera"
+ },
+ "street": {
+  "de": "Straße",
+  "en": "street",
+  "es": "la calle"
+ },
+ "summer": {
+  "de": "Sommer",
+  "en": "summer",
+  "es": "el verano"
+ },
+ "sunny": {
+  "de": "sonnig",
+  "en": "sunny",
+  "es": "hace sol"
+ },
+ "swim": {
+  "de": "schwimmen",
+  "en": "swim",
+  "es": "nadar"
+ },
+ "t_shirt": {
+  "de": "T-Shirt",
+  "en": "T-shirt",
+  "es": "la camiseta"
+ },
+ "table": {
+  "de": "Tisch",
+  "en": "table",
+  "es": "la mesa"
+ },
+ "tasty": {
+  "de": "lecker",
+  "en": "tasty",
+  "es": "rico"
+ },
+ "teacher": {
+  "de": "Lehrer",
+  "en": "teacher",
+  "es": "el profesor"
+ },
+ "teddy_bear": {
+  "de": "der Teddy",
+  "en": "teddy bear",
+  "es": "el osito"
+ },
+ "ten": {
+  "de": "zehn",
+  "en": "ten",
+  "es": "diez"
+ },
+ "thirsty": {
+  "de": "durstig",
+  "en": "thirsty",
+  "es": "tener sed"
+ },
+ "three": {
+  "de": "drei",
+  "en": "three",
+  "es": "tres"
+ },
+ "together": {
+  "de": "zusammen",
+  "en": "together",
+  "es": "juntos"
+ },
+ "town": {
+  "de": "Stadt",
+  "en": "town",
+  "es": "la ciudad"
+ },
+ "toy": {
+  "de": "das Spielzeug",
+  "en": "toy",
+  "es": "el juguete"
+ },
+ "tree": {
+  "de": "Baum",
+  "en": "tree",
+  "es": "el árbol"
+ },
+ "trousers": {
+  "de": "Hose",
+  "en": "trousers",
+  "es": "los pantalones"
+ },
+ "two": {
+  "de": "zwei",
+  "en": "two",
+  "es": "dos"
+ },
+ "warm": {
+  "de": "warm",
+  "en": "warm",
+  "es": "calentito"
+ },
+ "wash": {
+  "de": "waschen",
+  "en": "wash",
+  "es": "lavarse"
+ },
+ "water": {
+  "de": "Wasser",
+  "en": "water",
+  "es": "el agua"
+ },
+ "week": {
+  "de": "Woche",
+  "en": "week",
+  "es": "la semana"
+ },
+ "white": {
+  "de": "weiß",
+  "en": "white",
+  "es": "blanco"
+ },
+ "window": {
+  "de": "Fenster",
+  "en": "window",
+  "es": "la ventana"
+ },
+ "windy": {
+  "de": "windig",
+  "en": "windy",
+  "es": "hace viento"
+ },
+ "winter": {
+  "de": "Winter",
+  "en": "winter",
+  "es": "el invierno"
+ },
+ "yellow": {
+  "de": "gelb",
+  "en": "yellow",
+  "es": "amarillo"
+ }
+}

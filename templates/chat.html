@@ -656,6 +656,11 @@
      úgy, mintha dobozban ülne. */
   .chat-kabala-rive{display:block;position:relative;
                     width:118%;height:118%;left:-9%;top:-9%}
+
+  /* ══ KÉPES SZÓTÁR: a szó melletti kép (2026-10-07) ══ */
+  .chat-vocab-list li.van-kep{overflow:hidden;min-height:62px}
+  .vocab-kep{float:right;width:54px;height:54px;object-fit:cover;border-radius:12px;
+    margin:0 0 4px 10px;background:#FBF5EA;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -946,7 +951,8 @@
         <p class="chat-vocab-lang">{{ language|display_language }}</p>
         <ul class="chat-vocab-list" id="vocab-list">
             {% for w in vocabulary %}
-                <li>
+                <li{% if w['kep'] %} class="van-kep"{% endif %}>
+                    {% if w['kep'] %}<img class="vocab-kep" src="{{ w['kep'] }}" alt="" loading="lazy">{% endif %}
                     <span class="vocab-native">{{ w['word_native'] }}</span>
                     <span class="vocab-arrow">→</span>
                     <span class="vocab-foreign">{{ w['word_foreign'] }}</span>
@@ -3293,7 +3299,13 @@
 
         vocabArray.forEach(function(w) {
             var li = document.createElement('li');
-            li.innerHTML = '<span class="vocab-native">' + (w.word_native || '') + '</span>' +
+            /* KÉPES SZÓTÁR: ha a szóhoz van jóváhagyott kép, a szó mellett látszik. */
+            var kepHtml = '';
+            if (w.kep && /^\/static\/szokepek\/[a-z0-9_\/]+\.webp$/.test(w.kep)) {
+                li.className = 'van-kep';
+                kepHtml = '<img class="vocab-kep" src="' + w.kep + '" alt="" loading="lazy">';
+            }
+            li.innerHTML = kepHtml + '<span class="vocab-native">' + (w.word_native || '') + '</span>' +
                            '<span class="vocab-arrow"> - </span>' +
                            '<span class="vocab-foreign">' + (w.word_foreign || '') + '</span>';
             list.appendChild(li);
@@ -4652,6 +4664,7 @@
     .chat-sidebar-vocab.szolap.nyitva .chat-vocab-list li{
         font-size:17px;padding:11px 0}
     .chat-sidebar-vocab.szolap.nyitva .chat-sidebar-title{margin-top:0}
+    .chat-sidebar-vocab.szolap.nyitva .vocab-kep{width:64px;height:64px}
 
     .mobil-gombok.harom .mobil-gomb{display:flex;flex-direction:column;
         align-items:center;justify-content:center;gap:3px;

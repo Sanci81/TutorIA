@@ -8631,6 +8631,76 @@ def _chat_subject_label(
     return subject_label
 
 
+# ══ KÉPES SZÓTÁR ══════════════════════════════════════════════════════
+# A nyelvórák szavaihoz előre legyártott, jóváhagyott képek vannak a
+# static/szokepek/nyelv mappában (szokep_generalas.py). A listájuk a
+# szokepek.json: kulcs → {"en": "apple", "de": "Apfel", "es": "la manzana"}.
+# Itt a szójegyzék minden szavához megkeressük a képet az IDEGEN szó
+# alapján – névelő, kis- és nagybetű, írásjel nem számít. Így ugyanaz a
+# kép megy a magyar és a spanyol oldal angol, német és spanyol óráin.
+# Ha nincs kép (vagy még nincs jóváhagyva egy sem), minden úgy marad,
+# ahogy eddig volt.
+_SZOKEP_MAPPA = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                             "static", "szokepek", "nyelv")
+_SZOKEP_NEVELOK = {"the", "a", "an", "der", "die", "das", "ein", "eine",
+                   "el", "la", "los", "las", "un", "una", "unos", "unas"}
+_szokep_gyorstar: dict = {"ido": None, "index": {}}
+
+
+def _szokep_norm(szo: str) -> str:
+    s = re.sub(r"[¡!¿?.,;:\"'()…]", " ", str(szo or "").lower())
+    reszek = [r for r in s.split() if r]
+    while len(reszek) > 1 and reszek[0] in _SZOKEP_NEVELOK:
+        reszek = reszek[1:]
+    return " ".join(reszek)
+
+
+def _szokep_index() -> dict:
+    ut = os.path.join(_SZOKEP_MAPPA, "szokepek.json")
+    try:
+        ido = os.path.getmtime(ut)
+    except OSError:
+        return {}
+    if _szokep_gyorstar["ido"] == ido:
+        return _szokep_gyorstar["index"]
+    index: dict = {}
+    try:
+        with open(ut, encoding="utf-8") as f:
+            adat = json.load(f)
+        for kulcs, szavak in (adat or {}).items():
+            if not os.path.exists(os.path.join(_SZOKEP_MAPPA, kulcs + ".webp")):
+                continue
+            cim = f"/static/szokepek/nyelv/{kulcs}.webp"
+            for nyelv in ("en", "de", "es"):
+                n = _szokep_norm((szavak or {}).get(nyelv, ""))
+                if n and n not in index:
+                    index[n] = cim
+    except Exception:
+        logger.exception("szokepek.json olvasása nem sikerült")
+        index = {}
+    _szokep_gyorstar.update(ido=ido, index=index)
+    return index
+
+
+def _szokepekkel(szavak):
+    """A szójegyzék szavai, és ahol van, a kép címe a "kep" mezőben."""
+    index = _szokep_index()
+    if not index or not szavak:
+        return szavak
+    ki = []
+    for w in szavak:
+        try:
+            d = dict(w)
+        except Exception:
+            ki.append(w)
+            continue
+        kep = index.get(_szokep_norm(d.get("word_foreign", "")))
+        if kep:
+            d["kep"] = kep
+        ki.append(d)
+    return ki
+
+
 def _chat_save_vocabulary(
     child_id: int,
     subject: str,
@@ -8671,7 +8741,7 @@ def child_vocabulary(child_id: int):
     words = database.get_vocabulary(
         child_id, subject, language=language or None, topic_id=topic_id
     )
-    return jsonify({"words": words})
+    return jsonify({"words": _szokepekkel(words)})
 
 
 # ── AZ ÚJ MUNKAFELÜLET KAPCSOLÓJA ──────────────────────────────────────────
@@ -9110,7 +9180,7 @@ def child_chat(child_id: int):
 
     vocabulary = []
     if is_foreign and language:
-        vocabulary = database.get_vocabulary(child_id, subject, language=language, topic_id=current_topic_id)
+        vocabulary = _szokepekkel(database.get_vocabulary(child_id, subject, language=language, topic_id=current_topic_id))
 
     chat_switch_params = {"child_id": child_id, "subject": subject, "mode": "chat"}
     if language:
@@ -10007,7 +10077,7 @@ def child_chat_send(child_id: int):
     )
     vocabulary = []
     if is_foreign and language:
-        vocabulary = database.get_vocabulary(child_id, subject, language=language, topic_id=current_topic_id)
+        vocabulary = _szokepekkel(database.get_vocabulary(child_id, subject, language=language, topic_id=current_topic_id))
 
     _eltelt = time.monotonic() - _kezdet
     if _eltelt > 20:
@@ -10964,9 +11034,9 @@ def child_chat_test_submit(child_id: int):
     # teljesítése után a témakör szavai eltűnnének a panelről.
     vocabulary = []
     if language:
-        vocabulary = database.get_vocabulary(
+        vocabulary = _szokepekkel(database.get_vocabulary(
             child_id, subject, language=language, topic_id=topic_id
-        )
+        ))
 
     # ── Szóbeli teszt hibáinak összefoglalója (felolvasáshoz) ──
     voice_feedback = None
