@@ -7743,9 +7743,17 @@ EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket 
 - Alsó tagozaton (1-4.) vagy kezdő szintnél EGYSZERRE CSAK EGY új nyelvi elemet taníts.
   Ez lehet egy szó VAGY egy kész fordulat („There is a park near my school."). Soha ne
   hármat, ne is kettőt.
-- Az új elemet mondd ki, majd ISMÉTELD MEG még kétszer a válaszodon belül, más-más
-  mondatban, hogy rögzüljön.
-- Utána tegyél fel EGY kérdést róla. Ha a gyerek jól válaszol, UGYANEBBEN a válaszban
+- Az új elemet egy KONKRÉT, a gyerek életéből vett helyzettel vezesd be (tárgy,
+  állat, játék, család), és mutasd meg KÉT RÖVID PÉLDAMONDATBAN, fordítással:
+  „Este juguete es mío. – Ez a játék az enyém." Ez az ismétlés: a szó a két
+  mondatban hangzik el újra. TILOS a puszta szólista-ismétlés („mío — enyém,
+  mío — az enyém"), mert abból a gyerek semmit nem tanul.
+- Utána tegyél fel EGY kérdést, amin a gyereknek GONDOLKODNIA kell: fordíttass
+  le egy rövid, ÚJ mondatot a szóval, egészíttess ki egy mondatot, vagy kérdezz
+  rá úgy, hogy a válaszlehetőségek között egy KORÁBBAN tanult szó is legyen.
+  TILOS olyat kérdezni, aminek a válasza szó szerint ugyanabban az üzenetben áll
+  („Most a mío szót tanuljuk: azt jelenti, enyém. … Melyik szó jelenti azt, hogy
+  enyém?") – ez nem kérdés, hanem visszamásolás. Ha a gyerek jól válaszol, UGYANEBBEN a válaszban
   dicsérd meg és lépj a következő elemre – ne kérdezd meg még egyszer ugyanazt. Csak
   akkor kérdezz vissza ugyanarra, ha rosszul válaszolt, és akkor is magyarázd el előbb
   más szavakkal.
@@ -8884,22 +8892,82 @@ def _tantargyi_kep(szoveg: str, *, es: bool, targy: str = "",
     if not lista or not szoveg:
         return None
     targy_szavak = _tkep_szavak(targy)
-    if not targy_szavak:
-        return None
     kis = szoveg.lower()
     nyelv = "es" if es else "hu"
     volt = _tkep_mutatott.get(beszelgetes, []) if beszelgetes else []
-    for ny, nev, cim, tk, _gyenge in lista:
-        # A tantárgy MINDEN szava benne legyen a mappa nevében – különben a
-        # vizuális kultúra órán a digitális kultúra képei is előjönnének.
-        if ny != nyelv or not targy_szavak <= set(tk.split("_")):
-            continue
-        if cim in volt:
+    # 1. kör: a SAJÁT tantárgy képei (erős és főszavas találat is).
+    # 2. kör: BÁRMELYIK tantárgy képe, de csak a TELJES névre, legalább 6
+    #    betűvel – így a „harmonika" zeneórán kívül is előjön, de az „egér"
+    #    (számítógépes) vagy az „ember" nem kerül bármelyik órára.
+    sajat = [x for x in lista if targy_szavak and targy_szavak <= set(x[3].split("_"))]
+    tobbi = [x for x in lista if x not in sajat and x[4] == 0 and len(x[1]) >= 6]
+    for ny, nev, cim, tk, _gyenge in sajat + tobbi:
+        if ny != nyelv or cim in volt:
             continue
         # Magyar toldalék: harmonika → harmonikát, mese → mesét.
         minta = (re.escape(nev[:-1]) + "[aáeé]"
                  if ny == "hu" and nev[-1:] in ("a", "e") else re.escape(nev))
         if re.search(r"(?<![\w])" + minta, kis):
+            if beszelgetes:
+                if len(_tkep_mutatott) > 2000:
+                    _tkep_mutatott.clear()
+                _tkep_mutatott[beszelgetes] = (volt + [cim])[-40:]
+            return (f'<img src="{cim}" alt="" loading="lazy" '
+                    f'style="width:100%;height:auto;display:block;border-radius:8px">')
+    return None
+
+
+_NYELV_KOD = {"angol": "en", "nemet": "de", "spanyol": "es"}
+_nyelvi_kep_gyorstar: dict = {"ido": None, "index": {}}
+
+
+def _nyelvi_kep_index(kod: str) -> dict:
+    """A képes szótár CSAK az adott nyelvre: {szó: kép címe}."""
+    ut = os.path.join(_SZOKEP_MAPPA, "szokepek.json")
+    try:
+        ido = os.path.getmtime(ut)
+    except OSError:
+        return {}
+    if _nyelvi_kep_gyorstar["ido"] != ido:
+        osszes: dict = {}
+        try:
+            with open(ut, encoding="utf-8") as f:
+                adat = json.load(f)
+            for kulcs, szavak in (adat or {}).items():
+                if not os.path.exists(os.path.join(_SZOKEP_MAPPA, kulcs + ".webp")):
+                    continue
+                for ny in ("en", "de", "es"):
+                    n = _szokep_norm((szavak or {}).get(ny, ""))
+                    if n:
+                        osszes.setdefault(ny, {}).setdefault(
+                            n, f"/static/szokepek/nyelv/{kulcs}.webp")
+        except Exception:
+            logger.exception("szokepek.json olvasása nem sikerült")
+            osszes = {}
+        _nyelvi_kep_gyorstar.update(ido=ido, index=osszes)
+    return _nyelvi_kep_gyorstar["index"].get(kod, {})
+
+
+def _nyelvi_kep(reply: str, vocab_pairs, *, nyelv: str = "",
+                beszelgetes=None) -> str | None:
+    """Nyelvórán: a most tanított idegen szó képe a képes szótárból (HTML).
+
+    Először a válasz <VOCAB> párjai közül keres, aztán a válasz szövegében
+    álló idegen szavak közül (egy- és kétszavas kifejezések). Csak az óra
+    nyelvén keres – angolórán nem jön elő egy spanyol szó képe."""
+    index = _nyelvi_kep_index(_NYELV_KOD.get(nyelv or "", ""))
+    if not index:
+        return None
+    volt = _tkep_mutatott.get(beszelgetes, []) if beszelgetes else []
+    jeloltek = [_szokep_norm(f) for _n, f in (vocab_pairs or [])]
+    szavak = re.findall(r"[^\W\d_]+", (reply or "").lower())
+    jeloltek += [" ".join(szavak[i:i + 2]) for i in range(len(szavak) - 1)]
+    jeloltek += szavak
+    for j in jeloltek:
+        if len(j) < 3:
+            continue
+        cim = index.get(j)
+        if cim and cim not in volt:
             if beszelgetes:
                 if len(_tkep_mutatott) > 2000:
                     _tkep_mutatott.clear()
@@ -10332,10 +10400,15 @@ def child_chat_send(child_id: int):
 
     # ── TANTÁRGYI KÉP: ha nincs rajz, de a tanár egy olyan dolgot említ,
     # amihez van jóváhagyott kép, az kerül a szöveg alá szemléltetésnek.
-    if not figures and not is_foreign:
+    # NYELVÓRÁN a képes szótár képe (a most tanított szóé) kerül a táblára.
+    if not figures:
         try:
-            _tk = _tantargyi_kep(reply, es=(_active_curriculum() or "HU").upper() == "ES",
-                                 targy=subject, beszelgetes=session_id)
+            if is_foreign:
+                _tk = _nyelvi_kep(reply, vocab_pairs, nyelv=language,
+                                  beszelgetes=session_id)
+            else:
+                _tk = _tantargyi_kep(reply, es=(_active_curriculum() or "HU").upper() == "ES",
+                                     targy=subject, beszelgetes=session_id)
             if _tk:
                 figures = [_tk]
         except Exception:

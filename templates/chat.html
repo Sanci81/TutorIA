@@ -151,6 +151,9 @@
   .uj-felulet .tanit-abra{margin:16px 0 0;max-width:340px}
   .uj-felulet .tanit-abra svg{width:100%;height:auto;display:block;
       background:#fff;border-radius:8px}
+  /* Kép (tantárgyi kép, képes szótár) a táblán – ugyanott, ahol a rajz. */
+  .uj-felulet .tanit-abra img{width:100%;max-width:260px;height:auto;display:block;
+      background:#fff;border-radius:12px;box-shadow:0 4px 14px rgba(20,60,40,.12)}
   .uj-felulet .tanit-var{color:#8aa0b2;font-style:italic}
 
   /* ── a keskeny beszélgetés-sáv ── */
@@ -4369,7 +4372,9 @@
             szoveg.textContent = (masolat.textContent || '').trim();
 
             abra.innerHTML = '';
-            var abrak = belso.querySelectorAll('.chat-figure svg');
+            /* A rajz (svg) MELLETT a kép (img) is a táblára kerül – eddig
+               csak az svg-t másoltuk, ezért a képek sosem látszottak. */
+            var abrak = belso.querySelectorAll('.chat-figure svg, .chat-figure img');
             for (var j = 0; j < abrak.length; j++) {
                 abra.appendChild(abrak[j].cloneNode(true));
             }
