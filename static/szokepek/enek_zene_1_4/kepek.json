@@ -1,0 +1,310 @@
+{
+ "accordion": {
+  "en": "accordion",
+  "es": "acordeón",
+  "evfolyam": null,
+  "hu": "harmonika",
+  "temakor": "Zeneművek/Énekes anyag"
+ },
+ "bar_line_music_staff": {
+  "en": "bar line on music staff",
+  "es": "barra de compás",
+  "evfolyam": null,
+  "hu": "ütemvonal",
+  "temakor": "Zenei ismeretek/ Ritmikai fejlesztés"
+ },
+ "child_singing": {
+  "en": "singing child",
+  "es": "niño cantando",
+  "evfolyam": null,
+  "hu": "éneklő gyermek",
+  "temakor": "Zeneművek/Énekes anyag"
+ },
+ "children_choir": {
+  "en": "children's choir",
+  "es": "coro infantil",
+  "evfolyam": null,
+  "hu": "gyermekkar",
+  "temakor": "Zeneművek/Zenehallgatás"
+ },
+ "children_holding_hands_circle_game": {
+  "en": "children holding hands in a circle game",
+  "es": "niños tomados de la mano jugando en círculo",
+  "evfolyam": null,
+  "hu": "kézen fogva körjátékot játszó gyerekek",
+  "temakor": "Zeneművek/Énekes anyag"
+ },
+ "church_bethlehem_scene": {
+  "en": "Bethlehem scene",
+  "es": "escena de Belén",
+  "evfolyam": null,
+  "hu": "betlehemi jelenet",
+  "temakor": "Zeneművek/Énekes anyag"
+ },
+ "clapping_hands": {
+  "en": "clapping hands",
+  "es": "manos aplaudiendo",
+  "evfolyam": null,
+  "hu": "tapsoló kezek",
+  "temakor": "Zenei ismeretek/ Ritmikai fejlesztés"
+ },
+ "dance_circle": {
+  "en": "circle dance",
+  "es": "danza en círculo",
+  "evfolyam": null,
+  "hu": "körtánc",
+  "temakor": "Zeneművek/ Zenehallgatás"
+ },
+ "duet_two_singers": {
+  "en": "duet",
+  "es": "dueto",
+  "evfolyam": null,
+  "hu": "duett",
+  "temakor": "Zeneművek/ Zenehallgatás"
+ },
+ "folk_dancers": {
+  "en": "folk dancers",
+  "es": "bailarines folclóricos",
+  "evfolyam": null,
+  "hu": "néptáncosok",
+  "temakor": "Zeneművek/Énekes anyag"
+ },
+ "hand_signs": {
+  "en": "hand signs",
+  "es": "señas con la mano",
+  "evfolyam": null,
+  "hu": "kézjelek",
+  "temakor": "Zenei ismeretek/ Hallásfejlesztés"
+ },
+ "hungarian_folk_dance_house": {
+  "en": "folk dance house",
+  "es": "casa de baile folclórico",
+  "evfolyam": null,
+  "hu": "táncház",
+  "temakor": "Zeneművek/Énekes anyag"
+ },
+ "loudspeaker": {
+  "en": "loudspeaker",
+  "es": "altavoz",
+  "evfolyam": null,
+  "hu": "hangszóró",
+  "temakor": "Zenei ismeretek/Hallásfejlesztés"
+ },
+ "melody_shape": {
+  "en": "melody line",
+  "es": "línea melódica",
+  "evfolyam": null,
+  "hu": "dallamvonal",
+  "temakor": "Zenei ismeretek/ Zenei írás, olvasás"
+ },
+ "microphone": {
+  "en": "microphone",
+  "es": "micrófono",
+  "evfolyam": null,
+  "hu": "mikrofon",
+  "temakor": "Zenei ismeretek/Hallásfejlesztés"
+ },
+ "mixed_choir": {
+  "en": "mixed choir",
+  "es": "coro mixto",
+  "evfolyam": null,
+  "hu": "vegyeskar",
+  "temakor": "Zeneművek/Zenehallgatás"
+ },
+ "music_accent": {
+  "en": "musical accent",
+  "es": "acento musical",
+  "evfolyam": null,
+  "hu": "zenei hangsúly",
+  "temakor": "Zenei ismeretek /Ritmikai fejlesztés"
+ },
+ "music_note": {
+  "en": "music note",
+  "es": "nota musical",
+  "evfolyam": null,
+  "hu": "hangjegy",
+  "temakor": "Zenei ismeretek/ Zenei írás, olvasás"
+ },
+ "music_notes": {
+  "en": "music notes",
+  "es": "notas musicales",
+  "evfolyam": null,
+  "hu": "hangjegyek",
+  "temakor": "Zenei ismeretek/Hallásfejlesztés"
+ },
+ "music_notes_rest": {
+  "en": "rest symbol",
+  "es": "silencio musical",
+  "evfolyam": null,
+  "hu": "szünetjel",
+  "temakor": "Zenei ismeretek/ Ritmikai fejlesztés"
+ },
+ "music_staff": {
+  "en": "musical staff",
+  "es": "pentagrama",
+  "evfolyam": null,
+  "hu": "kottafejlesztés?",
+  "temakor": "Zenei ismeretek/ Zenei írás-olvasás"
+ },
+ "musical_instrument": {
+  "en": "musical instrument",
+  "es": "instrumento musical",
+  "evfolyam": null,
+  "hu": "hangszer",
+  "temakor": "Zenei ismeretek/ Hallásfejlesztés"
+ },
+ "musical_note": {
+  "en": "musical note",
+  "es": "nota musical",
+  "evfolyam": null,
+  "hu": "zenei hangjegy",
+  "temakor": "Zenei ismeretek /Ritmikai fejlesztés"
+ },
+ "musical_staff": {
+  "en": "musical staff",
+  "es": "pentagrama",
+  "evfolyam": null,
+  "hu": "kottaötös",
+  "temakor": "Zenei ismeretek/ Zenei írás, olvasás"
+ },
+ "national_anthem_flag": {
+  "en": "national anthem",
+  "es": "himno nacional",
+  "evfolyam": null,
+  "hu": "himnusz",
+  "temakor": "Zeneművek/ Zenehallgatás"
+ },
+ "orchestra": {
+  "en": "orchestra",
+  "es": "orquesta",
+  "evfolyam": null,
+  "hu": "zenekar",
+  "temakor": "Zeneművek/Zenehallgatás"
+ },
+ "pentatonic_scale": {
+  "en": "pentatonic scale",
+  "es": "escala pentatónica",
+  "evfolyam": null,
+  "hu": "pentaton hangsor",
+  "temakor": "Zenei ismeretek/ Hallásfejlesztés"
+ },
+ "piano": {
+  "en": "piano",
+  "es": "piano",
+  "evfolyam": null,
+  "hu": "zongora",
+  "temakor": "Zeneművek/Zenehallgatás"
+ },
+ "repeat_sign_music": {
+  "en": "repeat sign",
+  "es": "signo de repetición",
+  "evfolyam": null,
+  "hu": "ismétlőjel",
+  "temakor": "Zenei ismeretek/ Ritmikai fejlesztés"
+ },
+ "rest_symbol": {
+  "en": "rest symbol",
+  "es": "silencio",
+  "evfolyam": null,
+  "hu": "szünetjel",
+  "temakor": "Zenei ismeretek /Ritmikai fejlesztés"
+ },
+ "rhythm_notes": {
+  "en": "rhythm notes",
+  "es": "figuras rítmicas",
+  "evfolyam": null,
+  "hu": "ritmusértékek",
+  "temakor": "Zenei ismeretek/ Zenei írás-olvasás"
+ },
+ "sheet_music_page": {
+  "en": "sheet music page",
+  "es": "partitura",
+  "evfolyam": null,
+  "hu": "kotta",
+  "temakor": "Zenei ismeretek/ Zenei írás, olvasás"
+ },
+ "shepherd_with_cows": {
+  "en": "shepherd with cows",
+  "es": "pastor con vacas",
+  "evfolyam": null,
+  "hu": "pásztor tehenekkel",
+  "temakor": "Zeneművek/Énekes anyag"
+ },
+ "singer": {
+  "en": "singer",
+  "es": "cantante",
+  "evfolyam": null,
+  "hu": "énekes",
+  "temakor": "Zenei ismeretek/ Hallásfejlesztés"
+ },
+ "singing_mouth": {
+  "en": "singing mouth",
+  "es": "boca cantando",
+  "evfolyam": null,
+  "hu": "éneklő száj",
+  "temakor": "Zenei ismeretek/Hallásfejlesztés"
+ },
+ "snare_drum": {
+  "en": "drum",
+  "es": "tambor",
+  "evfolyam": null,
+  "hu": "dob",
+  "temakor": "Zenei ismeretek/ Ritmikai fejlesztés"
+ },
+ "solfege_hand_signs": {
+  "en": "solfege hand signs",
+  "es": "señas manuales de solfeo",
+  "evfolyam": null,
+  "hu": "szolmizációs kézjelek",
+  "temakor": "Zenei ismeretek/ Zenei írás-olvasás"
+ },
+ "solo_singer": {
+  "en": "solo singing",
+  "es": "canto solista",
+  "evfolyam": null,
+  "hu": "szólóének",
+  "temakor": "Zeneművek/ Zenehallgatás"
+ },
+ "straw_horse_sleigh": {
+  "en": "horse sleigh",
+  "es": "trineo tirado por caballos",
+  "evfolyam": null,
+  "hu": "lovasszán",
+  "temakor": "Zeneművek/Énekes anyag"
+ },
+ "time_signature_3_4": {
+  "en": "3/4 time signature",
+  "es": "compás de 3/4",
+  "evfolyam": null,
+  "hu": "3/4 ütemmutató",
+  "temakor": "Zenei ismeretek /Ritmikai fejlesztés"
+ },
+ "time_signature_4_4": {
+  "en": "4/4 time signature",
+  "es": "compás de 4/4",
+  "evfolyam": null,
+  "hu": "4/4 ütemmutató",
+  "temakor": "Zenei ismeretek /Ritmikai fejlesztés"
+ },
+ "traditional_hungarian_folk_costume": {
+  "en": "traditional Hungarian folk costume",
+  "es": "traje popular húngaro",
+  "evfolyam": null,
+  "hu": "magyar népviselet",
+  "temakor": "Zeneművek/Énekes anyag"
+ },
+ "treble_clef": {
+  "en": "treble clef",
+  "es": "clave de sol",
+  "evfolyam": null,
+  "hu": "violinkulcs",
+  "temakor": "Zenei ismeretek/Hallásfejlesztés"
+ },
+ "violin_duo": {
+  "en": "violin duo",
+  "es": "dúo de violines",
+  "evfolyam": null,
+  "hu": "hegedűduó",
+  "temakor": "Zeneművek/Zenehallgatás"
+ }
+}

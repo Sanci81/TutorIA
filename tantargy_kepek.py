@@ -37,6 +37,8 @@ a tantervből szedi ki a program, három lépésben.
         A jó képek kicsinyítve a static/szokepek/<tantárgy> mappába kerülnek.
     Rossz képet újra lehet kérni:
     python tantargy_kepek.py --gyart --tantargy biologia --csak heart --ujra
+    Az ÖSSZES kép jóváhagyása egyszerre, pipálás nélkül:
+    python tantargy_kepek.py --jovahagy MIND
 
 MI KELL HOZZÁ: ugyanaz, mint a szótárnál – OPENAI_API_KEY és a Pillow.
 """
@@ -279,6 +281,15 @@ def gyartas(kliens, csak_t: str, csak_k: set, ujra: bool, db: int, csak_lista: b
 
 
 def jovahagyas(parancs: str) -> int:
+    # MIND: az összes tantárgy összes legyártott képe, pipálás nélkül.
+    if parancs.strip().upper() == "MIND":
+        for tk, lista in tervek("").items():
+            mappa = os.path.join(UJ_MAPPA, tk)
+            kesz = [f["kulcs"] for f in lista
+                    if os.path.exists(os.path.join(mappa, f["kulcs"] + ".png"))]
+            if kesz:
+                jovahagyas(tk + ":" + ",".join(kesz))
+        return 0
     from PIL import Image
     tk, _, kulcsok = parancs.partition(":")
     lista = {f["kulcs"]: f for f in tervek(tk).get(tk, [])}

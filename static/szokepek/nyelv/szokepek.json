@@ -554,6 +554,11 @@
   "en": "nature",
   "es": "la naturaleza"
  },
+ "near": {
+  "de": "nah",
+  "en": "near",
+  "es": "cerca"
+ },
  "new": {
   "de": "neu",
   "en": "new",
@@ -628,6 +633,11 @@
   "de": "Geschenk",
   "en": "present",
   "es": "el regalo"
+ },
+ "price": {
+  "de": "Preis",
+  "en": "price",
+  "es": "el precio"
  },
  "rabbit": {
   "de": "Hase",

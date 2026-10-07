@@ -4793,6 +4793,126 @@
 })();
 </script>
 
+{# ══ SZÓJEGYZÉK FIÓK – LAPTOP / ASZTALI GÉP (760 felett) ════════════════
+   Eddig a szójegyzék a jobb felső sarokba volt beszorítva (200 képpont).
+   Most a jobb szélen egy függőleges „📖 Szójegyzék" fül van; rákattintva
+   a szójegyzék oldalról kicsúszik (340 képpont széles, teljes magasságban).
+   Újra a fülre, a ✕-re, az Esc-re vagy a fiókon kívülre kattintva bezárul.
+   TELEFONON (759 alatt) és NAGYÍTOTT nézetben NEM változik semmi.
+   Ugyanazt az elemet mutatjuk, így az új szavak ugyanúgy bekerülnek. #}
+<style>
+  .szo-fiok-gomb,.szo-fiok-zar{display:none}
+  @media (min-width:760px){
+    .chat-layout:not(.teljes-mod):has(.uj-felulet):has(.chat-sidebar-vocab.szo-fiok)
+        .chat-header,
+    .chat-layout:not(.teljes-mod):has(.uj-felulet):has(.chat-sidebar-vocab.szo-fiok)
+        .lecke-sin-doboz{margin-right:0}
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .chat-sidebar-vocab.szo-fiok{
+        display:block;position:fixed;top:84px;bottom:20px;right:0;left:auto;
+        width:340px;height:auto;max-height:none;margin:0;overflow-y:auto;
+        z-index:57;background:#fff;border-radius:22px 0 0 22px;
+        padding:20px 22px 22px;box-shadow:-12px 0 34px rgba(20,60,40,.20);
+        transform:translateX(105%);transition:transform .25s ease;
+        visibility:hidden}
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .chat-sidebar-vocab.szo-fiok.fiok-nyitva{
+        transform:none;visibility:visible}
+    .chat-sidebar-vocab.szo-fiok .chat-sidebar-title{margin-top:0;padding-right:36px}
+    .chat-sidebar-vocab.szo-fiok .chat-vocab-list li{font-size:17px;padding:10px 0}
+    .chat-sidebar-vocab.szo-fiok .vocab-kep{width:64px;height:64px}
+    .chat-sidebar-vocab.szo-fiok .szo-fiok-zar{display:flex;position:absolute;
+        top:14px;right:14px;width:34px;height:34px;border-radius:50%;border:0;
+        background:#EEF4EF;color:#1F4D3B;font-size:18px;font-weight:800;
+        align-items:center;justify-content:center;cursor:pointer}
+    .chat-layout:not(.teljes-mod) .szo-fiok-gomb{display:flex;position:fixed;
+        right:0;top:50%;transform:translateY(-50%);z-index:58;
+        writing-mode:vertical-rl;align-items:center;gap:8px;
+        padding:16px 10px;border:0;border-radius:16px 0 0 16px;
+        background:#1F7A4D;color:#fff;font-size:16px;font-weight:800;
+        letter-spacing:.3px;cursor:pointer;box-shadow:-4px 4px 14px rgba(14,42,30,.25);
+        transition:right .25s ease}
+    .chat-layout:not(.teljes-mod) .szo-fiok-gomb .ik{writing-mode:horizontal-tb;font-size:20px}
+    .chat-layout:not(.teljes-mod) .szo-fiok-gomb.aktiv{right:340px;background:#17603C}
+    .szo-fiok-gomb .pott{display:none;position:absolute;top:-5px;left:-5px;
+        width:14px;height:14px;border-radius:50%;background:#F08A24;
+        box-shadow:0 0 0 3px #fff}
+    .szo-fiok-gomb.uzenet .pott{display:block}
+  }
+</style>
+<script>
+(function () {
+    "use strict";
+    try {
+        var lap = document.getElementById('chat-page');
+        var szavak = document.querySelector('.chat-sidebar-vocab');
+        var lista = document.getElementById('vocab-list');
+        if (!lap || !szavak || !document.querySelector('.uj-felulet')) { return; }
+
+        var gomb = document.createElement('button');
+        gomb.type = 'button';
+        gomb.className = 'szo-fiok-gomb';
+        gomb.setAttribute('aria-expanded', 'false');
+        gomb.innerHTML = '<span class="ik">📖</span><span>'
+            + {{ t('chat_vocab_title')|tojson }} + '</span><span class="pott"></span>';
+        lap.appendChild(gomb);
+
+        var zar = document.createElement('button');
+        zar.type = 'button';
+        zar.className = 'szo-fiok-zar';
+        zar.setAttribute('aria-label', '✕');
+        zar.textContent = '✕';
+        szavak.insertBefore(zar, szavak.firstChild);
+
+        function asztaliE() {
+            return window.innerWidth >= 760 && !lap.classList.contains('teljes-mod');
+        }
+        function nyit(igen) {
+            szavak.classList.toggle('fiok-nyitva', igen);
+            gomb.classList.toggle('aktiv', igen);
+            gomb.setAttribute('aria-expanded', igen ? 'true' : 'false');
+            if (igen) { gomb.classList.remove('uzenet'); }
+        }
+        function rendez() {
+            if (asztaliE()) {
+                szavak.classList.add('szo-fiok');
+            } else {
+                nyit(false);
+                szavak.classList.remove('szo-fiok');
+            }
+        }
+        gomb.addEventListener('click', function () {
+            nyit(!szavak.classList.contains('fiok-nyitva'));
+        });
+        zar.addEventListener('click', function () { nyit(false); });
+        document.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Escape') { nyit(false); }
+        });
+        document.addEventListener('click', function (ev) {
+            if (!szavak.classList.contains('fiok-nyitva')) { return; }
+            var t = ev.target;
+            if (szavak.contains(t) || gomb.contains(t)) { return; }
+            nyit(false);
+        });
+        if (lista) {
+            new MutationObserver(function () {
+                if (szavak.classList.contains('szo-fiok')
+                        && !szavak.classList.contains('fiok-nyitva')) {
+                    gomb.classList.add('uzenet');
+                }
+            }).observe(lista, { childList: true });
+        }
+        rendez();
+        window.addEventListener('resize', function () {
+            window.requestAnimationFrame(rendez);
+        });
+        new MutationObserver(function () {
+            window.requestAnimationFrame(rendez);
+        }).observe(lap, { attributes: true, attributeFilter: ['class'] });
+    } catch (e) {
+        if (window.console) { console.error('szo-fiok:', e); }
+    }
+})();
+</script>
+
 {# ══ A KABALA FIGURA ODAHÚZHATÓ, AHOVA A GYEREK AKARJA ═════════════════
    A BAJ: a figura a munkaterület bal alsó sarkához van rögzítve. Amíg
    alatta üres hely van, ez jó – de amint oda kerül egy válaszkártya vagy

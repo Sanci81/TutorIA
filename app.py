@@ -8701,6 +8701,125 @@ def _szokepekkel(szavak):
     return ki
 
 
+# ══ BELSŐ JEGYZET A VÁLASZBAN (Luna) ═══════════════════════════════════
+# 2026-10-07, próbaoldal: a tanár válaszába a modell saját, angol nyelvű
+# tervezgetése került ("Wait. Need avoid malformed… VOCAB marker at end…").
+# Ezek a kifejezések a gyereknek szóló szövegben SOSEM fordulnak elő –
+# a <FELADAT>/<VOCAB> jelölőket előbb kivesszük, hogy azok ne számítsanak.
+# ERŐS minták: ezek semmilyen órán nem kerülhetnek a gyereknek szóló szövegbe.
+_BELSO_JEGYZET = re.compile(
+    r"(VOCAB\s*markers?|\bFL\s*tags?\b|\bFELADAT\s+(?:marker|tag|block)|"
+    r"malformed|mis-tag|\bWait\.\s+Need|"
+    r"sentence\s+constraint|\bUse\s+\d+\s+sentences|language\s+codes?|"
+    r"\banswer\s+already\s+from|\bVoice\s+short\b|\bbelt\s+nope\b)",
+    re.IGNORECASE)
+# GYENGE minták: angol nyelvórán előfordulhatnak tananyagként, ott nem nézzük.
+_BELSO_JEGYZET_GYENGE = re.compile(
+    r"(\bNeed\s+(?:to\s+)?(?:avoid|fix|ask|use|keep|mark)\b|"
+    r"\bthe\s+child\s+(?:said|wrote|answered)|"
+    r"\b(?:I|we)\s+(?:should|need\s+to|must)\s+(?:ask|avoid|use|keep|write)\b)")
+
+
+def _belso_jegyzet_helye(szoveg: str, *, idegen: bool = False) -> int:
+    """Ahol a modell belső jegyzete kezdődik a válaszban, vagy -1."""
+    if not szoveg:
+        return -1
+    tiszta = re.sub(r"<[^>]*>", lambda m: " " * len(m.group(0)), szoveg)
+    talalat = [m.start() for m in [_BELSO_JEGYZET.search(tiszta),
+                                   None if idegen else _BELSO_JEGYZET_GYENGE.search(tiszta)] if m]
+    if not talalat:
+        return -1
+    kezd = min(talalat)
+    # A MONDAT elejétől vágunk, ahol a jegyzet elkezdődött.
+    eleje = max(tiszta.rfind(j, 0, kezd) for j in (". ", "! ", "? ", "\n"))
+    # Ha a mondat eleje magyar/spanyol szöveg (ékezet), az még a gyereknek
+    # szól – ilyenkor csak a jegyzet első szavától vágunk.
+    if re.search(r"[áéíóöőúüűñ¿¡]", tiszta[eleje + 1:kezd], flags=re.I):
+        return kezd
+    return eleje + 1 if eleje >= 0 else 0
+
+
+def _belso_jegyzet_nelkul(szoveg: str, *, idegen: bool = False) -> str:
+    hely = _belso_jegyzet_helye(szoveg, idegen=idegen)
+    if hely < 0:
+        return szoveg
+    # A jelölőket (feladat, szójegyzék, ábra) a levágott részből is megtartjuk,
+    # ha épek – azokat a program dolgozza fel, a gyerek nem látja.
+    marad = "".join(m.group(0) for m in re.finditer(
+        r"<(FELADAT|VOCAB|ABRA|MONDD)\b[^>]*>.*?</\1>", szoveg[hely:], flags=re.S))
+    return (szoveg[:hely].rstrip() + ("\n" + marad if marad else "")).strip()
+
+
+# ══ TANTÁRGYI KÉP A TÁBLÁRA ════════════════════════════════════════════
+# A jóváhagyott tantárgyi képek (tantargy_kepek.py) a static/szokepek/
+# <tantárgy> mappákban vannak, mindegyikben egy kepek.json (hu/es név).
+# Ha a tanár válaszában szerepel egy ilyen dolog neve (pl. „szív",
+# „vulkán"), és a válaszhoz nincs rajz, a kép a szöveg alá kerül,
+# szemléltetésnek. Egy válaszhoz legfeljebb EGY kép.
+_TKEP_GYOKER = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                            "static", "szokepek")
+_tkep_gyorstar: dict = {"kulcs": None, "lista": []}
+
+
+def _tkep_lista() -> list:
+    import glob as _glob
+    fajlok = sorted(f for f in _glob.glob(os.path.join(_TKEP_GYOKER, "*", "kepek.json")))
+    try:
+        kulcs = tuple((f, os.path.getmtime(f)) for f in fajlok)
+    except OSError:
+        return []
+    if _tkep_gyorstar["kulcs"] == kulcs:
+        return _tkep_gyorstar["lista"]
+    lista = []
+    for f in fajlok:
+        tk = os.path.basename(os.path.dirname(f))
+        try:
+            with open(f, encoding="utf-8") as fh:
+                adat = json.load(fh)
+        except Exception:
+            continue
+        for k, v in (adat or {}).items():
+            if not os.path.exists(os.path.join(_TKEP_GYOKER, tk, k + ".webp")):
+                continue
+            cim = f"/static/szokepek/{tk}/{k}.webp"
+            for nyelv in ("hu", "es"):
+                nev = str((v or {}).get(nyelv) or "").strip().lower()
+                nev = re.sub(r"^(a|az|el|la|los|las|un|una)\s+", "", nev)
+                if len(nev) >= 4:
+                    lista.append((nyelv, nev, cim, tk))
+    lista.sort(key=lambda x: -len(x[1]))       # a hosszabb név nyer
+    _tkep_gyorstar.update(kulcs=kulcs, lista=lista)
+    return lista
+
+
+def _tkep_szavak(s: str) -> set:
+    t = (s or "").lower()
+    for a, b in zip("áéíóöőúüűñ", "aeiooouuun"):
+        t = t.replace(a, b)
+    return {w for w in re.split(r"[^a-z0-9]+", t) if len(w) >= 4}
+
+
+def _tantargyi_kep(szoveg: str, *, es: bool, targy: str = "") -> str | None:
+    """A szövegben említett dolog képe (HTML), vagy None.
+    Csak az aktuális tantárgy mappájából választ (pl. biológiaórán nem
+    jön elő az ének-zene képe)."""
+    lista = _tkep_lista()
+    if not lista or not szoveg:
+        return None
+    targy_szavak = _tkep_szavak(targy)
+    if not targy_szavak:
+        return None
+    kis = szoveg.lower()
+    nyelv = "es" if es else "hu"
+    for ny, nev, cim, tk in lista:
+        if ny != nyelv or not (targy_szavak & set(tk.split("_"))):
+            continue
+        if re.search(r"(?<![\w])" + re.escape(nev), kis):
+            return (f'<img src="{cim}" alt="" loading="lazy" '
+                    f'style="width:100%;height:auto;display:block;border-radius:8px">')
+    return None
+
+
 def _chat_save_vocabulary(
     child_id: int,
     subject: str,
@@ -9516,6 +9635,29 @@ def child_chat_send(child_id: int):
         logger.exception("Chat AI hiba (child_id=%s): %s", child_id, exc)
         return jsonify({"error": "chat_failed", "detail": str(exc)}), 500
 
+    # ── BELSŐ JEGYZET A VÁLASZBAN (Luna) ──────────────────────────────
+    # Ha a modell saját tervezgetése is a válaszba került, egyszer újrakérjük
+    # egy egyértelmű figyelmeztetéssel. Ha a második is ilyen, vagy nincs rá
+    # idő, a jegyzetet levágjuk – a gyerek csak a neki szóló részt látja.
+    if _belso_jegyzet_helye(raw_reply, idegen=is_foreign) >= 0:
+        print("[ELLENORZES] belso jegyzet a valaszban", flush=True)
+        if _maradek() >= 20:
+            try:
+                _ujra = _call_ai_for_chat(
+                    system_prompt
+                    + "\n\nFIGYELEM: az előző válaszodba a saját tervezgetésed, "
+                    "jegyzeteid is belekerültek (angolul). Most CSAK a gyereknek "
+                    "szóló végleges szöveget írd le, a szokásos jelölőkkel. "
+                    "Semmilyen tervezést, megjegyzést, utasítást ne írj ki.",
+                    history, user_text, child_id=child_id,
+                    idokorlat=min(35.0, _maradek() - 6), ujra=0)
+                if _ujra and _belso_jegyzet_helye(_ujra, idegen=is_foreign) < 0:
+                    raw_reply = _ujra
+                    print("[ELLENORZES] a masodik valasz tiszta", flush=True)
+            except Exception:
+                logger.exception("Belso jegyzet ujrakeres hiba")
+        raw_reply = _belso_jegyzet_nelkul(raw_reply, idegen=is_foreign)
+
     # ── A VÁLASZ ELLENŐRZÉSE, mielőtt a gyerek elolvassa ────────────────
     # Élesben előfordult, hogy a tanár megdicsért egy ROSSZ választ, majd a
     # saját levezetése mást adott ki ("Pontosan 18 cm. Mert 6+6+6+6 = 24").
@@ -10083,6 +10225,17 @@ def child_chat_send(child_id: int):
     if _eltelt > 20:
         print(f"[LASSU] chat kor {_eltelt:.1f}s child={child_id} "
               f"targy={subject!r} tema={current_topic!r}", flush=True)
+
+    # ── TANTÁRGYI KÉP: ha nincs rajz, de a tanár egy olyan dolgot említ,
+    # amihez van jóváhagyott kép, az kerül a szöveg alá szemléltetésnek.
+    if not figures and not is_foreign:
+        try:
+            _tk = _tantargyi_kep(reply, es=(_active_curriculum() or "HU").upper() == "ES",
+                                 targy=subject)
+            if _tk:
+                figures = [_tk]
+        except Exception:
+            logger.exception("Tantargyi kep hiba")
 
     return jsonify(
         {

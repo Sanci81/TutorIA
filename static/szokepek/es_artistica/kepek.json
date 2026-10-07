@@ -1,0 +1,303 @@
+{
+ "art_exhibition": {
+  "en": "art exhibition",
+  "es": "exposición de arte",
+  "evfolyam": null,
+  "hu": "művészeti kiállítás",
+  "temakor": "Recepción y análisis"
+ },
+ "artist": {
+  "en": "artist",
+  "es": "artista",
+  "evfolyam": null,
+  "hu": "művész",
+  "temakor": "Recepción y análisis"
+ },
+ "artist_paintbrush_and_palette": {
+  "en": "artist with paintbrush and palette",
+  "es": "artista con pincel y paleta",
+  "evfolyam": null,
+  "hu": "művész ecsettel és festőpalettával",
+  "temakor": "Creación e interpretación"
+ },
+ "artist_paintbrush_palette": {
+  "en": "artist with paintbrush and palette",
+  "es": "artista con pincel y paleta",
+  "evfolyam": null,
+  "hu": "művész ecsettel és palettával",
+  "temakor": "Creación e interpretación"
+ },
+ "artist_painting": {
+  "en": "painting",
+  "es": "pintura",
+  "evfolyam": null,
+  "hu": "festmény",
+  "temakor": "Recepción y análisis"
+ },
+ "artist_palette": {
+  "en": "artist's palette",
+  "es": "paleta de pintor",
+  "evfolyam": null,
+  "hu": "festőpaletta",
+  "temakor": "Creación e interpretación"
+ },
+ "artwork": {
+  "en": "artwork",
+  "es": "obra de arte",
+  "evfolyam": null,
+  "hu": "műalkotás",
+  "temakor": "Recepción y análisis"
+ },
+ "audience": {
+  "en": "audience",
+  "es": "público",
+  "evfolyam": null,
+  "hu": "közönség",
+  "temakor": "Recepción y análisis"
+ },
+ "camera": {
+  "en": "camera",
+  "es": "cámara",
+  "evfolyam": null,
+  "hu": "fényképezőgép",
+  "temakor": "Creación e interpretación"
+ },
+ "child_dancing": {
+  "en": "dancing child",
+  "es": "niño bailando",
+  "evfolyam": null,
+  "hu": "táncoló gyerek",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "clay_model": {
+  "en": "clay model",
+  "es": "modelo de arcilla",
+  "evfolyam": null,
+  "hu": "agyagmodell",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "colored_pencil": {
+  "en": "colored pencil",
+  "es": "lápiz de color",
+  "evfolyam": null,
+  "hu": "színes ceruza",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "copyright_symbol": {
+  "en": "copyright symbol",
+  "es": "símbolo de copyright",
+  "evfolyam": null,
+  "hu": "szerzői jog jel",
+  "temakor": "Creación e interpretación"
+ },
+ "dancer": {
+  "en": "dancer",
+  "es": "bailarín",
+  "evfolyam": null,
+  "hu": "táncos",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "digital_tablet": {
+  "en": "digital tablet",
+  "es": "tableta digital",
+  "evfolyam": null,
+  "hu": "digitális tablet",
+  "temakor": "Recepción y análisis"
+ },
+ "drawing_sketchbook": {
+  "en": "sketchbook",
+  "es": "cuaderno de bocetos",
+  "evfolyam": null,
+  "hu": "vázlatfüzet",
+  "temakor": "Creación e interpretación"
+ },
+ "drum": {
+  "en": "drum",
+  "es": "tambor",
+  "evfolyam": null,
+  "hu": "dob",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "gallery": {
+  "en": "art gallery",
+  "es": "galería de arte",
+  "evfolyam": null,
+  "hu": "képtár",
+  "temakor": "Recepción y análisis"
+ },
+ "guitar": {
+  "en": "guitar",
+  "es": "guitarra",
+  "evfolyam": null,
+  "hu": "gitár",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "handmade_instrument": {
+  "en": "handmade instrument",
+  "es": "instrumento casero",
+  "evfolyam": null,
+  "hu": "házi készítésű hangszer",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "line": {
+  "en": "line",
+  "es": "línea",
+  "evfolyam": null,
+  "hu": "vonal",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "microphone": {
+  "en": "microphone",
+  "es": "micrófono",
+  "evfolyam": null,
+  "hu": "mikrofon",
+  "temakor": "Creación e interpretación"
+ },
+ "museum_gallery": {
+  "en": "museum gallery",
+  "es": "galería de museo",
+  "evfolyam": null,
+  "hu": "múzeumi galéria",
+  "temakor": "Recepción y análisis"
+ },
+ "music_note_sheet": {
+  "en": "sheet music",
+  "es": "partitura",
+  "evfolyam": null,
+  "hu": "kotta",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "music_performance": {
+  "en": "music performance",
+  "es": "concierto de música",
+  "evfolyam": null,
+  "hu": "zenei előadás",
+  "temakor": "Recepción y análisis"
+ },
+ "musical_instruments": {
+  "en": "musical instruments",
+  "es": "instrumentos musicales",
+  "evfolyam": null,
+  "hu": "hangszerek",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "musical_note": {
+  "en": "musical note",
+  "es": "nota musical",
+  "evfolyam": null,
+  "hu": "hangjegy",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "musician_instrument": {
+  "en": "musician with instrument",
+  "es": "músico con instrumento",
+  "evfolyam": null,
+  "hu": "zenész hangszerrel",
+  "temakor": "Creación e interpretación"
+ },
+ "orchestra": {
+  "en": "orchestra",
+  "es": "orquesta",
+  "evfolyam": null,
+  "hu": "zenekar",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "paintbrush": {
+  "en": "paintbrush",
+  "es": "pincel",
+  "evfolyam": null,
+  "hu": "ecset",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "paintbrush_and_palette": {
+  "en": "paintbrush and palette",
+  "es": "pincel y paleta",
+  "evfolyam": null,
+  "hu": "ecset és festéspaletta",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "palette": {
+  "en": "palette",
+  "es": "paleta",
+  "evfolyam": null,
+  "hu": "paletta",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "photographer_camera": {
+  "en": "photographer with camera",
+  "es": "fotógrafo con cámara",
+  "evfolyam": null,
+  "hu": "fényképész fényképezőgéppel",
+  "temakor": "Creación e interpretación"
+ },
+ "point": {
+  "en": "point",
+  "es": "punto",
+  "evfolyam": null,
+  "hu": "pont",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "shape": {
+  "en": "shape",
+  "es": "forma",
+  "evfolyam": null,
+  "hu": "alakzat",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "sheet_of_paper": {
+  "en": "sheet of paper",
+  "es": "hoja de papel",
+  "evfolyam": null,
+  "hu": "papírlap",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "singing_voice": {
+  "en": "singing voice",
+  "es": "voz cantada",
+  "evfolyam": null,
+  "hu": "énekhang",
+  "temakor": "Música y artes escénicas y performativas"
+ },
+ "stage_actor": {
+  "en": "stage actor",
+  "es": "actor en el escenario",
+  "evfolyam": null,
+  "hu": "színész a színpadon",
+  "temakor": "Creación e interpretación"
+ },
+ "stage_spotlight": {
+  "en": "stage spotlight",
+  "es": "foco de escenario",
+  "evfolyam": null,
+  "hu": "színpadi reflektor",
+  "temakor": "Creación e interpretación"
+ },
+ "theater_mask": {
+  "en": "theater mask",
+  "es": "máscara de teatro",
+  "evfolyam": null,
+  "hu": "színházi maszk",
+  "temakor": "Creación e interpretación"
+ },
+ "theater_stage": {
+  "en": "theater stage",
+  "es": "escenario de teatro",
+  "evfolyam": null,
+  "hu": "színpad",
+  "temakor": "Recepción y análisis"
+ },
+ "video_camera": {
+  "en": "video camera",
+  "es": "videocámara",
+  "evfolyam": null,
+  "hu": "videókamera",
+  "temakor": "Artes plásticas, visuales y audiovisuales"
+ },
+ "violin": {
+  "en": "violin",
+  "es": "violín",
+  "evfolyam": null,
+  "hu": "hegedű",
+  "temakor": "Música y artes escénicas y performativas"
+ }
+}

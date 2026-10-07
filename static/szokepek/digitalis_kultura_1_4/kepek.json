@@ -1,0 +1,338 @@
+{
+ "arrow_sequence": {
+  "en": "sequence of arrows",
+  "es": "secuencia de flechas",
+  "evfolyam": "4",
+  "hu": "nyílsor",
+  "temakor": "Lépésről lépésre: az algoritmus"
+ },
+ "bar_graph": {
+  "en": "bar graph",
+  "es": "gráfico de barras",
+  "evfolyam": "4",
+  "hu": "oszlopdiagram",
+  "temakor": "Igaz vagy álhír? Az információ megbízhatósága"
+ },
+ "broken_code": {
+  "en": "mistake in code",
+  "es": "error en el código",
+  "evfolyam": "4",
+  "hu": "hiba a kódban",
+  "temakor": "Kódolás és a robot irányítása"
+ },
+ "bullying_message": {
+  "en": "bullying message",
+  "es": "mensaje de acoso",
+  "evfolyam": "4",
+  "hu": "zaklató üzenet",
+  "temakor": "Biztonság az interneten"
+ },
+ "child_following_instructions": {
+  "en": "child following instructions",
+  "es": "niño siguiendo instrucciones",
+  "evfolyam": "4",
+  "hu": "gyerek utasításokat követ",
+  "temakor": "Lépésről lépésre: az algoritmus"
+ },
+ "computer": {
+  "en": "computer",
+  "es": "ordenador",
+  "evfolyam": "3",
+  "hu": "számítógép",
+  "temakor": "A digitális világ körülöttünk"
+ },
+ "computer_image_editing": {
+  "en": "computer image editing",
+  "es": "edición de imágenes en computadora",
+  "evfolyam": "3",
+  "hu": "képszerkesztés számítógépen",
+  "temakor": "Képek szerkesztése és digitális fotó"
+ },
+ "computer_mouse": {
+  "en": "mouse",
+  "es": "ratón",
+  "evfolyam": "3",
+  "hu": "egér",
+  "temakor": "A számítógép és a tablet használata"
+ },
+ "computer_screen_fake_news": {
+  "en": "computer screen with a fake news article",
+  "es": "pantalla de ordenador con una noticia falsa",
+  "evfolyam": "4",
+  "hu": "számítógép képernyőjén álhír cikk",
+  "temakor": "Igaz vagy álhír? Az információ megbízhatósága"
+ },
+ "computer_screen_with_drawing_program": {
+  "en": "computer screen with a drawing program",
+  "es": "pantalla de computadora con un programa de dibujo",
+  "evfolyam": "3",
+  "hu": "számítógép képernyő rajzolóprogrammal",
+  "temakor": "Rajzolás a számítógépen"
+ },
+ "daily_routine_objects": {
+  "en": "daily routine objects",
+  "es": "objetos de la rutina diaria",
+  "evfolyam": "4",
+  "hu": "napi rutin tárgyai",
+  "temakor": "Lépésről lépésre: az algoritmus"
+ },
+ "desktop_computer": {
+  "en": "desktop computer",
+  "es": "computadora de escritorio",
+  "evfolyam": "3",
+  "hu": "számítógép",
+  "temakor": "A számítógép és a tablet használata"
+ },
+ "digital_camera": {
+  "en": "digital camera",
+  "es": "cámara digital",
+  "evfolyam": "3",
+  "hu": "digitális fényképezőgép",
+  "temakor": "Fájlok, mentés és adattárolás"
+ },
+ "digital_paintbrush_tool": {
+  "en": "digital paintbrush tool",
+  "es": "pincel digital",
+  "evfolyam": "3",
+  "hu": "digitális ecset",
+  "temakor": "Rajzolás a számítógépen"
+ },
+ "digital_photo": {
+  "en": "digital photo",
+  "es": "foto digital",
+  "evfolyam": "3",
+  "hu": "digitális fotó",
+  "temakor": "Képek szerkesztése és digitális fotó"
+ },
+ "eraser_tool": {
+  "en": "eraser tool",
+  "es": "herramienta de borrador",
+  "evfolyam": "3",
+  "hu": "radír eszköz",
+  "temakor": "Rajzolás a számítógépen"
+ },
+ "floor_robot": {
+  "en": "floor robot",
+  "es": "robot de suelo",
+  "evfolyam": "4",
+  "hu": "padlórobot",
+  "temakor": "Kódolás és a robot irányítása"
+ },
+ "folder": {
+  "en": "folder",
+  "es": "carpeta",
+  "evfolyam": "3",
+  "hu": "mappa",
+  "temakor": "Fájlok, mentés és adattárolás"
+ },
+ "hard_drive": {
+  "en": "hard drive",
+  "es": "disco duro",
+  "evfolyam": "3",
+  "hu": "merevlemez",
+  "temakor": "Fájlok, mentés és adattárolás"
+ },
+ "infographic_chart": {
+  "en": "infographic chart",
+  "es": "gráfico de infografía",
+  "evfolyam": "4",
+  "hu": "infografika diagram",
+  "temakor": "Igaz vagy álhír? Az információ megbízhatósága"
+ },
+ "keyboard": {
+  "en": "keyboard",
+  "es": "teclado",
+  "evfolyam": "3",
+  "hu": "billentyűzet",
+  "temakor": "A számítógép és a tablet használata"
+ },
+ "magnifying_glass": {
+  "en": "magnifying glass",
+  "es": "lupa",
+  "evfolyam": "4",
+  "hu": "nagyító",
+  "temakor": "Keresés az interneten"
+ },
+ "maze_path": {
+  "en": "path or maze",
+  "es": "camino o laberinto",
+  "evfolyam": "4",
+  "hu": "útvonal vagy лабirintus",
+  "temakor": "Kódolás és a robot irányítása"
+ },
+ "monitor_screen": {
+  "en": "monitor",
+  "es": "monitor",
+  "evfolyam": "3",
+  "hu": "monitor",
+  "temakor": "A számítógép és a tablet használata"
+ },
+ "newspaper_headline": {
+  "en": "newspaper headline",
+  "es": "titular de periódico",
+  "evfolyam": "4",
+  "hu": "újságcímlap",
+  "temakor": "Igaz vagy álhír? Az információ megbízhatósága"
+ },
+ "password": {
+  "en": "password",
+  "es": "contraseña",
+  "evfolyam": "4",
+  "hu": "jelszó",
+  "temakor": "Biztonság az interneten"
+ },
+ "person_blocking_user": {
+  "en": "blocking a user",
+  "es": "bloqueo de usuario",
+  "evfolyam": "4",
+  "hu": "felhasználó blokkolása",
+  "temakor": "Biztonság az interneten"
+ },
+ "photo_collage": {
+  "en": "photo collage",
+  "es": "reportaje fotográfico",
+  "evfolyam": "3",
+  "hu": "képes beszámoló",
+  "temakor": "Képek szerkesztése és digitális fotó"
+ },
+ "photo_cropping": {
+  "en": "cropped photo",
+  "es": "foto recortada",
+  "evfolyam": "3",
+  "hu": "vágott fotó",
+  "temakor": "Képek szerkesztése és digitális fotó"
+ },
+ "picture_file_icon": {
+  "en": "picture file icon",
+  "es": "icono de archivo de imagen",
+  "evfolyam": "3",
+  "hu": "képfájl ikon",
+  "temakor": "Rajzolás a számítógépen"
+ },
+ "printer": {
+  "en": "printer",
+  "es": "impresora",
+  "evfolyam": "3",
+  "hu": "nyomtató",
+  "temakor": "A digitális világ körülöttünk"
+ },
+ "programming_blocks": {
+  "en": "programming blocks",
+  "es": "bloques de programación",
+  "evfolyam": "4",
+  "hu": "programozó blokkok",
+  "temakor": "Kódolás és a robot irányítása"
+ },
+ "recipe_steps": {
+  "en": "recipe steps",
+  "es": "pasos de una receta",
+  "evfolyam": "4",
+  "hu": "recept lépései",
+  "temakor": "Lépésről lépésre: az algoritmus"
+ },
+ "report_button": {
+  "en": "report button",
+  "es": "botón de denunciar",
+  "evfolyam": "4",
+  "hu": "jelentés gomb",
+  "temakor": "Biztonság az interneten"
+ },
+ "robot": {
+  "en": "robot",
+  "es": "robot",
+  "evfolyam": "4",
+  "hu": "robot",
+  "temakor": "Kódolás és a robot irányítása"
+ },
+ "robot_toy": {
+  "en": "toy robot",
+  "es": "robot de juguete",
+  "evfolyam": "4",
+  "hu": "játékrobot",
+  "temakor": "Lépésről lépésre: az algoritmus"
+ },
+ "save_icon": {
+  "en": "save icon",
+  "es": "icono de guardar",
+  "evfolyam": "3",
+  "hu": "mentés ikon",
+  "temakor": "Fájlok, mentés és adattárolás"
+ },
+ "save_icon_floppy_disk": {
+  "en": "save icon floppy disk",
+  "es": "icono de guardar, disquete",
+  "evfolyam": "3",
+  "hu": "mentés ikon, floppy lemez",
+  "temakor": "Rajzolás a számítógépen"
+ },
+ "search_engine": {
+  "en": "search engine",
+  "es": "motor de búsqueda",
+  "evfolyam": "4",
+  "hu": "keresőmotor",
+  "temakor": "Keresés az interneten"
+ },
+ "smartphone": {
+  "en": "smartphone",
+  "es": "teléfono inteligente",
+  "evfolyam": "3",
+  "hu": "okostelefon",
+  "temakor": "A digitális világ körülöttünk"
+ },
+ "smartphone_with_privacy_lock": {
+  "en": "smartphone with privacy lock",
+  "es": "teléfono inteligente con candado",
+  "evfolyam": "4",
+  "hu": "zárral védett okostelefon",
+  "temakor": "Biztonság az interneten"
+ },
+ "tablet": {
+  "en": "tablet",
+  "es": "tableta",
+  "evfolyam": "3",
+  "hu": "tablet",
+  "temakor": "A digitális világ körülöttünk"
+ },
+ "tablet_device": {
+  "en": "tablet",
+  "es": "tableta",
+  "evfolyam": "3",
+  "hu": "tablet",
+  "temakor": "A számítógép és a tablet használata"
+ },
+ "url_address_bar": {
+  "en": "URL address bar",
+  "es": "barra de direcciones URL",
+  "evfolyam": "4",
+  "hu": "URL-címmező",
+  "temakor": "Keresés az interneten"
+ },
+ "web_browser": {
+  "en": "web browser",
+  "es": "navegador web",
+  "evfolyam": "4",
+  "hu": "böngészőprogram",
+  "temakor": "Keresés az interneten"
+ },
+ "webpage": {
+  "en": "web page",
+  "es": "página web",
+  "evfolyam": "4",
+  "hu": "weboldal",
+  "temakor": "Keresés az interneten"
+ },
+ "website_browser_window": {
+  "en": "website browser window",
+  "es": "ventana del navegador web",
+  "evfolyam": "4",
+  "hu": "weboldal böngészőablak",
+  "temakor": "Igaz vagy álhír? Az információ megbízhatósága"
+ },
+ "wifi_router": {
+  "en": "wifi router",
+  "es": "router wifi",
+  "evfolyam": "3",
+  "hu": "wifi router",
+  "temakor": "A digitális világ körülöttünk"
+ }
+}
