@@ -1,0 +1,1388 @@
+{
+ "abacus": {
+  "en": "abacus",
+  "es": "ábaco",
+  "evfolyam": null,
+  "hu": "abakusz",
+  "temakor": "Számok helyi értékes alakja"
+ },
+ "addition_blocks": {
+  "en": "addition with blocks",
+  "es": "suma con bloques",
+  "evfolyam": null,
+  "hu": "összeadás kockákkal",
+  "temakor": "Alapműveletek értelmezése"
+ },
+ "addition_equation_with_blocks": {
+  "en": "addition equation with blocks",
+  "es": "suma con bloques",
+  "evfolyam": null,
+  "hu": "összeadás kockákkal",
+  "temakor": "Alapműveletek tulajdonságai"
+ },
+ "answer_speech_bubble": {
+  "en": "answer speech bubble",
+  "es": "bocadillo de respuesta",
+  "evfolyam": null,
+  "hu": "válasz buborék",
+  "temakor": "Szöveges feladatok megoldása"
+ },
+ "arrow_comparison_symbols": {
+  "en": "comparison symbols",
+  "es": "símbolos de comparación",
+  "evfolyam": null,
+  "hu": "összehasonlító jelek",
+  "temakor": "Számok rendezése"
+ },
+ "backwards_arrows": {
+  "en": "reverse arrows",
+  "es": "flechas en sentido contrario",
+  "evfolyam": null,
+  "hu": "visszafelé mutató nyilak",
+  "temakor": "Problémamegoldás"
+ },
+ "bag_of_balls": {
+  "en": "bag of balls",
+  "es": "bolsa con bolas",
+  "evfolyam": null,
+  "hu": "zsák golyókkal",
+  "temakor": "Valószínűségi gondolkodás"
+ },
+ "balance_scale": {
+  "en": "balance scale",
+  "es": "balanza",
+  "evfolyam": null,
+  "hu": "mérleg",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "bar_chart": {
+  "en": "bar chart",
+  "es": "gráfico de barras",
+  "evfolyam": null,
+  "hu": "oszlopdiagram",
+  "temakor": "Adatok megfigyelése"
+ },
+ "base_ten_blocks": {
+  "en": "base ten blocks",
+  "es": "bloques de base diez",
+  "evfolyam": null,
+  "hu": "tízes számrendszer kockái",
+  "temakor": "Számok helyi értékes alakja"
+ },
+ "basement_below_ground": {
+  "en": "basement below ground",
+  "es": "sótano bajo tierra",
+  "evfolyam": null,
+  "hu": "pince a föld alatt",
+  "temakor": "Negatív számok"
+ },
+ "basket_of_items": {
+  "en": "basket of items",
+  "es": "cesta con objetos",
+  "evfolyam": null,
+  "hu": "kosár tárgyakkal",
+  "temakor": "Szöveges feladatok megoldása"
+ },
+ "blocks_building": {
+  "en": "blocks tower",
+  "es": "torre de bloques",
+  "evfolyam": null,
+  "hu": "kockatorony",
+  "temakor": "Alkotás térben és síkon"
+ },
+ "blue_cube": {
+  "en": "blue cube",
+  "es": "cubo azul",
+  "evfolyam": null,
+  "hu": "kék kocka",
+  "temakor": "Állítások"
+ },
+ "bundled_school_supplies": {
+  "en": "bundled items",
+  "es": "objetos agrupados",
+  "evfolyam": null,
+  "hu": "kötegelve ábrázolt tárgyak",
+  "temakor": "Szóbeli számolási eljárások"
+ },
+ "bundles_of_hundred": {
+  "en": "bundles of one hundred",
+  "es": "paquete de cien",
+  "evfolyam": null,
+  "hu": "százas köteg",
+  "temakor": "Fejben számolás"
+ },
+ "bundles_of_ten_objects": {
+  "en": "bundles of ten objects",
+  "es": "paquetes de diez objetos",
+  "evfolyam": null,
+  "hu": "tíz darabos kötegek",
+  "temakor": "Számok helyi értékes alakja"
+ },
+ "bundles_of_tens": {
+  "en": "bundle of tens",
+  "es": "paquete de decenas",
+  "evfolyam": null,
+  "hu": "tízes csomag",
+  "temakor": "Fejben számolás"
+ },
+ "bundles_of_thousand": {
+  "en": "bundles of one thousand",
+  "es": "paquete de mil",
+  "evfolyam": null,
+  "hu": "ezres köteg",
+  "temakor": "Fejben számolás"
+ },
+ "calculator": {
+  "en": "calculator",
+  "es": "calculadora",
+  "evfolyam": null,
+  "hu": "számológép",
+  "temakor": "Alapműveletek tulajdonságai"
+ },
+ "calendar": {
+  "en": "calendar",
+  "es": "calendario",
+  "evfolyam": null,
+  "hu": "naptár",
+  "temakor": "Mérőeszköz használata, mérési módszerek"
+ },
+ "cash_register": {
+  "en": "cash register",
+  "es": "caja registradora",
+  "evfolyam": null,
+  "hu": "pénztárgép",
+  "temakor": "Írásbeli összeadás és kivonás"
+ },
+ "checking_marks": {
+  "en": "check marks and cross marks",
+  "es": "marcas de comprobación y cruces",
+  "evfolyam": null,
+  "hu": "ellenőrző jelölések",
+  "temakor": "Szöveges feladatok megoldása"
+ },
+ "children_lineup": {
+  "en": "lineup of children",
+  "es": "fila de niños",
+  "evfolyam": null,
+  "hu": "gyerekek sora",
+  "temakor": "Adatok megfigyelése"
+ },
+ "circle_divided_into_equal_parts": {
+  "en": "circle divided into equal parts",
+  "es": "círculo dividido en partes iguales",
+  "evfolyam": null,
+  "hu": "egyenlő részekre osztott kör",
+  "temakor": "Törtrészek"
+ },
+ "circle_set_diagram": {
+  "en": "circle set diagram",
+  "es": "diagrama de conjuntos",
+  "evfolyam": null,
+  "hu": "halmazábra",
+  "temakor": "Állítások"
+ },
+ "clipboard_data_sheet": {
+  "en": "data sheet",
+  "es": "hoja de datos",
+  "evfolyam": null,
+  "hu": "adatlap",
+  "temakor": "Adatok megfigyelése"
+ },
+ "clock": {
+  "en": "clock",
+  "es": "reloj",
+  "evfolyam": null,
+  "hu": "óra",
+  "temakor": "Problémamegoldás"
+ },
+ "coin": {
+  "en": "coin",
+  "es": "moneda",
+  "evfolyam": null,
+  "hu": "érme",
+  "temakor": "Valószínűségi gondolkodás"
+ },
+ "coin_toss": {
+  "en": "coin toss",
+  "es": "lanzamiento de moneda",
+  "evfolyam": null,
+  "hu": "pénzfeldobás",
+  "temakor": "Valószínűségi gondolkodás"
+ },
+ "coins": {
+  "en": "coins",
+  "es": "monedas",
+  "evfolyam": null,
+  "hu": "pénzérmék",
+  "temakor": "Számlálás, becslés"
+ },
+ "coins_for_dividing": {
+  "en": "coins",
+  "es": "monedas",
+  "evfolyam": null,
+  "hu": "pénzek",
+  "temakor": "Írásbeli szorzás és osztás"
+ },
+ "coins_grouped_in_tens": {
+  "en": "coins grouped in tens",
+  "es": "monedas agrupadas de diez en diez",
+  "evfolyam": null,
+  "hu": "tízesével csoportosított pénzérmék",
+  "temakor": "Számok helyi értékes alakja"
+ },
+ "colorful_cuisenaire_rods": {
+  "en": "colorful counting rods",
+  "es": "regletas de colores",
+  "evfolyam": null,
+  "hu": "színes rudak",
+  "temakor": "Törtrészek"
+ },
+ "column_addition": {
+  "en": "column addition",
+  "es": "suma en columna",
+  "evfolyam": null,
+  "hu": "írásbeli összeadás",
+  "temakor": "Írásbeli összeadás és kivonás"
+ },
+ "column_subtraction": {
+  "en": "column subtraction",
+  "es": "resta en columna",
+  "evfolyam": null,
+  "hu": "írásbeli kivonás",
+  "temakor": "Írásbeli összeadás és kivonás"
+ },
+ "complete_collection_of_objects": {
+  "en": "complete collection of objects",
+  "es": "conjunto completo de objetos",
+  "evfolyam": null,
+  "hu": "teljes készlet",
+  "temakor": "Rendszerezés, rendszerképzés"
+ },
+ "cone": {
+  "en": "cone",
+  "es": "cono",
+  "evfolyam": null,
+  "hu": "kúp",
+  "temakor": "Alakzatok geometriai tulajdonságai"
+ },
+ "counting_beads_or_blocks": {
+  "en": "counting blocks",
+  "es": "bloques de contar",
+  "evfolyam": null,
+  "hu": "számoló kockák",
+  "temakor": "Számok rendezése"
+ },
+ "counting_objects": {
+  "en": "counting objects",
+  "es": "conteo de objetos",
+  "evfolyam": null,
+  "hu": "tárgyak megszámlálása",
+  "temakor": "Számlálás, becslés"
+ },
+ "counting_with_abacus": {
+  "en": "abacus",
+  "es": "ábaco",
+  "evfolyam": null,
+  "hu": "számolótábla",
+  "temakor": "Számlálás, becslés"
+ },
+ "cube": {
+  "en": "cube",
+  "es": "cubo",
+  "evfolyam": null,
+  "hu": "kocka",
+  "temakor": "Alakzatok geometriai tulajdonságai"
+ },
+ "cube_edge_frame": {
+  "en": "wireframe cube",
+  "es": "armazón de cubo",
+  "evfolyam": null,
+  "hu": "kocka élváza",
+  "temakor": "Alkotás térben és síkon"
+ },
+ "cube_frame": {
+  "en": "wireframe cube",
+  "es": "armazón de cubo",
+  "evfolyam": null,
+  "hu": "kocka élváza",
+  "temakor": "Alkotás térben és síkon"
+ },
+ "cube_net": {
+  "en": "cube net",
+  "es": "desarrollo de cubo",
+  "evfolyam": null,
+  "hu": "kockaháló",
+  "temakor": "Alkotás térben és síkon"
+ },
+ "deck_of_cards": {
+  "en": "deck of cards",
+  "es": "mazo de cartas",
+  "evfolyam": null,
+  "hu": "kártyapakli",
+  "temakor": "Valószínűségi gondolkodás"
+ },
+ "decreasing_line_of_objects": {
+  "en": "decreasing row of objects",
+  "es": "fila decreciente de objetos",
+  "evfolyam": null,
+  "hu": "csökkenő sor",
+  "temakor": "Összefüggések, kapcsolatok, szabályszerűségek felismerése"
+ },
+ "dice": {
+  "en": "dice",
+  "es": "dado",
+  "evfolyam": null,
+  "hu": "kocka",
+  "temakor": "Valószínűségi gondolkodás"
+ },
+ "different_shape_collection": {
+  "en": "different shape collection",
+  "es": "colección de formas diferentes",
+  "evfolyam": null,
+  "hu": "különböző alakzatok gyűjteménye",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ },
+ "digit": {
+  "en": "digit",
+  "es": "dígito",
+  "evfolyam": null,
+  "hu": "számjegy",
+  "temakor": "Számok tulajdonságai"
+ },
+ "digit_blocks": {
+  "en": "base-ten blocks",
+  "es": "bloques base diez",
+  "evfolyam": null,
+  "hu": "tízesrendszeres építőelemek",
+  "temakor": "Szóbeli számolási eljárások"
+ },
+ "direction_arrows": {
+  "en": "direction arrows",
+  "es": "flechas de dirección",
+  "evfolyam": null,
+  "hu": "irányjelző nyilak",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "dividing_objects_into_equal_groups": {
+  "en": "equal groups of objects",
+  "es": "objetos en grupos iguales",
+  "evfolyam": null,
+  "hu": "egyenlő csoportokba osztott tárgyak",
+  "temakor": "Fejben számolás"
+ },
+ "division_equal_sharing": {
+  "en": "division",
+  "es": "división",
+  "evfolyam": null,
+  "hu": "osztás",
+  "temakor": "Alapműveletek értelmezése"
+ },
+ "division_sharing": {
+  "en": "division sharing",
+  "es": "reparto en división",
+  "evfolyam": null,
+  "hu": "osztásos elosztás",
+  "temakor": "Alapműveletek tulajdonságai"
+ },
+ "division_sharing_objects": {
+  "en": "division sharing objects",
+  "es": "reparto de objetos",
+  "evfolyam": null,
+  "hu": "elosztás tárgyakkal",
+  "temakor": "Alapműveletek tulajdonságai"
+ },
+ "division_with_remainder": {
+  "en": "division with remainder",
+  "es": "división con resto",
+  "evfolyam": null,
+  "hu": "maradékos osztás",
+  "temakor": "Alapműveletek értelmezése"
+ },
+ "edge_of_cube": {
+  "en": "edge",
+  "es": "arista",
+  "evfolyam": null,
+  "hu": "él",
+  "temakor": "Alakzatok geometriai tulajdonságai"
+ },
+ "egg_carton": {
+  "en": "egg carton",
+  "es": "cartón de huevos",
+  "evfolyam": null,
+  "hu": "tojáskarton",
+  "temakor": "Számok helyi értékes alakja"
+ },
+ "equal_groups_objects": {
+  "en": "equal groups",
+  "es": "grupos iguales",
+  "evfolyam": null,
+  "hu": "egyenlő csoportok",
+  "temakor": "Írásbeli szorzás és osztás"
+ },
+ "equal_groups_of_objects": {
+  "en": "equal groups of objects",
+  "es": "grupos iguales de objetos",
+  "evfolyam": null,
+  "hu": "egyenlő tárgycsoportok",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "equal_parts_pie": {
+  "en": "equal parts pie",
+  "es": "tarta dividida en partes iguales",
+  "evfolyam": null,
+  "hu": "egyenlő részekre osztott torta",
+  "temakor": "Alapműveletek értelmezése"
+ },
+ "even_number": {
+  "en": "even number",
+  "es": "número par",
+  "evfolyam": null,
+  "hu": "páros szám",
+  "temakor": "Számok tulajdonságai"
+ },
+ "even_number_grouping": {
+  "en": "even number grouping",
+  "es": "agrupación de número par",
+  "evfolyam": null,
+  "hu": "páros szám csoportosítás",
+  "temakor": "Számok tulajdonságai"
+ },
+ "everyday_problem_scene": {
+  "en": "everyday problem scene",
+  "es": "situación cotidiana",
+  "evfolyam": null,
+  "hu": "hétköznapi helyzet",
+  "temakor": "Szöveges feladatok megoldása"
+ },
+ "extra_item": {
+  "en": "extra item",
+  "es": "objeto sobrante",
+  "evfolyam": null,
+  "hu": "felesleges tárgy",
+  "temakor": "Szöveges feladatok megoldása"
+ },
+ "face_of_cube": {
+  "en": "face",
+  "es": "cara",
+  "evfolyam": null,
+  "hu": "lap",
+  "temakor": "Alakzatok geometriai tulajdonságai"
+ },
+ "floor_plan": {
+  "en": "floor plan",
+  "es": "plano de planta",
+  "evfolyam": null,
+  "hu": "alaprajz",
+  "temakor": "Alkotás térben és síkon"
+ },
+ "four_digit_number": {
+  "en": "four-digit number",
+  "es": "número de cuatro cifras",
+  "evfolyam": null,
+  "hu": "négyjegyű szám",
+  "temakor": "Számok tulajdonságai"
+ },
+ "front_back": {
+  "en": "in front of and behind",
+  "es": "delante y detrás",
+  "evfolyam": null,
+  "hu": "előtte és mögötte",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "game_board": {
+  "en": "board game",
+  "es": "tablero de juego",
+  "evfolyam": null,
+  "hu": "társasjáték tábla",
+  "temakor": "Problémamegoldás"
+ },
+ "graduated_cylinder": {
+  "en": "graduated cylinder",
+  "es": "probeta",
+  "evfolyam": null,
+  "hu": "mérőhenger",
+  "temakor": "Mérőeszköz használata, mérési módszerek"
+ },
+ "greater_than_less_than_symbols": {
+  "en": "greater than and less than symbols",
+  "es": "signos mayor y menor",
+  "evfolyam": null,
+  "hu": "nagyobb és kisebb jelek",
+  "temakor": "Számok rendezése"
+ },
+ "grid_map": {
+  "en": "grid map",
+  "es": "cuadrícula",
+  "evfolyam": null,
+  "hu": "négyzetháló",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "group_of_objects": {
+  "en": "group of objects",
+  "es": "grupo de objetos",
+  "evfolyam": null,
+  "hu": "tárgycsoport",
+  "temakor": "Állítások"
+ },
+ "group_of_small_objects": {
+  "en": "group of small objects",
+  "es": "grupo de objetos pequeños",
+  "evfolyam": null,
+  "hu": "kis tárgyak csoportja",
+  "temakor": "Számlálás, becslés"
+ },
+ "group_of_three_objects": {
+  "en": "group of three objects",
+  "es": "grupo de tres objetos",
+  "evfolyam": null,
+  "hu": "számhármas",
+  "temakor": "Összefüggések, kapcsolatok, szabályszerűségek felismerése"
+ },
+ "groups_of_objects": {
+  "en": "groups of objects",
+  "es": "grupos de objetos",
+  "evfolyam": null,
+  "hu": "tárgycsoportok",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "house_with_street_address": {
+  "en": "house",
+  "es": "casa",
+  "evfolyam": null,
+  "hu": "ház",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "hundred_chart": {
+  "en": "hundred chart",
+  "es": "tabla del 100",
+  "evfolyam": null,
+  "hu": "számtáblázat",
+  "temakor": "Fejben számolás"
+ },
+ "hundreds_chart": {
+  "en": "hundreds chart",
+  "es": "tabla numérica",
+  "evfolyam": null,
+  "hu": "számtábla",
+  "temakor": "Számok rendezése"
+ },
+ "in_out": {
+  "en": "inside and outside",
+  "es": "dentro y fuera",
+  "evfolyam": null,
+  "hu": "bent és kint",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "increasing_line_of_objects": {
+  "en": "increasing row of objects",
+  "es": "fila creciente de objetos",
+  "evfolyam": null,
+  "hu": "növekvő sor",
+  "temakor": "Összefüggések, kapcsolatok, szabályszerűségek felismerése"
+ },
+ "inverse_operations_blocks": {
+  "en": "inverse operations with blocks",
+  "es": "operaciones inversas con bloques",
+  "evfolyam": null,
+  "hu": "fordított műveletek kockákkal",
+  "temakor": "Alapműveletek tulajdonságai"
+ },
+ "kitchen_scale": {
+  "en": "scale",
+  "es": "balanza",
+  "evfolyam": null,
+  "hu": "mérleg",
+  "temakor": "Mérőeszköz használata, mérési módszerek"
+ },
+ "left_right": {
+  "en": "left and right direction",
+  "es": "izquierda y derecha",
+  "evfolyam": null,
+  "hu": "bal és jobb irány",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "long_multiplication_with_carry": {
+  "en": "long multiplication",
+  "es": "multiplicación escrita",
+  "evfolyam": null,
+  "hu": "írásbeli szorzás",
+  "temakor": "Írásbeli szorzás és osztás"
+ },
+ "magnifying_glass": {
+  "en": "magnifying glass",
+  "es": "lupa",
+  "evfolyam": null,
+  "hu": "nagyító",
+  "temakor": "Problémamegoldás"
+ },
+ "marble_bag": {
+  "en": "bag of marbles",
+  "es": "bolsa de canicas",
+  "evfolyam": null,
+  "hu": "golyós zacskó",
+  "temakor": "Valószínűségi gondolkodás"
+ },
+ "maze": {
+  "en": "maze",
+  "es": "laberinto",
+  "evfolyam": null,
+  "hu": "labirintus",
+  "temakor": "Problémamegoldás"
+ },
+ "measuring_cup": {
+  "en": "measuring cup",
+  "es": "vaso medidor",
+  "evfolyam": null,
+  "hu": "mérőpohár",
+  "temakor": "Mérőeszköz használata, mérési módszerek"
+ },
+ "measuring_cups": {
+  "en": "measuring cup",
+  "es": "vaso medidor",
+  "evfolyam": null,
+  "hu": "mérőedény",
+  "temakor": "Számlálás, becslés"
+ },
+ "measuring_tape": {
+  "en": "measuring tape",
+  "es": "cinta métrica",
+  "evfolyam": null,
+  "hu": "mérőszalag",
+  "temakor": "Adatok megfigyelése"
+ },
+ "measuring_tape_and_results": {
+  "en": "measurement results",
+  "es": "resultados de medición",
+  "evfolyam": null,
+  "hu": "mérési eredmények",
+  "temakor": "Adatok megfigyelése"
+ },
+ "measuring_tools": {
+  "en": "measuring tools",
+  "es": "herramientas de medición",
+  "evfolyam": null,
+  "hu": "mérőeszközök",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "mirror": {
+  "en": "mirror",
+  "es": "espejo",
+  "evfolyam": null,
+  "hu": "tükör",
+  "temakor": "Transzformációk"
+ },
+ "mirror_line": {
+  "en": "mirror line",
+  "es": "eje de simetría",
+  "evfolyam": null,
+  "hu": "tükörtengely",
+  "temakor": "Transzformációk"
+ },
+ "mirror_reflection_of_shape": {
+  "en": "mirror reflection",
+  "es": "imagen en el espejo",
+  "evfolyam": null,
+  "hu": "tükörkép",
+  "temakor": "Transzformációk"
+ },
+ "missing_item": {
+  "en": "missing object",
+  "es": "objeto faltante",
+  "evfolyam": null,
+  "hu": "hiányzó tárgy",
+  "temakor": "Szöveges feladatok megoldása"
+ },
+ "missing_puzzle_piece": {
+  "en": "jigsaw puzzle piece",
+  "es": "pieza de rompecabezas",
+  "evfolyam": null,
+  "hu": "kirakós darab",
+  "temakor": "Problémamegoldás"
+ },
+ "mixed_collection": {
+  "en": "mixed collection",
+  "es": "colección mixta",
+  "evfolyam": null,
+  "hu": "vegyes gyűjtemény",
+  "temakor": "Állítások"
+ },
+ "mixed_group_of_objects": {
+  "en": "mixed group of objects",
+  "es": "grupo mixto de objetos",
+  "evfolyam": null,
+  "hu": "kevert tárgycsoport",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ },
+ "mixed_objects_group": {
+  "en": "mixed objects group",
+  "es": "grupo de objetos mezclados",
+  "evfolyam": null,
+  "hu": "vegyes tárgycsoport",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ },
+ "money_coins_and_notes": {
+  "en": "coins and banknotes",
+  "es": "monedas y billetes",
+  "evfolyam": null,
+  "hu": "pénzérmék és bankjegyek",
+  "temakor": "Számok helyi értékes alakja"
+ },
+ "money_debt": {
+  "en": "debt money",
+  "es": "deuda de dinero",
+  "evfolyam": null,
+  "hu": "adósság pénz",
+  "temakor": "Negatív számok"
+ },
+ "moving_object": {
+  "en": "moving object",
+  "es": "movimiento",
+  "evfolyam": null,
+  "hu": "mozgatás",
+  "temakor": "Transzformációk"
+ },
+ "multiplication_array": {
+  "en": "multiplication array",
+  "es": "arreglo de multiplicación",
+  "evfolyam": null,
+  "hu": "szorzás elrendezésben",
+  "temakor": "Alapműveletek értelmezése"
+ },
+ "multiplication_arrays": {
+  "en": "multiplication",
+  "es": "multiplicación",
+  "evfolyam": null,
+  "hu": "szorzás",
+  "temakor": "Alapműveletek értelmezése"
+ },
+ "multiplication_check_with_inverse_operation": {
+  "en": "inverse operation check",
+  "es": "comprobación por multiplicación",
+  "evfolyam": null,
+  "hu": "visszaszorzás",
+  "temakor": "Írásbeli szorzás és osztás"
+ },
+ "multiplication_table_chart": {
+  "en": "multiplication table chart",
+  "es": "tabla de multiplicar",
+  "evfolyam": null,
+  "hu": "szorzótábla táblázat",
+  "temakor": "Fejben számolás"
+ },
+ "near_far": {
+  "en": "near and far",
+  "es": "más cerca y más lejos",
+  "evfolyam": null,
+  "hu": "közelebb és távolabb",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "number_comparison_symbols": {
+  "en": "number comparison symbols",
+  "es": "símbolos de comparación de números",
+  "evfolyam": null,
+  "hu": "számösszehasonlító jelek",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "number_line": {
+  "en": "number line",
+  "es": "recta numérica",
+  "evfolyam": null,
+  "hu": "számegyenes",
+  "temakor": "Számok rendezése"
+ },
+ "number_order_sequence": {
+  "en": "number sequence order",
+  "es": "ordenar números",
+  "evfolyam": null,
+  "hu": "számok sorba rendezése",
+  "temakor": "Számok rendezése"
+ },
+ "number_sequence": {
+  "en": "number sequence",
+  "es": "secuencia numérica",
+  "evfolyam": null,
+  "hu": "számsorozat",
+  "temakor": "Összefüggések, kapcsolatok, szabályszerűségek felismerése"
+ },
+ "numbered_objects": {
+  "en": "objects with numbers",
+  "es": "objetos numerados",
+  "evfolyam": null,
+  "hu": "számozott tárgyak",
+  "temakor": "Szöveges feladatok megoldása"
+ },
+ "numbers_and_objects": {
+  "en": "countable objects",
+  "es": "objetos contables",
+  "evfolyam": null,
+  "hu": "megszámlálható tárgyak",
+  "temakor": "Szöveges feladatok megoldása"
+ },
+ "numbers_chart": {
+  "en": "number chart",
+  "es": "tabla numérica",
+  "evfolyam": null,
+  "hu": "számtábla",
+  "temakor": "Szóbeli számolási eljárások"
+ },
+ "object_that_does_not_belong": {
+  "en": "object that does not belong",
+  "es": "objeto que no pertenece",
+  "evfolyam": null,
+  "hu": "oda nem illő tárgy",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ },
+ "odd_number": {
+  "en": "odd number",
+  "es": "número impar",
+  "evfolyam": null,
+  "hu": "páratlan szám",
+  "temakor": "Számok tulajdonságai"
+ },
+ "odd_one_out_object": {
+  "en": "odd one out object",
+  "es": "objeto que no pertenece",
+  "evfolyam": null,
+  "hu": "kilógó tárgy",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ },
+ "one_digit_number": {
+  "en": "one-digit number",
+  "es": "número de una cifra",
+  "evfolyam": null,
+  "hu": "egyjegyű szám",
+  "temakor": "Számok tulajdonságai"
+ },
+ "open_sentence": {
+  "en": "open sentence",
+  "es": "sentencia abierta",
+  "evfolyam": null,
+  "hu": "nyitott mondat",
+  "temakor": "Összefüggések, kapcsolatok, szabályszerűségek felismerése"
+ },
+ "ordered_line_of_objects": {
+  "en": "ordered line of objects",
+  "es": "objetos ordenados en fila",
+  "evfolyam": null,
+  "hu": "sorba rendezett tárgyak",
+  "temakor": "Rendszerezés, rendszerképzés"
+ },
+ "ordinal_positions": {
+  "en": "ordinal positions",
+  "es": "números ordinales",
+  "evfolyam": null,
+  "hu": "sorszámok",
+  "temakor": "Számok rendezése"
+ },
+ "pair_of_identical_objects": {
+  "en": "pair of identical objects",
+  "es": "pareja de objetos idénticos",
+  "evfolyam": null,
+  "hu": "azonos tárgyak párja",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ },
+ "pair_of_objects": {
+  "en": "pair of objects",
+  "es": "par de objetos",
+  "evfolyam": null,
+  "hu": "számpár / pár",
+  "temakor": "Összefüggések, kapcsolatok, szabályszerűségek felismerése"
+ },
+ "paired_items": {
+  "en": "paired items",
+  "es": "objetos emparejados",
+  "evfolyam": null,
+  "hu": "párosított tárgyak",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "paired_objects": {
+  "en": "paired objects",
+  "es": "objetos emparejados",
+  "evfolyam": null,
+  "hu": "párosított tárgyak",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "paper_folded_in_half": {
+  "en": "folded paper in half",
+  "es": "papel doblado por la mitad",
+  "evfolyam": null,
+  "hu": "félbehajtott papír",
+  "temakor": "Törtrészek"
+ },
+ "paper_folded_in_thirds": {
+  "en": "paper folded into thirds",
+  "es": "papel doblado en tercios",
+  "evfolyam": null,
+  "hu": "harmadolva hajtogatott papír",
+  "temakor": "Törtrészek"
+ },
+ "paper_folded_into_eighths": {
+  "en": "paper folded into eighths",
+  "es": "papel doblado en octavos",
+  "evfolyam": null,
+  "hu": "nyolcadokra hajtogatott papír",
+  "temakor": "Törtrészek"
+ },
+ "paper_map": {
+  "en": "map",
+  "es": "mapa",
+  "evfolyam": null,
+  "hu": "térkép",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "pattern_blocks": {
+  "en": "pattern made of shapes",
+  "es": "patrón hecho de formas",
+  "evfolyam": null,
+  "hu": "mintázat formákból",
+  "temakor": "Alkotás térben és síkon"
+ },
+ "pile_of_coins": {
+  "en": "pile of coins",
+  "es": "montón de monedas",
+  "evfolyam": null,
+  "hu": "érmék halmaza",
+  "temakor": "Számlálás, becslés"
+ },
+ "place_value_chart": {
+  "en": "place value chart",
+  "es": "tabla de valor posicional",
+  "evfolyam": null,
+  "hu": "helyiérték-táblázat",
+  "temakor": "Szóbeli számolási eljárások"
+ },
+ "place_value_table": {
+  "en": "place value chart",
+  "es": "tabla de valor posicional",
+  "evfolyam": null,
+  "hu": "helyiérték-táblázat",
+  "temakor": "Szóbeli számolási eljárások"
+ },
+ "playing_cards": {
+  "en": "playing cards",
+  "es": "cartas de juego",
+  "evfolyam": null,
+  "hu": "játékkártyák",
+  "temakor": "Valószínűségi gondolkodás"
+ },
+ "puzzle_piece": {
+  "en": "puzzle piece",
+  "es": "pieza de rompecabezas",
+  "evfolyam": null,
+  "hu": "kirakóelem",
+  "temakor": "Problémamegoldás"
+ },
+ "question_mark": {
+  "en": "question mark",
+  "es": "signo de interrogación",
+  "evfolyam": null,
+  "hu": "kérdőjel",
+  "temakor": "Problémamegoldás"
+ },
+ "question_mark_sign": {
+  "en": "question mark sign",
+  "es": "signo de interrogación",
+  "evfolyam": null,
+  "hu": "kérdőjel jel",
+  "temakor": "Problémamegoldás"
+ },
+ "rectangular_prism": {
+  "en": "rectangular prism",
+  "es": "prisma rectangular",
+  "evfolyam": null,
+  "hu": "téglatest",
+  "temakor": "Alakzatok geometriai tulajdonságai"
+ },
+ "red_ball": {
+  "en": "red ball",
+  "es": "pelota roja",
+  "evfolyam": null,
+  "hu": "piros labda",
+  "temakor": "Állítások"
+ },
+ "right_angle": {
+  "en": "right angle",
+  "es": "ángulo recto",
+  "evfolyam": null,
+  "hu": "derékszög",
+  "temakor": "Alakzatok geometriai tulajdonságai"
+ },
+ "road_path": {
+  "en": "path",
+  "es": "ruta",
+  "evfolyam": null,
+  "hu": "útvonal",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "roman_numerals_i_v_x": {
+  "en": "Roman numerals I V X",
+  "es": "números romanos I V X",
+  "evfolyam": null,
+  "hu": "római számjelek I V X",
+  "temakor": "Számok tulajdonságai"
+ },
+ "rotation_arrow": {
+  "en": "rotating arrow",
+  "es": "flecha giratoria",
+  "evfolyam": null,
+  "hu": "forgó nyíl",
+  "temakor": "Transzformációk"
+ },
+ "rounding_number_marker": {
+  "en": "number marker",
+  "es": "marcador de número",
+  "evfolyam": null,
+  "hu": "számjelölő",
+  "temakor": "Számok rendezése"
+ },
+ "ruler": {
+  "en": "ruler",
+  "es": "regla",
+  "evfolyam": null,
+  "hu": "vonalzó",
+  "temakor": "Számlálás, becslés"
+ },
+ "scale": {
+  "en": "scale",
+  "es": "balanza",
+  "evfolyam": null,
+  "hu": "mérleg",
+  "temakor": "Mérőeszköz használata, mérési módszerek"
+ },
+ "set_diagram_circles": {
+  "en": "set diagram circles",
+  "es": "círculos de diagrama de conjuntos",
+  "evfolyam": null,
+  "hu": "halmazábra körei",
+  "temakor": "Rendszerezés, rendszerképzés"
+ },
+ "set_of_objects": {
+  "en": "set of objects",
+  "es": "conjunto de objetos",
+  "evfolyam": null,
+  "hu": "halmaz",
+  "temakor": "Rendszerezés, rendszerképzés"
+ },
+ "set_of_same_objects": {
+  "en": "set of same objects",
+  "es": "conjunto de objetos iguales",
+  "evfolyam": null,
+  "hu": "azonos tárgyak halmaza",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ },
+ "sharing_apples": {
+  "en": "sharing apples equally",
+  "es": "reparto igual de manzanas",
+  "evfolyam": null,
+  "hu": "alma egyenlő osztása",
+  "temakor": "Alapműveletek értelmezése"
+ },
+ "shifted_copy_of_shape": {
+  "en": "shifted copy",
+  "es": "figura trasladada",
+  "evfolyam": null,
+  "hu": "eltolt kép",
+  "temakor": "Transzformációk"
+ },
+ "shopping_basket_with_items": {
+  "en": "shopping basket with items",
+  "es": "cesta de la compra con productos",
+  "evfolyam": null,
+  "hu": "bevásárlókosár árukkal",
+  "temakor": "Számlálás, becslés"
+ },
+ "shopping_price_tags": {
+  "en": "price tags",
+  "es": "etiquetas de precio",
+  "evfolyam": null,
+  "hu": "árcímkék",
+  "temakor": "Adatok megfigyelése"
+ },
+ "shopping_receipt": {
+  "en": "receipt",
+  "es": "recibo",
+  "evfolyam": null,
+  "hu": "nyugta",
+  "temakor": "Adatok megfigyelése"
+ },
+ "single_digit_division": {
+  "en": "long division",
+  "es": "división escrita",
+  "evfolyam": null,
+  "hu": "írásbeli osztás",
+  "temakor": "Írásbeli szorzás és osztás"
+ },
+ "single_object": {
+  "en": "single object",
+  "es": "un objeto",
+  "evfolyam": null,
+  "hu": "egy tárgy",
+  "temakor": "Állítások"
+ },
+ "small_large_comparison_objects": {
+  "en": "small and large comparison objects",
+  "es": "objetos más pequeños y más grandes",
+  "evfolyam": null,
+  "hu": "kisebb és nagyobb tárgyak",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "snowy_cold_weather": {
+  "en": "cold snowy weather",
+  "es": "tiempo frío y nevado",
+  "evfolyam": null,
+  "hu": "hideg havas idő",
+  "temakor": "Negatív számok"
+ },
+ "soroban": {
+  "en": "soroban",
+  "es": "soroban",
+  "evfolyam": null,
+  "hu": "szorobán",
+  "temakor": "Írásbeli összeadás és kivonás"
+ },
+ "sorted_groups_of_objects": {
+  "en": "sorted groups of objects",
+  "es": "grupos de objetos ordenados",
+  "evfolyam": null,
+  "hu": "válogatott tárgycsoportok",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ },
+ "sorted_object_set": {
+  "en": "sorted object set",
+  "es": "conjunto de objetos clasificados",
+  "evfolyam": null,
+  "hu": "válogatott tárgyhalmaz",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ },
+ "sorted_objects_row": {
+  "en": "sorted objects row",
+  "es": "fila de objetos ordenados",
+  "evfolyam": null,
+  "hu": "rendezett tárgyak sora",
+  "temakor": "Rendszerezés, rendszerképzés"
+ },
+ "sphere": {
+  "en": "sphere",
+  "es": "esfera",
+  "evfolyam": null,
+  "hu": "gömb",
+  "temakor": "Alakzatok geometriai tulajdonságai"
+ },
+ "spinning_wheel": {
+  "en": "spinning wheel",
+  "es": "ruleta",
+  "evfolyam": null,
+  "hu": "forgókerék",
+  "temakor": "Valószínűségi gondolkodás"
+ },
+ "split_group_of_objects": {
+  "en": "split group of objects",
+  "es": "grupo de objetos dividido",
+  "evfolyam": null,
+  "hu": "szétbontott tárgycsoport",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "square": {
+  "en": "square",
+  "es": "cuadrado",
+  "evfolyam": null,
+  "hu": "négyzet",
+  "temakor": "Alakzatok geometriai tulajdonságai"
+ },
+ "square_number": {
+  "en": "square number",
+  "es": "número cuadrado",
+  "evfolyam": null,
+  "hu": "négyzetszám",
+  "temakor": "Számok tulajdonságai"
+ },
+ "stack_of_base_ten_blocks": {
+  "en": "base-ten blocks",
+  "es": "bloques base diez",
+  "evfolyam": null,
+  "hu": "tízes alapú kockák",
+  "temakor": "Számok helyi értékes alakja"
+ },
+ "stacked_blocks": {
+  "en": "stacked blocks",
+  "es": "bloques apilados",
+  "evfolyam": null,
+  "hu": "egymásra rakott építőkockák",
+  "temakor": "Problémamegoldás"
+ },
+ "stacked_rulers": {
+  "en": "stacked rulers",
+  "es": "reglas colocadas una tras otra",
+  "evfolyam": null,
+  "hu": "egymás mellé rakott vonalzók",
+  "temakor": "Számlálás, becslés"
+ },
+ "stacks_of_ten_blocks": {
+  "en": "ten blocks",
+  "es": "bloques de base diez",
+  "evfolyam": null,
+  "hu": "tizespálcikák és egységek",
+  "temakor": "Szóbeli számolási eljárások"
+ },
+ "story_problem": {
+  "en": "word problem sheet",
+  "es": "hoja de problemas de texto",
+  "evfolyam": null,
+  "hu": "szöveges feladat lap",
+  "temakor": "Szöveges feladatok megoldása"
+ },
+ "subtraction_blocks": {
+  "en": "subtraction with blocks",
+  "es": "resta con bloques",
+  "evfolyam": null,
+  "hu": "kivonás kockákkal",
+  "temakor": "Alapműveletek értelmezése"
+ },
+ "subtraction_equation_with_blocks": {
+  "en": "subtraction equation with blocks",
+  "es": "resta con bloques",
+  "evfolyam": null,
+  "hu": "kivonás kockákkal",
+  "temakor": "Alapműveletek tulajdonságai"
+ },
+ "symmetrical_butterfly": {
+  "en": "butterfly",
+  "es": "mariposa",
+  "evfolyam": null,
+  "hu": "pillangó",
+  "temakor": "Transzformációk"
+ },
+ "symmetrical_leaf": {
+  "en": "leaf",
+  "es": "hoja",
+  "evfolyam": null,
+  "hu": "levél",
+  "temakor": "Transzformációk"
+ },
+ "symmetrical_pattern": {
+  "en": "symmetrical pattern",
+  "es": "patrón simétrico",
+  "evfolyam": null,
+  "hu": "szimmetrikus minta",
+  "temakor": "Transzformációk"
+ },
+ "symmetrical_shape": {
+  "en": "symmetrical shape",
+  "es": "figura simétrica",
+  "evfolyam": null,
+  "hu": "szimmetrikus alakzat",
+  "temakor": "Alkotás térben és síkon"
+ },
+ "table_chart": {
+  "en": "table chart",
+  "es": "tabla",
+  "evfolyam": null,
+  "hu": "táblázat",
+  "temakor": "Adatok megfigyelése"
+ },
+ "table_grid": {
+  "en": "table grid",
+  "es": "tabla de clasificación",
+  "evfolyam": null,
+  "hu": "táblázatos elrendezés",
+  "temakor": "Rendszerezés, rendszerképzés"
+ },
+ "ten_frame": {
+  "en": "ten-frame tray",
+  "es": "marco de diez",
+  "evfolyam": null,
+  "hu": "tízes tábla",
+  "temakor": "Számok helyi értékes alakja"
+ },
+ "tessellation_tiles": {
+  "en": "tile pattern",
+  "es": "mosaico",
+  "evfolyam": null,
+  "hu": "mozaikminta",
+  "temakor": "Alkotás térben és síkon"
+ },
+ "thermometer_below_zero": {
+  "en": "thermometer below zero",
+  "es": "termómetro bajo cero",
+  "evfolyam": null,
+  "hu": "hőmérő nulla alatt",
+  "temakor": "Negatív számok"
+ },
+ "three_digit_number": {
+  "en": "three-digit number",
+  "es": "número de tres cifras",
+  "evfolyam": null,
+  "hu": "háromjegyű szám",
+  "temakor": "Számok tulajdonságai"
+ },
+ "toy_blocks_structure": {
+  "en": "block structure",
+  "es": "construcción de bloques",
+  "evfolyam": null,
+  "hu": "építmény építőkockákból",
+  "temakor": "Alkotás térben és síkon"
+ },
+ "tree_diagram": {
+  "en": "tree diagram",
+  "es": "diagrama de árbol",
+  "evfolyam": null,
+  "hu": "fadiagram",
+  "temakor": "Rendszerezés, rendszerképzés"
+ },
+ "triangle": {
+  "en": "triangle",
+  "es": "triángulo",
+  "evfolyam": null,
+  "hu": "háromszög",
+  "temakor": "Alakzatok geometriai tulajdonságai"
+ },
+ "two_digit_number": {
+  "en": "two-digit number",
+  "es": "número de dos cifras",
+  "evfolyam": null,
+  "hu": "kétjegyű szám",
+  "temakor": "Számok tulajdonságai"
+ },
+ "two_groups_of_objects": {
+  "en": "two groups of objects",
+  "es": "dos grupos de objetos",
+  "evfolyam": null,
+  "hu": "két tárgycsoport",
+  "temakor": "Szám és valóság kapcsolata"
+ },
+ "two_separate_groups": {
+  "en": "two separate groups",
+  "es": "dos grupos separados",
+  "evfolyam": null,
+  "hu": "két külön csoport",
+  "temakor": "Állítások"
+ },
+ "underwater_sea_level": {
+  "en": "underwater below sea level",
+  "es": "lugar bajo el nivel del mar",
+  "evfolyam": null,
+  "hu": "tengerszint alatti hely",
+  "temakor": "Negatív számok"
+ },
+ "up_down": {
+  "en": "up and down direction",
+  "es": "arriba y abajo",
+  "evfolyam": null,
+  "hu": "fel és le irány",
+  "temakor": "Tájékozódás térben és síkon"
+ },
+ "venn_diagram": {
+  "en": "Venn diagram",
+  "es": "diagrama de Venn",
+  "evfolyam": null,
+  "hu": "Venn-diagram",
+  "temakor": "Rendszerezés, rendszerképzés"
+ },
+ "venn_diagram_circles": {
+  "en": "venn diagram circles",
+  "es": "círculos de diagrama de Venn",
+  "evfolyam": null,
+  "hu": "halmazábra körök",
+  "temakor": "Válogatás, halmazok alkotása, vizsgálata"
+ }
+}

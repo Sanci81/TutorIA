@@ -1,0 +1,373 @@
+{
+ "birthday_party": {
+  "en": "birthday party",
+  "es": "fiesta de cumpleaños",
+  "evfolyam": null,
+  "hu": "születésnapi ünnepség",
+  "temakor": "Család – Helyem a családban"
+ },
+ "castle_or_historic_monument": {
+  "en": "historic monument",
+  "es": "monumento histórico",
+  "evfolyam": null,
+  "hu": "történelmi emlékmű",
+  "temakor": "A társas együttélés kulturális gyökerei: Nemzet – Helyem a társadalomban"
+ },
+ "child_face_angry": {
+  "en": "angry child face",
+  "es": "cara de niño enfadado",
+  "evfolyam": null,
+  "hu": "dühös gyerekarc",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "child_face_sad": {
+  "en": "sad child face",
+  "es": "cara de niño triste",
+  "evfolyam": null,
+  "hu": "szomorú gyerekarc",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "child_face_scared": {
+  "en": "scared child face",
+  "es": "cara de niño asustado",
+  "evfolyam": null,
+  "hu": "ijedt gyerekarc",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "child_face_smile": {
+  "en": "smiling child face",
+  "es": "cara de niño sonriendo",
+  "evfolyam": null,
+  "hu": "mosolygó gyerekarc",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "child_waiting_with_self_control": {
+  "en": "child holding back from grabbing something",
+  "es": "niño conteniéndose de coger algo",
+  "evfolyam": null,
+  "hu": "önmagát visszatartó gyerek",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "child_with_goal_path": {
+  "en": "child walking toward a goal",
+  "es": "niño caminando hacia una meta",
+  "evfolyam": null,
+  "hu": "cél felé haladó gyerek",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "child_with_medal": {
+  "en": "child with a medal",
+  "es": "niño con una medalla",
+  "evfolyam": null,
+  "hu": "érmet viselő gyerek",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "christmas_tree": {
+  "en": "Christmas tree",
+  "es": "árbol de Navidad",
+  "evfolyam": null,
+  "hu": "karácsonyfa",
+  "temakor": "A társas együttélés kulturális gyökerei: Nemzet – Helyem a társadalomban"
+ },
+ "church": {
+  "en": "church",
+  "es": "iglesia",
+  "evfolyam": null,
+  "hu": "templom",
+  "temakor": "A társas együttélés kulturális gyökerei: Nemzet – Helyem a társadalomban"
+ },
+ "church_building": {
+  "en": "church building",
+  "es": "iglesia",
+  "evfolyam": null,
+  "hu": "templom",
+  "temakor": "A társas együttélés kulturális gyökerei: Nemzet – Helyem a társadalomban"
+ },
+ "class_rules_sign": {
+  "en": "class rules poster",
+  "es": "cartel de normas de clase",
+  "evfolyam": null,
+  "hu": "osztályszabályok plakát",
+  "temakor": "Helyem az osztály közösségében"
+ },
+ "classroom_group_of_children": {
+  "en": "classroom group of children",
+  "es": "grupo de niños en el aula",
+  "evfolyam": null,
+  "hu": "osztálytermi gyerekcsoport",
+  "temakor": "Helyem az osztály közösségében"
+ },
+ "different_emotions_faces": {
+  "en": "faces showing different emotions",
+  "es": "caras mostrando emociones diferentes",
+  "evfolyam": null,
+  "hu": "különböző érzelmeket mutató arcok",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "dove": {
+  "en": "dove",
+  "es": "paloma",
+  "evfolyam": null,
+  "hu": "galamb",
+  "temakor": "Az európai kultúra hatása az egyén értékrendjére"
+ },
+ "easter_cross": {
+  "en": "cross",
+  "es": "cruz",
+  "evfolyam": null,
+  "hu": "kereszt",
+  "temakor": "Az európai kultúra hatása az egyén értékrendjére"
+ },
+ "easter_egg": {
+  "en": "Easter egg",
+  "es": "huevo de Pascua",
+  "evfolyam": null,
+  "hu": "húsvéti tojás",
+  "temakor": "Az európai kultúra hatása az egyén értékrendjére"
+ },
+ "endangered_animal": {
+  "en": "endangered animal",
+  "es": "animal en peligro de extinción",
+  "evfolyam": null,
+  "hu": "veszélyeztetett állat",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ },
+ "extended_family": {
+  "en": "extended family",
+  "es": "familia extensa / parientes",
+  "evfolyam": null,
+  "hu": "nagycsalád / rokonság",
+  "temakor": "Család – Helyem a családban"
+ },
+ "factory_smoke": {
+  "en": "factory smoke",
+  "es": "humo de fábrica",
+  "evfolyam": null,
+  "hu": "gyári füst",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ },
+ "family_celebration": {
+  "en": "family celebration",
+  "es": "celebración familiar",
+  "evfolyam": null,
+  "hu": "családi ünnep",
+  "temakor": "Család – Helyem a családban"
+ },
+ "family_group": {
+  "en": "family group",
+  "es": "familia",
+  "evfolyam": null,
+  "hu": "család",
+  "temakor": "Család – Helyem a családban"
+ },
+ "family_meal": {
+  "en": "family meal",
+  "es": "comida en familia",
+  "evfolyam": null,
+  "hu": "közös családi étkezés",
+  "temakor": "Család – Helyem a családban"
+ },
+ "family_members": {
+  "en": "family members",
+  "es": "miembros de la familia",
+  "evfolyam": null,
+  "hu": "családtagok",
+  "temakor": "Család – Helyem a családban"
+ },
+ "festival_wreath": {
+  "en": "festival wreath",
+  "es": "corona festiva",
+  "evfolyam": null,
+  "hu": "ünnepi koszorú",
+  "temakor": "Az európai kultúra hatása az egyén értékrendjére"
+ },
+ "friendly_handshake": {
+  "en": "friendly handshake",
+  "es": "apretón de manos amistoso",
+  "evfolyam": null,
+  "hu": "barátságos kézfogás",
+  "temakor": "Helyem az osztály közösségében"
+ },
+ "friendship": {
+  "en": "friend",
+  "es": "amigo",
+  "evfolyam": null,
+  "hu": "barát",
+  "temakor": "Helyem az osztály közösségében"
+ },
+ "grandparents": {
+  "en": "grandparents",
+  "es": "abuelos",
+  "evfolyam": null,
+  "hu": "nagyszülők",
+  "temakor": "Család – Helyem a családban"
+ },
+ "historic_castle": {
+  "en": "historic castle",
+  "es": "castillo histórico",
+  "evfolyam": null,
+  "hu": "történelmi vár",
+  "temakor": "A társas együttélés kulturális gyökerei: Nemzet – Helyem a társadalomban"
+ },
+ "home": {
+  "en": "home",
+  "es": "casa",
+  "evfolyam": null,
+  "hu": "otthon",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "home_or_house": {
+  "en": "house",
+  "es": "casa",
+  "evfolyam": null,
+  "hu": "ház",
+  "temakor": "A társas együttélés kulturális gyökerei: Nemzet – Helyem a társadalomban"
+ },
+ "human_mirror": {
+  "en": "mirror with a child reflection",
+  "es": "niño reflejado en un espejo",
+  "evfolyam": null,
+  "hu": "tükörben látható gyerek",
+  "temakor": "Éntudat – Önismeret"
+ },
+ "hungarian_flag": {
+  "en": "Hungarian flag",
+  "es": "bandera húngara",
+  "evfolyam": null,
+  "hu": "magyar zászló",
+  "temakor": "A társas együttélés kulturális gyökerei: Nemzet – Helyem a társadalomban"
+ },
+ "menorah": {
+  "en": "menorah",
+  "es": "menorá",
+  "evfolyam": null,
+  "hu": "menóra",
+  "temakor": "Az európai kultúra hatása az egyén értékrendjére"
+ },
+ "nativity_scene": {
+  "en": "nativity scene",
+  "es": "belén",
+  "evfolyam": null,
+  "hu": "betlehemi jelenet",
+  "temakor": "Az európai kultúra hatása az egyén értékrendjére"
+ },
+ "new_baby": {
+  "en": "baby",
+  "es": "bebé",
+  "evfolyam": null,
+  "hu": "baba",
+  "temakor": "Család – Helyem a családban"
+ },
+ "passover_seder_plate": {
+  "en": "Passover seder plate",
+  "es": "plato del séder de Pascua judía",
+  "evfolyam": null,
+  "hu": "pészahi szédertál",
+  "temakor": "Az európai kultúra hatása az egyén értékrendjére"
+ },
+ "pet_cat": {
+  "en": "cat",
+  "es": "gato",
+  "evfolyam": null,
+  "hu": "macska",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ },
+ "pet_dog": {
+  "en": "dog",
+  "es": "perro",
+  "evfolyam": null,
+  "hu": "kutya",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ },
+ "plant_in_pot": {
+  "en": "potted plant",
+  "es": "planta en maceta",
+  "evfolyam": null,
+  "hu": "cserepes növény",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ },
+ "protected_nature_landscape": {
+  "en": "protected nature landscape",
+  "es": "paisaje natural protegido",
+  "evfolyam": null,
+  "hu": "védett természeti érték",
+  "temakor": "A társas együttélés kulturális gyökerei: Nemzet – Helyem a társadalomban"
+ },
+ "raised_hand_student": {
+  "en": "raised hand student",
+  "es": "alumno con la mano levantada",
+  "evfolyam": null,
+  "hu": "kezét felemelő tanuló",
+  "temakor": "Helyem az osztály közösségében"
+ },
+ "recycling_bin": {
+  "en": "recycling bin",
+  "es": "contenedor de reciclaje",
+  "evfolyam": null,
+  "hu": "szelektív hulladékgyűjtő",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ },
+ "recycling_bins": {
+  "en": "recycling bins",
+  "es": "contenedores de reciclaje",
+  "evfolyam": null,
+  "hu": "szelektív hulladékgyűjtő kukák",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ },
+ "students_group": {
+  "en": "group of students",
+  "es": "grupo de alumnos",
+  "evfolyam": null,
+  "hu": "diákcsoport",
+  "temakor": "Helyem az osztály közösségében"
+ },
+ "town_or_village": {
+  "en": "town",
+  "es": "pueblo",
+  "evfolyam": null,
+  "hu": "város",
+  "temakor": "A társas együttélés kulturális gyökerei: Nemzet – Helyem a társadalomban"
+ },
+ "trash_pollution": {
+  "en": "trash pollution",
+  "es": "basura en la naturaleza",
+  "evfolyam": null,
+  "hu": "szemét a természetben",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ },
+ "tree_and_birds": {
+  "en": "tree and birds",
+  "es": "árbol y pájaros",
+  "evfolyam": null,
+  "hu": "fa és madarak",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ },
+ "trusted_adult": {
+  "en": "trusted adult",
+  "es": "adulto de confianza",
+  "evfolyam": null,
+  "hu": "megbízható felnőtt",
+  "temakor": "Család – Helyem a családban"
+ },
+ "two_children_arguing": {
+  "en": "two children arguing",
+  "es": "dos niños discutiendo",
+  "evfolyam": null,
+  "hu": "veszekedő két gyerek",
+  "temakor": "Helyem az osztály közösségében"
+ },
+ "two_children_hugging": {
+  "en": "two children hugging",
+  "es": "dos niños abrazándose",
+  "evfolyam": null,
+  "hu": "ölelkező két gyerek",
+  "temakor": "Helyem az osztály közösségében"
+ },
+ "wildlife_animal": {
+  "en": "wild animal",
+  "es": "animal salvaje",
+  "evfolyam": null,
+  "hu": "vadon élő állat",
+  "temakor": "A természet rendjének megőrzése a fenntarthatóság érdekében"
+ }
+}

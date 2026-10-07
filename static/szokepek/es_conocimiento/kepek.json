@@ -1,0 +1,1318 @@
+{
+ "advertisement_poster": {
+  "en": "advertisement poster",
+  "es": "cartel publicitario",
+  "evfolyam": "6",
+  "hu": "reklámplakát",
+  "temakor": "Salud, emociones y decisiones"
+ },
+ "aid_donation_boxes": {
+  "en": "donation boxes",
+  "es": "cajas de donación",
+  "evfolyam": "6",
+  "hu": "adománydobozok",
+  "temakor": "Retos del mundo y compromiso"
+ },
+ "algorithm_flowchart": {
+  "en": "algorithm flowchart",
+  "es": "diagrama de flujo de un algoritmo",
+  "evfolyam": "5",
+  "hu": "algoritmus folyamatábra",
+  "temakor": "Programación y pensamiento computacional"
+ },
+ "antique_camera": {
+  "en": "antique camera",
+  "es": "cámara antigua",
+  "evfolyam": "2",
+  "hu": "antik fényképezőgép",
+  "temakor": "Antes y ahora"
+ },
+ "arrows_path": {
+  "en": "arrows path",
+  "es": "camino de flechas",
+  "evfolyam": "3",
+  "hu": "nyilas útvonal",
+  "temakor": "Tecnología y programación"
+ },
+ "asking_permission": {
+  "en": "asking permission",
+  "es": "pedir permiso",
+  "evfolyam": "1",
+  "hu": "engedélykérés",
+  "temakor": "Aparatos digitales con cuidado"
+ },
+ "bacteria": {
+  "en": "bacteria",
+  "es": "bacterias",
+  "evfolyam": "5",
+  "hu": "baktériumok",
+  "temakor": "La vida: células y funciones"
+ },
+ "balanced_meal_plate": {
+  "en": "balanced meal plate",
+  "es": "plato de comida equilibrada",
+  "evfolyam": "2",
+  "hu": "kiegyensúlyozott ételadag",
+  "temakor": "Cuido mi salud"
+ },
+ "bandage": {
+  "en": "bandage",
+  "es": "vendaje",
+  "evfolyam": "4",
+  "hu": "kötés",
+  "temakor": "Salud y hábitos"
+ },
+ "bar_graph": {
+  "en": "bar graph",
+  "es": "gráfico de barras",
+  "evfolyam": "4",
+  "hu": "oszlopdiagram",
+  "temakor": "Investigación y comunicación científica"
+ },
+ "battery": {
+  "en": "battery",
+  "es": "pila",
+  "evfolyam": "4",
+  "hu": "elem",
+  "temakor": "Fuerzas, energía y máquinas"
+ },
+ "beaker": {
+  "en": "beaker",
+  "es": "vaso de precipitados",
+  "evfolyam": "4",
+  "hu": "főzőpohár",
+  "temakor": "Investigación y comunicación científica"
+ },
+ "bug_fixing": {
+  "en": "bug fixing",
+  "es": "depuración",
+  "evfolyam": "5",
+  "hu": "hibajavítás",
+  "temakor": "Programación y pensamiento computacional"
+ },
+ "cell": {
+  "en": "cell",
+  "es": "célula",
+  "evfolyam": "5",
+  "hu": "sejt",
+  "temakor": "La vida: células y funciones"
+ },
+ "cell_model": {
+  "en": "cell model",
+  "es": "modelo celular",
+  "evfolyam": "5",
+  "hu": "sejtmodell",
+  "temakor": "La vida: células y funciones"
+ },
+ "chemical_reaction_bubbling": {
+  "en": "bubbling chemical reaction",
+  "es": "reacción química con burbujas",
+  "evfolyam": "6",
+  "hu": "pezsgő kémiai reakció",
+  "temakor": "Física y química cotidianas"
+ },
+ "child_exercising": {
+  "en": "child exercising",
+  "es": "niño haciendo ejercicio",
+  "evfolyam": "2",
+  "hu": "sportoló gyerek",
+  "temakor": "Cuido mi salud"
+ },
+ "child_observing": {
+  "en": "child observing",
+  "es": "niño observando",
+  "evfolyam": "1",
+  "hu": "megfigyelő gyerek",
+  "temakor": "Aprendo a observar como un científico"
+ },
+ "cigarette": {
+  "en": "cigarette",
+  "es": "cigarrillo",
+  "evfolyam": "6",
+  "hu": "cigaretta",
+  "temakor": "Salud, emociones y decisiones"
+ },
+ "circulatory_system": {
+  "en": "circulatory system",
+  "es": "aparato circulatorio",
+  "evfolyam": "3",
+  "hu": "keringési rendszer",
+  "temakor": "El cuerpo humano por dentro"
+ },
+ "city_population": {
+  "en": "city with population",
+  "es": "ciudad con población",
+  "evfolyam": "3",
+  "hu": "város lakossággal",
+  "temakor": "España: paisajes y sociedad"
+ },
+ "classroom_charter": {
+  "en": "classroom charter",
+  "es": "carta del aula",
+  "evfolyam": "3",
+  "hu": "osztálytermi charta",
+  "temakor": "Convivencia y derechos"
+ },
+ "classroom_exhibition_display": {
+  "en": "classroom exhibition display",
+  "es": "panel de exposición",
+  "evfolyam": "6",
+  "hu": "kiállítási tabló",
+  "temakor": "Retos del mundo y compromiso"
+ },
+ "classroom_problem": {
+  "en": "messy classroom",
+  "es": "aula desordenada",
+  "evfolyam": "2",
+  "hu": "rendetlen osztályterem",
+  "temakor": "Retos del mundo que me rodea"
+ },
+ "classroom_rules_poster": {
+  "en": "classroom rules poster",
+  "es": "cartel de normas del aula",
+  "evfolyam": "3",
+  "hu": "osztálytermi szabályok plakátja",
+  "temakor": "Convivencia y derechos"
+ },
+ "clean_park": {
+  "en": "clean park",
+  "es": "parque limpio",
+  "evfolyam": "1",
+  "hu": "tiszta park",
+  "temakor": "Cuido el planeta desde pequeño"
+ },
+ "cleaning_tools": {
+  "en": "cleaning tools",
+  "es": "utensilios de limpieza",
+  "evfolyam": "2",
+  "hu": "tisztítóeszközök",
+  "temakor": "Retos del mundo que me rodea"
+ },
+ "clipboard": {
+  "en": "clipboard",
+  "es": "portapapeles",
+  "evfolyam": "4",
+  "hu": "írótábla",
+  "temakor": "Investigación y comunicación científica"
+ },
+ "coastal_landscape": {
+  "en": "coastline",
+  "es": "litoral",
+  "evfolyam": "3",
+  "hu": "partvidék",
+  "temakor": "España: paisajes y sociedad"
+ },
+ "community_campaign_poster": {
+  "en": "campaign poster",
+  "es": "cartel de campaña",
+  "evfolyam": "6",
+  "hu": "kampányplakát",
+  "temakor": "Retos del mundo y compromiso"
+ },
+ "community_meeting": {
+  "en": "community meeting",
+  "es": "asamblea comunitaria",
+  "evfolyam": "5",
+  "hu": "közösségi gyűlés",
+  "temakor": "Ciudadanía activa"
+ },
+ "computer_mouse": {
+  "en": "mouse",
+  "es": "ratón",
+  "evfolyam": "1",
+  "hu": "egér",
+  "temakor": "Aparatos digitales con cuidado"
+ },
+ "computer_programming": {
+  "en": "computer programming",
+  "es": "programación informática",
+  "evfolyam": "5",
+  "hu": "számítógépes programozás",
+  "temakor": "Programación y pensamiento computacional"
+ },
+ "computer_with_blocks_programming": {
+  "en": "computer with block programming on screen",
+  "es": "computadora con programación por bloques en la pantalla",
+  "evfolyam": "3",
+  "hu": "számítógép blokkalapú programozással a képernyőn",
+  "temakor": "Tecnología y programación"
+ },
+ "control_group": {
+  "en": "control group",
+  "es": "grupo de control",
+  "evfolyam": "5",
+  "hu": "kontrollcsoport",
+  "temakor": "Ciencia con rigor"
+ },
+ "data_chart": {
+  "en": "data chart",
+  "es": "gráfico de datos",
+  "evfolyam": "5",
+  "hu": "adatábra",
+  "temakor": "Ciencia con rigor"
+ },
+ "data_table": {
+  "en": "data table",
+  "es": "tabla de datos",
+  "evfolyam": "2",
+  "hu": "táblázat",
+  "temakor": "Investigo y explico"
+ },
+ "debt_or_duty_bucket": {
+  "en": "helping duty",
+  "es": "tarea de ayuda",
+  "evfolyam": "3",
+  "hu": "segítői feladat",
+  "temakor": "Convivencia y derechos"
+ },
+ "different_animals_and_plants": {
+  "en": "biodiversity",
+  "es": "biodiversidad",
+  "evfolyam": "4",
+  "hu": "biológiai sokféleség",
+  "temakor": "Seres vivos y biodiversidad"
+ },
+ "digestive_system": {
+  "en": "digestive system",
+  "es": "aparato digestivo",
+  "evfolyam": "3",
+  "hu": "emésztőrendszer",
+  "temakor": "El cuerpo humano por dentro"
+ },
+ "digital_drawing_tablet": {
+  "en": "digital drawing tablet",
+  "es": "tableta de dibujo digital",
+  "evfolyam": "2",
+  "hu": "digitális rajztábla",
+  "temakor": "Creo con herramientas digitales"
+ },
+ "digital_profile": {
+  "en": "online profile",
+  "es": "perfil en línea",
+  "evfolyam": "6",
+  "hu": "online profil",
+  "temakor": "Tecnología, datos y sociedad digital"
+ },
+ "diverse_people_group": {
+  "en": "group of diverse people",
+  "es": "grupo de personas diversas",
+  "evfolyam": "6",
+  "hu": "különböző emberek csoportja",
+  "temakor": "España y el mundo actual"
+ },
+ "dry_plain": {
+  "en": "dry plain",
+  "es": "llanura seca",
+  "evfolyam": "3",
+  "hu": "száraz síkság",
+  "temakor": "España: paisajes y sociedad"
+ },
+ "ears": {
+  "en": "ears",
+  "es": "orejas",
+  "evfolyam": "1",
+  "hu": "orejas",
+  "temakor": "Mi cuerpo y mis sentidos"
+ },
+ "earth_with_hot_temperature": {
+  "en": "hot Earth",
+  "es": "Tierra caliente",
+  "evfolyam": "6",
+  "hu": "forró Föld",
+  "temakor": "Ecosistemas y cambio climático"
+ },
+ "electric_circuit_battery_bulb": {
+  "en": "electric circuit with battery and bulb",
+  "es": "circuito eléctrico con pila y bombilla",
+  "evfolyam": "4",
+  "hu": "elektromos áramkör elem és izzó",
+  "temakor": "Fuerzas, energía y máquinas"
+ },
+ "electric_wire": {
+  "en": "electric wire",
+  "es": "cable eléctrico",
+  "evfolyam": "5",
+  "hu": "elektromos vezeték",
+  "temakor": "Materia, energía y electricidad"
+ },
+ "electric_wires": {
+  "en": "electrical wires",
+  "es": "cables eléctricos",
+  "evfolyam": "4",
+  "hu": "elektromos vezetékek",
+  "temakor": "Fuerzas, energía y máquinas"
+ },
+ "endangered_animal": {
+  "en": "endangered species",
+  "es": "especie amenazada",
+  "evfolyam": "4",
+  "hu": "veszélyeztetett faj",
+  "temakor": "Seres vivos y biodiversidad"
+ },
+ "equal_group_of_children": {
+  "en": "equal group of children",
+  "es": "grupo de niños iguales",
+  "evfolyam": "3",
+  "hu": "egyenlő gyerekcsoport",
+  "temakor": "Convivencia y derechos"
+ },
+ "europe_map": {
+  "en": "map of Europe",
+  "es": "mapa de Europa",
+  "evfolyam": "6",
+  "hu": "európa térkép",
+  "temakor": "España y el mundo actual"
+ },
+ "european_union_flag": {
+  "en": "European Union flag",
+  "es": "bandera de la Unión Europea",
+  "evfolyam": "6",
+  "hu": "európai uniós zászló",
+  "temakor": "España y el mundo actual"
+ },
+ "experiment_tools": {
+  "en": "lab tools",
+  "es": "herramientas de laboratorio",
+  "evfolyam": "6",
+  "hu": "laboratóriumi eszközök",
+  "temakor": "Proyecto de investigación"
+ },
+ "extinct_animal_skeleton": {
+  "en": "extinct species",
+  "es": "especie extinta",
+  "evfolyam": "4",
+  "hu": "kihalt faj",
+  "temakor": "Seres vivos y biodiversidad"
+ },
+ "eyes": {
+  "en": "eyes",
+  "es": "ojos",
+  "evfolyam": "1",
+  "hu": "ojos",
+  "temakor": "Mi cuerpo y mis sentidos"
+ },
+ "fingerprint_data": {
+  "en": "personal data fingerprint",
+  "es": "huella dactilar de datos personales",
+  "evfolyam": "6",
+  "hu": "személyes adat ujjlenyomat",
+  "temakor": "Tecnología, datos y sociedad digital"
+ },
+ "fire": {
+  "en": "fire",
+  "es": "fuego",
+  "evfolyam": "3",
+  "hu": "tűz",
+  "temakor": "Materia y energía"
+ },
+ "food_chain": {
+  "en": "food chain",
+  "es": "cadena alimentaria",
+  "evfolyam": "3",
+  "hu": "tápláléklánc",
+  "temakor": "Los ecosistemas"
+ },
+ "forest_and_pollution": {
+  "en": "polluted ecosystem",
+  "es": "ecosistema contaminado",
+  "evfolyam": "6",
+  "hu": "szennyezett ökoszisztéma",
+  "temakor": "Ecosistemas y cambio climático"
+ },
+ "forest_ecosystem": {
+  "en": "ecosystem",
+  "es": "ecosistema",
+  "evfolyam": "3",
+  "hu": "ökoszisztéma",
+  "temakor": "Los ecosistemas"
+ },
+ "gas": {
+  "en": "gas",
+  "es": "gas",
+  "evfolyam": "2",
+  "hu": "gáz",
+  "temakor": "Materia, luz y sonido"
+ },
+ "globes_earth": {
+  "en": "earth globe",
+  "es": "globo terráqueo",
+  "evfolyam": "4",
+  "hu": "földgömb",
+  "temakor": "Retos globales y consumo"
+ },
+ "government_building": {
+  "en": "public institution building",
+  "es": "edificio de una institución pública",
+  "evfolyam": "5",
+  "hu": "intézmény épülete",
+  "temakor": "Ciudadanía activa"
+ },
+ "green_plant": {
+  "en": "plant",
+  "es": "planta",
+  "evfolyam": "3",
+  "hu": "növény",
+  "temakor": "Los ecosistemas"
+ },
+ "greenhouse_effect": {
+  "en": "greenhouse effect",
+  "es": "efecto invernadero",
+  "evfolyam": "6",
+  "hu": "üvegházhatás",
+  "temakor": "Ecosistemas y cambio climático"
+ },
+ "habitat": {
+  "en": "habitat",
+  "es": "hábitat",
+  "evfolyam": "2",
+  "hu": "élőhely",
+  "temakor": "Plantas y animales de mi entorno"
+ },
+ "habitat_with_many_species": {
+  "en": "habitat",
+  "es": "hábitat",
+  "evfolyam": "4",
+  "hu": "élőhely",
+  "temakor": "Seres vivos y biodiversidad"
+ },
+ "handwashing": {
+  "en": "handwashing",
+  "es": "lavado de manos",
+  "evfolyam": "2",
+  "hu": "kézmosás",
+  "temakor": "Cuido mi salud"
+ },
+ "hard_material": {
+  "en": "hard material",
+  "es": "material duro",
+  "evfolyam": "1",
+  "hu": "kemény anyag",
+  "temakor": "Materiales, fuerzas y movimiento"
+ },
+ "hawk": {
+  "en": "hawk",
+  "es": "halcón",
+  "evfolyam": "3",
+  "hu": "héja",
+  "temakor": "Los ecosistemas"
+ },
+ "healthy_food_and_water": {
+  "en": "healthy food and water",
+  "es": "comida saludable y agua",
+  "evfolyam": "5",
+  "hu": "egészséges étel és víz",
+  "temakor": "Cuerpo humano y salud avanzada"
+ },
+ "healthy_lunch": {
+  "en": "healthy lunch",
+  "es": "almuerzo saludable",
+  "evfolyam": "1",
+  "hu": "almuerzo saludable",
+  "temakor": "Mi cuerpo y mis sentidos"
+ },
+ "heart": {
+  "en": "heart",
+  "es": "corazón",
+  "evfolyam": "4",
+  "hu": "szív",
+  "temakor": "Salud y hábitos"
+ },
+ "helping_hands": {
+  "en": "helping hands",
+  "es": "manos ayudando",
+  "evfolyam": "2",
+  "hu": "segítő kezek",
+  "temakor": "Retos del mundo que me rodea"
+ },
+ "helping_hands_cooperation": {
+  "en": "helping hands",
+  "es": "manos ayudando",
+  "evfolyam": "6",
+  "hu": "segítő kezek",
+  "temakor": "Retos del mundo y compromiso"
+ },
+ "historic_monument": {
+  "en": "historic monument",
+  "es": "monumento histórico",
+  "evfolyam": "4",
+  "hu": "történelmi emlékmű",
+  "temakor": "Historia de España: grandes etapas"
+ },
+ "human_body": {
+  "en": "human body",
+  "es": "cuerpo humano",
+  "evfolyam": "1",
+  "hu": "test",
+  "temakor": "Mi cuerpo y mis sentidos"
+ },
+ "human_body_internal_view": {
+  "en": "human body internal view",
+  "es": "cuerpo humano por dentro",
+  "evfolyam": "3",
+  "hu": "emberi test belső nézete",
+  "temakor": "El cuerpo humano por dentro"
+ },
+ "human_brain": {
+  "en": "human brain",
+  "es": "cerebro humano",
+  "evfolyam": "5",
+  "hu": "emberi agy",
+  "temakor": "Cuerpo humano y salud avanzada"
+ },
+ "human_heart": {
+  "en": "heart",
+  "es": "corazón",
+  "evfolyam": "3",
+  "hu": "szív",
+  "temakor": "El cuerpo humano por dentro"
+ },
+ "human_muscular_system": {
+  "en": "human muscular system",
+  "es": "sistema muscular humano",
+  "evfolyam": "5",
+  "hu": "izomrendszer",
+  "temakor": "Cuerpo humano y salud avanzada"
+ },
+ "human_skeleton": {
+  "en": "human skeleton",
+  "es": "esqueleto humano",
+  "evfolyam": "5",
+  "hu": "emberi csontváz",
+  "temakor": "Cuerpo humano y salud avanzada"
+ },
+ "ice_cube": {
+  "en": "ice cube",
+  "es": "cubo de hielo",
+  "evfolyam": "3",
+  "hu": "jégkocka",
+  "temakor": "Materia y energía"
+ },
+ "invertebrate": {
+  "en": "invertebrate",
+  "es": "invertebrado",
+  "evfolyam": "2",
+  "hu": "gerinctelen",
+  "temakor": "Plantas y animales de mi entorno"
+ },
+ "lab_test_tubes": {
+  "en": "test tubes",
+  "es": "tubos de ensayo",
+  "evfolyam": "3",
+  "hu": "kémcsövek",
+  "temakor": "El método científico"
+ },
+ "latin_america_map": {
+  "en": "map of Latin America",
+  "es": "mapa de América Latina",
+  "evfolyam": "5",
+  "hu": "Latin-Amerika térképe",
+  "temakor": "Geografía e historia del mundo hispano"
+ },
+ "leaves": {
+  "en": "leaves",
+  "es": "hojas",
+  "evfolyam": "1",
+  "hu": "levelek",
+  "temakor": "Aprendo a observar como un científico"
+ },
+ "life_cycle": {
+  "en": "life cycle",
+  "es": "ciclo de vida",
+  "evfolyam": "2",
+  "hu": "életciklus",
+  "temakor": "Plantas y animales de mi entorno"
+ },
+ "light_bulb": {
+  "en": "light bulb",
+  "es": "bombilla",
+  "evfolyam": "3",
+  "hu": "villanykörte",
+  "temakor": "Materia y energía"
+ },
+ "liquid": {
+  "en": "liquid",
+  "es": "líquido",
+  "evfolyam": "2",
+  "hu": "folyadék",
+  "temakor": "Materia, luz y sonido"
+ },
+ "lock_and_shield": {
+  "en": "privacy lock",
+  "es": "candado de privacidad",
+  "evfolyam": "6",
+  "hu": "adatvédelmi lakat",
+  "temakor": "Tecnología, datos y sociedad digital"
+ },
+ "loop_arrow_circle": {
+  "en": "loop arrow circle",
+  "es": "flecha circular",
+  "evfolyam": "3",
+  "hu": "körkörös nyíl",
+  "temakor": "Tecnología y programación"
+ },
+ "magnifying_glass": {
+  "en": "magnifying glass",
+  "es": "lupa",
+  "evfolyam": "1",
+  "hu": "nagyító",
+  "temakor": "Aprendo a observar como un científico"
+ },
+ "maze": {
+  "en": "maze",
+  "es": "laberinto",
+  "evfolyam": "3",
+  "hu": "labirintus",
+  "temakor": "Tecnología y programación"
+ },
+ "measuring_cup": {
+  "en": "measuring cup",
+  "es": "vaso medidor",
+  "evfolyam": "3",
+  "hu": "mérőpohár",
+  "temakor": "El método científico"
+ },
+ "measuring_tool": {
+  "en": "measuring tool",
+  "es": "instrumento de medición",
+  "evfolyam": "5",
+  "hu": "mérőeszköz",
+  "temakor": "Ciencia con rigor"
+ },
+ "medicine_pills": {
+  "en": "medicine pills",
+  "es": "pastillas de medicina",
+  "evfolyam": "6",
+  "hu": "gyógyszer tabletták",
+  "temakor": "Salud, emociones y decisiones"
+ },
+ "medieval_castle": {
+  "en": "medieval castle",
+  "es": "castillo medieval",
+  "evfolyam": "4",
+  "hu": "középkori vár",
+  "temakor": "Historia de España: grandes etapas"
+ },
+ "melting_ice": {
+  "en": "melting ice",
+  "es": "hielo derritiéndose",
+  "evfolyam": "2",
+  "hu": "olvadó jég",
+  "temakor": "Materia, luz y sonido"
+ },
+ "microscope": {
+  "en": "microscope",
+  "es": "microscopio",
+  "evfolyam": "5",
+  "hu": "mikroszkóp",
+  "temakor": "La vida: células y funciones"
+ },
+ "mixing_sugar_into_water": {
+  "en": "sugar dissolving in water",
+  "es": "azúcar disolviéndose en agua",
+  "evfolyam": "6",
+  "hu": "cukor oldódása vízben",
+  "temakor": "Física y química cotidianas"
+ },
+ "modern_smartphone": {
+  "en": "smartphone",
+  "es": "teléfono inteligente",
+  "evfolyam": "2",
+  "hu": "okostelefon",
+  "temakor": "Antes y ahora"
+ },
+ "modern_television": {
+  "en": "modern television",
+  "es": "televisor moderno",
+  "evfolyam": "2",
+  "hu": "modern televízió",
+  "temakor": "Antes y ahora"
+ },
+ "mountain_range": {
+  "en": "mountain range",
+  "es": "cordillera",
+  "evfolyam": "3",
+  "hu": "hegylánc",
+  "temakor": "España: paisajes y sociedad"
+ },
+ "neighbor": {
+  "en": "neighbor",
+  "es": "vecino",
+  "evfolyam": "1",
+  "hu": "szomszéd",
+  "temakor": "Mi casa, mi calle, mi pueblo"
+ },
+ "newspaper": {
+  "en": "newspaper",
+  "es": "periódico",
+  "evfolyam": "5",
+  "hu": "újság",
+  "temakor": "Ciudadanía activa"
+ },
+ "notebook": {
+  "en": "notebook",
+  "es": "cuaderno",
+  "evfolyam": "1",
+  "hu": "füzet",
+  "temakor": "Aprendo a observar como un científico"
+ },
+ "notebook_and_pencil": {
+  "en": "notebook and pencil",
+  "es": "cuaderno y lápiz",
+  "evfolyam": "2",
+  "hu": "cuaderno y lápiz",
+  "temakor": "Investigo y explico"
+ },
+ "oil_and_water_mixture": {
+  "en": "oil and water mixture",
+  "es": "mezcla de aceite y agua",
+  "evfolyam": "6",
+  "hu": "olaj és víz keveréke",
+  "temakor": "Física y química cotidianas"
+ },
+ "old_and_new_timeline": {
+  "en": "timeline",
+  "es": "línea del tiempo",
+  "evfolyam": "5",
+  "hu": "idővonal",
+  "temakor": "Geografía e historia del mundo hispano"
+ },
+ "old_manuscript": {
+  "en": "old manuscript",
+  "es": "manuscrito antiguo",
+  "evfolyam": "4",
+  "hu": "régi kézirat",
+  "temakor": "Historia de España: grandes etapas"
+ },
+ "old_telephone": {
+  "en": "old telephone",
+  "es": "teléfono antiguo",
+  "evfolyam": "2",
+  "hu": "régi telefon",
+  "temakor": "Antes y ahora"
+ },
+ "old_television": {
+  "en": "old television",
+  "es": "televisor antiguo",
+  "evfolyam": "2",
+  "hu": "régi televízió",
+  "temakor": "Antes y ahora"
+ },
+ "peer_review": {
+  "en": "peer review",
+  "es": "revisión por pares",
+  "evfolyam": "5",
+  "hu": "szakértői lektorálás",
+  "temakor": "Ciencia con rigor"
+ },
+ "plant": {
+  "en": "plant",
+  "es": "planta",
+  "evfolyam": "2",
+  "hu": "növény",
+  "temakor": "Plantas y animales de mi entorno"
+ },
+ "plant_cell": {
+  "en": "plant cell",
+  "es": "célula vegetal",
+  "evfolyam": "5",
+  "hu": "növényi sejt",
+  "temakor": "La vida: células y funciones"
+ },
+ "plant_experiment": {
+  "en": "plant experiment",
+  "es": "experimento con planta",
+  "evfolyam": "3",
+  "hu": "növényi kísérlet",
+  "temakor": "El método científico"
+ },
+ "plant_pot": {
+  "en": "potted plant",
+  "es": "planta en maceta",
+  "evfolyam": "2",
+  "hu": "planta en maceta",
+  "temakor": "Investigo y explico"
+ },
+ "plant_seed": {
+  "en": "seed in soil",
+  "es": "semilla en la tierra",
+  "evfolyam": "1",
+  "hu": "mag a földben",
+  "temakor": "Los seres vivos y yo"
+ },
+ "potted_plant": {
+  "en": "potted plant",
+  "es": "planta en maceta",
+  "evfolyam": "1",
+  "hu": "cserepes növény",
+  "temakor": "Los seres vivos y yo"
+ },
+ "power_plug": {
+  "en": "power plug",
+  "es": "enchufe",
+  "evfolyam": "5",
+  "hu": "konnektor dugója",
+  "temakor": "Materia, energía y electricidad"
+ },
+ "prehistoric_human": {
+  "en": "prehistoric human",
+  "es": "humano prehistórico",
+  "evfolyam": "4",
+  "hu": "őskori ember",
+  "temakor": "Historia de España: grandes etapas"
+ },
+ "presentation_poster": {
+  "en": "science poster",
+  "es": "cartel científico",
+  "evfolyam": "3",
+  "hu": "tudományos poszter",
+  "temakor": "El método científico"
+ },
+ "product_label": {
+  "en": "product label",
+  "es": "etiqueta de producto",
+  "evfolyam": "4",
+  "hu": "termékcímke",
+  "temakor": "Retos globales y consumo"
+ },
+ "protected_nature_park": {
+  "en": "protected natural park",
+  "es": "espacio protegido",
+  "evfolyam": "4",
+  "hu": "védett természeti park",
+  "temakor": "Seres vivos y biodiversidad"
+ },
+ "prototype": {
+  "en": "prototype",
+  "es": "prototipo",
+  "evfolyam": "4",
+  "hu": "prototípus",
+  "temakor": "Diseño y robótica"
+ },
+ "pull_action": {
+  "en": "pull",
+  "es": "tirar",
+  "evfolyam": "1",
+  "hu": "tirar",
+  "temakor": "Materiales, fuerzas y movimiento"
+ },
+ "push_action": {
+  "en": "push",
+  "es": "empujar",
+  "evfolyam": "1",
+  "hu": "tolás",
+  "temakor": "Materiales, fuerzas y movimiento"
+ },
+ "recycled_materials": {
+  "en": "recycled materials",
+  "es": "materiales reciclados",
+  "evfolyam": "4",
+  "hu": "újrahasznosított anyagok",
+  "temakor": "Diseño y robótica"
+ },
+ "recycling_bin": {
+  "en": "recycling bin",
+  "es": "contenedor de reciclaje",
+  "evfolyam": "2",
+  "hu": "szelektív hulladékgyűjtő",
+  "temakor": "Retos del mundo que me rodea"
+ },
+ "recycling_bins": {
+  "en": "recycling bins",
+  "es": "contenedores de reciclaje",
+  "evfolyam": "1",
+  "hu": "szelektív hulladékgyűjtők",
+  "temakor": "Cuido el planeta desde pequeño"
+ },
+ "research_report": {
+  "en": "report document",
+  "es": "informe escrito",
+  "evfolyam": "6",
+  "hu": "jelentésdokumentum",
+  "temakor": "Proyecto de investigación"
+ },
+ "respiratory_system": {
+  "en": "respiratory system",
+  "es": "aparato respiratorio",
+  "evfolyam": "3",
+  "hu": "légzőrendszer",
+  "temakor": "El cuerpo humano por dentro"
+ },
+ "right_to_speak_hand_raise": {
+  "en": "hand raised to speak",
+  "es": "mano levantada para hablar",
+  "evfolyam": "3",
+  "hu": "felemelt kéz beszédhez",
+  "temakor": "Convivencia y derechos"
+ },
+ "robot": {
+  "en": "robot",
+  "es": "robot",
+  "evfolyam": "3",
+  "hu": "robot",
+  "temakor": "Tecnología y programación"
+ },
+ "robot_ai": {
+  "en": "artificial intelligence robot",
+  "es": "robot de inteligencia artificial",
+  "evfolyam": "6",
+  "hu": "mesterséges intelligencia robot",
+  "temakor": "Tecnología, datos y sociedad digital"
+ },
+ "robot_path_mat": {
+  "en": "robot path mat",
+  "es": "alfombra de recorrido para robot",
+  "evfolyam": "2",
+  "hu": "robotpálya szőnyeg",
+  "temakor": "Creo con herramientas digitales"
+ },
+ "roman_ruins": {
+  "en": "Roman ruins",
+  "es": "ruinas romanas",
+  "evfolyam": "4",
+  "hu": "római romok",
+  "temakor": "Historia de España: grandes etapas"
+ },
+ "school_campaign_poster": {
+  "en": "class campaign poster",
+  "es": "póster de campaña de clase",
+  "evfolyam": "2",
+  "hu": "osztályplakát",
+  "temakor": "Retos del mundo que me rodea"
+ },
+ "science_experiment_setup": {
+  "en": "science experiment setup",
+  "es": "montaje de experimento",
+  "evfolyam": "5",
+  "hu": "kísérleti összeállítás",
+  "temakor": "Ciencia con rigor"
+ },
+ "science_fair_table": {
+  "en": "science fair table",
+  "es": "mesa de feria de ciencias",
+  "evfolyam": "4",
+  "hu": "tudományos vásári asztal",
+  "temakor": "Investigación y comunicación científica"
+ },
+ "science_presentation": {
+  "en": "presentation board",
+  "es": "cartel de presentación",
+  "evfolyam": "6",
+  "hu": "prezentációs tábla",
+  "temakor": "Proyecto de investigación"
+ },
+ "scientific_poster": {
+  "en": "scientific poster",
+  "es": "póster científico",
+  "evfolyam": "4",
+  "hu": "tudományos plakát",
+  "temakor": "Investigación y comunicación científica"
+ },
+ "scientist_with_clipboard": {
+  "en": "scientist with clipboard",
+  "es": "científico con portapapeles",
+  "evfolyam": "3",
+  "hu": "tudós írólappal",
+  "temakor": "El método científico"
+ },
+ "screen_time_clock": {
+  "en": "clock",
+  "es": "reloj",
+  "evfolyam": "1",
+  "hu": "óra",
+  "temakor": "Aparatos digitales con cuidado"
+ },
+ "sdg_global_goals_icons": {
+  "en": "Sustainable Development Goals icons",
+  "es": "iconos de los Objetivos de Desarrollo Sostenible",
+  "evfolyam": "6",
+  "hu": "fenntartható fejlődési célok ikonok",
+  "temakor": "Retos del mundo y compromiso"
+ },
+ "seed_sprout": {
+  "en": "germinating seed",
+  "es": "semilla germinando",
+  "evfolyam": "2",
+  "hu": "csírázó mag",
+  "temakor": "Investigo y explico"
+ },
+ "sensor": {
+  "en": "sensor",
+  "es": "sensor",
+  "evfolyam": "4",
+  "hu": "érzékelő",
+  "temakor": "Diseño y robótica"
+ },
+ "service_project_cleanup": {
+  "en": "community cleanup",
+  "es": "limpieza comunitaria",
+  "evfolyam": "5",
+  "hu": "közösségi takarítás",
+  "temakor": "Ciudadanía activa"
+ },
+ "shadow_with_flashlight": {
+  "en": "shadow with flashlight",
+  "es": "sombra con linterna",
+  "evfolyam": "2",
+  "hu": "árnyék zseblámpával",
+  "temakor": "Materia, luz y sonido"
+ },
+ "shopping_bag": {
+  "en": "shopping bag",
+  "es": "bolsa de compra",
+  "evfolyam": "4",
+  "hu": "bevásárlótáska",
+  "temakor": "Retos globales y consumo"
+ },
+ "simple_experiment_setup": {
+  "en": "simple experiment setup",
+  "es": "experimento sencillo",
+  "evfolyam": "2",
+  "hu": "experimento sencillo",
+  "temakor": "Investigo y explico"
+ },
+ "simple_floor_robot": {
+  "en": "simple floor robot",
+  "es": "robot de suelo sencillo",
+  "evfolyam": "2",
+  "hu": "egyszerű padlón guruló robot",
+  "temakor": "Creo con herramientas digitales"
+ },
+ "sleeping_child": {
+  "en": "sleeping child",
+  "es": "niño durmiendo",
+  "evfolyam": "2",
+  "hu": "alvó gyerek",
+  "temakor": "Cuido mi salud"
+ },
+ "soap_and_towel": {
+  "en": "soap and towel",
+  "es": "jabón y toalla",
+  "evfolyam": "6",
+  "hu": "szappan és törölköző",
+  "temakor": "Salud, emociones y decisiones"
+ },
+ "soap_and_water": {
+  "en": "soap and water",
+  "es": "jabón y agua",
+  "evfolyam": "4",
+  "hu": "szappan és víz",
+  "temakor": "Salud y hábitos"
+ },
+ "soft_material": {
+  "en": "soft material",
+  "es": "material blando",
+  "evfolyam": "1",
+  "hu": "puha anyag",
+  "temakor": "Materiales, fuerzas y movimiento"
+ },
+ "solar_panel": {
+  "en": "solar panel",
+  "es": "panel solar",
+  "evfolyam": "5",
+  "hu": "napelem",
+  "temakor": "Materia, energía y electricidad"
+ },
+ "solar_panels": {
+  "en": "solar panels",
+  "es": "paneles solares",
+  "evfolyam": "6",
+  "hu": "napelemek",
+  "temakor": "Ecosistemas y cambio climático"
+ },
+ "solid": {
+  "en": "solid",
+  "es": "sólido",
+  "evfolyam": "2",
+  "hu": "szilárd anyag",
+  "temakor": "Materia, luz y sonido"
+ },
+ "sound_waves_from_bell": {
+  "en": "sound waves from a bell",
+  "es": "ondas sonoras de una campana",
+  "evfolyam": "6",
+  "hu": "hanghullámok egy csengőtől",
+  "temakor": "Física y química cotidianas"
+ },
+ "spain_map": {
+  "en": "map of Spain",
+  "es": "mapa de España",
+  "evfolyam": "5",
+  "hu": "Spanyolország térképe",
+  "temakor": "Geografía e historia del mundo hispano"
+ },
+ "spanish_constitution_book": {
+  "en": "Spanish Constitution book",
+  "es": "libro de la Constitución Española",
+  "evfolyam": "6",
+  "hu": "spanyol alkotmány könyv",
+  "temakor": "España y el mundo actual"
+ },
+ "steam": {
+  "en": "steam",
+  "es": "vapor",
+  "evfolyam": "3",
+  "hu": "gőz",
+  "temakor": "Materia y energía"
+ },
+ "step_by_step_instruction_cards": {
+  "en": "instruction cards",
+  "es": "tarjetas de instrucciones",
+  "evfolyam": "2",
+  "hu": "utasításkártyák",
+  "temakor": "Creo con herramientas digitales"
+ },
+ "stethoscope": {
+  "en": "stethoscope",
+  "es": "estetoscopio",
+  "evfolyam": "4",
+  "hu": "sztetoszkóp",
+  "temakor": "Salud y hábitos"
+ },
+ "suitcase_with_travel_items": {
+  "en": "suitcase",
+  "es": "maleta",
+  "evfolyam": "5",
+  "hu": "bőrönd",
+  "temakor": "Geografía e historia del mundo hispano"
+ },
+ "sun": {
+  "en": "sun",
+  "es": "sol",
+  "evfolyam": "3",
+  "hu": "nap",
+  "temakor": "Materia y energía"
+ },
+ "tablet_device": {
+  "en": "tablet",
+  "es": "tableta",
+  "evfolyam": "1",
+  "hu": "tábla gép",
+  "temakor": "Aparatos digitales con cuidado"
+ },
+ "testing_setup": {
+  "en": "testing setup",
+  "es": "montaje de prueba",
+  "evfolyam": "4",
+  "hu": "tesztelési elrendezés",
+  "temakor": "Diseño y robótica"
+ },
+ "thermometer": {
+  "en": "thermometer",
+  "es": "termómetro",
+  "evfolyam": "6",
+  "hu": "lázmérő",
+  "temakor": "Salud, emociones y decisiones"
+ },
+ "toothbrush": {
+  "en": "toothbrush",
+  "es": "cepillo de dientes",
+  "evfolyam": "1",
+  "hu": "cepillo de dientes",
+  "temakor": "Mi cuerpo y mis sentidos"
+ },
+ "toothbrush_and_toothpaste": {
+  "en": "toothbrush and toothpaste",
+  "es": "cepillo de dientes y pasta de dientes",
+  "evfolyam": "2",
+  "hu": "fogkefe és fogkrém",
+  "temakor": "Cuido mi salud"
+ },
+ "toy_car_on_ramp": {
+  "en": "toy car on a ramp",
+  "es": "coche de juguete en una rampa",
+  "evfolyam": "1",
+  "hu": "játékautó rámpán",
+  "temakor": "Materiales, fuerzas y movimiento"
+ },
+ "trash_bin": {
+  "en": "trash bin",
+  "es": "papelera",
+  "evfolyam": "1",
+  "hu": "szemetes",
+  "temakor": "Cuido el planeta desde pequeño"
+ },
+ "trash_pile": {
+  "en": "pile of waste",
+  "es": "montón de basura",
+  "evfolyam": "4",
+  "hu": "hulladékhalom",
+  "temakor": "Retos globales y consumo"
+ },
+ "tree_and_flower": {
+  "en": "tree and flower",
+  "es": "árbol y flor",
+  "evfolyam": "1",
+  "hu": "fa és virág",
+  "temakor": "Cuido el planeta desde pequeño"
+ },
+ "vertebrate": {
+  "en": "vertebrate",
+  "es": "vertebrado",
+  "evfolyam": "2",
+  "hu": "gerinces",
+  "temakor": "Plantas y animales de mi entorno"
+ },
+ "video_game_controller": {
+  "en": "video game controller",
+  "es": "mando de videojuego",
+  "evfolyam": "5",
+  "hu": "játékkonzol vezérlő",
+  "temakor": "Programación y pensamiento computacional"
+ },
+ "village": {
+  "en": "village",
+  "es": "pueblo",
+  "evfolyam": "1",
+  "hu": "falu",
+  "temakor": "Mi casa, mi calle, mi pueblo"
+ },
+ "voting_ballot_box": {
+  "en": "ballot box",
+  "es": "urna electoral",
+  "evfolyam": "5",
+  "hu": "szavazóurna",
+  "temakor": "Ciudadanía activa"
+ },
+ "warning_fake_news": {
+  "en": "fake news warning",
+  "es": "alerta de noticia falsa",
+  "evfolyam": "6",
+  "hu": "álhír figyelmeztetés",
+  "temakor": "Tecnología, datos y sociedad digital"
+ },
+ "water_tap": {
+  "en": "water tap",
+  "es": "grifo de agua",
+  "evfolyam": "1",
+  "hu": "vízcsap",
+  "temakor": "Cuido el planeta desde pequeño"
+ },
+ "watering_can": {
+  "en": "watering can",
+  "es": "regadera",
+  "evfolyam": "1",
+  "hu": "locsolókanna",
+  "temakor": "Los seres vivos y yo"
+ },
+ "wind_turbine": {
+  "en": "wind turbine",
+  "es": "molino de viento",
+  "evfolyam": "4",
+  "hu": "szélturbina",
+  "temakor": "Fuerzas, energía y máquinas"
+ },
+ "world_map": {
+  "en": "world map",
+  "es": "mapa del mundo",
+  "evfolyam": "5",
+  "hu": "világtérkép",
+  "temakor": "Geografía e historia del mundo hispano"
+ },
+ "yard": {
+  "en": "school yard",
+  "es": "patio de la escuela",
+  "evfolyam": "1",
+  "hu": "iskolaudvar",
+  "temakor": "Aprendo a observar como un científico"
+ }
+}

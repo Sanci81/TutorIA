@@ -1,0 +1,1206 @@
+{
+ "abacus": {
+  "en": "abacus",
+  "es": "ábaco",
+  "evfolyam": "3",
+  "hu": "számolótábla",
+  "temakor": "Números hasta 9.999 y su valor"
+ },
+ "abacus_or_counting_rods": {
+  "en": "counting rods",
+  "es": "regletas de conteo",
+  "evfolyam": "2",
+  "hu": "számlálópálcikák",
+  "temakor": "Sumar y restar llevando"
+ },
+ "acute_angle": {
+  "en": "acute angle",
+  "es": "ángulo agudo",
+  "evfolyam": "4",
+  "hu": "hegyesszög",
+  "temakor": "Área, ángulos y simetría"
+ },
+ "addition_blocks": {
+  "en": "addition with blocks",
+  "es": "suma con bloques",
+  "evfolyam": "1",
+  "hu": "összeadás kockákkal",
+  "temakor": "Sumar y restar hasta 20"
+ },
+ "algebra_tiles": {
+  "en": "algebra tiles",
+  "es": "baldosas algebraicas",
+  "evfolyam": "6",
+  "hu": "algebrai lapocskák",
+  "temakor": "Álgebra sencilla"
+ },
+ "analog_clock": {
+  "en": "analog clock",
+  "es": "reloj analógico",
+  "evfolyam": "2",
+  "hu": "analóg óra",
+  "temakor": "El reloj, el calendario y el dinero"
+ },
+ "angle": {
+  "en": "angle",
+  "es": "ángulo",
+  "evfolyam": "2",
+  "hu": "szög",
+  "temakor": "Líneas, ángulos y simetría"
+ },
+ "balance_scale": {
+  "en": "balance scale",
+  "es": "balanza",
+  "evfolyam": "3",
+  "hu": "mérleg",
+  "temakor": "Longitud, masa y capacidad"
+ },
+ "bar_chart": {
+  "en": "bar chart",
+  "es": "gráfico de barras",
+  "evfolyam": "1",
+  "hu": "oszlopdiagram",
+  "temakor": "Recogemos datos y hacemos un gráfico"
+ },
+ "beads_necklace_pattern": {
+  "en": "beads necklace",
+  "es": "collar de cuentas",
+  "evfolyam": "1",
+  "hu": "gyöngysor",
+  "temakor": "Series y patrones"
+ },
+ "bundle_of_ten_sticks": {
+  "en": "bundle of ten sticks",
+  "es": "haz de diez palitos",
+  "evfolyam": "1",
+  "hu": "tíz pálcika kötege",
+  "temakor": "Los números hasta el 99"
+ },
+ "bus_trip_budget": {
+  "en": "school trip budget",
+  "es": "presupuesto de excursión",
+  "evfolyam": "6",
+  "hu": "kirándulási költségvetés",
+  "temakor": "Proporcionalidad y porcentajes"
+ },
+ "calculator": {
+  "en": "calculator",
+  "es": "calculadora",
+  "evfolyam": "4",
+  "hu": "számológép",
+  "temakor": "Multiplicación y división por dos cifras"
+ },
+ "calendar": {
+  "en": "calendar",
+  "es": "calendario",
+  "evfolyam": "2",
+  "hu": "naptár",
+  "temakor": "El reloj, el calendario y el dinero"
+ },
+ "cartesian_coordinates_grid": {
+  "en": "cartesian coordinate grid",
+  "es": "coordenadas cartesianas",
+  "evfolyam": "5",
+  "hu": "derékszögű koordináta-rendszer",
+  "temakor": "Geometría: figuras, cuerpos y coordenadas"
+ },
+ "chalkboard_pattern": {
+  "en": "chalkboard pattern",
+  "es": "patrón en la pizarra",
+  "evfolyam": "1",
+  "hu": "táblán lévő minta",
+  "temakor": "Series y patrones"
+ },
+ "checkmark_pencil": {
+  "en": "checkmark pencil",
+  "es": "lápiz con marca de verificación",
+  "evfolyam": "3",
+  "hu": "pipás ceruza",
+  "temakor": "Igualdades y números desconocidos"
+ },
+ "child_listening_to_friend": {
+  "en": "child listening to a friend",
+  "es": "niño escuchando a un amigo",
+  "evfolyam": "1",
+  "hu": "barátjára figyelő gyerek",
+  "temakor": "Las matemáticas y yo"
+ },
+ "child_raising_hand_for_help": {
+  "en": "child asking for help",
+  "es": "niño pidiendo ayuda",
+  "evfolyam": "1",
+  "hu": "segítséget kérő gyerek",
+  "temakor": "Las matemáticas y yo"
+ },
+ "children_taking_turns": {
+  "en": "children taking turns",
+  "es": "niños turnándose",
+  "evfolyam": "1",
+  "hu": "váltott sorrendben játszó gyerekek",
+  "temakor": "Las matemáticas y yo"
+ },
+ "circle": {
+  "en": "circle",
+  "es": "círculo",
+  "evfolyam": "1",
+  "hu": "kör",
+  "temakor": "Figuras planas y cuerpos"
+ },
+ "circle_fraction_pie": {
+  "en": "fraction circle",
+  "es": "círculo fraccionario",
+  "evfolyam": "4",
+  "hu": "tört kör",
+  "temakor": "Fracciones y decimales"
+ },
+ "city_population": {
+  "en": "city population",
+  "es": "población de una ciudad",
+  "evfolyam": "4",
+  "hu": "város lakossága",
+  "temakor": "Números grandes y aproximación"
+ },
+ "classroom_shop_objects": {
+  "en": "classroom shop items",
+  "es": "objetos de una tienda de clase",
+  "evfolyam": "2",
+  "hu": "osztálytermi bolti áruk",
+  "temakor": "Sumar y restar llevando"
+ },
+ "clock": {
+  "en": "clock",
+  "es": "reloj",
+  "evfolyam": "6",
+  "hu": "óra",
+  "temakor": "Medida: superficie, volumen y tiempo"
+ },
+ "coin": {
+  "en": "coin",
+  "es": "moneda",
+  "evfolyam": "3",
+  "hu": "érme",
+  "temakor": "Gráficos, media y azar"
+ },
+ "coin_price_tag": {
+  "en": "price tag",
+  "es": "etiqueta de precio",
+  "evfolyam": "4",
+  "hu": "árcédula",
+  "temakor": "Fracciones y decimales"
+ },
+ "coins_in_hand": {
+  "en": "coins in hand",
+  "es": "monedas en la mano",
+  "evfolyam": "2",
+  "hu": "érmék kézben",
+  "temakor": "El reloj, el calendario y el dinero"
+ },
+ "column_addition_with_carry": {
+  "en": "column addition with carrying",
+  "es": "suma en columna con llevada",
+  "evfolyam": "2",
+  "hu": "írásbeli összeadás átvitellel",
+  "temakor": "Sumar y restar llevando"
+ },
+ "column_subtraction_with_borrowing": {
+  "en": "column subtraction with borrowing",
+  "es": "resta en columna con llevadas",
+  "evfolyam": "2",
+  "hu": "írásbeli kivonás kölcsönzéssel",
+  "temakor": "Sumar y restar llevando"
+ },
+ "comparison_cards": {
+  "en": "comparison cards",
+  "es": "cartas de comparación",
+  "evfolyam": "1",
+  "hu": "összehasonlító kártyák",
+  "temakor": "Los números hasta el 99"
+ },
+ "counting_beads": {
+  "en": "counting beads",
+  "es": "cuentas para contar",
+  "evfolyam": "4",
+  "hu": "számológyöngyök",
+  "temakor": "Números grandes y aproximación"
+ },
+ "counting_table": {
+  "en": "counting table",
+  "es": "tabla de recuento",
+  "evfolyam": "2",
+  "hu": "táblázatos összesítés",
+  "temakor": "Datos, gráficos y azar"
+ },
+ "cube": {
+  "en": "cube",
+  "es": "cubo",
+  "evfolyam": "1",
+  "hu": "kocka",
+  "temakor": "Figuras planas y cuerpos"
+ },
+ "cube_net": {
+  "en": "cube net",
+  "es": "desarrollo de un cubo",
+  "evfolyam": "6",
+  "hu": "kockaháló",
+  "temakor": "Geometría en el plano y en el espacio"
+ },
+ "curved_line": {
+  "en": "curved line",
+  "es": "línea curva",
+  "evfolyam": "2",
+  "hu": "görbe vonal",
+  "temakor": "Líneas, ángulos y simetría"
+ },
+ "decimal_number": {
+  "en": "decimal number",
+  "es": "número decimal",
+  "evfolyam": "4",
+  "hu": "tizedes szám",
+  "temakor": "Fracciones y decimales"
+ },
+ "dice": {
+  "en": "dice",
+  "es": "dado",
+  "evfolyam": "2",
+  "hu": "dobókocka",
+  "temakor": "Datos, gráficos y azar"
+ },
+ "digit_blocks": {
+  "en": "base-ten blocks",
+  "es": "bloques de base diez",
+  "evfolyam": "3",
+  "hu": "tízes alapú építőkockák",
+  "temakor": "Números hasta 9.999 y su valor"
+ },
+ "discount_price_tag": {
+  "en": "discount price tag",
+  "es": "etiqueta de descuento",
+  "evfolyam": "5",
+  "hu": "leárazási címke",
+  "temakor": "Fracciones y decimales en la práctica"
+ },
+ "divisibility": {
+  "en": "divisibility",
+  "es": "divisibilidad",
+  "evfolyam": "5",
+  "hu": "oszthatóság",
+  "temakor": "Números enteros, potencias y divisibilidad"
+ },
+ "division_equal_sharing": {
+  "en": "division by equal sharing",
+  "es": "reparto en partes iguales",
+  "evfolyam": "3",
+  "hu": "egyenlő osztás",
+  "temakor": "Multiplicar y dividir"
+ },
+ "division_with_remainder": {
+  "en": "division with remainder",
+  "es": "división con resto",
+  "evfolyam": "4",
+  "hu": "osztás maradékkal",
+  "temakor": "Multiplicación y división por dos cifras"
+ },
+ "domino_tiles": {
+  "en": "domino tiles",
+  "es": "fichas de dominó",
+  "evfolyam": "1",
+  "hu": "dominók",
+  "temakor": "Sumar y restar hasta 20"
+ },
+ "double_objects": {
+  "en": "double objects",
+  "es": "objetos dobles",
+  "evfolyam": "2",
+  "hu": "dupla tárgyak",
+  "temakor": "Empiezan las tablas: 2, 5 y 10"
+ },
+ "drinking_glass": {
+  "en": "drinking glass",
+  "es": "vaso",
+  "evfolyam": "1",
+  "hu": "vaso",
+  "temakor": "Medimos con palmos, pasos y vasos"
+ },
+ "equal_sign": {
+  "en": "equal sign",
+  "es": "signo igual",
+  "evfolyam": "3",
+  "hu": "egyenlőségjel",
+  "temakor": "Igualdades y números desconocidos"
+ },
+ "euro_coin": {
+  "en": "euro coin",
+  "es": "moneda de euro",
+  "evfolyam": "2",
+  "hu": "euróérme",
+  "temakor": "El reloj, el calendario y el dinero"
+ },
+ "exact_division": {
+  "en": "exact division",
+  "es": "división exacta",
+  "evfolyam": "3",
+  "hu": "pontos osztás",
+  "temakor": "Multiplicar y dividir"
+ },
+ "five_groups": {
+  "en": "five groups",
+  "es": "cinco grupos",
+  "evfolyam": "2",
+  "hu": "öt csoport",
+  "temakor": "Empiezan las tablas: 2, 5 y 10"
+ },
+ "folded_paper_strip": {
+  "en": "folded paper strip",
+  "es": "tira de papel doblada",
+  "evfolyam": "3",
+  "hu": "tira de papel doblada",
+  "temakor": "Las fracciones más sencillas"
+ },
+ "footsteps": {
+  "en": "footsteps",
+  "es": "pasos",
+  "evfolyam": "1",
+  "hu": "pasos",
+  "temakor": "Medimos con palmos, pasos y vasos"
+ },
+ "four_digit_number_card": {
+  "en": "four-digit number card",
+  "es": "tarjeta con número de cuatro cifras",
+  "evfolyam": "3",
+  "hu": "négyjegyű számkártya",
+  "temakor": "Números hasta 9.999 y su valor"
+ },
+ "fraction_pie_chart": {
+  "en": "fraction pie chart",
+  "es": "gráfico circular de fracciones",
+  "evfolyam": "5",
+  "hu": "körtorta töredéke",
+  "temakor": "Fracciones y decimales en la práctica"
+ },
+ "fraction_strip": {
+  "en": "fraction strip",
+  "es": "tira de fracciones",
+  "evfolyam": "4",
+  "hu": "törtszalag",
+  "temakor": "Fracciones y decimales"
+ },
+ "fraction_wheel": {
+  "en": "fraction wheel",
+  "es": "rueda de fracciones",
+  "evfolyam": "3",
+  "hu": "rueda de fracciones",
+  "temakor": "Las fracciones más sencillas"
+ },
+ "fruit": {
+  "en": "fruit",
+  "es": "fruta",
+  "evfolyam": "1",
+  "hu": "gyümölcs",
+  "temakor": "Recogemos datos y hacemos un gráfico"
+ },
+ "fruit_basket": {
+  "en": "basket of fruit",
+  "es": "cesta de frutas",
+  "evfolyam": "6",
+  "hu": "gyümölcskosár",
+  "temakor": "Cálculo eficiente y resolución de problemas"
+ },
+ "graduated_measuring_cup": {
+  "en": "graduated measuring cup",
+  "es": "vaso medidor",
+  "evfolyam": "5",
+  "hu": "mérőpohár",
+  "temakor": "El sistema métrico completo"
+ },
+ "grid_plane": {
+  "en": "grid plane",
+  "es": "plano cuadriculado",
+  "evfolyam": "3",
+  "hu": "rácsos sík",
+  "temakor": "Polígonos, perímetro y planos"
+ },
+ "grid_square": {
+  "en": "grid square",
+  "es": "cuadrícula",
+  "evfolyam": "6",
+  "hu": "négyzetháló",
+  "temakor": "Geometría en el plano y en el espacio"
+ },
+ "groups_of_objects": {
+  "en": "groups of objects",
+  "es": "grupos de objetos",
+  "evfolyam": "3",
+  "hu": "tárgycsoportok",
+  "temakor": "Multiplicar y dividir"
+ },
+ "halved_pizza": {
+  "en": "half pizza",
+  "es": "media pizza",
+  "evfolyam": "3",
+  "hu": "fél pizza",
+  "temakor": "Las fracciones más sencillas"
+ },
+ "hand_span": {
+  "en": "hand span",
+  "es": "palmo",
+  "evfolyam": "1",
+  "hu": "arasz",
+  "temakor": "Medimos con palmos, pasos y vasos"
+ },
+ "handheld_calculator": {
+  "en": "calculator",
+  "es": "calculadora",
+  "evfolyam": "6",
+  "hu": "számológép",
+  "temakor": "Cálculo eficiente y resolución de problemas"
+ },
+ "hundreds_tens_ones_blocks": {
+  "en": "hundreds tens and ones blocks",
+  "es": "bloques de centenas, decenas y unidades",
+  "evfolyam": "2",
+  "hu": "százas, tízes és egyes kockák",
+  "temakor": "Los números hasta el 999"
+ },
+ "input_output_table": {
+  "en": "input-output table",
+  "es": "tabla de entrada y salida",
+  "evfolyam": "2",
+  "hu": "be- és kimeneti táblázat",
+  "temakor": "Patrones y la máquina de números"
+ },
+ "kilogram_weight": {
+  "en": "one kilogram weight",
+  "es": "pesa de un kilogramo",
+  "evfolyam": "3",
+  "hu": "egy kilogrammos súly",
+  "temakor": "Longitud, masa y capacidad"
+ },
+ "kitchen_scale": {
+  "en": "kitchen scale",
+  "es": "balanza de cocina",
+  "evfolyam": "4",
+  "hu": "konyhai mérleg",
+  "temakor": "Medidas y unidades"
+ },
+ "large_number_digits": {
+  "en": "large number digits",
+  "es": "cifras de números grandes",
+  "evfolyam": "4",
+  "hu": "nagy számjegyek",
+  "temakor": "Números grandes y aproximación"
+ },
+ "letter_variable": {
+  "en": "letter variable",
+  "es": "variable letra",
+  "evfolyam": "4",
+  "hu": "változó betű",
+  "temakor": "Expresiones y proporcionalidad sencilla"
+ },
+ "line_graph": {
+  "en": "line graph",
+  "es": "gráfico de líneas",
+  "evfolyam": "3",
+  "hu": "vonalgrafikon",
+  "temakor": "Gráficos, media y azar"
+ },
+ "liter_container": {
+  "en": "liter bottle",
+  "es": "botella de un litro",
+  "evfolyam": "3",
+  "hu": "literes palack",
+  "temakor": "Longitud, masa y capacidad"
+ },
+ "map_scale_ruler": {
+  "en": "scale ruler",
+  "es": "regla de escala",
+  "evfolyam": "6",
+  "hu": "léptékmérő vonalzó",
+  "temakor": "Proporcionalidad y porcentajes"
+ },
+ "map_with_scale": {
+  "en": "map with scale",
+  "es": "mapa con escala",
+  "evfolyam": "5",
+  "hu": "térkép méretaránnyal",
+  "temakor": "Patrones, fórmulas y proporciones"
+ },
+ "math_blocks_with_mistake": {
+  "en": "math blocks with a wrong answer",
+  "es": "bloques de matemáticas con un error",
+  "evfolyam": "1",
+  "hu": "téves megoldást mutató matematikai kockák",
+  "temakor": "Las matemáticas y yo"
+ },
+ "math_check_with_calculator": {
+  "en": "calculator",
+  "es": "calculadora",
+  "evfolyam": "2",
+  "hu": "számológép",
+  "temakor": "Sumar y restar llevando"
+ },
+ "measuring_cup": {
+  "en": "measuring cup",
+  "es": "vaso medidor",
+  "evfolyam": "4",
+  "hu": "mérőpohár",
+  "temakor": "Medidas y unidades"
+ },
+ "measuring_cup_fraction_marks": {
+  "en": "measuring cup with fraction marks",
+  "es": "vaso medidor con marcas de fracciones",
+  "evfolyam": "5",
+  "hu": "mérőedény tört jelölésekkel",
+  "temakor": "Fracciones y decimales en la práctica"
+ },
+ "measuring_jug": {
+  "en": "measuring jug",
+  "es": "jarra medidora",
+  "evfolyam": "4",
+  "hu": "mérőkancsó",
+  "temakor": "Expresiones y proporcionalidad sencilla"
+ },
+ "measuring_tape": {
+  "en": "measuring tape",
+  "es": "cinta métrica",
+  "evfolyam": "4",
+  "hu": "mérőszalag",
+  "temakor": "Medidas y unidades"
+ },
+ "meter_ruler": {
+  "en": "meter ruler",
+  "es": "metro",
+  "evfolyam": "5",
+  "hu": "méterrúd",
+  "temakor": "El sistema métrico completo"
+ },
+ "meter_tape_measure": {
+  "en": "tape measure",
+  "es": "cinta métrica",
+  "evfolyam": "3",
+  "hu": "mérőszalag",
+  "temakor": "Longitud, masa y capacidad"
+ },
+ "metric_ruler": {
+  "en": "metric ruler",
+  "es": "regla métrica",
+  "evfolyam": "4",
+  "hu": "metrikus vonalzó",
+  "temakor": "Medidas y unidades"
+ },
+ "mirror_symmetric_shape": {
+  "en": "symmetric shape",
+  "es": "figura simétrica",
+  "evfolyam": "2",
+  "hu": "szimmetrikus alakzat",
+  "temakor": "Líneas, ángulos y simetría"
+ },
+ "missing_number": {
+  "en": "missing number",
+  "es": "número que falta",
+  "evfolyam": "2",
+  "hu": "hiányzó szám",
+  "temakor": "Patrones y la máquina de números"
+ },
+ "missing_number_box": {
+  "en": "missing number box",
+  "es": "casilla con número faltante",
+  "evfolyam": "3",
+  "hu": "hiányzó szám doboz",
+  "temakor": "Igualdades y números desconocidos"
+ },
+ "multiples_blocks": {
+  "en": "multiples",
+  "es": "múltiplos",
+  "evfolyam": "5",
+  "hu": "többszörösök",
+  "temakor": "Números enteros, potencias y divisibilidad"
+ },
+ "multiplication_flashcards": {
+  "en": "multiplication flashcards",
+  "es": "tarjetas de multiplicación",
+  "evfolyam": "3",
+  "hu": "szorzókártyák",
+  "temakor": "Multiplicar y dividir"
+ },
+ "number_blocks": {
+  "en": "number blocks",
+  "es": "bloques numéricos",
+  "evfolyam": "3",
+  "hu": "számkockák",
+  "temakor": "Igualdades y números desconocidos"
+ },
+ "number_cards": {
+  "en": "number cards",
+  "es": "tarjetas numéricas",
+  "evfolyam": "2",
+  "hu": "számkártyák",
+  "temakor": "Los números hasta el 999"
+ },
+ "number_cards_sequence": {
+  "en": "number cards",
+  "es": "tarjetas con números",
+  "evfolyam": "1",
+  "hu": "számozott kártyák",
+  "temakor": "Series y patrones"
+ },
+ "number_line": {
+  "en": "number line",
+  "es": "recta numérica",
+  "evfolyam": "1",
+  "hu": "számegyenes",
+  "temakor": "Los números hasta el 99"
+ },
+ "number_line_markers": {
+  "en": "number line markers",
+  "es": "marcas en la recta numérica",
+  "evfolyam": "5",
+  "hu": "számegyenes jelölései",
+  "temakor": "Fracciones y decimales en la práctica"
+ },
+ "number_line_with_negative_numbers": {
+  "en": "number line with negative numbers",
+  "es": "recta numérica con números negativos",
+  "evfolyam": "6",
+  "hu": "számegyenes negatív számokkal",
+  "temakor": "Números enteros y racionales"
+ },
+ "number_machine": {
+  "en": "number machine",
+  "es": "máquina de números",
+  "evfolyam": "2",
+  "hu": "számmáquina",
+  "temakor": "Patrones y la máquina de números"
+ },
+ "number_pattern": {
+  "en": "number pattern",
+  "es": "patrón de números",
+  "evfolyam": "6",
+  "hu": "számsorozat mintája",
+  "temakor": "Álgebra sencilla"
+ },
+ "number_pattern_sequence": {
+  "en": "number pattern sequence",
+  "es": "secuencia de patrón numérico",
+  "evfolyam": "2",
+  "hu": "számsorozat mintázata",
+  "temakor": "Patrones y la máquina de números"
+ },
+ "numbers_to_twenty": {
+  "en": "numbers up to twenty",
+  "es": "números hasta veinte",
+  "evfolyam": "1",
+  "hu": "számok húszig",
+  "temakor": "Sumar y restar hasta 20"
+ },
+ "objects_in_rows": {
+  "en": "objects in rows",
+  "es": "objetos en filas",
+  "evfolyam": "2",
+  "hu": "tárgyak sorokban",
+  "temakor": "Empiezan las tablas: 2, 5 y 10"
+ },
+ "obtuse_angle": {
+  "en": "obtuse angle",
+  "es": "ángulo obtuso",
+  "evfolyam": "4",
+  "hu": "tompaszög",
+  "temakor": "Área, ángulos y simetría"
+ },
+ "order_of_operations": {
+  "en": "order of operations",
+  "es": "orden de operaciones",
+  "evfolyam": "4",
+  "hu": "műveleti sorrend",
+  "temakor": "Multiplicación y división por dos cifras"
+ },
+ "ordered_number_line": {
+  "en": "ordered number line",
+  "es": "recta numérica ordenada",
+  "evfolyam": "2",
+  "hu": "rendezett számegyenes",
+  "temakor": "Los números hasta el 999"
+ },
+ "paper_folding_symmetry": {
+  "en": "folded paper symmetry",
+  "es": "simetría al doblar papel",
+  "evfolyam": "2",
+  "hu": "papírhajtás szimmetria",
+  "temakor": "Líneas, ángulos y simetría"
+ },
+ "paper_sheet": {
+  "en": "sheet of paper",
+  "es": "hoja de papel",
+  "evfolyam": "5",
+  "hu": "papírlap",
+  "temakor": "Operaciones combinadas"
+ },
+ "parentheses": {
+  "en": "parentheses",
+  "es": "paréntesis",
+  "evfolyam": "5",
+  "hu": "zárójelek",
+  "temakor": "Operaciones combinadas"
+ },
+ "pattern_blocks_row": {
+  "en": "pattern blocks row",
+  "es": "fila de piezas con patrón",
+  "evfolyam": "1",
+  "hu": "sorba rakott mintás elemek",
+  "temakor": "Series y patrones"
+ },
+ "percent_circle": {
+  "en": "percentage pie chart",
+  "es": "gráfico circular de porcentajes",
+  "evfolyam": "6",
+  "hu": "százalékkördiagram",
+  "temakor": "Proporcionalidad y porcentajes"
+ },
+ "percent_symbol": {
+  "en": "percent symbol",
+  "es": "símbolo de porcentaje",
+  "evfolyam": "6",
+  "hu": "százalékjel",
+  "temakor": "Números enteros y racionales"
+ },
+ "perimeter": {
+  "en": "perimeter",
+  "es": "perímetro",
+  "evfolyam": "3",
+  "hu": "kerület",
+  "temakor": "Polígonos, perímetro y planos"
+ },
+ "pie_chart": {
+  "en": "pie chart",
+  "es": "gráfico de sectores",
+  "evfolyam": "4",
+  "hu": "kördiagram",
+  "temakor": "Estadística y probabilidad"
+ },
+ "place_value_chart": {
+  "en": "place value chart",
+  "es": "tabla de valor posicional",
+  "evfolyam": "3",
+  "hu": "helyiérték-tábla",
+  "temakor": "Números hasta 9.999 y su valor"
+ },
+ "polygon": {
+  "en": "polygon",
+  "es": "polígono",
+  "evfolyam": "3",
+  "hu": "sokszög",
+  "temakor": "Polígonos, perímetro y planos"
+ },
+ "polyhedron": {
+  "en": "polyhedron",
+  "es": "poliedro",
+  "evfolyam": "5",
+  "hu": "soklapú test",
+  "temakor": "Geometría: figuras, cuerpos y coordenadas"
+ },
+ "power_symbol": {
+  "en": "power/exponent notation",
+  "es": "potencia",
+  "evfolyam": "5",
+  "hu": "hatványírás",
+  "temakor": "Números enteros, potencias y divisibilidad"
+ },
+ "price_tag": {
+  "en": "price tag",
+  "es": "etiqueta de precio",
+  "evfolyam": "3",
+  "hu": "árcédula",
+  "temakor": "Números hasta 9.999 y su valor"
+ },
+ "price_tags": {
+  "en": "price tags",
+  "es": "etiquetas de precio",
+  "evfolyam": "4",
+  "hu": "árcímkék",
+  "temakor": "Expresiones y proporcionalidad sencilla"
+ },
+ "prime_number": {
+  "en": "prime number",
+  "es": "número primo",
+  "evfolyam": "5",
+  "hu": "prímszám",
+  "temakor": "Números enteros, potencias y divisibilidad"
+ },
+ "proportional_table": {
+  "en": "proportional table",
+  "es": "tabla de proporcionalidad",
+  "evfolyam": "4",
+  "hu": "arányossági táblázat",
+  "temakor": "Expresiones y proporcionalidad sencilla"
+ },
+ "protractor": {
+  "en": "protractor",
+  "es": "transportador",
+  "evfolyam": "4",
+  "hu": "szögmérő",
+  "temakor": "Área, ángulos y simetría"
+ },
+ "quartered_paper_square": {
+  "en": "quarterd paper square",
+  "es": "cuadrado en cuartos",
+  "evfolyam": "3",
+  "hu": "cuadrado en cuartos",
+  "temakor": "Las fracciones más sencillas"
+ },
+ "random_draw_bag": {
+  "en": "random draw bag",
+  "es": "bolsa de sorteo",
+  "evfolyam": "6",
+  "hu": "sorsolózsák",
+  "temakor": "Estadística, azar y pensamiento crítico"
+ },
+ "recipe_ingredients": {
+  "en": "recipe ingredients",
+  "es": "ingredientes de una receta",
+  "evfolyam": "4",
+  "hu": "recept hozzávalói",
+  "temakor": "Expresiones y proporcionalidad sencilla"
+ },
+ "recipe_mixing_bowl": {
+  "en": "recipe mixing bowl",
+  "es": "bol para mezclar de receta",
+  "evfolyam": "5",
+  "hu": "keverőtál recepthez",
+  "temakor": "Fracciones y decimales en la práctica"
+ },
+ "rectangle": {
+  "en": "rectangle",
+  "es": "rectángulo",
+  "evfolyam": "1",
+  "hu": "téglalap",
+  "temakor": "Figuras planas y cuerpos"
+ },
+ "rectangle_area": {
+  "en": "rectangle area",
+  "es": "área de un rectángulo",
+  "evfolyam": "5",
+  "hu": "téglalap területe",
+  "temakor": "Patrones, fórmulas y proporciones"
+ },
+ "rectangle_perimeter": {
+  "en": "rectangle perimeter",
+  "es": "perímetro de un rectángulo",
+  "evfolyam": "5",
+  "hu": "téglalap kerülete",
+  "temakor": "Patrones, fórmulas y proporciones"
+ },
+ "rectangular_prism": {
+  "en": "rectangular prism",
+  "es": "prisma rectangular",
+  "evfolyam": "6",
+  "hu": "téglatest",
+  "temakor": "Medida: superficie, volumen y tiempo"
+ },
+ "regular_polygon": {
+  "en": "regular polygon",
+  "es": "polígono regular",
+  "evfolyam": "5",
+  "hu": "szabályos sokszög",
+  "temakor": "Geometría: figuras, cuerpos y coordenadas"
+ },
+ "right_angle": {
+  "en": "right angle",
+  "es": "ángulo recto",
+  "evfolyam": "4",
+  "hu": "derékszög",
+  "temakor": "Área, ángulos y simetría"
+ },
+ "roman_numeral_card": {
+  "en": "roman numeral card",
+  "es": "tarjeta de número romano",
+  "evfolyam": "4",
+  "hu": "római szám kártya",
+  "temakor": "Números grandes y aproximación"
+ },
+ "rotation_arrows": {
+  "en": "rotation arrows",
+  "es": "flechas de giro",
+  "evfolyam": "6",
+  "hu": "forgásnyilak",
+  "temakor": "Geometría en el plano y en el espacio"
+ },
+ "school_building": {
+  "en": "school building",
+  "es": "edificio escolar",
+  "evfolyam": "5",
+  "hu": "iskolaépület",
+  "temakor": "El sistema métrico completo"
+ },
+ "shopping_cart": {
+  "en": "shopping cart",
+  "es": "carrito de compras",
+  "evfolyam": "6",
+  "hu": "bevásárlókocsi",
+  "temakor": "Cálculo eficiente y resolución de problemas"
+ },
+ "shopping_sale_tag": {
+  "en": "sale tag",
+  "es": "etiqueta de rebaja",
+  "evfolyam": "6",
+  "hu": "árleszállítási címke",
+  "temakor": "Proporcionalidad y porcentajes"
+ },
+ "simple_equation_on_scale": {
+  "en": "simple equation on a scale",
+  "es": "ecuación sencilla en una balanza",
+  "evfolyam": "6",
+  "hu": "egyszerű egyenlet mérlegen",
+  "temakor": "Álgebra sencilla"
+ },
+ "single_digit_multiplication": {
+  "en": "single-digit multiplication",
+  "es": "multiplicación de una cifra",
+  "evfolyam": "3",
+  "hu": "egyjegyű szorzás",
+  "temakor": "Multiplicar y dividir"
+ },
+ "single_unit_objects": {
+  "en": "single unit objects",
+  "es": "objetos sueltos",
+  "evfolyam": "1",
+  "hu": "egyes tárgyak",
+  "temakor": "Los números hasta el 99"
+ },
+ "sphere": {
+  "en": "sphere",
+  "es": "esfera",
+  "evfolyam": "5",
+  "hu": "gömb",
+  "temakor": "Geometría: figuras, cuerpos y coordenadas"
+ },
+ "square": {
+  "en": "square",
+  "es": "cuadrado",
+  "evfolyam": "1",
+  "hu": "négyzet",
+  "temakor": "Figuras planas y cuerpos"
+ },
+ "square_number": {
+  "en": "square number",
+  "es": "cuadrado perfecto",
+  "evfolyam": "5",
+  "hu": "négyzetszám",
+  "temakor": "Números enteros, potencias y divisibilidad"
+ },
+ "stack_of_unit_cubes": {
+  "en": "stack of unit cubes",
+  "es": "cubos unidad apilados",
+  "evfolyam": "5",
+  "hu": "egységkockák halmaza",
+  "temakor": "El sistema métrico completo"
+ },
+ "stacked_math_blocks": {
+  "en": "stacked number blocks",
+  "es": "bloques de números apilados",
+  "evfolyam": "5",
+  "hu": "egymásra rakott számblokkok",
+  "temakor": "Operaciones combinadas"
+ },
+ "sticker_chart": {
+  "en": "sticker chart",
+  "es": "gráfico de pegatinas",
+  "evfolyam": "1",
+  "hu": "matricás grafikon",
+  "temakor": "Recogemos datos y hacemos un gráfico"
+ },
+ "stopwatch": {
+  "en": "stopwatch",
+  "es": "cronómetro",
+  "evfolyam": "6",
+  "hu": "stopperóra",
+  "temakor": "Cálculo eficiente y resolución de problemas"
+ },
+ "straight_line": {
+  "en": "straight line",
+  "es": "línea recta",
+  "evfolyam": "2",
+  "hu": "egyenes vonal",
+  "temakor": "Líneas, ángulos y simetría"
+ },
+ "subtraction_blocks": {
+  "en": "subtraction with blocks",
+  "es": "resta con bloques",
+  "evfolyam": "1",
+  "hu": "kivonás kockákkal",
+  "temakor": "Sumar y restar hasta 20"
+ },
+ "survey_classroom": {
+  "en": "classroom survey",
+  "es": "encuesta de la clase",
+  "evfolyam": "3",
+  "hu": "osztályfelmérés",
+  "temakor": "Gráficos, media y azar"
+ },
+ "survey_clipboard": {
+  "en": "survey clipboard",
+  "es": "portapapeles de encuesta",
+  "evfolyam": "1",
+  "hu": "kérdőív csíptetőlap",
+  "temakor": "Recogemos datos y hacemos un gráfico"
+ },
+ "survey_sheet": {
+  "en": "survey sheet",
+  "es": "hoja de encuesta",
+  "evfolyam": "4",
+  "hu": "kérdőív lap",
+  "temakor": "Estadística y probabilidad"
+ },
+ "ten_frame": {
+  "en": "ten-frame",
+  "es": "marco de diez",
+  "evfolyam": "1",
+  "hu": "tízes keret",
+  "temakor": "Sumar y restar hasta 20"
+ },
+ "ten_objects": {
+  "en": "ten objects",
+  "es": "diez objetos",
+  "evfolyam": "2",
+  "hu": "tíz tárgy",
+  "temakor": "Empiezan las tablas: 2, 5 y 10"
+ },
+ "thermometer_below_zero": {
+  "en": "thermometer below zero",
+  "es": "termómetro bajo cero",
+  "evfolyam": "6",
+  "hu": "hőmérő nulla alatt",
+  "temakor": "Números enteros y racionales"
+ },
+ "thirds_of_paper_strip": {
+  "en": "thirds of a paper strip",
+  "es": "tercios de una tira de papel",
+  "evfolyam": "3",
+  "hu": "tercios de una tira de papel",
+  "temakor": "Las fracciones más sencillas"
+ },
+ "three_digit_number": {
+  "en": "three-digit number",
+  "es": "número de tres cifras",
+  "evfolyam": "2",
+  "hu": "háromjegyű szám",
+  "temakor": "Los números hasta el 999"
+ },
+ "toothpicks_polygon": {
+  "en": "toothpicks making a polygon",
+  "es": "polígono hecho con palitos",
+  "evfolyam": "3",
+  "hu": "pálcikákból rakott sokszög",
+  "temakor": "Polígonos, perímetro y planos"
+ },
+ "toy_banknotes": {
+  "en": "toy banknotes",
+  "es": "billetes de juguete",
+  "evfolyam": "2",
+  "hu": "játékpénz bankjegyek",
+  "temakor": "Los números hasta el 999"
+ },
+ "toy_shop_register": {
+  "en": "toy shop cash register",
+  "es": "caja registradora de juguete",
+  "evfolyam": "2",
+  "hu": "játék pénztárgép",
+  "temakor": "El reloj, el calendario y el dinero"
+ },
+ "toy_train_sequence": {
+  "en": "toy train sequence",
+  "es": "secuencia de tren de juguete",
+  "evfolyam": "1",
+  "hu": "játék vonatsor",
+  "temakor": "Series y patrones"
+ },
+ "triangle": {
+  "en": "triangle",
+  "es": "triángulo",
+  "evfolyam": "1",
+  "hu": "háromszög",
+  "temakor": "Figuras planas y cuerpos"
+ },
+ "two_bar_charts": {
+  "en": "two bar charts",
+  "es": "dos gráficos de barras",
+  "evfolyam": "3",
+  "hu": "két oszlopdiagram",
+  "temakor": "Gráficos, media y azar"
+ },
+ "two_children_working_together": {
+  "en": "two children working together",
+  "es": "dos niños trabajando juntos",
+  "evfolyam": "1",
+  "hu": "két együtt dolgozó gyerek",
+  "temakor": "Las matemáticas y yo"
+ },
+ "two_digit_division": {
+  "en": "two-digit division",
+  "es": "división por dos cifras",
+  "evfolyam": "4",
+  "hu": "kétszámjegyű osztás",
+  "temakor": "Multiplicación y división por dos cifras"
+ },
+ "two_digit_multiplication": {
+  "en": "two-digit multiplication",
+  "es": "multiplicación por dos cifras",
+  "evfolyam": "4",
+  "hu": "kétszámjegyű szorzás",
+  "temakor": "Multiplicación y división por dos cifras"
+ },
+ "two_digit_number": {
+  "en": "two-digit number",
+  "es": "número de dos cifras",
+  "evfolyam": "1",
+  "hu": "kétjegyű szám",
+  "temakor": "Los números hasta el 99"
+ },
+ "two_groups": {
+  "en": "two groups",
+  "es": "dos grupos",
+  "evfolyam": "2",
+  "hu": "két csoport",
+  "temakor": "Empiezan las tablas: 2, 5 y 10"
+ },
+ "up_down_number_steps": {
+  "en": "up and down number steps",
+  "es": "serie creciente y decreciente",
+  "evfolyam": "2",
+  "hu": "növekvő és csökkenő számsor",
+  "temakor": "Patrones y la máquina de números"
+ },
+ "variable_symbol": {
+  "en": "variable symbol",
+  "es": "símbolo de variable",
+  "evfolyam": "5",
+  "hu": "változó jel",
+  "temakor": "Patrones, fórmulas y proporciones"
+ },
+ "vertex": {
+  "en": "vertex",
+  "es": "vértice",
+  "evfolyam": "3",
+  "hu": "csúcs",
+  "temakor": "Polígonos, perímetro y planos"
+ },
+ "wall": {
+  "en": "wall",
+  "es": "pared",
+  "evfolyam": "6",
+  "hu": "fal",
+  "temakor": "Medida: superficie, volumen y tiempo"
+ },
+ "wall_calendar": {
+  "en": "calendar",
+  "es": "calendario",
+  "evfolyam": "5",
+  "hu": "naptár",
+  "temakor": "El sistema métrico completo"
+ },
+ "water_in_glass": {
+  "en": "water in a glass",
+  "es": "agua en un vaso",
+  "evfolyam": "1",
+  "hu": "víz egy pohárban",
+  "temakor": "Medimos con palmos, pasos y vasos"
+ }
+}

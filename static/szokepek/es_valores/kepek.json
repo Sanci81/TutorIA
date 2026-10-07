@@ -1,0 +1,107 @@
+{
+ "animal_care": {
+  "en": "animal care",
+  "es": "cuidado de animales",
+  "evfolyam": null,
+  "hu": "állatgondozás",
+  "temakor": "Desarrollo sostenible y ética ambiental"
+ },
+ "bicycle": {
+  "en": "bicycle",
+  "es": "bicicleta",
+  "evfolyam": null,
+  "hu": "kerékpár",
+  "temakor": "Desarrollo sostenible y ética ambiental"
+ },
+ "diverse_children": {
+  "en": "diverse children",
+  "es": "niños diversos",
+  "evfolyam": null,
+  "hu": "különböző gyerekek",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "diverse_people_circle": {
+  "en": "diverse people",
+  "es": "personas diversas",
+  "evfolyam": null,
+  "hu": "különböző emberek",
+  "temakor": "Sociedad, justicia y democracia"
+ },
+ "family_group": {
+  "en": "family",
+  "es": "familia",
+  "evfolyam": null,
+  "hu": "család",
+  "temakor": "Sociedad, justicia y democracia"
+ },
+ "friendship_pair": {
+  "en": "friends",
+  "es": "amigos",
+  "evfolyam": null,
+  "hu": "barátok",
+  "temakor": "Sociedad, justicia y democracia"
+ },
+ "handshake": {
+  "en": "handshake",
+  "es": "apretón de manos",
+  "evfolyam": null,
+  "hu": "kézfogás",
+  "temakor": "Sociedad, justicia y democracia"
+ },
+ "heart_and_brain": {
+  "en": "heart and brain",
+  "es": "corazón y cerebro",
+  "evfolyam": null,
+  "hu": "szív és agy",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "human_face_mirror": {
+  "en": "human face in a mirror",
+  "es": "rostro humano en un espejo",
+  "evfolyam": null,
+  "hu": "emberi arc a tükörben",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "mobile_phone_and_notification": {
+  "en": "mobile phone with notification",
+  "es": "teléfono móvil con notificación",
+  "evfolyam": null,
+  "hu": "mobiltelefon értesítéssel",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "polluted_and_clean_nature": {
+  "en": "polluted and clean nature",
+  "es": "naturaleza contaminada y limpia",
+  "evfolyam": null,
+  "hu": "szennyezett és tiszta természet",
+  "temakor": "Desarrollo sostenible y ética ambiental"
+ },
+ "recycling_bin": {
+  "en": "recycling bin",
+  "es": "contenedor de reciclaje",
+  "evfolyam": null,
+  "hu": "szelektív hulladékgyűjtő",
+  "temakor": "Desarrollo sostenible y ética ambiental"
+ },
+ "shield_lock": {
+  "en": "shield with lock",
+  "es": "escudo con candado",
+  "evfolyam": null,
+  "hu": "lakatos pajzs",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "tree_and_wildlife": {
+  "en": "tree and wildlife",
+  "es": "árbol y fauna silvestre",
+  "evfolyam": null,
+  "hu": "fa és vadon élő állatok",
+  "temakor": "Desarrollo sostenible y ética ambiental"
+ },
+ "voting_ballot_box": {
+  "en": "ballot box",
+  "es": "urna electoral",
+  "evfolyam": null,
+  "hu": "szavazóurna",
+  "temakor": "Sociedad, justicia y democracia"
+ }
+}

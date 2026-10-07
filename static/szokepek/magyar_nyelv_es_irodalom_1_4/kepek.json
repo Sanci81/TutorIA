@@ -1,0 +1,905 @@
+{
+ "adjective_comparative_superlative": {
+  "en": "adjective words",
+  "es": "palabra que expresa una cualidad",
+  "evfolyam": null,
+  "hu": "tulajdonságot kifejező szó",
+  "temakor": "Tulajdonságokat kifejező szavak"
+ },
+ "alphabet_letter": {
+  "en": "alphabet letter",
+  "es": "letra",
+  "evfolyam": null,
+  "hu": "betű",
+  "temakor": "A nyelv építő kövei: hang/betű, szótag, szó elválasztás, betűrendbe sorolás"
+ },
+ "alphabet_lowercase_and_uppercase_letters": {
+  "en": "alphabet letters",
+  "es": "letras del alfabeto",
+  "evfolyam": null,
+  "hu": "ábécé betűi",
+  "temakor": "Kisbetű – nagybetű"
+ },
+ "alphabetical_order_list": {
+  "en": "alphabetical order",
+  "es": "orden alfabético",
+  "evfolyam": null,
+  "hu": "betűrend",
+  "temakor": "A nyelv építő kövei: hang/betű, szótag, szó elválasztás, betűrendbe sorolás"
+ },
+ "animal_name": {
+  "en": "animal name",
+  "es": "nombre de animal",
+  "evfolyam": null,
+  "hu": "állatnév",
+  "temakor": "Kisbetű – nagybetű"
+ },
+ "base_word_suffix": {
+  "en": "word stem and suffix",
+  "es": "raíz de la palabra y sufijo",
+  "evfolyam": null,
+  "hu": "szótő és toldalék",
+  "temakor": "Tulajdonságokat kifejező szavak"
+ },
+ "book_page_with_heading_and_picture": {
+  "en": "page with heading and illustration",
+  "es": "página con título e ilustración",
+  "evfolyam": null,
+  "hu": "cím és illusztrációt tartalmazó oldal",
+  "temakor": "Növények, állatok, emberek, találmányok"
+ },
+ "bookshelf": {
+  "en": "bookshelf",
+  "es": "estantería de libros",
+  "evfolyam": null,
+  "hu": "könyvespolc",
+  "temakor": "Olvassunk együtt! Közös olvasmányok"
+ },
+ "boy_running": {
+  "en": "running boy",
+  "es": "niño corriendo",
+  "evfolyam": null,
+  "hu": "futó fiú",
+  "temakor": "Cselekvés, történés a múltban, jelenben, jövőben"
+ },
+ "capital_letter": {
+  "en": "capital letter",
+  "es": "letra mayúscula",
+  "evfolyam": null,
+  "hu": "nagybetű",
+  "temakor": "A nyelv építő kövei: szó, szókapcsolat, mondat, szöveg"
+ },
+ "chapter_book": {
+  "en": "chapter book",
+  "es": "libro con capítulos",
+  "evfolyam": null,
+  "hu": "fejezetekre tagolt könyv",
+  "temakor": "Olvassunk együtt! Közös olvasmányok"
+ },
+ "child_breathing": {
+  "en": "child breathing",
+  "es": "niño respirando",
+  "evfolyam": null,
+  "hu": "lélegző gyerek",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "child_breathing_for_speech": {
+  "en": "child taking a breath to speak",
+  "es": "niño tomando aire para hablar",
+  "evfolyam": null,
+  "hu": "gyerek levegőt vesz beszédhez",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "child_speaking": {
+  "en": "child speaking",
+  "es": "niño hablando",
+  "evfolyam": null,
+  "hu": "beszélő gyerek",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "child_speaking_into_microphone": {
+  "en": "child speaking into a microphone",
+  "es": "niño hablando en un micrófono",
+  "evfolyam": null,
+  "hu": "gyerek mikrofonba beszél",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "child_will_play_with_ball": {
+  "en": "child playing with ball",
+  "es": "niño jugando con una pelota",
+  "evfolyam": null,
+  "hu": "labdázó gyerek",
+  "temakor": "Cselekvés, történés a múltban, jelenben, jövőben"
+ },
+ "child_with_clear_mouth_articulation": {
+  "en": "child pronouncing words clearly",
+  "es": "niño articulando claramente",
+  "evfolyam": null,
+  "hu": "gyerek tisztán artikulál",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "child_with_expressive_face": {
+  "en": "child with expressive face",
+  "es": "niño con expresión facial",
+  "evfolyam": null,
+  "hu": "kifejező arcú gyerek",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "children_playing_folk_game": {
+  "en": "children playing a folk game",
+  "es": "niños jugando a un juego tradicional",
+  "evfolyam": null,
+  "hu": "népi gyermekjáték",
+  "temakor": "Ünnepkörök, hagyományok, mesterségek"
+ },
+ "christmas_star": {
+  "en": "Christmas star",
+  "es": "estrella de Belén",
+  "evfolyam": null,
+  "hu": "betlehemi csillag",
+  "temakor": "Évszakok, ünnepkörök, hagyományok"
+ },
+ "compound_word": {
+  "en": "compound word",
+  "es": "palabra compuesta",
+  "evfolyam": null,
+  "hu": "összetett szó",
+  "temakor": "A nyelv építő kövei: hang/betű, szótag, szó elválasztás, betűrendbe sorolás"
+ },
+ "compound_word_spacing": {
+  "en": "joined and separate words",
+  "es": "escritura junto y separada",
+  "evfolyam": null,
+  "hu": "egybeírás és különírás",
+  "temakor": "Tulajdonságokat kifejező szavak"
+ },
+ "consonant_letter": {
+  "en": "consonant letter",
+  "es": "consonante",
+  "evfolyam": null,
+  "hu": "mássalhangzó",
+  "temakor": "Írás jelrendszere"
+ },
+ "continent": {
+  "en": "continent",
+  "es": "continente",
+  "evfolyam": null,
+  "hu": "földrész",
+  "temakor": "Helyem a világban"
+ },
+ "country_flag": {
+  "en": "country flag",
+  "es": "bandera de un país",
+  "evfolyam": null,
+  "hu": "ország zászlója",
+  "temakor": "Helyem a világban"
+ },
+ "diacritic_mark": {
+  "en": "diacritic mark",
+  "es": "tilde/diacrítico",
+  "evfolyam": null,
+  "hu": "ékezet",
+  "temakor": "Írás jelrendszere"
+ },
+ "dictionary_book": {
+  "en": "dictionary",
+  "es": "diccionario",
+  "evfolyam": null,
+  "hu": "szótár",
+  "temakor": "A magyar ábécé – a betűrend"
+ },
+ "double_letter": {
+  "en": "double letter",
+  "es": "letra doble",
+  "evfolyam": null,
+  "hu": "kettőzött betű",
+  "temakor": "A nyelv építő kövei: hang/betű, szótag, szó"
+ },
+ "exclamation_mark": {
+  "en": "exclamation mark",
+  "es": "signo de exclamación",
+  "evfolyam": null,
+  "hu": "felkiáltójel",
+  "temakor": "A nyelv építő kövei: szó, szókapcsolat, mondat, szöveg (rövid szövegek alkotása - hír, hirdetés, meghívó, felhívás, tudósítás, elbeszélő szöveg elektronikus levél)"
+ },
+ "fairy_tale_castle": {
+  "en": "fairy-tale castle",
+  "es": "castillo de cuento",
+  "evfolyam": null,
+  "hu": "mesebeli vár",
+  "temakor": "Népmesék, műmesék"
+ },
+ "family_celebration": {
+  "en": "family celebration",
+  "es": "celebración familiar",
+  "evfolyam": null,
+  "hu": "családi ünnep",
+  "temakor": "Évszakok, ünnepkörök, hagyományok"
+ },
+ "family_home": {
+  "en": "family home",
+  "es": "hogar familiar",
+  "evfolyam": null,
+  "hu": "családi otthon",
+  "temakor": "Helyem a közösségben – család, iskola"
+ },
+ "fixed_phrase": {
+  "en": "fixed phrase",
+  "es": "locución fija",
+  "evfolyam": null,
+  "hu": "állandósult szókapcsolat",
+  "temakor": "Hangalak és jelentés kapcsolata, állandósult szókapcsolatok"
+ },
+ "folk_costume": {
+  "en": "folk costume",
+  "es": "traje tradicional",
+  "evfolyam": null,
+  "hu": "népviselet",
+  "temakor": "Ünnepkörök, hagyományok, mesterségek"
+ },
+ "folk_singer": {
+  "en": "folk singer",
+  "es": "cantante de canción popular",
+  "evfolyam": null,
+  "hu": "népdalénekes",
+  "temakor": "Versek, népköltészeti alkotások"
+ },
+ "folk_song": {
+  "en": "folk song",
+  "es": "canción popular",
+  "evfolyam": null,
+  "hu": "népdal",
+  "temakor": "Versek, népköltészeti alkotások"
+ },
+ "forest_path": {
+  "en": "forest path",
+  "es": "sendero del bosque",
+  "evfolyam": null,
+  "hu": "erdei ösvény",
+  "temakor": "Mesék, történetek"
+ },
+ "forest_river_landscape": {
+  "en": "landscape",
+  "es": "paisaje",
+  "evfolyam": null,
+  "hu": "táj",
+  "temakor": "Mondák, regék"
+ },
+ "forest_scene": {
+  "en": "forest scene",
+  "es": "escena del bosque",
+  "evfolyam": null,
+  "hu": "erdei jelenet",
+  "temakor": "Népmesék, műmesék"
+ },
+ "full_stop": {
+  "en": "full stop",
+  "es": "punto",
+  "evfolyam": null,
+  "hu": "pont",
+  "temakor": "A nyelv építő kövei: szó, szókapcsolat, mondat, szöveg"
+ },
+ "girl_reading": {
+  "en": "reading girl",
+  "es": "niña leyendo",
+  "evfolyam": null,
+  "hu": "olvasó lány",
+  "temakor": "Cselekvés, történés a múltban, jelenben, jövőben"
+ },
+ "globe": {
+  "en": "globe",
+  "es": "globo terráqueo",
+  "evfolyam": null,
+  "hu": "földgömb",
+  "temakor": "Helyem a világban"
+ },
+ "group_dialogue_scene": {
+  "en": "group dialogue",
+  "es": "diálogo en grupo",
+  "evfolyam": null,
+  "hu": "csoportos párbeszéd",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "handicraft_tool": {
+  "en": "handicraft tool",
+  "es": "herramienta de artesanía",
+  "evfolyam": null,
+  "hu": "kézműves szerszám",
+  "temakor": "Ünnepkörök, hagyományok, mesterségek"
+ },
+ "historic_castle": {
+  "en": "castle",
+  "es": "castillo",
+  "evfolyam": null,
+  "hu": "vár",
+  "temakor": "Mondák, regék"
+ },
+ "home_house": {
+  "en": "home house",
+  "es": "casa, hogar",
+  "evfolyam": null,
+  "hu": "otthon, ház",
+  "temakor": "Helyem a világban"
+ },
+ "hungarian_alphabet": {
+  "en": "Hungarian alphabet",
+  "es": "alfabeto húngaro",
+  "evfolyam": null,
+  "hu": "magyar ábécé",
+  "temakor": "A magyar ábécé – a betűrend"
+ },
+ "idiom": {
+  "en": "idiom",
+  "es": "modismo",
+  "evfolyam": null,
+  "hu": "szólás",
+  "temakor": "Hangalak és jelentés kapcsolata, állandósult szókapcsolatok"
+ },
+ "illustrated_book": {
+  "en": "illustrated book",
+  "es": "libro ilustrado",
+  "evfolyam": null,
+  "hu": "illusztrált könyv",
+  "temakor": "Olvassunk együtt! Közös olvasmányok"
+ },
+ "invented_object": {
+  "en": "invention",
+  "es": "invento",
+  "evfolyam": null,
+  "hu": "találmány",
+  "temakor": "Növények, állatok, emberek, találmányok"
+ },
+ "king": {
+  "en": "king",
+  "es": "rey",
+  "evfolyam": null,
+  "hu": "király",
+  "temakor": "Népmesék, műmesék"
+ },
+ "king_or_historic_figure": {
+  "en": "king",
+  "es": "rey",
+  "evfolyam": null,
+  "hu": "király",
+  "temakor": "Mondák, regék"
+ },
+ "lamb": {
+  "en": "lamb",
+  "es": "cordero",
+  "evfolyam": null,
+  "hu": "bárány",
+  "temakor": "Évszakok, ünnepkörök, hagyományok"
+ },
+ "left_right_hands": {
+  "en": "left and right hands",
+  "es": "mano izquierda y mano derecha",
+  "evfolyam": null,
+  "hu": "bal és jobb kéz",
+  "temakor": "Óvodából iskolába – írás-előkészítés, íráskészséget megalapozó képességek fejlesztése"
+ },
+ "legend_storybook": {
+  "en": "legend book",
+  "es": "libro de leyendas",
+  "evfolyam": null,
+  "hu": "monda vagy rege könyv",
+  "temakor": "Mondák, regék"
+ },
+ "letter": {
+  "en": "letter",
+  "es": "letra",
+  "evfolyam": null,
+  "hu": "betű",
+  "temakor": "Írás jelrendszere"
+ },
+ "letter_a": {
+  "en": "letter A",
+  "es": "la letra A",
+  "evfolyam": null,
+  "hu": "a betű",
+  "temakor": "Betűtanítás kezdete. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "letter_email_message": {
+  "en": "message or letter",
+  "es": "carta / correo electrónico / mensaje",
+  "evfolyam": null,
+  "hu": "levél / e-mail / SMS",
+  "temakor": "A nyelv építő kövei: Az írásbeli szövegalkotás lépései (mondatgrammatikai eszközök alkalmazása- kapcsolás, szűkítés, bővítés, névmásítás, névelőhasználat, helyettesítés)"
+ },
+ "letter_order_list": {
+  "en": "alphabetical order list",
+  "es": "lista en orden alfabético",
+  "evfolyam": null,
+  "hu": "betűrend szerinti lista",
+  "temakor": "A magyar ábécé – a betűrend"
+ },
+ "library": {
+  "en": "library",
+  "es": "biblioteca",
+  "evfolyam": null,
+  "hu": "könyvtár",
+  "temakor": "Helyem a közösségben – család, iskola"
+ },
+ "lined_paper": {
+  "en": "lined paper",
+  "es": "papel rayado",
+  "evfolyam": null,
+  "hu": "vonalas papír",
+  "temakor": "Óvodából iskolába – írás-előkészítés, íráskészséget megalapozó képességek fejlesztése"
+ },
+ "lips_and_tongue": {
+  "en": "lips and tongue",
+  "es": "labios y lengua",
+  "evfolyam": null,
+  "hu": "ajak és nyelv",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "living_thing": {
+  "en": "living thing",
+  "es": "ser vivo",
+  "evfolyam": null,
+  "hu": "élőlény",
+  "temakor": "Élőlények, tárgyak, gondolati dolgok neve"
+ },
+ "long_consonant_letter": {
+  "en": "long consonant letter",
+  "es": "letra de consonante larga",
+  "evfolyam": null,
+  "hu": "hosszú mássalhangzó betű",
+  "temakor": "Hangok időtartamának jelentés-megkülönböztető szerepe"
+ },
+ "long_vowel_letter": {
+  "en": "long vowel letter",
+  "es": "letra de vocal larga",
+  "evfolyam": null,
+  "hu": "hosszú magánhangzó betű",
+  "temakor": "Hangok időtartamának jelentés-megkülönböztető szerepe"
+ },
+ "lowercase_letter": {
+  "en": "lowercase letter",
+  "es": "letra minúscula",
+  "evfolyam": null,
+  "hu": "kisbetű",
+  "temakor": "Betűtanítás. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "lullaby_cradle": {
+  "en": "lullaby cradle",
+  "es": "cuna de canción de cuna",
+  "evfolyam": null,
+  "hu": "altatódal bölcső",
+  "temakor": "Versek, népköltészeti alkotások"
+ },
+ "many_apples": {
+  "en": "many apples",
+  "es": "muchas manzanas",
+  "evfolyam": null,
+  "hu": "sok alma",
+  "temakor": "Mennyiségeket kifejező szavak"
+ },
+ "mythical_dragon": {
+  "en": "dragon",
+  "es": "dragón",
+  "evfolyam": null,
+  "hu": "sárkány",
+  "temakor": "Mondák, regék"
+ },
+ "national_flag": {
+  "en": "national flag",
+  "es": "bandera nacional",
+  "evfolyam": null,
+  "hu": "nemzeti zászló",
+  "temakor": "Ünnepkörök, hagyományok, mesterségek"
+ },
+ "notebook": {
+  "en": "notebook",
+  "es": "cuaderno",
+  "evfolyam": null,
+  "hu": "füzet",
+  "temakor": "Óvodából iskolába – írás-előkészítés, íráskészséget megalapozó képességek fejlesztése"
+ },
+ "object": {
+  "en": "object",
+  "es": "objeto",
+  "evfolyam": null,
+  "hu": "tárgy",
+  "temakor": "Élőlények, tárgyak, gondolati dolgok neve"
+ },
+ "objects": {
+  "en": "objects",
+  "es": "objetos",
+  "evfolyam": null,
+  "hu": "tárgyak",
+  "temakor": "Kisbetű – nagybetű"
+ },
+ "opposite_adjectives": {
+  "en": "opposite adjectives",
+  "es": "expresiones de significado opuesto",
+  "evfolyam": null,
+  "hu": "ellentétes jelentésű kifejezések",
+  "temakor": "Tulajdonságokat kifejező szavak"
+ },
+ "opposite_words": {
+  "en": "opposite words",
+  "es": "palabras de significado opuesto",
+  "evfolyam": null,
+  "hu": "ellentétes jelentésű szavak",
+  "temakor": "Hangalak és jelentés kapcsolata, állandósult szókapcsolatok"
+ },
+ "past_present_future_clock": {
+  "en": "clock",
+  "es": "reloj",
+  "evfolyam": null,
+  "hu": "óra",
+  "temakor": "Cselekvés, történés a múltban, jelenben, jövőben"
+ },
+ "person": {
+  "en": "person",
+  "es": "persona",
+  "evfolyam": null,
+  "hu": "ember",
+  "temakor": "Állatok, növények, emberek"
+ },
+ "person_illustrated_story": {
+  "en": "character",
+  "es": "personaje",
+  "evfolyam": null,
+  "hu": "szereplő",
+  "temakor": "A nyelv építő kövei: Az írásbeli szövegalkotás lépései (mondatgrammatikai eszközök alkalmazása- kapcsolás, szűkítés, bővítés, névmásítás, névelőhasználat, helyettesítés)"
+ },
+ "person_name": {
+  "en": "person name",
+  "es": "nombre de persona",
+  "evfolyam": null,
+  "hu": "személynév",
+  "temakor": "Kisbetű – nagybetű"
+ },
+ "picture_illustration": {
+  "en": "illustration",
+  "es": "ilustración",
+  "evfolyam": null,
+  "hu": "illusztráció",
+  "temakor": "Állatok, növények, emberek"
+ },
+ "place_name": {
+  "en": "place name",
+  "es": "nombre de lugar",
+  "evfolyam": null,
+  "hu": "helynév",
+  "temakor": "Kisbetű – nagybetű"
+ },
+ "plant": {
+  "en": "plant",
+  "es": "planta",
+  "evfolyam": null,
+  "hu": "növény",
+  "temakor": "Állatok, növények, emberek"
+ },
+ "poem": {
+  "en": "poem",
+  "es": "poema",
+  "evfolyam": null,
+  "hu": "vers",
+  "temakor": "Versek, népköltészeti alkotások"
+ },
+ "poem_book": {
+  "en": "poem book",
+  "es": "libro de poemas",
+  "evfolyam": null,
+  "hu": "verseskönyv",
+  "temakor": "Versek, népköltészeti alkotások"
+ },
+ "poet_writing": {
+  "en": "poet writing",
+  "es": "poeta",
+  "evfolyam": null,
+  "hu": "költő",
+  "temakor": "Versek, népköltészeti alkotások"
+ },
+ "princess": {
+  "en": "princess",
+  "es": "princesa",
+  "evfolyam": null,
+  "hu": "hercegnő",
+  "temakor": "Népmesék, műmesék"
+ },
+ "proverb_picture": {
+  "en": "proverb",
+  "es": "refrán",
+  "evfolyam": null,
+  "hu": "közmondás",
+  "temakor": "Hangalak és jelentés kapcsolata, állandósult szókapcsolatok"
+ },
+ "question_mark": {
+  "en": "question mark",
+  "es": "signo de interrogación",
+  "evfolyam": null,
+  "hu": "kérdőjel",
+  "temakor": "A nyelv építő kövei: szó, szókapcsolat, mondat, szöveg (rövid szövegek alkotása - hír, hirdetés, meghívó, felhívás, tudósítás, elbeszélő szöveg elektronikus levél)"
+ },
+ "rhyme_chain_children": {
+  "en": "children doing a counting rhyme",
+  "es": "niños recitando una cuenta",
+  "evfolyam": null,
+  "hu": "kiszámoló gyerekek",
+  "temakor": "Versek, népköltészeti alkotások"
+ },
+ "rhyme_scheme": {
+  "en": "rhyme",
+  "es": "rima",
+  "evfolyam": null,
+  "hu": "rím",
+  "temakor": "Versek, népköltészeti alkotások"
+ },
+ "scene_and_action": {
+  "en": "scene with action",
+  "es": "acción de una historia",
+  "evfolyam": null,
+  "hu": "cselekmény",
+  "temakor": "A nyelv építő kövei: Az írásbeli szövegalkotás lépései (mondatgrammatikai eszközök alkalmazása- kapcsolás, szűkítés, bővítés, névmásítás, névelőhasználat, helyettesítés)"
+ },
+ "school_building": {
+  "en": "school building",
+  "es": "edificio escolar",
+  "evfolyam": null,
+  "hu": "iskola épület",
+  "temakor": "Helyem a közösségben – család, iskola"
+ },
+ "sentence": {
+  "en": "sentence",
+  "es": "oración",
+  "evfolyam": null,
+  "hu": "mondat",
+  "temakor": "A nyelv építő kövei: szó, szókapcsolat, mondat, szöveg"
+ },
+ "sentence_on_board": {
+  "en": "sentence on a board",
+  "es": "oración en la pizarra",
+  "evfolyam": null,
+  "hu": "mondat a táblán",
+  "temakor": "Betűtanítás kezdete. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "several_books": {
+  "en": "several books",
+  "es": "unos cuantos libros",
+  "evfolyam": null,
+  "hu": "néhány könyv",
+  "temakor": "Mennyiségeket kifejező szavak"
+ },
+ "short_consonant_letter": {
+  "en": "short consonant letter",
+  "es": "letra de consonante corta",
+  "evfolyam": null,
+  "hu": "rövid mássalhangzó betű",
+  "temakor": "Hangok időtartamának jelentés-megkülönböztető szerepe"
+ },
+ "short_vowel_letter": {
+  "en": "short vowel letter",
+  "es": "letra de vocal corta",
+  "evfolyam": null,
+  "hu": "rövid magánhangzó betű",
+  "temakor": "Hangok időtartamának jelentés-megkülönböztető szerepe"
+ },
+ "siblings_and_grandparents": {
+  "en": "siblings and grandparents",
+  "es": "hermanos y abuelos",
+  "evfolyam": null,
+  "hu": "testvérek és nagyszülők",
+  "temakor": "Helyem a közösségben – család, iskola"
+ },
+ "simple_shapes_sequence": {
+  "en": "simple shape sequence",
+  "es": "secuencia de formas simples",
+  "evfolyam": null,
+  "hu": "egyszerű alakzatsor",
+  "temakor": "Óvodából iskolába – írás-előkészítés, íráskészséget megalapozó képességek fejlesztése"
+ },
+ "single_letter": {
+  "en": "single letter",
+  "es": "una letra",
+  "evfolyam": null,
+  "hu": "egy betű",
+  "temakor": "A nyelv építő kövei: hang/betű, szótag, szó"
+ },
+ "special_hungarian_letters": {
+  "en": "special Hungarian letters",
+  "es": "letras húngaras especiales",
+  "evfolyam": null,
+  "hu": "különleges magyar betűk",
+  "temakor": "A magyar ábécé – a betűrend"
+ },
+ "spring_season": {
+  "en": "spring",
+  "es": "primavera",
+  "evfolyam": null,
+  "hu": "tavasz",
+  "temakor": "Évszakok, ünnepkörök, hagyományok"
+ },
+ "story_text": {
+  "en": "text or story",
+  "es": "texto",
+  "evfolyam": null,
+  "hu": "szöveg",
+  "temakor": "A nyelv építő kövei: Az írásbeli szövegalkotás lépései (mondatgrammatikai eszközök alkalmazása- kapcsolás, szűkítés, bővítés, névmásítás, névelőhasználat, helyettesítés)"
+ },
+ "storybook": {
+  "en": "storybook",
+  "es": "libro de cuentos",
+  "evfolyam": null,
+  "hu": "meseesküvők?",
+  "temakor": "Népmesék, műmesék"
+ },
+ "storybook_fairy_tale": {
+  "en": "fairy tale book",
+  "es": "cuento en verso",
+  "evfolyam": null,
+  "hu": "verses mese",
+  "temakor": "Versek, népköltészeti alkotások"
+ },
+ "storybook_open_book": {
+  "en": "storybook book",
+  "es": "libro de cuentos",
+  "evfolyam": null,
+  "hu": "meséskönyv",
+  "temakor": "Mesék, történetek"
+ },
+ "syllable_block": {
+  "en": "syllable",
+  "es": "sílaba",
+  "evfolyam": null,
+  "hu": "szótag",
+  "temakor": "Betűtanítás. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "syllable_blocks": {
+  "en": "syllable blocks",
+  "es": "sílabas",
+  "evfolyam": null,
+  "hu": "szótagok",
+  "temakor": "Betűtanítás kezdete. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "syllable_breaking": {
+  "en": "syllables",
+  "es": "sílabas",
+  "evfolyam": null,
+  "hu": "szótagok",
+  "temakor": "Szótő és toldalék, szóelemzés"
+ },
+ "synonymous_adjectives": {
+  "en": "synonyms",
+  "es": "sinónimos",
+  "evfolyam": null,
+  "hu": "rokon értelmű szavak",
+  "temakor": "Tulajdonságokat kifejező szavak"
+ },
+ "synonyms": {
+  "en": "synonyms",
+  "es": "sinónimos",
+  "evfolyam": null,
+  "hu": "rokon értelmű szavak",
+  "temakor": "Hangalak és jelentés kapcsolata, állandósult szókapcsolatok"
+ },
+ "talking_two_children": {
+  "en": "two children talking",
+  "es": "dos niños hablando",
+  "evfolyam": null,
+  "hu": "két beszélgető gyerek",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "three_balloons": {
+  "en": "three balloons",
+  "es": "tres globos",
+  "evfolyam": null,
+  "hu": "három lufi",
+  "temakor": "Mennyiségeket kifejező szavak"
+ },
+ "two_apples": {
+  "en": "two apples",
+  "es": "dos manzanas",
+  "evfolyam": null,
+  "hu": "két alma",
+  "temakor": "Mennyiségeket kifejező szavak"
+ },
+ "two_children_talking": {
+  "en": "two children talking",
+  "es": "dos niños hablando",
+  "evfolyam": null,
+  "hu": "két beszélgető gyerek",
+  "temakor": "Beszéd és kommunikáció"
+ },
+ "uppercase_letter": {
+  "en": "uppercase letter",
+  "es": "letra mayúscula",
+  "evfolyam": null,
+  "hu": "nagybetű",
+  "temakor": "Betűtanítás. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "vowel": {
+  "en": "vowel",
+  "es": "vocal",
+  "evfolyam": null,
+  "hu": "magánhangzó",
+  "temakor": "Betűtanítás. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "vowel_and_consonant_letters": {
+  "en": "vowel and consonant letters",
+  "es": "vocal y consonante",
+  "evfolyam": null,
+  "hu": "magánhangzó és mássalhangzó betűk",
+  "temakor": "A nyelv építő kövei: hang/betű, szótag, szó"
+ },
+ "vowel_i": {
+  "en": "vowel i",
+  "es": "vocal i",
+  "evfolyam": null,
+  "hu": "i magánhangzó",
+  "temakor": "Betűtanítás kezdete. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "vowel_letter": {
+  "en": "vowel letter",
+  "es": "vocal",
+  "evfolyam": null,
+  "hu": "magánhangzó",
+  "temakor": "Írás jelrendszere"
+ },
+ "winter_season": {
+  "en": "winter",
+  "es": "invierno",
+  "evfolyam": null,
+  "hu": "tél",
+  "temakor": "Évszakok, ünnepkörök, hagyományok"
+ },
+ "word": {
+  "en": "word",
+  "es": "palabra",
+  "evfolyam": null,
+  "hu": "szó",
+  "temakor": "Betűtanítás. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "word_book": {
+  "en": "word written on paper",
+  "es": "palabra escrita",
+  "evfolyam": null,
+  "hu": "írott szó",
+  "temakor": "Betűtanítás kezdete. Olvasási készséget megalapozó részképességek fejlesztése"
+ },
+ "word_ending": {
+  "en": "word ending",
+  "es": "sufijo",
+  "evfolyam": null,
+  "hu": "toldalék",
+  "temakor": "Szótő és toldalék, szóelemzés"
+ },
+ "word_pair_different_length_letters": {
+  "en": "word pair with different letter length",
+  "es": "pareja de palabras con distinta duración de letras",
+  "evfolyam": null,
+  "hu": "eltérő hosszúságú betűs szó páros",
+  "temakor": "Hangok időtartamának jelentés-megkülönböztető szerepe"
+ },
+ "word_root": {
+  "en": "word root",
+  "es": "raíz de la palabra",
+  "evfolyam": null,
+  "hu": "szótő",
+  "temakor": "Szótő és toldalék, szóelemzés"
+ },
+ "word_with_prefix_suffix_parts": {
+  "en": "word parts",
+  "es": "partes de una palabra",
+  "evfolyam": null,
+  "hu": "szóelemek",
+  "temakor": "Szótő és toldalék, szóelemzés"
+ },
+ "written_sentence": {
+  "en": "sentence",
+  "es": "oración",
+  "evfolyam": null,
+  "hu": "mondat",
+  "temakor": "A nyelv építő kövei: Az írásbeli szövegalkotás lépései (mondatgrammatikai eszközök alkalmazása- kapcsolás, szűkítés, bővítés, névmásítás, névelőhasználat, helyettesítés)"
+ },
+ "written_word_segments": {
+  "en": "letter groups in a word",
+  "es": "grupos de letras",
+  "evfolyam": null,
+  "hu": "betűkapcsolatok",
+  "temakor": "Szótő és toldalék, szóelemzés"
+ }
+}

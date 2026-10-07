@@ -1,0 +1,373 @@
+{
+ "3d_space_object": {
+  "en": "3D object",
+  "es": "cuerpo tridimensional",
+  "evfolyam": null,
+  "hu": "térbeli test",
+  "temakor": "Vizuális kifejezőeszközök – Érzékelés, jellemzők, tapasztalat"
+ },
+ "animated_film": {
+  "en": "animated film",
+  "es": "película de animación",
+  "evfolyam": null,
+  "hu": "animációs film",
+  "temakor": "Álló- és mozgókép – Kép, hang, történet"
+ },
+ "architectural_model": {
+  "en": "architectural model",
+  "es": "maqueta",
+  "evfolyam": null,
+  "hu": "makett",
+  "temakor": "Természetes és mesterséges környezet – Közvetlen környezetünk"
+ },
+ "book_cover": {
+  "en": "book cover",
+  "es": "portada de libro",
+  "evfolyam": null,
+  "hu": "könyvborító",
+  "temakor": "Vizuális információ – Vizuális jelek a környezetünkben"
+ },
+ "building": {
+  "en": "building",
+  "es": "edificio",
+  "evfolyam": null,
+  "hu": "épület",
+  "temakor": "Természetes és mesterséges környezet – Közvetlen környezetünk"
+ },
+ "carved_wood_object": {
+  "en": "carved wood object",
+  "es": "objeto de madera tallada",
+  "evfolyam": null,
+  "hu": "faragott fa tárgy",
+  "temakor": "Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények"
+ },
+ "ceramic_pot": {
+  "en": "ceramic pot",
+  "es": "vasija de barro",
+  "evfolyam": null,
+  "hu": "cserépedény",
+  "temakor": "Természetes és mesterséges környezet – Valós és kitalált tárgyak"
+ },
+ "coat_of_arms": {
+  "en": "coat of arms",
+  "es": "escudo de armas",
+  "evfolyam": null,
+  "hu": "címer",
+  "temakor": "Vizuális információ – Vizuális jelek a környezetünkben"
+ },
+ "collage_art": {
+  "en": "collage",
+  "es": "collage",
+  "evfolyam": null,
+  "hu": "kollázs",
+  "temakor": "Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények"
+ },
+ "comic_strip": {
+  "en": "comic strip",
+  "es": "cómic",
+  "evfolyam": null,
+  "hu": "képregény",
+  "temakor": "Álló- és mozgókép – Kép, hang, történet"
+ },
+ "computer_internet_screen": {
+  "en": "computer screen",
+  "es": "pantalla de computadora",
+  "evfolyam": null,
+  "hu": "számítógép képernyő",
+  "temakor": "Médiahasználat – Valós és virtuális információk"
+ },
+ "decorative_hanging": {
+  "en": "decorative ornament",
+  "es": "objeto decorativo",
+  "evfolyam": null,
+  "hu": "dísztárgy",
+  "temakor": "Természetes és mesterséges környezet – Valós és kitalált tárgyak"
+ },
+ "different_sizes_objects": {
+  "en": "different sizes",
+  "es": "diferentes tamaños",
+  "evfolyam": null,
+  "hu": "különböző méretek",
+  "temakor": "Vizuális kifejezőeszközök – Érzékelés, jellemzők, tapasztalat"
+ },
+ "direction_arrows": {
+  "en": "direction arrows",
+  "es": "direcciones",
+  "evfolyam": null,
+  "hu": "irányok",
+  "temakor": "Vizuális kifejezőeszközök – Érzékelés, jellemzők, tapasztalat"
+ },
+ "educational_program": {
+  "en": "educational program",
+  "es": "programa divulgativo",
+  "evfolyam": null,
+  "hu": "ismeretterjesztő műsor",
+  "temakor": "Médiahasználat – Valós és virtuális információk"
+ },
+ "embroidered_pattern": {
+  "en": "embroidered pattern",
+  "es": "motivo de bordado",
+  "evfolyam": null,
+  "hu": "hímzésminta",
+  "temakor": "Természetes és mesterséges környezet – Valós és kitalált tárgyak"
+ },
+ "farmhouse": {
+  "en": "farmhouse",
+  "es": "casa campesina",
+  "evfolyam": null,
+  "hu": "parasztház",
+  "temakor": "Természetes és mesterséges környezet – Közvetlen környezetünk"
+ },
+ "film_camera": {
+  "en": "film camera",
+  "es": "cámara de cine",
+  "evfolyam": null,
+  "hu": "filmkamera",
+  "temakor": "Álló- és mozgókép – Kép, hang, történet"
+ },
+ "film_clapperboard": {
+  "en": "film clapperboard",
+  "es": "claqueta de cine",
+  "evfolyam": null,
+  "hu": "film csapó",
+  "temakor": "Médiahasználat – Valós és virtuális információk"
+ },
+ "flat_shape": {
+  "en": "flat shape",
+  "es": "figura plana",
+  "evfolyam": null,
+  "hu": "sík alakzat",
+  "temakor": "Vizuális kifejezőeszközök – Érzékelés, jellemzők, tapasztalat"
+ },
+ "floor_plan": {
+  "en": "floor plan",
+  "es": "plano",
+  "evfolyam": null,
+  "hu": "alaprajz",
+  "temakor": "Természetes és mesterséges környezet – Közvetlen környezetünk"
+ },
+ "folk_house": {
+  "en": "folk house",
+  "es": "casa campesina",
+  "evfolyam": null,
+  "hu": "parasztház",
+  "temakor": "Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények"
+ },
+ "gift_wrapped_package": {
+  "en": "wrapped package",
+  "es": "paquete envuelto",
+  "evfolyam": null,
+  "hu": "becsomagolt csomag",
+  "temakor": "Természetes és mesterséges környezet – Valós és kitalált tárgyak"
+ },
+ "historic_building": {
+  "en": "historic building",
+  "es": "edificio histórico",
+  "evfolyam": null,
+  "hu": "nevezetes épület",
+  "temakor": "Természetes és mesterséges környezet – Közvetlen környezetünk"
+ },
+ "hungarian_flag": {
+  "en": "Hungarian flag",
+  "es": "bandera húngara",
+  "evfolyam": null,
+  "hu": "magyar zászló",
+  "temakor": "Vizuális információ – Vizuális jelek a környezetünkben"
+ },
+ "invitation_card": {
+  "en": "invitation card",
+  "es": "tarjeta de invitación",
+  "evfolyam": null,
+  "hu": "meghívókártya",
+  "temakor": "Vizuális információ – Vizuális jelek a környezetünkben"
+ },
+ "map": {
+  "en": "map",
+  "es": "mapa",
+  "evfolyam": null,
+  "hu": "térkép",
+  "temakor": "Vizuális információ – Vizuális jelek a környezetünkben"
+ },
+ "monument": {
+  "en": "monument",
+  "es": "monumento",
+  "evfolyam": null,
+  "hu": "műemlék",
+  "temakor": "Természetes és mesterséges környezet – Közvetlen környezetünk"
+ },
+ "movie_scene": {
+  "en": "movie scene",
+  "es": "escena de película",
+  "evfolyam": null,
+  "hu": "filmrészlet jelenete",
+  "temakor": "Álló- és mozgókép – Kép, hang, történet"
+ },
+ "needle_thread": {
+  "en": "needle and thread",
+  "es": "aguja e hilo",
+  "evfolyam": null,
+  "hu": "tű és cérna",
+  "temakor": "Természetes és mesterséges környezet – Valós és kitalált tárgyak"
+ },
+ "patterned_decoration": {
+  "en": "patterned decoration",
+  "es": "decoración con patrón",
+  "evfolyam": null,
+  "hu": "mintás díszítés",
+  "temakor": "Természetes és mesterséges környezet – Valós és kitalált tárgyak"
+ },
+ "pictogram": {
+  "en": "pictogram",
+  "es": "pictograma",
+  "evfolyam": null,
+  "hu": "piktogram",
+  "temakor": "Vizuális információ – Vizuális jelek a környezetünkben"
+ },
+ "picture_illustration": {
+  "en": "picture illustration",
+  "es": "ilustración",
+  "evfolyam": null,
+  "hu": "illusztráció",
+  "temakor": "Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények"
+ },
+ "portrait_of_person": {
+  "en": "portrait of a person",
+  "es": "retrato de una persona",
+  "evfolyam": null,
+  "hu": "portré",
+  "temakor": "Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények"
+ },
+ "poster": {
+  "en": "poster",
+  "es": "cartel",
+  "evfolyam": null,
+  "hu": "plakát",
+  "temakor": "Vizuális információ – Vizuális jelek a környezetünkben"
+ },
+ "puppet": {
+  "en": "puppet",
+  "es": "marioneta",
+  "evfolyam": null,
+  "hu": "báb",
+  "temakor": "Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények"
+ },
+ "scissors_glue_craft_tools": {
+  "en": "scissors and glue",
+  "es": "tijeras y pegamento",
+  "evfolyam": null,
+  "hu": "olló és ragasztó",
+  "temakor": "Természetes és mesterséges környezet – Valós és kitalált tárgyak"
+ },
+ "sequence_of_images": {
+  "en": "sequence of images",
+  "es": "secuencia de imágenes",
+  "evfolyam": null,
+  "hu": "képsorozat",
+  "temakor": "Álló- és mozgókép – Kép, hang, történet"
+ },
+ "side_character": {
+  "en": "side character",
+  "es": "personaje secundario",
+  "evfolyam": null,
+  "hu": "mellékszereplő",
+  "temakor": "Álló- és mozgókép – Kép, hang, történet"
+ },
+ "simple_costume": {
+  "en": "simple costume",
+  "es": "disfraz sencillo",
+  "evfolyam": null,
+  "hu": "egyszerű jelmez",
+  "temakor": "Természetes és mesterséges környezet – Valós és kitalált tárgyak"
+ },
+ "simple_puppet": {
+  "en": "simple puppet",
+  "es": "títere",
+  "evfolyam": null,
+  "hu": "bábu",
+  "temakor": "Természetes és mesterséges környezet – Valós és kitalált tárgyak"
+ },
+ "single_film_frame": {
+  "en": "film frame",
+  "es": "fotograma",
+  "evfolyam": null,
+  "hu": "képkocka",
+  "temakor": "Álló- és mozgókép – Kép, hang, történet"
+ },
+ "sound_effect": {
+  "en": "sound effect",
+  "es": "efecto de sonido",
+  "evfolyam": null,
+  "hu": "hanghatás",
+  "temakor": "Álló- és mozgókép – Kép, hang, történet"
+ },
+ "square": {
+  "en": "town square",
+  "es": "plaza",
+  "evfolyam": null,
+  "hu": "tér",
+  "temakor": "Természetes és mesterséges környezet – Közvetlen környezetünk"
+ },
+ "stage_lighting": {
+  "en": "lighting",
+  "es": "iluminación",
+  "evfolyam": null,
+  "hu": "megvilágítás",
+  "temakor": "Álló- és mozgókép – Kép, hang, történet"
+ },
+ "story_location": {
+  "en": "story location",
+  "es": "lugar de la historia",
+  "evfolyam": null,
+  "hu": "történet helyszíne",
+  "temakor": "Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények"
+ },
+ "storybook_character": {
+  "en": "storybook character",
+  "es": "personaje de cuento",
+  "evfolyam": null,
+  "hu": "mesefigura",
+  "temakor": "Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények"
+ },
+ "surface_textures": {
+  "en": "surface textures",
+  "es": "superficies",
+  "evfolyam": null,
+  "hu": "felületek",
+  "temakor": "Vizuális kifejezőeszközök – Érzékelés, jellemzők, tapasztalat"
+ },
+ "television": {
+  "en": "television",
+  "es": "televisor",
+  "evfolyam": null,
+  "hu": "televízió",
+  "temakor": "Médiahasználat – Valós és virtuális információk"
+ },
+ "traffic_sign": {
+  "en": "traffic sign",
+  "es": "señal de tráfico",
+  "evfolyam": null,
+  "hu": "közlekedési tábla",
+  "temakor": "Vizuális információ – Vizuális jelek a környezetünkben"
+ },
+ "tv_advertisement": {
+  "en": "advertisement",
+  "es": "anuncio",
+  "evfolyam": null,
+  "hu": "reklám",
+  "temakor": "Médiahasználat – Valós és virtuális információk"
+ },
+ "tv_series": {
+  "en": "TV series",
+  "es": "serie de televisión",
+  "evfolyam": null,
+  "hu": "televíziós sorozat",
+  "temakor": "Médiahasználat – Valós és virtuális információk"
+ },
+ "village": {
+  "en": "village",
+  "es": "pueblo",
+  "evfolyam": null,
+  "hu": "település",
+  "temakor": "Természetes és mesterséges környezet – Közvetlen környezetünk"
+ }
+}

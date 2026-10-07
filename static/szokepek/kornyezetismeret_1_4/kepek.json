@@ -1,0 +1,345 @@
+{
+ "adult_human": {
+  "en": "adult human",
+  "es": "adulto",
+  "evfolyam": "3",
+  "hu": "felnőtt ember",
+  "temakor": "Növekedés és fejlődés"
+ },
+ "autumn_tree": {
+  "en": "autumn tree",
+  "es": "árbol otoñal",
+  "evfolyam": "3",
+  "hu": "őszi fa",
+  "temakor": "Az idő: napszakok, hónapok, évszakok"
+ },
+ "baby_human": {
+  "en": "baby human",
+  "es": "bebé",
+  "evfolyam": "3",
+  "hu": "csecsemő",
+  "temakor": "Növekedés és fejlődés"
+ },
+ "balance_scale": {
+  "en": "balance scale",
+  "es": "balanza",
+  "evfolyam": "3",
+  "hu": "mérleg",
+  "temakor": "Mérünk: hosszúság, tömeg, űrtartalom, idő"
+ },
+ "bean_seedling": {
+  "en": "bean seedling",
+  "es": "plántula de judía",
+  "evfolyam": "3",
+  "hu": "babcsíra",
+  "temakor": "Növekedés és fejlődés"
+ },
+ "butterfly_life_cycle": {
+  "en": "butterfly life cycle",
+  "es": "ciclo de vida de la mariposa",
+  "evfolyam": "3",
+  "hu": "pillangó életciklusa",
+  "temakor": "Növekedés és fejlődés"
+ },
+ "calendar": {
+  "en": "calendar",
+  "es": "calendario",
+  "evfolyam": "3",
+  "hu": "naptár",
+  "temakor": "Az idő: napszakok, hónapok, évszakok"
+ },
+ "candle_flame": {
+  "en": "candle flame",
+  "es": "llama de vela",
+  "evfolyam": "3",
+  "hu": "gyertyaláng",
+  "temakor": "Halmazállapotok és változásaik"
+ },
+ "capital_city": {
+  "en": "capital city",
+  "es": "capital",
+  "evfolyam": "4",
+  "hu": "főváros",
+  "temakor": "Hazánk, Magyarország"
+ },
+ "capital_city_landmark": {
+  "en": "capital city landmark",
+  "es": "monumento de la capital",
+  "evfolyam": "4",
+  "hu": "fővárosi nevezetesség",
+  "temakor": "Hazánk, Magyarország"
+ },
+ "chick_hatching": {
+  "en": "hatching chick",
+  "es": "pollito saliendo del huevo",
+  "evfolyam": "3",
+  "hu": "kikelő csibe",
+  "temakor": "Növekedés és fejlődés"
+ },
+ "clock": {
+  "en": "clock",
+  "es": "reloj",
+  "evfolyam": "3",
+  "hu": "óra",
+  "temakor": "Mérünk: hosszúság, tömeg, űrtartalom, idő"
+ },
+ "compass": {
+  "en": "compass",
+  "es": "brújula",
+  "evfolyam": "4",
+  "hu": "iránytű",
+  "temakor": "Tájékozódás a térben: alaprajz és térkép"
+ },
+ "condensation_droplets": {
+  "en": "water droplets",
+  "es": "gotas de agua",
+  "evfolyam": "3",
+  "hu": "vízcseppek",
+  "temakor": "Halmazállapotok és változásaik"
+ },
+ "county_boundary_map": {
+  "en": "county boundary map",
+  "es": "mapa con límites de condados",
+  "evfolyam": "4",
+  "hu": "megyehatárokat mutató térkép",
+  "temakor": "Hazánk, Magyarország"
+ },
+ "duck": {
+  "en": "duck",
+  "es": "pato",
+  "evfolyam": "4",
+  "hu": "kacsa",
+  "temakor": "A víz és a vízpart élővilága, tápláléklánc"
+ },
+ "field": {
+  "en": "field",
+  "es": "campo",
+  "evfolyam": "4",
+  "hu": "mező",
+  "temakor": "A mező, a rét és a mesterséges életközösségek"
+ },
+ "floor_plan": {
+  "en": "floor plan",
+  "es": "plano",
+  "evfolyam": "4",
+  "hu": "alaprajz",
+  "temakor": "Tájékozódás a térben: alaprajz és térkép"
+ },
+ "forest_deer": {
+  "en": "deer",
+  "es": "ciervo",
+  "evfolyam": "4",
+  "hu": "szarvas",
+  "temakor": "Az erdő életközössége"
+ },
+ "forest_fox": {
+  "en": "fox",
+  "es": "zorro",
+  "evfolyam": "4",
+  "hu": "róka",
+  "temakor": "Az erdő életközössége"
+ },
+ "forest_mushroom": {
+  "en": "mushroom",
+  "es": "hongo",
+  "evfolyam": "4",
+  "hu": "gomba",
+  "temakor": "Az erdő életközössége"
+ },
+ "forest_squirrel": {
+  "en": "squirrel",
+  "es": "ardilla",
+  "evfolyam": "4",
+  "hu": "mókus",
+  "temakor": "Az erdő életközössége"
+ },
+ "forest_trees": {
+  "en": "forest trees",
+  "es": "árboles del bosque",
+  "evfolyam": "4",
+  "hu": "erdei fák",
+  "temakor": "Az erdő életközössége"
+ },
+ "frog": {
+  "en": "frog",
+  "es": "rana",
+  "evfolyam": "4",
+  "hu": "béka",
+  "temakor": "A víz és a vízpart élővilága, tápláléklánc"
+ },
+ "handwashing": {
+  "en": "handwashing",
+  "es": "lavado de manos",
+  "evfolyam": "4",
+  "hu": "kézmosás",
+  "temakor": "Testünk és egészségünk"
+ },
+ "healthy_food_plate": {
+  "en": "healthy food plate",
+  "es": "comida saludable",
+  "evfolyam": "4",
+  "hu": "egészséges étel",
+  "temakor": "Testünk és egészségünk"
+ },
+ "hungary_map": {
+  "en": "map of Hungary",
+  "es": "mapa de Hungría",
+  "evfolyam": "4",
+  "hu": "Magyarország térképe",
+  "temakor": "Hazánk, Magyarország"
+ },
+ "ice_cube": {
+  "en": "ice cube",
+  "es": "cubo de hielo",
+  "evfolyam": "3",
+  "hu": "jégkocka",
+  "temakor": "Halmazállapotok és változásaik"
+ },
+ "insect_with_magnifying_glass": {
+  "en": "insect with magnifying glass",
+  "es": "insecto con lupa",
+  "evfolyam": "4",
+  "hu": "rovar nagyítóval",
+  "temakor": "A mező, a rét és a mesterséges életközösségek"
+ },
+ "lake": {
+  "en": "lake",
+  "es": "lago",
+  "evfolyam": "4",
+  "hu": "tó",
+  "temakor": "A víz és a vízpart élővilága, tápláléklánc"
+ },
+ "map": {
+  "en": "map",
+  "es": "mapa",
+  "evfolyam": "4",
+  "hu": "térkép",
+  "temakor": "Tájékozódás a térben: alaprajz és térkép"
+ },
+ "meadow": {
+  "en": "meadow",
+  "es": "prado",
+  "evfolyam": "4",
+  "hu": "rét",
+  "temakor": "A mező, a rét és a mesterséges életközösségek"
+ },
+ "measuring_cup": {
+  "en": "measuring cup",
+  "es": "vaso medidor",
+  "evfolyam": "3",
+  "hu": "mérőedény",
+  "temakor": "Mérünk: hosszúság, tömeg, űrtartalom, idő"
+ },
+ "measuring_tape": {
+  "en": "measuring tape",
+  "es": "cinta métrica",
+  "evfolyam": "3",
+  "hu": "mérőszalag",
+  "temakor": "Mérünk: hosszúság, tömeg, űrtartalom, idő"
+ },
+ "noon_sun": {
+  "en": "midday sun",
+  "es": "sol del mediodía",
+  "evfolyam": "3",
+  "hu": "déli nap",
+  "temakor": "Az idő: napszakok, hónapok, évszakok"
+ },
+ "north_south_east_west": {
+  "en": "compass directions",
+  "es": "puntos cardinales",
+  "evfolyam": "4",
+  "hu": "égtájak",
+  "temakor": "Tájékozódás a térben: alaprajz és térkép"
+ },
+ "person": {
+  "en": "person",
+  "es": "persona",
+  "evfolyam": "3",
+  "hu": "ember",
+  "temakor": "Élő és élettelen a környezetünkben"
+ },
+ "plant": {
+  "en": "plant",
+  "es": "planta",
+  "evfolyam": "3",
+  "hu": "növény",
+  "temakor": "Élő és élettelen a környezetünkben"
+ },
+ "reeds": {
+  "en": "reeds",
+  "es": "juncos",
+  "evfolyam": "4",
+  "hu": "nád",
+  "temakor": "A víz és a vízpart élővilága, tápláléklánc"
+ },
+ "rock": {
+  "en": "rock",
+  "es": "roca",
+  "evfolyam": "3",
+  "hu": "kő",
+  "temakor": "Élő és élettelen a környezetünkben"
+ },
+ "ruler": {
+  "en": "ruler",
+  "es": "regla",
+  "evfolyam": "3",
+  "hu": "vonalzó",
+  "temakor": "Mérünk: hosszúság, tömeg, űrtartalom, idő"
+ },
+ "rural_lifecommunity": {
+  "en": "artificial life community",
+  "es": "comunidad de vida artificial",
+  "evfolyam": "4",
+  "hu": "mesterséges életközösség",
+  "temakor": "A mező, a rét és a mesterséges életközösségek"
+ },
+ "school_bag": {
+  "en": "school bag",
+  "es": "mochila escolar",
+  "evfolyam": "3",
+  "hu": "iskolatáska",
+  "temakor": "Élő és élettelen a környezetünkben"
+ },
+ "snowy_winter_scene": {
+  "en": "snowy winter scene",
+  "es": "paisaje invernal nevado",
+  "evfolyam": "3",
+  "hu": "havas téli táj",
+  "temakor": "Az idő: napszakok, hónapok, évszakok"
+ },
+ "steam_above_hot_water": {
+  "en": "steam",
+  "es": "vapor",
+  "evfolyam": "3",
+  "hu": "gőz",
+  "temakor": "Halmazállapotok és változásaik"
+ },
+ "sunrise": {
+  "en": "sunrise",
+  "es": "amanecer",
+  "evfolyam": "3",
+  "hu": "napkelte",
+  "temakor": "Az idő: napszakok, hónapok, évszakok"
+ },
+ "terrain_map": {
+  "en": "relief map",
+  "es": "mapa de relieve",
+  "evfolyam": "4",
+  "hu": "domborzati térkép",
+  "temakor": "Tájékozódás a térben: alaprajz és térkép"
+ },
+ "toothbrush": {
+  "en": "toothbrush",
+  "es": "cepillo de dientes",
+  "evfolyam": "4",
+  "hu": "fogkefe",
+  "temakor": "Testünk és egészségünk"
+ },
+ "water_puddle": {
+  "en": "water puddle",
+  "es": "charco de agua",
+  "evfolyam": "3",
+  "hu": "víztócsa",
+  "temakor": "Halmazállapotok és változásaik"
+ }
+}

@@ -1,0 +1,576 @@
+{
+ "animal_care": {
+  "en": "animal care",
+  "es": "cuidado de animales",
+  "evfolyam": null,
+  "hu": "állatgondozás",
+  "temakor": "Desarrollo sostenible y ética ambiental"
+ },
+ "balance_beam": {
+  "en": "balance beam",
+  "es": "barra de equilibrio",
+  "evfolyam": null,
+  "hu": "mérleggerenda",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "balancing_child": {
+  "en": "balancing child",
+  "es": "niño en equilibrio",
+  "evfolyam": null,
+  "hu": "egyensúlyozó gyerek",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "ball_in_flight": {
+  "en": "ball in flight",
+  "es": "pelota en vuelo",
+  "evfolyam": null,
+  "hu": "repülő labda",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "basketball_game": {
+  "en": "basketball game",
+  "es": "partido de baloncesto",
+  "evfolyam": null,
+  "hu": "kosárlabda-mérkőzés",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "bicycle": {
+  "en": "bicycle",
+  "es": "bicicleta",
+  "evfolyam": null,
+  "hu": "kerékpár",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "bicycle_helmet": {
+  "en": "bicycle helmet",
+  "es": "casco de bicicleta",
+  "evfolyam": null,
+  "hu": "kerékpáros sisak",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "catching_ball": {
+  "en": "catching a ball",
+  "es": "atrapar un balón",
+  "evfolyam": null,
+  "hu": "labda elkapása",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "child_kicking_ball": {
+  "en": "child kicking a ball",
+  "es": "niño pateando una pelota",
+  "evfolyam": null,
+  "hu": "labdát rúgó gyerek",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "child_throwing_ball": {
+  "en": "child throwing a ball",
+  "es": "niño lanzando una pelota",
+  "evfolyam": null,
+  "hu": "labdát dobó gyerek",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "children_playing_tag": {
+  "en": "children playing tag",
+  "es": "niños jugando a pillar",
+  "evfolyam": null,
+  "hu": "bújócskázó gyerekek",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "city_bicycle": {
+  "en": "bicycle",
+  "es": "bicicleta",
+  "evfolyam": null,
+  "hu": "kerékpár",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "cool_down_after_exercise": {
+  "en": "cool down after exercise",
+  "es": "vuelta a la calma después del ejercicio",
+  "evfolyam": null,
+  "hu": "levezetés edzés után",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "cool_down_stretching": {
+  "en": "cool-down stretching",
+  "es": "vuelta a la calma",
+  "evfolyam": null,
+  "hu": "nyújtás levezetésként",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "courthouse": {
+  "en": "courthouse",
+  "es": "tribunal",
+  "evfolyam": null,
+  "hu": "bíróság",
+  "temakor": "Sociedad, justicia y democracia"
+ },
+ "dancing_silhouette": {
+  "en": "dancing silhouette",
+  "es": "silueta bailando",
+  "evfolyam": null,
+  "hu": "táncoló sziluett",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "diverse_people_group": {
+  "en": "diverse people",
+  "es": "personas diversas",
+  "evfolyam": null,
+  "hu": "különböző emberek",
+  "temakor": "Sociedad, justicia y democracia"
+ },
+ "dodging_opponent": {
+  "en": "dodging an opponent",
+  "es": "esquivar a un oponente",
+  "evfolyam": null,
+  "hu": "ellenfél kikerülése",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "dog_leash": {
+  "en": "dog leash",
+  "es": "correa para perro",
+  "evfolyam": null,
+  "hu": "póráz",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "energy_drink_can": {
+  "en": "energy drink can",
+  "es": "lata de bebida energética",
+  "evfolyam": null,
+  "hu": "energiaitalos doboz",
+  "temakor": "Vida activa y saludable"
+ },
+ "family_group": {
+  "en": "family",
+  "es": "familia",
+  "evfolyam": null,
+  "hu": "család",
+  "temakor": "Sociedad, justicia y democracia"
+ },
+ "first_aid_treatment": {
+  "en": "first aid treatment",
+  "es": "primeros auxilios",
+  "evfolyam": null,
+  "hu": "elsősegélynyújtás",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "fist_broken_chain": {
+  "en": "freedom and rights",
+  "es": "derechos y libertad",
+  "evfolyam": null,
+  "hu": "szabadság és jogok",
+  "temakor": "Sociedad, justicia y democracia"
+ },
+ "fresh_fruits_and_vegetables": {
+  "en": "fresh fruits and vegetables",
+  "es": "frutas y verduras frescas",
+  "evfolyam": null,
+  "hu": "friss gyümölcsök és zöldségek",
+  "temakor": "Vida activa y saludable"
+ },
+ "friends_group": {
+  "en": "friends",
+  "es": "amigos",
+  "evfolyam": null,
+  "hu": "barátok",
+  "temakor": "Sociedad, justicia y democracia"
+ },
+ "gesture": {
+  "en": "gesture",
+  "es": "gesto",
+  "evfolyam": null,
+  "hu": "gesztus",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "good_posture": {
+  "en": "good posture",
+  "es": "buena postura",
+  "evfolyam": null,
+  "hu": "jó testtartás",
+  "temakor": "Vida activa y saludable"
+ },
+ "good_posture_sitting": {
+  "en": "good sitting posture",
+  "es": "buena postura al sentarse",
+  "evfolyam": null,
+  "hu": "helyes ülő testtartás",
+  "temakor": "Vida activa y saludable"
+ },
+ "group_game": {
+  "en": "children's game",
+  "es": "juego infantil",
+  "evfolyam": null,
+  "hu": "gyerekjáték",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "gym_bag": {
+  "en": "gym bag",
+  "es": "bolsa de deporte",
+  "evfolyam": null,
+  "hu": "tornazsák",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "hand_washing": {
+  "en": "hand washing",
+  "es": "lavado de manos",
+  "evfolyam": null,
+  "hu": "kézmosás",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "handwashing": {
+  "en": "handwashing",
+  "es": "lavado de manos",
+  "evfolyam": null,
+  "hu": "kézmosás",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "healthy_food_fruit": {
+  "en": "fruit",
+  "es": "fruta",
+  "evfolyam": null,
+  "hu": "gyümölcs",
+  "temakor": "Vida activa y saludable"
+ },
+ "healthy_food_plate": {
+  "en": "healthy food plate",
+  "es": "plato de comida saludable",
+  "evfolyam": null,
+  "hu": "egészséges ételtányér",
+  "temakor": "Vida activa y saludable"
+ },
+ "heart": {
+  "en": "heart",
+  "es": "corazón",
+  "evfolyam": null,
+  "hu": "szív",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "jumping_child": {
+  "en": "jumping child",
+  "es": "niño saltando",
+  "evfolyam": null,
+  "hu": "ugró gyerek",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "lock": {
+  "en": "lock",
+  "es": "candado",
+  "evfolyam": null,
+  "hu": "zár",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "music_rhythm_activity": {
+  "en": "rhythmic music activity",
+  "es": "actividad rítmico-musical",
+  "evfolyam": null,
+  "hu": "ritmikus zenei tevékenység",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "musical_rhythm_activity": {
+  "en": "rhythmic activity",
+  "es": "actividad rítmica",
+  "evfolyam": null,
+  "hu": "ritmikus tevékenység",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "olympic_rings": {
+  "en": "Olympic rings",
+  "es": "anillos olímpicos",
+  "evfolyam": null,
+  "hu": "Olimpiai karikák",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "paralympic_agitos": {
+  "en": "Paralympic agitos",
+  "es": "agitos paralímpicos",
+  "evfolyam": null,
+  "hu": "Paralimpiai ágók",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "park_path": {
+  "en": "park path",
+  "es": "sendero del parque",
+  "evfolyam": null,
+  "hu": "parkösvény",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "park_tree": {
+  "en": "tree",
+  "es": "árbol",
+  "evfolyam": null,
+  "hu": "fa",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "passing_ball": {
+  "en": "passing a ball",
+  "es": "pase de balón",
+  "evfolyam": null,
+  "hu": "labdapassz",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "pedestrian_crosswalk": {
+  "en": "pedestrian crosswalk",
+  "es": "paso de peatones",
+  "evfolyam": null,
+  "hu": "gyalogátkelőhely",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "person_exercising": {
+  "en": "person exercising",
+  "es": "persona haciendo ejercicio",
+  "evfolyam": null,
+  "hu": "sportoló ember",
+  "temakor": "Vida activa y saludable"
+ },
+ "person_mirror": {
+  "en": "person looking in a mirror",
+  "es": "persona mirándose en un espejo",
+  "evfolyam": null,
+  "hu": "tükörbe néző ember",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "person_with_good_posture": {
+  "en": "person with good posture",
+  "es": "persona con buena postura",
+  "evfolyam": null,
+  "hu": "jó testtartású ember",
+  "temakor": "Vida activa y saludable"
+ },
+ "phone_with_warning": {
+  "en": "smartphone with warning sign",
+  "es": "teléfono inteligente con señal de advertencia",
+  "evfolyam": null,
+  "hu": "okostelefon figyelmeztető jellel",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "playground_slide": {
+  "en": "playground slide",
+  "es": "tobogán",
+  "evfolyam": null,
+  "hu": "csúszda",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "processed_food_packaged_snack": {
+  "en": "packaged snack",
+  "es": "aperitivo envasado",
+  "evfolyam": null,
+  "hu": "csomagolt snack",
+  "temakor": "Vida activa y saludable"
+ },
+ "recycling_bin": {
+  "en": "recycling bin",
+  "es": "contenedor de reciclaje",
+  "evfolyam": null,
+  "hu": "újrahasznosító kuka",
+  "temakor": "Desarrollo sostenible y ética ambiental"
+ },
+ "rhythmic_gymnastics_ribbon": {
+  "en": "rhythmic gymnastics ribbon",
+  "es": "cinta de gimnasia rítmica",
+  "evfolyam": null,
+  "hu": "szalag ritmikus gimnasztikához",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "roller_skates": {
+  "en": "roller skates",
+  "es": "patines",
+  "evfolyam": null,
+  "hu": "görkorcsolya",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "running_child": {
+  "en": "running child",
+  "es": "niño corriendo",
+  "evfolyam": null,
+  "hu": "futó gyerek",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "running_sports_movement": {
+  "en": "running child",
+  "es": "niño corriendo",
+  "evfolyam": null,
+  "hu": "futó gyerek",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "safety_helmet": {
+  "en": "safety helmet",
+  "es": "casco de seguridad",
+  "evfolyam": null,
+  "hu": "védősisak",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "scooter": {
+  "en": "scooter",
+  "es": "patinete",
+  "evfolyam": null,
+  "hu": "roller",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "sleeping_in_bed": {
+  "en": "sleeping in bed",
+  "es": "dormir en la cama",
+  "evfolyam": null,
+  "hu": "alvás az ágyban",
+  "temakor": "Vida activa y saludable"
+ },
+ "soap_and_towel": {
+  "en": "soap and towel",
+  "es": "jabón y toalla",
+  "evfolyam": null,
+  "hu": "szappan és törölköző",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "soccer_game": {
+  "en": "soccer game",
+  "es": "partido de fútbol",
+  "evfolyam": null,
+  "hu": "futballmérkőzés",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "soda_bottle": {
+  "en": "sugary soda bottle",
+  "es": "botella de refresco azucarado",
+  "evfolyam": null,
+  "hu": "cukros üdítős palack",
+  "temakor": "Vida activa y saludable"
+ },
+ "solar_panel": {
+  "en": "solar panel",
+  "es": "panel solar",
+  "evfolyam": null,
+  "hu": "napelem",
+  "temakor": "Desarrollo sostenible y ética ambiental"
+ },
+ "sports_clothes": {
+  "en": "sports clothes",
+  "es": "ropa deportiva",
+  "evfolyam": null,
+  "hu": "sportruha",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "sports_dancer": {
+  "en": "sports player",
+  "es": "deportista",
+  "evfolyam": null,
+  "hu": "sportoló",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "sports_equipment": {
+  "en": "sports equipment",
+  "es": "material deportivo",
+  "evfolyam": null,
+  "hu": "sportfelszerelés",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "sports_people_of_different_body_types": {
+  "en": "people of different body types doing sports",
+  "es": "personas de diferentes cuerpos haciendo deporte",
+  "evfolyam": null,
+  "hu": "különböző testalkatú emberek sportolnak",
+  "temakor": "Vida activa y saludable"
+ },
+ "sports_team_jersey": {
+  "en": "sports jersey",
+  "es": "camiseta deportiva",
+  "evfolyam": null,
+  "hu": "sportmez",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "sports_trophy": {
+  "en": "sports trophy",
+  "es": "trofeo deportivo",
+  "evfolyam": null,
+  "hu": "sporttrófea",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "stretching_before_exercise": {
+  "en": "stretching before exercise",
+  "es": "estiramiento antes de hacer ejercicio",
+  "evfolyam": null,
+  "hu": "bemelegítő nyújtás",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "team_game_field": {
+  "en": "sports field",
+  "es": "campo de juego",
+  "evfolyam": null,
+  "hu": "sportpálya",
+  "temakor": "Resolución de problemas en situaciones motrices"
+ },
+ "traditional_dance": {
+  "en": "traditional dance",
+  "es": "baile tradicional",
+  "evfolyam": null,
+  "hu": "néptánc",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "traditional_folk_dance": {
+  "en": "traditional folk dance",
+  "es": "baile folclórico",
+  "evfolyam": null,
+  "hu": "népi tánc",
+  "temakor": "Manifestaciones de la cultura motriz"
+ },
+ "traffic_light": {
+  "en": "traffic light",
+  "es": "semáforo",
+  "evfolyam": null,
+  "hu": "közlekedési lámpa",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "trash_bin": {
+  "en": "trash bin",
+  "es": "papelera",
+  "evfolyam": null,
+  "hu": "szemetes kuka",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "tree_and_bird": {
+  "en": "tree and bird",
+  "es": "árbol y pájaro",
+  "evfolyam": null,
+  "hu": "fa és madár",
+  "temakor": "Desarrollo sostenible y ética ambiental"
+ },
+ "tree_and_flower_bed": {
+  "en": "tree and flower bed",
+  "es": "árbol y parterre de flores",
+  "evfolyam": null,
+  "hu": "fa és virágágyás",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "tree_and_flower_care": {
+  "en": "plant care",
+  "es": "cuidado de plantas",
+  "evfolyam": null,
+  "hu": "növényápolás",
+  "temakor": "Interacción eficiente y sostenible con el entorno"
+ },
+ "two_people_holding_hands": {
+  "en": "two people holding hands",
+  "es": "dos personas dándose la mano",
+  "evfolyam": null,
+  "hu": "két egymás kezét fogó ember",
+  "temakor": "Autoconocimiento y autonomía moral"
+ },
+ "warm_up_exercise": {
+  "en": "warm-up exercise",
+  "es": "calentamiento",
+  "evfolyam": null,
+  "hu": "bemelegítő gyakorlat",
+  "temakor": "Organización y gestión de la actividad física"
+ },
+ "washing_hands": {
+  "en": "washing hands",
+  "es": "lavarse las manos",
+  "evfolyam": null,
+  "hu": "kézmosás",
+  "temakor": "Vida activa y saludable"
+ },
+ "water_bottle": {
+  "en": "water bottle",
+  "es": "botella de agua",
+  "evfolyam": null,
+  "hu": "kulacs",
+  "temakor": "Vida activa y saludable"
+ }
+}

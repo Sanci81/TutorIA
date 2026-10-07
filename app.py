@@ -3858,6 +3858,65 @@ def _feladat_potlas(reply_text: str, *, es: bool, idokorlat: float,
     return feladat
 
 
+# ── HA A TANÁR NEM KÉRDEZ A VÉGÉN ───────────────────────────────────────────
+# Élesben előfordult: a tanár elmagyarázott valamit, és ott abbamaradt – a
+# gyerek nem tudta, mit írjon. Ha a válaszban SEHOL nincs kérdés és feladat
+# sincs, egy olcsó külön hívással egy rövid, a magyarázathoz illő kérdést
+# kérünk a végére. Ha az nem sikerül (vagy nincs rá idő), egy fix mondat jön.
+_KERDES_POTLAS_HU = (
+    "Egy gyereknek szóló tanári üzenetet kapsz, ami nem ér véget kérdéssel. "
+    "Írj EGY rövid (legfeljebb 15 szavas) magyar kérdést, ami a most "
+    "elmagyarázott dologra kérdez rá, vagy a következő lépésre hívja a "
+    "gyereket. Tegeződj, legyen barátságos. CSAK a kérdést írd ki, "
+    "idézőjel és bármi más nélkül.")
+_KERDES_POTLAS_ES = (
+    "Recibes un mensaje de un profesor para un niño que no termina con una "
+    "pregunta. Escribe UNA pregunta corta (máximo 15 palabras) en español "
+    "sobre lo que se acaba de explicar, o que invite al siguiente paso. "
+    "Tutea al niño, con tono amable. Escribe SOLO la pregunta, sin comillas "
+    "ni nada más.")
+# Ha a végén FELSZÓLÍTÁS áll („Írd le…", „Most te jössz!"), az is feladat –
+# ilyenkor nem teszünk mellé még egy kérdést.
+_FELSZOLITAS = re.compile(
+    r"\b(írd|írj|mondd|mondj|számold|számolj|próbáld|válaszolj|rajzold|rajzolj|"
+    r"keresd|keress|sorold|nevezd|egészítsd|fordítsd|olvasd|gondold|told|"
+    r"válaszd|válassz|döntsd|te\s+jössz|rajtad\s+a\s+sor|"
+    r"escribe|dime|calcula|intenta|responde|dibuja|busca|nombra|completa|"
+    r"traduce|lee|piensa|elige|te\s+toca)\b", re.IGNORECASE)
+_KERDES_TARTALEK_HU = "Mehetünk tovább, vagy kérdeznél valamit?"
+_KERDES_TARTALEK_ES = "¿Seguimos, o quieres preguntarme algo?"
+
+
+def _kerdes_potlas(lathato: str, *, es: bool, idokorlat: float) -> str:
+    """Egy kérdés a válasz végére (mindig ad vissza valamit)."""
+    tartalek = _KERDES_TARTALEK_ES if es else _KERDES_TARTALEK_HU
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if idokorlat < 3.0 or not api_key:
+        return tartalek
+    try:
+        client = _openai_client(api_key, request_timeout=idokorlat,
+                                max_retries=0)
+        resp = client.chat.completions.create(
+            model=MODELL_SEGED,
+            messages=[
+                {"role": "system",
+                 "content": _KERDES_POTLAS_ES if es else _KERDES_POTLAS_HU},
+                {"role": "user", "content": (lathato or "")[:2500]},
+            ],
+        )
+        k = (resp.choices[0].message.content or "").strip().strip('"„”«»')
+    except Exception as exc:
+        print(f"[KERDES-POTLAS] hiba: {exc}", flush=True)
+        return tartalek
+    k = k.splitlines()[0].strip() if k else ""
+    if (not k.endswith("?") or len(k) > 160 or "<" in k
+            or _belso_jegyzet_helye(k) >= 0):
+        return tartalek
+    if es and not k.startswith("¿"):
+        k = "¿" + k
+    return k
+
+
 # ── HA A TANÁR ELFELEJTI A JELÖLŐT ──────────────────────────────────────────
 # Élesben ez volt a fő baj: a felületek készen álltak, de a tanár sima
 # szövegben kérdezett ("Mennyi a 7400 - 650?", "A lány énekel. ___ vidám."),
@@ -8759,6 +8818,14 @@ def _belso_jegyzet_nelkul(szoveg: str, *, idegen: bool = False) -> str:
 _TKEP_GYOKER = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "static", "szokepek")
 _tkep_gyorstar: dict = {"kulcs": None, "lista": []}
+# Túl általános főszavak – ezekre nem teszünk ki képet.
+_TKEP_ALTALANOS = {
+    "gyerek", "gyerekek", "gyermek", "gyermekek", "kezek", "képernyő",
+    "képernyőn", "emberek", "tárgyai", "tárgyak", "jelenet", "részei",
+    "persona", "personas", "pantalla", "imagen", "dibujo", "objetos",
+    "escena", "partes", "grupo", "manos", "niños", "niñas"}
+# Melyik képet mutattuk már az adott beszélgetésben (ne ismétlődjön).
+_tkep_mutatott: dict = {}
 
 
 def _tkep_lista() -> list:
@@ -8786,8 +8853,16 @@ def _tkep_lista() -> list:
                 nev = str((v or {}).get(nyelv) or "").strip().lower()
                 nev = re.sub(r"^(a|az|el|la|los|las|un|una)\s+", "", nev)
                 if len(nev) >= 4:
-                    lista.append((nyelv, nev, cim, tk))
-    lista.sort(key=lambda x: -len(x[1]))       # a hosszabb név nyer
+                    lista.append((nyelv, nev, cim, tk, 0))
+                # Többszavas névnél a FŐSZÓ is elég (magyarban az utolsó,
+                # spanyolban az első szó): „emberi idegrendszer" → idegrendszer,
+                # „acordeón grande" → acordeón. Gyenge találat, csak ha nincs jobb.
+                szavak = nev.split()
+                if len(szavak) > 1:
+                    fo = (szavak[-1] if nyelv == "hu" else szavak[0]).strip(",.")
+                    if len(fo) >= 6 and fo not in _TKEP_ALTALANOS:
+                        lista.append((nyelv, fo, cim, tk, 1))
+    lista.sort(key=lambda x: (x[4], -len(x[1])))   # erős előbb, hosszabb nyer
     _tkep_gyorstar.update(kulcs=kulcs, lista=lista)
     return lista
 
@@ -8796,10 +8871,12 @@ def _tkep_szavak(s: str) -> set:
     t = (s or "").lower()
     for a, b in zip("áéíóöőúüűñ", "aeiooouuun"):
         t = t.replace(a, b)
-    return {w for w in re.split(r"[^a-z0-9]+", t) if len(w) >= 4}
+    return {w for w in re.split(r"[^a-z0-9]+", t)
+            if len(w) >= 4 and w not in ("json", "lomloe", "teljes")}
 
 
-def _tantargyi_kep(szoveg: str, *, es: bool, targy: str = "") -> str | None:
+def _tantargyi_kep(szoveg: str, *, es: bool, targy: str = "",
+                   beszelgetes=None) -> str | None:
     """A szövegben említett dolog képe (HTML), vagy None.
     Csak az aktuális tantárgy mappájából választ (pl. biológiaórán nem
     jön elő az ének-zene képe)."""
@@ -8811,10 +8888,22 @@ def _tantargyi_kep(szoveg: str, *, es: bool, targy: str = "") -> str | None:
         return None
     kis = szoveg.lower()
     nyelv = "es" if es else "hu"
-    for ny, nev, cim, tk in lista:
-        if ny != nyelv or not (targy_szavak & set(tk.split("_"))):
+    volt = _tkep_mutatott.get(beszelgetes, []) if beszelgetes else []
+    for ny, nev, cim, tk, _gyenge in lista:
+        # A tantárgy MINDEN szava benne legyen a mappa nevében – különben a
+        # vizuális kultúra órán a digitális kultúra képei is előjönnének.
+        if ny != nyelv or not targy_szavak <= set(tk.split("_")):
             continue
-        if re.search(r"(?<![\w])" + re.escape(nev), kis):
+        if cim in volt:
+            continue
+        # Magyar toldalék: harmonika → harmonikát, mese → mesét.
+        minta = (re.escape(nev[:-1]) + "[aáeé]"
+                 if ny == "hu" and nev[-1:] in ("a", "e") else re.escape(nev))
+        if re.search(r"(?<![\w])" + minta, kis):
+            if beszelgetes:
+                if len(_tkep_mutatott) > 2000:
+                    _tkep_mutatott.clear()
+                _tkep_mutatott[beszelgetes] = (volt + [cim])[-40:]
             return (f'<img src="{cim}" alt="" loading="lazy" '
                     f'style="width:100%;height:auto;display:block;border-radius:8px">')
     return None
@@ -9766,6 +9855,21 @@ def child_chat_send(child_id: int):
         except Exception:
             logger.exception("Feladat-potlas hiba")
             feladat = None
+    if not feladat:
+        # Ha a válaszban sehol nincs kérdés, a végére teszünk egyet.
+        try:
+            _lathato = _parse_chat_markers(raw_reply)[0] or ""
+            if (_lathato.strip() and "?" not in _lathato
+                    and not _FELSZOLITAS.search(_lathato[-220:])):
+                _kerdes = _kerdes_potlas(
+                    _lathato, es=_es_tanterv,
+                    idokorlat=min(8.0, _maradek() - 4))
+                # A legvégére tesszük: a jelölők (szójegyzék, rajz) a helyükön
+                # maradnak, a gyerek a kérdést látja utoljára.
+                raw_reply = raw_reply.rstrip() + "\n\n" + _kerdes
+                print(f"[KERDES-POTLAS] {_kerdes!r}", flush=True)
+        except Exception:
+            logger.exception("Kerdes-potlas hiba")
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:
@@ -10231,7 +10335,7 @@ def child_chat_send(child_id: int):
     if not figures and not is_foreign:
         try:
             _tk = _tantargyi_kep(reply, es=(_active_curriculum() or "HU").upper() == "ES",
-                                 targy=subject)
+                                 targy=subject, beszelgetes=session_id)
             if _tk:
                 figures = [_tk]
         except Exception:

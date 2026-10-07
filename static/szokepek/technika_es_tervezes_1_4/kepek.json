@@ -1,0 +1,303 @@
+{
+ "apartment_building": {
+  "en": "apartment building",
+  "es": "edificio de apartamentos",
+  "evfolyam": null,
+  "hu": "lakóház",
+  "temakor": "Otthon – család – életmód"
+ },
+ "bicycle": {
+  "en": "bicycle",
+  "es": "bicicleta",
+  "evfolyam": null,
+  "hu": "kerékpár",
+  "temakor": "Közlekedés"
+ },
+ "bike_lane": {
+  "en": "bike lane",
+  "es": "carril bici",
+  "evfolyam": null,
+  "hu": "kerékpárút",
+  "temakor": "Közlekedés"
+ },
+ "blueprint_floor_plan": {
+  "en": "floor plan",
+  "es": "plano de planta",
+  "evfolyam": null,
+  "hu": "alaprajz",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ },
+ "carnival_mask": {
+  "en": "carnival mask",
+  "es": "máscara de carnaval",
+  "evfolyam": null,
+  "hu": "farsangi maszk",
+  "temakor": "Jeles napok, ünnepek"
+ },
+ "christmas_tree": {
+  "en": "Christmas tree",
+  "es": "árbol de Navidad",
+  "evfolyam": null,
+  "hu": "karácsonyfa",
+  "temakor": "Jeles napok, ünnepek"
+ },
+ "cleaning_tools": {
+  "en": "cleaning tools",
+  "es": "utensilios de limpieza",
+  "evfolyam": null,
+  "hu": "tisztítószerek és takarítóeszközök",
+  "temakor": "Otthon – család – életmód"
+ },
+ "cloth_fabric": {
+  "en": "cloth fabric",
+  "es": "tela",
+  "evfolyam": null,
+  "hu": "textil",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "cocarde": {
+  "en": "cockade",
+  "es": "cocarda",
+  "evfolyam": null,
+  "hu": "kokárda",
+  "temakor": "Jeles napok, ünnepek"
+ },
+ "decorated_eggs": {
+  "en": "decorated eggs",
+  "es": "huevos decorados",
+  "evfolyam": null,
+  "hu": "hímes tojás",
+  "temakor": "Jeles napok, ünnepek"
+ },
+ "embroidered_hungarian_folk_dress": {
+  "en": "Hungarian folk costume",
+  "es": "traje popular húngaro",
+  "evfolyam": null,
+  "hu": "magyar népviselet",
+  "temakor": "Jeles napok, ünnepek"
+ },
+ "family_at_table": {
+  "en": "family at the table",
+  "es": "familia en la mesa",
+  "evfolyam": null,
+  "hu": "család az asztalnál",
+  "temakor": "Otthon – család – életmód"
+ },
+ "family_home_interior": {
+  "en": "home interior",
+  "es": "interior de la casa",
+  "evfolyam": null,
+  "hu": "otthon belső tere",
+  "temakor": "Otthon – család – életmód"
+ },
+ "family_house": {
+  "en": "family house",
+  "es": "casa familiar",
+  "evfolyam": null,
+  "hu": "családi ház",
+  "temakor": "Otthon – család – életmód"
+ },
+ "family_inside_home": {
+  "en": "home interior",
+  "es": "interior de una casa",
+  "evfolyam": null,
+  "hu": "otthon belső tere",
+  "temakor": "Otthon – család – életmód"
+ },
+ "glass_container": {
+  "en": "glass container",
+  "es": "recipiente de vidrio",
+  "evfolyam": null,
+  "hu": "üvegedény",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "hungarian_flag": {
+  "en": "Hungarian flag",
+  "es": "bandera húngara",
+  "evfolyam": null,
+  "hu": "magyar zászló",
+  "temakor": "Jeles napok, ünnepek"
+ },
+ "manufactured_materials": {
+  "en": "manufactured materials",
+  "es": "materiales مصنوعados",
+  "evfolyam": null,
+  "hu": "mesterséges anyagok",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "metal_spoon": {
+  "en": "metal spoon",
+  "es": "cuchara de metal",
+  "evfolyam": null,
+  "hu": "fémkanál",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "model_house": {
+  "en": "model house",
+  "es": "maqueta de una casa",
+  "evfolyam": null,
+  "hu": "makett ház",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ },
+ "natural_materials": {
+  "en": "natural materials",
+  "es": "materiales naturales",
+  "evfolyam": null,
+  "hu": "természetes anyagok",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "paper_craft_template": {
+  "en": "paper template",
+  "es": "plantilla de papel",
+  "evfolyam": null,
+  "hu": "papírsablon",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ },
+ "paper_sheet": {
+  "en": "sheet of paper",
+  "es": "hoja de papel",
+  "evfolyam": null,
+  "hu": "papírlap",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "pedestrian_crossing": {
+  "en": "pedestrian crossing",
+  "es": "paso de peatones",
+  "evfolyam": null,
+  "hu": "gyalogátkelőhely",
+  "temakor": "Közlekedés"
+ },
+ "pedestrian_crosswalk": {
+  "en": "pedestrian crosswalk",
+  "es": "paso de peatones",
+  "evfolyam": null,
+  "hu": "gyalogátkelőhely",
+  "temakor": "Közlekedés"
+ },
+ "plastic_bottle": {
+  "en": "plastic bottle",
+  "es": "botella de plástico",
+  "evfolyam": null,
+  "hu": "műanyag palack",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "recycled_materials": {
+  "en": "recycled materials",
+  "es": "materiales reciclados",
+  "evfolyam": null,
+  "hu": "újrahasznosított anyagok",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ },
+ "recycling_bins": {
+  "en": "recycling bins",
+  "es": "contenedores de reciclaje",
+  "evfolyam": null,
+  "hu": "szelektív hulladékgyűjtő kukák",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ },
+ "road": {
+  "en": "road",
+  "es": "carretera",
+  "evfolyam": null,
+  "hu": "út",
+  "temakor": "Közlekedés"
+ },
+ "rope_knot": {
+  "en": "knot in rope",
+  "es": "nudo en una cuerda",
+  "evfolyam": null,
+  "hu": "csomó a kötélben",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ },
+ "santa_claus": {
+  "en": "Santa Claus",
+  "es": "Papá Noel",
+  "evfolyam": null,
+  "hu": "Mikulás",
+  "temakor": "Jeles napok, ünnepek"
+ },
+ "seat_belt": {
+  "en": "seat belt",
+  "es": "cinturón de seguridad",
+  "evfolyam": null,
+  "hu": "biztonsági öv",
+  "temakor": "Közlekedés"
+ },
+ "sewing_needle_thread": {
+  "en": "needle and thread",
+  "es": "aguja e hilo",
+  "evfolyam": null,
+  "hu": "tű és cérna",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ },
+ "sorting_recycling": {
+  "en": "sorting recycling",
+  "es": "reciclaje selectivo",
+  "evfolyam": null,
+  "hu": "szelektív hulladékgyűjtés",
+  "temakor": "Otthon – család – életmód"
+ },
+ "stone_and_leaf": {
+  "en": "stone and leaf",
+  "es": "piedra y hoja",
+  "evfolyam": null,
+  "hu": "kő és levél",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "thread_weaving": {
+  "en": "woven fibers",
+  "es": "fibras tejidas",
+  "evfolyam": null,
+  "hu": "szőtt szálak",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ },
+ "toolbox_tools": {
+  "en": "toolbox tools",
+  "es": "herramientas",
+  "evfolyam": null,
+  "hu": "szerszámok",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ },
+ "train": {
+  "en": "train",
+  "es": "tren",
+  "evfolyam": null,
+  "hu": "vonat",
+  "temakor": "Közlekedés"
+ },
+ "tram": {
+  "en": "tram",
+  "es": "tranvía",
+  "evfolyam": null,
+  "hu": "villamos",
+  "temakor": "Közlekedés"
+ },
+ "washing_hands": {
+  "en": "washing hands",
+  "es": "lavarse las manos",
+  "evfolyam": null,
+  "hu": "kézmosás",
+  "temakor": "Otthon – család – életmód"
+ },
+ "wood_log": {
+  "en": "wood log",
+  "es": "tronco de madera",
+  "evfolyam": null,
+  "hu": "farönk",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "wooden_and_plastic_objects": {
+  "en": "wood and plastic objects",
+  "es": "objetos de madera y plástico",
+  "evfolyam": null,
+  "hu": "fa- és műanyag tárgyak",
+  "temakor": "Anyagok a környezetünkben"
+ },
+ "wooden_block_structure": {
+  "en": "wooden blocks",
+  "es": "bloques de madera",
+  "evfolyam": null,
+  "hu": "fa kockák",
+  "temakor": "Tárgykészítés különböző anyagokból, építés, szerelés"
+ }
+}

@@ -1,0 +1,1010 @@
+{
+ "accent_mark": {
+  "en": "accent mark",
+  "es": "tilde",
+  "evfolyam": "3",
+  "hu": "ékezetjel",
+  "temakor": "Ortografía y vocabulario"
+ },
+ "active_voice": {
+  "en": "active voice",
+  "es": "voz activa",
+  "evfolyam": "6",
+  "hu": "aktív szerkezet",
+  "temakor": "Gramática y análisis"
+ },
+ "advertisement_poster": {
+  "en": "advertisement poster",
+  "es": "cartel publicitario",
+  "evfolyam": "6",
+  "hu": "reklámplakát",
+  "temakor": "Comunicación y medios"
+ },
+ "alphabet_letters": {
+  "en": "alphabet letters",
+  "es": "letras del alfabeto",
+  "evfolyam": "1",
+  "hu": "ábécé betűi",
+  "temakor": "Las letras y los sonidos"
+ },
+ "antonyms": {
+  "en": "antonyms",
+  "es": "antónimos",
+  "evfolyam": "3",
+  "hu": "ellentétek",
+  "temakor": "Ortografía y vocabulario"
+ },
+ "argumentative_letter": {
+  "en": "letter to the editor",
+  "es": "carta al director",
+  "evfolyam": "6",
+  "hu": "levél a szerkesztőnek",
+  "temakor": "Escribir para convencer"
+ },
+ "article_determiner": {
+  "en": "determiner",
+  "es": "determinante",
+  "evfolyam": "4",
+  "hu": "determináns",
+  "temakor": "Gramática: la oración completa"
+ },
+ "audience_raising_hand": {
+  "en": "audience raising hand",
+  "es": "público levantando la mano",
+  "evfolyam": "3",
+  "hu": "közönség jelentkezik",
+  "temakor": "Exponer y escuchar"
+ },
+ "book_club": {
+  "en": "book club",
+  "es": "club de lectura",
+  "evfolyam": "3",
+  "hu": "olvasókör",
+  "temakor": "Leer por placer"
+ },
+ "book_page": {
+  "en": "book page",
+  "es": "página de libro",
+  "evfolyam": "3",
+  "hu": "könyvoldal",
+  "temakor": "Comprender lo que leo"
+ },
+ "book_pages_side_by_side": {
+  "en": "two different texts",
+  "es": "dos textos diferentes",
+  "evfolyam": "4",
+  "hu": "két különböző szöveg",
+  "temakor": "Leer distintos textos"
+ },
+ "bookmarked_story_book": {
+  "en": "storybook with bookmark",
+  "es": "libro de cuentos con marcapáginas",
+  "evfolyam": "6",
+  "hu": "mesekönyv könyvjelzővel",
+  "temakor": "Literatura y creación"
+ },
+ "bookshelf": {
+  "en": "bookshelf",
+  "es": "estantería",
+  "evfolyam": "3",
+  "hu": "könyvespolc",
+  "temakor": "Leer por placer"
+ },
+ "boy_girl_talking": {
+  "en": "two people talking",
+  "es": "dos personas hablando",
+  "evfolyam": "3",
+  "hu": "két beszélő ember",
+  "temakor": "Gramática: la oración"
+ },
+ "ca_co_cu": {
+  "en": "ca co cu",
+  "es": "ca co cu",
+  "evfolyam": "2",
+  "hu": "ca co cu",
+  "temakor": "Las palabras y su ortografía"
+ },
+ "capital_letter": {
+  "en": "capital letter",
+  "es": "letra mayúscula",
+  "evfolyam": "1",
+  "hu": "nagybetű",
+  "temakor": "Escribo mis primeras palabras"
+ },
+ "child_answering_question": {
+  "en": "child answering a question",
+  "es": "niño respondiendo una pregunta",
+  "evfolyam": "1",
+  "hu": "gyerek válaszol",
+  "temakor": "Hablamos y escuchamos en clase"
+ },
+ "child_apologizing": {
+  "en": "child apologizing",
+  "es": "niño pidiendo perdón",
+  "evfolyam": "2",
+  "hu": "gyerek, aki bocsánatot kér",
+  "temakor": "Hablar bien, convivir mejor"
+ },
+ "child_asking_for_help": {
+  "en": "child asking for help",
+  "es": "niño pidiendo ayuda",
+  "evfolyam": "2",
+  "hu": "gyerek, aki segítséget kér",
+  "temakor": "Hablar bien, convivir mejor"
+ },
+ "child_asking_question": {
+  "en": "child asking a question",
+  "es": "niño haciendo una pregunta",
+  "evfolyam": "1",
+  "hu": "gyerek kérdez",
+  "temakor": "Hablamos y escuchamos en clase"
+ },
+ "child_giving_short_presentation": {
+  "en": "child giving a short presentation",
+  "es": "niño dando una breve exposición",
+  "evfolyam": "3",
+  "hu": "gyerek rövid előadást tart",
+  "temakor": "Exponer y escuchar"
+ },
+ "child_listening_attentively": {
+  "en": "child listening attentively",
+  "es": "niño escuchando atentamente",
+  "evfolyam": "1",
+  "hu": "gyerek figyelmesen hallgat",
+  "temakor": "Hablamos y escuchamos en clase"
+ },
+ "child_questioning": {
+  "en": "child asking a question",
+  "es": "niño preguntando",
+  "evfolyam": "2",
+  "hu": "kérdező gyerek",
+  "temakor": "Conversamos y explicamos"
+ },
+ "child_reading_aloud": {
+  "en": "child reading aloud",
+  "es": "niño leyendo en voz alta",
+  "evfolyam": "2",
+  "hu": "gyerek hangosan olvas",
+  "temakor": "Leo con fluidez"
+ },
+ "child_saying_please": {
+  "en": "child saying please",
+  "es": "niño diciendo por favor",
+  "evfolyam": "2",
+  "hu": "gyerek, aki azt mondja: kérlek",
+  "temakor": "Hablar bien, convivir mejor"
+ },
+ "child_talking": {
+  "en": "child speaking",
+  "es": "niño hablando",
+  "evfolyam": "2",
+  "hu": "beszélő gyerek",
+  "temakor": "Conversamos y explicamos"
+ },
+ "child_talking_in_class": {
+  "en": "child speaking in class",
+  "es": "niño hablando en clase",
+  "evfolyam": "1",
+  "hu": "gyerek beszél az osztályban",
+  "temakor": "Hablamos y escuchamos en clase"
+ },
+ "children_taking_turns_talking": {
+  "en": "children taking turns talking",
+  "es": "niños turnándose para hablar",
+  "evfolyam": "1",
+  "hu": "gyerekek sorban beszélnek",
+  "temakor": "Hablamos y escuchamos en clase"
+ },
+ "class_circle_talk": {
+  "en": "class circle discussion",
+  "es": "asamblea de clase",
+  "evfolyam": "2",
+  "hu": "osztálykörben beszélgetés",
+  "temakor": "Hablar bien, convivir mejor"
+ },
+ "class_news_anchor": {
+  "en": "class news presenter",
+  "es": "presentador de noticias de clase",
+  "evfolyam": "3",
+  "hu": "osztályhíradós",
+  "temakor": "Exponer y escuchar"
+ },
+ "classical_writer": {
+  "en": "writer",
+  "es": "escritor",
+  "evfolyam": "5",
+  "hu": "író",
+  "temakor": "Literatura española e hispanoamericana"
+ },
+ "classroom_debate": {
+  "en": "classroom debate",
+  "es": "debate en clase",
+  "evfolyam": "4",
+  "hu": "osztálytermi vita",
+  "temakor": "Debatir y argumentar"
+ },
+ "classroom_interview": {
+  "en": "classroom interview",
+  "es": "entrevista en el aula",
+  "evfolyam": "2",
+  "hu": "osztálytermi interjú",
+  "temakor": "Conversamos y explicamos"
+ },
+ "classroom_label": {
+  "en": "classroom label",
+  "es": "rótulo del aula",
+  "evfolyam": "1",
+  "hu": "tantermi felirat",
+  "temakor": "Escribo mis primeras palabras"
+ },
+ "classroom_poster": {
+  "en": "classroom poster",
+  "es": "cartel del aula",
+  "evfolyam": "1",
+  "hu": "osztálytermi plakát",
+  "temakor": "Empiezo a leer palabras y frases"
+ },
+ "compound_sentence": {
+  "en": "compound sentence",
+  "es": "oración compuesta",
+  "evfolyam": "6",
+  "hu": "összetett mondat",
+  "temakor": "Gramática y análisis"
+ },
+ "computer_screen_news": {
+  "en": "computer screen with news",
+  "es": "pantalla de ordenador con noticias",
+  "evfolyam": "6",
+  "hu": "számítógép képernyő hírekkel",
+  "temakor": "Lectura crítica"
+ },
+ "conjunction": {
+  "en": "conjunction",
+  "es": "nexo",
+  "evfolyam": "6",
+  "hu": "kötőszó",
+  "temakor": "Gramática y análisis"
+ },
+ "consonant_letters": {
+  "en": "consonant letters",
+  "es": "letras consonantes",
+  "evfolyam": "1",
+  "hu": "mássalhangzó betűk",
+  "temakor": "Las letras y los sonidos"
+ },
+ "debate_table": {
+  "en": "debate table",
+  "es": "mesa de debate",
+  "evfolyam": "5",
+  "hu": "vitaasztal",
+  "temakor": "Comunicación oral formal"
+ },
+ "descriptive_text_page": {
+  "en": "descriptive text",
+  "es": "texto descriptivo",
+  "evfolyam": "4",
+  "hu": "leíró szöveg",
+  "temakor": "Leer distintos textos"
+ },
+ "dictionary": {
+  "en": "dictionary",
+  "es": "diccionario",
+  "evfolyam": "3",
+  "hu": "szótár",
+  "temakor": "Ortografía y vocabulario"
+ },
+ "different_accents_listening_scene": {
+  "en": "different accents listening scene",
+  "es": "escena escuchando distintos acentos",
+  "evfolyam": "6",
+  "hu": "különböző akcentusokat hallgató jelenet",
+  "temakor": "Norma y variedad lingüística"
+ },
+ "direct_object": {
+  "en": "direct object",
+  "es": "complemento directo",
+  "evfolyam": "4",
+  "hu": "tárgy",
+  "temakor": "Gramática: la oración completa"
+ },
+ "double_l_and_y": {
+  "en": "double l and y",
+  "es": "ll e y",
+  "evfolyam": "5",
+  "hu": "ll és y",
+  "temakor": "Léxico y ortografía"
+ },
+ "eraser": {
+  "en": "eraser",
+  "es": "goma de borrar",
+  "evfolyam": "2",
+  "hu": "radír",
+  "temakor": "Escribo textos cortos"
+ },
+ "eraser_revising": {
+  "en": "eraser revising",
+  "es": "borrador para corregir",
+  "evfolyam": "3",
+  "hu": "radír javítás",
+  "temakor": "Escribo un texto bien organizado"
+ },
+ "globe": {
+  "en": "globe",
+  "es": "globo terráqueo",
+  "evfolyam": "1",
+  "hu": "földgömb",
+  "temakor": "Las lenguas que me rodean"
+ },
+ "group_of_children": {
+  "en": "group of children",
+  "es": "grupo de niños",
+  "evfolyam": "1",
+  "hu": "gyerekcsoport",
+  "temakor": "Las lenguas que me rodean"
+ },
+ "handwritten_note": {
+  "en": "handwritten note",
+  "es": "nota escrita a mano",
+  "evfolyam": "1",
+  "hu": "kézzel írt üzenet",
+  "temakor": "Escribo mis primeras palabras"
+ },
+ "highlighter": {
+  "en": "highlighter",
+  "es": "rotulador fluorescente",
+  "evfolyam": "3",
+  "hu": "kiemelőfilc",
+  "temakor": "Comprender lo que leo"
+ },
+ "instruction_sheet": {
+  "en": "instruction sheet",
+  "es": "hoja de instrucciones",
+  "evfolyam": "4",
+  "hu": "utasításlap",
+  "temakor": "Leer distintos textos"
+ },
+ "interview_scene": {
+  "en": "interview scene",
+  "es": "escena de entrevista",
+  "evfolyam": "5",
+  "hu": "interjús jelenet",
+  "temakor": "Comunicación oral formal"
+ },
+ "letter": {
+  "en": "letter",
+  "es": "carta",
+  "evfolyam": "3",
+  "hu": "levél",
+  "temakor": "Escribo un texto bien organizado"
+ },
+ "letter_cards": {
+  "en": "letter cards",
+  "es": "tarjetas de letras",
+  "evfolyam": "1",
+  "hu": "betűkártyák",
+  "temakor": "Las letras y los sonidos"
+ },
+ "library": {
+  "en": "library",
+  "es": "biblioteca",
+  "evfolyam": "3",
+  "hu": "könyvtár",
+  "temakor": "Leer por placer"
+ },
+ "line_of_text": {
+  "en": "line of text",
+  "es": "línea de texto",
+  "evfolyam": "1",
+  "hu": "szövegsor",
+  "temakor": "Empiezo a leer palabras y frases"
+ },
+ "magnifying_glass": {
+  "en": "magnifying glass",
+  "es": "lupa",
+  "evfolyam": "3",
+  "hu": "nagyító",
+  "temakor": "Comprender lo que leo"
+ },
+ "magnifying_glass_over_book": {
+  "en": "magnifying glass over book",
+  "es": "lupa sobre un libro",
+  "evfolyam": "5",
+  "hu": "nagyító a könyv fölött",
+  "temakor": "Leer para aprender"
+ },
+ "main_character": {
+  "en": "main character",
+  "es": "personaje principal",
+  "evfolyam": "2",
+  "hu": "főszereplő",
+  "temakor": "Cuentos, poemas y teatro"
+ },
+ "map_of_spain_with_languages": {
+  "en": "map of Spain with languages",
+  "es": "mapa de España con lenguas",
+  "evfolyam": "6",
+  "hu": "Spanyolország térképe nyelvekkel",
+  "temakor": "Norma y variedad lingüística"
+ },
+ "mb_cluster": {
+  "en": "mb letter pair",
+  "es": "mb",
+  "evfolyam": "2",
+  "hu": "mb betűpár",
+  "temakor": "Las palabras y su ortografía"
+ },
+ "microphone": {
+  "en": "microphone",
+  "es": "micrófono",
+  "evfolyam": "5",
+  "hu": "mikrofon",
+  "temakor": "Comunicación oral formal"
+ },
+ "moderator": {
+  "en": "moderator",
+  "es": "moderador",
+  "evfolyam": "4",
+  "hu": "moderátor",
+  "temakor": "Debatir y argumentar"
+ },
+ "mp_cluster": {
+  "en": "mp letter pair",
+  "es": "mp",
+  "evfolyam": "2",
+  "hu": "mp betűpár",
+  "temakor": "Las palabras y su ortografía"
+ },
+ "music_notes": {
+  "en": "music notes",
+  "es": "notas musicales",
+  "evfolyam": "4",
+  "hu": "hangjegyek",
+  "temakor": "Literatura: poesía y narrativa"
+ },
+ "narrative_book_page": {
+  "en": "narrative text",
+  "es": "texto narrativo",
+  "evfolyam": "4",
+  "hu": "elbeszélő szöveg",
+  "temakor": "Leer distintos textos"
+ },
+ "newspaper": {
+  "en": "newspaper",
+  "es": "periódico",
+  "evfolyam": "3",
+  "hu": "újság",
+  "temakor": "Escribo un texto bien organizado"
+ },
+ "newspaper_article": {
+  "en": "newspaper article",
+  "es": "artículo de periódico",
+  "evfolyam": "6",
+  "hu": "újságcikk",
+  "temakor": "Lectura crítica"
+ },
+ "notebook": {
+  "en": "notebook",
+  "es": "cuaderno",
+  "evfolyam": "3",
+  "hu": "füzet",
+  "temakor": "Comprender lo que leo"
+ },
+ "notebook_outline": {
+  "en": "outline notes in notebook",
+  "es": "esquema en el cuaderno",
+  "evfolyam": "5",
+  "hu": "vázlat a füzetben",
+  "temakor": "Leer para aprender"
+ },
+ "old_scroll": {
+  "en": "scroll",
+  "es": "pergamino",
+  "evfolyam": "5",
+  "hu": "tekercs",
+  "temakor": "Literatura española e hispanoamericana"
+ },
+ "open_book": {
+  "en": "open book",
+  "es": "libro abierto",
+  "evfolyam": "1",
+  "hu": "nyitott könyv",
+  "temakor": "Cuentos y poemas"
+ },
+ "open_book_story": {
+  "en": "open story book",
+  "es": "libro de cuentos abierto",
+  "evfolyam": "4",
+  "hu": "nyitott mesekönyv",
+  "temakor": "Literatura: poesía y narrativa"
+ },
+ "opinion_article": {
+  "en": "opinion article",
+  "es": "artículo de opinión",
+  "evfolyam": "6",
+  "hu": "véleménycikk",
+  "temakor": "Escribir para convencer"
+ },
+ "paper": {
+  "en": "sheet of paper",
+  "es": "hoja de papel",
+  "evfolyam": "4",
+  "hu": "papírlap",
+  "temakor": "Escribir con estilo propio"
+ },
+ "paper_sheet": {
+  "en": "sheet of paper",
+  "es": "hoja de papel",
+  "evfolyam": "6",
+  "hu": "papírlap",
+  "temakor": "Literatura y creación"
+ },
+ "paragraph": {
+  "en": "paragraph",
+  "es": "párrafo",
+  "evfolyam": "3",
+  "hu": "bekezdés",
+  "temakor": "Escribo un texto bien organizado"
+ },
+ "passive_voice": {
+  "en": "passive voice",
+  "es": "voz pasiva",
+  "evfolyam": "6",
+  "hu": "passzív szerkezet",
+  "temakor": "Gramática y análisis"
+ },
+ "peer_review": {
+  "en": "two children checking work",
+  "es": "dos niños revisando un trabajo",
+  "evfolyam": "4",
+  "hu": "dos niños revisando un trabajo",
+  "temakor": "Escribir con estilo propio"
+ },
+ "pen": {
+  "en": "pen",
+  "es": "bolígrafo",
+  "evfolyam": "4",
+  "hu": "toll",
+  "temakor": "Escribir con estilo propio"
+ },
+ "pencil_and_paper_draft": {
+  "en": "pencil and paper draft",
+  "es": "borrador con lápiz y papel",
+  "evfolyam": "3",
+  "hu": "ceruza és papír vázlat",
+  "temakor": "Escribo un texto bien organizado"
+ },
+ "people_from_different_regions_of_spain": {
+  "en": "people from different regions of Spain",
+  "es": "personas de diferentes regiones de España",
+  "evfolyam": "6",
+  "hu": "különböző spanyolországi régiókból származó emberek",
+  "temakor": "Norma y variedad lingüística"
+ },
+ "period_full_stop": {
+  "en": "period",
+  "es": "punto",
+  "evfolyam": "1",
+  "hu": "pont",
+  "temakor": "Escribo mis primeras palabras"
+ },
+ "period_punctuation": {
+  "en": "period punctuation mark",
+  "es": "punto final",
+  "evfolyam": "1",
+  "hu": "pont írásjel",
+  "temakor": "Empiezo a leer palabras y frases"
+ },
+ "person_character": {
+  "en": "story character",
+  "es": "personaje de cuento",
+  "evfolyam": "4",
+  "hu": "mesealak",
+  "temakor": "Literatura: poesía y narrativa"
+ },
+ "pet_cat": {
+  "en": "cat",
+  "es": "gato",
+  "evfolyam": "2",
+  "hu": "macska",
+  "temakor": "Escribo textos cortos"
+ },
+ "pet_dog": {
+  "en": "dog",
+  "es": "perro",
+  "evfolyam": "2",
+  "hu": "kutya",
+  "temakor": "Escribo textos cortos"
+ },
+ "place_description": {
+  "en": "landscape",
+  "es": "paisaje",
+  "evfolyam": "4",
+  "hu": "tájkép",
+  "temakor": "Escribir con estilo propio"
+ },
+ "poem_book": {
+  "en": "poem book",
+  "es": "libro de poemas",
+  "evfolyam": "1",
+  "hu": "verseskönyv",
+  "temakor": "Cuentos y poemas"
+ },
+ "poem_page": {
+  "en": "poem page",
+  "es": "página de poema",
+  "evfolyam": "2",
+  "hu": "verses oldal",
+  "temakor": "Cuentos, poemas y teatro"
+ },
+ "poetry_recital": {
+  "en": "poetry recital",
+  "es": "recital de poesía",
+  "evfolyam": "5",
+  "hu": "versmondás",
+  "temakor": "Literatura española e hispanoamericana"
+ },
+ "postcard": {
+  "en": "postcard",
+  "es": "postal",
+  "evfolyam": "2",
+  "hu": "képeslap",
+  "temakor": "Escribo textos cortos"
+ },
+ "presentation_script_paper": {
+  "en": "presentation script paper",
+  "es": "guion de la exposición en papel",
+  "evfolyam": "3",
+  "hu": "előadás vázlatlap",
+  "temakor": "Exponer y escuchar"
+ },
+ "presentation_slides": {
+  "en": "presentation slides",
+  "es": "diapositivas de presentación",
+  "evfolyam": "5",
+  "hu": "prezentációs diák",
+  "temakor": "Comunicación oral formal"
+ },
+ "pronoun": {
+  "en": "pronoun",
+  "es": "pronombre",
+  "evfolyam": "4",
+  "hu": "névmás",
+  "temakor": "Gramática: la oración completa"
+ },
+ "punctuation_marks": {
+  "en": "punctuation marks",
+  "es": "signos de puntuación",
+  "evfolyam": "5",
+  "hu": "írásjelek",
+  "temakor": "Léxico y ortografía"
+ },
+ "que_qui": {
+  "en": "que qui",
+  "es": "que qui",
+  "evfolyam": "2",
+  "hu": "que qui",
+  "temakor": "Las palabras y su ortografía"
+ },
+ "question_mark": {
+  "en": "question mark",
+  "es": "signo de interrogación",
+  "evfolyam": "2",
+  "hu": "kérdőjel",
+  "temakor": "Leo con fluidez"
+ },
+ "quill_pen": {
+  "en": "quill pen",
+  "es": "pluma estilográfica antigua",
+  "evfolyam": "6",
+  "hu": "tollszár",
+  "temakor": "Literatura y creación"
+ },
+ "radio": {
+  "en": "radio",
+  "es": "radio",
+  "evfolyam": "6",
+  "hu": "rádió",
+  "temakor": "Comunicación y medios"
+ },
+ "reading_child": {
+  "en": "child reading",
+  "es": "niño leyendo",
+  "evfolyam": "3",
+  "hu": "gyerek olvas",
+  "temakor": "Leer por placer"
+ },
+ "respectful_handshake": {
+  "en": "respectful handshake",
+  "es": "apretón de manos respetuoso",
+  "evfolyam": "4",
+  "hu": "tiszteletet mutató kézfogás",
+  "temakor": "Debatir y argumentar"
+ },
+ "revision_marks": {
+  "en": "correction marks",
+  "es": "marcas de corrección",
+  "evfolyam": "6",
+  "hu": "javítási jelek",
+  "temakor": "Escribir para convencer"
+ },
+ "rubric_sheet": {
+  "en": "assessment rubric sheet",
+  "es": "rúbrica de evaluación",
+  "evfolyam": "6",
+  "hu": "értékelési szempontlap",
+  "temakor": "Escribir para convencer"
+ },
+ "running_dog": {
+  "en": "running dog",
+  "es": "perro corriendo",
+  "evfolyam": "3",
+  "hu": "futó kutya",
+  "temakor": "Gramática: la oración"
+ },
+ "semantic_field": {
+  "en": "semantic field",
+  "es": "campo semántico",
+  "evfolyam": "5",
+  "hu": "jelentésmező",
+  "temakor": "Léxico y ortografía"
+ },
+ "sentence": {
+  "en": "sentence",
+  "es": "oración",
+  "evfolyam": "5",
+  "hu": "mondat",
+  "temakor": "Gramática avanzada"
+ },
+ "sentence_structure": {
+  "en": "sentence",
+  "es": "oración",
+  "evfolyam": "4",
+  "hu": "mondat",
+  "temakor": "Gramática: la oración completa"
+ },
+ "short_reading_book": {
+  "en": "short reading book",
+  "es": "libro de lectura corto",
+  "evfolyam": "2",
+  "hu": "rövid olvasókönyv",
+  "temakor": "Leo con fluidez"
+ },
+ "short_sentence_card": {
+  "en": "short sentence card",
+  "es": "tarjeta con frase corta",
+  "evfolyam": "1",
+  "hu": "rövid mondat kártya",
+  "temakor": "Empiezo a leer palabras y frases"
+ },
+ "speaker_at_podium": {
+  "en": "speaker at podium",
+  "es": "orador en un atril",
+  "evfolyam": "5",
+  "hu": "előadó pulpitusnál",
+  "temakor": "Comunicación oral formal"
+ },
+ "speaking_turns": {
+  "en": "turn-taking",
+  "es": "turno de palabra",
+  "evfolyam": "4",
+  "hu": "váltott beszéd",
+  "temakor": "Debatir y argumentar"
+ },
+ "speech_bubble": {
+  "en": "speech bubble",
+  "es": "bocadillo de diálogo",
+  "evfolyam": "2",
+  "hu": "beszédbuborék",
+  "temakor": "Leo con fluidez"
+ },
+ "speech_bubbles": {
+  "en": "speech bubbles",
+  "es": "bocadillos de diálogo",
+  "evfolyam": "1",
+  "hu": "beszédbuborékok",
+  "temakor": "Las lenguas que me rodean"
+ },
+ "speech_bubbles_in_different_languages": {
+  "en": "speech bubbles in different languages",
+  "es": "bocadillos de diálogo en diferentes lenguas",
+  "evfolyam": "6",
+  "hu": "beszédbuborékok különböző nyelveken",
+  "temakor": "Norma y variedad lingüística"
+ },
+ "stack_of_books": {
+  "en": "stack of books",
+  "es": "pila de libros",
+  "evfolyam": "5",
+  "hu": "könyvkupac",
+  "temakor": "Leer para aprender"
+ },
+ "step_by_step_process": {
+  "en": "step-by-step process",
+  "es": "proceso paso a paso",
+  "evfolyam": "2",
+  "hu": "lépésről lépésre folyamat",
+  "temakor": "Conversamos y explicamos"
+ },
+ "storybook": {
+  "en": "storybook",
+  "es": "cuento ilustrado",
+  "evfolyam": "2",
+  "hu": "képes mesekönyv",
+  "temakor": "Cuentos, poemas y teatro"
+ },
+ "storybook_character": {
+  "en": "storybook character",
+  "es": "personaje de cuento",
+  "evfolyam": "1",
+  "hu": "mesefigura",
+  "temakor": "Cuentos y poemas"
+ },
+ "storybook_house": {
+  "en": "storybook house",
+  "es": "casa de cuento",
+  "evfolyam": "1",
+  "hu": "meseház",
+  "temakor": "Cuentos y poemas"
+ },
+ "stressed_syllable": {
+  "en": "stressed syllable",
+  "es": "sílaba tónica",
+  "evfolyam": "2",
+  "hu": "hangsúlyos szótag",
+  "temakor": "Las palabras y su ortografía"
+ },
+ "syllable_blocks": {
+  "en": "syllable blocks",
+  "es": "bloques de sílabas",
+  "evfolyam": "1",
+  "hu": "szótagtégla",
+  "temakor": "Las letras y los sonidos"
+ },
+ "synonyms": {
+  "en": "synonyms",
+  "es": "sinónimos",
+  "evfolyam": "3",
+  "hu": "szinonimák",
+  "temakor": "Ortografía y vocabulario"
+ },
+ "theater_mask": {
+  "en": "theater mask",
+  "es": "máscara de teatro",
+  "evfolyam": "1",
+  "hu": "színházi maszk",
+  "temakor": "Cuentos y poemas"
+ },
+ "theater_stage": {
+  "en": "theater stage",
+  "es": "escenario de teatro",
+  "evfolyam": "2",
+  "hu": "színpad",
+  "temakor": "Cuentos, poemas y teatro"
+ },
+ "thumbs_up_down": {
+  "en": "for and against",
+  "es": "a favor y en contra",
+  "evfolyam": "4",
+  "hu": "mellette és ellene",
+  "temakor": "Debatir y argumentar"
+ },
+ "two_children_conversation": {
+  "en": "two children talking",
+  "es": "dos niños hablando",
+  "evfolyam": "2",
+  "hu": "két beszélgető gyerek",
+  "temakor": "Conversamos y explicamos"
+ },
+ "two_children_talking": {
+  "en": "two children talking",
+  "es": "dos niños hablando",
+  "evfolyam": "2",
+  "hu": "két beszélgető gyerek",
+  "temakor": "Hablar bien, convivir mejor"
+ },
+ "verb": {
+  "en": "verb",
+  "es": "verbo",
+  "evfolyam": "5",
+  "hu": "ige",
+  "temakor": "Gramática avanzada"
+ },
+ "verb_tense": {
+  "en": "verb",
+  "es": "verbo",
+  "evfolyam": "4",
+  "hu": "ige",
+  "temakor": "Gramática: la oración completa"
+ },
+ "visual_aid_poster": {
+  "en": "visual aid poster",
+  "es": "póster de apoyo visual",
+  "evfolyam": "3",
+  "hu": "vizuális segédeszköz plakát",
+  "temakor": "Exponer y escuchar"
+ },
+ "vowel_letters": {
+  "en": "vowel letters",
+  "es": "letras vocales",
+  "evfolyam": "1",
+  "hu": "magánhangzó betűk",
+  "temakor": "Las letras y los sonidos"
+ },
+ "word_card": {
+  "en": "word card",
+  "es": "tarjeta con palabra",
+  "evfolyam": "1",
+  "hu": "szókártya",
+  "temakor": "Empiezo a leer palabras y frases"
+ },
+ "word_collection_cards": {
+  "en": "word collection cards",
+  "es": "tarjetas de palabras",
+  "evfolyam": "6",
+  "hu": "szókártyák",
+  "temakor": "Norma y variedad lingüística"
+ },
+ "word_family": {
+  "en": "word family",
+  "es": "familia de palabras",
+  "evfolyam": "3",
+  "hu": "szócsalád",
+  "temakor": "Ortografía y vocabulario"
+ },
+ "word_prefix": {
+  "en": "prefix",
+  "es": "prefijo",
+  "evfolyam": "5",
+  "hu": "előtag",
+  "temakor": "Léxico y ortografía"
+ },
+ "word_spacing": {
+  "en": "space between words",
+  "es": "espacio entre palabras",
+  "evfolyam": "1",
+  "hu": "szóköz",
+  "temakor": "Escribo mis primeras palabras"
+ },
+ "word_suffix": {
+  "en": "suffix",
+  "es": "sufijo",
+  "evfolyam": "5",
+  "hu": "utótag",
+  "temakor": "Léxico y ortografía"
+ },
+ "word_with_acute_accent": {
+  "en": "accent mark",
+  "es": "tilde",
+  "evfolyam": "4",
+  "hu": "ékezet",
+  "temakor": "Ortografía y acentuación"
+ },
+ "word_with_tilde_on_letter": {
+  "en": "accented word",
+  "es": "palabra con tilde",
+  "evfolyam": "4",
+  "hu": "ékezetes szó",
+  "temakor": "Ortografía y acentuación"
+ },
+ "world_map": {
+  "en": "world map",
+  "es": "mapamundi",
+  "evfolyam": "1",
+  "hu": "világtérkép",
+  "temakor": "Las lenguas que me rodean"
+ },
+ "written_draft": {
+  "en": "draft text",
+  "es": "borrador",
+  "evfolyam": "6",
+  "hu": "piszkozat",
+  "temakor": "Escribir para convencer"
+ },
+ "written_text": {
+  "en": "written text",
+  "es": "texto escrito",
+  "evfolyam": "6",
+  "hu": "írott szöveg",
+  "temakor": "Gramática y análisis"
+ }
+}

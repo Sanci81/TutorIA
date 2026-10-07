@@ -303,7 +303,11 @@ def jovahagyas(parancs: str) -> int:
         if not os.path.exists(forras):
             print(f"  ! nincs ilyen kép: {tk}/{k}")
             continue
-        kep = Image.open(forras).convert("RGB")
+        try:
+            kep = Image.open(forras).convert("RGB")
+        except Exception as exc:          # sérült / félig letöltött kép
+            print(f"  ! hibás kép, kihagyva: {tk}/{k} ({exc.__class__.__name__})")
+            continue
         kep.thumbnail((512, 512))
         kep.save(os.path.join(cel, k + ".webp"), "WEBP", quality=82, method=6)
         f = lista.get(k, {})

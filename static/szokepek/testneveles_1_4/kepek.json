@@ -1,0 +1,779 @@
+{
+ "badminton_racket_and_shuttlecock": {
+  "en": "badminton racket and shuttlecock",
+  "es": "raqueta de bádminton y volante",
+  "evfolyam": null,
+  "hu": "tollaslabdaütő és tollaslabda",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "balance_beam_stand": {
+  "en": "balance beam stand",
+  "es": "equilibrio sobre una barra de equilibrio",
+  "evfolyam": null,
+  "hu": "egyensúlyozás gerendán",
+  "temakor": "Támasz-, függés- és egyensúlygyakorlatok"
+ },
+ "ball_catching": {
+  "en": "catching a ball",
+  "es": "atrapar una pelota",
+  "evfolyam": null,
+  "hu": "labdaelkapás",
+  "temakor": "Dobások, ütések"
+ },
+ "ball_exercise": {
+  "en": "exercise ball",
+  "es": "ejercicio con pelota",
+  "evfolyam": null,
+  "hu": "labdagyakorlat",
+  "temakor": "Gimnasztika és rendgyakorlatok – prevenció, relaxáció"
+ },
+ "ball_giving_to_partner": {
+  "en": "passing a ball hand to hand",
+  "es": "pasar una pelota de mano a mano",
+  "evfolyam": null,
+  "hu": "labda átadása kézről kézre",
+  "temakor": "Dobások, ütések"
+ },
+ "ball_grasping": {
+  "en": "holding a ball in hand",
+  "es": "sujetar una pelota en la mano",
+  "evfolyam": null,
+  "hu": "labda kézben tartása",
+  "temakor": "Dobások, ütések"
+ },
+ "ball_gulating": {
+  "en": "rolling a ball",
+  "es": "rodar una pelota",
+  "evfolyam": null,
+  "hu": "labda gurítása",
+  "temakor": "Dobások, ütések"
+ },
+ "ball_roll": {
+  "en": "rolling a ball",
+  "es": "rodar una pelota",
+  "evfolyam": null,
+  "hu": "labdagurítás",
+  "temakor": "Dobások, ütések"
+ },
+ "ball_throw": {
+  "en": "throwing a ball",
+  "es": "lanzar una pelota",
+  "evfolyam": null,
+  "hu": "labdadobás",
+  "temakor": "Dobások, ütések"
+ },
+ "bear_walk": {
+  "en": "bear walk",
+  "es": "andar como oso",
+  "evfolyam": null,
+  "hu": "medvejárás",
+  "temakor": "Kúszások és mászások"
+ },
+ "behind_position": {
+  "en": "behind position",
+  "es": "posición por detrás",
+  "evfolyam": null,
+  "hu": "hátsó helyzet",
+  "temakor": "Küzdőfeladatok és -játékok"
+ },
+ "bicycle": {
+  "en": "bicycle",
+  "es": "bicicleta",
+  "evfolyam": null,
+  "hu": "kerékpár",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "body_awareness_pose": {
+  "en": "body awareness pose",
+  "es": "conciencia corporal",
+  "evfolyam": null,
+  "hu": "testtudat",
+  "temakor": "Gyógytestnevelés"
+ },
+ "bouncing_ball": {
+  "en": "bouncing ball",
+  "es": "pelota botando",
+  "evfolyam": null,
+  "hu": "pattogó labda",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "bridge_pose": {
+  "en": "bridge pose",
+  "es": "puente",
+  "evfolyam": null,
+  "hu": "híd",
+  "temakor": "Támasz-, függés- és egyensúlygyakorlatok"
+ },
+ "catching_ball": {
+  "en": "catching a ball",
+  "es": "atrapar una pelota",
+  "evfolyam": null,
+  "hu": "labda elkapása",
+  "temakor": "Dobások, ütések"
+ },
+ "child_catching_ball": {
+  "en": "child catching a ball",
+  "es": "niño atrapando la pelota",
+  "evfolyam": null,
+  "hu": "labdát elkapó gyerek",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "child_catching_or_dodging": {
+  "en": "child dodging a defender",
+  "es": "niño esquivando a un defensor",
+  "evfolyam": null,
+  "hu": "gyerek kitér a védő elől",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "child_doing_breathing_exercise": {
+  "en": "breathing exercise",
+  "es": "ejercicio de respiración",
+  "evfolyam": null,
+  "hu": "légzőgyakorlat",
+  "temakor": "Gyógytestnevelés"
+ },
+ "child_doing_corrective_exercise": {
+  "en": "corrective exercise",
+  "es": "ejercicio correctivo",
+  "evfolyam": null,
+  "hu": "korrekciós gyakorlat",
+  "temakor": "Gyógytestnevelés"
+ },
+ "child_falling": {
+  "en": "child falling",
+  "es": "niño cayendo",
+  "evfolyam": null,
+  "hu": "eső gyerek",
+  "temakor": "Küzdőfeladatok és -játékok"
+ },
+ "child_kicking_ball": {
+  "en": "child kicking a ball",
+  "es": "niño chutando la pelota",
+  "evfolyam": null,
+  "hu": "labdát rúgó gyerek",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "child_throwing_ball_at_target": {
+  "en": "child throwing ball at a target",
+  "es": "niño lanzando una pelota a un objetivo",
+  "evfolyam": null,
+  "hu": "gyerek célba dob",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "child_with_good_posture": {
+  "en": "good posture",
+  "es": "buena postura",
+  "evfolyam": null,
+  "hu": "helyes testtartás",
+  "temakor": "Gyógytestnevelés"
+ },
+ "children_passing_ball_between_teammates": {
+  "en": "children passing a ball between teammates",
+  "es": "niños pasándose una pelota entre compañeros",
+  "evfolyam": null,
+  "hu": "gyerekek labdát passzolnak egymásnak",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "children_playing_team_ball_game": {
+  "en": "children playing a team ball game",
+  "es": "niños jugando un juego de pelota en equipo",
+  "evfolyam": null,
+  "hu": "gyerekek csapatlabdajátékot játszanak",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "children_running_in_a_tag_game": {
+  "en": "children running in a tag game",
+  "es": "niños jugando a pillarse",
+  "evfolyam": null,
+  "hu": "gyerekek fogócskáznak",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "children_touching_feet": {
+  "en": "foot touch",
+  "es": "toque de pies",
+  "evfolyam": null,
+  "hu": "lábérintés",
+  "temakor": "Küzdőfeladatok és -játékok"
+ },
+ "children_touching_hands": {
+  "en": "hand touch",
+  "es": "toque de manos",
+  "evfolyam": null,
+  "hu": "kézérintés",
+  "temakor": "Küzdőfeladatok és -játékok"
+ },
+ "circle_formation_children": {
+  "en": "circle formation",
+  "es": "formación en círculo",
+  "evfolyam": null,
+  "hu": "kör alakzat",
+  "temakor": "Gimnasztika és rendgyakorlatok – prevenció, relaxáció"
+ },
+ "circle_game": {
+  "en": "circle game",
+  "es": "juego en círculo",
+  "evfolyam": null,
+  "hu": "körjáték",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "climbing_ladder": {
+  "en": "ladder climb",
+  "es": "escalada en escalera",
+  "evfolyam": null,
+  "hu": "mászás létrán",
+  "temakor": "Kúszások és mászások"
+ },
+ "climbing_wall": {
+  "en": "climbing on a wall",
+  "es": "trepar por una pared",
+  "evfolyam": null,
+  "hu": "mászás falon",
+  "temakor": "Támasz-, függés- és egyensúlygyakorlatok"
+ },
+ "climbing_wall_rungs": {
+  "en": "climbing rungs",
+  "es": "escalera de trepa",
+  "evfolyam": null,
+  "hu": "mászórács",
+  "temakor": "Kúszások és mászások"
+ },
+ "crab_walk": {
+  "en": "crab walk",
+  "es": "caminar como cangrejo",
+  "evfolyam": null,
+  "hu": "rákjárás",
+  "temakor": "Kúszások és mászások"
+ },
+ "crawling_under_obstacle": {
+  "en": "child crawling under a bar",
+  "es": "niño gateando bajo una barra",
+  "evfolyam": null,
+  "hu": "gyerek átbújik egy akadály alatt",
+  "temakor": "Kúszások és mászások"
+ },
+ "dive_start": {
+  "en": "dive start",
+  "es": "salto de cabeza",
+  "evfolyam": null,
+  "hu": "fejesugrás",
+  "temakor": "Úszás (Amennyiben adottak a feltételek.)"
+ },
+ "dribbling_basketball": {
+  "en": "dribbling a basketball",
+  "es": "bote de baloncesto",
+  "evfolyam": null,
+  "hu": "labdavezetés kosárlabdával",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "falling_to_mat": {
+  "en": "falling safely",
+  "es": "caída segura",
+  "evfolyam": null,
+  "hu": "biztonságos esés",
+  "temakor": "Küzdőfeladatok és -játékok"
+ },
+ "finish_line": {
+  "en": "finish line",
+  "es": "línea de meta",
+  "evfolyam": null,
+  "hu": "célvonal",
+  "temakor": "Járások, futások"
+ },
+ "float_on_back": {
+  "en": "floating on back",
+  "es": "flotar boca arriba",
+  "evfolyam": null,
+  "hu": "háton lebegés",
+  "temakor": "Úszás (Amennyiben adottak a feltételek.)"
+ },
+ "forearm_pass_volleyball": {
+  "en": "forearm pass in volleyball",
+  "es": "toque de antebrazos",
+  "evfolyam": null,
+  "hu": "alkarérintés",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "forward_support_jump": {
+  "en": "support jump",
+  "es": "salto de apoyo",
+  "evfolyam": null,
+  "hu": "bakugrás",
+  "temakor": "Támasz-, függés- és egyensúlygyakorlatok"
+ },
+ "gallop": {
+  "en": "gallop",
+  "es": "galope",
+  "evfolyam": null,
+  "hu": "galopp",
+  "temakor": "Szökdelések, ugrások"
+ },
+ "gym_mat_back_roll": {
+  "en": "backward roll on a gym mat",
+  "es": "voltereta hacia atrás en colchoneta",
+  "evfolyam": null,
+  "hu": "hátragurulás tornaszőnyegen",
+  "temakor": "Támasz-, függés- és egyensúlygyakorlatok"
+ },
+ "gym_mat_forward_roll": {
+  "en": "forward roll on a gym mat",
+  "es": "voltereta hacia delante en colchoneta",
+  "evfolyam": null,
+  "hu": "előregurulás tornaszőnyegen",
+  "temakor": "Támasz-, függés- és egyensúlygyakorlatok"
+ },
+ "gym_nastics_baton": {
+  "en": "gymnastics stick",
+  "es": "palo de gimnasia",
+  "evfolyam": null,
+  "hu": "bot",
+  "temakor": "Gimnasztika és rendgyakorlatok – prevenció, relaxáció"
+ },
+ "gymnastic_bench": {
+  "en": "gym bench",
+  "es": "banco sueco",
+  "evfolyam": null,
+  "hu": "tornapad",
+  "temakor": "Kúszások és mászások"
+ },
+ "gymnastics_bench": {
+  "en": "gymnastics bench",
+  "es": "banco de gimnasia",
+  "evfolyam": null,
+  "hu": "zsámoly",
+  "temakor": "Szökdelések, ugrások"
+ },
+ "handstand": {
+  "en": "handstand",
+  "es": "vertical de manos",
+  "evfolyam": null,
+  "hu": "kézállás",
+  "temakor": "Támasz-, függés- és egyensúlygyakorlatok"
+ },
+ "hanging_on_bar": {
+  "en": "hanging from a bar",
+  "es": "colgado de una barra",
+  "evfolyam": null,
+  "hu": "függés a rúdon",
+  "temakor": "Kúszások és mászások"
+ },
+ "headstand": {
+  "en": "headstand",
+  "es": "parada de cabeza",
+  "evfolyam": null,
+  "hu": "fejállás",
+  "temakor": "Támasz-, függés- és egyensúlygyakorlatok"
+ },
+ "high_knee_running_person": {
+  "en": "person doing high-knee running",
+  "es": "persona corriendo con elevación de rodillas",
+  "evfolyam": null,
+  "hu": "térdemelés futás",
+  "temakor": "Járások, futások"
+ },
+ "hiking": {
+  "en": "hiking",
+  "es": "senderismo",
+  "evfolyam": null,
+  "hu": "túrázás",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "hitting_with_racket": {
+  "en": "hitting with a racket",
+  "es": "golpear con una raqueta",
+  "evfolyam": null,
+  "hu": "ütés ütővel",
+  "temakor": "Dobások, ütések"
+ },
+ "horse_riding": {
+  "en": "horse riding",
+  "es": "montar a caballo",
+  "evfolyam": null,
+  "hu": "lovaglás",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "hurdle_jump": {
+  "en": "hurdle jump",
+  "es": "salto de valla",
+  "evfolyam": null,
+  "hu": "gátugrás",
+  "temakor": "Szökdelések, ugrások"
+ },
+ "ice_skating": {
+  "en": "ice skating",
+  "es": "patinaje sobre hielo",
+  "evfolyam": null,
+  "hu": "korcsolyázás",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "juggling_ball": {
+  "en": "juggling a ball with feet",
+  "es": "hacer malabares con el balón",
+  "evfolyam": null,
+  "hu": "dekázás",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "jump_rope": {
+  "en": "jump rope",
+  "es": "cuerda para saltar",
+  "evfolyam": null,
+  "hu": "ugrókötél",
+  "temakor": "Gimnasztika és rendgyakorlatok – prevenció, relaxáció"
+ },
+ "jumping_grid": {
+  "en": "hopscotch",
+  "es": "rayuela",
+  "evfolyam": null,
+  "hu": "ugróiskola",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "jumping_up": {
+  "en": "jumping up",
+  "es": "salto hacia arriba",
+  "evfolyam": null,
+  "hu": "felugrás",
+  "temakor": "Szökdelések, ugrások"
+ },
+ "line_formation_children": {
+  "en": "line formation",
+  "es": "formación en fila",
+  "evfolyam": null,
+  "hu": "sor alakzat",
+  "temakor": "Gimnasztika és rendgyakorlatok – prevenció, relaxáció"
+ },
+ "line_race": {
+  "en": "line race",
+  "es": "carrera en fila",
+  "evfolyam": null,
+  "hu": "sorverseny",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "obstacle_course": {
+  "en": "obstacle course",
+  "es": "circuito de obstáculos",
+  "evfolyam": null,
+  "hu": "akadálypálya",
+  "temakor": "Kúszások és mászások"
+ },
+ "outdoor_obstacle_course": {
+  "en": "outdoor obstacle course",
+  "es": "circuito de obstáculos al aire libre",
+  "evfolyam": null,
+  "hu": "szabadtéri akadálypálya",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "person_dribbling_ball": {
+  "en": "person dribbling a ball",
+  "es": "niño botando la pelota",
+  "evfolyam": null,
+  "hu": "labdavezető gyerek",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "playground": {
+  "en": "playground",
+  "es": "patio de recreo",
+  "evfolyam": null,
+  "hu": "játszótér",
+  "temakor": "Gyógytestnevelés"
+ },
+ "pushing_game": {
+  "en": "pushing game",
+  "es": "juego de empujones",
+  "evfolyam": null,
+  "hu": "kitolásos játék",
+  "temakor": "Küzdőfeladatok és -játékok"
+ },
+ "relay_baton": {
+  "en": "relay baton",
+  "es": "testigo de relevo",
+  "evfolyam": null,
+  "hu": "váltóbot",
+  "temakor": "Járások, futások"
+ },
+ "relay_race": {
+  "en": "relay race",
+  "es": "carrera de relevos",
+  "evfolyam": null,
+  "hu": "váltóverseny",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "relay_race_baton": {
+  "en": "relay race baton",
+  "es": "testigo de relevos",
+  "evfolyam": null,
+  "hu": "váltóbot",
+  "temakor": "Úszás (Amennyiben adottak a feltételek.)"
+ },
+ "relay_race_team": {
+  "en": "relay race team",
+  "es": "equipo de relevo",
+  "evfolyam": null,
+  "hu": "váltóverseny csapat",
+  "temakor": "Járások, futások"
+ },
+ "roller_skates": {
+  "en": "roller skates",
+  "es": "patines en línea",
+  "evfolyam": null,
+  "hu": "görkorcsolya",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "rolls_on_mat": {
+  "en": "forward roll",
+  "es": "voltereta adelante",
+  "evfolyam": null,
+  "hu": "gurulás",
+  "temakor": "Küzdőfeladatok és -játékok"
+ },
+ "running_lane": {
+  "en": "running lane",
+  "es": "carril de carrera",
+  "evfolyam": null,
+  "hu": "futósáv",
+  "temakor": "Járások, futások"
+ },
+ "running_person": {
+  "en": "person running",
+  "es": "persona corriendo",
+  "evfolyam": null,
+  "hu": "futó ember",
+  "temakor": "Járások, futások"
+ },
+ "sand_landing": {
+  "en": "landing in sand",
+  "es": "caída en la arena",
+  "evfolyam": null,
+  "hu": "érkezés a homokba",
+  "temakor": "Szökdelések, ugrások"
+ },
+ "sandpit": {
+  "en": "sandpit",
+  "es": "foso de arena",
+  "evfolyam": null,
+  "hu": "homokgödör",
+  "temakor": "Szökdelések, ugrások"
+ },
+ "scattered_formation_children": {
+  "en": "scattered formation",
+  "es": "formación dispersa",
+  "evfolyam": null,
+  "hu": "szétszórt alakzat",
+  "temakor": "Gimnasztika és rendgyakorlatok – prevenció, relaxáció"
+ },
+ "seal_crawl": {
+  "en": "seal crawl",
+  "es": "arrastrarse como foca",
+  "evfolyam": null,
+  "hu": "fókakúszás",
+  "temakor": "Kúszások és mászások"
+ },
+ "side_shuffle_jump": {
+  "en": "side shuffle jump",
+  "es": "saltos laterales",
+  "evfolyam": null,
+  "hu": "oldalazó szökdelés",
+  "temakor": "Szökdelések, ugrások"
+ },
+ "sideways_run": {
+  "en": "sideways run",
+  "es": "carrera lateral",
+  "evfolyam": null,
+  "hu": "oldalazó futás",
+  "temakor": "Járások, futások"
+ },
+ "skiing": {
+  "en": "skiing",
+  "es": "esquí",
+  "evfolyam": null,
+  "hu": "síelés",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "soccer_kick_ball": {
+  "en": "kicking a soccer ball",
+  "es": "patada a un balón de fútbol",
+  "evfolyam": null,
+  "hu": "labdarúgó labda rúgása",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "spider_walk": {
+  "en": "spider walk",
+  "es": "caminar como araña",
+  "evfolyam": null,
+  "hu": "pókjárás",
+  "temakor": "Kúszások és mászások"
+ },
+ "spine_mobilization_exercise": {
+  "en": "spine mobilizing exercise",
+  "es": "ejercicio de movilización de la columna",
+  "evfolyam": null,
+  "hu": "gerincmobilizáló gyakorlat",
+  "temakor": "Gyógytestnevelés"
+ },
+ "sports_ball": {
+  "en": "sports ball",
+  "es": "pelota",
+  "evfolyam": null,
+  "hu": "labda",
+  "temakor": "Gyógytestnevelés"
+ },
+ "sports_clothing": {
+  "en": "sports clothing",
+  "es": "ropa deportiva",
+  "evfolyam": null,
+  "hu": "sportöltözet",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "sprint_runner": {
+  "en": "sprint runner",
+  "es": "velocista",
+  "evfolyam": null,
+  "hu": "sprinter",
+  "temakor": "Járások, futások"
+ },
+ "standing_posture": {
+  "en": "standing posture",
+  "es": "postura erguida",
+  "evfolyam": null,
+  "hu": "helyes testtartás",
+  "temakor": "Gimnasztika és rendgyakorlatok – prevenció, relaxáció"
+ },
+ "swim_board": {
+  "en": "kickboard",
+  "es": "tabla de natación",
+  "evfolyam": null,
+  "hu": "úszódeszka",
+  "temakor": "Úszás (Amennyiben adottak a feltételek.)"
+ },
+ "swimmer": {
+  "en": "swimmer",
+  "es": "nadador",
+  "evfolyam": null,
+  "hu": "úszó",
+  "temakor": "Úszás (Amennyiben adottak a feltételek.)"
+ },
+ "swimmer_backstroke": {
+  "en": "backstroke swimmer",
+  "es": "nadador de espalda",
+  "evfolyam": null,
+  "hu": "hátúszó",
+  "temakor": "Úszás (Amennyiben adottak a feltételek.)"
+ },
+ "swimmer_breaststroke": {
+  "en": "breaststroke swimmer",
+  "es": "nadador de braza",
+  "evfolyam": null,
+  "hu": "mellúszó",
+  "temakor": "Úszás (Amennyiben adottak a feltételek.)"
+ },
+ "swimmer_freestyle": {
+  "en": "freestyle swimmer",
+  "es": "nadador de crol",
+  "evfolyam": null,
+  "hu": "gyorsúszó",
+  "temakor": "Úszás (Amennyiben adottak a feltételek.)"
+ },
+ "swimming_pool": {
+  "en": "swimming pool",
+  "es": "piscina",
+  "evfolyam": null,
+  "hu": "úszómedence",
+  "temakor": "Úszás (Amennyiben adottak a feltételek.)"
+ },
+ "tag_game": {
+  "en": "tag game",
+  "es": "juego del pillapilla",
+  "evfolyam": null,
+  "hu": "fogójáték",
+  "temakor": "Testnevelési és népi játékok"
+ },
+ "takeoff_board": {
+  "en": "takeoff board",
+  "es": "tabla de batida",
+  "evfolyam": null,
+  "hu": "elugró sáv",
+  "temakor": "Szökdelések, ugrások"
+ },
+ "takeoff_jump": {
+  "en": "takeoff jump",
+  "es": "impulso de salto",
+  "evfolyam": null,
+  "hu": "elugrás",
+  "temakor": "Szökdelések, ugrások"
+ },
+ "throwing_ball": {
+  "en": "throwing a ball",
+  "es": "lanzar una pelota",
+  "evfolyam": null,
+  "hu": "labda dobása",
+  "temakor": "Dobások, ütések"
+ },
+ "tiptoe_walking_person": {
+  "en": "person walking on tiptoes",
+  "es": "persona caminando de puntillas",
+  "evfolyam": null,
+  "hu": "lábujjhegyen járó ember",
+  "temakor": "Járások, futások"
+ },
+ "tossing_ball_with_two_hands": {
+  "en": "throwing a ball with two hands",
+  "es": "lanzar una pelota con dos manos",
+  "evfolyam": null,
+  "hu": "kétkezes labdadobás",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "two_children_passing_ball": {
+  "en": "children passing a ball",
+  "es": "niños pasándose la pelota",
+  "evfolyam": null,
+  "hu": "labdát átadó gyerekek",
+  "temakor": "Labdás gyakorlatok"
+ },
+ "two_children_pulling": {
+  "en": "children pulling each other",
+  "es": "niños tirando uno del otro",
+  "evfolyam": null,
+  "hu": "húzó gyerekek",
+  "temakor": "Küzdőfeladatok és -játékok"
+ },
+ "two_children_pushing": {
+  "en": "children pushing each other",
+  "es": "niños empujándose",
+  "evfolyam": null,
+  "hu": "toló gyerekek",
+  "temakor": "Küzdőfeladatok és -játékok"
+ },
+ "two_handed_chest_push": {
+  "en": "two-handed chest push",
+  "es": "empuje frontal con dos manos",
+  "evfolyam": null,
+  "hu": "kétkezes mellső lökés",
+  "temakor": "Dobások, ütések"
+ },
+ "upright_posture": {
+  "en": "upright posture",
+  "es": "postura correcta",
+  "evfolyam": null,
+  "hu": "helyes testtartás",
+  "temakor": "Gyógytestnevelés"
+ },
+ "walking_person": {
+  "en": "person walking",
+  "es": "persona caminando",
+  "evfolyam": null,
+  "hu": "járó ember",
+  "temakor": "Járások, futások"
+ },
+ "winter_play_sled": {
+  "en": "sled",
+  "es": "trineo",
+  "evfolyam": null,
+  "hu": "szánkó",
+  "temakor": "Foglalkozások alternatív környezetben"
+ },
+ "wrestling_pair": {
+  "en": "wrestling pair",
+  "es": "pareja de lucha",
+  "evfolyam": null,
+  "hu": "grundbirkózó pár",
+  "temakor": "Küzdőfeladatok és -játékok"
+ }
+}
