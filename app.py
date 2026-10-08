@@ -123,6 +123,14 @@ MODELL_TANAR = os.environ.get("MODELL_TANAR", "gpt-5.4-mini")
 # SEGÉDMUNKÁK: gyakorlófeladat, válaszellenőrzés, kvíz, szófelismerés,
 # szóbeli válasz értékelése. Rövid, egyszerű kérések. (11 hívás.)
 MODELL_SEGED = os.environ.get("MODELL_SEGED", "gpt-4o-mini")
+# MÁSIK SZOLGÁLTATÓ CSAK A TANÁRNAK (kipróbáláshoz, kódváltoztatás nélkül).
+# Ha a Railway-en a TANAR_API_BASE és a TANAR_API_KEY is be van állítva, a
+# tanár hívása oda megy – OpenAI-kompatibilis felületre (Mistral, Google
+# Gemini). A MODELL_TANAR akkor annak a szolgáltatónak a modellneve. Minden
+# más (hang, kép, ellenőrzések, segédhívások) marad az OpenAI-nál.
+# Visszaállás: a két változót törölni kell.
+TANAR_API_BASE = os.environ.get("TANAR_API_BASE", "").strip()
+TANAR_API_KEY = os.environ.get("TANAR_API_KEY", "").strip()
 
 # NEHÉZ KVÍZ. Az idegennyelvi kvíznél a kis modell gyenge volt, ezért
 # ennél az EGY ágnál nagyobb modell dolgozik.
@@ -4427,6 +4435,9 @@ _ABRA_RULES_HU = (
     "- Ha a fogalom absztrakt (valószínűség, véletlen, nyelvtani fogalom) és "
     "nem tudsz olyan rajzot adni, ami MÉR vagy MEGMUTAT valami valóságosat, "
     "add vissza azt, hogy NINCS. A kitalált ikon rosszabb, mint a semmi.\n"
+    "- Kezet, ujjakat, fogást (pl. ceruzafogás), testtartást, mozdulatot "
+    "vagy arcot SOHA ne rajzolj – egyszerű alakzatokkal nem ismerhető fel. "
+    "Ilyenkor: NINCS.\n"
     '- Feliratok: font-size="16" fill="#222", MINDIG az alakzaton KÍVÜL, tőle '
     "legalább 12 pixelre; minden oldalon 30 pixel margó.\n"
     '- Bal oldali felirat: text-anchor="end"; jobb oldali: text-anchor="start"; '
@@ -4489,6 +4500,9 @@ _ABRA_RULES_ES = (
     "- Si el concepto es abstracto (probabilidad, azar, gramática) y no puedes "
     "hacer un dibujo que MIDA o MUESTRE algo real, devuelve NINGUNO. Un icono "
     "inventado es peor que nada.\n"
+    "- NUNCA dibujes manos, dedos, formas de coger algo (p. ej. el lápiz), "
+    "posturas, movimientos ni caras: con formas simples no se reconocen. "
+    "En ese caso: NINGUNO.\n"
     '- Etiquetas: font-size="16" fill="#222", SIEMPRE FUERA de la figura, a 12 px '
     "como mínimo; margen de 30 px por cada lado.\n"
     '- Etiqueta a la izquierda: text-anchor="end"; a la derecha: text-anchor="start"; '
@@ -6623,8 +6637,10 @@ perc alatt megunja.
   fogalom és jelentése párban         → parosit
   eldöntendő, NEM számolós kérdés     → valaszt
 
-Egy válaszban EGY feladat legyen. Ha csak magyarázol és nem kérsz semmit,
-akkor nem kell feladat — de akkor kérdést se tegyél fel a végén.
+Egy válaszban EGY feladat legyen. Ha csak magyarázol, akkor nem kell feladat —
+de a végén MINDIG mondd meg, mit tegyen a gyerek: tegyél fel egy rövid kérdést
+(„Érthető? Mehetünk tovább?"). A gyerek soha ne maradjon úgy, hogy nem tudja,
+mit válaszoljon.
 
 ⛔ SZÁMOLÁSNÁL SOHA NE ADJ VÁLASZGOMBOKAT.
 Ha a kérdés az, hogy MENNYI valami, a "szamolo" vagy a "szam" típust
@@ -6741,8 +6757,10 @@ Cómo elegir la superficie:
   concepto y significado en pareja      → parosit
   pregunta cerrada que NO es cálculo    → valaszt
 
-Un ejercicio por respuesta. Si solo explicas y no pides nada, no hace falta
-ejercicio — pero entonces tampoco termines con una pregunta.
+Un ejercicio por respuesta. Si solo explicas, no hace falta ejercicio — pero
+termina SIEMPRE diciendo al niño qué hacer, con una pregunta corta
+(«¿Lo entiendes? ¿Seguimos?»). El niño nunca debe quedarse sin saber qué
+responder.
 
 ⛔ EN UN CÁLCULO NUNCA DES BOTONES. Si preguntas CUÁNTO es algo, usa
 "szamolo" o "szam". Con botones el niño adivina en vez de calcular.
@@ -6942,6 +6960,7 @@ Por ejemplo, si enseñas el perímetro de un rectángulo, añade al final:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Reglas:
 - SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
+- NUNCA dibujes manos, dedos, formas de coger algo, posturas, movimientos del cuerpo ni caras: con formas simples no se reconocen y el niño no entiende el dibujo. En esos casos, NO pongas dibujo.
 - DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas, líneas de tiempo o mapas. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
@@ -7214,6 +7233,7 @@ Por ejemplo, si enseñas el perímetro de un rectángulo, añade al final:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Reglas:
 - SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
+- NUNCA dibujes manos, dedos, formas de coger algo, posturas, movimientos del cuerpo ni caras: con formas simples no se reconocen y el niño no entiende el dibujo. En esos casos, NO pongas dibujo.
 - DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas, líneas de tiempo o mapas. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
@@ -7426,6 +7446,7 @@ Például, ha a téglalap kerületét tanítod, a válaszod végére tedd:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Szabályok:
 - CSAK ott rajzolj, ahol tényleg segít: geometria (idom oldalakkal, jelölésekkel), számegyenes, halmazábra, fizikai ábra (erők, áramkör), kémiai szerkezet, kottavonal hangjegyekkel, idővonal történelemhez, egyszerű térképvázlat, diagram.
+- SOHA ne rajzolj kezet, ujjakat, tartást vagy fogást (pl. ceruzafogás), testtartást, mozdulatot vagy arcot: egyszerű alakzatokkal ezek nem ismerhetők fel, és a gyerek nem érti a rajzot. Ilyenkor NE legyen rajz.
 - KÖTELEZŐ ábrát rajzolnod, ha geometriai alakzatról, mértékegységről, számegyenesről, halmazról, áramkörről, kémiai szerkezetről, kottáról, idővonalról vagy térképről tanítasz. Ilyenkor mindig legyen ábra, akkor is, ha szöveggel is elmondható.
 - Egyéb esetben csak akkor rajzolj, ha tényleg segít, és ne minden válaszban.
 - Az ábra rajzterülete legyen viewBox="0 0 320 220", és HAGYJ 30 pixel margót minden oldalon, hogy a feliratok ne lógjanak ki.
@@ -8589,6 +8610,25 @@ def _call_ai_for_chat(
     # A gyerek ELŐTT ül és vár. 40 mp + egy újrapróbálás ≈ 85 mp a legrosszabb
     # esetben – a böngésző 90 mp-nél szakítja meg a kérést, tehát még épp
     # belefér, és nem marad örökre pörgő pont a képernyőn.
+    if TANAR_API_BASE and TANAR_API_KEY:
+        import httpx
+        from openai import OpenAI
+        client = _MertKliens(OpenAI(
+            api_key=TANAR_API_KEY, base_url=TANAR_API_BASE,
+            timeout=httpx.Timeout(max(8.0, idokorlat), connect=10.0),
+            max_retries=max(0, ujra)))
+        # A Gemini ismeri a reasoning_effort-ot, a Mistral nem (hibát adna).
+        extra = ({"reasoning_effort": "low"}
+                 if "generativelanguage" in TANAR_API_BASE else {})
+        response = client.chat.completions.create(
+            model=MODELL_TANAR, messages=messages, **extra)
+        tartalom = response.choices[0].message.content
+        if isinstance(tartalom, list):       # néhány szolgáltató részekben adja
+            tartalom = "".join(
+                (r.get("text", "") if isinstance(r, dict) else getattr(r, "text", ""))
+                or "" for r in tartalom)
+        return (tartalom or "").strip()
+
     client = _openai_client(api_key, request_timeout=max(8.0, idokorlat),
                             max_retries=max(0, ujra))
     response = client.chat.completions.create(
