@@ -437,8 +437,17 @@ def _feladat_leiras(f: dict) -> str:
                 f"{'hátra' if f.get('hatra') else 'előre'}, a gyerek a célszámra koppint")
     if tipus == "ora":
         return f"óra húzható mutatókkal – {f.get('kerdes', '')}"
-    if tipus in ("racs", "szogmero", "koordinata", "terulet"):
+    if tipus in ("racs", "szogmero", "koordinata", "terulet", "merleg", "szazalek",
+                 "tort", "irany", "cimke"):
         return f"interaktív rajz ({tipus}) – {f.get('kerdes', '')}"
+    if tipus == "idovonal":
+        return ("idővonal, a gyerek a kártyákat az évszámhoz húzza: "
+                + "; ".join(f"{a} ({b})" for a, b in (f.get("esemenyek") or [])))
+    if tipus == "kotta":
+        return f"kotta zongorával – {len(f.get('hangok') or [])} hangot játszik le sorban"
+    if tipus == "memoria":
+        return "memóriajáték, párok: " + "; ".join(
+            f"{a} ↔ {b}" for a, b in (f.get("parok") or []))
     if tipus == "szoveg":
         return f"szavak kijelölése a szövegben: „{f.get('szoveg', '')}”"
     return f"feladat ({tipus})"

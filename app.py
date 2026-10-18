@@ -3800,6 +3800,136 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
                 kerdes = f"Rajzolj egy téglalapot, aminek a kerülete {k} egység!"
         return {"tipus": "terulet", "terulet": t, "kerulet": k, "kerdes": kerdes}
 
+    # ══ 3. CSOMAG: MÉRLEG, SZÁZALÉK, TÖRT, IRÁNYTŰ, IDŐVONAL, KOTTA,
+    #    CÍMKÉZÉS, MEMÓRIA ═══════════════════════════════════════════════
+    if tipus == "merleg":
+        # x + a = b a mérlegen. A megoldást (x = b − a) MI számoljuk.
+        try:
+            a = int(adat.get("a"))
+            b = int(adat.get("b"))
+        except Exception:
+            return None
+        x = b - a
+        if not (1 <= a <= 9 and 1 <= x <= 12):
+            return None
+        kerdes = (f"Resuelve con la balanza: x + {a} = {b}" if es_tanterv
+                  else f"Oldd meg a mérlegen: x + {a} = {b}")
+        return {"tipus": "merleg", "a": a, "b": b, "kerdes": kerdes}
+
+    if tipus == "szazalek":
+        try:
+            cel = int(adat.get("cel"))
+        except Exception:
+            return None
+        if not (5 <= cel <= 95 and cel % 5 == 0):
+            return None
+        kerdes = (f"Colorea el {cel} % de la barra." if es_tanterv
+                  else f"Színezd ki a sáv {cel}%-át!")
+        return {"tipus": "szazalek", "cel": cel, "kerdes": kerdes}
+
+    if tipus == "tort":
+        try:
+            sz = int(adat.get("szamlalo"))
+            n = int(adat.get("nevezo"))
+        except Exception:
+            return None
+        if not (2 <= n <= 10 and 1 <= sz < n):
+            return None
+        kerdes = (f"¿Dónde está {sz}/{n} en la recta numérica?" if es_tanterv
+                  else f"Hol van a számegyenesen a {sz}/{n}?")
+        return {"tipus": "tort", "szamlalo": sz, "nevezo": n, "kerdes": kerdes}
+
+    if tipus == "irany":
+        def _sima(s):
+            s = unicodedata.normalize("NFD", str(s or "").strip().lower())
+            return "".join(c for c in s if unicodedata.category(c) != "Mn").replace("-", "").replace(" ", "")
+        NEVEK = [("eszak", "norte", "n", "e"), ("eszakkelet", "noreste", "ne", "ek"),
+                 ("kelet", "este", "k"), ("delkelet", "sureste", "se", "dk"),
+                 ("del", "sur", "s", "d"), ("delnyugat", "suroeste", "so", "sw", "dny"),
+                 ("nyugat", "oeste", "o", "w", "ny"), ("eszaknyugat", "noroeste", "no", "nw", "eny")]
+        v = _sima(adat.get("cel"))
+        idx = next((i for i, nevek in enumerate(NEVEK) if v in nevek), None)
+        if idx is None or idx == 0:
+            return None      # észak a kiinduló állás – arra nincs mit fordítani
+        HU = ["észak", "északkelet", "kelet", "délkelet", "dél", "délnyugat", "nyugat", "északnyugat"]
+        ES = ["norte", "noreste", "este", "sureste", "sur", "suroeste", "oeste", "noroeste"]
+        kerdes = (f"Gira la flecha hacia el {ES[idx]}." if es_tanterv
+                  else f"Fordítsd a nyilat {HU[idx]} felé!")
+        return {"tipus": "irany", "cel": idx, "kerdes": kerdes}
+
+    if tipus == "idovonal":
+        # Események évszámmal. A gyerek a kártyákat a jó év fölé húzza.
+        esemenyek = adat.get("esemenyek")
+        if not isinstance(esemenyek, list):
+            return None
+        tiszta, evek = [], set()
+        for e in esemenyek[:5]:
+            if not (isinstance(e, (list, tuple)) and len(e) == 2):
+                return None
+            nev = str(e[0]).strip()[:40]
+            try:
+                ev = int(e[1])
+            except Exception:
+                return None
+            if not nev or ev in evek or not (-5000 <= ev <= 2100):
+                return None
+            evek.add(ev)
+            tiszta.append([nev, ev])
+        if len(tiszta) < 3:
+            return None
+        tiszta.sort(key=lambda p: p[1])
+        kerdes = ("Arrastra cada acontecimiento a su año." if es_tanterv
+                  else "Húzd az eseményeket a helyükre az idővonalon!")
+        return {"tipus": "idovonal", "esemenyek": tiszta, "kerdes": kerdes}
+
+    if tipus == "kotta":
+        HANG = [("do", "c", "dó"), ("re", "d", "ré"), ("mi", "e"), ("fa", "f", "fá"),
+                ("sol", "g", "szo", "szó", "so"), ("la", "a", "lá")]
+        hangok = adat.get("hangok")
+        if not isinstance(hangok, list):
+            return None
+        tiszta = []
+        for h in hangok[:6]:
+            v = str(h).strip().lower()
+            idx = next((i for i, nevek in enumerate(HANG) if v in nevek), None)
+            if idx is None:
+                return None
+            tiszta.append(idx)
+        if len(tiszta) < 3:
+            return None
+        n = len(tiszta)
+        kerdes = (f"Toca las {n} notas del pentagrama." if es_tanterv
+                  else f"Játszd el a kottán lévő {n} hangot!")
+        return {"tipus": "kotta", "hangok": tiszta, "kerdes": kerdes}
+
+    if tipus == "cimke":
+        # Kész rajz, a részek nevét a gyerek húzza a helyére. Egyelőre egy
+        # rajz van: a növény (virág, levél, szár, gyökér).
+        if str(adat.get("kep") or "").strip().lower() not in ("noveny", "növény", "planta"):
+            return None
+        kerdes = ("Arrastra cada nombre a su parte de la planta." if es_tanterv
+                  else "Húzd a neveket a növény megfelelő részéhez!")
+        return {"tipus": "cimke", "kep": "noveny", "kerdes": kerdes}
+
+    if tipus == "memoria":
+        # Memóriajáték: kép (emoji) vagy szó, és a párja. A jobb oldalt a
+        # felolvasó kimondja, amikor a gyerek felfordítja.
+        parok = adat.get("parok")
+        if not isinstance(parok, list):
+            return None
+        tiszta, latott = [], set()
+        for par in parok[:6]:
+            if isinstance(par, (list, tuple)) and len(par) == 2:
+                bal, jobb = str(par[0]).strip()[:24], str(par[1]).strip()[:24]
+                if bal and jobb and bal not in latott and jobb not in latott:
+                    latott.update((bal, jobb))
+                    tiszta.append([bal, jobb])
+        if len(tiszta) < 3:
+            return None
+        kerdes = ("Encuentra las parejas." if es_tanterv
+                  else "Találd meg a párokat!")
+        return {"tipus": "memoria", "parok": tiszta, "kerdes": kerdes}
+
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
         # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
@@ -6824,10 +6954,10 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    A kérdést („Mutasd meg az órán: fél négy!") a program írja ki – te ne
    írd le előtte számokkal az időpontot, mert az elárulná a megoldást.
 
-⚠️ A 11–17. FELÜLETEK ELŐTT MINDIG TANÍTS: ugyanabban a válaszban, a
+⚠️ A 11–25. FELÜLETEK ELŐTT MINDIG TANÍTS: ugyanabban a válaszban, a
 jelölő ELŐTT magyarázd el röviden, egy példán, mi a lényeg (mit jelent a
 sor és az oszlop, hogyan kell a szögmérőt leolvasni, mi az x és az y, mi a
-terület és a kerület). Az első ilyen feladat legyen könnyű. Feladat
+terület és a kerület, mit jelent a százalék, hol van kelet). Az első ilyen feladat legyen könnyű. Feladat
 magyarázat nélkül soha.
 
 14) SZORZÁS TÉGLALAP-RÁCSON — a szorzás jelentése (2–4. osztály). A gyerek
@@ -6852,6 +6982,49 @@ magyarázat nélkül soha.
    <FELADAT>{"tipus":"terulet","terulet":12,"kerulet":14}</FELADAT>
    A rács 10 × 8-as – a feladatnak ezen belül megoldhatónak kell lennie.
 
+18) EGYENLET-MÉRLEG — az egyenlet jelentése (5–7. osztály). A bal
+   serpenyőn az x és "a" darab súly, a jobbon "b" darab. A gyerek mindkét
+   oldalról ugyanannyi súlyt vesz le, amíg az x egyedül marad:
+   <FELADAT>{"tipus":"merleg","a":3,"b":7}</FELADAT>
+   "a" 1–9, és x = b − a legyen 1 és 12 között. Az x értékét ne írd le.
+
+19) SZÁZALÉKSÁV — a százalék fogalma (5–7. osztály). A gyerek kiszínezi
+   a sáv megadott részét: <FELADAT>{"tipus":"szazalek","cel":25}</FELADAT>
+   "cel" 5 és 95 között, öttel osztható.
+
+20) TÖRT A SZÁMEGYENESEN (3–5. osztály). A 0 és 1 közötti szakasz
+   "nevezo" egyenlő részre van osztva; a gyerek a tört helyére koppint:
+   <FELADAT>{"tipus":"tort","szamlalo":3,"nevezo":4}</FELADAT>
+   "nevezo" 2–10, "szamlalo" 1-től a nevezőnél eggyel kisebbig.
+
+21) IRÁNYTŰ — égtájak (környezetismeret, földrajz, 3–5. osztály). A gyerek
+   a nyilat a kért égtáj felé fordítja; az észak mindig felül van:
+   <FELADAT>{"tipus":"irany","cel":"kelet"}</FELADAT>
+   "cel": kelet, dél, nyugat, északkelet, délkelet, délnyugat, északnyugat.
+
+22) IDŐVONAL — történelem (4–8. osztály). A gyerek az eseménykártyákat a
+   jó évszám fölé húzza:
+   <FELADAT>{"tipus":"idovonal","esemenyek":[["Honfoglalás",895],["Államalapítás",1000],["Tatárjárás",1241]]}</FELADAT>
+   Három–öt esemény, mind különböző évben; az évszámot csak olyan
+   eseményhez adj meg, amelyben BIZTOS vagy.
+
+23) KOTTA ZONGORÁVAL — ének-zene (1–4. osztály). A hangjegyek a kottán
+   vannak, a gyerek sorban lejátssza őket a zongorán:
+   <FELADAT>{"tipus":"kotta","hangok":["mi","ré","dó"]}</FELADAT>
+   Három–hat hang a dó, ré, mi, fá, szó, lá közül.
+
+24) NÖVÉNY CÍMKÉZÉSE — környezetismeret (1–4. osztály). Kész rajz, a
+   gyerek a virág, levél, szár, gyökér szót húzza a helyére:
+   <FELADAT>{"tipus":"cimke","kep":"noveny"}</FELADAT>
+   Csak ez az egy rajz van; más ábrához a 9) ábra-címkézést használd.
+
+25) MEMÓRIAJÁTÉK — szótanulás, de jó minden párosításhoz (idegen nyelv
+   1–8. osztály, fogalmak, ország–főváros). A párok egyik fele lehet
+   emoji is; a JOBB oldalt a felolvasó kimondja, amikor a gyerek
+   felfordítja, ezért idegen nyelven a jobb oldal az idegen szó:
+   <FELADAT>{"tipus":"memoria","parok":[["🍎","apple"],["🐶","dog"],["🐱","cat"],["🏠","house"]]}</FELADAT>
+   Három–hat pár, rövid szavak. Szünetben, lazításnak is ajánlhatod.
+
 🔴 A LEGFONTOSABB SZABÁLY EZEN A LISTÁN
 Ha a válaszodban BÁRMIT kérsz a gyerektől — számolást, kiválasztást,
 kiegészítést, sorbarendezést, megnevezést —, akkor azt KÖTELEZŐ <FELADAT>
@@ -6874,6 +7047,14 @@ perc alatt megunja.
   „Mérd meg / állítsd be a szöget"    → szogmero
   „Hol van a (3; −2) pont?"           → koordinata
   „Rajzolj 12 területű téglalapot"    → terulet
+  „Oldd meg: x + 3 = 7" (5–7. o.)     → merleg
+  „Színezd ki a 25%-ot!"              → szazalek
+  „Hol van a 3/4 a számegyenesen?"    → tort
+  égtájak                             → irany
+  „Mikor történt? Rakd az évszámhoz"  → idovonal
+  hangjegyek, dó-ré-mi                → kotta
+  a növény részei                     → cimke
+  szavak gyakorlása játékosan         → memoria
   fogalom és jelentése párban         → parosit
   eldöntendő, NEM számolós kérdés     → valaszt
 
@@ -7000,10 +7181,11 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    media»); no escribas antes la hora con números, porque daría la
    solución.
 
-⚠️ ANTES DE LAS SUPERFICIES 11–17 ENSEÑA SIEMPRE: en la misma respuesta,
+⚠️ ANTES DE LAS SUPERFICIES 11–25 ENSEÑA SIEMPRE: en la misma respuesta,
 antes de la marca, explica brevemente con un ejemplo la idea (qué son las
 filas y las columnas, cómo se lee el transportador, qué son la x y la y,
-qué es el área y el perímetro). El primer ejercicio, fácil. Nunca un
+qué es el área y el perímetro, qué es un porcentaje, dónde está el
+este). El primer ejercicio, fácil. Nunca un
 ejercicio sin explicación.
 
 14) MULTIPLICACIÓN EN CUADRÍCULA — qué significa multiplicar (2.º–4.º). El
@@ -7028,6 +7210,50 @@ ejercicio sin explicación.
    <FELADAT>{"tipus":"terulet","terulet":12,"kerulet":14}</FELADAT>
    La cuadrícula es de 10 × 8: el ejercicio debe poder resolverse en ella.
 
+18) BALANZA DE ECUACIONES — qué es una ecuación (5.º–6.º y 1.º–2.º ESO). En
+   el plato izquierdo están la x y "a" pesas; en el derecho, "b" pesas. El
+   niño quita el mismo número de pesas de los dos lados hasta que la x
+   queda sola:
+   <FELADAT>{"tipus":"merleg","a":3,"b":7}</FELADAT>
+   "a" 1–9, y x = b − a entre 1 y 12. No escribas el valor de x.
+
+19) BARRA DE PORCENTAJES — el concepto de porcentaje (5.º–6.º y ESO). El
+   niño colorea la parte pedida: <FELADAT>{"tipus":"szazalek","cel":25}</FELADAT>
+   "cel" entre 5 y 95, múltiplo de cinco.
+
+20) FRACCIÓN EN LA RECTA NUMÉRICA (3.º–5.º). El segmento de 0 a 1 está
+   dividido en "nevezo" partes iguales; el niño pulsa donde está la fracción:
+   <FELADAT>{"tipus":"tort","szamlalo":3,"nevezo":4}</FELADAT>
+   "nevezo" 2–10, "szamlalo" desde 1 hasta uno menos que el denominador.
+
+21) BRÚJULA — puntos cardinales (Ciencias Sociales, 2.º–5.º). El niño gira
+   la flecha hacia el punto pedido; el norte siempre está arriba:
+   <FELADAT>{"tipus":"irany","cel":"este"}</FELADAT>
+   "cel": este, sur, oeste, noreste, sureste, suroeste, noroeste.
+
+22) LÍNEA DEL TIEMPO — Historia (4.º–6.º y ESO). El niño arrastra cada
+   acontecimiento sobre su año:
+   <FELADAT>{"tipus":"idovonal","esemenyek":[["Llegada de Colón a América",1492],["Descubrimiento de Altamira",1868],["Constitución española",1978]]}</FELADAT>
+   De tres a cinco acontecimientos, cada uno en un año distinto; pon el año
+   solo si estás SEGURO.
+
+23) PENTAGRAMA CON PIANO — Música (1.º–4.º). Las notas están en el
+   pentagrama y el niño las toca en orden en el piano:
+   <FELADAT>{"tipus":"kotta","hangok":["mi","re","do"]}</FELADAT>
+   De tres a seis notas entre do, re, mi, fa, sol, la.
+
+24) ETIQUETAR LA PLANTA — Ciencias de la Naturaleza (1.º–4.º). Dibujo
+   hecho; el niño arrastra flor, hoja, tallo y raíz a su sitio:
+   <FELADAT>{"tipus":"cimke","kep":"noveny"}</FELADAT>
+   Solo existe este dibujo; para otros usa el 9) de etiquetar dibujos.
+
+25) JUEGO DE MEMORIA — vocabulario, pero sirve para cualquier pareja
+   (inglés 1.º–6.º, conceptos, país–capital). Un lado puede ser un emoji;
+   el lado DERECHO lo pronuncia la voz cuando el niño gira la carta, así
+   que en inglés el lado derecho es la palabra inglesa:
+   <FELADAT>{"tipus":"memoria","parok":[["🍎","apple"],["🐶","dog"],["🐱","cat"],["🏠","house"]]}</FELADAT>
+   De tres a seis parejas, palabras cortas. También vale para un descanso.
+
 🔴 LA REGLA MÁS IMPORTANTE DE ESTA LISTA
 Si en tu respuesta pides CUALQUIER COSA al niño — calcular, elegir,
 completar, ordenar, nombrar —, es OBLIGATORIO darlo con la marca <FELADAT>.
@@ -7050,6 +7276,14 @@ Cómo elegir la superficie:
   «Mide / ajusta el ángulo»             → szogmero
   «¿Dónde está el punto (3, −2)?»       → koordinata
   «Dibuja un rectángulo de área 12»     → terulet
+  «Resuelve: x + 3 = 7» (5.º–6.º)       → merleg
+  «Colorea el 25 %»                     → szazalek
+  «¿Dónde está 3/4 en la recta?»        → tort
+  puntos cardinales                     → irany
+  «¿Cuándo ocurrió? Ponlo en su año»    → idovonal
+  notas, do-re-mi                       → kotta
+  las partes de la planta               → cimke
+  practicar palabras jugando            → memoria
   concepto y significado en pareja      → parosit
   pregunta cerrada que NO es cálculo    → valaszt
 
