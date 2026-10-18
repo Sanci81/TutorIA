@@ -556,7 +556,13 @@
   .ie-szam:hover circle{fill:#FFF4E0}
   .ie-uzenet{margin:0 0 10px;padding:10px 12px;border-radius:12px;background:#FFF1E0;
       color:#8A4B00;font-weight:700;font-size:14.5px;line-height:1.4}
-  .ie-konfetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+  .ie-konfetti{position:fixed;inset:0;pointer-events:none;z-index:9999}
+  .feladat-pizza,.feladat-beka,.feladat-ora{position:relative}
+  .ie-szuper{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);
+      background:#1F7A4D;color:#fff;font-weight:900;font-size:30px;padding:12px 26px;
+      border-radius:999px;box-shadow:0 10px 26px rgba(14,42,30,.3);pointer-events:none;
+      animation:ie-szuper .5s cubic-bezier(.3,1.6,.5,1) both;z-index:5;white-space:nowrap}
+  @keyframes ie-szuper{0%{transform:translate(-50%,-50%) scale(0)}100%{transform:translate(-50%,-50%) scale(1)}}
   @keyframes ie-rezeg{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}
       40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
   .ie-rezeg{animation:ie-rezeg .45s ease}
@@ -1140,6 +1146,7 @@
         pizzaTipp: {{ t('pizza_tipp')|tojson }},
         oraValasz: {{ t('ora_valasz')|tojson }},
         oraTipp: {{ t('ora_tipp')|tojson }},
+        ieSzuper: {{ t('ie_szuper')|tojson }},
         utasitasAltalanos: {{ t('utasitas_altalanos')|tojson }},
         gombNehezebb: {{ t('gomb_nehezebb')|tojson }},
         gombPelda: {{ t('gomb_pelda')|tojson }},
@@ -2251,6 +2258,17 @@
         else { ieFut = false; ieCtx.clearRect(0, 0, ieVaszon.width, ieVaszon.height); }
     }
 
+    /* SIKER: a konfetti mellett egy nagy felirat is megjelenik a feladaton,
+       hogy akkor is egyértelmű legyen, ha a konfettit nem látni. */
+    function ieUnnep(doboz) {
+        var b = document.createElement('div');
+        b.className = 'ie-szuper';
+        b.textContent = L.ieSzuper;
+        doboz.appendChild(b);
+        ieKonfetti(doboz);
+        setTimeout(function () { ieKonfetti(doboz); }, 350);
+    }
+
     /* ── TÖRTPIZZA ─────────────────────────────────────────────────── */
     function pizzaFeladat(f) {
         var doboz = document.createElement('div');
@@ -2308,8 +2326,8 @@
             if (db === f.cel) {
                 kesz.disabled = true;
                 ieAnimal(svg.querySelector('.ie-pizza-g'), 'ie-forog');
-                ieKonfetti(svg);
-                setTimeout(function () { feladatKuld(doboz, valasz); }, 950);
+                ieUnnep(doboz);
+                setTimeout(function () { feladatKuld(doboz, valasz); }, 1400);
                 return;
             }
             hibak++;
@@ -2402,13 +2420,13 @@
             (function kovetkezo() {
                 if (db === f.lepes) {
                     var valasz = f.start + ' ' + f.jel + ' ' + f.lepes + ' = ' + tipp;
-                    if (tipp === f.cel) { ieKonfetti(svg); }
+                    if (tipp === f.cel) { ieUnnep(doboz); }
                     else {
                         ieEl('circle', {cx: bx(f.cel), cy: YV + 34, r: 23, fill: 'none',
                             stroke: '#3DDC97', 'stroke-width': 4}, svg);
                         ieAnimal(svg, 'ie-rezeg');
                     }
-                    setTimeout(function () { feladatKuld(doboz, valasz); }, 1100);
+                    setTimeout(function () { feladatKuld(doboz, valasz); }, 1400);
                     return;
                 }
                 db++; ugras(most, most + irany, db, kovetkezo); most += irany;
@@ -2490,8 +2508,8 @@
             if (allas.o === f.ora && allas.p === f.perc) {
                 kesz.disabled = true;
                 ieAnimal(g, 'ie-csorog');
-                ieKonfetti(svg);
-                setTimeout(function () { feladatKuld(doboz, valasz); }, 950);
+                ieUnnep(doboz);
+                setTimeout(function () { feladatKuld(doboz, valasz); }, 1400);
                 return;
             }
             hibak++;

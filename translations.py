@@ -323,6 +323,7 @@ TRANSLATIONS = {
     "pizza_tipp": {"hu": "Még nem jó. A lenti szám azt mutatja, hány részre vágtuk, a fenti azt, hányat kell kiszínezni.",
                    "es": "Todavía no. El número de abajo dice en cuántos trozos está cortada; el de arriba, cuántos hay que colorear."},
     "ora_valasz": {"hu": "Beállítottam: {ido}", "es": "He puesto: {ido}"},
+    "ie_szuper": {"hu": "Szuper! 🎉", "es": "¡Genial! 🎉"},
     "ora_tipp": {"hu": "Még nem jó. A nagy (narancs) mutató a percet, a kicsi (zöld) az órát mutatja.",
                  "es": "Todavía no. La aguja larga (naranja) marca los minutos y la corta (verde), la hora."},
     "utasitas_altalanos": {"hu": "Oldd meg a feladatot.",
