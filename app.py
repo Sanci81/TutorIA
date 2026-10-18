@@ -942,6 +942,19 @@ class _MertKliens:
             u = getattr(valasz, "usage", None)
             if not u:
                 return
+            # GYORSÍTÓTÁR-MÉRÉS: a költség attól függ, a bemenő tokenek hány
+            # százalékát számolja az OpenAI tizedáron. A Railway naplóban:
+            # [CACHE] be=… ebbol_cache=… (xx%) ki=…
+            try:
+                _be = int(getattr(u, "prompt_tokens", 0) or 0)
+                _det = getattr(u, "prompt_tokens_details", None)
+                _ca = int(getattr(_det, "cached_tokens", 0) or 0) if _det else 0
+                _ki = int(getattr(u, "completion_tokens", 0) or 0)
+                if _be:
+                    print(f"[CACHE] be={_be} ebbol_cache={_ca} "
+                          f"({round(100 * _ca / _be)}%) ki={_ki}", flush=True)
+            except Exception:
+                pass
             database.add_usage(
                 int(gyerek),
                 be_token=int(getattr(u, "prompt_tokens", 0)
