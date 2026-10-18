@@ -537,6 +537,36 @@
      gesztus, mint a füzetben, ezért nem kell magyarázni. */
   .feladat-szoveg{width:100%}
   .fsz-kerdes{margin:0 0 14px;font-size:14.5px;line-height:1.5;font-weight:600}
+  /* ── INTERAKTÍV ELEMEK (pizza, béka, óra) ── */
+  .ie-kerdes{font-size:17px;font-weight:700}
+  .ie-tort{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;
+      line-height:1;margin:0 3px;font-weight:800}
+  .ie-tort span:first-child{border-bottom:2.5px solid currentColor;padding:0 3px 2px}
+  .ie-tort span:last-child{padding-top:2px}
+  .ie-allas{font-size:14px;font-weight:700;color:#5B6B63;margin:-4px 0 4px}
+  .ie-svg{display:block;width:100%;height:auto;margin:6px auto 12px;overflow:visible;
+      touch-action:none;user-select:none;-webkit-user-select:none}
+  .ie-pizza,.ie-ora{max-width:300px}
+  .ie-beka{max-width:620px}
+  /* A munkatér flex-doboza a tartalom szélességére húzná össze: a béka kapja
+     meg a teljes szélességet, a pizza és az óra egy kényelmes kártyát. */
+  .munkater-test > .feladat-beka{flex:1 1 auto;width:100%;max-width:680px}
+  .munkater-test > .feladat-pizza,.munkater-test > .feladat-ora{flex:0 1 380px;width:100%}
+  .ie-szelet,.ie-szam{cursor:pointer}
+  .ie-szam:hover circle{fill:#FFF4E0}
+  .ie-uzenet{margin:0 0 10px;padding:10px 12px;border-radius:12px;background:#FFF1E0;
+      color:#8A4B00;font-weight:700;font-size:14.5px;line-height:1.4}
+  .ie-konfetti{position:fixed;inset:0;pointer-events:none;z-index:200}
+  @keyframes ie-rezeg{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}
+      40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  .ie-rezeg{animation:ie-rezeg .45s ease}
+  @keyframes ie-forog{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .ie-forog{animation:ie-forog .9s cubic-bezier(.3,1.4,.5,1)}
+  @keyframes ie-pattan{0%{transform:scale(0)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+  .ie-pattan{transform-box:fill-box;transform-origin:center;animation:ie-pattan .35s ease-out both}
+  @keyframes ie-csorog{0%,100%{transform:rotate(0)}15%{transform:rotate(-9deg)}30%{transform:rotate(9deg)}
+      45%{transform:rotate(-7deg)}60%{transform:rotate(7deg)}75%{transform:rotate(-4deg)}}
+  .ie-csorog{transform-box:fill-box;transform-origin:center;animation:ie-csorog .9s ease}
   .fszoveg-mondat{font-size:20px;line-height:2;margin-bottom:18px}
   .fszoveg-szo{font:inherit;color:inherit;background:none;border:none;
                border-bottom:3px solid transparent;border-radius:4px;
@@ -1102,6 +1132,14 @@
         utasitasAbra: {{ t('utasitas_abra')|tojson }},
         utasitasModell: {{ t('utasitas_modell')|tojson }},
         modellCel: {{ t('modell_cel')|tojson }},
+        utasitasPizza: {{ t('utasitas_pizza')|tojson }},
+        utasitasBeka: {{ t('utasitas_beka')|tojson }},
+        utasitasOra: {{ t('utasitas_ora')|tojson }},
+        pizzaAllas: {{ t('pizza_allas')|tojson }},
+        pizzaValasz: {{ t('pizza_valasz')|tojson }},
+        pizzaTipp: {{ t('pizza_tipp')|tojson }},
+        oraValasz: {{ t('ora_valasz')|tojson }},
+        oraTipp: {{ t('ora_tipp')|tojson }},
         utasitasAltalanos: {{ t('utasitas_altalanos')|tojson }},
         gombNehezebb: {{ t('gomb_nehezebb')|tojson }},
         gombPelda: {{ t('gomb_pelda')|tojson }},
@@ -1579,6 +1617,9 @@
         if (tipus === 'epito') { return L.utasitasEpito; }
         if (tipus === 'abra') { return L.utasitasAbra; }
         if (tipus === 'modell') { return L.utasitasModell; }
+        if (tipus === 'pizza') { return L.utasitasPizza; }
+        if (tipus === 'beka') { return L.utasitasBeka; }
+        if (tipus === 'ora') { return L.utasitasOra; }
         return L.utasitasAltalanos;
     }
 
@@ -1774,6 +1815,9 @@
         if (f.tipus === 'epito') { return epitoKartyak(f); }
         if (f.tipus === 'abra') { return abraCimkezo(f); }
         if (f.tipus === 'modell') { return modellCsuszka(f); }
+        if (f.tipus === 'pizza') { return pizzaFeladat(f); }
+        if (f.tipus === 'beka') { return bekaFeladat(f); }
+        if (f.tipus === 'ora') { return oraFeladat(f); }
         return null;
     }
 
@@ -2121,6 +2165,342 @@
         doboz.appendChild(kesz);
 
         frissit();
+        return doboz;
+    }
+
+    // ══════════════════════════════════════════════════════════════════
+    // INTERAKTÍV ELEMEK (2026-10-18): TÖRTPIZZA, BÉKA, ÓRA
+    //
+    // Sándor a mintaoldalon kipróbálta és jóváhagyta őket. A számokat a
+    // tanár adja, a szerver ellenőrzi; a kérdés szövegét is a szerver írja.
+    // Jó válasznál animáció és konfetti, rossz válasznál egy tipp, és
+    // másodszorra már megy a válasz a tanárnak, hogy ő segítsen.
+    // A válasz sima üzenetként megy vissza, mint a többi feladatnál.
+    // ══════════════════════════════════════════════════════════════════
+    var IE_NS = 'http://www.w3.org/2000/svg';
+    function ieEl(nev, attr, szulo) {
+        var e = document.createElementNS(IE_NS, nev);
+        for (var k in attr) { e.setAttribute(k, attr[k]); }
+        if (szulo) { szulo.appendChild(e); }
+        return e;
+    }
+    function ieAnimal(elem, osztaly) {
+        elem.classList.remove(osztaly); void elem.getBoundingClientRect();
+        elem.classList.add(osztaly);
+    }
+    /* A kérdésben a „3/4"-et rendes, egymás alá írt törtként mutatjuk. */
+    function ieKerdes(szoveg) {
+        var p = document.createElement('p');
+        p.className = 'fsz-kerdes ie-kerdes';
+        var darabok = String(szoveg || '').split(/(\d+\/\d+)/);
+        darabok.forEach(function (d) {
+            var m = /^(\d+)\/(\d+)$/.exec(d);
+            if (m) {
+                var t = document.createElement('span');
+                t.className = 'ie-tort';
+                var fe = document.createElement('span'); fe.textContent = m[1];
+                var le = document.createElement('span'); le.textContent = m[2];
+                t.appendChild(fe); t.appendChild(le); p.appendChild(t);
+            } else if (d) {
+                p.appendChild(document.createTextNode(d));
+            }
+        });
+        return p;
+    }
+    function ieUzenet(doboz) {
+        var u = document.createElement('div');
+        u.className = 'ie-uzenet';
+        u.hidden = true;
+        doboz.appendChild(u);
+        return function (szoveg) { u.textContent = szoveg || ''; u.hidden = !szoveg; };
+    }
+    /* KONFETTI – egy közös vászon az egész oldalon. */
+    var ieVaszon = null, ieCtx = null, ieReszek = [], ieFut = false;
+    function ieKonfetti(elem) {
+        try {
+            if (!ieVaszon) {
+                ieVaszon = document.createElement('canvas');
+                ieVaszon.className = 'ie-konfetti';
+                document.body.appendChild(ieVaszon);
+                ieCtx = ieVaszon.getContext('2d');
+            }
+            ieVaszon.width = window.innerWidth; ieVaszon.height = window.innerHeight;
+            var r = elem.getBoundingClientRect();
+            var x = r.left + r.width / 2, y = r.top + r.height / 2;
+            var szinek = ['#F5A01E', '#3DDC97', '#E0609B', '#2F8FD8', '#FFD54A'];
+            for (var i = 0; i < 80; i++) {
+                var sz = Math.random() * Math.PI * 2, seb = 4 + Math.random() * 7;
+                ieReszek.push({x: x, y: y, vx: Math.cos(sz) * seb, vy: Math.sin(sz) * seb - 4,
+                    m: 5 + Math.random() * 6, f: Math.random() * 6, fs: (Math.random() - .5) * .3,
+                    c: szinek[i % szinek.length], t: 0});
+            }
+            if (!ieFut) { ieFut = true; requestAnimationFrame(ieLepes); }
+        } catch (e) { /* a konfetti csak díszítés */ }
+    }
+    function ieLepes() {
+        ieCtx.clearRect(0, 0, ieVaszon.width, ieVaszon.height);
+        ieReszek = ieReszek.filter(function (p) { return p.t < 100; });
+        ieReszek.forEach(function (p) {
+            p.t++; p.vy += .22; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.f += p.fs;
+            ieCtx.save(); ieCtx.translate(p.x, p.y); ieCtx.rotate(p.f);
+            ieCtx.globalAlpha = Math.max(0, 1 - p.t / 100);
+            ieCtx.fillStyle = p.c; ieCtx.fillRect(-p.m / 2, -p.m / 4, p.m, p.m / 2);
+            ieCtx.restore();
+        });
+        if (ieReszek.length) { requestAnimationFrame(ieLepes); }
+        else { ieFut = false; ieCtx.clearRect(0, 0, ieVaszon.width, ieVaszon.height); }
+    }
+
+    /* ── TÖRTPIZZA ─────────────────────────────────────────────────── */
+    function pizzaFeladat(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-pizza';
+        doboz.appendChild(ieKerdes(f.kerdes));
+        var allas = document.createElement('div');
+        allas.className = 'ie-allas';
+        doboz.appendChild(allas);
+        var svg = ieEl('svg', {viewBox: '-150 -150 300 300', 'class': 'ie-svg ie-pizza'});
+        doboz.appendChild(svg);
+        var n = f.osztas, ki = [], hibak = 0, R = 124;
+        function rajz() {
+            svg.innerHTML = '';
+            var g = ieEl('g', {'class': 'ie-pizza-g'}, svg);
+            ieEl('circle', {r: 138, fill: '#D9963F'}, g);
+            ieEl('circle', {r: R, fill: '#F7DFA8'}, g);
+            for (var i = 0; i < n; i++) {
+                var a1 = -Math.PI / 2 + i * 2 * Math.PI / n, a2 = a1 + 2 * Math.PI / n;
+                var d = 'M0 0 L' + (R * Math.cos(a1)) + ' ' + (R * Math.sin(a1)) +
+                        ' A' + R + ' ' + R + ' 0 0 1 ' + (R * Math.cos(a2)) + ' ' + (R * Math.sin(a2)) + ' Z';
+                var sz = ieEl('g', {'class': 'ie-szelet', 'data-i': i}, g);
+                ieEl('path', {d: d, fill: ki[i] ? '#E2493B' : '#F7DFA8', stroke: '#C98A3A',
+                    'stroke-width': 3}, sz);
+                if (ki[i]) {
+                    var kozep = (a1 + a2) / 2, szel = 2 * Math.PI / n;
+                    [[.55, 0, 13], [.32, -.22, 9], [.32, .22, 9], [.78, -.12, 9], [.78, .14, 9]]
+                        .forEach(function (p, j) {
+                            var sg = kozep + p[1] * szel / .9;
+                            ieEl('circle', {cx: R * p[0] * Math.cos(sg), cy: R * p[0] * Math.sin(sg),
+                                r: p[2], fill: '#B3261E', stroke: '#8E1C15', 'class': 'ie-pattan',
+                                style: 'animation-delay:' + (j * 40) + 'ms'}, sz);
+                        });
+                }
+            }
+            var db = ki.filter(Boolean).length;
+            allas.textContent = L.pizzaAllas + ' ' + db + ' / ' + n;
+        }
+        svg.addEventListener('click', function (e) {
+            if (doboz.classList.contains('feladat-kesz')) { return; }
+            var sz = e.target.closest ? e.target.closest('.ie-szelet') : null;
+            if (!sz) { return; }
+            var i = +sz.getAttribute('data-i');
+            ki[i] = !ki[i];
+            uzen('');
+            rajz();
+        });
+        var uzen = ieUzenet(doboz);
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var db = ki.filter(Boolean).length;
+            var valasz = L.pizzaValasz.replace('{n}', n).replace('{k}', db);
+            if (db === f.cel) {
+                kesz.disabled = true;
+                ieAnimal(svg.querySelector('.ie-pizza-g'), 'ie-forog');
+                ieKonfetti(svg);
+                setTimeout(function () { feladatKuld(doboz, valasz); }, 950);
+                return;
+            }
+            hibak++;
+            ieAnimal(svg, 'ie-rezeg');
+            if (hibak < 2) { uzen(L.pizzaTipp); return; }
+            feladatKuld(doboz, valasz);
+        });
+        doboz.appendChild(kesz);
+        rajz();
+        return doboz;
+    }
+
+    /* ── BÉKA A SZÁMEGYENESEN ──────────────────────────────────────── */
+    function bekaFeladat(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-beka';
+        doboz.appendChild(ieKerdes(f.kerdes));
+        var svg = ieEl('svg', {viewBox: '0 0 640 215', 'class': 'ie-svg ie-beka'});
+        doboz.appendChild(svg);
+        var also = Math.min(f.start, f.cel), felso = Math.max(f.start, f.cel);
+        var LO = Math.max(0, Math.min(also - 2, 8)), HI = LO + 12;
+        if (felso + 1 > HI) { HI = Math.min(20, felso + 1); LO = HI - 12; }
+        var X0 = 34, LEP = 48, YV = 140, mozog = false;
+        function bx(n) { return X0 + (n - LO) * LEP; }
+        var nyomok = ieEl('g', {}, svg);
+        ieEl('line', {x1: X0 - 18, y1: YV, x2: bx(HI) + 18, y2: YV, stroke: '#1F7A4D',
+            'stroke-width': 4, 'stroke-linecap': 'round'}, svg);
+        for (var n = LO; n <= HI; n++) {
+            var g = ieEl('g', {'class': 'ie-szam', 'data-n': n}, svg);
+            ieEl('line', {x1: bx(n), y1: YV - 8, x2: bx(n), y2: YV + 8, stroke: '#1F7A4D',
+                'stroke-width': 3}, g);
+            ieEl('circle', {cx: bx(n), cy: YV + 34, r: 19, fill: '#fff', stroke: '#E0E8E3',
+                'stroke-width': 2}, g);
+            var t = ieEl('text', {x: bx(n), y: YV + 41, 'text-anchor': 'middle',
+                'font-size': 19, 'font-weight': 800, fill: '#0E2A1E'}, g);
+            t.textContent = n;
+            ieEl('rect', {x: bx(n) - LEP / 2, y: YV - 20, width: LEP, height: 80,
+                fill: 'transparent'}, g);
+        }
+        var cimkek = ieEl('g', {}, svg);
+        var beka = ieEl('g', {}, svg);
+        ieEl('ellipse', {cx: 0, cy: -16, rx: 20, ry: 15, fill: '#4CB944', stroke: '#2E7D32',
+            'stroke-width': 2.5}, beka);
+        ieEl('ellipse', {cx: 0, cy: -11, rx: 11, ry: 7, fill: '#C8F0B8'}, beka);
+        [-9, 9].forEach(function (x) {
+            ieEl('circle', {cx: x, cy: -31, r: 7.5, fill: '#4CB944', stroke: '#2E7D32',
+                'stroke-width': 2.5}, beka);
+            ieEl('circle', {cx: x, cy: -31, r: 4, fill: '#fff'}, beka);
+            ieEl('circle', {cx: x + 1, cy: -31, r: 2.2, fill: '#1B1B1B'}, beka);
+        });
+        ieEl('path', {d: 'M-7 -20 Q0 -14 7 -20', fill: 'none', stroke: '#1B5E20',
+            'stroke-width': 2.5, 'stroke-linecap': 'round'}, beka);
+        function hely(x, y, sx, sy) {
+            beka.setAttribute('transform', 'translate(' + x + ',' + y + ') scale(' +
+                (1.35 * (sx || 1)) + ',' + (1.35 * (sy || 1)) + ')');
+        }
+        hely(bx(f.start), YV);
+        function ugras(honnan, hova, sorszam, kesz) {
+            var t0 = null, IDO = 430, magas = 52;
+            ieEl('path', {d: 'M' + bx(honnan) + ' ' + YV + ' Q' + ((bx(honnan) + bx(hova)) / 2) +
+                ' ' + (YV - magas * 2.1) + ' ' + bx(hova) + ' ' + YV, fill: 'none', stroke: '#F5A01E',
+                'stroke-width': 3, 'stroke-dasharray': '6 6'}, nyomok);
+            function k(ido) {
+                if (t0 === null) { t0 = ido; }
+                var p = Math.min(1, (ido - t0) / IDO);
+                var nyujt = 1 + .18 * Math.sin(Math.PI * p);
+                hely(bx(honnan) + (bx(hova) - bx(honnan)) * p,
+                     YV - Math.sin(Math.PI * p) * magas * 1.05, 2 - nyujt, nyujt);
+                if (p < 1) { requestAnimationFrame(k); return; }
+                hely(bx(hova), YV);
+                var b = ieEl('g', {'class': 'ie-pattan'}, cimkek);
+                var cx = (bx(honnan) + bx(hova)) / 2;
+                ieEl('circle', {cx: cx, cy: YV - magas - 34, r: 12, fill: '#F5A01E'}, b);
+                var tx = ieEl('text', {x: cx, y: YV - magas - 29, 'text-anchor': 'middle',
+                    'font-size': 14, 'font-weight': 900, fill: '#fff'}, b);
+                tx.textContent = sorszam;
+                setTimeout(kesz, 90);
+            }
+            requestAnimationFrame(k);
+        }
+        svg.addEventListener('click', function (e) {
+            if (mozog || doboz.classList.contains('feladat-kesz')) { return; }
+            var sz = e.target.closest ? e.target.closest('.ie-szam') : null;
+            if (!sz) { return; }
+            var tipp = +sz.getAttribute('data-n');
+            mozog = true;
+            ieEl('circle', {cx: bx(tipp), cy: YV + 34, r: 23, fill: 'none', stroke: '#2F8FD8',
+                'stroke-width': 3.5}, svg);
+            var most = f.start, db = 0, irany = f.hatra ? -1 : 1;
+            (function kovetkezo() {
+                if (db === f.lepes) {
+                    var valasz = f.start + ' ' + f.jel + ' ' + f.lepes + ' = ' + tipp;
+                    if (tipp === f.cel) { ieKonfetti(svg); }
+                    else {
+                        ieEl('circle', {cx: bx(f.cel), cy: YV + 34, r: 23, fill: 'none',
+                            stroke: '#3DDC97', 'stroke-width': 4}, svg);
+                        ieAnimal(svg, 'ie-rezeg');
+                    }
+                    setTimeout(function () { feladatKuld(doboz, valasz); }, 1100);
+                    return;
+                }
+                db++; ugras(most, most + irany, db, kovetkezo); most += irany;
+            })();
+        });
+        return doboz;
+    }
+
+    /* ── ÓRA HÚZHATÓ MUTATÓKKAL ────────────────────────────────────── */
+    function oraFeladat(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-ora';
+        doboz.appendChild(ieKerdes(f.kerdes));
+        var svg = ieEl('svg', {viewBox: '-150 -150 300 300', 'class': 'ie-svg ie-ora'});
+        doboz.appendChild(svg);
+        var allas = {o: 12, p: 0}, fog = null, hibak = 0;
+        var g = ieEl('g', {'class': 'ie-ora-g'}, svg);
+        ieEl('circle', {r: 140, fill: '#F5A01E'}, g);
+        ieEl('circle', {r: 128, fill: '#fff', stroke: '#F3E4C8', 'stroke-width': 4}, g);
+        for (var i = 0; i < 60; i++) {
+            var a = i * Math.PI / 30, h = i % 5 === 0;
+            ieEl('line', {x1: Math.sin(a) * (h ? 108 : 114), y1: -Math.cos(a) * (h ? 108 : 114),
+                x2: Math.sin(a) * 120, y2: -Math.cos(a) * 120, stroke: h ? '#0E2A1E' : '#B8C4BD',
+                'stroke-width': h ? 4 : 2, 'stroke-linecap': 'round'}, g);
+        }
+        for (var n = 1; n <= 12; n++) {
+            var b = n * Math.PI / 6;
+            var t = ieEl('text', {x: Math.sin(b) * 88, y: -Math.cos(b) * 88 + 8,
+                'text-anchor': 'middle', 'font-size': 24, 'font-weight': 900, fill: '#0E2A1E'}, g);
+            t.textContent = n;
+        }
+        var kis = ieEl('g', {style: 'cursor:grab'}, g);
+        ieEl('line', {x1: 0, y1: 12, x2: 0, y2: -62, stroke: 'transparent', 'stroke-width': 34}, kis);
+        ieEl('line', {x1: 0, y1: 12, x2: 0, y2: -62, stroke: '#1F7A4D', 'stroke-width': 11,
+            'stroke-linecap': 'round'}, kis);
+        var nagy = ieEl('g', {style: 'cursor:grab'}, g);
+        ieEl('line', {x1: 0, y1: 16, x2: 0, y2: -100, stroke: 'transparent', 'stroke-width': 30}, nagy);
+        ieEl('line', {x1: 0, y1: 16, x2: 0, y2: -100, stroke: '#F5A01E', 'stroke-width': 7,
+            'stroke-linecap': 'round'}, nagy);
+        ieEl('circle', {r: 9, fill: '#0E2A1E'}, g);
+        function mutatok() {
+            kis.setAttribute('transform', 'rotate(' + ((allas.o % 12) * 30 + allas.p * .5) + ')');
+            nagy.setAttribute('transform', 'rotate(' + allas.p * 6 + ')');
+        }
+        function szog(e) {
+            var r = svg.getBoundingClientRect();
+            var x = e.clientX - (r.left + r.width / 2), y = e.clientY - (r.top + r.height / 2);
+            return (Math.atan2(x, -y) * 180 / Math.PI + 360) % 360;
+        }
+        function kezd(e, mi) {
+            if (doboz.classList.contains('feladat-kesz')) { return; }
+            e.preventDefault(); fog = mi;
+            try { svg.setPointerCapture(e.pointerId); } catch (x) {}
+            uzen('');
+        }
+        kis.addEventListener('pointerdown', function (e) { kezd(e, 'o'); });
+        nagy.addEventListener('pointerdown', function (e) { kezd(e, 'p'); });
+        svg.addEventListener('pointermove', function (e) {
+            if (!fog) { return; }
+            var a = szog(e);
+            if (fog === 'p') { allas.p = Math.round(a / 30) * 5 % 60; }
+            else {
+                var o = Math.round((a - allas.p * .5) / 30);
+                o = ((o % 12) + 12) % 12; allas.o = o === 0 ? 12 : o;
+            }
+            mutatok();
+        });
+        ['pointerup', 'pointercancel'].forEach(function (ev) {
+            svg.addEventListener(ev, function () { fog = null; });
+        });
+        var uzen = ieUzenet(doboz);
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var ido = allas.o + ':' + (allas.p < 10 ? '0' : '') + allas.p;
+            var valasz = L.oraValasz.replace('{ido}', ido);
+            if (allas.o === f.ora && allas.p === f.perc) {
+                kesz.disabled = true;
+                ieAnimal(g, 'ie-csorog');
+                ieKonfetti(svg);
+                setTimeout(function () { feladatKuld(doboz, valasz); }, 950);
+                return;
+            }
+            hibak++;
+            ieAnimal(svg, 'ie-rezeg');
+            if (hibak < 2) { uzen(L.oraTipp); return; }
+            feladatKuld(doboz, valasz);
+        });
+        doboz.appendChild(kesz);
+        mutatok();
         return doboz;
     }
 

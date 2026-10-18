@@ -429,6 +429,14 @@ def _feladat_leiras(f: dict) -> str:
                 + " / ".join(f.get("elemek") or []))
     if tipus in ("szam", "szamolo"):
         return "szám beírása egy mezőbe"
+    if tipus == "pizza":
+        return (f"pizza {f.get('osztas')} szeletre vágva, a gyerek {f.get('cel')} "
+                "szeletet színez ki")
+    if tipus == "beka":
+        return (f"számegyenes, a béka a {f.get('start')}-ről {f.get('lepes')}-t ugrik "
+                f"{'hátra' if f.get('hatra') else 'előre'}, a gyerek a célszámra koppint")
+    if tipus == "ora":
+        return f"óra húzható mutatókkal – {f.get('kerdes', '')}"
     if tipus == "szoveg":
         return f"szavak kijelölése a szövegben: „{f.get('szoveg', '')}”"
     return f"feladat ({tipus})"

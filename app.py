@@ -3478,6 +3478,53 @@ def _hianyzo_szavak(mondat: str, kinalat: list, text: str | None) -> list:
     return egyedi[:6]
 
 
+# Magyar toldalékok számokhoz 0–20: „a 7-en", „5-öt".
+_RAG_N = ["n", "en", "n", "on", "en", "ön", "on", "en", "on", "en", "en",
+          "en", "n", "on", "en", "ön", "on", "en", "on", "en", "on"]
+_RAG_T = ["t", "et", "t", "at", "et", "öt", "ot", "et", "at", "et", "et",
+          "et", "t", "at", "et", "öt", "ot", "et", "at", "et", "at"]
+
+
+def _szam_rag(n: int, rag: list) -> str:
+    return f"{n}-{rag[n]}" if 0 <= n < len(rag) else str(n)
+
+
+_ORA_HU = ["", "egy", "kettő", "három", "négy", "öt", "hat", "hét", "nyolc",
+           "kilenc", "tíz", "tizenegy", "tizenkettő"]
+_ORA_ES = ["", "una", "dos", "tres", "cuatro", "cinco", "seis", "siete",
+           "ocho", "nueve", "diez", "once", "doce"]
+
+
+def _ora_szoveg_hu(h: int, p: int) -> str:
+    kov = h % 12 + 1
+    if p == 0:
+        return f"pontosan {_ORA_HU[h]} óra"
+    if p == 15:
+        return f"negyed {_ORA_HU[kov]}"
+    if p == 30:
+        return f"fél {_ORA_HU[kov]}"
+    if p == 45:
+        return f"háromnegyed {_ORA_HU[kov]}"
+    return f"{h} óra {p} perc"
+
+
+def _ora_szoveg_es(h: int, p: int) -> str:
+    def ora(x):
+        return ("la " if x == 1 else "las ") + _ORA_ES[x]
+    kov = h % 12 + 1
+    if p == 0:
+        return ora(h) + " en punto"
+    if p == 15:
+        return ora(h) + " y cuarto"
+    if p == 30:
+        return ora(h) + " y media"
+    if p == 45:
+        return ora(kov) + " menos cuarto"
+    if p < 30:
+        return f"{ora(h)} y {p}"
+    return f"{ora(kov)} menos {60 - p}"
+
+
 def _feladat_parse_belso(text: str, *, grade: int | None = None,
                          es_tanterv: bool = False,
                          temakor: str | None = None) -> dict | None:
@@ -3621,6 +3668,60 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         # Csak ha így sem jön össze kettő, akkor marad a beírás.
         return {"tipus": "hianyzo", "mondat": mondat,
                 "szavak": _hianyzo_szavak(mondat, kinalat, text)}
+
+    # ── INTERAKTÍV ELEMEK (2026-10-18): pizza, béka, óra ─────────────────
+    # A tanár csak a SZÁMOKAT adja, a kérdés szövegét MI írjuk meg, és a
+    # helyes választ is mi tudjuk. Bármi gyanús: None, marad a sima kérdés.
+    if tipus == "pizza":
+        try:
+            n = int(adat.get("osztas"))
+            k = int(adat.get("cel"))
+        except Exception:
+            return None
+        if not (2 <= n <= 12 and 1 <= k <= n):
+            return None
+        return {"tipus": "pizza", "osztas": n, "cel": k,
+                "kerdes": (f"¡Colorea {k}/{n} de la pizza! Toca los trozos."
+                           if es_tanterv else
+                           f"Színezd ki a pizza {k}/{n} részét! Koppints a szeletekre.")}
+
+    if tipus in ("beka", "szamegyenes"):
+        try:
+            a = int(adat.get("start"))
+            b = int(adat.get("lepes"))
+        except Exception:
+            return None
+        irany = str(adat.get("irany") or "").strip().lower()
+        hatra = irany.startswith(("h", "atr", "back", "-", "vissza"))
+        cel = a - b if hatra else a + b
+        if not (0 <= a <= 20 and 1 <= b <= 10 and 0 <= cel <= 20):
+            return None
+        jel = "−" if hatra else "+"
+        # A béka a 20-as számkörhöz való. Nagyobbaknak sima beírós mező.
+        if grade is not None and grade > (2 if es_tanterv else 3):
+            return {"tipus": "szam", "muvelet": f"{a} {jel} {b}"}
+        if es_tanterv:
+            kerdes = (f"La rana está en el {a} y da {b} saltos "
+                      f"{'hacia atrás' if hatra else 'hacia delante'}. ¿Dónde cae?")
+        else:
+            kerdes = (f"A béka a {_szam_rag(a, _RAG_N)} ül, és {_szam_rag(b, _RAG_T)} "
+                      f"ugrik {'hátra' if hatra else 'előre'}. Hová érkezik?")
+        return {"tipus": "beka", "start": a, "lepes": b, "hatra": hatra,
+                "cel": cel, "jel": jel, "kerdes": kerdes}
+
+    if tipus == "ora":
+        try:
+            h = int(adat.get("ora"))
+            perc = int(adat.get("perc", 0))
+        except Exception:
+            return None
+        if not (0 <= h <= 23 and 0 <= perc < 60 and perc % 5 == 0):
+            return None
+        h = h % 12 or 12
+        kerdes = (f"Muestra en el reloj: {_ora_szoveg_es(h, perc)}."
+                  if es_tanterv else
+                  f"Mutasd meg az órán: {_ora_szoveg_hu(h, perc)}!")
+        return {"tipus": "ora", "ora": h, "perc": perc, "kerdes": kerdes}
 
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
@@ -6625,6 +6726,27 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    különben a feladat megoldhatatlan, és a program eldobja.
    Az "egyseg" elhagyható (cm, kg, N, ml).
 
+11) TÖRTPIZZA — a tört fogalma (2–5. osztály). A gyerek kiszínezi a pizza
+   szeleteit. "osztas" = hány EGYENLŐ szeletre vágtuk (2–12), "cel" =
+   hányat kell kiszínezni:
+   <FELADAT>{"tipus":"pizza","osztas":4,"cel":3}</FELADAT>
+   A kérdést a program írja ki, te csak a két számot add meg.
+
+12) BÉKA A SZÁMEGYENESEN — összeadás és kivonás a 20-as számkörben
+   (1–2. osztály). A béka a "start" számon ül, és "lepes" nagyot ugrik
+   előre vagy hátra. A gyerek arra a számra koppint, ahová szerinte
+   érkezik, a béka pedig egyenként végigugrálja – így látja is, miért:
+   <FELADAT>{"tipus":"beka","start":7,"lepes":5,"irany":"elore"}</FELADAT>
+   "irany": "elore" (összeadás) vagy "hatra" (kivonás). Minden szám, az
+   eredmény is, 0 és 20 között legyen.
+
+13) ÓRA — az idő leolvasása (1–4. osztály). A gyerek a mutatókat húzva
+   beállítja az időpontot. "ora" 1–12, "perc" 0, 15, 30 vagy 45 (vagy
+   ötnek a többszöröse):
+   <FELADAT>{"tipus":"ora","ora":3,"perc":30}</FELADAT>
+   A kérdést („Mutasd meg az órán: fél négy!") a program írja ki – te ne
+   írd le előtte számokkal az időpontot, mert az elárulná a megoldást.
+
 🔴 A LEGFONTOSABB SZABÁLY EZEN A LISTÁN
 Ha a válaszodban BÁRMIT kérsz a gyerektől — számolást, kiválasztást,
 kiegészítést, sorbarendezést, megnevezést —, akkor azt KÖTELEZŐ <FELADAT>
@@ -6640,6 +6762,9 @@ perc alatt megunja.
   „Rakd össze a mondatot"             → epito
   „Melyik rész a gyökér?"             → abra   (NEM sima <ABRA> rajz!)
   „Mi történik, ha nagyobb az erő?"   → modell
+  „Színezd ki a pizza ¾ részét!"      → pizza
+  „7 + 5 a számegyenesen" (1–2. o.)   → beka
+  „Állítsd az órát fél négyre!"       → ora
   fogalom és jelentése párban         → parosit
   eldöntendő, NEM számolós kérdés     → valaszt
 
@@ -6745,6 +6870,27 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    ejercicio sería irresoluble y el programa lo descarta.
    "egyseg" es opcional (cm, kg, N, ml).
 
+11) PIZZA DE FRACCIONES — el concepto de fracción (2.º–5.º). El niño
+   colorea los trozos de la pizza. "osztas" = en cuántos trozos IGUALES
+   está cortada (2–12), "cel" = cuántos hay que colorear:
+   <FELADAT>{"tipus":"pizza","osztas":4,"cel":3}</FELADAT>
+   El programa escribe la pregunta; tú solo das los dos números.
+
+12) RANA EN LA RECTA NUMÉRICA — sumas y restas hasta 20 (1.º–2.º). La
+   rana está en el número "start" y da "lepes" saltos hacia delante o
+   hacia atrás. El niño pulsa el número donde cree que caerá, y la rana
+   salta uno a uno – así ve también por qué:
+   <FELADAT>{"tipus":"beka","start":7,"lepes":5,"irany":"elore"}</FELADAT>
+   "irany": "elore" (suma) o "hatra" (resta). Todos los números, también
+   el resultado, entre 0 y 20.
+
+13) RELOJ — leer la hora (1.º–4.º). El niño mueve las agujas y pone la
+   hora. "ora" 1–12, "perc" 0, 15, 30 o 45 (o múltiplo de cinco):
+   <FELADAT>{"tipus":"ora","ora":3,"perc":30}</FELADAT>
+   El programa escribe la pregunta («Muestra en el reloj: las tres y
+   media»); no escribas antes la hora con números, porque daría la
+   solución.
+
 🔴 LA REGLA MÁS IMPORTANTE DE ESTA LISTA
 Si en tu respuesta pides CUALQUIER COSA al niño — calcular, elegir,
 completar, ordenar, nombrar —, es OBLIGATORIO darlo con la marca <FELADAT>.
@@ -6760,6 +6906,9 @@ Cómo elegir la superficie:
   «Construye la frase»                  → epito
   «¿Qué parte es la raíz?»              → abra  (¡NO un <ABRA> normal!)
   «¿Qué pasa si la fuerza es mayor?»    → modell
+  «Colorea 3/4 de la pizza»             → pizza
+  «7 + 5 en la recta numérica» (1.º–2.º) → beka
+  «Pon el reloj a las tres y media»     → ora
   concepto y significado en pareja      → parosit
   pregunta cerrada que NO es cálculo    → valaszt
 
