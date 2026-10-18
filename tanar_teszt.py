@@ -437,6 +437,8 @@ def _feladat_leiras(f: dict) -> str:
                 f"{'hátra' if f.get('hatra') else 'előre'}, a gyerek a célszámra koppint")
     if tipus == "ora":
         return f"óra húzható mutatókkal – {f.get('kerdes', '')}"
+    if tipus in ("racs", "szogmero", "koordinata", "terulet"):
+        return f"interaktív rajz ({tipus}) – {f.get('kerdes', '')}"
     if tipus == "szoveg":
         return f"szavak kijelölése a szövegben: „{f.get('szoveg', '')}”"
     return f"feladat ({tipus})"

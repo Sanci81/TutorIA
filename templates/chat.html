@@ -552,6 +552,9 @@
      meg a teljes szélességet, a pizza és az óra egy kényelmes kártyát. */
   .munkater-test > .feladat-beka{flex:1 1 auto;width:100%;max-width:680px}
   .munkater-test > .feladat-pizza,.munkater-test > .feladat-ora{flex:0 1 380px;width:100%}
+  .munkater-test > .feladat-racs,.munkater-test > .feladat-szogmero,
+  .munkater-test > .feladat-koordinata,.munkater-test > .feladat-terulet{flex:0 1 420px;width:100%;position:relative}
+  .ie-negyzetes{max-width:380px}
   .ie-szelet,.ie-szam{cursor:pointer}
   .ie-szam:hover circle{fill:#FFF4E0}
   .ie-uzenet{margin:0 0 10px;padding:10px 12px;border-radius:12px;background:#FFF1E0;
@@ -1147,6 +1150,19 @@
         oraValasz: {{ t('ora_valasz')|tojson }},
         oraTipp: {{ t('ora_tipp')|tojson }},
         ieSzuper: {{ t('ie_szuper')|tojson }},
+        utasitasRacs: {{ t('utasitas_racs')|tojson }},
+        utasitasSzogmero: {{ t('utasitas_szogmero')|tojson }},
+        utasitasKoordinata: {{ t('utasitas_koordinata')|tojson }},
+        utasitasTerulet: {{ t('utasitas_terulet')|tojson }},
+        racsAllas: {{ t('racs_allas')|tojson }},
+        racsTipp: {{ t('racs_tipp')|tojson }},
+        racsValasz: {{ t('racs_valasz')|tojson }},
+        szogTipp: {{ t('szog_tipp')|tojson }},
+        szogValasz: {{ t('szog_valasz')|tojson }},
+        koordTipp: {{ t('koord_tipp')|tojson }},
+        koordValasz: {{ t('koord_valasz')|tojson }},
+        terTipp: {{ t('ter_tipp')|tojson }},
+        terValasz: {{ t('ter_valasz')|tojson }},
         utasitasAltalanos: {{ t('utasitas_altalanos')|tojson }},
         gombNehezebb: {{ t('gomb_nehezebb')|tojson }},
         gombPelda: {{ t('gomb_pelda')|tojson }},
@@ -1627,6 +1643,10 @@
         if (tipus === 'pizza') { return L.utasitasPizza; }
         if (tipus === 'beka') { return L.utasitasBeka; }
         if (tipus === 'ora') { return L.utasitasOra; }
+        if (tipus === 'racs') { return L.utasitasRacs; }
+        if (tipus === 'szogmero') { return L.utasitasSzogmero; }
+        if (tipus === 'koordinata') { return L.utasitasKoordinata; }
+        if (tipus === 'terulet') { return L.utasitasTerulet; }
         return L.utasitasAltalanos;
     }
 
@@ -1825,6 +1845,10 @@
         if (f.tipus === 'pizza') { return pizzaFeladat(f); }
         if (f.tipus === 'beka') { return bekaFeladat(f); }
         if (f.tipus === 'ora') { return oraFeladat(f); }
+        if (f.tipus === 'racs') { return racsFeladat(f); }
+        if (f.tipus === 'szogmero') { return szogmeroFeladat(f); }
+        if (f.tipus === 'koordinata') { return koordinataFeladat(f); }
+        if (f.tipus === 'terulet') { return teruletFeladat(f); }
         return null;
     }
 
@@ -2519,6 +2543,244 @@
         });
         doboz.appendChild(kesz);
         mutatok();
+        return doboz;
+    }
+
+    /* ══ 2. CSOMAG: SZORZÁS RÁCSON, SZÖGMÉRŐ, KOORDINÁTA, TERÜLET ═══════ */
+    function ieSvgPont(svg, e) {
+        var p = svg.createSVGPoint(); p.x = e.clientX; p.y = e.clientY;
+        return p.matrixTransform(svg.getScreenCTM().inverse());
+    }
+    function ieHuzhato(svg, fogo, mozgat) {
+        var aktiv = false;
+        fogo.addEventListener('pointerdown', function (e) {
+            e.preventDefault(); aktiv = true;
+            try { svg.setPointerCapture(e.pointerId); } catch (x) {}
+        });
+        svg.addEventListener('pointermove', function (e) { if (aktiv) { mozgat(ieSvgPont(svg, e)); } });
+        ['pointerup', 'pointercancel'].forEach(function (v) {
+            svg.addEventListener(v, function () { aktiv = false; });
+        });
+    }
+    function ieSzoveg(x, y, s, attr, szulo) {
+        var a = {x: x, y: y, 'text-anchor': 'middle', 'font-weight': 800, 'font-size': 14, fill: '#0E2A1E'};
+        for (var k in (attr || {})) { a[k] = attr[k]; }
+        var t = ieEl('text', a, szulo); t.textContent = s; return t;
+    }
+    /* Közös „Kész" gomb: jó → ünneplés és küldés; rossz → tipp, másodszorra küldés. */
+    function ieKeszGomb(doboz, svg, uzen, jo, valasz, tipp, siker) {
+        var hibak = 0;
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            if (doboz.classList.contains('feladat-kesz')) { return; }
+            if (jo()) {
+                kesz.disabled = true;
+                var varj = siker ? siker() : 0;
+                ieUnnep(doboz);
+                setTimeout(function () { feladatKuld(doboz, valasz()); }, 1400 + (varj || 0));
+                return;
+            }
+            hibak++;
+            ieAnimal(svg, 'ie-rezeg');
+            if (hibak < 2) { uzen(tipp()); return; }
+            feladatKuld(doboz, valasz());
+        });
+        doboz.appendChild(kesz);
+    }
+
+    function racsFeladat(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-racs';
+        doboz.appendChild(ieKerdes(f.kerdes));
+        var allas = document.createElement('div'); allas.className = 'ie-allas'; doboz.appendChild(allas);
+        var svg = ieEl('svg', {viewBox: '-10 -10 340 320', 'class': 'ie-svg ie-negyzetes'});
+        doboz.appendChild(svg);
+        var C = 30, N = 10, m = {s: 1, o: 1};
+        for (var i = 0; i <= N; i++) {
+            ieEl('line', {x1: 0, y1: i * C, x2: N * C, y2: i * C, stroke: '#E3EAE5', 'stroke-width': 1.5}, svg);
+            ieEl('line', {x1: i * C, y1: 0, x2: i * C, y2: N * C, stroke: '#E3EAE5', 'stroke-width': 1.5}, svg);
+        }
+        var cellak = ieEl('g', {}, svg);
+        var keret = ieEl('rect', {x: 0, y: 0, fill: 'none', stroke: '#1F7A4D', 'stroke-width': 4, rx: 3}, svg);
+        var fogo = ieEl('circle', {r: 13, fill: '#F5A01E', stroke: '#fff', 'stroke-width': 3, style: 'cursor:grab'}, svg);
+        function rajz() {
+            cellak.innerHTML = '';
+            for (var s = 0; s < m.s; s++) { for (var o = 0; o < m.o; o++) {
+                ieEl('rect', {x: o * C + 2, y: s * C + 2, width: C - 4, height: C - 4, rx: 5, fill: '#BFEBD3'}, cellak);
+            } }
+            keret.setAttribute('width', m.o * C); keret.setAttribute('height', m.s * C);
+            fogo.setAttribute('cx', m.o * C); fogo.setAttribute('cy', m.s * C);
+            allas.textContent = L.racsAllas.replace('{s}', m.s).replace('{o}', m.o);
+        }
+        var uzen = ieUzenet(doboz);
+        ieHuzhato(svg, fogo, function (p) {
+            if (doboz.classList.contains('feladat-kesz')) { return; }
+            m.o = Math.max(1, Math.min(N, Math.round(p.x / C)));
+            m.s = Math.max(1, Math.min(N, Math.round(p.y / C)));
+            uzen(''); rajz();
+        });
+        ieKeszGomb(doboz, svg, uzen,
+            function () { return m.s === f.sor && m.o === f.oszlop; },
+            function () { return L.racsValasz.replace('{s}', m.s).replace('{o}', m.o).replace('{db}', m.s * m.o); },
+            function () { return L.racsTipp; },
+            function () {                       // soronként megtelik, mellette a futó összeg
+                cellak.innerHTML = '';
+                for (var s = 0; s < m.s; s++) {
+                    for (var o = 0; o < m.o; o++) {
+                        ieEl('rect', {x: o * C + 2, y: s * C + 2, width: C - 4, height: C - 4, rx: 5,
+                            fill: '#3DDC97', 'class': 'ie-pattan',
+                            style: 'animation-delay:' + (s * 260 + o * 30) + 'ms'}, cellak);
+                    }
+                    ieSzoveg(m.o * C + 22, s * C + 20, (s + 1) * m.o, {fill: '#D27E0B', 'font-size': 15,
+                        'class': 'ie-pattan', style: 'animation-delay:' + (s * 260 + 150) + 'ms'}, cellak);
+                }
+                return m.s * 260;
+            });
+        rajz();
+        return doboz;
+    }
+
+    function szogmeroFeladat(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-szogmero';
+        doboz.appendChild(ieKerdes(f.kerdes));
+        var svg = ieEl('svg', {viewBox: '-170 -175 340 205', 'class': 'ie-svg ie-negyzetes'});
+        doboz.appendChild(svg);
+        var R0 = 150, szog = f.szog > 90 ? 30 : 150;
+        function xy(fok, r) { var a = fok * Math.PI / 180; return [Math.cos(a) * r, -Math.sin(a) * r]; }
+        ieEl('path', {d: 'M' + (-R0) + ' 0 A' + R0 + ' ' + R0 + ' 0 0 1 ' + R0 + ' 0 Z', fill: '#E7F3FC',
+            stroke: '#2F8FD8', 'stroke-width': 3}, svg);
+        for (var g = 0; g <= 180; g++) {
+            var h = g % 10 === 0 ? 14 : g % 5 === 0 ? 9 : 5, a = xy(g, R0), b = xy(g, R0 - h);
+            ieEl('line', {x1: a[0], y1: a[1], x2: b[0], y2: b[1], stroke: '#2F8FD8',
+                'stroke-width': g % 10 === 0 ? 2 : 1}, svg);
+            if (g % 10 === 0) { var t = xy(g, R0 - 28); ieSzoveg(t[0], t[1] + 5, g, {'font-size': 12, fill: '#1F4E7A'}, svg); }
+        }
+        var iv = ieEl('path', {fill: 'rgba(245,160,30,.25)'}, svg);
+        ieEl('line', {x1: 0, y1: 0, x2: R0 + 12, y2: 0, stroke: '#1F7A4D', 'stroke-width': 5, 'stroke-linecap': 'round'}, svg);
+        var szar = ieEl('line', {x1: 0, y1: 0, stroke: '#F5A01E', 'stroke-width': 5, 'stroke-linecap': 'round'}, svg);
+        var fogo = ieEl('circle', {r: 13, fill: '#F5A01E', stroke: '#fff', 'stroke-width': 3, style: 'cursor:grab'}, svg);
+        ieEl('circle', {r: 6, fill: '#0E2A1E'}, svg);
+        function allit() {
+            var v = xy(szog, R0 + 12), k = xy(szog, 55);
+            szar.setAttribute('x2', v[0]); szar.setAttribute('y2', v[1]);
+            fogo.setAttribute('cx', v[0]); fogo.setAttribute('cy', v[1]);
+            iv.setAttribute('d', 'M0 0 L55 0 A55 55 0 0 0 ' + k[0] + ' ' + k[1] + ' Z');
+        }
+        var uzen = ieUzenet(doboz);
+        ieHuzhato(svg, fogo, function (p) {
+            if (doboz.classList.contains('feladat-kesz')) { return; }
+            var fok = Math.atan2(-p.y, p.x) * 180 / Math.PI;
+            if (fok < 0) { fok = p.x < 0 ? 180 : 0; }
+            szog = Math.max(0, Math.min(180, Math.round(fok))); uzen(''); allit();
+        });
+        ieKeszGomb(doboz, svg, uzen,
+            function () { return Math.abs(szog - f.szog) <= 2; },
+            function () { return L.szogValasz.replace('{f}', szog); },
+            function () { return L.szogTipp; },
+            function () { szog = f.szog; allit(); return 0; });
+        allit();
+        return doboz;
+    }
+
+    function koordinataFeladat(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-koordinata';
+        doboz.appendChild(ieKerdes(f.kerdes));
+        var svg = ieEl('svg', {viewBox: '-15 -15 355 355', 'class': 'ie-svg ie-negyzetes'});
+        doboz.appendChild(svg);
+        var U = 25, K = 6, O = 162.5, pont = null;
+        function px(x) { return O + x * U; } function py(y) { return O - y * U; }
+        for (var i = -K; i <= K; i++) {
+            ieEl('line', {x1: px(i), y1: py(-K), x2: px(i), y2: py(K), stroke: '#E3EAE5', 'stroke-width': 1.5}, svg);
+            ieEl('line', {x1: px(-K), y1: py(i), x2: px(K), y2: py(i), stroke: '#E3EAE5', 'stroke-width': 1.5}, svg);
+            if (i !== 0) {
+                ieSzoveg(px(i), py(0) + 17, i, {'font-size': 11, fill: '#5B6B63'}, svg);
+                ieSzoveg(px(0) - 12, py(i) + 4, i, {'font-size': 11, fill: '#5B6B63'}, svg);
+            }
+        }
+        ieEl('line', {x1: px(-K) - 6, y1: py(0), x2: px(K) + 10, y2: py(0), stroke: '#1F7A4D', 'stroke-width': 3}, svg);
+        ieEl('line', {x1: px(0), y1: py(-K) + 6, x2: px(0), y2: py(K) - 10, stroke: '#1F7A4D', 'stroke-width': 3}, svg);
+        ieEl('path', {d: 'M' + (px(K) + 12) + ' ' + py(0) + ' l-10 -6 v12 Z', fill: '#1F7A4D'}, svg);
+        ieEl('path', {d: 'M' + px(0) + ' ' + (py(K) - 12) + ' l-6 10 h12 Z', fill: '#1F7A4D'}, svg);
+        ieSzoveg(px(K) + 6, py(0) - 10, 'x', {fill: '#1F7A4D', 'font-size': 15}, svg);
+        ieSzoveg(px(0) + 14, py(K) - 6, 'y', {fill: '#1F7A4D', 'font-size': 15}, svg);
+        var jel = ieEl('g', {}, svg);
+        ieEl('rect', {x: px(-K) - 10, y: py(K) - 10, width: 2 * K * U + 20, height: 2 * K * U + 20,
+            fill: 'transparent', style: 'cursor:pointer'}, svg);
+        function irasmod(x, y) {
+            var sz = function (n) { return String(n).replace('-', '−'); };
+            return /;/.test(f.kerdes) ? '(' + sz(x) + '; ' + sz(y) + ')' : '(' + sz(x) + ', ' + sz(y) + ')';
+        }
+        function potty(mutasd) {
+            jel.innerHTML = '';
+            if (!pont) { return; }
+            if (mutasd) {
+                ieEl('line', {x1: px(pont.x), y1: py(pont.y), x2: px(pont.x), y2: py(0), stroke: '#F5A01E',
+                    'stroke-width': 2.5, 'stroke-dasharray': '5 5'}, jel);
+                ieEl('line', {x1: px(pont.x), y1: py(pont.y), x2: px(0), y2: py(pont.y), stroke: '#F5A01E',
+                    'stroke-width': 2.5, 'stroke-dasharray': '5 5'}, jel);
+                ieSzoveg(px(pont.x) + (pont.x >= 0 ? 36 : -36), py(pont.y) - 12, irasmod(pont.x, pont.y),
+                    {fill: '#D27E0B', 'font-size': 15}, jel);
+            }
+            ieEl('circle', {cx: px(pont.x), cy: py(pont.y), r: 9, fill: '#E0609B', stroke: '#fff',
+                'stroke-width': 3, 'class': 'ie-pattan'}, jel);
+        }
+        var uzen = ieUzenet(doboz);
+        svg.addEventListener('pointerdown', function (e) {
+            if (doboz.classList.contains('feladat-kesz')) { return; }
+            var p = ieSvgPont(svg, e), x = Math.round((p.x - O) / U), y = Math.round((O - p.y) / U);
+            if (Math.abs(x) > K || Math.abs(y) > K) { return; }
+            pont = {x: x, y: y}; uzen(''); potty(false);
+        });
+        ieKeszGomb(doboz, svg, uzen,
+            function () { return !!pont && pont.x === f.x && pont.y === f.y; },
+            function () { return pont ? L.koordValasz.replace('{p}', irasmod(pont.x, pont.y)) : ''; },
+            function () { potty(true); return L.koordTipp; },
+            function () { potty(true); return 0; });
+        return doboz;
+    }
+
+    function teruletFeladat(f) {
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-terulet';
+        doboz.appendChild(ieKerdes(f.kerdes));
+        var svg = ieEl('svg', {viewBox: '-30 -30 340 290', 'class': 'ie-svg ie-negyzetes'});
+        doboz.appendChild(svg);
+        var C = 28, NX = 10, NY = 8, m = {w: 1, h: 1};
+        for (var i = 0; i <= NX; i++) { ieEl('line', {x1: i * C, y1: 0, x2: i * C, y2: NY * C, stroke: '#E3EAE5', 'stroke-width': 1.5}, svg); }
+        for (var j = 0; j <= NY; j++) { ieEl('line', {x1: 0, y1: j * C, x2: NX * C, y2: j * C, stroke: '#E3EAE5', 'stroke-width': 1.5}, svg); }
+        var tegl = ieEl('rect', {x: 0, y: 0, fill: 'rgba(61,220,151,.35)', stroke: '#1F7A4D', 'stroke-width': 4, rx: 2}, svg);
+        var cimkek = ieEl('g', {}, svg);
+        var fogo = ieEl('circle', {r: 13, fill: '#F5A01E', stroke: '#fff', 'stroke-width': 3, style: 'cursor:grab'}, svg);
+        function allit() {
+            tegl.setAttribute('width', m.w * C); tegl.setAttribute('height', m.h * C);
+            fogo.setAttribute('cx', m.w * C); fogo.setAttribute('cy', m.h * C);
+            cimkek.innerHTML = '';
+            ieSzoveg(m.w * C / 2, -10, m.w, {fill: '#1F7A4D', 'font-size': 16}, cimkek);
+            ieSzoveg(-14, m.h * C / 2 + 5, m.h, {fill: '#1F7A4D', 'font-size': 16}, cimkek);
+        }
+        var uzen = ieUzenet(doboz);
+        ieHuzhato(svg, fogo, function (p) {
+            if (doboz.classList.contains('feladat-kesz')) { return; }
+            m.w = Math.max(1, Math.min(NX, Math.round(p.x / C)));
+            m.h = Math.max(1, Math.min(NY, Math.round(p.y / C)));
+            uzen(''); allit();
+        });
+        ieKeszGomb(doboz, svg, uzen,
+            function () {
+                var t = m.w * m.h, k = 2 * (m.w + m.h);
+                return (f.terulet == null || t === f.terulet) && (f.kerulet == null || k === f.kerulet);
+            },
+            function () {
+                return L.terValasz.replace('{w}', m.w).replace('{h}', m.h)
+                    .replace('{t}', m.w * m.h).replace('{k}', 2 * (m.w + m.h));
+            },
+            function () { return L.terTipp; });
+        allit();
         return doboz;
     }
 

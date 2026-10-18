@@ -3723,6 +3723,83 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
                   f"Mutasd meg az órán: {_ora_szoveg_hu(h, perc)}!")
         return {"tipus": "ora", "ora": h, "perc": perc, "kerdes": kerdes}
 
+    # ── 2. CSOMAG (2026-10-18): szorzás rácson, szögmérő, koordináta,
+    # kerület/terület. Ugyanaz az elv: a számokat a tanár adja, a kérdést és
+    # a helyes választ mi tudjuk.
+    if tipus == "racs":
+        try:
+            sor = int(adat.get("sor"))
+            oszlop = int(adat.get("oszlop"))
+        except Exception:
+            return None
+        if not (1 <= sor <= 10 and 1 <= oszlop <= 10):
+            return None
+        if grade is not None and grade > (4 if es_tanterv else 5):
+            return {"tipus": "szam", "muvelet": f"{sor} × {oszlop}"}
+        kerdes = (f"Construye {sor} × {oszlop}: {sor} filas y {oszlop} columnas."
+                  if es_tanterv else
+                  f"Rakd ki: {sor} × {oszlop}! Legyen {sor} sor és {oszlop} oszlop.")
+        return {"tipus": "racs", "sor": sor, "oszlop": oszlop, "kerdes": kerdes}
+
+    if tipus == "szogmero":
+        try:
+            fok = int(adat.get("szog"))
+        except Exception:
+            return None
+        if not (5 <= fok <= 175 and fok % 5 == 0):
+            return None
+        if es_tanterv:
+            kerdes = f"Ajusta el ángulo a {fok}°."
+        else:
+            # „öt"-re végződő szám: -re; egyébként a tízes dönt (tízre, húszra…)
+            rag = "re" if fok % 10 == 5 or fok % 100 in (10, 40, 50, 70, 90) else "ra"
+            kerdes = f"Állítsd be a szöget {fok}°-{rag}!"
+        return {"tipus": "szogmero", "szog": fok, "kerdes": kerdes}
+
+    if tipus == "koordinata":
+        try:
+            x = int(adat.get("x"))
+            y = int(adat.get("y"))
+        except Exception:
+            return None
+        if not (-6 <= x <= 6 and -6 <= y <= 6):
+            return None
+        def _sz(n):
+            return str(n).replace("-", "−")
+        kerdes = (f"Pon el punto en ({_sz(x)}, {_sz(y)})."
+                  if es_tanterv else f"Tedd a pöttyöt ide: ({_sz(x)}; {_sz(y)})")
+        return {"tipus": "koordinata", "x": x, "y": y, "kerdes": kerdes}
+
+    if tipus == "terulet":
+        t = adat.get("terulet")
+        k = adat.get("kerulet")
+        try:
+            t = int(t) if t is not None else None
+            k = int(k) if k is not None else None
+        except Exception:
+            return None
+        if t is None and k is None:
+            return None
+        # MEGOLDHATÓ-E a 10 × 8-as rácson?
+        if not any((t is None or w * h == t) and (k is None or 2 * (w + h) == k)
+                   for w in range(1, 11) for h in range(1, 9)):
+            return None
+        if es_tanterv:
+            if t is not None and k is not None:
+                kerdes = f"Dibuja un rectángulo de área {t} y perímetro {k}."
+            elif t is not None:
+                kerdes = f"Dibuja un rectángulo de área {t} cuadraditos."
+            else:
+                kerdes = f"Dibuja un rectángulo de perímetro {k}."
+        else:
+            if t is not None and k is not None:
+                kerdes = f"Rajzolj egy téglalapot: területe {t}, kerülete {k}!"
+            elif t is not None:
+                kerdes = f"Rajzolj egy téglalapot, aminek a területe {t} kis négyzet!"
+            else:
+                kerdes = f"Rajzolj egy téglalapot, aminek a kerülete {k} egység!"
+        return {"tipus": "terulet", "terulet": t, "kerulet": k, "kerdes": kerdes}
+
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
         # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
@@ -6747,6 +6824,34 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    A kérdést („Mutasd meg az órán: fél négy!") a program írja ki – te ne
    írd le előtte számokkal az időpontot, mert az elárulná a megoldást.
 
+⚠️ A 11–17. FELÜLETEK ELŐTT MINDIG TANÍTS: ugyanabban a válaszban, a
+jelölő ELŐTT magyarázd el röviden, egy példán, mi a lényeg (mit jelent a
+sor és az oszlop, hogyan kell a szögmérőt leolvasni, mi az x és az y, mi a
+terület és a kerület). Az első ilyen feladat legyen könnyű. Feladat
+magyarázat nélkül soha.
+
+14) SZORZÁS TÉGLALAP-RÁCSON — a szorzás jelentése (2–4. osztály). A gyerek
+   kihúz egy téglalapot a rácson; ha jó, soronként megtelik, és mellette
+   fut az összeg (4, 8, 12…):
+   <FELADAT>{"tipus":"racs","sor":6,"oszlop":4}</FELADAT>
+   "sor" és "oszlop" 1 és 10 között.
+
+15) SZÖGMÉRŐ — szögek mérése (5–6. osztály). A gyerek a szög szárát
+   húzza, a fokot a szögmérő skálájáról olvassa le:
+   <FELADAT>{"tipus":"szogmero","szog":60}</FELADAT>
+   "szog" 5 és 175 között, öttel osztható.
+
+16) KOORDINÁTA-RENDSZER — pont helye (5–7. osztály). A gyerek a rácson
+   arra a pontra koppint, amit kértél:
+   <FELADAT>{"tipus":"koordinata","x":3,"y":-2}</FELADAT>
+   x és y −6 és 6 között. Negatív számot csak akkor, ha már tanultátok.
+
+17) KERÜLET ÉS TERÜLET NÉGYZETRÁCSON (3–6. osztály). A gyerek kihúz egy
+   téglalapot, és közben látja az oldalai hosszát. Megadhatod a területet,
+   a kerületet vagy mindkettőt:
+   <FELADAT>{"tipus":"terulet","terulet":12,"kerulet":14}</FELADAT>
+   A rács 10 × 8-as – a feladatnak ezen belül megoldhatónak kell lennie.
+
 🔴 A LEGFONTOSABB SZABÁLY EZEN A LISTÁN
 Ha a válaszodban BÁRMIT kérsz a gyerektől — számolást, kiválasztást,
 kiegészítést, sorbarendezést, megnevezést —, akkor azt KÖTELEZŐ <FELADAT>
@@ -6765,6 +6870,10 @@ perc alatt megunja.
   „Színezd ki a pizza ¾ részét!"      → pizza
   „7 + 5 a számegyenesen" (1–2. o.)   → beka
   „Állítsd az órát fél négyre!"       → ora
+  „Mennyi 6 × 4? Rakd ki!" (2–4. o.)  → racs
+  „Mérd meg / állítsd be a szöget"    → szogmero
+  „Hol van a (3; −2) pont?"           → koordinata
+  „Rajzolj 12 területű téglalapot"    → terulet
   fogalom és jelentése párban         → parosit
   eldöntendő, NEM számolós kérdés     → valaszt
 
@@ -6891,6 +7000,34 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    media»); no escribas antes la hora con números, porque daría la
    solución.
 
+⚠️ ANTES DE LAS SUPERFICIES 11–17 ENSEÑA SIEMPRE: en la misma respuesta,
+antes de la marca, explica brevemente con un ejemplo la idea (qué son las
+filas y las columnas, cómo se lee el transportador, qué son la x y la y,
+qué es el área y el perímetro). El primer ejercicio, fácil. Nunca un
+ejercicio sin explicación.
+
+14) MULTIPLICACIÓN EN CUADRÍCULA — qué significa multiplicar (2.º–4.º). El
+   niño dibuja un rectángulo en la cuadrícula; si está bien, se llena fila
+   a fila con la suma al lado (4, 8, 12…):
+   <FELADAT>{"tipus":"racs","sor":6,"oszlop":4}</FELADAT>
+   "sor" (filas) y "oszlop" (columnas) entre 1 y 10.
+
+15) TRANSPORTADOR — medir ángulos (5.º–6.º). El niño mueve un lado del
+   ángulo y lee los grados en la escala:
+   <FELADAT>{"tipus":"szogmero","szog":60}</FELADAT>
+   "szog" entre 5 y 175, múltiplo de cinco.
+
+16) EJES DE COORDENADAS — situar un punto (5.º–6.º). El niño pulsa en la
+   cuadrícula el punto que pides:
+   <FELADAT>{"tipus":"koordinata","x":3,"y":-2}</FELADAT>
+   x e y entre −6 y 6. Números negativos solo si ya se han estudiado.
+
+17) PERÍMETRO Y ÁREA EN CUADRÍCULA (3.º–6.º). El niño dibuja un
+   rectángulo y ve la longitud de sus lados. Puedes dar el área, el
+   perímetro o ambos:
+   <FELADAT>{"tipus":"terulet","terulet":12,"kerulet":14}</FELADAT>
+   La cuadrícula es de 10 × 8: el ejercicio debe poder resolverse en ella.
+
 🔴 LA REGLA MÁS IMPORTANTE DE ESTA LISTA
 Si en tu respuesta pides CUALQUIER COSA al niño — calcular, elegir,
 completar, ordenar, nombrar —, es OBLIGATORIO darlo con la marca <FELADAT>.
@@ -6909,6 +7046,10 @@ Cómo elegir la superficie:
   «Colorea 3/4 de la pizza»             → pizza
   «7 + 5 en la recta numérica» (1.º–2.º) → beka
   «Pon el reloj a las tres y media»     → ora
+  «¿Cuánto es 6 × 4? Constrúyelo» (2.º–4.º) → racs
+  «Mide / ajusta el ángulo»             → szogmero
+  «¿Dónde está el punto (3, −2)?»       → koordinata
+  «Dibuja un rectángulo de área 12»     → terulet
   concepto y significado en pareja      → parosit
   pregunta cerrada que NO es cálculo    → valaszt
 
