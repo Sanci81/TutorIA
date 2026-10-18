@@ -130,6 +130,12 @@ MODELL_SEGED = os.environ.get("MODELL_SEGED", "gpt-4o-mini")
 # más (hang, kép, ellenőrzések, segédhívások) marad az OpenAI-nál.
 # Visszaállás: a két változót törölni kell.
 TANAR_API_BASE = os.environ.get("TANAR_API_BASE", "").strip()
+# KÉPEK A TÁBLÁN tanítás közben (tantárgyi kép, nyelvórán a képes szótár
+# képe). ALAPBÓL KI: Sándor szerint (2026-10-18) ezek a képek tanításhoz nem
+# elég jók – nem illenek pontosan a magyarázathoz. Bekapcsolni a Railway-en
+# a TABLA_KEPEK=1 változóval lehet. A szójegyzékben a képek ettől függetlenül
+# megmaradnak.
+TABLA_KEPEK = os.environ.get("TABLA_KEPEK", "0").strip().lower() in ("1", "true", "igen", "be")
 TANAR_API_KEY = os.environ.get("TANAR_API_KEY", "").strip()
 
 # NEHÉZ KVÍZ. Az idegennyelvi kvíznél a kis modell gyenge volt, ezért
@@ -10441,7 +10447,7 @@ def child_chat_send(child_id: int):
     # ── TANTÁRGYI KÉP: ha nincs rajz, de a tanár egy olyan dolgot említ,
     # amihez van jóváhagyott kép, az kerül a szöveg alá szemléltetésnek.
     # NYELVÓRÁN a képes szótár képe (a most tanított szóé) kerül a táblára.
-    if not figures:
+    if not figures and TABLA_KEPEK:
         try:
             if is_foreign:
                 _tk = _nyelvi_kep(reply, vocab_pairs, nyelv=language,

@@ -29,6 +29,13 @@ HASZNÁLAT
 
     A végén készül egy tanar_teszt_jelentes.md — azt olvasd el.
 
+MODELLEK ÖSSZEVETÉSE (Luna / Mistral / Gemini)
+    A tanár modelljét a MODELL_TANAR, TANAR_API_BASE, TANAR_API_KEY
+    változók döntik el – ugyanúgy, mint a Railway-en. A gyerek és az
+    ellenőrző mindig ugyanaz marad (OpenAI), így a számok összevethetők.
+    A jelentés neve tartalmazza a modell nevét, és kiírja a válaszidőt, a
+    tokeneket és a becsült árat is.
+
 MI KELL HOZZÁ
     Az OpenAI kulcs a környezetben. PowerShellben, egyszer, indítás előtt:
         $env:OPENAI_API_KEY = "sk-..."
@@ -71,6 +78,23 @@ except Exception as hiba:                          # pragma: no cover
 TANAR_MODELL = (os.environ.get("MODELL_TANAR")
                 or getattr(app, "MODELL_TANAR", None) or "gpt-5.4-mini")
 GYEREK_MODELL = "gpt-5.4-mini"     # aki a gyereket játssza
+
+# ══ MÁSIK SZOLGÁLTATÓ A TANÁRNAK (modell-összevetés) ═════════════════════
+# Ugyanaz a két változó, mint az appban (Railway). Ha be vannak állítva, a
+# TANÁR hívásai oda mennek (Mistral, Google Gemini – OpenAI-kompatibilis
+# felület). A GYEREK és az ELLENŐRZŐ marad az OpenAI-nál, így a mérce
+# mindhárom modellnél ugyanaz. PowerShellben például:
+#     $env:MODELL_TANAR   = "mistral-large-latest"
+#     $env:TANAR_API_BASE = "https://api.mistral.ai/v1"
+#     $env:TANAR_API_KEY  = "ide-a-sajat-kulcsod"
+TANAR_API_BASE = os.environ.get("TANAR_API_BASE", "").strip()
+TANAR_API_KEY = os.environ.get("TANAR_API_KEY", "").strip().strip("'\"")
+# Ár millió tokenenként (bemenet, kimenet), 2026. október – csak becsléshez.
+ARAK = {"gpt-6-luna": (0.10, 0.50), "gpt-5.4-mini": (0.75, 4.50),
+        "mistral-large-latest": (0.50, 1.50),
+        "gemini-3-flash-preview": (0.50, 3.00)}
+STAT = {"hivas": 0, "hiba": 0, "ido": 0.0, "be": 0, "ki": 0}
+_TANAR_KLIENS = None
 ELLENOR_MODELL = "gpt-5.4"         # aki átnézi – ő legyen az okosabb
 
 
@@ -214,6 +238,73 @@ def _valaszol(kliens, modell: str, uzenetek: list[dict], **extra) -> str:
     valasz = kliens.chat.completions.create(
         model=modell, messages=uzenetek, **extra)
     return (valasz.choices[0].message.content or "").strip()
+
+
+def _tanar_valaszol(kliens, uzenetek: list[dict]) -> str:
+    """A TANÁR hívása – a beállított szolgáltatónál, időt és tokent mérve."""
+    global _TANAR_KLIENS
+    import time
+    extra = {}
+    if TANAR_API_BASE and TANAR_API_KEY:
+        if _TANAR_KLIENS is None:
+            from openai import OpenAI
+            _TANAR_KLIENS = OpenAI(api_key=TANAR_API_KEY, base_url=TANAR_API_BASE,
+                                   timeout=90.0, max_retries=2)
+        k = _TANAR_KLIENS
+        # A Gemini ismeri a reasoning_effort-ot, a Mistral nem (hibát adna).
+        if "generativelanguage" in TANAR_API_BASE:
+            extra["reasoning_effort"] = "low"
+    else:
+        k = kliens
+        extra["reasoning_effort"] = "low"
+    kezd = time.monotonic()
+    STAT["hivas"] += 1
+    try:
+        valasz = k.chat.completions.create(model=TANAR_MODELL,
+                                           messages=uzenetek, **extra)
+    except Exception:
+        STAT["hiba"] += 1
+        raise
+    STAT["ido"] += time.monotonic() - kezd
+    u = getattr(valasz, "usage", None)
+    if u:
+        STAT["be"] += int(getattr(u, "prompt_tokens", 0) or 0)
+        STAT["ki"] += int(getattr(u, "completion_tokens", 0) or 0)
+    tartalom = valasz.choices[0].message.content
+    if isinstance(tartalom, list):           # néhány szolgáltató részekben adja
+        tartalom = "".join(
+            (r.get("text", "") if isinstance(r, dict) else getattr(r, "text", ""))
+            or "" for r in tartalom)
+    return (tartalom or "").strip()
+
+
+def _gepi_tanar(nyers: str, latott: str) -> list[str]:
+    """Géppel mérhető tanári hibák – ugyanaz a mérce minden modellnél."""
+    import re
+    ki: list[str] = []
+    try:
+        tiszta = app._parse_chat_markers(nyers)[0] or ""
+    except Exception:
+        tiszta = nyers
+    try:
+        if app._belso_jegyzet_helye(nyers) >= 0:
+            hely = app._belso_jegyzet_helye(nyers)
+            ki.append(f"[szivárgás] belső jegyzet a válaszban: "
+                      f"„{nyers[hely:hely + 90].strip()}…”")
+    except Exception:
+        pass
+    szemet = re.search(r"<\s*/?\s*(FELADAT|VOCAB|ABRA|MONDD|FL|TOPIC|LEVEL)"
+                       r"|⟨|<\|[a-z_]+\|>|\{\s*\"", tiszta, re.IGNORECASE)
+    if szemet:
+        ki.append(f"[jelölőhiba] a gyerek ezt is látja: "
+                  f"„{tiszta[max(0, szemet.start() - 20):szemet.start() + 50]}”")
+    if not tiszta.strip():
+        ki.append("[üres] a válaszból a gyerek semmit nem lát")
+    elif ("?" not in tiszta and "¿" not in tiszta
+          and "[A szöveg alatt ez a feladat" not in latott):
+        ki.append(f"[nincs kérdés] se kérdés, se feladat: "
+                  f"„…{tiszta[-80:].strip()}”")
+    return ki
 
 
 def _json_kibont(szoveg: str) -> dict:
@@ -408,8 +499,7 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
         uzenetek = ([{"role": "system", "content": rendszer}] + tortenet
                     + [{"role": "user", "content": gyerek_uzenet}])
         try:
-            tanar_valasz = _valaszol(kliens, TANAR_MODELL, uzenetek,
-                                     reasoning_effort="low")
+            tanar_valasz = _tanar_valaszol(kliens, uzenetek)
         except Exception as hiba:
             tanar_valasz = f"[A TANÁR VÁLASZA ELSZÁLLT: {hiba}]"
             print(f"      ! a TANÁR válasza sem ment: "
@@ -422,6 +512,7 @@ def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
         # párokat látva azt hitte, a válasz másolható a kérdésből, holott a
         # gyerek a magyar megfelelőt sosem látja.
         latott.append(_lathato(tanar_valasz, evfolyam))
+        gepi.extend(_gepi_tanar(tanar_valasz, latott[-1]))
 
         # A GYEREK IS AZT KAPJA, AMIT LÁT, nem a nyers jelölőket. Korábban a
         # nyers <FL:en>…</FL> szöveget kapta, és visszaírta a jelölőt — az
@@ -610,6 +701,15 @@ def _onproba() -> int:
     ]
     print("── Hívások ──")
     baj = 0
+    print(f"  a TANÁR a beállított szolgáltatónál ({TANAR_MODELL}"
+          + (f", {TANAR_API_BASE}" if TANAR_API_BASE else ", OpenAI")
+          + ") …", end=" ", flush=True)
+    try:
+        v = _tanar_valaszol(kliens, [{"role": "user", "content": "Mondd azt: szia"}])
+        print(f"OK — „{v[:40]}”")
+    except Exception as hiba:
+        baj += 1
+        print(f"HIBA — {type(hiba).__name__}: {str(hiba)[:150]}")
     for cimke, modell, uzenet, extra in probak:
         print(f"  {cimke} ({modell}) …", end=" ", flush=True)
         try:
@@ -743,10 +843,18 @@ def _jelentes(eredmenyek: list[dict], ido: str) -> None:
                  "> Ha a modell neve a baj, írd át az ELLENOR_MODELL sort a "
                  "tanar_teszt.py tetején.\n")
     s += [
-         f"Tanár modellje: **{TANAR_MODELL}**  ",
+         f"Tanár modellje: **{TANAR_MODELL}**"
+         + (f" ({TANAR_API_BASE})" if TANAR_API_BASE else " (OpenAI)") + "  ",
+         f"Tanári hívások: **{STAT['hivas']}**, ebből elszállt: **{STAT['hiba']}**  ",
+         f"Átlagos válaszidő: **{(STAT['ido'] / max(1, STAT['hivas'] - STAT['hiba'])):.1f} mp**  ",
+         f"Tokenek: be **{STAT['be']:,}**, ki **{STAT['ki']:,}**"
+         + (f" → becsült ár: **{(STAT['be'] * ARAK[TANAR_MODELL][0] + STAT['ki'] * ARAK[TANAR_MODELL][1]) / 1e6:.3f} $**"
+            f" (óránként {(STAT['be'] * ARAK[TANAR_MODELL][0] + STAT['ki'] * ARAK[TANAR_MODELL][1]) / 1e6 / max(1, len(eredmenyek)):.4f} $,"
+            " gyorsítótár nélkül számolva)" if TANAR_MODELL in ARAK else "")
+         + "  ",
          f"Oldal: **{'spanyol (LOMLOE)' if OLDAL == 'es' else 'magyar'}**  ",
          f"Lejátszott órák: **{len(eredmenyek)}**  ",
-         f"Gépi találat (számtan, felolvasás — ez NEM vélemény): **{gepi_db}**  ",
+         f"Gépi találat (számtan, felolvasás, szivárgás, jelölőhiba, hiányzó kérdés — ez NEM vélemény): **{gepi_db}**  ",
          f"Az ellenőrző szerint biztos hiba: **{biztos}**  ",
          f"Az ellenőrző szerint gyanús: **{gyanus}**\n",
          "> Az ellenőrző maga is egy AI. Nem talál meg mindent, és néha",
@@ -754,6 +862,13 @@ def _jelentes(eredmenyek: list[dict], ido: str) -> None:
          "> A GÉPI találatok viszont tények, azokat nem kell mérlegelni.\n"]
 
     if gepi_db:
+        fajtak: dict = {}
+        for e in eredmenyek:
+            for g in e["gepi"]:
+                k = g.split("]")[0] + "]"
+                fajtak[k] = fajtak.get(k, 0) + 1
+        s.append("\n## Gépi találatok fajtánként\n")
+        s += [f"- {k}: **{v}**" for k, v in sorted(fajtak.items())]
         s.append("\n## Gépi találatok\n")
         for e in eredmenyek:
             for g in e["gepi"]:
@@ -784,7 +899,9 @@ def _jelentes(eredmenyek: list[dict], ido: str) -> None:
     s.append(f"\n---\n\nA teljes beszélgetések: `{NAPLO_FAJL}`\n")
     # A korábbi jelentés NE vesszen el: egy dátumos másolat is készül, így
     # két futás eredménye összevethető (melyik modell, melyik javítás után).
+    import re as _re
     datumos = ("tanar_teszt_jelentes_" + OLDAL + "_"
+               + _re.sub(r"[^a-z0-9.-]+", "-", TANAR_MODELL.lower()) + "_"
                + datetime.now().strftime("%Y-%m-%d_%H%M") + ".md")
     with open(datumos, "w", encoding="utf-8") as f:
         f.write("\n".join(s))
