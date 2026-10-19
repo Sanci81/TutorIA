@@ -1629,6 +1629,86 @@ def blog_ai_tanulas():
     return render_template("blog_ai.html", gyerek_menu_nelkul=True)
 
 
+# ── ROBOT ELLENI VÉDELEM ─────────────────────────────────────────────────
+# 2026-10-19. Eddig semmi nem állta útját, hogy egy program tömegesen
+# regisztráljon (e-mail- és AI-költség), jelszót próbálgasson, vagy
+# elfelejtett-jelszó leveleket küldessen. Külső szolgáltatás (CAPTCHA)
+# nélkül, három egyszerű réteggel:
+#   1. CSAPDA-MEZŐ: egy embernek láthatatlan mező. Ember nem tölti ki,
+#      a robot minden mezőt kitölt.
+#   2. IDŐZÁR: az űrlap aláírva hordozza, mikor jelent meg. Ember nem
+#      tölti ki 2 másodperc alatt a regisztrációt.
+#   3. GYAKORISÁG-KORLÁT IP-nként.
+# A gyanús kérésre CSENDBEN úgy válaszolunk, mintha minden rendben lenne –
+# a robot nem tudja meg, mi buktatta le.
+_URLAP_CSAPDA = "weboldal"
+_URLAP_IDO = "urlap_ido"
+_PROBAK: dict[str, list[float]] = {}
+_PROBAK_ZAR = threading.Lock()
+
+
+def _urlap_jelolo():
+    from itsdangerous import URLSafeTimedSerializer
+    return URLSafeTimedSerializer(app.secret_key, salt="urlap-ido")
+
+
+@app.context_processor
+def _urlap_vedelem_sablonba():
+    """A sablonban: {{ urlap_vedelem() }} – a csapda-mező és az időbélyeg."""
+    def urlap_vedelem():
+        from markupsafe import Markup
+        jel = _urlap_jelolo().dumps(time.time())
+        return Markup(
+            '<div aria-hidden="true" style="position:absolute;left:-10000px;'
+            'top:auto;width:1px;height:1px;overflow:hidden">'
+            f'<label>Weboldal<input type="text" name="{_URLAP_CSAPDA}" '
+            'tabindex="-1" autocomplete="off" value=""></label></div>'
+            f'<input type="hidden" name="{_URLAP_IDO}" value="{jel}">')
+    return {"urlap_vedelem": urlap_vedelem}
+
+
+def _kero_ip() -> str:
+    return (request.headers.get("X-Forwarded-For") or request.remote_addr
+            or "").split(",")[0].strip()
+
+
+def _robot_gyanus(min_mp: float) -> bool:
+    """Igaz, ha a beküldött űrlap gépiesnek látszik (és naplózza)."""
+    if (request.form.get(_URLAP_CSAPDA) or "").strip():
+        logger.warning("ROBOT: kitöltött csapda-mező %s %s", request.path, _kero_ip())
+        return True
+    if min_mp > 0:
+        try:
+            mikor = float(_urlap_jelolo().loads(
+                request.form.get(_URLAP_IDO) or "", max_age=24 * 3600))
+        except Exception:
+            # Hiányzik vagy lejárt (pl. egy napig nyitva hagyott lap): ez
+            # embernél is előfordul, ezért nem robot – csak friss lap kell.
+            return False
+        if time.time() - mikor < min_mp:
+            logger.warning("ROBOT: túl gyors beküldés %s %s", request.path, _kero_ip())
+            return True
+    return False
+
+
+def _tul_sok_proba(nev: str, db: int, ablak_mp: int) -> bool:
+    """Igaz, ha erről az IP-ről ennél többször próbálták az ablakon belül."""
+    most = time.time()
+    kulcs = f"{nev}|{_kero_ip()}"
+    with _PROBAK_ZAR:
+        if len(_PROBAK) > 5000:            # ne nőjön a végtelenségig
+            for k in [k for k, v in _PROBAK.items() if not v or most - v[-1] > 3600]:
+                _PROBAK.pop(k, None)
+        lista = [t for t in _PROBAK.get(kulcs, []) if most - t < ablak_mp]
+        tul = len(lista) >= db
+        if not tul:
+            lista.append(most)
+        _PROBAK[kulcs] = lista
+    if tul:
+        logger.warning("ROBOT?: túl sok próba %s %s", nev, _kero_ip())
+    return tul
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     # Aki már be van lépve, annak nincs dolga a regisztrációval. Enélkül a
@@ -1641,6 +1721,12 @@ def register():
         email = (request.form.get("email") or "").strip()
         password = request.form.get("password") or ""
         confirm = request.form.get("password_confirm") or ""
+
+        if _robot_gyanus(min_mp=2):
+            return redirect(url_for("index"))
+        if _tul_sok_proba("register", 5, 3600):
+            flash(i18n.t("flash_tul_sok_proba", g.lang), "error")
+            return render_template("register.html", email=email)
 
         if len(password) < 6:
             flash(i18n.t("flash_password_short", g.lang), "error")
@@ -2480,6 +2566,14 @@ def login():
         email = (request.form.get("email") or "").strip()
         password = request.form.get("password") or ""
 
+        # Belépésnél nincs időzár: a jelszókezelő egy pillanat alatt kitölti.
+        if _robot_gyanus(min_mp=0):
+            flash(i18n.t("flash_invalid_login", g.lang), "error")
+            return render_template("login.html", email=email)
+        if _tul_sok_proba("login", 10, 600):
+            flash(i18n.t("flash_tul_sok_proba", g.lang), "error")
+            return render_template("login.html", email=email)
+
         parent = database.get_parent_by_email(email)
         if parent and check_password_hash(parent["password_hash"], password):
             session["parent_id"] = parent["id"]
@@ -2496,6 +2590,13 @@ def forgot_password():
     if request.method == "POST":
         email = (request.form.get("email") or "").strip()
         lang = g.lang
+
+        if _robot_gyanus(min_mp=2):
+            flash(i18n.t("flash_reset_email_sent", lang), "success")
+            return redirect(url_for("login"))
+        if _tul_sok_proba("forgot", 5, 3600):
+            flash(i18n.t("flash_tul_sok_proba", lang), "error")
+            return render_template("forgot_password.html", email=email)
 
         try:
             parent = database.get_parent_by_email(email)
@@ -3460,6 +3561,16 @@ def _feladat_parse(text: str, *, grade: int | None = None,
     eredmeny = _feladat_parse_belso(text, grade=grade, es_tanterv=es_tanterv,
                                     temakor=temakor)
     eredmeny = _feladat_jelolok_nelkul(eredmeny)
+    # A TÁBLA CÍME A KÉRDÉS LEGYEN, NE A LECKE NEVE. 2026-10-19, Sándor
+    # képernyőképe: a választós feladat fölött „My town – A városom” állt,
+    # a kérdés („Mit jelent magyarul a park?”) csak fent, a szövegben.
+    # Amelyik feladatnak nincs saját kérdése, az a tanár utolsó kérdő
+    # mondatát kapja címnek a jelölő elől.
+    if (isinstance(eredmeny, dict) and not eredmeny.get("kerdes")
+            and not eredmeny.get("cim")):
+        cim = _feladat_elotti_kerdes(text)
+        if cim:
+            eredmeny["cim"] = cim
     # A mintaoldalas elemek ebből tudják, hogy forint vagy euró, magyar
     # vagy spanyol felirat kell (a szöveges órán nincs nyelvjelző mező).
     if isinstance(eredmeny, dict) and "es" not in eredmeny:
@@ -3581,6 +3692,19 @@ def _ora_szoveg_es(h: int, p: int) -> str:
 # Számok után a -es/-as/-ös/-os rag (3-as, 5-ös, 6-os szorzótábla).
 _HU_ES_RAG = {1: "-es", 2: "-es", 3: "-as", 4: "-es", 5: "-ös", 6: "-os",
               7: "-es", 8: "-as", 9: "-es", 10: "-es"}
+
+
+def _feladat_elotti_kerdes(text: str) -> str:
+    """A tanár utolsó kérdő mondata a <FELADAT> jelölő előtt (vagy üres)."""
+    m = _CHAT_MARKER_FELADAT.search(text or "")
+    if not m:
+        return ""
+    elotte = re.sub(r"<[^>]{1,40}>", " ", text[:m.start()])
+    kerdesek = re.findall(r"[^.!?\n]*\?", elotte)
+    if not kerdesek:
+        return ""
+    k = kerdesek[-1].strip().strip("*_#>-–— ").strip()
+    return k if 3 <= len(k) <= 120 else ""
 
 
 def _feladat_parse_belso(text: str, *, grade: int | None = None,
@@ -8010,14 +8134,20 @@ def _dm_feladat_blokk(subject_label: str, grade: int, *, es: bool, idegen: bool 
         return ""
     if es:
         sorok = ["\n=== MÁS SUPERFICIES INTERACTIVAS PARA ESTA ASIGNATURA ===",
-                 "Valen las mismas reglas: enseña ANTES, una sola tarea por respuesta, al final."]
+                 "Valen las mismas reglas: enseña ANTES, una sola tarea por respuesta, al final.",
+                 "A los niños les ENCANTAN: si una de estas superficies encaja con lo que se practica ahora, "
+                 "úsala EN LUGAR de una pregunta normal de número o de elegir. En una clase, al menos cada "
+                 "segunda o tercera tarea debe ser una de estas (o de la lista anterior)."]
         for i, f in enumerate(talalt, start=26):
             sorok.append(f"{i}) {f[5]}")
         sorok.append("Cómo elegir (además de la lista anterior):")
         sorok += ["  " + f[7] for f in talalt]
     else:
         sorok = ["\n=== TOVÁBBI INTERAKTÍV FELÜLETEK EHHEZ A TANTÁRGYHOZ ===",
-                 "Ugyanazok a szabályok: ELŐTTE taníts, egy válaszban egy feladat, a válasz végén."]
+                 "Ugyanazok a szabályok: ELŐTTE taníts, egy válaszban egy feladat, a válasz végén.",
+                 "A gyerekek EZEKET SZERETIK a legjobban: ha valamelyik illik ahhoz, amit most gyakorol, "
+                 "EZT add a sima szám- vagy választós kérdés HELYETT. Egy órán legalább minden második-"
+                 "harmadik feladat ilyen legyen (vagy a fenti listából egy interaktív)."]
         for i, f in enumerate(talalt, start=26):
             sorok.append(f"{i}) {f[4]}")
         sorok.append("Így válassz (a fenti lista mellett):")

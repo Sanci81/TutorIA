@@ -732,6 +732,10 @@ TRANSLATIONS = {
         "es": "Antes de volver a intentarlo, estudia unos {minutes} minutos "
              "mas en este tema!",
     },
+    "flash_tul_sok_proba": {
+        "hu": "Túl sok próbálkozás. Várj egy kicsit, és próbáld újra!",
+        "es": "Demasiados intentos. Espera un poco y vuelve a intentarlo.",
+    },
     "gate_retry_hint": {
         "hu": "Zárd be ezt az ablakot, tanulj, és térj vissza később!",
         "es": "Cierra esta ventana, estudia y vuelve mas tarde!",

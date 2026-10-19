@@ -307,6 +307,8 @@
        és rálógott a témalistára, illetve nagyításban a szójegyzékre. */
     .chat-layout:has(.uj-felulet) .chat-kabala{position:static;max-width:150px;
         max-height:100%;width:auto;object-fit:contain}
+    /* A képes, reagáló kabala 400×600-as (a figura körül kis hely van). */
+    .chat-layout:has(.uj-felulet) .chat-kabala.kabala-allapotos{max-width:200px}
     .chat-layout:has(.uj-felulet) .chat-kabala-doboz{position:static;
         max-width:280px;max-height:100%}
 
@@ -768,6 +770,14 @@
   /* CSAK a rajztábla legszélét vágjuk le – ott van a „Click me!"
      felirat. 190% korábban a robot fejét is levágta, ezért nézett ki
      úgy, mintha dobozban ülne. */
+  /* A képes kabala arcai: rövid áttűnés, örömre egy kis ugrás. A 400×600-as
+     képeken a figura körül van egy kis hely, ezért valamivel szélesebb lehet. */
+  .chat-kabala.kabala-allapotos{transition:opacity .14s ease}
+  .chat-kabala.kabala-valt{opacity:0}
+  .chat-kabala.kabala-ugrik{animation:kabala-ugras .7s cubic-bezier(.3,1.6,.5,1)}
+  @keyframes kabala-ugras{0%{transform:translateY(0)}35%{transform:translateY(-22px)}
+    60%{transform:translateY(0)}80%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+  @media (prefers-reduced-motion: reduce){.chat-kabala.kabala-ugrik{animation:none}}
   .chat-kabala-rive{display:block;position:relative;
                     width:118%;height:118%;left:-9%;top:-9%}
 
@@ -1939,6 +1949,7 @@
             el.textContent = '⏳ ' + sablon.replace('{perc}', String(hatra));
         } else {
             el.textContent = '✅ ' + (el.getAttribute('data-kesz') || '');
+            if (typeof leckeAllomasra === 'function') { leckeAllomasra(3); }
         }
     }
 
@@ -2050,7 +2061,10 @@
     // ══════════════════════════════════════════════════════════════════
     var ALLOMAS_X = [8, 36, 64, 92];   // az állomások helye százalékban
     var GYAKORLAS_UTAN = 3;            // ennyi váltás után lép Gyakorlásra
-    var leckeAllomas = 1;
+    /* Ha a lecke ideje már letelt (korábbi napokon is tanulta), a sín a
+       Teszt állomásnál indul – ne mutassa a Tanulást, miközben alatta az
+       áll, hogy jöhet a záró teszt. */
+    var leckeAllomas = {{ 3 if (lecke_hossz_perc and lecke_hatra_perc <= 0) else 1 }};
     var leckeValtas = 0;
     var leckeVege = false;   // a témakör kész – ilyenkor MIND a négy pipa
 
@@ -2295,8 +2309,18 @@
         if (!elem) { return false; }
         munkaterTest.innerHTML = '';
         munkaterTest.appendChild(elem);
-        munkaterCim.textContent = (feladat && feladat.cim)
-            || currentTopicName || '';
+        /* A TÁBLA CÍME A KÉRDÉS, nem a lecke neve. Ha a feladat a kérdést
+           a saját dobozában mutatja, onnan feljebb visszük (a törtes kérdés
+           marad lent, mert az a dobozban szépen, emeletesen látszik). */
+        var cim = feladat && feladat.cim;
+        if (!cim && feladat && feladat.kerdes && !/\d+\/\d+/.test(feladat.kerdes)) {
+            var belso = elem.querySelector('.ie-kerdes');
+            if (belso && belso.textContent.trim() === String(feladat.kerdes).trim()) {
+                cim = feladat.kerdes;
+                belso.parentNode.removeChild(belso);
+            }
+        }
+        munkaterCim.textContent = cim || currentTopicName || '';
         munkaterUtasitas.textContent = (feladat && feladat.utasitas)
             || alapUtasitas(feladat && feladat.tipus);
         munkater.hidden = false;
@@ -6292,8 +6316,56 @@
         } catch (e) {}
     }
 
+    /* A KÉPES KABALA (kisfiú, kislány) IS REAGÁL. 2026-10-19: ugyanannak a
+       figurának hét arca van (static/figurak/kabala_fiu|kabala_lany), és
+       ugyanazokra az eseményekre vált, mint a mozgó robot: jó válaszra
+       örül és ugrik, rossz válaszra kicsit szomorú, amíg a tanár ír,
+       gondolkodik, az óra elején integet. Ha a képek nincsenek fent,
+       marad a régi állókép – semmi nem romlik el. */
+    var KABALA_KEP = {
+        alap: 'alap', koszon: 'integet', gondolkodik: 'gondolkodik',
+        nezelodik: 'gondolkodik', orul: 'orul', szomoru: 'szomoru',
+        bosszus: 'szomoru', kivancsi: 'alap', cuki: 'nevet',
+        gepies: 'meglepodik', kesz: 'tapsol'
+    };
+    var kabalaKepEl = document.getElementById('kabala-kep');
+    var kabalaKepMappa = '';
+    var kabalaKepMost = '';
+    if (kabalaKepEl) {
+        var _kkNem = /lany/.test(kabalaKepEl.getAttribute('src') || '') ? 'lany' : 'fiu';
+        kabalaKepMappa = {{ url_for('static', filename='figurak/')|tojson }} + 'kabala_' + _kkNem + '/';
+        /* Előre betöltjük mind a nyolcat; ha az alap nem jön le, a képes
+           reakció kimarad, és az eredeti állókép marad. */
+        var _kkProba = new Image();
+        _kkProba.onload = function () {
+            kabalaKepEl.classList.add('kabala-allapotos');
+            kabalaKepEl.src = _kkProba.src;
+            Object.keys(KABALA_KEP).forEach(function (k) { (new Image()).src = kabalaKepMappa + KABALA_KEP[k] + '.webp'; });
+            kabalaKepMost = 'alap';
+        };
+        _kkProba.onerror = function () { kabalaKepMappa = ''; };
+        _kkProba.src = kabalaKepMappa + 'alap.webp';
+    }
+    function kabalaKepValt(nev) {
+        if (!kabalaKepEl || !kabalaKepMappa || !kabalaKepMost) { return; }
+        var kep = KABALA_KEP[nev] || 'alap';
+        if (kep === kabalaKepMost) { return; }
+        kabalaKepMost = kep;
+        kabalaKepEl.classList.add('kabala-valt');
+        setTimeout(function () {
+            kabalaKepEl.src = kabalaKepMappa + kep + '.webp';
+            kabalaKepEl.classList.remove('kabala-valt');
+            kabalaKepEl.classList.remove('kabala-ugrik');
+            if (kep === 'orul' || kep === 'tapsol') {
+                void kabalaKepEl.offsetWidth;
+                kabalaKepEl.classList.add('kabala-ugrik');
+            }
+        }, 140);
+    }
+
     function kabalaAllapot(nev) {
         kabalaKert = nev;
+        if (typeof kabalaKepValt === 'function') { try { kabalaKepValt(nev); } catch (e) {} }
         /* EZ VOLT A HIBA, AMITŐL ÜRESEN MARADT A BAL OLDAL.
            A böngésző ezt a függvényt már a fájl elején is "látja", a hozzá
            tartozó KABALA_ALLAPOT táblázat viszont csak lejjebb kap értéket.
@@ -6419,6 +6491,13 @@
             setTimeout(function () { kabalaAllapot('alap'); }, 3500);
             kabalaUnatkozik();
         }
+    } else if (kabalaKepEl) {
+        /* A képes kabala is köszön az óra elején, és él az órán. */
+        setTimeout(function () {
+            kabalaAllapot('koszon');
+            setTimeout(function () { kabalaAllapot('alap'); }, 3500);
+        }, 600);
+        kabalaUnatkozik();
     }
 
     function setLoading(on) {

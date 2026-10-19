@@ -52,6 +52,7 @@
       </div>
       <div class="fp-kartya">
         <form method="post" action="{{ url_for('login') }}" novalidate>
+            {{ urlap_vedelem() }}
             <div class="field">
                 <label for="email">{{ t('label_email') }}</label>
                 <input type="email" id="email" name="email" value="{{ email }}" required autocomplete="email">

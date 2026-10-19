@@ -475,6 +475,64 @@ if(!i.hidden&&i.getAttribute('src')===u){i.hidden=true;return;}i.src=u;i.hidden=
         f.write(lap)
 
 
+def _hatter_le(kep):
+    """Leveszi a fehér/világosszürke hátteret (a kockás „átlátszó” mintát is).
+
+    2026-10-19: a képgenerátor az átlátszó háttér helyett odarajzolta a
+    kockás mintát, amivel a programok az átlátszóságot jelölik. A figurák
+    körvonalasak, ezért a széltől indulva elárasztjuk a világos képpontokat:
+    ami a körvonalon kívül van, átlátszó lesz, ami belül (fehér cipő, a
+    robot fehér teste), az megmarad.
+    """
+    from PIL import Image, ImageDraw, ImageFilter
+    kep = kep.convert("RGBA")
+    if kep.getchannel("A").getextrema()[0] < 250:
+        return kep                       # már valóban átlátszó
+    rgb = kep.convert("RGB")
+    w, h = rgb.size
+    vilagos = Image.new("L", (w, h), 0)
+    px, vp = rgb.load(), vilagos.load()
+    for y in range(h):
+        for x in range(w):
+            r, g, b = px[x, y]
+            if min(r, g, b) >= 232 and max(r, g, b) - min(r, g, b) <= 10:
+                vp[x, y] = 255
+    for x in list(range(0, w, 6)) + [w - 1]:
+        for y in (0, h - 1):
+            if vp[x, y] == 255:
+                ImageDraw.floodfill(vilagos, (x, y), 128)
+    for y in list(range(0, h, 6)) + [h - 1]:
+        for x in (0, w - 1):
+            if vp[x, y] == 255:
+                ImageDraw.floodfill(vilagos, (x, y), 128)
+    # A körvonalon BELÜL rekedt kockás foltok (pl. a kar és a fej között)
+    # is háttérnek számítanak – a fehér cipő vagy a robot teste viszont nem:
+    # a kockás mintában sok a 240–247-es szürke, a rajzolt fehérben nem.
+    szurke = rgb.convert("L")
+    for y in range(0, h, 3):
+        for x in range(0, w, 3):
+            if vp[x, y] != 255:
+                continue
+            ImageDraw.floodfill(vilagos, (x, y), 60)
+            folt = vilagos.point(lambda v: 255 if v == 60 else 0)
+            db = folt.histogram()[255]
+            from PIL import ImageChops
+            def _resz(lo, hi):
+                sav = szurke.point(lambda v: 255 if lo <= v <= hi else 0)
+                return ImageChops.multiply(sav, folt).histogram()[255]
+            # kockás minta: két éles árnyalat (kb. 244 és 254), köztes alig –
+            # a rajzolt fehérben (szem, cipő) folyamatos az átmenet
+            a_db, b_db, koztes = _resz(242, 246), _resz(252, 255), _resz(247, 251)
+            kockas = (db >= 150 and a_db >= 0.3 * db and b_db >= 0.3 * db
+                      and koztes <= 0.1 * db)
+            uj = 128 if kockas else 200
+            ImageDraw.floodfill(vilagos, (x, y), uj)
+    alfa = vilagos.point(lambda v: 0 if v == 128 else 255)
+    alfa = alfa.filter(ImageFilter.MinFilter(3)).filter(ImageFilter.GaussianBlur(0.8))
+    kep.putalpha(alfa)
+    return kep
+
+
 # ── 3. LÉPÉS ────────────────────────────────────────────────────────────
 def jovahagy(fig: str) -> int:
     from PIL import Image
@@ -495,7 +553,7 @@ def jovahagy(fig: str) -> int:
         kep = Image.open(forras)
         if kabala:
             # átlátszó háttér marad; az alakot középre, alulra igazítjuk
-            kep = kep.convert("RGBA")
+            kep = _hatter_le(kep)
             kep = kep.crop(kep.getchannel("A").getbbox() or (0, 0, kep.width, kep.height))
             kep.thumbnail((meret[0] - 20, meret[1] - 20), Image.LANCZOS)
             vaszon = Image.new("RGBA", meret, (0, 0, 0, 0))
