@@ -5418,6 +5418,41 @@ _FL_CSONKA = re.compile(
     r"<\s*/?\s*FL:(?:en|de|es|fr|it|la|hu)?(?!\s*>)")
 
 
+# Egy sor, amiben CSAK egy idegen szó jelölője áll. Éles példa, spanyolóra:
+#     Mit jelent magyarul az <FL:es>el parque</FL>?
+#     <VOCAB>kórház=el hospital</VOCAB>
+#     <FL:es>la calle</FL>
+# Az utolsó sor egy korábban tanult szó, a tanár odavetette. A jelölő
+# lejött, a szó a kérdés alatt maradt, mintha az lenne a válasz.
+_FL_ONALLO_SOR = re.compile(
+    r"^[ \t]*<\s*FL:[a-z]{2}\s*>([^<\n]*)<\s*/\s*FL(?::[a-z]{2})?\s*>[ \t]*$",
+    re.IGNORECASE | re.MULTILINE)
+
+
+def _fl_zaro_ismetles_nelkul(szoveg: str) -> str:
+    """Az utolsó kérdés UTÁN, külön sorban álló, már elhangzott idegen szó ki.
+
+    Csak ha a szó a szövegben korábban már szerepelt: akkor ismétlés, nem
+    tanítás. A kérdés előtti sorokhoz és az új szavakhoz nem nyúl.
+    """
+    if not szoveg or "FL" not in szoveg.upper():
+        return szoveg
+    kerdes = szoveg.rfind("?")
+    if kerdes < 0:
+        return szoveg
+
+    def csere(m: "re.Match[str]") -> str:
+        if m.start() < kerdes:
+            return m.group(0)
+        szo = m.group(1).strip().casefold()
+        elotte = _fl_lathatatlan(szoveg[:m.start()]).casefold()
+        if szo and szo in elotte:
+            return ""
+        return m.group(0)
+
+    return _FL_ONALLO_SOR.sub(csere, szoveg)
+
+
 def _fl_lathatatlan(szoveg: str) -> str:
     """Az idegen szó jelölése tűnik el, a szó marad. Hibás alaknál is."""
     t = _CHAT_MARKER_FL.sub(lambda m: m.group(2), szoveg or "")
@@ -5657,6 +5692,7 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     # elé tett ilyeneket: <|im_end|>, <|fim_suffix|>. Soha nem tartalom.
     clean = _MODELL_TOKEN.sub("", text)
     # Az <FL:xx>szó</FL> jelölőből csak a jelölés tűnik el, a SZÓ marad.
+    clean = _fl_zaro_ismetles_nelkul(clean)
     clean = _fl_lathatatlan(clean)
     clean = _CHAT_MARKER_TOPIC.sub("", clean)
     clean = _CHAT_MARKER_LEVEL.sub("", clean)

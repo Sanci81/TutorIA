@@ -165,6 +165,19 @@ JELOLO_ESETEK: list[tuple[str, str, str]] = [
      "„La tienda de la ciudad.” (A város boltja.)",
      "csonka <FL: záró jel nélkül. A gyerek az < jelet és az FL-t is látta. "
      "A La névelő megmarad."),
+    ("Nagyon ügyes, a „la calle” helyes! Most: <FL:es>el hospital</FL> = a kórház.\n\n"
+     "Mit jelent magyarul az <FL:es>el parque</FL>?\n\n"
+     "<VOCAB>kórház=el hospital</VOCAB>\n<FL:es>la calle</FL>",
+     "Nagyon ügyes, a „la calle” helyes! Most: el hospital = a kórház.\n\n"
+     "Mit jelent magyarul az el parque?",
+     "a tanár a kérdés alá külön sorba odavetett egy már tanult szót "
+     "FL-jelölővel. A gyerek a kérdés alatt a „la calle”-t látta."),
+    ("Mit jelent magyarul az <FL:es>el parque</FL>?\n<FL:es>la plaza</FL>",
+     "Mit jelent magyarul az el parque?\nla plaza",
+     "ami még NEM hangzott el, az marad: lehet, hogy épp most tanítja"),
+    ("<FL:es>la calle</FL>\nMit jelent a la calle?",
+     "la calle\nMit jelent a la calle?",
+     "a kérdés ELŐTT álló sor tanítás, ahhoz nem nyúlunk"),
     ("¿Dónde está <FL:es la calle?",
      "¿Dónde está la calle?",
      "spanyol órán is lejön a csonka jelölő, a szó marad"),
