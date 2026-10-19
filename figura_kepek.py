@@ -53,10 +53,18 @@ import os
 import sys
 import time
 
+# Windows konzol: a különleges jelek (pipa, nyíl) ne dobjanak piros hibát.
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 GYOKER = os.path.dirname(os.path.abspath(__file__))
 UJ_MAPPA = os.path.join(GYOKER, "szokep_uj", "figurak")
 VEGLEGES = os.path.join(GYOKER, "static", "figurak")
 MODELL = "gpt-image-2"
+# --utotag: más néven menti (pl. _high), így össze lehet hasonlítani.
+UTOTAG = ""
 
 STILUS = (
     "high-quality children's picture-book illustration, soft painterly "
@@ -109,6 +117,18 @@ POZOK = {
     "igen": "giving a happy thumbs up with his right hand, big proud smile",
     "orul": "jumping for joy with both arms raised, very happy",
 }
+# KÖZBÜLSŐ KÉPEK: a keze félúton jár. Az oldal így játssza le:
+# alap -> félúton -> megérinti -> félúton -> alap, így látszik a mozdulat.
+KOZTES = {
+    "eyes_k": "raising both hands halfway up towards his face, index fingers starting to point, smiling",
+    "ears_k": "raising both hands halfway up towards his ears, smiling",
+    "eyebrows_k": "raising both hands halfway up towards his forehead, index fingers starting to point, smiling",
+    "nose_k": "raising his right hand halfway up towards his face, index finger starting to point, smiling",
+    "mouth_k": "raising his right hand halfway up towards his face, index finger starting to point, smiling",
+    "chin_k": "raising his right hand halfway up towards his chin, smiling",
+    "hair_k": "raising his right hand halfway up towards the top of his head, smiling",
+}
+POZOK.update(KOZTES)
 
 # A maci ruhái: (kulcs, angol leírás, hol van a képen: felső–alsó arány)
 RUHAK = {
@@ -188,7 +208,7 @@ def valaszt(parancs: str) -> int:
         return 1
     with open(forras, "rb") as a, open(alap_ut(fig), "wb") as b:
         b.write(a.read())
-    print(f"✓ A(z) {sz}. jelölt lett a {fig} alapképe. Jöhet: python figura_kepek.py --gyart {fig}")
+    print(f"OK: a {sz}. jelölt lett az alapkép ({fig}). Jöhet: python figura_kepek.py --gyart {fig}")
     attekinto()
     return 0
 
@@ -207,7 +227,7 @@ def fiu_pozok(kliens, csak: set, ujra: bool, db: int, minoseg: str) -> int:
         print("Előbb válassz alapképet: --alap fiu, aztán --valaszt fiu:<szám>")
         return 1
     teendo = [k for k in POZOK if (not csak or k in csak)
-              and (ujra or not os.path.exists(os.path.join(mappa("fiu"), k + ".png")))]
+              and (ujra or not os.path.exists(os.path.join(mappa("fiu"), k + UTOTAG + ".png")))]
     if db:
         teendo = teendo[:db]
     for i, k in enumerate(teendo, 1):
@@ -216,7 +236,7 @@ def fiu_pozok(kliens, csak: set, ujra: bool, db: int, minoseg: str) -> int:
             with open(alap_ut("fiu"), "rb") as kep:
                 v = _hivas(kliens.images.edit, model=MODELL, image=kep, size=FIGURAK["fiu"]["meret"],
                            prompt=poz_prompt(POZOK[k]), input_fidelity="high", quality=minoseg)
-            with open(os.path.join(mappa("fiu"), k + ".png"), "wb") as ki:
+            with open(os.path.join(mappa("fiu"), k + UTOTAG + ".png"), "wb") as ki:
                 ki.write(_kep_bajt(v))
         except Exception as e:
             print(f"   ! nem sikerült: {type(e).__name__}: {str(e)[:200]}")
@@ -300,7 +320,7 @@ def maci_ruhak(kliens, csak: set, ujra: bool, db: int, minoseg: str) -> int:
             k = f"{r}_{sz}"
             if csak and k not in csak and r not in csak:
                 continue
-            if not ujra and os.path.exists(os.path.join(mappa("maci"), k + ".png")):
+            if not ujra and os.path.exists(os.path.join(mappa("maci"), k + "_teljes" + UTOTAG + ".png")):
                 continue
             teendo.append((r, sz, k))
     if db:
@@ -313,18 +333,16 @@ def maci_ruhak(kliens, csak: set, ujra: bool, db: int, minoseg: str) -> int:
                            mask=("maszk.png", _maszk_png(alap.size, RUHAK[r][1]), "image/png"),
                            size=FIGURAK["maci"]["meret"], prompt=ruha_prompt(SZINEK[sz], RUHAK[r][0]),
                            input_fidelity="high", quality=minoseg)
-            nyers = Image.open(io.BytesIO(_kep_bajt(v)))
-            nyers.save(os.path.join(mappa("maci"), k + "_teljes.png"))
-            reteg, kint = reteg_kivag(alap, nyers, RUHAK[r][1])
-            reteg.save(os.path.join(mappa("maci"), k + ".png"))
-            if kint > 10:
-                print(f"   ! a ruhán kívül is sokat változott ({kint:.0f}) – nézd meg, "
-                      f"lehet, hogy újra kell kérni: --gyart maci --csak {k} --ujra")
+            # 2026-10-19: a kivágott rétegek foltosak lettek (a gép az egész
+            # macit kicsit átrajzolja), ezért az oldal az EGÉSZ képet mutatja:
+            # egy feladatban egy ruhadarab.
+            with open(os.path.join(mappa("maci"), k + "_teljes" + UTOTAG + ".png"), "wb") as ki:
+                ki.write(_kep_bajt(v))
         except Exception as e:
             print(f"   ! nem sikerült: {type(e).__name__}: {str(e)[:200]}")
             time.sleep(2)
     attekinto()
-    print("\nKész. Nyisd meg: szokep_uj/figurak/attekinto.html – ott ki is próbálhatod a ruhákat.")
+    print("\nKész. Nyisd meg: szokep_uj/figurak/attekinto.html")
     return 0
 
 
@@ -344,15 +362,10 @@ def attekinto() -> None:
             for k in POZOK if os.path.exists(os.path.join(mappa("fiu"), k + ".png")))
         resz.append(f"<h2>Kisfiú – pózok</h2><div class='racs'>{kepek}</div>")
     if os.path.exists(alap_ut("maci")):
-        gombok = ""
-        for r in SORREND:
-            for sz in SZINEK:
-                if os.path.exists(os.path.join(mappa("maci"), f"{r}_{sz}.png")):
-                    gombok += f'<button data-r="{r}" data-sz="{sz}" style="background:{sz}">{r}</button>'
-        resz.append(
-            "<h2>Maci – próbáld fel a ruhákat</h2><div class='maci'><div id='m'><img src='maci/alap.png'>"
-            + "".join(f"<img id='r_{r}' hidden>" for r in SORREND)
-            + f"</div><div class='gombok'>{gombok}</div></div>")
+        kepek = '<figure><img src="maci/alap.png"><figcaption>alap</figcaption></figure>' + "".join(
+            f'<figure><img src="maci/{r}_{sz}_teljes.png"><figcaption>{sz} {r}</figcaption></figure>'
+            for r in RUHAK for sz in SZINEK if os.path.exists(os.path.join(mappa("maci"), f"{r}_{sz}_teljes.png")))
+        resz.append(f"<h2>Maci – ruhák</h2><div class='racs'>{kepek}</div>")
     lap = """<!doctype html><meta charset="utf-8"><title>Kisfiú és maci – képek</title>
 <style>body{font-family:system-ui;background:#FBF5EA;margin:0;padding:20px;color:#0E2A1E}
 .racs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
@@ -383,17 +396,16 @@ def jovahagy(fig: str) -> int:
     meret = (512, 768) if fig == "fiu" else (640, 640)
     megvan = []
     for k in kulcsok:
-        forras = os.path.join(mappa(fig), k + ".png")
+        forras = os.path.join(mappa(fig), k + ("_teljes" if fig == "maci" and k != "alap" else "") + ".png")
         if not os.path.exists(forras):
             continue
-        kep = Image.open(forras)
-        kep = kep.convert("RGBA" if (fig == "maci" and k != "alap") else "RGB").resize(meret, Image.LANCZOS)
+        kep = Image.open(forras).convert("RGB").resize(meret, Image.LANCZOS)
         kep.save(os.path.join(cel, k + ".webp"), "WEBP", quality=85, method=6)
         megvan.append(k)
-        print(f"  ✓ {fig}/{k}")
+        print(f"  OK {fig}/{k}")
     with open(os.path.join(cel, "kepek.json"), "w", encoding="utf-8") as f:
-        json.dump({"kepek": megvan, "sorrend": SORREND if fig == "maci" else []}, f, indent=1)
-    print(f"\n{len(megvan)} kép → static/figurak/{fig}. Töltsd fel: git add static/figurak")
+        json.dump({"kepek": megvan}, f, indent=1)
+    print(f"\n{len(megvan)} kép -> static/figurak/{fig}. Töltsd fel: git add static/figurak")
     return 0
 
 
@@ -418,7 +430,10 @@ def main() -> int:
     p.add_argument("--db", type=int, default=0, help="legfeljebb ennyi kép (próbának)")
     p.add_argument("--jeloltek", type=int, default=3, help="hány alapkép-jelölt legyen")
     p.add_argument("--minoseg", default="medium", choices=["low", "medium", "high"])
+    p.add_argument("--utotag", default="", help="más néven menti, pl. _high (összehasonlításhoz)")
     a = p.parse_args()
+    global UTOTAG
+    UTOTAG = a.utotag
 
     if a.lista:
         return lista()

@@ -12,6 +12,7 @@ import difflib
 import hashlib
 import json
 import logging
+import math
 import os
 import random
 import re
@@ -4249,6 +4250,587 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
                   else f"Palacsinta {fo} főre: mennyi cukor kell?")
         return {"tipus": "recept", "fo": fo, "alap": 4, "kerdes": kerdes}
 
+    # ══ MINTAOLDALAKRÓL ÁTHOZOTT ELEMEK – A csoport (5. minta) ══════════
+    # fgep, venn, szokital, szokereso, betukev. Gyanús → None.
+
+    if tipus == "fgep":
+        try:
+            a_, b_ = float(adat.get("szorzo", 1)), float(adat.get("hozzaad", 0))
+        except Exception:
+            return None
+        if not (a_.is_integer() and b_.is_integer()):
+            return None
+        a_, b_ = int(a_), int(b_)
+        if not (1 <= a_ <= 10 and -10 <= b_ <= 10) or (a_ == 1 and b_ == 0):
+            return None
+        # A kérdés mindig a sajátunk: a tanáré könnyen elárulná a szabályt.
+        kerdes = ("¿Qué hace la máquina con cada número? ¡Descubre su regla!" if es_tanterv
+                  else "Mit csinál a gép a számokkal? Találd ki a szabályát!")
+        return {"tipus": "fgep", "szorzo": a_, "hozzaad": b_, "kerdes": kerdes}
+
+    if tipus == "venn":
+        ha, hb = _rov(adat.get("a"), 16), _rov(adat.get("b"), 16)
+        if not ha or not hb or ha.lower() == hb.lower():
+            return None
+        elemek, latott = [], set()
+        for e in adat.get("elemek") or []:
+            try:
+                nev = _rov(e[0], 10)
+                ba, bb = e[1], e[2]
+            except Exception:
+                return None
+            if not nev or nev.lower() in latott or ba not in (0, 1, True, False) or bb not in (0, 1, True, False):
+                return None
+            latott.add(nev.lower())
+            elemek.append([nev, (1 if ba else 0) + (2 if bb else 0)])
+        if not (4 <= len(elemek) <= 10) or any(not any(e[1] == t for e in elemek) for t in (1, 2, 3)):
+            return None
+
+        # Számoknál, ha a halmaz neve egyértelmű (páros, 3-mal osztható, 10-nél nagyobb…),
+        # utánaszámolunk: a tanár ne tanítson rossz besorolást.
+        def _venn_feltetel(c):
+            s = c.lower()
+            if re.search(r"\bnem\b|\bno\b|igual|legalább|legfeljebb", s):
+                return None
+            m = re.search(r"\d+", s)
+            k = int(m.group()) if m else None
+            if "páratlan" in s or re.search(r"\bimpar", s):
+                return lambda n: n % 2 == 1
+            if "páros" in s or re.search(r"\bpar(es)?\b", s):
+                return lambda n: n % 2 == 0
+            if k and re.search(r"osztható|m[uú]ltiplo|divisible", s):
+                return lambda n: n % k == 0
+            if k is not None and re.search(r"nagyobb|mayor", s):
+                return lambda n: n > k
+            if k is not None and re.search(r"kisebb|menor", s):
+                return lambda n: n < k
+            if "kétjegyű" in s or re.search(r"dos cifras", s):
+                return lambda n: 10 <= n <= 99
+            if "egyjegyű" in s or re.search(r"una cifra", s):
+                return lambda n: 0 <= n <= 9
+            return None
+        if all(re.fullmatch(r"\d{1,4}", e[0]) for e in elemek):
+            fa, fb = _venn_feltetel(ha), _venn_feltetel(hb)
+            if fa and fb and any((1 if fa(int(e[0])) else 0) + (2 if fb(int(e[0])) else 0) != e[1] for e in elemek):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "Coloca las tarjetas en el diagrama." if es_tanterv else "Tedd a kártyákat a halmazábrába!")
+        return {"tipus": "venn", "a": ha, "b": hb, "elemek": elemek, "kerdes": kerdes}
+
+    if tipus in ("szokital", "szokereso", "betukev"):
+        _betu = (set("ABCDEFGHIJKLMNÑOPQRSTUVWXYZÁÉÍÓÚÜ") if es_tanterv
+                 else set("AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ"))
+
+        def _szo(s, tol, ig):
+            s = unicodedata.normalize("NFC", str(s or "").strip()).upper()
+            return s if tol <= len(s) <= ig and all(c in _betu for c in s) else None
+
+        def _alap(s):
+            # spanyolul a szókeresőben ékezet nélkül (az Ñ marad)
+            return "".join({"Á": "A", "É": "E", "Í": "I", "Ó": "O", "Ú": "U", "Ü": "U"}.get(c, c) for c in s) if es_tanterv else s
+
+        def _elarul(k, szo):
+            return k and szo.lower() in unicodedata.normalize("NFC", k).lower()
+
+        if tipus == "szokital":
+            szo = _szo(adat.get("szo"), 3, 10)
+            if not szo:
+                return None
+            k = _rov(adat.get("kerdes"), 120)
+            if not k or _elarul(k, szo):
+                k = "¡Adivina la palabra!" if es_tanterv else "Találd ki a szót!"
+            return {"tipus": "szokital", "szo": szo, "kerdes": k}
+
+        if tipus == "szokereso":
+            szavak = [_szo(w, 2, 8) for w in (adat.get("szavak") or [])]
+            if not (3 <= len(szavak) <= 6) or None in szavak or sum(map(len, szavak)) > 32:
+                return None
+            al = [_alap(w) for w in szavak]
+            if len(set(al)) != len(al):
+                return None
+            # egyik szó se legyen benne egy másikban (előre vagy visszafelé olvasva)
+            if any(i != j and (x in y or x[::-1] in y) for i, x in enumerate(al) for j, y in enumerate(al)):
+                return None
+            kerdes = _rov(adat.get("kerdes"), 120) or (
+                "¡Busca las palabras escondidas!" if es_tanterv else "Keresd meg az elrejtett szavakat!")
+            return {"tipus": "szokereso", "szavak": szavak, "kerdes": kerdes}
+
+        if tipus == "betukev":
+            szo = _szo(adat.get("szo"), 3, 10)
+            if not szo or len(set(szo)) < 2:
+                return None
+            kep = _rov(adat.get("kep"), 8)
+            if kep and re.search(r"[A-Za-z0-9ÁÉÍÓÖŐÚÜŰáéíóöőúüűñÑ]", kep):
+                kep = None
+            k = _rov(adat.get("kerdes"), 120)
+            if not k or _elarul(k, szo):
+                k = (("¿Qué es? ¡Ordena las letras!" if kep else "¡Ordena las letras y forma la palabra!") if es_tanterv
+                     else ("Mi van a képen? Rakd ki a szót!" if kep else "Rakd ki a szót a betűkből!"))
+            ki = {"tipus": "betukev", "szo": szo, "kerdes": k}
+            if kep:
+                ki["kep"] = kep
+            return ki
+
+    # ══ MINTAOLDALAKRÓL ÁTHOZOTT ELEMEK – B csomag (5. minta: környezet) ══
+    # A lényeges adatot a tanár adja; itt ellenőrizzük, hogy a feladat
+    # megoldható és értelmes legyen. Bármi gyanús → None.
+    def _ekezetnelkul(s):
+        s = unicodedata.normalize("NFD", str(s or "").lower())
+        return re.sub(r"\s+", " ", "".join(ch for ch in s if unicodedata.category(ch) != "Mn")).strip()
+
+    if tipus == "arnyek":
+        n = re.sub(r"^(por la|a la|al|a|en la|de la)\s+", "", _ekezetnelkul(adat.get("napszak")))
+        if n.startswith(("delutan", "tarde", "afternoon")):
+            cel = 2
+        elif n in ("del", "delben", "deli", "dele", "mediodia", "noon", "midday"):
+            cel = 1
+        elif n.startswith(("reggel", "manana", "morning")):
+            cel = 0
+        else:
+            return None
+        kerdes = (["Pon el Sol donde está por la mañana.", "Pon el Sol donde está a mediodía.",
+                   "Pon el Sol donde está por la tarde."][cel] if es_tanterv
+                  else ["Állítsd a Napot oda, ahol reggel áll!", "Állítsd a Napot oda, ahol délben áll!",
+                        "Állítsd a Napot oda, ahol délután áll!"][cel])
+        return {"tipus": "arnyek", "napszak": cel, "kerdes": kerdes}
+
+    if tipus == "szervek":
+        nevek = {"agy": "agy", "cerebro": "agy", "brain": "agy",
+                 "tudo": "tudo", "tudok": "tudo", "pulmon": "tudo", "pulmones": "tudo", "lungs": "tudo",
+                 "sziv": "sziv", "corazon": "sziv", "heart": "sziv",
+                 "maj": "maj", "higado": "maj", "liver": "maj",
+                 "gyomor": "gyomor", "estomago": "gyomor", "stomach": "gyomor",
+                 "belek": "belek", "bel": "belek", "intestino": "belek", "intestinos": "belek", "intestines": "belek"}
+        sor = ["agy", "tudo", "sziv", "maj", "gyomor", "belek"]
+        lista = adat.get("szervek")
+        if lista in (None, "", []):
+            valasztott = list(sor)
+        else:
+            if not isinstance(lista, list):
+                return None
+            valasztott = []
+            for s in lista:
+                k = nevek.get(_ekezetnelkul(s))
+                if not k:
+                    return None
+                if k not in valasztott:
+                    valasztott.append(k)
+            if len(valasztott) < 3:
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Dónde está cada órgano en nuestro cuerpo?" if es_tanterv else "Melyik szerv hol van a testünkben?")
+        return {"tipus": "szervek", "szervek": [k for k in sor if k in valasztott], "kerdes": kerdes}
+
+    if tipus == "vizkor":
+        c = _ekezetnelkul(adat.get("csapadek") or "eso")
+        csap = "ho" if c in ("ho", "havazas", "nieve", "snow") else "eso" if c in ("eso", "lluvia", "rain") else None
+        if not csap:
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué le pasa al agua? Ordena los pasos empezando por el calor del Sol." if es_tanterv
+            else "Mi történik a vízzel? Rakd sorba a lépéseket a Nap melegétől kezdve!")
+        return {"tipus": "vizkor", "csapadek": csap, "kerdes": kerdes}
+
+    if tipus == "hold":
+        n = _ekezetnelkul(adat.get("fazis"))
+        fazis = {"ujhold": 0, "luna nueva": 0, "nueva": 0, "new moon": 0,
+                 "elso negyed": 1, "cuarto creciente": 1, "first quarter": 1,
+                 "telihold": 2, "luna llena": 2, "llena": 2, "full moon": 2,
+                 "utolso negyed": 3, "cuarto menguante": 3, "last quarter": 3}.get(n)
+        if fazis is None:
+            return None
+        kerdes = (["Mueve la Luna a la posición de luna nueva.", "Mueve la Luna a la posición de cuarto creciente.",
+                   "Mueve la Luna a la posición de luna llena.", "Mueve la Luna a la posición de cuarto menguante."][fazis]
+                  if es_tanterv else
+                  ["Állítsd be a Holdat: legyen újhold!", "Állítsd be a Holdat: legyen első negyed!",
+                   "Állítsd be a Holdat: legyen telihold!", "Állítsd be a Holdat: legyen utolsó negyed!"][fazis])
+        return {"tipus": "hold", "fazis": fazis, "kerdes": kerdes}
+
+    if tipus == "terkep":
+        try:
+            lepes = int(adat.get("lepes"))
+            kockak = int(adat.get("kockak"))
+        except Exception:
+            return None
+        if lepes not in (1, 2, 3, 4, 5, 10, 20, 25, 50, 100) or not (4 <= kockak <= 12):
+            return None
+        honnan, hova = _rov(adat.get("honnan"), 14), _rov(adat.get("hova"), 14)
+        if (adat.get("honnan") and not honnan) or (adat.get("hova") and not hova) or (honnan and honnan == hova):
+            return None
+        a = honnan or ("Pueblito" if es_tanterv else "Kisfalu")
+        b = hova or ("Villalago" if es_tanterv else "Tóváros")
+        kerdes = (f"En la realidad, cada lado de un cuadro mide {lepes} km. ¿Cuánto mide el camino de {a} a {b}?" if es_tanterv
+                  else f"Egy kocka oldala a valóságban {lepes} km. Milyen hosszú az út {a} és {b} között?")
+        r = {"tipus": "terkep", "lepes": lepes, "kockak": kockak, "kerdes": kerdes}
+        if honnan:
+            r["honnan"] = honnan
+        if hova:
+            r["hova"] = hova
+        return r
+
+    # ══ MINTAOLDALAKRÓL ÁTHOZOTT ELEMEK – C csoport (5. és 6. minta) ════
+
+    if tipus == "lezer":
+        # A pályát itt rakjuk össze, így mindig megoldható: a fény útját
+        # visszük végig a tükrökön a célig, aztán összekeverjük a tükrök állását.
+        try:
+            neh = int(adat.get("nehezseg") or 2)
+        except Exception:
+            neh = 2
+        neh = max(1, min(3, neh))
+        n_tukor, n_csali = {1: (2, 0), 2: (3, 1), 3: (4, 2)}[neh]
+        DX, DY = (0, 1, 0, -1), (-1, 0, 1, 0)
+
+        def _lz_fut(forras, cel, tuk):
+            x, y, d = forras
+            for _ in range(60):
+                x, y = x + DX[d], y + DY[d]
+                if not (0 <= x < 5 and 0 <= y < 5):
+                    return False
+                if (x, y) == cel:
+                    return True
+                if (x, y) in tuk:
+                    d = (1, 0, 3, 2)[d] if tuk[(x, y)] == 0 else (3, 2, 1, 0)[d]
+            return False
+
+        palya = None
+        for _ in range(4000):
+            x, y = random.randint(0, 4), random.randint(0, 4)
+            befele = [d for d in range(4) if 0 <= x + DX[d] < 5 and 0 <= y + DY[d] < 5]
+            if (0 < x < 4 and 0 < y < 4) or not befele:
+                continue
+            d = random.choice(befele)
+            forras, ut, tuk, jo = (x, y, d), [(x, y)], {}, True
+            for i in range(n_tukor + 1):
+                hely = 0
+                while 0 <= x + DX[d] * (hely + 1) < 5 and 0 <= y + DY[d] * (hely + 1) < 5:
+                    hely += 1
+                if hely < 1:
+                    jo = False
+                    break
+                for _l in range(random.randint(1, hely)):
+                    x, y = x + DX[d], y + DY[d]
+                    if (x, y) in tuk or (x, y) == forras[:2]:
+                        jo = False
+                        break
+                    ut.append((x, y))
+                if not jo or (x, y) in ut[:-1]:
+                    jo = False
+                    break
+                if i < n_tukor:
+                    s = random.randint(0, 1)
+                    tuk[(x, y)] = s
+                    d = (1, 0, 3, 2)[d] if s == 0 else (3, 2, 1, 0)[d]
+            if not jo:
+                continue
+            cel = (x, y)
+            if not _lz_fut(forras, cel, tuk):
+                continue
+            szabad = [(a, b) for a in range(5) for b in range(5) if (a, b) not in ut]
+            if len(szabad) < n_csali:
+                continue
+            for c in random.sample(szabad, n_csali):
+                tuk[c] = random.randint(0, 1)
+            kezdo = {c: random.randint(0, 1) for c in tuk}
+            for _k in range(20):
+                if not _lz_fut(forras, cel, kezdo):
+                    break
+                c = random.choice(list(kezdo))
+                kezdo[c] = 1 - kezdo[c]
+            if _lz_fut(forras, cel, kezdo):
+                continue
+            palya = {"forras": list(forras), "cel": list(cel),
+                     "tukrok": [[c[0], c[1], s] for c, s in kezdo.items()]}
+            break
+        if not palya:
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Lleva el láser hasta la diana verde!" if es_tanterv else "Juttasd a lézert a zöld célba!")
+        return dict(tipus="lezer", nehezseg=neh, kerdes=kerdes, **palya)
+
+    if tipus == "atom":
+        HU = ["", "hidrogén", "hélium", "lítium", "berillium", "bór", "szén", "nitrogén", "oxigén", "fluor", "neon"]
+        ES = ["", "hidrógeno", "helio", "litio", "berilio", "boro", "carbono", "nitrógeno", "oxígeno", "flúor", "neón"]
+        JEL = ["", "h", "he", "li", "be", "b", "c", "n", "o", "f", "ne"]
+        NEU = [0, 0, 2, 4, 5, 6, 6, 7, 8, 10, 10]
+        e = unicodedata.normalize("NFD", str(adat.get("elem") or adat.get("rendszam") or "").strip().lower())
+        e = "".join(ch for ch in e if unicodedata.category(ch) != "Mn").replace("atom", "").strip()
+        nevek = [unicodedata.normalize("NFD", s) for s in HU + ES]
+        nevek = ["".join(ch for ch in s if unicodedata.category(ch) != "Mn") for s in nevek]
+        if e.isdigit():
+            z = int(e)
+        elif e in JEL:
+            z = JEL.index(e)
+        elif e and e in nevek:
+            z = nevek.index(e) % 11
+        else:
+            return None
+        if not (1 <= z <= 10):
+            return None
+        n = NEU[z]
+        if es_tanterv:
+            kerdes = (f"Construye un átomo neutro de {ES[z]}: {z} {'protón' if z == 1 else 'protones'} "
+                      f"y {n} {'neutrón' if n == 1 else 'neutrones'}.")
+        else:
+            kerdes = f"Építs {HU[z]}atomot! ({z} proton, {n} neutron, semleges)"
+        return {"tipus": "atom", "rendszam": z, "kerdes": kerdes}
+
+    if tipus == "robot":
+        # A pályát itt rakjuk össze; a legrövidebb utat szélességi kereséssel
+        # nézzük meg, így biztosan van megoldás, és nem túl hosszú.
+        try:
+            neh = int(adat.get("nehezseg") or 1)
+        except Exception:
+            neh = 1
+        neh = max(1, min(3, neh))
+        n_ko, tol, ig = {1: (3, 3, 6), 2: (5, 6, 9), 3: (7, 9, 13)}[neh]
+        mezok = [(a, b) for a in range(6) for b in range(6)]
+
+        def _rb_ut(start, cel, kovek):
+            tav, sor = {start: 0}, [start]
+            while sor:
+                p = sor.pop(0)
+                if p == cel:
+                    return tav[p]
+                for dx, dy in ((0, -1), (1, 0), (0, 1), (-1, 0)):
+                    q = (p[0] + dx, p[1] + dy)
+                    if q in tav or q in kovek or not (0 <= q[0] < 6 and 0 <= q[1] < 6):
+                        continue
+                    tav[q] = tav[p] + 1
+                    sor.append(q)
+            return None
+
+        palya = None
+        for _ in range(3000):
+            start, cel = random.sample(mezok, 2)
+            kovek = set(random.sample([m for m in mezok if m not in (start, cel)], n_ko))
+            hossz = _rb_ut(start, cel, kovek)
+            if hossz is None or not (tol <= hossz <= ig):
+                continue
+            if neh == 3 and hossz == abs(start[0] - cel[0]) + abs(start[1] - cel[1]):
+                continue
+            palya = {"start": list(start), "cel": list(cel), "kovek": sorted([list(k) for k in kovek]), "legrovidebb": hossz}
+            break
+        if not palya:
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "Lleva el robot hasta la estrella." if es_tanterv else "Vezesd el a robotot a csillaghoz!")
+        return dict(tipus="robot", nehezseg=neh, kerdes=kerdes, **palya)
+
+    if tipus == "vonalzo":
+        try:
+            hossz = float(str(adat.get("hossz")).replace(",", "."))
+        except Exception:
+            return None
+        t = unicodedata.normalize("NFD", (str(adat.get("targy") or "") + " " + str(adat.get("kerdes") or "")).lower())
+        t = "".join(ch for ch in t if unicodedata.category(ch) != "Mn")
+        targy = ("level" if re.search(r"\b(level|hoja)", t) else
+                 "ceruza" if re.search(r"\b(ceruza|lapiz)", t) else random.choice(["ceruza", "level"]))
+        if hossz * 2 != round(hossz * 2) or not ((3 if targy == "ceruza" else 2) <= hossz <= 12):
+            return None
+        hossz = int(hossz) if hossz == int(hossz) else hossz
+        kerdes = ({"ceruza": "¿Cuánto mide el lápiz?", "level": "¿Cuánto mide la hoja?"}[targy] if es_tanterv
+                  else {"ceruza": "Milyen hosszú a ceruza?", "level": "Milyen hosszú a levél?"}[targy])
+        return {"tipus": "vonalzo", "hossz": hossz, "targy": targy, "kerdes": kerdes}
+
+    if tipus == "suti":
+        try:
+            keksz, gyerek = int(adat.get("keksz")), int(adat.get("gyerek"))
+        except Exception:
+            return None
+        if not (2 <= gyerek <= 5 and gyerek <= keksz <= 30 and keksz // gyerek <= 8):
+            return None
+        mar = keksz % gyerek
+        if es_tanterv:
+            kerdes = (f"Reparte {keksz} galletas entre {gyerek} niños de forma justa."
+                      + (" Las que no se puedan repartir, se quedan en el bote." if mar else ""))
+        else:
+            kerdes = (f"Oszd szét igazságosan {keksz} kekszet {gyerek} gyerek között!"
+                      + (" Ami nem jut mindenkinek, maradjon az üvegben." if mar else ""))
+        return {"tipus": "suti", "keksz": keksz, "gyerek": gyerek, "kerdes": kerdes}
+
+    # ══ MINTAOLDALRÓL ÁTHOZOTT ELEMEK – D csoport (6. minta) ═════════════
+    # naptar, romai, harom, tizedes, akcio. A számokat a tanár adja; itt
+    # ellenőrizzük, hogy a feladat megoldható és értelmes. Gyanús → None.
+    def _dmD_szamok(s):
+        # a kérdésben szereplő számok (a „12 000" ezres tagolást összevonjuk)
+        s = re.sub(r"(?<=\d)[   ](?=\d{3}\b)", "", str(s or ""))
+        return [float(x.replace(",", ".")) for x in re.findall(r"\d+(?:[.,]\d+)?", s)]
+
+    def _dmD_kerdes(szabad):
+        # a tanár kérdése csak akkor marad, ha nincs benne más szám, mint amit megengedünk
+        k = _rov(adat.get("kerdes"), 120)
+        if k and all(any(abs(x - y) < 1e-9 for y in szabad) for x in _dmD_szamok(k)):
+            return k
+        return None
+
+    def _dmD_az(n):
+        # magyar névelő szám elé: az 1, az 5, az 50, az 1000 – a 2, a 10, a 0,37
+        t = str(int(n))
+        return "az" if t[0] == "5" or (t[0] == "1" and len(t) in (1, 4, 7)) else "a"
+
+    if tipus == "naptar":
+        import datetime as _dt
+        try:
+            ho = int(adat.get("ho"))
+            nap = int(adat.get("nap") if adat.get("nap") is not None else adat.get("ma"))
+            plusz = int(adat.get("plusz"))
+            ev = int(adat.get("ev") or _dt.date.today().year)
+        except Exception:
+            return None
+        if not (2000 <= ev <= 2100 and 1 <= ho <= 12) or plusz == 0 or abs(plusz) > 30:
+            return None
+        try:
+            ma_d = _dt.date(ev, ho, nap)
+            cel_d = _dt.date(ev, ho, nap + plusz)
+        except Exception:
+            return None
+        if cel_d.month != ma_d.month:
+            return None
+        if es_tanterv:
+            HO = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto",
+                  "septiembre", "octubre", "noviembre", "diciembre"]
+            NAP = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+            dias = "día" if abs(plusz) == 1 else "días"
+            kerdes = (f"Hoy es {NAP[ma_d.weekday()]}, {nap} de {HO[ho - 1]}. "
+                      + (f"¿Qué día será dentro de {plusz} {dias}?" if plusz > 0
+                         else f"¿Qué día fue hace {-plusz} {dias}?"))
+        else:
+            HO = ["január", "február", "március", "április", "május", "június", "július", "augusztus",
+                  "szeptember", "október", "november", "december"]
+            NAP = ["hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat", "vasárnap"]
+            kerdes = (f"Ma {NAP[ma_d.weekday()]}, {HO[ho - 1]} {nap}. "
+                      + (f"Milyen nap lesz {plusz} nap múlva?" if plusz > 0
+                         else f"Milyen nap volt {-plusz} nappal ezelőtt?"))
+        # A kérdést mindig mi írjuk: a hét napja így biztosan egyezik a naptárral.
+        return {"tipus": "naptar", "ev": ev, "ho": ho, "ma": nap, "plusz": plusz, "kerdes": kerdes}
+
+    if tipus == "romai":
+        try:
+            sz = int(adat.get("szam"))
+        except Exception:
+            return None
+        if not (1 <= sz <= 3999):
+            return None
+        n, rom = sz, ""
+        for v, j in ((1000, "M"), (900, "CM"), (500, "D"), (400, "CD"), (100, "C"), (90, "XC"), (50, "L"),
+                     (40, "XL"), (10, "X"), (9, "IX"), (5, "V"), (4, "IV"), (1, "I")):
+            while n >= v:
+                rom, n = rom + j, n - v
+        kerdes = _dmD_kerdes([sz])
+        if kerdes and re.search(r"(?<![A-Za-z])" + rom + r"(?![A-Za-z])", kerdes):
+            kerdes = None          # a tanár kérdése elárulná a választ
+        kerdes = kerdes or (f"Escribe {sz} en números romanos." if es_tanterv
+                            else f"Írd le római számmal: {sz}")
+        return {"tipus": "romai", "szam": sz, "kerdes": kerdes}
+
+    if tipus == "harom":
+        sz_ = unicodedata.normalize("NFD", str(adat.get("szempont") or "szog").lower())
+        sz_ = "".join(ch for ch in sz_ if unicodedata.category(ch) != "Mn")
+        szempont = "oldal" if sz_.startswith(("oldal", "lado")) else "szog" if sz_.startswith(("szog", "angul")) else None
+        if not szempont:
+            return None
+
+        def _osztaly(t):
+            a, b, c = sorted(t)
+            if szempont == "oldal":
+                return 0 if a == c else 1 if (a == b or b == c) else 2
+            q = a * a + b * b - c * c
+            return 0 if q > 0 else 1 if q == 0 else 2
+
+        def _jo(t):
+            a, b, c = sorted(t)
+            if a < 1 or c > 30 or a + b <= c:
+                return False                       # háromszög-egyenlőtlenség
+            szog = lambda x, y, z: math.degrees(math.acos((x * x + y * y - z * z) / (2 * x * y)))
+            if szog(b, c, a) < 12:                 # túl lapos, nem látszik jól
+                return False
+            nagy = szog(a, b, c)
+            if szempont == "szog" and a * a + b * b != c * c and 80 < nagy < 100:
+                return False                       # szemre nem dönthető el, derékszög-e
+            return True
+
+        lista = adat.get("haromszogek")
+        if lista is None:
+            KESZLET = ({0: [[5, 5, 5], [4, 4, 4], [6, 6, 6]], 1: [[5, 5, 8], [6, 6, 4], [4, 7, 7]],
+                        2: [[4, 5, 6], [3, 5, 7], [4, 6, 9]]} if szempont == "oldal" else
+                       {0: [[5, 6, 7], [6, 6, 6], [5, 5, 4]], 1: [[3, 4, 5], [6, 8, 10], [5, 12, 13]],
+                        2: [[3, 4, 6], [2, 3, 4], [4, 5, 8]]})
+            lista = [t for k in (0, 1, 2) for t in random.sample(KESZLET[k], 2)]
+        haromszogek = []
+        try:
+            for t0 in lista:
+                t = [int(float(x)) for x in t0]
+                if len(t) != 3 or any(float(x) != y for x, y in zip(t0, t)):
+                    return None                    # csak egész oldalhosszak
+                haromszogek.append(t)
+        except Exception:
+            return None
+        if not (3 <= len(haromszogek) <= 6) or not all(_jo(t) for t in haromszogek):
+            return None
+        if len({_osztaly(t) for t in haromszogek}) < 2:
+            return None                            # legyen mit szétválogatni
+        kerdes = _dmD_kerdes([len(haromszogek)]) or (
+            ("Clasifica los triángulos según sus lados." if szempont == "oldal" else "Clasifica los triángulos según sus ángulos.")
+            if es_tanterv else
+            ("Válogasd szét a háromszögeket az oldalaik szerint!" if szempont == "oldal"
+             else "Válogasd szét a háromszögeket a szögeik szerint!"))
+        return {"tipus": "harom", "szempont": szempont, "haromszogek": haromszogek, "kerdes": kerdes}
+
+    if tipus == "tizedes":
+        try:
+            szam = float(str(adat.get("szam")).replace(",", "."))
+        except Exception:
+            return None
+        szaz = round(szam * 100)
+        if not (0 < szam < 10) or abs(szam * 100 - szaz) > 1e-6 or szaz % 10 == 0:
+            return None                            # két tizedesjegy, a második ne legyen 0
+        sz_sz = f"{szaz // 100},{szaz % 100:02d}"
+        kerdes = _dmD_kerdes([szaz / 100]) or (f"¿Dónde está {sz_sz} en la recta numérica?" if es_tanterv
+                                              else f"Hol van {_dmD_az(szaz // 100)} {sz_sz} a számegyenesen?")
+        return {"tipus": "tizedes", "szam": szaz / 100, "kerdes": kerdes}
+
+    if tipus == "akcio":
+        try:
+            p = int(adat.get("szazalek") if adat.get("szazalek") is not None else adat.get("p"))
+            ar_be = float(str(adat.get("ar")).replace(",", ".").replace(" ", ""))
+        except Exception:
+            return None
+        if not (1 <= p <= 90):
+            return None
+        if es_tanterv:
+            ar = round(ar_be * 100)                # centben
+            if abs(ar_be * 100 - ar) > 1e-6 or not (100 <= ar <= 99999) or (ar * p) % 100 or (ar - ar * p // 100) % 5:
+                return None                        # a kedvezmény egész cent, az új ár 5 centre kerek
+        else:
+            ar = round(ar_be)                      # forintban
+            if ar != ar_be or not (100 <= ar <= 500000) or (ar * p) % 100 or (ar - ar * p // 100) % 10:
+                return None                        # a kedvezmény egész forint, az új ár tízre kerek
+        TARGY = ([["👟", "Zapatillas", "las zapatillas", 1], ["🎒", "Mochila", "la mochila", 0], ["⚽", "Balón", "el balón", 0],
+                  ["🎧", "Auriculares", "los auriculares", 1], ["🧸", "Peluche", "el peluche", 0]] if es_tanterv else
+                 [["👟", "Cipő", "cipő", 0], ["🎒", "Hátizsák", "hátizsák", 0], ["⚽", "Labda", "labda", 0],
+                  ["🎧", "Fejhallgató", "fejhallgató", 0], ["🧸", "Mackó", "mackó", 0], ["⌚", "Óra", "óra", 0]])
+        t = adat.get("targy")
+        targy, nev = None, None
+        if isinstance(t, (list, tuple)) and len(t) == 2 and _rov(t[0], 8) and _rov(t[1], 14):
+            targy = [_rov(t[0], 8), _rov(t[1], 14)]
+            targy[1] = targy[1][0].upper() + targy[1][1:]
+        else:
+            v = random.choice(TARGY)
+            targy, nev = [v[0], v[1]], v
+        ar_sz = (str(ar // 100) if ar % 100 == 0 else f"{ar // 100},{ar % 100:02d}") if es_tanterv else str(ar)
+        kerdes = _dmD_kerdes([p, float(ar_sz.replace(",", "."))])
+        if not kerdes:
+            if es_tanterv:
+                kerdes = (f"¡Rebajas del {p} %! ¿Cuánto {'cuestan' if nev[3] else 'cuesta'} ahora {nev[2]}?" if nev
+                          else f"¡Rebajas del {p} %! ¿Cuánto cuesta ahora?")
+            else:
+                nv = nev[2] if nev else targy[1].lower()
+                nevelo = "az" if nv[0] in "aáeéiíoóöőuúüű" else "a"
+                kerdes = f"Akció! Mennyibe kerül most {nevelo} {nv}?"
+        return {"tipus": "akcio", "ar": ar, "p": p, "penznem": "EUR" if es_tanterv else "HUF",
+                "targy": targy, "kerdes": kerdes}
+
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
         # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
@@ -7264,6 +7846,132 @@ _DM_FELULETEK = [
      'ARÁNYOSSÁG RECEPTTEL – 4 főre szóló palacsintarecept, "fo": 1, 2, 6, 8, 10, 12, 16 vagy 20 főre kell átszámolni:\n   <FELADAT>{"tipus":"recept","fo":6}</FELADAT>',
      'PROPORCIONALIDAD CON RECETA – receta para 4; "fo": 1, 2, 6, 8, 10, 12, 16 o 20 personas:\n   <FELADAT>{"tipus":"recept","fo":6}</FELADAT>',
      'egyenes arányosság                   → recept', 'proporcionalidad                    → recept'),
+    ("fgep", {"matek"}, 5, 8,
+     'FÜGGVÉNYGÉP – a gép a számot x × "szorzo" + "hozzaad" szabállyal alakítja; a gyerek számokat dob be, és 4 szabály közül kiválasztja a gépét. "szorzo" 1–10, "hozzaad" −10…10 (nem lehet ×1 + 0). A szabályt a kérdésbe NE írd bele:\n'
+     '   <FELADAT>{"tipus":"fgep","szorzo":3,"hozzaad":-1}</FELADAT>',
+     'MÁQUINA DE FUNCIONES – la máquina transforma el número con la regla x × "szorzo" + "hozzaad"; el niño mete números y elige la regla entre 4. "szorzo" 1–10, "hozzaad" −10…10 (no vale ×1 + 0). NO escribas la regla en la pregunta:\n'
+     '   <FELADAT>{"tipus":"fgep","szorzo":3,"hozzaad":-1}</FELADAT>',
+     'szabály, függvény, hozzárendelés     → fgep', 'regla, función, máquina de números   → fgep'),
+    ("venn", {"matek", "kornyezet"}, 3, 6,
+     'HALMAZOK (VENN-ÁBRA) – két kör, a gyerek a kártyákat a jó részbe húzza. "a" és "b" a két tulajdonság (max. 16 betű), "elemek": [szöveg (max. 10 betű), A-ba való (1/0), B-be való (1/0)]; 4–10 elem, legyen csak A-s, csak B-s és közös is:\n'
+     '   <FELADAT>{"tipus":"venn","kerdes":"Rendezd el a számokat!","a":"páros","b":"3-mal osztható","elemek":[["6",1,1],["4",1,0],["9",0,1],["12",1,1],["8",1,0],["3",0,1],["7",0,0]]}</FELADAT>',
+     'CONJUNTOS (DIAGRAMA DE VENN) – dos círculos; el niño arrastra cada tarjeta a su zona. "a" y "b" son las dos propiedades (máx. 16 letras), "elemek": [texto (máx. 10 letras), está en A (1/0), está en B (1/0)]; 4–10 elementos, con alguno solo en A, solo en B y en los dos:\n'
+     '   <FELADAT>{"tipus":"venn","kerdes":"Ordena los animales.","a":"vuela","b":"mamífero","elemek":[["murciélago",1,1],["águila",1,0],["perro",0,1],["paloma",1,0],["vaca",0,1],["lagarto",0,0]]}</FELADAT>',
+     'halmazok, közös rész, Venn-diagram   → venn', 'conjuntos, intersección, Venn       → venn'),
+    ("szokital", {"magyar", "nyelv"}, 2, 6,
+     'SZÓKITALÁLÓ – a gyerek betűket tippel, minden rossz tipp egy szirmot visz el (6 szirom). "szo": egy szó, 3–10 betű; a "kerdes" legyen körülírás vagy találós kérdés, a szót NE tartalmazza:\n'
+     '   <FELADAT>{"tipus":"szokital","szo":"elefánt","kerdes":"Nagy, szürke állat, hosszú ormánya van. Mi az?"}</FELADAT>',
+     'ADIVINA LA PALABRA – el niño prueba letras; cada fallo quita un pétalo (6 pétalos). "szo": una palabra de 3–10 letras; la "kerdes" es una pista o adivinanza y NO contiene la palabra:\n'
+     '   <FELADAT>{"tipus":"szokital","szo":"mariposa","kerdes":"Es un insecto con alas de colores. ¿Qué es?"}</FELADAT>',
+     'szó kitalálása körülírásból          → szokital', 'adivinar una palabra por su pista    → szokital'),
+    ("szokereso", {"magyar", "nyelv"}, 2, 6,
+     'SZÓKERESŐ – 8×8-as betűhálóban vízszintesen és függőlegesen elrejtett szavak. "szavak": 3–6 szó, egyenként 2–8 betű, összesen max. 32 betű, egyik se legyen benne a másikban:\n'
+     '   <FELADAT>{"tipus":"szokereso","kerdes":"Keresd meg a háziállatokat!","szavak":["macska","kutya","nyúl","ló","tehén"]}</FELADAT>',
+     'SOPA DE LETRAS – palabras escondidas en horizontal y vertical en una cuadrícula de 8×8. "szavak": 3–6 palabras de 2–8 letras, en total máx. 32 letras, ninguna dentro de otra:\n'
+     '   <FELADAT>{"tipus":"szokereso","kerdes":"Busca los medios de transporte.","szavak":["camión","tren","barco","avión","moto"]}</FELADAT>',
+     'szókereső, szókincs egy témában      → szokereso', 'sopa de letras, vocabulario         → szokereso'),
+    ("betukev", {"magyar", "nyelv"}, 1, 4,
+     'BETŰKEVERŐ – a szó összekevert betűiből a gyerek kirakja a szót. "szo": 3–10 betű; "kep": egy emoji a szó jelentéséhez (ajánlott); a "kerdes" a szót NE tartalmazza:\n'
+     '   <FELADAT>{"tipus":"betukev","szo":"alma","kep":"🍎"}</FELADAT>',
+     'LETRAS DESORDENADAS – el niño ordena las letras y forma la palabra. "szo": 3–10 letras; "kep": un emoji con el significado (recomendado); la "kerdes" NO contiene la palabra:\n'
+     '   <FELADAT>{"tipus":"betukev","szo":"ratón","kep":"🐭"}</FELADAT>',
+     'helyesírás, szó kirakása betűkből    → betukev', 'ortografía, formar una palabra      → betukev'),
+    ("arnyek", {"kornyezet"}, 2, 5,
+     'NAPSZAKOK ÉS ÁRNYÉK – a Napot húzza az égen, figyeli a fa árnyékát; "napszak": reggel, délben vagy délután:\n'
+     '   <FELADAT>{"tipus":"arnyek","napszak":"reggel"}</FELADAT>',
+     'MOMENTOS DEL DÍA Y SOMBRA – arrastra el Sol por el cielo y mira la sombra del árbol; "napszak": mañana, mediodía o tarde:\n'
+     '   <FELADAT>{"tipus":"arnyek","napszak":"tarde"}</FELADAT>',
+     'napszakok, a Nap járása, árnyék      → arnyek', 'el Sol durante el día, sombras       → arnyek'),
+    ("szervek", {"kornyezet"}, 3, 8,
+     'AZ EMBERI TEST – a szervek nevét a rajz megfelelő pontjához húzza. "szervek": 3–6 a következőkből: agy, tüdő, szív, máj, gyomor, belek (elhagyva: mind a 6):\n'
+     '   <FELADAT>{"tipus":"szervek","szervek":["szív","tüdő","máj","gyomor"]}</FELADAT>',
+     'EL CUERPO HUMANO – arrastra el nombre de cada órgano a su punto del dibujo. "szervek": 3–6 de estos: cerebro, pulmones, corazón, hígado, estómago, intestinos (si se omite: los 6):\n'
+     '   <FELADAT>{"tipus":"szervek","szervek":["corazón","pulmones","hígado","estómago"]}</FELADAT>',
+     'belső szervek, hol van a szív/máj    → szervek', 'órganos internos, dónde está…       → szervek'),
+    ("vizkor", {"kornyezet"}, 3, 6,
+     'A VÍZ KÖRFORGÁSA – a 4 lépést (párolgás, felhőképződés, csapadék, lefolyás) jó sorrendbe koppintja, a tájkép megmozdul; "csapadek": eső vagy hó (elhagyható):\n'
+     '   <FELADAT>{"tipus":"vizkor","csapadek":"eső"}</FELADAT>',
+     'EL CICLO DEL AGUA – toca los 4 pasos (evaporación, condensación, precipitación, escorrentía) en orden y el paisaje se mueve; "csapadek": lluvia o nieve (opcional):\n'
+     '   <FELADAT>{"tipus":"vizkor","csapadek":"nieve"}</FELADAT>',
+     'a víz körforgása                     → vizkor', 'el ciclo del agua                   → vizkor'),
+    ("hold", {"kornyezet"}, 4, 8,
+     'HOLDFÁZISOK – a Holdat a Föld körül húzza, egy kis ablak mutatja, milyennek látjuk; "fazis": újhold, első negyed, telihold vagy utolsó negyed:\n'
+     '   <FELADAT>{"tipus":"hold","fazis":"telihold"}</FELADAT>',
+     'FASES DE LA LUNA – mueve la Luna alrededor de la Tierra y una ventanita muestra cómo se ve; "fazis": luna nueva, cuarto creciente, luna llena o cuarto menguante:\n'
+     '   <FELADAT>{"tipus":"hold","fazis":"cuarto creciente"}</FELADAT>',
+     'holdfázisok, telihold, újhold        → hold', 'fases de la Luna                    → hold'),
+    ("terkep", {"kornyezet", "matek"}, 4, 7,
+     'TÉRKÉP, MÉRETARÁNY – négyzethálós térképen kanyargó út, a gyerek kiszámolja a hosszát km-ben. "lepes": 1 kocka hány km (1, 2, 3, 4, 5, 10, 20, 25, 50, 100); "kockak": az út hossza kockában (4–12); "honnan", "hova": falunevek (elhagyhatók, max. 14 betű):\n'
+     '   <FELADAT>{"tipus":"terkep","lepes":5,"kockak":9,"honnan":"Kisfalu","hova":"Tóváros"}</FELADAT>',
+     'MAPA Y ESCALA – camino con curvas en un mapa cuadriculado; el niño calcula su longitud en km. "lepes": km por cuadro (1, 2, 3, 4, 5, 10, 20, 25, 50, 100); "kockak": longitud del camino en cuadros (4–12); "honnan", "hova": nombres de los pueblos (opcionales, máx. 14 letras):\n'
+     '   <FELADAT>{"tipus":"terkep","lepes":5,"kockak":9,"honnan":"Pueblito","hova":"Villalago"}</FELADAT>',
+     'térkép, méretarány, távolság         → terkep', 'mapa, escala, distancias            → terkep'),
+    ("lezer", {"kornyezet"}, 6, 8,
+     'LÉZER ÉS TÜKRÖK – a fény visszaverődése: a gyerek a tükrökre koppintva célba vezeti a lézert. A pályát a program rakja ki (mindig megoldható); "nehezseg": 1 (2 tükör), 2 (3 tükör + 1 csali) vagy 3 (4 tükör + 2 csali):\n'
+     '   <FELADAT>{"tipus":"lezer","nehezseg":2}</FELADAT>',
+     'LÁSER Y ESPEJOS – la reflexión de la luz: el niño toca los espejos para llevar el láser a la diana. El tablero lo crea el programa (siempre tiene solución); "nehezseg": 1 (2 espejos), 2 (3 espejos + 1 de despiste) o 3 (4 espejos + 2 de despiste):\n'
+     '   <FELADAT>{"tipus":"lezer","nehezseg":2}</FELADAT>',
+     'fényvisszaverődés, tükör              → lezer', 'reflexión de la luz, espejos        → lezer'),
+    ("atom", {"kornyezet"}, 7, 8,
+     'ATOM ÉPÍTÉSE – protonból, neutronból, elektronból rakja össze a semleges atomot; "elem": rendszám 1–10 vagy név/vegyjel (hidrogéntől neonig):\n'
+     '   <FELADAT>{"tipus":"atom","elem":"szén"}</FELADAT>',
+     'CONSTRUIR UN ÁTOMO – forma el átomo neutro con protones, neutrones y electrones; "elem": número atómico 1–10 o nombre/símbolo (del hidrógeno al neón):\n'
+     '   <FELADAT>{"tipus":"atom","elem":"oxígeno"}</FELADAT>',
+     'atom felépítése, proton, elektron     → atom', 'partes del átomo, protones          → atom'),
+    ("robot", {"digit", "matek"}, 1, 6,
+     'KÓDOLÓ ROBOT – nyilakból programot rak össze, és a robotot a csillaghoz vezeti a kövek között (6×6 pálya, a program rakja ki, mindig megoldható); "nehezseg": 1 (3–6 lépés), 2 (6–9 lépés) vagy 3 (9–13 lépés, kerülővel):\n'
+     '   <FELADAT>{"tipus":"robot","nehezseg":1}</FELADAT>',
+     'ROBOT PROGRAMABLE – el niño forma un programa con flechas y lleva el robot a la estrella sin pisar piedras (tablero 6×6 creado por el programa, siempre con solución); "nehezseg": 1 (3–6 pasos), 2 (6–9 pasos) o 3 (9–13 pasos, con rodeo):\n'
+     '   <FELADAT>{"tipus":"robot","nehezseg":1}</FELADAT>',
+     'kódolás, algoritmus, irányok         → robot', 'programación, algoritmos, direcciones → robot'),
+    ("vonalzo", {"matek"}, 2, 5,
+     'MÉRÉS VONALZÓVAL – a vonalzót a tárgy alá húzza, és leolvassa a hosszát; "targy": ceruza vagy level, "hossz": cm-ben, fél centire pontosan (ceruza 3–12, levél 2–12):\n'
+     '   <FELADAT>{"tipus":"vonalzo","targy":"ceruza","hossz":7.5}</FELADAT>',
+     'MEDIR CON LA REGLA – arrastra la regla debajo del objeto y lee la longitud; "targy": ceruza (lápiz) o level (hoja), "hossz": en cm, de medio en medio (lápiz 3–12, hoja 2–12):\n'
+     '   <FELADAT>{"tipus":"vonalzo","targy":"level","hossz":6.5}</FELADAT>',
+     'hosszmérés, centiméter, vonalzó       → vonalzo', 'medir longitudes en cm             → vonalzo'),
+    ("suti", {"matek"}, 2, 4,
+     'OSZTÁS KEKSZEKKEL – a kekszeket igazságosan tányérokra osztja; "gyerek": 2–5, "keksz": legfeljebb 30, egy gyerekre legfeljebb 8 jut; ha nem osztható maradék nélkül, a maradék az üvegben marad:\n'
+     '   <FELADAT>{"tipus":"suti","keksz":12,"gyerek":3}</FELADAT>',
+     'DIVIDIR CON GALLETAS – reparte las galletas en platos de forma justa; "gyerek": 2–5 niños, "keksz": como máximo 30, como máximo 8 por niño; si sobra alguna, se queda en el bote (resto):\n'
+     '   <FELADAT>{"tipus":"suti","keksz":14,"gyerek":4}</FELADAT>',
+     'osztás, igazságos szétosztás, maradék → suti', 'división, repartir, resto            → suti'),
+    ("naptar", {"matek", "kornyezet"}, 2, 4,
+     'NAPTÁR – a havi naptárban a mai nap sárga; a gyerek arra a napra koppint, amelyik "plusz" nap múlva lesz (negatív "plusz": ennyi nappal ezelőtt volt). '
+     '"ho" 1–12, "nap" a mai nap, az eredmény ugyanabba a hónapba essen; "ev" elhagyható. A kérdést (a hét napjával) a program írja:\n'
+     '   <FELADAT>{"tipus":"naptar","ho":3,"nap":4,"plusz":9}</FELADAT>',
+     'CALENDARIO – en el calendario del mes, hoy está en amarillo; el niño toca el día que será dentro de "plusz" días ("plusz" negativo: hace tantos días). '
+     '"ho" 1–12, "nap" es hoy, el resultado debe caer en el mismo mes; "ev" es opcional. La pregunta (con el día de la semana) la escribe el programa:\n'
+     '   <FELADAT>{"tipus":"naptar","ho":3,"nap":4,"plusz":9}</FELADAT>',
+     'naptár, hét napjai, hány nap múlva   → naptar', 'calendario, días de la semana        → naptar'),
+    ("romai", {"matek"}, 4, 5,
+     'RÓMAI SZÁMOK – a gyerek kőtáblákból (I, V, X, L, C; 400-tól D és M is) rakja ki a számot (1–3999). A választ ne írd le:\n'
+     '   <FELADAT>{"tipus":"romai","szam":47}</FELADAT>',
+     'NÚMEROS ROMANOS – el niño forma el número con tablillas (I, V, X, L, C; desde 400 también D y M), 1–3999. No escribas la respuesta:\n'
+     '   <FELADAT>{"tipus":"romai","szam":47}</FELADAT>',
+     'római számok írása                   → romai', 'escribir en números romanos          → romai'),
+    ("harom", {"matek"}, 4, 6,
+     'HÁROMSZÖGEK KOSARAKBA – "szempont": szog (hegyes-, derék-, tompaszögű) vagy oldal (egyenlő oldalú, egyenlő szárú, különböző oldalú). '
+     '"haromszogek": 3–6 háromszög egész oldalhosszakkal (1–30), legalább kétféle; derékszögű csak pitagoraszi hármas (3,4,5; 6,8,10; 5,12,13). Elhagyva a program választ:\n'
+     '   <FELADAT>{"tipus":"harom","szempont":"szog","haromszogek":[[3,4,5],[5,6,7],[3,4,6],[6,6,6]]}</FELADAT>',
+     'TRIÁNGULOS EN CESTAS – "szempont": szog (acutángulo, rectángulo, obtusángulo) u oldal (equilátero, isósceles, escaleno). '
+     '"haromszogek": 3–6 triángulos con lados enteros (1–30), al menos de dos clases; rectángulo solo con ternas pitagóricas (3,4,5; 6,8,10; 5,12,13). Si lo omites, los elige el programa:\n'
+     '   <FELADAT>{"tipus":"harom","szempont":"oldal","haromszogek":[[5,5,5],[5,5,8],[4,5,6],[6,6,4]]}</FELADAT>',
+     'háromszögek fajtái (szög, oldal)     → harom', 'clasificar triángulos                → harom'),
+    ("tizedes", {"matek"}, 5, 6,
+     'TIZEDES TÖRT A SZÁMEGYENESEN – nagyítóval: előbb a jó tizedet, aztán a jó századot kell megtalálni. "szam" 0 és 10 között, pontosan két tizedesjeggyel, a második ne legyen 0:\n'
+     '   <FELADAT>{"tipus":"tizedes","szam":0.37}</FELADAT>',
+     'DECIMALES EN LA RECTA – con lupa: primero la décima, luego la centésima. "szam" entre 0 y 10, con dos decimales exactos y el segundo distinto de 0:\n'
+     '   <FELADAT>{"tipus":"tizedes","szam":2.58}</FELADAT>',
+     'tizedes törtek, tized, század        → tizedes', 'décimas y centésimas                 → tizedes'),
+    ("akcio", {"matek"}, 6, 7,
+     'AKCIÓS ÁR – egy termék "ar" forintba kerül, "szazalek"-kal olcsóbb; a gyerek kiszámolja és beírja az új árat (ar 100–500 000 Ft, szazalek 1–90; a kedvezmény egész forint, az új ár tízre kerek). '
+     '"targy" elhagyható: [emoji, név]. Csak ár + kedvezmény szöveges feladathoz; a százalék szemléltetéséhez (sáv színezése) a szazalek kell:\n'
+     '   <FELADAT>{"tipus":"akcio","ar":12000,"szazalek":25,"targy":["🎒","hátizsák"]}</FELADAT>',
+     'PRECIO REBAJADO – un producto cuesta "ar" euros y tiene un descuento de "szazalek"; el niño calcula y escribe el precio nuevo (ar 1–999,99 €, szazalek 1–90; el nuevo precio redondo a 5 céntimos). '
+     '"targy" opcional: [emoji, nombre]. Solo para problemas de precio con descuento; para representar un porcentaje (colorear la barra) usa szazalek:\n'
+     '   <FELADAT>{"tipus":"akcio","ar":40,"szazalek":15,"targy":["🎒","mochila"]}</FELADAT>',
+     'akciós ár, árengedmény, % olcsóbb    → akcio', 'rebajas, descuento en la tienda      → akcio'),
 ]
 
 
@@ -7280,6 +7988,8 @@ def _dm_cimkek(subject_label: str, idegen: bool) -> set:
         c.add("magyar")
     if any(k in s for k in ("enek", "zene", "music", "artistic")):
         c.add("enek")
+    if any(k in s for k in ("digit", "informatik", "programac", "computac", "tecnolog")):
+        c.add("digit")
     if idegen:
         c.add("nyelv")
     return c

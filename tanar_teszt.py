@@ -428,7 +428,9 @@ def _feladat_leiras(f: dict) -> str:
         return ("mondat kártyákból (a gyereknél MEGKEVERVE): "
                 + " / ".join(f.get("elemek") or []))
     if tipus in ("csoport", "szotag", "penz", "helyiertek", "tukor", "diagram", "kocka", "homero", "emelo", "allapot",
-                 "hallas", "ritmus", "aramkor", "tortcmp", "test", "mertek", "kerekit", "villam", "lift", "recept"):
+                 "hallas", "ritmus", "aramkor", "tortcmp", "test", "mertek", "kerekit", "villam", "lift", "recept",
+                 "fgep", "venn", "szokital", "szokereso", "betukev", "arnyek", "szervek", "vizkor", "hold", "terkep",
+                 "lezer", "atom", "robot", "vonalzo", "suti", "naptar", "romai", "harom", "tizedes", "akcio"):
         return f"interaktív feladat ({tipus}): {f.get('kerdes', '')}"
     if tipus == "osztas":
         return f"írásbeli osztás balról jobbra: {f.get('a')} : {f.get('b')}, a gyerek a hányadost írja be"
