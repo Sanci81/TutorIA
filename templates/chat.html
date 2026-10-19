@@ -731,6 +731,20 @@
   .kor-nagy .fmod-sav{background:#232c37}
   .kor-nagy .fmod-cel{color:#d6b25e}
   .kor-nagy .fmod-talalt .fmod-kijelzo{color:#6fd0a2}
+  /* írásbeli osztás – balról jobbra */
+  .feladat-osztas{display:block;width:fit-content;max-width:100%;--oszt-cella:40px}
+  .oszt-racs{display:grid;grid-auto-rows:46px;gap:2px 2px;align-items:center;justify-items:center;margin-bottom:8px}
+  .oszt-c{width:100%;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+  .oszt-jegy{font-size:28px;color:#16241d}
+  .oszt-jel{font-size:26px;color:#ef5f5f}
+  .oszt-oszto{font-size:28px;color:#16241d;border-left:3px solid #16241d;border-bottom:3px solid #16241d;height:100%;display:flex;align-items:center;justify-content:flex-start;padding-left:10px;box-sizing:border-box}
+  .oszt-mezo.fsz-mezo{width:100%;max-width:38px;height:44px;font-size:26px}
+  .oszt-mezo.oszt-akt{border-color:#1e7a4d;box-shadow:0 0 0 3px rgba(30,122,77,.18)}
+  .oszt-maradek{width:88%;max-width:34px;height:38px;box-sizing:border-box;border:2px dashed #cbd8e2;border-radius:8px;background:#fcfdfe;text-align:center;font:inherit;font-size:20px;font-weight:800;color:#5b6b63;padding:0}
+  .oszt-maradek:focus{outline:none;border-color:#3fa88f;background:#f2fbf8}
+  .oszt-lehoz{font-size:20px;color:#9aa8a0}
+  .oszt-tipp{font-size:15px;font-weight:700;color:#1e7a4d;background:#eef7f2;border-radius:10px;padding:7px 10px;margin-bottom:6px}
+  @media (max-width:420px){.feladat-osztas{--oszt-cella:32px}.oszt-mezo.fsz-mezo{height:40px;font-size:22px}.oszt-jegy,.oszt-oszto{font-size:24px}.oszt-maradek{height:34px;font-size:17px}}
   /* Az alsó szám jegyei átírhatók: kölcsönkérés után a 2-ből 3 lesz.
      Alapból ugyanúgy néznek ki, mint a nyomtatott számjegyek – csak akkor
      látszik, hogy mező, ha a gyerek beleáll. */
@@ -1212,6 +1226,8 @@
     // Feliratok az aktív tanterv nyelvén (HU/ES) – a t() az aktív g.lang alapján ad vissza.
     var L = {
         utasitasSzamolo: {{ t('utasitas_szamolo')|tojson }},
+        utasitasOsztas: {{ t('utasitas_osztas')|tojson }},
+        osztasTipp: {{ t('osztas_tipp')|tojson }},
         utasitasParosit: {{ t('utasitas_parosit')|tojson }},
         utasitasSorrend: {{ t('utasitas_sorrend')|tojson }},
         utasitasHianyzo: {{ t('utasitas_hianyzo')|tojson }},
@@ -1750,6 +1766,7 @@
        küldhet az "utasitas" mezőben – az mindig erősebb ennél. */
     function alapUtasitas(tipus) {
         if (tipus === 'szamolo') { return L.utasitasSzamolo; }
+        if (tipus === 'osztas') { return L.utasitasOsztas; }
         if (tipus === 'parosit') { return L.utasitasParosit; }
         if (tipus === 'sorrend') { return L.utasitasSorrend; }
         if (tipus === 'hianyzo') { return L.utasitasHianyzo; }
@@ -1983,6 +2000,7 @@
         }
         if (f.tipus === 'szamolo') { return szamoloTabla(f); }
         if (f.tipus === 'szam') { return szamMezo(f); }
+        if (f.tipus === 'osztas') { return osztasTabla(f); }
         if (f.tipus === 'valaszt') { return valasztGombok(f); }
         if (f.tipus === 'parosit') { return parositas(f); }
         if (f.tipus === 'sorrend') { return sorbarendezes(f); }
@@ -3591,6 +3609,98 @@
         doboz.appendChild(kesz);
 
         setTimeout(function () { mezok[mezok.length - 1].focus(); }, 60);
+        return doboz;
+    }
+
+    // ÍRÁSBELI OSZTÁS – BALRÓL JOBBRA. Az osztás fordítva megy, mint a többi
+    // művelet: a legnagyobb helyiértéknél kezdünk, és a maradékot jobbra
+    // visszük. Magyar oldalon „126 : 3 =" alak, spanyolon a galera.
+    function osztasTabla(f) {
+        var a = String(f.a), b = Number(f.b), q = String(f.eredmeny);
+        var doboz = document.createElement('div');
+        doboz.className = 'feladat feladat-osztas' + (f.es ? ' oszt-es' : '');
+        // Hol kezdődik az első részosztandó (ha az első jegy kisebb az osztónál, kettőt veszünk)?
+        var s = 0; while (s < a.length - 1 && Number(a.slice(0, s + 1)) < b) { s++; }
+        var lepes = [], r = 0;
+        for (var k = 0; k < q.length; k++) {
+            var resz = k === 0 ? Number(a.slice(0, s + 1)) : r * 10 + Number(a[s + k]);
+            r = resz % b; lepes.push({ resz: resz, marad: r });
+        }
+        var racs = document.createElement('div');
+        racs.className = 'oszt-racs';
+        var oszlopok = a.length + (f.es ? 1 + Math.max(q.length, String(b).length) : 3 + q.length);
+        racs.style.gridTemplateColumns = 'repeat(' + oszlopok + ', var(--oszt-cella))';
+        doboz.style.setProperty('--oszt-cella', 'min(40px, calc((100vw - 96px) / ' + oszlopok + '))');
+        function cella(sor, oszl, tartalom, cls) {
+            var c = tartalom instanceof Node ? tartalom : document.createElement('span');
+            if (!(tartalom instanceof Node)) { c.textContent = tartalom; }
+            c.className = (c.className ? c.className + ' ' : '') + 'oszt-c ' + (cls || '');
+            c.style.gridRow = String(sor + 1); c.style.gridColumn = String(oszl + 1);
+            racs.appendChild(c); return c;
+        }
+        for (var i = 0; i < a.length; i++) { cella(0, i, a[i], 'oszt-jegy'); }
+        var mezok = [];
+        function mezo(sor, oszl, cls, label) {
+            var be = document.createElement('input');
+            be.type = 'text'; be.inputMode = 'numeric'; be.maxLength = 1;
+            be.className = cls; be.setAttribute('aria-label', label);
+            return cella(sor, oszl, be, '');
+        }
+        var qKezd;
+        if (f.es) {
+            cella(0, a.length, String(b), 'oszt-oszto').style.gridColumn = (a.length + 1) + ' / span ' + Math.max(q.length, String(b).length);
+            qKezd = a.length;
+        } else {
+            cella(0, a.length, ':', 'oszt-jel');
+            cella(0, a.length + 1, String(b), 'oszt-jegy');
+            cella(0, a.length + 2, '=', 'oszt-jel');
+            qKezd = a.length + 3;
+        }
+        for (var qi = 0; qi < q.length; qi++) {
+            mezok.push(mezo(f.es ? 1 : 0, qKezd + qi, 'fsz-mezo oszt-mezo', (qi + 1) + '.'));
+        }
+        // A maradékok sorai (a gyerek jegyzete: nem ellenőrizzük, nem küldjük el).
+        for (var lk = 0; lk < q.length; lk++) {
+            var ro = lk + 1;
+            mezo(ro, s + lk, 'fsz-maradek-mezo oszt-maradek', L.feladatMaradek);
+            if (lk < q.length - 1) { cella(ro, s + lk + 1, a[s + lk + 1], 'oszt-lehoz'); }
+        }
+        doboz.appendChild(racs);
+        var tipp = document.createElement('div');
+        tipp.className = 'oszt-tipp';
+        doboz.appendChild(tipp);
+        function mutatTipp(idx) {
+            tipp.textContent = L.osztasTipp.replace('{r}', lepes[idx].resz).replace('{b}', b);
+            mezok.forEach(function (m, j) { m.classList.toggle('oszt-akt', j === idx); });
+        }
+        mezok.forEach(function (be, idx) {
+            be.addEventListener('focus', function () { mutatTipp(idx); this.select(); });
+            be.addEventListener('input', function () {
+                this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1);
+                if (this.value && idx < mezok.length - 1) { mezok[idx + 1].focus(); }
+            });
+            be.addEventListener('keydown', function (e) {
+                if (e.key === 'Backspace' && !this.value && idx > 0) { mezok[idx - 1].focus(); }
+                if (e.key === 'ArrowLeft' && idx > 0) { mezok[idx - 1].focus(); }
+                if (e.key === 'ArrowRight' && idx < mezok.length - 1) { mezok[idx + 1].focus(); }
+                if (e.key === 'Enter') { e.preventDefault(); kesz.click(); }
+            });
+        });
+        Array.prototype.forEach.call(racs.querySelectorAll('.oszt-maradek'), function (m) {
+            m.addEventListener('input', function () { this.value = this.value.replace(/[^0-9]/g, '').slice(0, 1); });
+        });
+        var kesz = document.createElement('button');
+        kesz.type = 'button';
+        kesz.className = 'feladat-kesz-gomb';
+        kesz.textContent = L.feladatKesz;
+        kesz.addEventListener('click', function () {
+            var ertek = mezok.map(function (m) { return m.value || ''; }).join('').replace(/^0+(?=\d)/, '');
+            if (!ertek) { mezok[0].focus(); return; }
+            feladatKuld(doboz, ertek);
+        });
+        doboz.appendChild(kesz);
+        mutatTipp(0);
+        setTimeout(function () { mezok[0].focus(); }, 60);
         return doboz;
     }
 

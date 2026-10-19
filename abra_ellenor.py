@@ -369,6 +369,62 @@ def magassag_rossz_elen(svg: str) -> str:
     return ""
 
 
+def feliratok_egymason(svg: str) -> str:
+    """Üres szöveg = rendben. Különben: melyik két felirat került egymásra.
+
+    2026-10-18, élő hiba (1. osztály, írás-előkészítés): a „felette" és a
+    „között" felirat egymásra zsúfolódott, a gyerek nem értette a rajzot.
+    A feliratok helyét a forrásból becsüljük (x, y, betűméret, igazítás);
+    ami transzformált csoportban van, azt kihagyjuk – ott nem tudjuk biztosan.
+    """
+    try:
+        import xml.etree.ElementTree as ET
+        gyoker = ET.fromstring(svg or "")
+    except Exception:
+        return ""
+    szulo = {c: p for p in gyoker.iter() for c in p}
+    dobozok = []
+    for el in gyoker.iter():
+        if _XML_TAG.sub("", el.tag or "").lower() != "text":
+            continue
+        felirat = "".join(el.itertext()).strip()
+        if not felirat or el.get("transform"):
+            continue
+        p, transzformalt = szulo.get(el), False
+        while p is not None:
+            if p.get("transform"):
+                transzformalt = True
+                break
+            p = szulo.get(p)
+        if transzformalt:
+            continue
+        try:
+            x, y = float(el.get("x") or 0), float(el.get("y") or 0)
+        except ValueError:
+            continue
+        stilus = (el.get("style") or "")
+        m = re.search(r"font-size\s*:\s*([\d.]+)", stilus)
+        try:
+            fs = float(m.group(1)) if m else float(re.sub(r"[^\d.]", "", el.get("font-size") or "") or 14)
+        except ValueError:
+            fs = 14.0
+        sz = 0.56 * fs * len(felirat)
+        igazit = (el.get("text-anchor") or "").strip()
+        bal = x - sz / 2 if igazit == "middle" else (x - sz if igazit == "end" else x)
+        dobozok.append((felirat, bal, y - fs * 0.8, bal + sz, y + fs * 0.2))
+    for i in range(len(dobozok)):
+        for j in range(i + 1, len(dobozok)):
+            a, b = dobozok[i], dobozok[j]
+            sz = min(a[3], b[3]) - max(a[1], b[1])
+            ma = min(a[4], b[4]) - max(a[2], b[2])
+            if sz <= 0 or ma <= 0:
+                continue
+            kisebb = min((a[3] - a[1]) * (a[4] - a[2]), (b[3] - b[1]) * (b[4] - b[2])) or 1
+            if sz * ma / kisebb > 0.25:
+                return f"a(z) „{a[0][:20]}” és a(z) „{b[0][:20]}” felirat egymásra került"
+    return ""
+
+
 def tartalmi_hiba(svg: str, szoveg: str, *, es: bool = False) -> tuple[str, str]:
     """A rajz MÉRHETŐ tartalmi hibái. (indok, előírás). Üres indok = rendben.
 
@@ -404,6 +460,17 @@ def tartalmi_hiba(svg: str, szoveg: str, *, es: bool = False) -> tuple[str, str]
             "FONTOS: a magasság (m) MINDIG a FÜGGŐLEGES él. Az elülső "
             "vízszintes él az a, a mélységet jelző ferde él a b. Mindegyik "
             "felirat a SAJÁT éle mellé kerüljön.")
+    egymason = feliratok_egymason(svg)
+    if egymason:
+        if es:
+            return egymason, (
+                "IMPORTANTE: cada etiqueta en SU sitio, separada de las demás; "
+                "nunca dos etiquetas una encima de otra. Lo que está ENTRE dos "
+                "líneas lleva su etiqueta ENTRE esas líneas.")
+        return egymason, (
+            "FONTOS: minden felirat a SAJÁT helyére kerüljön, a többitől jól "
+            "elkülönítve – két felirat soha ne legyen egymáson. Ami két vonal "
+            "KÖZÖTT van, annak a felirata is a két vonal között álljon.")
     return "", ""
 
 

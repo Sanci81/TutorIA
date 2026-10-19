@@ -427,6 +427,8 @@ def _feladat_leiras(f: dict) -> str:
     if tipus == "epito":
         return ("mondat kártyákból (a gyereknél MEGKEVERVE): "
                 + " / ".join(f.get("elemek") or []))
+    if tipus == "osztas":
+        return f"írásbeli osztás balról jobbra: {f.get('a')} : {f.get('b')}, a gyerek a hányadost írja be"
     if tipus in ("szam", "szamolo"):
         return "szám beírása egy mezőbe"
     if tipus == "pizza":

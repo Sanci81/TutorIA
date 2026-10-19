@@ -293,6 +293,10 @@ TRANSLATIONS = {
 
     "utasitas_szamolo": {"hu": "Töltsd ki jobbról balra.",
                          "es": "Complétalo de derecha a izquierda."},
+    "utasitas_osztas": {"hu": "Osztásnál balról kezdünk! Írd be a hányados jegyeit balról jobbra.",
+                        "es": "¡La división empieza por la izquierda! Escribe las cifras del cociente de izquierda a derecha."},
+    "osztas_tipp": {"hu": "Most ezt számold: {r} : {b} = ? A maradékot írd alá, és hozd le mellé a következő számjegyet.",
+                    "es": "Ahora calcula: {r} : {b} = ? Escribe el resto debajo y baja la cifra siguiente."},
     "utasitas_parosit": {"hu": "Húzd egymáshoz, ami összetartozik.",
                          "es": "Une lo que va junto."},
     "utasitas_sorrend": {"hu": "Rakd őket helyes sorrendbe.",

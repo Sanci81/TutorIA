@@ -3342,6 +3342,34 @@ def _szamolo_feladat(jel: str | None, a_nyers, b_nyers) -> dict | None:
             "eredmeny": str(ered)}
 
 
+# ── OSZTÁS: BALRÓL JOBBRA ─────────────────────────────────────────────
+# ÉLES HIBA, 2026-10-18, 2. osztály, „Alapműveletek értelmezése": a 12 : 2
+# az oszlopos táblában jelent meg „Töltsd ki jobbról balra" utasítással.
+# Az osztás fordítva megy, mint a többi művelet: a legnagyobb helyiértéknél
+# kezdünk, és a maradékot JOBBRA visszük tovább. Ezért osztás SOHA nem
+# kerül az oszlopos táblába:
+#   – kis osztás (pl. 12 : 2, szorzótábla) → egy beírós mező;
+#   – írásbeli osztás (háromjegyű vagy nagyobb osztandó, vagy írásbeli
+#     témakör, egyjegyű osztó, maradék nélkül) → saját, balról jobbra
+#     kitöltős tábla. Magyar oldalon „126 : 3 =" alak, spanyolon a
+#     „galera" (az osztó jobbra, alatta a hányados).
+def _osztas_feladat(a_nyers, b_nyers, *, temakor: str | None = None,
+                    es_tanterv: bool = False) -> dict | None:
+    try:
+        a_ert = int(a_nyers)
+        b_ert = int(b_nyers)
+    except Exception:
+        return None
+    if a_ert < 0 or b_ert <= 0 or a_ert > 999999:
+        return None
+    irasbeli = (2 <= b_ert <= 9 and a_ert % b_ert == 0 and 10 <= a_ert <= 99999
+                and a_ert >= b_ert and (a_ert >= 100 or _irasbeli_temakor(temakor)))
+    if irasbeli:
+        return {"tipus": "osztas", "a": a_ert, "b": b_ert,
+                "eredmeny": str(a_ert // b_ert), "es": bool(es_tanterv)}
+    return {"tipus": "szam", "muvelet": f"{a_ert} : {b_ert}"}
+
+
 # ÍRÁSBELI MŰVELET TÉMAKÖRÖK. Ha ezeket tanulja a gyerek, a számolást
 # OSZLOPBAN kell kérni, akkor is, ha egyébként már tudna fejben számolni —
 # épp az írásbeli eljárást gyakorolja.
@@ -3585,11 +3613,8 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         # eljárás; a négy üres kocka semmit nem segít, csak összezavar.
         # Osztásnál beírós mezőt adunk, ott a gyerek a hányadost írja be.
         if _jel == "÷":
-            try:
-                return {"tipus": "szam",
-                        "muvelet": f"{int(adat['a'])} ÷ {int(adat['b'])}"}
-            except Exception:
-                return None
+            return _osztas_feladat(adat.get("a"), adat.get("b"),
+                                   temakor=temakor, es_tanterv=es_tanterv)
         return _szamolo_feladat(_jel, adat.get("a"), adat.get("b"))
 
     if tipus == "szam":
@@ -3609,7 +3634,13 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         # bízzuk: az „fejben" szót bármikor leírhatja egy másodikosnak is.
         # Írásbeli műveletet tanuló témakörben MINDIG oszlopba írunk — ott
         # épp az az eljárás a lecke. Egyébként az évfolyam dönt.
-        if jel is not None and (_irasbeli_temakor(temakor)
+        if jel == "÷":
+            # Osztás SOHA nem megy az oszlopos (jobbról balra) táblába.
+            oszt = _osztas_feladat(adat.get("a"), adat.get("b"),
+                                   temakor=temakor, es_tanterv=es_tanterv)
+            if oszt:
+                return oszt
+        if jel is not None and jel != "÷" and (_irasbeli_temakor(temakor)
                                 or not _fejben_szamolhat(grade, es_tanterv)):
             oszlopos = _szamolo_feladat(jel, adat.get("a"), adat.get("b"))
             if oszlopos:
@@ -4302,10 +4333,8 @@ def _feladat_szovegbol(szoveg: str, *, grade: int | None = None,
         # Írásbeli témakörben és kisiskolásnak OSZLOPBA, egyébként beírós
         # mező – pontosan ugyanaz a szabály, mint a jelölős úton.
         if jel == "÷":
-            try:
-                return {"tipus": "szam", "muvelet": f"{int(a_ert)} ÷ {int(b_ert)}"}
-            except Exception:
-                return None
+            return _osztas_feladat(a_ert, b_ert, temakor=temakor,
+                                   es_tanterv=es_tanterv)
         if jel is not None:
             if _irasbeli_temakor(temakor) or not _fejben_szamolhat(grade, es_tanterv):
                 oszlopos = _szamolo_feladat(jel, a_ert, b_ert)
@@ -7934,6 +7963,15 @@ Tema actual: {current_topic}
 - La pregunta debe basarse en lo que acabas de enseñar.
 - En preguntas de opción múltiple, las opciones deben ser cosas o palabras reales
   (p. ej. "piedra" o "perro"), no las propiedades mismas (p. ej. "vivo" o "sin vida").
+- PROHIBIDAS las preguntas negativas o con doble negación. MAL: «¿Dónde está el sitio
+  que no está debajo de la línea ni encima?» BIEN: «¿Dónde escribimos la letra pequeña:
+  entre las dos líneas, encima o debajo?»
+- En 1º y 2º NO hagas preguntas generales sobre un concepto sin opciones. MAL:
+  «¿Cuál puede ser un acompañamiento rítmico al cantar?» BIEN: «¿Cuál puede ser un
+  acompañamiento rítmico al cantar: las palmas, dibujar o leer?» – y añade los botones
+  de opción (<FELADAT> "valaszt").
+- Compruébalo: ¿un niño de siete años entiende a la primera QUÉ le preguntas y qué tipo
+  de respuesta encaja? Si no, reformúlalo más sencillo.
 
 === TOLERANCIA AL RECONOCIMIENTO DE VOZ ===
 En modo voz, la voz del niño la transcribe una máquina y a menudo la distorsiona — también
@@ -8443,6 +8481,15 @@ A szövegeidet egy gyerek olvassa és hallja, ezért a magyar nyelvhelyesség K�
 - A kérdés arra épüljön, amit épp most tanítottál.
 - Feleletválasztósnál az opciók valódi dolgok vagy szavak legyenek (pl. "kő" vagy
   "kutya"), ne maguk a tulajdonságok (pl. "élő" vagy "élettelen").
+- TILOS a tagadó és a kettős tagadású kérdés. ROSSZ: „Hol van az a hely, amelyik nem a
+  vonal alatt és nem is felette van?” JÓ: „Hová írjuk a kis betűt: a két vonal közé, fölé
+  vagy alá?”
+- 1–2. osztályban NE tegyél fel általános fogalom-kérdést válaszlehetőség nélkül.
+  ROSSZ: „Melyik lehet ritmuskíséret éneklés közben?” – a gyerek nem tudja, mit
+  válaszoljon. JÓ: „Melyik lehet ritmuskíséret éneklés közben: a taps, a rajzolás vagy
+  az olvasás?” – és tedd mellé a választógombokat (<FELADAT> "valaszt").
+- Ellenőrizd magad: egy hétéves első olvasásra megérti, MIT kérdezel, és tudja, milyen
+  válasz illik rá? Ha nem, fogalmazd újra egyszerűbben.
 
 === HANGFELISMERÉS-TOLERANCIA ===
 Hangmódban a gyerek beszédét egy gép írja le, és gyakran torzítja — a MAGYAR válaszokat is,
