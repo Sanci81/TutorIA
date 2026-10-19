@@ -9,10 +9,12 @@ KISFIÚ: egy alapkép, aztán UGYANAZ a fiú különböző pózokban (megfogja a
 orrát, a fülét, integet …). Az oldal a két kép között áttűnéssel vált,
 így úgy látszik, mintha megmozdulna.
 
-MACI: egy ruha nélküli maci, aztán UGYANARRA a macira rárajzolja a ruhákat
-(sapka, sál, póló, csizma, négy színben). A program minden ruhát kivág
-külön rétegnek, így a ruhák pontosan illenek, és bármilyen összeállításban
-ráadhatók – nem páncélként lógnak rajta.
+A köztes képek (pl. nose_k: a keze félúton jár) adják a mozdulatot:
+alap -> félúton -> megérinti -> félúton -> alap.
+
+MACI: egy ruha nélküli maci, és UGYANAZ a maci egy-egy ruhában (sapka,
+sál, póló, csizma, négy színben) – mindig az egész kép, így a ruha
+természetesen ül rajta. Egy feladatban egy ruhadarab.
 
 1. LÉPÉS – AZ ALAPKÉP (3 jelölt, ebből választasz)
     python figura_kepek.py --alap fiu
@@ -28,8 +30,9 @@ ráadhatók – nem páncélként lógnak rajta.
         Egy próbapóz. Ha jó:
     python figura_kepek.py --gyart fiu
     python figura_kepek.py --gyart maci
-        Nyisd meg újra az attekinto.html-t: a macin ki lehet próbálni a
-        ruhákat, a fiúnál látszik minden póz.
+        Nyisd meg újra az attekinto.html-t.
+    Összehasonlítás (nem írja felül a meglévőt, nose_high.png lesz):
+    python figura_kepek.py --gyart fiu --csak nose --ujra --minoseg high --utotag _high
     Rossz képet újra lehet kérni:
     python figura_kepek.py --gyart fiu --csak nose --ujra
 
@@ -38,6 +41,16 @@ ráadhatók – nem páncélként lógnak rajta.
     python figura_kepek.py --jovahagy maci
         A képek a static/figurak/fiu és static/figurak/maci mappába
         kerülnek (webp). Töltsd fel: git add static/figurak
+
+KABALA (a lap szélén álló fiú és lány, és egy új robot): ugyanaz a
+figura érzelmekkel – örül, kicsit szomorú, nevet, gondolkodik,
+meglepődik, integet, tapsol. A fiú és a lány alapja a mostani kabala
+(static/kabala), a robotnak előbb alapkép-jelöltek kellenek:
+    python figura_kepek.py --alap kabala_fiu      (csak átmásolja a mostanit)
+    python figura_kepek.py --alap kabala_lany
+    python figura_kepek.py --alap robot           (3 jelölt) → --valaszt robot:2
+    python figura_kepek.py --gyart kabala_fiu --db 1   (próba), aztán mind
+    python figura_kepek.py --jovahagy kabala_fiu       (static/figurak/kabala_fiu)
 
 MI KELL HOZZÁ: OPENAI_API_KEY és a Pillow (ugyanaz, mint a szótárnál).
 --minoseg medium (alap) vagy high: a high részletesebb, de drágább.
@@ -103,6 +116,35 @@ FIGURAK = {
     },
 }
 
+# A kabalák: a fiú és a lány alapja a mostani kabalakép, a robot új.
+KABALA_STILUS = (
+    "bold friendly cartoon style for children with clean dark outlines and "
+    "flat bright colours, exactly the style of the reference picture, whole "
+    "figure from head to toe, front view, transparent background"
+)
+FIGURAK.update({
+    "kabala_fiu": {"meret": "1024x1536", "forras": os.path.join("static", "kabala", "fiu.png"), "alany": ""},
+    "kabala_lany": {"meret": "1024x1536", "forras": os.path.join("static", "kabala", "lany.png"), "alany": ""},
+    "robot": {"meret": "1024x1536", "alany": (
+        "a cute friendly little robot mascot for a children's learning app, "
+        "round head with a big screen face showing two large friendly eyes and "
+        "a smile, short antenna with a small glowing ball, rounded body in "
+        "white and teal with a small orange heart light on the chest, short "
+        "arms with round hands, short legs, standing, bold friendly cartoon "
+        "style with clean dark outlines and flat bright colours")},
+})
+KABALAK = ("kabala_fiu", "kabala_lany", "robot")
+# A kabalák érzelmei. Kedves maradjon: a „szomorú” sem sír, csak biztat.
+EMOCIOK = {
+    "orul": "jumping for joy with both arms raised high, big happy open smile",
+    "szomoru": "a little bit sad but kind and encouraging: head slightly tilted, small gentle smile, shoulders a bit down; not crying",
+    "nevet": "laughing happily with eyes squeezed shut, one hand on the tummy",
+    "gondolkodik": "thinking hard: index finger on the chin, eyes looking up and to the side",
+    "meglepodik": "surprised and amazed: mouth open in a round 'oh', both hands raised beside the face",
+    "integet": "waving hello with one hand raised high, big friendly smile",
+    "tapsol": "clapping both hands together in front of the chest, big proud smile",
+}
+
 # A fiú pózai. A kulcs ugyanaz, amit az oldal használ (angol testrész).
 POZOK = {
     "eyes": "pointing with both index fingers to his own two eyes, eyes wide open, smiling",
@@ -157,16 +199,17 @@ def _kep_bajt(valasz) -> bytes:
 
 def _hivas(fv, **kw):
     """Régebbi openai csomagnál egyes beállítások hiányoznak – akkor nélkülük."""
-    for elhagy in ([], ["input_fidelity"], ["input_fidelity", "quality"]):
+    kw = {k: v for k, v in kw.items() if v is not None}
+    for elhagy in ([], ["input_fidelity"], ["input_fidelity", "quality"], ["input_fidelity", "quality", "background"]):
         try:
             return fv(**{k: v for k, v in kw.items() if k not in elhagy})
         except TypeError:
             continue
         except Exception as e:
-            if any(k in str(e) for k in ("input_fidelity", "quality")) and elhagy != ["input_fidelity", "quality"]:
+            if any(k in str(e) for k in ("input_fidelity", "quality", "background")) and len(elhagy) < 3:
                 continue
             raise
-    return fv(**{k: v for k, v in kw.items() if k not in ("input_fidelity", "quality")})
+    return fv(**{k: v for k, v in kw.items() if k not in ("input_fidelity", "quality", "background")})
 
 
 def mappa(fig: str) -> str:
@@ -181,6 +224,13 @@ def alap_ut(fig: str) -> str:
 def alap_jeloltek(kliens, fig: str, minoseg: str, db: int) -> int:
     os.makedirs(mappa(fig), exist_ok=True)
     f = FIGURAK[fig]
+    if f.get("forras"):
+        # A mostani kabala lesz az alap – nem kell generálni.
+        from PIL import Image
+        Image.open(os.path.join(GYOKER, f["forras"])).save(alap_ut(fig))
+        print(f"OK: a mostani kabala ({f['forras']}) lett az alapkép. Jöhet: --gyart {fig}")
+        attekinto()
+        return 0
     for i in range(1, db + 1):
         ut = os.path.join(mappa(fig), f"jelolt_{i}.png")
         if os.path.exists(ut):
@@ -188,8 +238,10 @@ def alap_jeloltek(kliens, fig: str, minoseg: str, db: int) -> int:
             continue
         print(f"  {fig} {i}. jelölt …", flush=True)
         try:
+            stilus = KABALA_STILUS if fig in KABALAK else STILUS
             v = _hivas(kliens.images.generate, model=MODELL, size=f["meret"], n=1, quality=minoseg,
-                       prompt=f"{STILUS}. Subject: {f['alany']}. {TILTAS}")
+                       background="transparent" if fig in KABALAK else None,
+                       prompt=f"{stilus}. Subject: {f['alany']}. {TILTAS}")
             with open(ut, "wb") as ki:
                 ki.write(_kep_bajt(v))
         except Exception as e:
@@ -346,6 +398,39 @@ def maci_ruhak(kliens, csak: set, ujra: bool, db: int, minoseg: str) -> int:
     return 0
 
 
+# ── 2. LÉPÉS: A KABALÁK ÉRZELMEI ────────────────────────────────────────
+def kabala_prompt(leiras: str) -> str:
+    return (f"The very same character as in the picture, drawn in exactly the same style: "
+            f"same face, same hair, same clothes and colours, same proportions, whole "
+            f"body visible, transparent background. Now the character is {leiras}. The "
+            f"emotion must be clear and lively for a 6-year-old. {TILTAS}")
+
+
+def kabala_erzelmek(kliens, fig: str, csak: set, ujra: bool, db: int, minoseg: str) -> int:
+    if not os.path.exists(alap_ut(fig)):
+        print(f"Előbb alapkép kell: python figura_kepek.py --alap {fig}")
+        return 1
+    teendo = [k for k in EMOCIOK if (not csak or k in csak)
+              and (ujra or not os.path.exists(os.path.join(mappa(fig), k + UTOTAG + ".png")))]
+    if db:
+        teendo = teendo[:db]
+    for i, k in enumerate(teendo, 1):
+        print(f"[{i}/{len(teendo)}] {fig}: {k} …", flush=True)
+        try:
+            with open(alap_ut(fig), "rb") as kep:
+                v = _hivas(kliens.images.edit, model=MODELL, image=kep, size=FIGURAK[fig]["meret"],
+                           prompt=kabala_prompt(EMOCIOK[k]), input_fidelity="high", quality=minoseg,
+                           background="transparent")
+            with open(os.path.join(mappa(fig), k + UTOTAG + ".png"), "wb") as ki:
+                ki.write(_kep_bajt(v))
+        except Exception as e:
+            print(f"   ! nem sikerült: {type(e).__name__}: {str(e)[:200]}")
+            time.sleep(2)
+    attekinto()
+    print("\nKész. Nyisd meg: szokep_uj/figurak/attekinto.html")
+    return 0
+
+
 # ── ÁTNÉZŐ ──────────────────────────────────────────────────────────────
 def attekinto() -> None:
     os.makedirs(UJ_MAPPA, exist_ok=True)
@@ -356,6 +441,12 @@ def attekinto() -> None:
             kepek = "".join(f'<figure><img src="{fig}/{x}"><figcaption>{x[7:-4]}. jelölt</figcaption></figure>' for x in jel)
             resz.append(f"<h2>{fig} – alapkép-jelöltek</h2><p>Válassz: <code>python figura_kepek.py "
                         f"--valaszt {fig}:&lt;szám&gt;</code></p><div class='racs'>{kepek}</div>")
+    for fig in KABALAK:
+        if os.path.exists(alap_ut(fig)):
+            kepek = f'<figure><img src="{fig}/alap.png"><figcaption>alap</figcaption></figure>' + "".join(
+                f'<figure><img src="{fig}/{k}.png"><figcaption>{k}</figcaption></figure>'
+                for k in EMOCIOK if os.path.exists(os.path.join(mappa(fig), k + ".png")))
+            resz.append(f"<h2>{fig} – érzelmek</h2><div class='racs kabala'>{kepek}</div>")
     if os.path.exists(alap_ut("fiu")):
         kepek = '<figure><img src="fiu/alap.png"><figcaption>alap</figcaption></figure>' + "".join(
             f'<figure><img src="fiu/{k}.png"><figcaption>{k}</figcaption></figure>'
@@ -370,7 +461,7 @@ def attekinto() -> None:
 <style>body{font-family:system-ui;background:#FBF5EA;margin:0;padding:20px;color:#0E2A1E}
 .racs{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
 figure{margin:0;background:#fff;border-radius:14px;padding:8px;box-shadow:0 4px 12px rgba(0,0,0,.08)}
-figure img{width:100%;display:block;border-radius:8px}figcaption{text-align:center;font-weight:700;margin-top:6px}
+figure img{width:100%;display:block;border-radius:8px}.kabala figure{background:#DDEFE6}figcaption{text-align:center;font-weight:700;margin-top:6px}
 .maci{display:flex;gap:20px;flex-wrap:wrap}#m{position:relative;width:min(420px,100%);background:#fff;border-radius:14px}
 #m img{width:100%;display:block}#m img+img{position:absolute;left:0;top:0}
 .gombok{display:grid;grid-template-columns:repeat(4,90px);gap:8px;align-content:start}
@@ -392,14 +483,26 @@ def jovahagy(fig: str) -> int:
         return 1
     cel = os.path.join(VEGLEGES, fig)
     os.makedirs(cel, exist_ok=True)
-    kulcsok = ["alap"] + (list(POZOK) if fig == "fiu" else [f"{r}_{sz}" for r in RUHAK for sz in SZINEK])
-    meret = (512, 768) if fig == "fiu" else (640, 640)
+    kabala = fig in KABALAK
+    kulcsok = ["alap"] + (list(EMOCIOK) if kabala else list(POZOK) if fig == "fiu"
+                          else [f"{r}_{sz}" for r in RUHAK for sz in SZINEK])
+    meret = (400, 600) if kabala else (512, 768) if fig == "fiu" else (640, 640)
     megvan = []
     for k in kulcsok:
         forras = os.path.join(mappa(fig), k + ("_teljes" if fig == "maci" and k != "alap" else "") + ".png")
         if not os.path.exists(forras):
             continue
-        kep = Image.open(forras).convert("RGB").resize(meret, Image.LANCZOS)
+        kep = Image.open(forras)
+        if kabala:
+            # átlátszó háttér marad; az alakot középre, alulra igazítjuk
+            kep = kep.convert("RGBA")
+            kep = kep.crop(kep.getchannel("A").getbbox() or (0, 0, kep.width, kep.height))
+            kep.thumbnail((meret[0] - 20, meret[1] - 20), Image.LANCZOS)
+            vaszon = Image.new("RGBA", meret, (0, 0, 0, 0))
+            vaszon.paste(kep, ((meret[0] - kep.width) // 2, meret[1] - 10 - kep.height), kep)
+            kep = vaszon
+        else:
+            kep = kep.convert("RGB").resize(meret, Image.LANCZOS)
         kep.save(os.path.join(cel, k + ".webp"), "WEBP", quality=85, method=6)
         megvan.append(k)
         print(f"  OK {fig}/{k}")
@@ -413,6 +516,8 @@ def lista() -> int:
     print("fiú:  3 alapkép-jelölt + " + str(len(POZOK)) + " póz: " + ", ".join(POZOK))
     print("maci: 3 alapkép-jelölt + " + str(len(RUHAK) * len(SZINEK)) + " ruha (" +
           ", ".join(RUHAK) + " × " + ", ".join(SZINEK) + ")")
+    print("kabala_fiu, kabala_lany, robot: " + str(len(EMOCIOK)) + " érzelem mindegyiknek: " + ", ".join(EMOCIOK)
+          + " (a robotnak + 3 alapkép-jelölt)")
     print("Összesen kb. " + str(6 + len(POZOK) + len(RUHAK) * len(SZINEK)) + " kép. Előbb próbáld --db 1-gyel, "
           "és nézd meg az OpenAI fiókodban, mennyibe került.")
     return 0
@@ -453,6 +558,8 @@ def main() -> int:
     csak = {x.strip() for x in a.csak.split(",") if x.strip()}
     if a.alap:
         return alap_jeloltek(kliens, a.alap, a.minoseg, a.jeloltek)
+    if a.gyart in KABALAK:
+        return kabala_erzelmek(kliens, a.gyart, csak, a.ujra, a.db, a.minoseg)
     if a.gyart == "fiu":
         return fiu_pozok(kliens, csak, a.ujra, a.db, a.minoseg)
     return maci_ruhak(kliens, csak, a.ujra, a.db, a.minoseg)

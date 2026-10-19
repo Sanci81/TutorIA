@@ -333,6 +333,13 @@ def load_language():
     """
     lang = nyelv_utvonal.nyelv_a_cimbol(request.environ)
     if lang not in i18n.LANGUAGES:
+        # 2026-10-19, Sándor képernyőképe: a magyar leckeoldalon a teszt-zár
+        # spanyolul szólt. Ok: a munkamenet nyelve közben átállt (pl. egy
+        # másik fülön a spanyol oldal), és a háttérkérés azt kapta meg. A
+        # lap ezért minden saját kéréshez elküldi, MILYEN NYELVEN jelent
+        # meg – a válasz ugyanazon a nyelven jön, mint maga a lap.
+        lang = request.headers.get("X-TutorIA-Lang")
+    if lang not in i18n.LANGUAGES:
         lang = session.get("lang", i18n.DEFAULT_LANG)
     if lang not in i18n.LANGUAGES:
         lang = i18n.DEFAULT_LANG

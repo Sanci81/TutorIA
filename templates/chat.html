@@ -1525,6 +1525,27 @@
    szervertől, reklámszűrőtől, és nem kell külön .wasm fájlt letöltenie. #}
 <script src="{{ url_for('static', filename='rive.js') }}"></script>
 <script>
+    // A lap nyelve minden saját háttérkéréssel megy, hogy a szerver
+    // üzenetei (pl. a teszt-zár) ugyanazon a nyelven jöjjenek, mint a lap –
+    // akkor is, ha közben egy másik fülön átváltott a munkamenet nyelve.
+    // A hangos kérésekhez (felolvasás, hangfelismerés) nem nyúl.
+    (function () {
+        var lapNyelve = {{ g.lang|tojson }}, eredeti = window.fetch;
+        if (!eredeti) { return; }
+        window.fetch = function (cel, beall) {
+            try {
+                var url = typeof cel === 'string' ? cel : (cel && cel.url) || '';
+                var sajat = url.charAt(0) === '/' || url.indexOf(location.origin) === 0;
+                if (sajat && !/voice|speak|transcrib|hang/i.test(url)) {
+                    beall = beall || {};
+                    var fej = new Headers(beall.headers || (typeof cel !== 'string' && cel.headers) || {});
+                    if (!fej.has('X-TutorIA-Lang')) { fej.set('X-TutorIA-Lang', lapNyelve); }
+                    beall.headers = fej;
+                }
+            } catch (e) {}
+            return eredeti.call(this, cel, beall);
+        };
+    })();
     // ── A teszt ablak és a teljes képernyő ─────────────────────────────
     // A böngésző teljes képernyő módjában CSAK a kinagyított elem tartalma
     // látszik. A teszt ablaka viszont a <section> MELLETT állt, nem benne –
