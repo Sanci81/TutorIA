@@ -5946,7 +5946,7 @@ _ABRA_TRIGGER_WORDS: tuple[str, ...] = (
     "számegyenes", "halmazábra", "tört", "tizedes", "koordináta",
     "áramkör", "izzó", "mágnes", "vektor", "molekula", "vegyjel",
     "vegyület", "kémiai kötés", "kotta", "hangjegy", "vonalrendszer",
-    "idővonal", "időszalag", "térkép", "kontinens", "égtáj",
+    "idővonal", "időszalag", "kontinens", "égtáj",
     "vízkörforgás", "táplálékl", "diagram", "grafikon", "oszlopdiagram",
     "kocka", "gúla", "henger", "gömb", "hasáb", "szimmetri", "tükrözés",
     # spanyol
@@ -5954,7 +5954,7 @@ _ABRA_TRIGGER_WORDS: tuple[str, ...] = (
     "triángulo", "polígono", "circunferencia", "radio", "diámetro",
     "ángulo", "recta numérica", "conjunto", "fracción", "decimal",
     "coordenada", "circuito", "imán", "molécula", "enlace químico",
-    "pentagrama", "línea del tiempo", "mapa", "continente", "diagrama",
+    "pentagrama", "línea del tiempo", "continente", "diagrama",
     "gráfico", "cubo", "cilindro", "esfera", "prisma",
     "pirámide", "simetría",
 )
@@ -9082,9 +9082,9 @@ Si un concepto se entiende mejor con una IMAGEN, dibuja una. Añade la imagen al
 Por ejemplo, si enseñas el perímetro de un rectángulo, añade al final:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Reglas:
-- SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
+- SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, diagrama.
 - NUNCA dibujes manos, dedos, formas de coger algo, posturas, movimientos del cuerpo ni caras: con formas simples no se reconocen y el niño no entiende el dibujo. En esos casos, NO pongas dibujo.
-- DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas, líneas de tiempo o mapas. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
+- DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas o líneas de tiempo. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Trazos gruesos y de color, stroke-width="3". Un color por forma: #1e7a4d, #2f8fd8, #e07a3d o #7b5ea7. Prohibido el negro y #222.
@@ -9356,9 +9356,9 @@ Si un concepto se entiende mejor con una IMAGEN, dibuja una. Añade la imagen al
 Por ejemplo, si enseñas el perímetro de un rectángulo, añade al final:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Reglas:
-- SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, mapa sencillo, diagrama.
+- SOLO dibuja donde realmente ayude: geometría (figura con lados, anotaciones), recta numérica, diagrama de conjuntos, dibujo de física (fuerzas, circuito), estructura química, pentagrama con notas, línea de tiempo para historia, diagrama.
 - NUNCA dibujes manos, dedos, formas de coger algo, posturas, movimientos del cuerpo ni caras: con formas simples no se reconocen y el niño no entiende el dibujo. En esos casos, NO pongas dibujo.
-- DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas, líneas de tiempo o mapas. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
+- DEBES dibujar OBLIGATORIAMENTE si enseñas formas geométricas, unidades de medida, recta numérica, diagramas de conjuntos, circuitos eléctricos, estructuras químicas, pentagramas o líneas de tiempo. En estos casos, siempre incluye una imagen, incluso si se puede explicar con texto.
 - En otros casos, solo dibuja si realmente ayuda, y no en cada respuesta.
 - El área de dibujo debe tener viewBox="0 0 320 220", y DEJA 30 píxeles de margen en cada lado para que las etiquetas no se salgan.
 - Trazos gruesos y de color, stroke-width="3". Un color por forma: #1e7a4d, #2f8fd8, #e07a3d o #7b5ea7. Prohibido el negro y #222.
@@ -9579,9 +9579,9 @@ Ha egy fogalom ÁBRÁVAL érthetőbb, rajzolj egyet. Az ábrát a válaszod vég
 Például, ha a téglalap kerületét tanítod, a válaszod végére tedd:
 <ABRA><svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><rect x="50" y="60" width="200" height="90" fill="#e7f6ee" stroke="#1e7a4d" stroke-width="3"/><text x="150" y="50" font-size="18" text-anchor="middle">a</text><text x="35" y="110" font-size="18" text-anchor="middle">b</text></svg></ABRA>
 Szabályok:
-- CSAK ott rajzolj, ahol tényleg segít: geometria (idom oldalakkal, jelölésekkel), számegyenes, halmazábra, fizikai ábra (erők, áramkör), kémiai szerkezet, kottavonal hangjegyekkel, idővonal történelemhez, egyszerű térképvázlat, diagram.
+- CSAK ott rajzolj, ahol tényleg segít: geometria (idom oldalakkal, jelölésekkel), számegyenes, halmazábra, fizikai ábra (erők, áramkör), kémiai szerkezet, kottavonal hangjegyekkel, idővonal történelemhez, diagram.
 - SOHA ne rajzolj kezet, ujjakat, tartást vagy fogást (pl. ceruzafogás), testtartást, mozdulatot vagy arcot: egyszerű alakzatokkal ezek nem ismerhetők fel, és a gyerek nem érti a rajzot. Ilyenkor NE legyen rajz.
-- KÖTELEZŐ ábrát rajzolnod, ha geometriai alakzatról, mértékegységről, számegyenesről, halmazról, áramkörről, kémiai szerkezetről, kottáról, idővonalról vagy térképről tanítasz. Ilyenkor mindig legyen ábra, akkor is, ha szöveggel is elmondható.
+- KÖTELEZŐ ábrát rajzolnod, ha geometriai alakzatról, mértékegységről, számegyenesről, halmazról, áramkörről, kémiai szerkezetről, kottáról vagy idővonalról tanítasz. Ilyenkor mindig legyen ábra, akkor is, ha szöveggel is elmondható.
 - Egyéb esetben csak akkor rajzolj, ha tényleg segít, és ne minden válaszban.
 - Az ábra rajzterülete legyen viewBox="0 0 320 220", és HAGYJ 30 pixel margót minden oldalon, hogy a feliratok ne lógjanak ki.
 - A vonalak vastagok és színesek, stroke-width="3". Egy alakzat egy szín: #1e7a4d, #2f8fd8, #e07a3d vagy #7b5ea7. Fekete és #222 vonal tilos.
