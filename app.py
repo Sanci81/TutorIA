@@ -3452,6 +3452,10 @@ def _feladat_parse(text: str, *, grade: int | None = None,
     eredmeny = _feladat_parse_belso(text, grade=grade, es_tanterv=es_tanterv,
                                     temakor=temakor)
     eredmeny = _feladat_jelolok_nelkul(eredmeny)
+    # A mintaoldalas elemek ebből tudják, hogy forint vagy euró, magyar
+    # vagy spanyol felirat kell (a szöveges órán nincs nyelvjelző mező).
+    if isinstance(eredmeny, dict) and "es" not in eredmeny:
+        eredmeny["es"] = bool(es_tanterv)
     if eredmeny is None:
         m = _CHAT_MARKER_FELADAT.search(text or "")
         if m:
@@ -3564,6 +3568,11 @@ def _ora_szoveg_es(h: int, p: int) -> str:
     if p < 30:
         return f"{ora(h)} y {p}"
     return f"{ora(kov)} menos {60 - p}"
+
+
+# Számok után a -es/-as/-ös/-os rag (3-as, 5-ös, 6-os szorzótábla).
+_HU_ES_RAG = {1: "-es", 2: "-es", 3: "-as", 4: "-es", 5: "-ös", 6: "-os",
+              7: "-es", 8: "-as", 9: "-es", 10: "-es"}
 
 
 def _feladat_parse_belso(text: str, *, grade: int | None = None,
@@ -3973,6 +3982,272 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         kerdes = ("Encuentra las parejas." if es_tanterv
                   else "Találd meg a párokat!")
         return {"tipus": "memoria", "parok": tiszta, "kerdes": kerdes}
+
+    # ══ MINTAOLDALAKRÓL ÁTHOZOTT ELEMEK – 1. csomag ═════════════════════
+    # A számokat a tanár adja; itt ellenőrizzük, hogy a feladat megoldható
+    # és értelmes legyen. Bármi gyanús → None (és a napló megmutatja).
+    def _rov(s, n=24):
+        s = str(s or "").strip()
+        return s if 0 < len(s) <= n else None
+
+    if tipus == "csoport":
+        csop = [_rov(c, 20) for c in (adat.get("csoportok") or [])]
+        elemek = []
+        for e in adat.get("elemek") or []:
+            try:
+                nev, idx = _rov(e[0], 24), int(e[1])
+            except Exception:
+                return None
+            if not nev or not (0 <= idx < len(csop)):
+                return None
+            elemek.append([nev, idx])
+        if not (2 <= len(csop) <= 4) or None in csop or not (4 <= len(elemek) <= 10):
+            return None
+        if any(not any(e[1] == i for e in elemek) for i in range(len(csop))):
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "Agrupa las tarjetas." if es_tanterv else "Csoportosítsd a kártyákat!")
+        return {"tipus": "csoport", "csoportok": csop, "elemek": elemek, "kerdes": kerdes}
+
+    if tipus == "szotag":
+        szo = str(adat.get("szo") or "").strip().lower()
+        reszek = szo.split("-")
+        if not (2 <= len(reszek) <= 6) or not all(r.isalpha() for r in reszek) or len(szo) > 24:
+            return None
+        kerdes = ("Separa la palabra en sílabas." if es_tanterv
+                  else "Bontsd szótagokra a szót!")
+        return {"tipus": "szotag", "szo": szo, "kerdes": kerdes}
+
+    if tipus == "penz":
+        if es_tanterv:
+            try:
+                cent = round(float(str(adat.get("osszeg")).replace(",", ".")) * 100)
+            except Exception:
+                return None
+            if not (5 <= cent <= 2000 and cent % 5 == 0):
+                return None
+            kerdes = f"Paga exactamente {cent // 100},{cent % 100:02d} €."
+            return {"tipus": "penz", "osszeg": cent, "kerdes": kerdes}
+        try:
+            ft = int(adat.get("osszeg"))
+        except Exception:
+            return None
+        if not (5 <= ft <= 5000 and ft % 5 == 0):
+            return None
+        return {"tipus": "penz", "osszeg": ft, "kerdes": f"Fizess ki pontosan {ft} Ft-ot!"}
+
+    if tipus == "helyiertek":
+        try:
+            sz = int(adat.get("szam"))
+        except Exception:
+            return None
+        if not (1 <= sz <= 999):
+            return None
+        kerdes = (f"Forma el número {sz} con monedas de 100, 10 y 1." if es_tanterv
+                  else f"Rakd ki érmékből ezt a számot: {sz}")
+        return {"tipus": "helyiertek", "szam": sz, "kerdes": kerdes}
+
+    if tipus == "tukor":
+        try:
+            sorok = int(adat.get("sorok") or 6)
+        except Exception:
+            sorok = 6
+        sorok = max(4, min(6, sorok))
+        kerdes = ("Refleja la figura respecto al eje rojo." if es_tanterv
+                  else "Tükrözd a mintát a piros tengelyre!")
+        return {"tipus": "tukor", "sorok": sorok, "kerdes": kerdes}
+
+    if tipus == "diagram":
+        adatok = []
+        for a in adat.get("adatok") or []:
+            try:
+                cim, ert = _rov(a[0], 12), int(a[1])
+            except Exception:
+                return None
+            if not cim or not (0 <= ert <= 20):
+                return None
+            adatok.append([cim, ert])
+        if not (2 <= len(adatok) <= 5):
+            return None
+        cim = _rov(adat.get("cim"), 80)
+        kerdes = (f"Dibuja el gráfico de barras: {cim}." if es_tanterv and cim else
+                  "Dibuja el gráfico de barras con los datos." if es_tanterv else
+                  f"Rajzold meg az oszlopdiagramot: {cim}" if cim else
+                  "Rajzold meg az oszlopdiagramot az adatokból!")
+        return {"tipus": "diagram", "adatok": adatok, "kerdes": kerdes}
+
+    if tipus == "kocka":
+        try:
+            szam = int(adat.get("szam") or 6)
+        except Exception:
+            szam = 6
+        szam = max(1, min(6, szam))
+        kerdes = (f"Si tiras el dado 60 veces, ¿cuántas veces saldrá más o menos el {szam}?" if es_tanterv
+                  else f"Ha 60-szor dobsz a kockával, kb. hányszor lesz {szam}{['', '-es', '-es', '-as', '-es', '-ös', '-os'][szam]}?")
+        return {"tipus": "kocka", "szam": szam, "dobas": 60, "kerdes": kerdes}
+
+    if tipus == "homero":
+        try:
+            fok = int(adat.get("fok"))
+        except Exception:
+            return None
+        if not (-20 <= fok <= 40):
+            return None
+        kerdes = (f"Pon el termómetro en {fok} °C." if es_tanterv
+                  else f"Állítsd a hőmérőt {'mínusz ' + str(-fok) if fok < 0 else fok} °C-ra!")
+        return {"tipus": "homero", "fok": fok, "kerdes": kerdes}
+
+    if tipus == "emelo":
+        try:
+            bs, bt, js = int(adat.get("bal_suly")), int(adat.get("bal_tav")), int(adat.get("jobb_suly"))
+        except Exception:
+            return None
+        if not (1 <= bs <= 9 and 1 <= bt <= 5 and 1 <= js <= 9) or (bs * bt) % js or not (1 <= bs * bt // js <= 5):
+            return None
+        kerdes = (f"¿Dónde pones la pesa de {js} kg para que la palanca quede en equilibrio?" if es_tanterv
+                  else f"Hová tegyed a {js} kg-os súlyt, hogy az emelő egyensúlyban legyen?")
+        return {"tipus": "emelo", "bal_suly": bs, "bal_tav": bt, "jobb_suly": js, "kerdes": kerdes}
+
+    if tipus == "allapot":
+        c = unicodedata.normalize("NFD", str(adat.get("cel") or "").lower())
+        c = "".join(ch for ch in c if unicodedata.category(ch) != "Mn")
+        cel = {"jeg": 0, "hielo": 0, "szilard": 0, "solido": 0, "viz": 1, "agua": 1, "folyekony": 1, "liquido": 1,
+               "goz": 2, "vapor": 2, "legnemu": 2, "gas": 2}.get(c.strip())
+        if cel is None:
+            return None
+        kerdes = (["Congela el agua.", "Que el agua sea líquida.", "Haz hervir el agua."][cel] if es_tanterv
+                  else ["Fagyaszd meg a vizet!", "Legyen folyékony víz!", "Forrald fel a vizet!"][cel])
+        return {"tipus": "allapot", "cel": cel, "kerdes": kerdes}
+
+    if tipus == "hallas":
+        szavak = []
+        for p in adat.get("szavak") or []:
+            try:
+                kep, szo = _rov(p[0], 8), _rov(p[1], 24)
+            except Exception:
+                return None
+            if not kep or not szo:
+                return None
+            szavak.append([kep, szo])
+        if not (4 <= len(szavak) <= 8):
+            return None
+        kerdes = ("Escucha y toca el dibujo correcto." if es_tanterv
+                  else "Hallgasd meg, és koppints a jó képre!")
+        return {"tipus": "hallas", "szavak": szavak, "kerdes": kerdes}
+
+    if tipus == "ritmus":
+        minta = [str(m).strip().lower().replace("-", "") for m in (adat.get("minta") or [])]
+        if not (3 <= len(minta) <= 6) or any(m not in ("ta", "titi") for m in minta) or "titi" not in minta:
+            return None
+        kerdes = ("Escucha el ritmo y escríbelo." if es_tanterv
+                  else "Hallgasd meg a ritmust, és rakd ki!")
+        return {"tipus": "ritmus", "minta": minta, "kerdes": kerdes}
+
+    if tipus == "aramkor":
+        k = str(adat.get("kapcsolas") or "").lower()
+        mod = "parhuzamos" if k.startswith(("par", "pár")) else "soros" if k.startswith(("sor", "seri")) else None
+        if not mod:
+            return None
+        if es_tanterv:
+            kerdes = ("Circuito en serie: ¿cuándo se enciende la bombilla? ¡Enciéndela!" if mod == "soros"
+                      else "Circuito en paralelo: ¿basta un interruptor? ¡Enciende la bombilla con uno solo!")
+        else:
+            kerdes = ("Soros kapcsolás: mikor világít az izzó? Gyújtsd fel!" if mod == "soros"
+                      else "Párhuzamos kapcsolás: elég-e egy kapcsoló? Gyújtsd fel az izzót egy kapcsolóval!")
+        return {"tipus": "aramkor", "kapcsolas": mod, "kerdes": kerdes}
+
+    if tipus == "tortcmp":
+        try:
+            a = [int(adat["a"][0]), int(adat["a"][1])]
+            b = [int(adat["b"][0]), int(adat["b"][1])]
+        except Exception:
+            return None
+        if not all(2 <= t[1] <= 12 and 1 <= t[0] < t[1] for t in (a, b)) or a == b:
+            return None
+        kerdes = (f"¿Cuál es mayor: {a[0]}/{a[1]} o {b[0]}/{b[1]}?" if es_tanterv
+                  else f"Melyik a nagyobb: {a[0]}/{a[1]} vagy {b[0]}/{b[1]}?")
+        return {"tipus": "tortcmp", "a": a, "b": b, "kerdes": kerdes}
+
+    if tipus == "test":
+        t = unicodedata.normalize("NFD", str(adat.get("test") or "").lower())
+        t = "".join(ch for ch in t if unicodedata.category(ch) != "Mn").replace(" ", "")
+        test = ("kocka" if t in ("kocka", "cubo") else "teglatest" if t in ("teglatest", "ortoedro", "prismarectangular")
+                else "gula" if t.startswith(("gula", "piramide")) else "hasab" if t.startswith(("hasab", "prisma")) else None)
+        k = unicodedata.normalize("NFD", str(adat.get("kerdes") or "").lower())
+        k = "".join(ch for ch in k if unicodedata.category(ch) != "Mn")
+        kerd = ("csucs" if k.startswith(("csucs", "vertice")) else "el" if k.startswith(("el", "arista"))
+                else "lap" if k.startswith(("lap", "cara")) else None)
+        if not test or not kerd:
+            return None
+        kerdes = ({"csucs": "¿Cuántos vértices tiene este cuerpo?", "el": "¿Cuántas aristas tiene este cuerpo?",
+                   "lap": "¿Cuántas caras tiene este cuerpo?"}[kerd] if es_tanterv
+                  else {"csucs": "Hány csúcsa van ennek a testnek?", "el": "Hány éle van ennek a testnek?",
+                        "lap": "Hány lapja van ennek a testnek?"}[kerd])
+        return {"tipus": "test", "test": test, "kerdes_tipus": kerd, "kerdes": kerdes}
+
+    if tipus == "mertek":
+        tol, ig = str(adat.get("tol") or "").strip(), str(adat.get("ig") or "").strip()
+        sor = next((s_ for s_ in (["m", "dm", "cm", "mm"], ["l", "dl", "cl", "ml"]) if tol in s_ and ig in s_), None)
+        try:
+            ertek = float(str(adat.get("ertek")).replace(",", "."))
+        except Exception:
+            return None
+        if not sor or sor.index(tol) >= sor.index(ig) or not (0 < ertek <= 999) or round(ertek * 10) != ertek * 10:
+            return None
+        ertek_sz = ("%g" % ertek).replace(".", ",")
+        kerdes = (f"Convierte: {ertek_sz} {tol} = ? {ig}" if es_tanterv
+                  else f"Váltsd át: {ertek_sz} {tol} = ? {ig}")
+        return {"tipus": "mertek", "sor": sor, "tol": tol, "ig": ig, "ertek": ertek, "kerdes": kerdes}
+
+    if tipus == "kerekit":
+        try:
+            sz, hely = int(adat.get("szam")), int(adat.get("hely"))
+        except Exception:
+            return None
+        if hely not in (10, 100, 1000) or not (1 <= sz <= 99999) or sz % hely == 0 or (sz % hely) * 2 == hely:
+            return None
+        kerdes = ((f"Redondea {sz} a las " + {10: "decenas", 100: "centenas", 1000: "unidades de millar"}[hely] + ".") if es_tanterv
+                  else f"Kerekítsd {'tízesre' if hely == 10 else 'százasra' if hely == 100 else 'ezresre'}: {sz}")
+        return {"tipus": "kerekit", "szam": sz, "hely": hely, "kerdes": kerdes}
+
+    if tipus == "villam":
+        try:
+            tablak = sorted({int(t) for t in (adat.get("tablak") or [])})
+        except Exception:
+            return None
+        if not tablak or any(not (2 <= t <= 10) for t in tablak):
+            return None
+        kerdes = ("Relámpago de tablas: " + ", ".join(map(str, tablak)) if es_tanterv
+                  else "Szorzótábla-villám: " + " és ".join(f"{t}{_HU_ES_RAG.get(t, '-es')}" for t in tablak) + " szorzótábla")
+        return {"tipus": "villam", "tablak": tablak, "mp": 60, "kerdes": kerdes}
+
+    if tipus == "lift":
+        try:
+            ind, lep = int(adat.get("indul")), int(adat.get("lepes"))
+        except Exception:
+            return None
+        if not (-5 <= ind <= 8 and -5 <= ind + lep <= 8 and lep != 0):
+            return None
+        if ind == 0:
+            hol = "a földszinten"
+        elif ind > 0:
+            hol = f"{'az' if ind in (1, 5) else 'a'} {ind}. emeleten"
+        else:
+            hol = f"a föld alatti {-ind}. szinten"
+        kerdes = (f"El ascensor está en la planta {ind} y {'sube' if lep > 0 else 'baja'} {abs(lep)} planta{'' if abs(lep) == 1 else 's'}. ¿Adónde llega?" if es_tanterv
+                  else f"A lift {hol} van, és {abs(lep)} szintet megy {'fel' if lep > 0 else 'le'}. Hová érkezik?")
+        return {"tipus": "lift", "indul": ind, "lepes": lep, "kerdes": kerdes}
+
+    if tipus == "recept":
+        try:
+            fo = int(adat.get("fo"))
+        except Exception:
+            return None
+        if fo not in (1, 2, 6, 8, 10, 12, 16, 20):
+            return None
+        kerdes = (f"Receta de tortitas: ¿cuánto azúcar hace falta para {fo} persona{'' if fo == 1 else 's'}?" if es_tanterv
+                  else f"Palacsinta {fo} főre: mennyi cukor kell?")
+        return {"tipus": "recept", "fo": fo, "alap": 4, "kerdes": kerdes}
 
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
@@ -6891,6 +7166,148 @@ _NYELVORA_FORDULAT_ES = """
 # MINDEN tantárgyhoz és MINDKÉT tantervhez hozzáfűzzük. (Először tévedésből
 # csak az idegennyelv-ágba került be, ezért matekon soha nem jelent meg.)
 # ══════════════════════════════════════════════════════════════════════
+# ══ TOVÁBBI INTERAKTÍV FELÜLETEK – TANTÁRGY ÉS ÉVFOLYAM SZERINT ═══════
+# A mintaoldalakról áthozott elemek. NEM mind kerül a promptba: csak azok,
+# amelyek a mostani tantárgyhoz és évfolyamhoz illenek – így a prompt nem
+# hízik feleslegesen, és a tanár nem keveri össze a felületeket.
+# (tipus, címkék, évfolyam-tól, -ig, magyar leírás, spanyol leírás,
+#  magyar választó-sor, spanyol választó-sor)
+_DM_FELULETEK = [
+    ("csoport", {"*"}, 1, 8,
+     'CSOPORTOSÍTÁS – kártyák kosarakba (bármely tárgy). 2–4 csoport, 4–10 kártya; az elem második száma a csoport sorszáma 0-tól:\n'
+     '   <FELADAT>{"tipus":"csoport","kerdes":"Szilárd, folyékony vagy légnemű?","csoportok":["szilárd","folyékony","légnemű"],"elemek":[["jég",0],["tej",1],["gőz",2],["kő",0]]}</FELADAT>',
+     'AGRUPAR – tarjetas en cestas (cualquier asignatura). 2–4 grupos, 4–10 tarjetas; el número es el grupo, empezando en 0:\n'
+     '   <FELADAT>{"tipus":"csoport","kerdes":"¿Sólido, líquido o gas?","csoportok":["sólido","líquido","gas"],"elemek":[["hielo",0],["leche",1],["vapor",2],["piedra",0]]}</FELADAT>',
+     '„Válogasd szét / csoportosítsd!"     → csoport', '«Clasifica / agrupa»               → csoport'),
+    ("szotag", {"magyar"}, 1, 3,
+     'SZÓTAGOLÁS – a gyerek a betűk közé koppint. A szót kötőjellel bontva add meg (2–6 szótag):\n'
+     '   <FELADAT>{"tipus":"szotag","szo":"ce-ru-za"}</FELADAT>',
+     'SÍLABAS – el niño toca entre las letras. Da la palabra separada con guiones (2–6 sílabas):\n'
+     '   <FELADAT>{"tipus":"szotag","szo":"ma-ri-po-sa"}</FELADAT>',
+     'szótagolás, elválasztás               → szotag', 'separar en sílabas                 → szotag'),
+    ("penz", {"matek"}, 1, 4,
+     'PÉNZ – kifizetés forintérmékkel és -bankjegyekkel (5–5000 Ft, öttel osztható):\n   <FELADAT>{"tipus":"penz","osszeg":135}</FELADAT>',
+     'DINERO – pagar con monedas y billetes de euro. "osszeg" en euros (0,05–20 €):\n   <FELADAT>{"tipus":"penz","osszeg":3.45}</FELADAT>',
+     '„Fizess ki 135 Ft-ot!"               → penz', '«Paga 3,45 €»                        → penz'),
+    ("helyiertek", {"matek"}, 1, 3,
+     'HELYIÉRTÉK – a számot 100-as, 10-es és 1-es érmékből rakja ki (1–999):\n   <FELADAT>{"tipus":"helyiertek","szam":347}</FELADAT>',
+     'VALOR POSICIONAL – forma el número con monedas de 100, 10 y 1 (1–999):\n   <FELADAT>{"tipus":"helyiertek","szam":347}</FELADAT>',
+     'százasok, tízesek, egyesek           → helyiertek', 'centenas, decenas, unidades         → helyiertek'),
+    ("tukor", {"matek"}, 2, 5,
+     'TÜKRÖZÉS – négyzetrácson a minta tükörképét kell kiszínezni: <FELADAT>{"tipus":"tukor"}</FELADAT>',
+     'SIMETRÍA – colorear el reflejo de la figura en la cuadrícula: <FELADAT>{"tipus":"tukor"}</FELADAT>',
+     'tükrözés, tengelyes szimmetria       → tukor', 'simetría, reflejo                   → tukor'),
+    ("diagram", {"matek", "kornyezet"}, 2, 6,
+     'OSZLOPDIAGRAM – a gyerek az adatokból megrajzolja a diagramot (2–5 oszlop, értékek 0–20, címke emoji vagy rövid szó):\n'
+     '   <FELADAT>{"tipus":"diagram","cim":"Kedvenc gyümölcs az osztályban","adatok":[["🍎",5],["🍐",3],["🍌",7]]}</FELADAT>',
+     'GRÁFICO DE BARRAS – el niño dibuja el gráfico con los datos (2–5 barras, valores 0–20):\n'
+     '   <FELADAT>{"tipus":"diagram","cim":"Fruta favorita de la clase","adatok":[["🍎",5],["🍐",3],["🍌",7]]}</FELADAT>',
+     'adatok, diagram, táblázat            → diagram', 'datos, gráfico de barras            → diagram'),
+    ("kocka", {"matek"}, 4, 8,
+     'VALÓSZÍNŰSÉG DOBÓKOCKÁVAL – tippel, aztán 60-at dob: <FELADAT>{"tipus":"kocka","szam":6}</FELADAT>',
+     'PROBABILIDAD CON DADO – adivina y luego tira 60 veces: <FELADAT>{"tipus":"kocka","szam":6}</FELADAT>',
+     'esély, valószínűség                  → kocka', 'probabilidad, azar                  → kocka'),
+    ("homero", {"matek", "kornyezet"}, 2, 6,
+     'HŐMÉRŐ – a gyerek beállítja a hőmérsékletet (−20 és 40 °C között):\n   <FELADAT>{"tipus":"homero","fok":-7}</FELADAT>',
+     'TERMÓMETRO – el niño marca la temperatura (entre −20 y 40 °C):\n   <FELADAT>{"tipus":"homero","fok":-7}</FELADAT>',
+     'hőmérséklet, fagypont                → homero', 'temperatura, bajo cero              → homero'),
+    ("emelo", {"kornyezet"}, 5, 8,
+     'EMELŐ – egyensúly: bal oldalon "bal_suly" kg "bal_tav" távolságra; hová kerüljön a "jobb_suly" kg? (bal_suly×bal_tav osztható legyen jobb_suly-val, az eredmény 1–5):\n'
+     '   <FELADAT>{"tipus":"emelo","bal_suly":4,"bal_tav":3,"jobb_suly":6}</FELADAT>',
+     'PALANCA – equilibrio: a la izquierda "bal_suly" kg a distancia "bal_tav"; ¿dónde va la pesa de "jobb_suly" kg? (el resultado 1–5):\n'
+     '   <FELADAT>{"tipus":"emelo","bal_suly":4,"bal_tav":3,"jobb_suly":6}</FELADAT>',
+     'emelő, forgatónyomaték               → emelo', 'palanca, equilibrio                 → emelo'),
+    ("allapot", {"kornyezet"}, 3, 7,
+     'HALMAZÁLLAPOT – csúszkával melegíti/hűti a vizet; "cel": jég, víz vagy gőz:\n   <FELADAT>{"tipus":"allapot","cel":"gőz"}</FELADAT>',
+     'ESTADOS DEL AGUA – calienta o enfría con un deslizador; "cel": hielo, agua o vapor:\n   <FELADAT>{"tipus":"allapot","cel":"vapor"}</FELADAT>',
+     'fagyás, olvadás, forrás              → allapot', 'congelar, fundir, hervir            → allapot'),
+    ("hallas", {"nyelv"}, 1, 6,
+     'HALLÁS UTÁNI ÉRTÉS – a felolvasó kimondja a szót, a gyerek a jó képre koppint (4–8 pár: emoji és idegen szó):\n'
+     '   <FELADAT>{"tipus":"hallas","szavak":[["🍎","apple"],["🐶","dog"],["🐱","cat"],["🏠","house"]]}</FELADAT>',
+     'COMPRENSIÓN AUDITIVA – se oye la palabra y el niño toca el dibujo (4–8 parejas: emoji y palabra extranjera):\n'
+     '   <FELADAT>{"tipus":"hallas","szavak":[["🍎","apple"],["🐶","dog"],["🐱","cat"],["🏠","house"]]}</FELADAT>',
+     'hallás utáni szófelismerés           → hallas', 'reconocer palabras al oírlas        → hallas'),
+    ("ritmus", {"enek"}, 1, 4,
+     'RITMUS – meghallgatja, és kirakja ta és ti-ti elemekből (3–6 elem, legyen benne ti-ti):\n   <FELADAT>{"tipus":"ritmus","minta":["ta","titi","ta","ta"]}</FELADAT>',
+     'RITMO – lo escucha y lo forma con ta y ti-ti (3–6 elementos, con algún ti-ti):\n   <FELADAT>{"tipus":"ritmus","minta":["ta","titi","ta","ta"]}</FELADAT>',
+     'ritmus, ta és ti-ti                  → ritmus', 'ritmo, negra y corcheas              → ritmus'),
+    ("aramkor", {"kornyezet"}, 4, 8,
+     'ÁRAMKÖR KAPCSOLÓKKAL – "kapcsolas": soros vagy parhuzamos:\n   <FELADAT>{"tipus":"aramkor","kapcsolas":"soros"}</FELADAT>',
+     'CIRCUITO CON INTERRUPTORES – "kapcsolas": soros (serie) o parhuzamos (paralelo):\n   <FELADAT>{"tipus":"aramkor","kapcsolas":"parhuzamos"}</FELADAT>',
+     'áramkör, soros, párhuzamos           → aramkor', 'circuito en serie o paralelo        → aramkor'),
+    ("tortcmp", {"matek"}, 3, 6,
+     'TÖRTEK ÖSSZEHASONLÍTÁSA – <, = vagy >, utána sávok mutatják (nevező 2–12):\n   <FELADAT>{"tipus":"tortcmp","a":[3,4],"b":[2,3]}</FELADAT>',
+     'COMPARAR FRACCIONES – <, = o >, y después lo muestran unas barras (denominador 2–12):\n   <FELADAT>{"tipus":"tortcmp","a":[3,4],"b":[2,3]}</FELADAT>',
+     'melyik tört a nagyobb                → tortcmp', '¿qué fracción es mayor?             → tortcmp'),
+    ("test", {"matek"}, 3, 6,
+     'TESTEK FORGATHATÓAN – "test": kocka, teglatest, gula vagy hasab; "kerdes": csucs, el vagy lap:\n   <FELADAT>{"tipus":"test","test":"gula","kerdes":"el"}</FELADAT>',
+     'CUERPOS QUE SE GIRAN – "test": kocka (cubo), teglatest (ortoedro), gula (pirámide) o hasab (prisma); "kerdes": csucs (vértices), el (aristas) o lap (caras):\n'
+     '   <FELADAT>{"tipus":"test","test":"gula","kerdes":"el"}</FELADAT>',
+     'csúcs, él, lap számolása             → test', 'vértices, aristas, caras            → test'),
+    ("mertek", {"matek"}, 3, 6,
+     'MÉRTÉKEGYSÉG-LÉTRA – váltás nagyobbról kisebbre (m, dm, cm, mm vagy l, dl, cl, ml):\n   <FELADAT>{"tipus":"mertek","ertek":3.5,"tol":"m","ig":"cm"}</FELADAT>',
+     'ESCALERA DE UNIDADES – de mayor a menor (m, dm, cm, mm o l, dl, cl, ml):\n   <FELADAT>{"tipus":"mertek","ertek":3.5,"tol":"m","ig":"cm"}</FELADAT>',
+     'mértékegység-váltás                  → mertek', 'conversión de unidades              → mertek'),
+    ("kerekit", {"matek"}, 3, 5,
+     'KEREKÍTÉS – "hely": 10, 100 vagy 1000; a szám ne legyen pont a fele:\n   <FELADAT>{"tipus":"kerekit","szam":347,"hely":10}</FELADAT>',
+     'REDONDEO – "hely": 10, 100 o 1000; que el número no esté justo en la mitad:\n   <FELADAT>{"tipus":"kerekit","szam":347,"hely":10}</FELADAT>',
+     'kerekítés                            → kerekit', 'redondear                           → kerekit'),
+    ("villam", {"matek"}, 2, 4,
+     'SZORZÓTÁBLA-VILLÁM – 60 másodperces gyakorlás a megadott szorzótáblákból:\n   <FELADAT>{"tipus":"villam","tablak":[3,4]}</FELADAT>',
+     'RELÁMPAGO DE TABLAS – 60 segundos con las tablas indicadas:\n   <FELADAT>{"tipus":"villam","tablak":[3,4]}</FELADAT>',
+     'szorzótábla gyakorlása, játékosan    → villam', 'practicar las tablas jugando        → villam'),
+    ("lift", {"matek"}, 3, 6,
+     'NEGATÍV SZÁMOK LIFTTEL – a lift az "indul" szintről "lepes" szintet megy (−5 és 8 között marad):\n   <FELADAT>{"tipus":"lift","indul":2,"lepes":-5}</FELADAT>',
+     'NÚMEROS NEGATIVOS CON ASCENSOR – sale de la planta "indul" y se mueve "lepes" plantas (entre −5 y 8):\n   <FELADAT>{"tipus":"lift","indul":2,"lepes":-5}</FELADAT>',
+     'negatív számok, 0 alatt              → lift', 'números negativos                   → lift'),
+    ("recept", {"matek"}, 4, 7,
+     'ARÁNYOSSÁG RECEPTTEL – 4 főre szóló palacsintarecept, "fo": 1, 2, 6, 8, 10, 12, 16 vagy 20 főre kell átszámolni:\n   <FELADAT>{"tipus":"recept","fo":6}</FELADAT>',
+     'PROPORCIONALIDAD CON RECETA – receta para 4; "fo": 1, 2, 6, 8, 10, 12, 16 o 20 personas:\n   <FELADAT>{"tipus":"recept","fo":6}</FELADAT>',
+     'egyenes arányosság                   → recept', 'proporcionalidad                    → recept'),
+]
+
+
+def _dm_cimkek(subject_label: str, idegen: bool) -> set:
+    s = unicodedata.normalize("NFD", (subject_label or "").lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    c = {"*"}
+    if "matemat" in s:
+        c.add("matek")
+    if any(k in s for k in ("kornyezet", "termeszet", "conocimiento", "ciencia", "biolog", "fizika", "fisica",
+                            "kemia", "quimica", "foldrajz", "geograf", "technika", "tecnolog")):
+        c.add("kornyezet")
+    if any(k in s for k in ("magyar nyelv", "irodalom", "lengua")):
+        c.add("magyar")
+    if any(k in s for k in ("enek", "zene", "music", "artistic")):
+        c.add("enek")
+    if idegen:
+        c.add("nyelv")
+    return c
+
+
+def _dm_feladat_blokk(subject_label: str, grade: int, *, es: bool, idegen: bool = False) -> str:
+    cimkek = _dm_cimkek(subject_label, idegen)
+    talalt = [f for f in _DM_FELULETEK
+              if (f[1] & cimkek) and f[2] - 1 <= (grade or 0) <= f[3] + 1]
+    if not talalt:
+        return ""
+    if es:
+        sorok = ["\n=== MÁS SUPERFICIES INTERACTIVAS PARA ESTA ASIGNATURA ===",
+                 "Valen las mismas reglas: enseña ANTES, una sola tarea por respuesta, al final."]
+        for i, f in enumerate(talalt, start=26):
+            sorok.append(f"{i}) {f[5]}")
+        sorok.append("Cómo elegir (además de la lista anterior):")
+        sorok += ["  " + f[7] for f in talalt]
+    else:
+        sorok = ["\n=== TOVÁBBI INTERAKTÍV FELÜLETEK EHHEZ A TANTÁRGYHOZ ===",
+                 "Ugyanazok a szabályok: ELŐTTE taníts, egy válaszban egy feladat, a válasz végén."]
+        for i, f in enumerate(talalt, start=26):
+            sorok.append(f"{i}) {f[4]}")
+        sorok.append("Így válassz (a fenti lista mellett):")
+        sorok += ["  " + f[6] for f in talalt]
+    return "\n".join(sorok) + "\n"
+
+
 _FELADAT_BLOKK_HU = """
 
 ✏️ BEÍRÓS ÉS KATTINTÓS FELADAT — EZ TESZI GYAKORLÁSSÁ AZ ÓRÁT:
@@ -6996,7 +7413,7 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    A kérdést („Mutasd meg az órán: fél négy!") a program írja ki – te ne
    írd le előtte számokkal az időpontot, mert az elárulná a megoldást.
 
-⚠️ A 11–25. FELÜLETEK ELŐTT MINDIG TANÍTS: ugyanabban a válaszban, a
+⚠️ A 11–25. (és a 26-tól következő) FELÜLETEK ELŐTT MINDIG TANÍTS: ugyanabban a válaszban, a
 jelölő ELŐTT magyarázd el röviden, egy példán, mi a lényeg (mit jelent a
 sor és az oszlop, hogyan kell a szögmérőt leolvasni, mi az x és az y, mi a
 terület és a kerület, mit jelent a százalék, hol van kelet). Az első ilyen feladat legyen könnyű. Feladat
@@ -7223,7 +7640,7 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    media»); no escribas antes la hora con números, porque daría la
    solución.
 
-⚠️ ANTES DE LAS SUPERFICIES 11–25 ENSEÑA SIEMPRE: en la misma respuesta,
+⚠️ ANTES DE LAS SUPERFICIES 11–25 (y las que siguen desde la 26) ENSEÑA SIEMPRE: en la misma respuesta,
 antes de la marca, explica brevemente con un ejemplo la idea (qué son las
 filas y las columnas, cómo se lee el transportador, qué son la x y la y,
 qué es el área y el perímetro, qué es un porcentaje, dónde está el
@@ -7786,6 +8203,7 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
         prompt += _NYELVORA_FORDULAT_ES
         prompt += _spiral_block
         prompt += _FELADAT_BLOKK_ES
+        prompt += _dm_feladat_blokk(subject_label, grade, es=True, idegen=is_foreign_language)
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "
               f"len={len(prompt)}", flush=True)
@@ -7987,6 +8405,7 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
         prompt += _KERDES_HIGIENIA_ES
         prompt += _spiral_block
         prompt += _FELADAT_BLOKK_ES
+        prompt += _dm_feladat_blokk(subject_label, grade, es=True, idegen=is_foreign_language)
 
         print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
               f"has_grade_block={'NIVEL ADECUADO' in prompt} "
@@ -8505,6 +8924,7 @@ nem csak az idegen szavakat. Példák: 'Iszak' vagy 'Visszat' a 'viszlát' helye
     prompt += _KERDES_HIGIENIA_HU
     prompt += _spiral_block
     prompt += _FELADAT_BLOKK_HU
+    prompt += _dm_feladat_blokk(subject_label, grade, es=False, idegen=is_foreign_language)
 
     print(f"[PROMPT-DEBUG] grade={grade!r} foreign={is_foreign_language!r} lang={lang!r} "
           f"has_grade_block={'ÉVFOLYAMHOZ ILLŐ SZINT' in prompt or 'NIVEL ADECUADO' in prompt} "

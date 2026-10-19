@@ -427,6 +427,9 @@ def _feladat_leiras(f: dict) -> str:
     if tipus == "epito":
         return ("mondat kártyákból (a gyereknél MEGKEVERVE): "
                 + " / ".join(f.get("elemek") or []))
+    if tipus in ("csoport", "szotag", "penz", "helyiertek", "tukor", "diagram", "kocka", "homero", "emelo", "allapot",
+                 "hallas", "ritmus", "aramkor", "tortcmp", "test", "mertek", "kerekit", "villam", "lift", "recept"):
+        return f"interaktív feladat ({tipus}): {f.get('kerdes', '')}"
     if tipus == "osztas":
         return f"írásbeli osztás balról jobbra: {f.get('a')} : {f.get('b')}, a gyerek a hányadost írja be"
     if tipus in ("szam", "szamolo"):
