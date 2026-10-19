@@ -3522,8 +3522,7 @@ _FELADAT_NYERS_MEZOK = frozenset({"svg"})
 
 def _jelolo_nelkul(szoveg: str) -> str:
     """Egyetlen szövegből kiszedi a tanári jelölőket, a TARTALMAT meghagyva."""
-    t = _CHAT_MARKER_FL.sub(lambda m: m.group(2), szoveg or "")
-    t = _FL_MARADEK.sub("", t)
+    t = _fl_lathatatlan(szoveg or "")
     t = _CHAT_MARKER_VOCAB.sub(lambda m: m.group(2).strip(), t)
     t = _CHAT_MARKER_VOCAB_EGY.sub(lambda m: m.group(1).strip(), t)
     t = _CHAT_MARKER_TOPIC.sub("", t)
@@ -3735,8 +3734,7 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
     # minden szövegből kivesszük, bármilyen mélyen is van.
     def _jelolo_nelkul(ertek):
         if isinstance(ertek, str):
-            tiszta = _CHAT_MARKER_FL.sub(lambda mm: mm.group(2), ertek)
-            tiszta = _FL_MARADEK.sub("", tiszta)
+            tiszta = _fl_lathatatlan(ertek)
             return tiszta.strip()
         if isinstance(ertek, list):
             return [_jelolo_nelkul(e) for e in ertek]
@@ -5413,6 +5411,20 @@ _CHAT_MARKER_FL = re.compile(
 # nélkül, elgépelve, félbehagyva. A gyereknek SEMMILYEN tag nem való a
 # képernyőre, ezért a maradékot is leszedjük. A SZÖVEG marad, a jelölés megy.
 _FL_MARADEK = re.compile(r"<\s*/?\s*FL(?::[a-z]{2})?\s*>", re.IGNORECASE)
+# Csonka jelölő, záró > nélkül. Éles példa: „<FL:La tienda de la ciudad.”
+# A szabályos minta ezt nem ismeri fel, ezért az < és az FL a gyereknél maradt.
+# A nyelvkódot csak kisbetűsen vesszük le, hogy a „La” névelő megmaradjon.
+_FL_CSONKA = re.compile(
+    r"<\s*/?\s*FL:(?:en|de|es|fr|it|la|hu)?(?!\s*>)")
+
+
+def _fl_lathatatlan(szoveg: str) -> str:
+    """Az idegen szó jelölése tűnik el, a szó marad. Hibás alaknál is."""
+    t = _CHAT_MARKER_FL.sub(lambda m: m.group(2), szoveg or "")
+    t = _FL_MARADEK.sub("", t)
+    t = _FL_CSONKA.sub("", t)
+    t = re.sub(r"[ \t]{2,}", " ", t)
+    return t
 
 _CHAT_MARKER_SVG = re.compile(
     r"<\s*ABRA\s*>\s*(.*?)\s*<\s*/\s*ABRA\s*>",
@@ -5645,8 +5657,7 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     # elé tett ilyeneket: <|im_end|>, <|fim_suffix|>. Soha nem tartalom.
     clean = _MODELL_TOKEN.sub("", text)
     # Az <FL:xx>szó</FL> jelölőből csak a jelölés tűnik el, a SZÓ marad.
-    clean = _CHAT_MARKER_FL.sub(lambda m: m.group(2), clean)
-    clean = _FL_MARADEK.sub("", clean)      # a hibás párok maradéka
+    clean = _fl_lathatatlan(clean)
     clean = _CHAT_MARKER_TOPIC.sub("", clean)
     clean = _CHAT_MARKER_LEVEL.sub("", clean)
     # A KÉRDÉS UTÁN ÁLLÓ SZÓJEGYZÉK-JELÖLŐK A VÁLASZLEHETŐSÉGEK.
@@ -11418,8 +11429,8 @@ def child_chat(child_id: int):
         # régi beszélgetések is helyesen látszanak.
         raw = msg.get("content") or ""
         up = raw.upper()
-        if "VOCAB" in up or "TOPIC_COMPLETE" in up or "<LEVEL" in up or "<FL:" in up:
-            cleaned = _CHAT_MARKER_FL.sub(lambda m: m.group(2), raw)
+        if "VOCAB" in up or "TOPIC_COMPLETE" in up or "<LEVEL" in up or "<FL" in up:
+            cleaned = _fl_lathatatlan(raw)
             cleaned = _CHAT_MARKER_TOPIC.sub("", cleaned)
             cleaned = _CHAT_MARKER_LEVEL.sub("", cleaned)
             cleaned = _CHAT_MARKER_VOCAB.sub("", cleaned).strip()

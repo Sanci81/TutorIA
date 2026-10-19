@@ -161,6 +161,13 @@ JELOLO_ESETEK: list[tuple[str, str, str]] = [
     ("melyik objektív és melyik <FL:la>szubjektív>:",
      "melyik objektív és melyik szubjektív>:",
      "félbehagyott, záró pár nélküli jelölő – a szöveg marad, a tag megy"),
+    ("„<FL:La tienda de la ciudad.” (A város boltja.)",
+     "„La tienda de la ciudad.” (A város boltja.)",
+     "csonka <FL: záró jel nélkül. A gyerek az < jelet és az FL-t is látta. "
+     "A La névelő megmarad."),
+    ("¿Dónde está <FL:es la calle?",
+     "¿Dónde está la calle?",
+     "spanyol órán is lejön a csonka jelölő, a szó marad"),
     ("Két új szó jön: <VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB>",
      "Két új szó jön: manzana, pera",
      "ha a szavak MÉG NEM hangzottak el, látszaniuk kell — de vesszővel"),
