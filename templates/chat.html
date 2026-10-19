@@ -4463,6 +4463,214 @@
         });
     };
 
+    /* Közös: nevek húzása rögzített helyekre, egy hely – egy kártya. */
+    function dmNevHelyre(D, kt, helyek, nevek, uresSzo) {
+        D.huzosLista(kt, function () { return helyek; }, D.kever(nevek.map(function (n, i) { return D.szovegKartya(n, String(i)); })));
+        return function () {
+            var ures = helyek.filter(function (h) { return !h.querySelector('.kartya'); }).length;
+            if (ures) { return {hianyzik: uresSzo(ures)}; }
+            return helyek.filter(function (h) { var c = h.querySelector('.kartya'), ok = c.dataset.nev === h.dataset.i;
+                c.classList.toggle('rossz-k', !ok); if (!ok) { D.animal(c, 'rezeg'); } return !ok; });
+        };
+    }
+
+    /* ── G1. TÖRTÉNELMI KORSZAKOK ────────────────────────────────────── */
+    DM.korszak = function (f, D) {
+        var KEP = ['<path d="M10 40 q30 -36 60 0Z" fill="#6B4E37"/><path d="M28 30 l6 -10 l6 10 M44 30 l8 -12 l4 12" stroke="#F5C33B" stroke-width="3" fill="none"/>',
+            '<path d="M8 40 h64 v-4 h-64Z M12 36 v-22 M24 36 v-22 M36 36 v-22 M48 36 v-22 M60 36 v-22 M8 14 h64 l-32 -10Z" stroke="#fff" stroke-width="3" fill="#fff"/>',
+            '<path d="M14 40 v-24 h8 v6 h8 v-6 h8 v6 h8 v-6 h8 v24Z" fill="#fff"/><path d="M34 40 v-10 q6 -6 12 0 v10" fill="#5F6F86"/>',
+            '<path d="M20 38 q20 -30 40 0" fill="none" stroke="#fff" stroke-width="3"/><path d="M40 8 v26 M40 8 l14 10 l-14 4" stroke="#fff" stroke-width="3" fill="#fff"/><path d="M14 38 h52 l-8 6 h-36Z" fill="#fff"/>',
+            '<rect x="28" y="6" width="24" height="38" rx="5" fill="#fff"/><rect x="31" y="11" width="18" height="26" fill="#3DA35D"/>'];
+        var SZIN = ['#8C6A4F', '#C9963A', '#5F6F86', '#2F7FC8', '#3DA35D'];
+        var NEV = D.T(['őskor', 'ókor', 'középkor', 'újkor', 'jelenkor'], ['Prehistoria', 'Edad Antigua', 'Edad Media', 'Edad Moderna', 'Edad Contemporánea']);
+        var EV = D.T(['kb. Kr. e. 3000-ig', 'Kr. e. 3000 – 476', '476 – 1492', '1492 – 1914', '1914-től'], ['hasta c. 3000 a. C.', '3000 a. C. – 476', '476 – 1492', '1492 – 1789', 'desde 1789']);
+        D.html('<div class="allas">' + D.T('Húzd vagy koppintsd a korszakok nevét a jó helyre az időszalagon!', 'Arrastra o toca los nombres y ponlos en su sitio en la franja del tiempo.') +
+            '</div><div class="kartyak" data-id="kt"></div><div class="korszakok" data-id="sav"></div>');
+        var sav = D.$('sav'), helyek = NEV.map(function (n, i) { var h = document.createElement('div'); h.className = 'hely'; h.dataset.i = i; h.style.background = SZIN[i];
+            h.innerHTML = '<svg viewBox="0 0 80 48">' + KEP[i] + '</svg><span class="ev">' + EV[i] + '</span>'; sav.appendChild(h); return h; });
+        var ell = dmNevHelyre(D, D.$('kt'), helyek, NEV, function (u) { return D.T('Még ' + u + ' korszak neve hiányzik!', u === 1 ? 'Todavía falta 1 nombre.' : 'Todavía faltan ' + u + ' nombres.'); });
+        D.ellenoriz(function () { var r = ell(); if (r.hianyzik) { return r; }
+            var valasz = D.T('Így raktam sorba a korszakokat: ', 'Así he ordenado las edades: ') + helyek.map(function (h) { return h.querySelector('.kartya').textContent; }).join(' → ') + '.';
+            if (!r.length) { return {jo: true, valasz: valasz, uzenet: D.T('Időrendben: őskor → ókor → középkor → újkor → jelenkor. A határokat nagy események jelzik: az írás megjelenése, Róma bukása (476), Amerika felfedezése (1492), az első világháború (1914).',
+                'En orden: Prehistoria → Edad Antigua → Edad Media → Edad Moderna → Edad Contemporánea. Los límites los marcan grandes acontecimientos: la aparición de la escritura, la caída de Roma (476), la llegada de Colón a América (1492) y la Revolución francesa (1789).')}; }
+            return {jo: false, valasz: valasz, uzenet: D.T(r.length + ' név rossz helyen – megjelöltem őket. Nézd az évszámokat és a képeket: barlang, oszlopos templom, vár, vitorlás hajó, telefon.',
+                (r.length === 1 ? 'Hay 1 nombre mal colocado; lo he marcado.' : 'Hay ' + r.length + ' nombres mal colocados; los he marcado.') + ' Mira las fechas y los dibujos: cueva, templo con columnas, castillo, barco de vela, teléfono.')};
+        });
+    };
+
+    /* ── G2. KÖZLEKEDÉSI TÁBLÁK ──────────────────────────────────────── */
+    DM.kresz = function (f, D) {
+        var RAJZ = ['<polygon points="22,2 50,2 70,22 70,50 50,70 22,70 2,50 2,22" fill="#D7282F" stroke="#fff" stroke-width="3"/><text x="36" y="42" text-anchor="middle" font-size="17" font-weight="900" fill="#fff" font-family="Nunito,sans-serif">STOP</text>',
+            '<polygon points="4,6 68,6 36,66" fill="#fff" stroke="#D7282F" stroke-width="7" stroke-linejoin="round"/>',
+            '<circle cx="36" cy="36" r="33" fill="#D7282F"/><rect x="12" y="29" width="48" height="14" rx="2" fill="#fff"/>',
+            '<rect x="3" y="3" width="66" height="66" rx="8" fill="#1E63B8"/><polygon points="36,9 64,62 8,62" fill="#fff"/><circle cx="38" cy="28" r="4" fill="#111"/><path d="M37 33 l-3 12 l6 6 l-2 8 M35 40 l-6 4 M37 38 l6 4 M34 45 l-6 12" stroke="#111" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M18 60 h36" stroke="#111" stroke-width="2" stroke-dasharray="4 3"/>',
+            '<circle cx="36" cy="36" r="33" fill="#1E63B8"/><circle cx="22" cy="44" r="9" fill="none" stroke="#fff" stroke-width="3"/><circle cx="50" cy="44" r="9" fill="none" stroke="#fff" stroke-width="3"/><path d="M22 44 l9 -14 h13 l6 14 M31 30 l6 14 h-15 M40 26 h6" stroke="#fff" stroke-width="3" fill="none" stroke-linejoin="round"/>'];
+        var NEV = D.T(['Állj! Elsőbbségadás kötelező', 'Elsőbbségadás kötelező', 'Behajtani tilos', 'Gyalogos-átkelőhely', 'Kerékpárút'],
+            ['STOP: hay que pararse', 'Ceda el paso', 'Entrada prohibida', 'Paso de peatones', 'Vía para bicicletas']);
+        D.html('<div class="allas">' + D.T('Húzd vagy koppintsd a jelentést a tábla alá!', 'Arrastra o toca cada significado y ponlo debajo de su señal.') +
+            '</div><div class="kartyak" data-id="kt"></div><div class="tablak" data-id="tb"></div>');
+        var tb = D.$('tb'), helyek = [];
+        D.kever([0, 1, 2, 3, 4]).forEach(function (i) { var d = document.createElement('div'); d.className = 'tabla'; d.innerHTML = '<svg viewBox="0 0 72 72">' + RAJZ[i] + '</svg>';
+            var h = document.createElement('div'); h.className = 'hely'; h.dataset.i = i; d.appendChild(h); tb.appendChild(d); helyek.push(h); });
+        var ell = dmNevHelyre(D, D.$('kt'), helyek, NEV, function (u) { return D.T('Még ' + u + ' tábla alatt üres a hely!', u === 1 ? 'Todavía hay 1 señal sin significado.' : 'Todavía hay ' + u + ' señales sin significado.'); });
+        D.ellenoriz(function () { var r = ell(); if (r.hianyzik) { return r; }
+            if (!r.length) { return {jo: true, valasz: D.T('Mind az öt tábla alá a jó jelentést tettem.', 'He puesto el significado correcto debajo de las cinco señales.'),
+                uzenet: D.T('Szuper! A piros kör tilt, a kék kör utasít (pl. kerékpárút), a kék négyzet tájékoztat, a STOP-nál pedig mindig meg kell állni.',
+                    '¡Genial! El círculo rojo prohíbe, el círculo azul obliga (por ejemplo, vía para bicicletas), el cuadrado azul informa y en el STOP siempre hay que pararse.')}; }
+            var nevek = r.map(function (h) { return h.querySelector('.kartya').textContent; }).join('; ');
+            return {jo: false, valasz: D.T('Ezeket rossz tábla alá tettem: ' + nevek + '.', 'He puesto mal estos significados: ' + nevek + '.'),
+                uzenet: D.T(r.length + ' jelentés rossz helyen – megjelöltem őket. Tipp: a piros tiltást vagy veszélyt jelez, a kék segít vagy utasít.',
+                    (r.length === 1 ? 'Hay 1 significado mal colocado; lo he marcado.' : 'Hay ' + r.length + ' significados mal colocados; los he marcado.') + ' Pista: el rojo prohíbe o avisa de un peligro; el azul ayuda u obliga.')};
+        });
+    };
+
+    /* ── G3. KETTES SZÁMRENDSZER – pöttyös kártyák ───────────────────── */
+    DM.binaris = function (f, D) {
+        var E = [16, 8, 4, 2, 1], fel = [false, false, false, false, false], cel = f.szam;
+        D.html('<div class="allas">' + D.T('Fordítsd meg a kártyákat (koppints rájuk)! A felfordított kártyák pöttyeit adjuk össze.', 'Da la vuelta a las tarjetas (tócalas). Se suman los puntos de las que están boca arriba.') +
+            '</div><div class="bkartyak" data-id="bk"></div><div class="kijelzo" data-id="ki"></div>');
+        function ossz() { return E.reduce(function (s, e, i) { return s + (fel[i] ? e : 0); }, 0); }
+        function bitek() { return fel.map(function (x) { return x ? 1 : 0; }).join(''); }
+        function rajz() { var d = D.$('bk'); d.innerHTML = '';
+            E.forEach(function (e, i) { var k = document.createElement('div'); k.className = 'bk' + (fel[i] ? '' : ' le');
+                k.innerHTML = '<div class="elo"><b>' + e + '</b><span class="pottyok">' + new Array(e + 1).join('<i></i>') + '</span></div><div class="hat"></div>';
+                k.onclick = function () { if (D.kesz()) { return; } fel[i] = !fel[i]; rajz(); D.torol(); }; d.appendChild(k); });
+            D.$('ki').innerHTML = D.T('kettes számrendszerben: ', 'en binario: ') + "<b style='letter-spacing:.2em'>" + bitek() + '</b> &nbsp;=&nbsp; ' + ossz(); }
+        rajz();
+        D.ellenoriz(function () { var s = ossz();
+            if (!s) { return {hianyzik: D.T('Koppints a kártyákra, és fordítsd fel, amelyik kell!', 'Toca las tarjetas y da la vuelta a las que hagan falta.')}; }
+            var valasz = D.T('Szerintem ' + cel + ' kettes számrendszerben: ' + bitek() + '.', 'Creo que ' + cel + ' en binario es ' + bitek() + '.');
+            if (s === cel) { return {jo: true, valasz: valasz, uzenet: cel + ' = ' + E.filter(function (e, i) { return fel[i]; }).join(' + ') + '. ' +
+                D.T('Kettes számrendszerben: ' + bitek() + ' – a számítógép is így tárolja a számokat!', 'En binario: ' + bitek() + '. ¡Así guarda los números el ordenador!')}; }
+            D.animal(D.$('bk'), 'rezeg');
+            return {jo: false, valasz: valasz, uzenet: D.T('Most ' + s + ', de ' + cel + ' kell. Kezdd a legnagyobb kártyával: ha nem nagyobb, mint ami még hiányzik, fordítsd fel!',
+                'Ahora tienes ' + s + ', pero hace falta ' + cel + '. Empieza por la tarjeta más grande: si no es mayor que lo que falta, dale la vuelta.')};
+        });
+    };
+
+    /* ── G4. MÁGNES – mit vonz? ──────────────────────────────────────── */
+    DM.magnes = function (f, D) {
+        var ALAP = [170, 40], pos = ALAP.slice(), fut = false, hibak = 0, vege = false, mg, gid = 'dmmg' + D.rnd(1000, 999999);
+        /* minden tárgy 60×60-as dobozba rajzolva, (0,0) a közepe; a kulcs kimaradt: sok kulcs sárgarézből van */
+        var TARGY = [
+            [D.T('gemkapocs', 'clip'), 1, '<path d="M-6 22 V-14 a8 8 0 0 1 16 0 V16 a5 5 0 0 1 -10 0 V-8" fill="none" stroke="#8E9BA3" stroke-width="4" stroke-linecap="round"/><path d="M-6 22 a8 8 0 0 0 16 0" fill="none" stroke="#8E9BA3" stroke-width="4"/>'],
+            [D.T('vasszög', 'clavo'), 1, '<rect x="-14" y="-24" width="28" height="7" rx="3" fill="#7C8990"/><path d="M-3 -17 h6 v34 l-3 9 l-3 -9Z" fill="#9AA6AD" stroke="#6E7A80" stroke-width="1.5"/>'],
+            [D.T('vascsavar', 'tornillo'), 1, '<path d="M-12 -22 h24 l-3 8 h-18Z" fill="#8E9BA3"/><rect x="-5" y="-14" width="10" height="36" fill="#AAB4BA"/><path d="M-5 -8 l10 4 M-5 0 l10 4 M-5 8 l10 4 M-5 16 l10 4" stroke="#7C8990" stroke-width="2"/>'],
+            [D.T('radír', 'goma'), 0, '<g transform="rotate(-20)"><rect x="-22" y="-11" width="44" height="22" rx="5" fill="#F48FB1"/><rect x="4" y="-11" width="18" height="22" rx="4" fill="#64B5F6"/></g>'],
+            [D.T('fakanál', 'cuchara de madera'), 0, '<g transform="rotate(-35)"><ellipse cx="0" cy="-15" rx="10" ry="13" fill="#D9A877" stroke="#A86F3D" stroke-width="2"/><rect x="-3" y="-3" width="6" height="30" rx="3" fill="#C98B4E"/></g>'],
+            [D.T('üveggolyó', 'canica'), 0, '<circle r="15" fill="#90CAF9" fill-opacity=".85" stroke="#42A5F5" stroke-width="2"/><path d="M-6 -6 q4 -4 9 -3" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M-10 4 q8 6 18 -4" stroke="#1E88E5" stroke-width="2" fill="none"/>'],
+            [D.T('műanyag kocka', 'pieza de plástico'), 0, '<rect x="-16" y="-10" width="32" height="24" rx="3" fill="#FFCA28" stroke="#E0A800" stroke-width="2"/><rect x="-11" y="-17" width="9" height="7" rx="2" fill="#FFCA28" stroke="#E0A800" stroke-width="2"/><rect x="2" y="-17" width="9" height="7" rx="2" fill="#FFCA28" stroke="#E0A800" stroke-width="2"/>'],
+            [D.T('alma', 'manzana'), 0, '<path d="M0 -8 q-18 -10 -18 8 q0 18 18 16 q18 2 18 -16 q0 -18 -18 -8Z" fill="#E53935" stroke="#B71C1C" stroke-width="2"/><path d="M0 -8 q2 -8 6 -12" stroke="#5D4037" stroke-width="3" fill="none"/><path d="M4 -16 q8 -6 12 0 q-6 4 -12 0Z" fill="#66BB6A"/>']];
+        var mag = D.kever(TARGY.filter(function (t) { return t[1]; })).slice(0, D.rnd(2, 3)), nem = D.kever(TARGY.filter(function (t) { return !t[1]; })).slice(0, 6 - mag.length);
+        var T = D.kever(mag.concat(nem)).map(function (t, i) { return {nev: t[0], mag: t[1], rajz: t[2], x: 56 + (i % 3) * 114, y: i < 3 ? 150 : 232}; });
+        function az(n) { return /^[aáeéiíoóöőuúüű]/i.test(n) ? 'Az' : 'A'; }
+        D.html('<div class="allas" data-id="all"></div><div class="vaszon"><svg data-id="svg" viewBox="0 0 340 384"></svg></div>');
+        var svg = D.$('svg');
+        function magnes(g) { g.innerHTML = '<path d="M-30 24 V-4 a30 30 0 0 1 30 -30 V-10 a14 14 0 0 0 -14 14 V24Z" fill="url(#' + gid + 'p)" stroke="#8E1F28" stroke-width="2"/>' +
+            '<path d="M30 24 V-4 a30 30 0 0 0 -30 -30 V-10 a14 14 0 0 1 14 14 V24Z" fill="url(#' + gid + 'k)" stroke="#164F86" stroke-width="2"/>' +
+            '<rect x="-30" y="16" width="16" height="12" fill="#E9EEF1" stroke="#9AA6AD"/><rect x="14" y="16" width="16" height="12" fill="#E9EEF1" stroke="#9AA6AD"/>' +
+            '<text x="-22" y="6" font-size="11" font-weight="900" fill="#fff" text-anchor="middle">' + D.T('É', 'N') + '</text><text x="22" y="6" font-size="11" font-weight="900" fill="#fff" text-anchor="middle">' + D.T('D', 'S') + '</text>'; }
+        function rajz() {
+            svg.innerHTML = '';
+            D.defs(svg, '<linearGradient id="' + gid + 'a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#EBD9BA"/><stop offset="1" stop-color="#CDB38A"/></linearGradient>' +
+                '<linearGradient id="' + gid + 'd" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9A862"/><stop offset="1" stop-color="#B9894A"/></linearGradient>' +
+                '<linearGradient id="' + gid + 'f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8C487"/><stop offset="1" stop-color="#CFA463"/></linearGradient>' +
+                '<linearGradient id="' + gid + 'p" x1="0" x2="1"><stop offset="0" stop-color="#F06A6A"/><stop offset="1" stop-color="#C62F3B"/></linearGradient>' +
+                '<linearGradient id="' + gid + 'k" x1="0" x2="1"><stop offset="0" stop-color="#5DA9EC"/><stop offset="1" stop-color="#1F6FB0"/></linearGradient>');
+            D.el('rect', {x: 0, y: 100, width: 340, height: 284, fill: 'url(#' + gid + 'a)'}, svg);
+            D.el('path', {d: 'M0 100 H340', stroke: '#B89A6A', 'stroke-width': 2}, svg);
+            var dz = D.el('g', {transform: 'translate(0,22)'}, svg), FU = 'url(#' + gid + 'f)';
+            D.el('ellipse', {cx: 170, cy: 354, rx: 74, ry: 6, fill: 'rgba(0,0,0,.12)'}, dz);
+            D.el('path', {d: 'M122 282 L100 266 L84 288 L110 300Z', fill: FU, stroke: '#8C6A3A', 'stroke-width': 2, 'stroke-linejoin': 'round'}, dz);
+            D.el('path', {d: 'M218 282 L240 266 L256 288 L230 300Z', fill: FU, stroke: '#8C6A3A', 'stroke-width': 2, 'stroke-linejoin': 'round'}, dz);
+            D.el('path', {d: 'M122 282 L128 262 H212 L218 282Z', fill: '#E3BC7E', stroke: '#8C6A3A', 'stroke-width': 2, 'stroke-linejoin': 'round'}, dz);
+            D.el('path', {d: 'M110 300 L122 282 H218 L230 300Z', fill: '#6E4A22', stroke: '#8C6A3A', 'stroke-width': 2, 'stroke-linejoin': 'round'}, dz);
+            D.el('path', {d: 'M122 282 H218 L214 290 H126Z', fill: '#4E3216', opacity: .6}, dz);
+            T.filter(function (t) { return t.dobozban; }).forEach(function (t) {
+                D.el('g', {transform: 'translate(' + (134 + (t.bent % 4) * 24) + ',' + (288 - Math.floor(t.bent / 4) * 6) + ') scale(.55)'}, dz).innerHTML = t.rajz; });
+            D.el('path', {d: 'M110 300 H230 V350 H110Z', fill: 'url(#' + gid + 'd)', stroke: '#8C6A3A', 'stroke-width': 2, 'stroke-linejoin': 'round'}, dz);
+            D.el('path', {d: 'M110 300 H230', stroke: '#F0D29C', 'stroke-width': 2}, dz);
+            D.el('rect', {x: 158, y: 300, width: 24, height: 50, fill: '#E9D8B4', opacity: .55}, dz);
+            D.el('rect', {x: 132, y: 312, width: 76, height: 26, rx: 5, fill: '#FFF8E8', stroke: '#B08A55', 'stroke-width': 1.5}, dz);
+            D.txt(170, 330, D.T('DOBOZ', 'CAJA'), {'font-size': 14, fill: '#6B4A22'}, dz);
+            T.forEach(function (t) {
+                if (t.dobozban) { return; }
+                var g = D.el('g', {transform: 'translate(' + t.x + ',' + t.y + ')', style: 'cursor:pointer'}, svg);
+                D.el('circle', {r: 29, fill: '#fff', 'fill-opacity': .6}, g);
+                var k = D.el('g', {}, g); k.innerHTML = t.rajz; t.g = g; t.k = k;
+                D.txt(0, 44, t.nev, {'font-size': 12, fill: '#4A3B2A'}, g);
+                g.addEventListener('click', function () { probal(t); });
+            });
+            mg = D.el('g', {}, svg); magnes(mg); pos = ALAP.slice(); mg.setAttribute('transform', 'translate(' + ALAP[0] + ',' + ALAP[1] + ')');
+        }
+        function mozgat(cel, ido) {
+            var tol = pos.slice();
+            return new Promise(function (kesz) { D.tween(ido, function (e) { pos = [tol[0] + (cel[0] - tol[0]) * e, tol[1] + (cel[1] - tol[1]) * e];
+                mg.setAttribute('transform', 'translate(' + pos[0] + ',' + pos[1] + ')'); }, kesz); }); }
+        function allas() { var kell = T.filter(function (t) { return t.mag; }), bent = kell.filter(function (t) { return t.dobozban; }).length;
+            D.$('all').innerHTML = D.T('Koppints egy tárgyra: a mágnes odarepül. Amit magához vonz, azt beviszi a dobozba.', 'Toca un objeto: el imán vuela hacia él. Lo que atrae, lo lleva a la caja.') +
+                ' <b>' + bent + ' / ' + kell.length + '</b>';
+            if (bent === kell.length && !vege) { vege = true;
+                var nevek = kell.map(function (t) { return t.nev; }).join(', ');
+                D.vege(true, D.T('Mind megvan! A mágnes a vasból és acélból készült tárgyakat vonzza (' + nevek + '). A fát, a műanyagot, a gumit, az üveget és az almát nem.',
+                    '¡Ya están todos! El imán atrae los objetos de hierro y acero (' + nevek + '). La madera, el plástico, la goma, el cristal y la manzana, no.'),
+                    D.T('Megtaláltam mind a ' + kell.length + ' tárgyat, amit a mágnes vonz: ' + nevek + '.', 'He encontrado los ' + kell.length + ' objetos que atrae el imán: ' + nevek + '.') +
+                    (hibak ? D.T(' Közben ' + hibak + ' olyat is kipróbáltam, amit nem vonz.', ' También he probado ' + hibak + (hibak === 1 ? ' objeto que no atrae.' : ' objetos que no atrae.')) : '')); } }
+        function probal(t) {
+            if (fut || t.dobozban || D.kesz()) { return; } fut = true; D.torol();
+            mozgat([t.x, t.y - 62], 500).then(function () {
+                if (t.mag) {
+                    try { t.k.animate([{transform: 'translateY(0)'}, {transform: 'translateY(-30px)'}], {duration: 220, fill: 'forwards'}); } catch (e) {}
+                    return new Promise(function (r) { setTimeout(r, 260); }).then(function () {
+                        t.g.remove(); D.el('g', {transform: 'translate(0,46)'}, mg).innerHTML = t.rajz;
+                        return mozgat([170, 244], 650); }).then(function () {
+                        t.dobozban = true; t.bent = T.filter(function (x) { return x.dobozban; }).length - 1; fut = false; rajz(); allas(); });
+                }
+                hibak++; D.animal(t.g, 'rezeg');
+                D.jelez(false, D.T(az(t.nev) + ' ' + t.nev + ' meg se mozdul: a mágnes nem vonzza.', '¡Ni se mueve! El imán no atrae la ' + t.nev + '.'));
+                return mozgat(ALAP, 500).then(function () { fut = false; });
+            });
+        }
+        rajz(); allas();
+    };
+
+    /* ── G5. SAVAK ÉS LÚGOK – pH-skála ───────────────────────────────── */
+    DM.ph = function (f, D) {
+        var A = [['🍋', 'citromlé', 2], ['🫙', 'ecet', 3], ['🥤', 'kóla', 3], ['💧', 'tiszta víz', 7], ['🥛', 'tej', 6.5], ['🧼', 'szappanos víz', 10], ['🧂', 'szódabikarbónás víz', 8.5], ['🧴', 'lefolyótisztító', 13]];
+        var akt = D.kever(A.slice()).slice(0, 5), hely = {}, valasztott = null;
+        D.html('<div class="allas">Koppints egy anyagra, aztán a skálán arra a helyre, ahová szerinted való. A skálán lévő jelre koppintva visszaveszed.</div>' +
+            '<div class="kartyak" data-id="kt"></div><div class="ph-skala" data-id="sk"></div>');
+        var sk = D.$('sk'), kt = D.$('kt');
+        function x(ph) { return ph / 14 * 100; }
+        function rajz() {
+            sk.innerHTML = '<div class="sav"></div>'; kt.innerHTML = '';
+            for (var i = 0; i <= 14; i++) { var s = document.createElement('span'); s.className = 'sz'; s.style.left = x(i) + '%'; s.textContent = i; sk.appendChild(s); }
+            [['savas', 2, '#D7282F'], ['semleges', 50, '#3DA35D'], ['lúgos', 96, '#5146A8']].forEach(function (t) { var s = document.createElement('span'); s.className = 'tip'; s.style.left = t[1] + '%'; s.style.color = t[2]; s.textContent = t[0]; sk.appendChild(s); });
+            var sorok = [];
+            akt.filter(function (a) { return hely[a[1]] !== undefined; }).sort(function (a, b) { return hely[a[1]] - hely[b[1]]; }).forEach(function (a) {
+                var p = hely[a[1]], r = 0; while ((sorok[r] || []).some(function (q) { return Math.abs(q - p) < 1.6; })) { r++; } (sorok[r] = sorok[r] || []).push(p);
+                var m = document.createElement('button'); m.type = 'button'; m.className = 'ph-jel'; m.textContent = a[0]; m.title = a[1]; m.style.left = x(p) + '%'; m.style.bottom = (100 + r * 40) + 'px';
+                m.style.setProperty('--szar', (6 + r * 40) + 'px');
+                m.onclick = function (e) { e.stopPropagation(); if (D.kesz()) { return; } delete hely[a[1]]; rajz(); D.torol(); }; sk.appendChild(m); });
+            akt.forEach(function (a) { var c = document.createElement('button'); c.type = 'button'; c.className = 'kartya ph-kartya' + (hely[a[1]] !== undefined ? ' lent' : '') + (valasztott === a ? ' kivalasztott' : '');
+                c.innerHTML = a[0] + ' ' + a[1] + (hely[a[1]] !== undefined ? ' <b>→ ' + D.vesszo(hely[a[1]]) + '</b>' : '');
+                c.onclick = function () { if (D.kesz()) { return; } valasztott = a; rajz(); }; kt.appendChild(c); });
+            sk.classList.toggle('var', !!valasztott);
+        }
+        sk.addEventListener('click', function (e) { if (D.kesz()) { return; } if (!valasztott) { D.jelez(false, 'Előbb koppints egy anyagra fent!'); return; }
+            var r = sk.getBoundingClientRect(); hely[valasztott[1]] = Math.max(0, Math.min(14, Math.round((e.clientX - r.left) / r.width * 28) / 2));
+            valasztott = akt.filter(function (a) { return hely[a[1]] === undefined; })[0] || null; rajz(); D.torol(); });
+        rajz();
+        D.ellenoriz(function () {
+            var m = akt.filter(function (a) { return hely[a[1]] === undefined; }).length;
+            if (m) { return {hianyzik: 'Még ' + m + ' anyag nincs a skálán!'}; }
+            var valasz = 'Így tettem fel a pH-skálára: ' + akt.map(function (a) { return a[1] + ' ' + D.vesszo(hely[a[1]]); }).join(', ') + '.';
+            var rossz = akt.filter(function (a) { return Math.abs(hely[a[1]] - a[2]) > 1.5; });
+            if (!rossz.length) { return {jo: true, valasz: valasz, uzenet: akt.map(function (a) { return a[1] + ' ≈ ' + D.vesszo(a[2]); }).join(' · ') + '. 7 alatt savas, 7 semleges, 7 fölött lúgos.'}; }
+            return {jo: false, valasz: valasz, uzenet: 'Ezek még nincsenek jó helyen: <b>' + rossz.map(function (a) { return a[1]; }).join(', ') + '</b>. A savanyú dolgok savasak, a csúszós tisztítószerek lúgosak.'};
+        });
+    };
+
     function feladatElem(f) {
         if (!f || !f.tipus) { return null; }
         if (f.tipus === 'szamolo' && fejbenSzamolosTemakor()) {

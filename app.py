@@ -5085,6 +5085,37 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         return {"tipus": "foto", "kerdes": ("¿Cómo fabrica su alimento la planta?" if es_tanterv
                                             else "Hogyan készít táplálékot a növény?")}
 
+    # ══ MINTAOLDALRÓL ÁTHOZOTT ELEMEK – G csoport (6. minta, 4. rész) ═══
+    # korszak, kresz, binaris, magnes, ph. A spanyol korszakhatárok mások
+    # (Edad Moderna 1789-ig), ezt a felület tudja; a tanártól nem kérünk adatot.
+    if tipus == "korszak":
+        return {"tipus": "korszak", "kerdes": ("¿Qué edad de la historia es cada una?" if es_tanterv
+                                               else "Melyik korszak melyik?")}
+
+    if tipus == "kresz":
+        return {"tipus": "kresz", "kerdes": ("¿Qué significan las señales?" if es_tanterv
+                                             else "Mit jelentenek a táblák?")}
+
+    if tipus == "binaris":
+        try:
+            sz = int(adat.get("szam")) if adat.get("szam") is not None else random.randint(3, 31)
+        except Exception:
+            return None
+        if not (1 <= sz <= 31):
+            return None
+        return {"tipus": "binaris", "szam": sz,
+                "kerdes": (f"Forma el número {sz} con las tarjetas." if es_tanterv
+                           else f"Rakd ki ezt a számot a kártyákkal: {sz}")}
+
+    if tipus == "magnes":
+        return {"tipus": "magnes", "kerdes": ("¿Qué objetos atrae el imán?" if es_tanterv
+                                              else "Melyik tárgyat vonzza a mágnes?")}
+
+    if tipus == "ph":
+        if es_tanterv:
+            return None
+        return {"tipus": "ph", "kerdes": "Savas, semleges vagy lúgos?"}
+
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
         # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
@@ -8321,6 +8352,35 @@ _DM_FELULETEK = [
      'FOTOSÍNTESIS – el niño separa lo que necesita la hoja (luz solar, agua, dióxido de carbono) y lo que se produce (oxígeno, glucosa). Sin parámetros:\n'
      '   <FELADAT>{"tipus":"foto"}</FELADAT>',
      'fotoszintézis, a növény táplálkozása → foto', 'fotosíntesis, cómo se alimenta la planta → foto'),
+    ("korszak", {"tortenelem"}, 5, 8,
+     'TÖRTÉNELMI KORSZAKOK – öt színes sáv évszámokkal és képpel (őskor, ókor, középkor, újkor, jelenkor), a gyerek a nevüket a helyükre húzza. Nincs paramétere:\n'
+     '   <FELADAT>{"tipus":"korszak"}</FELADAT>',
+     'EDADES DE LA HISTORIA – cinco franjas con fechas y dibujo (Prehistoria, Edad Antigua, Edad Media, Edad Moderna, Edad Contemporánea); el niño arrastra cada nombre a su franja. Sin parámetros:\n'
+     '   <FELADAT>{"tipus":"korszak"}</FELADAT>',
+     'történelmi korszakok sorrendje       → korszak', 'edades de la historia               → korszak'),
+    ("kresz", {"kornyezet"}, 1, 4,
+     'KÖZLEKEDÉSI TÁBLÁK – öt tábla (STOP, elsőbbségadás, behajtani tilos, gyalogos-átkelőhely, kerékpárút), a gyerek a jelentésüket a tábla alá húzza. Nincs paramétere:\n'
+     '   <FELADAT>{"tipus":"kresz"}</FELADAT>',
+     'SEÑALES DE TRÁFICO – cinco señales (STOP, ceda el paso, entrada prohibida, paso de peatones, vía para bicicletas); el niño arrastra su significado debajo de cada una. Sin parámetros:\n'
+     '   <FELADAT>{"tipus":"kresz"}</FELADAT>',
+     'közlekedési táblák, KRESZ            → kresz', 'señales de tráfico, educación vial  → kresz'),
+    ("binaris", {"digit", "matek"}, 5, 8,
+     'KETTES SZÁMRENDSZER KÁRTYÁKKAL – 16, 8, 4, 2, 1 pöttyös kártyák, a gyerek felfordítja, amelyek kellenek. "szam": 1–31 (elhagyva: a program választ):\n'
+     '   <FELADAT>{"tipus":"binaris","szam":13}</FELADAT>',
+     'SISTEMA BINARIO CON TARJETAS – tarjetas de 16, 8, 4, 2 y 1 puntos; el niño da la vuelta a las que hacen falta. "szam": 1–31 (si se omite, lo elige el programa):\n'
+     '   <FELADAT>{"tipus":"binaris","szam":13}</FELADAT>',
+     'kettes számrendszer, bináris szám    → binaris', 'sistema binario                     → binaris'),
+    ("magnes", {"kornyezet"}, 2, 5,
+     'MÁGNES – hat tárgy, a gyerek kipróbálja, melyiket vonzza a mágnes (vas, acél igen; fa, műanyag, üveg, gumi nem). Nincs paramétere:\n'
+     '   <FELADAT>{"tipus":"magnes"}</FELADAT>',
+     'EL IMÁN – seis objetos; el niño prueba cuáles atrae el imán (hierro y acero sí; madera, plástico, cristal y goma no). Sin parámetros:\n'
+     '   <FELADAT>{"tipus":"magnes"}</FELADAT>',
+     'mágnes, mit vonz a mágnes           → magnes', 'el imán, qué atrae                  → magnes'),
+    ("ph", {"kornyezet"}, 7, 8,
+     'SAVAK ÉS LÚGOK – öt hétköznapi anyagot (citromlé, ecet, tej, szappanos víz…) a gyerek a pH-skálán a helyére tesz. Nincs paramétere:\n'
+     '   <FELADAT>{"tipus":"ph"}</FELADAT>',
+     None,
+     'savas, semleges, lúgos, pH            → ph', None),
 ]
 
 
@@ -8339,6 +8399,8 @@ def _dm_cimkek(subject_label: str, idegen: bool) -> set:
         c.add("enek")
     if any(k in s for k in ("digit", "informatik", "programac", "computac", "tecnolog")):
         c.add("digit")
+    if any(k in s for k in ("tortenel", "historia", "social", "conocimiento")):
+        c.add("tortenelem")
     if idegen:
         c.add("nyelv")
         if "angol" in s or "ingles" in s:
