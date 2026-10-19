@@ -184,6 +184,11 @@ JELOLO_ESETEK: list[tuple[str, str, str]] = [
     ("Két új szó jön: <VOCAB>alma=manzana</VOCAB><VOCAB>körte=pera</VOCAB>",
      "Két új szó jön: manzana, pera",
      "ha a szavak MÉG NEM hangzottak el, látszaniuk kell — de vesszővel"),
+    ("1) Mit jelent magyarul a korábban tanult el colegio?\n"
+     '<FELADAT>{"tipus":"valaszt","opciok":["iskola","kórház","busz"]}</FELADAT>',
+     "CÍM:Mit jelent magyarul a korábban tanult el colegio?",
+     "a kérdés elején sorszám állt, és a gyerek csak a zárójelet látta: "
+     "„) Mit jelent…”. A sorszám lekerül a kérdés elől."),
 ]
 
 # Ugyanaz a hiba a SPANYOL oldalon. Ott nincs rag: a "está más cerca de"
@@ -239,7 +244,13 @@ def main() -> int:
         os.environ.setdefault("SECRET_KEY", "hang-teszt")
         import app
         for be, vart, miert in JELOLO_ESETEK:
-            kapott = app._parse_chat_markers(be)[0].strip()
+            if vart.startswith("CÍM:"):
+                # A kérdés a feladat CÍMÉBE kerül, nem a szövegbe.
+                f = app._feladat_parse(be, grade=3)
+                kapott = f.get("cim") if f else None
+                vart = vart[4:]
+            else:
+                kapott = app._parse_chat_markers(be)[0].strip()
             if kapott == vart:
                 print(f"  ok    {be[:60]}")
                 continue

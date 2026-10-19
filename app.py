@@ -3703,6 +3703,11 @@ def _feladat_elotti_kerdes(text: str) -> str:
     if not kerdesek:
         return ""
     k = kerdesek[-1].strip().strip("*_#>-–— ").strip()
+    # A tanár a kérdést sorszámmal kezdi: "1) Mit jelent…", "1. Mit jelent…",
+    # "a) …". 2026-10-19, Sándor képernyőképe: a gyerek ") Mit jelent…" szöveget
+    # látott, mert a sorszámból csak a zárójel maradt. A kérdés elejéről a
+    # sorszám minden alakja lekerül.
+    k = re.sub(r"^\(?\s*(?:\d{1,2}|[a-zA-Z])\s*[.)]\s*", "", k)
     return k if 3 <= len(k) <= 120 else ""
 
 
