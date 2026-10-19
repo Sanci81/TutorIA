@@ -5042,6 +5042,49 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         return {"tipus": "irasjel", "fajta": fajta, "mondat": mondat, "kep": kep, "jo": JEL[fajta],
                 "kerdes": "Melyik írásjel kerül a mondat végére?"}
 
+    # ══ MINTAOLDALRÓL ÁTHOZOTT ELEMEK – F csoport (6. minta, 3. rész) ═══
+    # oltoz, elolj (angol), rovar, foto. Az angol mondatot a program rakja
+    # össze, a tanár csak a ruhát, színt, helyet választja.
+    if tipus == "oltoz":
+        SZIN = ("red", "blue", "green", "yellow")
+        RUHA = {"hat": "hat", "scarf": "scarf", "shirt": "T-shirt", "t-shirt": "T-shirt", "tshirt": "T-shirt", "boots": "boots"}
+        lista = adat.get("ruhak")
+        if lista is None:
+            r = random.sample(["hat", "scarf", "shirt", "boots"], 2)
+            lista = [[c, x] for c, x in zip(random.sample(SZIN, 2), r)]
+        ruhak = []
+        try:
+            for szin, ruha in lista:
+                szin, ruha = str(szin).strip().lower(), RUHA.get(str(ruha).strip().lower())
+                if szin not in SZIN or not ruha:
+                    return None
+                ruhak.append([szin, "shirt" if ruha == "T-shirt" else ruha])
+        except Exception:
+            return None
+        if not (1 <= len(ruhak) <= 2) or len({r[1] for r in ruhak}) != len(ruhak):
+            return None
+        mondat = "Put on the " + " and the ".join(
+            f"{c} {'T-shirt' if r == 'shirt' else r}" for c, r in ruhak) + "."
+        return {"tipus": "oltoz", "ruhak": ruhak, "mondat": mondat, "kerdes": "“" + mondat + "”"}
+
+    if tipus == "elolj":
+        HOL = {"on": "on", "under": "under", "in": "in", "next to": "next to", "next": "next to"}
+        hol = str(adat.get("hol") or "").strip().lower()
+        hol = HOL.get(hol) if hol else random.choice(["on", "under", "in", "next to"])
+        if not hol:
+            return None
+        mondat = {"on": "The cat is on the table.", "under": "The cat is under the table.",
+                  "in": "The cat is in the box.", "next to": "The cat is next to the table."}[hol]
+        return {"tipus": "elolj", "hol": hol, "mondat": mondat, "kerdes": "“" + mondat + "”"}
+
+    if tipus == "rovar":
+        return {"tipus": "rovar", "kerdes": ("Nombra las partes del cuerpo de la hormiga." if es_tanterv
+                                             else "Nevezd meg a hangya testrészeit!")}
+
+    if tipus == "foto":
+        return {"tipus": "foto", "kerdes": ("¿Cómo fabrica su alimento la planta?" if es_tanterv
+                                            else "Hogyan készít táplálékot a növény?")}
+
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
         # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
@@ -8254,6 +8297,30 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"irasjel","fajta":"kerdo"}</FELADAT>',
      None,
      'mondatfajták, mondatvégi írásjel     → irasjel', None),
+    ("oltoz", {"angol"}, 1, 4,
+     'ÖLTÖZTESD FEL A MACIT – angol utasítás (a program mondja ki és írja ki), a gyerek a jó színű ruhát adja a macira. "ruhak": 1–2 pár [szín, ruha]; szín: red, blue, green, yellow; ruha: hat, scarf, shirt, boots (elhagyva: a program választ):\n'
+     '   <FELADAT>{"tipus":"oltoz","ruhak":[["red","hat"],["blue","boots"]]}</FELADAT>',
+     'VISTE AL OSITO – instrucción en inglés (el programa la dice y la escribe); el niño pone al osito la ropa del color pedido. "ruhak": 1–2 pares [color, prenda]; color: red, blue, green, yellow; prenda: hat, scarf, shirt, boots (si se omite, lo elige el programa):\n'
+     '   <FELADAT>{"tipus":"oltoz","ruhak":[["red","hat"],["blue","boots"]]}</FELADAT>',
+     'ruhák és színek angolul               → oltoz', 'ropa y colores en inglés             → oltoz'),
+    ("elolj", {"angol"}, 2, 5,
+     'HOL A CICA? – angol mondat (on, under, in, next to), a gyerek oda húzza a cicát. "hol": on, under, in vagy next to (elhagyva: a program választ):\n'
+     '   <FELADAT>{"tipus":"elolj","hol":"under"}</FELADAT>',
+     '¿DÓNDE ESTÁ EL GATO? – frase en inglés (on, under, in, next to); el niño arrastra el gato a su sitio. "hol": on, under, in o next to (si se omite, lo elige el programa):\n'
+     '   <FELADAT>{"tipus":"elolj","hol":"under"}</FELADAT>',
+     'elöljárószók: on, under, in, next to → elolj', 'preposiciones: on, under, in, next to → elolj'),
+    ("rovar", {"kornyezet"}, 3, 6,
+     'A ROVAROK TESTE – a hangya rajzán a gyerek a helyére húzza a neveket (fej, csáp, tor, potroh, láb, szem). Nincs paramétere:\n'
+     '   <FELADAT>{"tipus":"rovar"}</FELADAT>',
+     'EL CUERPO DE LOS INSECTOS – en el dibujo de la hormiga, el niño arrastra los nombres (cabeza, antena, tórax, abdomen, pata, ojo). Sin parámetros:\n'
+     '   <FELADAT>{"tipus":"rovar"}</FELADAT>',
+     'a rovarok teste, fej-tor-potroh      → rovar', 'partes de un insecto                → rovar'),
+    ("foto", {"kornyezet"}, 5, 7,
+     'FOTOSZINTÉZIS – a gyerek szétválogatja, mi kell a levélnek (napfény, víz, szén-dioxid) és mi keletkezik benne (oxigén, szőlőcukor). Nincs paramétere:\n'
+     '   <FELADAT>{"tipus":"foto"}</FELADAT>',
+     'FOTOSÍNTESIS – el niño separa lo que necesita la hoja (luz solar, agua, dióxido de carbono) y lo que se produce (oxígeno, glucosa). Sin parámetros:\n'
+     '   <FELADAT>{"tipus":"foto"}</FELADAT>',
+     'fotoszintézis, a növény táplálkozása → foto', 'fotosíntesis, cómo se alimenta la planta → foto'),
 ]
 
 
@@ -8274,6 +8341,8 @@ def _dm_cimkek(subject_label: str, idegen: bool) -> set:
         c.add("digit")
     if idegen:
         c.add("nyelv")
+        if "angol" in s or "ingles" in s:
+            c.add("angol")
     return c
 
 
