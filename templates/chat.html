@@ -4151,6 +4151,121 @@
         });
     };
 
+    /* ── E1. A KÖR RÉSZEI ────────────────────────────────────────────── */
+    DM.kor = function (f, D) {
+        var R = 100, cel = f.resz, hibak = 0, vege = false, gid = 'dmkr' + D.rnd(1000, 999999);
+        var NEV = D.T({kozeppont: 'középpont', sugar: 'sugár', atmero: 'átmérő', hur: 'húr', korvonal: 'körvonal'},
+            {kozeppont: 'el centro', sugar: 'un radio', atmero: 'un diámetro', hur: 'una cuerda', korvonal: 'la circunferencia'});
+        var TARGY = D.T({kozeppont: 'a középpontot', sugar: 'a sugarat', atmero: 'az átmérőt', hur: 'a húrt', korvonal: 'a körvonalat'}, NEV);
+        var MAGY = D.T({kozeppont: 'A kör minden pontja ugyanolyan messze van a középponttól.', sugar: 'A sugár a középpontot köti össze a kör egy pontjával.',
+            atmero: 'Az átmérő a középponton át megy, és kétszer olyan hosszú, mint a sugár.', hur: 'A húr a kör két pontját köti össze – de nem kell a középponton átmennie.',
+            korvonal: 'A körvonal maga a kör: a középponttól egyforma távolságra lévő pontok.'},
+            {kozeppont: 'Todos los puntos de la circunferencia están a la misma distancia del centro.', sugar: 'El radio une el centro con un punto de la circunferencia.',
+            atmero: 'El diámetro pasa por el centro y mide el doble que el radio.', hur: 'La cuerda une dos puntos de la circunferencia, sin tener que pasar por el centro.',
+            korvonal: 'La circunferencia es la línea curva: todos sus puntos están a la misma distancia del centro.'});
+        function az(n) { return /^[aáeéiíoóöőuúüű]/.test(n) ? 'az ' : 'a '; }
+        function ez(n) { return D.T('ez ' + az(NEV[n]) + NEV[n], 'esto es ' + NEV[n]); }
+        D.html('<div class="allas">' + D.T('Koppints a rajzon arra, amit kérdezek!', 'Toca en el dibujo lo que te pido.') +
+            '</div><div class="vaszon"><svg data-id="svg" viewBox="-130 -130 260 260" style="max-width:300px"></svg></div>');
+        var svg = D.$('svg');
+        D.defs(svg, '<radialGradient id="' + gid + '" cx="40%" cy="35%"><stop offset="0" stop-color="#F3FAFF"/><stop offset="1" stop-color="#D7ECFA"/></radialGradient>');
+        D.el('circle', {r: R, fill: 'url(#' + gid + ')'}, svg);
+        var RESZ = {
+            korvonal: D.el('circle', {r: R, fill: 'none', stroke: '#1F4E7A', 'stroke-width': 4}, svg),
+            atmero: D.el('line', {x1: -R * .94, y1: R * .34, x2: R * .94, y2: -R * .34, stroke: '#2F8FD8', 'stroke-width': 4}, svg),
+            sugar: D.el('line', {x1: 0, y1: 0, x2: -R * .5, y2: -R * .866, stroke: '#E0609B', 'stroke-width': 4}, svg),
+            hur: D.el('line', {x1: -R * .6, y1: R * .8, x2: R * .87, y2: R * .5, stroke: '#3DA35D', 'stroke-width': 4}, svg),
+            kozeppont: D.el('circle', {r: 6, fill: '#0E2A1E'}, svg)};
+        D.txt(10, 14, 'O', {'font-size': 13}, svg);
+        Object.keys(RESZ).forEach(function (n) { var v = RESZ[n].cloneNode();
+            v.setAttribute('stroke', 'transparent'); v.setAttribute('stroke-width', n === 'korvonal' ? 18 : 20);
+            if (n === 'kozeppont') { v.setAttribute('r', 16); v.setAttribute('fill', 'transparent'); } else { v.setAttribute('fill', 'none'); }
+            v.style.cursor = 'pointer'; v.style.pointerEvents = n === 'korvonal' ? 'stroke' : 'all'; svg.appendChild(v);
+            v.addEventListener('click', function (ev) { ev.stopPropagation(); valaszt(n); }); });
+        function valaszt(n) {
+            if (vege || D.kesz()) { return; }
+            var valasz = D.T('Szerintem ' + ez(n) + '.', 'Creo que ' + ez(n) + '.');
+            if (n === cel || (cel === 'hur' && n === 'atmero')) { vege = true;
+                try { RESZ[n].animate([{opacity: 1}, {opacity: .2}, {opacity: 1}], {duration: 500, iterations: 2}); } catch (e) {}
+                D.vege(true, n === cel ? D.T('Igen, ' + ez(n) + '! ', 'Sí, ' + ez(n) + '. ') + MAGY[n]
+                    : D.T('Igen, az átmérő is húr – a leghosszabb, mert a középponton megy át. A zöld vonal is húr.',
+                        'Sí, el diámetro también es una cuerda: la más larga, porque pasa por el centro. La línea verde también es una cuerda.'), valasz); return; }
+            hibak++; D.animal(svg, 'rezeg');
+            D.jelez(false, D.T('Ez ' + az(NEV[n]) + NEV[n] + '. ' + MAGY[n] + ' Keresd ' + TARGY[cel] + '!', 'Esto es ' + NEV[n] + '. ' + MAGY[n] + ' Busca ' + NEV[cel] + '.'));
+            if (hibak >= 2) { vege = true; D.kuld(valasz, 2600); }
+        }
+    };
+
+    /* ── E2. MAGÁNHANGZÓK ────────────────────────────────────────────── */
+    DM.maganh = function (f, D) {
+        var szo = f.szo.toUpperCase(), MH = 'AÁEÉIÍOÓÖŐUÚÜŰ', t = [], i = 0, tobbjegyu = '';
+        var KET = D.es ? ['CH', 'LL', 'RR'] : ['CS', 'DZ', 'GY', 'LY', 'NY', 'SZ', 'TY', 'ZS'];
+        while (i < szo.length) { var b = szo.charAt(i);
+            if (!D.es && szo.substr(i, 3) === 'DZS') { b = 'DZS'; } else if (KET.indexOf(szo.substr(i, 2)) >= 0) { b = szo.substr(i, 2); }
+            if (b.length > 1 && !tobbjegyu) { tobbjegyu = b; }
+            t.push(b); i += b.length; }
+        D.html('<div class="allas">' + D.T('Koppints a magánhangzókra! Másodszori koppintásra visszavonod.', 'Si vuelves a tocar una letra, la desmarcas.') +
+            '</div><div class="betusor" data-id="betuk"></div>');
+        var sor = D.$('betuk');
+        t.forEach(function (b) { var g = D.gomb(b, '', function () { g.classList.toggle('jel'); D.torol(); }); g.dataset.mh = MH.indexOf(b) >= 0 ? 1 : 0; sor.appendChild(g); });
+        D.ellenoriz(function () {
+            var bs = Array.prototype.slice.call(sor.children), jelolt = bs.filter(function (b) { return b.classList.contains('jel'); });
+            if (!jelolt.length) { return {hianyzik: D.T('Koppints a magánhangzókra!', 'Toca las vocales.')}; }
+            var valasz = D.T('Szerintem ezek a magánhangzók: ', 'Creo que estas son las vocales: ') + jelolt.map(function (b) { return b.textContent; }).join(', ') + '.';
+            var rossz = bs.filter(function (b) { return b.classList.contains('jel') !== (b.dataset.mh === '1'); });
+            if (!rossz.length) { var db = bs.filter(function (b) { return b.dataset.mh === '1'; }).length;
+                bs.forEach(function (b) { b.classList.remove('jel'); b.classList.add(b.dataset.mh === '1' ? 'jo-mh' : 'mgh'); });
+                return {jo: true, valasz: valasz, uzenet: D.T('Ügyes! A rózsaszínek a magánhangzók (' + db + ' db), a kékek a mássalhangzók.', '¡Muy bien! Las rosas son las vocales (' + db + '), las azules son las consonantes.') +
+                    (tobbjegyu ? D.T(' Figyeld meg: a „' + tobbjegyu + '” ' + (tobbjegyu.length === 3 ? 'háromjegyű' : 'kétjegyű') + ' betű – ' + (tobbjegyu.length === 3 ? 'három' : 'két') + ' jelből áll, de egy hangot jelöl.',
+                        ' Fíjate: «' + tobbjegyu + '» es un dígrafo: dos letras que suenan como un solo sonido.') : '')}; }
+            rossz.forEach(function (b) { D.animal(b, 'rezeg'); });
+            return {jo: false, valasz: valasz, uzenet: D.T('Még nem jó: ' + rossz.length + ' betűt nézz meg újra! A magánhangzók: a, á, e, é, i, í, o, ó, ö, ő, u, ú, ü, ű.',
+                'Todavía no: revisa ' + (rossz.length === 1 ? '1 letra' : rossz.length + ' letras') + '. Las vocales son a, e, i, o, u (también con tilde: á, é, í, ó, ú).')};
+        });
+    };
+
+    /* ── E3. J VAGY LY ───────────────────────────────────────────────── */
+    DM.jly = function (f, D) {
+        var szo = f.szo, m = szo.match(/ly|j/), eleje = szo.slice(0, m.index).toUpperCase(), jo = m[0], utana = szo.slice(m.index + jo.length).toUpperCase();
+        var RAG = {j: 'j-vel', ly: 'ly-nal'}, vege = false;
+        D.html('<div class="kep-szo">' + f.kep + '</div><div class="szo-nagy" data-id="szo">' + eleje + '<b>?</b>' + utana + '</div><div class="gombok kozep" data-id="gombok"></div>');
+        function mutat() { D.$('szo').innerHTML = eleje + '<b>' + jo.toUpperCase() + '</b>' + utana; }
+        ['j', 'ly'].forEach(function (b) { D.$('gombok').appendChild(D.gomb(b, 'fo betuvalaszto', function () {
+            if (vege) { return; } vege = true;
+            var valasz = 'Szerintem a hiányzó betű: ' + b + '.';
+            mutat();
+            if (b === jo) { D.vege(true, 'Igen! A „' + szo + '” szót ' + RAG[jo] + ' írjuk.' + (jo === 'ly' ? ' Az ly-os szavakat meg kell jegyezni – sok olvasással megy a legjobban.' : ''), valasz); return; }
+            D.animal(D.$('szo'), 'rezeg');
+            D.vege(false, 'Nem, a „' + szo + '” szót ' + RAG[jo] + ' írjuk. Jegyezd meg így: ' + szo.toUpperCase() + '.', valasz); })); });
+    };
+
+    /* ── E4. MONDATFAJTÁK – MONDATVÉGI ÍRÁSJEL ───────────────────────── */
+    DM.irasjel = function (f, D) {
+        var hibak = 0, vege = false, gid = 'dmij' + D.rnd(1000, 999999), NEV = {'.': 'pont', '?': 'kérdőjel', '!': 'felkiáltójel'};
+        var MAGY = {kijelento: 'Ez kijelentő mondat: elmond valamit. A végére pont kerül.',
+            kerdo: 'Ez kérdő mondat: kérdezünk vele. A végére kérdőjel kerül.',
+            felkialto: 'Ez felkiáltó mondat: erős érzést fejez ki, például csodálkozást vagy örömet. A végére felkiáltójel kerül.',
+            felszolito: 'Ez felszólító mondat: kérünk vagy utasítunk vele. A végére felkiáltójel kerül, de ha nyugodtan kérjük, pont is lehet.',
+            ohajto: 'Ez óhajtó mondat: azt fejezi ki, amit szeretnénk. A végére felkiáltójel vagy pont kerül.'};
+        D.html('<div class="vaszon"><svg data-id="svg" viewBox="0 0 320 150"></svg></div><div class="gombok kozep" data-id="gombok"></div>');
+        var svg = D.$('svg');
+        function rajz(jel) { svg.innerHTML = '';
+            D.defs(svg, '<radialGradient id="' + gid + '" cx="40%" cy="35%"><stop offset="0" stop-color="#FFE9A8"/><stop offset="1" stop-color="#F6C445"/></radialGradient>');
+            D.el('circle', {cx: 44, cy: 104, r: 32, fill: 'url(#' + gid + ')', stroke: '#D9A21B', 'stroke-width': 2}, svg); D.txt(44, 117, f.kep, {'font-size': 36}, svg);
+            D.el('path', {d: 'M92 22 h208 q14 0 14 14 v52 q0 14 -14 14 h-168 l-28 22 l6 -22 h-18 q-14 0 -14 -14 v-52 q0 -14 14 -14Z', fill: '#fff', stroke: '#BFD6C8', 'stroke-width': 2.5}, svg);
+            var t = D.el('foreignObject', {x: 92, y: 26, width: 220, height: 72}, svg);
+            t.innerHTML = '<div xmlns="http://www.w3.org/1999/xhtml" style="font:800 19px Nunito,sans-serif;color:#0E2A1E;display:flex;align-items:center;justify-content:center;height:72px;text-align:center;line-height:1.2">' +
+                f.mondat + '<span style="color:#E0609B;min-width:14px;display:inline-block;border-bottom:3px solid #E0609B;margin-left:2px">' + (jel || '&nbsp;') + '</span></div>'; }
+        rajz();
+        ['.', '?', '!'].forEach(function (j) { D.$('gombok').appendChild(D.gomb(j, 'fo betuvalaszto', function () {
+            if (vege) { return; }
+            var valasz = 'Szerintem a mondat végére ' + NEV[j] + ' kerül: ' + f.mondat + j;
+            if (f.jo.indexOf(j) >= 0) { vege = true; rajz(j); D.vege(true, 'Igen! ' + MAGY[f.fajta], valasz); return; }
+            hibak++; D.animal(svg, 'rezeg');
+            if (hibak >= 2) { vege = true; rajz(f.jo[0]); D.vege(false, MAGY[f.fajta], valasz); return; }
+            D.jelez(false, 'Olvasd fel hangosan! Kérdezel valamit? Csodálkozol, kérsz valamit, vagy csak elmondasz valamit?'); })); });
+    };
+
     function feladatElem(f) {
         if (!f || !f.tipus) { return null; }
         if (f.tipus === 'szamolo' && fejbenSzamolosTemakor()) {

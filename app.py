@@ -4960,6 +4960,88 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         return {"tipus": "akcio", "ar": ar, "p": p, "penznem": "EUR" if es_tanterv else "HUF",
                 "targy": targy, "kerdes": kerdes}
 
+    # ══ MINTAOLDALRÓL ÁTHOZOTT ELEMEK – E csoport (6. minta, 2. rész) ═══
+    # kor, maganh, jly, irasjel. A j/ly szavakat és a mondatokat NEM a tanár
+    # írja: csak a mi ellenőrzött listánkból választhat, hogy a gyerek ne
+    # lásson rosszul írt szót vagy rossz írásjelet.
+    def _dmE_kulcs(s):
+        s = unicodedata.normalize("NFD", str(s or "").strip().lower())
+        return "".join(ch for ch in s if unicodedata.category(ch) != "Mn")
+
+    if tipus == "kor":
+        RESZ = {"kozeppont": "kozeppont", "centro": "kozeppont", "sugar": "sugar", "radio": "sugar",
+                "atmero": "atmero", "diametro": "atmero", "hur": "hur", "cuerda": "hur",
+                "korvonal": "korvonal", "circunferencia": "korvonal"}
+        k = _dmE_kulcs(adat.get("resz"))
+        resz = RESZ.get(k) if k else random.choice(["kozeppont", "sugar", "atmero", "hur", "korvonal"])
+        if not resz:
+            return None
+        kerdes = ({"kozeppont": "Toca el centro de la circunferencia.", "sugar": "Toca un radio.",
+                   "atmero": "Toca un diámetro.", "hur": "Toca una cuerda.",
+                   "korvonal": "Toca la circunferencia."}[resz] if es_tanterv else
+                  {"kozeppont": "Hol van a kör középpontja?", "sugar": "Hol van a kör egyik sugara?",
+                   "atmero": "Hol van a kör egyik átmérője?", "hur": "Hol van a kör egyik húrja?",
+                   "korvonal": "Hol van a kör körvonala?"}[resz])
+        return {"tipus": "kor", "resz": resz, "kerdes": kerdes}
+
+    if tipus == "maganh":
+        szo = str(adat.get("szo") or "").strip().lower()
+        if not szo:
+            szo = random.choice(["mariposa", "elefante", "pelota", "camiseta", "tomate", "conejo", "pirata", "manzana"]
+                                if es_tanterv else
+                                ["kutya", "iskola", "papagáj", "elefánt", "ceruza", "tündér", "őszirózsa", "fagylalt", "óriás", "zsiráf"])
+        if es_tanterv:
+            # a „qu", „gue/gui" néma u-ja és a szó végi y megtévesztené a gyereket
+            if (not re.fullmatch(r"[a-záéíóúñ]{2,12}", szo) or "qu" in szo or re.search(r"g[uü][eéií]", szo)
+                    or "y" in szo):
+                return None
+            mh = "aeiouáéíóú"
+        else:
+            if not re.fullmatch(r"[a-záéíóöőúüű]{2,12}", szo) or re.search(r"(?<![glnt])y", szo):
+                return None
+            mh = "aáeéiíoóöőuúüű"
+        if not any(c in mh for c in szo) or all(c in mh for c in szo):
+            return None
+        kerdes = ("Toca las vocales." if es_tanterv else "Keresd meg a magánhangzókat!")
+        return {"tipus": "maganh", "szo": szo, "kerdes": kerdes}
+
+    if tipus == "jly":
+        if es_tanterv:
+            return None
+        SZAVAK = {"papagáj": "🦜", "király": "👑", "tojás": "🥚", "bagoly": "🦉", "vaj": "🧈", "folyó": "🏞️",
+                  "hajó": "🚢", "pulyka": "🦃", "lyuk": "🕳️", "játék": "🧸", "jég": "🧊", "sajt": "🧀",
+                  "mosolyog": "😊", "száj": "👄", "tej": "🥛", "gulyás": "🍲", "hópehely": "❄️",
+                  "gombolyag": "🧶", "jaguár": "🐆", "juh": "🐑", "fejsze": "🪓"}
+        szo = str(adat.get("szo") or "").strip().lower()
+        if not szo:
+            szo = random.choice(list(SZAVAK))
+        if szo not in SZAVAK:
+            return None
+        return {"tipus": "jly", "szo": szo, "kep": SZAVAK[szo],
+                "kerdes": "Melyik betű hiányzik: j vagy ly?"}
+
+    if tipus == "irasjel":
+        if es_tanterv:
+            return None
+        MONDATOK = {
+            "kijelento": [["Holnap kirándulni megyünk", "🎒"], ["A macska a kanapén alszik", "🐱"],
+                          ["Anya almás pitét süt", "🥧"], ["A kutya a kertben játszik", "🐶"]],
+            "kerdo": [["Hány óra van", "⏰"], ["Ki ette meg a tortát", "🎂"],
+                      ["Hol van a labdám", "⚽"], ["Mikor jön a nagymama", "👵"]],
+            "felkialto": [["De szép ez a virág", "🌸"], ["De finom ez a leves", "🍲"], ["De nagy ez a hegy", "⛰️"]],
+            "felszolito": [["Csukd be az ajtót", "🚪"], ["Gyere ide gyorsan", "🏃"], ["Mosd meg a kezed", "🧼"]],
+            "ohajto": [["Bárcsak esne a hó", "❄️"], ["Bárcsak itt lennél", "🤗"], ["Bárcsak nyár lenne", "☀️"]]}
+        # A felszólító és az óhajtó mondat végére pont is kerülhet (AkH.).
+        JEL = {"kijelento": ["."], "kerdo": ["?"], "felkialto": ["!"],
+               "felszolito": ["!", "."], "ohajto": ["!", "."]}
+        fajta = _dmE_kulcs(adat.get("fajta")) or random.choice(list(MONDATOK))
+        fajta = next((f for f in MONDATOK if fajta.startswith(f[:5])), None)
+        if not fajta:
+            return None
+        mondat, kep = random.choice(MONDATOK[fajta])
+        return {"tipus": "irasjel", "fajta": fajta, "mondat": mondat, "kep": kep, "jo": JEL[fajta],
+                "kerdes": "Melyik írásjel kerül a mondat végére?"}
+
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
         # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
@@ -8150,6 +8232,28 @@ _DM_FELULETEK = [
      '"targy" opcional: [emoji, nombre]. Solo para problemas de precio con descuento; para representar un porcentaje (colorear la barra) usa szazalek:\n'
      '   <FELADAT>{"tipus":"akcio","ar":40,"szazalek":15,"targy":["🎒","mochila"]}</FELADAT>',
      'akciós ár, árengedmény, % olcsóbb    → akcio', 'rebajas, descuento en la tienda      → akcio'),
+    ("kor", {"matek"}, 5, 6,
+     'A KÖR RÉSZEI – a gyerek a rajzon a kért részre koppint; "resz": kozeppont, sugar, atmero, hur vagy korvonal (elhagyva: a program választ). A kérdést a program írja:\n'
+     '   <FELADAT>{"tipus":"kor","resz":"sugar"}</FELADAT>',
+     'PARTES DE LA CIRCUNFERENCIA – el niño toca en el dibujo la parte pedida; "resz": centro, radio, diametro, cuerda o circunferencia (si se omite, la elige el programa). La pregunta la escribe el programa:\n'
+     '   <FELADAT>{"tipus":"kor","resz":"radio"}</FELADAT>',
+     'a kör részei, sugár, átmérő, húr     → kor', 'centro, radio, diámetro, cuerda     → kor'),
+    ("maganh", {"magyar"}, 1, 2,
+     'MAGÁNHANGZÓK – a szó betűi közül a gyerek kijelöli a magánhangzókat. "szo": egy köznapi szó, 2–12 betű, csak a magyar ábécé betűi (elhagyva: a program választ):\n'
+     '   <FELADAT>{"tipus":"maganh","szo":"iskola"}</FELADAT>',
+     'VOCALES – el niño marca las vocales de la palabra. "szo": una palabra corriente de 2–12 letras, sin "qu", "gue", "gui" ni "y" (si se omite, la elige el programa):\n'
+     '   <FELADAT>{"tipus":"maganh","szo":"mariposa"}</FELADAT>',
+     'magánhangzó, mássalhangzó            → maganh', 'vocales y consonantes               → maganh'),
+    ("jly", {"magyar"}, 2, 4,
+     'J VAGY LY – képpel, a szóból hiányzik a j vagy az ly, a gyerek választ. "szo" CSAK ezek egyike lehet: papagáj, király, tojás, bagoly, vaj, folyó, hajó, pulyka, lyuk, játék, jég, sajt, mosolyog, száj, tej, gulyás, hópehely, gombolyag, jaguár, juh, fejsze (elhagyva: a program választ). A szót ne írd le előtte:\n'
+     '   <FELADAT>{"tipus":"jly","szo":"bagoly"}</FELADAT>',
+     None,
+     'j vagy ly helyesírása                → jly', None),
+    ("irasjel", {"magyar"}, 2, 4,
+     'MONDATFAJTÁK, ÍRÁSJEL – a program egy mondatot mutat írásjel nélkül, a gyerek kiválasztja a végére a pontot, kérdőjelet vagy felkiáltójelet. "fajta": kijelento, kerdo, felkialto, felszolito vagy ohajto (elhagyva: a program választ). A mondatot a program adja:\n'
+     '   <FELADAT>{"tipus":"irasjel","fajta":"kerdo"}</FELADAT>',
+     None,
+     'mondatfajták, mondatvégi írásjel     → irasjel', None),
 ]
 
 
@@ -8176,7 +8280,7 @@ def _dm_cimkek(subject_label: str, idegen: bool) -> set:
 def _dm_feladat_blokk(subject_label: str, grade: int, *, es: bool, idegen: bool = False) -> str:
     cimkek = _dm_cimkek(subject_label, idegen)
     talalt = [f for f in _DM_FELULETEK
-              if (f[1] & cimkek) and f[2] - 1 <= (grade or 0) <= f[3] + 1]
+              if (f[1] & cimkek) and f[2] - 1 <= (grade or 0) <= f[3] + 1 and (f[5] if es else f[4])]
     if not talalt:
         return ""
     if es:
