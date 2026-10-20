@@ -2848,9 +2848,10 @@ def add_child():
         region = request.form.get("region") or None
         # A gyerek neme: csak a kabala figurához kell, megadása nem kötelező.
         neme = (request.form.get("gyerek_neme") or "").strip()
-        # A "robot" a mozgó kabala figura. A megadása nem kötelező: üres
-        # érték mellett egyáltalán nincs figura a chat oldalon.
-        if neme not in ("fiu", "lany", "robot"):
+        # A "robot" a mozgó kabala figura, a "robot_kep" a rajzolt (álló) robot.
+        # A megadása nem kötelező: üres érték mellett egyáltalán nincs figura
+        # a chat oldalon.
+        if neme not in ("fiu", "lany", "robot", "robot_kep"):
             neme = ""
 
         errors = False
@@ -2983,9 +2984,10 @@ def edit_child(child_id: int):
         if voice_es not in ("female", "male"):
             voice_es = "female"
         neme = (request.form.get("gyerek_neme") or "").strip()
-        # A "robot" a mozgó kabala figura. A megadása nem kötelező: üres
-        # érték mellett egyáltalán nincs figura a chat oldalon.
-        if neme not in ("fiu", "lany", "robot"):
+        # A "robot" a mozgó kabala figura, a "robot_kep" a rajzolt (álló) robot.
+        # A megadása nem kötelező: üres érték mellett egyáltalán nincs figura
+        # a chat oldalon.
+        if neme not in ("fiu", "lany", "robot", "robot_kep"):
             neme = ""
 
         errors = False
@@ -11727,7 +11729,11 @@ def child_chat(child_id: int):
     # KABALA FIGURA. Csak akkor van, ha a szülő megadta a gyerek nemét.
     # Ha nincs megadva, egyszerűen nem jelenik meg semmi.
     _neme = (child.get("gyerek_neme") or "").strip()
-    _kabala = {"fiu": "kabala/fiu.png", "lany": "kabala/lany.png"}.get(_neme)
+    _kabala = {
+        "fiu": "kabala/fiu.png",
+        "lany": "kabala/lany.png",
+        "robot_kep": "figurak/robot/alap.webp",
+    }.get(_neme)
     # A MOZGÓ FIGURA külön választás, nem a nem helyett: a fiú és a lány
     # kabala megmarad, a "nem adom meg" pedig továbbra is üres oszlopot ad.
     _kabala_robot = (_neme == "robot")
@@ -12999,6 +13005,7 @@ def child_chat_test_generate(child_id: int):
     catalog = chat_curriculum.get("topic_catalog") or []
     topic = get_topic_from_catalog(catalog, topic_id)
     if not topic:
+        logger.warning("KVIZ_HIBA topic_not_found subject=%s topic=%s", subject, topic_id)
         return jsonify({"error": "topic_not_found"}), 404
 
     # ── A TESZT KAPUJA ──────────────────────────────────────────────
@@ -13089,10 +13096,11 @@ def child_chat_test_generate(child_id: int):
             oral=oral,
         )
     except NotImplementedError:
+        logger.error("KVIZ_HIBA nincs OPENAI_API_KEY a szerveren")
         return jsonify({"error": "openai_not_configured"}), 501
     except Exception as exc:
-        logger.exception("Kvíz generálás hiba: %s", exc)
-        return jsonify({"error": "quiz_failed", "detail": str(exc)}), 500
+        logger.exception("KVIZ_HIBA Kvíz generálás hiba: %s", exc)
+        return jsonify({"error": "quiz_failed", "detail": str(exc)[:300]}), 500
 
     return jsonify({"questions": questions, "topic_id": topic_id, "topic_name": topic["name"], "ora_szam": topic.get("ora_szam", 0)})
 
