@@ -5305,6 +5305,765 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             "¡Busca los pares que riman!" if es_tanterv else "Keresd meg a rímpárokat!")
         return {"tipus": "rim", "parok": parok, "kerdes": kerdes}
 
+    if tipus == "toldalek":
+        # Magyar: toldalék (rag/jel); spanyol: végződés (plural/género).
+        TOLD_HU = [
+            ["🍎🍎🍎", "Sok", "alma", ["k", "t", "ban"], "k", "almák",
+             "Az -a végű szó toldalék előtt -á-ra változik: alma → almák."],
+            ["🐱🏠", "A cica a", "ház", ["ban", "ben", "on"], "ban", "házban",
+             "A ház mély hangrendű szó (á), ezért -ban kell, nem -ben."],
+            ["🐦🌳", "A madár a", "fá", ["n", "ban", "ra"], "n", "fán",
+             "Ami a fa tetején van, az a fá-n van."],
+            ["📖🎒", "A könyv a", "táská", ["ban", "ben", "n"], "ban", "táskában",
+             "Mély hangrendű szó (a, á) → -ban."],
+            ["🐶🐶", "Két", "kutya", ["", "k", "t"], "", "kutya",
+             "Számnév után nem teszünk többes számot: két kutya, nem két kutyák!"],
+            ["🍦", "Megettem a", "fagyi", ["t", "k", "ban"], "t", "fagyit",
+             "Mit ettem meg? → -t (tárgyrag): fagyit."],
+            ["🏡🌷", "A virág a", "kert", ["ben", "ban", "on"], "ben", "kertben",
+             "A kert magas hangrendű (e), ezért -ben."],
+            ["🍽️", "A tányér az", "asztal", ["on", "en", "ban"], "on", "asztalon",
+             "Ami rajta van: -on (mély hangrend: a)."],
+        ]
+        TOLD_ES = [
+            ["📚📚", "Muchos", "libro", ["s", "es", ""], "s", "libros",
+             "El plural de las palabras en -o suele ser -s: libro → libros."],
+            ["🏠🏠", "Muchas", "casa", ["s", "es", ""], "s", "casas",
+             "El plural de las palabras en -a suele ser -s: casa → casas."],
+            ["🐟", "Un", "pez", ["es", "s", ""], "es", "peces",
+             "Palabras en -z: pez → peces (z → c + es)."],
+            ["🌸", "Una", "flor", ["es", "s", ""], "es", "flores",
+             "Si termina en consonante, el plural suele ser -es: flor → flores."],
+            ["🐱", "El", "gato", ["s", "es", ""], "s", "gatos",
+             "gato → gatos: añadimos -s."],
+            ["✏️", "Un", "lápiz", ["es", "s", ""], "es", "lápices",
+             "lápiz → lápices: z → c + es."],
+        ]
+        catalog = TOLD_ES if es_tanterv else TOLD_HU
+
+        def _told_sz(s, n):
+            """Toldalék / választék: az üres string is érvényes („semmi”)."""
+            if s is None:
+                return None
+            s = str(s).strip()
+            return s if len(s) <= n else None
+
+        kep = _rov(adat.get("kep"), 16)
+        elotag = _told_sz(adat.get("elotag"), 40) if "elotag" in adat else None
+        to = _rov(adat.get("to"), 24)
+        kesz = _rov(adat.get("kesz"), 32)
+        tipp = _rov(adat.get("tipp"), 160)
+        jo_raw = adat.get("jo")
+        valaszt_raw = adat.get("valaszt")
+        if kep and elotag is not None and to and kesz and valaszt_raw is not None and jo_raw is not None:
+            try:
+                valaszt = [_told_sz(x, 12) for x in valaszt_raw]
+                jo = _told_sz(jo_raw, 12)
+            except Exception:
+                return None
+            if None in valaszt or jo is None or len(valaszt) != 3:
+                return None
+            if jo not in valaszt:
+                return None
+            if not tipp:
+                tipp = ("¡Así es!" if es_tanterv else "Így van!")
+        else:
+            row = random.choice(catalog)
+            kep, elotag, to, valaszt, jo, kesz, tipp = (
+                row[0], row[1], row[2], list(row[3]), row[4], row[5], row[6])
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué terminación encaja al final de la palabra?"
+            if es_tanterv else
+            "Melyik toldalék illik a szó végére?")
+        return {"tipus": "toldalek", "kep": kep, "elotag": elotag, "to": to,
+                "valaszt": valaszt, "jo": jo, "kesz": kesz, "tipp": tipp, "kerdes": kerdes}
+
+    if tipus == "kepsor":
+        SOR = {"noveny": "noveny", "növény": "noveny", "planta": "noveny", "plant": "noveny",
+               "lepke": "lepke", "mariposa": "lepke", "butterfly": "lepke"}
+        nyers = str(adat.get("sorozat") or "").strip()
+        if nyers:
+            sorozat = SOR.get(nyers.casefold()) or SOR.get(nyers)
+            if not sorozat:
+                return None
+        else:
+            sorozat = random.choice(["noveny", "lepke"])
+        NEV = {"noveny": ("a növény fejlődése", "el crecimiento de la planta"),
+               "lepke": ("a lepke élete", "la vida de la mariposa")}[sorozat]
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            f"¡Ordena las imágenes: {NEV[1]}!"
+            if es_tanterv else
+            f"Rakd sorrendbe a képeket: {NEV[0]}!")
+        return {"tipus": "kepsor", "sorozat": sorozat, "kerdes": kerdes}
+
+    if tipus == "szamangol":
+        try:
+            szam = int(adat.get("szam")) if adat.get("szam") is not None else random.randint(0, 20)
+        except Exception:
+            return None
+        if not (0 <= szam <= 20):
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Escucha y toca el número correcto!"
+            if es_tanterv else
+            "Hallgasd meg, és koppints a jó számra!")
+        return {"tipus": "szamangol", "szam": szam, "kerdes": kerdes}
+
+    if tipus == "idojaras":
+        KANON = {
+            "sunny": "sunny", "napos": "sunny", "soleado": "sunny", "sol": "sunny",
+            "rainy": "rainy", "eso": "rainy", "eső": "rainy", "lluvioso": "rainy", "lluvia": "rainy",
+            "snowy": "snowy", "ho": "snowy", "hó": "snowy", "nevado": "snowy", "nieve": "snowy",
+            "windy": "windy", "szel": "windy", "szél": "windy", "ventoso": "windy", "viento": "windy",
+            "cloudy": "cloudy", "felhos": "cloudy", "felhős": "cloudy", "nublado": "cloudy",
+        }
+        nyers = str(adat.get("ido") or "").strip()
+        ido = KANON.get(nyers.casefold()) or KANON.get(nyers)
+        if not ido:
+            if nyers:
+                return None
+            ido = random.choice(["sunny", "rainy", "snowy", "windy", "cloudy"])
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Escucha y toca la imagen del tiempo!"
+            if es_tanterv else
+            "Hallgasd meg, és koppints a jó időjárás-képre!")
+        return {"tipus": "idojaras", "ido": ido, "kerdes": kerdes}
+
+    if tipus == "evszak":
+        # Négy fa + négy évszaknév; a tanárnak nem kell adatot küldenie.
+        # Opcionális "sorrend": pontosan a 4 kulcs (tavasz/nyar/osz/tel).
+        sorrend = adat.get("sorrend")
+        if sorrend is not None:
+            if not isinstance(sorrend, list) or len(sorrend) != 4:
+                return None
+            if set(sorrend) != {"tavasz", "nyar", "osz", "tel"}:
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Pon el nombre de cada estación bajo el árbol correcto!"
+            if es_tanterv else
+            "Rakd az évszak nevét a jó fa alá!")
+        return {"tipus": "evszak", "kerdes": kerdes}
+
+    if tipus == "elohely":
+        # Alap: erdő/tenger/sivatag/sarkvidék, 2–2 állat véletlenül.
+        # Opcionális "helyek": 4 [{kulcs,nev,allatok:[[emoji,név],...]}]
+        KANON = {
+            "erdo": "erdo", "erdő": "erdo", "bosque": "erdo",
+            "tenger": "tenger", "mar": "tenger",
+            "sivatag": "sivatag", "desierto": "sivatag",
+            "sarkvidek": "sarkvidek", "sarkvidék": "sarkvidek", "polo": "sarkvidek",
+        }
+        nyers = adat.get("helyek")
+        helyek = None
+        if nyers is not None:
+            if not isinstance(nyers, list) or len(nyers) != 4:
+                return None
+            helyek = []
+            for h in nyers:
+                try:
+                    kulcs = KANON.get(str(h.get("kulcs") or "").strip().casefold()) or KANON.get(str(h.get("kulcs") or "").strip())
+                    nev = _rov(h.get("nev"), 24)
+                    allatok = []
+                    for a in (h.get("allatok") or []):
+                        em, an = _rov(a[0], 8), _rov(a[1], 20)
+                        if not em or not an:
+                            return None
+                        allatok.append([em, an])
+                except Exception:
+                    return None
+                if not kulcs or not nev or not (2 <= len(allatok) <= 5):
+                    return None
+                helyek.append({"kulcs": kulcs, "nev": nev, "allatok": allatok})
+            if len({h["kulcs"] for h in helyek}) != 4:
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Dónde vive cada animal? ¡Colócalos en su hábitat!"
+            if es_tanterv else
+            "Hol él az állat? Rakd a jó élőhelyre!")
+        out = {"tipus": "elohely", "kerdes": kerdes}
+        if helyek is not None:
+            out["helyek"] = helyek
+        return out
+
+    if tipus == "tanyer":
+        # Opcionális "db_csoport": hány étel / csoport (1–3); hibás → None.
+        db = adat.get("db_csoport")
+        if db is not None:
+            try:
+                db = int(db)
+            except Exception:
+                return None
+            if not (1 <= db <= 3):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Pon cada alimento en la parte correcta del plato!"
+            if es_tanterv else
+            "Mi hova kerül az okos tányéron?")
+        out = {"tipus": "tanyer", "kerdes": kerdes}
+        if db is not None:
+            out["db_csoport"] = db
+        return out
+
+    if tipus == "bolygo":
+        # Opcionális "db": hány bolygó (csak 8 elfogadott – a teljes Naprendszer).
+        db = adat.get("db")
+        if db is not None:
+            try:
+                db = int(db)
+            except Exception:
+                return None
+            if db != 8:
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Ordena los planetas desde el Sol hacia fuera!"
+            if es_tanterv else
+            "Rakd sorba a Naprendszer bolygóit a Naptól kifelé!")
+        return {"tipus": "bolygo", "kerdes": kerdes}
+
+    if tipus == "vezeto":
+        # Vezetők / szigetelők próbája. Opcionális "db": 4–8 tárgy.
+        db = adat.get("db")
+        if db is not None:
+            try:
+                db = int(db)
+            except Exception:
+                return None
+            if not (4 <= db <= 8):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué conduce la corriente? ¡Pruébalo!"
+            if es_tanterv else
+            "Melyik vezeti az áramot? Próbáld ki!")
+        out = {"tipus": "vezeto", "kerdes": kerdes}
+        if db is not None:
+            out["db"] = db
+        return out
+
+    if tipus == "poharak":
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Cuál vaso suena grave y cuál agudo? ¡Ordénalos!"
+            if es_tanterv else
+            "Melyik pohárnak mély, melyiknek magas a hangja?")
+        # Opcionális "db": csak 5 pohár elfogadott (a minta hangkészlete).
+        db = adat.get("db")
+        if db is not None:
+            try:
+                db = int(db)
+            except Exception:
+                return None
+            if db != 5:
+                return None
+        return {"tipus": "poharak", "kerdes": kerdes}
+
+    if tipus == "domb":
+        # Valósághű canvas domborzati térkép + jelmagyarázat.
+        mag = adat.get("mag")
+        if mag is not None:
+            try:
+                mag = int(mag)
+            except Exception:
+                return None
+            if mag < 0:
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué significan los colores del mapa de relieve?"
+            if es_tanterv else
+            "Mit jelentenek a színek a domborzati térképen?")
+        out = {"tipus": "domb", "kerdes": kerdes}
+        if mag is not None:
+            out["mag"] = mag
+        return out
+
+    if tipus == "sorozat":
+        # Számvonat: 6 elemű számtani sorozat, 2 hiányzó kocsi.
+        sor = adat.get("sor")
+        hiany = adat.get("hiany")
+        if sor is not None:
+            try:
+                sor = [int(x) for x in sor]
+            except Exception:
+                return None
+            if len(sor) != 6 or any(v < 0 or v > 100 for v in sor):
+                return None
+            d = sor[1] - sor[0]
+            if d == 0 or any(sor[i] != sor[0] + i * d for i in range(6)):
+                return None
+        if hiany is not None:
+            try:
+                hiany = [int(x) for x in hiany]
+            except Exception:
+                return None
+            if len(hiany) != 2 or len(set(hiany)) != 2:
+                return None
+            if not all(2 <= i <= 5 for i in hiany):
+                return None
+            if sor is not None and any(i >= len(sor) for i in hiany):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué números van en los vagones con ?"
+            if es_tanterv else
+            "Milyen szám van a ? kocsikon?")
+        out = {"tipus": "sorozat", "kerdes": kerdes}
+        if sor is not None:
+            out["sor"] = sor
+        if hiany is not None:
+            out["hiany"] = hiany
+        return out
+
+    if tipus == "zokni":
+        n = adat.get("n")
+        if n is not None:
+            try:
+                n = int(n)
+            except Exception:
+                return None
+            if not (5 <= n <= 12):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Empareja los calcetines! ¿El número es par o impar?"
+            if es_tanterv else
+            "Párosítsd a zoknikat! Páros vagy páratlan a szám?")
+        out = {"tipus": "zokni", "kerdes": kerdes}
+        if n is not None:
+            out["n"] = n
+        return out
+
+    if tipus == "becsles":
+        n = adat.get("n")
+        if n is not None:
+            try:
+                n = int(n)
+            except Exception:
+                return None
+            if not (12 <= n <= 60):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Cuántos caramelos hay? ¡Estímalo, no los cuentes!"
+            if es_tanterv else
+            "Szerinted hány cukorka van? Becsüld meg, ne számold!")
+        out = {"tipus": "becsles", "kerdes": kerdes}
+        if n is not None:
+            out["n"] = n
+        return out
+
+    if tipus == "allitas":
+        szoveg = _rov(adat.get("szoveg"), 120)
+        igaz = adat.get("igaz")
+        if szoveg is not None or igaz is not None:
+            if not szoveg or not isinstance(igaz, bool):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Verdadero o falso? ¡Mira los globos!"
+            if es_tanterv else
+            "Igaz vagy hamis? Nézd meg a léggömböket!")
+        out = {"tipus": "allitas", "kerdes": kerdes}
+        if szoveg is not None:
+            out["szoveg"] = szoveg
+            out["igaz"] = igaz
+        return out
+
+    if tipus == "urmertek":
+        cel = adat.get("cel")
+        if cel is not None:
+            try:
+                cel = int(cel)
+            except Exception:
+                return None
+            if not (1 <= cel <= 10):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Llena la jarra con exactamente la cantidad pedida!"
+            if es_tanterv else
+            "Tölts a kancsóba pontosan a kért mennyiséget!")
+        out = {"tipus": "urmertek", "kerdes": kerdes}
+        if cel is not None:
+            out["cel"] = cel
+        return out
+
+    if tipus == "nezet":
+        mag = adat.get("magassagok")
+        irany = adat.get("irany")
+        if mag is not None:
+            try:
+                mag = [[int(x) for x in sor] for sor in mag]
+            except Exception:
+                return None
+            if len(mag) != 3 or any(len(s) != 3 for s in mag):
+                return None
+            if any(v < 0 or v > 3 for sor in mag for v in sor):
+                return None
+            ossz = sum(v for sor in mag for v in sor)
+            if ossz < 3 or ossz > 18:
+                return None
+        if irany is not None:
+            ir = str(irany).strip().lower()
+            if ir in ("elol", "frente", "delante"):
+                irany = "elol"
+            elif ir in ("oldalt", "lado", "de lado"):
+                irany = "oldalt"
+            else:
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué imagen ve el niño desde su posición?"
+            if es_tanterv else
+            "Melyik képet látja a kisfiú az ő helyéről?")
+        out = {"tipus": "nezet", "kerdes": kerdes}
+        if mag is not None:
+            out["magassagok"] = mag
+        if irany is not None:
+            out["irany"] = irany
+        return out
+
+    if tipus == "betu":
+        szavak = adat.get("szavak")
+        if szavak is not None:
+            if not isinstance(szavak, list) or len(szavak) != 5:
+                return None
+            tiszt = []
+            for s in szavak:
+                if isinstance(s, (list, tuple)) and len(s) >= 2:
+                    kep, szo = _rov(s[0], 8), _rov(s[1], 20)
+                elif isinstance(s, dict):
+                    kep, szo = _rov(s.get("kep"), 8), _rov(s.get("szo"), 20)
+                else:
+                    return None
+                if not kep or not szo:
+                    return None
+                tiszt.append([kep, szo])
+            szavak = tiszt
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Ordena las palabras alfabéticamente!"
+            if es_tanterv else
+            "Rakd a szavakat ábécérendbe!")
+        out = {"tipus": "betu", "kerdes": kerdes}
+        if szavak is not None:
+            out["szavak"] = szavak
+        return out
+
+    if tipus == "szofaj":
+        szavak = adat.get("szavak")
+        TIP_MAP = {"sustantivo": "fonev", "verbo": "ige", "adjetivo": "melleknev",
+                   "fonev": "fonev", "ige": "ige", "melleknev": "melleknev"}
+        if szavak is not None:
+            if not isinstance(szavak, list) or not (6 <= len(szavak) <= 12):
+                return None
+            tiszt = []
+            for s in szavak:
+                if isinstance(s, (list, tuple)) and len(s) >= 2:
+                    szo, tip = _rov(s[0], 24), str(s[1]).strip().lower()
+                elif isinstance(s, dict):
+                    szo = _rov(s.get("szo"), 24)
+                    tip = str(s.get("tip") or "").strip().lower()
+                else:
+                    return None
+                tip = TIP_MAP.get(tip)
+                if not szo or not tip:
+                    return None
+                tiszt.append({"szo": szo, "tip": tip})
+            if len({x["tip"] for x in tiszt}) < 2:
+                return None
+            szavak = tiszt
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué palabra va en cada caja: sustantivo, verbo o adjetivo?"
+            if es_tanterv else
+            "Melyik szó melyik ládába való: főnév, ige vagy melléknév?")
+        out = {"tipus": "szofaj", "kerdes": kerdes}
+        if szavak is not None:
+            out["szavak"] = szavak
+        return out
+
+    if tipus == "nagybetu":
+        mondat = _rov(adat.get("mondat"), 160)
+        nagy = adat.get("nagy")
+        if mondat is not None or nagy is not None:
+            if not mondat or not isinstance(nagy, list) or not nagy:
+                return None
+            try:
+                nagy = [int(x) for x in nagy]
+            except Exception:
+                return None
+            szavak = mondat.split()
+            if any(i < 0 or i >= len(szavak) for i in nagy):
+                return None
+            if len(set(nagy)) != len(nagy):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué palabras deben empezar con mayúscula?"
+            if es_tanterv else
+            "Melyik szót kell nagy kezdőbetűvel írni?")
+        out = {"tipus": "nagybetu", "kerdes": kerdes}
+        if mondat is not None:
+            out["mondat"] = mondat
+            out["nagy"] = nagy
+        return out
+
+    if tipus == "tilde":
+        # Spanyol sílaba tónica – magyar tanterven is elfogadjuk, de a
+        # leírás jelzi: elsősorban spanyol nyelvtanhoz való.
+        kep = _rov(adat.get("kep"), 8)
+        tonica = adat.get("tonica")
+        szotagok = adat.get("szotagok")
+        if kep is not None or tonica is not None or szotagok is not None:
+            if not kep or tonica is None or szotagok is None:
+                return None
+            try:
+                tonica = int(tonica)
+            except Exception:
+                return None
+            if isinstance(szotagok, str):
+                reszek = [x for x in szotagok.replace(" ", "").split("-") if x]
+            elif isinstance(szotagok, list):
+                reszek = [_rov(x, 12) for x in szotagok]
+                if None in reszek:
+                    return None
+            else:
+                return None
+            if not (2 <= len(reszek) <= 5) or not (0 <= tonica < len(reszek)):
+                return None
+            szotagok = reszek
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Cuál es la sílaba tónica? Luego elige: aguda, llana o esdrújula."
+            if es_tanterv else
+            "Melyik a hangsúlyos szótag? Aztán: aguda, llana vagy esdrújula?")
+        out = {"tipus": "tilde", "kerdes": kerdes}
+        if kep is not None:
+            out["kep"] = kep
+            out["szotagok"] = szotagok
+            out["tonica"] = tonica
+        return out
+
+    if tipus == "nevelo":
+        mod_raw = str(adat.get("mod") or adat.get("nyelv") or "").strip().lower()
+        if mod_raw in ("en", "angol", "english"):
+            mod = "en"
+        elif mod_raw in ("es", "spanyol", "espanol", "español"):
+            mod = "es"
+        elif mod_raw in ("hu", "magyar"):
+            mod = "hu"
+        elif es_tanterv:
+            mod = "es"
+        else:
+            mod = "hu"
+        nevelo = _rov(adat.get("nevelo"), 8)
+        szo = _rov(adat.get("szo"), 24)
+        kep = _rov(adat.get("kep"), 8)
+        tobb = adat.get("tobb")
+        if nevelo is not None or szo is not None:
+            if not nevelo or not szo:
+                return None
+            nevelo = nevelo.lower()
+            engedett = {"hu": {"a", "az"}, "en": {"a", "an"}, "es": {"el", "la", "los", "las"}}[mod]
+            if nevelo not in engedett:
+                return None
+            if tobb is not None and not isinstance(tobb, bool):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120)
+        if not kerdes:
+            if mod == "es":
+                kerdes = ("¿Qué artículo encaja: el, la, los o las?"
+                          if es_tanterv else
+                          "Melyik névelő illik: el, la, los vagy las?")
+            elif mod == "en":
+                kerdes = ("A or an? Choose the correct article."
+                          if es_tanterv else
+                          "A vagy an? Válaszd ki a jó névelőt!")
+            else:
+                kerdes = ("¿A o az? Elige el artículo correcto."
+                          if es_tanterv else
+                          "A vagy az? Válaszd ki a jó névelőt!")
+        out = {"tipus": "nevelo", "kerdes": kerdes, "mod": mod}
+        if nevelo is not None:
+            out["nevelo"] = nevelo
+            out["szo"] = szo
+            if kep:
+                out["kep"] = kep
+            if isinstance(tobb, bool):
+                out["tobb"] = tobb
+        return out
+
+    if tipus == "gerinces":
+        csoportok = adat.get("csoportok")
+        if csoportok is not None:
+            if not isinstance(csoportok, list) or not (3 <= len(csoportok) <= 5):
+                return None
+            tiszt = []
+            for c in csoportok:
+                if isinstance(c, dict):
+                    cid = _rov(c.get("id"), 16)
+                    nev = _rov(c.get("nev"), 24)
+                    leir = _rov(c.get("leir"), 80) or ""
+                    allatok = c.get("allatok") or []
+                elif isinstance(c, (list, tuple)) and len(c) >= 3:
+                    cid = _rov(c[0], 16)
+                    nev = _rov(c[1], 24)
+                    leir = _rov(c[2], 80) or ""
+                    allatok = c[3] if len(c) > 3 else []
+                else:
+                    return None
+                if not cid or not nev or not isinstance(allatok, list) or not allatok:
+                    return None
+                all_tiszt = []
+                for a in allatok[:5]:
+                    if isinstance(a, (list, tuple)) and len(a) >= 2:
+                        kep_a, nev_a = _rov(a[0], 8), _rov(a[1], 20)
+                    elif isinstance(a, dict):
+                        kep_a, nev_a = _rov(a.get("kep"), 8), _rov(a.get("nev"), 20)
+                    else:
+                        return None
+                    if not kep_a or not nev_a:
+                        return None
+                    all_tiszt.append([kep_a, nev_a])
+                tiszt.append({"id": cid, "nev": nev, "leir": leir, "allatok": all_tiszt})
+            csoportok = tiszt
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿A qué grupo de vertebrados pertenece el animal?"
+            if es_tanterv else
+            "Melyik csoportba tartozik az állat?")
+        out = {"tipus": "gerinces", "kerdes": kerdes}
+        if csoportok is not None:
+            out["csoportok"] = csoportok
+        return out
+
+    if tipus == "ciklus":
+        ALLAT = {"beka": "beka", "béka": "beka", "rana": "beka",
+                 "lepke": "lepke", "mariposa": "lepke", "butterfly": "lepke"}
+        allat = adat.get("allat")
+        if allat is not None:
+            kulcs = ALLAT.get(str(allat).strip().lower())
+            if not kulcs:
+                return None
+            allat = kulcs
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Cómo se desarrolla? ¡Ordena el ciclo de la vida!"
+            if es_tanterv else
+            "Rakd sorba: hogyan fejlődik? Az 1. a legfelső.")
+        out = {"tipus": "ciklus", "kerdes": kerdes}
+        if allat is not None:
+            out["allat"] = allat
+        return out
+
+    if tipus == "szin":
+        # ABC-sorrendű kulcsok (a böngésző sort()-ja szerint)
+        CEL_OK = {
+            "kek+sarga", "kek+piros", "piros+sarga",
+            "feher+kek", "feher+piros", "feher+sarga",
+            "amarillo+azul", "amarillo+rojo", "azul+rojo",
+            "blanco+azul", "blanco+rojo", "amarillo+blanco",
+        }
+        cel = adat.get("cel")
+        if cel is not None:
+            cel = str(cel).strip().lower().replace(" ", "")
+            cel = (cel.replace("á", "a").replace("é", "e").replace("í", "i")
+                     .replace("ó", "o").replace("ö", "o").replace("ő", "o")
+                     .replace("ú", "u").replace("ü", "u").replace("ű", "u"))
+            reszek = sorted(cel.split("+"))
+            if len(reszek) != 2:
+                return None
+            cel = "+".join(reszek)
+            if cel not in CEL_OK:
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Mezcla el color pedido! Toca dos pinturas."
+            if es_tanterv else
+            "Keverd ki a kért színt! Koppints két festékre.")
+        out = {"tipus": "szin", "kerdes": kerdes}
+        if cel is not None:
+            out["cel"] = cel
+        return out
+
+    if tipus == "hangszer":
+        csaladok = adat.get("csaladok")
+        if csaladok is not None:
+            if not isinstance(csaladok, list) or not (3 <= len(csaladok) <= 4):
+                return None
+            tiszt = []
+            for c in csaladok:
+                if isinstance(c, dict):
+                    cid, nev = _rov(c.get("id"), 16), _rov(c.get("nev"), 24)
+                    leir = _rov(c.get("leir"), 80) or ""
+                    hs = c.get("hangszerek") or []
+                elif isinstance(c, (list, tuple)) and len(c) >= 3:
+                    cid, nev = _rov(c[0], 16), _rov(c[1], 24)
+                    leir = _rov(c[2], 80) or ""
+                    hs = c[3] if len(c) > 3 else []
+                else:
+                    return None
+                if not cid or not nev or not isinstance(hs, list) or not hs:
+                    return None
+                hs_t = []
+                for h in hs[:4]:
+                    if isinstance(h, (list, tuple)) and len(h) >= 2:
+                        kep, nev_h = _rov(h[0], 8), _rov(h[1], 20)
+                    elif isinstance(h, dict):
+                        kep, nev_h = _rov(h.get("kep"), 8), _rov(h.get("nev"), 20)
+                    else:
+                        return None
+                    if not kep or not nev_h:
+                        return None
+                    hs_t.append([kep, nev_h])
+                tiszt.append({"id": cid, "nev": nev, "leir": leir, "hangszerek": hs_t})
+            csaladok = tiszt
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿A qué familia de instrumentos pertenece?"
+            if es_tanterv else
+            "Melyik hangszercsaládba tartozik?")
+        out = {"tipus": "hangszer", "kerdes": kerdes}
+        if csaladok is not None:
+            out["csaladok"] = csaladok
+        return out
+
+    if tipus == "szoba":
+        SZOBAK = {"bedroom", "bathroom", "kitchen", "living room", "livingroom"}
+        szoba = adat.get("szoba")
+        kerdes_en = _rov(adat.get("kerdes_en") or adat.get("mondat"), 80)
+        if szoba is not None or kerdes_en is not None:
+            if not szoba:
+                return None
+            sz = str(szoba).strip().lower().replace("_", " ")
+            if sz == "livingroom":
+                sz = "living room"
+            if sz not in SZOBAK:
+                return None
+            szoba = sz
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Escucha y toca la habitación correcta!"
+            if es_tanterv else
+            "Hallgasd meg, és koppints a jó szobára!")
+        out = {"tipus": "szoba", "kerdes": kerdes}
+        if szoba is not None:
+            out["szoba"] = szoba
+            if kerdes_en:
+                out["kerdes_en"] = kerdes_en
+        return out
+
+    if tipus == "tapl":
+        lanc = adat.get("lanc")
+        if lanc is not None:
+            if not isinstance(lanc, list) or not (3 <= len(lanc) <= 5):
+                return None
+            tiszt = []
+            for a in lanc:
+                if isinstance(a, (list, tuple)) and len(a) >= 2:
+                    kep, nev = _rov(a[0], 8), _rov(a[1], 20)
+                elif isinstance(a, dict):
+                    kep, nev = _rov(a.get("kep"), 8), _rov(a.get("nev"), 20)
+                else:
+                    return None
+                if not kep or not nev:
+                    return None
+                tiszt.append([kep, nev])
+            if len({x[1] for x in tiszt}) != len(tiszt):
+                return None
+            lanc = tiszt
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Quién se come a quién? ¡Ordena la cadena alimentaria!"
+            if es_tanterv else
+            "Ki kit eszik? Rakd sorba a táplálékláncot!")
+        out = {"tipus": "tapl", "kerdes": kerdes}
+        if lanc is not None:
+            out["lanc"] = lanc
+        return out
+
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
         # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
@@ -8612,6 +9371,178 @@ _DM_FELULETEK = [
      'PARES QUE RIMAN – el niño busca cuatro pares. "parok" opcional (rímas en español); si se omite, lista española:\n'
      '   <FELADAT>{"tipus":"rim"}</FELADAT>',
      'rímpárok, rímelő szavak              → rim', 'pares que riman                     → rim'),
+    ("toldalek", {"magyar"}, 2, 4,
+     'TOLDALÉK – a gyerek a helyes toldalékra koppint. Add meg: kep, elotag, to, valaszt (3 db), jo, kesz, tipp; vagy hagyd üresen (kész lista):\n'
+     '   <FELADAT>{"tipus":"toldalek","kep":"🍎🍎🍎","elotag":"Sok","to":"alma","valaszt":["k","t","ban"],"jo":"k","kesz":"almák","tipp":"alma → almák."}</FELADAT>',
+     'TERMINACIÓN – el niño toca la terminación correcta (plural u otra). Campos: kep, elotag, to, valaszt, jo, kesz, tipp; o lista lista:\n'
+     '   <FELADAT>{"tipus":"toldalek","kep":"📚📚","elotag":"Muchos","to":"libro","valaszt":["s","es",""],"jo":"s","kesz":"libros","tipp":"libro → libros."}</FELADAT>',
+     'toldalék, rag, többes szám           → toldalek', 'terminación, plural                 → toldalek'),
+    ("kepsor", {"kornyezet"}, 1, 2,
+     'KÉPSOR – a gyerek 4 képet rak sorrendbe. "sorozat": noveny|lepke (elhagyva a program választ):\n'
+     '   <FELADAT>{"tipus":"kepsor","sorozat":"noveny"}</FELADAT>',
+     'ORDEN CON IMÁGENES – el niño ordena 4 imágenes. "sorozat": noveny|lepke (planta|mariposa):\n'
+     '   <FELADAT>{"tipus":"kepsor","sorozat":"lepke"}</FELADAT>',
+     'növény fejlődése, lepke élete        → kepsor', 'crecimiento planta, mariposa       → kepsor'),
+    ("szamangol", {"nyelv", "angol"}, 1, 4,
+     'ANGOL SZÁMOK – hallás után a jó számra koppint (0–20). "szam" opcionális:\n'
+     '   <FELADAT>{"tipus":"szamangol","szam":7}</FELADAT>',
+     'NÚMEROS EN INGLÉS – toca el número correcto tras oírlo (0–20). "szam" opcional:\n'
+     '   <FELADAT>{"tipus":"szamangol","szam":7}</FELADAT>',
+     'angol számok, hallás után            → szamangol', 'números en inglés, escuchar        → szamangol'),
+    ("idojaras", {"nyelv", "angol"}, 2, 4,
+     'IDŐJÁRÁS ANGOLUL – hallás után a jó képre koppint. "ido": sunny|rainy|snowy|windy|cloudy:\n'
+     '   <FELADAT>{"tipus":"idojaras","ido":"sunny"}</FELADAT>',
+     'EL TIEMPO EN INGLÉS – toca la imagen correcta. "ido": sunny|rainy|snowy|windy|cloudy:\n'
+     '   <FELADAT>{"tipus":"idojaras","ido":"rainy"}</FELADAT>',
+     'időjárás angolul, It\'s sunny         → idojaras', 'el tiempo en inglés                → idojaras'),
+    ("evszak", {"kornyezet"}, 1, 3,
+     'ÉVSZAKOK – a gyerek a négy évszak nevét a megfelelő fa alá húzza (kész rajz):\n'
+     '   <FELADAT>{"tipus":"evszak"}</FELADAT>',
+     'ESTACIONES – el niño arrastra el nombre de cada estación bajo el árbol correcto:\n'
+     '   <FELADAT>{"tipus":"evszak"}</FELADAT>',
+     'évszakok, fa, tavasz nyár ősz tél     → evszak', 'estaciones del año                 → evszak'),
+    ("elohely", {"kornyezet"}, 2, 5,
+     'ÉLŐHELYEK – állatok húzása erdő/tenger/sivatag/sarkvidék helyre. Opcionális "helyek" (4 db, kulcs+név+állatok):\n'
+     '   <FELADAT>{"tipus":"elohely"}</FELADAT>',
+     'HÁBITATS – coloca animales en bosque/mar/desierto/polo. "helyek" opcional:\n'
+     '   <FELADAT>{"tipus":"elohely"}</FELADAT>',
+     'élőhely, erdő tenger sivatag         → elohely', 'hábitat, bosque mar desierto       → elohely'),
+    ("tanyer", {"kornyezet"}, 1, 4,
+     'OKOS TÁNYÉR – ételek a zöldség/gyümölcs/gabona/fehérje részre:\n'
+     '   <FELADAT>{"tipus":"tanyer"}</FELADAT>',
+     'PLATO SALUDABLE – alimentos en verdura/fruta/cereal/proteína:\n'
+     '   <FELADAT>{"tipus":"tanyer"}</FELADAT>',
+     'okos tányér, egészséges étel         → tanyer', 'plato saludable, alimentos         → tanyer'),
+    ("bolygo", {"kornyezet"}, 4, 6,
+     'BOLYGÓK – Naprendszer sorrend a Naptól kifelé (8 bolygó húzása):\n'
+     '   <FELADAT>{"tipus":"bolygo"}</FELADAT>',
+     'PLANETAS – orden del Sistema Solar desde el Sol hacia fuera:\n'
+     '   <FELADAT>{"tipus":"bolygo"}</FELADAT>',
+     'bolygók, Naprendszer                 → bolygo', 'planetas, Sistema Solar            → bolygo'),
+    ("vezeto", {"kornyezet"}, 4, 6,
+     'VEZETŐK/SZIGETELŐK – tárgyat az áramkörbe tesz, világít-e az izzó. Opcionális "db" 4–8:\n'
+     '   <FELADAT>{"tipus":"vezeto"}</FELADAT>',
+     'CONDUCTORES/AISLANTES – mete el objeto en el circuito: ¿se enciende? "db" opcional 4–8:\n'
+     '   <FELADAT>{"tipus":"vezeto"}</FELADAT>',
+     'vezető, szigetelő, áramkör           → vezeto', 'conductor, aislante, circuito      → vezeto'),
+    ("poharak", {"enek", "kornyezet"}, 3, 5,
+     'POHÁR-XILOFON – hangmagasság: a gyerek a legmélyebbtől a legmagasabbig koppint:\n'
+     '   <FELADAT>{"tipus":"poharak"}</FELADAT>',
+     'XILÓFONO DE VASOS – altura del sonido: del más grave al más agudo:\n'
+     '   <FELADAT>{"tipus":"poharak"}</FELADAT>',
+     'pohár, hangmagasság, víz             → poharak', 'vasos, altura del sonido           → poharak'),
+    ("domb", {"kornyezet"}, 4, 6,
+     'DOMBORZAT – valósághű térkép + jelmagyarázat (tenger/alföld/dombság/hegység). Opcionális "mag" (térkép-mag):\n'
+     '   <FELADAT>{"tipus":"domb"}</FELADAT>',
+     'RELIEVE – mapa realista + leyenda (mar/llanura/colina/montaña). "mag" opcional:\n'
+     '   <FELADAT>{"tipus":"domb"}</FELADAT>',
+     'domborzat, térkép, alföld hegység    → domb', 'relieve, mapa, llanura montaña     → domb'),
+    ("sorozat", {"matek"}, 1, 4,
+     'SZÁMVONAT – számtani sorozat, 2 hiányzó kocsi. Opcionális "sor" (6 szám) és "hiany" (2 index, 2–5):\n'
+     '   <FELADAT>{"tipus":"sorozat","sor":[2,4,6,8,10,12],"hiany":[2,4]}</FELADAT>',
+     'TREN NUMÉRICO – sucesión aritmética, 2 vagones vacíos. "sor" y "hiany" opcionales:\n'
+     '   <FELADAT>{"tipus":"sorozat","sor":[2,4,6,8,10,12],"hiany":[2,4]}</FELADAT>',
+     'számvonat, szabályszerűség           → sorozat', 'tren numérico, sucesión            → sorozat'),
+    ("zokni", {"matek"}, 1, 2,
+     'ZOKNIPÁROK – párosítás, majd páros/páratlan. Opcionális "n" 5–12:\n'
+     '   <FELADAT>{"tipus":"zokni","n":7}</FELADAT>',
+     'CALCETINES – emparejar, luego par/impar. "n" opcional 5–12:\n'
+     '   <FELADAT>{"tipus":"zokni","n":7}</FELADAT>',
+     'zokni, páros páratlan                → zokni', 'calcetines, par impar              → zokni'),
+    ("becsles", {"matek"}, 1, 4,
+     'BECSLÉS – cukorkák az üvegben. Opcionális "n" 12–60:\n'
+     '   <FELADAT>{"tipus":"becsles","n":28}</FELADAT>',
+     'ESTIMACIÓN – caramelos en el tarro. "n" opcional 12–60:\n'
+     '   <FELADAT>{"tipus":"becsles","n":28}</FELADAT>',
+     'becslés, cukorka                     → becsles', 'estimación, caramelos              → becsles'),
+    ("allitas", {"matek"}, 1, 3,
+     'IGAZ/HAMIS – léggömbök. Opcionális "szoveg" + "igaz" (bool), különben a program generál:\n'
+     '   <FELADAT>{"tipus":"allitas"}</FELADAT>',
+     'VERDADERO/FALSO – globos. "szoveg" + "igaz" opcionales:\n'
+     '   <FELADAT>{"tipus":"allitas"}</FELADAT>',
+     'állítás, igaz hamis, léggömb         → allitas', 'afirmación, verdadero falso        → allitas'),
+    ("urmertek", {"matek"}, 2, 4,
+     'ŰRMÉRTÉK – mérőkancsó (dl/liter). Opcionális "cel" 1–10:\n'
+     '   <FELADAT>{"tipus":"urmertek","cel":7}</FELADAT>',
+     'CAPACIDAD – jarra (dl/litro). "cel" opcional 1–10:\n'
+     '   <FELADAT>{"tipus":"urmertek","cel":7}</FELADAT>',
+     'űrmérték, liter, deciliter           → urmertek', 'capacidad, litro, decilitro         → urmertek'),
+    ("nezet", {"matek"}, 3, 4,
+     'NÉZETEK – kockaépítmény, kisfiú szemével. Opcionális "magassagok" 3×3 (0–3) + "irany" elol/oldalt:\n'
+     '   <FELADAT>{"tipus":"nezet","irany":"elol"}</FELADAT>',
+     'VISTAS – construcción de cubos. "magassagok" 3×3 (0–3) + "irany" elol/oldalt opcionales:\n'
+     '   <FELADAT>{"tipus":"nezet","irany":"frente"}</FELADAT>',
+     'nézet, építmény, térbeli             → nezet', 'vista, construcción, espacial       → nezet'),
+    ("betu", {"magyar", "nyelv"}, 2, 4,
+     'ÁBÉCÉREND – 5 szó húzása. Opcionális "szavak": [[emoji, szó], ...] pontosan 5:\n'
+     '   <FELADAT>{"tipus":"betu"}</FELADAT>',
+     'ORDEN ALFABÉTICO – 5 palabras. "szavak" opcional [[emoji, palabra], ...] exactamente 5:\n'
+     '   <FELADAT>{"tipus":"betu"}</FELADAT>',
+     'ábécé, ábécérend                     → betu', 'alfabeto, orden alfabético          → betu'),
+    ("szofaj", {"magyar", "nyelv"}, 2, 4,
+     'SZÓFAJOK – főnév/ige/melléknév ládák. Opcionális "szavak": [{"szo":"kutya","tip":"fonev"}, ...] 6–12:\n'
+     '   <FELADAT>{"tipus":"szofaj"}</FELADAT>',
+     'CATEGORÍAS GRAMATICALES – sustantivo/verbo/adjetivo. "szavak" opcional 6–12:\n'
+     '   <FELADAT>{"tipus":"szofaj"}</FELADAT>',
+     'szófaj, főnév, ige, melléknév        → szofaj', 'sustantivo, verbo, adjetivo         → szofaj'),
+    ("nagybetu", {"magyar"}, 2, 3,
+     'NAGY KEZDŐBETŰ – koppintós mondat. Opcionális "mondat" + "nagy" (indexek, 0-tól):\n'
+     '   <FELADAT>{"tipus":"nagybetu","mondat":"tegnap péter a balatonhoz ment.","nagy":[0,1,3]}</FELADAT>',
+     'MAYÚSCULA – frase tocable. "mondat" + "nagy" (índices desde 0) opcionales:\n'
+     '   <FELADAT>{"tipus":"nagybetu","mondat":"ayer pedro fue a madrid.","nagy":[0,1,4]}</FELADAT>',
+     'nagy kezdőbetű, tulajdonnév          → nagybetu', 'mayúscula, nombre propio            → nagybetu'),
+    ("tilde", {"magyar", "nyelv"}, 3, 4,
+     'TILDE / SÍLABA TÓNICA – CSAK spanyol ékezetszabály (aguda, llana, esdrújula). Magyar helyesíráshoz NE:\n'
+     '   <FELADAT>{"tipus":"tilde"}</FELADAT>',
+     'TILDE – sílaba tónica (aguda/llana/esdrújula). Una palabra. Opcional "kep","szotagok","tonica":\n'
+     '   <FELADAT>{"tipus":"tilde","kep":"🌳","szotagok":["ár","bol"],"tonica":0}</FELADAT>',
+     'tilde, sílaba tónica (spanyol)       → tilde', 'tilde, sílaba tónica, aguda         → tilde'),
+    ("nevelo", {"magyar", "nyelv", "angol"}, 1, 3,
+     'NÉVELŐ – a/az (magyar), a/an (angol, "mod":"en"), el/la/los/las (spanyol, "mod":"es"). '
+     'Opcionális "nevelo"+"szo"+"kep", spanyolnál "tobb":\n'
+     '   <FELADAT>{"tipus":"nevelo"}</FELADAT>\n'
+     '   <FELADAT>{"tipus":"nevelo","mod":"en"}</FELADAT>',
+     'ARTÍCULO – a/az (húngaro), a/an (inglés, "mod":"en"), el/la/los/las (español). '
+     '"nevelo"+"szo"+"kep" opcionales:\n'
+     '   <FELADAT>{"tipus":"nevelo"}</FELADAT>\n'
+     '   <FELADAT>{"tipus":"nevelo","mod":"en","nevelo":"an","szo":"apple","kep":"🍎"}</FELADAT>',
+     'névelő, a/az, a/an, el/la            → nevelo', 'artículo, el la los las, a an       → nevelo'),
+    ("gerinces", {"kornyezet"}, 3, 4,
+     'GERINCESEK – emlős/madár/hal/hüllő/kétéltű. Opcionális "csoportok" 3–5 db:\n'
+     '   <FELADAT>{"tipus":"gerinces"}</FELADAT>',
+     'VERTEBRADOS – mamífero/ave/pez/reptil/anfibio. "csoportok" opcional 3–5:\n'
+     '   <FELADAT>{"tipus":"gerinces"}</FELADAT>',
+     'gerinces, emlős, madár, hüllő        → gerinces', 'vertebrado, mamífero, ave, reptil  → gerinces'),
+    ("ciklus", {"kornyezet"}, 2, 4,
+     'ÉLETCIKLUS – béka vagy lepke. Opcionális "allat": beka / lepke:\n'
+     '   <FELADAT>{"tipus":"ciklus","allat":"lepke"}</FELADAT>',
+     'CICLO DE VIDA – rana o mariposa. "allat": beka / lepke opcional:\n'
+     '   <FELADAT>{"tipus":"ciklus","allat":"mariposa"}</FELADAT>',
+     'életciklus, béka, lepke, átalakulás  → ciklus', 'ciclo de vida, rana, mariposa      → ciklus'),
+    ("szin", {"enek"}, 1, 4,
+     'SZÍNKEVERÉS – két festék. Opcionális "cel" pl. kek+sarga, piros+sarga, feher+piros:\n'
+     '   <FELADAT>{"tipus":"szin","cel":"kek+sarga"}</FELADAT>',
+     'MEZCLA DE COLORES – dos pinturas. "cel" opcional p. ej. azul+amarillo:\n'
+     '   <FELADAT>{"tipus":"szin","cel":"azul+amarillo"}</FELADAT>',
+     'színkeverés, alapszínek              → szin', 'mezcla de colores, primarios       → szin'),
+    ("hangszer", {"enek"}, 2, 4,
+     'HANGSZERCSALÁDOK – húros/fúvós/ütős/billentyűs. Koppintásra megszólal (WebAudio):\n'
+     '   <FELADAT>{"tipus":"hangszer"}</FELADAT>',
+     'FAMILIAS DE INSTRUMENTOS – cuerda/viento/percusión/teclado. Al tocar suena:\n'
+     '   <FELADAT>{"tipus":"hangszer"}</FELADAT>',
+     'hangszercsalád, húros, fúvós         → hangszer', 'familia de instrumentos            → hangszer'),
+    ("szoba", {"angol"}, 1, 3,
+     'ROOMS OF THE HOUSE – angol. Opcionális "szoba" (bedroom/bathroom/kitchen/living room) + "kerdes_en":\n'
+     '   <FELADAT>{"tipus":"szoba","szoba":"kitchen","kerdes_en":"Touch the kitchen!"}</FELADAT>',
+     'HABITACIONES DE LA CASA – inglés. "szoba" + "kerdes_en" opcionales:\n'
+     '   <FELADAT>{"tipus":"szoba","szoba":"bedroom","kerdes_en":"Touch the bedroom!"}</FELADAT>',
+     'rooms, bedroom, kitchen (angol)      → szoba', 'rooms of the house (inglés)        → szoba'),
+    ("tapl", {"kornyezet"}, 3, 4,
+     'TÁPLÁLÉKLÁNC – növény → fogyasztó → ragadozó. Opcionális "lanc": [[emoji, név], ...] 3–5:\n'
+     '   <FELADAT>{"tipus":"tapl","lanc":[["🌾","fű"],["🐰","nyúl"],["🦊","róka"]]}</FELADAT>',
+     'CADENA ALIMENTARIA – planta → consumidor → depredador. "lanc" opcional 3–5:\n'
+     '   <FELADAT>{"tipus":"tapl"}</FELADAT>',
+     'tápláléklánc, termelő, ragadozó      → tapl', 'cadena alimentaria, productor     → tapl'),
 ]
 
 

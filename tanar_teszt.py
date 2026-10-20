@@ -433,7 +433,12 @@ def _feladat_leiras(f: dict) -> str:
                  "lezer", "atom", "robot", "vonalzo", "suti", "naptar", "romai", "harom", "tizedes", "akcio",
                  "kor", "maganh", "jly", "irasjel", "oltoz", "elolj", "rovar", "foto",
                  "korszak", "kresz", "binaris", "magnes", "ph", "csop", "tortfal", "tengely",
-                 "halo", "atlag", "zsak", "rim"):
+                 "halo", "atlag", "zsak", "rim", "toldalek", "kepsor", "szamangol", "idojaras",
+                 "evszak", "elohely", "tanyer", "bolygo", "vezeto", "poharak", "domb",
+                 "sorozat", "zokni", "becsles", "allitas",
+                 "urmertek", "nezet", "betu", "szofaj",
+                 "nagybetu", "tilde", "nevelo", "gerinces",
+                 "ciklus", "szin", "hangszer", "szoba", "tapl"):
         return f"interaktív feladat ({tipus}): {f.get('kerdes', '')}"
     if tipus == "osztas":
         return f"írásbeli osztás balról jobbra: {f.get('a')} : {f.get('b')}, a gyerek a hányadost írja be"
