@@ -1757,7 +1757,8 @@ def create_child(
             curriculum=curriculum,
             region=region,
             gyerek_neme=(gyerek_neme
-                         if gyerek_neme in ("fiu", "lany", "robot") else None),
+                         if gyerek_neme in ("fiu", "lany", "robot", "robot_kep")
+                         else None),
         )
         db.add(child)
         db.commit()
@@ -1812,7 +1813,9 @@ def update_child(
         # Üres érték = „nem adom meg"; ilyenkor törlődik a korábbi választás.
         if gyerek_neme is not None:
             child.gyerek_neme = (
-                gyerek_neme if gyerek_neme in ("fiu", "lany", "robot") else None)
+                gyerek_neme
+                if gyerek_neme in ("fiu", "lany", "robot", "robot_kep")
+                else None)
         db.commit()
         return True
     finally:

@@ -2848,10 +2848,9 @@ def add_child():
         region = request.form.get("region") or None
         # A gyerek neme: csak a kabala figurához kell, megadása nem kötelező.
         neme = (request.form.get("gyerek_neme") or "").strip()
-        # A "robot" a mozgó kabala figura, a "robot_kep" a rajzolt (álló) robot.
-        # A megadása nem kötelező: üres érték mellett egyáltalán nincs figura
-        # a chat oldalon.
-        if neme not in ("fiu", "lany", "robot", "robot_kep"):
+        # A "robot" a mozgó kabala figura. A megadása nem kötelező: üres
+        # érték mellett egyáltalán nincs figura a chat oldalon.
+        if neme not in ("fiu", "lany", "robot"):
             neme = ""
 
         errors = False
@@ -2984,10 +2983,9 @@ def edit_child(child_id: int):
         if voice_es not in ("female", "male"):
             voice_es = "female"
         neme = (request.form.get("gyerek_neme") or "").strip()
-        # A "robot" a mozgó kabala figura, a "robot_kep" a rajzolt (álló) robot.
-        # A megadása nem kötelező: üres érték mellett egyáltalán nincs figura
-        # a chat oldalon.
-        if neme not in ("fiu", "lany", "robot", "robot_kep"):
+        # A "robot" a mozgó kabala figura. A megadása nem kötelező: üres
+        # érték mellett egyáltalán nincs figura a chat oldalon.
+        if neme not in ("fiu", "lany", "robot"):
             neme = ""
 
         errors = False
@@ -11729,11 +11727,7 @@ def child_chat(child_id: int):
     # KABALA FIGURA. Csak akkor van, ha a szülő megadta a gyerek nemét.
     # Ha nincs megadva, egyszerűen nem jelenik meg semmi.
     _neme = (child.get("gyerek_neme") or "").strip()
-    _kabala = {
-        "fiu": "kabala/fiu.png",
-        "lany": "kabala/lany.png",
-        "robot_kep": "figurak/robot/alap.webp",
-    }.get(_neme)
+    _kabala = {"fiu": "kabala/fiu.png", "lany": "kabala/lany.png"}.get(_neme)
     # A MOZGÓ FIGURA külön választás, nem a nem helyett: a fiú és a lány
     # kabala megmarad, a "nem adom meg" pedig továbbra is üres oszlopot ad.
     _kabala_robot = (_neme == "robot")

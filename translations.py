@@ -1423,6 +1423,7 @@ TRANSLATIONS = {
     "nem_fiu": {"hu": "Fiú", "es": "Niño"},
     "nem_lany": {"hu": "Lány", "es": "Niña"},
     "nem_robot": {"hu": "Robot (mozg\u00f3)", "es": "Robot (animado)"},
+    "nem_robot_kep": {"hu": "Rajzolt robot", "es": "Robot dibujado"},
     "nem_nincs": {"hu": "Nem adom meg", "es": "Prefiero no decirlo"},
     "nem_miert": {
         "hu": "Csak azt dönti el, melyik rajzfigura kíséri a tanulásban. "

@@ -50,6 +50,11 @@
                         <span>{{ t('nem_robot') }}</span>
                     </label>
                     <label class="nemgomb">
+                        <input type="radio" name="gyerek_neme" value="robot_kep"
+                               {{ 'checked' if jelenlegi == 'robot_kep' else '' }}>
+                        <span>{{ t('nem_robot_kep') }}</span>
+                    </label>
+                    <label class="nemgomb">
                         <input type="radio" name="gyerek_neme" value="fiu"
                                {{ 'checked' if jelenlegi == 'fiu' else '' }}>
                         <span>{{ t('nem_fiu') }}</span>
@@ -61,7 +66,7 @@
                     </label>
                     <label class="nemgomb">
                         <input type="radio" name="gyerek_neme" value=""
-                               {{ 'checked' if jelenlegi not in ('fiu', 'lany', 'robot') else '' }}>
+                               {{ 'checked' if jelenlegi not in ('fiu', 'lany', 'robot', 'robot_kep') else '' }}>
                         <span>{{ t('nem_nincs') }}</span>
                     </label>
                 </div>

@@ -6853,8 +6853,11 @@
     var kabalaKepMost = '';
     var kabalaKepUtolsoValtas = 0;
     if (kabalaKepEl) {
-        var _kkNem = /lany/.test(kabalaKepEl.getAttribute('src') || '') ? 'lany' : 'fiu';
-        kabalaKepMappa = {{ url_for('static', filename='figurak/')|tojson }} + 'kabala_' + _kkNem + '/';
+        var _kkSrc = kabalaKepEl.getAttribute('src') || '';
+        var _kkMappa = /figurak\/robot/.test(_kkSrc) ? 'robot/'
+            : /lany/.test(_kkSrc) ? 'kabala_lany/'
+            : 'kabala_fiu/';
+        kabalaKepMappa = {{ url_for('static', filename='figurak/')|tojson }} + _kkMappa;
         /* Előre betöltjük mind a nyolcat; ha az alap nem jön le, a képes
            reakció kimarad, és az eredeti állókép marad. */
         var _kkProba = new Image();
@@ -7795,7 +7798,10 @@
                     testResult.hidden = false;
                     testResult.innerHTML =
                         '<div class="result-box result-fail">' +
-                        escapeHtml(L.quizCreateFailed) + '</div>';
+                        escapeHtml(L.quizCreateFailed) + '</div>';
+                    /* Hogy kiderüljön, MI a hiba: a kód apró betűvel alatta. */
+                    var _hk = (res.data && (res.data.error || '')) + ' ' + (res.data && res.data.detail ? String(res.data.detail).slice(0, 160) : '');
+                    testResult.innerHTML += '<p class="result-hint" style="font-size:12px;opacity:.7">(' + escapeHtml(_hk.trim() || ('HTTP ' + (res.ok ? 'ok' : '?'))) + ')</p>';
                     testOverlay.hidden = false;
                     return;
                 }
