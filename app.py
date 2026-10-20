@@ -5216,6 +5216,95 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             f"Hol a szimmetriatengelye: {NEV[0]}?")
         return {"tipus": "tengely", "alak": alak, "tengely": teng, "kerdes": kerdes}
 
+    if tipus == "halo":
+        jo = adat.get("jo")
+        if jo is not None:
+            try:
+                jo = int(jo)
+            except Exception:
+                return None
+            if not (0 <= jo <= 4):
+                return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Cuál es el desarrollo del cubo?" if es_tanterv else "Melyik a kocka hálója?")
+        out = {"tipus": "halo", "kerdes": kerdes}
+        if jo is not None:
+            out["jo"] = jo
+        return out
+
+    if tipus == "atlag":
+        try:
+            tornyok = [int(x) for x in (adat.get("tornyok") or [])]
+        except Exception:
+            return None
+        if not (3 <= len(tornyok) <= 5):
+            return None
+        if not all(1 <= t <= 7 for t in tornyok):
+            return None
+        s = sum(tornyok)
+        n = len(tornyok)
+        if s % n:
+            return None
+        atl = s // n
+        if all(t == atl for t in tornyok):
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            f"Torres: {', '.join(str(t) for t in tornyok)}. ¿Cuál es la media? ¡Iguala las torres!"
+            if es_tanterv else
+            f"Tornyok: {', '.join(str(t) for t in tornyok)}. Mennyi az átlag? Egyenlítsd ki!")
+        return {"tipus": "atlag", "tornyok": tornyok, "kerdes": kerdes}
+
+    if tipus == "zsak":
+        try:
+            nyers = adat.get("zsakok") or []
+            zsakok = [[int(z[0]), int(z[1])] for z in nyers]
+        except Exception:
+            return None
+        if len(zsakok) != 3:
+            return None
+        if not all(1 <= p <= 6 and 1 <= k <= 6 for p, k in zsakok):
+            return None
+        esely = [p / (p + k) for p, k in zsakok]
+        m = max(esely)
+        if esely.count(m) != 1:
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "Con los ojos cerrados sacas una bola. ¿De qué saco es más probable la roja?"
+            if es_tanterv else
+            "Becsukott szemmel húzol egy golyót. Melyik zsákból a legvalószínűbb a piros?")
+        return {"tipus": "zsak", "zsakok": zsakok, "kerdes": kerdes}
+
+    if tipus == "rim":
+        RIM_HU = [
+            [["🏠", "ház"], ["🏺", "váz"]], [["✋", "kéz"], ["🍯", "méz"]],
+            [["🐟", "hal"], ["🎵", "dal"]], [["🏞️", "tó"], ["🐴", "ló"]],
+            [["🌙", "hold"], ["🏪", "bolt"]], [["🐭", "egér"], ["🍞", "kenyér"]],
+        ]
+        RIM_ES = [
+            [["☀️", "sol"], ["⚽", "gol"]], [["🍞", "pan"], ["🍮", "flan"]],
+            [["🐱", "gato"], ["🍽️", "plato"]], [["🏠", "casa"], ["🥣", "masa"]],
+            [["🌸", "flor"], ["❤️", "amor"]], [["🌊", "mar"], ["🥖", "bar"]],
+        ]
+        nyers = adat.get("parok")
+        if nyers:
+            parok = []
+            for p in nyers:
+                try:
+                    a = [_rov(p[0][0], 8), _rov(p[0][1], 16)]
+                    b = [_rov(p[1][0], 8), _rov(p[1][1], 16)]
+                except Exception:
+                    return None
+                if not a[0] or not a[1] or not b[0] or not b[1]:
+                    return None
+                parok.append([a, b])
+            if not (4 <= len(parok) <= 6):
+                return None
+        else:
+            parok = RIM_ES if es_tanterv else RIM_HU
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¡Busca los pares que riman!" if es_tanterv else "Keresd meg a rímpárokat!")
+        return {"tipus": "rim", "parok": parok, "kerdes": kerdes}
+
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
         # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
@@ -8499,6 +8588,30 @@ _DM_FELULETEK = [
      'EJE DE SIMETRÍA – el niño toca la línea de puntos correcta. "alak": sziv|pillango|B|nyil|fenyo:\n'
      '   <FELADAT>{"tipus":"tengely","alak":"sziv"}</FELADAT>',
      'szimmetriatengely, tükrözés          → tengely', 'eje de simetría                     → tengely'),
+    ("halo", {"matek"}, 5, 6,
+     'KOCKA HÁLÓJA – négy háló közül a gyerek a jóra koppint. Opcionális "jo": 0–4 (melyik jó háló a katalógusból); elhagyva a program választ:\n'
+     '   <FELADAT>{"tipus":"halo"}</FELADAT>',
+     'DESARROLLO DEL CUBO – el niño toca el desarrollo correcto entre cuatro. "jo" opcional 0–4; si se omite, lo elige el programa:\n'
+     '   <FELADAT>{"tipus":"halo"}</FELADAT>',
+     'kocka hálója, összehajtható          → halo', 'desarrollo del cubo                 → halo'),
+    ("atlag", {"matek"}, 6, 7,
+     'ÁTLAG – tornyok kiegyenlítése. "tornyok": 3–5 magasság (1–7), az összeg osztható a darabszámmal, és ne legyenek már egyformák:\n'
+     '   <FELADAT>{"tipus":"atlag","tornyok":[1,3,5]}</FELADAT>',
+     'MEDIA – igualar torres. "tornyok": 3–5 alturas (1–7), la suma divisible por el número, y que no sean ya iguales:\n'
+     '   <FELADAT>{"tipus":"atlag","tornyok":[1,3,5]}</FELADAT>',
+     'átlag, tornyok kiegyenlítése         → atlag', 'media, igualar torres               → atlag'),
+    ("zsak", {"matek"}, 6, 7,
+     'VALÓSZÍNŰSÉG ZSÁKOKKAL – 3 zsák [piros, kék], 1–6 golyó színként; egyértelmű legyen, melyikben a legnagyobb a piros esélye:\n'
+     '   <FELADAT>{"tipus":"zsak","zsakok":[[2,4],[3,1],[1,5]]}</FELADAT>',
+     'PROBABILIDAD CON SACOS – 3 sacos [rojas, azules], 1–6 bolas por color; que quede claro cuál tiene más probabilidad de roja:\n'
+     '   <FELADAT>{"tipus":"zsak","zsakok":[[2,4],[3,1],[1,5]]}</FELADAT>',
+     'valószínűség, piros golyó            → zsak', 'probabilidad, bola roja             → zsak'),
+    ("rim", {"magyar"}, 1, 3,
+     'RÍMPÁROK – a gyerek négy párt keres. Opcionális "parok": 4–6 [[emoji,szó],[emoji,szó]] páros; elhagyva kész magyar lista:\n'
+     '   <FELADAT>{"tipus":"rim"}</FELADAT>',
+     'PARES QUE RIMAN – el niño busca cuatro pares. "parok" opcional (rímas en español); si se omite, lista española:\n'
+     '   <FELADAT>{"tipus":"rim"}</FELADAT>',
+     'rímpárok, rímelő szavak              → rim', 'pares que riman                     → rim'),
 ]
 
 

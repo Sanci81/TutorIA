@@ -4844,6 +4844,193 @@
         rajz();
     };
 
+    /* ── A KOCKA HÁLÓJA ──────────────────────────────────────────────── */
+    DM.halo = function (f, D) {
+        var JO = [[[1, 0], [0, 1], [1, 1], [2, 1], [3, 1], [1, 2]], [[0, 0], [0, 1], [1, 1], [2, 1], [3, 1], [3, 2]],
+            [[1, 0], [1, 1], [0, 1], [2, 1], [3, 1], [2, 2]], [[0, 0], [1, 0], [1, 1], [2, 1], [3, 1], [3, 2]],
+            [[0, 0], [1, 0], [1, 1], [2, 1], [2, 2], [3, 2]]];
+        var ROSSZ = [[[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]], [[0, 1], [1, 1], [2, 1], [3, 1], [4, 1], [2, 0]],
+            [[0, 0], [1, 0], [2, 0], [3, 0], [1, 1], [2, 1]], [[1, 0], [0, 1], [1, 1], [2, 1], [1, 2], [2, 2]],
+            [[0, 0], [1, 0], [2, 0], [2, 1], [3, 1], [3, 0]]];
+        var SZ = ['#EF5350', '#42A5F5', '#66BB6A', '#FFCA28', '#AB47BC', '#26A69A'];
+        var ji = (f.jo != null && f.jo >= 0 && f.jo < JO.length) ? f.jo : D.rnd(0, JO.length - 1);
+        var j = JO[ji], r = D.kever(ROSSZ.slice()).slice(0, 3);
+        var l = D.kever([[j, 1]].concat(r.map(function (x) { return [x, 0]; })));
+        var hibak = 0, vege = false;
+        D.html('<div class="allas">' + D.T('Melyik hálóból hajtható össze kocka? Koppints rá!',
+            '¿Con qué desarrollo se puede formar un cubo? ¡Tócalo!') +
+            '</div><div class="halok" data-id="lista"></div><div class="kocka3d-hely" data-id="hely"><div class="kocka3d" data-id="kocka"></div></div>');
+        function rajzHalo(h) {
+            var mx = Math.max.apply(null, h.map(function (p) { return p[0]; })) + 1;
+            var my = Math.max.apply(null, h.map(function (p) { return p[1]; })) + 1;
+            return '<svg viewBox="-4 -4 ' + (mx * 30 + 8) + ' ' + (Math.max(my, 3) * 30 + 8) + '">' +
+                h.map(function (p, i) {
+                    return '<rect x="' + p[0] * 30 + '" y="' + p[1] * 30 + '" width="30" height="30" rx="3" fill="' +
+                        SZ[i] + '" stroke="#1F4E7A" stroke-width="2"/>';
+                }).join('') + '</svg>';
+        }
+        var lista = D.$('lista');
+        l.forEach(function (x) {
+            lista.appendChild(D.gomb(rajzHalo(x[0]), '', function () {
+                if (vege || D.kesz()) { return; }
+                if (x[1]) {
+                    this.classList.add('jo'); vege = true;
+                    var k = D.$('kocka');
+                    k.innerHTML = ['rotateY(0deg)', 'rotateY(90deg)', 'rotateY(180deg)', 'rotateY(-90deg)', 'rotateX(90deg)', 'rotateX(-90deg)']
+                        .map(function (t, i) {
+                            return '<div style="background:' + SZ[i] + ';transform:' + t + ' translateZ(35px)"></div>';
+                        }).join('');
+                    D.$('hely').classList.add('lat');
+                    D.vege(true, D.T('Ebből összehajtható a kocka: mind a 6 lap a helyére kerül, és egyik sem fedi a másikat.',
+                        'Con este desarrollo se forma el cubo: las 6 caras encajan y ninguna se solapa.'),
+                        D.T('A jó hálót választottam: ebből összehajtható a kocka.',
+                            'He elegido el desarrollo correcto: con él se forma un cubo.'));
+                } else {
+                    this.classList.add('rossz'); D.animal(this, 'rezeg'); hibak++;
+                    var valasz = D.T('Egy olyan hálót tippeltem, amiből nem lesz kocka.',
+                        'He elegido un desarrollo con el que no se puede formar un cubo.');
+                    D.jelez(false, D.T('Ebből nem lesz kocka: hajtogatáskor két lap egymásra kerülne, egy oldal pedig nyitva maradna.',
+                        'Con este no sale un cubo: al doblar, dos caras se solaparían y una quedaría abierta.'));
+                    if (hibak >= 2) { vege = true; D.kuld(valasz, 2600); }
+                }
+            }));
+        });
+    };
+
+    /* ── ÁTLAG – TORNYOK KIEGYENLÍTÉSE ────────────────────────────────── */
+    DM.atlag = function (f, D) {
+        var T = f.tornyok.slice(), fog = null, SZ = ['#EF5350', '#42A5F5', '#66BB6A', '#FFCA28', '#AB47BC'];
+        D.html('<div class="allas">' + D.T('Koppints egy kockára egy magas tornyon, aztán egy alacsony toronyra: átrakod. Egyenlítsd ki a tornyokat!',
+            'Toca un cubo de una torre alta y luego una torre baja: lo mueves. ¡Iguala las torres!') +
+            '</div><div class="vaszon"><svg data-id="svg" viewBox="0 0 320 210"></svg></div>');
+        var svg = D.$('svg');
+        function rajz() {
+            svg.innerHTML = '';
+            var w = 300 / T.length;
+            D.el('line', {x1: 6, y1: 196, x2: 314, y2: 196, stroke: '#5B6B63', 'stroke-width': 3}, svg);
+            T.forEach(function (h, i) {
+                var x = 10 + i * w + w / 2 - 18, g = D.el('g', {style: 'cursor:pointer'}, svg);
+                D.el('rect', {x: x - 8, y: 6, width: 52, height: 190, fill: fog === i ? 'rgba(245,160,30,.15)' : 'transparent', rx: 8}, g);
+                for (var k = 0; k < h; k++) {
+                    D.el('rect', {x: x, y: 170 - k * 26, width: 36, height: 24, rx: 4, fill: SZ[i % 5],
+                        stroke: 'rgba(0,0,0,.25)', 'stroke-width': 1.5}, g);
+                }
+                D.txt(x + 18, 208, h, {'font-size': 14, fill: '#0E2A1E'}, svg);
+                (function (i) {
+                    g.addEventListener('click', function () {
+                        if (D.kesz()) { return; }
+                        if (fog === null) { if (T[i] > 0) { fog = i; rajz(); } }
+                        else { if (fog !== i && T[i] < 7) { T[fog]--; T[i]++; } fog = null; rajz(); D.torol(); }
+                    });
+                })(i);
+            });
+        }
+        rajz();
+        D.ellenoriz(function () {
+            var s = T.reduce(function (a, b) { return a + b; }, 0), ok = T.every(function (t) { return t === T[0]; });
+            var valasz = D.T('A tornyok most: ' + T.join(', ') + '.', 'Las torres ahora: ' + T.join(', ') + '.');
+            if (ok) {
+                return {jo: true, valasz: valasz,
+                    uzenet: D.T('Mind ' + T[0] + ' magas! Az átlag ' + T[0] + ': ' + s + ' kocka : ' + T.length + ' torony = ' + T[0] + '. Az átlag az, amennyi akkor jutna mindegyikre, ha igazságosan elosztanánk.',
+                        '¡Todas miden ' + T[0] + '! La media es ' + T[0] + ': ' + s + ' cubos ÷ ' + T.length + ' torres = ' + T[0] + '. La media es lo que tocaría a cada una si se reparte por igual.')};
+            }
+            return {jo: false, valasz: valasz,
+                uzenet: D.T('Még nem egyformák. Vegyél el a magasabbakból, és tedd az alacsonyabbakra!',
+                    'Todavía no son iguales. Quita de las altas y pon en las bajas.')};
+        });
+    };
+
+    /* ── VALÓSZÍNŰSÉG – ZSÁKOK ───────────────────────────────────────── */
+    DM.zsak = function (f, D) {
+        var Z = f.zsakok.map(function (z) { return [z[0], z[1]]; });
+        var esely = Z.map(function (z) { return z[0] / (z[0] + z[1]); });
+        var m = Math.max.apply(null, esely), legjobb = esely.indexOf(m);
+        var hibak = 0, vege = false, gid = 'dmzs' + D.rnd(1000, 999999);
+        D.html('<div class="allas">' + D.T('Koppints arra a zsákra, amelyikből a legnagyobb eséllyel húzol pirosat!',
+            '¡Toca el saco del que es más probable sacar una bola roja!') +
+            '</div><div class="vaszon"><svg data-id="svg" viewBox="0 0 340 200"></svg></div>');
+        var svg = D.$('svg');
+        D.defs(svg, '<radialGradient id="' + gid + 'p" cx="35%" cy="30%"><stop offset="0" stop-color="#FF8A80"/><stop offset="1" stop-color="#D32F2F"/></radialGradient>' +
+            '<radialGradient id="' + gid + 'k" cx="35%" cy="30%"><stop offset="0" stop-color="#82B1FF"/><stop offset="1" stop-color="#1E63B8"/></radialGradient>' +
+            '<linearGradient id="' + gid + 'z" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E9D3A8"/><stop offset="1" stop-color="#C7A46B"/></linearGradient>');
+        Z.forEach(function (z, i) {
+            var cx = 58 + i * 112, g = D.el('g', {style: 'cursor:pointer'}, svg);
+            D.el('path', {d: 'M' + (cx - 46) + ' 60 q-8 70 6 112 q40 16 80 0 q14 -42 6 -112Z', fill: 'url(#' + gid + 'z)', stroke: '#8C6A3A', 'stroke-width': 2.5}, g);
+            D.el('path', {d: 'M' + (cx - 40) + ' 60 q40 -26 80 0', fill: '#D9BE8A', stroke: '#8C6A3A', 'stroke-width': 2.5}, g);
+            D.el('path', {d: 'M' + (cx - 30) + ' 52 q30 10 60 0', stroke: '#8C6A3A', 'stroke-width': 3, fill: 'none'}, g);
+            var golyok = []; for (var a = 0; a < z[0]; a++) { golyok.push(1); } for (var b = 0; b < z[1]; b++) { golyok.push(0); }
+            D.kever(golyok).forEach(function (p, k) {
+                D.el('circle', {cx: cx - 28 + (k % 4) * 19, cy: 152 - Math.floor(k / 4) * 19, r: 8.5,
+                    fill: p ? 'url(#' + gid + 'p)' : 'url(#' + gid + 'k)'}, g);
+            });
+            D.txt(cx, 192, D.T(z[0] + ' piros, ' + z[1] + ' kék', z[0] + ' rojas, ' + z[1] + ' azules'),
+                {'font-size': 12, fill: '#5B6B63'}, g);
+            (function (i, z, g) {
+                g.addEventListener('click', function () {
+                    if (vege || D.kesz()) { return; }
+                    var ossz = z[0] + z[1];
+                    var valasz = D.T('A ' + (i + 1) + '. zsákot választottam (' + z[0] + ' piros a ' + ossz + '-ből).',
+                        'He elegido el saco ' + (i + 1) + ' (' + z[0] + ' rojas de ' + ossz + ').');
+                    if (i === legjobb) {
+                        vege = true;
+                        var leiras = Z.map(function (q, j) { return (j + 1) + '. ' + q[0] + '/' + (q[0] + q[1]); }).join(', ');
+                        D.vege(true, D.T('Igen! Az esély: piros / összes. ' + leiras + '. Nem az számít, hol van több piros, hanem hogy az összesnek hányad része piros!',
+                            '¡Sí! La probabilidad es rojas / total. ' + leiras + '. No importa dónde haya más rojas, sino qué parte del total es roja.'), valasz);
+                    } else {
+                        hibak++; D.animal(g, 'rezeg');
+                        D.jelez(false, D.T('Ebben ' + z[0] + ' piros van a ' + ossz + '-ből. Hasonlítsd össze, melyik zsákban nagyobb a pirosak része!',
+                            'Aquí hay ' + z[0] + ' rojas de ' + ossz + '. ¡Compara en qué saco es mayor la parte de rojas!'));
+                        if (hibak >= 2) { vege = true; D.kuld(valasz, 2600); }
+                    }
+                });
+            })(i, z, g);
+        });
+    };
+
+    /* ── RÍMPÁROK ────────────────────────────────────────────────────── */
+    DM.rim = function (f, D) {
+        var P = f.parok;
+        if (!P || !P.length) {
+            P = D.es
+                ? [[['☀️', 'sol'], ['⚽', 'gol']], [['🍞', 'pan'], ['🍮', 'flan']], [['🐱', 'gato'], ['🍽️', 'plato']],
+                    [['🏠', 'casa'], ['🥣', 'masa']], [['🌸', 'flor'], ['❤️', 'amor']], [['🌊', 'mar'], ['🥖', 'bar']]]
+                : [[['🏠', 'ház'], ['🏺', 'váz']], [['✋', 'kéz'], ['🍯', 'méz']], [['🐟', 'hal'], ['🎵', 'dal']],
+                    [['🏞️', 'tó'], ['🐴', 'ló']], [['🌙', 'hold'], ['🏪', 'bolt']], [['🐭', 'egér'], ['🍞', 'kenyér']]];
+        }
+        var v = D.kever(P.slice()).slice(0, 4), L = [], jel = null, kesz = 0, vege = false;
+        v.forEach(function (p, i) { L.push([p[0], i]); L.push([p[1], i]); });
+        D.kever(L);
+        D.html('<div class="allas">' + D.T('Koppints két képre, amelyek rímelnek!',
+            '¡Toca dos dibujos que rimen!') +
+            '</div><div class="rimek" data-id="lapok"></div>');
+        var d = D.$('lapok');
+        L.forEach(function (l) {
+            var b = D.gomb('<span>' + l[0][0] + '</span><b>' + l[0][1] + '</b>', '', function () {
+                if (vege || D.kesz() || b.classList.contains('par')) { return; }
+                if (!jel) { jel = {b: b, l: l}; b.classList.add('jel'); return; }
+                if (jel.b === b) { b.classList.remove('jel'); jel = null; return; }
+                if (jel.l[1] === l[1]) {
+                    b.classList.add('par'); jel.b.classList.remove('jel'); jel.b.classList.add('par');
+                    kesz++; D.torol(); jel = null;
+                    if (kesz === 4) {
+                        vege = true;
+                        var peldak = v.slice(0, 2).map(function (p) { return p[0][1] + ' – ' + p[1][1]; }).join(', ');
+                        D.vege(true, D.T('Mind a 4 rímpár megvan! A rímelő szavak vége ugyanúgy cseng: ' + peldak + '.',
+                            '¡Ya están los 4 pares! Las rimas acaban igual: ' + peldak + '.'),
+                            D.T('Megtaláltam mind a 4 rímpárt.', 'He encontrado los 4 pares que riman.'));
+                    }
+                } else {
+                    D.animal(b, 'rezeg'); D.animal(jel.b, 'rezeg');
+                    try { D.mond(jel.l[0][1]); D.mond(l[0][1]); } catch (e) {}
+                    D.jelez(false, D.T('„' + jel.l[0][1] + '” és „' + l[0][1] + '” nem rímel. Mondd ki hangosan, és figyeld a szó végét!',
+                        '«' + jel.l[0][1] + '» y «' + l[0][1] + '» no riman. Dilos en voz alta y fíjate en el final.'));
+                    jel.b.classList.remove('jel'); jel = null;
+                }
+            });
+            d.appendChild(b);
+        });
+    };
+
     function feladatElem(f) {
         if (!f || !f.tipus) { return null; }
         if (f.tipus === 'szamolo' && fejbenSzamolosTemakor()) {
