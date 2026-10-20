@@ -143,6 +143,31 @@ TANAR_API_KEY = os.environ.get("TANAR_API_KEY", "").strip()
 # ennél az EGY ágnál nagyobb modell dolgozik.
 MODELL_KVIZ_NAGY = os.environ.get("MODELL_KVIZ_NAGY", "gpt-4o")
 
+
+def _ai_keszit(client, **kw):
+    """Egy AI-hívás, ami nem bukik el azon, ha a modell nem ismer egy beállítást.
+
+    2026-10-20, Sándor képernyőképe: „Unsupported value: 'temperature' does
+    not support 0.5 with this model”. Az újabb (gondolkodó) modellek csak az
+    alap temperature-t fogadják el, és a max_tokens helyett
+    max_completion_tokens kell nekik. Ha a Railway-en egy ilyen modell van
+    beállítva (pl. MODELL_SEGED), eddig a teszt és több segédhívás csendben
+    meghiúsult. Itt egyszer újrapróbáljuk a kifogásolt beállítás nélkül.
+    """
+    for _ in range(3):
+        try:
+            return client.chat.completions.create(**kw)
+        except Exception as e:                       # noqa: BLE001
+            uz = str(e)
+            if "temperature" in uz and "temperature" in kw:
+                kw.pop("temperature", None)
+                continue
+            if "max_tokens" in uz and "max_tokens" in kw:
+                kw["max_completion_tokens"] = kw.pop("max_tokens")
+                continue
+            raise
+    return client.chat.completions.create(**kw)
+
 # ÁBRA. A magyarázó rajzot (SVG) készíti. Külön állítható, mert a rajz
 # más képességet kér, mint a beszélgetés.
 MODELL_ABRA = os.environ.get("MODELL_ABRA", "gpt-5.4-mini")
@@ -1125,7 +1150,7 @@ KERETTANTERV ({grade_num}. osztály, {subject_label}):
     raw = ""
     try:
         client = _openai_client(api_key, request_timeout=90.0)
-        response = client.chat.completions.create(
+        response = _ai_keszit(client, 
             model=MODELL_SEGED,
             response_format={"type": "json_object"},
             messages=[
@@ -1437,7 +1462,7 @@ def _call_ai_check_task_answer(
         )
 
     client = _openai_client(api_key, request_timeout=45.0)
-    response = client.chat.completions.create(
+    response = _ai_keszit(client, 
         model=MODELL_SEGED,
         response_format={"type": "json_object"},
         messages=[
@@ -1472,7 +1497,7 @@ def test_openai():
             return "ERROR: OpenAI API key missing", 500
 
         client = _openai_client(api_key, request_timeout=30.0)
-        response = client.chat.completions.create(
+        response = _ai_keszit(client, 
             model=MODELL_SEGED,
             messages=[{"role": "user", "content": "Say hello in one word."}],
             max_tokens=10,
@@ -5335,7 +5360,7 @@ def _feladat_potlas(reply_text: str, *, es: bool, idokorlat: float,
     try:
         client = _openai_client(api_key, request_timeout=idokorlat,
                                 max_retries=0)
-        resp = client.chat.completions.create(
+        resp = _ai_keszit(client, 
             model=MODELL_SEGED,
             messages=[
                 {"role": "system",
@@ -5411,7 +5436,7 @@ def _kerdes_potlas(lathato: str, *, es: bool, idokorlat: float) -> str:
     try:
         client = _openai_client(api_key, request_timeout=idokorlat,
                                 max_retries=0)
-        resp = client.chat.completions.create(
+        resp = _ai_keszit(client, 
             model=MODELL_SEGED,
             messages=[
                 {"role": "system",
@@ -6141,7 +6166,7 @@ def _generate_illustration(
     system = _ABRA_RULES_ES if es else _ABRA_RULES_HU
     try:
         client = _openai_client(api_key, request_timeout=45.0)
-        resp = client.chat.completions.create(
+        resp = _ai_keszit(client, 
             model=MODELL_ABRA,
             reasoning_effort="low",
             messages=[
@@ -6851,7 +6876,7 @@ def _transcribe_via_chat(
             system += f"\nAz előző tanári üzenet: {context_text}"
 
         client = _openai_client(api_key, request_timeout=60.0)
-        response = client.chat.completions.create(
+        response = _ai_keszit(client, 
             model=MODELL_HANG_SZOVEG,
             messages=[
                 {"role": "system", "content": system},
@@ -7154,7 +7179,7 @@ def _mark_foreign_segments(text: str, base_lang: str) -> str | None:
             hint = (f"Ez egy {_HINT[lesson_lang]} nyelvóra szövege, tehát az idegen "
                     f"részek szinte biztosan {_HINT[lesson_lang]} nyelvűek.\n")
         client = _openai_client(api_key, request_timeout=25.0)
-        resp = client.chat.completions.create(
+        resp = _ai_keszit(client, 
             model=MODELL_HANG_SZOVEG,
             reasoning_effort="low",
             messages=[
@@ -7250,7 +7275,7 @@ def _detect_foreign_words(text: str, base_lang: str) -> dict[str, str]:
             return {}
         base_name = "spanyol" if base_lang == "es" else "magyar"
         client = _openai_client(api_key, request_timeout=15.0)
-        resp = client.chat.completions.create(
+        resp = _ai_keszit(client, 
             model=MODELL_SEGED,
             response_format={"type": "json_object"},
             messages=[
@@ -10260,7 +10285,7 @@ def _call_ai_for_quiz(
         client = _openai_client(api_key, request_timeout=60.0)
 
         def _oral_request() -> list:
-            resp = client.chat.completions.create(
+            resp = _ai_keszit(client, 
                 model=model,
                 response_format={"type": "json_object"},
                 messages=[
@@ -10651,7 +10676,7 @@ def _call_ai_for_quiz(
     client = _openai_client(api_key, request_timeout=60.0)
 
     def _do_request(extra_user_note: str = "") -> list:
-        resp = client.chat.completions.create(
+        resp = _ai_keszit(client, 
             model=model,
             response_format={"type": "json_object"},
             messages=[
@@ -10766,7 +10791,7 @@ def _call_ai_for_chat(
         # A Gemini ismeri a reasoning_effort-ot, a Mistral nem (hibát adna).
         extra = ({"reasoning_effort": "low"}
                  if "generativelanguage" in TANAR_API_BASE else {})
-        response = client.chat.completions.create(
+        response = _ai_keszit(client, 
             model=MODELL_TANAR, messages=messages, **extra)
         tartalom = response.choices[0].message.content
         if isinstance(tartalom, list):       # néhány szolgáltató részekben adja
@@ -10777,7 +10802,7 @@ def _call_ai_for_chat(
 
     client = _openai_client(api_key, request_timeout=max(8.0, idokorlat),
                             max_retries=max(0, ujra))
-    response = client.chat.completions.create(
+    response = _ai_keszit(client, 
         model=MODELL_TANAR,
         messages=messages,
         reasoning_effort="low",
@@ -12966,7 +12991,7 @@ def _evaluate_oral_answers(
 
     try:
         client = _openai_client(api_key, request_timeout=30.0)
-        resp = client.chat.completions.create(
+        resp = _ai_keszit(client, 
             model=MODELL_SEGED,
             response_format={"type": "json_object"},
             messages=[{"role": "user", "content": prompt}],
@@ -13410,7 +13435,7 @@ def child_chat_test_submit(child_id: int):
                         + json.dumps(simple_words, ensure_ascii=False)
                     )
                     client = _openai_client(api_key, request_timeout=15.0)
-                    resp = client.chat.completions.create(
+                    resp = _ai_keszit(client, 
                         model=MODELL_SEGED,
                         response_format={"type": "json_object"},
                         messages=[{"role": "user", "content": prompt}],
