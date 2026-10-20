@@ -5148,6 +5148,74 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             return None
         return {"tipus": "ph", "kerdes": "Savas, semleges vagy lúgos?"}
 
+    if tipus == "csop":
+        try:
+            n = int(adat.get("n"))
+            k = int(adat.get("k"))
+        except Exception:
+            return None
+        if not (2 <= n <= 5 and 2 <= k <= 5):
+            return None
+        ossz = n * k
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            f"Hay {n} platos con {k} fresas en cada uno. ¿Cuántas fresas hay en total?"
+            if es_tanterv else
+            f"{n} tányér, mindegyiken {k} eper. Hány eper van összesen?")
+        return {"tipus": "csop", "n": n, "k": k, "kerdes": kerdes}
+
+    if tipus == "tortfal":
+        try:
+            n1 = int(adat.get("n1"))
+            k1 = int(adat.get("k1"))
+            n2 = int(adat.get("n2"))
+        except Exception:
+            return None
+        if n1 not in (2, 3, 4, 6) or n2 not in (4, 6, 8, 12):
+            return None
+        if not (1 <= k1 < n1) or n2 <= n1 or (k1 * n2) % n1:
+            return None
+        k2 = k1 * n2 // n1
+        if not (1 <= k2 < n2):
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            f"Colorea en la fila de 1/{n2} lo mismo que {k1}/{n1}."
+            if es_tanterv else
+            f"Színezd ki az 1/{n2}-es sorban ugyanannyit, mint {k1}/{n1}!")
+        return {"tipus": "tortfal", "n1": n1, "k1": k1, "n2": n2, "k2": k2, "kerdes": kerdes}
+
+    if tipus == "tengely":
+        ALAKOK = {
+            "sziv": "f", "pillango": "f", "B": "v", "nyil": "v", "fenyo": "f",
+            "corazon": "f", "mariposa": "f", "flecha": "v", "abeto": "f",
+        }
+        # ékezet nélküli / alias → kanonikus kulcs
+        ALAK_KANON = {
+            "sziv": "sziv", "szív": "sziv", "corazon": "sziv", "corazón": "sziv",
+            "pillango": "pillango", "pillangó": "pillango", "mariposa": "pillango",
+            "b": "B", "B": "B",
+            "nyil": "nyil", "nyíl": "nyil", "flecha": "nyil",
+            "fenyo": "fenyo", "fenyő": "fenyo", "fenyofa": "fenyo", "fenyőfa": "fenyo",
+            "abeto": "fenyo",
+        }
+        nyers = str(adat.get("alak") or "").strip()
+        alak = ALAK_KANON.get(nyers) or ALAK_KANON.get(nyers.casefold())
+        if not alak:
+            return None
+        teng = str(adat.get("tengely") or ALAKOK.get(alak) or "").strip().lower()
+        if teng not in ("f", "v", "a"):
+            return None
+        # ha a tanár megad tengelyt, egyezzen a alak természetes tengelyével
+        if teng != ALAKOK[alak]:
+            return None
+        NEV = {"sziv": ("szív", "corazón"), "pillango": ("pillangó", "mariposa"),
+               "B": ("B betű", "letra B"), "nyil": ("nyíl", "flecha"),
+               "fenyo": ("fenyőfa", "abeto")}[alak]
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            f"¿Dónde está el eje de simetría de: {NEV[1]}?"
+            if es_tanterv else
+            f"Hol a szimmetriatengelye: {NEV[0]}?")
+        return {"tipus": "tengely", "alak": alak, "tengely": teng, "kerdes": kerdes}
+
     if tipus == "modell":
         # MODELL-FELÜLET: a gyerek húz egy csúszkát, és LÁTJA, mi történik.
         # Fizika (nagyobb erő – nagyobb gyorsulás), kémia (koncentráció),
@@ -8413,6 +8481,24 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"ph"}</FELADAT>',
      None,
      'savas, semleges, lúgos, pH            → ph', None),
+    ("csop", {"matek"}, 1, 3,
+     'SZORZÁS CSOPORTOKKAL – tányérokra epret rak, aztán megadja az összeget. "n": tányérok száma (2–5), "k": eper tányéronként (2–5):\n'
+     '   <FELADAT>{"tipus":"csop","n":3,"k":4}</FELADAT>',
+     'MULTIPLICAR CON GRUPOS – pone fresas en platos y dice el total. "n": platos (2–5), "k": fresas por plato (2–5):\n'
+     '   <FELADAT>{"tipus":"csop","n":3,"k":4}</FELADAT>',
+     'szorzás csoportokkal, tányérok       → csop', 'multiplicar con grupos, platos      → csop'),
+    ("tortfal", {"matek"}, 4, 5,
+     'TÖRTFAL – egyenlő törtek: a gyerek az 1/n2-es sorban kiszínezi, ami a k1/n1-gyel egyenlő. n1∈{2,3,4,6}, n2∈{4,6,8,12}, n2>n1, k1*n2 osztható n1-gyel:\n'
+     '   <FELADAT>{"tipus":"tortfal","k1":1,"n1":2,"n2":4}</FELADAT>',
+     'MURO DE FRACCIONES – fracciones equivalentes: colorea en la fila 1/n2 lo mismo que k1/n1. n1∈{2,3,4,6}, n2∈{4,6,8,12}, n2>n1:\n'
+     '   <FELADAT>{"tipus":"tortfal","k1":1,"n1":2,"n2":4}</FELADAT>',
+     'egyenlő törtek, törtfal              → tortfal', 'fracciones equivalentes, muro       → tortfal'),
+    ("tengely", {"matek"}, 3, 5,
+     'SZIMMETRIATENGELY – a gyerek a helyes szaggatott vonalra koppint. "alak": sziv|pillango|B|nyil|fenyo (a tengely az alakból jön):\n'
+     '   <FELADAT>{"tipus":"tengely","alak":"sziv"}</FELADAT>',
+     'EJE DE SIMETRÍA – el niño toca la línea de puntos correcta. "alak": sziv|pillango|B|nyil|fenyo:\n'
+     '   <FELADAT>{"tipus":"tengely","alak":"sziv"}</FELADAT>',
+     'szimmetriatengely, tükrözés          → tengely', 'eje de simetría                     → tengely'),
 ]
 
 
