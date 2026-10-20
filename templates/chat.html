@@ -2228,7 +2228,9 @@
        küldhet az "utasitas" mezőben – az mindig erősebb ennél. */
     function alapUtasitas(tipus) {
         if (DM[tipus]) { return ''; }
-        if (tipus === 'szamolo') { return L.utasitasSzamolo; }
+        /* Fejben számolós témakörben a számoló egyetlen mezőként jelenik meg –
+           ott a „jobbról balra” utasítás értelmetlen. */
+        if (tipus === 'szamolo') { return fejbenSzamolosTemakor() ? '' : L.utasitasSzamolo; }
         if (tipus === 'osztas') { return L.utasitasOsztas; }
         if (tipus === 'parosit') { return L.utasitasParosit; }
         if (tipus === 'sorrend') { return L.utasitasSorrend; }
