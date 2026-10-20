@@ -10093,6 +10093,65 @@ nem csak az idegen szavakat. Példák: 'Iszak' vagy 'Visszat' a 'viszlát' helye
     return prompt
 
 
+def _kerekito_kulcs_javit(questions: list) -> list:
+    """A becslős (kerekítős) tesztkérdések megoldókulcsát kiszámolja.
+
+    2026-10-20, Sándor tesztje: „Kerekítsd a számokat százasra: 4386 + 2712”
+    – a kulcs 7200-at mondott, pedig 4400 + 2700 = 7100, és a gyerek jó
+    válaszát rossznak jelölte. A számellenőr a kerekítést nem nézi, ezért itt
+    külön kiszámoljuk: a megnevezett számot (vagy mindkettőt) kerekítjük
+    (5-től felfelé), elvégezzük a műveletet, és ha a kulcs más számot mond,
+    kijavítjuk. Ha a kérdés nem egyértelmű, nem nyúlunk hozzá.
+    """
+    egyseg_szavak = (("ezres", 1000), ("százas", 100), ("tízes", 10),
+                     ("millares", 1000), ("centenas", 100), ("decenas", 10))
+    for q in questions:
+        try:
+            szoveg = str(q.get("q") or "")
+            kis = szoveg.lower()
+            if "kerekít" not in kis and "redonde" not in kis:
+                continue
+            egyseg = next((e for sz, e in egyseg_szavak if sz in kis), None)
+            m = re.search(r"(\d[\d ]*\d|\d)\s*([+\-−×x·*])\s*(\d[\d ]*\d|\d)", szoveg)
+            if not egyseg or not m:
+                continue
+            a, b = int(m.group(1).replace(" ", "")), int(m.group(3).replace(" ", ""))
+            kerek = lambda n: (n + egyseg // 2) // egyseg * egyseg
+            csak = re.search(r"kerekítsd a (\d+)", kis)
+            if csak:
+                c = int(csak.group(1))
+                a2 = kerek(a) if c == a else a
+                b2 = kerek(b) if c == b else b
+            else:
+                a2, b2 = kerek(a), kerek(b)
+            jel = m.group(2)
+            vart = a2 + b2 if jel == "+" else a2 - b2 if jel in "-−" else a2 * b2
+
+            def _szamok(t):
+                return [int(x.replace(" ", "")) for x in re.findall(r"\d[\d ]*\d|\d", str(t))]
+
+            def _csere(t):
+                sz = _szamok(t)
+                if len(sz) != 1 or sz[0] == vart:
+                    return t
+                return re.sub(r"\d[\d ]*\d|\d", str(vart), str(t), count=1)
+
+            if q.get("type") == "mc" and isinstance(q.get("options"), list):
+                opts = q["options"]
+                jo = [i for i, o in enumerate(opts) if vart in _szamok(o)]
+                if jo and q.get("correct") not in jo:
+                    print(f"[KEREKITES] kulcs javitva: {szoveg[:60]} -> {opts[jo[0]]}", flush=True)
+                    q["correct"] = jo[0]
+            elif q.get("answer"):
+                uj = _csere(q["answer"])
+                if uj != q["answer"]:
+                    print(f"[KEREKITES] kulcs javitva: {szoveg[:60]} -> {uj}", flush=True)
+                    q["answer"] = uj
+        except Exception:                                # sose bukjon el rajta
+            continue
+    return questions
+
+
 def _call_ai_for_quiz(
     *, grade: int, topic_name: str, topic_text: str, age: int,
     ora_szam: int, all_ora_szamok: list[int], szokincs: list | None = None,
@@ -10744,6 +10803,7 @@ def _call_ai_for_quiz(
             print(f"[SZAMELLENOR] javitva: {_sor}", flush=True)
     except Exception as _exc:                        # sose bukjon el rajta a kvíz
         print(f"[SZAMELLENOR] kihagyva: {_exc}", flush=True)
+    questions = _kerekito_kulcs_javit(questions)
 
     # Véletlenszerűsítjük az mc kérdések helyes válaszának pozícióját
     for q in questions:
