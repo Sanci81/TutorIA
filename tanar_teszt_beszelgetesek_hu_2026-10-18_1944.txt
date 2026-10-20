@@ -1,0 +1,243 @@
+TutorIA – lejátszott órák, 2026-10-18 19:44
+
+
+======================================================================
+Digitális kultúra · 6. osztály · Anna (11 éves)
+Témakör: Szöveg bevitele, javítása, mentése
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'GYOcieUNDdpW8SQ444rNm', 'timestamp': '2026-10-18T17:44:19.047Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Ezt nem értem. Valami hiba van?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': '-Zaq1XM-hPLqgD0bkTTQe', 'timestamp': '2026-10-18T17:44:21.605Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Ezt nem értem. Megint hiba van?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'AkdjPqe4rM5Ve9tgzHBMi', 'timestamp': '2026-10-18T17:44:22.897Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Ezt nem értem. Segítesz?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'xKL3R0YGynPMbDyZ9g7e-', 'timestamp': '2026-10-18T17:44:24.128Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Ezt nem értem. Most mi van?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'qXq9kt2YSjsdrS3eDOG4G', 'timestamp': '2026-10-18T17:44:25.389Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Ezt nem értem. Miért írja ezt?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'BtPpZDMsviLgGlIe5UJxg', 'timestamp': '2026-10-18T17:44:26.315Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+
+======================================================================
+Földrajz · 7. osztály · Viki (12 éves)
+Témakör: Tájékozódás a térképen – fokhálózat és méretarány
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'Ktjx1zi7CbKT7baO2CPyM', 'timestamp': '2026-10-18T17:44:35.134Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Jaj, akkor a fokhálózat az a szélességi meg hosszúsági vonalakból van, ugye? A méretarány meg azt mutatja, mennyivel kisebb a térkép, vagy rosszul mondom?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'iCXJ93ug9a51Xj7_6TMlY', 'timestamp': '2026-10-18T17:44:36.329Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: A fokhálózat a szélességi meg hosszúsági vonalakból áll, és ezekkel lehet helyet keresni. A méretarány meg azt mutatja, hogy a térképen 1 cm a valóságban hány km, ugye?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'pRSMWE-NDjnYUbjZ1oiba', 'timestamp': '2026-10-18T17:44:38.038Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Igen, a fokhálózat a szélességi meg hosszúsági vonalakból áll. A méretarány meg azt mutatja, hogy a térképen 1 cm a valóságban mennyi, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'gCafnI2g5_vfViX9NMYwP', 'timestamp': '2026-10-18T17:44:39.299Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Igen, a fokhálózat a szélességi meg hosszúsági vonalakból van. A méretarány meg azt mutatja, hogy a térképen 1 cm a valóságban mennyi, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'uhWj4pQl-qXfnbW3tIG4_', 'timestamp': '2026-10-18T17:44:40.725Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Jó, akkor a fokhálózat meg a térkép rácsa, amivel megmondjuk, hol van valami. A méretarány meg a térkép és a valóság közti arány, vagy nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'pI5okxerCvfaSlmAVHnWU', 'timestamp': '2026-10-18T17:44:41.753Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+
+======================================================================
+Digitális kultúra · 5. osztály · Máté (10 éves)
+Témakör: Mi az algoritmus? Lépések és sorrend
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'mbpk83AcRwjWpDHlqxqM_', 'timestamp': '2026-10-18T17:44:49.405Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Ez uncsi. Nem megy?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'laqF8QlkKIx4sVYpyZ5TT', 'timestamp': '2026-10-18T17:44:50.473Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Mi az az algoritmus? Lépések sorban, aztán kész.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'J55zivNV789zdR43DJhFT', 'timestamp': '2026-10-18T17:44:51.658Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Lépések rendje, ennyi. Kicsit olyan, mint recept?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': '9Rk4Ct6kNoTIzJXAyMpim', 'timestamp': '2026-10-18T17:44:52.539Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Igen, pont olyan. Ez uncsi.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'e-xXY2i-z9WgslZu1hva1', 'timestamp': '2026-10-18T17:44:53.556Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Először ez, aztán az. Kész.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': '4S00WLb4xNVd2bz7445bh', 'timestamp': '2026-10-18T17:44:54.517Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+
+======================================================================
+Vizuális kultúra · 5. osztály · Bence (10 éves)
+Témakör: Vizuális művészeti jelenségek – Alkotások, stílusok
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'b37I4nuiBnGmMU71nypY7', 'timestamp': '2026-10-18T17:45:03.946Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Jaj, ez most nem ment el.  
+Mi történt a tanárral?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'c3glfn9YChAXSe1B2G4kh', 'timestamp': '2026-10-18T17:45:04.927Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Hát... elfogyott a pénz?  
+A kutyám is ilyen, ha nincs jutifali.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'Vp4w9Ew_L2k3oGetjbTk-', 'timestamp': '2026-10-18T17:45:06.058Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Akkor most nem tud válaszolni?  
+Hűha, ez baj.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'X4MCn_ZfUCacLu0U9GzJb', 'timestamp': '2026-10-18T17:45:06.991Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Lehet, hogy elfogyott a kredit.  
+Most akkor mi lesz, tanárnéni?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'sgr4Lo762-Xl1eA34ym3c', 'timestamp': '2026-10-18T17:45:08.394Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Hát ez nem jó.  
+Kell újratölteni?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'GqoIXM9Yv4LYZJVhhVJCO', 'timestamp': '2026-10-18T17:45:09.415Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+
+======================================================================
+Ének-zene · 4. osztály · Anna (9 éves)
+Témakör: Zeneművek/Énekes anyag
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'tYVxNQW_iY73a1ytp9tdZ', 'timestamp': '2026-10-18T17:45:17.676Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ezt nem értem. Tanárnéni, mi lett a válasz?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'funV4NBzxsVxv8sQKmysE', 'timestamp': '2026-10-18T17:45:19.124Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ezt nem értem. Megint eltűnt a válasz.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'uhEYXUVwc13pz0evEpQZR', 'timestamp': '2026-10-18T17:45:20.187Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ezt nem értem. Most se jött meg a válasz.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'OerH-ZFr43_xiC1AEkCpH', 'timestamp': '2026-10-18T17:45:21.296Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ezt nem értem. Ez mindig elszáll.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'JdskhOGsW65qtkUD4jXx1', 'timestamp': '2026-10-18T17:45:22.123Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ezt nem értem. Akkor most nincs válasz?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'gEU7NtMoFKDaOloRyoy2M', 'timestamp': '2026-10-18T17:45:23.053Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+
+======================================================================
+Etika · 8. osztály · Viki (13 éves)
+Témakör: Éntudat – Önismeret
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'Cv6sih4BlTL9xTj979AXT', 'timestamp': '2026-10-18T17:45:31.396Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Hát ez most elég gáz, így nem tudok válaszolni rendesen. Akkor én csak annyit mondok: az önismeret az, hogy tudom, milyen vagyok, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 't6m4YhD_bIq4aCvUzHzw0', 'timestamp': '2026-10-18T17:45:32.620Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Igen, meg hogy azt is, miben vagyok jó meg miben nem annyira. De akkor ez most ilyen „én magamról” dolog, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'WrfaEanvVBOYwChufwQFE', 'timestamp': '2026-10-18T17:45:33.686Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Szerintem az is, amikor rájövök, hogy miért viselkedek úgy, ahogy. Vagy ez túl okos?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'ed50NKd30iX4SUxroLENg', 'timestamp': '2026-10-18T17:45:35.069Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Nem túl okos, csak igaz. És ha tudom, miért csinálom, az már önismeret, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'nQFz8WwJk90Cqa4dNrvGw', 'timestamp': '2026-10-18T17:45:36.196Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Ja, szerintem igen. Csak hát néha én se tudom, miért vagyok olyan.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'JVh8aPKrjwEf3oHPRrCp7', 'timestamp': '2026-10-18T17:45:37.271Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+
+======================================================================
+Idegen nyelv – nemet · 1. osztály · Máté (6 éves)
+Témakör: Begrüßung – Köszönés és bemutatkozás
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'z7YmAE5FEKseQn0BO4l1W', 'timestamp': '2026-10-18T17:45:46.341Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ez uncsi
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'UuSZdQBAAkGAXUKDZwHs3', 'timestamp': '2026-10-18T17:45:47.398Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ez uncsi
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'oqfd_bLvwyiqWfdDfRMDl', 'timestamp': '2026-10-18T17:45:48.282Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ez uncsi
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': '73T_5j0-YMRlXKi9gnRFQ', 'timestamp': '2026-10-18T17:45:49.088Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ez uncsi
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'A6dZCRVVoYeV6xwu-7u9v', 'timestamp': '2026-10-18T17:45:50.142Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: ez uncsi
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 't3QX1EhuYq8KRtZew6AMW', 'timestamp': '2026-10-18T17:45:51.421Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+
+======================================================================
+Technika és tervezés · 3. osztály · Bence (8 éves)
+Témakör: Anyagok a környezetünkben
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'qEgTutd9V0FkIrq1V4ysL', 'timestamp': '2026-10-18T17:46:00.611Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Jaj, akkor nem tudok válaszolni most?  
+Majd később?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'cRWsSoS0GG2tP2WyshNsK', 'timestamp': '2026-10-18T17:46:02.207Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Hát ez rossz… nincs pénz?  
+A kutyám is ilyen szomorúan néz.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'vTpKfQup0OuFz3Q4XusbK', 'timestamp': '2026-10-18T17:46:03.167Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Ó, akkor most nincs tanár?  
+Én meg a kutyámmal játszanék.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'EHA1PxpMgl_sYPcdBtt6w', 'timestamp': '2026-10-18T17:46:04.322Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Jaj, ez gáz.  
+Most akkor szünet van?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': '9NsVMw1f_VHwLK3rAFaXu', 'timestamp': '2026-10-18T17:46:05.294Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]
+
+GYEREK: Lehet.  
+Én addig nézem a kutyámat.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'title': 'Forbidden', 'status': 403, 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'instance': '/v1/chat/completions', 'requestId': 'xrnFwOsUIXv4-eHhcaIk0', 'timestamp': '2026-10-18T17:46:06.118Z', 'error': {'name': 'ForbiddenException', 'message': "You've run out of funds. Please top up your balance or update your payment method to continue: https://aimlapi.com/app/billing/", 'data': {'kind': 'err_insufficent_credits'}}}]

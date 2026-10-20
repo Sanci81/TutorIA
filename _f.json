@@ -1,0 +1,9 @@
+[["{\"tipus\":\"korszak\"}", false, 6],
+ ["{\"tipus\":\"korszak\"}", true, 6],
+ ["{\"tipus\":\"kresz\"}", false, 2],
+ ["{\"tipus\":\"binaris\",\"szam\":13}", false, 6],
+ ["{\"tipus\":\"magnes\"}", true, 3],
+ ["{\"tipus\":\"ph\"}", false, 7],
+ ["{\"tipus\":\"kresz\"}", true, 2],
+ ["{\"tipus\":\"binaris\",\"szam\":40}", false, 6],
+ ["{\"tipus\":\"ph\"}", true, 6]]

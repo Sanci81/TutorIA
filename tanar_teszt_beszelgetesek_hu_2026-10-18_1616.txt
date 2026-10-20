@@ -1,0 +1,618 @@
+TutorIA – lejátszott órák, 2026-10-18 16:16
+
+
+======================================================================
+Digitális kultúra · 6. osztály · Anna (11 éves)
+Témakör: Szöveg bevitele, javítása, mentése
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Anna! Noémi vagyok. Ma azt gyakoroljuk, hogyan írj be, javíts és ments el egy szöveget. 😊
+
+Amikor begépelsz egy rövid fogalmazást, azt szövegbevitelnek hívjuk. Például leírod: „Kirándulni mentünk az osztállyal.”
+
+Ha egy korábban elmentett szövegen szeretnél dolgozni, előbb megnyitod. Például megnyitod a kirándulásról írt fogalmazásodat, hogy folytasd.
+
+A mentés megőrzi a szövegben végzett változtatásokat. Például a fogalmazás javítása után elmented, hogy legközelebb a javított változatot nyithasd meg.
+
+Ha csak egy mondatot szeretnél javítani, előbb kijelölheted: így megmutatod a szerkesztőnek, melyik szövegrésszel szeretnél dolgozni. Például kijelölöd azt a mondatot, amelyben hibát találtál.
+
+Egy tegnap elmentett fogalmazást szeretnél folytatni. Mit teszel vele először?
+<FELADAT>{"tipus":"valaszt","opciok":["Megnyitod","Elmented","Kijelölöd"]}</FELADAT>
+
+GYEREK: Megnyitod. Mert azt kell először, ugye?
+
+TANÁR: Igen, pontosan! Megnyitod az elmentett fogalmazást, és utána folytathatod. Ügyesen indokoltad. 😊
+
+Most nézzük, hogyan javíthatsz egy szövegrészt. A törlés eltávolítja azt, amire nincs szükség. Például kitörlöd a véletlenül kétszer begépelt „szép” szót.
+
+A másolás megismétel egy kijelölt szövegrészt, miközben az eredeti is megmarad. Például egy fogalmazásban a „Kedvenc helyem” címet másolod egy másik helyre.
+
+Az áthelyezésnél a kijelölt szövegrész az eredeti helyéről egy új helyre kerül. Például egy mondatot a fogalmazás végéről az elejére helyezel át.
+
+Egy mondatot a fogalmazás végéről az elejére szeretnél tenni úgy, hogy csak egyszer szerepeljen. Melyik műveletet választod?
+<FELADAT>{"tipus":"valaszt","opciok":["Másolás","Áthelyezés","Törlés"]}</FELADAT>
+
+GYEREK: Áthelyezés. Mert akkor csak egyszer marad ott.
+
+TANÁR: Így van! Áthelyezéskor a mondat az eredeti helyéről az új helyére kerül, ezért csak egyszer szerepel. 😊
+
+A helyesírás-ellenőrző segít észrevenni a lehetséges elírásokat. Például ha a „kirándulás” szót hibásan gépeled be, jelezheti a hibát. A javaslatát azonban érdemes elolvasnod, mielőtt javítasz.
+
+Javítás után mentsd el újra a fogalmazást. Így a kijavított szöveg marad meg. Például kijavítasz egy elírt szót, majd mented a változást.
+
+Kijavítottál egy elírást a már megnyitott fogalmazásodban. Mit tegyél, hogy a javítás megmaradjon?
+<FELADAT>{"tipus":"valaszt","opciok":["Elmented","Megnyitod","Kijelölöd"]}</FELADAT>
+
+GYEREK: Elmented. Hogy megmaradjon a javítás.
+
+TANÁR: Pontosan! Mentés után a javítás megmarad. 😊
+
+Már átvettük, hogyan gépelhetsz be és nyithatsz meg szöveget, hogyan jelölhetsz ki, másolhatsz, törölhetsz és helyezhetsz át szövegrészeket, valamint hogyan segít a helyesírás-ellenőrző. Most egy rövid felmérésen kipróbálhatod, mennyire mennek ezek önállóan.
+
+<TOPIC_COMPLETE>
+
+GYEREK: Jó, próbálom! 😊
+
+TANÁR: Kezdjük! 😊 Egy rövid fogalmazásban véletlenül kétszer írtad le ugyanazt a mondatot. A fölösleges példányt már kijelölted. Melyik műveletet választod?
+<FELADAT>{"tipus":"valaszt","opciok":["Másolás","Törlés","Áthelyezés"]}</FELADAT>
+
+GYEREK: Törlés. Mert az egyik felesleges.
+
+TANÁR: Igen, helyes! A kijelölt, fölösleges mondatot törlöd, így a másik példány megmarad. 😊
+
+Most egy másik helyzet következik. Ha ugyanazt a mondatot két helyen is szeretnéd megtartani, a másolást használod.
+
+A fogalmazásod egyik mondatát a végén is szeretnéd szerepeltetni, de az eredeti helyén is meg akarod tartani. Melyik műveletet választod?
+<FELADAT>{"tipus":"valaszt","opciok":["Másolás","Áthelyezés","Törlés"]}</FELADAT>
+
+
+======================================================================
+Földrajz · 7. osztály · Viki (12 éves)
+Témakör: Tájékozódás a térképen – fokhálózat és méretarány
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Viki! Noémi vagyok. Ma azt tanuljuk meg, hogyan találunk meg egy helyet a térképen, és hogyan értelmezzük a térkép méretarányát. 🗺️
+
+A földrajzi fokhálózat a Földön segít helyet meghatározni. A szélességi körök észak–déli, a hosszúsági körök kelet–nyugati helyzetet adnak meg. Például egy atlaszban a kétféle adat együtt mutatja meg, hol keress egy pontot.
+
+A keresőhálózat a térképlapot osztja mezőkre, többnyire betűkkel és számokkal. Például ha a térkép szélén A, B, C és 1, 2, 3 jelöléseket látsz, a B2 mezőben keresheted a megadott helyet.
+
+A világtájak azt mutatják, merre van egy hely egy másikhoz képest. Észak, dél, kelet és nyugat fővilágtáj; az északkelet és a délnyugat mellékvilágtáj. Például egy pont lehet a térkép közepétől délnyugatra.
+
+A méretarány megmondja, mennyivel kisebb a térkép a valóságnál. Például az 1 : 100 000 méretarány azt jelenti, hogy a térképen mért 1 cm a valóságban 100 000 cm. Távolságszámításkor a térképen mért hosszt megszorozzuk a méretarány második számával; ezt röviden így írjuk: valós távolság = térképi távolság × a méretarány második száma. Előtte azonos mértékegységet használunk.
+
+Nézd meg az ábrát: a kék pont a kiinduló hely, a narancssárga pont pedig az, amelynek az irányát keresed. Melyik világtáj felé van a narancssárga pont a kék ponttól?
+
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><rect x="65" y="40" width="190" height="140" rx="12" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><line x1="160" y1="40" x2="160" y2="180" stroke="#7b5ea7" stroke-width="3" stroke-linecap="round"/><line x1="65" y1="110" x2="255" y2="110" stroke="#7b5ea7" stroke-width="3" stroke-linecap="round"/><circle cx="160" cy="110" r="8" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><circle cx="215" cy="65" r="8" fill="#fff4e0" stroke="#e07a3d" stroke-width="3"/><text x="160" y="25" font-size="16" fill="#222" text-anchor="middle">Észak</text><text x="160" y="205" font-size="16" fill="#222" text-anchor="middle">Dél</text><text x="45" y="115" font-size="16" fill="#222" text-anchor="end">Nyugat</text><text x="270" y="115" font-size="16" fill="#222" text-anchor="start">Kelet</text></svg></ABRA>
+<FELADAT>{"tipus":"valaszt","opciok":["északnyugat","északkelet","délkelet","délnyugat"]}</FELADAT>
+
+GYEREK: Szerintem északkelet. Jól mondom?
+
+TANÁR: Igen, jól mondod, Viki! A narancssárga pont a kék ponttól északra és keletre van, vagyis északkeletre. 😊
+
+A méretarányt vonallal is meg lehet mutatni. Ezt aránymértéknek hívjuk. Az alábbi vonalon egy szakasz 1 km-t jelent a valóságban. Ha a térképen mért távolság két ilyen szakasz hosszú, akkor a valóságban 2 km.
+
+A szintvonal másban segít: az azonos magasságú helyeket köti össze a térképen. Például egy dombot több, egymásba záródó szintvonal is jelezhet.
+
+Most számoljunk a méretaránnyal! Egy 1 : 100 000 méretarányú térképen 1 cm a valóságban 1 km. Ha két hely között 4 cm-t mérsz a térképen, hány kilométer a valós távolság?
+
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><line x1="70" y1="105" x2="250" y2="105" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><line x1="70" y1="91" x2="70" y2="119" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><line x1="160" y1="91" x2="160" y2="119" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><line x1="250" y1="91" x2="250" y2="119" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><text x="70" y="142" font-size="16" fill="#222" text-anchor="middle">0</text><text x="160" y="142" font-size="16" fill="#222" text-anchor="middle">1 km</text><text x="250" y="142" font-size="16" fill="#222" text-anchor="middle">2 km</text></svg></ABRA>
+<FELADAT>{"tipus":"szam","muvelet":"1 : 100 000 méretarány; a térképen 4 cm; valós távolság km-ben"}</FELADAT>
+
+GYEREK: 4 km. Ez tök könnyű volt.
+
+TANÁR: Pontosan, 4 km! Ügyesen alkalmaztad a méretarányt. 😊
+
+Most nézzünk egy másik méretarányt. Az 1 : 200 000 azt jelenti, hogy a térképen mért 1 cm a valóságban 200 000 cm, vagyis 2 km. Például a térképen mért 2 cm-es távolság így a valóságban 4 km.
+
+Fontos, hogy számolás előtt azonos mértékegységben gondolkodjunk. Először a térképen mért centimétereket szorozzuk meg a méretarány második számával, majd a kapott centimétereket kilométerre váltjuk. Ezt röviden így írjuk: valós távolság cm-ben = térképi távolság cm-ben × a méretarány második száma.
+
+Az ábrán az első szakasz 1 cm-es a térképen. Most te jössz: egy 1 : 200 000 méretarányú térképen hány kilométer a valóságban a 3 cm-es távolság?
+
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><line x1="55" y1="105" x2="265" y2="105" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><line x1="55" y1="91" x2="55" y2="119" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><line x1="125" y1="91" x2="125" y2="119" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><line x1="195" y1="91" x2="195" y2="119" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><line x1="265" y1="91" x2="265" y2="119" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><text x="55" y="145" font-size="16" fill="#222" text-anchor="middle">0</text><text x="125" y="145" font-size="16" fill="#222" text-anchor="middle">1 cm</text><text x="195" y="145" font-size="16" fill="#222" text-anchor="middle">2 cm</text><text x="265" y="145" font-size="16" fill="#222" text-anchor="middle">3 cm</text></svg></ABRA>
+<FELADAT>{"tipus":"szam","muvelet":"1 : 200 000 méretarány; a térképen 3 cm; valós távolság km-ben"}</FELADAT>
+
+GYEREK: 6 km. Ez már picit jobb.
+
+TANÁR: Igen, 6 km! Jól számoltál: itt 1 cm a térképen 2 km-t jelent a valóságban, ezért 3 cm 6 km. 😊
+
+Most térjünk vissza a fokhálózathoz. Egy hely megadásakor először a földrajzi szélességet, utána a földrajzi hosszúságot mondjuk. Például egy pont helye lehet 20° északi szélesség, 10° keleti hosszúság. A két adat együtt segít megtalálni a pontot.
+
+Az ábrán melyik számpár adja meg a narancssárga pont helyét?
+
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><rect x="85" y="45" width="150" height="130" rx="12" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><line x1="85" y1="85" x2="235" y2="85" stroke="#7b5ea7" stroke-width="3" stroke-linecap="round"/><line x1="85" y1="135" x2="235" y2="135" stroke="#7b5ea7" stroke-width="3" stroke-linecap="round"/><line x1="135" y1="45" x2="135" y2="175" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><line x1="195" y1="45" x2="195" y2="175" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><circle cx="195" cy="85" r="8" fill="#fff4e0" stroke="#e07a3d" stroke-width="3"/><text x="70" y="90" font-size="16" fill="#222" text-anchor="end">40° É</text><text x="70" y="140" font-size="16" fill="#222" text-anchor="end">20° É</text><text x="135" y="202" font-size="16" fill="#222" text-anchor="middle">10° K</text><text x="205" y="202" font-size="16" fill="#222" text-anchor="middle">30° K</text></svg></ABRA>
+<FELADAT>{"tipus":"valaszt","opciok":["20° északi szélesség, 30° keleti hosszúság","40° északi szélesség, 10° keleti hosszúság","40° északi szélesség, 30° keleti hosszúság","20° északi szélesség, 10° keleti hosszúság"]}</FELADAT>
+
+GYEREK: Szerintem a 20° északi szélesség, 10° keleti hosszúság. Ugye ez volt az a pont?
+
+TANÁR: A két adat sorrendjére jól emlékeztél: előbb a szélességet, utána a hosszúságot mondjuk. A pontot viszont most másik vonalak találkozásánál jelöltük. Semmi baj, nézzük meg újra! 😊
+
+A szélességet a vízszintes vonal bal oldaláról olvasd le. A hosszúságot a függőleges vonal alatt találod. Például ha egy pont a 20° É jelű vízszintes és a 10° K jelű függőleges vonalon van, akkor a helye 20° északi szélesség, 10° keleti hosszúság.
+
+A narancssárga pontnál melyik két vonal találkozik? Az ábrán ezek jelölését keresd meg.
+
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><rect x="85" y="45" width="150" height="130" rx="12" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><line x1="85" y1="85" x2="235" y2="85" stroke="#7b5ea7" stroke-width="3" stroke-linecap="round"/><line x1="85" y1="135" x2="235" y2="135" stroke="#7b5ea7" stroke-width="3" stroke-linecap="round"/><line x1="135" y1="45" x2="135" y2="175" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><line x1="195" y1="45" x2="195" y2="175" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/><circle cx="195" cy="85" r="8" fill="#fff4e0" stroke="#e07a3d" stroke-width="3"/><text x="70" y="90" font-size="16" fill="#222" text-anchor="end">40° É</text><text x="70" y="140" font-size="16" fill="#222" text-anchor="end">20° É</text><text x="135" y="202" font-size="16" fill="#222" text-anchor="middle">10° K</text><text x="205" y="202" font-size="16" fill="#222" text-anchor="middle">30° K</text></svg></ABRA>
+<FELADAT>{"tipus":"valaszt","opciok":["20° északi szélesség, 10° keleti hosszúság","40° északi szélesség, 30° keleti hosszúság","40° északi szélesség, 10° keleti hosszúság","20° északi szélesség, 30° keleti hosszúság"]}</FELADAT>
+
+GYEREK: Szerintem a 40° északi szélesség, 30° keleti hosszúság. Most ez a jó?
+
+TANÁR: Igen, most ez a jó! A pont a 40° északi szélességi kör és a 30° keleti hosszúsági kör találkozásánál van. Ügyesen leolvastad mindkét adatot. 😊
+
+Most figyeld meg a különbséget a kétféle hálózat között. A földrajzi fokhálózat fokokkal adja meg egy hely szélességét és hosszúságát. A keresőhálózat viszont a térképlap mezőit jelöli betűkkel és számokkal. Például az A1 egy mező neve, nem földrajzi szélesség és hosszúság.
+
+Az ábrán a narancssárga pont egy keresőhálózat mezőjében van. Melyik mezőben keresnéd?
+
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><rect x="65" y="55" width="210" height="120" rx="12" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><line x1="135" y1="55" x2="135" y2="175" stroke="#2f8fd8" stroke-width="3"/><line x1="205" y1="55" x2="205" y2="175" stroke="#2f8fd8" stroke-width="3"/><line x1="65" y1="115" x2="275" y2="115" stroke="#2f8fd8" stroke-width="3"/><circle cx="240" cy="145" r="8" fill="#fff4e0" stroke="#e07a3d" stroke-width="3"/><text x="100" y="40" font-size="16" fill="#222" text-anchor="middle">A</text><text x="170" y="40" font-size="16" fill="#222" text-anchor="middle">B</text><text x="240" y="40" font-size="16" fill="#222" text-anchor="middle">C</text><text x="48" y="90" font-size="16" fill="#222" text-anchor="end">1</text><text x="48" y="150" font-size="16" fill="#222" text-anchor="end">2</text></svg></ABRA>
+<FELADAT>{"tipus":"valaszt","opciok":["B2","C1","C2","A2"]}</FELADAT>
+
+
+======================================================================
+Digitális kultúra · 5. osztály · Máté (10 éves)
+Témakör: Mi az algoritmus? Lépések és sorrend
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Máté! Noémi vagyok. Ma azt tanuljuk meg, hogyan lehet egy feladatot pontos lépésekre bontani, és miért fontos a sorrendjük. 😊
+
+Amikor egy feladat megoldásához egymás után több dolog történik, azt folyamatnak nevezzük. Például egy rajz elkészítése folyamat: előbb megrajzolod, aztán kiszínezed.
+
+A folyamat egyes teendői a lépések. Egy jó lépésből pontosan kiderül, mit kell tenni. Például a „Rajzolj egy kört!” világos utasítás.
+
+Ha a lépéseket úgy írjuk le, hogy azok alapján más is el tudja végezni a feladatot, algoritmust készítünk. Például egy rajz algoritmusa így kezdődhet: „Rajzolj egy házat, majd színezd ki a tetejét.”
+
+A lépések sorrendje is számít. Ezt az egymás után következő rendet szekvenciának hívjuk. Például a rajzot csak azután tudod kiszínezni, hogy megrajzoltad.
+
+Most rendezd sorba, hogyan készül el egy papírrepülő rajza! ✏️
+<FELADAT>{"tipus":"sorrend","elemek":["Rajzold meg a papírrepülő körvonalát.","Rajzold be a szárnyak vonalait.","Színezd ki a rajzot."]}</FELADAT>
+
+GYEREK: Előbb: rajzold meg a papírrepülő körvonalát, aztán rajzold be a szárnyak vonalait, végül színezd ki a rajzot.
+
+TANÁR: Pontosan, Máté! Előbb a körvonal készül el, utána a szárnyak vonalai, végül a színezés. Ügyesen figyeltél a sorrendre! 😊
+
+Egy feladatnál azt is megfigyelhetjük, miből indulunk ki, és mi lesz a végeredmény. Amivel elkezdjük a munkát, azt bemenetnek hívjuk. A kész eredmény a kimenet. Például egy üres lap és a ceruzák a rajzolás bemenetei; az elkészült rajz a kimenet.
+
+Az algoritmus leírásakor a lépéseket olyan pontosan fogalmazzuk meg, hogy valaki más is követni tudja őket. Például a „Rendezd sorba a könyveket!” helyett pontosabb ez: „Tedd a könyveket a címük szerint betűrendbe!”
+
+Ha a könyveket a címük szerint betűrendbe tesszük, mi a kimenet?
+<FELADAT>{"tipus":"valaszt","opciok":["A betűrendbe rendezett könyvek","A rendezésre váró könyvek","A könyvek címeinek listája"]}</FELADAT>
+
+GYEREK: A betűrendbe rendezett könyvek.
+
+TANÁR: Így van, Máté! A betűrendbe rendezett könyvek a kimenet: ez a munka eredménye. 😊
+
+Amikor azon gondolkodsz, hogyan juss el a bemenettől a kívánt kimenetig, problémát oldasz meg. Ilyenkor előbb megtervezed a lépéseket, aztán leírod őket. Például ha a kimenet egy betűrendbe rendezett könyvsor, el kell döntened, milyen sorrendben kerüljenek a könyvek a polcra.
+
+Az utasításaid akkor is legyenek pontosak, ha egy társadnak mondod el őket. A „Tedd oda a könyvet!” helyett ezt mondd: „Tedd a könyvet a polc bal szélére!” Így a társad tudja, hová tegye.
+
+Most melyik utasítás alapján tudná a társad pontosan elhelyezni a könyvet?
+<FELADAT>{"tipus":"valaszt","opciok":["Tedd a könyvet a polc jobb szélére!","Tedd a könyvet valahová a polcra!","Tedd a könyvet a többi közelébe!"]}</FELADAT>
+
+GYEREK: Tedd a könyvet a polc jobb szélére!
+
+TANÁR: Ügyes vagy, Máté! A „polc jobb szélére” pontosan megmondja, hová kerüljön a könyv. 😊
+
+Egy algoritmust folyamatábrával is leírhatunk. Ebben az egyes teendőket külön alakzatokba írjuk, a nyilak pedig megmutatják, melyik lépés következik. Így könnyebb észrevenni, ha egy lépés kimaradt vagy rossz helyre került. Például egy rajz folyamatábrájában nyíl vezethet a „Rajzold meg a körvonalat!” teendőtől a „Színezd ki!” teendőhöz.
+
+Egy feladatot kisebb lépésekre bontva könnyebb követni és másnak elmagyarázni. Például a „Rendezd el a kártyákat!” helyett leírhatod külön, hogy előbb válogasd ki a piros kártyákat, aztán tedd őket egymás mellé.
+
+Rakd helyes sorrendbe egy könyv címének leírását és ellenőrzését!
+<FELADAT>{"tipus":"sorrend","elemek":["Olvasd el a könyv címét.","Írd le a címet egy lapra.","Hasonlítsd össze a leírt címet a könyvön láthatóval."]}</FELADAT>
+
+GYEREK: Előbb olvasd el a könyv címét, aztán írd le egy lapra, végül hasonlítsd össze a könyvön láthatóval.
+
+TANÁR: Pontosan, Máté! Előbb elolvasod a címet, utána leírod, végül összehasonlítod az eredetivel. Az utolsó lépésből derül ki, pontosan írtad-e le. 😊
+
+Egy folyamatábrán a nyilak ugyanezt a sorrendet mutatnák: olvasás → leírás → összehasonlítás. Ha felcserélnénk a leírást és az összehasonlítást, még nem lenne mit ellenőrizni.
+
+Most rendezd sorba, hogyan készül egy betűrendbe rendezett címlista!
+<FELADAT>{"tipus":"sorrend","elemek":["Olvasd el a könyvek címét.","Írd le a címeket egy lapra.","Rendezd a leírt címeket betűrendbe."]}</FELADAT>
+
+GYEREK: Előbb olvasd el a könyvek címét, aztán írd le őket egy lapra, végül rendezd betűrendbe.
+
+TANÁR: Így van, Máté! A címeket előbb meg kell ismerned és leírnod, csak azután tudod betűrendbe rendezni őket. 😊
+
+Most kapcsoljuk össze, amit tanultunk. A könyvek címei a bemenet. A leírt lépésekből áll az algoritmus, a betűrendbe rendezett címlista pedig a kimenet. Ha ezeket a lépéseket folyamatábrán mutatnánk meg, a nyilak jeleznék a sorrendjüket.
+
+Próbáld ki ugyanezt egy másik feladaton: egy társad szín szerint csoportosítja a kártyákat. Mi lenne ennek a kimenete?
+<FELADAT>{"tipus":"valaszt","opciok":["A csoportosításra váró kártyák","A szín szerint csoportosított kártyák","Az utasítás, hogy csoportosítsa a kártyákat"]}</FELADAT>
+
+
+======================================================================
+Vizuális kultúra · 5. osztály · Bence (10 éves)
+Témakör: Vizuális művészeti jelenségek – Alkotások, stílusok
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Bence! Noémi vagyok. Ma azt tanuljuk, hogyan figyelhetünk meg és hasonlíthatunk össze műalkotásokat. 🎨
+
+Egy képről mondhatunk olyat, amit bárki ellenőrizhet. Ezt tárgyilagos, más szóval <FL:la>objektív</FL> megállapításnak hívjuk. Például: „A képen három ember látható.”
+
+A saját érzésünkről is beszélhetünk. Ez személyes, más szóval <FL:la>szubjektív</FL> vélemény. Például: „Ez a kép nekem nyugodtnak tűnik.” Másnak lehet róla más érzése.
+
+A műalkotás jellegzetes megjelenését <FL:la>stílusnak</FL> nevezzük. Figyelhetjük például, hogyan ábrázolja az alkotó az alakokat, és milyen díszítést használ. Egy régi vázaképen az alakok fekete színnel jelenhetnek meg.
+
+Azt is érdemes megfigyelni, melyik korban készült egy alkotás. Ha két különböző korból származó művet nézünk, összehasonlíthatjuk a témájukat és a megjelenésüket. Például egy ókori vázakép és egy mai sportot bemutató kép is ábrázolhat mozgó embereket, mégis másként jelenítheti meg őket.
+
+Egy festményen két piros hajó látható. Melyik mondat tárgyilagos megállapítás róla?
+<FELADAT>{"tipus":"valaszt","opciok":["A festmény vidám hangulatú.","A festményen két hajó látható.","A festmény szebb, mint a többi."]}</FELADAT>
+
+GYEREK: A festményen két hajó látható.
+
+TANÁR: Ügyes vagy, Bence! Ezt bárki ellenőrizheti a képen, ezért tárgyilagos megállapítás. 😊
+
+Most nézzük, hogyan használhatsz fel egy régi alkotást a saját képedhez. Ha átveszed egy ókori fekete alakos vázakép jellegzetes megjelenését, de mai sportolókat rajzolsz rá, a régi <FL:la>stílust</FL> új témával kapcsolod össze.
+
+Egy kép részletéből a hiányzó részt is elképzelheted. Ha csak egy vázakép ívelt széle és egy fekete alak egy része látszik, a látható vonalak segíthetnek a kép kiegészítésében. Ezt a hiányzó részek elképzelését és megjelenítését <FL:la>rekonstruálásnak</FL> nevezzük.
+
+Egy másik régi vázaképnek csak az egyik fele látszik. Mi segítene leginkább a hiányzó fél megrajzolásában?
+<FELADAT>{"tipus":"valaszt","opciok":["A látható vonalak és alakok megfigyelése.","Egy tetszőleges mai fénykép lemásolása.","A kép címének újraírása."]}</FELADAT>
+
+GYEREK: A látható vonalak és alakok megfigyelése.
+
+TANÁR: Pontosan! A látható vonalakból és alakokból következtethetsz arra, milyen lehetett a hiányzó rész. 😊
+
+A művészettörténeti kor azt mutatja meg, hogy egy alkotás a múlt melyik időszakában készült. Például az ókori vázaképet és egy középkori építményt más-más korhoz kapcsoljuk.
+
+A <FL:la>klasszikus</FL> szóval régebbi, mintának tekintett művekről is beszélünk. Például egy ókori vázakép jellegzetes alakábrázolását később is felhasználhatja egy alkotó.
+
+A <FL:la>kortárs</FL> művészet a saját korunkban készülő művészet. Például ha valaki ma készít egy képet, amelyet egy régi vázakép ihletett, az új alkotás <FL:la>kortárs</FL>, még akkor is, ha régi mintát használ.
+
+Két képet nézel: az egyik ókori vázakép, a másikat ma készítette valaki a vázakép mintájára. Melyik állítás igaz?
+<FELADAT>{"tipus":"valaszt","opciok":["Mindkét kép az ókorban készült, mert hasonlítanak.","A ma készült kép kortárs alkotás, bár régi mintát használ.","A két kép csak akkor hasonlítható össze, ha ugyanakkor készült."]}</FELADAT>
+
+GYEREK: A ma készült kép kortárs alkotás, bár régi mintát használ.
+
+TANÁR: Így van! A készítés ideje számít: a ma készült kép kortárs alkotás, akkor is, ha régi mintából indul ki. 🎨
+
+A <FL:la>modern</FL> művészet nem ugyanazt jelenti, mint a kortárs. A modern művészet korábbi időszakhoz kapcsolódik; a kortárs művészet a saját korunkban készül. Például egy ma készült kép kortárs, nem pusztán azért modern, mert újszerűnek látjuk.
+
+Két alkotást a témájuk szerint is összehasonlíthatunk: azt nézzük, mit ábrázolnak. Például egy ókori vázakép és egy mai festmény is bemutathat sportolókat. Utána azt is megfigyelhetjük, hogyan ábrázolják őket.
+
+Egy régi és egy mai képen is futó emberek láthatók. Melyik megállapítás hasonlítja össze a képek témáját?
+<FELADAT>{"tipus":"valaszt","opciok":["Mindkét kép futó embereket ábrázol.","A régi kép nekem jobban tetszik.","A mai képen élénkebbek a színek."]}</FELADAT>
+
+GYEREK: Mindkét kép futó embereket ábrázol.
+
+TANÁR: Jól látod! A két kép témája ugyanaz: futó embereket ábrázolnak. 👏
+
+Összehasonlításkor azt is nézhetjük, hogyan jelennek meg az alakok. Ha felismerhető embereket vagy tárgyakat látunk, azt <FL:la>figuratív</FL> ábrázolásnak nevezzük. Például egy futót ábrázoló vázakép figuratív.
+
+Egy alkotó színekkel, vonalakkal és formákkal fejezheti ki a mondanivalóját. Ezeket kifejezőeszközöknek hívjuk. Például egy vázaképen a fekete alakok és a körvonalak segítenek felismerni a mozdulatot.
+
+Ugyanarról a témáról tehát két alkotás nagyon különbözhet. Egy futót ábrázoló vázaképen a körvonalak, egy mai festményen az élénk színek kaphatnak nagyobb szerepet.
+
+Két futót ábrázoló képet hasonlítasz össze. Melyik mondat szól a kifejezőeszközeikről?
+<FELADAT>{"tipus":"valaszt","opciok":["Az egyik képen fekete körvonalak, a másikon élénk színek láthatók.","Mindkét képen futó ember látható.","Az egyik kép régebben készült, mint a másik."]}</FELADAT>
+
+GYEREK: Az egyik képen fekete körvonalak, a másikon élénk színek láthatók.
+
+TANÁR: Pontosan! A körvonalak és a színek a képek kifejezőeszközei. Ügyesen választottad szét ezt a témájuktól és a készítésük idejétől. 👏
+
+Egy alkotásnál azt is megfigyelhetjük, miért készült. Lehet, hogy egy történetet mutat be, vagy egy tárgyat díszít. Például egy vázára festett alakok történetet mesélhetnek el, miközben a vázát is díszítik.
+
+A díszítés egyik visszatérő részletét <FL:la>motívumnak</FL> nevezzük. Például ha egy mintán ugyanaz a levélforma többször megjelenik, az a levélforma egy motívum. Ezt egy saját alkotáson is felhasználhatod, és új témához igazíthatod.
+
+Egy vázán ugyanaz a hullámos vonal többször ismétlődik. Melyik részlet a motívum?
+<FELADAT>{"tipus":"valaszt","opciok":["A váza teljes alakja.","Az ismétlődő hullámos vonal.","A váza kora."]}</FELADAT>
+
+
+======================================================================
+Ének-zene · 4. osztály · Anna (9 éves)
+Témakör: Zeneművek/Énekes anyag
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Anna! Noémi vagyok. Ma negyedikes népdalokról és azok kifejező énekléséről tanulunk. 🎶
+
+Az életképet bemutató dal egy mindennapi helyzetet idéz fel. A „Pásztorember vígan él” című dalban például a pásztor élete jelenik meg.
+
+Az állatos dalokban állatok szerepelnek. A „Kis kacsa fürdik” című dal már a címében is elárulja, hogy egy kacsáról szól.
+
+A dal hangulatához az éneklés módja is hozzátartozik. A vidám „Farsang három napjába” éneklésekor például élénk előadás illik a dalhoz.
+
+Ha valaki énekel, miközben egy hangszer is szól, azt hangszerkíséretes éneklésnek nevezzük. Ilyenkor a dallamot és a kíséretet egyszerre halljuk.
+
+Most te jössz: a „Sárga csikó” című dalt a címe alapján melyik dalcsoportba sorolnád?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Állatos dalok","Életképek","Jeles napok dalai"]}</FELADAT>
+
+GYEREK: Állatos dalok. 😊
+
+TANÁR: Jó gondolat, Anna! 😊 A csikó valóban állat, ezért a cím alapján érthető a válaszod. A tanult dalok között azonban a „Sárga csikó” az életképekhez tartozik. Ezt a kérdést én tettem fel pontatlanul.
+
+A párosító dalokban leányokról és legényekről énekelnek. Ilyen dal például a „Csillag Boris”.
+
+A jeles napokhoz kötődő dalokat egy-egy ünnephez vagy szokáshoz kapcsoljuk. A „Farsang három napjába” például farsangi dal.
+
+A dal hangulatához a tempó is illik: ez azt jelenti, milyen gyorsan énekeljük. Egy élénk dalhoz más tempó illhet, mint egy ünnepélyeshez.
+
+A „Luca, Luca” melyik dalcsoportba tartozik?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Jeles napok dalai","Párosítók","Életképek"]}</FELADAT>
+
+GYEREK: Jeles napok dalai. Ez Luca napjához tartozik, ugye?
+
+TANÁR: Így van, Anna! A „Luca, Luca” a jeles napok dalai közé tartozik, és Luca napjához kapcsolódik. Ügyesen felismerted! 😊
+
+A táncházban közösen énekelnek és táncolnak a népzenére. Például egy tanult népdal is megszólalhat táncházban.
+
+Egy népdalt többféleképpen is hallhatsz: elénekelheti valaki egyedül, vagy szólhat hangszeres kísérettel. Ha te énekelsz, és közben egy hangszer is megszólal, figyelhetsz arra, hogyan illik össze a két hang.
+
+Melyik helyzetben hallasz hangszerkíséretes éneklést?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Valaki egyedül énekel.","Valaki énekel, miközben egy hangszer is szól.","Csak egy hangszer szól."]}</FELADAT>
+
+GYEREK: Valaki énekel, miközben egy hangszer is szól. 🎵
+
+TANÁR: Pontosan! 🎵 Ilyenkor az énekhang mellett hangszer is szól. Szép munka!
+
+Éneklés közben kétféleképpen figyelheted a hangokat. Amikor a dallam hangjai egymás után következnek, a dal halad előre. Például a „Kis kacsa fürdik” éneklésekor egyik hang után jön a következő.
+
+Amikor az ének és a hangszer egyszerre szól, két zenei részt hallasz együtt. Például te énekled a „Pásztorember vígan él” dallamát, miközben egy osztálytársad hangszeren kísér.
+
+Melyik történik, ha te énekelsz, és közben az osztálytársad hangszeren játszik?
+
+<FELADAT>{"tipus":"valaszt","opciok":["A dallam hangjai egymás után következnek.","Az ének és a hangszer egyszerre szól."]}</FELADAT>
+
+GYEREK: Az ének és a hangszer egyszerre szól. 😊
+
+TANÁR: Így van, Anna! 😊 Egyszerre hallod az éneket és a hangszer játékát.
+
+A népdalok régebbi foglalkozásokról is mesélnek. A „Kelj fel juhász” címében a juhász olyan ember, aki juhokat őriz. A „Béres legény” címében a béres mezőgazdasági munkát végző ember.
+
+Énekléskor a tiszta hangok mellett a szavakra is figyelünk. Ha érthetően ejted őket, a hallgatók könnyebben követik a dal történetét. Például a „Molnárlegény voltam én” éneklésekor is fontos, hogy jól érthetők legyenek a szavak.
+
+A „Pásztorember vígan él” címében melyik szó utal foglalkozásra?
+
+<FELADAT>{"tipus":"valaszt","opciok":["vígan","pásztorember","él"]}</FELADAT>
+
+GYEREK: pásztorember. Ez foglalkozás, ugye?
+
+TANÁR: Igen, jól látod! 😊 A pásztorember pásztorkodással foglalkozik, állatokat őriz.
+
+A népdalok előadásakor a dal hangulatát is megmutathatod. A „Pásztorember vígan él” címében a „vígan” derűs hangulatra utal. Ünnepélyes alkalomhoz viszont másféle, visszafogottabb előadás illik: a Himnuszt méltósággal énekeljük.
+
+A dalokat emlékezetből is megtanuljuk. Ez azt jelenti, hogy később szöveg nélkül is el tudjuk énekelni őket. Például egy tanult népdalt így énekelhetsz az osztállyal.
+
+Melyik dalhoz illik az ünnepélyes, méltóságteljes előadás?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Pásztorember vígan él","Himnusz","Farsang három napjába"]}</FELADAT>
+
+
+======================================================================
+Etika · 8. osztály · Viki (13 éves)
+Témakör: Éntudat – Önismeret
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Viki! Noémi vagyok. Ma azt nézzük meg, hogyan ismerheted meg magad jobban, és hogyan hatnak rád mások elvárásai. 🙂
+
+Az önismeret azt jelenti, hogy észreveszed a tulajdonságaidat, az érzéseidet és azt is, min szeretnél változtatni. Például: „Szeretek alaposan felkészülni, de új helyzetekben néha elbizonytalanodom.”
+
+Az önazonosság ahhoz kapcsolódik, hogy mi fontos neked, és milyennek tartod magad. Például: „Fontos nekem, hogy akkor is őszinte legyek, ha a többiek más véleményen vannak.”
+
+Egy személyiségjegy viszonylag jellemző rád, de nem ír le teljesen. Például: „Kitartó vagyok a rajzolásban, bár nem minden feladatnál könnyű kitartanom.”
+
+A társas szerep attól is függ, milyen helyzetben vagy. Lehetsz egyszerre osztálytárs és csapattag; a két helyzetben másra számíthatnak tőled. Az elvárásokra érdemes figyelni, de közben azt is mérlegelheted, mi egyezik a saját értékeiddel.
+
+Egy diák szerint fontos, hogy meghallgassa mások véleményét, de a döntése előtt a saját meggyőződését is átgondolja. Melyik mondat mutatja ezt leginkább?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Meghallgatom a többieket, aztán eldöntöm, mit tartok helyesnek.","Mindig azt választom, amit a legtöbben szeretnének.","Nem érdekel mások véleménye, mert csak az enyém számít."]}</FELADAT>
+
+GYEREK: Meghallgatom a többieket, aztán eldöntöm, mit tartok helyesnek. Ez a jó, nem?
+
+TANÁR: Igen, ez a jó válasz! 😊 Meghallgatod a többieket, de a döntést a saját értékeid alapján hozod meg.
+
+Ugyanarra a helyzetre különbözőképpen reagálhatunk. Ha valaki nem ért egyet veled, érezhetsz csalódottságot, míg ő egyszerűen más szempontot tart fontosnak. A másik véleményének megértése nem jelenti azt, hogy egyet is kell értened vele.
+
+Az önkifejezés az, ahogyan elmondod a gondolataidat és érzéseidet. Például: „Csalódott vagyok, mert sokat készültem erre, de szeretném megérteni, te hogyan látod.” Így a saját érzésedet is kifejezed, és teret adsz a beszélgetésnek.
+
+Egy csoport másik ötletet választ, mint amit egy diák javasolt. Melyik mondattal fejezheti ki a diák a véleményét úgy, hogy a többiekét is figyelembe veszi?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Ha nem az én ötletemet választottátok, nincs értelme tovább beszélni.","Én más megoldást javasoltam; elmondanátok, ti miért ezt választottátok?","Rendben, de én továbbra is a saját ötletemet szeretném megvalósítani a közös feladatban."]}</FELADAT>
+
+GYEREK: Én más megoldást javasoltam; elmondanátok, ti miért ezt választottátok? Így nem veszekedés lesz belőle, hanem beszélgetés.
+
+TANÁR: Pontosan, Viki! Jól indokoltad meg: a diák elmondja a saját véleményét, és kíváncsi marad a többiek szempontjára is. 😊
+
+Az önismerethez az is hozzátartozik, hogy felismered, mire van szükséged. Például egy sűrű tanulós nap után szükséged lehet pihenésre, még akkor is, ha szívesen folytatnád a munkát.
+
+A saját határaid azt jelzik, mi az, amit szívesen megosztasz másokkal. Az interneten ez különösen fontos: mielőtt közzéteszel valamit magadról, érdemes átgondolnod, kinek válhat láthatóvá.
+
+Az interneten mutatott képed csak egy része annak, aki vagy. Kiválaszthatod, mely élményeidet osztod meg, de ebből mások nem ismerhetik meg minden gondolatodat és tulajdonságodat. Ezt a különbséget nevezzük a valóságos és a virtuális önazonosság közötti különbségnek.
+
+Egy diák büszke arra, hogy sikerült egy rajza, és szeretne róla bejegyzést készíteni. Melyik döntésnél figyel leginkább a saját határaira?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Közzéteszi a rajzot, és azt is leírja, pontosan hol és mikor lehet vele találkozni.","Előbb átgondolja, kinek szeretné megmutatni a rajzot, és csak azt osztja meg, amit szívesen látnak mások.","Nem oszt meg semmit, mert minden bejegyzésből teljesen megismernék őt."]}</FELADAT>
+
+GYEREK: Előbb átgondolja, kinek szeretné megmutatni a rajzot, és csak azt osztja meg, amit szívesen látnak mások. Ez oké, nem?
+
+TANÁR: Igen, jó választ választottál! 😊 A diák nemcsak azt gondolja át, mit szeretne megmutatni, hanem azt is, kik láthatják a bejegyzését.
+
+Most nézzük meg, hogyan ellenőrizheted, amit olvasol. Egy állítás forrása az a hely, ahonnan az információ származik. Ha valaki azt írja, hogy egy tanulási módszer mindenkinek beválik, érdemes megnézni, ki írta ezt, és mivel támasztja alá.
+
+A hitelesség azt jelenti, hogy van okod megbízni egy állításban. Például egy hangzatos bejegyzés önmagában kevés; erősebb alap, ha a szerző megmutatja, honnan származnak az adatai. A saját tapasztalatodat is figyelembe veheted: attól, hogy másnak bevált egy módszer, neked még nem biztos, hogy segít.
+
+Két bejegyzés állítja, hogy egy-egy tanulási módszer hatásos. Melyik ad jobb alapot a mérlegeléshez?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Az, amelyik sok kedvelést kapott, de nem írja le, mire alapozza az állítását.","Az, amelyik határozottan ígér sikert, de nem nevezi meg a szerzőjét.","Az, amelyik megnevezi a szerzőjét és bemutatja, mire alapozza az állítását."]}</FELADAT>
+
+GYEREK: Az, amelyik megnevezi a szerzőjét és bemutatja, mire alapozza az állítását. Az tűnik hitelesebbnek.
+
+TANÁR: Így van, Viki! Jól mérlegeltél: nem a magabiztos hang vagy a kedvelések száma számít, hanem az, hogy ellenőrizhető-e az állítás alapja. 😊
+
+Az önismeret a céljaid megválasztásában is segít. Egy cél akkor használható igazán, ha tudod, miért fontos neked, és mi lehet az első lépés felé. Például: „Szeretnék magabiztosabban felszólalni, ezért a következő héten egyszer jelentkezem az órán.”
+
+A terv mellett önellenőrzésre is szükség van: időnként megnézed, haladsz-e, és változtatsz, ha valami nem működik. Ha sikerül egy lépés, azt is érdemes elismerned. Nem kell megvárnod, amíg az egész cél megvalósul.
+
+Egy diák szeretné megtudni, melyik továbbtanulási irány illik az érdeklődéséhez. Melyik terve segíti leginkább ebben?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Kiválasztja azt az irányt, amelyet a legtöbb barátja választ.","Átgondolja, milyen tevékenységeket szeret, tájékozódik a lehetőségekről, majd újra mérlegel.","Kiválasztja az első érdekesnek tűnő lehetőséget, és nem foglalkozik a többivel."]}</FELADAT>
+
+GYEREK: Átgondolja, milyen tevékenységeket szeret, tájékozódik a lehetőségekről, majd újra mérlegel. Ez elég okos terv.
+
+TANÁR: Igen, ez átgondolt terv! 😊 Az érdeklődése ad neki kiindulópontot, a tájékozódás után pedig még módosíthat a döntésén.
+
+A célok mellett az is fontos, hogyan érzed magad a mindennapokban. A jólét inkább az élet anyagi feltételeire utal, például arra, hogy rendelkezésre állnak-e a szükséges dolgok. A jóllét azt is magában foglalja, hogy testileg és lelkileg hogyan vagy. Például valakinek megvan minden taneszköze, mégis fáradtnak érezheti magát, ha nem jut elég ideje pihenni.
+
+A stressz feszültség, amelyet például egy fontos döntés előtt érezhetsz. Érdemes észrevenni, hogyan hat rád: ha egy zsúfolt hét után nehezebben figyelsz, a pihenés is része lehet a tervednek.
+
+Egy diák minden szükséges taneszközzel rendelkezik, de hetek óta kimerültnek érzi magát. Melyik mondat írja le legpontosabban a helyzetét?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Mivel a szükséges eszközei megvannak, a jóllétével biztosan minden rendben van.","Az anyagi feltételei rendben lehetnek, de a jóllétére a kimerültsége miatt figyelnie kell.","A kimerültsége bizonyítja, hogy nincsenek meg a szükséges taneszközei."]}</FELADAT>
+
+
+======================================================================
+Idegen nyelv – nemet · 1. osztály · Máté (6 éves)
+Témakör: Begrüßung – Köszönés és bemutatkozás
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Máté! Noémi vagyok. Ma németül tanulunk köszönni. 😊
+
+Amikor megérkezel játszani, így köszönhetsz: „<FL:de>Hallo!</FL>” (Szia!) Ha egy barátod érkezik hozzád, neki is mondhatod: „<FL:de>Hallo!</FL>” (Szia!)
+
+Most képzeld el, hogy belépsz a terembe. Melyik illik oda: „szia” vagy „viszlát”?
+
+<VOCAB>szia=hallo</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["viszlát","szia"]}</FELADAT>
+
+GYEREK: szia
+
+TANÁR: Így van, megérkezéskor „szia”! Ügyes vagy, Máté! 😊
+
+Amikor elmész a barátodtól, így búcsúzhatsz: „<FL:de>Tschüss!</FL>” (Viszlát!) Ha véget ér a játék, akkor is mondhatod: „<FL:de>Tschüss!</FL>” (Viszlát!)
+
+Ha most indulsz haza a barátodtól, melyiket mondod neki németül?
+
+<VOCAB>viszlát=tschüss</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["<FL:de>Hallo!</FL>","<FL:de>Tschüss!</FL>"]}</FELADAT>
+
+GYEREK: Tschüss!
+
+TANÁR: Ügyes vagy, Máté! A <FL:de>Tschüss!</FL> jó búcsúzás. 😊
+
+Reggel így köszönhetsz a tanítódnak: „<FL:de>Guten Morgen!</FL>” (Jó reggelt!) Ha reggel találkozol egy barátoddal, neki is mondhatod: „<FL:de>Guten Morgen!</FL>” (Jó reggelt!)
+
+Ha reggel érkezel az iskolába, melyik köszönést választod?
+
+<VOCAB>jó reggelt=guten Morgen</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["<FL:de>Guten Morgen!</FL>","<FL:de>Tschüss!</FL>"]}</FELADAT>
+
+GYEREK: Guten Morgen!
+
+TANÁR: Helyes, Máté! Reggel így köszönünk. 😊
+
+Napközben így is köszönhetsz a tanítódnak: „<FL:de>Guten Tag!</FL>” (Jó napot!) Ha délben találkozol vele, ugyanezt mondhatod: „<FL:de>Guten Tag!</FL>” (Jó napot!)
+
+Ha délben lépsz be a terembe, melyik köszönést választod?
+
+<VOCAB>jó napot=guten Tag</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["<FL:de>Guten Morgen!</FL>","<FL:de>Guten Tag!</FL>"]}</FELADAT>
+
+GYEREK: Guten Tag!
+
+TANÁR: Helyes, Máté! Délben mondhatod: „<FL:de>Guten Tag!</FL>” 😊
+
+Ha kérsz egy játékot, a kérés végén azt mondhatod: „<FL:de>Bitte!</FL>” (Kérlek!) Ha azt kéred, hogy adjanak neked egy ceruzát, akkor is mondhatod: „<FL:de>Bitte!</FL>” (Kérlek!)
+
+Ha szeretnél elkérni egy játékot, melyik szót használod?
+
+<VOCAB>kérlek=bitte</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["<FL:de>Bitte!</FL>","<FL:de>Hallo!</FL>"]}</FELADAT>
+
+GYEREK: Bitte!
+
+TANÁR: Helyes, Máté! Ha kérsz valamit, mondhatod: „<FL:de>Bitte!</FL>” 😊
+
+Ha megkapod a kért játékot, így köszönöd meg: „<FL:de>Danke!</FL>” (Köszönöm!) Ha valaki odaadja a ceruzádat, neki is mondhatod: „<FL:de>Danke!</FL>” (Köszönöm!)
+
+Ha a barátod odaadja neked a labdát, mit mondasz neki németül?
+
+<VOCAB>köszönöm=danke</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["<FL:de>Danke!</FL>","<FL:de>Tschüss!</FL>"]}</FELADAT>
+
+
+======================================================================
+Technika és tervezés · 3. osztály · Bence (8 éves)
+Témakör: Anyagok a környezetünkben
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Bence! Noémi vagyok. Ma azt nézzük meg, hogyan lesz a környezetünkben található anyagból használható tárgy. 🌿
+
+Az anyag az, amiből egy tárgy készül. Például egy képkeret készülhet fából.
+
+A nyersanyag az, amit a természetből kapunk. Például a fa törzse nyersanyag.
+
+Az alapanyag az, amit már előkészítettek a tárgykészítéshez. Például a fatörzsből vágott deszkából képkeretet készíthetünk.
+
+A kész tárgyat terméknek nevezzük. Ebben a példában a képkeret a termék. Így követik egymást: nyersanyag → alapanyag → termék.
+
+Most nézzünk egy másik példát! Melyik lehet a képkeret készítéséhez használt alapanyag?
+
+<FELADAT>{"tipus":"valaszt","opciok":["fatörzs","deszka","képkeret"]}</FELADAT>
+
+GYEREK: Deszka! 😊
+
+TANÁR: Ügyes vagy, Bence! A deszka az alapanyag, amelyből elkészülhet a képkeret. 😊
+
+Tárgykészítés előtt érdemes megvizsgálni az anyagot. Ezt anyagvizsgálatnak hívjuk. Például megnézhetjük és megtapinthatjuk a deszkát, mielőtt felhasználjuk.
+
+Azt, hogy egy anyag kemény-e, rugalmas-e vagy sima-e a felülete, fizikai tulajdonságnak nevezzük. Például egy sima felületű deszka kellemes tapintású.
+
+Az is számít, hogyan tudunk dolgozni az anyaggal. Ezt technológiai tulajdonságnak hívjuk. Például egy deszkából kialakítható a tervezett képkeret.
+
+Ha egy tárgyhoz könnyen hajlítható anyag kell, melyik tulajdonságot érdemes vizsgálni?
+
+<FELADAT>{"tipus":"valaszt","opciok":["rugalmasság","szín","szag"]}</FELADAT>
+
+GYEREK: Rugalmasság! Vagyis azt nézném.
+
+TANÁR: Így van, Bence! A rugalmasságot vizsgálnád: azt, hogy az anyag hajlítás után visszanyeri-e az alakját. 😊
+
+Az anyag átlátszósága is fontos. Ha szeretnénk átlátni egy tárgyon, az anyag kiválasztásakor ezt figyelembe vesszük. Például egy ablakhoz átlátszó üveget választunk.
+
+A felület minőségét tapintással is megfigyelhetjük: lehet sima vagy érdes. Például egy képkerethez kellemesebb lehet a sima felületű deszka.
+
+Most egy új helyzet: olyan tárgyat tervezel, amelyen keresztül látni szeretnél. Melyik tulajdonságot vizsgálnád meg először?
+
+<FELADAT>{"tipus":"valaszt","opciok":["átlátszóság","rugalmasság","szag"]}</FELADAT>
+
+GYEREK: Átlátszóság! Az kell.
+
+TANÁR: Pontosan, Bence! Az átlátszóság segít eldönteni, alkalmas-e az anyag a tervezett tárgyhoz. 😊
+
+Most nézzük, honnan származnak az anyagok. A természetes anyagokat a környezetünkben találjuk meg, például a fát vagy a terméseket. A mesterséges anyagokat emberi munkával állítják elő; ilyen például a műanyag.
+
+Amikor tárgyat tervezünk, azt is átgondoljuk, mennyi anyagra van szükségünk. Ha csak a szükséges mennyiséget használjuk fel, kevesebb maradék keletkezik. Például egy termésekből készülő képhez előbb kiválasztjuk a megfelelő darabokat, és csak azokat használjuk fel.
+
+Egy műanyagból készült tárgy anyaga természetes vagy mesterséges?
+
+<FELADAT>{"tipus":"valaszt","opciok":["természetes","mesterséges"]}</FELADAT>
+
+GYEREK: Mesterséges! A műanyag olyan.
+
+TANÁR: Ügyes vagy, Bence! A műanyag mesterséges anyag. 😊
+
+Az anyag kiválasztásakor több tulajdonságot együtt figyelünk meg. A színt és az alakot szemmel vizsgáljuk. Például egy termésekből készülő képhez kiválaszthatunk apró, kerek terméseket.
+
+A szag is lehet egy anyag megfigyelhető tulajdonsága. Például egy fadarabnak jellegzetes szaga lehet. Ismeretlen anyagot azonban nem szagolunk meg közelről.
+
+Ha termésekből kerek formákat szeretnél kirakni egy képen, melyik tulajdonságuk segít leginkább a válogatásban?
+
+<FELADAT>{"tipus":"valaszt","opciok":["alak","szín","szag"]}</FELADAT>
+
+GYEREK: Alak! Az a fontos.
+
+TANÁR: Így van, Bence! A kerek formák kirakásához a termések alakját figyeled meg. 😊
+
+Az ember a környezetét is alakítja, amikor anyagokból tárgyakat készít. Például egy fatörzsből deszka, a deszkából pedig képkeret lehet. Ilyenkor érdemes előre átgondolni, mire lesz szükség, hogy kevés anyag maradjon felhasználatlanul.
+
+Közös munkánál a társak javaslatait is meghallgatjuk. Például ha termésekből készítünk képet, megbeszélhetjük, melyik termés hová illik. Ha valamivel nem értünk egyet, elmondhatjuk, miért választanánk mást.
+
+Egy termésekből készülő képhez kétféle anyagot találtok. Az egyikből sok kellene, és sok maradék keletkezne; a másikból éppen elegendő van. Melyiket választanád a takarékos anyaghasználathoz?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Amelyikből sok maradék keletkezne.","Amelyikből éppen elegendő van."]}</FELADAT>

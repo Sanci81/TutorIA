@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="hu"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Megéri-e? — a teljes számítás</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#0b0f22;color:#e9e4d6;
+       font:16px/1.65 system-ui,Segoe UI,sans-serif;padding:30px 22px 90px}
+  .k{max-width:1000px;margin:0 auto}
+  h1{font-size:1.7rem;margin:0 0 6px}
+  h2{font-size:1.12rem;color:#f0c869;margin:40px 0 10px;
+     border-bottom:1px solid rgba(240,200,105,.25);padding-bottom:7px}
+  h3{font-size:.95rem;margin:24px 0 6px;color:#cfe6da}
+  p{margin:0 0 13px}
+  .alcim{opacity:.6;font-size:.93rem;margin:0 0 4px}
+  table{width:100%;border-collapse:collapse;font-size:.88rem;margin:10px 0 6px}
+  th{text-align:left;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;
+     opacity:.55;padding:7px 9px;font-weight:700;border-bottom:1px solid rgba(255,255,255,.14)}
+  th.sz,td.sz{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td{padding:7px 9px;border-bottom:1px solid rgba(255,255,255,.06)}
+  tr.min td{background:rgba(180,53,63,.14)}
+  tr.min td b{color:#ff9aa2}
+  tr.jo td{background:rgba(47,143,96,.14)}
+  tr.draga td{background:rgba(180,53,63,.12)}
+  tr.rossz td{opacity:.55}
+  .soha{color:#ff9aa2;font-weight:700}
+  .k2{color:#8aa79a;font-size:.8rem}
+  .doboz{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.11);
+         border-radius:13px;padding:16px 20px;margin:14px 0}
+  .valasz{background:linear-gradient(150deg,rgba(47,143,96,.18),rgba(47,143,96,.06));
+          border:1px solid rgba(47,143,96,.5)}
+  .baj{background:rgba(180,53,63,.12);border:1px solid rgba(180,53,63,.42)}
+  .valasz b,.baj b{color:#fff}
+  ul{margin:8px 0 0 0;padding-left:20px}
+  li{margin-bottom:7px}
+  .merve{color:#7fe0ab;font-weight:700}
+  .tipp{color:#f0c869;font-weight:700}
+  code{background:rgba(255,255,255,.08);padding:1px 6px;border-radius:5px;font-size:.88em}
+</style></head><body><div class="k">
+
+<h1>Megéri-e? — a teljes számítás</h1>
+<p class="alcim">2026. október 5. · minden feltételezés kiírva ·
+<span class="merve">zöld</span> = mért vagy ellenőrzött adat ·
+<span class="tipp">sárga</span> = feltételezés</p>
+
+<div class="doboz valasz">
+<p><b>A rövid válasz: igen, megéri — de nem úgy, ahogy most fut.</b></p>
+<p>A program jelenleg a <code>gpt-5.4-mini</code> modellt hívja. Ez ma már
+„legacy", és drága: teljes perckeret-használat mellett <b>mind a három
+csomag veszteséges</b> vele. Ugyanez a szolgáltatás a mai olcsó modellen
+(<code>gpt-6-luna</code>) <b>minden csomagnál nyereséges</b>, még akkor is,
+ha a gyerek az utolsó percig elhasználja a keretét.</p>
+<p>A különbség nem apró: a beszélgetés tokenköltsége <b>tizenötöd–
+tizennyolcad részére</b> esik.</p>
+</div>
+
+<h2>1. Honnan jönnek a számok</h2>
+<p>Minden ár ellenőrizve, nem a kódból átvéve:</p>
+<table>
+<tr><th>tétel</th><th>érték</th><th>forrás</th></tr>
+<tr><td>Felolvasás (Azure)</td><td class="sz">16 $ / 1M karakter</td>
+    <td class="k2">Azure árlista; havi 500 000 karakter ingyenes</td></tr>
+<tr><td>Beszédfelismerés</td><td class="sz">0,0045 $ / perc</td>
+    <td class="k2">OpenAI hivatalos árlista, <code>gpt-transcribe</code> — a kód ezt hívja</td></tr>
+<tr><td>gpt-5.4-mini</td><td class="sz">0,75 be / 4,50 ki $ / 1M</td>
+    <td class="k2">három független forrás egyezik; „legacy"</td></tr>
+<tr><td>gpt-6-luna</td><td class="sz">0,05 be / 0,25 ki $ / 1M</td>
+    <td class="k2">OpenAI hivatalos árlista, mai modell</td></tr>
+<tr><td>Árfolyam</td><td class="sz">1 € = 1,119 $</td><td class="k2">mai középárfolyam</td></tr>
+<tr><td>Áfa</td><td class="sz">21%</td><td class="k2">spanyol általános kulcs</td></tr>
+<tr><td>Stripe</td><td class="sz">1,5% + 0,25 €</td><td class="k2">európai kártya, tranzakciónként</td></tr>
+<tr><td>Havi állandó költség</td><td class="sz">390,67 €</td>
+    <td class="k2">a te adataid: autónomo 300, könyvelő 50, Railway 40, domain 8/év</td></tr>
+</table>
+<p class="k2">A kódban <code>BE_1M = 0.10</code> és <code>KI_1M = 0.60</code> áll. Ez
+egyik modellhez sem tartozik — egy régi, olcsóbb modell ára maradt ott.
+Ezért mutat az /admin oldal a valóságnál kisebb eurót.</p>
+
+<h2>2. Mennyi tokent fogyaszt egy perc</h2>
+<p>Ezt nem találgattam: az /admin oldal két gyerekének <span class="merve">mért</span>
+költségéből fejtettem vissza. Egy dolgot nem tudunk még, a be- és a kimenő
+token arányát, ezért három változatot mutatok. A folytatásban a középsővel
+(10:1) számolok.</p>
+<table>
+<tr><th>gyerek</th><th>tanult</th><th>mért költség</th><th>be:ki arány</th>
+    <th class="sz">be / perc</th><th class="sz">ki / perc</th></tr>
+<tr><td>A gyerek</td><td>42 perc</td><td class=sz>0,19 €</td><td>5:1</td><td class=sz>22 351</td><td class=sz>4 470</td></tr><tr><td>A gyerek</td><td>42 perc</td><td class=sz>0,19 €</td><td>10:1</td><td class=sz>30 732</td><td class=sz>3 073</td></tr><tr><td>A gyerek</td><td>42 perc</td><td class=sz>0,19 €</td><td>20:1</td><td class=sz>37 824</td><td class=sz>1 891</td></tr><tr><td>B gyerek</td><td>25 perc</td><td class=sz>0,22 €</td><td>5:1</td><td class=sz>43 478</td><td class=sz>8 696</td></tr><tr><td>B gyerek</td><td>25 perc</td><td class=sz>0,22 €</td><td>10:1</td><td class=sz>59 783</td><td class=sz>5 978</td></tr><tr><td>B gyerek</td><td>25 perc</td><td class=sz>0,22 €</td><td>20:1</td><td class=sz>73 579</td><td class=sz>3 679</td></tr>
+</table>
+<p class="k2">A bemenő token azért ilyen magas, mert a teljes tananyag és az
+addigi beszélgetés MINDEN kérésnél újra elmegy. Ez a költség fő hajtója —
+nem a percek száma.</p>
+
+<h2>3. Mibe kerül egy perc</h2>
+<p>A fenti tokenszámmal (30 732 be / 3 073 ki percenként), modellenként.
+A „gyorsítótár" azt jelenti, hogy az ismétlődő tananyagot a szolgáltató
+felismeri, és tized áron számolja.</p>
+<table>
+<tr><th>modell</th><th class="sz">gyorsítótár</th><th class="sz">néma perc</th>
+    <th class="sz">hangos perc</th></tr>
+<tr class=draga><td>gpt-5.4-mini <span class=k>(amit most hiv a kod)</span></td><td class=sz>0%</td><td class=sz>3,30 cent</td><td class=sz><b>4,08 cent</b></td></tr><tr class=draga><td>gpt-5.4-mini <span class=k>(amit most hiv a kod)</span></td><td class=sz>75%</td><td class=sz>1,91 cent</td><td class=sz><b>2,69 cent</b></td></tr><tr class=jo><td>gpt-6-luna <span class=k>(mai olcso modell)</span></td><td class=sz>0%</td><td class=sz>0,21 cent</td><td class=sz><b>0,99 cent</b></td></tr><tr class=jo><td>gpt-6-luna <span class=k>(mai olcso modell)</span></td><td class=sz>75%</td><td class=sz>0,11 cent</td><td class=sz><b>0,90 cent</b></td></tr><tr class=rossz><td>a kodban beallitott <span class=k>(rossz)</span> ar</td><td class=sz>0%</td><td class=sz>0,44 cent</td><td class=sz><b>1,22 cent</b></td></tr><tr class=rossz><td>a kodban beallitott <span class=k>(rossz)</span> ar</td><td class=sz>75%</td><td class=sz>0,25 cent</td><td class=sz><b>1,04 cent</b></td></tr>
+</table>
+<p class="k2">A hangos percben benne van a felolvasás (0,39 cent) és a
+beszédfelismerés (0,41 cent) is. Ezek fixek, modelltől függetlenül.</p>
+
+<h2>4. Mennyi marad egy előfizetőből</h2>
+<p>A legrosszabb esetet nézzük: a gyerek az <b>egész keretét elhasználja,
+hangosan</b>. Az éves előfizetőnél az ár tíz hónapé, a perc viszont
+tizenkét hónapra jár — ezt a táblázat így is számolja, ezért hoz kevesebbet.</p>
+
+<h3>a) A mostani modellel — <code>gpt-5.4-mini</code>, gyorsítótár nélkül
+(4,08 cent / hangos perc)</h3>
+<table>
+<tr><th>csomag</th><th class="sz">bruttó</th><th class="sz">nettó</th>
+<th class="sz">jutalék</th><th class="sz">AI</th><th class="sz">marad</th>
+<th class="sz">nullszaldó</th></tr>
+<tr class="min"><td>Alap <span class=k>havi</span></td><td class=sz>14,90 €</td><td class=sz>12,31 €</td><td class=sz>0,47 €</td><td class=sz>16,32 €</td><td class=sz><b>-4,48 €</b></td><td class=sz><span class=soha>soha</span></td></tr><tr class="min"><td>Alap <span class=k>éves</span></td><td class=sz>12,42 €</td><td class=sz>10,26 €</td><td class=sz>0,21 €</td><td class=sz>16,32 €</td><td class=sz><b>-6,26 €</b></td><td class=sz><span class=soha>soha</span></td></tr><tr class="min"><td>Pro <span class=k>havi</span></td><td class=sz>24,90 €</td><td class=sz>20,58 €</td><td class=sz>0,62 €</td><td class=sz>36,72 €</td><td class=sz><b>-16,76 €</b></td><td class=sz><span class=soha>soha</span></td></tr><tr class="min"><td>Pro <span class=k>éves</span></td><td class=sz>20,75 €</td><td class=sz>17,15 €</td><td class=sz>0,33 €</td><td class=sz>36,72 €</td><td class=sz><b>-19,90 €</b></td><td class=sz><span class=soha>soha</span></td></tr><tr class="min"><td>Max <span class=k>havi</span></td><td class=sz>39,90 €</td><td class=sz>32,98 €</td><td class=sz>0,85 €</td><td class=sz>73,44 €</td><td class=sz><b>-41,31 €</b></td><td class=sz><span class=soha>soha</span></td></tr><tr class="min"><td>Max <span class=k>éves</span></td><td class=sz>33,25 €</td><td class=sz>27,48 €</td><td class=sz>0,52 €</td><td class=sz>73,44 €</td><td class=sz><b>-46,48 €</b></td><td class=sz><span class=soha>soha</span></td></tr>
+</table>
+
+<h3>b) Ugyanaz 75% gyorsítótárral (2,69 cent / hangos perc)</h3>
+<table>
+<tr><th>csomag</th><th class="sz">bruttó</th><th class="sz">nettó</th>
+<th class="sz">jutalék</th><th class="sz">AI</th><th class="sz">marad</th>
+<th class="sz">nullszaldó</th></tr>
+<tr class=""><td>Alap <span class=k>havi</span></td><td class=sz>14,90 €</td><td class=sz>12,31 €</td><td class=sz>0,47 €</td><td class=sz>10,76 €</td><td class=sz><b>1,09 €</b></td><td class=sz>361 fő</td></tr><tr class="min"><td>Alap <span class=k>éves</span></td><td class=sz>12,42 €</td><td class=sz>10,26 €</td><td class=sz>0,21 €</td><td class=sz>10,76 €</td><td class=sz><b>-0,70 €</b></td><td class=sz><span class=soha>soha</span></td></tr><tr class="min"><td>Pro <span class=k>havi</span></td><td class=sz>24,90 €</td><td class=sz>20,58 €</td><td class=sz>0,62 €</td><td class=sz>24,20 €</td><td class=sz><b>-4,24 €</b></td><td class=sz><span class=soha>soha</span></td></tr><tr class="min"><td>Pro <span class=k>éves</span></td><td class=sz>20,75 €</td><td class=sz>17,15 €</td><td class=sz>0,33 €</td><td class=sz>24,20 €</td><td class=sz><b>-7,38 €</b></td><td class=sz><span class=soha>soha</span></td></tr><tr class="min"><td>Max <span class=k>havi</span></td><td class=sz>39,90 €</td><td class=sz>32,98 €</td><td class=sz>0,85 €</td><td class=sz>48,40 €</td><td class=sz><b>-16,27 €</b></td><td class=sz><span class=soha>soha</span></td></tr><tr class="min"><td>Max <span class=k>éves</span></td><td class=sz>33,25 €</td><td class=sz>27,48 €</td><td class=sz>0,52 €</td><td class=sz>48,40 €</td><td class=sz><b>-21,44 €</b></td><td class=sz><span class=soha>soha</span></td></tr>
+</table>
+<div class="doboz baj"><b>Ez a mai állapot.</b> Teljes használat mellett az
+Alap havi csomagon kívül minden veszteséges, és az Alap is csak 1,09 eurót
+hagy — 361 előfizető kellene a nullszaldóhoz.</div>
+
+<h3>c) A mai olcsó modellel — <code>gpt-6-luna</code>, gyorsítótár nélkül
+(0,99 cent / hangos perc)</h3>
+<table>
+<tr><th>csomag</th><th class="sz">bruttó</th><th class="sz">nettó</th>
+<th class="sz">jutalék</th><th class="sz">AI</th><th class="sz">marad</th>
+<th class="sz">nullszaldó</th></tr>
+<tr class=""><td>Alap <span class=k>havi</span></td><td class=sz>14,90 €</td><td class=sz>12,31 €</td><td class=sz>0,47 €</td><td class=sz>3,96 €</td><td class=sz><b>7,89 €</b></td><td class=sz>50 fő</td></tr><tr class=""><td>Alap <span class=k>éves</span></td><td class=sz>12,42 €</td><td class=sz>10,26 €</td><td class=sz>0,21 €</td><td class=sz>3,96 €</td><td class=sz><b>6,10 €</b></td><td class=sz>65 fő</td></tr><tr class=""><td>Pro <span class=k>havi</span></td><td class=sz>24,90 €</td><td class=sz>20,58 €</td><td class=sz>0,62 €</td><td class=sz>8,90 €</td><td class=sz><b>11,06 €</b></td><td class=sz>36 fő</td></tr><tr class=""><td>Pro <span class=k>éves</span></td><td class=sz>20,75 €</td><td class=sz>17,15 €</td><td class=sz>0,33 €</td><td class=sz>8,90 €</td><td class=sz><b>7,92 €</b></td><td class=sz>50 fő</td></tr><tr class=""><td>Max <span class=k>havi</span></td><td class=sz>39,90 €</td><td class=sz>32,98 €</td><td class=sz>0,85 €</td><td class=sz>17,80 €</td><td class=sz><b>14,33 €</b></td><td class=sz>28 fő</td></tr><tr class=""><td>Max <span class=k>éves</span></td><td class=sz>33,25 €</td><td class=sz>27,48 €</td><td class=sz>0,52 €</td><td class=sz>17,80 €</td><td class=sz><b>9,16 €</b></td><td class=sz>43 fő</td></tr>
+</table>
+
+<h3>d) Ugyanaz 75% gyorsítótárral (0,90 cent / hangos perc)</h3>
+<table>
+<tr><th>csomag</th><th class="sz">bruttó</th><th class="sz">nettó</th>
+<th class="sz">jutalék</th><th class="sz">AI</th><th class="sz">marad</th>
+<th class="sz">nullszaldó</th></tr>
+<tr class=""><td>Alap <span class=k>havi</span></td><td class=sz>14,90 €</td><td class=sz>12,31 €</td><td class=sz>0,47 €</td><td class=sz>3,58 €</td><td class=sz><b>8,26 €</b></td><td class=sz>48 fő</td></tr><tr class=""><td>Alap <span class=k>éves</span></td><td class=sz>12,42 €</td><td class=sz>10,26 €</td><td class=sz>0,21 €</td><td class=sz>3,58 €</td><td class=sz><b>6,47 €</b></td><td class=sz>61 fő</td></tr><tr class=""><td>Pro <span class=k>havi</span></td><td class=sz>24,90 €</td><td class=sz>20,58 €</td><td class=sz>0,62 €</td><td class=sz>8,07 €</td><td class=sz><b>11,89 €</b></td><td class=sz>33 fő</td></tr><tr class=""><td>Pro <span class=k>éves</span></td><td class=sz>20,75 €</td><td class=sz>17,15 €</td><td class=sz>0,33 €</td><td class=sz>8,07 €</td><td class=sz><b>8,75 €</b></td><td class=sz>45 fő</td></tr><tr class=""><td>Max <span class=k>havi</span></td><td class=sz>39,90 €</td><td class=sz>32,98 €</td><td class=sz>0,85 €</td><td class=sz>16,13 €</td><td class=sz><b>16,00 €</b></td><td class=sz>25 fő</td></tr><tr class=""><td>Max <span class=k>éves</span></td><td class=sz>33,25 €</td><td class=sz>27,48 €</td><td class=sz>0,52 €</td><td class=sz>16,13 €</td><td class=sz><b>10,83 €</b></td><td class=sz>37 fő</td></tr>
+</table>
+<div class="doboz valasz"><b>Ez volna a jó állapot.</b> Teljes, hangos
+használat mellett is minden csomag nyereséges, és a nullszaldóhoz 25–65
+előfizető kell — nem 361.</div>
+
+<h2>5. És ha nem használja el a keretét?</h2>
+<p>A két mért gyereked az Alap keretének 6 és 10 százalékát használta el
+harminc nap alatt. Ennyinél még a drága modell is bőven nyereséges. A bal
+oldal a mostani modell, a jobb a mai olcsó — mindkettő 75% gyorsítótárral,
+teljes hangos használattal.</p>
+<table>
+<tr><th rowspan="2">kihasznált<br>keret</th>
+    <th colspan="3" class="sz">gpt-5.4-mini (mai állapot)</th>
+    <th colspan="3" class="sz">gpt-6-luna</th></tr>
+<tr><th class="sz">Alap</th><th class="sz">Pro</th><th class="sz">Max</th>
+    <th class="sz">Alap</th><th class="sz">Pro</th><th class="sz">Max</th></tr>
+<tr><td class=sz><b>6%</b></td><td class="sz ">11,20 €</td><td class="sz ">18,50 €</td><td class="sz ">29,22 €</td><td class="sz ">11,63 €</td><td class="sz ">19,47 €</td><td class="sz ">31,16 €</td></tr><tr><td class=sz><b>10%</b></td><td class="sz ">10,77 €</td><td class="sz ">17,54 €</td><td class="sz ">27,29 €</td><td class="sz ">11,48 €</td><td class="sz ">19,15 €</td><td class="sz ">30,51 €</td></tr><tr><td class=sz><b>25%</b></td><td class="sz ">9,15 €</td><td class="sz ">13,91 €</td><td class="sz ">20,03 €</td><td class="sz ">10,94 €</td><td class="sz ">17,94 €</td><td class="sz ">28,09 €</td></tr><tr><td class=sz><b>50%</b></td><td class="sz ">6,46 €</td><td class="sz ">7,86 €</td><td class="sz ">7,93 €</td><td class="sz ">10,05 €</td><td class="sz ">15,92 €</td><td class="sz ">24,06 €</td></tr><tr><td class=sz><b>75%</b></td><td class="sz ">3,77 €</td><td class="sz ">1,81 €</td><td class="sz min">-4,17 €</td><td class="sz ">9,15 €</td><td class="sz ">13,91 €</td><td class="sz ">20,03 €</td></tr><tr><td class=sz><b>100%</b></td><td class="sz ">1,09 €</td><td class="sz min">-4,24 €</td><td class="sz min">-16,27 €</td><td class="sz ">8,26 €</td><td class="sz ">11,89 €</td><td class="sz ">16,00 €</td></tr>
+</table>
+<p class="k2">Jól látszik, hol a törés: a mostani modellen a Pro 75%, a Max
+már 50% körül fordul veszteségbe. Az olcsó modellen egyik sem.</p>
+
+<h2>6. Mit kell tenni</h2>
+<div class="doboz">
+<ul>
+<li><b>Modellt váltani.</b> Ez az egyetlen lépés, ami önmagában megoldja a
+kérdést. Előbb viszont ki kell próbálni tanítási minőségre — az ár nem
+minden, egy butább tanár nem ér 15 eurót. Ez egy fél napos teszt.</li>
+<li><b>A rossz árakat javítani az adminban</b>, hogy a jövőben a valóságot
+lásd. Railway → a <code>web</code> szolgáltatás → Variables:
+<code>BE_1M</code> és <code>KI_1M</code> a választott modell árára.</li>
+<li><b>Megmérni a gyorsítótárat.</b> A kód most nem tárolja a
+<code>cached_tokens</code> értéket. Ha tárolná, nem kellene becsülni.</li>
+<li><b>Megmérni a be:ki arányt.</b> Az admin oldal mostantól kiírja a
+gyerek bemenő és kimenő tokenjét — ebből a 10:1 feltételezés helyére
+valódi szám kerül.</li>
+<li><b>Rövidebb rendszerprompt.</b> Percenként ~30 000 bemenő token sok.
+Ha a tananyagból csak az aktuális témakör megy el, és nem az egész, a
+költség töredékére esik — modellváltás nélkül is.</li>
+</ul>
+</div>
+<p class="k2">Amit NEM kell tenni: árat emelni vagy perckeretet vágni. A
+számok szerint nem az árazás a baj, hanem egy drága, elavult modell és egy
+túl hosszú prompt.</p>
+
+</div></body></html>

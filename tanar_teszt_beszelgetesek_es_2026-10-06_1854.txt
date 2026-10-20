@@ -1,0 +1,1422 @@
+TutorIA – lejátszott órák, 2026-10-06 18:54
+
+
+======================================================================
+Lengua Extranjera – angol · 1. osztály · Lucía (6 éves)
+Témakör: Hello & Goodbye – Saludos y despedidas
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Lucía! Hoy vamos a aprender a saludar y despedirnos en inglés. 😊
+
+Empezamos con <FL:en>hello</FL>, que significa «hola». Puedes decir: “<FL:en>Hello</FL>, <FL:en>Anna</FL>!” («¡Hola, Anna!»). También: “<FL:en>Hello</FL>, <FL:en>teacher</FL>!” («¡Hola, profe!»).
+
+¿Qué significa <FL:en>hello</FL>?  
+<FELADAT>{"tipus":"valaszt","opciok":["hola","adiós"]}</FELADAT>
+<VOCAB>hola=hello</VOCAB>
+
+GYEREK: Hola.
+
+TANÁR: ¡Muy bien, Lucía! <FL:en>Hello</FL> significa «hola». 😊
+
+Ahora aprendemos <FL:en>goodbye</FL>, que significa «adiós». Puedes decir: “<FL:en>Goodbye</FL>, <FL:en>Anna</FL>!” («¡Adiós, Anna!»).
+
+¿Qué significa <FL:en>goodbye</FL>?
+<FELADAT>{"tipus":"valaszt","opciok":["hola","adiós"]}</FELADAT>
+<VOCAB>adiós=goodbye</VOCAB>
+
+GYEREK: adiós
+
+TANÁR: ¡Correcto! <FL:en>Goodbye</FL> significa «adiós». 😊 Ahora aprendemos <FL:en>hi</FL>, una forma informal de decir «hola» a un amigo: “<FL:en>Hi</FL>, <FL:en>Anna</FL>!” («¡Hola, Anna!»). También puedes decir: “<FL:en>Hi</FL>, <FL:en>Tom</FL>!” («¡Hola, Tom!»).
+
+¿Cuál usarías para saludar a un amigo?
+<FELADAT>{"tipus":"valaszt","opciok":["Hi","Goodbye"]}</FELADAT>
+<VOCAB>hola=hi</VOCAB>
+
+GYEREK: Hi
+
+TANÁR: ¡Muy bien! <FL:en>Hi</FL> es un saludo informal para un amigo. 😊 Ahora aprendemos <FL:en>good morning</FL>: «buenos días», para saludar por la mañana. “<FL:en>Good morning</FL>, <FL:en>teacher</FL>!” («¡Buenos días, profe!»); “<FL:en>Good morning</FL>, <FL:en>Anna</FL>!” («¡Buenos días, Anna!»).
+<VOCAB>buenos días=good morning</VOCAB>
+¿Qué significa <FL:en>good morning</FL>?
+<FELADAT>{"tipus":"valaszt","opciok":["buenos días","buenas noches"]}</FELADAT>
+
+GYEREK: buenos días
+
+TANÁR: ¡Muy bien! <FL:en>Good morning</FL> significa «buenos días». 😊 Ahora aprendemos <FL:en>good afternoon</FL>, que usamos por la tarde: “<FL:en>Good afternoon</FL>, teacher!” («¡Buenas tardes, profe!») y “<FL:en>Good afternoon</FL>, <FL:en>Anna</FL>!” («¡Buenas tardes, Anna!»). ¿Qué decimos para saludar por la tarde?
+<FELADAT>{"tipus":"valaszt","opciok":["Good afternoon","Good morning"]}</FELADAT>
+<VOCAB>buenas tardes=good afternoon</VOCAB>
+
+GYEREK: Good afternoon
+
+TANÁR: ¡Correcto! 😊 Ahora aprendemos <FL:en>good evening</FL>, para saludar al llegar por la tarde-noche: “<FL:en>Good evening</FL>, teacher!” («¡Buenas tardes, profe!»). También puedes decir: “<FL:en>Good evening</FL>, <FL:en>Anna</FL>” («¡Buenas tardes, Anna!»).
+
+¿Qué significa <FL:en>good evening</FL>?
+<FELADAT>{"tipus":"valaszt","opciok":["buenas tardes","buenos días"]}</FELADAT>
+<VOCAB>buenas tardes=good evening</VOCAB>
+
+
+======================================================================
+Educación Física · 3. osztály · Martina (8 éves)
+Témakör: Vida activa y saludable
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Martina! Hoy vamos a aprender cómo cuidar nuestro cuerpo y sentirnos bien con hábitos saludables. 😊
+
+Moverse un poco cada día, por ejemplo caminar, bailar o jugar, ayuda a fortalecer el cuerpo y también puede mejorar el ánimo. Después de jugar un rato, muchas personas se sienten más despiertas y contentas.
+
+Los alimentos naturales son alimentos que han cambiado poco, como una manzana. Los procesados se han preparado o cambiado algo, como el pan. Los ultraprocesados suelen llevar muchos ingredientes y han cambiado mucho, como algunas golosinas. Conviene elegir a menudo alimentos naturales y variados.
+
+La postura es la forma en que colocamos el cuerpo. Al sentarnos, apoyar los pies y mantener la espalda cómoda ayuda a cuidar el cuerpo. Por ejemplo, al dibujar, podemos acercar el papel y evitar encorvarnos demasiado.
+
+¿Cuál de estos alimentos es natural?
+
+<FELADAT>{"tipus":"valaszt","opciok":["manzana","golosina","galleta rellena"]}</FELADAT>
+
+GYEREK: ¡La manzana! ¿Es natural, no?
+
+TANÁR: ¡Sí, Martina! La manzana es un alimento natural. ¡Muy bien! 🍎
+
+Ahora veremos cómo cuidarnos también por dentro y con los demás.
+
+Cada cuerpo es diferente, y todos merecen respeto. No hace falta tener el mismo aspecto ni hacer las cosas a la misma velocidad para disfrutar de un juego.
+
+También tenemos puntos fuertes y cosas que estamos aprendiendo. Por ejemplo, quizá a alguien se le dé muy bien correr y otra persona esté mejorando poco a poco. Practicar con paciencia ayuda a descubrir lo que podemos hacer.
+
+Jugar y moverse son buenas formas de pasar el tiempo libre. En un juego, lo importante no es ganar a toda costa: podemos competir con respeto, seguir las reglas y alegrarnos también por los demás.
+
+¿Qué muestra respeto durante un juego?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Animar a los compañeros","Burlarse de quien va más despacio","Enfadarse si no se gana"]}</FELADAT>
+
+GYEREK: ¡Animar a los compañeros! Eso es ser buena compañera, ¿verdad?
+
+TANÁR: ¡Exactamente! Animar a los compañeros es ser buena compañera. 😊
+
+Ahora aprenderemos a respetar las posibilidades de cada persona. En un juego, podemos cambiar una regla para que todos participen; por ejemplo, acercar la línea de lanzamiento si a alguien le cuesta llegar lejos.
+
+También es bueno escuchar al cuerpo. Si una actividad nos resulta demasiado difícil o nos sentimos muy cansados, podemos parar un momento y contárselo a un adulto. Cada persona aprende y mejora a su ritmo.
+
+¿Qué sería una buena forma de incluir a todos en un juego de lanzar?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Acercar la línea para quien lo necesite","Dejar fuera a quien lanza más despacio","Reírse de quien no acierta"]}</FELADAT>
+
+GYEREK: Acercar la línea para quien lo necesite. Así jugamos todos juntos.
+
+TANÁR: ¡Muy bien, Martina! Acercar la línea ayuda a que todos juguéis juntos. 😊
+
+Para cuidar el cuerpo también hacen falta descanso y agua. Descansar después de jugar ayuda al cuerpo a recuperarse. Beber agua cuando tenemos sed también es una buena forma de cuidarnos.
+
+Por ejemplo, después de una actividad física, puedes descansar un rato y beber agua.
+
+¿Qué ayuda al cuerpo a recuperarse después de jugar?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Descansar un rato","Seguir jugando aunque estés agotada","No parar nunca"]}</FELADAT>
+
+GYEREK: Descansar un rato. Y beber agua también, ¿sí?
+
+TANÁR: ¡Sí! Descansar y beber agua también ayudan a cuidar el cuerpo. 😊
+
+Ahora veremos qué beneficios puede tener moverse con regularidad. La actividad física fortalece el cuerpo y puede ayudar a sentir alegría y tranquilidad. Por ejemplo, bailar un rato puede hacer que el cuerpo se active y mejorar el ánimo.
+
+Recuerda también que los alimentos pueden cambiar de distintas maneras: una fruta es natural; el pan suele ser procesado, porque se prepara con varios ingredientes; y algunos productos muy elaborados, como ciertas galletas rellenas, son ultraprocesados. Podemos elegir alimentos variados y comerlos con atención.
+
+¿Cuál es un ejemplo de alimento procesado?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Pan","Manzana","Una fruta fresca"]}</FELADAT>
+
+GYEREK: El pan. Creo que sí es procesado, ¿no?
+
+TANÁR: ¡Sí, Martina! El pan suele ser un alimento procesado porque se prepara con varios ingredientes. ¡Muy bien! 😊
+
+Ahora veremos cómo elegir una actividad para el tiempo libre. Pasear, bailar o jugar pueden ser formas saludables de disfrutar y moverse. También podemos hacer otras actividades tranquilas; lo importante es buscar un buen equilibrio.
+
+Cuando jugamos para ganar, la competición puede ser divertida. Pero no debemos olvidar que es un juego: respetamos las reglas, aceptamos el resultado y tratamos bien a los demás.
+
+¿Cuál es una forma respetuosa de competir?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Aceptar el resultado y felicitar a los demás","Cambiar las reglas para ganar siempre","Burlarse de quien pierde"]}</FELADAT>
+
+
+======================================================================
+Educación Artística · 2. osztály · Hugo (7 éves)
+Témakör: Recepción y análisis
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Hugo! Soy Elvira. Hoy vamos a aprender a escuchar y mirar obras de arte con atención. 😊
+
+Cuando vemos un cuadro o escuchamos una canción, podemos fijarnos en sus colores, formas y sonidos. Por ejemplo, al mirar un cuadro, podemos observar qué colores destacan.
+
+Para atender mejor, guardamos silencio mientras alguien toca música o explica una obra. Así podemos escuchar y no molestamos a los demás.
+
+También cuidamos las normas del lugar: en un museo miramos sin tocar las obras; en un concierto escuchamos mientras suena la música. Y con recursos digitales, como una tableta, podemos ver imágenes o escuchar canciones.
+
+¿Qué ayuda a escuchar una canción en un concierto?  
+<FELADAT>{"tipus":"valaszt","opciok":["Hablar durante la canción","Escuchar en silencio","Tocar los instrumentos del escenario"]}</FELADAT>
+
+GYEREK: Escuchar en silencio.
+
+TANÁR: ¡Muy bien, Hugo! Escuchar en silencio nos ayuda a disfrutar de la música. 🎵
+
+Ahora aprenderemos a observar y escuchar con más atención:
+
+- Primero, fíjate en detalles. En un cuadro puedes observar los colores y las formas; en una canción, los sonidos y la melodía, es decir, los sonidos que van uno detrás de otro.
+- Después, piensa qué te hace sentir la obra. Una música suave puede darte calma, y unos colores vivos pueden hacer que un cuadro parezca alegre.
+- Las obras pueden ser distintas porque las crearon personas de lugares y épocas diferentes. También hay artistas mujeres y hombres. Podemos respetar y disfrutar todas esas maneras de crear.
+
+Por ejemplo, con una tableta podemos ver dos cuadros y fijarnos en qué colores usa cada artista.
+
+¿Cuál es una buena forma de observar un cuadro?  
+<FELADAT>{"tipus":"valaszt","opciok":["Fijarse en sus colores y formas","Tocar la pantalla sin mirar","Hablar para no escuchar"]}</FELADAT>
+
+GYEREK: Fijarse en sus colores y formas.
+
+TANÁR: ¡Exacto, Hugo! Fijarse en los colores y las formas nos ayuda a descubrir detalles. 🌟
+
+Ahora veremos algunas palabras para hablar de distintas obras:
+
+- Un dibujo o una pintura son obras visuales: las vemos. Por ejemplo, un retrato pintado.
+- Una canción es una obra musical: la escuchamos. Podemos fijarnos en si suena rápida o lenta.
+- Una obra de teatro es una obra escénica: vemos a personas representar una historia. Por ejemplo, una actriz puede hacer de una reina.
+
+También podemos usar recursos digitales, como una tableta, para ver imágenes o escuchar música. Los usamos con cuidado y siguiendo las indicaciones de una persona adulta.
+
+¿Cuál de estas obras se escucha?  
+<FELADAT>{"tipus":"valaszt","opciok":["Una canción","Un dibujo","Un retrato"]}</FELADAT>
+
+GYEREK: Una canción.
+
+TANÁR: ¡Muy bien, Hugo! Una canción se escucha. 🎵
+
+Ahora conoceremos otras formas de disfrutar el arte:
+
+- Un vídeo con imágenes y sonidos es una obra audiovisual. Por ejemplo, una película de dibujos animados se ve y se escucha.
+- Las obras pueden ser de artistas de nuestra localidad, de otras partes del país o de otros lugares. Algunas son antiguas y otras, recientes. Podemos observarlas con curiosidad y respeto.
+- En un museo, una sala de conciertos o una función de teatro, seguimos las normas del lugar. Por ejemplo, esperamos nuestro turno y escuchamos cuando empieza una actuación.
+
+¿Qué obra es audiovisual?  
+<FELADAT>{"tipus":"valaszt","opciok":["Un vídeo con imágenes y sonidos","Un dibujo en papel","Una canción sin imágenes"]}</FELADAT>
+
+GYEREK: Un vídeo con imágenes y sonidos.
+
+TANÁR: ¡Correcto, Hugo! Un vídeo con imágenes y sonidos es una obra audiovisual. 📺
+
+Ahora practicaremos cómo hablar de lo que observamos:
+
+- En una pintura, podemos decir: «Veo formas grandes y colores claros».
+- En una canción, podemos decir: «Escucho sonidos fuertes y rápidos».
+- En una actuación, podemos fijarnos en los movimientos y en cómo las personas cuentan la historia.
+
+Describir es contar lo que vemos o escuchamos. Por ejemplo, en vez de decir solo «me gusta», podemos explicar: «Me gusta porque tiene colores brillantes».
+
+¿Qué frase describe lo que se escucha en una canción?  
+<FELADAT>{"tipus":"valaszt","opciok":["La melodía suena lenta","Veo formas redondas","La actriz lleva una capa"]}</FELADAT>
+
+GYEREK: La melodía suena lenta.
+
+TANÁR: ¡Muy bien, Hugo! «La melodía suena lenta» describe lo que escuchamos. 🎶
+
+Ahora vamos a comparar obras. Comparar es fijarse en qué se parecen y en qué son diferentes. Por ejemplo, dos cuadros pueden tener animales, pero uno puede usar colores vivos y el otro, colores suaves. También podemos comparar una canción tranquila con otra rápida.
+
+Al observar o escuchar, podemos seguir este orden: atender en silencio, fijarnos en algunos detalles y contar qué notamos. Así disfrutamos mejor de cada obra y respetamos las ideas de quienes la crearon.
+
+¿Qué diferencia hay entre estos dos cuadros?  
+<FELADAT>{"tipus":"valaszt","opciok":["Uno usa colores vivos y el otro suaves","Los dos se escuchan como canciones","Uno es una actriz en un escenario"]}</FELADAT>
+
+
+======================================================================
+Conocimiento del Medio · 2. osztály · Pablo (7 éves)
+Témakör: Investigo y explico
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Pablo! Soy Elvira. Hoy aprenderemos cómo investigar una pregunta y explicar lo que descubrimos. 😊
+
+Primero, hacemos una pregunta sobre algo que podemos observar. Por ejemplo: «¿Crecerá una semilla si la regamos?».
+
+Después pensamos qué podría pasar. Esa idea se llama hipótesis. Por ejemplo: «Creo que la semilla regada crecerá».
+
+Luego hacemos una prueba sencilla y nos fijamos en lo que ocurre. Para comparar, podemos poner una semilla con agua y otra sin agua, y observarlas durante varios días.
+
+Por último, anotamos lo que vemos y contamos qué aprendimos. Por ejemplo, podemos apuntar cada día si ha salido un brote y cuánto ha crecido.
+
+¿Qué dato sería útil anotar para comparar cuánto crecen los brotes?
+
+<FELADAT>{"tipus":"valaszt","opciok":["La altura del brote","El color de la maceta","El nombre de quien mira"]}</FELADAT>
+
+GYEREK: La altura del brote. ¿Así, no?
+
+TANÁR: ¡Exacto, Pablo! Anotar la altura del brote nos ayuda a comparar cómo crece cada semilla. 🌱
+
+Ahora veremos cómo registrar los datos con orden. Podemos hacer una tabla con una fila para cada día y apuntar allí lo que observamos. Por ejemplo: el lunes, el brote mide 1 centímetro; el martes, 2 centímetros. Así vemos los cambios.
+
+Después usamos esos datos para explicar qué ocurrió. Si el brote regado creció y el otro no, podemos decir que, en nuestra prueba, el agua ayudó a que creciera.
+
+¿Qué pondrías en la tabla para recordar cuándo hiciste cada observación?
+
+<FELADAT>{"tipus":"valaszt","opciok":["El día de la observación","El dibujo de la maceta","El nombre de la semilla"]}</FELADAT>
+
+GYEREK: El día de la observación. ¿Lunes, martes...?
+
+TANÁR: ¡Sí, Pablo! El lunes, el martes y los demás días en que observes la semilla. ¡Lo has entendido muy bien! 😊
+
+Al terminar, miramos todos los datos y contamos qué descubrimos. Esa explicación final se llama conclusión. Por ejemplo: «El brote que recibió agua creció durante la semana».
+
+Recuerda: hacemos una pregunta, pensamos qué podría pasar, observamos y anotamos los datos, y al final contamos lo que aprendimos.
+
+¿Qué hacemos al final de una investigación: anotar una nueva observación o explicar lo que descubrimos?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Anotar una nueva observación","Explicar lo que descubrimos"]}</FELADAT>
+
+GYEREK: Explicar lo que descubrimos. ¡Y ya está!
+
+TANÁR: ¡Correcto, Pablo! Al final contamos lo que descubrimos: esa es la conclusión. Ya sabes los pasos de una investigación: hacemos una pregunta, pensamos qué podría pasar, observamos y anotamos los datos, y explicamos lo aprendido. 🌱
+
+¡Has terminado de aprender este tema! Ahora viene la prueba final. ¡Ánimo, seguro que lo haces muy bien!
+
+<TOPIC_COMPLETE>
+
+GYEREK: ¡Vale! Estoy listo... creo. Mi perro también quiere ayudar 🐶
+
+TANÁR: ¡Qué buen ayudante! 🐶 Empezamos la prueba final con una pregunta sobre la hipótesis.
+
+Antes de probar si el agua ayuda a crecer a una semilla, pensamos: «Creo que la semilla regada crecerá». ¿Qué nombre tiene esa idea?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Una hipótesis","Una tabla de datos","Una conclusión"]}</FELADAT>
+
+GYEREK: Una hipótesis. ¿Sí?
+
+TANÁR: ¡Sí, correcto! Una hipótesis es una idea sobre lo que creemos que puede pasar. 🐶
+
+Ahora toca recordar cómo anotamos lo que observamos en una investigación. Si miras un brote cada día, ¿qué dato te ayuda a saber cuánto ha crecido?
+
+<FELADAT>{"tipus":"valaszt","opciok":["La altura del brote","El color de la mesa","El nombre de quien lo observa"]}</FELADAT>
+
+
+======================================================================
+Lengua Castellana y Literatura · 3. osztály · Lucía (8 éves)
+Témakör: Exponer y escuchar
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Lucía! Soy Elvira. Hoy aprenderemos a preparar una exposición corta y a escuchar con atención. 😊
+
+Para empezar, piensa en que vas a contar a la clase cómo cuidar una planta.
+
+- Prepara un guion: son unas pocas ideas en el orden en que las contarás. Por ejemplo: primero, qué necesita la planta; después, cómo regarla.
+- Habla con voz clara y mantén una postura tranquila. Así, tus compañeros podrán escucharte y verte bien.
+- Puedes usar un apoyo visual, como un dibujo de una planta, para ayudar a que se entienda mejor.
+- Cuando termine la exposición, escucha las preguntas del público y responde con amabilidad. También puedes hacer una pregunta cuando otra persona expone.
+
+¿Qué te ayudaría a recordar el orden de tus ideas?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Un guion breve","Hablar muy deprisa","Dar la espalda a la clase"]}</FELADAT>
+
+GYEREK: Un guion breve, sí. Así no me olvido de nada.
+
+TANÁR: ¡Muy bien, Lucía! Un guion breve ayuda a recordar las ideas sin tener que aprenderse todo de memoria.
+
+Ahora veremos cómo ordenar una exposición:
+
+- Al principio, di de qué vas a hablar: «Voy a contaros cómo cuidar una planta».
+- En el medio, explica tus ideas en orden: por ejemplo, qué necesita y cómo se riega.
+- Al final, despídete con una frase que cierre el tema: «¡Así podemos ayudar a que crezca!».
+
+¿Qué orden siguen estas tres partes?
+
+<FELADAT>{"tipus":"sorrend","elemek":["Presentar el tema","Explicar las ideas","Terminar la exposición"]}</FELADAT>
+
+GYEREK: Primero: **Presentar el tema**. Después: **Explicar las ideas**. Y al final: **Terminar la exposición**.
+
+TANÁR: ¡Exacto, Lucía! Has ordenado muy bien las partes de la exposición. 😊
+
+Ahora vamos a preparar cómo presentarla:
+
+- Habla con un volumen que se oiga, sin gritar. Si vas muy deprisa, a los demás les costará entenderte.
+- Mira al público de vez en cuando y mantén una postura cómoda y tranquila.
+- Un apoyo visual, como un dibujo o una imagen, sirve para aclarar una idea. No debe distraer de lo que estás contando.
+
+¿Cuál sería un buen apoyo visual para una exposición sobre las partes de una planta?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Un dibujo de una planta con sus partes","Un montón de juguetes sin relación","Una imagen que no se vea"]}</FELADAT>
+
+GYEREK: Un dibujo de una planta con sus partes. Así se entiende mejor, ¿no?
+
+TANÁR: ¡Sí, Lucía! Un dibujo con las partes de la planta ayuda a entender lo que cuentas. 🌱
+
+Ahora veremos cómo escuchar y atender las preguntas:
+
+- Mientras alguien expone, escucha sin interrumpir y espera tu turno para hablar.
+- Puedes hacer una pregunta relacionada con el tema. Por ejemplo, después de una exposición sobre plantas: «¿Cada cuánto hay que regarla?».
+- Quien expone puede responder con calma y amabilidad. Si no sabe algo, puede decirlo con sinceridad.
+
+Después de una exposición sobre el cuidado de las plantas, ¿qué pregunta tendría más relación con el tema?
+
+<FELADAT>{"tipus":"valaszt","opciok":["¿Cada cuánto hay que regarla?","¿Cuál es tu película favorita?","¿Qué día es hoy?"]}</FELADAT>
+
+GYEREK: ¿Cada cuánto hay que regarla? Esa sí va del tema.
+
+TANÁR: ¡Muy bien, Lucía! Esa pregunta está relacionada con la exposición. 😊
+
+Ahora aprenderemos a comentar la exposición de un compañero con respeto. Puedes decir algo que hizo bien y añadir una sugerencia amable. Por ejemplo: «Se entendió muy bien tu explicación. Podrías hablar un poquito más despacio». Así ayudas sin hacer sentir mal a la otra persona.
+
+¿Qué comentario es más amable y útil después de una exposición?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Se entendió muy bien; podrías hablar un poco más despacio.","Qué aburrido, no me gustó.","No voy a escuchar nada."]}</FELADAT>
+
+GYEREK: Se entendió muy bien; podrías hablar un poco más despacio. Eso está bien, creo.
+
+TANÁR: ¡Sí, Lucía! Es un comentario amable: reconoce algo que salió bien y propone una mejora con respeto. 😊
+
+Ahora puedes practicar una mini-exposición como si dieras una noticia a la clase. Cuenta un hecho de forma breve y ordenada: qué ha pasado y algún detalle importante. Por ejemplo: «Ayer plantamos flores en el patio. Ahora vamos a regarlas para que crezcan». Quien escucha presta atención y espera al final para hacer una pregunta relacionada.
+
+¿Qué pregunta encaja mejor con esa noticia?
+
+<FELADAT>{"tipus":"valaszt","opciok":["¿Quién va a regar las flores?","¿Qué has desayunado?","¿Cuál es tu juego favorito?"]}</FELADAT>
+
+
+======================================================================
+Matemáticas · 6. osztály · Martina (11 éves)
+Témakör: Números enteros y racionales
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Martina! Soy Elvira. Hoy vamos a aprender a entender los números negativos y a compararlos. 😊
+
+Los números positivos son mayores que cero. A veces se escriben con el signo +, como +4, aunque también podemos escribir simplemente 4. Por ejemplo, subir cuatro pisos se puede representar con +4.
+
+Los números negativos son menores que cero y llevan el signo −. Por ejemplo, si la temperatura es de 3 grados bajo cero, se escribe −3 °C.
+
+El cero no es ni positivo ni negativo. En una recta numérica, los números mayores quedan a la derecha y los menores, a la izquierda. Por eso, −2 es mayor que −5: está más a la derecha.
+
+¿Cuál de estas temperaturas es la más fría?
+
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><line x1="50" y1="110" x2="270" y2="110" stroke="#2f8fd8" stroke-width="4" stroke-linecap="round"/><path d="M270 110 L258 103 M270 110 L258 117" fill="none" stroke="#2f8fd8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><line x1="70" y1="99" x2="70" y2="121" stroke="#2f8fd8" stroke-width="3"/><line x1="115" y1="99" x2="115" y2="121" stroke="#2f8fd8" stroke-width="3"/><line x1="160" y1="99" x2="160" y2="121" stroke="#2f8fd8" stroke-width="3"/><line x1="205" y1="99" x2="205" y2="121" stroke="#2f8fd8" stroke-width="3"/><line x1="250" y1="99" x2="250" y2="121" stroke="#2f8fd8" stroke-width="3"/><text x="70" y="150" font-size="16" fill="#222" text-anchor="middle">−4</text><text x="115" y="150" font-size="16" fill="#222" text-anchor="middle">−2</text><text x="160" y="150" font-size="16" fill="#222" text-anchor="middle">0</text><text x="205" y="150" font-size="16" fill="#222" text-anchor="middle">+2</text><text x="250" y="150" font-size="16" fill="#222" text-anchor="middle">+4</text></svg></ABRA>
+<FELADAT>{"tipus":"valaszt","opciok":["−2 °C","−5 °C","+1 °C"]}</FELADAT>
+
+GYEREK: −5 °C, porque es más pequeño y está más a la izquierda. ¿Verdad?
+
+TANÁR: ¡Exacto, Martina! −5 °C es la temperatura más fría: está más a la izquierda en la recta numérica. ¡Muy bien! 😊
+
+Ahora veremos las fracciones equivalentes: son fracciones distintas que representan la misma cantidad. Por ejemplo, 1/2 y 2/4 son equivalentes. Para obtener 2/4 a partir de 1/2, multiplicamos el numerador y el denominador por 2. Lo importante es multiplicar ambos por el mismo número.
+
+¿Cuál es equivalente a 2/3?
+
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><rect x="70" y="65" width="60" height="90" rx="8" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><rect x="130" y="65" width="60" height="90" rx="8" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><rect x="190" y="65" width="60" height="90" rx="8" fill="#fff4e0" stroke="#2f8fd8" stroke-width="3"/><text x="160" y="190" font-size="16" fill="#222" text-anchor="middle">2 de 3 partes</text></svg></ABRA>
+<FELADAT>{"tipus":"valaszt","opciok":["4/6","3/5","2/5"]}</FELADAT>
+
+GYEREK: 4/6, porque multiplico arriba y abajo por 2. ¿Sí?
+
+TANÁR: ¡Sí, Martina! ¡Muy bien! Multiplicar arriba y abajo por 2 convierte 2/3 en 4/6, sin cambiar su valor. 😊
+
+Ahora veremos los porcentajes. «Por ciento» significa «de cada cien»: por ejemplo, 25 % equivale a 25/100, es decir, a una cuarta parte. Si una camiseta cuesta 40 euros y tiene un descuento del 25 %, el descuento es 10 euros, porque 25 % de 40 es 10.
+
+¿Cuánto es el 10 % de 70?
+
+<FELADAT>{"tipus":"szam","jel":"*","a":70,"b":0.1}</FELADAT>
+
+GYEREK: 7, porque el 10 % de 70 es una décima parte. ¿Está bien?
+
+TANÁR: ¡Sí, está bien, Martina! El 10 % es una décima parte, y 70 ÷ 10 = 7. ¡Buen razonamiento! 😊
+
+Ahora aprenderemos a escribir multiplicaciones repetidas de forma abreviada. Por ejemplo, 2 × 2 × 2 se escribe 2³ y se lee «dos elevado a tres». El 2 es la base y el 3 indica cuántas veces se multiplica la base por sí misma. Así que 2³ = 8.
+
+Calcula 3², es decir, 3 × 3.
+
+<FELADAT>{"tipus":"szam","muvelet":"3²"}</FELADAT>
+
+GYEREK: 9, porque 3 × 3 = 9. ¿Es fácil, no?
+
+TANÁR: ¡Sí, Martina! ¡Lo has entendido muy bien! 😊
+
+Ahora practicaremos cómo se aplican los porcentajes a un precio. Si un artículo cuesta 50 euros y sube un 10 %, calculamos primero el 10 % de 50, que es 5 euros. Después sumamos la subida: el nuevo precio es 55 euros.
+
+En cambio, con un descuento restamos esa cantidad. Un descuento del 10 % sobre 50 euros dejaría el precio en 45 euros.
+
+Un libro cuesta 80 euros y su precio sube un 10 %. ¿Cuál es el precio nuevo?
+
+<FELADAT>{"tipus":"szam","muvelet":"Precio nuevo tras subir 80 euros un 10 %"}</FELADAT>
+
+GYEREK: 88 euros, porque el 10 % de 80 es 8 y se suma. ¿He acertado?
+
+TANÁR: ¡Sí, Martina, has acertado! El 10 % de 80 es 8, y al sumarlo obtenemos 88 euros. Ya has practicado los números negativos, las fracciones equivalentes, los porcentajes y las potencias. ¡Ahora viene la prueba final del tema! Confía en lo que sabes y resuelve cada ejercicio con calma. 😊
+
+< TOPIC_COMPLETE>
+
+
+======================================================================
+Conocimiento del Medio · 4. osztály · Hugo (9 éves)
+Témakör: Investigación y comunicación científica
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Hugo! Hoy aprenderemos a investigar una pregunta y a contar a otras personas lo que descubrimos. 😊
+
+- Primero elegimos una pregunta que podamos investigar. Por ejemplo: «¿Qué semilla crece más rápido?».
+- Después preparamos una prueba justa: cambiamos solo una cosa y mantenemos las demás iguales. Por ejemplo, ponemos las semillas en la misma cantidad de tierra y agua, pero en lugares con distinta luz.
+- Mientras observamos, anotamos los resultados con cuidado. Por ejemplo, escribimos cada día cuánto han crecido las plantas.
+- Al final, podemos mostrar los resultados en un gráfico y explicarlos en un póster científico. Así otras personas entienden qué hicimos y qué descubrimos.
+
+Imagina que quieres averiguar si una planta crece mejor con más luz. ¿Qué deberías mantener igual para que la prueba sea justa?
+
+<FELADAT>{"tipus":"valaszt","opciok":["La cantidad de agua","La cantidad de luz","El lugar con más luz"]}</FELADAT>
+
+GYEREK: La cantidad de agua.
+
+TANÁR: ¡Muy bien, Hugo! Si mantenemos igual la cantidad de agua, podemos comparar mejor cómo influye la luz. 🌱
+
+Ahora veremos cómo hacer un registro claro. Anotamos las observaciones en una tabla, con la fecha y lo que medimos. Por ejemplo, podemos escribir la altura de cada planta una vez al día, siempre usando la misma unidad.
+
+Después, un gráfico permite comparar los resultados de un vistazo. Si una planta crece más, su barra será más alta. Y al explicar el trabajo, contamos qué pregunta investigamos, qué hicimos y qué descubrimos.
+
+<FELADAT>{"valaszt","opciok":["Anotar cada día la altura de las plantas en centímetros","Escribir al final lo que recordamos","Cambiar cada día la forma de medir"]}</FELADAT>
+
+GYEREK: Vale. ¿Y luego hacemos un póster?
+
+TANÁR: ¡Sí! Después podemos preparar un póster científico. Lleva un título, la pregunta investigada, cómo hicimos la prueba, los resultados y una conclusión. Por ejemplo, podríamos dibujar un gráfico con la altura de las plantas y explicar cuál creció más.
+
+Es importante que el póster muestre lo que observamos de verdad, aunque el resultado no sea el que esperábamos. Así, otras personas pueden entender nuestro trabajo.
+
+<FELADAT>{"tipus":"valaszt","opciok":["Título, pregunta, prueba, resultados y conclusión","Solo dibujos y un título","Una conclusión sin contar cómo investigamos"]}</FELADAT>
+
+GYEREK: Título, pregunta, prueba, resultados y conclusión.
+
+TANÁR: ¡Exacto, Hugo! El póster reúne las partes importantes de la investigación. 👏
+
+Antes de presentarlo, comprobamos que la conclusión se apoya en los resultados. Por ejemplo, si las plantas con más luz crecieron más en nuestra prueba, podemos decir que, en esa prueba, crecieron más con más luz. No conviene afirmar cosas que no hayamos observado.
+
+También ayuda repartir el trabajo en equipo: una persona puede anotar las medidas y otra preparar el gráfico. Después, todos revisan que los datos estén bien y practican cómo explicar el póster con claridad.
+
+Ya has practicado cómo planear una prueba justa, registrar los resultados y comunicarlos. ¡Estás preparado para la prueba final del tema! Ánimo, Hugo. 😊
+
+<TOPIC_COMPLETE>
+
+GYEREK: Vale, gracias. ¿Ya acaba?
+
+TANÁR: ¡De nada, Hugo! La parte de aprender ya ha terminado, pero todavía queda la prueba final para cerrar el tema. ¡Ánimo, seguro que te irá bien!
+
+GYEREK: Vale, pues. ez uncsi
+
+TANÁR: Entiendo, Hugo; a veces los pósteres pueden hacerse un poco pesados. Vamos con una pregunta cortita: al presentar los resultados, conviene explicar qué muestran los datos, sin inventar nada. Por ejemplo, si el gráfico muestra que una planta creció más, contamos eso y no decimos que todas las plantas crecerán igual.
+
+¿Qué ayuda a que otras personas entiendan un gráfico?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Poner un título y explicar qué muestran los datos","Añadir resultados que no medimos","Quitar las etiquetas"]}</FELADAT>
+
+
+======================================================================
+Lengua Castellana y Literatura · 4. osztály · Pablo (9 éves)
+Témakör: Debatir y argumentar
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Pablo! Soy Elvira. Hoy aprenderemos a defender una opinión, escuchar a los demás y debatir con respeto. 😊
+
+Una opinión es lo que pensamos sobre un tema. Por ejemplo: «Creo que la clase debería tener más tiempo para leer».
+
+Un argumento es una razón que explica nuestra opinión. Por ejemplo: «Así podríamos descubrir más historias y aprender palabras nuevas».
+
+En un debate, cada persona espera su turno para hablar y escucha sin interrumpir. Si no estamos de acuerdo, podemos responder con respeto: «Entiendo lo que dices, pero pienso algo distinto porque…».
+
+Al final, hacemos una conclusión: contamos brevemente qué ideas importantes han aparecido. Por ejemplo: «Hemos visto que leer más puede ser divertido y también ayuda a aprender».
+
+¿Qué frase es un argumento para la opinión «Debería haber más tiempo para leer»?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Porque así podemos descubrir más historias.","No estoy de acuerdo contigo.","Mi opinión es que sí."]}</FELADAT>
+
+GYEREK: Porque así podemos descubrir más historias.
+
+TANÁR: ¡Correcto, Pablo! Esa razón explica muy bien la opinión. 😊
+
+Ahora veremos cómo continuar un debate:
+
+- Puede haber argumentos a favor y en contra. Sobre leer más, a favor: «Leer nos ayuda a aprender palabras nuevas». En contra: «Si alargamos la lectura, tendremos menos tiempo para otras actividades».
+- Refutar es responder a una idea con la que no estamos de acuerdo, pero con respeto. Por ejemplo: «Entiendo tu argumento, pero también necesitamos tiempo para jugar».
+- En un debate de clase, una persona moderadora puede dar los turnos para que todos puedan hablar y escuchar.
+
+¿Cuál respuesta expresa desacuerdo con respeto?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Entiendo tu idea, pero pienso algo distinto.","¡Eso que dices no tiene sentido!","No te dejaré hablar."]}</FELADAT>
+
+GYEREK: Entiendo tu idea, pero pienso algo distinto.
+
+TANÁR: ¡Muy bien, Pablo! Has elegido una respuesta respetuosa. 😊
+
+Ahora vamos a juntar las partes de un debate. La persona moderadora reparte los turnos y ayuda a que todos puedan hablar. Al terminar, se hace una conclusión que resume las ideas principales, sin añadir una opinión nueva.
+
+Por ejemplo, si debatimos si conviene leer un rato cada día, la conclusión podría ser: «Hemos escuchado que leer ayuda a aprender y que también hay que dejar tiempo para otras actividades».
+
+¿Cuál frase sería una buena conclusión para ese debate?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Hemos visto que leer ayuda a aprender y que también necesitamos tiempo para otras actividades.","Yo tengo razón y los demás no.","¿Quién quiere hablar primero?"]}</FELADAT>
+
+GYEREK: Hemos visto que leer ayuda a aprender y que también necesitamos tiempo para otras actividades.
+
+TANÁR: ¡Excelente, Pablo! Has reconocido una conclusión porque resume las ideas que se han escuchado. También has aprendido a dar razones, respetar los turnos y responder con educación cuando no estás de acuerdo.
+
+Ya estás preparado para la prueba final del tema. ¡Ánimo, seguro que lo haces muy bien! <TOPIC_COMPLETE>
+
+GYEREK: ¡Vale! Estoy un poco nervioso… pero creo que sí. ¿Puedo hacerlo?
+
+TANÁR: ¡Claro que puedes, Pablo! Es normal estar un poco nervioso; respira despacio y recuerda lo que ya sabes. En un debate damos razones para explicar nuestras opiniones, escuchamos los turnos y respondemos con respeto. La prueba te ayudará a demostrarlo poco a poco. 😊
+
+GYEREK: Sí, vale... yo creo que sí. Mi perro también se pone nervioso cuando oye ruidos.
+
+TANÁR: Es normal ponerse nervioso; a tu perro también pueden asustarle algunos ruidos. Tú ya has practicado cómo expresar tus ideas y escuchar con respeto. Vamos con una pregunta de la prueba final. 😊
+
+En un debate sobre tener más tiempo de recreo, ¿cuál frase expresa una opinión?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Creo que deberíamos tener más tiempo de recreo.","El recreo empieza después de la clase.","El patio tiene dos bancos."]}</FELADAT>
+
+
+======================================================================
+Lengua Extranjera – angol · 2. osztály · Lucía (7 éves)
+Témakör: Animals – Animales
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Lucía! Hoy aprenderemos nombres de animales en inglés. 🐶
+
+Perro se dice <FL:en>dog</FL>. <FL:en>Dog</FL>, <FL:en>dog</FL>: “I see a dog” (Veo un perro).
+
+¿Qué animal dice «guau»?
+
+<FELADAT>{"tipus":"valaszt","opciok":["perro","gato","pájaro"]}</FELADAT>
+<VOCAB>perro=dog</VOCAB>
+
+GYEREK: ¡Hola! Es el **perro**. 🐶
+
+TANÁR: ¡Muy bien, Lucía! 🐶 Ahora aprendemos «gato»: en inglés se dice <FL:en>cat</FL>. <FL:en>Cat</FL>, <FL:cat>cat</FL> aparece en “I see a cat” (Veo un gato).
+
+¿Qué significa <FL:en>dog</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["perro","gato","pájaro"]}</FELADAT>
+<VOCAB>gato=cat</VOCAB>
+
+GYEREK: Perro. ¿Es perro, no?
+
+TANÁR: ¡Sí, <FL:en>dog</FL> significa «perro»! 😊 Ahora aprendemos «pájaro»: se dice <FL:en>bird</FL>; “I see a bird” (Veo un pájaro) y “The bird is small” (El pájaro es pequeño). ¿Qué significa <FL:en>bird</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["pájaro","perro","gato"]}</FELADAT>
+<VOCAB>pájaro=bird</VOCAB>
+
+GYEREK: Pájaro. ¡Bird es pájaro!
+
+TANÁR: ¡Muy bien! <FL:en>Bird</FL> significa «pájaro». 😊 Ahora aprendemos «pez»: <FL:en>fish</FL>; “I see a fish” (Veo un pez) y “The fish is small” (El pez es pequeño). ¿Qué significa <FL:en>cat</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["gato","perro","pájaro"]}</FELADAT>
+<VOCAB>pez=fish</VOCAB>
+
+GYEREK: Gato. ¡Cat es gato!
+
+TANÁR: ¡Muy bien, Lucía! <FL:en>Cat</FL> significa «gato». 😊 Ya conoces varios animales; ahora aprendemos «conejo»: se dice <FL:en>rabbit</FL>. Por ejemplo: “I see a rabbit” (Veo un conejo). ¿Qué significa <FL:en>rabbit</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["conejo","pez","gato"]}</FELADAT>
+<VOCAB>conejo=rabbit</VOCAB>
+
+GYEREK: Conejo. ¡Rabbit es conejo!
+
+TANÁR: ¡Muy bien! <FL:en>Rabbit</FL> significa «conejo». 😊 Ahora aprendemos «hámster»: en inglés se dice <FL:en>hamster</FL>. “I see a hamster” (Veo un hámster). ¿Qué significa <FL:en>fish</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["pez","conejo","pájaro"]}</FELADAT>
+<VOCAB>hámster=hamster</VOCAB>
+
+
+======================================================================
+Educación Artística · 1. osztály · Martina (6 éves)
+Témakör: Recepción y análisis
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Martina! Soy Elvira. Hoy aprenderemos a mirar y escuchar obras de arte con atención y respeto. 😊
+
+Cuando observamos una obra, podemos fijarnos en sus colores, formas y detalles. Por ejemplo, al mirar un cuadro, podemos descubrir si tiene muchos colores brillantes o pocos colores suaves.
+
+El arte puede aparecer de distintas maneras: en un cuadro, una canción, una película o una obra de teatro. Cada una nos hace mirar, escuchar o sentir cosas diferentes.
+
+En un museo o mientras escuchamos una canción, estar en silencio nos ayuda a prestar atención y también deja que los demás disfruten. Por ejemplo, esperamos nuestro turno para hablar después de escuchar una canción.
+
+También usamos palabras para contar lo que vemos y oímos. Podemos decir “color”, “imagen”, “sonido” o “movimiento”. Por ejemplo: “Veo una imagen con mucho azul”.
+
+¿Cuál de estas cosas se escucha: un cuadro o una canción?
+
+<FELADAT>{"tipus":"valaszt","opciok":["un cuadro","una canción"]}</FELADAT>
+
+GYEREK: Una canción. ¿Puedo decir también que se oye con los oídos?
+
+TANÁR: ¡Sí, Martina! Una canción se oye con los oídos. ¡Muy bien! 👂
+
+Ahora veremos cómo podemos disfrutar del arte con ayuda de la tecnología. En una tableta podemos escuchar una canción grabada o ver un vídeo de una danza. La tableta es un recurso digital: una herramienta que nos ayuda a ver o escuchar arte.
+
+Por ejemplo, si no estamos en una sala de conciertos, podemos escuchar allí una grabación de música.
+
+¿Qué puedes escuchar en una tableta?
+
+<FELADAT>{"tipus":"valaszt","opciok":["una canción grabada","un cuadro"]}</FELADAT>
+
+GYEREK: Una canción grabada. Pero yo quiero ver un vídeo también.
+
+TANÁR: ¡Exacto, Martina! En una tableta puedes escuchar una canción grabada y también ver un vídeo. En un vídeo podemos fijarnos en las imágenes y los movimientos, además de escuchar los sonidos.
+
+Cuando miramos o escuchamos una obra, primero prestamos atención y después podemos contar qué nos ha llamado la atención. Por ejemplo: «Me gustó cómo bailaban» o «La música sonaba suave».
+
+Algunas obras son de artistas que viven cerca; otras vienen de lugares lejanos o de hace mucho tiempo. Todas pueden ser distintas y merecen respeto. Por ejemplo, podemos disfrutar de una canción nueva y también escuchar una canción antigua.
+
+Al observar una obra, ¿qué podrías contar después: algo que te llamó la atención o algo que comiste ayer?
+
+<FELADAT>{"tipus":"valaszt","opciok":["algo que me llamó la atención","algo que comí ayer"]}</FELADAT>
+
+GYEREK: Algo que me llamó la atención. Ayer comí tortilla, ¿vale?
+
+TANÁR: ¡Sí, claro! Puedes contar que ayer comiste tortilla; y sobre una obra, también puedes decir qué detalle te llamó la atención. 😊
+
+Ahora aprendemos dos palabras. La persona que crea una canción, un cuadro o una danza es una artista o un artista. Lo que crea se llama una obra. Por ejemplo, una canción creada por una compositora es una obra musical.
+
+<FELADAT>{"tipus":"valaszt","opciok":["la persona que crea una canción","la canción creada"]}</FELADAT>
+
+GYEREK: La persona que crea una canción. ¿Y una obra también puede ser un dibujo?
+
+TANÁR: ¡Sí! Un dibujo también puede ser una obra de arte. La persona que lo crea puede elegir los colores y las formas. Por ejemplo, puede dibujar un paisaje con montañas y un río.
+
+Un dibujo es una obra que vemos. Una canción es una obra que escuchamos. Cada una se disfruta de una manera distinta.
+
+¿Cuál de estas obras puedes mirar: un dibujo o una canción?
+
+<FELADAT>{"tipus":"valaszt","opciok":["un dibujo","una canción"]}</FELADAT>
+
+GYEREK: Un dibujo. Pero una canción también se puede sentir, ¿no?
+
+TANÁR: ¡Sí, Martina! Una canción se escucha con los oídos y también puede hacernos sentir alegría, calma o emoción. A cada persona una canción puede hacerle sentir algo distinto, y podemos respetar lo que sienten los demás.
+
+Por ejemplo, una canción suave puede hacer que alguien se sienta tranquilo. Otra persona quizá sienta algo diferente. 😊
+
+Si una canción te hace sentir tranquila, ¿qué palabra describe cómo te sientes: tranquila o ruidosa?
+
+<FELADAT>{"tipus":"valaszt","opciok":["tranquila","ruidosa"]}</FELADAT>
+
+
+======================================================================
+Lengua Extranjera – angol · 5. osztály · Hugo (10 éves)
+Témakör: Reading & Writing – Leer y escribir
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Hugo! Soy Elvira. Hoy vamos a aprender a ordenar las acciones de un texto en inglés. 😊
+
+Usamos estas palabras para contar qué pasa primero y qué ocurre después:
+
+- <FL:en>first</FL> = primero. Ejemplo: “First I get up.” (Primero me levanto.)
+- <FL:en>then</FL> = luego. Ejemplo: “Then I have breakfast.” (Luego desayuno.)
+- <FL:en>next</FL> = a continuación. Ejemplo: “Next I go to school.” (A continuación voy al colegio.)
+- <FL:en>finally</FL> = por último. Ejemplo: “Finally I come home.” (Por último vuelvo a casa.)
+
+Para ordenar una rutina, ¿qué palabra pondrías justo antes de contar la última acción?
+
+<VOCAB>primero=first</VOCAB><VOCAB>luego=then</VOCAB><VOCAB>a continuación=next</VOCAB><VOCAB>por último=finally</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["first","then","next","finally"]}</FELADAT>
+
+GYEREK: finally
+
+TANÁR: ¡Correcto, Hugo! **<FL:en>Finally</FL>** significa «por último». 😊
+
+Ahora veremos tres palabras para hablar de textos:
+
+- **<FL:en>story</FL>** significa «cuento» o «historia». “I read a story.” (Leo un cuento.)
+- **<FL:en>letter</FL>** significa «carta». “I write a letter.” (Escribo una carta.)
+- **<FL:en>message</FL>** significa «mensaje». “I send a message.” (Envío un mensaje.)
+
+Cuando escribas una frase en inglés, empieza con mayúscula y termina con punto. Por ejemplo: “I read a story.” (Leo un cuento.)
+
+<VOCAB>cuento=story</VOCAB><VOCAB>carta=letter</VOCAB><VOCAB>mensaje=message</VOCAB>
+
+GYEREK: vale
+
+TANÁR: ¡Genial! Ahora vamos a fijarnos en cómo se construye una frase: primero va quién hace algo, después la acción y, si hace falta, qué recibe la acción. Por ejemplo: “I write a letter.” (Escribo una carta.) Empieza con mayúscula y acaba con punto.
+
+Completa la frase con la palabra adecuada:
+
+<FELADAT>{"tipus":"hianyzo","mondat":"I ___ a letter.","szavak":["write","writes","writing"]}</FELADAT>
+
+GYEREK: write
+
+TANÁR: ¡Muy bien, Hugo! **<FL:en>Write</FL>** es la palabra correcta: “I write a letter.” (Escribo una carta.)
+
+Ahora aprenderemos cómo empezar una carta amistosa. Puedes escribir: “<FL:en>Dear friend</FL>,” (Querido amigo / Querida amiga). Después, empieza la frase siguiente con mayúscula y termina con punto.
+
+¿Cuál es el saludo correcto para empezar una carta amistosa?
+
+<VOCAB>querido/querida=dear</VOCAB><VOCAB>amigo/amiga=friend</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["Dear friend,","Finally friend.","I write friend."]}</FELADAT>
+
+GYEREK: Dear friend,
+
+TANÁR: ¡Muy bien! **“<FL:en>Dear friend</FL>,”** es un saludo adecuado para empezar una carta amistosa. Después puedes contar tus actividades siguiendo el orden en que ocurren: “<FL:en>First I get up, then I have breakfast.</FL>” (Primero me levanto y luego desayuno.)
+
+Al escribir, comienza cada frase con mayúscula y pon un punto al final. Ahora vamos a practicar el orden de las acciones:
+
+<FELADAT>{"tipus":"sorrend","elemek":["Finally I go to bed.","First I get up.","Then I have breakfast.","Next I go to school."]}</FELADAT>
+
+GYEREK: First I get up. Then I have breakfast. Next I go to school. Finally I go to bed.
+
+TANÁR: ¡Excelente, Hugo! Has ordenado correctamente las cuatro acciones. 😊
+
+Ahora vamos a leerlas como un pequeño texto. Las palabras que indican el orden ayudan a entender qué ocurre primero y qué pasa después: “<FL:en>First I get up. Then I have breakfast. Next I go to school. Finally I go to bed.</FL>” (Primero me levanto. Luego desayuno. A continuación voy al colegio. Por último me acuesto.)
+
+En una lectura, fíjate en esas palabras para encontrar rápidamente la acción que viene después.
+
+¿Qué haces después de levantarte?
+
+<FELADAT>{"tipus":"valaszt","opciok":["I have breakfast.","I go to school.","I go to bed."]}</FELADAT>
+
+
+======================================================================
+Educación Física · 6. osztály · Pablo (11 éves)
+Témakör: Vida activa y saludable
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Pablo! Hoy vamos a aprender cómo una vida activa ayuda al cuerpo, al ánimo y a las relaciones con los demás. 😊
+
+Moverse con regularidad fortalece el cuerpo y también puede mejorar el ánimo. Por ejemplo, jugar al baloncesto con amigos puede hacer que te sientas con más energía y de mejor humor.
+
+La actividad física también ayuda a relacionarnos: podemos cooperar, respetar turnos y animar a otras personas. Por ejemplo, en un juego en equipo, cada participante puede aportar algo distinto.
+
+Cuidar la alimentación forma parte de una vida saludable. Los alimentos muy procesados y las bebidas con mucho azúcar no son la mejor elección para tomar a menudo; es preferible elegir opciones variadas y agua. Por ejemplo, para acompañar una merienda, puedes escoger agua en vez de un refresco azucarado.
+
+Y cada cuerpo es diferente. No hay un único aspecto físico necesario para practicar deporte: lo importante es participar, respetar a los demás y encontrar actividades adecuadas para cada persona.
+
+¿Cuál es un beneficio social de jugar en equipo?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Aprender a cooperar","Tener todos el mismo aspecto","Evitar hablar con los demás"]}</FELADAT>
+
+GYEREK: Aprender a cooperar. ¿Es así?
+
+TANÁR: ¡Sí, Pablo, es correcto! Jugar en equipo puede ayudarnos a cooperar y respetar a los demás. 😊
+
+Ahora veremos otro hábito saludable: cuidar la postura. Al correr, saltar o levantar material, conviene moverse con atención y seguir las indicaciones para hacer la actividad de forma segura. Por ejemplo, al recoger una pelota del suelo, puedes flexionar las piernas en vez de doblar solo la espalda.
+
+También es importante escuchar al cuerpo y descansar cuando lo necesitamos. Cada persona tiene capacidades distintas, y compararnos constantemente no ayuda: podemos fijarnos metas realistas y valorar nuestros propios avances.
+
+¿Qué conviene hacer al recoger una pelota del suelo?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Flexionar las piernas","Doblar solo la espalda","Hacerlo deprisa sin mirar"]}</FELADAT>
+
+GYEREK: Flexionar las piernas. ¿Sí?
+
+TANÁR: ¡Sí, Pablo, correcto! Flexionar las piernas ayuda a cuidar la postura al recoger algo del suelo. 😊
+
+Ahora veremos cómo cuidar también la salud mental y social. Tener una imagen realista de uno mismo significa reconocer lo que se nos da bien y lo que podemos ir mejorando, sin exigirnos ser perfectos. Por ejemplo, si hoy corres menos que un compañero, puedes proponerte mejorar poco a poco, sin dejar de disfrutar.
+
+Además, debemos respetar los cuerpos y las habilidades de todas las personas. Decir que un deporte es «solo para chicos» o «solo para chicas» es un estereotipo: cualquier persona puede practicarlo si le interesa y puede hacerlo de forma adecuada.
+
+Cuando alguien del equipo tiene un ritmo distinto, ¿qué actitud ayuda a que todos participen?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Adaptar el juego y animarle","Burlarse de esa persona","Dejarle siempre fuera"]}</FELADAT>
+
+GYEREK: Adaptar el juego y animarle. Creo que sí.
+
+TANÁR: ¡Sí, Pablo, muy bien! Adaptar el juego y animar a esa persona ayuda a que todos puedan participar. 😊
+
+Ahora veremos dos ideas más. El deporte profesional exige entrenar mucho y seguir horarios y normas estrictos. No es necesario entrenar como un deportista profesional para llevar una vida activa: también cuentan las actividades que disfrutamos y podemos hacer con regularidad.
+
+Además, algunos hábitos poco saludables pueden dificultar la actividad física. Por ejemplo, pasar demasiado tiempo sin moverse puede hacer que luego cueste más mantener el ritmo durante un juego. Por eso es útil alternar los ratos de descanso con momentos para moverse.
+
+¿Hace falta entrenar como un deportista profesional para llevar una vida activa?
+
+<FELADAT>{"tipus":"valaszt","opciok":["No, también cuentan las actividades habituales que disfrutamos","Sí, siempre hay que entrenar como un profesional","Sí, solo el deporte profesional es actividad física"]}</FELADAT>
+
+GYEREK: No, también cuentan las actividades habituales que disfrutamos. ¿Verdad?
+
+TANÁR: ¡Sí, Pablo, exacto! No hace falta entrenar como un profesional: las actividades habituales que disfrutas también ayudan a mantenerte activo. 😊
+
+Ahora aprenderemos a cuidar el cuerpo durante la actividad. Las bebidas azucaradas y las bebidas energéticas no son buenas para tomar habitualmente; para quitar la sed, el agua es una opción adecuada. Las bebidas energéticas pueden afectar al descanso, así que no son para niños.
+
+También tenemos una responsabilidad personal: prestar atención a cómo nos sentimos. Por ejemplo, si durante un juego te encuentras mal o notas dolor, paras y se lo cuentas a un adulto.
+
+¿Qué opción es mejor para quitar la sed después de jugar?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Agua","Bebida energética","Refresco azucarado"]}</FELADAT>
+
+GYEREK: Agua. Es la mejor, ¿no?
+
+TANÁR: ¡Sí, Pablo, muy bien! El agua es una buena opción para quitar la sed. 😊
+
+Ya hemos repasado cómo una vida activa beneficia al cuerpo, al ánimo y a las relaciones; cómo cuidar la postura y elegir hábitos saludables; y cómo respetar las diferencias y ayudar a que todos participen. Por ejemplo, en un juego podemos adaptar una regla para que cada compañero tenga la oportunidad de disfrutar y colaborar.
+
+¡Ya viene la prueba final de este tema! Has aprendido mucho; lee cada pregunta con calma y confía en lo que sabes. <TOPIC_COMPLETE>
+
+
+======================================================================
+Lengua Castellana y Literatura · 6. osztály · Lucía (11 éves)
+Témakör: Comunicación y medios
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Lucía! Hoy vamos a aprender a distinguir noticias y opiniones, reconocer la publicidad y mirar con espíritu crítico los mensajes de los medios. 😊
+
+Una noticia cuenta un hecho que ha ocurrido o está ocurriendo. Por ejemplo: «La biblioteca del barrio abrió una sala nueva el lunes». Una noticia debería ofrecer datos que se puedan comprobar.
+
+Una opinión expresa lo que alguien piensa o siente. Por ejemplo: «La sala nueva de la biblioteca es preciosa». Las opiniones pueden ser distintas y no se demuestran como un hecho.
+
+La publicidad intenta llamar nuestra atención para que conozcamos o elijamos un producto, una actividad o una idea. Por ejemplo, un cartel que anima a apuntarse a un taller de lectura puede ser publicidad.
+
+En los medios digitales, como las páginas web o las aplicaciones, podemos encontrar mensajes muy distintos. Antes de creer o compartir algo, conviene fijarse en quién lo publica y si hay datos que lo apoyen. Por ejemplo, si una noticia sorprende mucho, podemos buscarla en otros medios fiables.
+
+Ahora, fíjate en esta frase: «El taller de lectura empieza el sábado a las diez». ¿Qué tipo de mensaje es?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Un hecho que puede comprobarse","Una opinión personal","Un anuncio publicitario"]}</FELADAT>
+
+GYEREK: Un hecho que puede comprobarse. Empieza el sábado a las diez, ¿no?
+
+TANÁR: ¡Exacto, Lucía! «Empieza el sábado a las diez» es un dato concreto que se puede comprobar. ¡Muy bien! 😊
+
+Ahora veremos cómo revisar un mensaje antes de creerlo o compartirlo:
+
+- Mira quién lo publica. No es lo mismo una información de una entidad identificable que un mensaje sin autor claro.
+- Busca pruebas o datos. Una afirmación acompañada de información comprobable resulta más fiable que una frase llamativa sin explicación.
+- Compara con otros medios. Si varios medios fiables cuentan el mismo hecho, tenemos más motivos para confiar, aunque siempre conviene fijarse en los datos.
+
+Por ejemplo, si lees «¡La biblioteca prepara una actividad nueva!», comprueba quién lo anuncia y busca cuándo y dónde se realizará.
+
+¿Qué detalle te ayudaría más a comprobar esa noticia?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Quién la publica","Si el titular usa letras grandes","Si aparece una imagen bonita"]}</FELADAT>
+
+GYEREK: Quién la publica. Así sé si es de verdad o no, creo.
+
+TANÁR: ¡Muy bien, Lucía! Saber quién publica un mensaje es una pista importante. Aun así, no basta por sí sola para demostrar que sea cierto: también hay que revisar los datos y compararlos con otras fuentes fiables.
+
+Ahora vamos a fijarnos en los anuncios. La publicidad suele destacar lo atractivo de algo para captar nuestra atención. Puede usar frases entusiastas, imágenes llamativas o promesas. Por eso conviene preguntarse: «¿Qué quiere que piense o haga este mensaje?» y «¿Ofrece datos concretos o solo intenta convencerme?».
+
+Por ejemplo, «¡El taller más divertido de todos!» expresa una valoración entusiasta. En cambio, «El taller será el sábado y durará una hora» ofrece datos concretos que se pueden comprobar.
+
+En un anuncio que dice «¡Ven al taller más divertido de la ciudad!», ¿qué parte es una opinión entusiasta?
+
+<FELADAT>{"tipus":"valaszt","opciok":["más divertido de la ciudad","Ven al taller","el taller"]}</FELADAT>
+
+GYEREK: más divertido de la ciudad. Es una opinión, ¿sí?
+
+TANÁR: ¡Sí, Lucía! «Más divertido de la ciudad» es una opinión: expresa una valoración, no un dato que se pueda comprobar. ¡Lo has entendido muy bien! 😊
+
+Ahora vamos a fijarnos en los titulares. Un titular resume una noticia para atraer la atención. A veces usa palabras muy llamativas, así que es buena idea leer también el resto de la noticia y comprobar si el texto respalda lo que promete el titular.
+
+Por ejemplo, «¡La feria más increíble llega al barrio!» suena emocionante, pero «La feria del barrio abre el sábado» ofrece un dato concreto. Para comparar dos titulares, fíjate en qué información comparten y en qué palabras intentan despertar una emoción.
+
+¿Cuál de estos titulares presenta un dato más concreto?
+
+<FELADAT>{"tipus":"valaszt","opciok":["La feria del barrio abre el sábado","¡La feria más increíble de todas!"]}</FELADAT>
+
+GYEREK: La feria del barrio abre el sábado. Eso sí es concreto.
+
+TANÁR: ¡Exacto, Lucía! «La feria del barrio abre el sábado» da un dato que se puede comprobar. ¡Muy bien! 😊
+
+Ahora veremos cómo preparar un mensaje oral para un medio digital, como una grabación de audio:
+
+- Antes de grabar, piensa qué quieres contar y a quién va dirigido. Así eliges la información más útil. Por ejemplo, para invitar a la clase a una actividad, di qué día será y dónde.
+- Habla con claridad y orden: presenta el tema, explica los datos importantes y termina con una idea final. Si te equivocas, puedes repetir la grabación antes de compartirla.
+
+¿Qué ayudaría más a que tus compañeros entiendan una invitación grabada?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Hablar con claridad y decir los datos importantes","Usar muchas palabras difíciles","Hablar muy deprisa"]}</FELADAT>
+
+GYEREK: Hablar con claridad y decir los datos importantes. Así se entiende mejor, creo.
+
+TANÁR: ¡Muy bien, Lucía! Hablar con claridad y dar los datos importantes ayuda a que el mensaje se entienda. 😊
+
+Ahora vamos a preparar un mensaje oral pensando en quién lo escuchará y para qué:
+
+- El propósito es lo que queremos conseguir con el mensaje. Por ejemplo, podemos informar sobre una actividad o invitar a la clase.
+- El público es quien va a escucharlo. Si hablamos a nuestros compañeros, podemos usar palabras cercanas y explicar los datos que necesitan.
+- Para que el mensaje sea claro, podemos separar los hechos de las opiniones. «La actividad empieza a las cuatro» es un dato; «será genial» es una opinión.
+
+Imagina que grabas una invitación para una actividad de clase. ¿Cuál de estas frases aporta un dato concreto?
+
+<FELADAT>{"tipus":"valaszt","opciok":["La actividad empieza a las cuatro","Será la actividad más emocionante"]}</FELADAT>
+
+
+======================================================================
+Educación Artística · 5. osztály · Martina (10 éves)
+Témakör: Recepción y análisis
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Martina! Soy Elvira, y hoy vamos a aprender a observar y escuchar obras de arte con atención, respeto y curiosidad. 😊
+
+Cuando recibimos una obra, no solo la miramos o la escuchamos: también nos fijamos en cómo nos hace sentir y en los detalles. Por ejemplo, al ver una pintura, podemos observar sus colores y pensar qué ambiente crean.
+
+Para escuchar música o ver una actuación, el silencio ayuda a prestar atención y a no molestar a los demás. En un concierto, por ejemplo, esperamos a que termine la música antes de aplaudir.
+
+También usamos palabras propias del arte. En una canción, la melodía es la parte que podemos tararear; en una pintura, los colores y las formas nos dan pistas sobre cómo está hecha.
+
+Y al conocer obras, conviene descubrir las aportaciones de mujeres y hombres artistas. Por ejemplo, podemos fijarnos en quién creó una obra y evitar pensar que un tipo de arte solo lo hacen las mujeres o solo los hombres.
+
+En una actuación, ¿qué ayuda a que todas las personas puedan escuchar con atención?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Guardar silencio mientras actúan","Hablar durante la música","Usar el móvil con sonido"]}</FELADAT>
+
+GYEREK: Guardar silencio mientras actúan. ¿Así, verdad?
+
+TANÁR: ¡Sí, Martina, así es! Guardar silencio mientras actúan ayuda a que todas las personas puedan escuchar y disfrutar. 😊
+
+Ahora veremos cómo analizar una obra con curiosidad, sin decidir enseguida si es «bonita» o «fea». Podemos fijarnos en detalles concretos: en una pintura, observar los colores y las formas; en una canción, escuchar si el ritmo es rápido o lento. Después podemos contar qué detalle nos llamó la atención y cómo nos hizo sentir.
+
+También podemos investigar quién creó la obra y de qué época o lugar procede. Por ejemplo, si vemos una escultura en un museo, podemos leer su cartel para saber quién la hizo y cuándo.
+
+<FELADAT>{"tipus":"valaszt","opciok":["Fijarse en detalles y contar qué nos hacen sentir","Decidir enseguida si es bonita o fea","Ignorar quién creó la obra"]}</FELADAT>
+
+GYEREK: Fijarse en detalles y contar qué nos hacen sentir. ¿Sí?
+
+TANÁR: ¡Sí, Martina! Muy bien: observar detalles y explicar qué nos hacen sentir nos ayuda a conocer mejor una obra. 😊
+
+Ahora aprenderemos dos maneras más de analizarla:
+
+- En una película o un vídeo, podemos fijarnos en las imágenes, los sonidos y cómo se unen para contar algo. Por ejemplo, una música suave puede acompañar una escena tranquila.
+- También podemos investigar quién creó una obra. Es importante recordar que mujeres y hombres pueden crear todo tipo de arte. Por ejemplo, una mujer puede dirigir una película y un hombre puede diseñar vestuario; el talento no depende de ser chica o chico.
+
+Para buscar información sobre una obra, podemos usar recursos digitales de forma responsable, como la página de un museo o una biblioteca digital, y comprobar quién publica la información.
+
+Si encuentras una canción en una página de un museo, ¿qué detalle podrías observar para analizarla?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Los sonidos y cómo se unen","Solo el color de la pantalla","El nombre del aparato"]}</FELADAT>
+
+GYEREK: Los sonidos y cómo se unen. Creo que es eso, ¿no?
+
+TANÁR: ¡Sí, Martina, es eso! Has recordado que en una canción podemos escuchar los sonidos y cómo se unen. 😊
+
+Ahora aprenderemos a describir lo que vemos en una obra audiovisual, como una película:
+
+- Una parte de la película que ocurre en un mismo lugar o momento se llama escena. Por ejemplo, una escena puede mostrar a varias personas en un parque.
+- Lo que ocurre y hacen los personajes es la acción. Podemos contarla sin inventar detalles: «La niña busca algo en el jardín».
+- Al comentar una obra, escuchamos también las opiniones de otras personas con respeto. A alguien puede gustarle una escena que a otra persona le transmite algo distinto.
+
+Si una película muestra a una niña buscando algo en un jardín, ¿qué podrías describir: la escena o los sonidos de una canción?
+
+<FELADAT>{"tipus":"valaszt","opciok":["La escena","Los sonidos de una canción"]}</FELADAT>
+
+GYEREK: La escena. Aunque los sonidos también molan, ¿eh?
+
+TANÁR: ¡Exacto, Martina! La escena, y también tienes razón: los sonidos pueden ser muy interesantes. En una obra podemos fijarnos en varias cosas a la vez. 😊
+
+Ahora veremos cómo comparar propuestas artísticas:
+
+- Podemos comparar dos obras fijándonos en algo concreto, como los colores, los sonidos o el tema. Por ejemplo, dos canciones pueden tener ritmos distintos.
+- Las obras pueden venir de lugares y épocas diferentes. Conocer su procedencia nos ayuda a entender que existen muchas formas de crear y expresarse.
+- Al hablar de una obra, podemos decir qué observamos y qué nos hace sentir, respetando que otra persona quizá la interprete de otra manera.
+
+Una forma respetuosa de comparar dos pinturas es fijarse en qué aspecto concreto? 
+<FELADAT>{"tipus":"valaszt","opciok":["En sus colores o formas","En cuál debería gustarle a todo el mundo","En si una persona tiene más talento por ser hombre o mujer"]}</FELADAT>
+
+GYEREK: En sus colores o formas. ¿Verdad?
+
+TANÁR: ¡Verdad! Comparar los colores o las formas es fijarse en detalles concretos, sin decir que una obra vale más solo porque nos guste más. 😊
+
+Ahora aprenderemos cómo disfrutar propuestas artísticas en distintos lugares:
+
+- En un museo, miramos las obras con cuidado y seguimos las indicaciones del lugar. Así ayudamos a conservarlas.
+- En una actuación, esperamos nuestro turno para hablar y aplaudimos al final, cuando corresponda. Así mostramos respeto por quienes actúan y por el público.
+- En casa o en clase, podemos usar herramientas digitales para escuchar música o ver una obra. Conviene elegirlas con ayuda de una persona adulta y prestar atención a la obra, no a otras cosas de la pantalla.
+
+En un museo, ¿qué actitud ayuda a cuidar las obras?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Mirarlas con cuidado y seguir las indicaciones","Tocarlas para comprobar cómo están hechas","Hablar en voz alta delante de ellas"]}</FELADAT>
+
+
+======================================================================
+Lengua Castellana y Literatura · 2. osztály · Hugo (7 éves)
+Témakör: Conversamos y explicamos
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Hugo! Soy Elvira. Hoy vamos a aprender a conversar y a explicar cosas con claridad. 😊
+
+- Para explicar algo, contamos las ideas en orden. Por ejemplo, para preparar un bocadillo: primero ponemos el pan, después añadimos el queso y, al final, cerramos el bocadillo.
+- Si queremos saber más, hacemos una pregunta amable. Por ejemplo: «¿Qué queso has elegido?».
+- Cuando explicamos cómo hacer algo, contamos los pasos uno detrás de otro. Así, quien nos escucha puede entenderlo y repetirlo.
+
+¿Qué pregunta podrías hacer para saber qué queso eligió alguien?
+
+<FELADAT>{"tipus":"valaszt","opciok":["¿Qué queso has elegido?","¡Qué rico está!","Hasta mañana."]}</FELADAT>
+
+GYEREK: ¿Qué queso has elegido?
+
+TANÁR: ¡Muy bien, Hugo! Esa pregunta sirve para saber qué queso eligió la otra persona. 😊
+
+Ahora veremos cómo escuchar y explicar los pasos de algo:
+
+- Escuchamos con atención y respondemos a lo que nos preguntan. Si alguien dice «He elegido queso fresco», podemos contestar: «¡Qué bien!».
+- Para explicar los pasos, usamos palabras como «primero», «después» y «al final».
+- Por ejemplo: para preparar la mochila, primero metemos los libros, después añadimos el estuche y al final cerramos la mochila.
+
+Ordena los pasos para preparar la mochila:
+
+<FELADAT>{"tipus":"sorrend","elemek":["Metemos los libros","Añadimos el estuche","Cerramos la mochila"]}</FELADAT>
+
+GYEREK: Primero metemos los libros, después añadimos el estuche y al final cerramos la mochila.
+
+TANÁR: ¡Muy bien, Hugo! Has contado los pasos en el orden correcto: primero, después y al final. 😊
+
+Ahora vamos a practicar una conversación. Cuando alguien nos cuenta algo, podemos hacer otra pregunta relacionada para saber más. Por ejemplo, si nos dice «Me gusta jugar al escondite», podemos preguntar «¿Cómo se juega?». Así la conversación continúa y aprendemos más.
+
+¿Qué pregunta nos ayudaría a saber dónde se juega al escondite?
+
+<FELADAT>{"tipus":"valaszt","opciok":["¿Dónde se juega?","¿Te gusta el helado?","¿Qué hora es?"]}</FELADAT>
+
+GYEREK: ¿Dónde se juega?
+
+TANÁR: ¡Exacto, Hugo! «¿Dónde se juega?» ayuda a saber más. 😊
+
+Ahora aprenderemos a contar una noticia de la clase. Podemos decir qué ha pasado y dónde. Por ejemplo: «Hoy hemos plantado semillas en el patio». La frase cuenta algo que ha ocurrido y el lugar.
+
+¿Cuál de estas frases cuenta algo que ha pasado en clase?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Hoy hemos leído un cuento en clase.","¿Te gusta leer?","Mañana quizá llueva."]}</FELADAT>
+
+GYEREK: Hoy hemos leído un cuento en clase.
+
+TANÁR: ¡Muy bien, Hugo! Esa frase cuenta algo que ha pasado en clase. 😊
+
+Ahora aprenderemos a responder con claridad. Si alguien pregunta «¿Qué habéis leído?», contestamos justo a eso: «Hemos leído un cuento». Así, la otra persona entiende nuestra respuesta.
+
+También podemos añadir un detalle para explicar un poco más: «Hemos leído un cuento de animales». Primero damos la respuesta y después contamos un detalle relacionado.
+
+<FELADAT>{"tipus":"valaszt","opciok":["¿Qué habéis leído?","¿Dónde está tu mochila?","¿Cuántos años tienes?"]}</FELADAT>
+
+GYEREK: ¿Qué habéis leído?
+
+TANÁR: Esa era la pregunta que podía hacer alguien para saber qué habíamos leído. 😊
+
+Ya hemos practicado cómo ordenar ideas, hacer preguntas para saber más, explicar pasos y contar algo que ha pasado. ¡Ahora viene la prueba final del tema! Lee la pregunta y elige la respuesta que encaja mejor.
+
+¿Qué habéis leído?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Hemos leído un cuento.","En el patio.","Primero abrimos la mochila."]}</FELADAT>
+<TOPIC_COMPLETE>
+
+
+======================================================================
+Educación en Valores Cívicos y Éticos · 6. osztály · Pablo (11 éves)
+Témakör: Autoconocimiento y autonomía moral
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Pablo! Soy Elvira, y hoy vamos a aprender cómo conocernos mejor y tomar decisiones responsables. 😊
+
+Conocerse a uno mismo es reconocer lo que se nos da bien, lo que nos cuesta y lo que nos importa. Cada persona es diferente y tiene dignidad, es decir, merece respeto. Por ejemplo, quizá a ti te guste trabajar en equipo y a otra persona le guste más trabajar a solas: ninguna forma es mejor por sí misma.
+
+Las emociones nos dan pistas sobre cómo nos sentimos. La autoestima es la manera de valorarnos; no significa pensar que somos perfectos, sino reconocer nuestras cualidades y aceptar que podemos mejorar. Por ejemplo, si te equivocas en un ejercicio, puedes sentir frustración y, aun así, recordar que equivocarse forma parte de aprender.
+
+También podemos decidir por nuestras propias razones. Cuando pensamos qué opción es respetuosa y responsable, y elegimos por ello, actuamos con autonomía. Si hacemos algo solo porque alguien nos presiona, sin pensar si está bien, nuestra decisión depende demasiado de otra persona. Por ejemplo, puedes decidir incluir a un compañero en un juego porque te parece justo, aunque otros prefieran dejarlo fuera.
+
+En este caso, ¿qué guía la decisión del niño: su propio juicio o la presión de otras personas?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Su propio juicio: decide incluir al compañero porque le parece justo","La presión de otras personas: hace lo que los demás le piden sin pensarlo"]}</FELADAT>
+
+GYEREK: Su propio juicio. Le parece justo, ¿no?
+
+TANÁR: ¡Exacto, Pablo! Ha usado su propio juicio y ha pensado en lo justo. 😊
+
+Ahora veremos cómo distinguir entre un deseo y una razón. Un deseo es algo que nos apetece; una razón es algo que pensamos para decidir qué conviene hacer. Por ejemplo, quizá te apetezca ser el primero en la fila, pero pensar que los demás también esperan te da una razón para respetar el turno.
+
+Después viene la responsabilidad: consiste en hacerse cargo de las decisiones y de sus consecuencias. Si eliges una opción que molesta a alguien, puedes reconocerlo y tratar de reparar el daño.
+
+¿Qué le ayuda a decidir mejor al niño que quiere colarse en la fila?  
+<FELADAT>{"tipus":"valaszt","opciok":["Pensar que los demás también esperan su turno","Hacer enseguida lo que más le apetece"]}</FELADAT>
+
+GYEREK: Pensar que los demás también esperan su turno. Es más justo.
+
+TANÁR: ¡Muy bien, Pablo! Pensar en los demás y respetar su turno es una decisión justa. 😊
+
+Ahora veremos cómo los valores nos ayudan a decidir. Un valor es algo que consideramos importante, como la justicia, el respeto o la sinceridad. Una norma es una regla que orienta cómo convivimos; por ejemplo, esperar el turno para hablar ayuda a que todos puedan participar.
+
+También podemos usar el pensamiento crítico: antes de seguir una idea, nos paramos a pensar si es razonable y respetuosa. Por ejemplo, si alguien propone excluir a un compañero de un juego, puedes preguntarte si eso trata a todos con justicia.
+
+¿Cuál de estas acciones muestra respeto por los demás?  
+<FELADAT>{"tipus":"valaszt","opciok":["Escuchar sin interrumpir cuando otra persona habla","Burlarse de alguien por dar una opinión diferente"]}</FELADAT>
+
+GYEREK: Escuchar sin interrumpir cuando otra persona habla. Eso es respeto.
+
+TANÁR: ¡Exacto, Pablo! Escuchar con atención es una forma de respeto. 😊
+
+Ahora veremos qué podemos hacer con las emociones. Sentir enfado, tristeza o alegría es normal; lo importante es reconocer lo que sentimos y elegir cómo actuar. Por ejemplo, si te enfadas durante un juego, puedes hacer una pausa y explicar con calma qué te ha molestado, en vez de insultar.
+
+La autoestima es valorarte sin creer que tienes que hacerlo todo perfectamente. Puedes reconocer algo que se te da bien y, al mismo tiempo, aceptar que estás aprendiendo otra cosa. Por ejemplo: «Se me da bien ayudar a mi equipo, y puedo practicar más las divisiones».
+
+¿Qué respuesta muestra una buena manera de gestionar el enfado?  
+<FELADAT>{"tipus":"valaszt","opciok":["Hacer una pausa y explicar con calma qué te ha molestado","Insultar a los demás enseguida"]}</FELADAT>
+
+GYEREK: Hacer una pausa y explicar con calma qué te ha molestado. Eso está mejor.
+
+TANÁR: ¡Muy bien, Pablo! Hacer una pausa ayuda a expresar el enfado sin herir a nadie. 😊
+
+Ahora veremos que nuestra identidad está formada por muchas cosas: nuestros gustos, capacidades, experiencias y relaciones. Compartimos algunas características con otras personas y tenemos otras propias. Por ejemplo, dos compañeros pueden disfrutar del fútbol y, a la vez, tener ideas distintas sobre qué juego elegir.
+
+También es importante cuidar la intimidad: hay información, imágenes y conversaciones personales que no debemos compartir sin permiso. Antes de publicar algo sobre otra persona, hay que pedirle permiso. Y si alguien te presiona o te hace sentir incómodo, puedes decir que no y hablar con un adulto de confianza.
+
+¿Qué conviene hacer antes de publicar una foto en la que aparece un compañero?
+<FELADAT>{"tipus":"valaszt","opciok":["Pedirle permiso","Publicarla sin preguntarle"]}</FELADAT>
+
+GYEREK: Pedirle permiso. Si no, no está bien, creo.
+
+TANÁR: ¡Exacto! Pedir permiso respeta la intimidad de tu compañero. 😊
+
+Ahora veremos cómo usar los medios y las redes con criterio. No todo lo que aparece en internet es cierto: conviene pensar quién lo ha publicado y comprobarlo con fuentes fiables. Por ejemplo, si lees una noticia sorprendente, no la compartas enseguida; primero busca si otros medios fiables también la cuentan.
+
+La libertad de expresión permite compartir ideas, pero no significa que esté bien insultar, acosar o divulgar información privada. Si ves que alguien recibe mensajes crueles repetidos, no los difundas: cuéntaselo a un adulto de confianza para que pueda ayudar.
+
+¿Qué conviene hacer ante una noticia sorprendente que aparece en internet?  
+<FELADAT>{"tipus":"valaszt","opciok":["Comprobar si la cuentan también fuentes fiables","Compartirla enseguida sin comprobarla"]}</FELADAT>
+
+
+======================================================================
+Lengua Extranjera – angol · 3. osztály · Lucía (8 éves)
+Témakör: Sounds & Spelling – Sonidos y ortografía
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Lucía! Soy Elvira. Hoy vamos a escuchar cómo algunas letras juntas suenan de una forma especial. 😊
+
+La palabra <FL:en>three</FL> significa «tres». Empieza con las letras <FL:en>th</FL>, que tienen un sonido distinto de la «t» española. <FL:en>Three</FL> (tres) también aparece en «<FL:en>three</FL> cats» (tres gatos).
+
+¿Qué significa <FL:en>three</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["tres","gato","casa"]}</FELADAT>
+<VOCAB>tres=three</VOCAB>
+
+GYEREK: tres 😊
+
+TANÁR: ¡Muy bien, Lucía! 😊 Ahora aprendemos <FL:en>the</FL>: puede significar «el» o «la». En «<FL:en>the dog</FL>» significa «el perro», y en «<FL:en>the sun</FL>» significa «el sol». ¿Qué dos letras aparecen al principio de <FL:en>the</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["th","sh","ch"]}</FELADAT>
+<VOCAB>el/la=the</VOCAB>
+
+GYEREK: th
+
+TANÁR: ¡Correcto, Lucía! <FL:en>the</FL> empieza por <FL:en>th</FL>. 😊 Ahora, <FL:en>this</FL> significa «esto»: «<FL:en>This is a book</FL>» (Esto es un libro). <FL:en>This</FL> empieza con el mismo sonido que <FL:en>three</FL> y <FL:en>the</FL>. ¿Empieza <FL:en>this</FL> con <FL:en>th</FL> o con <FL:en>sh</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["th","sh"]}</FELADAT>
+<VOCAB>esto=this</VOCAB>
+
+GYEREK: th
+
+TANÁR: ¡Muy bien! 😊 Ahora aprendemos <FL:en>think</FL>, que significa «pensar». En «<FL:en>I think</FL>» significa «pienso». <FL:en>Think</FL> empieza con las letras <FL:en>th</FL>, como las palabras que acabamos de practicar. ¿Con qué letras empieza <FL:en>think</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["th","sh","ch"]}</FELADAT>
+<VOCAB>pensar=think</VOCAB>
+
+GYEREK: th
+
+TANÁR: ¡Muy bien! 😊 Ahora aprendemos <FL:en>ship</FL>, que significa «barco». Empieza con <FL:en>sh</FL>: «<FL:en>ship</FL>» (barco). ¿Cuál empieza con <FL:en>sh</FL>: <FL:en>ship</FL> o <FL:en>three</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["ship","three"]}</FELADAT>
+<VOCAB>barco=ship</VOCAB>
+
+GYEREK: ship
+
+TANÁR: ¡Muy bien, Lucía! 😊 Ahora aprendemos <FL:en>chair</FL>, que significa «silla» y empieza con las letras <FL:en>ch</FL>. «<FL:en>The chair is red</FL>» significa «La silla es roja». <FL:en>Chair</FL> empieza con <FL:en>ch</FL>; así distinguimos ese sonido de <FL:en>sh</FL>, como en <FL:en>ship</FL>.
+
+<VOCAB>silla=chair</VOCAB>
+
+
+======================================================================
+Educación Física · 1. osztály · Martina (6 éves)
+Témakör: Vida activa y saludable
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Martina! Soy Elvira, y hoy aprenderemos hábitos sencillos para cuidar nuestro cuerpo y sentirnos bien. 😊
+
+Mover el cuerpo, por ejemplo, caminando, bailando o jugando, ayuda a que el cuerpo esté fuerte y nos da energía.
+
+También necesitamos comer alimentos variados y beber agua. Por ejemplo, después de jugar, puedes beber agua para refrescarte.
+
+Al sentarnos, conviene apoyar bien los pies y mantener la espalda cómoda. Y después de movernos, nos ayuda descansar y asearnos, como lavarnos las manos.
+
+Jugar con otras personas también puede hacernos sentir contentas. En los juegos, tratamos a todos con respeto y dejamos que cada persona participe.
+
+¿Cuál de estas opciones es un buen hábito después de jugar?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Beber agua y descansar un poco","No dejar participar a nadie","Sentarse de cualquier manera"]}</FELADAT>
+
+GYEREK: Beber agua y descansar un poco. ¿Sí?
+
+TANÁR: ¡Sí, Martina! Beber agua y descansar un poco después de jugar son buenos hábitos. 😊
+
+Ahora veremos cómo el movimiento también nos ayuda a sentirnos bien. Bailar o jugar puede alegrarnos, y cada persona tiene cosas que ya sabe hacer y otras que está aprendiendo. Por ejemplo, quizá hoy te salga bien saltar y otro día practiques lanzar una pelota.
+
+En los juegos, todas las niñas y todos los niños tienen derecho a participar. Respetamos a cada persona y buscamos una manera de jugar juntos.
+
+¿Qué opción muestra respeto en un juego?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Invitar a todos a participar","Dejar fuera a alguien porque juega distinto","Reírse de quien está aprendiendo"]}</FELADAT>
+
+GYEREK: Invitar a todos a participar. Eso es bueno y bonito.
+
+TANÁR: ¡Exacto, Martina! Invitar a todos a participar es respetuoso y hace que el juego sea más agradable. 😊
+
+Ahora aprenderemos a cuidar el cuerpo durante y después del movimiento. Si corres o bailas, tu cuerpo trabaja; luego puedes beber agua, descansar y lavarte para estar cómoda. Al sentarte, también intenta apoyar los pies y mantener la espalda cómoda.
+
+Cada persona puede hacer algunas cosas muy bien y estar aprendiendo otras. Por ejemplo, tal vez se te dé bien bailar y estés practicando atrapar una pelota. Lo importante es seguir intentándolo sin compararte con los demás.
+
+¿Cuál es una buena forma de cuidar el cuerpo después de jugar?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Descansar y asearse","Seguir jugando sin parar","No beber cuando tienes sed"]}</FELADAT>
+
+GYEREK: Descansar y asearse. ¡Y beber agua también!
+
+TANÁR: ¡Muy bien! Descansar, asearte y beber agua son maneras estupendas de cuidar tu cuerpo. 😊
+
+También ayuda comer alimentos variados, como fruta, verduras, pan y otros alimentos. Así tu cuerpo recibe distintas cosas que necesita. Y moverte con frecuencia, por ejemplo jugando o bailando, ayuda a que tu cuerpo se mantenga activo.
+
+Ya hemos aprendido varias formas de cuidarnos: movernos, comer variado, beber agua, descansar, asearnos y tratar a los demás con respeto. ¡Estás aprendiendo muy bien!
+
+GYEREK: ¡Gracias, profe Elvira! Yo quiero seguir jugando y cuidando mi cuerpo. ¿Ahora hacemos otro juego?
+
+TANÁR: ¡Claro, Martina! 😊 Jugamos a elegir buenos hábitos.
+
+Cuando estamos sentados, cuidamos la postura: apoyamos los pies y dejamos la espalda cómoda. Y en los juegos, respetamos a los demás y damos a todos la oportunidad de participar.
+
+¿Qué ayuda a cuidar tu cuerpo cuando estás sentada?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Apoyar los pies y tener la espalda cómoda","Sentarse de cualquier manera","Apartar a los demás del juego"]}</FELADAT>
+
+GYEREK: Apoyar los pies y tener la espalda cómoda. ¿Sí?
+
+TANÁR: ¡Sí, Martina, muy bien! Apoyar los pies y tener la espalda cómoda ayuda a cuidar tu cuerpo. 😊
+
+En otro juego, podemos pensar en cómo cuidarnos después de movernos. Por ejemplo, tras bailar un rato, puedes beber agua y descansar un poco.
+
+¿Qué hábito elegirías después de bailar?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Beber agua y descansar","No parar nunca para descansar","No lavarse después de jugar"]}</FELADAT>
+
+
+======================================================================
+Matemáticas · 5. osztály · Hugo (10 éves)
+Témakör: Números enteros, potencias y divisibilidad
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Hugo! Soy Elvira. Hoy vamos a aprender cómo se escriben las potencias y qué relación tienen con los múltiplos y los divisores. 😊
+
+Una potencia sirve para escribir una multiplicación en la que se repite el mismo número. Por ejemplo, 3 × 3 × 3 se escribe 3³. El 3 es la base y el 3 pequeño indica cuántas veces multiplicamos la base. Esto se escribe así de corto: aⁿ significa multiplicar la base a por sí misma n veces.
+
+Cuando multiplicamos un número por sí mismo, obtenemos su cuadrado. Por ejemplo, 5 × 5 = 5² = 25.
+
+Un número es múltiplo de otro cuando aparece al contar de ese número en ese número. Por ejemplo, 20 es múltiplo de 5 porque 5 × 4 = 20. Y 5 es divisor de 20 porque 20 se puede repartir en grupos de 5 sin que sobre nada.
+
+Ahora calcula esta potencia:
+
+<FELADAT>{"tipus":"szam","jel":"*","a":4,"b":4}</FELADAT>
+
+GYEREK: ¿Qué potencia?
+
+TANÁR: La multiplicación era 4 × 4. Como el 4 se repite dos veces, se escribe como la potencia 4² y se lee «cuatro al cuadrado». El ejercicio te pide calcular cuánto vale:
+
+<FELADAT>{"tipus":"szam","jel":"*","a":4,"b":4}</FELADAT>
+
+GYEREK: 16
+
+TANÁR: ¡Correcto, 4 × 4 = 16! Y 4² se lee «cuatro al cuadrado». 😊
+
+Ahora veremos unos trucos para saber si un número se puede dividir exactamente por otro, sin hacer la división:
+
+- Es divisible por 2 si termina en 0, 2, 4, 6 u 8. Por ejemplo, 248 es divisible por 2.
+- Es divisible por 5 si termina en 0 o en 5. Por ejemplo, 135 es divisible por 5.
+- Es divisible por 10 si termina en 0. Por ejemplo, 430 es divisible por 10.
+
+¿Cuál de estos números es divisible por 10?
+
+<FELADAT>{"tipus":"valaszt","opciok":["135","248","430"]}</FELADAT>
+
+GYEREK: 430
+
+TANÁR: ¡Exacto, 430 es divisible por 10 porque termina en 0! 😊
+
+También podemos comprobar si un número es divisible por 3: sumamos sus cifras. Si esa suma es múltiplo de 3, el número también lo es. Por ejemplo, en 123 sumamos 1 + 2 + 3 = 6, y 6 es múltiplo de 3; por eso, 123 es divisible por 3.
+
+Un número primo tiene exactamente dos divisores: 1 y él mismo. Por ejemplo, 7 es primo; en cambio, 8 no lo es, porque también se puede dividir exactamente por 2 y por 4.
+
+¿Cuál de estos números es primo?
+
+<FELADAT>{"tipus":"valaszt","opciok":["9","11","15"]}</FELADAT>
+
+GYEREK: 11
+
+TANÁR: ¡Muy bien! 11 es primo: solo se divide exactamente entre 1 y 11. 😊
+
+Ahora aprendemos dos trucos más:
+
+- Para saber si un número es divisible por 9, sumamos sus cifras. Si la suma es múltiplo de 9, el número también lo es. Por ejemplo, 729: 7 + 2 + 9 = 18, y 18 es múltiplo de 9.
+- Para comprobar si un número es divisible por 4, miramos sus dos últimas cifras. Si forman un número divisible por 4, el número completo también lo es. Por ejemplo, 316: sus dos últimas cifras son 16, que es divisible por 4.
+
+¿Cuál de estos números es divisible por 4?
+
+<FELADAT>{"tipus":"valaszt","opciok":["318","324","326"]}</FELADAT>
+
+GYEREK: 324
+
+TANÁR: ¡Correcto! 324 es divisible por 4 porque sus dos últimas cifras forman 24, y 24 se puede dividir exactamente por 4. 😊
+
+Sigamos con la relación entre múltiplos y divisores: si un número divide a otro sin que sobre nada, el primero es divisor del segundo. Por ejemplo, 6 es divisor de 24 porque 6 × 4 = 24. Entonces, 24 es múltiplo de 6.
+
+Un número primo solo tiene dos divisores: 1 y él mismo. El 1 no es primo, porque solo tiene un divisor.
+
+¿Cuál de estos números es divisor de 24?
+
+<FELADAT>{"tipus":"valaszt","opciok":["5","6","7"]}</FELADAT>
+
+
+======================================================================
+Lengua Extranjera – angol · 4. osztály · Pablo (9 éves)
+Témakör: Describing People – Describir personas
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Pablo! Hoy aprenderemos a describir cómo son las personas en inglés. 😊
+
+La palabra <FL:en>tall</FL> significa «alto». Por ejemplo: <FL:en>He is tall</FL>. (Él es alto.) También podemos decir: <FL:en>My brother is tall</FL>. (Mi hermano es alto.) <FL:en>Tall</FL> describe a una persona alta.
+
+¿Quién podría ser <FL:en>tall</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["una persona alta","una persona baja"]}</FELADAT>
+<VOCAB>alto=tall</VOCAB>
+
+GYEREK: Una persona alta. ¿Sí?
+
+TANÁR: ¡Sí, correcto: una persona alta! 😊 Ahora aprenderemos <FL:en>short</FL>, que significa «bajo» o «baja». <FL:en>She is short</FL>. (Ella es baja.) <FL:en>My friend is short</FL>. (Mi amiga es baja.)
+
+<FELADAT>{"tipus":"valaszt","opciok":["He is tall","She is short"]}</FELADAT>
+<VOCAB>bajo=short</VOCAB>
+
+GYEREK: She is short. Creo que sí.
+
+TANÁR: ¡Sí, muy bien! <FL:en>She is short</FL> significa «Ella es baja». 😊 Ahora aprenderemos <FL:en>big</FL>, que significa «grande». <FL:en>He is big</FL>. (Él es grande.) <FL:en>The character is big</FL>. (El personaje es grande.)
+
+¿Qué significa <FL:en>big</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["grande","bajo"]}</FELADAT>
+<VOCAB>grande=big</VOCAB>
+
+GYEREK: Grande. Fácil, ¿no?
+
+TANÁR: ¡Sí, lo estás haciendo muy bien! 😊 Ahora aprenderemos <FL:en>small</FL>, que significa «pequeño» o «pequeña». <FL:en>The dog is small</FL>. (El perro es pequeño.) <FL:en>My cat is small</FL>. (Mi gato es pequeño.)
+
+<FELADAT>{"tipus":"valaszt","opciok":["pequeño","alto"]}</FELADAT>
+<VOCAB>pequeño=small</VOCAB>
+
+GYEREK: Pequeño. Como mi perro, bueno, mi perro es pequeño también.
+
+TANÁR: ¡Qué bien! Si tu perro es pequeño, puedes decir: <FL:en>My dog is small</FL>. (Mi perro es pequeño.) Ahora aprenderemos <FL:en>happy</FL>, que significa «feliz». <FL:en>She is happy</FL>. (Ella está feliz.) <FL:en>He is happy</FL>. (Él está feliz.)
+
+Si alguien sonríe porque está jugando a su juego favorito, ¿cómo está?
+
+<FELADAT>{"tipus":"valaszt","opciok":["feliz","triste"]}</FELADAT>
+<VOCAB>feliz=happy</VOCAB>
+
+GYEREK: Feliz. Mi perro también está happy cuando juega.
+
+TANÁR: ¡Muy bien! Tu perro está <FL:en>happy</FL> cuando juega: ¡está feliz! 😊 Ahora aprenderemos <FL:en>sad</FL>, que significa «triste». <FL:en>He is sad</FL>. (Él está triste.) <FL:en>She is sad</FL>. (Ella está triste.)
+
+<FELADAT>{"tipus":"valaszt","opciok":["He is sad","He is happy"]}</FELADAT>
+<VOCAB>triste=sad</VOCAB>

@@ -1,1908 +1,1409 @@
-TutorIA – lejátszott órák, 2026-09-03 11:12
+TutorIA – lejátszott órák, 2026-10-06 18:00
 
 
 ======================================================================
-Digitális kultúra · 6. osztály · Anna (11 éves)
-Témakör: Szöveg bevitele, javítása, mentése
+Lengua Extranjera – angol · 1. osztály · Lucía (6 éves)
+Témakör: Hello & Goodbye – Saludos y despedidas
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia! Én Noémi vagyok, és ma azt tanuljuk meg, hogyan gépelünk be egy szöveget, hogyan javítjuk ki, és hogyan mentjük el. 😊
+TANÁR: ¡Hola, Anna! Hoy aprenderemos a saludar en inglés. 😊
 
-A szövegbevitel azt jelenti, hogy begépeled a mondatokat a gépbe. Például: „Ma este olvasok egy mesét.”
+La primera expresión es <FL:en>hello</FL>, que significa «hola». Puedes decir: «<FL:en>Hello</FL>» cuando llegas. También puedes saludar con «<FL:en>Hello</FL>» a una persona que ves.  
 
-A kijelölés azt jelenti, hogy egy szót vagy mondatrészt kiválasztasz, hogy utána tudj vele dolgozni. Például kijelölöd a rosszul írt szót, mert azt szeretnéd javítani.
+¿En qué momento usarías este saludo?
 
-A törlés azt jelenti, hogy eltávolítod, ami fölösleges vagy hibás. Például ha véletlenül kétszer írtad le ugyanazt a szót, az egyiket kitörlöd.
+<FELADAT>{"tipus":"valaszt","opciok":["Al llegar para saludar","Al despedirme","Al dar las gracias"]}</FELADAT>
+<VOCAB>hola=hello</VOCAB>
 
-A mentés azt jelenti, hogy a kész szöveget elteszed, hogy később is megmaradjon. Például ha megírtál egy rövid fogalmazást, elmented, és legközelebb is meg tudod nyitni.
+GYEREK: Al llegar para saludar. Hello!
 
-Figyelj arra is, hogy a helyesírás-ellenőrző segíthet a hibák megtalálásában, de neked is érdemes elolvasni a szöveget mentés előtt.
+TANÁR: ¡Muy bien, Anna! 😊 Ahora aprenderemos <FL:en>hi</FL>, otra forma de decir «hola», más informal. Puedes decir «<FL:en>Hi</FL>» a una amiga; también «<FL:en>Hi</FL>» cuando la ves en el recreo. ¿En cuál situación usarías <FL:en>hi</FL>?
 
-Most te jössz: mire jó a mentés? 😊
+<FELADAT>{"tipus":"valaszt","opciok":["Al saludar a una amiga","Al dar las gracias","Al despedirme"]}</FELADAT>
+<VOCAB>hola=hi</VOCAB>
 
-GYEREK: A mentés arra jó, hogy a szöveg megmaradjon, és később is meg tudjam nyitni. Jól mondtam?
+GYEREK: Al saludar a una amiga. Hi!
 
-TANÁR: Nagyon jól mondtad! 😊 Pontosan: a mentés arra jó, hogy a szöveg megmaradjon, és később is meg tudd nyitni.
+TANÁR: ¡Muy bien! Ahora aprenderemos <FL:en>goodbye</FL>, que significa «adiós». Al salir, puedes decir: «<FL:en>Goodbye</FL>» (¡Adiós!). También usamos «<FL:en>goodbye</FL>» para despedirnos. ¿Qué significa <FL:en>goodbye</FL>?
 
-Most nézzünk meg két hasznos műveletet:
-A másolás azt jelenti, hogy egy szót vagy mondatrészt lemásolsz úgy, hogy az eredeti is ott marad. Például ha egy címet kétszer kell leírnod, nem kell újragépelni, hanem másolhatod.
+<FELADAT>{"tipus":"valaszt","opciok":["Hola","Adiós","Gracias"]}</FELADAT>
+<VOCAB>adiós=goodbye</VOCAB>
 
-Az áthelyezés azt jelenti, hogy egy szót vagy mondatrészt másik helyre teszel a szövegben. Például ha egy mondat végét szeretnéd előrébb tenni, áthelyezheted.
+GYEREK: Adiós. Goodbye!
 
-A javításnál gyakran először kijelölöd a hibás részt, aztán törlöd vagy kicseréled. Így lesz a szöveg szebb és pontosabb.
+TANÁR: ¡Muy bien, Anna! 😊 Ahora aprenderemos <FL:en>bye</FL>, que también significa «adiós» y suena más informal. Puedes decir «<FL:en>Bye!</FL>» (¡Adiós!) a una amiga; «<FL:en>Bye!</FL>» sirve para despedirse al salir. ¿Qué significa <FL:en>bye</FL>?
 
-Egy rövid kérdés: melyik művelettel tudsz egy szót úgy elvinni másik helyre, hogy ne csak másolat legyen belőle? 😊
+<FELADAT>{"tipus":"valaszt","opciok":["Adiós","Hola","Por favor"]}</FELADAT>
+<VOCAB>adiós=bye</VOCAB>
 
-GYEREK: Az áthelyezéssel, mert akkor oda kerül és nem marad ott az eredeti. Jól mondtam?
+GYEREK: Adiós. Bye!
 
-TANÁR: Igen, nagyon jól mondtad! 😊 Az áthelyezésnél a szövegrész új helyre kerül, és nem csak egy másolata lesz.
+TANÁR: ¡Muy bien, Anna! 😊 Ahora aprenderemos <FL:en>good morning</FL>, que significa «buenos días»: se dice por la mañana. Puedes saludar a la maestra: «<FL:en>Good morning, teacher!</FL>» (¡Buenos días, profesora!). ¿Cuándo usarías este saludo?
 
-Most jöjjön még két fontos dolog:
-A megnyitás azt jelenti, hogy egy már elmentett szöveget újra előveszel. Például ha tegnap elkezdtél írni egy fogalmazást, ma megnyitod, és folytathatod.
+<FELADAT>{"tipus":"valaszt","opciok":["Por la mañana","Al despedirme","Al dar las gracias"]}</FELADAT>
+<VOCAB>buenos días=good morning</VOCAB>
 
-A javításnál segít a helyesírás-ellenőrző. Ez megmutathatja, ha egy szó hibásan van leírva. Például ha elgépeled, hogy „iskola”, akkor ránézhetsz, és kijavíthatod.
+GYEREK: Por la mañana. Good morning!
 
-Emlékezz rá:
-- kijelölés: kiválasztod a szövegrészt
-- másolás: marad az eredeti is
-- áthelyezés: másik helyre kerül
-- mentés: megmarad a szöveg
-- megnyitás: újra előveszed
+TANÁR: ¡Correcto! 😊 Ahora aprenderemos <FL:en>good afternoon</FL>, que se usa para saludar por la tarde. Puedes decir «<FL:en>Good afternoon!</FL>» (¡Buenas tardes!) al llegar a clase; también «<FL:en>Good afternoon!</FL>» al ver a alguien por la tarde. ¿Qué saludo usarías por la tarde?
 
-Most te jössz: mire jó a megnyitás? 😊
-
-GYEREK: A megnyitás arra jó, hogy a már elmentett szöveget újra elővegyem. Jól mondtam?
-
-TANÁR: Igen, helyesen mondtad! 😊 A megnyitás valóban arra jó, hogy a már elmentett szöveget újra elővedd.
-
-Most összekapcsoljuk a fontos lépéseket:
-Először begépeled a szöveget.
-Ha van benne hiba, kijelölöd a hibás részt.
-Utána törlöd vagy átírod.
-Ha készen van, elmented.
-Később pedig megnyitod, ha tovább szeretnél rajta dolgozni.
-
-Egy kis gyakorló kérdés: melyik művelettel tudod eltávolítani a rossz szót a szövegből? 😊
-
-GYEREK: A törléssel tudom eltávolítani a rossz szót. ezt nem értem?
-
-TANÁR: Jól mondtad az első részét. 😊 A törléssel valóban el tudod távolítani a rossz szót.
-
-Az „ezt nem értem” azt jelenti, hogy valami még bizonytalan neked. Ez teljesen rendben van.
-
-Így képzeld el:
-ha egy szót rosszul írtál le, először kijelölöd,
-utána törlöd,
-és végül beírod helyette a jót.
-
-Például:
-„almma” → kijelölöd → törlöd → „alma”
-
-Ha szeretnéd, most csinálhatunk még egy nagyon rövid gyakorlást. Írok egy hibás mondatot, és te megmondod, mit kell vele tenni. 😊
-
-GYEREK: Jöhet, én készen vagyok. Mit írjak vele?
-
-TANÁR: Szuper, akkor itt egy rövid gyakorlás 😊
-
-Írd ezt a hibás mondatot:
-
-„A cica szereti a tejett.”
-
-A feladatod: találd meg a hibát, és mondd meg, mit csinálnál vele: kijelölnéd, törölnéd, majd helyesen írnád le.
-
-Mit javítanál rajta?
+<FELADAT>{"tipus":"valaszt","opciok":["Good afternoon","Good morning","Goodbye"]}</FELADAT>
+<VOCAB>buenas tardes=good afternoon</VOCAB>
 
 
 ======================================================================
-Földrajz · 7. osztály · Viki (12 éves)
-Témakör: Tájékozódás a térképen – fokhálózat és méretarány
+Educación Física · 3. osztály · Martina (8 éves)
+Témakör: Vida activa y saludable
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia Viki! Ma azt tanuljuk meg, hogyan tájékozódunk a térképen a fokhálózat és a méretarány segítségével. 🙂
+TANÁR: ¡Hola, Viki! Soy Elvira. Hoy aprenderemos cómo cuidar el cuerpo y sentirnos bien mientras nos movemos. 😊
 
-A földrajzi fokhálózat segít pontosan megmondani, hol van egy hely a Földön. Két része van: a szélességi körök és a hosszúsági körök. A szélességi körök kelet–nyugati irányban futnak, a hosszúsági körök pedig észak–déli irányban. Például egy város helyét úgy találjuk meg, hogy megadjuk, melyik szélességi és hosszúsági kör közelében van.
+Moverse un poco cada día, por ejemplo caminar, bailar o jugar a la pelota, ayuda al corazón y a los músculos. También puede mejorar el ánimo: después de jugar, muchas personas se sienten más contentas y tranquilas.
 
-A keresőhálózat egy egyszerűbb térképi segédeszköz. Ez a térképen felosztott mezők rendszere, amivel könnyebb gyorsan megtalálni valamit. Olyan, mint amikor egy játék tábláján négyzetháló segít keresni.
+Los alimentos pueden ser naturales, procesados o ultraprocesados. Una manzana es natural; el pan suele estar procesado; y algunos aperitivos envasados son ultraprocesados. Conviene elegir a menudo alimentos sencillos, como fruta y verduras.
 
-A méretarány azt mutatja meg, hogy a térképen mért távolság mennyi a valóságban. Ha a méretarány kicsi, sokat kisebbít a térkép. Az aránymérték segít kiszámolni a valódi távolságot. Például ha a térképen 1 cm a valóságban 1 km-et jelent, akkor könnyű becsülni a távolságot.
+La postura también importa. Al recoger algo del suelo, es mejor doblar las rodillas y acercar el objeto al cuerpo, en vez de curvar mucho la espalda.
 
-A szintvonalak olyan vonalak a térképen, amelyek azonos magasságú pontokat kötnek össze. Ezekből meg tudjuk nézni, hogy a terep lapos vagy hegyes. Minél közelebb vannak egymáshoz, annál meredekebb a terep.
+Y cada cuerpo es distinto. Respetar nuestro cuerpo y el de los demás ayuda a que todos podamos jugar y participar, aunque no corramos o saltemos igual.
 
-<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
-  <rect x="70" y="30" width="170" height="120" fill="none" stroke="#222" stroke-width="3"/>
-  <line x1="115" y1="30" x2="115" y2="150" stroke="#222" stroke-width="3"/>
-  <line x1="160" y1="30" x2="160" y2="150" stroke="#222" stroke-width="3"/>
-  <line x1="205" y1="30" x2="205" y2="150" stroke="#222" stroke-width="3"/>
-  <line x1="70" y1="70" x2="240" y2="70" stroke="#222" stroke-width="3"/>
-  <line x1="70" y1="110" x2="240" y2="110" stroke="#222" stroke-width="3"/>
-  <text x="50" y="74" font-size="16" fill="#222" text-anchor="end">szélességi kör</text>
-  <text x="160" y="24" font-size="16" fill="#222" text-anchor="middle">fokhálózat</text>
-  <text x="160" y="185" font-size="16" fill="#222" text-anchor="middle">1 cm = 1 km</text>
-  <line x1="70" y1="170" x2="170" y2="170" stroke="#222" stroke-width="3"/>
-  <line x1="70" y1="162" x2="70" y2="178" stroke="#222" stroke-width="3"/>
-  <line x1="170" y1="162" x2="170" y2="178" stroke="#222" stroke-width="3"/>
-  <text x="120" y="158" font-size="16" fill="#222" text-anchor="middle">méretarány</text>
-  <path d="M245 140 C255 120, 270 115, 280 90 C288 70, 295 62, 305 45" fill="none" stroke="#222" stroke-width="3"/>
-  <text x="255" y="30" font-size="16" fill="#222" text-anchor="middle">szintvonal</text>
-</svg></ABRA>
+¿Cuál es una actividad que ayuda a mover el cuerpo y puede mejorar el ánimo?
 
-Most te jössz: mire való a méretarány a térképen?
+<FELADAT>{"tipus":"valaszt","opciok":["Bailar","Ver la televisión sin moverse","Quedarse sentado todo el día"]}</FELADAT>
 
-GYEREK: A méretarány azt mutatja, hogy a térképen látszó távolság a valóságban mennyi. Tehát vele ki tudjuk számolni, milyen messze vannak egymástól a helyek.
+GYEREK: ¡Bailar! Y también caminar un poco.
 
-TANÁR: Nagyon ügyes, ez teljesen jó volt! 🙂 A lényegét jól mondtad ki.
+TANÁR: ¡Muy bien, <FL:hu>Viki</FL>! Bailar y caminar son buenas maneras de moverse. 😊
 
-A méretarányt gyakran így írjuk: 1:100 000. Ez azt jelenti, hogy a térképen 1 egység a valóságban 100 000 ugyanilyen egység. Ha például centiméterben számolunk, akkor a térképen 1 cm a valóságban 100 000 cm. Ezt azért szeretjük, mert így a térképen mért távolságból ki tudjuk számolni a valódi távolságot.
+Ahora veremos cómo disfrutar de la actividad física con los demás. En un juego, competir puede ser divertido, pero ganar no es lo más importante. Por ejemplo, si alguien corre más despacio, podemos animarle y seguir jugando juntos.
 
-Az aránymérték ennek a kiszámításához segít. Olyan, mint egy átváltás: megmutatja, mennyi lesz a valós távolság a térképi távolságból. Például ha a térképen két város között 3 cm van, és a méretarány 1:100 000, akkor a valódi távolság ennél jóval nagyobb lesz.
+Cada persona tiene cosas que se le dan bien y otras que está aprendiendo. Quizá a alguien se le dé bien lanzar una pelota y otra persona prefiera bailar. Respetar esas diferencias ayuda a que todos participen y se sientan a gusto.
 
-A szintvonalaknál is van egy fontos szabály: ha a vonalak sűrűn vannak egymás mellett, akkor a hegyoldal meredek. Ha távolabb vannak egymástól, akkor lankásabb a terep.
+En el tiempo libre, jugar al aire libre o dar un paseo son opciones activas. Podemos alternarlas con momentos tranquilos, como leer o dibujar.
 
-Melyik mutatja a meredekebb hegyoldalt: a sűrűn futó szintvonalak vagy a ritkán futó szintvonalak?
+En un juego de equipo, ¿qué ayuda a que todos disfruten?
 
-GYEREK: A sűrűn futó szintvonalak mutatják a meredekebb hegyoldalt. Az olyan, mint amikor majdnem egymásra vannak rajzolva, nem?
+<FELADAT>{"tipus":"valaszt","opciok":["Animar y dejar que todos participen","Burlarse de quien va más despacio","Pensar solo en ganar"]}</FELADAT>
 
-TANÁR: Igen, nagyon jó a hasonlatod! 🙂 A sűrűn futó szintvonalak tényleg azt jelentik, hogy a terep hirtelen emelkedik, tehát meredek.
+GYEREK: Animar y dejar que todos participen. ¿Vale?
 
-Úgy is mondhatjuk, hogy minél közelebb vannak egymáshoz a szintvonalak, annál „sűrűbb” a domboldal képe a térképen. Ha messzebb vannak egymástól, akkor a felszín inkább enyhén emelkedik.
+TANÁR: ¡Sí, Viki, muy bien! Animar y dejar participar hace que el juego sea más agradable para todos. 😊
 
-Most egy másik fontos dolgot nézzünk meg: a fokhálózatban a helyeket nem csak „rámutatással”, hanem pontos jelöléssel keressük meg. Ez azért fontos, mert így ugyanazt a pontot mindenki egyformán tudja megtalálni.
+Ahora aprenderemos a conocer nuestras posibilidades. Cada persona tiene habilidades distintas y puede mejorar poco a poco. Por ejemplo, si hoy te cuesta mantener el equilibrio, puedes practicar con calma y elegir una forma de hacerlo que te resulte cómoda. No hace falta compararse con los demás.
 
-Melyik mutatja a pontosabb helymeghatározást: amikor csak rámutatunk a térképre, vagy amikor a fokhálózat alapján keresünk?
+También conviene escuchar al cuerpo: si durante una actividad te encuentras mal o algo te duele, paras y se lo cuentas a un adulto. Cuidarse también es saber cuándo descansar.
 
-GYEREK: A fokhálózat alapján keresünk, az pontosabb. Rámutatni olyan... hát az csak kb. odavaló, nem?
+¿Qué harías si una actividad te hace sentir mal?
 
-TANÁR: Igen, pont így van! Szépen megfogalmaztad. 🙂
+<FELADAT>{"tipus":"valaszt","opciok":["Parar y contárselo a un adulto","Seguir aunque me encuentre mal","Reírme de quien me avisa"]}</FELADAT>
 
-A rámutatás csak hozzávetőleges. A fokhálózat viszont pontosabb, mert a helyet a szélességi és hosszúsági körök alapján lehet megadni. Ez olyan, mintha egy címben nem csak azt mondanánk, hogy „ott valahol”, hanem pontosabban megmutatnánk, hol van.
+GYEREK: Parar y contárselo a un adulto. Y descanso un poco.
 
-A keresőhálózat is azért hasznos, mert gyors keresésnél segít eligazodni a térképen. Nem mindig kell rögtön a legpontosabb földrajzi fokhálózat, néha elég egy egyszerűbb négyzethálós rendszer is.
+TANÁR: ¡Muy bien, <FL:hu>Viki</FL>! Parar, descansar un poco y avisar a un adulto es una forma de cuidar tu cuerpo. 😊
 
-A méretarány és a fokhálózat együtt nagyon sokat segít. Az egyik megmutatja, hol van valami, a másik pedig azt, milyen messze van. Ezért a térképen nemcsak nézünk, hanem számolunk is. 🙂
+Ahora vamos a fijarnos en los alimentos. Los naturales, como una pera, se parecen mucho a como los encontramos en la naturaleza. Los procesados, como el pan, se preparan o se transforman. Los ultraprocesados, como algunas golosinas envasadas, suelen tener muchos ingredientes y estar muy transformados. Podemos disfrutar de distintos alimentos, pero elegir a menudo opciones sencillas, como fruta, es una buena costumbre.
 
-Most jöjjön egy kis gyakorlás: ha két pont között a térképen 2 cm van, és a méretarány 1:100 000, akkor a valóságban ez nagyjából mekkora távolság?
+¿Cuál de estos alimentos es natural?
 
-GYEREK: Az 2 km. Vagyis a valóságban már nem is olyan pici, ugye?
+<FELADAT>{"tipus":"valaszt","opciok":["Una pera","Unas golosinas envasadas","Un refresco"]}</FELADAT>
 
-TANÁR: Ügyes, ez helyes! 🙂 A 2 cm a térképen valóban 2 km a valóságban.
+GYEREK: Una pera. Yo quiero una manzana también.
 
-Igen, jól érzed: ami a térképen pici, az a valóságban már lehet egész nagy távolság. Ezért fontos a méretarány. Segít „átfordítani” a térképi távolságot valós távolsággá.
+TANÁR: ¡Correcto, Viki! Una pera es un alimento natural. Y una manzana también puede ser una buena opción. 😊
 
-Eddig három nagyon fontos dolgot láttunk:
-- a fokhálózat pontos helyet ad,
-- a keresőhálózat gyors keresésre jó,
-- a méretarány megmutatja a valódi távolságot.
+Ahora veremos cómo cuidar la postura. Al agacharte para recoger una pelota, dobla las rodillas y procura no encorvar mucho la espalda. Así colocas el cuerpo de una forma más cómoda.
 
-Most egy könnyű kérdés: ha a szintvonalak távol vannak egymástól, akkor a terep inkább meredek vagy lankás?
+Al recoger algo del suelo, ¿qué postura ayuda a cuidar la espalda?
 
-GYEREK: Lankás. Az már olyan kis enyhe emelkedés, nem meredek.
+<FELADAT>{"tipus":"valaszt","opciok":["Doblar las rodillas","Encorvar mucho la espalda","Estirar las piernas y tirar de la espalda"]}</FELADAT>
 
-TANÁR: Nagyon jó! Pontosan. 🙂 Ha a szintvonalak távol vannak egymástól, a terep inkább lankás, tehát enyhén emelkedik.
+GYEREK: Doblar las rodillas. Es más fácil, creo.
 
-Akkor most szépen összefoglalom a lényeget:
-- a fokhálózat a pontos helymeghatározásra való,
-- a keresőhálózat a gyors keresésre való,
-- a méretarány a távolság átszámításában segít,
-- a szintvonalak pedig a felszín domborzatát mutatják.
+TANÁR: ¡Exacto, Viki! Doblar las rodillas puede hacer que te resulte más cómodo recoger algo del suelo. 😊
 
-Nagyon ügyesen haladsz! Ha szeretnéd, adhatok egy rövid gyakorló feladatot is ebből.
+Ahora recordaremos algo importante: los cuerpos son diferentes y todos merecen respeto. Algunas personas corren más rápido, otras tienen más equilibrio o disfrutan de otros juegos. Podemos elegir actividades distintas y participar cada uno a su manera. Lo importante no es tener el mismo cuerpo ni hacer todo igual, sino tratarse bien y disfrutar juntos.
+
+En un juego, una compañera no puede saltar tan alto como los demás. ¿Qué actitud ayuda a que se sienta incluida?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Invitarla a jugar y respetar su manera de participar","Decirle que no puede jugar","Compararla con quien salta más"]}</FELADAT>
 
 
 ======================================================================
-Digitális kultúra · 5. osztály · Máté (10 éves)
-Témakör: Mi az algoritmus? Lépések és sorrend
+Educación Artística · 2. osztály · Hugo (7 éves)
+Témakör: Recepción y análisis
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia, Máté! 😊 Ma azt tanuljuk meg, mi az <FL:la>algoritmus</FL>, és miért fontos a lépések helyes sorrendje.
+TANÁR: ¡Hola, Máté! Soy Elvira. Hoy aprenderemos a mirar y escuchar obras de arte con atención. 😊
 
-Az <FL:la>algoritmus</FL> egy pontosan megadott lépéssor.
-Olyan, mint egy útmutató: ha minden lépést jó sorrendben csinálsz, a feladat megoldható.
+- Una obra de arte puede ser un cuadro, una canción o una representación. Por ejemplo, podemos observar los colores de un cuadro o escuchar los sonidos de una canción.
+- Recibir una obra con atención significa fijarnos y pensar en lo que vemos o escuchamos. Por ejemplo, al mirar un cuadro, podemos descubrir qué colores destacan.
+- En un concierto o en una función, guardamos silencio mientras actúan. Así escuchamos mejor y respetamos a quienes están actuando.
+- Para hablar del arte usamos palabras especiales. En una canción, la melodía es la parte que podemos tararear; en una obra de teatro, los actores representan una historia.
 
-A <FL:la>folyamat</FL> azt jelenti, hogy valami egymás után történik.
-Például: fogmosásnál előbb vizesítünk, aztán fogkrém jön, végül megmossuk a fogat.
+¿En qué lugar es importante guardar silencio mientras actúan?
 
-A <FL:la>szekvencia</FL> azt jelenti, hogy a lépések sorrendben követik egymást.
-Ha felcseréled őket, a megoldás hibás lehet.
-Például: szendvicset előbb megkenünk, és csak utána tesszük rá az ételt.
+<FELADAT>{"tipus":"valaszt","opciok":["En un concierto","En el patio durante el recreo","En una carrera"]}</FELADAT>
 
-A <FL:la>bemenet</FL> az, ami bejut a feladatba.
-A <FL:la>kimenet</FL> pedig az, ami az eredmény lesz.
-Például egy számoló feladatnál a bemenet a megadott számok, a kimenet a válasz.
+GYEREK: En un concierto.
 
-Most figyelj erre:
-ha valamit lépésekre bontunk, akkor mindig azt nézzük meg, mi jön először, mi jön utána, és mi a végeredmény.
+TANÁR: ¡Muy bien, Máté! En un concierto guardamos silencio para escuchar y respetar a quienes actúan. 🎵
 
-Melyik lenne helyes sorrend fogmosásnál: előbb fogkrém, aztán víz, vagy előbb víz, aztán fogkrém? 😊
+Ahora aprenderemos a descubrir detalles en distintas obras:
 
-GYEREK: Előbb víz, aztán fogkrém. Mert úgy szokás, nem?
+- Dos artistas pueden pintar el mismo tema de maneras diferentes. Por ejemplo, uno puede pintar un árbol con muchos colores y otro con solo unos pocos.
+- Las obras pueden venir de distintos lugares y épocas. También hay artistas mujeres y hombres, y podemos conocer sus obras.
+- Una buena forma de observar es fijarse en un detalle y después contar qué nos llama la atención. Por ejemplo: «Me gusta ese árbol porque tiene hojas de muchos colores».
 
-TANÁR: Ügyes vagy, Máté! 😊 Jól választottad meg a sorrendet.
+¿Qué detalle podrías observar en un cuadro de un árbol?
 
-Azért fontos a sorrend, mert az egyik lépés előkészíti a következőt.
-Ha összekeverjük a lépéseket, az eredmény rossz is lehet.
+<FELADAT>{"tipus":"valaszt","opciok":["Los colores de las hojas","El volumen de la música","El sabor de la comida"]}</FELADAT>
 
-Az <FL:la>algoritmus</FL> leírása azt jelenti, hogy a feladat lépéseit rendben leírjuk.
-Például: „először készítsd elő a hozzávalókat, aztán keverd össze, végül tedd a tálba”.
+GYEREK: Los colores de las hojas.
 
-A problémamegoldó tevékenység azt jelenti, hogy gondolkodunk a megoldáson, és szép sorban haladunk.
-Nem összevissza csináljuk, hanem terv szerint.
+TANÁR: ¡Exacto! Fijarse en los colores de las hojas es observar un detalle. 🌳
 
-A bemenet az, amit megkapunk.
-A kimenet az, ami a végén elkészül.
-Például egy rajzos feladatnál a bemenet lehet az utasítás, a kimenet pedig a kész rajz.
+Ahora veremos dos formas de disfrutar el arte:
 
-Most egy másik helyzet: ha palacsintát készítünk, melyik jön előbb: az összekeverés vagy a sütés? 😊
+- Una obra audiovisual combina imágenes y sonidos. Por ejemplo, una película tiene imágenes que vemos y voces o música que escuchamos.
+- Hay recursos digitales, como una tableta, que permiten ver imágenes artísticas o escuchar música. Los usamos con cuidado y siguiendo las indicaciones de una persona adulta.
 
-GYEREK: Előbb az összekeverés. Aztán sütés, kész.
+¿Cuál de estas opciones combina imágenes y sonidos?
 
-TANÁR: Nagyon jó! 😊 Előbb az összekeverés, aztán a sütés. Pontosan így működik a jó sorrend.
+<FELADAT>{"tipus":"valaszt","opciok":["Una película","Un dibujo en papel","Una escultura"]}</FELADAT>
 
-Most nézzünk meg még két fontos dolgot.
+GYEREK: Una película.
 
-A <FL:la>bemenet</FL> az, amit megadunk egy feladatnak.
-Például egy rajzolós programban a bemenet lehet az utasítás, hogy „rajzolj egy négyzetet”.
+TANÁR: ¡Muy bien! Una película combina imágenes y sonidos. 🎬
 
-A <FL:la>kimenet</FL> az eredmény.
-Például a program végén megjelenő négyzet a kimenet.
+Ya conocemos varias formas de arte. Para distinguirlas, fíjate en esto:
 
-Az <FL:la>algoritmus</FL> <FL:la>leírása</FL> azt jelenti, hogy a lépéseket érthetően leírjuk.
-Ez lehet szavakkal vagy egyszerű rajzzal is.
+- Una escultura es una obra con forma que podemos observar desde distintos lados. Por ejemplo, una figura hecha de piedra.
+- En una representación, unas personas actúan para contar algo. Por ejemplo, en una función de teatro, los actores representan una historia.
+- Una tableta o un ordenador pueden servir para ver obras y escuchar música. Al usarlos, seguimos las indicaciones de una persona adulta.
 
-Például:
-először öntsd a vizet a bögrébe,
-utána tedd bele a teát,
-végül keverd meg.
+Ya hemos aprendido a observar con atención, respetar el silencio y reconocer distintas formas de arte. ¡Ahora viene la prueba final de este tema! Tú puedes hacerlo. 😊
 
-Ezt már algoritmusként tudjuk elmondani, mert sorrendben halad.
+<TOPIC_COMPLETE>
 
-Mi lehet a kimenet, ha egy program bemenetként egy rajz utasítását kapja? 😊
+GYEREK: Ez uncsi.
 
-GYEREK: A kész rajz. Ez uncsi.
+TANÁR: Entiendo, <FL:hu>Máté</FL>; a veces aprender puede hacerse un poco aburrido. Vamos a convertir la prueba en un reto de detective: escucha o mira con atención y busca una pista, como un sonido o un color. 🎨
 
-TANÁR: Jól van, a kész rajz. 👏 Ez teljesen helyes.
+En una película, ¿qué dos cosas podemos percibir?
 
-Rendben, legyen játékosabb!  
-Képzeld el, hogy te vagy a <FL:la>algoritmus</FL>.
+<FELADAT>{"tipus":"valaszt","opciok":["Imágenes y sonidos","Sabores y olores","Solo movimientos"]}</FELADAT>
 
-Ha azt akarjuk, hogy valaki elmosogasson, a jó sorrend fontos.
-Nem mindegy, mi jön előbb.
+GYEREK: Imágenes y sonidos.
 
-Például:
-először összegyűjti az edényeket,
-utána benedvesíti őket,
-végül elmosogatja.
+TANÁR: ¡Correcto! Una película nos muestra imágenes y nos deja escuchar sonidos. 🎬
 
-Ha a lépések összekeverednek, nehezebb lesz a feladat.
+En la prueba, recuerda también que guardar silencio durante una actuación ayuda a escuchar y muestra respeto.
 
-Most te jössz:  
-mi lenne az első lépés, ha meg akarsz teríteni az asztalra? 😊
+¿En cuál de estos lugares conviene guardar silencio mientras actúan?
 
-GYEREK: Odarakom a tányérokat. Aztán a többit.
-
-TANÁR: Ügyes gondolat! 😊 A tányérok tényleg fontosak.
-
-Csak figyelj arra, hogy az <FL:la>algoritmus</FL>-ban a lépések legyenek minél pontosabbak.
-Az, hogy „a többit”, még kicsit túl általános.
-Jobb, ha megnevezed, mi jön még: például pohár, villa, kés, szalvéta.
-
-Így már szép, egyértelmű sorrend lesz:
-először a tányérok,
-utána a poharak,
-végül az evőeszközök.
-
-Most próbáld meg egy mondatban megmondani a teljes sorrendet az asztalterítésnél. 😊
-
-GYEREK: Először a tányérok, aztán a poharak, végül a villa meg a kés. Ez így jó?
-
-TANÁR: Igen, ez már nagyon jó! 😊 Szépen, sorrendben mondtad el.
-
-Még pontosabb lenne, ha a szalvétát is külön megemlítenéd, mert az is az asztalterítés része lehet.
-Így a lépések könnyen követhetők, és ez már igazi <FL:la>algoritmus</FL>.
-
-Most egy rövid ellenőrző kérdés:
-mi az, ami az eredményt jelenti, vagyis a végén elkészül? 😊
+<FELADAT>{"tipus":"valaszt","opciok":["En un concierto","En el recreo","En un partido de fútbol"]}</FELADAT>
 
 
 ======================================================================
-Vizuális kultúra · 5. osztály · Bence (10 éves)
-Témakör: Vizuális művészeti jelenségek – Alkotások, stílusok
+Conocimiento del Medio · 2. osztály · Pablo (7 éves)
+Témakör: Investigo y explico
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia, Bence! Ma azt tanuljuk meg, hogyan ismerhetünk fel különböző műalkotásokat, stílusokat és művészettörténeti korokat. 🎨
+TANÁR: ¡Hola, Bence! Soy Elvira. Hoy aprenderemos a investigar algo sencillo y a contar lo que descubrimos. 😊
 
-Az objektív azt jelenti, hogy amit tényleg látunk a képen, azt mondjuk el. Például: „A képen egy piros ház látható.”
+Investigar es buscar una respuesta observando y probando. Por ejemplo, podemos preguntarnos: «¿Qué necesita una semilla para empezar a crecer?».
 
-A szubjektív azt jelenti, hogy a saját érzésünket, véleményünket mondjuk el. Például: „Nekem vidámnak tűnik ez a kép.”
+Antes de probar, decimos lo que creemos que pasará. Esa idea se llama hipótesis. Por ejemplo: «Creo que la semilla crecerá si recibe agua».
 
-A stílus az a sajátos mód, ahogyan egy művész vagy egy korszak alkot. Például egy régi és egy mai kép másképp használhatja a színeket és a formákat.
+Luego hacemos una prueba sencilla. Podemos poner una semilla en algodón húmedo y observarla cada día. Después anotamos lo que vemos, como si aparece una raíz o un tallo.
 
-A művészettörténeti korok segítenek abban, hogy lássuk, melyik alkotás készült régebben, és melyik modernebb vagy kortárs. Például egy régi templom és egy mai installáció teljesen más korból való.
+Al final contamos qué descubrimos. Esa explicación se llama conclusión. Por ejemplo: «La semilla empezó a crecer y le apareció una raíz».
 
-Most figyelj egy kicsit: szerinted az objektív vagy a szubjektív mondja el azt, amit valóban látunk a képen?
+¿Qué pregunta nos ayuda a investigar qué necesitan las semillas?
 
-GYEREK: Az objektív, ugye? Vagyis amit tényleg látunk.
+<FELADAT>{"tipus":"valaszt","opciok":["¿Qué necesita una semilla para crecer?","¿Cuántos juguetes tengo?","¿De qué color es mi mochila?"]}</FELADAT>
 
-TANÁR: Igen, ügyes vagy! 🙂 Az <FL:la>objectív</FL> azt mondja el, amit tényleg látunk. A <FL:la>szubjektív</FL> pedig azt, amit érzünk róla.
+GYEREK: ¿Que necesita una semilla para crecer? Creo que sí.
 
-Figyeld meg ezt a különbséget:
-- <FL:la>objectív</FL>: „A képen három ember áll.”
-- <FL:la>szubjektív</FL>: „Szerintem a kép nyugodt.”
+TANÁR: ¡Muy bien, Bence! Esa es una buena pregunta para investigar. 🌱
 
-Most jöjjön még két fontos fogalom.
+Ahora aprendemos a hacer una prueba justa: cambiamos una sola cosa y dejamos las demás iguales. Por ejemplo, ponemos dos semillas en algodón igual: a una le damos agua y a la otra no. Así podemos observar si el agua influye en su crecimiento.
 
-A <FL:la>klasszikus</FL> művészet olyan régebbi, rendezett, szabályos műveket jelent, amelyek gyakran nagyon átgondoltak. Például egy régi szobor vagy egy díszes templom lehet klasszikus hatású.
+Para guardar lo que vemos, hacemos un registro. Puede ser una tabla con los días y un dibujo o una nota, como «apareció una raíz». Luego comparamos los registros y contamos qué pasó.
 
-A <FL:la>modern</FL> művészet már merészebb, új formákat és ötleteket használ. Például egy különös színű, szokatlan alakú festmény lehet modern.
+En una investigación, seguimos este orden: pregunta, idea de lo que pasará, prueba, registro y explicación final.
 
-A <FL:la>kortárs</FL> művészet a jelenkor művészete. Ez lehet festmény, szobor vagy akár olyan alkotás is, ami meglepő anyagokból készül. Például egy mai kiállításon láthatsz <FL:fr>installáció</FL>-t is, ami egy térben elhelyezett műalkotás.
+En una prueba con dos semillas, ¿qué conviene dejar igual en las dos? <FELADAT>{"tipus":"valaszt","opciok":["El algodón y el tipo de semilla","El agua, si queremos comparar el efecto del agua","Todo debe ser distinto"]}</FELADAT>
 
-Most te jössz: melyik mondat <FL:la>objectív</FL>, és melyik <FL:la>szubjektív</FL>:  
-„A képen egy kék hajó látható.” vagy „Ez a kép nekem szomorúnak tűnik.”
+GYEREK: El algodón y el tipo de semilla. ¿Sí?
 
-GYEREK: A kék hajós az objektív, a szomorúnak tűnik meg szubjektív. Jól mondtam?
+TANÁR: ¡Sí, exacto! Dejamos iguales el algodón y el tipo de semilla, y cambiamos solo el agua. Así podemos comparar mejor. 🌱
 
-TANÁR: Igen, nagyon jól mondtad! 👏
+Al observar, anotamos lo que vemos cada día. Por ejemplo: «Día 1: no veo cambios. Día 4: apareció una raíz».
 
-Az első mondat objektív, mert azt írja le, amit látunk: „A képen egy kék hajó látható.”
-A második szubjektív, mert érzést mond: „Ez a kép nekem szomorúnak tűnik.”
+Después comparamos las notas y explicamos qué muestran. Esa explicación final es la conclusión. La conclusión se basa en lo que observamos, no solo en lo que imaginábamos antes.
 
-Most nézzünk egy másik fontos dolgot: a művészettörténeti korokat. Ezek segítenek abban, hogy egy alkotást időben el tudjunk helyezni.
+Si una semilla con agua crece y otra sin agua no cambia, ¿cuál sería una conclusión razonable?
 
-Például:
-- az ókor művészete régi, szigorúbb formákat használhat,
-- a középkor alkotásai gyakran vallásos témájúak,
-- a modern művészet sokszor új, meglepő megoldásokat keres,
-- a kortárs művészet pedig a jelenkor alkotása.
+<FELADAT>{"tipus":"valaszt","opciok":["En esta prueba, la semilla con agua empezó a crecer","Todas las semillas crecen igual, aunque no las observemos","La semilla sin agua recibió más agua"]}</FELADAT>
 
-Egy művet nem csak az alapján ismerünk fel, hogy mit ábrázol, hanem azt is megnézzük, hogyan készült: milyen színekkel, formákkal és hangulattal.
+GYEREK: En esta prueba, la semilla con agua empezó a crecer. Y mi perro también bebe agua.
 
-Most egy kérdés: szerinted egy mai kiállításon látott mű inkább modern vagy kortárs?
+TANÁR: ¡Muy bien, Bence! Esa conclusión encaja con lo que observamos. Y sí, tu perro también bebe agua; hoy hemos investigado cómo el agua puede ayudar a una semilla a crecer. 🌱
 
-GYEREK: Szerintem kortárs. Vagy modern is lehet? nemtom.
+Ya sabes hacer una pregunta, decir qué crees que pasará, probarlo, anotar lo que observas y explicar el resultado. ¡Ahora viene la prueba final del tema! Confía en lo que has aprendido. <TOPIC_COMPLETE>
 
-TANÁR: Jól gondolkodsz. 🙂 A mai kiállításon látott mű általában <FL:la>kortárs</FL>, mert a jelenkorban készült.
+GYEREK: ¡Vale! Lo entiendo un poco. Mi perro se llama Luna.
 
-A <FL:la>modern</FL> inkább egy korábbi újító művészetre utal, nem arra, ami most készül.  
-Tehát ha valami mostani alkotás, akkor többnyire <FL:la>kortárs</FL>.
+TANÁR: ¡Luna es un nombre muy bonito! 😊 Para investigar, recuerda este orden: hacemos una pregunta, decimos qué creemos que pasará, probamos, anotamos lo que vemos y contamos qué descubrimos.
 
-Példa:
-- egy régi festmény lehet <FL:la>klasszikus</FL>,
-- egy új, szokatlan festmény lehet <FL:la>modern</FL>,
-- egy ma készült mű pedig <FL:la>kortárs</FL>.
+En la prueba final, elige la conclusión que se apoya en lo observado:
 
-Nagyon jó, hogy gondolkodtál rajta. Most már szépen külön tudod választani ezeket. 🌟
+<FELADAT>{"tipus":"valaszt","opciok":["La semilla con agua empezó a crecer; eso fue lo que vimos","Yo sabía desde el principio que crecería","Todas las semillas crecen igual"]}</FELADAT>
 
-Mondok egy rövid feladatot: ez a mondat inkább objektív vagy szubjektív?  
-„A képen sok vörös és sárga szín látható.”
+GYEREK: La semilla con agua empezó a crecer; eso fue lo que vimos. ¿Sí?
 
-GYEREK: Objektív. Ilyet látunk rajta.
-
-TANÁR: Szuper, ez helyes! 👏 Pontosan azért objektív, mert azt mondja el, ami tényleg látszik a képen.
-
-Most egy fontos lépés jön: amikor műalkotásokat nézünk, nemcsak azt figyeljük, hogy mi van rajtuk, hanem azt is, hogy miben különböznek egymástól.
-
-Nézzünk három dolgot, amire érdemes figyelni:
-- a téma: miről szól a kép
-- a forma: milyen alakok, vonalak, színek vannak rajta
-- a hangulat: milyen érzést kelt
-
-Például egy régi templom és egy mai <FL:fr>installáció</FL> között nagy különbség lehet. A templom gyakran szabályosabb és díszesebb, az <FL:fr>installáció</FL> pedig lehet nagyon különös, akár meglepő is.
-
-Az is fontos, hogy egy alkotás részleteiből néha ki tudjuk találni az egész látványt. Ha csak egy darabját látjuk, megpróbálhatjuk elképzelni a többit. Ez egy igazi művészeti nyomozás 😊
-
-Példa:
-- ha egy képen csak egy díszes ruharészletet látunk, elképzelhetjük, hogy egy ünnepi jelenetből való
-- ha csak egy épület tetejét látjuk, sejthetjük, hogy talán templom vagy palota
-
-Most te jössz: ha egy képen sok sötét szín és erős, komoly hangulat van, az inkább objektív vagy szubjektív megfigyelés?
-
-GYEREK: Szubjektív, szerintem. Mert a hangulatot érezzük, nem?
-
-TANÁR: Jól érzed, részben igazad van. 🙂 A hangulat tényleg inkább szubjektív.
-
-De figyelj: a „sok sötét szín” még objektív, mert azt tényleg látjuk a képen.  
-A „komoly hangulat” viszont szubjektív, mert ez már az érzésünk, véleményünk.
-
-Tehát egy mondatban akár mindkettő is lehet:
-- „Sok sötét szín van a képen.” → objektív
-- „Komoly hangulatot kelt.” → szubjektív
-
-Ez nagyon fontos, mert a művek elemzésénél külön kell választani, mit látunk, és mit érzünk róla. Ez segít abban, hogy pontosabban beszéljünk a képről. 🎨
-
-Most már ügyesen felismered a különbséget.  
-Mondj egy szubjektív mondatot egy képről!
+TANÁR: ¡Sí, correcto! La conclusión se apoya en lo que vimos en la prueba. 🎉 Has aprobado la prueba final y has terminado este tema. ¡Buen trabajo, Bence!
 
 
 ======================================================================
-Ének-zene · 4. osztály · Anna (9 éves)
-Témakör: Zeneművek/Énekes anyag
+Lengua Castellana y Literatura · 3. osztály · Lucía (8 éves)
+Témakör: Exponer y escuchar
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia! Ma az énekes anyaggal fogunk foglalkozni, vagyis népdalokat és ünnepi dalokat tanulunk meg figyelmesen hallgatni és szépen énekelni. 🎶
+TANÁR: ¡Hola, Anna! Soy Elvira. Hoy aprenderemos a preparar una exposición corta y a escuchar con atención. 😊
 
-Először nézzünk meg néhány fontos dolgot:
-A népdal olyan dal, amit sok ember ismert és énekelt régen is. Ezekben gyakran van egyszerű dallam és könnyen megjegyezhető szöveg. Például: A juhásznak vagy a Kis kacsa fürdik.
+- Primero, piensa en el tema y prepara un pequeño guion: unas pocas ideas en orden. Por ejemplo, si hablas de tu mascota, puedes contar cómo es, qué le gusta y cómo la cuidas.
+- Al exponer, habla con voz clara y mira al público. Mantén una postura cómoda y tranquila.
+- Puedes usar un apoyo visual, como un dibujo, para ayudar a que los demás entiendan mejor. El dibujo acompaña tus palabras, pero no las sustituye.
+- Cuando escuchas a un compañero, espera a que termine y piensa en una pregunta amable sobre lo que ha contado.
 
-A <FL:it>tempo giusto</FL> azt jelenti, hogy a dalt egyenletes, szépen tartható tempóban énekeljük. Ez segít abban, hogy ne siessünk és ne lassuljunk el túlzottan. Például egy táncos dalnál fontos, hogy a ritmus biztos maradjon.
+Si alguien expone sobre su mascota, ¿cuál sería una pregunta amable?
 
-A jeles napok dalai olyan énekek, amelyeket ünnepekhez, szokásokhoz kapcsolunk. Ilyen például a <FL:hu>Himnusz</FL>, a <FL:hu>Mennyből az angyal</FL> vagy a <FL:hu>Karácsonyi pásztortánc</FL>. Ezekben az ünnep hangulata is benne van.
+<FELADAT>{"tipus":"valaszt","opciok":["¿Qué es lo que más le gusta hacer?","¡No sabes hablar!","¿Por qué has elegido ese tema?"]}</FELADAT>
 
-A <FL:hu>táncház</FL> olyan közös éneklés és tánc, ahol a dalokat játékosan, vidáman adják elő. Ilyenkor a zene nemcsak hallgatnivaló, hanem mozgásra is hív. Például egy táncnóta közben a testeddel is lehet követni a ritmust. 🙂
+GYEREK: ¿Qué es lo que más le gusta hacer?
 
-Most te jössz: szerinted a <FL:it>tempo giusto</FL> inkább egyenletes éneklést jelent, vagy nagyon gyors, kapkodó éneklést?
+TANÁR: ¡Muy bien, Anna! Esa es una pregunta amable y ayuda a conocer mejor a la mascota. 😊
 
-GYEREK: Szerintem az egyenletes éneklést jelenti, nem a kapkodóst. Jól mondom?
+Ahora vamos a ordenar una exposición para que se entienda bien:
 
-TANÁR: Igen, jól mondod! Ügyes vagy. 😊 A <FL:it>tempo giusto</FL> valóban egyenletes, biztos tempót jelent.
+- Al principio, dices el tema: «Voy a hablar de mi gato».
+- Después, cuentas las ideas principales: cómo es y qué le gusta.
+- Al final, terminas con una frase de cierre: «¡Y por eso me encanta mi gato!».
 
-Most tanuljunk meg három dologra figyelni éneklés közben.
+<FELADAT>{"tipus":"sorrend","elemek":["Cuento cómo es y qué le gusta","Digo de qué tema voy a hablar","Termino con una frase de cierre"]}</FELADAT>
 
-A tiszta intonáció azt jelenti, hogy a hangok pontosan szólnak, nem csúsznak el. Ez nagyon fontos, hogy a dal szépen hangozzon. Például amikor a <FL:hu>Buba éneke</FL> dallamát énekeljük, igyekszünk a hangokat tisztán megszólaltatni.
+GYEREK: Digo de qué tema voy a hablar, cuento cómo es y qué le gusta, termino con una frase de cierre.
 
-A helyes légzés azt segíti, hogy legyen elég levegőd a mondatok végéig. Nem kapkodva veszünk levegőt, hanem nyugodtan, éneklés előtt. Például egy hosszabb sor végén így könnyebb szépen kitartani a hangot.
+TANÁR: ¡Muy bien! Has ordenado la exposición correctamente: tema, ideas y cierre. 🌟
 
-Az artikuláció azt jelenti, hogy a szavakat érthetően ejtjük. Így a dal szövege is szépen hallatszik. Például a <FL:hu>Csordapásztorok</FL> éneklésekor fontos, hogy minden szó tisztán érthető legyen.
+Ahora vamos a cuidar cómo presentamos:
 
-Most te jössz: mire figyelünk, hogy tisztán és szépen tudjunk énekelni?
+- Habla con una voz que llegue a quienes te escuchan, sin gritar.
+- Di las palabras con calma. Así, el público puede seguir tus ideas.
+- Mantén una postura tranquila y mira de vez en cuando a las personas.
 
-GYEREK: A tiszta intonációra, a helyes légzésre és az artikulációra. És akkor szép lesz a dal, ugye?
+Por ejemplo, al hablar de una planta, puedes decir despacio: «Mi planta tiene hojas verdes y necesita agua».
 
-TANÁR: Igen, pontosan! Szuperül összefoglaltad. 😊 Ha figyelsz a tiszta intonációra, a helyes légzésre és az artikulációra, akkor a dal sokkal szebben szól.
+<FELADAT>{"tipus":"valaszt","opciok":["Hablar con calma y con voz clara","Hablar muy deprisa y muy bajito","Gritar para que todos te miren"]}</FELADAT>
 
-Most nézzünk meg még két fontos zenei dolgot.
+GYEREK: Hablar con calma y con voz clara.
 
-A dinamika azt mutatja meg, hogy halkan vagy hangosan éneklünk. Ezzel tudjuk kifejezni a dal hangulatát. Például egy szép, nyugodt dalnál lehet halkabban énekelni, egy vidám résznél pedig erősebben.
+TANÁR: ¡Exacto, Anna! Hablar con calma y con voz clara ayuda a que todos te entiendan. 😊
 
-A karakter a dal hangulatát, „milyenségét” jelenti. Lehet például vidám, játékos, ünnepélyes vagy tréfás. Például a <FL:hu>Mennyből az angyal</FL> ünnepélyes, a <FL:hu>Farsang három napjába</FL> vidámabb hangulatú.
+Ahora veremos cómo usar un apoyo visual y cómo responder al público:
 
-Most figyeld meg: egy ünnepi dal inkább vidám vagy ünnepélyes hangulatú?
+- Un dibujo o una foto puede ayudar a explicar una idea. Elige uno que tenga relación con tu tema. Por ejemplo, para hablar de una planta, puedes mostrar un dibujo de sus partes.
+- Cuando alguien te haga una pregunta, escucha hasta el final y responde con amabilidad. Si no sabes la respuesta, puedes decirlo con sinceridad.
 
-GYEREK: Szerintem inkább ünnepélyes hangulatú. De lehet egy kicsit vidám is, nem?
+Si vas a exponer sobre una planta, ¿qué apoyo visual te ayudaría más?
 
-TANÁR: Igen, nagyon jó a megfigyelésed. 😊 Egy ünnepi dal gyakran ünnepélyes, de lehet benne vidám rész is.
+<FELADAT>{"tipus":"valaszt","opciok":["Un dibujo de una planta","Una foto de una bicicleta","Un dibujo sin relación con el tema"]}</FELADAT>
 
-Most kapcsoljunk ehhez egy új fogalmat: a hangszerkíséretet. Ez azt jelenti, hogy a dalt valamilyen hangszer segíti, például zongora vagy más hangszer. Ettől a dal még szebben, gazdagabban szól. Például a <FL:hu>Himnusz</FL> is énekelhető kísérettel.
+GYEREK: Un dibujo de una planta.
 
-A hangszerkíséretes éneklésnél fontos, hogy együtt maradjunk a zenével. Figyelni kell az elejére, a tempóra és a belépésre is. Például amikor a tanító vagy egy osztálytárs játszik, az énekesek ehhez igazodnak.
+TANÁR: ¡Muy bien! Un dibujo de una planta acompaña muy bien esa exposición. 🌱
 
-A hangterjedelem azt mutatja meg, milyen magas és milyen mély hangokat tudunk énekelni. Az oktávnál tágabb hangterjedelem azt jelenti, hogy még szélesebb hanglépéseket is tudunk megszólaltatni. Ez már ügyesebb éneklést kíván.
+Ahora aprenderemos a escuchar y a dar una opinión útil:
 
-Most te jössz: a hangszerkíséret mit segít az éneklésben?
+- Mientras habla otra persona, espera tu turno y escucha sin interrumpir.
+- Después puedes decir algo que te haya gustado y una idea amable para mejorar. Por ejemplo: «Me ha gustado cómo has explicado las hojas. Podrías hablar un poquito más despacio».
 
-GYEREK: Segít, hogy a dal szebben és gazdagabban szóljon. És hogy könnyebb legyen együtt maradni a zenével, ugye?
+<FELADAT>{"tipus":"valaszt","opciok":["Escuchar y esperar mi turno","Interrumpir para contar mi propia historia","Reírme si alguien se equivoca"]}</FELADAT>
 
-TANÁR: Igen, pontosan! Nagyon jól mondtad. 😊 Segít, hogy a dal szebben és gazdagabban szóljon, és igen, az is könnyebb lesz vele, hogy együtt maradjunk a zenével.
+GYEREK: Escuchar y esperar mi turno.
 
-Most nézzünk meg még egy fontos dolgot: a magyar népszokásokat. Ezek régi, közös szokások, amelyek egy-egy ünnephez vagy alkalomhoz tartoznak. A dalok sokszor ezeket őrzik meg nekünk. Például a karácsonyi dalok az ünnep hangulatát hozzák közel, a tavaszi dalok pedig a természet ébredését.
+TANÁR: ¡Exacto, Anna! Escuchar y esperar tu turno demuestra respeto. 🌟
 
-A jeles napok olyan különleges napok, mint az ünnepek. Ilyenkor sokszor másképp énekelünk, beszélünk vagy ünneplünk, mint a hétköznapokon. Például a <FL:hu>Mennyből az angyal</FL> karácsonykor szokott előkerülni, ezért ez jeles naphoz kötődő dal.
+Ahora prepararemos una exposición breve como una noticia de clase:
 
-A népi kifejezések a dalokban régi, különleges szavak vagy fordulatok. Ezeket néha meg kell fejteni, mert nem mindennap használjuk őket. Például a népdalokban sok ilyen régi szó rejlik.
+- Elige un hecho sencillo y cuenta lo más importante.
+- Usa un guion con unas pocas palabras clave para recordar tus ideas.
+- Al terminar, deja que el público haga una pregunta y escucha la pregunta completa antes de responder.
 
-Most te jössz: szerinted a jeles napok dalai inkább hétköznapi alkalomhoz, vagy különleges ünnephez tartoznak?
+Por ejemplo, si cuentas que la clase ha plantado flores, puedes anotar: «plantamos flores», «patio» y «cuidarlas». Esas palabras te ayudan a recordar sin tener que leer todo.
 
-GYEREK: Szerintem különleges ünnephez tartoznak. Nem a hétköznaphoz, ugye?
+Si vas a contar que la clase plantó flores, ¿qué palabras clave podrías anotar?
 
-TANÁR: Igen, ügyes vagy! 😊 A jeles napok dalai különleges ünnepekhez tartoznak, nem a hétköznapokhoz.
-
-Most figyeljünk a dalok hangulatára is. Egy dal lehet:
-- táncos, amikor lendületes, és szinte hív a mozgásra,
-- tréfás, amikor játékos és mókás,
-- ünnepi, amikor méltóságteljesebb,
-- állatos vagy mesés, amikor valamilyen történetet vagy szereplőt idéz meg.
-
-Például a <FL:hu>Farsang három napjába</FL> inkább játékos, a <FL:hu>Mennyből az angyal</FL> ünnepélyes, a <FL:hu>Kis kacsa fürdik</FL> pedig vidám, állatos dal.
-
-Amikor éneklünk, jó, ha a dal hangulatához illően adjuk elő. Egy ünnepi dalt nem szabad túl kapkodva énekelni, egy vidám dalt pedig bátran, élénken lehet énekelni.
-
-Most te jössz: melyik dal hangzik inkább ünnepélyesnek, a <FL:hu>Mennyből az angyal</FL> vagy a <FL:hu>Kis kacsa fürdik</FL>?
+<FELADAT>{"tipus":"valaszt","opciok":["plantamos flores, patio, cuidarlas","perro, pelota, montaña","desayuno, lápiz, ventana"]}</FELADAT>
 
 
 ======================================================================
-Etika · 8. osztály · Viki (13 éves)
-Témakör: Éntudat – Önismeret
+Matemáticas · 6. osztály · Martina (11 éves)
+Témakör: Números enteros y racionales
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia, Viki! Ma az önismeretről és az identitásról fogunk beszélni. 🙂
+TANÁR: ¡Hola, Viki! Soy Elvira, y hoy vamos a aprender a reconocer los números negativos, a situarlos en una recta numérica y a relacionar fracciones con porcentajes. 😊
 
-Az önismeret azt jelenti, hogy figyeled magad: mit érzel, miben vagy jó, és miben szeretnél fejlődni. Például: „Tudom, hogy gyorsan izgulok, amikor felelek.”
+Un número negativo es menor que cero. Puede servir para indicar una temperatura bajo cero: −3 °C significa tres grados por debajo de cero. El cero no es positivo ni negativo.
 
-Az identitás azt mutatja meg, hogy ki vagy te. Ebbe beletartozik a nevem, a tulajdonságaid, a szerepeid és az is, ami fontos neked. Például: „Én tanuló, barát és testvér is vagyok.”
+En la recta numérica, los números aumentan hacia la derecha y disminuyen hacia la izquierda. Por eso, −4 está a la izquierda de −1 y es menor que −1.
 
-A valóságos és a virtuális identitás nem ugyanaz. A valóságos az, aki te tényleg vagy. A virtuális pedig az, amit az online térben mutatsz magadról. Például lehet, hogy valaki a közösségi oldalon nagyon magabiztosnak látszik, de a valóságban sokszor bizonytalan.
+Una fracción representa partes iguales de una unidad. Por ejemplo, 1/2 significa una de dos partes iguales. También se puede expresar como porcentaje: 1/2 equivale al 50 %, es decir, a 50 de cada 100.
 
-A célok segítenek, hogy előre tudj lépni. Egy jó cél reális és elérhető, és mellé terv is kell. Például: „Jobban akarok tanulni matekból, ezért minden nap átnézem a leckét.”
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><line x1="55" y1="110" x2="265" y2="110" stroke="#2f8fd8" stroke-width="3" stroke-linecap="round"/><path d="M55 110 L66 104 M55 110 L66 116 M265 110 L254 104 M265 110 L254 116" fill="none" stroke="#2f8fd8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><line x1="85" y1="100" x2="85" y2="120" stroke="#2f8fd8" stroke-width="3"/><line x1="145" y1="100" x2="145" y2="120" stroke="#2f8fd8" stroke-width="3"/><line x1="205" y1="100" x2="205" y2="120" stroke="#2f8fd8" stroke-width="3"/><circle cx="85" cy="110" r="6" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><circle cx="145" cy="110" r="6" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><circle cx="205" cy="110" r="6" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/><text x="85" y="145" font-size="16" fill="#555" text-anchor="middle">−4</text><text x="145" y="145" font-size="16" fill="#555" text-anchor="middle">0</text><text x="205" y="145" font-size="16" fill="#555" text-anchor="middle">3</text></svg></ABRA>
 
-Most egy könnyű kérdés: szerinted a valóságos identitás vagy a virtuális identitás az, aki te tényleg vagy? 🙂
+¿Cuál de estos números es el menor?
 
-GYEREK: A valóságos identitás az, aki tényleg vagyok, nem? A virtuális meg csak olyan, amit mutatok.
+<FELADAT>{"tipus":"valaszt","opciok":["−4","0","3"]}</FELADAT>
 
-TANÁR: Igen, nagyon jól mondtad! 😊 A valóságos identitás az, aki tényleg vagy. A virtuális identitás pedig az, amit az online térben megmutatsz magadról.
+GYEREK: −4, porque está más a la izquierda en la recta numérica. ¿Sí, profe?
 
-Most nézzünk meg három fontos dolgot ehhez kapcsolódva.
+TANÁR: ¡Sí, Viki! ¡Muy bien explicado! −4 es menor porque está más a la izquierda en la recta numérica. 😊
 
-Az egyik a személyiségjegy. Ez olyan tulajdonság, ami rád jellemző. Lehet például türelmes, vidám vagy hirtelen természetű. Például: „Én inkább csendes vagyok, de figyelmes.”
+Ahora veremos cómo se usan los porcentajes y las potencias. Un porcentaje indica cuántas partes hay de cada 100. Por ejemplo, el 10 % de 50 es 5, porque 10 de cada 100 es una décima parte.
 
-A másik a társas szerep. Ez azt jelenti, hogy különböző helyzetekben más-más szerepben vagy. Lehetsz otthon testvér, az iskolában tanuló, a barátaid között barát. Például: „Otthon segítő vagyok, az osztályban pedig figyelmes tanuló.”
+Una potencia sirve para escribir una multiplicación repetida de forma breve. Por ejemplo, 3² significa 3 × 3, que da 9. El número pequeño indica cuántas veces se multiplica el número grande por sí mismo.
 
-A harmadik az önkontroll. Ez azt jelenti, hogy figyeled a viselkedésedet, és szükség esetén meg tudod állítani magad. Például ha dühös vagy, nem rögtön kiabálsz, hanem előbb megpróbálsz lenyugodni.
+¿Cuánto es el 25 % de 40?
 
-Ezek mind segítenek abban, hogy jobban megértsd magadat. Aki ismeri magát, az könnyebben dönt, és jobban tud együttműködni másokkal.
+<FELADAT>{"tipus":"szam","muvelet":"25 % de 40"}</FELADAT>
 
-Most te jössz: melyik az a szó, ami azt jelenti, hogy figyeled és szabályozod a viselkedésedet? 🙂
+GYEREK: Es 10, porque la cuarta parte de 40 es 10. ¿Voy bien?
 
-GYEREK: Az önkontroll az, nem? Ez az, amikor nem rögtön robbanok fel.
+TANÁR: ¡Sí, vas muy bien! El 25 % es una cuarta parte, y la cuarta parte de 40 es 10. 😊
 
-TANÁR: Igen, pontosan! Szuper válasz 😊 Az önkontroll az, amikor meg tudod állítani magad, mielőtt meggondolatlanul reagálnál.
+Ahora veremos las fracciones equivalentes: son fracciones distintas que representan la misma cantidad. Por ejemplo, 1/2 y 2/4 son equivalentes, porque ambas representan la mitad.
 
-Most egy másik fontos rész jön: az érzelmek és a viselkedés kapcsolata.
+Los porcentajes también sirven para calcular descuentos. Si algo cuesta 30 euros y tiene un descuento del 20 %, primero calculamos el 20 % de 30, que son 6 euros. Después restamos el descuento: el precio final es 24 euros.
 
-Az érzelmeid hatnak arra, hogyan viselkedsz. Ha nyugodt vagy, könnyebb figyelni és beszélgetni. Ha dühös vagy, könnyebben mondhatsz olyat, amit később megbánsz. Például: „Amikor mérges voltam, inkább kértem egy kis időt.”
+Una tienda rebaja 20 % un juguete que cuesta 50 euros. ¿Cuántos euros descuentan?
 
-Fontos az is, hogy a helyzetnek megfelelően fejezd ki az érzelmeidet. Ez azt jelenti, hogy nem kell mindent elrejteni, de nem is jó mindent azonnal kiborítani. Például örömöt meg lehet osztani, szomorúságról pedig nyugodtan lehet beszélni egy megbízható felnőttel vagy baráttal.
+<FELADAT>{"tipus":"szam","muvelet":"20 % de 50 euros"}</FELADAT>
 
-A célok is részei az önismeretnek. Ha tudod, mit szeretnél elérni, akkor könnyebb lépéseket tervezni. Például: „Szeretnék jobb lenni angolból, ezért minden nap átnézek öt szót.”
+GYEREK: Descuentan 10 euros, porque el 20 % de 50 es 10. ¿Es fácil, no?
 
-Most egy kérdés: szerinted mi segít abban, hogy ne kapkodd el a reakciódat, ha felmérgesedsz? 🙂
+TANÁR: ¡Exacto, Viki! Has calculado bien: el descuento es de 10 euros. 😊
 
-GYEREK: Ha mélyet lélegzem, meg egy kicsit elmegyek onnan. Meg az is, ha számolok tízig, bár néha nem bírom ki 😅
+Ahora veremos cómo sumar un número negativo. Imagina que la temperatura está a 2 grados bajo cero, es decir, a −2 °C. Si baja 3 grados más, hacemos −2 + (−3) y llegamos a −5 °C. Sumar un número negativo significa avanzar hacia valores menores.
 
-TANÁR: Nagyon jó gondolatok! 😊 A mély levegővétel, a helyzetből való rövid kilépés és a számolás mind segíthetnek abban, hogy megnyugodj, mielőtt reagálsz.
+¿A qué temperatura se llega si hacen −3 °C y sube 5 grados?
 
-Ez kapcsolódik az önkontrollhoz, vagyis ahhoz, hogy figyeled magad, és nem az első indulatod szerint cselekszel. Ez nem azt jelenti, hogy mindig könnyű, hanem azt, hogy próbálod szabályozni magad.
+<FELADAT>{"tipus":"szam","jel":"+","a":-3,"b":5}</FELADAT>
 
-Most nézzünk még két fogalmat, ami sokat segít az önismeretben.
+GYEREK: Se llega a 2 °C. Creo que es porque sube más de lo que estaba bajo cero, ¿no?
 
-Az egyik a stressz. A stressz feszültséget jelent. Akkor jelentkezhet, amikor sok a feladat, vagy valami nyomaszt. Például: „Feszült lettem a dolgozat előtt.” A stressz önmagában nem mindig rossz, de fontos, hogy észrevedd, mikor vagy túlterhelt.
+TANÁR: ¡Correcto! Se llega a 2 °C. La temperatura empezó en −3 °C y subió 5 grados: primero llega a 0 °C y todavía sube 2 grados. ¡Lo has explicado muy bien! 😊
 
-A másik a jóllét. Ez azt jelenti, hogy testileg és lelkileg is viszonylag jól vagy. Nem csak az számít, hogy nincs bajod, hanem az is, hogy van-e elég pihenésed, nyugalmad és biztonságérzeted. Például: „Jobban érzem magam, ha eleget alszom és van időm pihenni.”
+Ahora aprenderemos a restar un número negativo. Restar −2 equivale a sumar 2: por ejemplo, 4 − (−2) = 4 + 2 = 6. En una recta numérica, restar un número negativo nos mueve hacia la derecha.
 
-Most te jössz: a stressz inkább nyugalmat vagy feszültséget jelent? 🙂
+<FELADAT>{"tipus":"szam","jel":"-","a":3,"b":-4}</FELADAT>
 
-GYEREK: Feszültséget, az biztos. Néha olyan, mintha a fejem is zúgna tőle.
+GYEREK: Da 7, porque restar un negativo es sumar. ¿Entonces siempre se gira a la derecha?
 
-TANÁR: Igen, nagyon jól érted. 😊 A <FL:en>stressz</FL> feszültséget jelent. Amit mondasz, az is mutatja, hogy a tested is jelezhet, ha sok a nyomás.
+TANÁR: ¡Sí, el resultado es 7, y has recordado bien la regla! Pero no siempre nos movemos hacia la derecha: depende de la operación y del signo.
 
-Fontos, hogy ilyenkor észrevedd a jeleket. Ilyen lehet a fejfájás, a szorongás vagy az, hogy nehezebben figyelsz. Ez segít abban, hogy időben pihenj, kérj segítséget, vagy egy kicsit megállj.
+Al sumar un número positivo, avanzamos hacia la derecha; al sumar uno negativo, hacia la izquierda. Al restar un número positivo, vamos hacia la izquierda. Y al restar uno negativo, como en el ejemplo, vamos hacia la derecha: 3 − (−4) = 7.
 
-Most egy másik, ehhez kapcsolódó fogalom jön: a boldogság és a boldogulás.
+Aquí tienes los cuatro movimientos en la recta numérica:
 
-A boldogság inkább azt jelenti, hogy örömöt, elégedettséget érzel. Például: „Boldog vagyok, amikor jól sikerül egy dolgozatom.”
-
-A boldogulás azt jelenti, hogy az életedet úgy alakítod, hogy előre tudj menni, és meg tudd oldani a feladataidat. Például: „Boldogulok, ha megtanulom beosztani az időmet.”
-
-Látod a különbséget? A boldogság egy érzés, a boldogulás inkább egy sikeres életvezetés. 🙂
-
-Most te jössz: a boldogság inkább érzés, vagy inkább élettani feladat?
-
-GYEREK: Érzés, szerintem. A boldogulás az a másik, az inkább hogy elboldogulok a dolgokkal.
-
-TANÁR: Igen, pontosan! Nagyon ügyes vagy 😊
-
-A boldogság érzés. A boldogulás pedig azt jelenti, hogy meg tudsz birkózni az élet dolgaival, és haladsz előre.
-
-Most nézzünk még egy fontos területet: az egészséges szokások és a káros hatások felismerése.
-
-Az egészséget őrző szokások segítenek, hogy jól érezd magad testileg és lelkileg. Ilyen például a pihenés, a mozgás, a rendszeres étkezés és az, ha mersz segítséget kérni. Például: „Jobban érzem magam, ha van időm kikapcsolódni.”
-
-A káros tényezők olyan dolgok, amelyek ronthatják a közérzetedet vagy a fejlődésedet. Ilyen lehet a túl sok stressz, a kialvatlanság vagy az, ha valaki rossz hatásokat másol le másoktól. Például: „Ha túl sokáig ülök a képernyő előtt, fáradtabb leszek.”
-
-Fontos az is, hogy tudd, mi a saját határod. Vagyis meddig engeded meg, hogy valaki belépjen a személyes teredbe, vagy mit osztasz meg magadról. Ez az önazonosság része is.
-
-Most egy kérdés: mondj egy olyan szokást, ami segít a jóllétedben! 🙂
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg"><line x1="55" y1="110" x2="265" y2="110" stroke="#2f8fd8" stroke-width="3" stroke-linecap="round"/><path d="M55 110 L66 104 M55 110 L66 116 M265 110 L254 104 M265 110 L254 116" fill="none" stroke="#2f8fd8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><line x1="85" y1="100" x2="85" y2="120" stroke="#2f8fd8" stroke-width="3"/><line x1="145" y1="100" x2="145" y2="120" stroke="#2f8fd8" stroke-width="3"/><line x1="205" y1="100" x2="205" y2="120" stroke="#2f8fd8" stroke-width="3"/><text x="85" y="145" font-size="16" fill="#555" text-anchor="middle">−1</text><text x="145" y="145" font-size="16" fill="#555" text-anchor="middle">0</text><text x="205" y="145" font-size="16" fill="#555" text-anchor="middle">1</text><text x="160" y="55" font-size="16" fill="#555" text-anchor="middle">Sumar positivo: derecha</text><text x="160" y="185" font-size="16" fill="#555" text-anchor="middle">Sumar negativo: izquierda</text></svg></ABRA>
 
 
 ======================================================================
-Idegen nyelv – nemet · 1. osztály · Máté (6 éves)
-Témakör: Begrüßung – Köszönés és bemutatkozás
+Conocimiento del Medio · 4. osztály · Hugo (9 éves)
+Témakör: Investigación y comunicación científica
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia! Ma németül a köszönést és a bemutatkozást tanuljuk. 😊
+TANÁR: ¡Hola, Máté! Soy Elvira y hoy aprenderemos a investigar una pregunta y a contar lo que descubrimos. 😊
 
-A <FL:de>hallo</FL> azt jelenti, hogy szia.  
-Például: <FL:de>Hallo!</FL> (Szia!)
+Para investigar, primero elegimos una pregunta concreta. Por ejemplo: «¿Las semillas crecen igual con mucha luz que con poca luz?».
 
-Most te jössz: mit jelent a <FL:de>hallo</FL>? Mondd egy szóval!  
-<VOCAB>szia=hallo</VOCAB>
+Después planeamos una prueba justa: cambiamos solo una cosa, la cantidad de luz, y mantenemos iguales las demás, como el tipo de semilla y el agua. Así sabremos mejor qué pudo causar el resultado.
 
-GYEREK: szia
+Mientras hacemos la prueba, anotamos los datos con cuidado. Por ejemplo, podemos medir la altura de cada planta cada día y escribirla en una tabla. Luego, un gráfico nos ayuda a ver los cambios de un vistazo.
 
-TANÁR: Ügyes vagy! 😊 A <FL:de>tschüss</FL> azt jelenti, hogy szia, viszlát. Például: <FL:de>Tschüss!</FL> (Viszlát!)
+Al final, contamos qué hicimos y qué descubrimos. Podemos preparar un póster con la pregunta, cómo hicimos la prueba, los resultados y una conclusión.
 
-Most te jössz: mit jelent a <FL:de>tschüss</FL>?  
-<VOCAB>viszlát=tschüss</VOCAB>
+¿Cuál sería la mejor forma de saber cómo cambió la altura de una planta cada día?
 
-GYEREK: viszlát
+<FELADAT>{"tipus":"valaszt","opciok":["Medirla y anotar el dato cada día","Mirarla una sola vez al final","Adivinar cuánto ha crecido"]}</FELADAT>
 
-TANÁR: Nagyon jó! 😊 Most jön a <FL:de>guten Morgen</FL>. Ez azt jelenti, hogy jó reggelt. Például: <FL:de>Guten Morgen!</FL> (Jó reggelt!)
+GYEREK: Medirla y anotarlo cada día.
 
-Most te jössz: mit jelent a <FL:de>guten Morgen</FL>?  
-<VOCAB>jó reggelt=guten Morgen</VOCAB>
+TANÁR: ¡Muy bien, Máté! Medir y anotar cada día permite comparar los cambios con datos reales. 😊
 
-GYEREK: jó reggelt
+Ahora veremos cómo hacer que la investigación sea más fiable y fácil de entender:
 
-TANÁR: Szuper! 😊 Most jön a <FL:de>guten Tag</FL>. Ez azt jelenti, hogy jó napot. Például: <FL:de>Guten Tag!</FL> (Jó napot!)
+- Podemos repetir las mediciones varios días y hacerlas de la misma manera. Así es menos probable que una observación aislada nos lleve a una conclusión equivocada.
+- Una tabla ordena los datos. Después, podemos pasarlos a un gráfico: por ejemplo, los días van abajo y la altura de la planta, al lado.
+- La conclusión debe apoyarse en lo que muestran los datos. Si una planta creció más en nuestra prueba, contamos eso, sin afirmar que ocurrirá siempre en todas las plantas.
 
-A <FL:de>guten Tag</FL> egy kedves nappali köszönés.  
-Most te jössz: mit jelent a <FL:de>guten Tag</FL>?  
-<VOCAB>jó napot=guten Tag</VOCAB>
+Imagina que en una prueba una planta creció más que otra. ¿Qué frase sería más cuidadosa?
 
-GYEREK: jó napot
+<FELADAT>{"tipus":"valaszt","opciok":["En esta prueba, una planta creció más que la otra","Todas las plantas crecerán siempre igual","La prueba demuestra qué les pasará a todas las plantas"]}</FELADAT>
 
-TANÁR: Nagyon ügyes vagy! 😊 Most jön a <FL:de>bitte</FL>. Ez udvarias szó, azt jelenti: kérem. Például: <FL:de>Bitte!</FL> (Kérem!)
+GYEREK: En esta prueba, una planta creció más que la otra.
 
-Most te jössz: mit jelent a <FL:de>bitte</FL>?  
-<VOCAB>kérem=bitte</VOCAB>
+TANÁR: ¡Exacto, Máté! Esa frase cuenta lo que ocurrió en vuestra prueba sin asegurar que pase siempre. 😊
 
-GYEREK: kérem
+Ahora aprenderemos a presentar los resultados en equipo. En un póster científico conviene incluir la pregunta que investigasteis, cómo hicisteis la prueba, los datos —por ejemplo, en una tabla o un gráfico— y la conclusión. Así, otras personas pueden entender qué hicisteis y qué descubristeis.
 
-TANÁR: Szép munka! 😊 Most jön a <FL:de>danke</FL>. Ez azt jelenti, hogy köszönöm. Például: <FL:de>Danke!</FL> (Köszönöm!)
+En el equipo podéis repartiros las tareas: una persona mide, otra anota y otra ayuda a preparar el póster. Después, todos revisáis que los datos estén bien copiados y explicáis el trabajo con claridad.
 
-Most te jössz: mit jelent a <FL:de>danke</FL>?  
-<VOCAB>köszönöm=danke</VOCAB>
+Ya hemos recorrido las partes principales de una investigación: plantear una pregunta, hacer una prueba justa, registrar y mostrar los datos, sacar una conclusión cuidadosa y comunicarla en equipo. ¡Buen trabajo! Ahora viene la prueba final del tema. ¡Ánimo, estás preparado! <TOPIC_COMPLETE>
 
+GYEREK: ez uncsi
 
-======================================================================
-Technika és tervezés · 3. osztály · Bence (8 éves)
-Témakör: Anyagok a környezetünkben
-======================================================================
-GYEREK: Szia! Kezdhetjük?
+TANÁR: Entiendo, Máté. Vamos a darle un toque de misterio: ¡serás detective científico! 🕵️‍♂️
 
-TANÁR: Szia, Bence! Ma az anyagokról fogunk tanulni a környezetünkben. 😊
+Tu equipo quiere averiguar si una planta crece más con mucha luz o con poca. Para que la comparación sea justa, cambiáis solo la cantidad de luz; medís y anotáis el crecimiento; y al final contáis lo que muestran los datos, sin afirmar más de lo que habéis observado.
 
-Az anyag azt jelenti, amiből egy tárgy készül. Például a pohár lehet üveg, a pulóver lehet textil.
+Ordena las tarjetas para reconstruir la investigación:
 
-Az alapanyag az a kiinduló anyag, amiből valami más készül. Például a fa alapanyag lehet egy asztalhoz vagy egy ceruzához.
+<FELADAT>{"tipus":"sorrend","elemek":["Contar la conclusión usando los datos","Elegir qué queremos averiguar","Hacer una prueba justa y anotar las mediciones"]}</FELADAT>
 
-A termék a kész tárgy. Például a kész füzet vagy a kész szék már termék.
+GYEREK: Elegir qué queremos averiguar, hacer una prueba justa y anotar las mediciones, contar la conclusión usando los datos.
 
-Az anyagvizsgálat azt jelenti, hogy megnézzük, milyen az anyag. Figyelhetjük a színét, az alakját, hogy átlátszó-e, kemény vagy rugalmas, és milyen a tapintása. Például egy sima műanyag doboz más, mint egy érdes faág.
+TANÁR: ¡Muy bien, Máté! Has ordenado correctamente la investigación: primero elegimos qué averiguar, después hacemos una prueba y registramos las mediciones, y al final contamos una conclusión basada en los datos. 🎉
 
-Most figyelj erre: nem minden anyag jó minden tárgyhoz. A választásnál az számít, hogy mire akarjuk használni. Például az ablakhoz jó az átlátszó anyag, a székre pedig inkább a kemény anyag.
+Para que el póster científico sea fácil de entender, podemos usar un título claro y un gráfico con etiquetas. Por ejemplo, si comparamos el crecimiento de dos plantas, indicamos qué planta representa cada columna y qué medida muestra la altura.
 
-Melyik tárgyad anyagát tudnád megmondani: az asztalét vagy a szivacsét? 😊
+Ahora viene la prueba final del tema. ¡Ánimo, detective científico! <TOPIC_COMPLETE>
 
-GYEREK: A szivacsét! Az puha meg rugalmas, ugye?
+GYEREK: Vale.
 
-TANÁR: Ügyes vagy, Bence! Igen, a szivacs puha és rugalmas. 😊
+TANÁR: ¡Empezamos la prueba final! Recuerda: una comparación es más justa cuando cambiamos solo una cosa y mantenemos las demás iguales.
 
-A puha anyag könnyen benyomható. Például a szivacs vagy a vatta puha.
+Dos plantas reciben la misma cantidad de agua y son del mismo tipo, pero una recibe más luz. ¿Qué están comparando?
 
-A rugalmas anyag összenyomható, aztán visszanyeri az alakját. Például egy gumiszalag rugalmas.
-
-A kemény anyag nehezen nyomható be. Például a fa vagy a kő kemény.
-
-Az anyagok felülete is lehet különböző. Lehet sima, érdes vagy puha. Például az asztal felülete sokszor sima, a faágé inkább érdes.
-
-Most te jössz: melyik anyag rugalmasabb, a szivacs vagy a kő? 🙂
-
-GYEREK: A szivacs? A kő nem nagyon rugalmas, azt hiszem.
-
-TANÁR: Nagyon jó! 😊 Igen, a szivacs rugalmasabb, a kő pedig nem rugalmas.
-
-Most nézzünk meg két fontos dolgot még.
-
-A sima felület olyan, amin könnyű végighúzni az ujjunkat. Például az üveg vagy egy asztallap gyakran sima.
-
-Az érdes felület kissé vagy nagyon egyenetlen. Például a fa kérge vagy egy kő felszíne lehet érdes.
-
-Az átlátszó anyagon át lehet látni. Például az üveg átlátszó. Az átlátszatlan anyagon nem lehet át­látni. Például a karton átlátszatlan.
-
-Az anyag szaga is segíthet a vizsgálatban. Egyes anyagoknak van jellegzetes szaguk, másoknak alig van. Például a friss fa illata más, mint a műanyagé.
-
-Most te jössz: az üveg átlátszó vagy átlátszatlan? 🙂
-
-GYEREK: Átlátszó! Azon át lehet látni.
-
-TANÁR: Ügyes vagy! 😊 Igen, az üveg átlátszó, ezért át lehet rajta látni.
-
-Most egy fontos gondolatot nézzünk meg: a természetes és a mesterséges anyagokat.
-
-A természetes anyag a természetből származik. Például a fa, a kő vagy a gyapjú természetes anyag.
-
-A mesterséges anyag az ember által készített anyag. Például a műanyag vagy a papír mesterséges anyag.
-
-A nyersanyag az a dolog, amiből valamit készítenek. Például a fából lehet bútor, a kőből lehet építőanyag.
-
-Az alapanyag az a nyersanyag, amit már felhasználnak egy új tárgy készítéséhez. A végén a kész tárgyból termék lesz.
-
-Például: a fa lehet nyersanyag, ebből készülhet alapanyag, majd abból termék, mondjuk egy asztal. Így látjuk, hogyan kapcsolódnak egymáshoz.
-
-Most te jössz: a fa természetes vagy mesterséges anyag? 🙂
-
-GYEREK: Természetes! A fáról jön, ugye?
-
-TANÁR: Nagyon ügyes! 😊 Igen, a fa természetes anyag, mert a természetből származik.
-
-Jól mondtad azt is, hogy a fáról jön. A fa valóban a természetben nő, és sok minden készülhet belőle.
-
-Most figyelj egy új kapcsolatra:
-A nyersanyag az, amit még csak megszerzünk a természetből.
-Az alapanyag az, amit már fel tudunk használni valami új készítéséhez.
-A termék pedig a kész dolog.
-
-Például:
-fa → deszka → asztal
-
-A fa a nyersanyag, a deszka az alapanyag, az asztal a termék.
-
-Egy másik példa:
-gyapjú → fonal → pulóver
-
-Most te jössz: a pulóver nyersanyag, alapanyag vagy termék? 🙂
-
-GYEREK: Termék! Az már kész dolog, azt hiszem.
-
-TANÁR: Nagyon jó, Bence! 😊 A pulóver termék, mert kész dolog.
-
-Most nézzünk meg még egy fontos szempontot: az anyagokat a felhasználásuk szerint is választjuk.
-
-Ha valamit erősnek kell lennie, akkor keményebb anyag jó rá.
-Ha valaminek hajlékonyan kell mozognia, akkor rugalmas anyag kell.
-Ha azt szeretnénk, hogy lássunk rajta át, akkor átlátszó anyag kell.
-
-Például:
-- ablakhoz üveg kell, mert átlátszó
-- szatyorhoz gyakran műanyag kell, mert könnyű
-- játékhoz vagy bútorhoz sokszor fa kell, mert erős
-
-Ezért az anyagvizsgálat nagyon fontos. Előbb megfigyeljük az anyagot, aztán eldöntjük, mire jó.
-
-Most te jössz: melyik anyag jó egy ablakhoz, az üveg vagy a fa? 🙂
+<FELADAT>{"tipus":"valaszt","opciok":["El efecto de la cantidad de luz","El efecto del tipo de semilla","El efecto de la cantidad de agua"]}</FELADAT>
 
 
 ======================================================================
-Természettudomány · 6. osztály · Anna (11 éves)
-Témakör: Az állatok testfelépítése
+Lengua Castellana y Literatura · 4. osztály · Pablo (9 éves)
+Témakör: Debatir y argumentar
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia! Ma az állatok testfelépítéséről fogunk tanulni. 🐾
+TANÁR: ¡Hola, Bence! Soy Elvira. Hoy aprenderemos a defender una opinión y a escuchar la de los demás. 😊
 
-Először néhány fontos dolgot nézünk meg.
+Una opinión es lo que pensamos sobre un tema. Por ejemplo: «Creo que sería buena idea tener más tiempo para leer en clase».
 
-Az állatoknak vannak életfeltételeik. Ez azt jelenti, hogy szükségük van megfelelő táplálékra, vízre, levegőre és megfelelő helyre az élethez. Például a nyúl nem tud megélni ugyanúgy, mint a hal, mert más környezetet igényel.
+Un argumento es una razón que explica por qué pensamos eso. Por ejemplo: «Así podríamos disfrutar de más libros y aprender palabras nuevas».
 
-Az állatoknak életjelenségeik is vannak. Ilyen a táplálkozás, a mozgás, a növekedés és a szaporodás. Például a kutya mozog, eszik és nő, ahogy telik az idő.
+En un debate, cada persona espera su turno para hablar. Así todos pueden expresarse y escuchar sin interrumpirse.
 
-Az állatok testrészei különböző feladatot végeznek. A láb a mozgásban segít, a szárny a repülésben, a szőr vagy a toll pedig védi az állat testét. Például a madár szárnya repülésre való.
+También podemos no estar de acuerdo y responder con respeto. Por ejemplo: «Entiendo lo que dices, pero yo pienso que…». Al final, hacemos una conclusión: una frase que resume lo que hemos pensado o acordado.
 
-Az állatokat több szempont szerint csoportosíthatjuk. Lehetnek háziállatok vagy vadon élő állatok, lehetnek növényevők, ragadozók vagy mindenevők. Például a tehén növényevő, a farkas ragadozó, a medve pedig mindenevő.
+¿Cuál de estas frases da una razón para apoyar una opinión?
 
-A gerinces állatoknak van belső vázuk, a gerincteleneknek nincs gerincük. Például a hal gerinces, a csiga gerinctelen.
+<FELADAT>{"tipus":"valaszt","opciok":["Me gusta leer.","Leer en clase ayuda a aprender palabras nuevas.","Yo pienso algo distinto."]}</FELADAT>
 
-Most te jössz! A kutya gerinces vagy gerinctelen?
+GYEREK: Leer en clase ayuda a aprender palabras nuevas.
 
-GYEREK: A kutya gerinces, mert van gerince. Ugye?
+TANÁR: ¡Muy bien, Bence! Esa frase sí da una razón: explica cómo leer en clase puede ayudarnos. 😊
 
-TANÁR: Igen, ügyes vagy! 😊 A kutya gerinces, mert van gerince.
+Ahora practicaremos cómo responder cuando alguien piensa distinto. Primero escuchamos su idea; después podemos reconocerla y explicar la nuestra con calma. Por ejemplo: «Entiendo que quieras más tiempo de recreo. Yo prefiero dedicar un poco más de tiempo a leer, porque así descubrimos historias nuevas».
 
-Most nézzünk meg még két fontos dolgot.
+En un debate también puede haber una persona moderadora. Su trabajo es repartir los turnos y ayudar a que todos puedan hablar y escuchar.
 
-Az állatok lehetnek háziállatok vagy vadon élő állatok. A háziállat olyan állat, amelyik az ember közelében él, és az ember gondoskodik róla. Például a kutya háziállat, a róka vadon élő állat.
+<FELADAT>{"tipus":"valaszt","opciok":["No sabes de qué hablas.","Entiendo tu idea, pero pienso otra cosa porque…","¡Cállate, ahora hablo yo!"]}</FELADAT>
 
-Az állatok táplálkozás szerint is csoportosíthatók. A növényevő állatok növényeket esznek, a ragadozók más állatokat fogyasztanak, a mindenevők pedig mindkettőt eszik. Például a tehén növényevő, a farkas ragadozó, a medve mindenevő.
+GYEREK: Entiendo tu idea, pero pienso otra cosa porque…
 
-Az állatok testrészei a mozgáshoz és a védekezéshez is kapcsolódhatnak. A láb járásra, futásra vagy ugrásra való, a csőr az evésben segít, a karmok pedig fogásra vagy védekezésre valók. Például a madár csőrével csipeget, a macska karmaival kapaszkodik.
+TANÁR: ¡Exacto, Bence! Esa respuesta escucha la idea de la otra persona y expresa un desacuerdo con respeto. 😊
 
-És most egy új kérdés: a medve növényevő, ragadozó vagy mindenevő?
+Ahora veremos cómo cerrar un debate. Una conclusión resume lo que se ha dicho. Puede mencionar un acuerdo o explicar que hay opiniones distintas. Por ejemplo: «Los dos queremos estar más a gusto en clase; una persona prefiere leer más y otra quiere más recreo».
 
-GYEREK: A medve mindenevő, mert eszik növényt meg húst is. Jól mondtam?
+También podemos comparar razones a favor y en contra. Si hablamos de tener más tiempo para leer, una razón a favor podría ser que leemos más historias; una razón en contra, que quedaría menos tiempo para otras actividades.
 
-TANÁR: Nagyon jól mondtad! 😊 A medve mindenevő, mert növényt és húst is eszik.
+¿Cuál frase podría servir de conclusión si dos personas tienen opiniones distintas sobre el recreo?
 
-Most egy kicsit a gerincesek és a gerinctelenek különbségéről tanulunk tovább.
+<FELADAT>{"tipus":"valaszt","opciok":["Una persona quiere más recreo y otra prefiere dejar el horario como está.","¡Mi opinión es la única que cuenta!","No voy a escuchar a nadie."]}</FELADAT>
 
-A gerinces állatok testében van gerincoszlop. Ilyen például a kutya, a hal és a madár. Ez tartja a testüket, és segít a mozgásban.
+GYEREK: Una persona quiere más recreo y otra prefiere dejar el horario como está.
 
-A gerinctelen állatoknak nincs gerincük. Ilyen például a csiga, a pók és a rovarok többsége. Náluk másféle testfelépítés segíti a mozgást és a védekezést.
+TANÁR: ¡Muy bien! Has reconocido una conclusión: resume las opiniones sin decir que una de ellas sea la única válida. 😊
 
-Az állatok testrészei az életmódjukhoz igazodnak. A madár szárnya a repüléshez való, a hal uszonya az úszáshoz, a ló lába a gyors futáshoz.
+Ya sabes cómo participar en un debate: dices tu opinión, la apoyas con una razón, escuchas sin interrumpir y respondes con respeto. Al terminar, la conclusión resume las ideas o el acuerdo. Por ejemplo: «Queremos aprovechar bien el tiempo; podemos leer un rato y también disfrutar del recreo».
 
-Most te jössz! A csiga gerinces vagy gerinctelen?
+Ya hemos practicado las partes principales del debate. ¡Ahora viene la prueba final del tema! Confía en lo que has aprendido. <TOPIC_COMPLETE>
 
-GYEREK: A csiga gerinctelen, mert nincs gerince. Ezt értem.
+GYEREK: ¡Vale! Creo que lo entendí un poco. ¿Ya acabamos?
 
-TANÁR: Nagyon szép válasz! 😊 A csiga gerinctelen, mert nincs gerince.
+TANÁR: Sí, ya hemos terminado de aprender el tema; ahora toca la prueba final para comprobarlo. ¡Has aprendido a dar razones, escuchar y discrepar con respeto!
 
-Most egy különleges dolgot is megnézünk.
+GYEREK: Vale, yo creo que sí sé un poco. ¡Mi perro también escucha cuando hablo!
 
-Vannak egészen apró élőlények, amelyeket egysejtűeknek hívunk. Azért kapják ezt a nevet, mert a testük csak egyetlen sejtből áll. Olyan kicsik lehetnek, hogy szabad szemmel nem is látjuk őket, ezért mikroszkóppal lehet megfigyelni őket.
+TANÁR: ¡Qué buen compañero de escucha tienes! 😊 En la prueba final también veremos si distingues una opinión de la razón que la apoya. Recuerda: la razón explica por qué alguien piensa así.
 
-Például egy tó vizében élhetnek ilyen apró élőlények.
+¿Cuál frase da una razón para tener un perro?
 
-Az egysejtűek is élnek, táplálkoznak és mozoghatnak, csak nagyon egyszerű a testfelépítésük.
-
-Most te jössz! Mit nevezünk egysejtűnek?
-
-GYEREK: Egysejtű az, aminek a teste csak egy sejtből áll. ezt nem értem.
-
-TANÁR: Persze, segítek másképp 😊
-
-Az egysejtű élőlény teste csak egyetlen nagyon apró „építőkockából”, vagyis sejtből áll.  
-A többsejtű élőlények teste sok sejtből épül fel, az egysejtűeké pedig csak egyből.
-
-Például:
-- az ember sok sejtből áll,
-- az egysejtű élőlény csak egy sejtből.
-
-Így könnyebb elképzelni: mintha egy ház sok téglából lenne, az egysejtű pedig csak egyetlen téglából állna. 🙂
-
-Most te jössz: az egysejtű teste egy sejtből vagy sok sejtből áll?
-
-GYEREK: Egy sejtből áll. Ugye jól?
-
-TANÁR: Igen, nagyon jól! 😊 Az egysejtű teste egy sejtből áll.
-
-Most nézzünk még egy fontos dolgot az állatokkal kapcsolatban.
-
-Az állatok mozgása összefügg a testfelépítésükkel.  
-A hal teste és uszonyai segítik az úszást.  
-A madár szárnya a repülésre való.  
-A ló lábai a futásban segítenek.  
-
-Ezért mondjuk, hogy az állat testfelépítése alkalmazkodik az életmódjához.
-
-Most te jössz: melyik testrész segíti a madarat a repülésben?
+<FELADAT>{"tipus":"valaszt","opciok":["Me gustan los perros.","Un perro necesita paseos y cuidados cada día.","Los perros son muy simpáticos."]}</FELADAT>
 
 
 ======================================================================
-Idegen nyelv – angol · 8. osztály · Viki (13 éves)
-Témakör: Just, already, yet – Ami már megtörtént
+Lengua Extranjera – angol · 2. osztály · Lucía (7 éves)
+Témakör: Animals – Animales
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia Viki! Ma azokat az angol szavakat tanuljuk meg, amelyekkel azt mondjuk, hogy valami már megtörtént. 😊
+TANÁR: ¡Hola, Anna! Soy Elvira y hoy aprenderemos un nombre de animal en inglés. 🐶
 
-Az <FL:en>already</FL> azt jelenti, hogy „már”. Akkor használjuk, ha valami korábban megtörtént, mint vártuk. Például: <FL:en>I have already finished my homework.</FL> (Már befejeztem a házi feladatomat.)
-<VOCAB>már=already</VOCAB>
+«<FL:en>Dog</FL>» significa «perro». «<FL:en>Dog</FL>» aparece en «<FL:en>I have a dog</FL>» (Tengo un perro), y también podemos decir «<FL:en>The dog is big</FL>» (El perro es grande).
 
-A <FL:en>yet</FL> azt jelenti, hogy „még”. Gyakran kérdésben vagy tagadásban használjuk, amikor valami még nem történt meg. Például: <FL:en>Has she arrived yet?</FL> (Megérkezett már?)
-<VOCAB>még=yet</VOCAB>
+¿Qué animal es «<FL:en>dog</FL>»?
+<FELADAT>{"tipus":"valaszt","opciok":["perro","gato","pez"]}</FELADAT>
+<VOCAB>perro=dog</VOCAB>
 
-A <FL:en>just</FL> azt jelenti, hogy „épp most”. Akkor használjuk, ha valami nagyon frissen történt meg. Például: <FL:en>I have just arrived.</FL> (Épp most érkeztem meg.)
-<VOCAB>épp most=just</VOCAB>
+GYEREK: perro. ¿Sí?
 
-Melyik szó jelenti azt, hogy „már”: <FL:en>already</FL>, <FL:en>yet</FL> vagy <FL:en>just</FL>?
+TANÁR: ¡Sí, Anna, correcto! «<FL:en>Dog</FL>» significa «perro». 😊
 
-GYEREK: Az <FL:en>already</FL> az, ugye? Mármint „már”.
+Ahora aprendemos «<FL:en>cat</FL>», que significa «gato». Por ejemplo: «<FL:en>I have a cat</FL>» (Tengo un gato).
 
-TANÁR: Igen, ügyes vagy! 😊 Az <FL:en>already</FL> valóban azt jelenti, hogy „már”.
+<FELADAT>{"tipus":"valaszt","opciok":["gato","conejo","pájaro"]}</FELADAT>
+<VOCAB>gato=cat</VOCAB>
 
-Most jöjjön két új szó, ami ehhez a témához kapcsolódik. A <FL:en>recently</FL> azt jelenti, hogy „nemrég”. Például: <FL:en>I have recently started a new book.</FL> (Nemrég kezdtem egy új könyvet.)
-<VOCAB>nemrég=recently</VOCAB>
+GYEREK: gato. ¿Puedo decir otra?
 
-Az <FL:en>achievement</FL> azt jelenti, hogy „eredmény” vagy „siker”. Olyasmire mondjuk, amit kemény munkával értél el. Például: <FL:en>Finishing the race was a big achievement.</FL> (A futam befejezése nagy eredmény volt.)
-<VOCAB>eredmény=achievement</VOCAB>
+TANÁR: ¡Sí, «gato» está bien! 😊 Y claro, puedes decir otra. Ahora aprendemos «<FL:en>bird</FL>», que significa «pájaro». «<FL:en>Bird</FL>» es un animal que puede volar; por ejemplo: «<FL:en>I have a bird</FL>» (Tengo un pájaro).
 
-Az <FL:en>proud</FL> azt jelenti, hogy „büszke”. Például: <FL:en>I am proud of my result.</FL> (Büszke vagyok az eredményemre.)
-<VOCAB>büszke=proud</VOCAB>
+¿Qué significa «<FL:en>bird</FL>»?
+<FELADAT>{"tipus":"valaszt","opciok":["pájaro","perro","pez"]}</FELADAT>
+<VOCAB>pájaro=bird</VOCAB>
 
-Melyik szó jelent azt, hogy „nemrég”: <FL:en>recently</FL> vagy <FL:en>proud</FL>?
+GYEREK: pájaro. ¿Es fácil?
 
-GYEREK: A <FL:en>recently</FL>, mert az a „nemrég”. 
-A <FL:en>proud</FL> az meg a „büszke”, nem?
+TANÁR: ¡Sí, Anna, lo has acertado! 😊 Puede ser fácil cuando aprendemos poquito a poco. Ahora aprendemos «<FL:en>fish</FL>», que significa «pez». Por ejemplo: «<FL:en>I have a fish</FL>» (Tengo un pez). ¿Qué significa «<FL:en>fish</FL>»?
+<FELADAT>{"tipus":"valaszt","opciok":["pez","gato","conejo"]}</FELADAT>
+<VOCAB>pez=fish</VOCAB>
 
-TANÁR: Nagyon jó! 😊 Mindkettőt jól mondtad.
+GYEREK: pez. ¿Es pez?
 
-A <FL:en>recently</FL> valóban „nemrég”.
-A <FL:en>proud</FL> pedig „büszke”. Például: <FL:en>I am proud of you.</FL> (Büszke vagyok rád.)
-<VOCAB>büszke=proud</VOCAB>
+TANÁR: ¡Sí, Anna, correcto! «<FL:en>Fish</FL>» significa «pez». 😊
 
-Most még két fontos szót nézünk meg. A <FL:en>finish</FL> azt jelenti, hogy „befejez”. Például: <FL:en>I finish my homework at six.</FL> (Hatkor befejezem a házi feladatomat.)
-<VOCAB>befejez=finish</VOCAB>
+Ahora aprendemos «<FL:en>rabbit</FL>», que significa «conejo». Por ejemplo: «<FL:en>I have a rabbit</FL>» (Tengo un conejo).
 
-Az <FL:en>arrive</FL> azt jelenti, hogy „megérkezik”. Például: <FL:en>The bus arrives at seven.</FL> (A busz hétkor érkezik meg.)
-<VOCAB>megérkezik=arrive</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["conejo","pájaro","pez"]}</FELADAT>
+<VOCAB>conejo=rabbit</VOCAB>
 
-Melyik szó jelent azt, hogy „megérkezik”: <FL:en>finish</FL> vagy <FL:en>arrive</FL>?
+GYEREK: conejo. ¿Y ya?
 
-GYEREK: Az <FL:en>arrive</FL>, az a „megérkezik”.  
-A <FL:en>finish</FL> meg a „befejez”, az biztos nem.
-
-TANÁR: Nagyon ügyes vagy! 😊 Jól megkülönböztetted őket.
-
-Most figyelj egy fontos mintára:
-<FL:en>Have you finished your homework yet?</FL> (Befejezted már a házi feladatodat?)
-Ezt akkor használjuk, amikor megkérdezzük, hogy valami már megtörtént-e. A <FL:en>yet</FL> itt a mondat végére kerül. Tagadásban is gyakori: <FL:en>I haven’t finished yet.</FL> (Még nem fejeztem be.)
-
-Az <FL:en>just</FL> azt mutatja, hogy valami nagyon frissen történt. Például: <FL:en>She has just arrived.</FL> (Épp most érkezett meg.)
-
-Most te jössz: melyik szót tennéd a mondat végére: <FL:en>Have you finished your homework ___?</FL>
-
-GYEREK: A <FL:en>yet</FL>-et, ugye?  
-Have you finished your homework yet?
-
-TANÁR: Igen, ügyes vagy! 😊 A <FL:en>yet</FL> ide kerül a mondat végére.
-
-Egy fontos különbség:
-<FL:en>I have already finished my homework.</FL> (Már befejeztem a házi feladatomat.)
-<FL:en>I haven’t finished my homework yet.</FL> (Még nem fejeztem be a házi feladatomat.)
-
-Tehát az <FL:en>already</FL> inkább azt mondja: „ez már megtörtént”, a <FL:en>yet</FL> pedig azt: „ez még nem történt meg”.  
-Most te jössz: melyik illik ide? <FL:en>I have ___ arrived.</FL>
-
-GYEREK: A <FL:en>just</FL> illik oda.  
-I have just arrived.
-
-TANÁR: Nagyon jó! 😊 Az <FL:en>just</FL> tényleg ide illik.
-
-Az <FL:en>I have just arrived.</FL> azt jelenti, hogy „Épp most érkeztem meg.” Ez nagyon friss esemény.  
-<VOCAB>épp most=just</VOCAB>
-
-Kis különbség:
-<FL:en>already</FL> = már  
-<FL:en>yet</FL> = még  
-<FL:en>just</FL> = épp most
-
-Most egy könnyű kérdés: melyik szó való ide?  
-<FL:en>She has ___ finished her project.</FL>
+TANÁR: ¡No, todavía quedan más animales! 😊 «<FL:en>Hamster</FL>» significa «hámster». Por ejemplo: «<FL:en>I have a hamster</FL>» (Tengo un hámster). ¿Qué significa «<FL:en>hamster</FL>»?
+<FELADAT>{"tipus":"valaszt","opciok":["hámster","conejo","gato"]}</FELADAT>
+<VOCAB>hámster=hamster</VOCAB>
 
 
 ======================================================================
-Technika és tervezés · 7. osztály · Máté (12 éves)
-Témakör: Mechanikai hajtások, mechanizmusok
+Educación Artística · 1. osztály · Martina (6 éves)
+Témakör: Recepción y análisis
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia! Ma a mechanikai hajtások alapjait fogjuk megérteni. ⚙️
+TANÁR: ¡Hola, Viki! Soy Elvira. Hoy aprenderemos a mirar y escuchar obras de arte con atención. 😊
 
-Először nézzük meg a legfontosabb fogalmakat:
+Cuando observamos un cuadro, nos fijamos en lo que vemos: por ejemplo, sus colores y las formas que aparecen.
 
-A hajtókerék az a kerék, amelyik mozgásba hozza a másikat.  
-Például egy biciklin a pedálhoz kapcsolódó rész hajtja a rendszert.
+Cuando escuchamos música, prestamos atención a los sonidos. Si varios sonidos van uno detrás de otro y podemos tararearlos, forman una melodía.
 
-A hajtott kerék az, amelyik a mozgást megkapja.  
-Például a bicikli hátsó kereke végül ettől forog.
+En un museo, un teatro o un concierto, respetamos a los demás. Hablamos bajito y guardamos silencio mientras disfrutamos de la obra; así podemos prestar atención.
 
-Az áttétel azt mutatja meg, hogy a két kerék mérete és fordulatszáma hogyan függ össze.  
-Ha az egyik kerék nagyobb, általában lassabban forog, de nagyobb erőt tud átadni.
+Si vemos una obra que viene de otro lugar o de otra época, podemos descubrir cosas distintas. Cada obra merece respeto, aunque sea diferente de las que conocemos.
 
-A forgatónyomaték azt jelenti, hogy egy erő mennyire tud egy testet elfordítani.  
-Például a kulcs hosszabb karján könnyebb meglazítani egy csavart.
+Cuando escuchas música, ¿qué conviene hacer para prestar atención?
 
-Egyszerűen így gondold el:  
-ha kisebb kerék hajt nagyobb kereket, akkor a mozgás lassulhat, de az erő nőhet.  
-Ha nagyobb kerék hajt kisebbet, akkor a kisebb kerék gyorsabban foroghat.
+<FELADAT>{"tipus":"valaszt","opciok":["Escuchar en silencio","Hablar muy alto","Taparse los oídos"]}</FELADAT>
 
-Ezt röviden így írjuk az áttételre:
-áttétel = a hajtott kerék fogszáma / a hajtókerék fogszáma
+GYEREK: Escuchar en silencio. ¿Así o no?
 
-Most nézd meg ezt az egyszerű ábrát: a nagyobb kerék lassabban, a kisebb gyorsabban fordul.
+TANÁR: ¡Sí, muy bien, Viki! Escuchar en silencio nos ayuda a disfrutar y a prestar atención. 😊
 
-<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="110" cy="120" r="55" fill="none" stroke="#222" stroke-width="3"/>
-  <circle cx="220" cy="120" r="30" fill="none" stroke="#222" stroke-width="3"/>
-  <line x1="165" y1="120" x2="190" y2="120" stroke="#222" stroke-width="3"/>
-  <text x="110" y="40" font-size="16" fill="#222" text-anchor="middle">hajtókerék</text>
-  <text x="220" y="70" font-size="16" fill="#222" text-anchor="middle">hajtott kerék</text>
-  <text x="110" y="198" font-size="16" fill="#222" text-anchor="middle">lassabban forog</text>
-  <text x="220" y="198" font-size="16" fill="#222" text-anchor="middle">gyorsabban forog</text>
-</svg></ABRA>
+Ahora aprenderemos a observar y a contar lo que notamos:
 
-Most te jössz: melyik kerék a hajtókerék az ábrán?
+- En una imagen podemos nombrar un color o una forma. Por ejemplo: «Veo un círculo azul».
+- En una canción podemos fijarnos en los sonidos. Por ejemplo: «Oigo sonidos rápidos».
+- Una pantalla o un altavoz pueden ayudarnos a ver o escuchar una obra. Por ejemplo, podemos mirar un vídeo de una danza y fijarnos en cómo se mueven las personas.
 
-GYEREK: A bal oldali. Vagy nem?
+<FELADAT>{"tipus":"valaszt","opciok":["Veo un círculo azul","Oigo un tambor","Bailo sin mirar"]}</FELADAT>
 
-TANÁR: Igen, jól mondtad: a bal oldali a hajtókerék. 👍
+GYEREK: Veo un círculo azul. ¡Es fácil!
 
-Szuper, ezt már érted. Most nézzünk egy másik fontos dolgot: a forgatónyomatékot.  
-Ez azt mutatja meg, hogy egy erő mennyire könnyen tud elfordítani valamit.
+TANÁR: ¡Exacto, Viki! ¡Y te ha resultado fácil! 😊
 
-A lényeg egyszerű:
-ha ugyanakkora erőt messzebb fejtünk ki a tengelytől, könnyebb elfordítani a tárgyat.  
-Ezért könnyebb egy hosszú kulccsal meglazítani a csavart, mint egy röviddel.
+Ahora veremos que el arte puede presentarse de distintas maneras:
 
-Ezt röviden így írjuk:
-forgatónyomaték = erő × erőkar
+- Un cuadro es una imagen hecha sobre una superficie plana. Por ejemplo, un paisaje pintado.
+- Una escultura es una obra que tiene volumen. Por ejemplo, una figura que podemos observar desde distintos lados.
+- En una actuación, como una obra de teatro o un baile, las personas se expresan con la voz y el cuerpo.
 
-Az erőkar az a távolság, ahol az erő hat a tengelytől mérve.
+Hay muchas formas de crear arte, y pueden hacerlo tanto mujeres como hombres. Cada obra puede ser diferente y merece que la observemos con respeto.
 
-Például:
-ha egy ajtót a kilincsénél nyitsz, könnyű kinyitni, mert messze van a forgástengelytől.  
-Ha az ajtó közepén próbálnád, nehezebb lenne.
+¿Qué tipo de obra podemos mirar desde distintos lados?
 
-Most egy új kérdés: miért könnyebb hosszú kulccsal elfordítani egy csavart, mint röviddel?
+<FELADAT>{"tipus":"valaszt","opciok":["Un cuadro","Una escultura","Una canción"]}</FELADAT>
 
-GYEREK: Mert nagyobb az erőkara. Ez uncsi.
+GYEREK: Una escultura. ¿Porque tiene volumen, no?
 
-TANÁR: Jól van, pontosan: mert nagyobb az erőkara. 👏
+TANÁR: ¡Sí, muy bien! Una escultura tiene volumen y podemos observarla desde distintos lados. 😊
 
-Igazad van, menjünk tovább egy érdekesebb részre. Most a mechanizmusokról lesz szó.  
-Ezek olyan szerkezetek, amelyek a mozgást átalakítják.
+Ahora practicaremos cómo recibir una obra con atención. Primero miramos o escuchamos sin distraernos; después pensamos qué hemos notado. Por ejemplo, al ver un baile, podemos fijarnos en los movimientos. Al escuchar una canción, podemos fijarnos en los sonidos y el ritmo.
 
-Négy fontos mechanizmus van:
-- karos mechanizmus: egy kar segít emelni vagy lenyomni valamit. Például egy mérleghinta.
-- forgattyús mechanizmus: körmozgást alakít át egyenes vonalú mozgássá. Például a régi varrógépben.
-- bütykös mechanizmus: egy forgó rész időnként megemel egy másik részt. Például egyes gépekben ezt használják ismétlődő mozgásra.
-- fogasléces mechanizmus: a fogaskerék forgása egy fogaslécet előre-hátra mozgat. Például kormányrendszerben is előfordul.
+También podemos usar palabras sencillas para contar lo que sentimos: «me gusta», «me sorprende» o «me parece alegre». No hace falta que a todos nos guste lo mismo; escuchamos las ideas de los demás con respeto.
 
-A lényeg:
-a mechanizmusok nem csak forgatnak, hanem mozgást is átalakítanak.
+Si ves un baile, ¿en qué podrías fijarte?
 
-Most próbáld ezt: melyik mechanizmus alakítja át a forgómozgást egyenes vonalú mozgássá?
+<FELADAT>{"tipus":"valaszt","opciok":["En los movimientos","En el sabor","En el olor"]}</FELADAT>
 
-GYEREK: A forgattyús.
+GYEREK: En los movimientos. ¿Y si se mueven muy rápido?
 
-TANÁR: Ügyes, ez így helyes. 👍
+TANÁR: ¡Eso es! Si se mueven muy rápido, puedes fijarte en que los movimientos son rápidos. También puedes observar si luego se vuelven lentos. Así describes lo que ves sin decidir que todos tienen que sentir lo mismo. 😊
 
-Most nézzünk egy kicsit gyakorlatiabb dolgot: az áttételt számítást.  
-Ez akkor kell, amikor két kerék vagy fogaskerék együtt dolgozik.
+Cuando una obra te sorprenda, puedes decir: «Me ha llamado la atención cómo se mueven».
 
-Egyszerűen így gondold:
-ha a hajtókerék kicsi, a hajtott nagyobb, akkor a hajtott lassabban forog.  
-Ha a hajtókerék nagyobb, a hajtott gyorsabban foroghat.
+En un baile, ¿qué palabra usarías para describir movimientos que no van deprisa?
 
-Ezt aránypárral is felírhatjuk:
-a hajtókerék fordulatszáma : a hajtott kerék fordulatszáma = a hajtott kerék fogszáma : a hajtókerék fogszáma
+<FELADAT>{"tipus":"valaszt","opciok":["Lentos","Ruidosos","Azules"]}</FELADAT>
 
-Példa:
-ha a hajtókerék 10 fogú, a hajtott kerék 20 fogú, akkor a hajtott kerék kétszer lassabban forog.
+GYEREK: Lentos. ¿Así se dice?
 
-Most te jössz: szerinted egy 10 fogú hajtókerék és egy 20 fogú hajtott kerék közül melyik forog gyorsabban?
+TANÁR: ¡Sí, Viki! «Lentos» es correcto. Muy bien. 😊
 
-GYEREK: A 10 fogú.
+Ahora ya sabes recibir una obra con atención: miramos o escuchamos en silencio, nos fijamos en detalles y contamos lo que notamos con respeto. También vimos que hay cuadros, esculturas y actuaciones, y que podemos encontrar obras distintas en diferentes lugares y épocas.
 
-TANÁR: Igen, a 10 fogú forog gyorsabban. Ügyes vagy! 👍
+Ya viene la prueba final de este tema. ¡Ánimo, has aprendido muy bien! Completa este ejercicio: elige una norma para escuchar una obra con atención.
 
-Most jöjjön még egy fontos gépészeti gondolat: a nagyobb kerék nem mindig „jobb”, csak másra jó.  
-A kisebb kerék általában gyorsabb mozgást ad, a nagyobb kerék pedig könnyebben ad át nagyobb erőt.
-
-Ezért a hajtásoknál mindig azt nézzük, mire van szükség:
-gyorsaságra vagy erőre.
-
-Például biciklin:
-ha könnyebb haladni szeretnél, más áttétel kell, mint ha nagy sebességet szeretnél.
-
-Most egy rövid kérdés: melyikre van inkább szükség, ha nagy erőt szeretnél átadni: a gyorsabb vagy a lassabb mozgásra?
-
-GYEREK: A lassabbra.
-
-TANÁR: Nagyon jó, ez így van. A lassabb mozgásnál gyakran nagyobb erőt tudunk átadni. 👏
-
-Most összefoglalom röviden, amit eddig tudsz:
-- a hajtókerék mozgásba hozza a rendszert,
-- a hajtott kerék megkapja a mozgást,
-- az áttétel megmutatja, hogyan függ össze a két kerék mérete és fordulatszáma,
-- a forgatónyomaték azt mutatja meg, mennyire könnyű elfordítani valamit,
-- a mechanizmusok a mozgás átalakítására valók.
-
-Egy kis gyakorló feladat:
-Egy 12 fogú kerék hajt egy 24 fogú kereket. Szerinted a hajtott kerék gyorsabban vagy lassabban forog?
+<FELADAT>{"tipus":"valaszt","opciok":["Escuchar en silencio","Hablar muy alto","No mirar ni escuchar"]}</FELADAT><TOPIC_COMPLETE>
 
 
 ======================================================================
-Testnevelés · 7. osztály · Bence (12 éves)
-Témakör: Gimnasztika és rendgyakorlatok – prevenció, relaxáció
+Lengua Extranjera – angol · 5. osztály · Hugo (10 éves)
+Témakör: Reading & Writing – Leer y escribir
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia! Ma a helyes testtartásról, a bemelegítésről és az egyszerű relaxációról fogunk tanulni. 🙂
+TANÁR: ¡Hola, Máté! Hoy vamos a leer y escribir frases cortas en inglés para contar cosas en orden. 😊
 
-A helyes testtartás azt jelenti, hogy álláskor és üléskor a tested nincs összecsukva, hanem rendezett helyzetben van. Ez segít, hogy a hátad és az izmaid ne fáradjanak el gyorsan. Például: egyenesen ülök a padban, nem görnyedek.
+Para ordenar una historia usamos conectores:
 
-A bemelegítés azért kell, mert a mozgatórendszered így készül fel a terhelésre. A bemelegített izmok rugalmasabbak, és kisebb az esélye a sérülésnek. Például: futás előtt átmozgatjuk a karunkat és a lábunkat.
+- <FL:en>first</FL> significa «primero». <FL:en>First I get up.</FL> (Primero me levanto.)
+- <FL:en>then</FL> significa «después». <FL:en>Then I have breakfast.</FL> (Después desayuno.)
+- <FL:en>next</FL> significa «a continuación». <FL:en>Next I go to school.</FL> (A continuación voy al colegio.)
+- <FL:en>finally</FL> significa «por último». <FL:en>Finally I come home.</FL> (Por último vuelvo a casa.)
 
-A nyújtó gyakorlatok a terhelés után hasznosak. Segítenek ellazítani az izmokat, és csökkentik a feszülést. Például: edzés után finoman megnyújtjuk a combunkat.
+En inglés, empieza cada frase con mayúscula y termina con punto. Fíjate también en el orden: quién hace algo, qué hace y, a veces, qué cosa recibe la acción.
 
-A relaxáció ellazulást jelent. Ilyenkor nyugodtan lélegzünk, és megpróbáljuk lecsendesíteni a testünket. Például: becsukom a szemem, és lassan, nyugodtan lélegzem párat.
+<VOCAB>primero=first</VOCAB><VOCAB>después=then</VOCAB><VOCAB>a continuación=next</VOCAB><VOCAB>por último=finally</VOCAB>
+<FELADAT>{"tipus":"hianyzo","mondat":"___ I have breakfast.","szavak":["First","Then","Finally"]}</FELADAT>
 
-Most te jössz: a bemelegítés vagy a relaxáció segít inkább felkészülni a mozgásra? 🙂
+GYEREK: First.
 
-GYEREK: A bemelegítés? Az készít fel a mozgásra, ugye? 🙂
+TANÁR: ¡Bien! «<FL:en>First</FL>» encaja ahí y empieza con mayúscula. 😊
 
-TANÁR: Igen, ügyes vagy! 🙂 A bemelegítés készít fel a mozgásra.
+Ahora leemos una frase completa: «<FL:en>First I get up, then I have breakfast.</FL>» significa «Primero me levanto y después desayuno». Así, <FL:en>first</FL> y <FL:en>then</FL> muestran el orden de las acciones.
 
-Most figyelj még két fontos dologra:
-A nyújtás a terhelés után segít az izmoknak ellazulni. Például edzés után óvatosan megnyújtod a karodat vagy a lábadat.
+Una historia corta en inglés se llama <FL:en>story</FL>. Por ejemplo: «<FL:en>I read a story.</FL>» (Leo una historia). ¿Qué significa <FL:en>story</FL>?
 
-A relaxáció nyugalmat jelent. Ilyenkor a tested és a légzésed is megnyugszik. Például becsukod a szemed, és lassan veszel levegőt.
+<VOCAB>historia=story</VOCAB>
 
-Van még egy nagyon fontos szabály: a fáradt izom sérülékenyebb. Ezért nem jó hirtelen, erősen mozgatni, ha már elfáradtál. Például futás után nem ugrálunk rögtön nagyokat, hanem előbb lenyugtatjuk a testet.
+GYEREK: historia.
 
-Most mondd meg: melyik segít az izmok ellazításában, a nyújtás vagy a bemelegítés? 🙂
+TANÁR: ¡Correcto! <FL:en>Story</FL> significa «historia». 😊
 
-GYEREK: A nyújtás, szerintem. Vagy nem? 🙂
+Ahora veremos dos formas de escribir a alguien. Una carta es una <FL:en>letter</FL>: «<FL:en>Dear friend,</FL>» significa «Querido amigo,». Un mensaje es un <FL:en>message</FL>: «<FL:en>I have a new book.</FL>» significa «Tengo un libro nuevo».
 
-TANÁR: Igen, jól gondolod! 🙂 A nyújtás segít az izmok ellazításában.
+Al escribir, recuerda empezar con mayúscula y poner un punto al final de la frase. Ordena las tarjetas para formar la frase que ya hemos leído:
 
-A bemelegítés ezzel szemben inkább felkészít a mozgásra. Tehát előtte van haszna, a nyújtásnak pedig inkább utána.
+<VOCAB>carta=letter</VOCAB><VOCAB>mensaje=message</VOCAB>
+<FELADAT>{"tipus":"epito","elemek":["First","I","get","up,","then","I","have","breakfast."],"kerdes":"Construye la frase en el orden correcto."}</FELADAT>
 
-Most még egy fontos dolgot tanulj meg: a helyes testtartás nemcsak állásnál fontos, hanem ülésnél is. Ha egyenesen ülsz, a hátad kevésbé terhelődik, és könnyebb hosszabb ideig figyelni. Például: a padban ülve a vállad nem esik előre, hanem szépen tartod magad.
+GYEREK: First I get up, then I have breakfast.
 
-És egy egyszerű relaxációs mód: lassan levegőt veszel, majd lassan kifújod. Ez segít megnyugtatni a testedet. Például: játék vagy futás után néhány nyugodt légvétellel pihensz.
+TANÁR: ¡Muy bien! Has colocado las acciones en el orden correcto. 🎉
 
-Most mondd meg: ülésnél miért jó az egyenes tartás? 🙂
+Ahora vamos a empezar una carta. En inglés, «<FL:en>Dear friend,</FL>» significa «Querido amigo,». Se escribe al principio, con mayúscula y una coma al final. Después puedes escribir una frase, empezando también con mayúscula y terminando con punto.
 
-GYEREK: Mert nem fáj annyira a hátad? És jobban lehet figyelni, asszem.
+En esta frase, ¿qué signo aparece al final de «<FL:en>Dear friend,</FL>»?
 
-TANÁR: Nagyon jó, ezt szépen elmondtad! 🙂 Igen, az egyenes tartás segít, hogy kevésbé fájjon a hátad, és könnyebb legyen figyelni.
+<VOCAB>querido=dear</VOCAB><VOCAB>amigo=friend</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["Una coma","Un punto","Un signo de interrogación"]}</FELADAT>
 
-Most egy kicsit továbbmegyünk a gimnasztikában:
-A statikus gyakorlatoknál egy helyzetet tartasz meg. Például: karokat magasba emelve kitartod a tartást.
+GYEREK: Una coma.
 
-A dinamikus gyakorlatoknál mozogsz, ismétled a mozdulatot. Például: karemelés, karkörzés, törzsdöntés.
+TANÁR: ¡Exacto, Máté! Al final de «<FL:en>Dear friend,</FL>» va una coma. 😊
 
-A légzőgyakorlatoknál figyelsz a levegővételre. Ez segít nyugodtabbnak lenni és jobban ellazulni. Például: belégzéskor emelkedik a mellkasod, kilégzéskor pedig leenged.
+Ahora fíjate en el orden de una frase: primero decimos quién, luego qué hace y, a veces, qué cosa. En «<FL:en>I read a story.</FL>» (Leo una historia), <FL:en>I</FL> dice quién y <FL:en>read</FL> dice qué hago.
 
-És még valami fontos: a gyakorlatokat utasításra, pontosan kell végezni. Azért, hogy mindenki ugyanúgy, biztonságosan csinálja. Például: amikor a tanár azt mondja, hogy „karokat oldalsó középtartásba”, akkor pontosan azt a helyzetet veszed fel.
+Toca la palabra que indica qué hago:
 
-Most te jössz: a statikus vagy a dinamikus gyakorlatnál van inkább mozgás? 🙂
+<FELADAT>{"tipus":"szoveg","szoveg":"I read a story.","kerdes":"¿Qué palabra indica la acción?"}</FELADAT>
 
-GYEREK: A dinamikusnál van mozgás, azt hiszem. Vagy a statikusnál? Nem, a dinamikusnál.
+GYEREK: read.
 
-TANÁR: Ügyes, ez így jó! 🙂 A dinamikus gyakorlatnál van mozgás.
+TANÁR: ¡Correcto! «<FL:en>read</FL>» indica la acción: significa «leer». 😊
 
-A statikus gyakorlatnál inkább megtartod ugyanazt a helyzetet. Ez segít az izmok tartásában és a testtartás javításában.
+Ya conoces los conectores de orden, cómo empezar una carta y el orden básico de una frase. Ahora practica con una postal breve: completa el saludo con la palabra adecuada.
 
-Most nézzünk még két fontos fogalmat:
-Az oszlopalakzat olyan, amikor egymás mögött álltok. Például sorakozásnál egymás mögé rendeződtök.
-A köralakzat olyan, amikor körben álltok. Például közös gyakorlatnál mindenki látja a másikat.
-A szétszórt alakzatnál nem álltok szorosan egymás mellett, hanem van hely köztetek. Ez azért jó, mert biztonságosan tudtok mozogni. Például tornateremben nyújtásnál mindenki külön helyen áll.
-
-Most egy gyors kérdés: melyik alakzatban álltok egymás mögött? 🙂
-
-GYEREK: Az oszlopalakzatban. Ugye? 🙂
-
-TANÁR: Igen, helyes! 🙂 Az oszlopalakzatban egymás mögött álltok.
-
-Jó volt az emlékezésed. Most még egy fontos dolog:
-A bemelegítés előtt a test hidegebb és merevebb lehet. Ezért kell először óvatosan átmozgatni. Ha a test már bemelegedett, könnyebben mozognak az izmok és az ízületek.
-
-A terhelés után végzett nyújtás segít csökkenteni a feszülést. Például futás után a combot és a vádlit is óvatosan meg lehet nyújtani.
-
-A stressz azt jelenti, hogy a tested vagy a lelked feszültebb. Ilyenkor segíthet a nyugodt légzés és az ellazulás. Például: ha sok volt a feladat, pár perc nyugodt légzés segíthet.
-
-Most mondd meg: a bemelegítés előtt vagy után merevebb a test? 🙂
+<VOCAB>leer=read</VOCAB>
+<FELADAT>{"tipus":"hianyzo","mondat":"Dear ____,","szavak":["friend","story","message"]}</FELADAT>
 
 
 ======================================================================
-Vizuális kultúra · 4. osztály · Anna (9 éves)
-Témakör: Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények
+Educación Física · 6. osztály · Pablo (11 éves)
+Témakör: Vida activa y saludable
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia, Anna! Ma azt nézzük meg, hogyan lehet mesét, fantáziát és saját élményeket rajzzal vagy térbeli alkotással megmutatni. 🎨
+TANÁR: ¡Hola, Bence! Soy Elvira. Hoy aprenderemos cómo cuidar la salud física, mental y social con hábitos activos y saludables. 😊
 
-A figurális alkotás olyan kép, amin felismerhető valami a valóságból, például ember, állat vagy tárgy.  
-Például: ha rajzolsz egy királyt a meséből, az figurális alkotás.
+Moverte con regularidad ayuda al cuerpo a estar fuerte y también puede mejorar el ánimo. Por ejemplo, jugar a la pelota con amigos combina movimiento y diversión.
 
-A <FL:la>kompozíció</FL> azt jelenti, hogy a képen hogyan rendezed el a dolgokat.  
-Például: ha a főhőst középre teszed, a háttérbe pedig az erdőt, az már tudatos <FL:la>kompozíció</FL>.
+La salud también incluye cómo te sientes contigo mismo. Cada cuerpo es diferente, y es importante tratar el propio cuerpo y el de los demás con respeto. Por ejemplo, nadie debería burlarse de un compañero por su aspecto o por cómo se mueve.
 
-A hangulat azt mutatja meg, milyen érzést kelt a kép. Lehet vidám, titokzatos vagy éppen nyugodt.  
-Például: egy sötét erdő és egy kis lámpás titokzatos hangulatot adhat.
+Además, los hábitos influyen en la actividad física. Las bebidas muy azucaradas y muchos alimentos ultraprocesados no son buenas opciones para tomar a menudo; para el día a día, el agua es una opción adecuada.
 
-A <FL:fr>kollázs</FL> olyan kép, amit több darabból raksz össze, például papírból kivágott formákból.  
-Például: egy mesebeli házat készíthetsz színes papírokból és újságdarabokból.
+¿Qué opción reúne movimiento y relación con otras personas?
 
-Nagyon fontos még, hogy a saját élményeidet is megmutathatod képen. Ha például voltál az erdőben vagy a tónál, azt is lerajzolhatod a saját ötleteid szerint.
+<FELADAT>{"tipus":"valaszt","opciok":["Jugar a la pelota con amigos","Quedarse sentado toda la tarde","Burlarse de cómo juega alguien"]}</FELADAT>
 
-Melyik szó jelenti azt, hogy a képen hogyan vannak elrendezve a dolgok: figurális alkotás, <FL:la>kompozíció</FL> vagy hangulat? 😊
+GYEREK: Jugar a la pelota con amigos. ¿Sí?
 
-GYEREK: A <FL:la>kompozíció</FL> az! Mert az mutatja, hogy hogyan vannak elrendezve a dolgok a képen.
+TANÁR: ¡Sí, Bence! Jugar a la pelota con amigos es una buena opción: te mueves y compartes un rato con otras personas. 😊
 
-TANÁR: Ügyes vagy, Anna! 🌟 Pontosan, a <FL:la>kompozíció</FL> a kép elrendezése.
+Ahora veremos cómo cuidar el cuerpo durante la actividad. Mantener una postura adecuada puede ayudar a moverte con comodidad; por ejemplo, al levantar una mochila del suelo, conviene doblar las rodillas y no encorvar la espalda. También es importante escuchar las señales del cuerpo: si te encuentras mal o sientes dolor, para la actividad y cuéntaselo a un adulto.
 
-Most nézzünk meg még néhány fontos fogalmat.
+El deporte profesional puede exigir entrenar muchas horas y seguir rutinas muy exigentes. No hace falta ser deportista profesional para disfrutar del movimiento: cada persona puede elegir actividades que le gusten y participar a su manera.
 
-A portré olyan kép, amin egy ember arcát vagy felsőtestét látjuk.  
-Például: ha megrajzolod a kedvenc mesebeli hősöd arcát, az portré lehet.
+¿En cuál de estas situaciones conviene parar y avisar a un adulto?  
+<FELADAT>{"tipus":"valaszt","opciok":["Sientes dolor o te encuentras mal","Te diviertes jugando","Terminas una actividad con energía"]}</FELADAT>
 
-A karakter azt mutatja meg, milyen valaki belülről és kívülről. Lehet bátor, kedves, furfangos vagy szomorú.  
-Például: a mese főhőse lehet bátor karakter, a gonosz szereplő pedig ijesztő.
+GYEREK: Sientes dolor o te encuentras mal. Creo que sí, ¿no?
 
-A gesztus a test mozdulata, amivel valamit kifejezünk.  
-Például: ha valaki integet vagy karba teszi a kezét, az már gesztus.
+TANÁR: ¡Sí, correcto! Si sientes dolor o te encuentras mal, conviene parar y avisar a un adulto. Muy bien. 😊
 
-Ezek nagyon sokat segítenek, ha mesefigurát rajzolsz. Nem csak az számít, hogyan néz ki, hanem az is, hogy milyen a tartása, az arca és a mozdulata. 🙂
+Ahora veremos que no existe un único tipo de cuerpo ni una sola manera de ser bueno en el deporte. Algunas personas corren rápido; otras tienen buen equilibrio o disfrutan más de los juegos en equipo. Lo importante es participar con respeto, sin burlarse ni decir que una actividad es solo para chicos o solo para chicas.
 
-Most te jössz: a gesztus inkább az archoz vagy a test mozdulatához tartozik?
+Por ejemplo, cualquier persona puede disfrutar del baile, la natación o el baloncesto, y cada cual puede mejorar a su ritmo.
 
-GYEREK: A test mozdulatához tartozik. Nem az arc, hanem hogy mit csinál a keze meg a teste.
+¿Cuál es una forma respetuosa de actuar cuando un compañero tiene una habilidad distinta a la tuya?
 
-TANÁR: Nagyon jó! 🌟 Pontosan, a gesztus a test mozdulata.
+<FELADAT>{"tipus":"valaszt","opciok":["Animarle y dejar que participe","Burlarse de él","Decirle que esa actividad no es para él"]}</FELADAT>
 
-Most nézzünk még két fontos dolgot.
+GYEREK: Animarle y dejar que participe. Mi perro también anima cuando corro.
 
-A hangulat megmutatja, milyen érzést kelt a kép. Egy kép lehet vidám, nyugodt vagy titokzatos.  
-Például: ha egy napfényes mezőt rajzolsz sok élénk színnel, az vidám hangulatú lehet.
+TANÁR: ¡Correcto! Animarle y dejar que participe es respetuoso. ¡Y qué simpático que tu perro te anime cuando corres! 😊
 
-A képmező az a rész, amit a képen látsz. Olyan, mint a rajz „tere”, ahová mindent elhelyezel.  
-Például: ha a főhős a közepén áll, a fák pedig körülötte vannak, akkor szépen kitöltöd a képmezőt.
+Ahora veremos cómo hablar de nuestras propias capacidades. Tener una idea realista de uno mismo significa reconocer lo que ya hacemos bien y también lo que podemos practicar, sin compararnos constantemente con los demás. Por ejemplo: «Aún me cuesta mantener el equilibrio, pero puedo mejorar practicando».
 
-Ha rajzolsz egy meserészletet, érdemes előbb elgondolni:
-mi legyen középen, mi kerüljön háttérbe, és milyen színekkel lesz a legjobb a hangulat. Ez segít, hogy a kép érthető és szép legyen. 🎨
+También cuenta lo que elegimos para comer y beber. Tomar a menudo muchos productos ultraprocesados o bebidas azucaradas no favorece la salud. Las bebidas energéticas tampoco son adecuadas para los niños; para hidratarse, lo mejor es elegir agua.
 
-Melyik szó jelenti azt, hogy milyen érzést kelt a kép: képmező vagy hangulat?
+¿Cuál es una forma realista y amable de pensar si todavía te cuesta una actividad?
 
-GYEREK: A hangulat! Az mondja meg, hogy vidám vagy titokzatos-e a kép.
+<FELADAT>{"tipus":"valaszt","opciok":["Puedo practicar y mejorar poco a poco","Nunca podré hacerlo","Los demás tienen que dejar de jugar"]}</FELADAT>
 
-TANÁR: Ügyes vagy! 🌟 Pontosan a hangulat mutatja meg, hogy a kép vidám, szomorú vagy titokzatos.
+GYEREK: Puedo practicar y mejorar poco a poco. ¿Puedo ir a jugar luego?
 
-Most tanuljunk még két új fogalmat.
+TANÁR: ¡Correcto! Practicar poco a poco ayuda a mejorar. 😊
 
-A fikció olyan történet, ami kitalált. Nem a valóságot mutatja, hanem a képzeletből születik.  
-Például: egy beszélő sárkány vagy egy repülő ház is fikció.
+No puedo decidir si puedes salir a jugar; pregúntaselo a mamá, papá o al adulto que esté contigo. Jugar activamente puede ayudar a cuidar el cuerpo y a disfrutar con otras personas. Por ejemplo, un juego en equipo permite moverse y cooperar.
 
-A <FL:fr>montázs</FL> olyan kép, amit sok különböző darabból rakunk össze. Lehetnek benne képek, papírdarabok vagy rajzolt részek is.  
-Például: ha egy erdőt készítesz kivágott fákból, rajzolt napból és ragasztott állatokból, az <FL:fr>montázs</FL> lehet.
+¿Qué beneficio puede aportar un juego en equipo?
 
-Ezek jól segítenek, ha saját mesét találsz ki. A fikcióval kitalálhatsz bármit, a <FL:fr>montázs</FL>-sal pedig sokféle darabból összeállíthatod a képet. 🙂
+<FELADAT>{"tipus":"valaszt","opciok":["Moverse y cooperar","Burlarse de los demás","Evitar siempre participar"]}</FELADAT>
 
-Most te jössz: melyik szó jelent kitalált történetet, a fikció vagy a <FL:fr>montázs</FL>?
+GYEREK: Moverse y cooperar. ¡Y luego agua!
 
-GYEREK: A fikció az, mert az kitalált történet. A montázs meg csak össze van rakva több darabból.
+TANÁR: ¡Exacto! Un juego en equipo permite moverse y cooperar. Y beber agua es una buena forma de hidratarse. 😊
 
-TANÁR: Nagyon ügyes vagy! 🌟 Pontosan: a fikció kitalált történet, a <FL:fr>montázs</FL> pedig sok darabból összeállított kép.
+Ya hemos repasado el movimiento, el respeto al cuerpo propio y ajeno, la participación igualitaria, la postura y algunos hábitos saludables. Ahora viene la prueba final de este tema. ¡Ánimo, Bence: lee cada pregunta con calma y elige la mejor opción!
 
-Most nézzünk még két fontos fogalmat.
-
-Az attribútum egy olyan tárgy vagy jel, ami segít felismerni egy szereplőt.  
-Például: egy királyt gyakran korona jelöl, egy lovagot pedig kard vagy pajzs.
-
-A színhangulat azt mutatja meg, hogy a színek milyen érzést keltenek együtt.  
-Például: a meleg sárga és piros vidámabb lehet, a kék és a sötétlila nyugodtabb vagy titokzatosabb hatású.
-
-Ha mesefigurát rajzolsz, ezek nagyon hasznosak:
-- a karakter megmutatja, milyen a szereplő,
-- az attribútum segít felismerni,
-- a színhangulat pedig megadja a kép érzését.
-
-Például egy bátor királyt úgy is rajzolhatsz, hogy koronát adsz rá, és arany, meleg színeket használsz körülötte. 🎨
-
-Most te jössz: melyik segít felismerni a szereplőt, az attribútum vagy a színhangulat?
-
-GYEREK: Az attribútum segít felismerni a szereplőt. A színhangulat meg az érzést adja.
-
-TANÁR: Nagyon szép válasz! 🌟 Jól megmondtad: az <FL:la>attribútum</FL> segít felismerni a szereplőt, a színhangulat pedig az érzést adja.
-
-Most tanuljunk még egy kicsit a mesés rajzokról.
-
-A népviselet a régi magyar ruhák összessége.  
-Például: ha egy népmesében a lány hímzett ruhát és kendőt visel, az lehet népviseleti elem.
-
-A parasztház egy régi, falusi ház. Általában egyszerű, és gyakran van tornáca.  
-Például: ha egy mese helyszíne egy régi falusi udvar, a parasztház jól illik hozzá.
-
-A székelykapu egy nagy, díszes fa kapu. Sokszor nagyon szép minták vannak rajta.  
-Például: ha egy mesehős egy különleges kapun megy át, az lehet székelykapu.
-
-Ezeket azért jó ismerni, mert ha népmesét rajzolsz, a helyszín és a ruhák is segítenek, hogy a kép igazi mesés hangulatú legyen. 🙂
-
-Most figyelj egy kicsit a kép elkészítésére is:
-először eldöntöd, mi legyen a főszereplő, utána megtervezed a hátteret, és csak ezután rajzolod meg a részleteket. Így a képed rendezett lesz.
-
-Melyik régi falusi ház neve: parasztház vagy <FL:la>attribútum</FL>?
+<FELADAT>{"tipus":"valaszt","opciok":["Moverse con regularidad puede beneficiar el cuerpo y el ánimo","Las bebidas energéticas son la mejor opción para hidratarse","Hay actividades deportivas que solo son para chicos"]}</FELADAT>
 
 
 ======================================================================
-Vizuális kultúra · 3. osztály · Viki (8 éves)
-Témakör: Síkbeli és térbeli alkotások – Mese, fantázia, képzelet, személyes élmények
+Lengua Castellana y Literatura · 6. osztály · Lucía (11 éves)
+Témakör: Comunicación y medios
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia! Ma azt tanuljuk meg, hogyan tudsz mesét, fantáziát és saját élményt képpé vagy térbeli alkotássá formálni. 🎨
+TANÁR: ¡Hola, Anna! Soy Elvira. Hoy aprenderemos a distinguir noticias, opiniones y anuncios, y a mirar los mensajes de los medios con atención. 😊
 
-A mese olyan történet, amiben sokszor különleges helyek és szereplők vannak. Például egy sárkányos várat vagy egy varázserdőt is meg lehet rajzolni.
+- Una noticia cuenta algo que ha ocurrido o que se puede comprobar. Por ejemplo: «La biblioteca del barrio abrirá los domingos durante el mes de junio».
+- Una opinión expresa lo que alguien piensa o siente. Por ejemplo: «Me parece que leer en la biblioteca es más divertido que leer en casa».
+- Un anuncio intenta llamar nuestra atención para que conozcamos o elijamos algo. Por ejemplo: un cartel que invita a apuntarse a un taller de dibujo.
+- En los medios digitales podemos encontrar información de muchas fuentes. Antes de creerla o compartirla, conviene fijarse en quién la publica y buscar si otros medios fiables cuentan lo mismo.
 
-A fantázia azt jelenti, hogy elképzelsz valamit, ami nincs a valóságban. Például kitalálhatsz egy repülő házat vagy egy beszélő virágot.
+Ahora, fíjate en esta frase: «El equipo del colegio ganó ayer el torneo de baloncesto». ¿Qué tipo de mensaje es?
 
-A személyes élmény azt jelenti, amit te magad átéltél. Például lerajzolhatod a szülinapodat, egy kirándulást vagy a kedvenc helyedet.
+<FELADAT>{"tipus":"valaszt","opciok":["Una noticia","Una opinión","Un anuncio"]}</FELADAT>
 
-Az alkotás lehet síkbeli vagy térbeli. Síkbeli, ha rajzolsz vagy festesz. Térbeli, ha formázol vagy építesz, például papírból, dobozból vagy más anyagból.
+GYEREK: Una noticia. Porque cuenta algo que pasó, ¿no?
 
-Most te jössz! Melyik lenne inkább fantázia: egy repülő macska vagy egy kék ceruza? 🙂
+TANÁR: ¡Exacto, Anna! Es una noticia porque cuenta un hecho que ocurrió. 😊
 
-GYEREK: A repülő macska, mert az nincs a valóságban. A kék ceruza meg lehet sima ceruza, ugye?
+Ahora veremos cómo analizar un anuncio. Además de fijarnos en qué producto, actividad o idea presenta, podemos observar qué palabras e imágenes usa para llamar la atención. Por ejemplo, un cartel de una feria de libros podría mostrar una portada colorida y decir: «¡Ven a descubrir nuevas aventuras!». Esa frase busca animar al público; no es una noticia sobre algo que ya pasó.
 
-TANÁR: Nagyon ügyes! 😊
+También conviene distinguir entre informar y convencer. Un mensaje informativo explica datos; uno persuasivo intenta influir en lo que pensamos o hacemos. Por ejemplo, «La feria abre el sábado a las diez» informa; «¡No te pierdas la feria más emocionante!» intenta convencer.
 
-Igen, jól gondolod: a repülő macska fantázia, mert ilyen nincs a valóságban.
+<FELADAT>{"tipus":"valaszt","opciok":["Informar","Convencer","Contar una opinión"]}</FELADAT>
 
-És igen, a kék ceruza sima ceruza is lehet. A „kék” csak azt mondja meg, milyen a színe.
+GYEREK: Convencer. Porque quiere que vayamos a la feria, creo.
 
-Figyeld meg:
-- fantázia = kitalált dolog
-- személyes élmény = veled megtörtént dolog
-- valóság = ami tényleg létezik
+TANÁR: ¡Muy bien! Has entendido la intención: ese mensaje quiere convencer al público de que vaya a la feria. 😊
 
-Például:
-- kitalált történet: egy macska repül a felhők között
-- személyes élmény: elmentél a játszótérre
-- valóság: egy ceruza ott van az asztalon
+Ahora aprenderemos a comparar titulares. Un titular resume una noticia y puede presentarla con un tono neutral o con palabras muy llamativas. Por ejemplo, «El equipo gana el torneo» cuenta el resultado de forma sencilla; «¡Victoria increíble del equipo!» lo cuenta con más emoción. Para saber qué ocurrió realmente, conviene leer la noticia completa y no quedarse solo con el titular.
 
-Most egy könnyű kérdés: a szülinapi tortád inkább fantázia vagy személyes élmény? 🙂
+Al consultar un mensaje digital, también ayuda comprobar quién lo publica y cuándo. Así podemos valorar mejor de dónde viene la información y si está actualizada.
 
-GYEREK: Személyes élmény, mert a szülinap velem megtörténik. De ha dinoszaurusz alakú torta, az már kicsit fantázia is, nem?
+¿Qué pista ayuda a comprobar de dónde viene una noticia?
 
-TANÁR: Igen, nagyon jól látod! 😊
+<FELADAT>{"tipus":"valaszt","opciok":["El nombre de quien la publica","El color del titular","El tamaño de las letras"]}</FELADAT>
 
-A szülinap személyes élmény, mert valóban megtörtént veled.
+GYEREK: El nombre de quien la publica. Porque así sabes de dónde viene, ¿verdad?
 
-A dinoszaurusz alakú torta pedig lehet egy kicsit fantáziás is, mert a torta valóságos, de az alakja kitalált, különleges.
+TANÁR: ¡Sí, exacto! El nombre de quien publica nos ayuda a saber de dónde procede la información. 😊
 
-Ez azt mutatja, hogy egy alkotásban néha összekeveredhet a valóság és a képzelet. Ez nagyon izgalmas a rajzolásban és a formázásban is.
+Ahora veremos cómo preparar un pódcast de clase, un programa de audio que se puede escuchar después.
 
-Például:
-- egy igazi születésnapi torta: személyes élményhez kapcsolódik
-- egy dinoszaurusz formájú torta: élmény és fantázia együtt
+- Primero, elegimos un tema y pensamos qué queremos contar. Por ejemplo, podemos hablar de una actividad del colegio.
+- Después, ordenamos las ideas para que quien escucha las entienda. Podemos empezar presentando el tema y terminar con una idea final.
+- Al grabar, hablamos con claridad y respetamos los turnos si participan varias personas. Así el mensaje se entiende mejor.
 
-Ügyes vagy, mert már szépen különbséget teszel a valóság és a képzelet között. 🌟
+Si en el pódcast contamos un hecho, como «La exposición abre el jueves», damos información. Si decimos «La exposición será muy divertida», expresamos una opinión.
 
-Most mondj egy dolgot, amit rajzolva inkább valóságosan ábrázolnál!
+¿Cuál de estas frases expresa una opinión?
 
-GYEREK: A kutyámat rajzolnám valóságosan, mert ő tényleg ilyen. Meg a házunkat is, csak azt nehéz jól megcsinálni.
+<FELADAT>{"tipus":"valaszt","opciok":["La exposición abre el jueves","La exposición tiene doce dibujos","La exposición será muy divertida"]}</FELADAT>
 
-TANÁR: Nagyon jó válasz! 😊
+GYEREK: La exposición será muy divertida. Eso es lo que pienso yo.
 
-A kutyádat valóságosan rajzolnád, mert azt szeretnéd megmutatni, amilyen tényleg. Ez a megfigyelésen alapuló rajz.
+TANÁR: ¡Correcto! «La exposición será muy divertida» expresa lo que alguien piensa; por eso es una opinión. 😊
 
-A házadat is rajzolhatod valósan, csak ott érdemes először a nagy formákat nézni. Például:
-- először a ház alakját,
-- aztán az ajtót és az ablakokat,
-- végül a kisebb részleteket.
+Ahora aprenderemos a detectar una promesa en la publicidad. Un anuncio puede destacar una ventaja, pero eso no significa que debamos creerla sin pensar. Por ejemplo, «Este cuaderno dura para siempre» es una afirmación exagerada: ningún cuaderno dura literalmente para siempre.
 
-Így könnyebb lesz szépen megrajzolni. Ez segít abban, hogy a rajzod rendezett legyen.
+También podemos preguntarnos: «¿Qué quiere que piense o haga este mensaje?» Esa pregunta nos ayuda a reconocer su intención. Un anuncio de un taller, por ejemplo, quizá quiera que nos apuntemos; una noticia, en cambio, busca contar un hecho.
 
-Azt is figyeld meg, mi legyen a kép közepén. Amit a legfontosabbnak szeretnél mutatni, azt tedd oda. Ezt nevezzük kompozíciónak, vagyis a kép elrendezésének.
+¿Cuál de estas frases es una promesa publicitaria exagerada?
 
-Például:
-- ha a kutyád a legfontosabb, ő legyen középen,
-- ha a házat akarod megmutatni, akkor az legyen a fő rész.
+<FELADAT>{"tipus":"valaszt","opciok":["El taller empieza el martes","¡Con este cuaderno escribirás las mejores historias del mundo!","La biblioteca tiene una sala nueva"]}</FELADAT>
 
-Most egy kérdés: ha egy rajzon a kutyád a legfontosabb, hová tennéd őt a képen? 🙂
+GYEREK: ¡Con este cuaderno escribirás las mejores historias del mundo! Eso suena muy exagerado.
 
-GYEREK: Középre tenném, mert ő a főszereplő. Vagy kicsit nagyobbra rajzolnám, az is jó?
+TANÁR: ¡Muy bien! Has detectado la exageración: el anuncio intenta convencer, pero esa frase no se puede comprobar como un hecho.
 
-TANÁR: Igen, mindkettő jó! 😊
+Para analizar mensajes de los medios, recuerda estas ideas: una noticia cuenta hechos; una opinión expresa lo que alguien piensa; y un anuncio intenta llamar la atención o convencer. En los medios digitales, también es útil fijarse en quién publica la información y contrastarla con otras fuentes.
 
-Ha a kutyád a főszereplő, akkor teheted középre. Így rögtön őt veszi észre, aki nézi a képet.
-
-És az is jó ötlet, ha kicsit nagyobbra rajzolod. A nagyobb alak fontosabbnak tűnik, mert jobban kitölti a képet.
-
-Ezt úgy is mondjuk, hogy a fontosabb dolgot hangsúlyozod.  
-Például:
-- a kutya lehet középen és nagyobban,
-- a ház lehet mögötte kisebben,
-- a kert pedig még kisebb részletekkel körülötte.
-
-Nagyon szépen gondolkodsz! 🌟
-
-Most egy kérdés: ha a képen a ház lenne a legfontosabb, te mit változtatnál rajta, hogy jobban feltűnjön?
-
-GYEREK: Nagyobbra rajzolnám, meg középre tenném. És lehetne piros tetője, hogy nagyon feltűnjön!
-
-TANÁR: Nagyon jó! 😊
-
-A nagyobb méret és a középre helyezés tényleg erősebbé teszi a házat. A piros tető pedig azért jó ötlet, mert a színével is kiemeli a házat. Ez már tudatos kompozíció.
-
-Most figyelj erre a három fontos dologra:
-- ha valami fontos, rajzold nagyobbra;
-- ha valami fontos, helyezd a kép közepére;
-- ha valamit ki akarsz emelni, használj feltűnő színt.
-
-Például:
-- egy piros tetős ház nagyon hamar odavonzza a tekintetet;
-- egy sárga nap a kék ég előtt szintén nagyon jól látszik;
-- egy zöld fa a ház mellett szépen keretezheti a képet.
-
-Ezek mind segítenek abban, hogy a rajzod ne csak szép legyen, hanem érthető is. Ez nagyon fontos a vizuális alkotásban. 🎨
-
-Most egy kérdés: ha a kutyád lenne a legfontosabb a képen, őt mivel emelnéd ki leginkább: nagyobb mérettel vagy feltűnő színnel?
+Ya hemos trabajado las ideas principales del tema. ¡Ahora viene la prueba final! Confía en lo que has aprendido y lee cada pregunta con atención. 😊 <TOPIC_COMPLETE>
 
 
 ======================================================================
-Idegen nyelv – spanyol · 5. osztály · Máté (10 éves)
-Témakör: ¡Hola! Me presento – Bemutatkozás és személyes adatok
+Educación Artística · 5. osztály · Martina (10 éves)
+Témakör: Recepción y análisis
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia, Máté! Ma azt tanuljuk meg, hogyan mutatkozz be spanyolul. 😊
+TANÁR: ¡Hola, Viki! Soy Elvira. Hoy aprenderemos a observar y escuchar obras de arte con atención y respeto. 😊
 
-Az első fontos kifejezés a <FL:es>llamarse</FL> ige. Ez azt jelenti, hogy „hívnak valakit”, és bemutatkozásnál ezt használjuk.
-Például: <FL:es>Me llamo</FL> Máté. (A nevem Máté.)
-Még egy példa: <FL:es>¿Cómo te llamas?</FL> (Hogy hívnak?)
-És még egy: <FL:es>Me llamo</FL> Ana. (A nevem Ana.)
+Cuando miramos una pintura, escuchamos música o vemos una obra de teatro, podemos participar con la mente aunque no estemos creando. Fijarnos en los detalles, escuchar y pensar qué nos hace sentir es una forma de **recibir activamente** una obra. Por ejemplo, al ver un mural, podemos observar sus colores y preguntarnos qué idea transmite.
 
-Most te jössz: hogyan mondod spanyolul azt, hogy „A nevem Máté”?  
-<VOCAB>neveznek=llamarse</VOCAB>
+En un concierto o en una sala de teatro, el silencio ayuda a que todas las personas puedan atender y disfrutar. También conviene esperar al momento adecuado para aplaudir y respetar las reacciones de los demás.
 
-GYEREK: Me llamo Máté.
+Para hablar de arte usamos palabras que describen lo que vemos y oímos. En una pintura podemos comentar los colores y las formas; en una canción, el ritmo; y en una representación teatral, los gestos y la voz.
 
-TANÁR: Ügyes vagy, Máté! 😊
+Además, al conocer obras distintas, es importante descubrir quién las creó. Las mujeres también han contribuido a todas las artes, aunque a veces sus obras se han conocido menos. Por ejemplo, podemos fijarnos en si una exposición incluye tanto artistas mujeres como hombres.
 
-Most jön egy új kifejezés: <FL:es>ser de</FL>. Ez azt mondja meg, hogy honnan származol vagy melyik országból jössz.
-Például: <FL:es>Soy de Hungría</FL>. (Magyarországról vagyok.)
-Még egy példa: <FL:es>¿Eres de España?</FL> (Spanyolországról vagy?)
-És így válaszolhatsz: <FL:es>Sí, soy de Hungría</FL>. (Igen, Magyarországról vagyok.)
+<FELADAT>{"tipus":"valaszt","opciok":["Escuchar con atención y pensar en lo que transmite","Hablar durante toda la música","Mirar solo quién está sentado cerca"]}</FELADAT>
 
-Most te jössz: hogyan mondod spanyolul azt, hogy „Magyarországról vagyok”?  
-<VOCAB>valahonnan származik=ser de</VOCAB><VOCAB>ország=el país</VOCAB>
+GYEREK: Escuchar con atención y pensar en lo que transmite. ¿Y si la pintura me pone triste?
 
-GYEREK: Soy de Hungría.
+TANÁR: ¡Muy bien, Viki! Escuchar y pensar en lo que transmite es recibir una obra con atención. 😊
 
-TANÁR: Nagyon ügyes! 😊
+Si una pintura te pone triste, está bien: cada persona puede sentir algo distinto al verla. Para analizarla, puedes separar dos cosas: **lo que sientes** y **las pistas que ves**. Por ejemplo: «Me siento triste» es tu emoción; «veo colores apagados y una figura sola» describe detalles que quizá te ayudan a explicar por qué te sientes así. Otra persona podría sentir algo diferente ante la misma pintura.
 
-Most jön a <FL:es>vivir</FL> ige. Ez azt jelenti, hogy „lakni, élni”.
-Például: <FL:es>Vivo en Budapest</FL>. (Budapesten lakom.)
-Másik példa: <FL:es>¿Dónde vives?</FL> (Hol laksz?)
-És még egy: <FL:es>Vivo en una ciudad</FL>. (Egy városban lakom.)
+¿Qué detalle podría servir como pista para explicar esa tristeza?
 
-Most te jössz: hogyan mondod spanyolul azt, hogy „Budapesten lakom”?  
-<VOCAB>lakni=vivir</VOCAB><VOCAB>város=la ciudad</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["Una figura sola bajo un cielo gris","Un grupo bailando con colores vivos","Una mesa llena de frutas brillantes"]}</FELADAT>
 
-GYEREK: Vivo en Budapest.
+GYEREK: Una figura sola bajo un cielo gris. Eso me hace pensar en tristeza, ¿no?
 
-TANÁR: Nagyon ügyes! 😊
+TANÁR: ¡Sí, Viki! Esa figura sola y el cielo gris son pistas que pueden hacerte pensar en la tristeza. No significa que todo el mundo vaya a sentir lo mismo: cada persona puede interpretar una pintura de manera distinta.
 
-Most jön a <FL:es>el país</FL>. Ez azt jelenti, hogy „ország”.
-Például: <FL:es>Hungría es un país</FL>. (Magyarország egy ország.)
-Még egy példa: <FL:es>España es un país</FL>. (Spanyolország egy ország.)
+Ahora añadimos una palabra útil: la **composición** es cómo están colocadas las cosas dentro de una imagen. Por ejemplo, si una figura aparece en el centro y ocupa casi todo el espacio, puede llamar mucho nuestra atención. Si aparece pequeña y rodeada de mucho espacio vacío, quizá parezca sola o alejada.
 
-Most te jössz: hogyan mondod spanyolul azt, hogy „ország”?  
-<VOCAB>ország=el país</VOCAB>
+También podemos conocer obras de distintas épocas y lugares. Compararlas nos ayuda a descubrir maneras diferentes de expresar ideas y emociones, sin decidir que una forma es mejor que otra.
 
-GYEREK: el país.
+<FELADAT>{"tipus":"valaszt","opciok":["La colocación de las cosas dentro de una imagen","El sonido más fuerte de una canción","El lugar donde se guarda una pintura"]}</FELADAT>
 
-TANÁR: Szuper! 😊
+GYEREK: La colocación de las cosas dentro de una imagen. La composición hace que una figura parezca más importante, ¿sí?
 
-Most jön a <FL:es>la ciudad</FL>. Ez azt jelenti, hogy „város”.
-Például: <FL:es>Budapest es una ciudad</FL>. (Budapest egy város.)
-Még egy példa: <FL:es>Madrid es una ciudad</FL>. (Madrid egy város.)
+TANÁR: ¡Sí! La composición puede hacer que una figura destaque y llame más la atención, aunque eso no siempre significa que sea la más importante para quien creó la obra. ¡Has entendido muy bien la idea! 😊
 
-Most te jössz: hogyan mondod spanyolul azt, hogy „város”?  
-<VOCAB>város=la ciudad</VOCAB>
+Al analizar una pintura, también ayuda separar **lo que observamos** de **lo que interpretamos**. «Veo tres figuras azules» describe algo que está en la imagen. «Parecen estar preocupadas» expresa una interpretación. Podemos fijarnos en las pistas y recordar que otra persona quizá las interprete de otra manera.
 
-GYEREK: la ciudad.
+<FELADAT>{"tipus":"valaszt","opciok":["Veo tres figuras azules","Las figuras están preocupadas","La pintura cuenta una historia triste"]}</FELADAT>
 
-TANÁR: Nagyon jó! 😊
+GYEREK: Veo tres figuras azules. Eso es lo que observo, no?
 
-Most jön a <FL:es>el idioma</FL>. Ez azt jelenti, hogy „nyelv”.
-Például: <FL:es>El español es un idioma</FL>. (A spanyol egy nyelv.)
-Még egy példa: <FL:es>El húngaro es un idioma</FL>. (A magyar egy nyelv.)
+TANÁR: ¡Exacto, Viki! «Veo tres figuras azules» describe algo que puedes observar directamente. «Parecen preocupadas» sería una interpretación. 😊
 
-Most te jössz: hogyan mondod spanyolul azt, hogy „nyelv”?  
-<VOCAB>nyelv=el idioma</VOCAB>
+Al visitar una exposición o ver una obra en una pantalla, también cuidamos el espacio y a las demás personas: hablamos bajito cuando hace falta, esperamos nuestro turno y seguimos las indicaciones. El silencio no significa que no podamos disfrutar; ayuda a concentrarnos y a no interrumpir.
+
+Además, al buscar información sobre una obra en recursos digitales, como una página de un museo, conviene fijarse en quién la creó y de dónde viene. Así descubrimos distintas artistas y culturas y las tratamos con respeto.
+
+<FELADAT>{"tipus":"valaszt","opciok":["Para concentrarnos y no interrumpir a los demás","Para que nadie pueda disfrutar de la obra","Porque está prohibido pensar durante una exposición"]}</FELADAT>
+
+GYEREK: Para concentrarnos y no interrumpir a los demás. Pero yo a veces quiero hablar, je.
+
+TANÁR: ¡Claro! A veces apetece comentar lo que vemos. Puedes guardar la idea para después o hablar bajito en un momento adecuado, sin tapar la obra ni molestar a quienes también están mirando. En un concierto o una representación, esperamos a que termine antes de aplaudir.
+
+Otra forma de recibir arte es **comparar**: buscar en qué se parecen y en qué se diferencian dos obras. Por ejemplo, dos canciones pueden tener ritmos distintos y, aun así, transmitir alegría.
+
+<FELADAT>{"tipus":"valaszt","opciok":["Comparar dos obras para encontrar semejanzas y diferencias","Hablar por encima de la música","Decidir que una obra no vale porque es diferente"]}</FELADAT>
 
 
 ======================================================================
-Idegen nyelv – angol · 7. osztály · Bence (12 éves)
-Témakör: What have you done? – Mit csináltál eddig?
+Lengua Castellana y Literatura · 2. osztály · Hugo (7 éves)
+Témakör: Conversamos y explicamos
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia! Ma azt tanuljuk meg, hogyan beszélünk angolul arról, ami már megtörtént. 🙂
+TANÁR: ¡Hola! Hoy vamos a aprender a explicar algo con orden y a hacer preguntas para entender mejor. 😊
 
-A Present Perfect Simple-ben a segédige és a főige együtt dolgozik: például „I have finished my homework.” jelentése: „Befejeztem a házi feladatomat.” Itt a hangsúly azon van, hogy a dolog már kész. A „finish” azt jelenti, hogy befejez valamit. Például: „I finish my work.” — „Befejezem a munkámat.” <VOCAB>befejez=finish</VOCAB>
+Cuando explicas algo, ayuda contar las ideas en orden: primero qué necesitas, después qué haces y, al final, qué ocurre. Por ejemplo, para preparar un bocadillo: primero coges el pan, después pones el queso y, al final, lo cierras.
 
-Egy másik fontos mondat: „I have already done it.” — „Már megtettem.” Az „already” azt mutatja, hogy valami korábban, a vártnál hamarabb megtörtént. Például: „She has already finished.” — „Ő már befejezte.” <VOCAB>már=already</VOCAB>
+También puedes usar palabras como «primero», «después» y «al final». Así, quien te escucha puede seguir tus ideas. Por ejemplo: «Primero me pongo el abrigo; después, cojo la mochila».
 
-Most te jössz: mit jelent ez a mondat magyarul? „I have finished my homework.”
+Y si quieres saber más, haz una pregunta amable y concreta. Por ejemplo, después de escuchar cómo se planta una semilla, puedes preguntar: «¿Cuándo hay que regarla?».
 
-GYEREK: Befejeztem a házi feladatomat. Ugye ez jó?
+¿Qué pregunta ayuda a saber más sobre una planta?
 
-TANÁR: Igen, ez jó! Szép munka! 😊
+<FELADAT>{"tipus":"valaszt","opciok":["¿De qué color es tu mochila?","¿Cuándo hay que regarla?","¿Dónde está mi abrigo?"]}</FELADAT>
 
-Most két nagyon hasznos szót tanulunk: <FL:en>ever</FL> és <FL:en>never</FL>. Az <FL:en>ever</FL> azt jelenti, hogy „valaha”, kérdésekben használjuk, például: <FL:en>Have you ever been to the zoo?</FL> jelentése: „Voltál már valaha állatkertben?” <VOCAB>valaha=ever</VOCAB>
+GYEREK: ¿Cuando hay que regarla?
 
-A <FL:en>never</FL> azt jelenti, hogy „soha”. Például: <FL:en>I have never seen a lion.</FL> jelentése: „Még soha nem láttam oroszlánt.” <VOCAB>soha=never</VOCAB>
+TANÁR: ¡Muy bien! Esa pregunta ayuda a saber cuándo necesita agua la planta. 🌱
 
-Van egy másik hasznos kifejezés is: <FL:en>so far</FL>, ez azt jelenti, hogy „eddig”. Például: <FL:en>I have done my homework so far.</FL> jelentése: „Eddig megcsináltam a házimat.” <VOCAB>eddig=so far</VOCAB>
+Ahora vamos a practicar cómo explicar un proceso con claridad. Puedes contar cada acción y añadir un detalle. Por ejemplo: «Primero pongo tierra en una maceta. Después, hago un pequeño agujero y dejo caer una semilla. Por último, la cubro con tierra y la riego».
 
-Most te jössz: melyik szó jelenti azt, hogy „soha”?
+Al escuchar, también podemos esperar a que la otra persona termine y luego hacer una pregunta relacionada. Así la conversación continúa y aprendemos más.
 
-GYEREK: Never. Vagyis soha.
+¿Qué palabra indica que cuentas la última acción?  
+<FELADAT>{"tipus":"valaszt","opciok":["Primero","Después","Por último"]}</FELADAT>
 
-TANÁR: Nagyon jó! 😊 A <FL:en>never</FL> tényleg azt jelenti, hogy „soha”. 
+GYEREK: Por último.
 
-Most jöjjön három új szó. A <FL:en>tidy</FL> azt jelenti, hogy rendbe tesz vagy rendes, rendezett. Például: <FL:en>I tidy my room.</FL> jelentése: „Rendbe teszem a szobámat.” <VOCAB>rendbe tesz=tidy</VOCAB>
+TANÁR: ¡Exacto! «Por último» nos avisa de que llega la última acción. 😊
 
-A <FL:en>achieve</FL> azt jelenti, hogy elér, megvalósít valamit. Például: <FL:en>She achieved her goal.</FL> jelentése: „Elérte a célját.” <VOCAB>elér=achieve</VOCAB>
+Ahora veremos cómo conversar para conocer a alguien. En una entrevista, hacemos preguntas, escuchamos con atención y luego contamos lo que hemos aprendido. Por ejemplo: «¿Qué juego te gusta?» Después escuchamos la respuesta sin interrumpir.
 
-A <FL:en>experience</FL> azt jelenti, hogy tapasztalat, élmény. Például: <FL:en>It was a new experience.</FL> jelentése: „Ez egy új élmény volt.” <VOCAB>tapasztalat=experience</VOCAB>
+También podemos contar una noticia de la clase. Decimos qué pasó y lo explicamos con claridad. Por ejemplo: «Hoy nuestra clase plantó semillas en el patio».
 
-Most te jössz: melyik szó jelenti azt, hogy „elér”?
+¿Cuál es una buena pregunta para una entrevista sobre los juegos favoritos?
 
-GYEREK: Achieve. Ez az, nem?
+<FELADAT>{"tipus":"valaszt","opciok":["¿Qué juego te gusta?","¿Dónde está mi lápiz?","¿Cuánto mide una ventana?"]}</FELADAT>
 
-TANÁR: Igen, ez az! Nagyon ügyes vagy! 😊
+GYEREK: ¿Qué juego te gusta?
 
-A <FL:en>achieve</FL> tényleg azt jelenti, hogy „elér”.
+TANÁR: ¡Muy bien! «¿Qué juego te gusta?» es una buena pregunta para una entrevista. 🎲
 
-Most a <FL:en>experience</FL> szóra figyelj. Ez azt jelenti, hogy „tapasztalat” vagy „élmény”. Például: <FL:en>Travel is a great experience.</FL> jelentése: „Az utazás nagyszerű élmény.” <VOCAB>tapasztalat=experience</VOCAB>
+Ahora practicaremos cómo responder y contar lo que hemos averiguado. Escucha la pregunta y contesta hablando del mismo tema. Por ejemplo:
 
-Most te jössz: mit jelent az <FL:en>experience</FL>?
+—¿Qué juego te gusta?  
+—Me gusta jugar al escondite.
 
-GYEREK: Tapasztalat. Vagy élmény. És a kutyámnak is van sok experience… nem?
+Después, puedes contar la respuesta a otra persona: «A mi compañero le gusta jugar al escondite». Así compartes una noticia de la conversación.
 
-TANÁR: Igen, az <FL:en>experience</FL> jelentése „tapasztalat” vagy „élmény”. Szép válasz! 😊
+¿Qué respuesta contesta a «¿Qué fruta te gusta?»  
+<FELADAT>{"tipus":"valaszt","opciok":["Me gusta la pera.","Mi mochila es azul.","Hoy hace sol."]}</FELADAT>
 
-A mondatod, hogy „My dog has a lot of experience” nyelvtanilag rendben van, de furán hangzik, mert ezt inkább emberekről mondjuk. Például: „I have a lot of experience.” — „Nekem sok tapasztalatom van.”
+GYEREK: Me gusta la pera.
 
-Most egy új szót gyakorlunk: <FL:en>finish</FL> azt jelenti, hogy „befejez”. Például: <FL:en>I finish my homework.</FL> — „Befejezem a házi feladatomat.” <VOCAB>befejez=finish</VOCAB>
+TANÁR: ¡Muy bien! «Me gusta la pera» responde a la pregunta sobre la fruta. 🍐
 
-Most te jössz: melyik szó jelentése „befejez”?
+Ahora vamos a contar una noticia de forma clara. Di qué ocurrió y añade un detalle. Por ejemplo: «Hoy hicimos un dibujo en clase. Usamos lápices de colores». Si cuentas varias acciones, ponlas en orden con «primero», «después» y «por último».
 
-GYEREK: Finish. Befejez, ugye?
+¿Qué ocurrió en esta noticia: «Hoy plantamos una semilla en clase»?
 
-TANÁR: Igen, ügyes vagy! 😊 A <FL:en>finish</FL> jelentése „befejez”.
+<FELADAT>{"tipus":"valaszt","opciok":["Plantaron una semilla.","Prepararon un bocadillo.","Jugaron al escondite."]}</FELADAT>
 
-Most egy nagyon fontos kifejezés jön: <FL:en>already</FL>. Ez azt jelenti, hogy „már”. Például: <FL:en>I have already finished.</FL> — „Már befejeztem.” <VOCAB>már=already</VOCAB>
+GYEREK: Plantaron una semilla.
 
-És még egy: <FL:en>so far</FL> azt jelenti, hogy „eddig”. Például: <FL:en>I have done two exercises so far.</FL> — „Eddig két feladatot csináltam meg.” <VOCAB>eddig=so far</VOCAB>
+TANÁR: ¡Exacto! La noticia cuenta que plantaron una semilla. 🌱
 
-Most te jössz: melyik szó jelenti azt, hogy „már”?
+Ya sabes ordenar una explicación, usar «primero», «después» y «por último», hacer preguntas para saber más y contar lo que ocurrió. Por ejemplo: «Primero pusimos tierra en una maceta; después plantamos una semilla y, por último, la regamos».
 
-
-======================================================================
-Idegen nyelv – nemet · 3. osztály · Anna (8 éves)
-Témakör: Die Schule – Az iskolában
-======================================================================
-GYEREK: Szia! Kezdhetjük?
-
-TANÁR: Szia! Ma az <FL:de>iskola</FL> neveit tanuljuk németül. 📚
-
-A mai első szó: <FL:de>Schule</FL> = iskola. Például: <FL:de>die Schule</FL>. (az iskola)
-Jól hangzik az is, hogy: <FL:de>Ich gehe zur Schule.</FL> (Iskolába megyek.) Ez egy könnyű mondat az iskoláról.
-
-Mit jelent a <FL:de>Schule</FL>? Egy szóval mondd!  
-<VOCAB>iskola=Schule</VOCAB>
-
-GYEREK: Iskola.
-
-TANÁR: Nagyon ügyes vagy! 🌟 A <FL:de>Schule</FL> azt jelenti: iskola.
-
-Most jöjjön a következő szó: <FL:de>Lehrer</FL> = tanár. Például: <FL:de>Der Lehrer ist nett.</FL> (A tanár kedves.)  
-Emlékezz: a <FL:de>Lehrer</FL> egy férfi tanár.
-
-Mit jelent a <FL:de>Lehrer</FL>? Egy szóval mondd!  
-<VOCAB>tanár=Lehrer</VOCAB>
-
-GYEREK: Tanár.
-
-TANÁR: Nagyon jó! 🌟 A <FL:de>Lehrer</FL> azt jelenti: tanár.
-
-Most tanuljuk a következő szót: <FL:de>Klassenzimmer</FL> = tanterem. Például: <FL:de>Im Klassenzimmer lernen wir.</FL> (A tanteremben tanulunk.)  
-A <FL:de>Klassenzimmer</FL> az a terem, ahol az órák vannak. 🙂
-
-Mit jelent a <FL:de>Klassenzimmer</FL>? Egy szóval mondd!  
-<VOCAB>tanterem=Klassenzimmer</VOCAB>
-
-GYEREK: Tanterem.
-
-TANÁR: Nagyon ügyes vagy! 🌟 A <FL:de>Klassenzimmer</FL> azt jelenti: tanterem.
-
-Most jöjjön a <FL:de>Stunde</FL> = óra. Például: <FL:de>Die Stunde beginnt.</FL> (Az óra kezdődik.)  
-A <FL:de>Stunde</FL> egy tanóra vagy egy időegység is lehet.
-
-Mit jelent a <FL:de>Stunde</FL>? Egy szóval mondd!  
-<VOCAB>óra=Stunde</VOCAB>
-
-GYEREK: Óra.
-
-TANÁR: Nagyon jó! 🌟 A <FL:de>Stunde</FL> azt jelenti: óra.
-
-Most jöjjön a <FL:de>Pause</FL> = szünet. Például: <FL:de>In der Pause spielen wir.</FL> (A szünetben játszunk.)  
-A <FL:de>Pause</FL> az a kis pihenő az órák között. 🙂
-
-Mit jelent a <FL:de>Pause</FL>? Egy szóval mondd!  
-<VOCAB>szünet=Pause</VOCAB>
-
-GYEREK: Szünet.
-
-TANÁR: Szuper! 🌟 A <FL:de>Pause</FL> azt jelenti: szünet.
-
-Most jöjjön a <FL:de>Mathe</FL> = matek. Például: <FL:de>Mathe macht Spaß.</FL> (A matek örömöt okoz.)  
-A <FL:de>Mathe</FL> a matematika rövid neve.
-
-Mit jelent a <FL:de>Mathe</FL>? Egy szóval mondd!  
-<VOCAB>matek=Mathe</VOCAB>
+Ahora viene la prueba final del tema. ¡Ánimo, has practicado muy bien! 😊
+<TOPIC_COMPLETE>
 
 
 ======================================================================
-Technika és tervezés · 6. osztály · Viki (11 éves)
-Témakör: Fém
+Educación en Valores Cívicos y Éticos · 6. osztály · Pablo (11 éves)
+Témakör: Autoconocimiento y autonomía moral
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia, Viki! Ma a <FL:de>fém</FL>ek legfontosabb tulajdonságait és a velük való biztonságos munkát fogjuk megismerni. 😊
+TANÁR: ¡Hola, Bence! Soy Elvira. Hoy vamos a aprender a conocernos mejor y a pensar por qué elegimos nuestras acciones. 😊
 
-A <FL:de>fém</FL> olyan anyag, amelyet sok tárgy készítéséhez használnak. Ilyen például a kanál, a drót vagy egy lámpa egy része. A <FL:de>fém</FL>ek általában kemények, jól alakíthatók, és sokszor fényes a felületük.
+Conocerse es reconocer cómo eres, qué te gusta y qué se te da bien. Por ejemplo, puedes descubrir que disfrutas ayudando a tus compañeros.
 
-Az egyik fontos tulajdonság a hajlíthatóság. Ez azt jelenti, hogy az anyagot meg lehet görbíteni, formálni. Például egy vékony huzalt könnyebb meghajlítani, mint egy vastag rudat.
+Cada persona tiene una identidad propia: hay cosas que compartimos con los demás y otras que nos hacen diferentes. Por ejemplo, dos amigos pueden disfrutar del mismo juego, pero tener habilidades e ideas distintas. Ser diferentes no significa que alguien valga más o menos.
 
-A másik fontos fogalom a korrózió. Ez az, amikor a <FL:de>fém</FL> a levegő vagy a nedvesség hatására károsodik. A vas például berozsdásodhat. Ezért sok <FL:de>fém</FL> tárgyat bevonattal védenek.
+También podemos distinguir entre un deseo y una razón. El deseo es lo que te apetece; una razón es lo que explica por qué conviene hacer algo. Por ejemplo, quizá te apetece seguir jugando, pero decides parar porque tienes que descansar.
 
-A harmadik dolog a biztonságos munkavégzés. <FL:de>Fém</FL>mel dolgozva figyelni kell a szerszámokra, mert élesek vagy nehezek lehetnek. Mindig rendben kell tartani a munkahelyet, és óvatosan kell bánni az eszközökkel.
+Cuando pensamos por nosotros mismos y elegimos con razones, actuamos con autonomía. Eso también implica responsabilidad: hacernos cargo de lo que elegimos y de sus consecuencias.
 
-Például: ha egy fémlemezből dísztárgy készül, akkor fontos, hogy pontosan mérjünk, és óvatosan használjuk az ollót vagy a fogót.
+¿Cuál de estas decisiones muestra que alguien se ha parado a pensar antes de actuar?
 
-Most te jössz: a <FL:de>fém</FL> inkább hajlítható, vagy inkább törékeny?
+<FELADAT>{"tipus":"valaszt","opciok":["Compartir el material porque un compañero lo necesita","Cogerlo sin permiso porque apetece","Hacerlo porque los demás lo hacen, sin pensarlo"]}</FELADAT>
 
-GYEREK: Szerintem inkább hajlítható, nem törékeny. De ha nagyon vastag, akkor már nehezebb, ugye?
+GYEREK: Compartir el material porque un compañero lo necesita. ¿Sí?
 
-TANÁR: Igen, nagyon jól gondolod! 😊 A <FL:de>fém</FL> általában hajlítható, de minél vastagabb vagy keményebb, annál nehezebb formálni.
+TANÁR: ¡Sí, Bence! Compartir porque tu compañero lo necesita es una decisión considerada. 😊
 
-Most nézzünk meg két fontos dolgot a <FL:de>fém</FL>ekkel kapcsolatban.
+Ahora veremos cómo influyen en nuestras decisiones lo que sentimos y lo que pensamos. Una emoción, como el enfado o la alegría, nos da información sobre cómo nos sentimos, pero no tiene que decidir por nosotros. Por ejemplo, si te enfadas en un juego, puedes parar un momento y pensar antes de responder.
 
-Az egyik az ötvözet. Ez azt jelenti, hogy két vagy több <FL:de>fém</FL>t együtt használnak, hogy jobb tulajdonságú anyagot kapjanak. Például az <FL:de>acél</FL> ilyen anyag: erősebb lehet, mint a sima vas.  
-Például: a bicikliknél és szerszámoknál gyakran használnak <FL:de>acél</FL>t.
+La autoestima es reconocer que tienes valor, con tus cualidades y también con cosas que puedes mejorar. Por ejemplo, puedes sentirte orgulloso de ser buen compañero y, a la vez, practicar algo que todavía te cuesta.
 
-A másik a lemez és a huzal. A lemez lapos <FL:de>fém</FL>darab, a huzal pedig vékony, hosszú <FL:de>fém</FL>szál. Más-más tárgyakhoz másik forma jó.  
-Például: a szalvétatartóhoz gyakran lemezt, a szélcsengőhöz huzalt használnak.
+Pensar de forma crítica y ética significa pararse a revisar una decisión: ¿es justa?, ¿cómo puede afectar a otras personas? Por ejemplo, antes de compartir una foto de un amigo, conviene pensar en su intimidad y pedirle permiso.
 
-A harmadik fontos dolog a felületvédelem. Ez azt jelenti, hogy a <FL:de>fém</FL> felszínét úgy védjük, hogy kevésbé károsodjon. Erre jó lehet a festés vagy a bevonat.  
-Például: egy kerítésen a festék segít, hogy ne kezdjen el rozsdásodni.
+¿Cuál sería la mejor decisión si estás enfadado porque un compañero ha ganado el juego?
 
-Most te jössz: melyik szokott lapos lenni, a lemez vagy a huzal?
+<FELADAT>{"tipus":"valaszt","opciok":["Parar un momento y pensar cómo responder","Insultarle para que se sienta mal","Compartir una foto suya sin preguntarle"]}</FELADAT>
 
-GYEREK: A lemez szokott lapos lenni, a huzal meg hosszú és vékony. Ugye?
+GYEREK: Parar un momento y pensar cómo responder. Ah, y mi perro también se enfada cuando no le doy la pelota... pero luego se calma.
 
-TANÁR: Igen, ügyes vagy! 😊 Pontosan: a lemez lapos, a huzal pedig hosszú és vékony.
+TANÁR: ¡Muy bien, <FL:hu>Bence</FL>! Parar y pensar antes de responder ayuda a elegir una reacción más respetuosa. 😊 Y sí, los perros también muestran emociones; cuando tu perro se calma, puede volver a jugar contigo.
 
-Most egy új fontos dolgot nézzünk meg: a <FL:de>korrózió</FL>t. Ez azt jelenti, hogy a <FL:de>fém</FL> a levegő vagy a nedvesség hatására lassan károsodik. A vas ilyenkor rozsdásodhat.
+Ahora veremos cómo nos ayudan los valores y las normas a decidir. Un valor es algo que consideramos importante, como la honestidad o el respeto. Una norma es una regla que nos ayuda a convivir; por ejemplo, esperar el turno para hablar. Las virtudes son hábitos buenos que practicamos, como ser paciente o justo.
 
-Például: ha egy fémszerszám kint marad az esőben, idővel megromolhat a felülete.
+A veces obedecemos una norma solo porque alguien nos lo pide. Pero la autonomía moral consiste en comprender por qué una decisión es buena y elegirla también por esa razón. Por ejemplo, no te burlas de alguien no solo porque te lo diga un adulto, sino porque entiendes que podrías hacerle daño.
 
-Ezért szokták a <FL:de>fém</FL> tárgyakat védeni. Ilyen védelem lehet a festék vagy más bevonat. Így tovább maradnak használhatók.
+Imagina que un compañero se equivoca al leer. ¿Qué opción muestra respeto?
 
-Most te jössz: miért jó a festés egy fém tárgyon?
+<FELADAT>{"tipus":"valaszt","opciok":["Escuchar sin burlarse","Reírse para que los demás también se rían","Interrumpirle para corregirle delante de todos"]}</FELADAT>
 
-GYEREK: Mert nem ázik szét meg kevésbé rozsdásodik. Meg szebb is lesz tőle, szerintem.
+GYEREK: Escuchar sin burlarse. Eso es respeto, ¿no?
 
-TANÁR: Nagyon jó válasz! 😊 Igen, a festés megvédi a <FL:la>korrózió</FL>tól, és szebb is lehet tőle a tárgy.
+TANÁR: ¡Sí, es respeto! Escuchar sin burlarse ayuda a que la otra persona se sienta aceptada. 😊
 
-Most nézzünk egy másik fontos dolgot: a megmunkálást. Ez azt jelenti, hogy a <FL:de>fém</FL>et formáljuk, például vágjuk, hajlítjuk vagy összeszereljük.  
-Például: ha huzalból kis tartót készítesz, akkor előbb meghajlítod, aztán óvatosan összeilleszted.
+Ahora veremos cómo tomar decisiones responsables cuando usamos medios y redes. Un mensaje o una imagen que vemos en internet no siempre cuenta toda la historia; podemos pensar quién lo publicó y si hay motivos para confiar en ello.
 
-A <FL:de>fém</FL>munkánál több szerszámot is használhatunk. A lemezvágó olló vágásra jó, a fogó hajlításra, a csavarhúzó pedig összeszerelésre. Mindig óvatosan kell dolgozni velük.  
-Például: egy lemezdarabot lemezvágó ollóval vágunk, nem kézzel tépjük el.
+La intimidad es la parte de nuestra vida que no tenemos por qué compartir con todo el mundo. Por ejemplo, antes de publicar una foto de otra persona, debemos respetar sus deseos y pedirle permiso.
 
-Most te jössz: melyik szerszám jó a hajlításhoz, a fogó vagy a csavarhúzó?
+También tenemos libertad para expresar nuestras ideas, pero no para usarla como excusa para humillar, amenazar o acosar. Si alguien recibe mensajes que le hacen daño, es importante contárselo a un adulto de confianza.
 
-GYEREK: A fogó jó a hajlításhoz. A csavarhúzó nem arra való, ugye?
+¿Qué harías antes de publicar una foto de un compañero?
 
-TANÁR: Így van, ügyes vagy! 😊 A fogó jó a hajlításhoz, a csavarhúzó pedig nem arra való.
+<FELADAT>{"tipus":"valaszt","opciok":["Preguntarle si está de acuerdo","Publicarla sin decirle nada","Añadir un comentario para que otros se burlen"]}</FELADAT>
 
-A csavarhúzó csavarok becsavarására és kicsavarására való. Ezért más feladatra használjuk, mint a fogót.
+GYEREK: Preguntarle si está de acuerdo. Mejor así, ¿no?
 
-Most még egy fontos dolgot tanuljunk: a <FL:de>fém</FL>ek fajtáit. A <FL:de>vas</FL> erős, de rozsdásodhat. Az <FL:de>alumínium</FL> könnyű. A <FL:de>réz</FL> pedig jól vezeti az elektromosságot, ezért sok vezetékben használják.  
-Például: a konyhai edényeknél gyakran az erősség számít, vezetékeknél pedig az, hogy jól vezessen az anyag.
+TANÁR: ¡Sí, preguntarle antes es una forma de respetar su intimidad! 😊
 
-Most te jössz: melyik <FL:de>fém</FL> könnyű, az <FL:de>alumínium</FL> vagy a <FL:de>vas</FL>?
+Ahora vamos a pensar en el proyecto personal: son las metas y actividades que cada persona considera importantes. No todos tenemos que querer lo mismo. Por ejemplo, una persona puede disfrutar aprendiendo música y otra, cuidando animales. Podemos elegir caminos distintos y tratarnos con respeto.
 
-GYEREK: Az alumínium könnyű. A vas nehezebb, az biztos.
+También conviene fijarse en si una costumbre empieza a ocupar demasiado tiempo y nos impide descansar, estudiar o disfrutar de otras actividades. Por ejemplo, si alguien no logra dejar un juego y deja de dormir lo suficiente, puede hablarlo con una persona adulta de confianza y buscar apoyo.
 
-TANÁR: Nagyon jó, ezt szépen tudod! 😊 Az <FL:de>alumínium</FL> valóban könnyű, a vas pedig általában nehezebb.
+Y, en nuestras relaciones, cada persona puede expresar qué cosas le hacen sentir cómoda o incómoda. Respetar esos límites y pedir ayuda a una persona adulta de confianza cuando algo preocupa también es una decisión responsable.
 
-Most nézzünk három vizsgálatot, amivel a <FL:de>fém</FL>ekről információt szerezhetünk.
+¿Qué ejemplo muestra que dos personas pueden tener proyectos distintos y respetarse?
 
-Az egyik a hajlítási próba. Ilyenkor megnézzük, mennyire könnyen görbül az anyag. Ha könnyen hajlik, akkor jól formálható.
+<FELADAT>{"tipus":"valaszt","opciok":["Una quiere aprender música y otra cuidar animales; respetan sus elecciones","Una se burla de la otra porque le gusta algo diferente","Una obliga a la otra a elegir la misma actividad"]}</FELADAT>
 
-A másik a mágnesesség vizsgálata. Ezzel azt nézzük meg, hogy a mágnes vonzza-e az anyagot. Például a vasat a mágnes vonzza, az <FL:de>alumínium</FL>ot nem úgy, mint a vasat.
+GYEREK: Una quiere aprender música y otra cuidar animales; respetan sus elecciones. ¿Vale?
 
-A harmadik a korrózióállóság vizsgálata. Ez azt mutatja meg, mennyire bírja az anyag a nedvességet és a levegőt anélkül, hogy károsodna.
+TANÁR: ¡Sí, vale! Has entendido que cada persona puede elegir metas diferentes y respetar las de los demás. 😊
 
-Például: ha egy tárgy kint marad az esőben, akkor fontos, hogy ne kezdjen el rozsdásodni.
+Ya hemos aprendido a reconocer emociones, pensar antes de actuar, tomar decisiones con razones y respetar la intimidad, los límites y las elecciones de otras personas. Pensar así nos ayuda a actuar con autonomía y responsabilidad.
 
-Most te jössz: melyik anyagot vonzza a mágnes jobban, a vasat vagy az alumíniumot?
+Ahora viene la prueba final del tema. ¡Ánimo, Bence! Ya tienes buenas ideas para resolverla.
+
+<TOPIC_COMPLETE>
 
 
 ======================================================================
-Digitális kultúra · 4. osztály · Máté (9 éves)
-Témakör: Keresés az interneten
+Lengua Extranjera – angol · 3. osztály · Lucía (8 éves)
+Témakör: Sounds & Spelling – Sonidos y ortografía
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia, Máté! Ma azt tanuljuk meg, hogyan keresünk az interneten úgy, hogy gyorsan megtaláljuk, amit szeretnénk. 😊
+TANÁR: ¡Hola, Anna! Hoy practicaremos cómo suenan algunas letras en inglés. 😊
 
-A böngészőprogram az az alkalmazás, amivel megnyitjuk a weboldalakat. Ilyenből nézed meg az internetes oldalakat.
+La palabra <FL:en>three</FL> significa «tres» y empieza con dos letras, “th”. Fíjate en “<FL:en>three</FL>”, “<FL:en>three</FL>, please” (Tres, por favor) y “I count to <FL:en>three</FL>” (Cuento hasta tres). ¿Qué pareja de letras aparece al principio de <FL:en>three</FL>?
 
-A keresés azt jelenti, hogy beírunk valamit a keresőbe, és az segít találatokat adni. A találat az, amit a kereső kidob nekünk.
+<VOCAB>tres=three</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["th","sh","ch"]}</FELADAT>
 
-A kulcsszó egy fontos szó, amivel keresünk. Például ha kutyákról keresel, a „kutya” jó kulcsszó.
+GYEREK: th. ¿Es correcto?
 
-A keresőkifejezés több szóból is állhat. Például: „kutya fajták gyerekeknek”.
+TANÁR: ¡Sí, Anna, «th» es correcto! 😊 Ahora veremos “sh”: en <FL:en>ship</FL> suena como «sh». <FL:en>Ship</FL>, “a <FL:en>ship</FL>” (un barco), “the <FL:en>ship</FL>” (el barco). ¿Qué significa <FL:en>three</FL>?
 
-Az URL egy weboldal címe. Ez segít pontosan megtalálni egy oldalt.
+<VOCAB>barco=ship</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["tres","barco","luz"]}</FELADAT>
 
-Például:
-- a böngészőprogramban megnyitsz egy oldalt
-- beírsz egy kulcsszót
-- megnézed a találatokat
-- kiválasztod a legjobb weboldalt
+GYEREK: tres. ¿Va bien?
 
-Most te jössz: szerinted a „macska” inkább kulcsszó, vagy keresőkifejezés?
+TANÁR: ¡Sí, «tres» está bien! 😊 Ahora practicamos “ch”: al principio de <FL:en>chair</FL> suena parecido a «ch» en español; <FL:en>chair</FL>, “a <FL:en>chair</FL>” (una silla), “the <FL:en>chair</FL>” (la silla). ¿Qué sonido aparece al principio de <FL:en>chair</FL>?
 
-GYEREK: Kulcsszó. Miért?
+<VOCAB>silla=chair</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["ch","sh","th"]}</FELADAT>
 
-TANÁR: Ügyes vagy, ez tényleg kulcsszó. 😊
+GYEREK: ch. ¿Lo hice bien?
 
-Azért, mert egyetlen fontos szóból áll. A kulcsszó általában rövid, és segít elindítani a keresést.  
-Például a „macska” önmagában is elég lehet, ha macskákról akarsz találatokat kapni.
+TANÁR: ¡Sí, «ch» está bien! 😊 Ahora fíjate en <FL:en>night</FL>: significa «noche», y las letras “gh” del final no se pronuncian. En <FL:en>night</FL>, “gh” queda en silencio; <FL:en>night</FL>, “Good night” (Buenas noches).
 
-A keresőkifejezés ennél hosszabb, mert több szóból áll. Például: „macska gondozása gyerekeknek”.
+<VOCAB>noche=night</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["night","chair","ship"]}</FELADAT>
 
-Most mondj egy másik kulcsszót!
+GYEREK: night. ¿Está bien?
 
-GYEREK: Kutya. Ez jó?
+TANÁR: ¡Sí, <FL:en>night</FL> era correcto! 😊 Ahora, en <FL:en>light</FL> («luz»), las letras “gh” tampoco suenan: “a <FL:en>light</FL>” (una luz), “the <FL:en>light</FL>” (la luz). ¿Qué letras quedan en silencio en <FL:en>light</FL>?
 
-TANÁR: Igen, nagyon jó! 😊 A „kutya” is kulcsszó.
+<VOCAB>luz=light</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["gh","th","sh"]}</FELADAT>
 
-Most nézzünk meg még két fontos szót:
-A weboldal egyetlen oldal az interneten. Például egy cikk vagy egy játék oldala lehet egy weboldal.
-A webhely több weboldalból álló összetartozó oldalcsoport. Olyan, mint egy nagyobb hely az interneten, ahol több oldal kapcsolódik egymáshoz.
+GYEREK: gh. ¿Sí?
 
-A találat pedig az, amit a kereső megmutat, amikor rákeresel valamire.
-Például ha beírod, hogy „kutya”, akkor sok találat jelenhet meg.
+TANÁR: ¡Sí! “gh” queda en silencio. 😊 Ahora aprendemos a preguntar cómo se deletrea una palabra: “How do you spell <FL:en>house</FL>?” (¿Cómo se deletrea «casa»?). Se responde diciendo sus letras: “H-O-U-S-E”; “How do you spell <FL:en>house</FL>?”; “H-O-U-S-E”. Elige el deletreo correcto de «casa»:
 
-Egy jó keresésnél érdemes rövid, fontos szavakat használni. Így könnyebb megtalálni a megfelelő oldalt.
-
-Most te jössz: melyik a hosszabb, a weboldal vagy a webhely?
-
-GYEREK: A webhely. Ez uncsi.
-
-TANÁR: Értem 🙂 Akkor csináljuk gyorsabban és játékosabban!
-
-Jó volt a válaszod: a webhely a hosszabb, mert több weboldal tartozik bele.
-
-Most jön egy hasznos trükk:
-Ha valamit pontosan akarsz keresni, akkor nem túl hosszú, de nem is túl általános szót írj be.
-Például:
-- „kutya” → sok találat lesz
-- „kutya fajták gyerekeknek” → pontosabb találatot kapsz
-
-A pontos kifejezés azt jelenti, hogy több szót együtt írunk be, mert így jobban szűkítjük a keresést.
-
-Példa:
-Ha a lovakról szeretnél képet találni, a „ló” helyett jobb lehet a „ló fajták” vagy a „lovak képek”.
-
-Most te jössz: melyik lesz pontosabb keresés, a „kutya” vagy a „kutya fajták”?
-
-GYEREK: A kutya fajták. Ez uncsi.
-
-TANÁR: Igen, ügyes! 😊 A „kutya fajták” pontosabb, mert két szó együtt jobban megmutatja, mit keresel.
-
-Akkor most játsszunk egy kicsit:
-Ha a „túzok” szóra keresel, sok mindent kaphatsz. Ha azt írod, hogy „túzok élőhelye”, akkor a kereső már szűkebben keres.
-
-Tehát:
-- egyetlen szó = rövidebb, általánosabb keresés
-- több szó = pontosabb keresés
-
-Most egy gyors kérdés: melyik keresés pontosabb, a „túzok” vagy a „túzok élőhelye”?
-
-GYEREK: A túzok élőhelye.
-
-TANÁR: Nagyon jó, ez a pontosabb keresés. 😊
-
-Most egy fontos dolog következik:
-A keresőben a találatokat érdemes megnézni, mielőtt rákattintasz valamelyikre. Figyeld a címet, és azt is, hogy miről szól az oldal.
-
-Ha a cím nem illik arra, amit keresel, akkor lehet, hogy nem az a jó találat.
-Például ha „túzok élőhelye” után olyasmit látsz, hogy „túzok képek”, az nem biztos, hogy a legjobb választás, ha az élőhely érdekel.
-
-Az URL az oldal címe. Ez segít megkülönböztetni az oldalak címét.
-Példa:
-- ha a cím és az URL is a túzokról szól, az jó jel
-- ha valami egészen más szerepel benne, akkor lehet, hogy nem az az oldal kell neked
-
-Most te jössz: ha az „élőhely” szót keresed, melyik találat lesz jobb, a „túzok élőhelye” vagy a „túzok képek”?
+<VOCAB>casa=house</VOCAB>
+<FELADAT>{"tipus":"valaszt","opciok":["H-O-U-S-E","H-A-U-S-E","H-O-U-S-A"]}</FELADAT>
 
 
 ======================================================================
-Etika · 5. osztály · Bence (10 éves)
-Témakör: Éntudat – Önismeret
+Educación Física · 1. osztály · Martina (6 éves)
+Témakör: Vida activa y saludable
 ======================================================================
-GYEREK: Szia! Kezdhetjük?
+GYEREK: ¡Hola! ¿Empezamos?
 
-TANÁR: Szia, Bence! Ma az önismeretről fogunk tanulni, vagyis arról, hogyan ismered meg jobban önmagad. 😊
+TANÁR: ¡Hola, <FL:hu>Viki</FL>! Soy Elvira. Hoy aprenderemos cómo cuidar nuestro cuerpo para sentirnos bien cuando nos movemos. 😊
 
-Az önismeret azt jelenti, hogy észreveszed, miben vagy jó, mi nehéz neked, és hogyan érzel különböző helyzetekben.  
-Például: „Jól megy nekem a rajzolás, de a hosszabb szövegek olvasásához több idő kell.”
+Moverse un poco cada día ayuda a que el cuerpo esté fuerte y con energía. Por ejemplo, caminar, bailar o jugar a la pelota son formas de moverse.
 
-Az önazonosság azt mutatja meg, hogy te ki vagy, mi jellemző rád. Ez nem csak a külsődet jelenti, hanem a szokásaidat, az érdeklődésedet és a gondolataidat is.  
-Például: „Én türelmes vagyok, és szeretek kitalálós játékokat játszani.”
+Cuando hacemos ejercicio, nuestro cuerpo necesita agua. Beber agua ayuda a mantenernos bien hidratados. Por ejemplo, podemos beber agua después de jugar.
 
-Az önállóság azt jelenti, hogy egyre több dolgot meg tudsz csinálni egyedül. Ahogy nősz, több felelősséget is kapsz.  
-Például: „Emlékeztetem magam, hogy elpakoljam a tanszereimet.”
+Después de movernos, también viene bien descansar y asearnos. Así el cuerpo se recupera y nos sentimos cómodos. Por ejemplo, después de jugar, podemos descansar un rato y lavarnos las manos.
 
-A felelősség azt jelenti, hogy vállalod a tetteid következményét, és figyelsz arra, hogy a döntéseidnek hatása van másokra is.  
-Például: „Ha én borítom ki a vizet, én is segítek feltakarítani.”
+¿Cuál de estas actividades ayuda a cuidar el cuerpo: bailar, no dormir nunca o dejar de beber agua?
 
-Most te jössz: szerinted az önismeret mit jelent?
+<FELADAT>{"tipus":"valaszt","opciok":["Bailar","No dormir nunca","Dejar de beber agua"]}</FELADAT>
 
-GYEREK: Hát… amikor tudom, hogy miben vagyok jó meg miben nem annyira?  
-Meg hogy én milyen vagyok, asszem.
+GYEREK: ¡Bailar! Es bueno para el cuerpo, ¿no?
 
-TANÁR: Nagyon jó, Bence! 😊 Pont ezt jelenti az önismeret: tudod, miben vagy erős, miben kell még fejlődnöd, és milyen ember vagy.
+TANÁR: ¡Sí, muy bien! Bailar mueve el cuerpo y ayuda a mantenerlo activo. 😊
 
-Most nézzünk meg még két fontos dolgot.
+Ahora aprenderemos otras dos formas de cuidarnos:
 
-Az egyik a fejlődés. Ez azt jelenti, hogy idővel többet tudsz, ügyesebb leszel, és néhány dologban jobbá válsz.  
-Például: „Tavaly még nehezen olvastam, most már sokkal gyorsabban megy.”
+- Tener una postura cómoda ayuda al cuerpo. Por ejemplo, al sentarnos, apoyamos bien los pies y mantenemos la espalda cómoda.
+- Comer alimentos variados y beber agua ayuda a darle al cuerpo lo que necesita. Por ejemplo, podemos comer fruta y beber agua durante el día.
 
-A másik a harmonikus élet. Ez azt jelenti, hogy igyekszel úgy élni, hogy a testednek és a lelkednek is jó legyen. Ide tartozik a pihenés, a mozgás, az evés és az is, hogy legyen időd arra, amit szeretsz.  
-Például: „Ha eleget alszom, jobban tudok figyelni az órán.”
+En un juego, también cuidamos a los demás cuando respetamos los turnos y dejamos que todos participen.
 
-Fontos még a felelősség is. Ez azt jelenti, hogy gondolkodsz a döntéseid előtt, mert azok hatnak rád és másokra is.  
-Például: „Ha elkésem, az a csoportmunkát is zavarhatja.”
+¿Cuál es una buena manera de sentarse?
 
-Most egy egyszerű kérdés: a fejlődés azt jelenti, hogy valaki mindig ugyanott marad, vagy hogy idővel változik és ügyesedik?
+<FELADAT>{"tipus":"valaszt","opciok":["Con los pies apoyados y la espalda cómoda","Torcidos y encogidos","Subidos encima de la silla"]}</FELADAT>
 
-GYEREK: Hát, hogy változik és ügyesedik.  
-Mint amikor én már jobban tudok labdázni, meg a kutyám is gyorsabb lett, azt hiszem.
+GYEREK: Con los pies apoyados y la espalda cómoda. ¿Así, verdad?
 
-TANÁR: Ügyes válasz! 😊 Igen, a fejlődés azt jelenti, hogy valaki idővel változik, tanul, és valamiben jobb lesz.
+TANÁR: ¡Sí, así está muy bien! Sentarse con los pies apoyados y la espalda cómoda ayuda a cuidar el cuerpo. 😊
 
-Most nézzünk meg még két új fogalmat.
+Ahora veremos cómo cuidarnos y cuidar a los demás al jugar:
 
-Az elfogadás azt jelenti, hogy észreveszed: az emberek nem egyformák, mégis mindenki értékes.  
-Ez segít abban, hogy ne csak a különbségeket lásd, hanem azt is, ami közös bennetek.  
-Például: „A barátom gyorsabban fut, én meg jobban rajzolok, és ez így rendben van.”
+- Moverse puede ayudarnos a sentirnos contentos y tranquilos. Por ejemplo, bailar con música puede alegrarnos.
+- Cada persona tiene cosas que se le dan bien y otras que está aprendiendo. Por ejemplo, quizá a alguien se le da bien correr y otra persona está aprendiendo a saltar.
+- Todos los niños tienen derecho a participar en los juegos. Respetamos a los demás y les dejamos jugar, aunque sean diferentes.
 
-A példakép olyan ember, akitől valami jót tanulhatsz. Lehet a családban, az iskolában vagy akár egy könyvben is.  
-Nem kell tökéletesnek lennie. Elég, ha valamiben jó mintát ad.  
-Például: „A nővérem példakép nekem, mert kitartóan gyakorol.”
+En un juego, ¿qué hacemos para que todos puedan participar?
 
-A terv pedig azt jelenti, hogy előre átgondolod, mit szeretnél elérni, és hogyan fogsz nekiindulni.  
-Például: „Ha jobb akarok lenni matekból, minden nap gyakorlok pár percet.”
+<FELADAT>{"tipus":"valaszt","opciok":["Dejamos que todos jueguen","Elegimos siempre a los mismos","No respetamos los turnos"]}</FELADAT>
 
-Most te jössz: mi az a példakép?
+GYEREK: Dejamos que todos jueguen. ¿Y si no quieren?
 
-GYEREK: Olyan ember, akitől jó dolgokat tanulok?  
-Aki nekem mutatja, hogyan kell valamit jól csinálni.
+TANÁR: ¡Muy bien! Dejar que todos tengan la oportunidad de participar es justo y respetuoso. Si alguien no quiere jugar, respetamos su decisión y no le obligamos; puede mirar o elegir otra actividad tranquila.
 
-TANÁR: Nagyon jó! 😊 Pontosan. A példakép olyan ember, akitől jó mintát tanulsz, és aki segít neked abban, hogy te is fejlődj.
+También cuidamos el ambiente del juego hablando con amabilidad. Por ejemplo, podemos decir: «¿Te apetece jugar con nosotros?» y aceptar su respuesta.
 
-Most még egy fontos dolog: a saját határaid. Ez azt jelenti, hogy tudod, mi az, ami már a te személyes tered, és mi az, amihez más nem nyúlhat bele engedély nélkül.  
-Például: „Nem szeretem, ha valaki engedély nélkül belenéz a füzetembe.”
+¿Qué hacemos si alguien no quiere jugar?
 
-Az is fontos, hogy figyelj a tested és a lelked jelzéseire. Ha fáradt vagy, pihenésre van szükséged. Ha valami rosszul esik, azt érdemes elmondani egy megbízható felnőttnek.  
-Például: „Ha nagyon ideges vagyok, kimegyek egy kicsit megnyugodni, és szólok anyának.”
+<FELADAT>{"tipus":"valaszt","opciok":["Respetamos su decisión","Le obligamos","Nos enfadamos con esa persona"]}</FELADAT>
 
-Most egy kérdés: mit jelent az, hogy példakép?
+GYEREK: Respetamos su decisión. ¿Puedo invitarle otra vez luego?
 
-GYEREK: Hát már mondtuk, nem?  
-Olyan ember, akitől jó mintát tanulsz.
+TANÁR: Sí, puedes invitarle otra vez más tarde, con amabilidad. Si vuelve a decir que no, respetamos su decisión. Así, jugar es agradable para todos. 😊
 
-TANÁR: Igen, jól emlékszel! 😊 Ez az.
+También podemos animar a alguien que está aprendiendo: por ejemplo, decir «¡Buen intento!» sin burlarnos si se equivoca.
 
-Most nézzük meg a tudás egyik fontos részét. Nem mindent ugyanúgy szerzünk meg. Van, amit magunktól tapasztalunk meg, és van, amit másoktól tanulunk. Ilyenkor fontos, hogy megnézzük, mennyire megbízható a forrás.
+¿Qué frase anima a un compañero?
 
-A forrás az, ahonnan az információt kapod. Lehet például egy tankönyv, egy tanár, egy felnőtt vagy egy videó.  
-Példa: „Ha valamit az interneten olvasok, érdemes megnéznem, igaz-e.”
+<FELADAT>{"tipus":"valaszt","opciok":["¡Buen intento!","¡Qué mal lo haces!","No juegues con nosotros"]}</FELADAT>
 
-A hiteles forrás olyan, amiben meg lehet bízni. Ilyen lehet például egy tankönyv vagy egy tanár magyarázata.  
-Példa: „A dolgozathoz a tankönyvből tanulok, mert az hiteles forrás.”
+GYEREK: ¡Buen intento! ¿Le digo también “vamos”?
 
-Nem minden információ egyformán jó. Ezért érdemes kérdezni, ellenőrizni, és nem rögtön elhinni mindent.
+TANÁR: ¡Sí, muy bien! «¡Vamos!» puede animar a tu compañero si lo dices con cariño. También puedes decir «¡Buen intento!». Así os animáis mientras jugáis. 😊
 
-Most te jössz: szerinted mi a hiteles forrás?
+Ahora aprendemos algo importante: cada persona puede moverse a su manera. En un juego, podemos adaptar los turnos o las reglas para que todos disfruten y participen. Por ejemplo, si alguien necesita más tiempo, esperamos con paciencia.
 
-GYEREK: Ami megbízható, és igazat mond.  
-Mondjuk a tankönyv, az?
+<FELADAT>{"tipus":"valaszt","opciok":["Esperar con paciencia a quien necesita más tiempo","Burlarse de quien juega más despacio","Dejar siempre fuera a alguien"]}</FELADAT>
 
-TANÁR: Igen, nagyon jó! 😊 A tankönyv általában hiteles forrás, mert ellenőrzött tudást ad.
 
-Most menjünk tovább két fontos dologgal.
+======================================================================
+Matemáticas · 5. osztály · Hugo (10 éves)
+Témakör: Números enteros, potencias y divisibilidad
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
 
-Az egyik az érzelem. Ez az, amit belül érzel, például örömöt, szomorúságot, félelmet vagy dühöt.  
-Fontos, hogy felismerd, mit érzel, mert így könnyebb jól reagálni.  
-Például: „Ha izgulok egy dolgozat előtt, akkor lassan veszek egy mély levegőt.”
+TANÁR: ¡Hola, <FL:hu>Máté</FL>! Soy <FL:hu>Elvira</FL>. Hoy vamos a aprender sobre los números enteros, las potencias y cómo reconocer múltiplos y divisores. 😊
 
-A másik a belső érték. Ez olyan jó tulajdonság, amit nem feltétlenül látni kívülről, de nagyon fontos. Ilyen lehet a kitartás, a kedvesség vagy a becsületesség.  
-Például: „A barátom kedves, ezért jó vele együtt dolgozni.”
+Los números enteros incluyen los positivos, el cero y los negativos. Por ejemplo, si hace 3 grados bajo cero, se escribe −3; si hace 3 grados sobre cero, se escribe +3.
 
-És még valami: az emberek különböznek egymástól, de sok mindenben hasonlítanak is. Ez segít abban, hogy jobban megértsük egymást.  
-Például: „Mindannyian tudunk örülni, félni vagy segítségre szorulni.”
+Una potencia es una forma corta de escribir una multiplicación del mismo número varias veces. En 2³, multiplicamos 2 × 2 × 2, que da 8. El 2 es la base y el 3 indica cuántas veces aparece como factor. Cuando el exponente es 2, hablamos del cuadrado: 4² = 4 × 4 = 16.
 
-Most egy kérdés: mondasz nekem egy belső értéket?
+Un número es múltiplo de otro si lo obtenemos al multiplicarlo por un número entero. Por ejemplo, 12 es múltiplo de 3, porque 3 × 4 = 12. Y 3 es divisor de 12, porque 12 se puede repartir entre 3 sin que sobre nada.
+
+Un número primo tiene exactamente dos divisores: 1 y él mismo. Por ejemplo, 7 es primo: solo se puede dividir exactamente entre 1 y 7.
+
+Ahora practica una potencia: ¿cuánto es 3²?
+
+<FELADAT>{"tipus":"szam","jel":"*","a":3,"b":3}</FELADAT>
+
+GYEREK: 9
+
+TANÁR: ¡Correcto, Máté! 3² = 3 × 3 = 9. 😊 Ahora veremos unas reglas que ayudan a saber si un número se puede dividir exactamente entre 2, 5 o 10.
+
+Un número es divisible entre 2 si termina en 0, 2, 4, 6 u 8. Por ejemplo, 34 es divisible entre 2.
+
+Es divisible entre 5 si termina en 0 o en 5. Por ejemplo, 45 es divisible entre 5.
+
+Y es divisible entre 10 si termina en 0. Por ejemplo, 70 es divisible entre 10.
+
+¿Cuál de estos números es divisible entre 2?
+
+<FELADAT>{"tipus":"valaszt","opciok":["14","15","17"]}</FELADAT>
+
+GYEREK: 14
+
+TANÁR: ¡Muy bien! 14 termina en 4, así que es divisible entre 2. 😊
+
+Ahora aprenderemos una regla para el 3 y el 9: suma las cifras del número. Si esa suma se puede dividir exactamente entre 3, el número también es divisible entre 3. Si se puede dividir exactamente entre 9, el número es divisible entre 9.
+
+Por ejemplo, 27: sumamos 2 + 7 = 9. Como 9 se divide exactamente entre 3 y entre 9, 27 es divisible entre ambos.
+
+¿Cuál de estos números es divisible entre 3?
+
+<FELADAT>{"tipus":"valaszt","opciok":["25","28","32","36"]}</FELADAT>
+
+GYEREK: 36
+
+TANÁR: ¡Exacto! 36 es divisible entre 3 porque 3 + 6 = 9, y 9 se divide exactamente entre 3. 😊
+
+Ahora veremos una regla para el 4: fíjate en las dos últimas cifras. Si esas dos cifras forman un número divisible entre 4, el número entero también es divisible entre 4. Por ejemplo, 316: sus dos últimas cifras son 16, y 16 se divide entre 4; por eso 316 también es divisible entre 4.
+
+¿Cuál de estos números es divisible entre 4?
+
+<FELADAT>{"tipus":"valaszt","opciok":["218","324","350"]}</FELADAT>
+
+GYEREK: 324
+
+TANÁR: ¡Correcto! Las dos últimas cifras de 324 forman 24, y 24 se divide exactamente entre 4. Así que 324 también es divisible entre 4. 😊
+
+Ahora veremos el criterio del 6: un número es divisible entre 6 si es divisible entre 2 y entre 3 a la vez. Por ejemplo, 42 termina en cifra par y sus cifras suman 4 + 2 = 6, que se divide entre 3. Así que 42 es divisible entre 6.
+
+¿Cuál de estos números es divisible entre 6?
+
+<FELADAT>{"tipus":"valaszt","opciok":["18","20","25"]}</FELADAT>
+
+GYEREK: 18
+
+TANÁR: ¡Muy bien! 18 es divisible entre 2 porque termina en cifra par, y entre 3 porque 1 + 8 = 9. Por eso también es divisible entre 6. 😊
+
+Ahora veremos cómo encontrar divisores y reconocer números primos. Un divisor de un número lo divide sin que sobre nada. Por ejemplo, 4 es divisor de 20, porque 20 ÷ 4 = 5.
+
+Un número primo tiene exactamente dos divisores: 1 y él mismo. Por ejemplo, 11 es primo; en cambio, 12 no lo es, porque también se puede dividir exactamente entre 2, 3, 4 y 6.
+
+¿Cuál de estos números es primo?
+
+<FELADAT>{"tipus":"valaszt","opciok":["9","13","15","21"]}</FELADAT>
+
+
+======================================================================
+Lengua Extranjera – angol · 4. osztály · Pablo (9 éves)
+Témakör: Describing People – Describir personas
+======================================================================
+GYEREK: ¡Hola! ¿Empezamos?
+
+TANÁR: ¡Hola, Bence! Hoy aprenderemos a describir cómo es una persona. 😊
+
+La palabra <FL:en>tall</FL> significa «alto». Por ejemplo: “He is <FL:en>tall</FL>” (Él es alto). También puedes decir: “My brother is <FL:en>tall</FL>” (Mi hermano es alto) y “The boy is <FL:en>tall</FL>” (El chico es alto).
+
+¿Cuál de estas palabras usarías para describir a alguien alto?
+
+<FELADAT>{"tipus":"valaszt","opciok":["<FL:en>tall</FL>","<FL:en>short</FL>","<FL:en>small</FL>"]}</FELADAT>
+<VOCAB>alto=tall</VOCAB>
+
+GYEREK: <FL:en>tall</FL>. ¿Sí?
+
+TANÁR: ¡Sí, correcto! <FL:en>tall</FL> significa «alto». 😊 Ahora aprendemos <FL:en>short</FL>, que significa «bajo»: “She is <FL:en>short</FL>” (Ella es baja); “My friend is <FL:en>short</FL>” (Mi amiga es baja).
+
+¿Qué palabra describe a una persona de baja estatura?
+
+<FELADAT>{"tipus":"valaszt","opciok":["<FL:en>short</FL>","<FL:en>tall</FL>","<FL:en>happy</FL>"]}</FELADAT>
+<VOCAB>bajo=short</VOCAB>
+
+GYEREK: <FL:en>short</FL>. Creo que sí.
+
+TANÁR: ¡Sí, muy bien, Bence! <FL:en>short</FL> significa «bajo» o «baja». 😊
+
+Ahora aprendemos <FL:en>happy</FL>, que significa «contento» o «contenta». “He is <FL:en>happy</FL>” (Él está contento). También: “She is <FL:en>happy</FL>” (Ella está contenta).
+
+¿Qué significa <FL:en>happy</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["contento o contenta","triste","bajo o baja"]}</FELADAT>
+<VOCAB>contento=happy</VOCAB>
+
+GYEREK: contento o contenta. ¿Mi perro también?
+
+TANÁR: ¡Sí! Un perro también puede estar contento: “The dog is <FL:en>happy</FL>” (El perro está contento). 😊
+
+Ahora aprendemos <FL:en>sad</FL>, que significa «triste»: “The dog is <FL:en>sad</FL>” (El perro está triste). También podemos decir: “She is <FL:en>sad</FL>” (Ella está triste).
+
+<VOCAB>triste=sad</VOCAB>
+
+GYEREK: sad es triste. Mi perro a veces está sad, pobre.
+
+TANÁR: ¡Exacto! <FL:en>sad</FL> significa «triste». Y sí, los perros también pueden parecer tristes; podemos acompañarlos con cariño. 😊
+
+Ahora aprendemos <FL:en>kind</FL>, que significa «amable»: “My friend is <FL:en>kind</FL>” (Mi amigo es amable). También: “She is <FL:en>kind</FL>” (Ella es amable).
+
+¿Qué significa <FL:en>kind</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["amable","divertido","triste"]}</FELADAT>
+<VOCAB>amable=kind</VOCAB>
+
+GYEREK: amable. ¿Verdad?
+
+TANÁR: ¡Sí, correcto! <FL:en>kind</FL> significa «amable». 😊
+
+Ahora aprendemos <FL:en>funny</FL>, que significa «divertido» o «gracioso». “He is <FL:en>funny</FL>” (Él es divertido). También: “My friend is <FL:en>funny</FL>” (Mi amigo es divertido).
+
+¿Qué significa <FL:en>funny</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["divertido o gracioso","amable","alto o alta"]}</FELADAT>
+<VOCAB>divertido=funny</VOCAB>

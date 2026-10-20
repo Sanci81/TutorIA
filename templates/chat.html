@@ -772,7 +772,7 @@
      úgy, mintha dobozban ülne. */
   /* A képes kabala arcai: rövid áttűnés, örömre egy kis ugrás. A 400×600-as
      képeken a figura körül van egy kis hely, ezért valamivel szélesebb lehet. */
-  .chat-kabala.kabala-allapotos{transition:opacity .14s ease}
+  .chat-kabala.kabala-allapotos{transition:opacity .35s ease}
   .chat-kabala.kabala-valt{opacity:0}
   .chat-kabala.kabala-ugrik{animation:kabala-ugras .7s cubic-bezier(.3,1.6,.5,1)}
   @keyframes kabala-ugras{0%{transform:translateY(0)}35%{transform:translateY(-22px)}
@@ -1294,7 +1294,7 @@
                     {% if aktiv_gyerek and aktiv_gyerek.avatar %}
                     <img src="{{ url_for('avatar_kep', kulcs=aktiv_gyerek.avatar) }}" alt="">
                     {% else %}{{ child['name'][0]|upper }}{% endif %}
-                </div>
+            </div>
                 <div class="chat-header-identity-text">
                     <h1 class="chat-child-name">{{ child['name'] }}</h1>
                     <p class="chat-subject">{{ subject_label }}</p>
@@ -1326,11 +1326,11 @@
                 <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
                 <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> {{ t('chat_minutes_suffix') }}</span>
                 <span class="chat-mini-stat">🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
-                {% if streak_days and streak_days > 0 %}
+            {% if streak_days and streak_days > 0 %}
                 <span class="chat-mini-stat chat-mini-stat-sorozat" id="streak-bar">
-                    {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
+                {{ t('chat_streak_fmt').replace('{n}', '<span id="streak-display">' ~ streak_days ~ '</span>')|safe }}
                 </span>
-                {% endif %}
+            {% endif %}
                 <span class="chat-header-ter"></span>
                 {% if show_early_test %}
                 <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
@@ -6846,11 +6846,12 @@
         alap: 'alap', koszon: 'integet', gondolkodik: 'gondolkodik',
         nezelodik: 'gondolkodik', orul: 'orul', szomoru: 'szomoru',
         bosszus: 'szomoru', kivancsi: 'alap', cuki: 'nevet',
-        gepies: 'meglepodik', kesz: 'tapsol'
+        gepies: 'alap', kesz: 'tapsol'
     };
     var kabalaKepEl = document.getElementById('kabala-kep');
     var kabalaKepMappa = '';
     var kabalaKepMost = '';
+    var kabalaKepUtolsoValtas = 0;
     if (kabalaKepEl) {
         var _kkNem = /lany/.test(kabalaKepEl.getAttribute('src') || '') ? 'lany' : 'fiu';
         kabalaKepMappa = {{ url_for('static', filename='figurak/')|tojson }} + 'kabala_' + _kkNem + '/';
@@ -6870,6 +6871,13 @@
         if (!kabalaKepEl || !kabalaKepMappa || !kabalaKepMost) { return; }
         var kep = KABALA_KEP[nev] || 'alap';
         if (kep === kabalaKepMost) { return; }
+        /* Gyors egymás utáni váltások kihagyása – kivéve öröm / szomorú / kész. */
+        var most = Date.now();
+        if (most - kabalaKepUtolsoValtas < 1500
+            && nev !== 'orul' && nev !== 'szomoru' && nev !== 'kesz') {
+            return;
+        }
+        kabalaKepUtolsoValtas = most;
         kabalaKepMost = kep;
         kabalaKepEl.classList.add('kabala-valt');
         setTimeout(function () {
@@ -6880,7 +6888,7 @@
                 void kabalaKepEl.offsetWidth;
                 kabalaKepEl.classList.add('kabala-ugrik');
             }
-        }, 140);
+        }, 350);
     }
 
     function kabalaAllapot(nev) {
@@ -6949,7 +6957,10 @@
     /* RÖVID KÖZBESZÓLÁS: egy arc pár másodpercre, utána alaphelyzet. */
     function kabalaVillan(nev, ido) {
         kabalaAllapot(nev);
-        setTimeout(function () { kabalaAllapot('alap'); }, ido || 2500);
+        var vissza = ido || 2500;
+        /* Képes kabalánál az alap visszaállás legalább 3,5 másodperc. */
+        if (kabalaKepEl && vissza < 3500) { vissza = 3500; }
+        setTimeout(function () { kabalaAllapot('alap'); }, vissza);
     }
 
     /* ÜRESJÁRAT. Ha percekig nem történik semmi, a figura MAGÁTÓL vált
@@ -6957,17 +6968,22 @@
        többi csak ritka eseményhez kötődik (teszt vége, hosszú
        várakozás), és a figura halottnak tűnne. */
     var KABALA_UNALOM = ['cuki', 'kivancsi', 'koszon', 'gepies', 'alap'];
+    var KABALA_UNALOM_KEP = ['koszon', 'cuki'];
     var kabalaUnalomOra = null;
 
     function kabalaUnatkozik() {
         if (kabalaUnalomOra) { clearTimeout(kabalaUnalomOra); }
+        var kesleltetes = kabalaKepEl
+            ? (30000 + Math.floor(Math.random() * 20000))
+            : (9000 + Math.floor(Math.random() * 7000));
         kabalaUnalomOra = setTimeout(function () {
             if (kabalaKert === 'alap') {
-                var i = Math.floor(Math.random() * KABALA_UNALOM.length);
-                kabalaVillan(KABALA_UNALOM[i], 3500);
+                var lista = kabalaKepEl ? KABALA_UNALOM_KEP : KABALA_UNALOM;
+                var i = Math.floor(Math.random() * lista.length);
+                kabalaVillan(lista[i], 3500);
             }
             kabalaUnatkozik();
-        }, 9000 + Math.floor(Math.random() * 7000));
+        }, kesleltetes);
     }
 
     /* A gyerek ÍR – a figura odafigyel. */
@@ -8256,12 +8272,12 @@
                nem duplázódik a click-kel, mint a touchstart tenné. */
             if (window.PointerEvent) {
                 voiceMicBtn.addEventListener('pointerdown', function (e) {
-                    e.preventDefault();
+                e.preventDefault();
                     toggleRecording();
-                });
+            });
             } else {
                 voiceMicBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
+                e.preventDefault();
                     toggleRecording();
                 });
             }

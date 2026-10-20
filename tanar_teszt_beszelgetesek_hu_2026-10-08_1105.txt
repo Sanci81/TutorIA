@@ -1,0 +1,233 @@
+TutorIA – lejátszott órák, 2026-10-08 11:05
+
+
+======================================================================
+Digitális kultúra · 6. osztály · Anna (11 éves)
+Témakör: Szöveg bevitele, javítása, mentése
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: ezt nem értem. Miért írja ki, hogy Error code: 403?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: ezt nem értem. Azt írja, hogy ez a modell nem elérhető az előfizetésben.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: ezt nem értem. Biztos nincs jogunk hozzá?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: ezt nem értem. Akkor másik modelt kell?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: ezt nem értem. Talán nincs meg a megfelelő előfizetés.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+
+======================================================================
+Földrajz · 7. osztály · Viki (12 éves)
+Témakör: Tájékozódás a térképen – fokhálózat és méretarány
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hoppá, ez most elszállt, tanárnő. Akkor a fokhálózatnál tartunk, ugye?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Jaj, megint elszállt. Akkor a méretarány jön, vagy már a nehezebbre ugrunk?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hát ez most mindjárt bekattan, tanárnő. Én már a fokoknál vagyok, az 1:100 000 az azt jelenti, hogy kicsi a térkép, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Na ez már nagyon uncsi, hogy mindig elszáll. Az 1:100 000 azt jelenti, hogy 1 cm a térképen 100 000 cm a valóságban, ugye?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Aha, akkor én jól mondtam, csak szépen kell átváltani. És a fokhálózatnál a szélesség meg a hosszúság, ugye?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+
+======================================================================
+Digitális kultúra · 5. osztály · Máté (10 éves)
+Témakör: Mi az algoritmus? Lépések és sorrend
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Ez uncsi. Most mi legyen?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Ez uncsi. Másik kérdés?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hát ez hiba. Mit kérdez a tanár?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Ez uncsi. Kérdezz mást.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Nem tudom. Ez uncsi.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+
+======================================================================
+Vizuális kultúra · 5. osztály · Bence (10 éves)
+Témakör: Vizuális művészeti jelenségek – Alkotások, stílusok
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hű, ez eltűnt. Megkérdezed még egyszer?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Jaj, megint elszállt. Tudod, melyik alkotásról volt szó?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Nekem ez csak hibás üzenetnek tűnik... mi volt a kérdés?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Nem tudom, elszállt megint. A kutyám meg közben alszik.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Jaj, hát ez mindig eltűnik. Mondd újra, jó?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+
+======================================================================
+Ének-zene · 4. osztály · Anna (9 éves)
+Témakör: Zeneművek/Énekes anyag
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Ez nem működik, tanár néni. Ezt nem értem.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Ez megint elszállt, tanár néni. Ezt nem értem.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Megint hiba lett. Ezt nem értem.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Jaj, megint nem jó. Ezt nem értem.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Ez megint nem ment. Ezt nem értem.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+
+======================================================================
+Etika · 8. osztály · Viki (13 éves)
+Témakör: Éntudat – Önismeret
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hát, ez most elszállt vagy mi... akkor szerintem az éntudat az, hogy tudom, ki vagyok, meg miben vagyok jó, meg miben nem. Jól mondom?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Na jó, ez megint hibás volt, de szerintem az önismeret az, amikor észreveszem a saját hülyeségeimet is. Vagy nem így kéne mondani?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hát, szerintem az önismeret az, amikor rájövök, hogy milyen vagyok, meg mire reagálok durván. És az éntudat meg az, hogy tudom: én én vagyok, nem más, ez jó így?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Szerintem az önismeret az, amikor tudom, miért lettem mérges vagy szomorú. Az éntudat meg az, hogy felismerem: én vagyok én, és kész?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Szerintem az önismeret az, amikor tudom, hogy milyen vagyok meg mi zavar. Az éntudat meg az, hogy érzem: én külön ember vagyok, nem csak úgy random valaki.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+
+======================================================================
+Idegen nyelv – nemet · 1. osztály · Máté (6 éves)
+Témakör: Begrüßung – Köszönés és bemutatkozás
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Ez uncsi. Mi van?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Ez uncsi. Nem tom.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hallo. Ich bin Máté.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hallo, ich bin Máté. Und du?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hallo, ich heiße Máté. Und du?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+
+======================================================================
+Technika és tervezés · 3. osztály · Bence (8 éves)
+Témakör: Anyagok a környezetünkben
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hú, ez nem működik... lehet, hogy rossz a gép? 😕
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Jaj, megint elszállt. Akkor másikat kellene?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Ajjaj, megint hiba lett. A kutyám is nézne nagyot...
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Nem megy... ez valami tiltás? 😕
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]
+
+GYEREK: Hát ez mindig elszáll. Miért van ez?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 403 - {'object': 'error', 'message': 'This model is not available in your subscription tier', 'type': 'tier_not_allowed', 'param': None, 'code': '1910', 'raw_status_code': 403}]

@@ -1,0 +1,233 @@
+TutorIA – lejátszott órák, 2026-10-08 15:40
+
+
+======================================================================
+Digitális kultúra · 6. osztály · Anna (11 éves)
+Témakör: Szöveg bevitele, javítása, mentése
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Bocsi, most hiba jött. ezt nem értem.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Most megint hiba lett. Megismétled, kérlek?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Hoppá, most sem ment. Meg tudod írni még egyszer?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Most is elszállt. ezt nem értem.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Bocsi, nem jött át. Írd le újra.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+
+======================================================================
+Földrajz · 7. osztály · Viki (12 éves)
+Témakör: Tájékozódás a térképen – fokhálózat és méretarány
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Tanárnő, elszállt a válasz, megismétli? Én addig azt mondom, hogy a fokhálózat az ilyen vonalas háló a térképen.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Jaj, megint? Szerintem a méretarány az, hogy mennyivel kisebb a térkép, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Igen, valami ilyesmi. És akkor a fokhálózaton a szélesség meg a hosszúság van, vagy összekevertem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Szerintem a szélesség a vízszintes, a hosszúság meg a függőleges… vagy fordítva? Mondja már el, mert befagytam.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Aha, akkor a szélességi körök vízszintesen mennek, a hosszúságiak meg függőlegesen, ugye? És a méretarány meg pl. 1:100000, az azt jelenti, hogy 1 cm a térképen 100000 cm a valóságban.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+
+======================================================================
+Digitális kultúra · 5. osztály · Máté (10 éves)
+Témakör: Mi az algoritmus? Lépések és sorrend
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Ez uncsi. Nem ment el?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Hát jó. Megint elszállt, mi?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Ez uncsi. Megint hiba.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Megint? Hát ez uncsi.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Ez uncsi.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+
+======================================================================
+Vizuális kultúra · 5. osztály · Bence (10 éves)
+Témakör: Vizuális művészeti jelenségek – Alkotások, stílusok
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Hű, ez valami hiba volt, szerintem várni kell egy kicsit. Megpróbáljuk újra?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Jaj, megint elszállt. Lehet, hogy túl sokan kérdezik egyszerre?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Akkor most várunk kicsit. A kutyám is mindig vár a jutifalatnál.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Hát ez megint hiba... nem tudom, miért. Azt hiszem, később jó lesz.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Megint nem megy, bocsi. Talán a rendszer fáradt.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+
+======================================================================
+Ének-zene · 4. osztály · Anna (9 éves)
+Témakör: Zeneművek/Énekes anyag
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: ezt nem értem. Megismétli a tanár néni?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: ezt nem értem. Megint elromlott?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: ezt nem értem. Ismételje meg kérlek?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: ezt nem értem. Tudja újra mondani?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: ezt nem értem. Megkérem még egyszer?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+
+======================================================================
+Etika · 8. osztály · Viki (13 éves)
+Témakör: Éntudat – Önismeret
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Jaj, ez elszállt. Tanárnő, megismétli?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Most megint nem jött meg, rate limit van vagy mi. Akkor kérdezhetek én?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Nálam is csak ez a hiba jön, fura. Akkor most én mondjak valami okosat az énkép-ről?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Hát ez most teljesen elszállt, én se látom a tanár üzenetét. Mondjam inkább, hogy az önismeret az, amikor tudom, miben vagyok jó?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Megint hiba, szuper. Akkor én most próbálom folytatni: az énkép nem ugyanaz, mint amit mások mondanak, ugye?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+
+======================================================================
+Idegen nyelv – nemet · 1. osztály · Máté (6 éves)
+Témakör: Begrüßung – Köszönés és bemutatkozás
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Ez uncsi. Noch mal?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Ez uncsi. Noch mal?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Ez uncsi. Hallo!
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Ez uncsi. Ich bin Máté.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Hallo! Ich heiße Máté.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+
+======================================================================
+Technika és tervezés · 3. osztály · Bence (8 éves)
+Témakör: Anyagok a környezetünkben
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Jaj, nem tudom... megint elszállt. Most akkor mi lesz?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Hát... várni kell? Én azt hiszem igen.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Jó, akkor megint nem ment. A kutyám nézne így: vakk?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Jaj, ez mindig elszáll... talán később jó lesz. Vakk-vakk.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]
+
+GYEREK: Nem tudom, miért hibázik. Várjunk egy kicsit?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - {'object': 'error', 'message': 'Rate limit exceeded', 'type': 'rate_limited', 'param': None, 'code': '1300', 'raw_status_code': 429}]

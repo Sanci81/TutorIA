@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<title>Figura választás – minta</title>
+<style>
+body{font-family:Nunito,Segoe UI,sans-serif;background:#f4f7f5;margin:0;padding:24px;color:#16302a}
+h1{font-size:20px;margin:0 0 6px}
+p{margin:0 0 18px;color:#4d6358}
+.sor{display:flex;flex-wrap:wrap;gap:14px}
+.kartya{background:#fff;border:2px solid #dfe6e2;border-radius:16px;padding:12px;width:180px;text-align:center}
+.kartya img{width:150px;height:170px;object-fit:contain}
+.kartya b{display:block;margin-top:8px}
+.kartya small{color:#6b7f74}
+.valaszto{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.gomb{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid #dfe6e2;border-radius:14px;background:#fff}
+.megjegyzes{margin-top:22px;background:#fff8e8;border-radius:12px;padding:12px 14px;max-width:640px}
+</style>
+</head>
+<body>
+<h1>Négy figura a profilban – minta</h1>
+<p>A mostani mozgó robot megmarad. Mellé jön a képes robot, a fiú és a lány. Ez még csak minta, a valódi oldalhoz nem nyúltam.</p>
+<div class="sor">
+  <div class="kartya"><img src="static/figurak/robot/alap.webp" alt="Képes robot"><b>Képes robot</b><small>új, ez jönne negyediknek</small></div>
+  <div class="kartya"><img src="static/figurak/kabala_fiu/alap.webp" alt="Fiú"><b>Fiú</b><small>már választható</small></div>
+  <div class="kartya"><img src="static/figurak/kabala_lany/alap.webp" alt="Lány"><b>Lány</b><small>már választható</small></div>
+</div>
+<div class="valaszto">
+  <label class="gomb"><input type="radio" name="n" checked> Robot (mozgó) – ez marad</label>
+  <label class="gomb"><input type="radio" name="n"> Képes robot</label>
+  <label class="gomb"><input type="radio" name="n"> Fiú</label>
+  <label class="gomb"><input type="radio" name="n"> Lány</label>
+  <label class="gomb"><input type="radio" name="n"> Nem mondom meg</label>
+</div>
+<p class="megjegyzes">A mozgó robotot itt nem tudom lerajzolni, az az oldalon animáció. A három kép a valódi, már elkészített figura.</p>
+</body>
+</html>

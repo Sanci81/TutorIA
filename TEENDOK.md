@@ -598,3 +598,41 @@ Sándor képeket küldött. Amiben ők jobbak, és amit érdemes elirigyelni:
 Ezek nem AI-kérdések, hanem FELÜLET-kérdések. A mi erősségünk (igazi
 tanár, aki magyaráz) megmarad mellettük — de a feladatok megjelenítésén
 sokat lehetne javítani anélkül, hogy a tanítást elrontanánk.
+
+---
+
+## INTERAKTÍV TANÍTÁS – A TERV (2026-10-18, Sándor jóváhagyta az irányt)
+
+ALAPELV: nem leckénként rajzolunk, hanem ÚJRAHASZNÁLHATÓ, kattintható
+elemeket építünk (kódban, képgyártás nélkül – használatkor 0 Ft). A tanár
+csak a SZÁMOKAT / SZAVAKAT adja meg egy <FELADAT> jelölőben, a program
+ellenőrzi őket (rossz értéknél sima kérdés marad). Így egy elem több száz
+feladatot fed le, több évfolyamon – a két tantervhez összesen nagyjából
+30 elem kell, nem több ezer. Ha a gyerek nem érti, a tanár új számokkal
+újat ad. Minden elem MAGYARUL és SPANYOLUL is. A tanár csak az adott
+tantárgyhoz és évfolyamhoz illő elemeket látja a promptban.
+Minden új elemből ELŐBB kipróbálható minta készül, csak utána kerül be.
+
+Kész minta (Claude outputs/interaktiv_minta.html), Sándornak tetszett:
+- [ ] Törtpizza (szeletek kiszínezése) – 1–3. o.
+- [ ] Béka a számegyenesen (ugrál, számol) – 1–2. o.
+- [ ] Óra húzható mutatókkal (negyed, fél, háromnegyed) – 1–3. o.
+
+Tervezett elemek:
+- [ ] Matek 3–4.: írásbeli összeadás/kivonás oszlopban MOZGÓ átvitellel
+      és lépésenkénti segítséggel (az oszlopos tábla már megvan, ez a
+      bővítése), szorzás téglalap-rácson, törtek a számegyenesen.
+- [ ] Matek 5–8.: húzható szögmérő, koordináta-rendszer (pont elhelyezése),
+      kerület/terület négyzetrácson (húzható téglalap), egyenlet-mérleg,
+      százaléksáv.
+- [ ] Környezetismeret, biológia: részek címkézése húzással (növény, test).
+- [ ] Földrajz: forgatható iránytű, méretarány-vonalzó.
+- [ ] Fizika: áramkör kapcsolóval (az izzó felgyullad).
+- [ ] Ének-zene: megszólaló hangjegyek, ritmus koppintással.
+- [ ] Történelem: idővonal, amire az eseményeket húzni kell.
+- [ ] Memóriajáték (kép ↔ szó): nyelvórán a megtanult szavakkal (176
+      szótárkép), környezetismeretben a fogalomképekkel, és SZÜNETJÁTÉKNAK.
+- [ ] Szünet-ajánlat: kb. 20 AKTÍV perc után (felső tagozaton 30) kedves
+      ajánlat: „Pihensz 2 percet egy memóriajátékkal?" – nem kötelező, a
+      szülő átállíthatja vagy kikapcsolhatja. Csak az számít aktív
+      percnek, amikor a gyerek tényleg válaszol.

@@ -1,0 +1,558 @@
+TutorIA – lejátszott órák, 2026-10-18 13:31
+
+
+======================================================================
+Digitális kultúra · 6. osztály · Anna (11 éves)
+Témakör: Szöveg bevitele, javítása, mentése
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Anna! Noémi vagyok, és ma elmerülünk a szövegszerkesztés világában: megtanuljuk, hogyan vigyünk be szöveget a számítógépbe, hogyan javítsuk ki a hibákat, és hogyan mentsük el a munkánkat, hogy ne vesszen el. 😊
+
+Kezdésnek nézzünk meg három nagyon fontos alapfogalmat:
+
+A szövegbevitel egyszerűen a gépelést jelenti. Amikor elindítasz egy szövegszerkesztőt, egy villogó függőleges vonalat látsz: ez a kurzor. A betűk mindig ott jelennek meg, ahol ez a kurzor éppen áll. Például, ha leírod a nevedet, a kurzor minden betű után egyet ugrik jobbra.
+
+A hibák javításához két törlés gombot használunk. A Backspace gomb (a hosszú nyíl balra) a kurzortól balra lévő betűt törli le, tehát visszafelé halad. A Delete gomb viszont a kurzortól jobbra lévő karaktert tünteti el. Például, ha azt írtad véletlenül, hogy „iskkolla”, a kurzort a két „k” közé téve a Backspace-szel az első, a Delete-tel a második felesleges betűt tudod letörölni.
+
+A mentés pedig az a folyamat, amikor a gép memóriájából fixen felírjuk a szöveget a háttértárra (például a winchesterre). Így ha kikapcsolod a gépet, másnap is meglesz a fájlod. Ezt általában a fájl menüben találod, vagy egy kis floppy lemez ikon jelzi.
+
+Nézzük, emlékszel-e a törlés irányaira!
+
+<ABRA>
+<svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+  <rect x="30" y="80" width="260" height="60" rx="12" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/>
+  <text x="160" y="118" font-size="24" fill="#222" text-anchor="middle" font-family="monospace">Szöve|g</text>
+  <line x1="160" y1="95" x2="160" y2="125" stroke="#e07a3d" stroke-width="3">
+    <animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite" />
+  </line>
+  <path d="M140 160 L100 160 L110 150 M100 160 L110 170" fill="none" stroke="#7b5ea7" stroke-width="3" stroke-linecap="round"/>
+  <text x="90" y="190" font-size="14" fill="#222" text-anchor="middle">Backspace</text>
+  <path d="M180 160 L220 160 L210 150 M220 160 L210 170" fill="none" stroke="#1e7a4d" stroke-width="3" stroke-linecap="round"/>
+  <text x="230" y="190" font-size="14" fill="#222" text-anchor="middle">Delete</text>
+</svg>
+</ABRA>
+
+<FELADAT>{"tipus":"valaszt","opciok":["A kurzortól balra lévő betűt.","A kurzortól jobbra lévő betűt.","A teljes mondatot egyszerre."]}</FELADAT>
+
+Melyik betűt törli le a Backspace billentyű?
+
+GYEREK: A kurzortól balra lévő betűt. Ezt jól mondom?
+
+TANÁR: Nagyon ügyes vagy, pontosan így van! A Backspace gombbal „visszafelé” haladva tudod letörölni a betűket. 🌟
+
+Most, hogy már tudsz törölni, tanuljunk meg kijelölni és mozgatni szövegrészeket. Ez akkor nagyon hasznos, ha rájössz, hogy egy mondat vagy szó jobb helyen lenne a szöveg egy másik részén.
+
+A kijelölés az alapja mindennek: ilyenkor az egérrel (vagy a Shift és a nyilak segítségével) „lefestjük” a szöveget, ami általában kék háttérrel jelenik meg. Ha kijelöltél valamit, két fontos dolgot tehetsz vele:
+
+A másolás során a szöveg az eredeti helyén is ott marad, de bekerül a vágólapra (ez egy láthatatlan átmeneti tároló). Ezt a billentyűzeten a <FL:en>Ctrl</FL> + C billentyűkombinációval érheted el. Olyan ez, mintha lefénymásolnád a papírt.
+
+Az áthelyezésnél (vagy kivágásnál) az eredeti helyéről eltűnik a szöveg, és csak ott jelenik meg újra, ahová beilleszted. Ehhez a <FL:en>Ctrl</FL> + X gombokat használjuk. Olyan, mintha ollóval vágnád ki.
+
+Bármelyiket is választottad, a szöveget a beillesztés parancsal, vagyis a <FL:en>Ctrl</FL> + V billentyűkkel tudod letenni az új helyére, oda, ahol a kurzor éppen villog. Röviden így írjuk a folyamatot: Kivágás (<FL:en>Ctrl</FL>+X) -> Beillesztés (<FL:en>Ctrl</FL>+V).
+
+Próbáljuk is ki! Ha egy mondatot át szeretnél tenni a szöveg elejéről a végére úgy, hogy az elején ne maradjon ott, melyik billentyűkombinációval kell kezdened a folyamatot?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Ctrl + C (Másolás)","Ctrl + X (Kivágás)","Ctrl + S (Mentés)"]}</FELADAT>
+
+GYEREK: A Ctrl + X-szel kell kezdeni. Jól írtam?
+
+TANÁR: Tökéletes válasz, Anna! Pontosan, a <FL:en>Ctrl</FL> + X (Kivágás) parancsot használjuk, ha el akarjuk vinni a szöveget az eredeti helyéről. ✂️
+
+Most ismerkedjünk meg egy nagyon hasznos segítőtárssal: a **helyesírás-ellenőrzővel**. A legtöbb szövegszerkesztő program (például a <FL:en>Word</FL>) figyeli, amit írsz. Ha egy szót elgépelsz, vagy olyan szót írsz, amit nem ismer, egy hullámos, piros vonallal húzza alá. Ha ilyenkor jobb gombbal rákattintasz az aláhúzott szóra, a program felajánl neked helyesebb lehetőségeket.
+
+Végezetül nézzük meg a **megnyitás** folyamatát. Ha egy korábban elmentett munkádat szeretnéd folytatni, a Megnyitás (<FL:en>en</FL>: Open) parancsot kell választanod. Ilyenkor a gép megmutatja a mappáidat, te pedig kiválaszthatod a fájlt, amit keresel.
+
+Rendszerezzük kicsit, mit hova tesz a gép! Párosítsd össze a műveleteket a megfelelő leírással!
+
+<FELADAT>{"tipus":"parosit","parok":[["Mentés","A memóriából a háttértárra írja a fájlt."],["Megnyitás","A háttértárról a memóriába tölti a fájlt."],["Helyesírás-ellenőrző","Pirossal jelzi az elgépelt szavakat."],["Vágólap","Itt tárolódik átmenetileg a másolt szöveg."]]}</FELADAT>
+
+GYEREK: Mentés ↔ a memóriából a háttértárra írja a fájlt. Megnyitás ↔ a háttértárról a memóriába tölti a fájlt, és a vágólapban van a másolt szöveg.
+
+TANÁR: Nagyszerűen párosítottad össze a fogalmakat! Pontosan látod a különbséget a gép memóriája és a háttértár (például a winchester) között. 🧠💾
+
+Mivel ezeket az alapokat már ilyen magabiztosan tudod, nézzük meg, készen állsz-e egy kis összefoglaló kihívásra! Ezzel ellenőrizhetjük, hogy minden fontos részlet megmaradt-e a mai leckéből.
+
+Benne vagy egy rövid záró tesztben? 😊
+
+GYEREK: Igen, benne vagyok! Jöhet a teszt, ezt nem értem ha nehéz.
+
+TANÁR: Ne aggódj, Anna, egyáltalán nem lesz nehéz! Pontosan olyan dolgokról foglak kérdezni, amiket az előbb átvettünk. Segítek majd, ha elakadnál. 😊
+
+Kezdjük az első kérdéssel! Képzeld el, hogy leírtad a „számítógép” szót, de véletlenül két darab „í” betűt tettél bele, így: „számíítógép”. A kurzorod most pontosan a két „í” betű között villog.
+
+Melyik billentyűvel tudod letörölni a kurzor ELŐTTI (tőle balra lévő) felesleges betűt?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Delete","Backspace","Enter"]}</FELADAT>
+
+GYEREK: Backspace. Jó ez így?
+
+TANÁR: Nagyon jó! Bizony, a Backspace billentyűvel tudsz balra, azaz „visszafelé” törölni. 🔙
+
+Jöhet a következő kérdés! Szeretnéd a dolgozatod egyik bekezdését átrakni a szöveg egy másik pontjára. Már ki is jelölted a szöveget az egérrel.
+
+Milyen sorrendben kell használnod a billentyűkombinációkat, hogy a szöveg eltűnjön az eredeti helyéről, és megjelenjen az új helyen?
+
+<FELADAT>{"tipus":"sorrend","elemek":["Ctrl + X (Kivágás)","Kattintás az új helyre","Ctrl + V (Beillesztés)"]}</FELADAT>
+
+
+======================================================================
+Földrajz · 7. osztály · Viki (12 éves)
+Témakör: Tájékozódás a térképen – fokhálózat és méretarány
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 7.523495161s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '7s'}]}}]]
+
+GYEREK: Jaj, akkor várjunk egy picit, mert elfogyott a keret, vagy mi. Utána folytatom: a fokhálózatnál a szélesség meg a hosszúság a fontos, ugye?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 3.327913473s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '3s'}]}}]]
+
+GYEREK: Hát ez most megint elszállt, de szerintem a méretarány azt mutatja, hányszor kisebb a térkép a valóságnál. A fokhálózat meg a szélességi meg hosszúsági körökből áll, vagy nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 59.917170537s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '59s'}]}}]]
+
+GYEREK: Jaj, hát akkor most tényleg várni kell, ez így butaság. De a fokhálózat a térképen a helyet mutatja, a méretarány meg azt, hogy mennyire van lekicsinyítve, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 56.351519046s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '56s'}]}}]]
+
+GYEREK: Na jó, akkor ezt most hagyjuk, mert a rendszer megint hisztizik. A méretarány az, hogy a térkép kisebb a valóságnál, a fokhálózat meg a koordinátás rács, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 53.063895533s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '53s'}]}}]]
+
+GYEREK: Akkor ezt most elnézem a gépnek, mert tényleg unalmasan hibázik. A fokhálózat a szélességi meg hosszúsági vonalakból áll, a méretarány meg a kicsinyítés, igaz?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 49.844738983s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '49s'}]}}]]
+
+
+======================================================================
+Digitális kultúra · 5. osztály · Máté (10 éves)
+Témakör: Mi az algoritmus? Lépések és sorrend
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia Máté! Noémi vagyok, és nagyon örülök, hogy velem fogsz tanulni. Ma egy izgalmas témába vágunk bele: megnézzük, hogyan gondolkodnak a gépek és mi is az az algoritmus. 🤖
+
+Bár a szó furcsán hangozhat, valójában nap mint nap használsz algoritmusokat anélkül, hogy tudnál róla!
+
+Nézzük meg a három legfontosabb alapfogalmat:
+
+1.  **Algoritmus**: Ez nem más, mint egy pontosan meghatározott útmutató vagy recept egy feladat megoldásához. Olyan lépések sorozata, amiket ha pontosan követsz, eljutsz a célhoz.
+2.  **Szekvencia**: Ez a lépések egymás utáni sorrendjét jelenti. Nagyon fontos, hogy a lépések a megfelelő sorrendben jöjjenek, különben nem sikerül a dolog!
+3.  **Bemenet és Kimenet**: A bemenet az, amiből kiindulunk (például a hozzávalók), a kimenet pedig a végeredmény (például a kész süti).
+
+Gondolj egy egyszerű példára: a fogmosásra!
+- **Bemenet**: fogkefe, fogkrém, víz.
+- **Algoritmus (lépések)**: 1. Vedd a kezedbe a fogkefét! 2. Tégy rá fogkrémet! 3. Mosd meg a fogaidat! 4. Öblíts ki a szádat!
+- **Kimenet**: tiszta fogak. ✨
+
+Ha felcserélnéd a sorrendet (szekvenciát), és előbb öblítenél, aztán tennél fogkrémet a kefére, de már nem mosnád meg, akkor nem lenne tiszta a fogad. A sorrend tehát kulcsfontosságú!
+
+Szerinted az alábbiak közül melyik folyamatnak van szigorú sorrendje (algoritmusa)?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Egy pohár kakaó elkészítése","Álmodozás a szünetről","Levegővétel"]}</FELADAT>
+
+GYEREK: Egy pohár kakaó elkészítése.
+
+TANÁR: Pontosan! A kakaókészítés egy igazi algoritmus, hiszen nem mindegy, mikor öntöd a tejet a pohárba, vagy mikor kevered bele a port. Ha előbb meginnád a tejet, és csak utána szórnád a szádba a kakaót, az már nem lenne az igazi! 😊
+
+Most nézzük meg, hogyan tudjuk ezeket a lépéseket ügyesen leírni. A digitális kultúrában ezt **algoritmus leírásának** hívjuk. 
+
+Két fontos dologra kell figyelnünk:
+1. **Pontos utasítások**: Olyan egyszerűen kell fogalmazni, hogy egy robot is megértse. Például a „csinálj kakaót” túl bonyolult egy gépnek, helyette azt mondjuk: „tégy két kanál port a pohárba”.
+2. **Folyamat**: Ez maga a tevékenység, amit végzünk, az elejétől a végéig.
+
+Minden algoritmus egy **problémamegoldó tevékenység**. Van egy problémánk (éhesek vagyunk), és az algoritmus segítségével megoldjuk (sütünk egy rántottát).
+
+Most próbáljuk ki, mennyire látod át a sorrendet! Képzeld el, hogy be akarsz kapcsolni egy számítógépet és meg akarsz nézni egy videót. Segíts sorba rakni a lépéseket!
+
+<FELADAT>{"tipus":"sorrend","elemek":["Nyomd meg a gép bekapcsoló gombját!","Várd meg, amíg betölt a rendszer!","Indítsd el az internetböngészőt!","Keress rá a videóra a keresőben!","Kattints a lejátszás gombra!"]}</FELADAT>
+
+GYEREK: Nyomd meg a gép bekapcsoló gombját! Várd meg, amíg betölt a rendszer! Indítsd el az internetböngészőt! Keress rá a videóra a keresőben! Kattints a lejátszás gombra!
+
+TANÁR: Hibátlan megoldás, Máté! Pontosan ebben a sorrendben kell csinálni, különben hiába kattintgatnál a kikapcsolt képernyőre. 🌟
+
+Most, hogy már tudod, mi az az **algoritmus** és miért fontos a **szekvencia** (vagyis a sorrend), nézzük meg egy kicsit közelebbről a **bemenetet** és a **kimenetet**.
+
+Minden program és minden folyamat várakozik valamire, amivel dolgozhat. Ez a **bemenet**. Aztán elvégzi a lépéseket, és a végén kapunk valamit, ez a **kimenet**.
+
+Vegyünk egy példát a suliból: a ceruzahegyezést!
+- **Bemenet**: Egy faragatlan, tompa hegyű ceruza.
+- **Folyamat (algoritmus)**: Dugd bele a ceruzát a hegyezőbe, és forgasd körbe ötször!
+- **Kimenet**: Egy hegyes ceruza, amivel már lehet írni.
+
+Ha a robotunknak azt mondanánk: "Hegyezz!", akkor tudnia kell, MIT hegyezzen meg. Ez a bemeneti adat.
+
+Nézzünk egy digitális példát: összeadunk két számot a számológépen!
+Itt a **bemenet** a két szám lesz (például a 2 és a 3).
+Az **algoritmus** pedig az összeadás művelete.
+
+Szerinted mi lesz a **kimenet** ebben az esetben?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Az 5-ös szám","Az összeadás jele (+)","A számológép gombjai"]}</FELADAT>
+
+GYEREK: Az 5-ös szám.
+
+TANÁR: Így van, az 5-ös szám a végeredmény, vagyis a **kimenet**! 🖐️
+
+Nagyon ügyes vagy, Máté! Eddig megbeszéltük, hogy az algoritmus pontos lépésekből áll, fontos a sorrend (**szekvencia**), és mindig van eleje (**bemenet**) meg vége (**kimenet**).
+
+Most egy kicsit nehezítsünk! Néha az algoritmusokat nem csak leírjuk, hanem le is rajzoljuk. Ezt **folyamatábrának** hívjuk.
+A folyamatábrában különböző alakzatokat használunk:
+- A kerekített téglalap jelzi az algoritmus **elejét** és **végét**.
+- A sima téglalapba írjuk az **utasításokat** (amit csinálni kell).
+- A nyilak mutatják meg, merre halad a **folyamat**.
+
+Nézd csak, így nézne ki egy egyszerű folyamatábra, ha egy robotnak magyaráznánk el, hogyan kell átkelni az úton (ha zöld a lámpa):
+
+<ABRA>
+<svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+  <!-- Start -->
+  <rect x="110" y="20" width="100" height="40" rx="20" fill="#f3eef8" stroke="#7b5ea7" stroke-width="3"/>
+  <text x="160" y="45" font-size="16" fill="#222" text-anchor="middle">START</text>
+  
+  <!-- Nyíl 1 -->
+  <line x1="160" y1="60" x2="160" y2="90" stroke="#7b5ea7" stroke-width="3" marker-end="url(#arrow)"/>
+  
+  <!-- Utasítás -->
+  <rect x="70" y="90" width="180" height="50" rx="12" fill="#e7f3fc" stroke="#2f8fd8" stroke-width="3"/>
+  <text x="160" y="120" font-size="14" fill="#222" text-anchor="middle">Lépj az úttestre!</text>
+  
+  <!-- Nyíl 2 -->
+  <line x1="160" y1="140" x2="160" y2="170" stroke="#2f8fd8" stroke-width="3"/>
+  
+  <!-- Stop -->
+  <rect x="110" y="170" width="100" height="40" rx="20" fill="#f3eef8" stroke="#7b5ea7" stroke-width="3"/>
+  <text x="160" y="195" font-size="16" fill="#222" text-anchor="middle">STOP</text>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#7b5ea7" />
+    </marker>
+  </defs>
+</svg>
+</ABRA>
+
+Látod? A nyilak segítenek, hogy ne tévedjünk el a lépések között. Ezt hívjuk **algoritmus leírásának** rajzos formában.
+
+Most próbáljuk meg párosítani a fogalmakat a jelentésükkel, hogy rögzüljenek a mai legfontosabb szavaink!
+
+<FELADAT>{"tipus":"parosit","parok":[["Algoritmus","Lépések pontos sorozata"],["Szekvencia","A lépések sorrendje"],["Bemenet","Amiből kiindulunk"],["Kimenet","A végeredmény"]]}</FELADAT>
+
+GYEREK: Algoritmus ↔ Lépések pontos sorozata; Szekvencia ↔ A lépések sorrendje; Bemenet ↔ Amiből kiindulunk; Kimenet ↔ A végeredmény.
+
+TANÁR: Nagyszerű munka, Máté! Hibátlanul összepárosítottad a fogalmakat. Most már pontosan érted az alapokat. ✨
+
+Emlékszel, említettem a **problémamegoldó tevékenységet**? Ez azt jelenti, hogy az algoritmust mindig azért készítjük, hogy egy konkrét feladatot megoldjunk vele. Amikor egy bonyolultabb dolgot kell megterveznünk, érdemes a **lépésenkénti finomítás elvét** követni. Ez csak annyit jelent, hogy először nagy vonalakban kitaláljuk a lépéseket, aztán mindegyiket részletesebb, kisebb utasításokra bontjuk.
+
+Például:
+1. Nagy lépés: "Vegyél fel egy pólót!"
+2. Finomított lépések: "Fogd meg a pólót! Keresd meg a nyakát! Húzd át a fejed rajta! Dugd át a karjaidat az ujjain!"
+
+Minél butább a gép (például egy egyszerű robot), annál több ilyen apró, finomított lépésre van szüksége.
+
+Mivel ilyen ügyesen vetted az akadályokat, szerintem készen állsz egy kis összefoglaló játékra. Ebben a feladatban egy mondatból hiányzik a kulcsszó.
+
+<FELADAT>{"tipus":"hianyzo","mondat":"Amikor egy feladatot apró, pontosan meghatározott lépésekre bontunk, akkor egy ___ készítünk.","szavak":["algoritmust","kimenetet","szekvenciát"]}</FELADAT>
+
+GYEREK: algoritmust.
+
+TANÁR: Pontosan, Máté! Egy algoritmust készítünk. 🏆
+
+Ezzel a végére is értünk a mai lecke főbb magyarázatainak. Megtanultuk, hogy mi az az **algoritmus**, miért fontos a **szekvencia**, és hogyan lesz a **bemenetből** a folyamat végén **kimenet**. Láttuk, hogy a bonyolultabb feladatokat érdemes **lépésenkénti finomítással** apróbb részekre bontani, és akár **folyamatábrán** is ábrázolhatjuk őket.
+
+Úgy látom, nagyon jól megy neked ez a téma! Szeretnél egy rövid, játékos összefoglaló tesztet kitölteni, hogy lezárjuk ezt a leckét, vagy beszélgessünk még valamelyik részről?
+
+<TOPIC_COMPLETE>
+
+<FELADAT>{"tipus":"valaszt","opciok":["Jöhet a teszt!","Inkább beszélgessünk még róla!"]}</FELADAT>
+
+
+======================================================================
+Vizuális kultúra · 5. osztály · Bence (10 éves)
+Témakör: Vizuális művészeti jelenségek – Alkotások, stílusok
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 3.59712226s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '3s'}]}}]]
+
+GYEREK: Hűha, ez elszállt. Megpróbáljuk újra?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 544.909331ms.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '0s'}]}}]]
+
+GYEREK: Jaj, megint nem ment. Várjunk egy kicsit?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 57.871708496s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '57s'}]}}]]
+
+GYEREK: Hát akkor várjunk. Addig meg a kutyám labdázna.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 54.678648614s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '54s'}]}}]]
+
+GYEREK: Jó, várjunk még. Nem megy.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 51.584405979s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '51s'}]}}]]
+
+GYEREK: Hát ez megint nem jó. Várjunk kicsit?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 48.792193689s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '48s'}]}}]]
+
+
+======================================================================
+Ének-zene · 4. osztály · Anna (9 éves)
+Témakör: Zeneművek/Énekes anyag
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Anna! Noémi vagyok. Nagyon örülök, hogy ma együtt fogunk énekelni és tanulni! 🎵 Ma a népdalok egyik legérdekesebb csoportjával, az életképekkel ismerkedünk meg.
+
+Az életképek olyan dalok, amik elmesélik nekünk, hogyan éltek, dolgoztak vagy szórakoztak régen az emberek. Olyanok, mint egy-egy zenélő fénykép a múltról! 📸
+
+Ma három fontos dolgot tanulunk meg róluk:
+
+1. **Pásztordalok**: Ezek az életképek egyik fajtája. A juhászok, csikósok vagy gulyások mindennapjait mutatják be. Például a „Kelj fel juhász” című dalunk arról szól, hogy a pásztornak már dolga van a nyájjal.
+2. **Munkadalok**: Ezeket a dalokat régen gyakran munka közben énekelték, hogy vidámabban teljen az idő. Ilyen a „Béres legény”, ami a mezőgazdasági munkáról és a szekér megrakásáról szól.
+3. **<FL:it>tempo giusto</FL>**: Ez egy olasz kifejezés, amit a zenében használunk. Azt jelenti, hogy „feszes, pontos ritmusban”. Az ilyen daloknak határozott lüktetése van, remekül lehet rájuk menetelni vagy táncolni.
+
+Gondolj bele, a pásztorok egész nap kint voltak a szabadban az állataikkal! A dalokból megtudhatjuk, hogy szerették a munkájukat és büszkék voltak rá. 🐑
+
+Nézd meg ezt a kottarészletet, ami egy ilyen határozott ritmusú dal elejét mutatja:
+
+<ABRA><svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+  <rect x="10" y="10" width="300" height="200" fill="#f3eef8" rx="12" />
+  <line x1="40" y1="60" x2="280" y2="60" stroke="#7b5ea7" stroke-width="2"/>
+  <line x1="40" y1="75" x2="280" y2="75" stroke="#7b5ea7" stroke-width="2"/>
+  <line x1="40" y1="90" x2="280" y2="90" stroke="#7b5ea7" stroke-width="2"/>
+  <line x1="40" y1="105" x2="280" y2="105" stroke="#7b5ea7" stroke-width="2"/>
+  <line x1="40" y1="120" x2="280" y2="120" stroke="#7b5ea7" stroke-width="2"/>
+  <circle cx="70" cy="120" r="8" fill="#7b5ea7"/>
+  <line x1="77" y1="120" x2="77" y2="85" stroke="#7b5ea7" stroke-width="3"/>
+  <circle cx="120" cy="105" r="8" fill="#7b5ea7"/>
+  <line x1="127" y1="105" x2="127" y2="70" stroke="#7b5ea7" stroke-width="3"/>
+  <circle cx="170" cy="120" r="8" fill="#7b5ea7"/>
+  <line x1="177" y1="120" x2="177" y2="85" stroke="#7b5ea7" stroke-width="3"/>
+  <circle cx="220" cy="105" r="8" fill="#7b5ea7"/>
+  <line x1="227" y1="105" x2="227" y2="70" stroke="#7b5ea7" stroke-width="3"/>
+  <text x="160" y="160" font-size="16" fill="#222" text-anchor="middle">Feszes, pontos ritmus</text>
+  <text x="160" y="190" font-size="18" fill="#7b5ea7" text-anchor="middle">tempo giusto</text>
+</svg></ABRA>
+
+Most pedig lássuk, mire emlékszel! Mit jelent az a kifejezés, hogy <FL:it>tempo giusto</FL>?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Nagyon lassú, álmos tempó","Halk, suttogó éneklés","Feszes, pontos ritmus"]}</FELADAT>
+
+GYEREK: Azt jelenti, hogy **feszes, pontos ritmus**. Ez az, ugye?
+
+TANÁR: Pontosan, Anna! Nagyon ügyes vagy! Ezt a kifejezést legközelebb is felismered majd, ha egy pergős, határozott ritmusú népdalt hallasz. ✨
+
+Most tanuljunk meg két újabb dolgot a népdalok világából:
+
+1. **Párosítók**: Ezek olyan dalok, amelyek a leányokról és a legényekről szólnak. Régen a fiatalok táncházakban vagy mulatságokban találkoztak, és gyakran énekeltek olyan dalokat, amikkel „összehozták” a párokat. Ilyen például a „Széles a Duna” vagy a „Zörög a kocsi”.
+2. **Jeles napok**: Ezek azok az ünnepek az évben, amikhez különleges dalok és szokások tartoznak. Például karácsonykor „Mennyből az angyal”-t énekelünk, farsangkor pedig vidám, tréfás dalokat, mert az a mulatozás ideje! 🎭
+
+A párosítókban sokszor hallhatsz neveket is. Képzeld el, régen ha valaki tetszett egy fiúnak, beleénekelte a lány nevét a dalba!
+
+Lássuk, tudod-e, melyik ünnephez melyik dalt kapcsoljuk? Párosítsd össze őket!
+
+<FELADAT>{"tipus":"parosit","parok":[["Karácsony","Mennyből az angyal"],["Farsang","Farsang három napjába"],["Március 15.","Huszárgyerek, huszargyerek"]]}</FELADAT>
+
+GYEREK: Karácsony – Mennyből az angyal, Farsang – Farsang három napjába, Március 15. – Huszárgyerek, huszargyerek. Jól van?
+
+TANÁR: Hibátlan megoldás, Anna! Pontosan összeválogattad az ünnepeket és a hozzájuk illő dalokat. 🌟
+
+Folytassuk két nagyon fontos és különleges dologgal:
+
+1. **A Himnusz**: Ezt a művet minden ünnepségen hallhatod. A szövegét <FL:hu>Kölcsey Ferenc</FL> írta, a zenéjét pedig <FL:hu>Erkel Ferenc</FL> szerezte. Ez Magyarország legfontosabb dala, amit mindig komolyan, állva énekelünk vagy hallgatunk, hogy kifejezzük a tiszteletünket. 🇭🇺
+
+2. **Állatos dalok**: A népdalok között rengeteg olyan van, ami állatokról szól. Ezek gyakran játékosak vagy tréfásak. Biztosan ismered azt, hogy „Debrecenbe kéne menni”, amiben egy pulykakakas is szerepel, vagy a „Házasodik a tücsök” című dalt, ami egy egész erdei lakodalmat mesél el! 🐞
+
+Gondolj csak bele, régen az emberek sokkal közelebb éltek a természethez, ezért is született ennyi dal a cicákról, kacsákról vagy éppen a kis madarakról.
+
+Most nézzük meg, emlékszel-e, ki szerezte nemzeti imádságunk, a Himnusz zenéjét!
+
+<FELADAT>{"tipus":"valaszt","opciok":["Kodály Zoltán","Erkel Ferenc","Bartók Béla"]}</FELADAT>
+
+GYEREK: Erkel Ferenc. Ugye ez volt?
+
+TANÁR: Így van, Anna! **Erkel Ferenc** szerezte a Himnusz zenéjét. Nagyon jól emlékeztél rá! 🎼
+
+Most nézzünk meg még két érdekes dolgot a dalok előadásáról:
+
+1. **Dinamika**: Ez azt jelenti, hogy milyen hangerővel énekelünk. Lehet egy dal halk (*piano*), mint egy bölcsődal, vagy hangos (*forte*), mint egy vidám katonadal.
+2. **Artikuláció**: Ez a tiszta kiejtést jelenti. Ahhoz, hogy mindenki értse a dal szövegét, fontos, hogy szépen, érthetően formáljuk a szavakat éneklés közben. 👄
+
+Sok népdalunk, például a „Huszárgyerek, huszárgyerek” vagy a „Debrecenbe kéne menni”, akkor hangzik a legjobban, ha büszkén és közepesen hangosan énekeljük őket.
+
+Most nézzük meg, tudod-e, melyik dalt ismerheti mindenki, amiben egy pulykakakas is felbukkan! Keressük meg a címét!
+
+<FELADAT>{"tipus":"hianyzo","mondat":"___ kéne menni, pulykakakast venni.","szavak":["Debrecenbe","Budapestre","Szegedre"]}</FELADAT>
+
+GYEREK: Debrecenbe. A pulykakakasos dal!
+
+TANÁR: Úgy van, Anna! „Debrecenbe kéne menni, pulykakakast venni” – ez az egyik legvidámabb állatos dalunk! 🦃
+
+Mivel ilyen ügyesen válaszoltál mindenre, elérkeztünk a mai leckénk végéhez. Átvettük az életképeket, a pásztordalokat, a párosítókat és még a Himnuszt is. Most pedig nézzük meg egy összefoglaló feladattal, mennyire sikerült megjegyezned a mai érdekességeket!
+
+Készen állsz egy kis játékos ellenőrzésre?
+
+<FELADAT>{"tipus":"parosit","parok":[["tempo giusto","feszes, pontos ritmus"],["életkép","mindennapi életet bemutató dal"],["Himnusz zeneszerzője","Erkel Ferenc"],["dinamika","hangerő a zenében"]]}</FELADAT>
+
+GYEREK: Igen, kész vagyok! tempo giusto – feszes, pontos ritmus; életkép – mindennapi életet bemutató dal; Himnusz zeneszerzője – Erkel Ferenc; dinamika – hangerő a zenében.
+
+TANÁR: Gratulálok, Anna! Mindent tökéletesen párosítottál össze! 🏆 Ma igazi szakértője lettél a népdalok világának.
+
+Nagyon büszke vagyok rád, mert nemcsak a kifejezéseket jegyezted meg, mint a <FL:it>tempo giusto</FL> vagy a dinamika, hanem azt is pontosan tudod, kiről szólnak az életképek vagy ki szerezte a Himnusz zenéjét.
+
+Mára végeztünk az ének-zene órával. Legközelebb újabb dalokat és hangszereket fogunk felfedezni! 🎶
+
+Szia, Anna! Legyen szép napod! 👋
+
+<TOPIC_COMPLETE>
+
+
+======================================================================
+Etika · 8. osztály · Viki (13 éves)
+Témakör: Éntudat – Önismeret
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Viki! Noémi vagyok. Nagyon örülök, hogy itt vagy, vágjunk is bele! 😊 Ma az éntudat és az önismeret izgalmas világával fogunk foglalkozni. Ez segít neked jobban megérteni saját magadat, és azt, hogyan látnak téged mások.
+
+Ma három fontos dologról fogunk beszélni: az identitásról, a személyiségjegyekről és a társadalmi szerepekről.
+
+Az identitás (vagy önazonosság) tulajdonképpen mindaz, ami téged azzá tesz, aki vagy. Olyan, mint egy belső iránytű: a tulajdonságaid, a hobbijaid, az értékeid és még az is benne van, hogy hova tartozol (például melyik családba vagy közösségbe). Például: "Az identitásom része, hogy szeretem a természetet és fontos nekem az őszinteség."
+
+A személyiségjegyek a te belső tulajdonságaid, amik jellemzik a viselkedésedet. Lehetsz például kitartó, vidám, vagy éppen megfontolt. Például: "Peti egyik fő személyiségjegye a segítőkészség, mert mindig kisegíti az osztálytársait."
+
+A társadalmi szerepek pedig azok a „szerepek”, amiket a mindennapokban betöltesz. Ezek határozzák meg, hogy az adott helyzetben mit várnak el tőled. Te például egyszerre vagy diák az iskolában, gyermek a családban, és csapattag az edzésen. Például: "Diákként az a szerepem, hogy figyeljek az órán és felkészüljek a feladatokra."
+
+Szerinted az alábbiak közül melyik egy társadalmi szerep?
+
+<FELADAT>{"tipus":"valaszt","opciok":["legyen valaki türelmes","testvér egy családban","szeresse valaki a zenét"]}</FELADAT>
+
+GYEREK: A testvér egy családban, ugye? Mert az már szerep, nem csak egy tulajdonság.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 51.181113812s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '51s'}]}}]]
+
+GYEREK: Jaj, elszállt a válasz, bocsi. Akkor a testvér egy családban, az a helyes, nem?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 47.829500091s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '47s'}]}}]]
+
+GYEREK: Igen, az a jó válasz. A többi inkább tulajdonság meg kedv, nem szerep.
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash\nPlease retry in 44.871185897s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '5'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44s'}]}}]]
+
+GYEREK: Jó, akkor végig a testvér. A másik kettő nem társadalmi szerep, csak tulajdonság meg ízlés, szerintem.
+
+TANÁR: Pontosan, Viki! Nagyon jól látod a különbséget. 🌟 A testvér egy olyan szerep, ami meghatározza a kapcsolataidat és a feladataidat a családon belül, míg a türelem belső tulajdonság, a zene szeretete pedig ízlés dolga.
+
+Most menjünk egy kicsit mélyebbre, és beszéljünk két fontos fogalomról: az **önismeretről** és az **önazonosságról** (vagyis az identitásról).
+
+Az **önismeret** azt jelenti, hogy tisztában vagy a saját értékeiddel, hibáiddal, vágyaiddal és azzal, hogyan reagálsz bizonyos helyzetekre. Ez egy folyamatos tanulás. Például: "Tudom magamról, hogy izgulok a felelések előtt, ezért hamarabb elkezdek készülni."
+
+Az **önazonosság** (identitás) pedig az az állapot, amikor a tetteid és a gondolataid összhangban vannak azzal, aki valójában vagy. Ha önazonos vagy, nem akarsz másnak látszani, csak hogy megfelelj másoknak. Például: "Nem állok be csúfolódni a többiek közé, mert ez ellenkezik az elveimmel."
+
+A 8. osztályban már sokat gondolkoztok a jövőtökön is. Ide tartozik a **pályaérdeklődés** is: mi az a tevékenység, ami téged boldoggá tesz, amiben el tudnál mélyedni később munkaként is.
+
+Nézzük, mennyire sikerült megjegyezni ezeket! Párosítsd össze a fogalmakat a leírásukkal!
+
+<FELADAT>{"tipus":"parosit","parok":[["Önismeret","Saját tulajdonságaim és határaim ismerete"],["Önazonosság","Amikor a tetteim összhangban vannak az értékeimmel"],["Pályaérdeklődés","Milyen irányban tanulnék tovább szívesen"]]}</FELADAT>
+
+GYEREK: Az önismeret a saját tulajdonságaim és határaim ismerete, az önazonosság meg amikor a tetteim összhangban vannak az értékeimmel. A pályaérdeklődés meg az, hogy milyen irányban tanulnék tovább szívesen, ugye?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h25m35.999640702s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44735s'}]}}]]
+
+
+======================================================================
+Idegen nyelv – nemet · 1. osztály · Máté (6 éves)
+Témakör: Begrüßung – Köszönés és bemutatkozás
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h25m21.421007391s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44721s'}]}}]]
+
+GYEREK: ez uncsi. Mit mondjak?
+
+TANÁR: Szia Máté! Noémi vagyok, és egyáltalán nem lesz uncsi, mert ma megtanuljuk, hogyan köszönj és mutatkozz be németül, mintha kint lennél Németországban! 🇩🇪
+
+Ma három nagyon fontos köszönést tanulunk meg:
+- <FL:de>Hallo</FL>! – Ez azt jelenti, hogy "Szia!". Ezt bármikor mondhatod a barátaidnak.
+- <FL:de>Guten Morgen</FL>! – Ez azt jelenti, hogy "Jó reggelt!". Ezt reggel mondjuk, amikor felkelünk.
+- <FL:de>Guten Tag</FL>! – Ez pedig azt jelenti, hogy "Jó napot!". Ezt napközben használjuk.
+
+Például, ha találkozol egy barátoddal, mondhatod neki: "<FL:de>Hallo</FL>!". Ha pedig bemész a boltba délután, mondhatod: "<FL:de>Guten Tag</FL>!".
+
+Most te jössz! Képzeld el, hogy reggel van és épp most ébredtél fel. Melyik köszönést használjuk ilyenkor?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Guten Morgen","Guten Tag","Hallo"]}</FELADAT>
+
+<VOCAB>szia=hallo</VOCAB><VOCAB>jó reggelt=guten Morgen</VOCAB><VOCAB>jó napot=guten Tag</VOCAB>
+
+GYEREK: Guten Morgen!
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h25m12.942881696s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44712s'}]}}]]
+
+GYEREK: ez uncsi. Guten Morgen?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h25m9.73761503s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44709s'}]}}]]
+
+GYEREK: Guten Morgen. Mit csináljak?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h25m6.904580148s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44706s'}]}}]]
+
+GYEREK: Hallo? Mit van?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h25m3.928848515s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44703s'}]}}]]
+
+
+======================================================================
+Technika és tervezés · 3. osztály · Bence (8 éves)
+Témakör: Anyagok a környezetünkben
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia Bence! Noémi vagyok. Örülök, hogy itt vagy! Ma a környezetünkben lévő anyagokról fogunk beszélgetni. 🪵💎
+
+Mindent, amiből a tárgyak készülnek, anyagnak hívunk. Gondolj csak bele: a ceruzád fából van, a tolltartód cipzárja fémből, az uzsonnás dobozod pedig talán műanyagból készült.
+
+Az anyagokat két nagy csoportba sorolhatjuk:
+- Természetes anyagok: Ezeket a természetben találjuk meg. Ilyen például a fa, a kő, a gyapjú vagy a bőr. Ezeket az ember csak formálja, de az alapanyagot a természet adja. Például egy fonott kosár vesszőből készül, ami a természetben nőtt.
+- Mesterséges anyagok: Ezeket az ember hozza létre gyárakban, különböző kémiai folyamatokkal. Ilyen a műanyag, a nejlon vagy az üveg. Például egy műanyag flakon nem a mezőn terem, azt nekünk kell legyártanunk.
+
+Minden anyagnak vannak tulajdonságai, amiket az érzékszerveinkkel tudunk megvizsgálni. Egy gyurma például puha és jól alakítható, míg egy kavics kemény. Az üveg átlátszó, a gumi pedig rugalmas, mert ha megnyújtod, utána visszanyeri az eredeti alakját.
+
+Kezdésnek nézzük meg, felismered-e, melyik anyagot kapjuk közvetlenül a természetből?
+
+<FELADAT>{"tipus":"valaszt","opciok":["műanyag","fa","üveg"]}</FELADAT>
+
+GYEREK: Fa! 😊
+
+TANÁR: Ügyes vagy, Bence! Pontosan, a fa egy nagyszerű természetes anyag. 🌳
+
+Most menjünk egy kicsit tovább, és nézzük meg, hogyan lesz a természetben talált dologból egy kész tárgy. Ehhez három fontos fogalmat használunk:
+- Nyersanyag: Amit közvetlenül a természetből kiveszünk. Például a kivágott fatörzs az erdőben.
+- Alapanyag: Amikor a nyersanyagot már kicsit előkészítjük a munkához. A fatörzsből a fűrészüzemben deszkákat vágnak – ez lesz az alapanyag.
+- Termék: Ez a kész tárgy, amit végül használunk. A deszkákból a asztalos készít egy szép kerti padot.
+
+Így épül fel a sor: nyersanyag → alapanyag → termék.
+
+Az anyagokat a tulajdonságaik alapján is csoportosíthatjuk. Vizsgáljuk meg a rugalmasságot! Rugalmasnak nevezzük azt az anyagot, amit ha meghúzunk vagy összenyomunk, utána magától visszaugrik az eredeti alakjára.
+
+Szerinted az alábbiak közül melyik tárgy készül rugalmas anyagból?
+
+<FELADAT>{"tipus":"valaszt","opciok":["kő váza","gumilabda","üvegpohár"]}</FELADAT>
+
+GYEREK: Gumilabda! De a kutyám is rugalmas, amikor ugrál? 😀
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h24m29.644718114s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44669s'}]}}]]
+
+GYEREK: Jaj, akkor most elromlott? 😅 A gumilabda rugalmas, ugye?
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h24m26.640746885s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44666s'}]}}]]
+
+GYEREK: Jaj, megint? 😟 Akkor a gumilabda!
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h24m24.062467355s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44664s'}]}}]]
+
+GYEREK: Jaj, nem tudom... talán a gumilabda? 😕
+
+TANÁR: [A TANÁR VÁLASZA ELSZÁLLT: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash\nPlease retry in 12h24m21.200659404s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44661s'}]}}]]

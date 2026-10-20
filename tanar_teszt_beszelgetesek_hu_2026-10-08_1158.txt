@@ -1,0 +1,239 @@
+TutorIA – lejátszott órák, 2026-10-08 11:57
+
+
+======================================================================
+Digitális kultúra · 6. osztály · Anna (11 éves)
+Témakör: Szöveg bevitele, javítása, mentése
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Anna! 🎉 Persze, kezdhetjük!
+
+Ma azt fogjuk megtanulni, hogyan kell szöveget begépelni, javítani és elmenteni a számítógépen. Ez nagyon hasznos, mert ha egyszer megtanulod, bármikor tudsz fogalmazást, meghívót vagy akár egy hosszabb írást készíteni. 📝
+
+Nézzük az első fontos dolgokat!
+
+Szövegbevitel. Ez azt jelenti, hogy a billentyűzeten begépelem a betűket, és azok megjelennek a képernyőn. Például ha leírom, hogy „Szia, Anna!", akkor az a szöveg a dokumentumban megjelenik. A gépelés közben egy kis villogó vonalat, az úgynevezett kurzort látsz – az mutatja, hova kerül a következő betű.
+
+Mentés. Ez az egyik legfontosabb dolog! A mentés azt jelenti, hogy a munkádat eltárolom a gép memóriájába, hogy később is meglegyen. Ha nem mentesz, és bezárod a programot, a szöveg sajnos elveszhet. Például: begépelek egy fogalmazást, majd megnyomom a mentés gombot, és onnantól a fájl megmarad. Gyakran érdemes menteni, nem csak a végén!
+
+Megnyitás. Ez a mentés ellentéte: ha van egy korábban elmentett szövegem, azt a megnyitás gombbal tudom újra elővenni és folytatni. Például megnyitom a „Házi feladat" nevű fájlt, és ott folytatom, ahol abbahagytam.
+
+Javítás. Ha elrontok valamit, nem kell újrakezdeni! A törlés gombbal (Backspace) kitörlöm a rossz betűt, és újra beírom. Például leírom, hogy „kutyaa", észreveszem a dupla betűt, és a Backspace-szel törlöm a felesleges „a"-t.
+
+Ez a négy dolog a legalapvetőbb. Most jön a kérdés:
+
+Ha begépelek egy szöveget, de nem nyomom meg a mentés gombot, és bezárom a programot, mi történik a szövegemmel?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Elvész, mert nem mentettem el","Megmarad magától is"]}</FELADAT>
+
+GYEREK: Elvész, mert nem mentettem el. És baj lesz, ugye?
+
+TANÁR: Pontosan, Anna! 🌟 Elvész, mert a gép nem jegyzi meg magától – ezért kell gyakran menteni. És igen, kicsit „baj" lesz, mert újra kell gépelned. De jó hír: ha ügyesen mentesz, ez soha nem fordul elő!
+
+Most nézzünk néhány új dolgot, ami segít, hogy gyorsan és ügyesen dolgozz a szöveggel.
+
+Kijelölés. Ha egy szót vagy egy egész mondatot ki akarok jelölni, az egérrel végighúzom rajta – ilyenkor a szöveg kék lesz. A kijelölt részt aztán tudom másolni, törölni vagy áthelyezni. Például kijelölöm a „Holnap iskolába megyek" mondatot, hogy átmozgassam a fogalmazás végére.
+
+Másolás. Ez azt jelenti, hogy a kijelölt szövegről készítek egy másolatot, az eredeti pedig a helyén marad. Például kijelölöm a címemet, és beillesztem a levél aljára is – így kétszer fog szerepelni. Ezt a Ctrl és a C gombokkal szoktuk csinálni, a beillesztés pedig a Ctrl és a V.
+
+Áthelyezés. Ez hasonló, de itt a szöveg elkerül az eredeti helyéről, és máshová kerül. Kijelölöm, kivágom a Ctrl és az X gombokkal, majd a megfelelő helyre illesztem a Ctrl és a V-vel. Például a rossz sorrendben lévő bekezdést átviszem a helyére.
+
+Helyesírás-ellenőrző. Ez egy nagyon ügyes segítő! A program magától észreveszi, ha egy szót elírtál, és piros aláhúzással jelzi. Például ha azt írom, hogy „iskola" helyett „iskolaa", a program aláhúzza. Rákattintok, és felajánlja a jó alakot.
+
+Na, itt a kérdés:
+
+Ha van egy szó a szövegben, amit át akarok vinni egy másik helyre, vajon a másolást vagy az áthelyezést használom?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Az áthelyezést","A másolást"]}</FELADAT>
+
+GYEREK: Az áthelyezést. Ugye, mert akkor odakerül másik helyre?
+
+TANÁR: Így van, Anna! 🏆 Az áthelyezést, mert akkor a szöveg átkerül egy másik helyre, és az eredeti helyéről eltűnik. Nagyon jól gondolkodtál!
+
+Most tanuljunk még két hasznos dolgot, amivel még ügyesebben használhatod a szövegszerkesztőt.
+
+Visszavonás. Ha véletlenül valami rosszat csináltál – például töröltél egy fontos mondatot –, nem kell pánikolni! A visszavonás gombbal az utolsó lépést visszafordíthatod. Például kijelölöm és kitörlöm a fél fogalmazásomat, majd megnyomom a Ctrl és a Z gombokat, és a szöveg visszakerül. Ezt nagyon szeretni fogod, mert sokszor megment.
+
+Kurzor és szöveg közötti mozgás. A kurzort nem csak az egérrel tudod odavinni, ahova akarod. A billentyűzeten a nyílbillentyűkkel is mozgathatod: a bal és jobb nyíl egy betűt lép, a felső és alsó nyíl egy sort. Például ha a sor végére akarok írni, csak a jobb nyilat nyomom.
+
+Fájlformátum. Amikor elmented a munkádat, a gép megkérdezi, milyen formátumban akarod menteni. Ez az a kiterjesztés, ami a fájl neve után szerepel. Például egy egyszerű szöveges fájl neve „fogalmazas.txt" lehet, egy szövegszerkesztőben készült dokumentumé pedig „fogalmazas.docx". Ez azért fontos, mert más programok máshogy nyitják meg őket.
+
+És most a kérdés:
+
+Ha véletlenül kitöröltem egy fontos bekezdést, de még nem csináltam semmi mást utána, mit érdemes megpróbálni?
+
+<FELADAT>{"tipus":"valaszt","opciok":["A visszavonás gombot (Ctrl+Z)","Újrakezdem az egészet elölről"]}</FELADAT>
+
+GYEREK: A visszavonás gombot, Ctrl+Z-t. Az jobb, mert visszajön a bekezdés, nem?
+
+TANÁR: Pontosan, Anna! 👏 A Ctrl+Z a legjobb barátod, mert visszahozza a véletlenül törölt bekezdést, és nem kell elölről kezdened az egészet. Ügyesen kitaláltad!
+
+Most nézzünk néhány dolgot, ami a rendezett, szép munkához kell.
+
+Betűtípus és betűméret. A szöveg nem csak egyféle kinézetű lehet. A betűtípus az a forma, ahogy a betűk kinéznek – például az egyik betűtípus kerekebb, a másik szögletesebb. A betűméret pedig megmondja, mekkora a betű. Például egy meghívón a cím nagyobb betűvel szerepel, mint a szöveg.
+
+Félkövér, dőlt és aláhúzott. Ezzel tudod kiemelni a fontos részeket. A félkövér (B) a betűket vastagabbá teszi, a dőlt (I) megdönti őket, az aláhúzás (U) pedig egy vonalat húz alájuk. Például: „Figyelem! Holnap nincs tanítás." – itt a „Figyelem!" lehet félkövér, hogy azonnal szemet szúrjon.
+
+Bekezdés. A szöveget nem egy nagy tömbben érdemes írni, hanem bekezdésekre bontva. Egy új bekezdést az Enter gombbal kezdesz. Például egy fogalmazásban az első bekezdés a bevezetés, a második a történet, a harmadik a befejezés.
+
+Na, most a kérdés:
+
+Ha a fogalmazásomban a legfontosabb szót szeretném kiemelni, hogy rögtön feltűnjön, melyik megoldást választom?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Félkövérré teszem","Aláhúzom helyette"]}</FELADAT>
+
+
+======================================================================
+Földrajz · 7. osztály · Viki (12 éves)
+Témakör: Tájékozódás a térképen – fokhálózat és méretarány
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Viki! 🎉 Örülök, hogy itt vagy!
+
+Ma azt tanuljuk meg, hogyan lehet megtalálni egy helyet a térképen – a fokhálózat segítségével. Ez olyan, mint egy kincskereső játék: ha tudod a „koordinátákat", bármit meg tudsz találni. 🗺️
+
+Nézzük meg az alapokat!
+
+A Föld gömb alakú, és a térképészek képzeletbeli vonalakkal hálózzák be – ez a fokhálózat. Kétféle vonal alkotja:
+
+A szélességi körök vízszintesen futnak, párhuzamosan az Egyenlítővel. Az Egyenlítő a nulla fok. Ha északra megyünk tőle, északi szélességről beszélünk, ha délre, déli szélességről. Például Budapest az északi szélesség 47. fokán fekszik.
+
+A hosszúsági körök függőlegesen futnak, és a sarkoknál találkoznak. A nulla fokot a Greenwich-i délvonal jelöli – ez egy város Angliában. Ha keletre megyünk tőle, keleti hosszúság, ha nyugatra, nyugati hosszúság. Budapest a keleti hosszúság 19. fokán van.
+
+A nagy, fő irányokat nevezzük fővilágtájaknak: észak, dél, kelet, nyugat. A köztes irányok a mellékvilágtájak: északkelet, délkelet, délnyugat, északnyugat.
+
+Egy példa, ahogy a térképészek mondanák: „Budapest az északi szélesség 47. fokán és a keleti hosszúság 19. fokán fekszik." Ezzel a két adattal pontosan meg tudjuk mondani, hol van.
+
+Most te jössz! Ha egy hely az Egyenlítőtől északra van, akkor az milyen szélességen fekszik?
+
+<FELADAT>{"tipus":"valaszt","opciok":["északi szélesség","déli szélesség","keleti hosszúság"]}</FELADAT>
+
+GYEREK: Északi szélesség, ugye? 😊
+
+TANÁR: Pontosan, ügyes vagy! 👏 Az északi szélesség a jó válasz.
+
+Most nézzük meg, hogyan is néz ki ez a hálózat a valóságban, és mit jelent a fok.
+
+A szélességi körök az Egyenlítőtől a sarkokig 90 fokig mennek. Az Egyenlítő a 0 fok, az Északi-sark a 90. fok északi szélesség. A hosszúsági köröknél máshogy van: a <FL:en>Greenwich</FL>-i délvonal a 0 fok, és attól keletre is 180 fokig, nyugatra is 180 fokig megyünk.
+
+Ez a két szám – a szélesség és a hosszúság – együtt adja meg pontosan, hol van egy hely. Ezt hívjuk keresőhálózatnak, mert segítségével rákereshetsz bármelyik pontra a térképen. 📍
+
+Egy hasznos tipp: a szélességi fokokat mindig előbb mondjuk, utána a hosszúsági fokokat. Az órán és a dolgozatban is így szokás.
+
+Most nézzük meg: ha a hosszúsági körök a sarkok felé mennek, mit veszel észre velük kapcsolatban?
+
+<FELADAT>{"tipus":"valaszt","opciok":["A sarkoknál mind egy pontban találkoznak","Párhuzamosan futnak egymással","Sosem érik el a sarkokat"]}</FELADAT>
+
+GYEREK: A sarkoknál mind egy pontban találkoznak, nem? 😄 Vagyis ott összefutnak.
+
+TANÁR: Pontosan! 😄 A hosszúsági körök tényleg mind egy pontban futnak össze a sarkoknál – ez a legjobb megkülönböztető jegyük a szélességi körökkel szemben, amik sosem találkoznak.
+
+Nagyon ügyesen haladunk! 🎯 Most térjünk rá a második nagy témára: a méretarányra.
+
+A méretarány (más szóval aránymérték) megmutatja, hogy a térkép mennyire kicsinyítette le a valóságot. Így szokták írni: 1 : 200 000. Ez azt jelenti, hogy ami a térképen 1 cm, az a valóságban 200 000 cm – vagyis 2 km. (Mert 100 000 cm = 1 km.)
+
+Számoljuk ki együtt! Ha a méretarány 1 : 200 000, és a térképen lemérek 3 cm-t, akkor a valóságban:
+3 × 200 000 = 600 000 cm = 6 km.
+
+Még egy hasznos dolog: minél nagyobb a méretarány második száma, annál kisebb a részletesség – egy országot mutató térképen kevesebb minden látszik, mint egy városén. Ezért nevezik az 1 : 200 000-et kicsiny méretaránynak, az 1 : 10 000-et pedig nagy méretaránynak.
+
+Most próbáld ki te! A térképen lemérsz 4 cm-t, a méretarány 1 : 100 000. Hány km ez a valóságban? Írd be a számot!
+
+<FELADAT>{"tipus":"szam","muvelet":"4 cm × 100 000 = ? km"}</FELADAT>
+
+GYEREK: 4 km, szerintem. 🙂
+
+TANÁR: Tökéletes, 4 km! 👏 Nagyon jól számoltál: 4 × 100 000 = 400 000 cm, ami pontosan 4 km.
+
+Látod, milyen egyszerű, ha tudod a trükköt? A méretaránynál csak arra kell figyelni, hogy a centimétert átváltsd kilométerre – vagyis a végén öt nullát lehúzol. 😊
+
+Most nézzük meg a harmadik fontos dolgot: a szintvonalat. Ez a térképen azt mutatja meg, hogy a felszín milyen magasan van. 
+
+A szintvonalak olyan vonalak, amelyek a térkép ugyanolyan magasságú pontjait kötik össze – mintha egy hegynél mindig ugyanabban a magasságban körbejárnánk. Ahol a szintvonalak sűrűn futnak egymás mellett, ott a hegyoldal meredek; ahol ritkán, ott lankás a lejtő.
+
+Egy példa: ha egy domboldalon a szintvonalak nagyon közel vannak egymáshoz, az azt jelenti, hogy ott hirtelen emelkedik a terep – gyalog is nehezebb felmenni. ⛰️
+
+Most kérdezem: ha a szintvonalak ritkán vannak egymástól, akkor a terep meredek vagy lankás?
+
+<FELADAT>{"tipus":"valaszt","opciok":["lankás","meredek","sík"]}</FELADAT>
+
+
+======================================================================
+Digitális kultúra · 5. osztály · Máté (10 éves)
+Témakör: Mi az algoritmus? Lépések és sorrend
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Máté! Örülök, hogy jöttél! 😊
+
+Ma arról tanulunk, mi az az algoritmus, és hogyan épül fel egy folyamat a lépésekből.
+
+Kezdjük egy hétköznapi példával. Gondolj arra, amikor reggel megfőzöd a teát. Ez nem egyetlen dolog, hanem több lépés egymás után. Nézzük, milyen szavakat használunk ehhez.
+
+Az algoritmus nem más, mint egy feladat pontos lépéseinek a sora. Olyan, mint egy recept: ha jól követed a lépéseket, mindig jó eredményt kapsz. Például a teafőzés algoritmusa lehet ilyen: fogom a bögrét, beleteszem a filtert, ráöntöm a forró vizet, megvárom, hogy ázzon, majd kiveszem a filtert. Ha ezt a sorrendet felcseréled, nem lesz jó tea.
+
+A második fontos szó a folyamat. Ez azt jelenti, hogy valami elejétől a végéig lezajlik. A teafőzés egy folyamat: van egy kezdete, amikor üres a bögre, és van egy vége, amikor kész a tea.
+
+A harmadik szó a szekvencia. Ez azt jelenti, hogy a lépések egymás után, sorban következnek. Nem ugrálunk összevissza, hanem szépen haladunk az elsőtől az utolsóig.
+
+A negyedik dolog, amit meg kell jegyezned: a bemenet és a kimenet. A bemenet az, amivel elkezdjük a munkát, a kimenet pedig az, ami a végén lesz belőle. A teafőzésnél a bemenet a víz és a filter, a kimenet pedig a kész tea.
+
+Szóval: az algoritmus egy feladat lépéseinek pontos sora, a szekvencia a lépések sorrendje, a bemenetből pedig a kimenet lesz.
+
+Most nézzünk egy másik példát! Fogmosás. Az első lépés, hogy veszem a fogkefét. Aztán fogkrémet teszek rá. Aztán a számba veszem és mozgatom. Végül kiköpöm és elöblítem. Ez is egy algoritmus, mert a lépések sorban következnek.
+
+Most te jössz! Az alábbi lépések össze vannak keverve. Rakd őket helyes sorrendbe, ahogy egy fogmosás történik!
+
+<FELADAT>{"tipus":"sorrend","elemek":["Veszek egy fogkefét.","Fogkrémet teszek rá.","A számban mozgatom a fogkefét.","Kiköpöm és elöblítem a szám."]}</FELADAT>
+
+GYEREK: Veszek egy fogkefét, aztán fogkrémet teszek rá, majd a számban mozgatom a fogkefét, és végül kiköpöm meg elöblítem a szám. Ez jó?
+
+TANÁR: Pontosan, Máté! Ügyes vagy! 👏 A fogmosás algoritmusa tényleg így néz ki, és te szépen sorrendbe raktad a lépéseket. A szekvencia is stimmel: egymás után haladnak a lépések.
+
+Most nézzünk egy kicsit nehezebbet, mert fontos, hogy ne csak sorrendben, hanem pontosan is meg tudjuk fogalmazni a lépéseket.
+
+Képzeld el, hogy meg akarod mutatni egy barátodnak, hogyan kell befűzni a cipőt. Ha csak azt mondod neki: „fűzd be”, abból nem fog rájönni. Ha viszont azt mondod: „először húzd át a fűzőt a lyukon, aztán vezesd át a másikon, majd kösd meg a masnit” – nos, ez már algoritmus. Figyeld meg: minél pontosabb egy lépés, annál könnyebb követni.
+
+Van egy fontos dolog is. Az algoritmusban számíthat, hogy milyen a bemenet. Ha a cipőm fűzője nagyon rövid, akkor nem ugyanúgy kell befűzni, mint egy hosszú fűzőt. Tehát az algoritmusnak alkalmazkodnia kell ahhoz, amivel dolgozik.
+
+Ugyanez igaz a teafőzésre is: ha nincs filter otthon, akkor szűrő nélkül, másképp kell megoldani. Az algoritmus tehát nem mindig ugyanaz, hanem a helyzethez igazodik.
+
+Most egy kicsit gondolkodj el! Ha a cipőfűzőm nagyon rövid, az mit jelent az algoritmus szempontjából?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Más lépésekre van szükség, mert kevesebb fűzővel dolgozom.","Ugyanazok a lépések jók, csak gyorsabban kell csinálni."]}</FELADAT>
+
+GYEREK: Más lépésekre van szükség, mert kevesebb fűzővel dolgozom. Ez így van, ugye?
+
+TANÁR: Így van, Máté! Ügyesen kiszúrtad! 🎉 Ha kevesebb a fűző, akkor tényleg más lépésekre van szükség. Ez azt jelenti, hogy az algoritmusunkat a bemenethez kell igazítani. Ez nagyon fontos gondolat, és jól megértetted.
+
+Most tanuljunk meg egy új szót, ami segít leírni az algoritmust. Ez a problémamegoldó tevékenység. Ez azt jelenti, hogy amikor valami feladatot meg akarunk oldani, először végiggondoljuk: mi a célom, mi van a kezemben, és milyen lépéseken keresztül jutok el a megoldáshoz. Tehát nem csak „csinálok valamit”, hanem megtervezem a lépéseket.
+
+Nézzünk egy példát! Ha az a cél, hogy elkészítsem a reggelimet, akkor először megnézem, mi van otthon: van-e kenyér, sajt, paradicsom. Aztán eldöntöm, mit csinálok belőlük. Ha nincs kenyér, akkor más lesz az algoritmus, például zsemléből készítem. Ez a problémamegoldás: a helyzethez igazodom.
+
+Még egy dolog, amit érdemes megjegyezni: az algoritmust leírhatjuk rajzzal is. Ezt úgy hívjuk, hogy folyamatábra. Olyan, mint egy kis térkép: nyilakkal jelöljük, hogy melyik lépés után mi következik. Például:
+
+Kezdés → kenyeret kiveszem → megkenem vajjal → ráteszem a sajtot → kész a szendvics.
+
+Ez a folyamatábra egyszerű változata, ahol a nyilak mutatják az utat. A számítógép is így „gondolkodik”: egymás után halad a lépéseken.
+
+Most te jössz! Az alábbi lépések közül melyik a legjobb első lépés, ha szendvicset akarok készíteni?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Megnézem, mi van otthon a konyhában.","Rögtön megkenem a kenyeret vajjal."]}</FELADAT>
+
+GYEREK: Megnézem, mi van otthon a konyhában. Aztán lehet csinálni.
+
+TANÁR: Pontosan, Máté! Ez a helyes első lépés! 👏 Nagyon jól látod a lényeget: előbb felmérjük, mivel dolgozunk, és csak utána kezdjük a munkát. Ez a problémamegoldó tevékenység lényege.
+
+Most tanuljunk meg valami újat, ami segít szépen leírni az algoritmust. Képzeld el, hogy egy robotnak kell megmondanod, hogyan jusson el az asztaltól az ajtóig. A robot nem látja, mit gondolsz – minden lépést pontosan meg kell mondanod neki. Ha csak annyit mondasz neki: „gyere ide”, az nem elég, mert nem tudja, mit jelent az, hogy „ide”.
+
+Ezért fontos, hogy az algoritmus lépései egyértelműek legyenek. Ez azt jelenti: minden lépést úgy fogalmazzunk meg, hogy egyértelműen lehessen követni. Például: „előre két lépést, majd fordulj balra, aztán még egy lépést előre”. Így már nem lehet félreérteni.
+
+A másik új dolog: az algoritmusnak mindig van kezdete és vége. A kezdés az, amikor elkezdjük a lépéseket, a vég pedig az, amikor elkészül az eredmény. A robot esetében a kezdés az asztal, a vég pedig az ajtó. Ha nincs vége, akkor sosem tudjuk, eljutottunk-e a célhoz.
+
+Nézzünk egy példát arra is, hogy milyen az, amikor az algoritmusban hiba van! Ha azt mondom a robotnak: „fordulj balra, előre két lépést, fordulj balra” – előfordulhat, hogy nem az ajtóhoz ér, hanem a falnak megy. Ilyenkor a lépéseket át kell gondolni, és javítani kell. Ez is a probléma megoldásához tartozik.
+
+Most te jössz! Képzeld el, hogy a robot az asztalnál áll, és az ajtó tőle balra van, két lépésre. Melyik utasítássor viszi el biztosan az ajtóhoz?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Fordulj balra, majd menj előre két lépést.","Menj előre két lépést, aztán fordulj balra."]}</FELADAT>

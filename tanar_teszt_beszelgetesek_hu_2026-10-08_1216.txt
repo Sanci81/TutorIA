@@ -1,0 +1,166 @@
+TutorIA – lejátszott órák, 2026-10-08 12:16
+
+
+======================================================================
+Digitális kultúra · 6. osztály · Anna (11 éves)
+Témakör: Szöveg bevitele, javítása, mentése
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Anna! Én Noémi vagyok, a digitális kultúra tanárod. Ma azzal kezdjük, hogyan lehet szöveget bevinni a számítógépbe, kijavítani a hibákat, és elmenteni a munkánkat. Ez az alapja mindennek, amit később csinálni fogsz. 😊
+
+Először beszéljünk a szövegbevitelről. Amikor begépelsz valamit, például egy fogalmazást, a billentyűzeten leütsz betűket, és azok megjelennek a képernyőn. A villogó függőleges vonalat, ami mutatja, hova kerül a következő betű, kurzornak hívjuk. Ha elgépelsz egy betűt, két fontos billentyűvel tudsz javítani. A Backspace (nyíl balra, a sor vége felé mutat) a kurzor előtti betűt törli, a Delete pedig a kurzor utáni betűt. 
+
+Ha kész a szöveged, el kell mentened, különben elveszhet. A mentés olyan, mintha a füzetedbe leírnád a munkádat, és később is megtalálnád. Általában a Fájl menüben találod a Mentés parancsot, vagy használhatod a Ctrl+S billentyűkombinációt is.
+
+Most próbáljuk ki! Ha begépelsz egy mondatot, és az utolsó betűt elrontod, melyik billentyűvel törlöd ki gyorsan?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Backspace","Delete","Enter","Shift"]}</FELADAT>
+
+GYEREK: Backspace.
+
+TANÁR: 
+
+GYEREK: 
+
+TANÁR: Szuper, pontosan így van! A Backspace a kurzor előtti betűt törli. 🎉
+
+Most nézzük meg, hogyan dolgozhatsz nagyobb szövegrészekkel. A kijelölés azt jelenti, hogy kiválasztasz egy szakaszt úgy, hogy az egérrel a rész elejére kattintasz, lenyomva tartod a gombot, és elhúzod a végéig. A kijelölt szöveg háttere megváltozik.
+
+Ha ki van jelölve, három hasznos dolgot tehetsz. A másolásnál a szöveg bekerül egy ideiglenes helyre, amit vágólapnak hívunk, de az eredeti is ott marad. Ehhez a Ctrl+C billentyűket nyomod le. A beillesztésnél a vágólapra tett szöveget a kurzorhoz teszed be: ez a Ctrl+V. A kivágás pedig kiemeli a szöveget az eredeti helyéről, és a vágólapra teszi: ez a Ctrl+X.
+
+Például van egy mondatod: "A macska a széken ül." Ki szeretnéd cserélni a "macska" szót "kutyá"-ra. Kijelölöd a szót, és egyszerűen beírod az újat, vagy kivágod és beilleszted a helyére.
+
+Most jöjjön egy kérdés! Ha egy mondatot át akarsz helyezni a szövegben, melyik kombinációval vágod ki, hogy utána máshova illeszthesd be?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Ctrl+C","Ctrl+V","Ctrl+X","Ctrl+S"]}</FELADAT>
+
+GYEREK: Ctrl+X. Utána Ctrl+V-vel beillesztem, ugye?
+
+TANÁR: Így van, nagyon jól látod! A Ctrl+X kivágja, a Ctrl+V pedig beilleszti a szöveget az új helyre. A kettő együtt remek páros, amikor átrendezed a mondataidat. 😊
+
+Most ismerjünk meg egy olyan eszközt, ami sokat segít a javításban: a helyesírás-ellenőrzőt. Amikor begépelsz egy szöveget, a program észreveszi, ha egy szót rosszul írtál. Általában piros hullámos vonallal húzza alá a hibás szót. Ha jobb gombbal rákattintasz, felajánlja a helyes változatokat. Például ha azt írod: "kutyáa", a program mutatja, hogy a helyes alak "kutya". Persze a program sem tökéletes, ezért mindig érdemes átolvasnod magad is a szöveget.
+
+Képzeld el, hogy ezt írod egy fogalmazásban: "A fiu a parkba megy." A program két szót is aláhúz, mert a "fiu" helyesen "fiú", a "parkba" pedig "parkba" — várj, az utóbbi jó. Akkor inkább egy másik példa: "A fiu a iskolába megy." Itt a "fiu" és az "a iskolába" is hibás, mert az utóbbi helyesen "az iskolába".
+
+Most te jössz! Ha a program piros hullámos vonallal aláhúz egy szót, mit tehetsz a leggyorsabban?
+
+<FELADAT>{"tipus":"valaszt","opciok":["Jobb gombbal rákattintok, és megnézem a javaslatokat","Azonnal leállítom a gépet","Kitörlöm az egész bekezdést","Nem törődöm vele"]}</FELADAT>
+
+
+======================================================================
+Földrajz · 7. osztály · Viki (12 éves)
+Témakör: Tájékozódás a térképen – fokhálózat és méretarány
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: 
+
+GYEREK: A fokhálózatnál a szélességi körök meg hosszúsági körök segítenek megtalálni a helyet, és a szélesség szerint megyünk északra meg délre, ugye? A méretarány meg megmutatja, hogy a térképen mennyivel kisebb minden, vagyis 1:100 000 kb ilyen.
+
+TANÁR: Szia, Viki! Nagyon ügyes vagy, szinte minden pontosan így van, ahogy mondtad. 🎯
+
+A szélességi körök tényleg észak-déli irányba adják meg a helyzetünket, a hosszúsági körök pedig kelet-nyugati irányba. Ha egy pontot meg akarunk találni, mindig előbb a szélességet, aztán a hosszúságot nézzük meg.
+
+A méretarányt is jól érted. Az 1 : 100 000 annyit tesz, hogy ami a térképen 1 cm, az a valóságban 100 000 cm, vagyis pontosan 1 km. Ez a kulcs a távolságok kiszámításához. 📏
+
+Nézzünk egy konkrét példát! Ha egy térképen a méretarány 1 : 200 000, és két város a térképen 2 cm-re van egymástól, akkor a valóságban milyen messze lehetnek? Kiszámolod? <FELADAT>{"tipus":"szam","muvelet":"1:200 000, térképen 2 cm, valós távolság km-ben?","egyseg":"km"}</FELADAT>
+
+GYEREK: 4 km, szerintem. Jól számolom, vagy egy kicsit becsaptál?
+
+TANÁR: Ügyes vagy, pontosan kiszámoltad! 🎯 1 : 200 000-nél 1 cm a térképen 2 km-t ér a valóságban, így a 2 cm-ből tényleg 4 km lesz. Semmi becsapás, csak jól számoltál!
+
+Most ismerjük meg a Föld legfontosabb szélességi köreit, mert ezek segítenek eligazodni a fokhálózaton. 🌍
+
+Először az Egyenlítő a leghíresebb: ez 0° szélességnél van, és kettéosztja a Földet északi meg déli féltekére.
+
+Aztán jön a két térítő: a Ráktérítő az északi féltekén 23,5°-nál, a Baktérítő pedig délen ugyanígy 23,5°-nál. Érdekesség, hogy ezeken a vonalakon lehet a Nap éppen függőlegesen a fejünk felett délben.
+
+Végül a két sarkkör: az Északi-sarkkör 66,5° északnál, a Déli-sarkkör 66,5° délnél. Itt nyáron egy napig nem nyugszik le a Nap, télen pedig nem kel fel.
+
+Most te jössz! Párosítsd össze a nevezetes köröket a hozzájuk tartozó szélességi fokkal. Próbáld meg felidézni! 💪
+
+<FELADAT>{"tipus":"parosit","parok":[["Egyenlítő","0°"],["Ráktérítő","23,5° észak"],["Baktérítő","23,5° dél"],["Északi-sarkkör","66,5° észak"]]}</FELADAT>
+
+GYEREK: Egyenlítő – 0°, Ráktérítő – 23,5° észak, Baktérítő – 23,5° dél, Északi-sarkkör – 66,5° észak. A Déli-sarkkör meg 66,5° dél, ugye?
+
+TANÁR: Szuper, pontosan tudod a nevezetes köröket, és a Déli-sarkkört is jól kiegészítetted! 🌟
+
+Most lépjünk tovább a tájékozódás másik fontos részére: a világtájakra. A térképen ugyanis nem elég tudni, hol vagyunk, azt is tudnunk kell, merre induljunk.
+
+Az alapvető négy irányt fő világtájnak hívjuk: észak, dél, kelet és nyugat. Ezeket rövidítve így jelöljük: É, D, K, NY. Képzeld el őket úgy, mint egy iránytű négy sarkát. 🧭
+
+De mi van akkor, ha egy hely nem pont északra van, hanem észak és kelet közé esik? Ilyenkor a mellékvilágtájakat használjuk, amelyek a fő irányok közé ékelődnek: északkelet, délkelet, délnyugat és északnyugat. Rövidítve: ÉK, DK, DNY, ÉNY. A nevüket úgy alkotjuk, hogy először kimondjuk a függőleges irányt, aztán a vízszinteset. Például ha egy város észak és kelet között fekszik, akkor északkeletre van tőlünk.
+
+Most téged kérdezlek! Ha egy túra során a táborhelyünktől egy forrás dél és nyugat közötti irányban található, melyik mellékvilágtáj felé induljunk? Válassz a lehetőségek közül! 🚶‍♀️
+
+<FELADAT>{"tipus":"valaszt","opciok":["délnyugat","délkelet","északnyugat","északkkelet"]}</FELADAT>
+
+
+======================================================================
+Digitális kultúra · 5. osztály · Máté (10 éves)
+Témakör: Mi az algoritmus? Lépések és sorrend
+======================================================================
+GYEREK: Szia! Kezdhetjük?
+
+TANÁR: Szia, Máté! Örülök, hogy itt vagy! 😊 Ma elkezdjük a digitális kultúra egyik legizgalmasabb részét: megtanuljuk, mi az algoritmus, és miért fontos a lépések sorrendje.
+
+Képzeld el, hogy reggel anyukád megkér, hogy készíts egy szendvicset. 🥪 Mit csinálsz először? Előveszed a kenyeret, megkened vajjal, ráraksz egy szelet sonkát, aztán összezárod. Ha ezt a sorrendet összekevernéd, például előbb raknád rá a sonkát, és csak utána kennéd meg a kenyeret vajjal, akkor a szendvics nem sikerülne jól.
+
+Pontosan ez az algoritmus: egy feladat megoldásának lépései, jó sorrendben. Minden lépés egy utasítás, és ha a sorrend rossz, az eredmény is rossz lehet.
+
+Nézzünk egy másik példát! Ha azt mondom: "Menj az ajtóhoz, nyisd ki, majd lépj ki rajta." – ez három lépés. Ha azt mondom: "Lépj ki az ajtón, nyisd ki, menj az ajtóhoz." – ez ugyanaz a három lépés, de rossz sorrendben, és nem tudnád megcsinálni.
+
+Az algoritmus tehát nem csak a számítógépeknél létezik. A saját napirended is egy algoritmus: felkelsz, fogat mosol, felöltözöl, reggelizel, elindulsz az iskolába.
+
+Most nézzünk egy hétköznapi folyamatot, és rakjuk sorba a lépéseit! Képzeld el, hogy fogat szeretnél mosni. 🪥 Melyik a helyes sorrend?
+
+<FELADAT>{"tipus":"sorrend","elemek":["Vegyem elő a fogkefét","Nyomjak rá fogkrémet","Nedvesítsem meg a fogkefét","Mossam meg a fogaimat","Öblítsem ki a számat"]}</FELADAT>
+
+GYEREK: Előbb megveszem... öö, nem, előveszem a fogkefét, aztán megnedvesítem, rá a fogkrém, fogat mosok, és kiöblítem. Jó ez?
+
+TANÁR: Szuper, nagyon jól gondolkoztál! 😊 A fogkefe megnedvesítése és a fogkrém rátevése sorrendben lehet kicsit másképp is, de a te logikád is teljesen jó: minden lépés a helyén van, és a lényeg, hogy a fogmosás előtt legyen fogkrém a kefén.
+
+Most nézzünk két új fogalmat: a bemenetet és a kimenetet.
+
+Minden algoritmusnak van bemenete, amiből elindul, és kimenete, ami a végén elkészül vagy megtörténik. Gondolj a palacsintasütésre! 🥞 A bemenet hozzá: liszt, tojás, tej, cukor, egy kis só. A kimenet pedig: a sok finom, kész palacsinta. A lépések a sütés folyamata, a sorrend pedig biztosítja, hogy a végeredmény tényleg palacsinta legyen, ne pedig egy tál lisztes, tojásos massza.
+
+Nézd meg jól: a bemenet az, amit beleteszel a folyamatba, a kimenet pedig az, amit kapsz belőle.
+
+Nézzünk egy másik példát! A tea készítése. 🍵 A bemenet: víz, teafilter, csésze, cukor. A kimenet: egy forró, finom csésze tea. A lépések: felforralod a vizet, beleteszed a teafiltert, kiöntöd a csészébe, hozzáadod a cukrot, megkevered. Ha a víz nem forr, a tea nem ázik ki jól.
+
+Most te jössz! A kenyérpirítás algoritmusánál a bemenet a kenyérszelet. Mi a kimenet?
+
+<FELADAT>{"tipus":"valaszt","opciok":["A kenyérszelet","A kenyérpirító","A pirított kenyér", "A bemenet"]}</FELADAT>
+
+GYEREK: A pirított kenyér.
+
+TANÁR: Nagyon ügyes vagy! 🎉 Igen, a kimenet a pirított kenyér, hiszen az az eredmény, amit a kenyérpirító algoritmusa elkészít.
+
+Most nézzük meg, hogyan írjuk le az algoritmust, hogy mások is megértsék! Az algoritmust le lehet írni szavakkal, lépésről lépésre. Például a kenyérpirítás így nézhet ki:
+
+1. Vegyél elő egy szelet kenyeret.
+2. Tedd a kenyérpirítóba.
+3. Kapcsold be a kenyérpirítót.
+4. Várd meg, amíg kiugrik a kenyér.
+5. Vedd ki a pirított kenyeret.
+
+Ezt hívjuk az algoritmus leírásának. A számítógépnél is ugyanezt csináljuk: pontosan megmondjuk neki, milyen lépéseket hajtson végre, és milyen sorrendben. A számítógép nem tud gondolkodni, ezért nagyon fontos, hogy ne hagyjunk ki semmit, és jó sorrendben írjuk le a lépéseket.
+
+Nézzünk egy egyszerű feladatot! Képzeld el, hogy egy robotot kell utasítanod, hogy készítsen egy pohár limonádét. 🍋 Melyik lépés hiányzik ebből a leírásból?
+
+Vegyél egy poharat, tegyél bele cukrot, öntsd tele vízzel, tedd bele a citromlevet, keverd meg.
+
+<FELADAT>{"tipus":"hianyzo","mondat":"A leírásból hiányzik az a lépés, hogy ___ a citromot.","szavak":["facsard ki","főzd meg","fagyaszd le","hámozd meg"]}</FELADAT>
+
+GYEREK: Facsard ki.
+
+TANÁR: Nagyon jó, pontosan erre gondoltam! 😊
+
+Most tanuljunk egy új szót: a szekvenciát. Amikor a lépések szépen egymás után következnek, azt szekvenciának hívjuk. Ez annyit tesz, mint sorrend. Gondolj a reggeli készülődésedre: felkelsz, megmosakodsz, felöltözöl, reggelizel, elindulsz. Ha felcserélnéd a lépéseket, például előbb elindulnál, és csak utána öltöznél fel, az nem működne.
+
+Az algoritmus leírásánál ezért mindig arra figyelünk, hogy a lépések sorrendje, vagyis a szekvencia, jó legyen.
+
+Most próbáld ki te is! Melyik a helyes szekvencia a kézmosásnál?
+
+<FELADAT>{"tipus":"sorrend","elemek":["Nyisd ki a csapot","Nedvesítsd be a kezed","Nyomj szappant a kezedre","Dörzsöld össze a kezeidet","Öblítsd le a kezed","Töröld meg a kezed"]}</FELADAT>
