@@ -340,7 +340,7 @@ def load_language():
         # meg – a válasz ugyanazon a nyelven jön, mint maga a lap.
         lang = request.headers.get("X-TutorIA-Lang")
     if lang not in i18n.LANGUAGES:
-    lang = session.get("lang", i18n.DEFAULT_LANG)
+        lang = session.get("lang", i18n.DEFAULT_LANG)
     if lang not in i18n.LANGUAGES:
         lang = i18n.DEFAULT_LANG
     g.lang = lang
@@ -6961,15 +6961,15 @@ def _whisper_transcribe(
     def _atiras(model: str, *, uj_stilus: bool) -> str:
         # A fájlt minden hívásnál újra kell csomagolni: az előző kérés a
         # végére olvasta a puffert, egy második hívás üres hangot küldene.
-    buf = io.BytesIO(audio_bytes)
-    buf.name = filename if "." in filename else f"{filename}.webm"
+        buf = io.BytesIO(audio_bytes)
+        buf.name = filename if "." in filename else f"{filename}.webm"
         kwargs: dict = {"model": model, "file": buf}
         if uj_stilus:
             kwargs["prompt"] = whisper_prompt
             extra: dict = {}
             if kulcsszavak:
                 extra["keywords"] = kulcsszavak
-    if force_language:
+            if force_language:
                 # A gpt-transcribe a `languages` LISTÁT kéri az egyes számú
                 # `language` helyett, és a kettőt együtt elutasítja.
                 extra["languages"] = [force_language]
@@ -7525,12 +7525,12 @@ def _azure_tts_speak(text: str) -> bytes | None:
             print(f"[TTS-DEBUG] tobbnyelvu ssml: {len(segments)} szegmens", flush=True)
         else:
             escaped = _ssml_escape(cleaned)
-        ssml = (
-            f'<speak version="1.0" xml:lang="{lang}">'
-            f'<voice name="{voice}">'
+            ssml = (
+                f'<speak version="1.0" xml:lang="{lang}">'
+                f'<voice name="{voice}">'
                 f'<prosody rate="{TTS_TEMPO_SSML}">{escaped}</prosody>'
-            f'</voice></speak>'
-        )
+                f'</voice></speak>'
+            )
         url = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/v1"
         req = urllib.request.Request(
             url,
@@ -10764,7 +10764,7 @@ def _call_ai_for_chat(
         # A Gemini ismeri a reasoning_effort-ot, a Mistral nem (hibát adna).
         extra = ({"reasoning_effort": "low"}
                  if "generativelanguage" in TANAR_API_BASE else {})
-    response = client.chat.completions.create(
+        response = client.chat.completions.create(
             model=MODELL_TANAR, messages=messages, **extra)
         tartalom = response.choices[0].message.content
         if isinstance(tartalom, list):       # néhány szolgáltató részekben adja
@@ -13050,14 +13050,14 @@ def child_chat_test_generate(child_id: int):
             }), 200
         if topic_learning_minutes < TESZT_MIN_PERC:
             need = TESZT_MIN_PERC - int(topic_learning_minutes)
-                    return jsonify({
-                        "ok": False,
+            return jsonify({
+                "ok": False,
                 "reason": "study_first_hour",
-                        "minutes_needed": need,
+                "minutes_needed": need,
                 "message": i18n.t("test_gate_elso_ora", g.lang).format(
-                            minutes=need
-                        ),
-                    }), 200
+                    minutes=need
+                ),
+            }), 200
 
     try:
         all_ora_szamok = [t.get("ora_szam", 0) for t in catalog]
@@ -13269,13 +13269,13 @@ def child_chat_test_submit(child_id: int):
             # Van még a három esélyből – AZONNAL újrapróbálhatja. Itt
             # szándékosan 0 a várakozás: a tanulási idő csak akkor jön,
             # ha mindhárom próbálkozás elfogyott.
-                can_retry = True
-                attempts_remaining = 3 - new_attempts
+            can_retry = True
+            attempts_remaining = 3 - new_attempts
             minutes_needed = 0
-            else:
+        else:
             # Elfogyott a három esély: egy óra tanulás, utána egy új próba.
-                can_retry = False
-                attempts_remaining = 0
+            can_retry = False
+            attempts_remaining = 0
             minutes_needed = TEST_RETRY_STUDY_MINUTES
     else:
         if passed:
