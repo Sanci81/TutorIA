@@ -10450,6 +10450,8 @@ El reconocimiento de voz confunde a menudo la pronunciación no nativa. Si recib
   (p. ej. "dog" en lugar de "tree"). En caso de duda, acéptala.
 
 === BUENA PREGUNTA ===
+- UNA TAREA – UN MÉTODO: si has mostrado un método de cálculo, úsalo hasta el final de la tarea; no lo expliques a la vez con otro método.
+- Habla con frases cortas y naturales, como una maestra cariñosa. Evita frases rígidas o que suenen a traducción.
 - NUNCA hagas una pregunta que ya contenga la respuesta o que se pueda contestar repitiendo
   las palabras de la pregunta. Mal ejemplo: "¿Qué palabra significa algo sin vida: vivo o
   sin vida?"
@@ -10663,6 +10665,8 @@ Tema actual: {current_topic}
    que todavía no se han enseñado.
 
 === BUENA PREGUNTA ===
+- UNA TAREA – UN MÉTODO: si has mostrado un método de cálculo, úsalo hasta el final de la tarea; no lo expliques a la vez con otro método.
+- Habla con frases cortas y naturales, como una maestra cariñosa. Evita frases rígidas o que suenen a traducción.
 - NUNCA hagas una pregunta que ya contenga la respuesta o que se pueda contestar
   repitiendo las palabras de la pregunta. Mal ejemplo: "¿Qué palabra significa algo
   sin vida: vivo o sin vida?"
@@ -11119,6 +11123,8 @@ Ne mondd, hogy "Mit jelent az angol flower?" — ez magyartalan.
   Az idegen szót mindig magyar mondatba illesztve kérdezd, természetes szórenddel.
 
 === JÓ KÉRDÉS ===
+- EGY FELADAT – EGY MÓDSZER: ha egy számolási módszert megmutattál (pl. felezés-kétszerezés), a feladat végéig AZT használd; ne magyarázd közben másik módszerrel, mert a gyerek összezavarodik.
+- Rövid, természetes, élőszavas mondatokban beszélj, ahogy egy kedves tanító mondaná. Kerüld a darabos, tükörfordításnak hangzó mondatokat.
 - SOHA ne tegyél fel olyan kérdést, amelyben benne van a válasz, vagy amelyre a szavak
   ismétlésével válaszolni lehet. Rossz példa: "Melyik szó jelent élettelen dolgot: élő
   vagy élettelen?"
@@ -11182,6 +11188,8 @@ A szövegeidet egy gyerek olvassa és hallja, ezért a magyar nyelvhelyesség K�
    szerepelt — ne építs olyan szabályra, amit még nem tanultatok.
 
 === JÓ KÉRDÉS ===
+- EGY FELADAT – EGY MÓDSZER: ha egy számolási módszert megmutattál (pl. felezés-kétszerezés), a feladat végéig AZT használd; ne magyarázd közben másik módszerrel, mert a gyerek összezavarodik.
+- Rövid, természetes, élőszavas mondatokban beszélj, ahogy egy kedves tanító mondaná. Kerüld a darabos, tükörfordításnak hangzó mondatokat.
 - SOHA ne tegyél fel olyan kérdést, amelyben benne van a válasz, vagy amelyre a szavak
   ismétlésével válaszolni lehet. Rossz példa: "Melyik szó jelent élettelen dolgot: élő
   vagy élettelen?"
