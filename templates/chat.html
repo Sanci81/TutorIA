@@ -5171,9 +5171,21 @@
        alap.webp képpontjaihoz igazítva (512×768). */
     DM.arcresz = function (f, D) {
         var MAPPA = {{ url_for('static', filename='figurak/fiu/')|tojson }};
-        var SZO = {eyes: 'eyes', ears: 'ears', eyebrows: 'eyebrows', nose: 'nose', mouth: 'mouth', chin: 'chin', hair: 'hair'};
-        var KERD = {eyes: 'Where are the eyes?', ears: 'Where are the ears?', eyebrows: 'Where are the eyebrows?', nose: 'Where is the nose?',
-            mouth: 'Where is the mouth?', chin: 'Where is the chin?', hair: 'Where is the hair?'};
+        /* A lecke nyelvén: angol, német, francia, spanyol (f.nyelv a szervertől). */
+        var NYELVEK = {
+            angol: [{eyes: 'eyes', ears: 'ears', eyebrows: 'eyebrows', nose: 'nose', mouth: 'mouth', chin: 'chin', hair: 'hair'},
+                {eyes: 'Where are the eyes?', ears: 'Where are the ears?', eyebrows: 'Where are the eyebrows?', nose: 'Where is the nose?',
+                 mouth: 'Where is the mouth?', chin: 'Where is the chin?', hair: 'Where is the hair?'}],
+            nemet: [{eyes: 'die Augen', ears: 'die Ohren', eyebrows: 'die Augenbrauen', nose: 'die Nase', mouth: 'der Mund', chin: 'das Kinn', hair: 'die Haare'},
+                {eyes: 'Wo sind die Augen?', ears: 'Wo sind die Ohren?', eyebrows: 'Wo sind die Augenbrauen?', nose: 'Wo ist die Nase?',
+                 mouth: 'Wo ist der Mund?', chin: 'Wo ist das Kinn?', hair: 'Wo sind die Haare?'}],
+            francia: [{eyes: 'les yeux', ears: 'les oreilles', eyebrows: 'les sourcils', nose: 'le nez', mouth: 'la bouche', chin: 'le menton', hair: 'les cheveux'},
+                {eyes: 'Où sont les yeux ?', ears: 'Où sont les oreilles ?', eyebrows: 'Où sont les sourcils ?', nose: 'Où est le nez ?',
+                 mouth: 'Où est la bouche ?', chin: 'Où est le menton ?', hair: 'Où sont les cheveux ?'}],
+            spanyol: [{eyes: 'los ojos', ears: 'las orejas', eyebrows: 'las cejas', nose: 'la nariz', mouth: 'la boca', chin: 'la barbilla', hair: 'el pelo'},
+                {eyes: '¿Dónde están los ojos?', ears: '¿Dónde están las orejas?', eyebrows: '¿Dónde están las cejas?', nose: '¿Dónde está la nariz?',
+                 mouth: '¿Dónde está la boca?', chin: '¿Dónde está la barbilla?', hair: '¿Dónde está el pelo?'}]};
+        var _ny = NYELVEK[f.nyelv] || NYELVEK.angol, SZO = _ny[0], KERD = _ny[1];
         var HU = {eyes: 'szem', ears: 'fül', eyebrows: 'szemöldök', nose: 'orr', mouth: 'száj', chin: 'áll', hair: 'haj'};
         var ES = {eyes: 'ojos', ears: 'orejas', eyebrows: 'cejas', nose: 'nariz', mouth: 'boca', chin: 'barbilla', hair: 'pelo'};
         /* [rész, középpont x, y, félszélesség, félmagasság] – képpontban */

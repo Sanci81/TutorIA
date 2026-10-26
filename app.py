@@ -9471,14 +9471,14 @@ _DM_FELULETEK = [
      'NÚMEROS EN INGLÉS – toca el número correcto tras oírlo (0–20). "szam" opcional:\n'
      '   <FELADAT>{"tipus":"szamangol","szam":7}</FELADAT>',
      'angol számok, hallás után            → szamangol', 'números en inglés, escuchar        → szamangol'),
-    ("arcresz", {"nyelv", "angol"}, 1, 4,
-     'AZ ARC RÉSZEI ANGOLUL – a kisfiú megmutat egy arcrészt, a gyerek a jó angol szóra koppint. '
+    ("arcresz", {"nyelv"}, 1, 4,
+     'AZ ARC RÉSZEI (a tanult nyelven) – a gyerek hallja a kérdést (pl. „Where are the ears?”), rákoppint a fiú arcán, a fiú megmutatja. '
      '"resz": eyes|ears|eyebrows|nose|mouth|chin|hair:\n'
      '   <FELADAT>{"tipus":"arcresz","resz":"ears"}</FELADAT>',
-     'PARTES DE LA CARA EN INGLÉS – el niño de la imagen señala una parte, el alumno toca la palabra. '
+     'PARTES DE LA CARA (en el idioma que se aprende) – el niño oye la pregunta, toca la cara del niño de la imagen y este la señala. '
      '"resz": eyes|ears|eyebrows|nose|mouth|chin|hair:\n'
      '   <FELADAT>{"tipus":"arcresz","resz":"nose"}</FELADAT>',
-     'arc részei, testrészek angolul       → arcresz', 'partes de la cara, el cuerpo        → arcresz'),
+     'arc részei, testrészek               → arcresz', 'partes de la cara, el cuerpo        → arcresz'),
     ("idojaras", {"nyelv", "angol"}, 2, 4,
      'IDŐJÁRÁS ANGOLUL – hallás után a jó képre koppint. "ido": sunny|rainy|snowy|windy|cloudy:\n'
      '   <FELADAT>{"tipus":"idojaras","ido":"sunny"}</FELADAT>',
@@ -13484,6 +13484,9 @@ def child_chat_send(child_id: int):
                 feladat["cim"] = _pk
         except Exception:
             logger.exception("Kerdes-potlas hiba")
+    if isinstance(feladat, dict) and feladat.get("tipus") == "arcresz":
+        # Az arcos feladat a lecke nyelvén kérdez (angol, német, francia, spanyol).
+        feladat["nyelv"] = _normalize_chat_language(teaching_language) or "angol"
     if not feladat:
         # Ha a válaszban sehol nincs kérdés, a végére teszünk egyet.
         try:
@@ -13501,6 +13504,7 @@ def child_chat_send(child_id: int):
             logger.exception("Kerdes-potlas hiba")
     _er = _CHAT_MARKER_EREDMENY.search(raw_reply or "")
     _eredmeny = ("jo" if _er.group(1).lower() in ("jo", "jó") else "rossz") if _er else ""
+    print(f"[EREDMENY] tanari jelzes: {_eredmeny or 'nincs'}", flush=True)
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:
