@@ -6190,7 +6190,9 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             muvelet = re.search(r"\d\s*[+\-−×x*·:/÷=]\s*\d", kerdes)
             if not (kerdes and _VALASZTOS_KERDES.search(kerdes) and not muvelet):
                 return {"tipus": "szam", "muvelet": ""}
-        return {"tipus": "valaszt", "opciok": tiszta}
+        _vk = str(adat.get("kerdes") or "").strip()[:120]
+        return ({"tipus": "valaszt", "opciok": tiszta, "cim": _vk} if len(_vk) >= 3
+                else {"tipus": "valaszt", "opciok": tiszta})
 
     return None
 
@@ -6249,6 +6251,45 @@ _FELADAT_POTLAS_ES = (
     "Si la pregunta no es de opción, o la explicación no permite decidir "
     'con claridad la respuesta correcta, devuelve: {"opciok": []}'
 )
+
+
+def _feladat_kerdes_potlas(reply_text: str, feladat: dict, *, es: bool,
+                           idokorlat: float) -> str:
+    """A tábla címe a kérdés legyen. Ha a tanár kérdés nélkül adott
+    feladatot (2026-10-26, Sándor képernyőképe: „age / country” gombok, fölöttük
+    csak a lecke neve), egy rövid külön hívás megírja a hiányzó kérdést."""
+    if idokorlat < 3.0:
+        return ""
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        return ""
+    utasitas = (
+        "Eres el asistente de un programa educativo para niños. Recibes el mensaje "
+        "del profesor y el ejercicio (JSON). Falta la pregunta del ejercicio. "
+        "Escribe UNA pregunta corta (máx. 100 caracteres) en español que encaje "
+        "con el mensaje y con las opciones, para que exactamente una opción sea "
+        "correcta. Devuelve SOLO la pregunta." if es else
+        "Egy gyerekeknek szóló oktatóprogram segédje vagy. Kapsz egy tanári "
+        "üzenetet és a hozzá tartozó feladatot (JSON). A feladat kérdése hiányzik. "
+        "Írj EGY rövid kérdést (legfeljebb 100 karakter) magyarul, ami illik az "
+        "üzenethez és a válaszlehetőségekhez, úgy, hogy pontosan egy lehetőség "
+        "legyen helyes. Csak a kérdést add vissza.")
+    try:
+        client = _openai_client(api_key, request_timeout=idokorlat, max_retries=0)
+        resp = _ai_keszit(client,
+            model=MODELL_SEGED,
+            messages=[
+                {"role": "system", "content": utasitas},
+                {"role": "user", "content": (reply_text or "")[:2000] + "\n\nFELADAT: "
+                 + json.dumps(feladat, ensure_ascii=False)[:800]},
+            ],
+        )
+        k = (resp.choices[0].message.content or "").strip().strip('"„”').strip()
+    except Exception as exc:
+        print(f"[FELADAT] kerdes-potlas hiba: {exc}", flush=True)
+        return ""
+    k = k.splitlines()[0].strip() if k else ""
+    return k if 3 <= len(k) <= 120 else ""
 
 
 def _utolso_kerdes(szoveg: str) -> str:
@@ -9631,9 +9672,10 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    rövid feliratot: <FELADAT>{"tipus":"szam","muvelet":"3x + 5 = 20, x"}</FELADAT>
 
 3) VÁLASZGOMBOK — csak NEM SZÁMOLÓS kérdéshez:
-   <FELADAT>{"tipus":"valaszt","opciok":["macska","kutya","ló"]}</FELADAT>
-   Kettő és hat közötti lehetőség. A KÉRDÉST a szövegben tedd fel, a
-   jelölőbe CSAK a válaszlehetőségek kerülnek, és pontosan egy legyen jó.
+   <FELADAT>{"tipus":"valaszt","kerdes":"Melyik állat ugat?","opciok":["macska","kutya","ló"]}</FELADAT>
+   Kettő és hat közötti lehetőség, pontosan egy legyen jó. A KÉRDÉST a
+   szövegben is tedd fel, ÉS írd be a "kerdes" mezőbe is (rövid, kérdőjellel).
+   Kérdés nélkül SOHA ne adj válaszgombokat – a gyerek nem tudja, mit kell választania.
    Példák: melyik szó a helyes fordítás; melyik állat emlős; melyik jel
    mutatja a települést; melyik mondat helyesírása jó; melyik hangszer húros.
 
@@ -9862,9 +9904,10 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    <FELADAT>{"tipus":"szam","muvelet":"3x + 5 = 20, x"}</FELADAT>
 
 3) BOTONES DE RESPUESTA — solo para preguntas QUE NO SEAN DE CÁLCULO:
-   <FELADAT>{"tipus":"valaszt","opciok":["gato","perro","caballo"]}</FELADAT>
-   Entre dos y seis opciones. La PREGUNTA va en el texto; en la marca van
-   SOLO las opciones, y exactamente una debe ser correcta.
+   <FELADAT>{"tipus":"valaszt","kerdes":"¿Qué animal ladra?","opciok":["gato","perro","caballo"]}</FELADAT>
+   Entre dos y seis opciones, exactamente una correcta. Haz la PREGUNTA en el
+   texto Y escríbela también en el campo "kerdes" (corta, con signo de
+   interrogación). NUNCA des botones sin pregunta: el niño no sabría qué elegir.
 
 4) EMPAREJAR — palabra y significado, concepto y definición, país y
    capital, instrumento y familia, fecha y acontecimiento:
@@ -13336,6 +13379,17 @@ def child_chat_send(child_id: int):
         raw_reply, grade=grade_num,
         es_tanterv=_es_tanterv,
         temakor=current_topic)
+    if (isinstance(feladat, dict) and not feladat.get("kerdes")
+            and not feladat.get("cim")):
+        # Feladat van, kérdés nincs: a tábla címe a lecke neve lenne.
+        try:
+            _pk = _feladat_kerdes_potlas(
+                _parse_chat_markers(raw_reply)[0], feladat, es=_es_tanterv,
+                idokorlat=min(8.0, _maradek() - 4))
+            if _pk:
+                feladat["cim"] = _pk
+        except Exception:
+            logger.exception("Kerdes-potlas hiba")
     if not feladat:
         # A tanár szövegben kérdezett, jelölő nélkül. Ilyenkor mi csináljuk
         # meg a feladatot – enélkül az egész oldal marad csevegésnek.
