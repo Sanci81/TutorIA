@@ -1487,6 +1487,16 @@
        gyerek nemét; keskeny képernyőn nem jelenik meg. #}
     {# KABALA: a szülő négy közül választ a profilban — fiú, lány, mozgó
        robot, vagy semmi. A fiú és a lány állókép marad, a robot mozog. #}
+    {% if proba_lista %}
+    <form method="get" style="position:fixed;left:12px;bottom:12px;z-index:9999;background:#fff;border:2px solid #1F7A4D;border-radius:12px;padding:8px 10px;font:14px Nunito,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.12)">
+        {% for k, v in request.args.items() %}{% if k != 'proba' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endif %}{% endfor %}
+        <b>Feladat-próba:</b>
+        <select name="proba" onchange="this.form.submit()" style="max-width:260px">
+            <option value="">– válassz –</option>
+            {% for tip, cim in proba_lista %}<option value="{{ tip }}" {% if request.args.get('proba') == tip %}selected{% endif %}>{{ tip }} – {{ cim }}</option>{% endfor %}
+        </select>
+    </form>
+    {% endif %}
     {% if kabala_kep or kabala_robot %}
     <div class="chat-kabala-oszlop" aria-hidden="true">
         {% if kabala_robot %}
@@ -9440,6 +9450,10 @@
 
     // Az oldal betöltésekor a MENTETT feladatot is kirakjuk (újratöltés után
     // ne tűnjön el, amire a tanár épp választ vár).
+    {% if proba_feladat %}
+    /* Üzemeltetői feladat-próba: a kiválasztott feladat azonnal a táblára. */
+    setTimeout(function () { try { munkaterBe({{ proba_feladat|tojson }}); } catch (e) { console.error(e); } }, 400);
+    {% endif %}
     (function mentettFeladatok() {
         var helyek = document.querySelectorAll('.feladat-hely');
         var utolso = helyek.length ? helyek[helyek.length - 1] : null;

@@ -13101,8 +13101,33 @@ def child_chat(child_id: int):
     # vissza nem kapcsolja. Így egy tesztelő is bármikor válthat.
     _uj_felulet = bool(session.get("uj_felulet", True))
 
+    # FELADAT-PRÓBA AZ ÜZEMELTETŐNEK: bármelyik órán kiválaszthat egy
+    # interaktív feladatot, és az azonnal megjelenik a táblán – nem kell
+    # kivárni, hogy a tanár épp azt adja. Csak admin címmel látszik.
+    _proba_lista, _proba_feladat = [], None
+    try:
+        if _admin_kapu() is None:
+            _es_t = (_active_curriculum() or "HU").upper() == "ES"
+            _proba_lista = [(f[0], (f[7] if _es_t else f[6]).split("→")[0].strip())
+                            for f in _DM_FELULETEK]
+            _pt = (request.args.get("proba") or "").strip().lower()
+            for f in _DM_FELULETEK:
+                if f[0] != _pt:
+                    continue
+                _m = re.search(r"<FELADAT>.*?</FELADAT>", f[5] if _es_t else f[4], re.DOTALL)
+                if _m:
+                    _proba_feladat = _feladat_parse(_m.group(0), grade=grade_num,
+                                                    es_tanterv=_es_t, temakor=None)
+                break
+            if isinstance(_proba_feladat, dict) and _proba_feladat.get("tipus") == "arcresz":
+                _proba_feladat["nyelv"] = _normalize_chat_language(language) or "angol"
+    except Exception:
+        logger.exception("Feladat-proba hiba")
+
     return render_template(
         "chat.html",
+        proba_lista=_proba_lista,
+        proba_feladat=_proba_feladat,
         uj_felulet=_uj_felulet,
         kabala_kep=_kabala,
         kabala_robot=_kabala_robot,
@@ -13293,6 +13318,17 @@ def child_chat_send(child_id: int):
     )
     if chat_mode == "voice":
         system_prompt += _voice_mode_prompt_block(_child_effective_age(child))
+    else:
+        # 2026-10-26: írásban a gyerek ROSSZ gombot nyomott, a tanár mégis azt
+        # felelte: „Ezt nem hallottam jól”. A félrehallás-szabály csak hangmódra
+        # való – írásban nincs mit félrehallani.
+        system_prompt += (
+            "\n\n=== ÍRÁSOS MÓD ===\nA gyerek most GÉPEL vagy GOMBRA KOPPINT – itt nincs "
+            "félrehallás. SOHA ne írd, hogy „nem hallottam jól”. Ha a válasza rossz, mondd meg "
+            "kedvesen, hogy ez most nem jó, mondd meg, mi a helyes és miért, és adj egy "
+            "hasonló kérdést.\n"
+            "MODO ESCRITO: el niño escribe o toca un botón; NUNCA digas «no te he oído bien». "
+            "Si la respuesta es incorrecta, díselo con cariño, explica la correcta y por qué.\n")
         # Ha az előző választ nehezen lehetett érteni, a tanár most kedvesen
         # visszakérdez rá. Kártya nélkül, szám nélkül — ahogy egy ember tenné.
         system_prompt += _kiejtes_visszakerdezes(
