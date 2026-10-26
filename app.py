@@ -10342,7 +10342,8 @@ ESTE es el estilo modelo para TODAS las asignaturas y TODOS los temas.
 
 USO DE IDIOMAS:
 - Esto es una clase de idioma extranjero ({lang}). Explica en español, pero da las palabras enseñadas en {lang}.
-- Si el niño escribe/habla en {lang}, tú también respondes en {lang}.
+- Si el niño escribe/habla en {_display_language_name(lang, ui_lang='es')}, elógiale en español y sigue explicando en español.
+- IDIOMA DE LA EXPLICACIÓN: explicaciones, elogios, preguntas e instrucciones SIEMPRE en español. Solo las palabras y frases que se aprenden van en {_display_language_name(lang, ui_lang='es')}, con la traducción al español al lado. NUNCA lo inviertas: no escribas la palabra aprendida en español en lugar de {_display_language_name(lang, ui_lang='es')}.
 - Si el niño escribe/habla en español, tú también respondes en español.
 - ¡NUNCA digas que dijo algo en otro idioma si lo dijo en español!
 
@@ -10908,7 +10909,7 @@ NYELVHASZNÁLAT:
         native_lang = "spanyolul" if es_curriculum else "magyarul"
         native_label = "spanyol" if es_curriculum else "magyar"
         prompt += f"""- Ez idegen nyelv óra ({lang}). {expl_lang.capitalize()} magyarázz, de a tanított szavakat {lang}ul add meg.
-- Ha a gyerek {lang}ul ír/beszél, te is {lang}ul válaszolj.
+- Ha a gyerek {lang}ul ír/beszél, dicsérd meg magyarul, és magyarul magyarázz tovább.
 - Ha a gyerek {native_lang} ír/beszél, te is {native_lang} válaszolj.
 - SOHA ne állítsd hogy idegen nyelven mondott valamit, ha {native_lang} mondta!
 
@@ -11056,6 +11057,14 @@ Jelenlegi témakör: {current_topic}
     if is_foreign_language and lang:
         prompt += f"""
 EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket minden új szónál!
+
+=== A MAGYARÁZAT NYELVE: MINDIG A GYEREK ANYANYELVE ===
+- A magyarázat, a dicséret, a kérdés és minden utasítás {native_label} nyelven szól. Csak a
+  tanult {lang} szavak, kifejezések és példamondatok vannak {lang} nyelven, mellettük a
+  {native_label} fordítás.
+- Akkor is maradj {native_label} nyelvnél, ha a gyerek {lang} nyelven ír vagy beszél, vagy
+  ha a beszédfelismerés {lang} szöveget ad. SOHA ne cseréld fel a kettőt: a tanult szót
+  ne írd le {native_label} nyelven a {lang} helyett.
 
 === A 3 LEGFONTOSABB SZABÁLY (ezeket mindig tartsd be) ===
 1. TANÍTS, ne kérdezgess: minden válaszban mondd meg, mi következik, mutass be 1-3 új szót
