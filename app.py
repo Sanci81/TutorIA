@@ -5418,6 +5418,16 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             "Hallgasd meg, és koppints a jó számra!")
         return {"tipus": "szamangol", "szam": szam, "kerdes": kerdes}
 
+    if tipus == "arcresz":
+        resz = str(adat.get("resz") or "").strip().lower()
+        if resz not in ("eyes", "ears", "eyebrows", "nose", "mouth", "chin", "hair"):
+            resz = random.choice(["eyes", "ears", "nose", "mouth", "hair"])
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué señala el niño? ¡Toca la palabra en inglés!"
+            if es_tanterv else
+            "Mit mutat a fiú? Koppints a jó angol szóra!")
+        return {"tipus": "arcresz", "resz": resz, "kerdes": kerdes}
+
     if tipus == "idojaras":
         KANON = {
             "sunny": "sunny", "napos": "sunny", "soleado": "sunny", "sol": "sunny",
@@ -9449,6 +9459,14 @@ _DM_FELULETEK = [
      'NÚMEROS EN INGLÉS – toca el número correcto tras oírlo (0–20). "szam" opcional:\n'
      '   <FELADAT>{"tipus":"szamangol","szam":7}</FELADAT>',
      'angol számok, hallás után            → szamangol', 'números en inglés, escuchar        → szamangol'),
+    ("arcresz", {"nyelv", "angol"}, 1, 4,
+     'AZ ARC RÉSZEI ANGOLUL – a kisfiú megmutat egy arcrészt, a gyerek a jó angol szóra koppint. '
+     '"resz": eyes|ears|eyebrows|nose|mouth|chin|hair:\n'
+     '   <FELADAT>{"tipus":"arcresz","resz":"ears"}</FELADAT>',
+     'PARTES DE LA CARA EN INGLÉS – el niño de la imagen señala una parte, el alumno toca la palabra. '
+     '"resz": eyes|ears|eyebrows|nose|mouth|chin|hair:\n'
+     '   <FELADAT>{"tipus":"arcresz","resz":"nose"}</FELADAT>',
+     'arc részei, testrészek angolul       → arcresz', 'partes de la cara, el cuerpo        → arcresz'),
     ("idojaras", {"nyelv", "angol"}, 2, 4,
      'IDŐJÁRÁS ANGOLUL – hallás után a jó képre koppint. "ido": sunny|rainy|snowy|windy|cloudy:\n'
      '   <FELADAT>{"tipus":"idojaras","ido":"sunny"}</FELADAT>',

@@ -2350,7 +2350,6 @@
         }
         if (typeof sendBtn !== 'undefined' && sendBtn) { sendBtn.disabled = false; }
         if (typeof input !== 'undefined' && input) { input.disabled = false; }
-        if (typeof kabalaVillan === 'function') { kabalaVillan('gepies', 2500); }
         return true;
     }
 
@@ -2514,7 +2513,8 @@
         D.mond = function (sz) { try { ieSzoKimond(sz); } catch (e) {} };
         D.kesz = function () { return doboz.classList.contains('feladat-kesz'); };
         var vj = document.createElement('div'); vj.className = 'visszajelzes';
-        D.jelez = function (jo, h) { vj.className = 'visszajelzes ' + (jo ? 'jo' : 'rossz'); vj.innerHTML = h; lap.appendChild(vj); };
+        D.jelez = function (jo, h) { vj.className = 'visszajelzes ' + (jo ? 'jo' : 'rossz'); vj.innerHTML = h; lap.appendChild(vj);
+            if (!jo && !D._nemRossz && typeof kabalaSzomoru === 'function') { try { kabalaSzomoru(); } catch (e) {} } };
         D.torol = function () { vj.className = 'visszajelzes'; vj.innerHTML = ''; };
         D.unnep = function () { ieUnnep(doboz); };
         D.kuld = function (valasz, varj) { if (D._elkuldve) { return; } D._elkuldve = true;
@@ -2524,7 +2524,7 @@
            a válasz mindenképp megy a tanárnak, hogy ő segítsen. */
         D.ellenoriz = function (fn, felirat) { var hibak = 0, sor = document.createElement('div'); sor.className = 'gombok dm-kesz-sor';
             var b = D.gomb(felirat || L.feladatKesz, 'fo', function () { var r = fn() || {};
-                if (r.hianyzik) { D.jelez(false, r.hianyzik); return; }
+                if (r.hianyzik) { D._nemRossz = true; D.jelez(false, r.hianyzik); D._nemRossz = false; return; }
                 if (r.jo) { b.disabled = true; D.jelez(true, r.uzenet || ''); D.unnep(); D.kuld(r.valasz, 2600); return; }
                 hibak++; D.jelez(false, r.uzenet || ''); if (hibak >= 2) { b.disabled = true; D.kuld(r.valasz, 2600); } });
             sor.appendChild(b); lap.appendChild(sor); return b; };
@@ -5161,6 +5161,51 @@
             }));
         });
         setTimeout(kimond, 300);
+    };
+
+    /* ── AZ ARC RÉSZEI (angol) – a kisfiú MEGMUTATJA, a gyerek megnevezi ──
+       2026-10-26. Valódi, AI-val rajzolt képek (static/figurak/fiu): a fiú
+       alaphelyzetből egy félúti kockán át odanyúl az arcrészhez, a gyerek
+       a jó angol szóra koppint. Jó válaszra a fiú örül, és a szót kimondjuk
+       ugyanazzal a hanggal, amit a nyelvórák használnak. */
+    DM.arcresz = function (f, D) {
+        var MAPPA = {{ url_for('static', filename='figurak/fiu/')|tojson }};
+        var SZO = {eyes: 'eyes', ears: 'ears', eyebrows: 'eyebrows', nose: 'nose', mouth: 'mouth', chin: 'chin', hair: 'hair'};
+        var HU = {eyes: 'szem', ears: 'fül', eyebrows: 'szemöldök', nose: 'orr', mouth: 'száj', chin: 'áll', hair: 'haj'};
+        var ES = {eyes: 'ojos', ears: 'orejas', eyebrows: 'cejas', nose: 'nariz', mouth: 'boca', chin: 'barbilla', hair: 'pelo'};
+        var cel = SZO[f.resz] ? f.resz : 'nose', hibak = 0, vege = false;
+        var opc = [cel], tobbi = D.kever(Object.keys(SZO).filter(function (k) { return k !== cel; }));
+        opc = D.kever(opc.concat(tobbi.slice(0, 3)));
+        ['alap', cel + '_k', cel, 'orul'].forEach(function (n) { (new Image()).src = MAPPA + n + '.webp'; });
+        D.html('<div class="allas">' + D.T('Mit mutat a fiú? Koppints a jó angol szóra!',
+            '¿Qué señala el niño? ¡Toca la palabra correcta en inglés!') + '</div>' +
+            '<div style="position:relative;width:min(100%,280px);aspect-ratio:512/430;overflow:hidden;margin:6px auto 10px;border-radius:16px;background:#fff">' +
+            '<img data-id="kep" alt="" src="' + MAPPA + 'alap.webp" style="position:absolute;left:0;top:-6%;width:100%;height:auto;transition:opacity .22s ease">' +
+            '</div><div class="gombok" style="justify-content:center;flex-wrap:wrap;gap:8px" data-id="lapok"></div>');
+        var kep = D.$('kep');
+        function mutat(nev, kesz) {
+            kep.style.opacity = '0';
+            setTimeout(function () { kep.src = MAPPA + nev + '.webp'; kep.style.opacity = '1'; if (kesz) { setTimeout(kesz, 260); } }, 220);
+        }
+        function megmutat() { mutat(cel + '_k', function () { setTimeout(function () { mutat(cel); }, 120); }); }
+        setTimeout(megmutat, 700);
+        opc.forEach(function (o) {
+            D.$('lapok').appendChild(D.gomb(SZO[o], '', function () {
+                if (vege || D.kesz()) { return; }
+                var valasz = D.T('A fiú a(z) ' + HU[cel] + ' részét mutatta, én ezt választottam: ' + SZO[o] + '.',
+                    'El niño señalaba: ' + ES[cel] + '. He elegido: ' + SZO[o] + '.');
+                if (o === cel) {
+                    vege = true; this.classList.add('jo'); D.mond(SZO[cel]); mutat('orul');
+                    D.vege(true, '<b>' + SZO[cel] + '</b> = ' + D.T(HU[cel], ES[cel]), valasz);
+                } else {
+                    hibak++; D.animal(this, 'rezeg');
+                    D.jelez(false, D.T('A(z) ' + SZO[o] + ' jelentése: ' + HU[o] + '. Nézd meg újra, mit mutat!',
+                        '«' + SZO[o] + '» significa: ' + ES[o] + '. ¡Mira otra vez qué señala!'));
+                    mutat('alap', megmutat);
+                    if (hibak >= 2) { vege = true; D.kuld(valasz, 2600); }
+                }
+            }));
+        });
     };
 
     /* ── IDŐJÁRÁS ANGOLUL ────────────────────────────────────────────── */
@@ -8058,6 +8103,8 @@
     /* SIKER: a konfetti mellett egy nagy felirat is megjelenik a feladaton,
        hogy akkor is egyértelmű legyen, ha a konfettit nem látni. */
     function ieUnnep(doboz) {
+        /* VALÓDI ESEMÉNY: a gyerek megoldotta a feladatot – a kabala örül. */
+        if (typeof kabalaOrul === 'function') { try { kabalaOrul(); } catch (e) {} }
         var b = document.createElement('div');
         b.className = 'ie-szuper';
         b.textContent = L.ieSzuper;
@@ -9846,18 +9893,23 @@
     /* MI TÖRTÉNT? A tanár szövegéből olvassuk ki, hogy dicsér-e vagy
        javít. Nincs rá külön jelzés a válaszban, ezért a jellemző
        fordulatokra figyelünk – magyarul és spanyolul is. */
-    var KABALA_DICSER = new RegExp('(ügyes|szuper|remek|pontosan|bravó|'
-        + 'nagyszerű|kitűnő|így van|helyes|eltaláltad|muy bien|excelente|'
-        + 'perfecto|correcto|genial|así es|eso es)', 'i');
-    var KABALA_JAVIT = new RegExp('(nem egészen|nem pontosan|majdnem|'
-        + 'nézzük újra|nézzük meg újra|próbáld|próbáljuk|nem stimmel|'
-        + 'sajnos nem|casi|no exactamente|no es correcto|inténtalo|'
-        + 'volvamos|revisemos)', 'i');
+    /* 2026-10-26, Sándor: „össze-vissza reagál”. Az ok: a teljes szövegben
+       kerestük a szavakat, így a „Válaszd ki a HELYES megoldást” örömöt, a
+       „PRÓBÁLD ki” szomorúságot váltott ki. Most CSAK az első mondat ELEJÉT
+       nézzük, és csak egyértelmű dicséretre / javításra reagálunk. */
+    var KABALA_DICSER = new RegExp('^(ügyes|szuper|remek|pontosan|bravó|'
+        + 'nagyszerű|kitűnő|így van|helyes|eltaláltad|igazad van|jó válasz|'
+        + 'muy bien|excelente|perfecto|correcto|genial|así es|eso es|¡?bien)', 'i');
+    var KABALA_JAVIT = new RegExp('^(nem egészen|nem pontosan|majdnem|'
+        + 'sajnos nem|ez nem|nem jó|nem stimmel|casi|no exactamente|'
+        + 'no es correcto|no del todo|no,)', 'i');
 
     var kabalaRontas = 0;          /* egymás utáni rossz válaszok */
 
     function kabalaValaszra(szoveg) {
         if (!szoveg) { return; }
+        szoveg = String(szoveg).replace(/^[^0-9A-Za-zÀ-ÿŐőŰű¡¿]+/, '');
+        szoveg = szoveg.split(/[.!?\n]/)[0].trim();
         if (KABALA_JAVIT.test(szoveg)) {
             kabalaRontas += 1;
             /* Harmadszorra már bosszús – de csak egy pillanatra, a
@@ -9893,7 +9945,10 @@
     var kabalaUnalomOra = null;
 
     function kabalaUnatkozik() {
+        /* 2026-10-26: kikapcsolva. A véletlen arcváltás a gyereknek
+           „ok nélküli” reakció – a kabala csak valódi eseményre vált. */
         if (kabalaUnalomOra) { clearTimeout(kabalaUnalomOra); }
+        return;
         var kesleltetes = kabalaKepEl
             ? (30000 + Math.floor(Math.random() * 20000))
             : (9000 + Math.floor(Math.random() * 7000));
@@ -9910,7 +9965,7 @@
     /* A gyerek ÍR – a figura odafigyel. */
     if (input) {
         input.addEventListener('input', function () {
-            if (kabalaKert === 'alap') { kabalaVillan('kivancsi', 2500); }
+            /* gépelésre nem vált: túl gyakori, „ok nélkül” reagált */
         });
     }
 

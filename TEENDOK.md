@@ -636,3 +636,12 @@ Tervezett elemek:
       ajánlat: „Pihensz 2 percet egy memóriajátékkal?" – nem kötelező, a
       szülő átállíthatja vagy kikapcsolhatja. Csak az számít aktív
       percnek, amikor a gyerek tényleg válaszol.
+
+## Később (2026-10-26)
+
+- [ ] Mappa takarítása: a régi `git add -A` óta felkerült próbafájlok (pl. `_css.txt`, `_elonezet.html`, `_elonezet.py`, `_f.json`, `_k.js`, `_kivonat.*`, `euklidesz_*.png`, `minta1-3.png`, `teszt_kep.png`, régi tesztnaplók). Claude előbb összeírja, mi törölhető biztonságosan; törölni Sándor töröl.
+- [ ] `kinézet képek\facebook\figyelem_szervek.png` törlése.
+- [ ] Teszt eredményoldal: pontösszesítő („7/10, ezeket rontottad, ezt gyakorold”) – jó ötlet, nem sürgős.
+- [ ] Kipróbálós demóoldal regisztráció nélkül – akkor kell, ha újra fut a Facebook hirdetés.
+- [ ] Képtár: előre legenerált, jóváhagyott képek témakörönként (a gyerek nem vár), a tanár csak a lecke saját képei közül választ.
+- [ ] A Cursorral készült 36 feladat részletes átnézése.
