@@ -14842,9 +14842,12 @@ def api_voice_transcribe():
     """Whisper: audio/webm → magyar szöveg."""
     upload = request.files.get("file") or request.files.get("audio")
     if not upload or not upload.filename:
+        logger.warning("[VOICE-DEBUG] nincs hangfajl a kerésben (mezok: %s)", list(request.files.keys()))
         return jsonify({"error": "no_audio"}), 400
     audio_bytes = upload.read()
+    logger.warning("[VOICE-DEBUG] hang erkezett: %d bajt, %s", len(audio_bytes), upload.mimetype)
     if len(audio_bytes) < 1000:
+        logger.warning("[VOICE-DEBUG] tul rovid felvetel (%d bajt) – a mikrofon valoszinuleg nem vett fel semmit", len(audio_bytes))
         return jsonify({"error": "audio_too_short"}), 400
     language = (request.form.get("language") or "hu").strip().lower()
 
