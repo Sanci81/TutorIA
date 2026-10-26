@@ -7935,6 +7935,16 @@ def _whisper_transcribe(
             STT_MODEL_TARTALEK,
         )
         result = _atiras(STT_MODEL_TARTALEK, uj_stilus=False)
+    # 2026-10-26: a fő felismerő hiba NÉLKÜL üres szöveget adott vissza, és a
+    # gyerek csak azt látta: „Nem értettem”. Ha üres, megkérdezzük a tartalék
+    # modellt is – ha az is üres, akkor tényleg csend volt a felvételen.
+    if not result and STT_MODEL_TARTALEK and STT_MODEL_TARTALEK != STT_MODEL:
+        try:
+            result = _atiras(STT_MODEL_TARTALEK, uj_stilus=False)
+            logger.warning("[VOICE-DEBUG] %s ures volt, tartalek (%s): %r",
+                           STT_MODEL, STT_MODEL_TARTALEK, result[:80])
+        except Exception as exc:
+            logger.warning("[VOICE-DEBUG] tartalek STT sem sikerult: %s", exc)
 
     # ── DIREKT prompt-visszhang szűrő ──
     # A felismerő néha SZÓ SZERINT visszaadja a neki küldött
