@@ -1422,8 +1422,8 @@ TRANSLATIONS = {
     "nem_cimke": {"hu": "A gyerek neme", "es": "Niño o niña"},
     "nem_fiu": {"hu": "Fiú", "es": "Niño"},
     "nem_lany": {"hu": "Lány", "es": "Niña"},
-    "nem_robot": {"hu": "Robi (mozgó robot)", "es": "Robi (robot animado)"},
-    "nem_robot_kep": {"hu": "Pixi (rajzos robot)", "es": "Pixi (robot ilustrado)"},
+    "nem_robot": {"hu": "Robi robot", "es": "Robot Robi"},
+    "nem_robot_kep": {"hu": "Pixi robot", "es": "Robot Pixi"},
     "nem_nincs": {"hu": "Nem adom meg", "es": "Prefiero no decirlo"},
     "nem_miert": {
         "hu": "Csak azt dönti el, melyik rajzfigura kíséri a tanulásban. "

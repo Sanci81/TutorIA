@@ -124,6 +124,8 @@ MODELL_TANAR = os.environ.get("MODELL_TANAR", "gpt-5.4-mini")
 # SEGÉDMUNKÁK: gyakorlófeladat, válaszellenőrzés, kvíz, szófelismerés,
 # szóbeli válasz értékelése. Rövid, egyszerű kérések. (11 hívás.)
 MODELL_SEGED = os.environ.get("MODELL_SEGED", "gpt-4o-mini")
+# A gépi SVG-ábrák (ABRA) be/ki – alapból KI (lásd _parse_chat_markers).
+ABRA_RAJZOK = os.environ.get("ABRA_RAJZOK", "0").strip().lower() in ("1", "true", "igen", "be")
 # MÁSIK SZOLGÁLTATÓ CSAK A TANÁRNAK (kipróbáláshoz, kódváltoztatás nélkül).
 # Ha a Railway-en a TANAR_API_BASE és a TANAR_API_KEY is be van állítva, a
 # tanár hívása oda megy – OpenAI-kompatibilis felületre (Mistral, Google
@@ -6499,6 +6501,8 @@ def _feladat_szovegbol(szoveg: str, *, grade: int | None = None,
 
 
 _CHAT_MARKER_TOPIC = re.compile(r"<TOPIC_COMPLETE>", re.IGNORECASE)
+# A gyerek válasza jó volt-e – a tanár jelzi, a kabala ebből reagál (rejtett).
+_CHAT_MARKER_EREDMENY = re.compile(r"<\s*EREDMENY\s*:\s*(jo|jó|rossz)\s*>", re.IGNORECASE)
 _CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
 _CHAT_MARKER_VOCAB = re.compile(
     r"[<\[]\s*VOCAB\s*[>\]]\s*([^=\n<\[]+?)\s*=\s*([^<\[\n]+?)\s*(?:[<\[]\s*/\s*VOCAB\s*[>\]]|$)",
@@ -6829,6 +6833,7 @@ _MODELL_TOKEN = re.compile(r"<\|[A-Za-z_][A-Za-z0-9_]{1,30}\|>")
 
 def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[str, str]], list[str]]:
     """Belső jelölők eltávolítása; topic, level, szójegyzék párok, SVG ábrák."""
+    text = _CHAT_MARKER_EREDMENY.sub("", text or "")
     level_val: int | None = None
     level_match = _CHAT_MARKER_LEVEL.search(text)
     if level_match:
@@ -6851,6 +6856,11 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     # Tartalék: <ABRA> keret nélküli, csupasz SVG a válasz szövegében.
     for m_bare in _BARE_SVG_RE.finditer(_CHAT_MARKER_SVG.sub("", text)):
         svg_list.append(m_bare.group(0).strip())
+    # 2026-10-26, Sándor: a gépi SVG-rajzok (párosak-kör, számegyenes „5 nem
+    # elem”) gyengék – „ilyen nem kell”. Amíg a jóváhagyott képtár el nem
+    # készül, KIKAPCSOLVA. Visszakapcsolás: Railway változó ABRA_RAJZOK=1.
+    if not ABRA_RAJZOK:
+        svg_list = []
 
     # MODELL-BELSŐ TOKENEK: a 20 órás magyar teszt (gpt-6-luna) a gyerek
     # elé tett ilyeneket: <|im_end|>, <|fim_suffix|>. Soha nem tartalom.
@@ -7181,6 +7191,8 @@ def _ensure_illustration(
     es: bool = False,
 ) -> str | None:
     """Ha nincs ábra, de a szöveg megkívánja, pótoljuk. A pótolt SVG-t adja vissza."""
+    if not ABRA_RAJZOK:
+        return None
     if figures or not _needs_illustration(reply_text):
         return None
     try:
@@ -10267,7 +10279,20 @@ def _teszt_kapu_szoveg(
             " hogy ki is próbálhatja, ha szeretné. Ne sürgesd.\n" + zaras)
 
 
-def _build_chat_system_prompt(
+def _build_chat_system_prompt(*args, **kwargs) -> str:
+    """A prompt + (ha a gépi rajzok ki vannak kapcsolva) a rajztilalom a végén."""
+    prompt = _build_chat_system_prompt_alap(*args, **kwargs)
+    if not ABRA_RAJZOK:
+        prompt += (
+            "\n\n=== RAJZ: MOST NINCS (ez felülír minden korábbi ábra-szabályt) ===\n"
+            "NE küldj <ABRA> blokkot, SVG-t vagy bármilyen rajzot, és NE hivatkozz ábrára "
+            "(„az ábrán”, „nézd meg a rajzot”). A szemléltetést a <FELADAT> elemek adják.\n"
+            "NO envíes <ABRA>, SVG ni dibujos, y NO menciones ningún dibujo («en el dibujo»).\n"
+        )
+    return prompt
+
+
+def _build_chat_system_prompt_alap(
     child: dict,
     *,
     subject_label: str,
@@ -10469,6 +10494,9 @@ Tema actual: {current_topic}
             )
 
         prompt += (
+            "\nSi el niño acaba de RESPONDER a una pregunta tuya, empieza tu mensaje con "
+            "<EREDMENY:jo> si la respuesta es correcta o <EREDMENY:rossz> si no lo es "
+            "(oculto, el niño no lo ve). Si no ha respondido a nada, no lo pongas.\n"
             "\nCuando hayas TERMINADO la materia del tema (oculto): <TOPIC_COMPLETE>\n"
             "Esto NO cierra la lección: solo abre la prueba final. La lección\n"
             "se cierra únicamente al aprobar la prueba, y el siguiente tema se\n"
@@ -10720,6 +10748,9 @@ Tema actual: {current_topic}
             )
 
         prompt += (
+            "\nSi el niño acaba de RESPONDER a una pregunta tuya, empieza tu mensaje con "
+            "<EREDMENY:jo> si la respuesta es correcta o <EREDMENY:rossz> si no lo es "
+            "(oculto, el niño no lo ve). Si no ha respondido a nada, no lo pongas.\n"
             "\nCuando hayas TERMINADO la materia del tema (oculto): <TOPIC_COMPLETE>\n"
             "Esto NO cierra la lección: solo abre la prueba final. La lección\n"
             "se cierra únicamente al aprobar la prueba, y el siguiente tema se\n"
@@ -11114,6 +11145,9 @@ Jelenlegi témakör: {current_topic}
         )
 
     prompt += (
+        "\nHa a gyerek épp VÁLASZOLT egy kérdésedre, az üzenetedet ezzel kezdd: "
+        "<EREDMENY:jo>, ha jó a válasza, vagy <EREDMENY:rossz>, ha nem "
+        "(rejtett, a gyerek nem látja). Ha nem válaszolt semmire, ne írd ki.\n"
         "\nHa VÉGIGVETTED a témakör anyagát (rejtett): <TOPIC_COMPLETE>\n"
         "Ez NEM zárja le a leckét, csak elindítja a záró tesztet. A leckét\n"
         "egyedül a sikeres teszt zárja le, és a következő lecke is csak\n"
@@ -13465,6 +13499,8 @@ def child_chat_send(child_id: int):
                 print(f"[KERDES-POTLAS] {_kerdes!r}", flush=True)
         except Exception:
             logger.exception("Kerdes-potlas hiba")
+    _er = _CHAT_MARKER_EREDMENY.search(raw_reply or "")
+    _eredmeny = ("jo" if _er.group(1).lower() in ("jo", "jó") else "rossz") if _er else ""
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:
@@ -13944,6 +13980,7 @@ def child_chat_send(child_id: int):
     return jsonify(
         {
             "reply": reply,
+            "eredmeny": _eredmeny,
             "session_id": session_id,
             "progress_pct": progress_pct,
             "current_topic": current_topic,

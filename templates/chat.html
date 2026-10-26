@@ -2042,6 +2042,7 @@
     // utáni sortörést, és az elején-végén az üres helyet.
     function tisztitBuborekSzoveg(t) {
         return String(t == null ? '' : t)
+            .replace(/<\s*EREDMENY\s*:[^>]*>/gi, '')
             .replace(/[ \t]+$/gm, '')
             .replace(/\n{3,}/g, '\n\n')
             .trim();
@@ -5163,48 +5164,68 @@
         setTimeout(kimond, 300);
     };
 
-    /* ── AZ ARC RÉSZEI (angol) – a kisfiú MEGMUTATJA, a gyerek megnevezi ──
-       2026-10-26. Valódi, AI-val rajzolt képek (static/figurak/fiu): a fiú
-       alaphelyzetből egy félúti kockán át odanyúl az arcrészhez, a gyerek
-       a jó angol szóra koppint. Jó válaszra a fiú örül, és a szót kimondjuk
-       ugyanazzal a hanggal, amit a nyelvórák használnak. */
+    /* ── AZ ARC RÉSZEI (angol) – kérdés → a gyerek rákoppint → a fiú megmutatja ──
+       2026-10-26, Sándor: ahogy a demóban volt – ELŐBB a kérdés („Where are the
+       ears?”, kimondva), a gyerek a fiú arcán rákoppint, és UTÁNA mutatja meg a
+       fiú is (valódi AI-képek: static/figurak/fiu). A koppintási pontok az
+       alap.webp képpontjaihoz igazítva (512×768). */
     DM.arcresz = function (f, D) {
         var MAPPA = {{ url_for('static', filename='figurak/fiu/')|tojson }};
         var SZO = {eyes: 'eyes', ears: 'ears', eyebrows: 'eyebrows', nose: 'nose', mouth: 'mouth', chin: 'chin', hair: 'hair'};
+        var KERD = {eyes: 'Where are the eyes?', ears: 'Where are the ears?', eyebrows: 'Where are the eyebrows?', nose: 'Where is the nose?',
+            mouth: 'Where is the mouth?', chin: 'Where is the chin?', hair: 'Where is the hair?'};
         var HU = {eyes: 'szem', ears: 'fül', eyebrows: 'szemöldök', nose: 'orr', mouth: 'száj', chin: 'áll', hair: 'haj'};
         var ES = {eyes: 'ojos', ears: 'orejas', eyebrows: 'cejas', nose: 'nariz', mouth: 'boca', chin: 'barbilla', hair: 'pelo'};
+        /* [rész, középpont x, y, félszélesség, félmagasság] – képpontban */
+        var PONT = [['eyes', 233, 155, 13, 10], ['eyes', 280, 153, 13, 10], ['eyebrows', 230, 135, 16, 6], ['eyebrows', 283, 134, 16, 6],
+            ['nose', 260, 170, 9, 8], ['mouth', 262, 187, 22, 8], ['chin', 260, 206, 20, 7], ['ears', 205, 167, 9, 16], ['ears', 315, 163, 9, 16],
+            ['hair', 258, 82, 70, 26]];
+        var ARC = {x: 175, y: 50, w: 170, h: 175};   /* a nagyított arc kivágása */
         var cel = SZO[f.resz] ? f.resz : 'nose', hibak = 0, vege = false;
-        var opc = [cel], tobbi = D.kever(Object.keys(SZO).filter(function (k) { return k !== cel; }));
-        opc = D.kever(opc.concat(tobbi.slice(0, 3)));
         ['alap', cel + '_k', cel, 'orul'].forEach(function (n) { (new Image()).src = MAPPA + n + '.webp'; });
-        D.html('<div class="allas">' + D.T('Mit mutat a fiú? Koppints a jó angol szóra!',
-            '¿Qué señala el niño? ¡Toca la palabra correcta en inglés!') + '</div>' +
-            '<div style="position:relative;width:min(100%,280px);aspect-ratio:512/430;overflow:hidden;margin:6px auto 10px;border-radius:16px;background:#fff">' +
-            '<img data-id="kep" alt="" src="' + MAPPA + 'alap.webp" style="position:absolute;left:0;top:-6%;width:100%;height:auto;transition:opacity .22s ease">' +
-            '</div><div class="gombok" style="justify-content:center;flex-wrap:wrap;gap:8px" data-id="lapok"></div>');
-        var kep = D.$('kep');
+        D.html('<div class="allas">' + D.T('Hallgasd meg, és koppints rá a fiú arcán!', '¡Escucha y tócalo en la cara del niño!') + '</div>' +
+            '<div class="gombok" style="justify-content:center;margin:4px 0 8px"><button type="button" class="hangszoro" data-id="mond">🔊 ' + KERD[cel] + '</button></div>' +
+            '<div data-id="keret" style="position:relative;width:min(100%,280px);aspect-ratio:' + ARC.w + '/' + ARC.h + ';overflow:hidden;margin:0 auto 10px;border-radius:16px;background:#fff;cursor:pointer;touch-action:manipulation">' +
+            '<img data-id="kep" alt="" draggable="false" src="' + MAPPA + 'alap.webp" style="position:absolute;width:' + (512 / ARC.w * 100) + '%;left:' + (-ARC.x / ARC.w * 100) + '%;top:' + (-ARC.y / ARC.h * 100) + '%;height:auto;transition:opacity .22s ease;pointer-events:none;user-select:none">' +
+            '</div>');
+        var keret = D.$('keret'), kep = D.$('kep');
+        function kimond() { D.mond(KERD[cel]); }
+        D.$('mond').onclick = function () { if (!D.kesz()) { kimond(); } };
+        setTimeout(kimond, 400);
+        function egeszAlak() {   /* kicsinyítés: a teljes alak felsőteste */
+            keret.style.aspectRatio = '512/430'; keret.style.cursor = 'default';
+            kep.style.width = '100%'; kep.style.left = '0'; kep.style.top = '-6%';
+        }
         function mutat(nev, kesz) {
             kep.style.opacity = '0';
-            setTimeout(function () { kep.src = MAPPA + nev + '.webp'; kep.style.opacity = '1'; if (kesz) { setTimeout(kesz, 260); } }, 220);
+            setTimeout(function () { kep.src = MAPPA + nev + '.webp'; kep.style.opacity = '1'; if (kesz) { setTimeout(kesz, 280); } }, 220);
         }
-        function megmutat() { mutat(cel + '_k', function () { setTimeout(function () { mutat(cel); }, 120); }); }
-        setTimeout(megmutat, 700);
-        opc.forEach(function (o) {
-            D.$('lapok').appendChild(D.gomb(SZO[o], '', function () {
-                if (vege || D.kesz()) { return; }
-                var valasz = D.T('A fiú a(z) ' + HU[cel] + ' részét mutatta, én ezt választottam: ' + SZO[o] + '.',
-                    'El niño señalaba: ' + ES[cel] + '. He elegido: ' + SZO[o] + '.');
-                if (o === cel) {
-                    vege = true; this.classList.add('jo'); D.mond(SZO[cel]); mutat('orul');
-                    D.vege(true, '<b>' + SZO[cel] + '</b> = ' + D.T(HU[cel], ES[cel]), valasz);
-                } else {
-                    hibak++; D.animal(this, 'rezeg');
-                    D.jelez(false, D.T('A(z) ' + SZO[o] + ' jelentése: ' + HU[o] + '. Nézd meg újra, mit mutat!',
-                        '«' + SZO[o] + '» significa: ' + ES[o] + '. ¡Mira otra vez qué señala!'));
-                    mutat('alap', megmutat);
-                    if (hibak >= 2) { vege = true; D.kuld(valasz, 2600); }
-                }
-            }));
+        function megmutatja(utana) {
+            kep.style.opacity = '0';
+            setTimeout(function () { egeszAlak(); mutat(cel + '_k', function () { setTimeout(function () { mutat(cel, utana); }, 150); }); }, 220);
+        }
+        function talal(e) {
+            var r = keret.getBoundingClientRect();
+            var x = ARC.x + (e.clientX - r.left) / r.width * ARC.w, y = ARC.y + (e.clientY - r.top) / r.height * ARC.h;
+            var leg = null, legd = 99;
+            PONT.forEach(function (p) { var d = Math.pow((x - p[1]) / p[3], 2) + Math.pow((y - p[2]) / p[4], 2); if (d < legd) { legd = d; leg = p[0]; } });
+            return legd <= 2.2 ? leg : null;
+        }
+        keret.addEventListener('click', function (e) {
+            if (vege || D.kesz()) { return; }
+            var mi = talal(e);
+            if (!mi) { D._nemRossz = true; D.jelez(false, D.T('Koppints a fiú arcára!', '¡Toca la cara del niño!')); D._nemRossz = false; return; }
+            var valasz = D.T('A kérdés: ' + KERD[cel] + ' – én ide koppintottam: ' + SZO[mi] + ' (' + HU[mi] + ').',
+                'La pregunta: ' + KERD[cel] + ' – he tocado: ' + SZO[mi] + ' (' + ES[mi] + ').');
+            if (mi === cel) {
+                vege = true; D.mond(SZO[cel]);
+                megmutatja(function () { D.vege(true, '<b>' + SZO[cel] + '</b> = ' + D.T(HU[cel], ES[cel]), valasz); });
+            } else {
+                hibak++; D.animal(keret, 'rezeg');
+                D.jelez(false, D.T('Ez a(z) <b>' + SZO[mi] + '</b> (' + HU[mi] + '). Hallgasd meg újra, mit keresünk!',
+                    'Eso es <b>' + SZO[mi] + '</b> (' + ES[mi] + '). ¡Escucha otra vez!'));
+                if (hibak >= 2) { vege = true; megmutatja(function () { D.kuld(valasz, 2600); }); } else { kimond(); }
+            }
         });
     };
 
@@ -9899,6 +9920,7 @@
        nézzük, és csak egyértelmű dicséretre / javításra reagálunk. */
     var KABALA_DICSER = new RegExp('^(ügyes|szuper|remek|pontosan|bravó|'
         + 'nagyszerű|kitűnő|így van|helyes|eltaláltad|igazad van|jó válasz|'
+        + 'igen,|igen!|nagyon jó|szép munka|tökéletes|sí,|¡sí|'
         + 'muy bien|excelente|perfecto|correcto|genial|así es|eso es|¡?bien)', 'i');
     var KABALA_JAVIT = new RegExp('^(nem egészen|nem pontosan|majdnem|'
         + 'sajnos nem|ez nem|nem jó|nem stimmel|casi|no exactamente|'
@@ -9907,6 +9929,11 @@
     var kabalaRontas = 0;          /* egymás utáni rossz válaszok */
 
     function kabalaValaszra(szoveg) {
+        /* ELSŐDLEGES: a tanár rejtett jelzése (<EREDMENY:jo|rossz>). */
+        var _er = window.kabalaEredmeny || '';
+        window.kabalaEredmeny = '';
+        if (_er === 'jo') { kabalaRontas = 0; kabalaOrul(); return; }
+        if (_er === 'rossz') { kabalaRontas += 1; kabalaSzomoru(); return; }
         if (!szoveg) { return; }
         szoveg = String(szoveg).replace(/^[^0-9A-Za-zÀ-ÿŐőŰű¡¿]+/, '');
         szoveg = szoveg.split(/[.!?\n]/)[0].trim();
@@ -10478,6 +10505,7 @@
                     document.getElementById('chat-session-id').value = res.data.session_id;
                 }
                 var aiMessage = res.data.reply || '';
+                window.kabalaEredmeny = res.data.eredmeny || '';
                 if (res.data.topic_done) {
                     setTimeout(function () {
                         confetti({
@@ -10904,6 +10932,7 @@
                         sessInput.value = res.data.session_id;
                     }
                     var reply = res.data.reply || '';
+                    window.kabalaEredmeny = res.data.eredmeny || '';
                     if (res.data.topic_done) {
                         setTimeout(function () {
                             confetti({
