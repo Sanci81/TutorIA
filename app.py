@@ -3597,6 +3597,15 @@ def _feladat_parse(text: str, *, grade: int | None = None,
         cim = _feladat_elotti_kerdes(text)
         if cim:
             eredmeny["cim"] = cim
+    # A cím/kérdés elejéről a sorszám-maradék („) Mit jelent…”, „1.) …”)
+    # lekerül. 2026-10-26, Sándor képernyőképe: „) Mit jelent itt a spell”.
+    if isinstance(eredmeny, dict):
+        for _kk in ("cim", "kerdes"):
+            _v = eredmeny.get(_kk)
+            if isinstance(_v, str) and _v:
+                _v = re.sub(r"^[\s)\].,:;–—]+", "", _v)
+                _v = re.sub(r"^\(?\s*(?:\d{1,2}|[a-zA-Z])\s*[.)]+\s+", "", _v)
+                eredmeny[_kk] = _v.strip()
     # A mintaoldalas elemek ebből tudják, hogy forint vagy euró, magyar
     # vagy spanyol felirat kell (a szöveges órán nincs nyelvjelző mező).
     if isinstance(eredmeny, dict) and "es" not in eredmeny:
@@ -9694,6 +9703,7 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    A hiányt HÁROM ALÁHÚZÁS jelöli:
    <FELADAT>{"tipus":"hianyzo","mondat":"A Duna Magyarország leg___ folyója.","szavak":["hosszabb","hosszab"]}</FELADAT>
    A "szavak" elhagyható — akkor a gyerek beírja.
+   A HELYES szóval kiegészített mondat legyen ÉRTELMES és IGAZ (nem: „My name is blue.”).
    MINDIG KÍNÁLJ FEL SZAVAKAT, LEGALÁBB HÁRMAT, és mind különböző legyen.
    EGYETLEN felkínált szó nem feladat, hanem kész válasz. A gyerek
    telefonon tanul: ott KOPPINTANI tud, gépelni alig – ezért a választás
@@ -10387,6 +10397,7 @@ USO DE IDIOMAS:
 - Esto es una clase de idioma extranjero ({lang}). Explica en español, pero da las palabras enseñadas en {lang}.
 - Si el niño escribe/habla en {_display_language_name(lang, ui_lang='es')}, elógiale en español y sigue explicando en español.
 - IDIOMA DE LA EXPLICACIÓN: explicaciones, elogios, preguntas e instrucciones SIEMPRE en español. Solo las palabras y frases que se aprenden van en {_display_language_name(lang, ui_lang='es')}, con la traducción al español al lado. NUNCA lo inviertas: no escribas la palabra aprendida en español en lugar de {_display_language_name(lang, ui_lang='es')}.
+- Preguntas sencillas, de niño. Sin términos de adulto (formulario, campo de dirección): pregunta como un maestro: «¿Qué significa address?»
 - Si el niño escribe/habla en español, tú también respondes en español.
 - ¡NUNCA digas que dijo algo en otro idioma si lo dijo en español!
 
@@ -11108,6 +11119,8 @@ EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket 
 - Akkor is maradj {native_label} nyelvnél, ha a gyerek {lang} nyelven ír vagy beszél, vagy
   ha a beszédfelismerés {lang} szöveget ad. SOHA ne cseréld fel a kettőt: a tanult szót
   ne írd le {native_label} nyelven a {lang} helyett.
+- Gyereknek szóló, hétköznapi kérdéseket tegyél fel. Felnőtt szakszót (adatlap, címmező,
+  űrlap) ne használj – kérdezz úgy, ahogy egy tanító a gyereket: „Mit jelent az address?”
 
 === A 3 LEGFONTOSABB SZABÁLY (ezeket mindig tartsd be) ===
 1. TANÍTS, ne kérdezgess: minden válaszban mondd meg, mi következik, mutass be 1-3 új szót
