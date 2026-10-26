@@ -13392,17 +13392,6 @@ def child_chat_send(child_id: int):
         raw_reply, grade=grade_num,
         es_tanterv=_es_tanterv,
         temakor=current_topic)
-    if (isinstance(feladat, dict) and not feladat.get("kerdes")
-            and not feladat.get("cim")):
-        # Feladat van, kérdés nincs: a tábla címe a lecke neve lenne.
-        try:
-            _pk = _feladat_kerdes_potlas(
-                _parse_chat_markers(raw_reply)[0], feladat, es=_es_tanterv,
-                idokorlat=min(8.0, _maradek() - 4))
-            if _pk:
-                feladat["cim"] = _pk
-        except Exception:
-            logger.exception("Kerdes-potlas hiba")
     if not feladat:
         # A tanár szövegben kérdezett, jelölő nélkül. Ilyenkor mi csináljuk
         # meg a feladatot – enélkül az egész oldal marad csevegésnek.
@@ -13422,6 +13411,27 @@ def child_chat_send(child_id: int):
         except Exception:
             logger.exception("Feladat-potlas hiba")
             feladat = None
+    if (isinstance(feladat, dict) and not feladat.get("kerdes")
+            and not feladat.get("cim")):
+        # Feladat van, kérdés nincs: a tábla címe a lecke neve lenne.
+        # MINDEN úton jött feladatra (jelölő, szövegből, pótlás) – 2026-10-26:
+        # a pótolt választógombok fölött is a lecke neve állt.
+        # Először ingyen: a tanár utolsó kérdése a szövegből; ha nincs, AI.
+        try:
+            _lat = _parse_chat_markers(raw_reply)[0] or ""
+            _kk = re.findall(r"[^.!?\n]*\?", re.sub(r"<[^>]{1,40}>", " ", _lat))
+            _pk = ""
+            if _kk:
+                _pk = re.sub(r"^[\s)\].,:;–—*_#>]+", "", _kk[-1])
+                _pk = re.sub(r"^\(?\s*(?:\d{1,2}|[a-zA-Z])\s*[.)]+\s+", "", _pk).strip()
+            if not (3 <= len(_pk) <= 120):
+                _pk = _feladat_kerdes_potlas(
+                    _lat, feladat, es=_es_tanterv,
+                    idokorlat=min(8.0, _maradek() - 4))
+            if _pk:
+                feladat["cim"] = _pk
+        except Exception:
+            logger.exception("Kerdes-potlas hiba")
     if not feladat:
         # Ha a válaszban sehol nincs kérdés, a végére teszünk egyet.
         try:
