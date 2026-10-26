@@ -212,6 +212,7 @@
       border-top:1px solid #edf1f5;border-radius:0;text-align:left;
       flex-wrap:wrap}
   .uj-felulet .beszelo .voice-mic-btn{order:1;flex:0 0 auto}
+  .voice-mic-btn.mikrofon-indul{transform:scale(.92);opacity:.75;box-shadow:0 0 0 10px rgba(46,160,90,.25);transition:all .15s}
   .uj-felulet .beszelo .voice-status{order:2;flex:1;min-width:0;
       font-size:.98rem;line-height:1.3}
   .uj-felulet .beszelo .voice-unsupported{order:3;flex:1 0 100%;
@@ -11114,6 +11115,10 @@
             if (voiceState === 'recording' || mikrofonIndul) return;
             mikrofonIndul = true;
             megallitasKerve = false;
+            /* Telefonon a mikrofon megnyitása akár egy másodperc is. Addig a
+               gomb azonnal jelezze, hogy megnyomták – különben a gyerek újra
+               nyomja, és az a felvételt rögtön le is állítja. */
+            if (voiceMicBtn) { voiceMicBtn.classList.add('mikrofon-indul'); }
             if (currentAudio) {
                 currentAudio.pause();
                 URL.revokeObjectURL(currentAudio.src);
@@ -11157,6 +11162,7 @@
                     mediaRecorder.start();
                     felvetelKezdet = Date.now();
                     mikrofonIndul = false;
+                    if (voiceMicBtn) { voiceMicBtn.classList.remove('mikrofon-indul'); }
                     setVoiceUi('recording');
                     /* Ha a gyerek elfelejti leállítani, ne vegyen fel a
                        végtelenségig. */
@@ -11170,6 +11176,7 @@
                 })
                 .catch(function () {
                     mikrofonIndul = false;
+                    if (voiceMicBtn) { voiceMicBtn.classList.remove('mikrofon-indul'); }
                     alert(L.voiceMicPermission);
                     setVoiceUi('idle');
                 });
@@ -11177,7 +11184,11 @@
 
         /* Egyetlen nyomás: ha nem vesz fel, indít; ha vesz fel, leállít. */
         function toggleRecording() {
-            if (voiceState === 'recording' || mikrofonIndul) {
+            /* Amíg a mikrofon még nyílik, a további nyomás NEM állítja le:
+               telefonon ez vágta el a felvételt, mielőtt a gyerek megszólalt
+               volna („Ez túl rövid volt”). */
+            if (mikrofonIndul) { return; }
+            if (voiceState === 'recording') {
                 stopRecording();
                 return;
             }
