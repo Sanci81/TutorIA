@@ -4326,19 +4326,21 @@
         var rajta = {hat: null, scarf: null, shirt: null, boots: null};
         D.html('<div class="allas">' + D.T('Hallgasd meg, és öltöztesd fel a macit! Koppints a ruhákra.', 'Escucha y viste al osito. Toca la ropa.') +
             '</div><div class="gombok kozep" data-id="hs"></div>' +
-            '<div data-id="maci" style="position:relative;width:min(100%,260px);aspect-ratio:1;margin:0 auto 8px">' +
-            '<img alt="" src="' + M + 'alap.webp" style="position:absolute;inset:0;width:100%;height:100%">' +
+            '<div data-id="maci" style="position:relative;width:min(100%,260px);aspect-ratio:640/710;margin:16px auto 8px">' +
+            '<img alt="" src="' + M + 'alap_pad.webp?v=3" style="position:absolute;inset:0;width:100%;height:100%">' +
             SORREND.map(function (r) { return '<img alt="" data-id="r-' + r + '" style="position:absolute;inset:0;width:100%;height:100%;display:none">'; }).join('') +
             '</div><div class="ruhak" data-id="ruhak" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:360px;margin:0 auto"></div>');
         D.$('hs').appendChild(D.gomb('🔊 ' + D.T('Meghallgatom', 'Escuchar'), 'hangszoro', function () { D.mond(f.mondat); }));
-        SORREND.forEach(function (r) { SZINEK.forEach(function (c) { (new Image()).src = M + 'reteg/' + FAJL[r] + '_' + c + '.webp'; }); });
+        /* ?v=3: a böngésző ne a régi (rosszul illeszkedő) rétegeket mutassa a tárából. */
+        var V = '.webp?v=3';
+        SORREND.forEach(function (r) { SZINEK.forEach(function (c) { (new Image()).src = M + 'reteg/' + FAJL[r] + '_' + c + V; }); });
         function maci() {
             SORREND.forEach(function (r) { var im = D.$('r-' + r);
-                if (rajta[r]) { im.src = M + 'reteg/' + FAJL[r] + '_' + rajta[r] + '.webp'; im.style.display = ''; } else { im.style.display = 'none'; } });
+                if (rajta[r]) { im.src = M + 'reteg/' + FAJL[r] + '_' + rajta[r] + V; im.style.display = ''; } else { im.style.display = 'none'; } });
         }
         function gombok() { var d = D.$('ruhak'); d.innerHTML = '';
             ['hat', 'scarf', 'shirt', 'boots'].forEach(function (r) { SZINEK.forEach(function (c) {
-                var b = D.gomb('<img alt="" src="' + M + 'reteg/ikon_' + FAJL[r] + '_' + c + '.webp" style="width:100%;max-width:64px;aspect-ratio:1;object-fit:contain">', rajta[r] === c ? 'fel' : '', function () {
+                var b = D.gomb('<img alt="" src="' + M + 'reteg/ikon_' + FAJL[r] + '_' + c + V + '" style="width:100%;max-width:64px;aspect-ratio:1;object-fit:contain">', rajta[r] === c ? 'fel' : '', function () {
                     rajta[r] = rajta[r] === c ? null : c; maci(); gombok(); D.torol(); });
                 b.style.cssText = 'padding:4px;border-radius:12px;' + (rajta[r] === c ? 'outline:3px solid #1F7A4D;background:#E6F4EC' : '');
                 b.title = magy(c, r); d.appendChild(b); }); }); }
