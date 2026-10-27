@@ -3442,7 +3442,8 @@ def _normalize_chat_mode(mode: str | None, profile: str) -> str:
 # feladatot kap. A válasza utána sima üzenetként megy vissza, tehát a
 # haladás, a pontozás és a témakör-lezárás változatlanul működik.
 _CHAT_MARKER_FELADAT = re.compile(
-    r"[<\[]\s*FELADAT\s*[>\]]\s*(\{.*?\})\s*[<\[]\s*/\s*FELADAT\s*[>\]]",
+    # 2026-10-27: a modell „< F E L A D A T >” alakban is írta – betűnként szóközzel.
+    r"[<\[]\s*F\s*E\s*L\s*A\s*D\s*A\s*T\s*[>\]]\s*(\{.*?\})\s*[<\[]\s*/\s*F\s*E\s*L\s*A\s*D\s*A\s*T\s*[>\]]",
     re.IGNORECASE | re.DOTALL,
 )
 
@@ -5425,9 +5426,9 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         if resz not in ("eyes", "ears", "eyebrows", "nose", "mouth", "chin", "hair"):
             resz = random.choice(["eyes", "ears", "nose", "mouth", "hair"])
         kerdes = _rov(adat.get("kerdes"), 120) or (
-            "¿Qué señala el niño? ¡Toca la palabra en inglés!"
+            "Partes de la cara: ¡escucha la pregunta!"
             if es_tanterv else
-            "Mit mutat a fiú? Koppints a jó angol szóra!")
+            "Az arc részei: hallgasd meg a kérdést!")
         return {"tipus": "arcresz", "resz": resz, "kerdes": kerdes}
 
     if tipus == "idojaras":
@@ -9455,7 +9456,8 @@ _DM_FELULETEK = [
      'rímpárok, rímelő szavak              → rim', 'pares que riman                     → rim'),
     ("toldalek", {"magyar"}, 2, 4,
      'TOLDALÉK – a gyerek a helyes toldalékra koppint. Add meg: kep, elotag, to, valaszt (3 db), jo, kesz, tipp; vagy hagyd üresen (kész lista):\n'
-     '   <FELADAT>{"tipus":"toldalek","kep":"🍎🍎🍎","elotag":"Sok","to":"alma","valaszt":["k","t","ban"],"jo":"k","kesz":"almák","tipp":"alma → almák."}</FELADAT>',
+     '   <FELADAT>{"tipus":"toldalek","kep":"🍎🍎🍎","elotag":"Itt vannak az","to":"alma","valaszt":["k","t","ban"],"jo":"k","kesz":"almák","tipp":"Több alma: alma → almák (az a-ból á lesz)."}</FELADAT>\n'
+     '   NYELVTAN: számnév és „sok”, „néhány” után NINCS többes szám (sok alma, három alma) – ilyen mondat ne legyen!',
      'TERMINACIÓN – el niño toca la terminación correcta (plural u otra). Campos: kep, elotag, to, valaszt, jo, kesz, tipp; o lista lista:\n'
      '   <FELADAT>{"tipus":"toldalek","kep":"📚📚","elotag":"Muchos","to":"libro","valaszt":["s","es",""],"jo":"s","kesz":"libros","tipp":"libro → libros."}</FELADAT>',
      'toldalék, rag, többes szám           → toldalek', 'terminación, plural                 → toldalek'),
@@ -13110,17 +13112,7 @@ def child_chat(child_id: int):
             _es_t = (_active_curriculum() or "HU").upper() == "ES"
             _proba_lista = [(f[0], (f[7] if _es_t else f[6]).split("→")[0].strip())
                             for f in _DM_FELULETEK]
-            _pt = (request.args.get("proba") or "").strip().lower()
-            for f in _DM_FELULETEK:
-                if f[0] != _pt:
-                    continue
-                _m = re.search(r"<FELADAT>.*?</FELADAT>", f[5] if _es_t else f[4], re.DOTALL)
-                if _m:
-                    _proba_feladat = _feladat_parse(_m.group(0), grade=grade_num,
-                                                    es_tanterv=_es_t, temakor=None)
-                break
-            if isinstance(_proba_feladat, dict) and _proba_feladat.get("tipus") == "arcresz":
-                _proba_feladat["nyelv"] = _normalize_chat_language(language) or "angol"
+            _proba_feladat = _proba_feladat_keszit(request.args.get("proba"), grade_num, _es_t, language)
     except Exception:
         logger.exception("Feladat-proba hiba")
 
@@ -16173,6 +16165,39 @@ def child_album_place(child_id: int):
 # változóban, mert egy elfelejtett Railway-beállítás miatt már kizártuk
 # magunkat a saját áttekintő oldalunkról. Ez a két cím MINDIG bejut.
 _ADMIN_ALAP = ("vigh.sandor81@gmail.com", "vbviki86@gmail.com")
+
+
+def _proba_feladat_keszit(tipus, grade, es, language):
+    """Üzemeltetői feladat-próba: a felület-lista példájából kész feladat."""
+    tipus = (tipus or "").strip().lower()
+    for f in _DM_FELULETEK:
+        if f[0] != tipus:
+            continue
+        m = re.search(r"<FELADAT>.*?</FELADAT>", f[5] if es else f[4], re.DOTALL)
+        if not m:
+            return None
+        fel = _feladat_parse(m.group(0), grade=grade, es_tanterv=es, temakor=None)
+        if isinstance(fel, dict):
+            if fel.get("tipus") == "arcresz":
+                fel["nyelv"] = _normalize_chat_language(language) or "angol"
+            fel["proba"] = True
+        return fel
+    return None
+
+
+@app.route("/feladat-proba")
+def feladat_proba_json():
+    """A Feladat-próba lista OLDALÚJRATÖLTÉS NÉLKÜL kéri le a feladatot – így
+    a nagyított (teljes képernyős) nézet sem ugrik vissza."""
+    if _admin_kapu() is not None:
+        abort(403)
+    try:
+        grade = int(request.args.get("evfolyam") or 0) or None
+    except ValueError:
+        grade = None
+    es = (_active_curriculum() or "HU").upper() == "ES"
+    return jsonify({"feladat": _proba_feladat_keszit(request.args.get("tipus"), grade, es,
+                                                     request.args.get("nyelv"))})
 
 
 def _admin_cimek() -> set[str]:

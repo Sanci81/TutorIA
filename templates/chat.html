@@ -1491,7 +1491,7 @@
     <form method="get" style="position:fixed;left:12px;bottom:12px;z-index:9999;background:#fff;border:2px solid #1F7A4D;border-radius:12px;padding:8px 10px;font:14px Nunito,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.12)">
         {% for k, v in request.args.items() %}{% if k != 'proba' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endif %}{% endfor %}
         <b>Feladat-próba:</b>
-        <select name="proba" onchange="this.form.submit()" style="max-width:260px">
+        <select name="proba" style="max-width:260px" onchange="(function(s){fetch('{{ url_for('feladat_proba_json') }}?tipus=' + encodeURIComponent(s.value) + '&evfolyam={{ grade_num or '' }}&nyelv={{ language or '' }}').then(function(r){return r.json();}).then(function(d){ if (d.feladat && window.__probaBe) { window.__probaBe(d.feladat); } });})(this)">
             <option value="">– válassz –</option>
             {% for tip, cim in proba_lista %}<option value="{{ tip }}" {% if request.args.get('proba') == tip %}selected{% endif %}>{{ tip }} – {{ cim }}</option>{% endfor %}
         </select>
@@ -2323,6 +2323,7 @@
        gyerek lássa, MIN dolgozik éppen. */
     function munkaterBe(feladat) {
         if (!munkater) { return false; }
+        window.__probaAktiv = !!(feladat && feladat.proba);
         var elem = feladatElem(feladat);
         if (!elem) { return false; }
         munkaterTest.innerHTML = '';
@@ -2338,6 +2339,8 @@
                 belso.parentNode.removeChild(belso);
             }
         }
+        /* 2026-10-27: törtes kérdésnél is a kérdés legyen a cím, ne a lecke neve. */
+        if (!cim && feladat && feladat.kerdes) { cim = String(feladat.kerdes); }
         munkaterCim.textContent = cim || currentTopicName || '';
         munkaterUtasitas.textContent = (feladat && feladat.utasitas)
             || alapUtasitas(feladat && feladat.tipus);
@@ -3153,7 +3156,12 @@
     DM.recept = function (f, D) {
         var R = D.T([['tojás', 2, 'db', 1], ['tej', 3, 'dl', .5], ['liszt', 20, 'dkg', 5], ['cukor', 4, 'dkg', 1]], [['huevos', 2, 'ud.', 1], ['leche', 300, 'ml', 50], ['harina', 200, 'g', 50], ['azúcar', 40, 'g', 10]]);
         var alap = f.alap || 4, fo = f.fo, jok = R.filter(function (r) { var x = r[1] * fo / alap; return Math.abs(x / r[3] - Math.round(x / r[3])) < 1e-9; });
-        var h = (jok.length ? jok : R)[D.rnd(0, (jok.length ? jok : R).length - 1)], jo = Math.round(h[1] * fo / alap * 100) / 100, ert = 0;
+        var h = (jok.length ? jok : R)[D.rnd(0, (jok.length ? jok : R).length - 1)];
+        /* 2026-10-27: a cím cukrot kérdezett, a feladat lisztet. Ha a kérdés
+           megnevez egy hozzávalót, azt kérdezzük. */
+        var _kerd = String(f.kerdes || f.cim || '').toLowerCase();
+        jok.forEach(function (r) { if (_kerd.indexOf(String(r[0]).toLowerCase().slice(0, 4)) >= 0) { h = r; } });
+        var jo = Math.round(h[1] * fo / alap * 100) / 100, ert = 0;
         D.html('<div class="recept">🥞 <b>' + D.T('Palacsinta ' + alap + ' főre:', 'Crepes para ' + alap + ' personas:') + '</b><br>' + R.map(function (r) { return D.vesszo(r[1]) + ' ' + r[2] + ' ' + r[0]; }).join(' · ') +
             '</div><div class="allas">' + D.T('Mennyi <b>' + h[0] + '</b> kell <b>' + fo + ' főre</b>? Állítsd be a gombokkal!', '¿Cuánta/o <b>' + h[0] + '</b> hace falta para <b>' + fo + ' personas</b>? ¡Ajústalo con los botones!') +
             '</div><div class="gombok" style="justify-content:center;align-items:center" data-id="g"></div>');
@@ -3202,7 +3210,9 @@
         function tabla() { D.$('tabla').innerHTML = probak.slice().sort(function (p, q) { return p - q; })
             .map(function (x) { return '<span>' + sz(x) + ' → ' + sz(szamol(a, b, x)) + '</span>'; }).join(''); }
         BE.forEach(function (x) { D.$('be').appendChild(D.gomb(sz(x), '', function () {
-            gep(x, szamol(a, b, x)); D.torol(); if (probak.indexOf(x) < 0) { probak.push(x); tabla(); } })); });
+            if (probak.indexOf(x) >= 0) { return; }
+            this.disabled = true; this.style.opacity = '.45';
+            gep(x, szamol(a, b, x)); D.torol(); probak.push(x); tabla(); })); });
         /* 3 rossz szabály a jó közeléből (pl. ×2 helyett +2, +5 helyett +4) */
         var jel = [[a, b + 1], [a, b - 1], [a + 1, b], [a - 1, b], [a, b + 2], [a + 2, b], [a + 1, b - 1], b === 0 ? [1, a] : [a, 0]];
         if (a === 1 && b > 1) { jel.push([b, 0]); }
@@ -3776,7 +3786,8 @@
         var E = D.T(['', 'hidrogén (H)', 'hélium (He)', 'lítium (Li)', 'berillium (Be)', 'bór (B)', 'szén (C)', 'nitrogén (N)', 'oxigén (O)', 'fluor (F)', 'neon (Ne)'],
             ['', 'hidrógeno (H)', 'helio (He)', 'litio (Li)', 'berilio (Be)', 'boro (B)', 'carbono (C)', 'nitrógeno (N)', 'oxígeno (O)', 'flúor (F)', 'neón (Ne)']);
         var KESZ = ['', 'a hidrogénatom', 'a héliumatom', 'a lítiumatom', 'a berilliumatom', 'a bóratom', 'a szénatom', 'a nitrogénatom', 'az oxigénatom', 'a fluoratom', 'a neonatom'];
-        D.html('<div class="allas">' + D.T('Rakd össze az atomot a + és − gombokkal!', '¡Construye el átomo con los botones + y −!') +
+        D.html('<div class="allas">' + D.T('Építsd meg ' + KESZ[Z] + 'ot: <b>' + Z + ' proton, ' + NEU[Z] + ' neutron, ' + Z + ' elektron</b>. Rakd össze a + és − gombokkal!',
+            'Construye el átomo de ' + E[Z].split(' ')[0] + ': <b>' + Z + ' protones, ' + NEU[Z] + ' neutrones y ' + Z + ' electrones</b>. Usa los botones + y −.') +
             '</div><div class="vaszon"><svg data-id="svg" viewBox="-110 -110 220 220" style="max-width:260px"></svg></div><div class="atomgombok" data-id="g"></div><div class="kijelzo" data-id="nev"></div>');
         var svg = D.$('svg');
         function rajz() { svg.innerHTML = '';
@@ -5059,17 +5070,18 @@
         D.kever(valaszt.slice()).forEach(function (t) {
             D.$('gombok').appendChild(D.gomb(t ? '-' + t : D.T('(semmi)', '(nada)'), 'fo betuvalaszto', function () {
                 if (vege || D.kesz()) { return; }
-                var valasz = D.T('A „' + (t || 'semmi') + '” toldalékot választottam: ' + elotag + ' ' + to + (t || '') + '.',
-                    'He elegido la terminación «' + (t || 'nada') + '»: ' + elotag + ' ' + to + (t || '') + '.');
+                var valasz = D.T('A „-' + (t || 'semmi') + '” toldalékot választottam (' + elotag + ' ' + to + '…).',
+                    'He elegido la terminación «-' + (t || 'nada') + '» (' + elotag + ' ' + to + '…).');
                 if (t === jo) {
                     vege = true;
                     D.$('szo').innerHTML = elotag + ' <span style="color:#1F7A4D">' + kesz + '</span>.';
                     D.vege(true, tipp || D.T('Így van!', '¡Así es!'), valasz);
                 } else {
                     hibak++; D.animal(D.$('szo'), 'rezeg');
-                    D.jelez(false, D.T('Mondd ki hangosan: „' + elotag + ' ' + to + t + '” – így mondjuk?',
-                        'Dilo en voz alta: «' + elotag + ' ' + to + t + '» – ¿así se dice?'));
-                    try { D.mond(elotag + ' ' + to + (t || '')); } catch (e) {}
+                    /* 2026-10-27: a hibás alakot NEM rakjuk össze („almat”) – rossz
+                       magyar szót mutatna és mondana ki a gyereknek. */
+                    D.jelez(false, D.T('Ez a toldalék most nem illik ide. Olvasd el újra a mondatot, és nézd meg a képet!',
+                        'Esta terminación no encaja aquí. Lee otra vez la frase y mira la imagen.'));
                     if (hibak >= 2) { vege = true; D.kuld(valasz, 2600); }
                 }
             }));
@@ -8116,6 +8128,9 @@
                 document.body.appendChild(ieVaszon);
                 ieCtx = ieVaszon.getContext('2d');
             }
+            /* Teljes képernyőn csak a nagyított elem látszik – oda kell a vászon. */
+            var _gazda = document.fullscreenElement || document.webkitFullscreenElement || document.body;
+            if (ieVaszon.parentNode !== _gazda) { _gazda.appendChild(ieVaszon); }
             ieVaszon.width = window.innerWidth; ieVaszon.height = window.innerHeight;
             var r = elem.getBoundingClientRect();
             var x = r.left + r.width / 2, y = r.top + r.height / 2;
@@ -8146,6 +8161,8 @@
     /* SIKER: a konfetti mellett egy nagy felirat is megjelenik a feladaton,
        hogy akkor is egyértelmű legyen, ha a konfettit nem látni. */
     function ieUnnep(doboz) {
+        /* Megoldás után a Kész gomb eltűnik – már nincs mit beküldeni. */
+        try { doboz.querySelectorAll('.dm-kesz-sor').forEach(function (s) { s.style.display = 'none'; }); } catch (e) {}
         /* VALÓDI ESEMÉNY: a gyerek megoldotta a feladatot – a kabala örül. */
         if (typeof kabalaOrul === 'function') { try { kabalaOrul(); } catch (e) {} }
         var b = document.createElement('div');
@@ -9118,6 +9135,9 @@
 
     function feladatKuld(doboz, szoveg) {
         if (!szoveg) { return; }
+        /* Feladat-próba (üzemeltető): a válasz NEM megy a tanárhoz – a tanár
+           mást tanít, és összezavarodna („ez egy másik feladathoz illik”). */
+        if (window.__probaAktiv) { console.log('Feladat-próba válasz (nem küldve):', szoveg); return; }
 
         // ELŐSZÖR KÜLDÜNK, csak utána tüntetjük el a feladatot. Élesben ez
         // ment félre: hangos módban a sendMessage() némán visszafordult, a
@@ -9450,6 +9470,7 @@
 
     // Az oldal betöltésekor a MENTETT feladatot is kirakjuk (újratöltés után
     // ne tűnjön el, amire a tanár épp választ vár).
+    window.__probaBe = function (f) { try { munkaterBe(f); } catch (e) { console.error(e); } };
     {% if proba_feladat %}
     /* Üzemeltetői feladat-próba: a kiválasztott feladat azonnal a táblára. */
     setTimeout(function () { try { munkaterBe({{ proba_feladat|tojson }}); } catch (e) { console.error(e); } }, 400);

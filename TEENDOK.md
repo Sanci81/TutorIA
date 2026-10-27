@@ -645,3 +645,23 @@ Tervezett elemek:
 - [ ] Kipróbálós demóoldal regisztráció nélkül – akkor kell, ha újra fut a Facebook hirdetés.
 - [ ] Képtár: előre legenerált, jóváhagyott képek témakörönként (a gyerek nem vár), a tanár csak a lecke saját képei közül választ.
 - [ ] A Cursorral készült 36 feladat részletes átnézése.
+
+## Feladatok átnézése – Sándor listája (2026-10-27)
+
+1. [x] toldalek: „Sok alma ?” nyelvtanilag rossz (sok után nincs többes szám; „almat”, „almaban” rossz alakok a visszajelzésben).
+2. [ ] csoport (szilárd/folyékony/légnemű): csak szöveg, „gagyi” – a kártyákra kép kell.
+3. [x] Nagyított (⛶) módban nincs konfetti; a Feladat-próba választáskor visszaugrik normál módba.
+4. [x] kocka: magyarázat kell (tipp → 60 dobás → hány 6-os); a próbából küldött válasz a tanárhoz megy és összezavarja.
+5. [x] tortcmp: a tábla címe a lecke neve lett (törtes kérdésnél a cím nem lesz a kérdés).
+6. [x] recept: a cím cukrot kérdez, a feladat lisztet.
+7. [x] fgep: a számokat a végtelenségig be lehet dobni.
+8. [ ] vizkor: a víz még mindig elválik a parttól.
+9. [ ] terkep: a házak a vonalon vannak; 9 kocka = 45 km, de csak 5/10/15/20 állítható.
+10. [x] Megoldás után „Szuper”, de a Kész gomb ott marad.
+11. [x] atom (szénatom): nem egyértelmű, hogy mindegyikből 6 kell.
+12. [ ] Mobilon néhány feladatnál nem világos, hogyan kell jelölni (pl. tizedes törtek) – később ellenőrizni.
+13. [ ] oltoz (maci öltöztetés): a maci „gagyi”, nem egybefüggő – az új AI-s maci képek (static/figurak/maci) nincsenek bekötve.
+14. [ ] elolj (on/under…): a kép gagyi és rossz; minden tanult nyelven, mindkét oldalon működjön.
+15. [ ] binaris: nem egyértelmű – előtte oktatás kell.
+16. [x] HIBA: „< F E L A D A T >{…}</FELADAT>” nyersen kint a lapon (szóközös jelölő).
+17. [ ] tapl (tápláléklánc): „termelő” szó – magyarázat kell, mit jelent itt.
