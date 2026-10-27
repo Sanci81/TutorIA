@@ -5212,22 +5212,20 @@
         var PONT = [['eyes', 233, 155, 13, 10], ['eyes', 280, 153, 13, 10], ['eyebrows', 230, 135, 16, 6], ['eyebrows', 283, 134, 16, 6],
             ['nose', 260, 170, 9, 8], ['mouth', 262, 187, 22, 8], ['chin', 260, 206, 20, 7], ['ears', 205, 167, 9, 16], ['ears', 315, 163, 9, 16],
             ['hair', 258, 82, 70, 26]];
-        var ARC = {x: 175, y: 50, w: 170, h: 175};   /* a nagyított arc kivágása */
+        /* 2026-10-27, Sándor: az EGÉSZ alak látszódjon, ne csak az arc. */
+        var ARC = {x: 96, y: 36, w: 320, h: 680};
         var cel = SZO[f.resz] ? f.resz : 'nose', hibak = 0, vege = false;
         ['alap', cel + '_k', cel, 'orul'].forEach(function (n) { (new Image()).src = MAPPA + n + '.webp'; });
         D.html('<div class="allas">' + D.T('Hallgasd meg, és koppints rá a fiú arcán!', '¡Escucha y tócalo en la cara del niño!') + '</div>' +
             '<div class="gombok" style="justify-content:center;margin:4px 0 8px"><button type="button" class="hangszoro" data-id="mond">🔊 ' + KERD[cel] + '</button></div>' +
-            '<div data-id="keret" style="position:relative;width:min(100%,280px);aspect-ratio:' + ARC.w + '/' + ARC.h + ';overflow:hidden;margin:0 auto 10px;border-radius:16px;background:#fff;cursor:pointer;touch-action:manipulation">' +
+            '<div data-id="keret" style="position:relative;width:min(100%,260px);aspect-ratio:' + ARC.w + '/' + ARC.h + ';overflow:hidden;margin:0 auto 10px;border-radius:16px;background:#fff;cursor:pointer;touch-action:manipulation">' +
             '<img data-id="kep" alt="" draggable="false" src="' + MAPPA + 'alap.webp" style="position:absolute;width:' + (512 / ARC.w * 100) + '%;left:' + (-ARC.x / ARC.w * 100) + '%;top:' + (-ARC.y / ARC.h * 100) + '%;height:auto;transition:opacity .22s ease;pointer-events:none;user-select:none">' +
             '</div>');
         var keret = D.$('keret'), kep = D.$('kep');
         function kimond() { D.mond(KERD[cel]); }
         D.$('mond').onclick = function () { if (!D.kesz()) { kimond(); } };
         setTimeout(kimond, 400);
-        function egeszAlak() {   /* kicsinyítés: a teljes alak felsőteste */
-            keret.style.aspectRatio = '512/430'; keret.style.cursor = 'default';
-            kep.style.width = '100%'; kep.style.left = '0'; kep.style.top = '-6%';
-        }
+        function egeszAlak() { keret.style.cursor = 'default'; }
         function mutat(nev, kesz) {
             kep.style.opacity = '0';
             setTimeout(function () { kep.src = MAPPA + nev + '.webp'; kep.style.opacity = '1'; if (kesz) { setTimeout(kesz, 280); } }, 220);
