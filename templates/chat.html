@@ -2590,7 +2590,9 @@
                     var regi = tarto.querySelector('.kartya'); if (regi && !h.dataset.tobb) { kt.appendChild(regi); } tarto.appendChild(c); D.torol(); }); }); };
         D.kepKartya = function (em, nev, adat) { var c = document.createElement('div'); c.className = 'kartya kepes'; c.dataset.nev = adat;
             c.innerHTML = '<span class="em">' + em + '</span><small>' + nev + '</small>'; return c; };
-        D.szovegKartya = function (sz, adat) { var c = document.createElement('div'); c.className = 'kartya'; c.textContent = sz; c.dataset.nev = adat; return c; };
+        D.szovegKartya = function (sz, adat, kep) { var c = document.createElement('div'); c.className = 'kartya'; c.dataset.nev = adat; c.dataset.szo = sz;
+            if (kep) { c.innerHTML = '<span style="display:block;font-size:2em;line-height:1.1">' + kep + '</span><span></span>'; c.lastChild.textContent = sz; }
+            else { c.textContent = sz; } return c; };
         /* számbillentyűzet egy kijelzőhöz */
         D.billentyuzet = function (hova, gomb) { hova.innerHTML = ''; hova.className = 'billentyu';
             '1234567890'.split('').concat([',', '⌫']).forEach(function (k) { var b = document.createElement('button'); b.type = 'button'; b.textContent = k;
@@ -2608,6 +2610,10 @@
     }
 
     /* ── 1. CSOPORTOSÍTÁS (bármely tantárgy) ─────────────────────────── */
+    /* Tartalék képek a gyakori szavakhoz, ha a tanár nem adott emojit. */
+    var CSOPORT_KEP = {'jég': '🧊', 'tej': '🥛', 'gőz': '💨', 'kő': '🪨', 'víz': '💧', 'levegő': '🌬️', 'olaj': '🛢️', 'fa': '🪵', 'vas': '🔩',
+        'homok': '⏳', 'füst': '🌫️', 'üveg': '🫙', 'hó': '❄️', 'eső': '🌧️', 'hielo': '🧊', 'leche': '🥛', 'vapor': '💨', 'piedra': '🪨', 'agua': '💧',
+        'aire': '🌬️', 'aceite': '🛢️', 'madera': '🪵', 'hierro': '🔩', 'nieve': '❄️', 'lluvia': '🌧️', 'humo': '🌫️'};
     DM.csoport = function (f, D) {
         D.html('<div class="allas">' + D.T('Húzd vagy koppintsd a kártyákat a jó csoportba!', '¡Arrastra o toca las tarjetas y ponlas en su grupo!') + '</div>' +
             '<div class="kartyak" data-id="kt"></div><div class="kosarak" data-id="ko"></div>');
@@ -2615,14 +2621,14 @@
         f.csoportok.forEach(function (n, i) { var d = document.createElement('div'); d.className = 'kosar hely'; d.dataset.i = i; d.dataset.tobb = 1;
             d.innerHTML = '<span class="nev">' + n + '</span><div class="tarto"></div>'; ko.appendChild(d); });
         D.huzosLista(kt, function () { return Array.prototype.slice.call(ko.children); },
-            D.kever(f.elemek.map(function (e) { var k = D.szovegKartya(e[0], String(e[1])); return k; })));
+            D.kever(f.elemek.map(function (e) { var k = D.szovegKartya(e[0], String(e[1]), e[2] || CSOPORT_KEP[String(e[0]).toLowerCase()] || ''); return k; })));
         D.ellenoriz(function () {
             var m = kt.querySelectorAll('.kartya').length;
             if (m) { return {hianyzik: D.T('Még ' + m + ' kártya nincs a helyén!', 'Todavía faltan ' + m + ' tarjetas.')}; }
             var rossz = [], leiras = [];
             Array.prototype.forEach.call(ko.children, function (k) { var sz = [];
-                Array.prototype.forEach.call(k.querySelectorAll('.kartya'), function (c) { sz.push(c.textContent); var ok = c.dataset.nev === k.dataset.i;
-                    c.classList.toggle('rossz-k', !ok); if (!ok) { rossz.push(c.textContent); } });
+                Array.prototype.forEach.call(k.querySelectorAll('.kartya'), function (c) { var szo = c.dataset.szo || c.textContent; sz.push(szo); var ok = c.dataset.nev === k.dataset.i;
+                    c.classList.toggle('rossz-k', !ok); if (!ok) { rossz.push(szo); } });
                 leiras.push(f.csoportok[+k.dataset.i] + ': ' + sz.join(', ')); });
             return {jo: !rossz.length,
                 uzenet: rossz.length ? D.T('Ezeket nézd meg még egyszer: <b>' + rossz.join(', ') + '</b>.', 'Revisa otra vez: <b>' + rossz.join(', ') + '</b>.')
@@ -3563,9 +3569,12 @@
             [0, 45, 90, 135, 180, 225, 270, 315].map(function (a) { return '<line x1="0" y1="-24" x2="0" y2="-32" stroke="#F5A01E" stroke-width="3" stroke-linecap="round" transform="rotate(' + a + ')"/>'; }).join('') + '</g>' +
             '<path d="M150 220 L235 70 L262 102 L285 60 L320 120 L320 220Z" fill="url(#§heg2)"/>' +
             '<path d="M220 97 L235 70 L248 86 L240 92 L232 86Z M276 76 L285 60 L296 80 L288 78 L282 84Z" fill="#fff"/>' +
+            /* 2026-10-27: a tenger a domb ALÁ fut, a domb széle a part (homoksávval) –
+               korábban a tenger függőleges éllel elvált a parttól. */
+            '<path d="M0 168 Q80 158 210 172 L210 220 L0 220Z" fill="url(#§ten)"/>' +
             '<path d="M110 220 Q150 160 230 140 Q280 136 320 150 L320 220Z" fill="url(#§heg)"/>' +
+            '<path d="M112 220 Q151 162 228 141" fill="none" stroke="#E9D9A6" stroke-width="6" stroke-linecap="round"/>' +
             [[200, 170], [222, 160], [290, 165], [305, 172]].map(function (t) { return '<path d="M' + t[0] + ' ' + (t[1] - 22) + ' l-9 18 h18Z M' + t[0] + ' ' + (t[1] - 12) + ' l-11 16 h22Z" fill="#2F7D45"/><rect x="' + (t[0] - 2) + '" y="' + (t[1] + 4) + '" width="4" height="6" fill="#7A5634"/>'; }).join('') +
-            '<path d="M0 168 Q60 160 140 176 L150 220 L0 220Z" fill="url(#§ten)"/>' +
             '<path d="M14 182 q8 -4 16 0 t16 0 M60 194 q8 -4 16 0 t16 0 M24 206 q8 -4 16 0 t16 0 M96 206 q8 -4 16 0 t16 0" stroke="#9FD3F7" stroke-width="2" fill="none"/>' +
             '<text x="50" y="216" font-size="11" font-weight="800" fill="#DDF0FF" font-family="Nunito,sans-serif">' + D.T('tenger', 'mar') + '</text></g>' +
             '<path data-a="0" d="M70 160 C70 120 80 95 100 80"/><path data-a="1" d="M110 66 C150 40 190 38 210 44"/>' +
@@ -3710,14 +3719,20 @@
             '<polyline points="' + pts + '" fill="none" stroke="#fff" stroke-width="2" stroke-dasharray="5 5" stroke-linejoin="round"/>';
         ut.slice(1, -1).forEach(function (p) { s += '<circle cx="' + px(p[0]) + '" cy="' + py(p[1]) + '" r="3" fill="#E0609B"/>'; });
         var a = ut[0], b = ut[ut.length - 1];
-        s += haz(px(a[0]), py(a[1]) - 8, '#F5A01E') + felirat(px(a[0]), py(a[1]) - 30, HONNAN) + haz(px(b[0]), py(b[1]) - 8, '#2F8FD8') + felirat(px(b[0]), py(b[1]) - 30, HOVA);
+        /* 2026-10-27: a ház NEM az úton/vonalon áll, hanem az út végén, mellette. */
+        s += haz(px(a[0]) - 15, py(a[1]) + 9, '#F5A01E') + felirat(px(a[0]) - 15, py(a[1]) - 16, HONNAN) + haz(px(b[0]) + 15, py(b[1]) + 9, '#2F8FD8') + felirat(px(b[0]) + 15, py(b[1]) - 16, HOVA);
         s += '<g transform="translate(' + px(0) + ',' + (py(7) + 14) + ')"><rect width="' + K + '" height="6" fill="#0E2A1E"/><line x1="0" y1="-3" x2="0" y2="9" stroke="#0E2A1E" stroke-width="2"/><line x1="' + K + '" y1="-3" x2="' + K + '" y2="9" stroke="#0E2A1E" stroke-width="2"/>' +
             '<text x="' + (K + 8) + '" y="7" font-size="11" font-weight="900" fill="#0E2A1E" font-family="Nunito,sans-serif">' + D.T('1 kocka oldala = ', '1 lado de cuadro = ') + lep + ' km</text></g>';
         D.html('<div class="allas">' + D.T('Számold meg, hány kocka hosszú az út, és állítsd be a km-t!', 'Cuenta cuántos cuadros mide el camino y ajusta los km.') +
             '</div><div class="vaszon"><svg data-id="svg" class="dmb" viewBox="0 0 320 240"></svg></div><div class="gombok" data-id="g" style="justify-content:center;align-items:center;flex-wrap:nowrap"></div>');
         var svg = D.$('svg'); svg.innerHTML = s;
-        var kij = document.createElement('div'); kij.className = 'kijelzo'; kij.style.cssText = 'min-width:100px;margin:6px 0';
-        function mutat() { kij.textContent = ert + ' km'; }
+        /* A km be is írható – nem kell kilencszer nyomni a +-t (2026-10-27). */
+        var kij = document.createElement('div'); kij.className = 'kijelzo'; kij.style.cssText = 'min-width:100px;margin:6px 0;display:flex;align-items:center;gap:4px;justify-content:center';
+        var kmBe = document.createElement('input'); kmBe.type = 'number'; kmBe.inputMode = 'numeric'; kmBe.min = '0';
+        kmBe.style.cssText = 'width:72px;font:inherit;text-align:center;border:0;background:transparent;outline:none';
+        kmBe.addEventListener('input', function () { ert = Math.max(0, parseInt(kmBe.value, 10) || 0); D.torol(); });
+        kij.appendChild(kmBe); kij.appendChild(document.createTextNode('km'));
+        function mutat() { kmBe.value = ert; }
         D.$('g').appendChild(D.gomb('−', 'masik', function () { ert = Math.max(0, ert - lep); mutat(); D.torol(); }));
         D.$('g').appendChild(kij);
         D.$('g').appendChild(D.gomb('+', 'masik', function () { ert += lep; mutat(); D.torol(); }));
@@ -4099,7 +4114,7 @@
         function sz(v) { return D.vesszo(String(Math.round(v * 100) / 100)); }
         function az(n) { var t = String(Math.floor(n)); return (t.charAt(0) === '5' || (t.charAt(0) === '1' && (t.length === 1 || t.length === 4))) ? 'az' : 'a'; }
         var cel = sz(szaz / 100), A = az(eg);
-        D.html('<div class="allas">' + D.T('Koppints először a jó szakaszra – a számegyenes ráközelít –, aztán a jó jelre!', 'Primero toca el tramo correcto (la recta se amplía) y después la marca exacta.') +
+        D.html('<div class="allas">' + D.T('Koppints először a jó kék sávra (két jel közé) – a számegyenes ráközelít –, aztán a jó narancs jelre!', 'Primero toca el tramo correcto (la recta se amplía) y después la marca exacta.') +
             '</div><div class="vaszon"><svg data-id="svg" viewBox="-20 -50 360 120"></svg></div>');
         svg = D.$('svg');
         function hiba(valasz, uzenet) { hibak++; D.animal(svg, 'rezeg'); D.jelez(false, uzenet); if (hibak >= 2) { vege = true; D.kuld(valasz, 2600); } }
@@ -4111,7 +4126,7 @@
                 if (cimke(i)) { D.txt(x, 54, sz(kezd + i * lep), {'font-size': 14, fill: '#0E2A1E'}, svg); } } }
         function szakasz() {
             vonal(eg, .1, function () { return true; });
-            for (var i = 0; i < 10; i++) { (function (i) { var x = i * W / 10, r = D.el('rect', {x: x + 2, y: -2, width: W / 10 - 4, height: 44, rx: 6, fill: 'transparent', style: 'cursor:pointer'}, svg);
+            for (var i = 0; i < 10; i++) { (function (i) { var x = i * W / 10, r = D.el('rect', {x: x + 2, y: -2, width: W / 10 - 4, height: 44, rx: 6, fill: i % 2 ? 'rgba(47,143,216,.10)' : 'rgba(47,143,216,.18)', style: 'cursor:pointer'}, svg);
                 r.addEventListener('click', function () { if (vege || D.kesz()) { return; }
                     var a = sz(eg + i / 10), b = sz(eg + (i + 1) / 10);
                     if (i === tized) { vege = true; r.setAttribute('fill', 'rgba(245,160,30,.3)'); D.txt(160, -30, D.T('Ráközelítünk…', 'Ampliamos…'), {'font-size': 13, fill: '#D27E0B'}, svg);
@@ -4122,7 +4137,7 @@
         function szazad() {
             vonal(also, .01, function (i) { return i % 5 === 0; });
             D.txt(160, -30, D.T(sz(also) + ' és ' + sz(also + .1) + ' között, nagyítva', 'Entre ' + sz(also) + ' y ' + sz(also + .1) + ', ampliado'), {'font-size': 12, fill: '#5B6B63'}, svg);
-            for (var i = 0; i <= 10; i++) { (function (i) { var x = i * W / 10, r = D.el('rect', {x: x - 14, y: -4, width: 28, height: 44, rx: 6, fill: 'transparent', style: 'cursor:pointer'}, svg);
+            for (var i = 0; i <= 10; i++) { (function (i) { var x = i * W / 10, r = D.el('rect', {x: x - 14, y: -4, width: 28, height: 44, rx: 6, fill: 'rgba(245,160,30,.14)', style: 'cursor:pointer'}, svg);
                 r.addEventListener('click', function () { if (vege || D.kesz()) { return; }
                     var v = Math.round(also * 100) + i;
                     if (v === szaz) { vege = true; D.el('path', {d: 'M' + x + ' 10 l-9 -16 h18Z', fill: '#E0609B', 'class': 'pattan'}, svg);
@@ -4296,87 +4311,65 @@
     };
 
     /* ── F1. ÖLTÖZTESD FEL A MACIT (angol) ───────────────────────────── */
+    /* ── ÖLTÖZTESD FEL A MACIT – valódi AI-képekkel (2026-10-27) ──────────
+       Az alap maci + ruharétegek (static/figurak/maci/reteg/<ruha>_<szín>.webp):
+       a rétegek pontosan a maci alakjára illeszkednek, így bármelyik ruha
+       bármelyikkel együtt felvehető. A mondat a lecke nyelvén jön a szervertől. */
     DM.oltoz = function (f, D) {
-        var SZIN = {red: ['#EF5350', '#B3262C'], blue: ['#42A5F5', '#1E63B8'], green: ['#4CBF73', '#22804A'], yellow: ['#FFD34E', '#C9961B']};
-        var NEV = {hat: 'hat', scarf: 'scarf', shirt: 'T-shirt', boots: 'boots'};
+        var M = {{ url_for('static', filename='figurak/maci/')|tojson }};
+        var SORREND = ['shirt', 'boots', 'scarf', 'hat'], FAJL = {shirt: 'tshirt', boots: 'boots', scarf: 'scarf', hat: 'hat'};
+        var SZINEK = ['red', 'blue', 'green', 'yellow'];
         var HU = {red: 'piros', blue: 'kék', green: 'zöld', yellow: 'sárga', hat: 'sapka', scarf: 'sál', shirt: 'póló', boots: 'csizma'};
         var ES_R = {hat: ['el gorro', 'm'], scarf: ['la bufanda', 'f'], shirt: ['la camiseta', 'f'], boots: ['las botas', 'fp']};
         var ES_C = {red: {m: 'rojo', f: 'roja', fp: 'rojas'}, blue: {m: 'azul', f: 'azul', fp: 'azules'}, green: {m: 'verde', f: 'verde', fp: 'verdes'}, yellow: {m: 'amarillo', f: 'amarilla', fp: 'amarillas'}};
         function magy(c, r) { return D.T(HU[c] + ' ' + HU[r], ES_R[r][0] + ' ' + ES_C[c][ES_R[r][1]]); }
-        var RUHA = {
-            shirt: function (c) { return '<path d="M120 126 Q160 116 200 126 L222 146 L208 166 L198 158 L198 204 Q160 214 122 204 L122 158 L112 166 L98 146 Z" fill="' + c[0] + '" stroke="' + c[1] + '" stroke-width="3" stroke-linejoin="round"/>' +
-                '<path d="M142 122 Q160 136 178 122" fill="none" stroke="' + c[1] + '" stroke-width="3"/><path d="M128 190 Q160 198 192 190" stroke="#fff" stroke-opacity=".35" stroke-width="4" fill="none"/>' +
-                '<circle cx="160" cy="168" r="10" fill="#fff" fill-opacity=".85"/><path d="M155 168 l4 4 l6 -8" stroke="' + c[1] + '" stroke-width="2.5" fill="none" stroke-linecap="round"/>'; },
-            scarf: function (c) { return '<path d="M120 118 Q160 140 200 118 L202 132 Q160 156 118 132 Z" fill="' + c[0] + '" stroke="' + c[1] + '" stroke-width="3" stroke-linejoin="round"/>' +
-                '<path d="M170 134 l4 44 l16 -2 l-6 -46 Z" fill="' + c[0] + '" stroke="' + c[1] + '" stroke-width="3" stroke-linejoin="round"/>' +
-                '<path d="M174 178 v8 M179 177 v9 M184 176 v9 M189 176 v8" stroke="' + c[1] + '" stroke-width="2.5" stroke-linecap="round"/>' +
-                '<path d="M132 128 l4 6 M146 134 l3 6 M160 136 l2 6 M188 128 l-4 6" stroke="#fff" stroke-opacity=".5" stroke-width="2.5"/>'; },
-            hat: function (c) { return '<path d="M114 52 Q114 4 160 4 Q206 4 206 52 Z" fill="' + c[0] + '" stroke="' + c[1] + '" stroke-width="3"/>' +
-                '<rect x="108" y="44" width="104" height="18" rx="9" fill="' + c[1] + '"/><path d="M118 53 h84" stroke="#fff" stroke-opacity=".35" stroke-width="3" stroke-dasharray="4 5"/>' +
-                '<circle cx="160" cy="4" r="11" fill="#fff" stroke="#E2E6EA" stroke-width="2"/><path d="M134 20 Q140 12 150 10" stroke="#fff" stroke-opacity=".45" stroke-width="4" fill="none" stroke-linecap="round"/>'; },
-            boots: function (c) { return [130, 190].map(function (x) { var o = x < 160 ? -1 : 1;
-                return '<path d="M' + (x - o * 16) + ' 212 h' + (o * 32) + ' v24 q' + (o * 18) + ' 0 ' + (o * 18) + ' 12 v6 h' + (-o * 50) + ' Z" fill="' + c[0] + '" stroke="' + c[1] + '" stroke-width="3" stroke-linejoin="round"/>' +
-                    '<rect x="' + (x - 19) + '" y="208" width="38" height="10" rx="5" fill="' + c[1] + '"/><path d="M' + (x - o * 18) + ' 254 h' + (o * 52) + '" stroke="#5A4636" stroke-width="5" stroke-linecap="round"/>' +
-                    '<path d="M' + (x - 8) + ' 222 v12" stroke="#fff" stroke-opacity=".4" stroke-width="3" stroke-linecap="round"/>'; }).join(''); }};
-        var IKON = {hat: '104 -10 112 76', scarf: '112 112 96 80', shirt: '94 112 132 108', boots: '100 206 120 54'};
-        var rajta = {hat: null, scarf: null, shirt: null, boots: null}, gid = 'dmmc' + D.rnd(1000, 999999);
+        var rajta = {hat: null, scarf: null, shirt: null, boots: null};
         D.html('<div class="allas">' + D.T('Hallgasd meg, és öltöztesd fel a macit! Koppints a ruhákra.', 'Escucha y viste al osito. Toca la ropa.') +
-            '</div><div class="gombok kozep" data-id="hs"></div><div class="vaszon"><svg data-id="svg" viewBox="0 -10 320 270"></svg></div><div class="ruhak" data-id="ruhak"></div>');
-        var svg = D.$('svg');
-        D.$('hs').appendChild(D.gomb('🔊 Listen', 'hangszoro', function () { D.mond(f.mondat); }));
+            '</div><div class="gombok kozep" data-id="hs"></div>' +
+            '<div data-id="maci" style="position:relative;width:min(100%,260px);aspect-ratio:1;margin:0 auto 8px">' +
+            '<img alt="" src="' + M + 'alap.webp" style="position:absolute;inset:0;width:100%;height:100%">' +
+            SORREND.map(function (r) { return '<img alt="" data-id="r-' + r + '" style="position:absolute;inset:0;width:100%;height:100%;display:none">'; }).join('') +
+            '</div><div class="ruhak" data-id="ruhak" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:360px;margin:0 auto"></div>');
+        D.$('hs').appendChild(D.gomb('🔊 ' + D.T('Meghallgatom', 'Escuchar'), 'hangszoro', function () { D.mond(f.mondat); }));
+        SORREND.forEach(function (r) { SZINEK.forEach(function (c) { (new Image()).src = M + 'reteg/' + FAJL[r] + '_' + c + '.webp'; }); });
         function maci() {
-            svg.innerHTML = '';
-            D.defs(svg, '<radialGradient id="' + gid + 's" cx="40%" cy="30%" r="75%"><stop offset="0" stop-color="#D8A06A"/><stop offset="1" stop-color="#A1652F"/></radialGradient>' +
-                '<radialGradient id="' + gid + 'h" cx="50%" cy="40%"><stop offset="0" stop-color="#F7DDBA"/><stop offset="1" stop-color="#E7BF8C"/></radialGradient>');
-            var K = '#6B3F1E', SZ = 'url(#' + gid + 's)', HS = 'url(#' + gid + 'h)';
-            D.el('ellipse', {cx: 160, cy: 254, rx: 70, ry: 6, fill: 'rgba(0,0,0,.08)'}, svg);
-            [130, 190].forEach(function (x) { D.el('rect', {x: x - 15, y: 196, width: 30, height: 40, rx: 14, fill: SZ, stroke: K, 'stroke-width': 2.5}, svg);
-                D.el('ellipse', {cx: x, cy: 240, rx: 20, ry: 12, fill: SZ, stroke: K, 'stroke-width': 2.5}, svg); D.el('ellipse', {cx: x, cy: 242, rx: 10, ry: 6, fill: HS}, svg); });
-            D.el('path', {d: 'M122 132 Q160 116 198 132 Q214 170 200 206 Q160 222 120 206 Q106 170 122 132Z', fill: SZ, stroke: K, 'stroke-width': 2.5}, svg);
-            D.el('ellipse', {cx: 160, cy: 176, rx: 27, ry: 30, fill: HS}, svg);
-            if (rajta.shirt) { D.el('g', {}, svg).innerHTML = RUHA.shirt(SZIN[rajta.shirt]); }
-            [[-1, 112], [1, 208]].forEach(function (a) { var g = D.el('g', {transform: 'rotate(' + (a[0] * -14) + ' ' + a[1] + ' 140)'}, svg);
-                D.el('rect', {x: a[1] - 12, y: 136, width: 24, height: 58, rx: 12, fill: SZ, stroke: K, 'stroke-width': 2.5}, g);
-                D.el('ellipse', {cx: a[1], cy: 188, rx: 9, ry: 7, fill: HS}, g); });
-            if (rajta.shirt) { D.el('g', {}, svg).innerHTML = '<path d="M98 146 L120 126 L124 150 L112 166 Z M222 146 L200 126 L196 150 L208 166 Z" fill="' + SZIN[rajta.shirt][0] + '" stroke="' + SZIN[rajta.shirt][1] + '" stroke-width="3" stroke-linejoin="round"/>'; }
-            if (rajta.boots) { D.el('g', {}, svg).innerHTML = RUHA.boots(SZIN[rajta.boots]); }
-            if (rajta.scarf) { D.el('g', {}, svg).innerHTML = RUHA.scarf(SZIN[rajta.scarf]); }
-            [118, 202].forEach(function (x) { D.el('circle', {cx: x, cy: 44, r: 18, fill: SZ, stroke: K, 'stroke-width': 2.5}, svg); D.el('circle', {cx: x, cy: 46, r: 9, fill: '#F2B8A6'}, svg); });
-            D.el('ellipse', {cx: 160, cy: 80, rx: 50, ry: 46, fill: SZ, stroke: K, 'stroke-width': 2.5}, svg);
-            [[140, 76], [180, 76]].forEach(function (e) { D.el('ellipse', {cx: e[0], cy: e[1], rx: 6, ry: 7.5, fill: '#2A160A'}, svg); D.el('circle', {cx: e[0] + 2, cy: e[1] - 3, r: 2.2, fill: '#fff'}, svg); });
-            [[128, 98], [192, 98]].forEach(function (c) { D.el('ellipse', {cx: c[0], cy: c[1], rx: 9, ry: 6, fill: '#F28C8C', opacity: .45}, svg); });
-            D.el('ellipse', {cx: 160, cy: 100, rx: 23, ry: 17, fill: HS}, svg);
-            D.el('path', {d: 'M151 90 q9 -6 18 0 q-2 8 -9 9 q-7 -1 -9 -9Z', fill: '#3B2414'}, svg);
-            D.el('path', {d: 'M160 99 v5 M150 104 q10 9 20 0', stroke: '#3B2414', 'stroke-width': 2.5, fill: 'none', 'stroke-linecap': 'round'}, svg);
-            if (rajta.hat) { D.el('g', {}, svg).innerHTML = RUHA.hat(SZIN[rajta.hat]); }
+            SORREND.forEach(function (r) { var im = D.$('r-' + r);
+                if (rajta[r]) { im.src = M + 'reteg/' + FAJL[r] + '_' + rajta[r] + '.webp'; im.style.display = ''; } else { im.style.display = 'none'; } });
         }
         function gombok() { var d = D.$('ruhak'); d.innerHTML = '';
-            Object.keys(RUHA).forEach(function (r) { Object.keys(SZIN).forEach(function (c) {
-                var b = D.gomb('<svg viewBox="' + IKON[r] + '">' + RUHA[r](SZIN[c]) + '</svg>', rajta[r] === c ? 'fel' : '', function () {
+            ['hat', 'scarf', 'shirt', 'boots'].forEach(function (r) { SZINEK.forEach(function (c) {
+                var b = D.gomb('<img alt="" src="' + M + 'reteg/ikon_' + FAJL[r] + '_' + c + '.webp" style="width:100%;max-width:64px;aspect-ratio:1;object-fit:contain">', rajta[r] === c ? 'fel' : '', function () {
                     rajta[r] = rajta[r] === c ? null : c; maci(); gombok(); D.torol(); });
-                b.title = c + ' ' + NEV[r]; d.appendChild(b); }); }); }
+                b.style.cssText = 'padding:4px;border-radius:12px;' + (rajta[r] === c ? 'outline:3px solid #1F7A4D;background:#E6F4EC' : '');
+                b.title = magy(c, r); d.appendChild(b); }); }); }
         maci(); gombok();
         setTimeout(function () { D.mond(f.mondat); }, 350);
         D.ellenoriz(function () {
             var fent = Object.keys(rajta).filter(function (k) { return rajta[k]; });
             if (!fent.length) { return {hianyzik: D.T('Koppints a ruhákra, és öltöztesd fel a macit!', 'Toca la ropa y viste al osito.')}; }
-            var valasz = D.T('A macin ez van: ', 'El osito lleva: ') + fent.map(function (k) { return rajta[k] + ' ' + NEV[k]; }).join(', ') + '.';
+            var valasz = D.T('A macin ez van: ', 'El osito lleva: ') + fent.map(function (k) { return magy(rajta[k], k); }).join(', ') + '.';
             var jo = fent.length === f.ruhak.length && f.ruhak.every(function (p) { return rajta[p[1]] === p[0]; });
-            if (jo) { return {jo: true, valasz: valasz, uzenet: 'Great! ' + f.ruhak.map(function (p) { return p[0] + ' ' + NEV[p[1]] + ' = ' + magy(p[0], p[1]); }).join(', ') + '.'}; }
-            D.animal(svg, 'rezeg');
+            if (jo) { return {jo: true, valasz: valasz, uzenet: D.T('Ügyes! ', '¡Muy bien! ') + '„' + f.mondat + '” = ' + f.ruhak.map(function (p) { return magy(p[0], p[1]); }).join(D.T(' és ', ' y ')) + '.'}; }
+            D.animal(D.$('maci'), 'rezeg');
             return {jo: false, valasz: valasz, uzenet: f.ruhak.length === 2
-                ? D.T('Not yet! Hallgasd meg újra: két ruhadarab kell, a megadott színben – és semmi más.', 'Not yet! Escucha otra vez: hacen falta dos prendas del color indicado, y nada más.')
-                : D.T('Not yet! Hallgasd meg újra: egy ruhadarab kell, a megadott színben – és semmi más.', 'Not yet! Escucha otra vez: hace falta una prenda del color indicado, y nada más.')};
+                ? D.T('Még nem jó. Hallgasd meg újra: két ruhadarab kell, a megadott színben – és semmi más.', 'Todavía no. Escucha otra vez: hacen falta dos prendas del color indicado, y nada más.')
+                : D.T('Még nem jó. Hallgasd meg újra: egy ruhadarab kell, a megadott színben – és semmi más.', 'Todavía no. Escucha otra vez: hace falta una prenda del color indicado, y nada más.')};
         });
     };
 
     /* ── F2. HOL A CICA? – angol elöljárószók ────────────────────────── */
     DM.elolj = function (f, D) {
-        var cel = f.hol, poz = [36, 186], mozdult = false, gid = 'dmep' + D.rnd(1000, 999999);
+        var cel = f.hol, poz = [30, 186], mozdult = false, gid = 'dmep' + D.rnd(1000, 999999);
+        /* A lecke nyelvén (2026-10-27): angol, német, francia, spanyol. */
+        var NY = ({angol: {'on': 'on', 'under': 'under', 'in': 'in', 'next to': 'next to'},
+            nemet: {'on': 'auf', 'under': 'unter', 'in': 'in', 'next to': 'neben'},
+            francia: {'on': 'sur', 'under': 'sous', 'in': 'dans', 'next to': 'à côté de'},
+            spanyol: {'on': 'encima de', 'under': 'debajo de', 'in': 'dentro de', 'next to': 'al lado de'}})[f.nyelv] ||
+            {'on': 'on', 'under': 'under', 'in': 'in', 'next to': 'next to'};
         var ZONA = {'on': function (x, y) { return x > 115 && x < 245 && y > 60 && y < 102; },
             'under': function (x, y) { return x > 125 && x < 235 && y > 118 && y < 200; },
             'in': function (x, y) { return x > 262 && x < 316 && y > 140 && y < 205; },
-            'next to': function (x, y) { return x > 60 && x < 112 && y > 120 && y < 210; }};
+            'next to': function (x, y) { return x > 72 && x < 112 && y > 120 && y < 210; }};
         var MAGY = D.T({'on': 'rajta (az asztalon)', 'under': 'alatta (az asztal alatt)', 'in': 'benne (a dobozban)', 'next to': 'mellette (az asztal mellett)'},
             {'on': 'encima (sobre la mesa)', 'under': 'debajo (debajo de la mesa)', 'in': 'dentro (dentro de la caja)', 'next to': 'al lado (al lado de la mesa)'});
         D.html('<div class="allas">' + D.T('Hallgasd meg, és húzd a cicát oda, ahová a mondat mondja!', 'Escucha y arrastra el gato adonde dice la frase.') +
@@ -4396,19 +4389,24 @@
             '<circle cy="-12" r="12" fill="#F5A01E" stroke="#B9690B" stroke-width="2"/><path d="M-10 -20 l2 -10 l7 7Z M10 -20 l-2 -10 l-7 7Z" fill="#F5A01E" stroke="#B9690B" stroke-width="2" stroke-linejoin="round"/>' +
             '<circle cx="-4" cy="-13" r="1.8" fill="#222"/><circle cx="4" cy="-13" r="1.8" fill="#222"/><path d="M-2 -8 q2 2 4 0" stroke="#222" stroke-width="1.4" fill="none"/>' +
             '<path d="M16 8 q14 -4 12 -18" stroke="#B9690B" stroke-width="4" fill="none" stroke-linecap="round"/>';
-        function allit() { cica.setAttribute('transform', 'translate(' + poz[0] + ',' + poz[1] + ')'); }
+        /* A doboz eleje a cica ELÉ kerül, ha a cica a dobozban van – így tényleg „benne” ül. */
+        var dobozEle = D.el('path', {d: 'M262 168 h54 v38 h-54Z', fill: 'url(#' + gid + 'd)', stroke: '#9C6E30', 'stroke-width': 2, style: 'display:none;pointer-events:none'}, svg);
+        function allit() { var benne = ZONA['in'](poz[0], poz[1]);
+            dobozEle.style.display = benne ? '' : 'none';
+            cica.setAttribute('transform', 'translate(' + (benne ? 289 : poz[0]) + ',' + (benne ? 168 : poz[1]) + ')'); }
         allit();
         D.huzhato(svg, cica, function (p) { poz = [Math.max(15, Math.min(305, p.x)), Math.max(20, Math.min(200, p.y))]; mozdult = true; allit(); D.torol(); });
         setTimeout(function () { D.mond(f.mondat); }, 350);
         D.ellenoriz(function () {
             if (!mozdult) { return {hianyzik: D.T('Húzd a cicát a helyére!', 'Arrastra el gato a su sitio.')}; }
             var hol = Object.keys(ZONA).filter(function (z) { return ZONA[z](poz[0], poz[1]); })[0];
-            var valasz = hol ? D.T('A cicát ide húztam: ' + hol + ' – ' + MAGY[hol] + '.', 'He puesto el gato aquí: ' + hol + ' – ' + MAGY[hol] + '.')
+            var valasz = hol ? D.T('A cicát ide húztam: ' + NY[hol] + ' – ' + MAGY[hol] + '.', 'He puesto el gato aquí: ' + NY[hol] + ' – ' + MAGY[hol] + '.')
                 : D.T('A cicát egyik helyre sem húztam.', 'No he puesto el gato en ningún sitio.');
-            if (hol === cel) { return {jo: true, valasz: valasz, uzenet: 'Yes! <b>' + cel + '</b> = ' + MAGY[cel] + '.'}; }
+            if (hol === cel) { return {jo: true, valasz: valasz, uzenet: D.T('Igen! ', '¡Sí! ') + '<b>' + NY[cel] + '</b> = ' + MAGY[cel] + '.'}; }
             D.animal(svg, 'rezeg');
-            return {jo: false, valasz: valasz, uzenet: hol ? D.T('Most a cica „' + hol + '” – vagyis ' + MAGY[hol] + '. Nem ez kell!', 'Ahora el gato está «' + hol + '», es decir, ' + MAGY[hol] + '. ¡No es eso!')
-                : D.T('Hallgasd meg újra: on = rajta, under = alatta, in = benne, next to = mellette.', 'Escucha otra vez: on = encima, under = debajo, in = dentro, next to = al lado.')};
+            return {jo: false, valasz: valasz, uzenet: hol ? D.T('Most a cica „' + NY[hol] + '” – vagyis ' + MAGY[hol] + '. Nem ez kell!', 'Ahora el gato está «' + NY[hol] + '», es decir, ' + MAGY[hol] + '. ¡No es eso!')
+                : D.T('Hallgasd meg újra: ' + NY['on'] + ' = rajta, ' + NY['under'] + ' = alatta, ' + NY['in'] + ' = benne, ' + NY['next to'] + ' = mellette.',
+                    'Escucha otra vez: ' + NY['on'] + ' = encima, ' + NY['under'] + ' = debajo, ' + NY['in'] + ' = dentro, ' + NY['next to'] + ' = al lado.')};
         });
     };
 
@@ -7641,6 +7639,8 @@
         }
         D.html('<div class="allas">' + D.T('Húzd vagy koppintsd a helyére – a lánc a növénnyel kezdődik! A nyíl azt jelenti: „megeszi”.',
             '¡Arrastra o toca cada pieza! La cadena empieza con la planta. La flecha significa «se come a».') +
+            '<br><small style="font-weight:600;opacity:.85">' + D.T('<b>Termelő</b> = a növény: a napfényből maga készíti el a táplálékát (nem a gazda!). <b>Fogyasztó</b> = aki megeszi. <b>Ragadozó</b> = aki más állatot eszik.',
+            '<b>Productor</b> = la planta: fabrica su propio alimento con la luz del sol. <b>Consumidor</b> = quien se la come. <b>Depredador</b> = quien come otros animales.') + '</small>' +
             '</div><div class="kartyak" data-id="kt"></div><div class="helyek tapl-helyek" data-id="helyek"></div>');
         var hk = D.$('helyek'), kt = D.$('kt');
         akt.forEach(function (a, i) {

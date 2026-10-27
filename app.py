@@ -4174,7 +4174,11 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
                 return None
             if not nev or not (0 <= idx < len(csop)):
                 return None
-            elemek.append([nev, idx])
+            # Harmadik, nem kötelező elem: egy illő emoji (kép a kártyára).
+            kep = str(e[2]).strip()[:4] if len(e) > 2 and e[2] else ""
+            if kep and any(ch.isalnum() for ch in kep):
+                kep = ""
+            elemek.append([nev, idx, kep] if kep else [nev, idx])
         if not (2 <= len(csop) <= 4) or None in csop or not (4 <= len(elemek) <= 10):
             return None
         if any(not any(e[1] == i for e in elemek) for i in range(len(csop))):
@@ -9121,10 +9125,10 @@ _NYELVORA_FORDULAT_ES = """
 #  magyar választó-sor, spanyol választó-sor)
 _DM_FELULETEK = [
     ("csoport", {"*"}, 1, 8,
-     'CSOPORTOSÍTÁS – kártyák kosarakba (bármely tárgy). 2–4 csoport, 4–10 kártya; az elem második száma a csoport sorszáma 0-tól:\n'
-     '   <FELADAT>{"tipus":"csoport","kerdes":"Szilárd, folyékony vagy légnemű?","csoportok":["szilárd","folyékony","légnemű"],"elemek":[["jég",0],["tej",1],["gőz",2],["kő",0]]}</FELADAT>',
-     'AGRUPAR – tarjetas en cestas (cualquier asignatura). 2–4 grupos, 4–10 tarjetas; el número es el grupo, empezando en 0:\n'
-     '   <FELADAT>{"tipus":"csoport","kerdes":"¿Sólido, líquido o gas?","csoportok":["sólido","líquido","gas"],"elemek":[["hielo",0],["leche",1],["vapor",2],["piedra",0]]}</FELADAT>',
+     'CSOPORTOSÍTÁS – kártyák kosarakba (bármely tárgy). 2–4 csoport, 4–10 kártya; az elem második száma a csoport sorszáma 0-tól, a harmadik egy ILLŐ EMOJI (kép a kártyára – mindig add meg):\n'
+     '   <FELADAT>{"tipus":"csoport","kerdes":"Szilárd, folyékony vagy légnemű?","csoportok":["szilárd","folyékony","légnemű"],"elemek":[["jég",0,"🧊"],["tej",1,"🥛"],["gőz",2,"💨"],["kő",0,"🪨"]]}</FELADAT>',
+     'AGRUPAR – tarjetas en cestas (cualquier asignatura). 2–4 grupos, 4–10 tarjetas; el número es el grupo, empezando en 0; el tercero, un EMOJI adecuado (imagen de la tarjeta, ponlo siempre):\n'
+     '   <FELADAT>{"tipus":"csoport","kerdes":"¿Sólido, líquido o gas?","csoportok":["sólido","líquido","gas"],"elemek":[["hielo",0,"🧊"],["leche",1,"🥛"],["vapor",2,"💨"],["piedra",0,"🪨"]]}</FELADAT>',
      '„Válogasd szét / csoportosítsd!"     → csoport', '«Clasifica / agrupa»               → csoport'),
     ("szotag", {"magyar"}, 1, 3,
      'SZÓTAGOLÁS – a gyerek a betűk közé koppint. A szót kötőjellel bontva add meg (2–6 szótag):\n'
@@ -9359,16 +9363,16 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"irasjel","fajta":"kerdo"}</FELADAT>',
      None,
      'mondatfajták, mondatvégi írásjel     → irasjel', None),
-    ("oltoz", {"angol"}, 1, 4,
-     'ÖLTÖZTESD FEL A MACIT – angol utasítás (a program mondja ki és írja ki), a gyerek a jó színű ruhát adja a macira. "ruhak": 1–2 pár [szín, ruha]; szín: red, blue, green, yellow; ruha: hat, scarf, shirt, boots (elhagyva: a program választ):\n'
+    ("oltoz", {"nyelv"}, 1, 4,
+     'ÖLTÖZTESD FEL A MACIT – utasítás a tanult nyelven (a program mondja ki és írja ki), a gyerek a jó színű ruhát adja a macira. "ruhak": 1–2 pár [szín, ruha], MINDIG angol kulccsal; szín: red, blue, green, yellow; ruha: hat, scarf, shirt, boots (elhagyva: a program választ):\n'
      '   <FELADAT>{"tipus":"oltoz","ruhak":[["red","hat"],["blue","boots"]]}</FELADAT>',
-     'VISTE AL OSITO – instrucción en inglés (el programa la dice y la escribe); el niño pone al osito la ropa del color pedido. "ruhak": 1–2 pares [color, prenda]; color: red, blue, green, yellow; prenda: hat, scarf, shirt, boots (si se omite, lo elige el programa):\n'
+     'VISTE AL OSITO – instrucción en el idioma que se aprende (el programa la dice y la escribe); el niño pone al osito la ropa del color pedido. "ruhak": 1–2 pares [color, prenda], SIEMPRE con claves en inglés; color: red, blue, green, yellow; prenda: hat, scarf, shirt, boots (si se omite, lo elige el programa):\n'
      '   <FELADAT>{"tipus":"oltoz","ruhak":[["red","hat"],["blue","boots"]]}</FELADAT>',
-     'ruhák és színek angolul               → oltoz', 'ropa y colores en inglés             → oltoz'),
-    ("elolj", {"angol"}, 2, 5,
-     'HOL A CICA? – angol mondat (on, under, in, next to), a gyerek oda húzza a cicát. "hol": on, under, in vagy next to (elhagyva: a program választ):\n'
+     'ruhák és színek                       → oltoz', 'ropa y colores                       → oltoz'),
+    ("elolj", {"nyelv"}, 2, 5,
+     'HOL A CICA? – mondat a tanult nyelven (a program írja: on/auf/sur/encima…), a gyerek oda húzza a cicát. "hol" MINDIG angol kulcs: on, under, in vagy next to (elhagyva: a program választ):\n'
      '   <FELADAT>{"tipus":"elolj","hol":"under"}</FELADAT>',
-     '¿DÓNDE ESTÁ EL GATO? – frase en inglés (on, under, in, next to); el niño arrastra el gato a su sitio. "hol": on, under, in o next to (si se omite, lo elige el programa):\n'
+     '¿DÓNDE ESTÁ EL GATO? – frase en el idioma que se aprende (la escribe el programa); el niño arrastra el gato. "hol" SIEMPRE clave en inglés: on, under, in o next to (si se omite, lo elige el programa):\n'
      '   <FELADAT>{"tipus":"elolj","hol":"under"}</FELADAT>',
      'elöljárószók: on, under, in, next to → elolj', 'preposiciones: on, under, in, next to → elolj'),
     ("rovar", {"kornyezet"}, 3, 6,
@@ -13512,9 +13516,8 @@ def child_chat_send(child_id: int):
                 feladat["cim"] = _pk
         except Exception:
             logger.exception("Kerdes-potlas hiba")
-    if isinstance(feladat, dict) and feladat.get("tipus") == "arcresz":
-        # Az arcos feladat a lecke nyelvén kérdez (angol, német, francia, spanyol).
-        feladat["nyelv"] = _normalize_chat_language(teaching_language) or "angol"
+    # A nyelvi feladatok (arcrész, elöljárószók) a lecke nyelvén szólnak.
+    _feladat_nyelvre(feladat, teaching_language)
     if not feladat:
         # Ha a válaszban sehol nincs kérdés, a végére teszünk egyet.
         try:
@@ -16167,6 +16170,66 @@ def child_album_place(child_id: int):
 _ADMIN_ALAP = ("vigh.sandor81@gmail.com", "vbviki86@gmail.com")
 
 
+_ELOLJ_MONDAT = {
+    "nemet": {"on": "Die Katze ist auf dem Tisch.", "under": "Die Katze ist unter dem Tisch.",
+              "in": "Die Katze ist in der Kiste.", "next to": "Die Katze ist neben dem Tisch."},
+    "francia": {"on": "Le chat est sur la table.", "under": "Le chat est sous la table.",
+                "in": "Le chat est dans la boîte.", "next to": "Le chat est à côté de la table."},
+    "spanyol": {"on": "El gato está encima de la mesa.", "under": "El gato está debajo de la mesa.",
+                "in": "El gato está dentro de la caja.", "next to": "El gato está al lado de la mesa."},
+}
+
+
+_OLTOZ_SZO = {
+    "nemet": ({"red": "rot", "blue": "blau", "green": "grün", "yellow": "gelb"},
+              {"hat": "die {c}e Mütze", "scarf": "den {c}en Schal", "shirt": "das {c}e T-Shirt", "boots": "die {c}en Stiefel"},
+              "Zieh {x} an."),
+    "francia": ({"red": ("rouge", "rouge", "rouges"), "blue": ("bleu", "bleue", "bleues"),
+                 "green": ("vert", "verte", "vertes"), "yellow": ("jaune", "jaune", "jaunes")},
+                {"hat": ("le bonnet {c}", 0), "scarf": ("l'écharpe {c}", 1), "shirt": ("le t-shirt {c}", 0), "boots": ("les bottes {c}", 2)},
+                "Mets {x}."),
+    "spanyol": ({"red": ("rojo", "roja", "rojas"), "blue": ("azul", "azul", "azules"),
+                 "green": ("verde", "verde", "verdes"), "yellow": ("amarillo", "amarilla", "amarillas")},
+                {"hat": ("el gorro {c}", 0), "scarf": ("la bufanda {c}", 1), "shirt": ("la camiseta {c}", 1), "boots": ("las botas {c}", 2)},
+                "Ponle {x}."),
+}
+
+
+def _oltoz_mondat(ruhak, nyelv):
+    if nyelv not in _OLTOZ_SZO:
+        return None
+    szin, ruha, minta = _OLTOZ_SZO[nyelv]
+    reszek = []
+    for c, r in ruhak:
+        if nyelv == "nemet":
+            reszek.append(ruha[r].format(c=szin[c]))
+        else:
+            sablon, alak = ruha[r]
+            reszek.append(sablon.format(c=szin[c][alak]))
+    ossze = {"nemet": " und ", "francia": " et ", "spanyol": " y "}[nyelv]
+    return minta.format(x=ossze.join(reszek))
+
+
+def _feladat_nyelvre(feladat, language):
+    """A nyelvi feladatok a LECKE nyelvén szóljanak (angol, német, francia,
+    spanyol) – 2026-10-27, Sándor: „minden idegen nyelvre, mindkét oldalon”."""
+    if not isinstance(feladat, dict) or feladat.get("tipus") not in ("arcresz", "elolj", "oltoz"):
+        return feladat
+    nyelv = _normalize_chat_language(language) or "angol"
+    feladat["nyelv"] = nyelv
+    if feladat.get("tipus") == "oltoz":
+        m = _oltoz_mondat(feladat.get("ruhak") or [], nyelv)
+        if m:
+            feladat["mondat"] = m
+            feladat["kerdes"] = "“" + m + "”"
+    if feladat.get("tipus") == "elolj" and nyelv in _ELOLJ_MONDAT:
+        m = _ELOLJ_MONDAT[nyelv].get(feladat.get("hol"))
+        if m:
+            feladat["mondat"] = m
+            feladat["kerdes"] = "“" + m + "”"
+    return feladat
+
+
 def _proba_feladat_keszit(tipus, grade, es, language):
     """Üzemeltetői feladat-próba: a felület-lista példájából kész feladat."""
     tipus = (tipus or "").strip().lower()
@@ -16178,8 +16241,7 @@ def _proba_feladat_keszit(tipus, grade, es, language):
             return None
         fel = _feladat_parse(m.group(0), grade=grade, es_tanterv=es, temakor=None)
         if isinstance(fel, dict):
-            if fel.get("tipus") == "arcresz":
-                fel["nyelv"] = _normalize_chat_language(language) or "angol"
+            _feladat_nyelvre(fel, language)
             fel["proba"] = True
         return fel
     return None
