@@ -9472,8 +9472,8 @@ _DM_FELULETEK = [
      'ORDEN CON IMÁGENES – el niño ordena 4 imágenes. "sorozat": noveny|lepke (planta|mariposa):\n'
      '   <FELADAT>{"tipus":"kepsor","sorozat":"lepke"}</FELADAT>',
      'növény fejlődése, lepke élete        → kepsor', 'crecimiento planta, mariposa       → kepsor'),
-    ("szamangol", {"nyelv", "angol"}, 1, 4,
-     'ANGOL SZÁMOK – hallás után a jó számra koppint (0–20). "szam" opcionális:\n'
+    ("szamangol", {"nyelv"}, 1, 4,
+     'SZÁMOK A TANULT NYELVEN (a program mondja ki: angol/német/francia/spanyol) – hallás után a jó számra koppint (0–20). "szam" opcionális:\n'
      '   <FELADAT>{"tipus":"szamangol","szam":7}</FELADAT>',
      'NÚMEROS EN INGLÉS – toca el número correcto tras oírlo (0–20). "szam" opcional:\n'
      '   <FELADAT>{"tipus":"szamangol","szam":7}</FELADAT>',
@@ -9486,8 +9486,8 @@ _DM_FELULETEK = [
      '"resz": eyes|ears|eyebrows|nose|mouth|chin|hair:\n'
      '   <FELADAT>{"tipus":"arcresz","resz":"nose"}</FELADAT>',
      'arc részei, testrészek               → arcresz', 'partes de la cara, el cuerpo        → arcresz'),
-    ("idojaras", {"nyelv", "angol"}, 2, 4,
-     'IDŐJÁRÁS ANGOLUL – hallás után a jó képre koppint. "ido": sunny|rainy|snowy|windy|cloudy:\n'
+    ("idojaras", {"nyelv"}, 2, 4,
+     'IDŐJÁRÁS A TANULT NYELVEN (a program mondja ki) – hallás után a jó képre koppint. "ido": sunny|rainy|snowy|windy|cloudy:\n'
      '   <FELADAT>{"tipus":"idojaras","ido":"sunny"}</FELADAT>',
      'EL TIEMPO EN INGLÉS – toca la imagen correcta. "ido": sunny|rainy|snowy|windy|cloudy:\n'
      '   <FELADAT>{"tipus":"idojaras","ido":"rainy"}</FELADAT>',
@@ -9628,8 +9628,8 @@ _DM_FELULETEK = [
      'FAMILIAS DE INSTRUMENTOS – cuerda/viento/percusión/teclado. Al tocar suena:\n'
      '   <FELADAT>{"tipus":"hangszer"}</FELADAT>',
      'hangszercsalád, húros, fúvós         → hangszer', 'familia de instrumentos            → hangszer'),
-    ("szoba", {"angol"}, 1, 3,
-     'ROOMS OF THE HOUSE – angol. Opcionális "szoba" (bedroom/bathroom/kitchen/living room) + "kerdes_en":\n'
+    ("szoba", {"nyelv"}, 1, 3,
+     'A HÁZ SZOBÁI a tanult nyelven (a program kérdez a lecke nyelvén). Opcionális "szoba" (bedroom/bathroom/kitchen/living room, angol kulcs) + angol órán "kerdes_en":\n'
      '   <FELADAT>{"tipus":"szoba","szoba":"kitchen","kerdes_en":"Touch the kitchen!"}</FELADAT>',
      'HABITACIONES DE LA CASA – inglés. "szoba" + "kerdes_en" opcionales:\n'
      '   <FELADAT>{"tipus":"szoba","szoba":"bedroom","kerdes_en":"Touch the bedroom!"}</FELADAT>',
@@ -13115,8 +13115,8 @@ def child_chat(child_id: int):
     try:
         if _admin_kapu() is None:
             _es_t = (_active_curriculum() or "HU").upper() == "ES"
-            _proba_lista = [(f[0], (f[7] if _es_t else f[6]).split("→")[0].strip())
-                            for f in _DM_FELULETEK]
+            _proba_lista = [(t, "alap feladat") for t in _alap_feladat_peldak(_es_t)] + [
+                (f[0], (f[7] if _es_t else f[6]).split("→")[0].strip()) for f in _DM_FELULETEK]
             _proba_feladat = _proba_feladat_keszit(request.args.get("proba"), grade_num, _es_t, language)
     except Exception:
         logger.exception("Feladat-proba hiba")
@@ -16217,7 +16217,7 @@ def _oltoz_mondat(ruhak, nyelv):
 def _feladat_nyelvre(feladat, language):
     """A nyelvi feladatok a LECKE nyelvén szóljanak (angol, német, francia,
     spanyol) – 2026-10-27, Sándor: „minden idegen nyelvre, mindkét oldalon”."""
-    if not isinstance(feladat, dict) or feladat.get("tipus") not in ("arcresz", "elolj", "oltoz"):
+    if not isinstance(feladat, dict) or feladat.get("tipus") not in ("arcresz", "elolj", "oltoz", "szamangol", "idojaras", "szoba"):
         return feladat
     nyelv = _normalize_chat_language(language) or "angol"
     feladat["nyelv"] = nyelv
@@ -16248,7 +16248,23 @@ def _proba_feladat_keszit(tipus, grade, es, language):
             _feladat_nyelvre(fel, language)
             fel["proba"] = True
         return fel
+    # Az alap feladatok (memória, pizza, óra, párosítás…) a fő tanári blokk példáiból.
+    pelda = _alap_feladat_peldak(es).get(tipus)
+    if pelda:
+        fel = _feladat_parse(pelda, grade=grade, es_tanterv=es, temakor=None)
+        if isinstance(fel, dict):
+            fel["proba"] = True
+        return fel
     return None
+
+
+def _alap_feladat_peldak(es: bool) -> dict:
+    """{tipus: '<FELADAT>{…}</FELADAT>'} – az alap feladatok első példája."""
+    ki = {}
+    for m in re.finditer(r'<FELADAT>\{"tipus":"(\w+)".*?\}</FELADAT>',
+                         _FELADAT_BLOKK_ES if es else _FELADAT_BLOKK_HU):
+        ki.setdefault(m.group(1), m.group(0))
+    return ki
 
 
 @app.route("/feladat-proba")

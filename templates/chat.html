@@ -5150,6 +5150,13 @@
     DM.szamangol = function (f, D) {
         var N = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
             'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
+        /* 2026-10-27: a lecke nyelvén (angol, német, francia, spanyol). */
+        N = ({nemet: ['null', 'eins', 'zwei', 'drei', 'vier', 'fünf', 'sechs', 'sieben', 'acht', 'neun', 'zehn', 'elf', 'zwölf', 'dreizehn',
+                'vierzehn', 'fünfzehn', 'sechzehn', 'siebzehn', 'achtzehn', 'neunzehn', 'zwanzig'],
+            francia: ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix', 'onze', 'douze', 'treize',
+                'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf', 'vingt'],
+            spanyol: ['cero', 'uno', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez', 'once', 'doce', 'trece',
+                'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte']})[f.nyelv] || N;
         var cel = f.szam, hibak = 0, vege = false;
         var opc = [cel];
         while (opc.length < 6) { var o = D.rnd(0, 20); if (opc.indexOf(o) < 0) { opc.push(o); } }
@@ -5159,7 +5166,7 @@
         D.kever(opc);
         D.html('<div class="allas">' + D.T('Hallgasd meg, és koppints a jó számra!',
             '¡Escucha y toca el número correcto!') +
-            '</div><div class="gombok kozep"><button type="button" class="hangszoro" data-id="mond">🔊 Listen</button></div>' +
+            '</div><div class="gombok kozep"><button type="button" class="hangszoro" data-id="mond">🔊 ' + D.T('Meghallgatom', 'Escuchar') + '</button></div>' +
             '<div class="szamlapok" data-id="lapok"></div>');
         function kimond() { try { D.mond(N[cel]); } catch (e) {} }
         D.$('mond').onclick = function () { if (!D.kesz()) { kimond(); } };
@@ -5328,13 +5335,18 @@
                 felhoR(36, 26, 0.85, '#DCE3EA', '#AEBBC7') + felhoR(118, 22, 1, '#E6ECF1', '#B3C0CC') + felhoR(80, 46, 0.9, '#F2F5F8', '#BDC9D4') +
                 domb('#8FAF79', '#6E9459') + haz(118, 96, 0.95, '#B5544A') + lombosFa(40, 104, 0.95, '#5E9E5A', '#3F7F40', '#8CC08A'), "It's cloudy."]
         };
+        /* 2026-10-27: a mondat a lecke nyelvén. */
+        var MON = ({nemet: {sunny: 'Es ist sonnig.', rainy: 'Es regnet.', snowy: 'Es schneit.', windy: 'Es ist windig.', cloudy: 'Es ist bewölkt.'},
+            francia: {sunny: 'Il y a du soleil.', rainy: 'Il pleut.', snowy: 'Il neige.', windy: 'Il y a du vent.', cloudy: 'Il y a des nuages.'},
+            spanyol: {sunny: 'Hace sol.', rainy: 'Llueve.', snowy: 'Nieva.', windy: 'Hace viento.', cloudy: 'Está nublado.'}})[f.nyelv];
+        if (MON) { Object.keys(K).forEach(function (k) { if (MON[k]) { K[k][1] = MON[k]; } }); }
         var NEV = {sunny: D.T('napos idő van', 'hace sol'), rainy: D.T('esik az eső', 'llueve'),
             snowy: D.T('esik a hó', 'nieva'), windy: D.T('fúj a szél', 'hace viento'), cloudy: D.T('felhős az ég', 'está nublado')};
         if (!K[cel]) { cel = 'sunny'; }
         var opc = D.kever(Object.keys(K).filter(function (x) { return x !== cel; }).slice(0, 3).concat([cel]));
         D.html('<div class="allas">' + D.T('Hallgasd meg (vagy olvasd el), és koppints a jó képre!',
             '¡Escucha (o lee) y toca la imagen correcta!') +
-            '</div><div class="gombok kozep"><button type="button" class="hangszoro" data-id="mond">🔊 Listen</button></div>' +
+            '</div><div class="gombok kozep"><button type="button" class="hangszoro" data-id="mond">🔊 ' + D.T('Meghallgatom', 'Escuchar') + '</button></div>' +
             '<div class="idolapok" data-id="lapok"></div>');
         function kimond() { try { D.mond(K[cel][1]); } catch (e) {} }
         D.$('mond').onclick = function () { if (!D.kesz()) { kimond(); } };
@@ -5345,7 +5357,7 @@
                     'He elegido la imagen de «' + K[o][1] + '» (la correcta: ' + K[cel][1] + ').');
                 if (o === cel) {
                     vege = true; this.classList.add('jo'); kimond();
-                    D.vege(true, 'Yes! ' + K[cel][1] + ' = ' + NEV[cel] + '.', valasz);
+                    D.vege(true, D.T('Igen! ', '¡Sí! ') + K[cel][1] + ' = ' + NEV[cel] + '.', valasz);
                 } else {
                     hibak++; D.animal(this, 'rezeg');
                     D.jelez(false, D.T('Ez: ' + K[o][1] + ' Hallgasd meg újra!', 'Esto es: ' + K[o][1] + ' ¡Escucha otra vez!'));
@@ -7513,8 +7525,30 @@
             ['Where is the cat?', null]
         ];
         var MACSKAHELY = {bedroom: [60, 168], bathroom: [210, 174], kitchen: [112, 272], 'living room': [250, 272]};
+        /* 2026-10-27: a lecke nyelvén is (német, francia, spanyol). */
+        var SZOBA_NY = ({
+            nemet: [{bedroom: 'das Schlafzimmer', bathroom: 'das Badezimmer', kitchen: 'die Küche', 'living room': 'das Wohnzimmer'},
+                [['Tippe auf das Schlafzimmer!', 'bedroom'], ['Tippe auf das Badezimmer!', 'bathroom'], ['Tippe auf die Küche!', 'kitchen'],
+                 ['Tippe auf das Wohnzimmer!', 'living room'], ['Wo ist das Bett?', 'bedroom'], ['Wo ist die Badewanne?', 'bathroom'],
+                 ['Wo ist der Kühlschrank?', 'kitchen'], ['Wo ist das Sofa?', 'living room'], ['Wo ist der Fernseher?', 'living room'],
+                 ['Wo ist der Herd?', 'kitchen'], ['Wo ist die Katze?', null]]],
+            francia: [{bedroom: 'la chambre', bathroom: 'la salle de bain', kitchen: 'la cuisine', 'living room': 'le salon'},
+                [['Touche la chambre !', 'bedroom'], ['Touche la salle de bain !', 'bathroom'], ['Touche la cuisine !', 'kitchen'],
+                 ['Touche le salon !', 'living room'], ['Où est le lit ?', 'bedroom'], ['Où est la baignoire ?', 'bathroom'],
+                 ['Où est le frigo ?', 'kitchen'], ['Où est le canapé ?', 'living room'], ['Où est la télé ?', 'living room'],
+                 ['Où est la cuisinière ?', 'kitchen'], ['Où est le chat ?', null]]],
+            spanyol: [{bedroom: 'el dormitorio', bathroom: 'el baño', kitchen: 'la cocina', 'living room': 'el salón'},
+                [['¡Toca el dormitorio!', 'bedroom'], ['¡Toca el baño!', 'bathroom'], ['¡Toca la cocina!', 'kitchen'],
+                 ['¡Toca el salón!', 'living room'], ['¿Dónde está la cama?', 'bedroom'], ['¿Dónde está la bañera?', 'bathroom'],
+                 ['¿Dónde está la nevera?', 'kitchen'], ['¿Dónde está el sofá?', 'living room'], ['¿Dónde está la tele?', 'living room'],
+                 ['¿Dónde está el fogón?', 'kitchen'], ['¿Dónde está el gato?', null]]]})[f.nyelv];
+        var SZNEV = SZOBA_NY ? SZOBA_NY[0] : {bedroom: 'the bedroom', bathroom: 'the bathroom', kitchen: 'the kitchen', 'living room': 'the living room'};
+        if (SZOBA_NY) { KERD = SZOBA_NY[1]; }
         var macska, kerdes, cel, hibak = 0, vege = false, kesz = {}, svg;
-        if (f.kerdes_en && f.szoba) {
+        if (SZOBA_NY && SZ[f.szoba]) {
+            var _jo = KERD.filter(function (p) { return p[1] === f.szoba; });
+            kerdes = _jo[D.rnd(0, _jo.length - 1)][0]; cel = f.szoba;
+        } else if (!SZOBA_NY && f.kerdes_en && f.szoba) {
             kerdes = String(f.kerdes_en);
             cel = String(f.szoba);
             if (!SZ[cel]) { cel = null; }
@@ -7584,16 +7618,16 @@
                 kesz = {};
                 kesz[n] = 'rgba(61,220,151,.35)';
                 rajz();
-                try { D.mond('Yes! The ' + n + '.'); } catch (e) {}
-                D.vege(true, 'Yes! <b>the ' + n + '</b> = ' + FAJTA[n], valasz);
+                try { D.mond(SZNEV[n]); } catch (e) {}
+                D.vege(true, D.T('Igen! ', '¡Sí! ') + '<b>' + SZNEV[n] + '</b> = ' + FAJTA[n], valasz);
             } else {
                 hibak++;
                 kesz = {};
                 kesz[n] = 'rgba(224,96,155,.3)';
                 rajz();
-                try { D.mond('This is the ' + n + '.'); } catch (e) {}
-                D.jelez(false, D.T('Ez <b>the ' + n + '</b> (' + FAJTA[n] + '). Hallgasd meg újra a kérdést!',
-                    'Esto es <b>the ' + n + '</b> (' + FAJTA[n] + '). ¡Escucha otra vez la pregunta!'));
+                try { D.mond(SZNEV[n]); } catch (e) {}
+                D.jelez(false, D.T('Ez <b>' + SZNEV[n] + '</b> (' + FAJTA[n] + '). Hallgasd meg újra a kérdést!',
+                    'Esto es <b>' + SZNEV[n] + '</b> (' + FAJTA[n] + '). ¡Escucha otra vez la pregunta!'));
                 setTimeout(function () { if (!vege) { kesz = {}; rajz(); } }, 900);
                 if (hibak >= 2) { vege = true; D.kuld(valasz, 2600); }
             }
@@ -7604,8 +7638,8 @@
             '<p style="text-align:center;font-weight:900;margin:4px 0 8px" data-id="kerd"></p>' +
             '<div class="vaszon"><svg data-id="svg" viewBox="0 0 340 300"></svg></div>');
         svg = D.$('svg');
-        D.$('kerd').textContent = '“' + kerdes + (kerdes.indexOf('Where') === 0 ? ' Touch the room!' : '') + '”';
-        D.$('hs').appendChild(D.gomb('🔊 Listen', 'hangszoro', function () { if (!D.kesz()) { kimond(); } }));
+        D.$('kerd').textContent = '“' + kerdes + (!SZOBA_NY && kerdes.indexOf('Where') === 0 ? ' Touch the room!' : '') + '”';
+        D.$('hs').appendChild(D.gomb('🔊 ' + D.T('Meghallgatom', 'Escuchar'), 'hangszoro', function () { if (!D.kesz()) { kimond(); } }));
         rajz();
         setTimeout(kimond, 300);
     };

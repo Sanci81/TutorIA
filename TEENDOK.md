@@ -669,5 +669,9 @@ Tervezett elemek:
 ## Új ötletek / bővítések (2026-10-27)
 
 18. [ ] ÚJ FELADAT – számkockák (Sándor videója): „? + ? + ? = 9” – a gyerek pöttyös számkockákat (1–5, színesek, egymásra rakhatók) húz a helyükre, aztán „Ellenőrzés”. Tornyokba rakható kockák, mint a Numberblocks-szerű játékokban.
-19. [ ] Nyelvi feladatok, amik még CSAK angolul vannak: szamangol (számok), idojaras (időjárás), szoba – legyenek németül, franciául, spanyolul is (mint az arcrész, elöljárók, maci).
+19. [x] Nyelvi feladatok, amik még CSAK angolul vannak: szamangol (számok), idojaras (időjárás), szoba – legyenek németül, franciául, spanyolul is (mint az arcrész, elöljárók, maci).
 20. [x] Maci NADRÁG (4 szín) + „Hol a cica?” rendes képek (cica, asztal, doboz): kep_nadrag_cica.py → Claude kivágja, beköti.
+
+21. [ ] ÉRDEKESSÉG-DOBOZ: lecke közben egy kis sárga dobozban egy érdekesség a témához (pl. kétjegyű szorzásnál: hogyan szoroznak Japánban vonalakkal). A tanár adja egy rejtett jelölővel, ritkán (leckénként 1). Minden tantárgyhoz: történelem – „tudtad?”, nyelv – szó eredete, természet – rekord állatok stb.
+22. [ ] HÁTTÉR-ÖTLET (Synthesis Tutor mintájára): sötét „űr” háttér a feladattáblán – finom rácsvonal, csillagpöttyök, néhány vonalas rajz (bolygó, távcső, műhold, ufó). Csak ötlet; saját rajzokkal, nem másolva.
+23. [ ] A Feladat-próba listába bekerültek az ALAP feladatok is (memória, pizza, óra, párosítás, szám, válaszgomb…) – ezeket is végig kell nézni.
