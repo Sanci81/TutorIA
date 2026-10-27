@@ -5095,10 +5095,11 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
     # össze, a tanár csak a ruhát, színt, helyet választja.
     if tipus == "oltoz":
         SZIN = ("red", "blue", "green", "yellow")
-        RUHA = {"hat": "hat", "scarf": "scarf", "shirt": "T-shirt", "t-shirt": "T-shirt", "tshirt": "T-shirt", "boots": "boots"}
+        RUHA = {"hat": "hat", "scarf": "scarf", "shirt": "T-shirt", "t-shirt": "T-shirt", "tshirt": "T-shirt", "boots": "boots",
+                "pants": "trousers", "trousers": "trousers"}
         lista = adat.get("ruhak")
         if lista is None:
-            r = random.sample(["hat", "scarf", "shirt", "boots"], 2)
+            r = random.sample(["hat", "scarf", "shirt", "pants", "boots"], 2)
             lista = [[c, x] for c, x in zip(random.sample(SZIN, 2), r)]
         ruhak = []
         try:
@@ -5106,13 +5107,13 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
                 szin, ruha = str(szin).strip().lower(), RUHA.get(str(ruha).strip().lower())
                 if szin not in SZIN or not ruha:
                     return None
-                ruhak.append([szin, "shirt" if ruha == "T-shirt" else ruha])
+                ruhak.append([szin, "shirt" if ruha == "T-shirt" else ("pants" if ruha == "trousers" else ruha)])
         except Exception:
             return None
         if not (1 <= len(ruhak) <= 2) or len({r[1] for r in ruhak}) != len(ruhak):
             return None
         mondat = "Put on the " + " and the ".join(
-            f"{c} {'T-shirt' if r == 'shirt' else r}" for c, r in ruhak) + "."
+            f"{c} {'T-shirt' if r == 'shirt' else ('trousers' if r == 'pants' else r)}" for c, r in ruhak) + "."
         return {"tipus": "oltoz", "ruhak": ruhak, "mondat": mondat, "kerdes": "“" + mondat + "”"}
 
     if tipus == "elolj":
@@ -9364,9 +9365,9 @@ _DM_FELULETEK = [
      None,
      'mondatfajták, mondatvégi írásjel     → irasjel', None),
     ("oltoz", {"nyelv"}, 1, 4,
-     'ÖLTÖZTESD FEL A MACIT – utasítás a tanult nyelven (a program mondja ki és írja ki), a gyerek a jó színű ruhát adja a macira. "ruhak": 1–2 pár [szín, ruha], MINDIG angol kulccsal; szín: red, blue, green, yellow; ruha: hat, scarf, shirt, boots (elhagyva: a program választ):\n'
+     'ÖLTÖZTESD FEL A MACIT – utasítás a tanult nyelven (a program mondja ki és írja ki), a gyerek a jó színű ruhát adja a macira. "ruhak": 1–2 pár [szín, ruha], MINDIG angol kulccsal; szín: red, blue, green, yellow; ruha: hat, scarf, shirt, pants, boots (elhagyva: a program választ):\n'
      '   <FELADAT>{"tipus":"oltoz","ruhak":[["red","hat"],["blue","boots"]]}</FELADAT>',
-     'VISTE AL OSITO – instrucción en el idioma que se aprende (el programa la dice y la escribe); el niño pone al osito la ropa del color pedido. "ruhak": 1–2 pares [color, prenda], SIEMPRE con claves en inglés; color: red, blue, green, yellow; prenda: hat, scarf, shirt, boots (si se omite, lo elige el programa):\n'
+     'VISTE AL OSITO – instrucción en el idioma que se aprende (el programa la dice y la escribe); el niño pone al osito la ropa del color pedido. "ruhak": 1–2 pares [color, prenda], SIEMPRE con claves en inglés; color: red, blue, green, yellow; prenda: hat, scarf, shirt, pants, boots (si se omite, lo elige el programa):\n'
      '   <FELADAT>{"tipus":"oltoz","ruhak":[["red","hat"],["blue","boots"]]}</FELADAT>',
      'ruhák és színek                       → oltoz', 'ropa y colores                       → oltoz'),
     ("elolj", {"nyelv"}, 2, 5,
@@ -16182,15 +16183,18 @@ _ELOLJ_MONDAT = {
 
 _OLTOZ_SZO = {
     "nemet": ({"red": "rot", "blue": "blau", "green": "grün", "yellow": "gelb"},
-              {"hat": "die {c}e Mütze", "scarf": "den {c}en Schal", "shirt": "das {c}e T-Shirt", "boots": "die {c}en Stiefel"},
+              {"hat": "die {c}e Mütze", "scarf": "den {c}en Schal", "shirt": "das {c}e T-Shirt", "boots": "die {c}en Stiefel",
+               "pants": "die {c}e Hose"},
               "Zieh {x} an."),
     "francia": ({"red": ("rouge", "rouge", "rouges"), "blue": ("bleu", "bleue", "bleues"),
                  "green": ("vert", "verte", "vertes"), "yellow": ("jaune", "jaune", "jaunes")},
-                {"hat": ("le bonnet {c}", 0), "scarf": ("l'écharpe {c}", 1), "shirt": ("le t-shirt {c}", 0), "boots": ("les bottes {c}", 2)},
+                {"hat": ("le bonnet {c}", 0), "scarf": ("l'écharpe {c}", 1), "shirt": ("le t-shirt {c}", 0), "boots": ("les bottes {c}", 2),
+                 "pants": ("le pantalon {c}", 0)},
                 "Mets {x}."),
-    "spanyol": ({"red": ("rojo", "roja", "rojas"), "blue": ("azul", "azul", "azules"),
-                 "green": ("verde", "verde", "verdes"), "yellow": ("amarillo", "amarilla", "amarillas")},
-                {"hat": ("el gorro {c}", 0), "scarf": ("la bufanda {c}", 1), "shirt": ("la camiseta {c}", 1), "boots": ("las botas {c}", 2)},
+    "spanyol": ({"red": ("rojo", "roja", "rojas", "rojos"), "blue": ("azul", "azul", "azules", "azules"),
+                 "green": ("verde", "verde", "verdes", "verdes"), "yellow": ("amarillo", "amarilla", "amarillas", "amarillos")},
+                {"hat": ("el gorro {c}", 0), "scarf": ("la bufanda {c}", 1), "shirt": ("la camiseta {c}", 1), "boots": ("las botas {c}", 2),
+                 "pants": ("los pantalones {c}", 3)},
                 "Ponle {x}."),
 }
 

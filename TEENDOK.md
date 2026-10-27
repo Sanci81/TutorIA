@@ -660,8 +660,14 @@ Tervezett elemek:
 10. [x] Megoldás után „Szuper”, de a Kész gomb ott marad.
 11. [x] atom (szénatom): nem egyértelmű, hogy mindegyikből 6 kell.
 12. [x] Mobilon néhány feladatnál nem világos, hogyan kell jelölni (pl. tizedes törtek) – később ellenőrizni.
-13. [ ] oltoz (maci öltöztetés): a maci „gagyi”, nem egybefüggő. Az AI-s maci képek (static/figurak/maci) egy-egy ruhadarabbal készültek, és a maci képről képre kicsit más – két ruha nem rakható egymásra. ÚJRA kell generálni MASZKOS szerkesztéssel (a maci minden képen pixelre ugyanaz), aztán bekötni; a feladat szavai minden tanult nyelven.
-14. [~] elolj: minden tanult nyelven működik (kész), a cica a dobozba „beül” (kész). MÉG HÁTRA: rendes AI-képek (cica, asztal, doboz) – a maci képeivel együtt.
+13. [x] oltoz (maci): a meglévő AI-képekből kivágott, a macira pontosan illesztett ruharétegek (static/figurak/maci/reteg) – bármely két ruha együtt felvehető; a mondat minden tanult nyelven. A gőz ikonja 💨 lett (♨️ tűznek tűnt).
+14. [x] elolj (valódi AI-képek: cica, asztal, doboz – 2026-10-27): minden tanult nyelven működik (kész), a cica a dobozba „beül” (kész). MÉG HÁTRA: rendes AI-képek (cica, asztal, doboz) – a maci képeivel együtt.
 15. [x] binaris: nem egyértelmű – előtte oktatás kell.
 16. [x] HIBA: „< F E L A D A T >{…}</FELADAT>” nyersen kint a lapon (szóközös jelölő).
 17. [x] tapl (tápláléklánc): „termelő” szó – magyarázat kell, mit jelent itt.
+
+## Új ötletek / bővítések (2026-10-27)
+
+18. [ ] ÚJ FELADAT – számkockák (Sándor videója): „? + ? + ? = 9” – a gyerek pöttyös számkockákat (1–5, színesek, egymásra rakhatók) húz a helyükre, aztán „Ellenőrzés”. Tornyokba rakható kockák, mint a Numberblocks-szerű játékokban.
+19. [ ] Nyelvi feladatok, amik még CSAK angolul vannak: szamangol (számok), idojaras (időjárás), szoba – legyenek németül, franciául, spanyolul is (mint az arcrész, elöljárók, maci).
+20. [x] Maci NADRÁG (4 szín) + „Hol a cica?” rendes képek (cica, asztal, doboz): kep_nadrag_cica.py → Claude kivágja, beköti.
