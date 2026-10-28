@@ -9995,21 +9995,28 @@
         if (!bub) { return; }
         var nev = bub.getAttribute('data-nev') || '';
         var es = (document.getElementById('chat-frame') || {}).value === 'es';
-        var MONDAT = es ? ['¡Hola, soy ' + nev + '!', '¡Tú puedes!', '¡Vamos, ' + nev + ' te ayuda!']
-                        : ['Szia, ' + nev + ' vagyok!', 'Ügyes vagy, csak így tovább!', 'Hajrá! ' + nev + ' drukkol neked!'];
+        var BEMUT = es ? '¡Hola, soy ' + nev + '!' : 'Szia, ' + nev + ' vagyok!';
+        /* 2026-10-28: a kabala MAGÁTÓL szól a feladat után – jóra dicsér, rosszra biztat. */
+        var DICSER = es ? ['¡Muy bien!', '¡Genial!', '¡Lo has conseguido!', '¡Bravo!', '¡Así se hace!']
+                        : ['Ügyes vagy!', 'Szuper!', 'Ez az, sikerült!', 'Bravó!', 'Nagyon jó!'];
+        var BIZTAT = es ? ['¡No pasa nada, inténtalo otra vez!', '¡Casi! Tú puedes.', 'Piénsalo con calma.']
+                        : ['Semmi baj, próbáld újra!', 'Majdnem! Menni fog.', 'Gondold végig nyugodtan.'];
+        function egy(t) { return t[Math.floor(Math.random() * t.length)]; }
         var ora = null;
         function mutat(sz) {
             bub.textContent = sz; bub.hidden = false;
             if (ora) { clearTimeout(ora); }
             ora = setTimeout(function () { bub.hidden = true; }, 3800);
         }
-        setTimeout(function () { mutat(MONDAT[0]); }, document.getElementById('kabala-rive') ? 3800 : 900);
+        setTimeout(function () { mutat(BEMUT); }, document.getElementById('kabala-rive') ? 3800 : 900);
+        window.kabalaMondDicser = function () { mutat(egy(DICSER)); };
+        window.kabalaMondBiztat = function () { mutat(egy(BIZTAT)); };
         var fig = document.getElementById('kabala-kep') || document.getElementById('kabala-rive');
         if (fig) {
             var oszlop = fig.closest('.chat-kabala-oszlop');
             if (oszlop) { oszlop.removeAttribute('aria-hidden'); }
             fig.style.cursor = 'pointer'; fig.style.pointerEvents = 'auto';
-            fig.addEventListener('click', function () { mutat(MONDAT[Math.floor(Math.random() * MONDAT.length)]); });
+            fig.addEventListener('click', function () { mutat(BEMUT); });
         }
     })();
 
@@ -10040,6 +10047,7 @@
     /* SZOMORÚ – rossz válasz után. Nem sokáig: a gyereket nem büntetni
        kell, csak jelezni, hogy még nem stimmel. */
     function kabalaSzomoru() {
+        if (window.kabalaMondBiztat) { try { window.kabalaMondBiztat(); } catch (e) {} }
         kabalaAllapot('szomoru');
         setTimeout(function () { kabalaAllapot('alap'); }, 3000);
     }
@@ -10146,6 +10154,7 @@
     /* Öröm — sikeres teszt, befejezett lecke. Pár másodperc után
        visszaáll, hogy ne váljon tapétává. */
     function kabalaOrul() {
+        if (window.kabalaMondDicser) { try { window.kabalaMondDicser(); } catch (e) {} }
         kabalaAllapot('orul');
         setTimeout(function () { kabalaAllapot('alap'); }, 4500);
     }

@@ -1420,8 +1420,8 @@ TRANSLATIONS = {
 
     # ── A GYEREK NEME (csak a kabala figurához) ──────────────────────────
     "nem_cimke": {"hu": "A gyerek neme", "es": "Niño o niña"},
-    "nem_fiu": {"hu": "Fiú", "es": "Niño"},
-    "nem_lany": {"hu": "Lány", "es": "Niña"},
+    "nem_fiu": {"hu": "Bence (fiú)", "es": "Hugo (niño)"},
+    "nem_lany": {"hu": "Lili (lány)", "es": "Lucía (niña)"},
     "nem_robot": {"hu": "Robi robot", "es": "Robot Robi"},
     "nem_robot_kep": {"hu": "Pixi robot", "es": "Robot Pixi"},
     "nem_nincs": {"hu": "Nem adom meg", "es": "Prefiero no decirlo"},
