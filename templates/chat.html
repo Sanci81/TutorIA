@@ -1218,6 +1218,21 @@
 .dm .kartya.rossz-k{background:#FDE8F1;border-color:var(--pink)}
 .kor-nagy .munkater .dm{background:#fff}
   .chat-kabala-oszlop{position:relative}
+  .ai-tajekoztato{display:flex;gap:14px;align-items:center;max-width:620px;margin:12px auto 4px;padding:14px 16px;
+    border-radius:20px;background:linear-gradient(135deg,#FFFDF5 0%,#F1F8F3 100%);border:1px solid #D7E9DD;
+    box-shadow:0 6px 20px rgba(31,122,77,.10);color:#1E3A2B;text-align:left;animation:aitBe .4s ease-out}
+  .ait-ikon{flex:none;width:52px;height:52px;border-radius:50%;background:#fff;display:grid;place-items:center;
+    font-size:30px;box-shadow:0 2px 8px rgba(0,0,0,.08);border:2px solid #CFE6D7}
+  .ait-szoveg{flex:1;min-width:0}
+  .ait-szoveg p{margin:2px 0;font-size:14.5px;line-height:1.45}
+  .ait-pill{display:inline-block;font-size:10.5px;font-weight:900;letter-spacing:.08em;color:#1F7A4D;
+    background:#E2F3E8;border-radius:999px;padding:2px 9px;margin-bottom:3px}
+  .ai-tajekoztato button{flex:none;border:0;border-radius:14px;padding:10px 16px;background:#1F7A4D;color:#fff;
+    font:800 14px Nunito,sans-serif;cursor:pointer;box-shadow:0 3px 0 #155C39}
+  .ai-tajekoztato button:active{transform:translateY(2px);box-shadow:0 1px 0 #155C39}
+  @media (max-width:600px){.ai-tajekoztato{flex-wrap:wrap}.ai-tajekoztato button{width:100%}}
+  @keyframes aitBe{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  .ai-jelzes{background:#E2F3E8;color:#1F7A4D;border-radius:999px;padding:2px 10px;font-weight:800}
   .kabala-buborek{position:absolute;top:-6px;right:-8px;z-index:5;max-width:190px;background:#fff;color:#0E2A1E;
     font:800 15px/1.3 Nunito,sans-serif;padding:10px 14px;border-radius:18px;box-shadow:0 6px 18px rgba(0,0,0,.14);
     animation:kbBe .35s ease-out}
@@ -1335,6 +1350,8 @@
                    rendesen tanulta a leckét, csak nem látta, melyiket. #}
                 <span class="chat-also-jel" aria-hidden="true">🎯</span>
                 <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
+                {# EU AI-rendelet 50. cikk: a gyerek tudja, hogy AI-jal beszél – jól láthatóan, végig. #}
+                <span class="chat-mini-stat ai-jelzes" title="{{ 'Tu profesor es una inteligencia artificial (IA). A veces puede equivocarse: si algo te parece raro, pregúntalo.' if g.lang == 'es' else 'A tanárod mesterséges intelligencia (AI). Néha tévedhet – ha valami furcsa, kérdezz rá!' }}">🤖 {{ 'Profesor de IA' if g.lang == 'es' else 'AI-tanár' }}</span>
                 <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> {{ t('chat_minutes_suffix') }}</span>
                 <span class="chat-mini-stat">🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
             {% if streak_days and streak_days > 0 %}
@@ -9988,6 +10005,24 @@
             }
         }, 350);
     }
+
+    /* AI-TÁJÉKOZTATÓ (EU AI-rendelet 50. cikk): az első órán egyszer, jól láthatóan.
+       Ezen a gépen megjegyezzük, hogy már látta; új gépen újra megjelenik. */
+    (function () {
+        var kulcs = 'ai_tajekoztato_' + {{ child['id']|tojson }};
+        try { if (localStorage.getItem(kulcs)) { return; } } catch (e) {}
+        var es = (document.getElementById('chat-frame') || {}).value === 'es';
+        var d = document.createElement('div'); d.className = 'ai-tajekoztato';
+        d.innerHTML = '<div class="ait-ikon" aria-hidden="true">🤖</div><div class="ait-szoveg">' +
+            '<span class="ait-pill">' + (es ? 'PROFESOR CON IA' : 'AI-TANÁR') + '</span>' + (es
+            ? '<p><b>¡Hola! Soy un profesor de inteligencia artificial.</b></p><p>Te enseño paso a paso, pero a veces puedo equivocarme. Si algo te parece raro, pregúntame o díselo a tus padres.</p>'
+            : '<p><b>Szia! Mesterséges intelligencia (AI) tanár vagyok.</b></p><p>Lépésről lépésre tanítalak, de néha én is tévedhetek. Ha valami furcsa, kérdezz rá, vagy szólj a szüleidnek!</p>') +
+            '</div><button type="button">' + (es ? '¡Entendido! 👍' : 'Értem! 👍') + '</button>';
+        d.querySelector('button').onclick = function () { try { localStorage.setItem(kulcs, '1'); } catch (e) {} d.remove(); };
+        var hova = document.querySelector('.chat-header-also') || document.body.firstChild;
+        hova.parentNode.insertBefore(d, hova.nextSibling);
+        if (!document.querySelector('.chat-header-also')) { d.style.margin = '12px'; }
+    })();
 
     /* NÉVBUBORÉK: az óra elején bemutatkozik, és ha a gyerek rákoppint. */
     (function () {
