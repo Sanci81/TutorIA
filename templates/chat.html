@@ -1228,7 +1228,7 @@
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
    Az effective_age már jön a szerverről, nem kell hozzá új adat. #}
 {% set korsav = "kor-kicsi" if (effective_age or 10) <= 8
-                else ("kor-kozep" if (effective_age or 10) <= 11 else "kor-nagy") %}
+                else ("kor-kozep" if (effective_age or 10) <= 11 else "kor-kozep kor-felso") %}
 <section class="chat-layout {{ korsav }}{% if chat_mode == 'voice' %} chat-layout-voice{% endif %}" id="chat-page">
     <button type="button" class="chat-sidebar-toggle" id="sidebar-toggle" aria-label="{{ t('chat_topics_title') }}">☰</button>
 
@@ -9141,8 +9141,10 @@
         var racs = document.createElement('div'); racs.className = 'ie-mem'; doboz.appendChild(racs);
         var parok = f.parok || [], n = parok.length, lapok = [], fent = [], talalt = 0, lepes = 0, zar = false;
         /* Több pár (legfeljebb 12 = 24 kártya): szélesebb rács. */
-        if (n > 8) { var _osz = (2 * n) % 6 === 0 ? 6 : ((2 * n) % 5 === 0 ? 5 : 6); racs.style.gridTemplateColumns = 'repeat(' + _osz + ',1fr)'; racs.style.maxWidth = (_osz * 96) + 'px'; }
-        else if (n > 6) { racs.style.maxWidth = '460px'; }
+        /* Mindig TELI sorok: olyan oszlopszám, ami osztja a kártyák számát (2026-10-28). */
+        var _k = 2 * n, _osz = 4;
+        [_k >= 18 ? 6 : 4, 5, 4, 6, 3, 7].some(function (c) { if (_k % c === 0 && _k / c >= 2) { _osz = c; return true; } return false; });
+        racs.style.gridTemplateColumns = 'repeat(' + _osz + ',1fr)'; racs.style.maxWidth = (_osz * 96) + 'px';
         var EMOJI = /\p{Extended_Pictographic}/u;
         parok.forEach(function (p, i) { lapok.push({id: i, t: p[0], jobb: false}); lapok.push({id: i, t: p[1], jobb: true}); });
         function frissit() { allas.textContent = L.memAllas.replace('{p}', talalt).replace('{n}', n).replace('{l}', lepes); }

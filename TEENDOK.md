@@ -680,3 +680,8 @@ Tervezett elemek:
 25. [x] Memória: legfeljebb 12 pár, évfolyam és tudás szerint több (1–2.: 4–6, 3–4.: 6–8, 5.-től: 8–12).
 26. [ ] TANÁRI / ISKOLAI változat (ötlet, Landris mintájára): tanárok órát, feladatlapot, dolgozatot készítenek a tantervhez; havidíjas.
 27. [ ] Nyitóoldal: a gyerek nevét már ott be lehet írni (Novakid-ötlet), a regisztrációnál előre kitöltve, a gyerekprofil ezzel jön létre. Hosszú kérdőív NEM kell.
+
+28. [ ] SZÜLŐI KIMUTATÁS (KooBits-ötlet): tantárgyanként a készségek színnel – „Mesteri / Biztos / Kezdő / Még nem”, és mennyi van kész a témakörökből. A szülő egy pillantással látja, hol tart a gyerek.
+29. [ ] NAPI CÉL: pl. „ma 10 feladat ~20 perc” – csík, ami betelik; a sorozat (streak) már megvan, ehhez köthető.
+30. [ ] HIRDETÉS-FORMA (KooBits): rövid, telefonos videó egy szülő szemszögéből – „3 ok, amiért…” – valódi gyerek a gépnél (saját, engedéllyel).
+31. [ ] NYITÓOLDAL (DeepSeek-vélemény alapján): 1) első képernyőn egy mondat: „AI-tanár, ami a gyerek tempójában tanít”; 2) ár / mennyi a próba után; 3) 2–3 szülői vélemény a tesztelőktől; 4) adatvédelmi blokk (GDPR, hol tárolódik, mit lát a szülő); 5) felső tagozatnak szóló rész is (8. osztály, történelem); 6) a magyar/spanyol tanterv viszonya egy mondatban.

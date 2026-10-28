@@ -4158,6 +4158,9 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
                 if bal and jobb and bal not in latott and jobb not in latott:
                     latott.update((bal, jobb))
                     tiszta.append([bal, jobb])
+        # Teli sorok a táblán: 7 és 11 pár helyett 6 és 10.
+        if len(tiszta) in (7, 11):
+            tiszta = tiszta[:-1]
         if len(tiszta) < 3:
             return None
         kerdes = ("Encuentra las parejas." if es_tanterv
