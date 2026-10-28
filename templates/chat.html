@@ -1351,7 +1351,7 @@
                 <span class="chat-also-jel" aria-hidden="true">🎯</span>
                 <h2 class="chat-current-topic" id="current-topic-title">{{ current_topic }}</h2>
                 {# EU AI-rendelet 50. cikk: a gyerek tudja, hogy AI-jal beszél – jól láthatóan, végig. #}
-                <span class="chat-mini-stat ai-jelzes" title="{{ 'Tu profesor es una inteligencia artificial (IA). A veces puede equivocarse: si algo te parece raro, pregúntalo.' if g.lang == 'es' else 'A tanárod mesterséges intelligencia (AI). Néha tévedhet – ha valami furcsa, kérdezz rá!' }}">🤖 {{ 'Profesor de IA' if g.lang == 'es' else 'AI-tanár' }}</span>
+                <span class="chat-mini-stat ai-jelzes" title="{{ 'Tu profesor es una inteligencia artificial (IA).' if g.lang == 'es' else 'A tanárod mesterséges intelligencia (AI).' }}">🤖 {{ 'Profesor de IA' if g.lang == 'es' else 'AI-tanár' }}</span>
                 <span class="chat-mini-stat">⏱️ <span id="learning-minutes-today">{{ learning_today }}</span> {{ t('chat_minutes_suffix') }}</span>
                 <span class="chat-mini-stat">🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
             {% if streak_days and streak_days > 0 %}
@@ -2392,6 +2392,16 @@
         if (typeof sendBtn !== 'undefined' && sendBtn) { sendBtn.disabled = false; }
         if (typeof input !== 'undefined' && input) { input.disabled = false; }
         return true;
+    }
+
+    /* A személyes-adat szűrő kitakarta a gyerek üzenetéből a címet/telefont:
+       a buborékban is a kitakart szöveg álljon (2026-10-28). */
+    function sajatUzenetFrissit(szoveg) {
+        if (!szoveg) { return; }
+        var b = document.querySelectorAll('.chat-bubble-user');
+        var u = b.length ? b[b.length - 1] : null;
+        var belso = u && (u.querySelector('.chat-bubble-inner') || u);
+        if (belso) { belso.textContent = szoveg; }
     }
 
     function appendBubble(role, text, figures, feladat) {
@@ -10015,8 +10025,8 @@
         var d = document.createElement('div'); d.className = 'ai-tajekoztato';
         d.innerHTML = '<div class="ait-ikon" aria-hidden="true">🤖</div><div class="ait-szoveg">' +
             '<span class="ait-pill">' + (es ? 'PROFESOR CON IA' : 'AI-TANÁR') + '</span>' + (es
-            ? '<p><b>¡Hola! Soy un profesor de inteligencia artificial.</b></p><p>Te enseño paso a paso, pero a veces puedo equivocarme. Si algo te parece raro, pregúntame o díselo a tus padres.</p>'
-            : '<p><b>Szia! Mesterséges intelligencia (AI) tanár vagyok.</b></p><p>Lépésről lépésre tanítalak, de néha én is tévedhetek. Ha valami furcsa, kérdezz rá, vagy szólj a szüleidnek!</p>') +
+            ? '<p><b>¡Hola! Soy un profesor de inteligencia artificial (IA).</b></p><p>Te enseño paso a paso, a tu ritmo. Si algo no queda claro, pregúntame tranquilamente.</p>'
+            : '<p><b>Szia! Mesterséges intelligencia (AI) tanár vagyok.</b></p><p>Lépésről lépésre, a te tempódban tanítalak. Ha valami nem világos, nyugodtan kérdezz!</p>') +
             '</div><button type="button">' + (es ? '¡Entendido! 👍' : 'Értem! 👍') + '</button>';
         d.querySelector('button').onclick = function () { try { localStorage.setItem(kulcs, '1'); } catch (e) {} d.remove(); };
         var hova = document.querySelector('.chat-header-also') || document.body.firstChild;
@@ -10683,6 +10693,7 @@
                 }
                 var aiMessage = res.data.reply || '';
                 window.kabalaEredmeny = res.data.eredmeny || '';
+                sajatUzenetFrissit(res.data.sajat_uzenet);
                 if (res.data.topic_done) {
                     setTimeout(function () {
                         confetti({
@@ -11110,6 +11121,7 @@
                     }
                     var reply = res.data.reply || '';
                     window.kabalaEredmeny = res.data.eredmeny || '';
+                    sajatUzenetFrissit(res.data.sajat_uzenet);
                     if (res.data.topic_done) {
                         setTimeout(function () {
                             confetti({

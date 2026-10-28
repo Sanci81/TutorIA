@@ -5485,6 +5485,21 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             f"Rakd sorrendbe a képeket: {NEV[0]}!")
         return {"tipus": "kepsor", "sorozat": sorozat, "kerdes": kerdes}
 
+    if tipus == "szamkocka":
+        # SZÁMKOCKÁK (2026-10-28): „? + ? + ? = 9” – a gyerek pöttyös számtornyokat
+        # tesz a helyekre. Több jó megoldás is lehet: csak az összeg és a darab számít.
+        try:
+            osszeg = int(adat.get("osszeg"))
+            db = int(adat.get("db") or 3)
+        except Exception:
+            return None
+        if not (2 <= db <= 4 and db <= osszeg <= 20):
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            f"Elige {db} torres que sumen {osszeg}." if es_tanterv
+            else f"Válassz {db} számtornyot, amelyek összege {osszeg}!")
+        return {"tipus": "szamkocka", "osszeg": osszeg, "db": db, "kerdes": kerdes}
+
     if tipus == "szamangol":
         try:
             szam = int(adat.get("szam")) if adat.get("szam") is not None else random.randint(0, 20)
@@ -9544,6 +9559,12 @@ _DM_FELULETEK = [
      'ORDEN CON IMÁGENES – el niño ordena 4 imágenes. "sorozat": noveny|lepke (planta|mariposa):\n'
      '   <FELADAT>{"tipus":"kepsor","sorozat":"lepke"}</FELADAT>',
      'növény fejlődése, lepke élete        → kepsor', 'crecimiento planta, mariposa       → kepsor'),
+    ("szamkocka", {"matek"}, 1, 3,
+     'SZÁMKOCKÁK – a gyerek pöttyös számtornyokat (1–10) rak a helyekre, hogy az összeg kijöjjön; több jó megoldás is van. "osszeg": 2–20, "db": 2–4 (hány tag):\n'
+     '   <FELADAT>{"tipus":"szamkocka","osszeg":9,"db":3}</FELADAT>',
+     'TORRES DE NÚMEROS – el niño coloca torres de cubos (1–10) para que salga la suma; hay varias soluciones. "osszeg": 2–20, "db": 2–4:\n'
+     '   <FELADAT>{"tipus":"szamkocka","osszeg":9,"db":3}</FELADAT>',
+     'összeg felbontása, pótlás, „hányféleképpen” → szamkocka', 'descomponer un número, sumas         → szamkocka'),
     ("szamangol", {"nyelv"}, 1, 4,
      'SZÁMOK A TANULT NYELVEN (a program mondja ki: angol/német/francia/spanyol) – hallás után a jó számra koppint (0–20). "szam" opcionális:\n'
      '   <FELADAT>{"tipus":"szamangol","szam":7}</FELADAT>',
@@ -10365,6 +10386,27 @@ def _teszt_kapu_szoveg(
 def _build_chat_system_prompt(*args, **kwargs) -> str:
     """A prompt + (ha a gépi rajzok ki vannak kapcsolva) a rajztilalom a végén."""
     prompt = _build_chat_system_prompt_alap(*args, **kwargs)
+    # A személyes-adat szűrő „[elrejtve]”-re cseréli a címet/telefont (2026-10-28).
+    prompt += (
+        "\n\n=== [elrejtve] A GYEREK ÜZENETÉBEN ===\n"
+        "Ha a gyerek üzenetében „[elrejtve]” áll, személyes adatot (címet, telefonszámot, e-mailt) írt, "
+        "amit a rendszer a védelme érdekében elrejtett. Ilyenkor EGY rövid, kedves mondattal mondd: "
+        "„Ilyen személyes adatot, mint a címed vagy a telefonszámod, nem kell ide írnod – ezt jobb megtartani "
+        "magadnak.” Ne írd, hogy nem látod vagy nem tudod ellenőrizni a választ, és ne kérd újra. "
+        "Utána folytasd a leckét.\n"
+        "Si en el mensaje del niño aparece «[elrejtve]», escribió un dato personal que el sistema ocultó. "
+        "Dile con UNA frase amable que no hace falta escribir aquí su dirección ni su teléfono, y sigue con la "
+        "lección. No digas que no puedes ver o comprobar su respuesta.\n")
+    # Személyes-adat szűrő (2026-10-28): a gyerek üzenetében [elrejtve] áll.
+    prompt += (
+        "\n\n=== HA A GYEREK ÜZENETÉBEN [elrejtve] ÁLL ===\n"
+        "Ez azt jelenti, hogy személyes adatot (címet, telefonszámot, e-mailt) írt, és a rendszer "
+        "kitakarta. Egy rövid, kedves mondattal kérd meg, hogy ilyet ide ne írjon, mert a tanuláshoz "
+        "nem kell; aztán tedd fel újra az előző kérdést. SOHA ne írd, hogy „rejtve jelent meg” vagy "
+        "„nem látom a válaszod” – ne magyarázd a szűrőt.\n"
+        "Si en el mensaje del niño aparece [elrejtve], ha escrito un dato personal (dirección, teléfono, "
+        "correo) y el sistema lo ha ocultado: pídele con una frase amable que no lo escriba aquí y repite "
+        "la pregunta anterior. NUNCA digas que «aparece oculto».\n")
     if not ABRA_RAJZOK:
         prompt += (
             "\n\n=== RAJZ: MOST NINCS (ez felülír minden korábbi ábra-szabályt) ===\n"
@@ -14104,6 +14146,8 @@ def child_chat_send(child_id: int):
         {
             "reply": reply,
             "eredmeny": _eredmeny,
+            # Ha a szűrő kitakart valamit, a gyerek buborékja is a kitakart szöveget mutassa.
+            "sajat_uzenet": user_text if user_text != _eredeti else "",
             "session_id": session_id,
             "progress_pct": progress_pct,
             "current_topic": current_topic,
