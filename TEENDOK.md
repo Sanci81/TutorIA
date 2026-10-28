@@ -675,3 +675,8 @@ Tervezett elemek:
 21. [ ] ÉRDEKESSÉG-DOBOZ: lecke közben egy kis sárga dobozban egy érdekesség a témához (pl. kétjegyű szorzásnál: hogyan szoroznak Japánban vonalakkal). A tanár adja egy rejtett jelölővel, ritkán (leckénként 1). Minden tantárgyhoz: történelem – „tudtad?”, nyelv – szó eredete, természet – rekord állatok stb.
 22. [ ] HÁTTÉR-ÖTLET (Synthesis Tutor mintájára): sötét „űr” háttér a feladattáblán – finom rácsvonal, csillagpöttyök, néhány vonalas rajz (bolygó, távcső, műhold, ufó). Csak ötlet; saját rajzokkal, nem másolva.
 23. [ ] A Feladat-próba listába bekerültek az ALAP feladatok is (memória, pizza, óra, párosítás, szám, válaszgomb…) – ezeket is végig kell nézni.
+
+24. [x] Kabalanevek (Bence/Lili – Hugo/Lucía – Robi – Pixi), a szülő átírhatja; az óra elején bemutatkozik, koppintásra biztat.
+25. [x] Memória: legfeljebb 12 pár, évfolyam és tudás szerint több (1–2.: 4–6, 3–4.: 6–8, 5.-től: 8–12).
+26. [ ] TANÁRI / ISKOLAI változat (ötlet, Landris mintájára): tanárok órát, feladatlapot, dolgozatot készítenek a tantervhez; havidíjas.
+27. [ ] Nyitóoldal: a gyerek nevét már ott be lehet írni (Novakid-ötlet), a regisztrációnál előre kitöltve, a gyerekprofil ezzel jön létre. Hosszú kérdőív NEM kell.

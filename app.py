@@ -2875,6 +2875,7 @@ def add_child():
         region = request.form.get("region") or None
         # A gyerek neme: csak a kabala figurához kell, megadása nem kötelező.
         neme = (request.form.get("gyerek_neme") or "").strip()
+        kabala_nev = (request.form.get("kabala_nev") or "").strip()[:30]
         # A "robot" a mozgó kabala figura, a "robot_kep" a rajzolt (álló) robot.
         # A megadása nem kötelező: üres érték mellett egyáltalán nincs figura
         # a chat oldalon.
@@ -2936,6 +2937,7 @@ def add_child():
                     "country": country,
                     "region": region,
                     "gyerek_neme": neme,
+                    "kabala_nev": kabala_nev,
                 },
             )
 
@@ -2947,6 +2949,7 @@ def add_child():
             curriculum=active_curriculum,
             grade_hu=grade_hu, grade_es=grade_es,
             gyerek_neme=neme or None,
+            kabala_nev=kabala_nev or None,
         )
         flash(i18n.t("flash_child_added", g.lang), "success")
         return redirect(url_for("dashboard"))
@@ -3011,6 +3014,7 @@ def edit_child(child_id: int):
         if voice_es not in ("female", "male"):
             voice_es = "female"
         neme = (request.form.get("gyerek_neme") or "").strip()
+        kabala_nev = (request.form.get("kabala_nev") or "").strip()[:30]
         # A "robot" a mozgó kabala figura, a "robot_kep" a rajzolt (álló) robot.
         # A megadása nem kötelező: üres érték mellett egyáltalán nincs figura
         # a chat oldalon.
@@ -3074,6 +3078,7 @@ def edit_child(child_id: int):
                     "voice_gender_hu": voice_hu,
                     "voice_gender_es": voice_es,
                     "gyerek_neme": neme,
+                    "kabala_nev": kabala_nev,
                 },
                 teacher_profiles=TEACHER_PROFILES,
                 active_curriculum=active_curriculum,
@@ -3096,6 +3101,7 @@ def edit_child(child_id: int):
             voice_gender_hu=voice_hu,
             voice_gender_es=voice_es,
             gyerek_neme=neme,
+            kabala_nev=kabala_nev,
         )
         # A hangválasztás azonnal érvényesüljön a következő felolvasásnál is.
         session.pop("tts_voice", None)
@@ -3114,6 +3120,7 @@ def edit_child(child_id: int):
         "voice_gender_hu": child.get("voice_gender_hu") or "female",
         "voice_gender_es": child.get("voice_gender_es") or "female",
         "gyerek_neme": child.get("gyerek_neme") or "",
+        "kabala_nev": child.get("kabala_nev") or "",
     }
     return render_template(
         "edit_child.html", child=child, form=form,
@@ -4145,7 +4152,7 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         if not isinstance(parok, list):
             return None
         tiszta, latott = [], set()
-        for par in parok[:6]:
+        for par in parok[:12]:
             if isinstance(par, (list, tuple)) and len(par) == 2:
                 bal, jobb = str(par[0]).strip()[:24], str(par[1]).strip()[:24]
                 if bal and jobb and bal not in latott and jobb not in latott:
@@ -9872,7 +9879,9 @@ magyarázat nélkül soha.
    emoji is; a JOBB oldalt a felolvasó kimondja, amikor a gyerek
    felfordítja, ezért idegen nyelven a jobb oldal az idegen szó:
    <FELADAT>{"tipus":"memoria","parok":[["🍎","apple"],["🐶","dog"],["🐱","cat"],["🏠","house"]]}</FELADAT>
-   Három–hat pár, rövid szavak. Szünetben, lazításnak is ajánlhatod.
+   Párok száma az évfolyamhoz és a tudáshoz: 1–2. o. 4–6 pár, 3–4. o. 6–8 pár, 5. o.-tól 8–12 pár.
+   Ha az előző memóriát könnyen megoldotta, a következőben adj TÖBB párt (legfeljebb 12).
+   Rövid szavak. Szünetben, lazításnak is ajánlhatod.
 
 🔴 A LEGFONTOSABB SZABÁLY EZEN A LISTÁN
 Ha a válaszodban BÁRMIT kérsz a gyerektől — számolást, kiválasztást,
@@ -10102,7 +10111,9 @@ ejercicio sin explicación.
    el lado DERECHO lo pronuncia la voz cuando el niño gira la carta, así
    que en inglés el lado derecho es la palabra inglesa:
    <FELADAT>{"tipus":"memoria","parok":[["🍎","apple"],["🐶","dog"],["🐱","cat"],["🏠","house"]]}</FELADAT>
-   De tres a seis parejas, palabras cortas. También vale para un descanso.
+   Número de parejas según el curso y el nivel: 1.º–2.º 4–6, 3.º–4.º 6–8, desde 5.º 8–12.
+   Si resolvió fácilmente el anterior, en el siguiente pon MÁS parejas (máximo 12).
+   Palabras cortas. También vale para un descanso.
 
 🔴 LA REGLA MÁS IMPORTANTE DE ESTA LISTA
 Si en tu respuesta pides CUALQUIER COSA al niño — calcular, elegir,
@@ -13094,6 +13105,12 @@ def child_chat(child_id: int):
     # A MOZGÓ FIGURA külön választás, nem a nem helyett: a fiú és a lány
     # kabala megmarad, a "nem adom meg" pedig továbbra is üres oszlopot ad.
     _kabala_robot = (_neme == "robot")
+    # A kabala NEVE: amit a szülő megadott, különben az alapnév (2026-10-27).
+    _es_old = (_active_curriculum() or "HU").upper() == "ES"
+    _kabala_nev = (child.get("kabala_nev") or "").strip() or {
+        "fiu": "Hugo" if _es_old else "Bence",
+        "lany": "Lucía" if _es_old else "Lili",
+        "robot": "Robi", "robot_kep": "Pixi"}.get(_neme, "")
 
     # ── ÚJ MUNKAFELÜLET (próbamód) ──────────────────────────────────────
     # A tanítás a munkatérre kerül, a beszélgetés keskeny sávba szorul
@@ -13127,6 +13144,7 @@ def child_chat(child_id: int):
         proba_feladat=_proba_feladat,
         uj_felulet=_uj_felulet,
         kabala_kep=_kabala,
+        kabala_nev=_kabala_nev,
         kabala_robot=_kabala_robot,
         child=child,
         subject=subject,
@@ -16251,7 +16269,9 @@ def _proba_feladat_keszit(tipus, grade, es, language):
     # Az alap feladatok (memória, pizza, óra, párosítás…) a fő tanári blokk példáiból.
     pelda = _alap_feladat_peldak(es).get(tipus)
     if pelda:
-        fel = _feladat_parse(pelda, grade=grade, es_tanterv=es, temakor=None)
+        # évfolyam nélkül: a próbában a feladat EREDETI alakja látszódjon
+        # (pl. a béka nagyobbaknak sima beírós mezővé alakulna).
+        fel = _feladat_parse(pelda, grade=None, es_tanterv=es, temakor=None)
         if isinstance(fel, dict):
             fel["proba"] = True
         return fel

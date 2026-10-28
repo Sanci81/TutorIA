@@ -194,6 +194,8 @@ class Child(Base):
     # figura álljon mellette a chatben. Megadása nem kötelező – ha üres,
     # nem jelenik meg figura.
     gyerek_neme: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    # A kabala NEVE – a szülő írja át; üresen az alapnév (Bence/Lili, Hugo/Lucía, Robi, Pixi).
+    kabala_nev: Mapped[str | None] = mapped_column(String(30), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -570,6 +572,7 @@ def _child_dict(child: Child) -> dict[str, Any]:
         "voice_gender_hu": getattr(child, "voice_gender_hu", None) or "female",
         "voice_gender_es": getattr(child, "voice_gender_es", None) or "female",
         "gyerek_neme": getattr(child, "gyerek_neme", None) or "",
+        "kabala_nev": getattr(child, "kabala_nev", None) or "",
         "created_at": child.created_at,
         "needs_birth_date": bd is None,
     }
@@ -602,6 +605,7 @@ def init_db() -> None:
     ensure_parents_ertesites_columns()
     ensure_parents_pin_column()
     ensure_children_neme_column()
+    ensure_children_kabala_nev_column()
     ensure_chat_messages_feladat_column()
     ensure_learning_time_keszulek_column()
     ensure_wallet_avatar_columns()
@@ -1045,6 +1049,26 @@ def ensure_children_neme_column() -> None:
                 conn.execute(text("ALTER TABLE children ADD COLUMN gyerek_neme VARCHAR(10)"))
     except Exception as exc:
         logger.warning("ensure_children_neme_column (sqlite): kihagyva: %s", exc)
+
+
+def ensure_children_kabala_nev_column() -> None:
+    """children.kabala_nev – a kabala neve (a szülő adhatja meg)."""
+    from sqlalchemy import text
+
+    try:
+        with _get_engine().begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE children ADD COLUMN IF NOT EXISTS kabala_nev VARCHAR(30)"))
+        return
+    except Exception as exc:
+        logger.warning("ensure_children_kabala_nev_column: kihagyva: %s", exc)
+    try:
+        with _get_engine().begin() as conn:
+            oszlopok = {sor[1] for sor in conn.execute(text("PRAGMA table_info(children)"))}
+            if "kabala_nev" not in oszlopok:
+                conn.execute(text("ALTER TABLE children ADD COLUMN kabala_nev VARCHAR(30)"))
+    except Exception as exc:
+        logger.warning("ensure_children_kabala_nev_column (sqlite): kihagyva: %s", exc)
 
 
 def ensure_parents_last_seen_column() -> None:
@@ -1730,6 +1754,7 @@ def create_child(
     grade_hu: int | None = None,
     grade_es: int | None = None,
     gyerek_neme: str | None = None,
+    kabala_nev: str | None = None,
 ) -> int:
     db = _session()
     try:
@@ -1756,6 +1781,7 @@ def create_child(
             country=country,
             curriculum=curriculum,
             region=region,
+            kabala_nev=((kabala_nev or "").strip()[:30] or None),
             gyerek_neme=(gyerek_neme
                          if gyerek_neme in ("fiu", "lany", "robot", "robot_kep")
                          else None),
@@ -1783,6 +1809,7 @@ def update_child(
     voice_gender_hu: str | None = None,
     voice_gender_es: str | None = None,
     gyerek_neme: str | None = None,
+    kabala_nev: str | None = None,
 ) -> bool:
     """Gyerek profil szerkesztése – csak a megadott szülő gyerekéhez."""
     db = _session()
@@ -1811,6 +1838,8 @@ def update_child(
         if voice_gender_es in ("female", "male"):
             child.voice_gender_es = voice_gender_es
         # Üres érték = „nem adom meg"; ilyenkor törlődik a korábbi választás.
+        if kabala_nev is not None:
+            child.kabala_nev = (kabala_nev or "").strip()[:30] or None
         if gyerek_neme is not None:
             child.gyerek_neme = (
                 gyerek_neme

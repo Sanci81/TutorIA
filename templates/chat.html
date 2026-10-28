@@ -1217,6 +1217,12 @@
 .dm .billentyu button.ok{background:var(--narancs);color:#fff;border-color:var(--narancs-a)}
 .dm .kartya.rossz-k{background:#FDE8F1;border-color:var(--pink)}
 .kor-nagy .munkater .dm{background:#fff}
+  .chat-kabala-oszlop{position:relative}
+  .kabala-buborek{position:absolute;top:-6px;right:-8px;z-index:5;max-width:190px;background:#fff;color:#0E2A1E;
+    font:800 15px/1.3 Nunito,sans-serif;padding:10px 14px;border-radius:18px;box-shadow:0 6px 18px rgba(0,0,0,.14);
+    animation:kbBe .35s ease-out}
+  .kabala-buborek::after{content:"";position:absolute;left:22px;bottom:-9px;border:9px solid transparent;border-top-color:#fff;border-bottom:0}
+  @keyframes kbBe{from{opacity:0;transform:translateY(6px) scale(.9)}to{opacity:1;transform:none}}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -1499,6 +1505,10 @@
     {% endif %}
     {% if kabala_kep or kabala_robot %}
     <div class="chat-kabala-oszlop" aria-hidden="true">
+        {% if kabala_nev %}
+        {# A kabala bemutatkozik (2026-10-27): „Szia, Bence vagyok!” – a nevet a szülő adhatja meg. #}
+        <div class="kabala-buborek" id="kabala-buborek" data-nev="{{ kabala_nev }}" hidden></div>
+        {% endif %}
         {% if kabala_robot %}
         <div class="chat-kabala chat-kabala-doboz">
             <canvas class="chat-kabala-rive" id="kabala-rive"
@@ -7868,8 +7878,9 @@
         function frissit() {
             var van = sor.querySelectorAll('.fepito-kartya').length > 0;
             sor.setAttribute('data-ures', van ? '0' : '1');
-            kesz.disabled = !van;
+            if (van && tippEl) { tippEl.remove(); tippEl = null; }
         }
+        var tippEl = null;
 
         function kartya(szo, hova) {
             var g = document.createElement('button');
@@ -7892,8 +7903,17 @@
         kesz.type = 'button';
         kesz.className = 'feladat-kesz-gomb';
         kesz.textContent = L.feladatKesz;
-        kesz.disabled = true;
+        /* 2026-10-27: a Kész gomb nem „néma” többé – ha még nincs kirakva
+           egy szó sem, megmondjuk, mit kell csinálni (Sándor: „nem reagál”). */
         kesz.addEventListener('click', function () {
+            if (!sor.querySelector('.fepito-kartya')) {
+                if (!tippEl) { tippEl = document.createElement('p'); tippEl.className = 'fsz-kerdes';
+                    tippEl.style.color = '#B3541E'; doboz.insertBefore(tippEl, kesz); }
+                tippEl.textContent = (document.getElementById('chat-frame') || {}).value === 'es'
+                    ? 'Toca las palabras en el orden correcto: así se forma la frase arriba.'
+                    : 'Koppints a szavakra a helyes sorrendben – fent áll össze a mondat.';
+                return;
+            }
             var szavak = [];
             sor.querySelectorAll('.fepito-kartya').forEach(function (e) {
                 szavak.push(e.textContent);
@@ -9120,6 +9140,9 @@
         var allas = document.createElement('div'); allas.className = 'ie-allas'; doboz.appendChild(allas);
         var racs = document.createElement('div'); racs.className = 'ie-mem'; doboz.appendChild(racs);
         var parok = f.parok || [], n = parok.length, lapok = [], fent = [], talalt = 0, lepes = 0, zar = false;
+        /* Több pár (legfeljebb 12 = 24 kártya): szélesebb rács. */
+        if (n > 8) { var _osz = (2 * n) % 6 === 0 ? 6 : ((2 * n) % 5 === 0 ? 5 : 6); racs.style.gridTemplateColumns = 'repeat(' + _osz + ',1fr)'; racs.style.maxWidth = (_osz * 96) + 'px'; }
+        else if (n > 6) { racs.style.maxWidth = '460px'; }
         var EMOJI = /\p{Extended_Pictographic}/u;
         parok.forEach(function (p, i) { lapok.push({id: i, t: p[0], jobb: false}); lapok.push({id: i, t: p[1], jobb: true}); });
         function frissit() { allas.textContent = L.memAllas.replace('{p}', talalt).replace('{n}', n).replace('{l}', lepes); }
@@ -9168,7 +9191,13 @@
         if (!szoveg) { return; }
         /* Feladat-próba (üzemeltető): a válasz NEM megy a tanárhoz – a tanár
            mást tanít, és összezavarodna („ez egy másik feladathoz illik”). */
-        if (window.__probaAktiv) { console.log('Feladat-próba válasz (nem küldve):', szoveg); return; }
+        if (window.__probaAktiv) {
+            /* A gyerek órán ez a válasz a TANÁRHOZ menne, ő értékelné – a próbában kiírjuk. */
+            var pv = document.createElement('div'); pv.className = 'visszajelzes jo';
+            pv.style.cssText = 'margin-top:10px;background:#FFF8E1;color:#5B4A00;border:2px dashed #F5A01E';
+            pv.textContent = 'Próba – órán ez menne a tanárnak, ő értékelné: „' + szoveg + '”';
+            try { doboz.appendChild(pv); } catch (e) {}
+            return; }
 
         // ELŐSZÖR KÜLDÜNK, csak utána tüntetjük el a feladatot. Élesben ez
         // ment félre: hangos módban a sendMessage() némán visszafordult, a
@@ -9957,6 +9986,30 @@
             }
         }, 350);
     }
+
+    /* NÉVBUBORÉK: az óra elején bemutatkozik, és ha a gyerek rákoppint. */
+    (function () {
+        var bub = document.getElementById('kabala-buborek');
+        if (!bub) { return; }
+        var nev = bub.getAttribute('data-nev') || '';
+        var es = (document.getElementById('chat-frame') || {}).value === 'es';
+        var MONDAT = es ? ['¡Hola, soy ' + nev + '!', '¡Tú puedes!', '¡Vamos, ' + nev + ' te ayuda!']
+                        : ['Szia, ' + nev + ' vagyok!', 'Ügyes vagy, csak így tovább!', 'Hajrá! ' + nev + ' drukkol neked!'];
+        var ora = null;
+        function mutat(sz) {
+            bub.textContent = sz; bub.hidden = false;
+            if (ora) { clearTimeout(ora); }
+            ora = setTimeout(function () { bub.hidden = true; }, 3800);
+        }
+        setTimeout(function () { mutat(MONDAT[0]); }, document.getElementById('kabala-rive') ? 3800 : 900);
+        var fig = document.getElementById('kabala-kep') || document.getElementById('kabala-rive');
+        if (fig) {
+            var oszlop = fig.closest('.chat-kabala-oszlop');
+            if (oszlop) { oszlop.removeAttribute('aria-hidden'); }
+            fig.style.cursor = 'pointer'; fig.style.pointerEvents = 'auto';
+            fig.addEventListener('click', function () { mutat(MONDAT[Math.floor(Math.random() * MONDAT.length)]); });
+        }
+    })();
 
     function kabalaAllapot(nev) {
         kabalaKert = nev;

@@ -1425,6 +1425,9 @@ TRANSLATIONS = {
     "nem_robot": {"hu": "Robi robot", "es": "Robot Robi"},
     "nem_robot_kep": {"hu": "Pixi robot", "es": "Robot Pixi"},
     "nem_nincs": {"hu": "Nem adom meg", "es": "Prefiero no decirlo"},
+    "kabala_nev_cimke": {"hu": "A kabala neve", "es": "Nombre de la mascota"},
+    "kabala_nev_hint": {"hu": "Ha üresen hagyod: Bence, Lili, Robi vagy Pixi",
+                        "es": "Si lo dejas vacío: Hugo, Lucía, Robi o Pixi"},
     "nem_miert": {
         "hu": "Csak azt dönti el, melyik rajzfigura kíséri a tanulásban. "
               "A tananyagra nincs hatással.",

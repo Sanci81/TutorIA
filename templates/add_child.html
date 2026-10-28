@@ -71,6 +71,9 @@
                     </label>
                 </div>
                 <p class="field-hint">{{ t('nem_miert') }}</p>
+                <label for="kabala_nev" style="margin-top:10px;display:block">{{ t('kabala_nev_cimke') }}</label>
+                <input type="text" id="kabala_nev" name="kabala_nev" maxlength="30"
+                       value="{{ form.get('kabala_nev', '') }}" placeholder="{{ t('kabala_nev_hint') }}">
             </div>
 
             {# CSAK AZ AKTUÁLIS TANTERV OSZTÁLYA LÁTSZIK.
