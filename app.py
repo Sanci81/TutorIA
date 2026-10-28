@@ -310,6 +310,68 @@ def _ssml_escape(text: str) -> str:
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-insecure-key")
+# ── BIZTONSÁG (2026-10-28) ─────────────────────────────────────────────
+# A munkamenet-süti JavaScriptből nem olvasható, más oldalról nem küldhető,
+# és élesben (Railway) csak HTTPS-en megy.
+_ELES = bool(os.environ.get("RAILWAY_ENVIRONMENT"))
+app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
+                  SESSION_COOKIE_SECURE=_ELES)
+if _ELES and app.config["SECRET_KEY"] == "dev-only-insecure-key":
+    print("!!! BIZTONSÁGI HIBA: a SECRET_KEY nincs beállítva a Railway-en !!!", flush=True)
+
+
+@app.after_request
+def _biztonsagi_fejlecek(resp):
+    """Böngészőnek szóló védőfejlécek: más oldal nem ágyazhatja be az
+    oldalunkat (kattintás-eltérítés ellen), a böngésző nem találgatja a
+    fájltípust, és csak HTTPS-en jöhet vissza."""
+    resp.headers.setdefault("X-Content-Type-Options", "nosniff")
+    resp.headers.setdefault("X-Frame-Options", "SAMEORIGIN")
+    resp.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    resp.headers.setdefault("Permissions-Policy", "camera=(), geolocation=(), microphone=(self)")
+    if _ELES:
+        resp.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+    return resp
+
+
+# ── SZEMÉLYES ADAT KITAKARÁSA A CHATBEN (2026-10-28, DPIA K1) ───────────
+# Mi nem kérünk ilyet, de a gyerek magától beírhatja. Mielőtt az üzenet
+# az adatbázisba és az OpenAI-hoz menne, kitakarjuk. Számolási válaszhoz
+# (csak szám) nem nyúlunk: telefonnak csak akkor vesszük, ha + / 06 / 00 /
+# 0034 kezdetű, vagy betűk is vannak az üzenetben.
+_RE_EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
+_RE_TELEFON = re.compile(r"(?<![\w])(?:\+|00)?\d[\d \-/().]{7,}\d(?![\w])")
+_RE_CIM = re.compile(
+    r"(?:\b[A-ZÁÉÍÓÖŐÚÜŰ][\wÁÉÍÓÖŐÚÜŰáéíóöőúüű.-]+ (?:utca|u\.|út|útja|tér|tere|körút|krt\.|köz|sor|fasor|lakótelep)\s*\d+[\w/.-]*)"
+    r"|(?:\b(?:calle|c/|avenida|avda\.?|av\.|plaza|pza\.|paseo|camino|carretera|urbanización)\s+[^\d,\n]{2,40}?,?\s*(?:n[º°o]\.?\s*)?\d+[\w/ºª-]*)",
+    re.IGNORECASE)
+
+
+def _szemelyes_kitakar(szoveg: str) -> str:
+    if not szoveg:
+        return szoveg
+    ki = _RE_EMAIL.sub("[elrejtve]", szoveg)
+    van_betu = bool(re.search(r"[A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüűñÑ]{2,}", ki))
+
+    def _tel(m):
+        t = m.group(0)
+        szamjegy = sum(c.isdigit() for c in t)
+        if szamjegy < 9:
+            return t
+        if t.startswith(("+", "00", "06", "0034")):
+            return "[elrejtve]"
+        # Számolás (12345 - 6789) vagy ezres tagolású szám (1 000 000), nem telefon –
+        # kivéve a spanyol mobil alakot (6xx/7xx/9xx xxx xxx).
+        if re.search(r"\s[-/]\s", t):
+            return t
+        if re.fullmatch(r"\d{1,3}(?: \d{3})+", t) and not re.fullmatch(r"[679]\d{2} \d{3} \d{3}", t):
+            return t
+        if van_betu:
+            return "[elrejtve]"
+        return t
+    ki = _RE_TELEFON.sub(_tel, ki)
+    ki = _RE_CIM.sub("[elrejtve]", ki)
+    return ki
 
 # Railway HTTPS linkekhez (elfelejtett jelszó e-mail)
 app.config["PREFERRED_URL_SCHEME"] = os.environ.get("PREFERRED_URL_SCHEME", "https")
@@ -13223,6 +13285,10 @@ def child_chat_send(child_id: int):
 
     data = request.get_json(silent=True) or {}
     user_text = (data.get("message") or request.form.get("message") or "").strip()
+    _eredeti = user_text
+    user_text = _szemelyes_kitakar(user_text)
+    if user_text != _eredeti:
+        logger.info("[SZURO] szemelyes adat kitakarva a chat-uzenetben")
     subject = (data.get("subject") or request.form.get("subject") or "").strip()
     session_id = data.get("session_id") or request.form.get("session_id")
     language = _normalize_chat_language(
