@@ -338,7 +338,7 @@ KARTYAK: list[dict] = [
         "teny": 'A Lánchíd megépítése előtt Pest és Buda között télen sokszor hetekig nem lehetett átkelni a jégzajlás miatt.',
         "erdekesseg": 'Ő szabályoztatta a Tiszát és a Dunát, és ő hozatta az első lóversenyt is – mert a lótenyésztést is fel akarta emelni.',
         "idezet": 'Magyarország nem volt, hanem lesz.',
-        "prompt": "Istvan Szechenyi, dark hair, full sideburns, dark tailcoat with white cravat. Standing before the half-built Chain Bridge. Danube at golden hour.",
+        "prompt": "Count Istvan Szechenyi as in his 1830s portraits: a Hungarian aristocrat about forty, oval face, dark wavy hair, dark moustache and dark side-whiskers framing the face, dark tailcoat with a high collar and a black silk cravat. He holds unrolled a LARGE architectural plan of the Chain Bridge, the drawing of the bridge clearly visible on the paper. Standing on the Pest bank of the Danube; behind him the Chain Bridge under construction, its two stone towers in wooden scaffolding, Buda castle hill beyond, warm late-afternoon light on the river. NOT a rainbow, NOT neon colours, NOT a modern suit.",
     },
     {
         "id": "hu_tortenel_7_semmelweis",
@@ -370,7 +370,7 @@ KARTYAK: list[dict] = [
         "teny": 'A Titanic utasainak egy részét az ő rádiója mentette meg: a segélykérést egy másik hajó fogta, és odaért.',
         "erdekesseg": 'A saját padlásán kezdte kísérletezni, tizenévesen. Az olasz posta elutasította az ötletét, ezért Angliába ment.',
         "idezet": 'A rádióhullámok mindenütt ott vannak, csak hallani kell őket.',
-        "prompt": "Guglielmo Marconi, neat dark hair and moustache, formal 1900s suit. Hand on a brass telegraph key with electric sparks. Tall antenna mast through the window.",
+        "prompt": "Guglielmo Marconi as in his 1901 photographs: an Italian inventor about twenty-seven, slim face, neatly parted dark hair, small dark moustache, high starched white collar, dark three-piece suit. One hand presses a LARGE brass Morse telegraph key; on the table beside it a spark-gap transmitter with two polished brass spheres and a bright blue-white electric spark jumping between them. Through the window a tall wooden radio antenna mast on a windy cliff above the Atlantic, grey-blue sky. NOT a rainbow.",
     },
     {
         "id": "hu_magyar_n_7_petofi",
@@ -455,7 +455,7 @@ KARTYAK: list[dict] = [
         "teny": 'A legnagyobb műveit már süketen írta. A hangokat csak a fejében hallotta.',
         "erdekesseg": 'A IX. szimfónia bemutatóján háttal állt a közönségnek. Egy énekesnő fordította meg, hogy lássa a tapsot, amit nem hallott.',
         "idezet": 'A zene magasabb kinyilatkoztatás, mint minden bölcsesség.',
-        "prompt": "Ludwig van Beethoven, wild grey hair, scowling face, clean-shaven, dark coat. One hand pressed flat on an open piano. Scattered manuscript pages, stormy grey light.",
+        "prompt": "Ludwig van Beethoven as in the 1820 Stieler portrait: about fifty, broad face, stern concentrated look, thick wild grey-and-dark hair, clean-shaven, dark blue-green coat with a high collar and a white cravat. He holds a quill and a LARGE handwritten music manuscript, the page covered in hand-drawn staves and musical notes, clearly visible. Beside him an open early-19th-century wooden grand piano with more manuscript pages scattered on it. Stormy evening light through a tall window, one candle. NOT a modern piano, NOT a white border.",
     },
     {
         "id": "hu_enek_zen_7_bartok",
@@ -471,7 +471,7 @@ KARTYAK: list[dict] = [
         "teny": 'Több mint tízezer dallamot gyűjtött össze Magyarországon, Romániában, Szlovákiában, sőt Észak-Afrikában is.',
         "erdekesseg": 'Az öreg parasztasszonyok eleinte féltek a fonográf tölcsérétől, és nem akartak beleénekelni.',
         "idezet": 'A falusi zene a legtisztább forrás.',
-        "prompt": "Bela Bartok, dark hair, sharp features, clean-shaven, plain travelling suit. Crouching beside a large brass phonograph horn. Whitewashed village yard, afternoon light.",
+        "prompt": "Bela Bartok as in his 1907 folk-song collecting photographs: a Hungarian composer about twenty-six, slim, delicate sharp features, neatly combed dark hair, clean-shaven, intense attentive eyes, dark city suit with a white collar. He leans over a wooden Edison phonograph with a LARGE brass recording horn, one hand on the wax cylinder, listening carefully. An old village woman in a folk headscarf sits ON THE FAR SIDE of the table, about one metre away from the horn, singing towards it; there is clear empty space between her face and the horn opening, her whole face is visible and nothing overlaps it. Whitewashed village house wall, wooden porch, warm afternoon sunlight.",
     },
     {
         "id": "hu_digitali_7_neumann",
@@ -487,7 +487,7 @@ KARTYAK: list[dict] = [
         "teny": 'A ma használt számítógépek felépítését máig róla nevezik: Neumann-architektúra.',
         "erdekesseg": 'Hatéves korában fejben osztott össze nyolcjegyű számokat, és szó szerint memorizált egész könyveket.',
         "idezet": 'Ha valaki nem hiszi, hogy a matematika egyszerű, az csak azért van, mert nem érti, milyen bonyolult az élet.',
-        "prompt": "John von Neumann, neat dark hair, round face, clean-shaven, grey three-piece suit. Holding a punched card before a wall of glowing vacuum tubes. Cyan glow, 1940s computer hall.",
+        "prompt": "John von Neumann as in his late-1940s photographs: about forty-five, round face, high forehead with receding dark hair combed back, clean-shaven, friendly half-smile, grey three-piece suit and tie. He holds up a LARGE punched card with rows of small rectangular holes, fully visible. Behind him the IAS computer: tall metal racks full of glowing vacuum tubes and bundles of wires, an operator's panel with switches and small lamps. 1950s computer laboratory, cool cyan light from the tubes mixed with warm lamp light.",
     },
     {
         "id": "hu_digitali_7_lovelace",
@@ -503,7 +503,7 @@ KARTYAK: list[dict] = [
         "teny": 'Ő ismerte fel elsőként, hogy a gép nemcsak számolni tud majd, hanem zenét is szerkeszthet, ha a hangokat számokká alakítjuk.',
         "erdekesseg": 'Az édesapja Byron, a híres költő volt. Az édesanyja kifejezetten matematikára taníttatta, nehogy költő legyen belőle.',
         "idezet": 'A gép csak azt teheti, amit megparancsolunk neki.',
-        "prompt": "Ada Lovelace, dark hair in a braided updo, blue-grey Victorian gown. Hand resting on a page of handwritten numbers beside a brass calculating engine. Candlelit drawing room.",
+        "prompt": "Ada Lovelace as in the 1840 Chalon portrait: a young woman about twenty-five, oval face, dark hair parted in the middle and gathered in a braided bun with a small jewelled ornament, pale blue-grey satin gown with lace. She writes with a quill in a LARGE open notebook full of handwritten mathematical tables and columns of figures, clearly visible. Beside her a section of Babbage's Difference Engine: polished brass columns of stacked gear wheels. Candlelit Victorian drawing room, dark blue walls.",
     },
     {
         "id": "hu_digitali_7_turing",
@@ -518,8 +518,8 @@ KARTYAK: list[dict] = [
         "leiras": 'Ő fogalmazta meg, mit jelent egyáltalán az, hogy egy gép „számol”, és ő tette fel a kérdést: gondolkodhat-e egy gép?',
         "teny": 'A második világháborúban feltörte a német Enigma kódot. A történészek szerint ezzel évekkel rövidítette meg a háborút.',
         "erdekesseg": 'Hosszútávfutó volt, olyan jó, hogy majdnem bekerült az olimpiai válogatottba. Néha kilométereket futott a megbeszélésekre.',
-        "idezet": 'Néha azok érnek el elképzelhetetlent, akiktől senki nem várja.',
-        "prompt": "Alan Turing, tousled dark hair, clean-shaven, tweed jacket. Holding a strip of paper tape before a rotating code-breaking machine. Dim green lamp, wartime hut.",
+        "idezet": 'Csak egy kis darabot látunk előre, de abban is rengeteg a tennivaló.',
+        "prompt": "Alan Turing as in his 1930s and 1940s photographs: a British mathematician about thirty, dark hair with a side parting, slightly untidy, thick dark eyebrows, deep-set eyes, strong jaw, clean-shaven, shy serious look, worn tweed sports jacket, white shirt and loose tie. He holds a LONG strip of punched paper tape, fully visible. Behind him the Bombe code-breaking machine of Bletchley Park: a tall cabinet with rows of large round rotating drums in red, green and yellow, cables at the side. Wartime wooden hut, green-shaded desk lamp. A real 1940s Englishman, NOT a film still, NOT a modern actor.",
     },
 ]
 
