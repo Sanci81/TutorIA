@@ -1238,6 +1238,33 @@
     animation:kbBe .35s ease-out}
   .kabala-buborek::after{content:"";position:absolute;left:22px;bottom:-9px;border:9px solid transparent;border-top-color:#fff;border-bottom:0}
   @keyframes kbBe{from{opacity:0;transform:translateY(6px) scale(.9)}to{opacity:1;transform:none}}
+  .szk-egyenlet{display:flex;align-items:flex-end;justify-content:center;gap:8px;flex-wrap:wrap;margin:10px 0 4px;min-height:170px}
+  .szk-hely{width:64px;min-height:150px;border:3px dashed #B9CBD8;border-radius:14px;background:#F7FAFC;display:flex;align-items:flex-end;justify-content:center;padding:6px 0;cursor:pointer}
+  .szk-hely span{font:900 34px Nunito,sans-serif;color:#9AB0C0;align-self:center}
+  .szk-hely.tele{border-style:solid;border-color:#DCE6EE;background:#fff}
+  .szk-jel{font:900 34px Nunito,sans-serif;color:#2B3A4A;align-self:center}
+  .szk-cel{font:900 46px Nunito,sans-serif;color:#D6409F;align-self:center;min-width:44px;text-align:center}
+  .szk-ossz{text-align:center;font:800 15px Nunito,sans-serif;color:#4A5B6B;min-height:22px}.szk-ossz.sok{color:#C0392B}
+  .szk-paletta{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:8px auto 10px;max-width:440px}
+  .szk-valaszto{border:0;background:#F3F6F9;border-radius:12px;padding:6px 6px 4px;min-height:96px;display:flex;align-items:flex-end;cursor:pointer}
+  .szk-valaszto:active{transform:scale(.95)}
+  .szk-torony{display:flex;flex-direction:column-reverse;align-items:center;gap:2px}
+  .szk-torony b{order:99;font:900 15px Nunito,sans-serif;color:#2B3A4A;margin-bottom:2px}
+  .szk-torony i{display:block;width:26px;height:12px;border-radius:4px;background:var(--sz);box-shadow:inset 0 -3px 0 rgba(0,0,0,.18);position:relative}
+  .szk-torony i::after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:rgba(255,255,255,.85)}
+  .szk-torony i.ot{margin-bottom:3px}
+  .szk-torony.kicsi i{width:22px;height:7px;border-radius:3px}.szk-torony.kicsi i::after{width:3px;height:3px;margin:-1.5px}
+  .dm .kk-egyenlet{display:flex !important;align-items:flex-end;justify-content:center;gap:6px !important;flex-wrap:nowrap !important;margin:8px 0 16px}
+  .dm .kk-hely{width:62px !important;min-height:142px !important;flex:none !important;border:3px dashed #B9C7D6;border-radius:16px;background:#F7FAFD;display:flex !important;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px !important;padding:8px 0 !important;cursor:pointer}
+  .dm .kk-hely.tele{border-style:solid;border-color:#D7E3EE;background:#fff}
+  .dm .kk-hely .kk-szam{font:900 22px Nunito,sans-serif;color:#22364B}
+  .dm .kk-ures{flex:1 !important}
+  .dm .kk-jel,.dm .kk-cel{font:900 28px Nunito,sans-serif;color:#22364B;align-self:center;flex:none !important}
+  .dm .kk-cel{color:#C2187A;font-size:38px}
+  .dm .kk-keszlet{display:flex !important;justify-content:center;align-items:flex-end;gap:6px !important;flex-wrap:nowrap !important;padding:10px 6px !important;border-radius:18px;background:#F2F6F3}
+  .dm .kk-torony{display:flex !important;flex-direction:column;align-items:center;gap:3px !important;padding:6px 6px !important;flex:none !important;border-radius:12px;background:#fff;border:2px solid #E2E8EE;cursor:pointer}
+  .dm .kk-torony .kk-szam{font:900 18px Nunito,sans-serif;color:#22364B}
+  .kk-torony:active{transform:translateY(2px)}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -5184,6 +5211,58 @@
     };
 
     /* ── SZÁMOK ANGOLUL (hallás után) ────────────────────────────────── */
+    /* ── SZÁMKOCKÁK – „? + ? + ? = 9” (2026-10-28, Sándor videója alapján) ──
+       Pöttyös, színes számtornyok 1–10. Koppintásra a következő üres helyre
+       kerül, a helyen lévőre koppintva visszamegy. Több jó megoldás is van. */
+    var SZK_SZIN = ['#E5484D', '#F5A01E', '#F2C230', '#3DB46D', '#2FB3C9', '#2F8FD8', '#7B5ED6', '#D6409F', '#8D6E63', '#455A64'];
+    function szkTorony(n, kicsi) {
+        var t = document.createElement('div'); t.className = 'szk-torony' + (kicsi ? ' kicsi' : '');
+        t.style.setProperty('--sz', SZK_SZIN[(n - 1) % 10]);
+        var fej = document.createElement('b'); fej.textContent = n; t.appendChild(fej);
+        for (var i = 0; i < n; i++) { var k = document.createElement('i'); if (i % 5 === 4) { k.className = 'ot'; } t.appendChild(k); }
+        return t;
+    }
+    DM.szamkocka = function (f, D) {
+        var cel = f.osszeg, db = f.db || 3, hely = [], vege = false;
+        for (var i = 0; i < db; i++) { hely.push(null); }
+        D.html('<div class="allas">' + D.T('Koppints a tornyokra! Rakj ' + db + ' tornyot a helyekre úgy, hogy az összegük ' + cel + ' legyen.',
+                'Toca las torres: pon ' + db + ' torres en los huecos para que sumen ' + cel + '.') + '</div>' +
+            '<div class="szk-egyenlet" data-id="egy"></div><div class="szk-ossz" data-id="ossz"></div><div class="szk-paletta" data-id="pal"></div>');
+        var egy = D.$('egy'), pal = D.$('pal'), ossz = D.$('ossz');
+        function rajz() {
+            egy.innerHTML = '';
+            hely.forEach(function (n, j) {
+                if (j) { var p = document.createElement('span'); p.className = 'szk-jel'; p.textContent = '+'; egy.appendChild(p); }
+                var h = document.createElement('button'); h.type = 'button'; h.className = 'szk-hely' + (n ? ' tele' : '');
+                if (n) { h.appendChild(szkTorony(n)); } else { h.innerHTML = '<span>?</span>'; }
+                h.onclick = function () { if (vege || D.kesz() || !hely[j]) { return; } hely[j] = null; D.torol(); rajz(); };
+                egy.appendChild(h);
+            });
+            var e = document.createElement('span'); e.className = 'szk-jel'; e.textContent = '='; egy.appendChild(e);
+            var c = document.createElement('span'); c.className = 'szk-cel'; c.textContent = cel; egy.appendChild(c);
+            var s = hely.reduce(function (a, n) { return a + (n || 0); }, 0);
+            ossz.textContent = s ? D.T('Eddig: ', 'Por ahora: ') + s + (s > cel ? D.T(' – ez már több!', ' – ¡ya es más!') : '') : '';
+            ossz.className = 'szk-ossz' + (s > cel ? ' sok' : '');
+        }
+        var max = Math.min(10, cel);
+        for (var n = 1; n <= max; n++) { (function (n) {
+            var b = document.createElement('button'); b.type = 'button'; b.className = 'szk-valaszto'; b.appendChild(szkTorony(n, true));
+            b.onclick = function () { if (vege || D.kesz()) { return; } var j = hely.indexOf(null);
+                if (j < 0) { D.jelez(false, D.T('Minden hely tele van. Koppints egy toronyra fent, hogy kivedd.', 'Todos los huecos están llenos. Toca una torre de arriba para quitarla.')); return; }
+                hely[j] = n; D.torol(); rajz(); };
+            pal.appendChild(b); })(n); }
+        rajz();
+        D.ellenoriz(function () {
+            if (hely.indexOf(null) >= 0) { return {hianyzik: D.T('Még van üres hely – tegyél bele egy tornyot!', 'Todavía hay un hueco vacío: ¡pon una torre!')}; }
+            var s = hely.reduce(function (a, n) { return a + n; }, 0), sor = hely.join(' + ') + ' = ' + s;
+            if (s === cel) { vege = true; return {jo: true, valasz: D.T('Így raktam ki: ', 'Lo he hecho así: ') + sor + '.',
+                uzenet: '<b>' + sor + '</b>. ' + D.T('Ügyes! Van más megoldás is – próbáld ki legközelebb!', '¡Muy bien! Hay más soluciones: ¡pruébalas la próxima vez!')}; }
+            return {jo: false, valasz: D.T('Így raktam ki: ', 'Lo he hecho así: ') + sor + '.',
+                uzenet: s > cel ? D.T(sor + ' – ez több, mint ' + cel + '. Cserélj ki egy tornyot kisebbre!', sor + ' – es más que ' + cel + '. ¡Cambia una torre por otra más pequeña!')
+                                : D.T(sor + ' – ez kevesebb, mint ' + cel + '. Cserélj ki egy tornyot nagyobbra!', sor + ' – es menos que ' + cel + '. ¡Cambia una torre por otra más grande!')};
+        });
+    };
+
     DM.szamangol = function (f, D) {
         var N = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
             'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
@@ -5299,6 +5378,63 @@
                     'Eso es <b>' + SZO[mi] + '</b> (' + ES[mi] + '). ¡Escucha otra vez!'));
                 if (hibak >= 2) { vege = true; megmutatja(function () { D.kuld(valasz, 2600); }); } else { kimond(); }
             }
+        });
+    };
+
+    /* ── SZÁMKOCKÁK – „? + ? + ? = 9” (2026-10-28) ──────────────────────
+       Pöttyös számtornyok (1–6), mindegyik szám saját színnel. Koppintásra
+       a torony a következő üres helyre ugrik; a helyen koppintva visszamegy.
+       Bármely jó felbontás elfogadott (pl. 9 = 2 + 3 + 4 = 1 + 4 + 4). */
+    DM.kockak = function (f, D) {
+        var cel = f.cel, db = f.db || 3, hely = [], vege = false;
+        var SZIN = ['', '#E5484D', '#F5A01E', '#E8C21A', '#3DBE6B', '#2F8FD8', '#8B5CF6'];
+        var SOT = ['', '#B3262C', '#C47A0A', '#B08F00', '#22804A', '#1E63B8', '#6237C8'];
+        for (var i = 0; i < db; i++) { hely.push(0); }
+        function torony(n, kis) {
+            var u = kis ? 16 : 20, h = n * u + 4, w = u + 4, s = '<svg viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" aria-hidden="true">';
+            for (var k = 0; k < n; k++) {
+                var y = h - 2 - (k + 1) * u;
+                s += '<rect x="2" y="' + y + '" width="' + u + '" height="' + u + '" rx="5" fill="' + SZIN[n] + '" stroke="' + SOT[n] + '" stroke-width="2"/>' +
+                    '<circle cx="' + (2 + u / 2) + '" cy="' + (y + u / 2) + '" r="' + (u * 0.16) + '" fill="#fff"/>';
+            }
+            return s + '</svg>';
+        }
+        D.html('<div class="allas">' + D.T('Koppints a tornyokra: rakj ki ' + db + ' tornyot, amelyek összege ' + cel + '! A helyen koppintva visszaveheted.',
+            '¡Toca las torres: pon ' + db + ' torres que sumen ' + cel + '! Toca un hueco para quitarla.') + '</div>' +
+            '<div class="kk-egyenlet" data-id="egy"></div><div class="kk-keszlet" data-id="kesz"></div>');
+        var egy = D.$('egy'), kesz = D.$('kesz');
+        function rajzol() {
+            var t = '';
+            hely.forEach(function (n, i) {
+                if (i) { t += '<span class="kk-jel">+</span>'; }
+                t += '<button type="button" class="kk-hely' + (n ? ' tele' : '') + '" data-i="' + i + '"><span class="kk-szam">' + (n || '?') + '</span>' +
+                    (n ? torony(n, true) : '<span class="kk-ures"></span>') + '</button>';
+            });
+            var osszeg = hely.reduce(function (a, b) { return a + b; }, 0);
+            t += '<span class="kk-jel">=</span><span class="kk-cel">' + cel + '</span>';
+            egy.innerHTML = t;
+            Array.prototype.forEach.call(egy.querySelectorAll('.kk-hely'), function (b) {
+                b.onclick = function () { if (vege || D.kesz()) { return; } hely[+b.getAttribute('data-i')] = 0; D.torol(); rajzol(); };
+            });
+            return osszeg;
+        }
+        [1, 2, 3, 4, 5, 6].forEach(function (n) {
+            var b = D.gomb(torony(n, false) + '<span class="kk-szam">' + n + '</span>', 'kk-torony', function () {
+                var i = hely.indexOf(0); if (i < 0) { D.jelez(false, D.T('Minden hely tele van. Koppints egy helyre, ha cserélnél!', 'Todos los huecos están llenos. Toca uno para cambiarlo.')); return; }
+                hely[i] = n; D.torol(); rajzol();
+            });
+            kesz.appendChild(b);
+        });
+        rajzol();
+        D.ellenoriz(function () {
+            if (hely.indexOf(0) >= 0) { return {hianyzik: D.T('Még van üres hely – tegyél rá egy tornyot!', 'Todavía hay un hueco vacío: ¡pon una torre!')}; }
+            var o = hely.reduce(function (a, b) { return a + b; }, 0), sor = hely.join(' + ') + ' = ' + o;
+            var valasz = D.T('Ezeket raktam ki: ' + sor + '.', 'He puesto: ' + sor + '.');
+            if (o === cel) { vege = true; return {jo: true, valasz: valasz, uzenet: D.T('Pontosan! ', '¡Exacto! ') + hely.join(' + ') + ' = ' + cel + '.'}; }
+            D.animal(egy, 'rezeg');
+            return {jo: false, valasz: valasz, uzenet: o > cel
+                ? D.T('Ez ' + o + ', több mint ' + cel + '. Cserélj egy tornyot kisebbre!', 'Suman ' + o + ', más que ' + cel + '. ¡Cambia una torre por otra más pequeña!')
+                : D.T('Ez ' + o + ', kevesebb mint ' + cel + '. Cserélj egy tornyot nagyobbra!', 'Suman ' + o + ', menos que ' + cel + '. ¡Cambia una torre por otra más grande!')};
         });
     };
 

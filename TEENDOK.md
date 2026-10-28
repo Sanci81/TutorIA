@@ -668,7 +668,7 @@ Tervezett elemek:
 
 ## Új ötletek / bővítések (2026-10-27)
 
-18. [ ] ÚJ FELADAT – számkockák (Sándor videója): „? + ? + ? = 9” – a gyerek pöttyös számkockákat (1–5, színesek, egymásra rakhatók) húz a helyükre, aztán „Ellenőrzés”. Tornyokba rakható kockák, mint a Numberblocks-szerű játékokban.
+18. [x] ÚJ FELADAT – számkockák (Sándor videója): „? + ? + ? = 9” – a gyerek pöttyös számkockákat (1–5, színesek, egymásra rakhatók) húz a helyükre, aztán „Ellenőrzés”. Tornyokba rakható kockák, mint a Numberblocks-szerű játékokban.
 19. [x] Nyelvi feladatok, amik még CSAK angolul vannak: szamangol (számok), idojaras (időjárás), szoba – legyenek németül, franciául, spanyolul is (mint az arcrész, elöljárók, maci).
 20. [x] Maci NADRÁG (4 szín) + „Hol a cica?” rendes képek (cica, asztal, doboz): kep_nadrag_cica.py → Claude kivágja, beköti.
 

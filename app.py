@@ -5523,6 +5523,21 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             "Az arc részei: hallgasd meg a kérdést!")
         return {"tipus": "arcresz", "resz": resz, "kerdes": kerdes}
 
+    if tipus == "kockak":
+        # SZÁMKOCKÁK (2026-10-28): „? + ? + ? = 9” – a gyerek pöttyös
+        # számtornyokat rak a helyekre; bármely jó felbontás elfogadott.
+        try:
+            cel = int(adat.get("cel"))
+            db = int(adat.get("db") or 3)
+        except Exception:
+            return None
+        if db not in (2, 3) or not (db <= cel <= db * 6):
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            f"Elige {db} torres que sumen {cel}." if es_tanterv else
+            f"Rakj ki {db} számtornyot, amelyek összege {cel}!")
+        return {"tipus": "kockak", "cel": cel, "db": db, "kerdes": kerdes}
+
     if tipus == "idojaras":
         KANON = {
             "sunny": "sunny", "napos": "sunny", "soleado": "sunny", "sol": "sunny",
@@ -9579,6 +9594,12 @@ _DM_FELULETEK = [
      '"resz": eyes|ears|eyebrows|nose|mouth|chin|hair:\n'
      '   <FELADAT>{"tipus":"arcresz","resz":"nose"}</FELADAT>',
      'arc részei, testrészek               → arcresz', 'partes de la cara, el cuerpo        → arcresz'),
+    ("kockak", {"matek"}, 1, 3,
+     'SZÁMKOCKÁK – „? + ? + ? = 9”: a gyerek pöttyös számtornyokat (1–6) húz a helyekre, bármely jó felbontás jó. "cel": az összeg (2 helynél 2–12, 3 helynél 3–18), "db": 2 vagy 3:\n'
+     '   <FELADAT>{"tipus":"kockak","cel":9,"db":3}</FELADAT>',
+     'TORRES DE NÚMEROS – «? + ? + ? = 9»: el niño coloca torres de puntos (1–6); vale cualquier descomposición correcta. "cel": la suma (2–12 con 2 huecos, 3–18 con 3), "db": 2 o 3:\n'
+     '   <FELADAT>{"tipus":"kockak","cel":9,"db":3}</FELADAT>',
+     'összeg felbontása, összeadás 20-ig    → kockak', 'descomponer un número, sumas hasta 20 → kockak'),
     ("idojaras", {"nyelv"}, 2, 4,
      'IDŐJÁRÁS A TANULT NYELVEN (a program mondja ki) – hallás után a jó képre koppint. "ido": sunny|rainy|snowy|windy|cloudy:\n'
      '   <FELADAT>{"tipus":"idojaras","ido":"sunny"}</FELADAT>',
