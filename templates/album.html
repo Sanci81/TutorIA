@@ -179,6 +179,8 @@ body{overflow-x:clip}
   .lapozo .gomb{padding:9px 12px;font-size:.78rem}
   .lapozo .kozepgomb{gap:6px}
   .lapozo .oldalszam{font-size:.7rem}
+  .lapozo #elore .szo{display:none}
+  .lapozo #elore{padding:9px 15px;font-size:1rem}
   .gomb{padding:9px 14px;font-size:.8rem}
   .tj .sorok{grid-template-columns:1fr}
 }
@@ -203,6 +205,15 @@ body{overflow-x:clip}
  font:inherit;font-size:.86rem;font-weight:700;color:#1b2350;cursor:pointer;text-align:left}
 .tj .sor:hover{border-color:#c9a23c;background:#fffdf5}
 .tj .sor .o{font-size:.72rem;opacity:.55;font-weight:700;white-space:nowrap}
+/* 2026-10-29: a felső tantárgysáv megszűnt, a tudása ide költözött */
+.tj .fej{cursor:pointer;border:0;font-family:inherit}
+.tj .fej .db{opacity:.7;margin-left:8px;letter-spacing:.5px}
+.tj .sor.itt{border-color:#c9a23c;background:#fff6dc}
+.tj .sor .jel{color:#2f8f60;font-weight:900;margin-left:6px}
+.tj .sor .jel.arany{color:#c99424}
+.tj .elejen{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 2px}
+.tj .elejen button{border:1px solid #e0d9c6;background:#fff;border-radius:999px;padding:7px 14px;
+  font:inherit;font-size:.82rem;font-weight:800;color:#1b2350;cursor:pointer}
 .tj .zar{margin-top:16px;border:0;background:#1b2350;color:#fff;border-radius:9px;
  padding:9px 18px;font-size:.85rem;font-weight:800;cursor:pointer;font-family:inherit}
 
@@ -409,7 +420,8 @@ body{overflow-x:clip}
   /* A becenév a kép FÖLÉ kerül – nem rá. */
   .becenev{position:static;order:-1;transform:none;max-width:none;
            margin:0;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.22)}
-  .sz-kep{margin-top:12px;aspect-ratio:4/3}
+  /* 2026-10-29: a 4:3-as keret a négyzetes kép alját levágta (Curie keze, a lombik). */
+  .sz-kep{margin-top:12px}
   /* A két tény-doboz a kép ALÁ, egymás alá. */
   .dobozok{position:static;margin-top:12px;gap:9px}
   .doboz,.doboz.kek{transform:none}
@@ -451,14 +463,13 @@ body{overflow-x:clip}
    <div class="sub">Húzd vagy koppintsd a lapjaidat a saját helyükre. A sima lap a sima helyre, az arany az aranyra.</div></div>
  <div class="prog">Beragasztva: <b id="db">0</b> / <span id="ossz"></span></div>
 </div>
-<div class="ugrosav" id="ugrosav"></div>
 <div class="szinpad"><div class="album"><div class="lapdoboz" id="lapdoboz"><div class="lap" id="lap"></div></div></div></div>
 <div class="lapozo" id="lapozo">
- <button class="gomb halvany" id="elore">‹ Előző</button>
+ <button class="gomb halvany" id="elore" aria-label="Előző oldal">‹<span class="szo"> Előző</span></button>
  <div class="dokk-kartyak" id="dokk"><div class="dokk-cim">A kártyáid<small>húzd a helyére,<br>vagy koppints</small></div>
   <div class="pakli" id="pakli"></div></div>
  <span class="kozepgomb">
-  <button class="gomb halvany" id="tartalomGomb">☰ Tartalom</button>
+  <button class="gomb halvany" id="tartalomGomb">☰ Tartalomjegyzék</button>
   <span class="oldalszam" id="oldalszam"></span>
  </span>
  <button class="gomb" id="hatra">Következő ›</button>
@@ -467,8 +478,8 @@ body{overflow-x:clip}
 <div class="nagy-hatter" id="nagyHatter" role="dialog" aria-label="A kártya nagyban">
  <img id="nagyKep" alt=""><button class="nagy-zar" id="nagyZar" type="button" aria-label="Bezárom">✕</button></div>
 <div class="tj-hatter" id="tjHatter"><div class="tj">
-  <h3>Tartalom</h3>
-  <p class="sug">Kattints egy névre, és a könyv odalapoz.</p>
+  <h3>Tartalomjegyzék</h3>
+  <p class="sug">Koppints egy névre vagy egy tantárgyra, és a könyv odalapoz. ✓ = beragasztva, ★ = arany lap is.</p>
   <div id="tjLista"></div>
   <button class="zar" id="tjZar">Bezárom</button>
 </div></div>
@@ -1247,21 +1258,29 @@ document.addEventListener('drop',e=>e.preventDefault());
    lapozó sáv mutat. Névre kattintva a könyv odalapoz. */
 function tartalomEpit(){
   const cel=document.getElementById('tjLista');
-  let h='', nyitva=false;
+  const lista=OLDALAK.findIndex(o=>o.t==='checklist');
+  let h=`<div class="elejen"><button class="sor-ugras" data-i="0">Borító</button>`
+       + (lista>=0?`<button class="sor-ugras" data-i="${lista}">Mi van meg? – lista</button>`:'')+`</div>`;
+  let nyitva=false;
   OLDALAK.forEach((o,i)=>{
     if(o.t==='szakasz'){
       if(nyitva) h+='</div>';
-      h+=`<div class="fej">${o.targy||''}</div><div class="sorok">`;
+      const ossz=o.tagok.length*2;
+      const meg=o.tagok.reduce((n,k)=>n+(beragasztva.has(k.hely1)?1:0)+(beragasztva.has(k.hely2)?1:0),0);
+      h+=`<button class="fej sor-ugras" data-i="${i}">${o.targy||''}<span class="db">${meg}/${ossz}</span></button><div class="sorok">`;
       nyitva=true;
     } else if(o.t==='szemely' && o.k){
       if(!nyitva){ h+='<div class="sorok">'; nyitva=true; }
-      h+=`<button class="sor" data-i="${i}"><span>${o.k.nev||''}</span>`
-       + `<span class="o">${i+1}. oldal</span></button>`;
+      const sima=beragasztva.has(o.k.hely1), arany=beragasztva.has(o.k.hely2);
+      h+=`<button class="sor ${i===oldal?'itt':''}" data-i="${i}"><span>${o.k.nev||''}`
+       + (sima?'<span class="jel" title="beragasztva">✓</span>':'')
+       + (arany?'<span class="jel arany" title="arany lap is">★</span>':'')
+       + `</span><span class="o">${i+1}. oldal</span></button>`;
     }
   });
   if(nyitva) h+='</div>';
   cel.innerHTML = h || '<p class="sug">Ebben az albumban még nincs lap.</p>';
-  cel.querySelectorAll('.sor').forEach(b=>b.addEventListener('click',()=>{
+  cel.querySelectorAll('.sor,.sor-ugras').forEach(b=>b.addEventListener('click',()=>{
     tartalomZar(); lapozzIde(Number(b.dataset.i));
   }));
 }

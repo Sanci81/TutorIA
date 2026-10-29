@@ -83,7 +83,7 @@ KARTYAK: list[dict] = [
         "teny": 'Három elem helyét üresen hagyta a táblázatban, és megjósolta a tulajdonságaikat. Mindhármat megtalálták még az élete során, pontosan olyannak, amilyennek leírta.',
         "erdekesseg": 'Azt állította, hogy a rendszer álmában állt össze a fejében, és ébredés után egyetlen papírra leírta az egészet.',
         "idezet": 'A tudomány munka, nem szórakozás.',
-        "prompt": "Dmitri Mendeleev, elderly, long wild grey hair, very long grey beard, dark coat. Leaning over a huge handwritten table of element symbols. Lamplit study.",
+        "prompt": "Dmitri Mendeleev as in his 1890s portraits: a Russian chemist about sixty, long wild grey hair down to the shoulders, very long untrimmed grey beard, deep-set intense blue eyes, dark loose coat over a waistcoat. He stands at a large wooden table playing his famous chemical solitaire: BOTH HANDS are fully visible in the lower half of the picture, his right hand placing a small paper card with a handwritten element symbol into a row, his left hand holding a few more cards fanned out. On the table many such cards are laid out in neat rows and columns, the beginning of the periodic table; one empty gap is left in a row. Lamplit study, shelves of bottles behind him. NOT a hidden arm, NOT arms cut off by the frame.",
 
     },
     {
