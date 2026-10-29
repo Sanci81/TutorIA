@@ -126,7 +126,10 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
 .lapdoboz{position:relative;transform-style:preserve-3d}
 .fl{position:absolute;inset:0;transform-origin:left center;
  transform-style:preserve-3d;pointer-events:none;z-index:5;will-change:transform}
-.fl .arc{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;
+/* 2026-10-29: a lapozó előlapja eddig „arc” osztályt kapott – ugyanazt, mint a
+   tantárgyoldal hatszögletű arcképei. Lapozáskor ezért minden arckép teljes
+   lapméretre nőtt (óriás szürke Newton). Saját nevet kapott: „fl-elo”. */
+.fl .fl-elo{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;
  border-radius:5px;box-shadow:0 0 34px rgba(0,0,0,.5)}
 .fl .tart{position:absolute;inset:0;box-sizing:border-box;box-shadow:none;min-height:0}
 /* a lap HÁTOLDALA – 90 fok után ezt látni, ahogy igazi könyvben is.
@@ -853,7 +856,7 @@ const _albumDoboz = document.querySelector('.album');
 
 function klonKeszit(){
   const fl=document.createElement('div'); fl.className='fl';
-  const arc=document.createElement('div'); arc.className='arc';
+  const arc=document.createElement('div'); arc.className='fl-elo';
   /* A másolatot DOM-ból készítjük, nem szövegből: a lap hátterében
      idézőjeles url("…") áll, ami szöveges összefűzésnél lezárná a
      style attribútumot. */
