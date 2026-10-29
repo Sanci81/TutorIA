@@ -159,7 +159,7 @@ body{overflow-x:clip}
    aljára, és ott is marad, bárhol jársz az oldalon. Így lapozáshoz soha
    nem kell legörgetni, és semmi nem zsugorodik össze. */
 .lapozo{position:sticky;bottom:10px;z-index:40;
-  background:rgba(12,16,34,.92);border-radius:14px;padding:10px 16px;
+  background:rgba(12,16,34,.92);border-radius:14px;padding:6px 14px;
   box-shadow:0 8px 24px rgba(0,0,0,.5);backdrop-filter:blur(3px)}
 
 /* ══ TELEFON ══════════════════════════════════════════════════════════
@@ -167,8 +167,18 @@ body{overflow-x:clip}
    kell görgetni. A 3D forgás ott elmarad: lassú volna, és a keskeny
    lapon úgysem látszik. */
 @media (max-width:760px){
-  .lapozo{bottom:6px;padding:9px 10px;flex-wrap:wrap;justify-content:center}
-  .kozepgomb{order:3;width:100%;justify-content:center;margin-top:2px}
+  .lapozo{bottom:6px;padding:8px 10px;grid-template-columns:auto 1fr auto}
+  .lapozo .dokk-kartyak{grid-column:1/-1;grid-row:1}
+  .lapozo #elore{grid-row:2;grid-column:1}
+  .lapozo .kozepgomb{grid-row:2;grid-column:2;justify-content:center;display:flex;align-items:center;gap:8px}
+  .lapozo #hatra{grid-row:2;grid-column:3}
+  .dokk-cim small{display:none}
+  .lapozo .gomb{white-space:nowrap}
+  .lapozo .oldalszam{white-space:nowrap}
+  .lapozo{column-gap:8px}
+  .lapozo .gomb{padding:9px 12px;font-size:.78rem}
+  .lapozo .kozepgomb{gap:6px}
+  .lapozo .oldalszam{font-size:.7rem}
   .gomb{padding:9px 14px;font-size:.8rem}
   .tj .sorok{grid-template-columns:1fr}
 }
@@ -196,7 +206,8 @@ body{overflow-x:clip}
 .tj .zar{margin-top:16px;border:0;background:#1b2350;color:#fff;border-radius:9px;
  padding:9px 18px;font-size:.85rem;font-weight:800;cursor:pointer;font-family:inherit}
 
-.lapozo{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px auto 0;max-width:1140px}
+.lapozo{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;
+  gap:6px 14px;margin:12px auto 0;max-width:1140px}
 .oldalszam{font-size:.78rem;opacity:.5;font-weight:800}
 .gomb{border:none;cursor:pointer;font-family:inherit;font-weight:800;font-size:.85rem;
  padding:9px 20px;border-radius:999px;background:linear-gradient(180deg,#ffe08a,#e8a33c);color:#1a1430}
@@ -213,6 +224,73 @@ body{overflow-x:clip}
 .mini .c{font-size:.57rem;font-weight:800;color:#22202a;padding:3px;text-align:center;line-height:1.15}
 .uzenet{margin-top:8px;font-size:.85rem;min-height:20px;font-weight:600}
 .uzenet.jo{color:#9ff0c8}.uzenet.baj{color:#ffb3b3}
+/* ══ A KÁRTYÁID A LAPOZÓBAN (2026-10-29) ═══════════════════════════════
+   A kártyák eddig az album ALATT voltak, a helyük meg fent: húzni csak
+   akkor lehetett, ha mindkettő látszott, telefonon pedig egyáltalán nem.
+   Most a kártyák a képernyő aljára tapadó sávban vannak, a lapozó gombokkal
+   együtt – a kártya és a helye mindig egyszerre látszik.
+   Két mód, ugyanazzal a végével:
+     • HÚZÁS (egér és ujj is): fogd meg a kártyát, vidd a helyére.
+     • KOPPINTÁS a kicsiknek: koppints a kártyára, aztán a helyére.
+   A jó helyre a kártya „odarepül”, rásimul, mint egy matrica, csillan egyet,
+   és hallani a ragasztást. */
+.dokk-kartyak{display:flex;align-items:center;gap:12px;min-width:0}
+.dokk-cim{font-size:.72rem;font-weight:900;letter-spacing:1.2px;color:#f0c869;
+  text-transform:uppercase;white-space:nowrap;line-height:1.25}
+.dokk-cim small{display:block;font-size:.62rem;letter-spacing:.4px;text-transform:none;
+  color:#c9cbe0;font-weight:700;opacity:.75}
+.lapozo .pakli{display:flex;flex-wrap:nowrap;gap:9px;overflow-x:auto;overflow-y:visible;
+  padding:9px 4px 4px;scrollbar-width:thin;min-width:0;flex:1}
+.lapozo .mini{width:50px;flex:none;cursor:grab;touch-action:pan-x;user-select:none;
+  -webkit-user-select:none;-webkit-touch-callout:none;transition:transform .15s,box-shadow .15s}
+.lapozo .mini img{pointer-events:none;-webkit-user-drag:none}
+.lapozo .mini .c{display:none}
+.lapozo .mini .cimke{font-size:.62rem;padding:1px 5px;top:3px;left:3px}
+.lapozo .mini:hover{transform:translateY(-4px)}
+.mini.kivalasztva{transform:translateY(-7px) scale(1.06)!important;
+  outline:3px solid #6fe3b0;outline-offset:2px}
+.mini.huzva{opacity:.25}
+.pakli-ures{font-size:.78rem;opacity:.55;padding:6px 2px;white-space:nowrap}
+.lapozo .uzenet{grid-column:1/-1;margin:0;min-height:0;font-size:.82rem;text-align:center}
+.lapozo .uzenet:empty{display:none}
+
+/* a kézben vitt kártya */
+.kezben-kartya{position:fixed;z-index:200;pointer-events:none;border-radius:7px;
+  box-shadow:0 18px 38px rgba(0,0,0,.55);transform-origin:50% 50%;will-change:transform;
+  border:2px solid #9aa0ad;background:#fff}
+.kezben-kartya.arany{border:3px solid #d8b355}
+/* a hely, ami fölött a kártya jár, és azok, amik várják */
+.hely.varja{border-color:#2fbf8f!important;box-shadow:0 0 0 4px rgba(47,191,143,.22);cursor:pointer;
+  animation:varja 1.6s ease-in-out infinite}
+@keyframes varja{50%{box-shadow:0 0 0 7px rgba(47,191,143,.12)}}
+.hely.rahuz{box-shadow:0 0 0 5px rgba(47,191,143,.45)!important;transform:scale(1.03)}
+
+/* a beragasztás pillanata: rásimul, mint egy matrica */
+.hely.kesz.uj-matrica{animation:matrica .62s cubic-bezier(.2,1.4,.4,1) both;z-index:3}
+@keyframes matrica{0%{transform:scale(1.14) rotate(-3deg);filter:brightness(1.18)}
+  45%{transform:scale(.95) rotate(.6deg)}75%{transform:scale(1.02) rotate(0)}
+  100%{transform:none;filter:none}}
+.hely.kesz .fenycsik{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:7px}
+.hely.kesz .fenycsik::after{content:"";position:absolute;top:-20%;bottom:-20%;width:38%;left:-60%;
+  background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);
+  transform:skewX(-14deg);animation:fenycsik .9s .28s ease-out forwards}
+@keyframes fenycsik{to{left:130%}}
+.szikra{position:fixed;z-index:201;pointer-events:none;width:10px;height:10px;margin:-5px 0 0 -5px;
+  background:radial-gradient(circle,#fff 0 30%,#ffe08a 45%,rgba(255,224,138,0) 70%);border-radius:50%}
+@media (prefers-reduced-motion: reduce){
+  .hely.kesz.uj-matrica,.hely.kesz .fenycsik::after,.hely.varja{animation:none}}
+
+/* ══ A SZEMÉLYLAP NE LEGYEN KÉTKÉPERNYŐNYI (2026-10-29) ═══════════════
+   A négyzetes portré a teljes bal hasábot kitöltötte (széles képernyőn
+   1200+ képpont magas lett), sokat kellett görgetni. Széles képernyőn a kép
+   a képernyő magasságához igazodik, a TÉNY-dobozok mellé kerülnek. */
+@media (min-width:1000px){
+  .sz-bal{display:grid;grid-template-columns:min(52vh,520px) minmax(0,1fr);
+    column-gap:18px;align-items:start;min-height:0}
+  .sz-bal .sz-kep{grid-column:1}
+  .sz-bal .dobozok{grid-column:2;grid-row:1;margin-top:16px}
+}
+@media (max-width:999px){.sz-kep{max-width:min(100%,62vh);margin-left:auto;margin-right:auto}}
 
 .borito,.hatso{background-size:cover!important;background-position:center!important;
  background-repeat:no-repeat!important;position:relative;overflow:hidden}
@@ -346,18 +424,21 @@ body{overflow-x:clip}
 <div class="top">
  <a class="vissza-gomb" href="{{ vissza_url }}">← Vissza a tanuláshoz</a>
  <div class="topkozep"><h1>TutorIA – Gyűjtőalbum</h1>
-   <div class="sub">Húzd a lapjaidat a saját helyükre. A sima lap a sima helyre, az arany az aranyra.</div></div>
+   <div class="sub">Húzd vagy koppintsd a lapjaidat a saját helyükre. A sima lap a sima helyre, az arany az aranyra.</div></div>
  <div class="prog">Beragasztva: <b id="db">0</b> / <span id="ossz"></span></div>
 </div>
 <div class="ugrosav" id="ugrosav"></div>
 <div class="szinpad"><div class="album"><div class="lapdoboz" id="lapdoboz"><div class="lap" id="lap"></div></div></div></div>
-<div class="lapozo">
+<div class="lapozo" id="lapozo">
  <button class="gomb halvany" id="elore">‹ Előző</button>
+ <div class="dokk-kartyak" id="dokk"><div class="dokk-cim">A kártyáid<small>húzd a helyére,<br>vagy koppints</small></div>
+  <div class="pakli" id="pakli"></div></div>
  <span class="kozepgomb">
   <button class="gomb halvany" id="tartalomGomb">☰ Tartalom</button>
   <span class="oldalszam" id="oldalszam"></span>
  </span>
  <button class="gomb" id="hatra">Következő ›</button>
+ <div class="uzenet" id="uzenet" aria-live="polite"></div>
 </div>
 <div class="tj-hatter" id="tjHatter"><div class="tj">
   <h3>Tartalom</h3>
@@ -365,10 +446,6 @@ body{overflow-x:clip}
   <div id="tjLista"></div>
   <button class="zar" id="tjZar">Bezárom</button>
 </div></div>
-<div class="kez"><h4>A kártyáid</h4>
- <p>Keresd meg, melyik oldalra és melyik helyre valók. A sima lap a sima helyre, az arany az aranyra.</p>
- <div class="pakli" id="pakli"></div><div class="uzenet" id="uzenet"></div></div>
-
 <script>
 /* Ezt a blokkot a Flask tölti ki. Fájlból megnyitva hibás marad – külön
    <script>, ezért csak ez dől el, és az album üresen, de hibátlanul jelenik meg. */
@@ -690,7 +767,7 @@ const lap=document.getElementById('lap'), uzenet=document.getElementById('uzenet
 
 function helyHTML(k,n,arany){
   if(beragasztva.has(n))
-    return `<div class="hely kesz"><img src="${SAJATKEP[n]||KARTYAUT(k,arany)}" ${HIBAKEP}></div>`;
+    return `<div class="hely kesz" data-k="${n}"><img src="${SAJATKEP[n]||KARTYAUT(k,arany)}" ${HIBAKEP}></div>`;
   return `<div class="hely ${arany?'arany':''}" data-n="${n}">
     <span class="szam">${n}</span><span class="fajta">${arany?'ARANY':'sima'}</span>
     <span class="q">?</span><span class="lecke">${k.lecke}</span></div>`;
@@ -778,33 +855,173 @@ function rajzol(){
   document.getElementById('db').textContent=beragasztva.size;
   ugrosav();
 }
+let KIVALASZTOTT=null;
+const _mozgas = () => !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+function sugo(szoveg, fajta){ uzenet.className='uzenet'+(fajta?' '+fajta:''); uzenet.textContent=szoveg||''; }
+function jeloles(){
+  lap.querySelectorAll('.hely[data-n]').forEach(h=>h.classList.toggle('varja', !!KIVALASZTOTT));
+}
+function kivalaszt(id){
+  KIVALASZTOTT = (id && KIVALASZTOTT!==id) ? id : null;
+  document.querySelectorAll('#pakli .mini').forEach(x=>x.classList.toggle('kivalasztva', x.dataset.id===KIVALASZTOTT));
+  const c=PAKLI.find(x=>x.id===KIVALASZTOTT);
+  sugo(c ? `${c.k.nev}${c.arany?' arany lapja':''}: lapozz a helyéhez, és koppints rá!` : '');
+  jeloles();
+}
+
+/* A RAGASZTÁS HANGJA: tompa koppanás és egy rövid papírsúrlódás. Fájl
+   nélkül, a böngésző kelti; ha nem engedi, csendben elmarad. */
+function ragasztHang(){
+  try{
+    _AC = _AC || new (window.AudioContext||window.webkitAudioContext)();
+    if(_AC.state==='suspended'){ _AC.resume(); }
+    const t=_AC.currentTime, sr=_AC.sampleRate;
+    const o=_AC.createOscillator(), g=_AC.createGain();
+    o.type='sine'; o.frequency.setValueAtTime(190,t); o.frequency.exponentialRampToValueAtTime(70,t+.12);
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.32,t+.008);
+    g.gain.exponentialRampToValueAtTime(.0001,t+.16);
+    o.connect(g).connect(_AC.destination); o.start(t); o.stop(t+.18);
+    const n=Math.floor(sr*.16), b=_AC.createBuffer(1,n,sr), d=b.getChannelData(0);
+    for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.2);
+    const z=_AC.createBufferSource(); z.buffer=b;
+    const f=_AC.createBiquadFilter(); f.type='bandpass'; f.frequency.value=2400; f.Q.value=.8;
+    const zg=_AC.createGain(); zg.gain.value=.07;
+    z.connect(f).connect(zg).connect(_AC.destination); z.start(t+.02);
+  }catch(e){}
+}
+function szikrak(r){
+  if(!_mozgas()) return;
+  const cx=r.left+r.width/2, cy=r.top+r.height/2;
+  for(let i=0;i<10;i++){
+    const e=document.createElement('i'); e.className='szikra';
+    e.style.left=cx+'px'; e.style.top=cy+'px'; document.body.appendChild(e);
+    const sz=(i/10)*Math.PI*2+Math.random()*.4, tav=Math.max(r.width,r.height)*(.55+Math.random()*.25);
+    e.animate([{transform:'translate(0,0) scale(.6)',opacity:1},
+               {transform:`translate(${Math.cos(sz)*tav}px,${Math.sin(sz)*tav}px) scale(1.1)`,opacity:0}],
+              {duration:620+Math.random()*200,easing:'cubic-bezier(.2,.7,.3,1)'}).onfinish=()=>e.remove();
+  }
+}
+/* a kártya (kép) odarepül a helyére; ha nincs mozgás, azonnal kész */
+function repul(kep, honnan, hova, kesz){
+  if(!_mozgas() || !kep){ if(kep) kep.remove(); kesz(); return; }
+  const dx=hova.left-honnan.left, dy=hova.top-honnan.top;
+  const sx=hova.width/honnan.width, sy=hova.height/honnan.height;
+  kep.style.left=honnan.left+'px'; kep.style.top=honnan.top+'px';
+  kep.style.width=honnan.width+'px'; kep.style.height=honnan.height+'px';
+  kep.style.transformOrigin='0 0';
+  const a=kep.animate([
+    {transform:'translate(0,0) scale(1,1) rotate(-4deg)'},
+    {transform:`translate(${dx*.55}px,${dy*.55-28}px) scale(${(1+sx)/2*1.08},${(1+sy)/2*1.08}) rotate(3deg)`,offset:.6},
+    {transform:`translate(${dx}px,${dy}px) scale(${sx},${sy}) rotate(0)`}],
+    {duration:Math.min(720,380+Math.hypot(dx,dy)*.35),easing:'cubic-bezier(.3,.6,.3,1)',fill:'forwards'});
+  a.onfinish=()=>{ kesz(); requestAnimationFrame(()=>kep.remove()); };
+}
+function kepKlon(c, r){
+  const k=document.createElement('img');
+  k.src=KARTYAUT_SZIG(c.k,c.arany); k.alt='';
+  k.className='kezben-kartya'+(c.arany?' arany':'');
+  k.style.left=r.left+'px'; k.style.top=r.top+'px'; k.style.width=r.width+'px'; k.style.height=r.height+'px';
+  document.body.appendChild(k); return k;
+}
+function ragaszt(c, h, kep, honnan){
+  if(!c || !h) { if(kep) kep.remove(); return false; }
+  if(Number(h.dataset.n)!==c.hova){
+    h.classList.add('rossz'); setTimeout(()=>h.classList.remove('rossz'),400);
+    sugo('Nem ez a helye. Melyik tantárgyban és melyik leckében tanultál róla?','baj');
+    if(kep) visszarepul(kep, honnan);
+    return false;
+  }
+  const cel=h.getBoundingClientRect();
+  if(!kep){ const m=document.querySelector(`#pakli .mini[data-id="${c.id}"]`);
+            honnan=(m||h).getBoundingClientRect(); kep=kepKlon(c,honnan); }
+  PAKLI=PAKLI.filter(x=>x.id!==c.id); if(KIVALASZTOTT===c.id) KIVALASZTOTT=null;
+  pakli();
+  repul(kep, honnan, cel, ()=>{
+    beragasztva.add(c.hova);
+    rajzol();
+    const uj=lap.querySelector(`.hely.kesz[data-k="${c.hova}"]`);
+    if(uj){ uj.insertAdjacentHTML('beforeend','<span class="fenycsik"></span>');
+            if(_mozgas()) uj.classList.add('uj-matrica'); szikrak(uj.getBoundingClientRect()); }
+    ragasztHang();
+    sugo(`Megvan! ${c.k.nev}${c.arany?' arany lapja':''} a helyére került.`,'jo');
+  });
+  /* Mentés: enélkül újratöltéskor kiesne a lap az albumból. */
+  if (window.BERAGASZT_URL) {
+    fetch(window.BERAGASZT_URL, {method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({lap: c.id})}).catch(()=>{});
+  }
+  return true;
+}
+function visszarepul(kep, honnan){
+  if(!_mozgas() || !honnan){ kep.remove(); return; }
+  const r=kep.getBoundingClientRect();
+  kep.animate([{transform:'none',opacity:1},
+               {transform:`translate(${honnan.left-r.left}px,${honnan.top-r.top}px) scale(${honnan.width/r.width})`,opacity:.4}],
+              {duration:320,easing:'ease-in'}).onfinish=()=>kep.remove();
+}
 function kotesek(){
   lap.querySelectorAll('.hely[data-n]').forEach(h=>{
-    h.addEventListener('dragover',e=>{e.preventDefault();
-      const c=PAKLI.find(x=>x.id===HUZOTT);
-      if(c && Number(h.dataset.n)!==c.hova){h.classList.add('tiltott');e.dataTransfer.dropEffect='none';return;}
-      h.classList.add('rahuz');});
-    h.addEventListener('dragleave',()=>h.classList.remove('rahuz','tiltott'));
-    h.addEventListener('drop',e=>{e.preventDefault();h.classList.remove('rahuz');
-      const id=e.dataTransfer.getData('text/plain');
-      const c=PAKLI.find(x=>x.id===id); if(!c) return;
-      if(Number(h.dataset.n)===c.hova){
-        beragasztva.add(c.hova); PAKLI=PAKLI.filter(x=>x.id!==id);
-        uzenet.className='uzenet jo';
-        uzenet.textContent=`Megvan! ${c.k.nev}${c.arany?' arany lapja':''} a helyére került.`;
-        rajzol(); pakli();
-        /* Mentés: enélkül újratöltéskor kiesne a lap az albumból. */
-        if (window.BERAGASZT_URL) {
-          fetch(window.BERAGASZT_URL, {method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({lap: id})}).catch(()=>{});
-        }
-      } else {
-        h.classList.add('rossz'); setTimeout(()=>h.classList.remove('rossz'),400);
-        uzenet.className='uzenet baj';
-        uzenet.textContent='Nem ez a helye. Melyik tantárgyban és melyik leckében tanultál róla?';
-      }});});
+    h.addEventListener('click',()=>{
+      if(!KIVALASZTOTT){ sugo('Előbb válassz egy kártyát lent, aztán koppints ide – vagy húzd ide.'); return; }
+      ragaszt(PAKLI.find(x=>x.id===KIVALASZTOTT), h);});
+  });
+  jeloles();
 }
+
+/* HÚZÁS – egérrel és ujjal is (Pointer Events). A böngésző beépített
+   húzása telefonon nem működik, ezért saját: a kártya képe követi az
+   ujjat, a hely, ami fölött jár, kivilágosodik. Ha csak koppint (nem
+   mozdul), az kiválasztás. */
+let _huz=null;
+function huzasIndit(e, m){
+  if(e.button>0) return;
+  const c=PAKLI.find(x=>x.id===m.dataset.id); if(!c) return;
+  _huz={c, m, x0:e.clientX, y0:e.clientY, megy:false, kep:null, alatt:null, id:e.pointerId,
+        honnan:m.getBoundingClientRect()};
+}
+function huzasMozog(e){
+  if(!_huz || e.pointerId!==_huz.id) return;
+  const dx=e.clientX-_huz.x0, dy=e.clientY-_huz.y0;
+  if(!_huz.megy){
+    if(Math.hypot(dx,dy)<8) return;
+    _huz.megy=true; try{ _huz.m.setPointerCapture(e.pointerId); }catch(_){}
+    _huz.kep=kepKlon(_huz.c,_huz.honnan); _huz.m.classList.add('huzva');
+    KIVALASZTOTT=_huz.c.id; jeloles(); sugo('');
+  }
+  e.preventDefault();
+  const r=_huz.honnan;
+  _huz.kep.style.transform=`translate(${dx}px,${dy}px) rotate(${Math.max(-8,Math.min(8,dx/30))}deg) scale(1.18)`;
+  /* mi van az ujj alatt? (a kép nem fogja el, pointer-events:none) */
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  const h=el && el.closest ? el.closest('.hely[data-n]') : null;
+  if(h!==_huz.alatt){ if(_huz.alatt) _huz.alatt.classList.remove('rahuz'); if(h) h.classList.add('rahuz'); _huz.alatt=h; }
+  /* a képernyő tetején vagy alján lassan görget, ha a hely nem látszik */
+  if(e.clientY<70) window.scrollBy(0,-14); else if(e.clientY>window.innerHeight-40) window.scrollBy(0,14);
+}
+function huzasVege(e){
+  if(!_huz || e.pointerId!==_huz.id) return;
+  const z=_huz; _huz=null;
+  if(!z.megy){ kivalaszt(z.c.id); return; }        /* csak koppintott */
+  z.m.classList.remove('huzva');
+  if(z.alatt) z.alatt.classList.remove('rahuz');
+  const kepR=z.kep.getBoundingClientRect();
+  /* a kép mostani helyéről indul a rásimulás */
+  z.kep.style.transform='none'; z.kep.style.left=kepR.left+'px'; z.kep.style.top=kepR.top+'px';
+  z.kep.style.width=kepR.width+'px'; z.kep.style.height=kepR.height+'px';
+  KIVALASZTOTT=null; jeloles();
+  if(z.alatt){ if(!ragaszt(z.c, z.alatt, z.kep, z.honnan)) pakli(); }
+  else { visszarepul(z.kep, z.honnan); pakli(); }
+}
+document.addEventListener('pointermove', huzasMozog, {passive:false});
+document.addEventListener('pointerup', huzasVege);
+document.addEventListener('pointercancel', e=>{
+  if(!_huz || e.pointerId!==_huz.id) return;
+  const z=_huz; _huz=null; z.m.classList.remove('huzva');
+  if(z.alatt) z.alatt.classList.remove('rahuz');
+  if(z.kep) visszarepul(z.kep, z.honnan);
+  KIVALASZTOTT=null; jeloles();
+});
+
 function ugrosav(){
   const e=document.getElementById('ugrosav'); if(!e) return;
   const elemek=[{cim:"Borító",i:0}];
@@ -830,13 +1047,19 @@ function ugrosav(){
 }
 function pakli(){
   const p=document.getElementById('pakli');
-  if(!PAKLI.length){p.innerHTML='<div style="opacity:.5;padding:18px">Minden lapot beragasztottál.</div>';return;}
-  p.innerHTML=PAKLI.slice(0,40).map(c=>`<div class="mini ${c.arany?'aranylap':''}" draggable="true" data-id="${c.id}">
+  if(!PAKLI.length){
+    p.innerHTML=`<div class="pakli-ures">${beragasztva.size ? 'Minden lapodat beragasztottad.' : 'Még nincs beragasztanivaló lapod – tasakot a Boltban bonthatsz.'}</div>`;
+    return;
+  }
+  p.innerHTML=PAKLI.slice(0,40).map(c=>`<div class="mini ${c.arany?'aranylap':''} ${c.id===KIVALASZTOTT?'kivalasztva':''}" data-id="${c.id}"
+     role="button" tabindex="0" aria-label="${c.k.nev}${c.arany?' arany':''} lapja, ${c.hova}. hely">
      <span class="cimke">${c.hova}</span>
-     <img src="${KARTYAUT_SZIG(c.k,c.arany)}" ${HIBAKEP}><div class="c">${c.k.nev}</div></div>`).join('');
-  p.querySelectorAll('.mini').forEach(m=>m.addEventListener('dragstart',e=>{
-    e.dataTransfer.setData('text/plain',m.dataset.id); HUZOTT=m.dataset.id;
-    uzenet.className='uzenet';uzenet.textContent='';}));
+     <img src="${KARTYAUT_SZIG(c.k,c.arany)}" alt="" draggable="false" ${HIBAKEP}><div class="c">${c.k.nev}</div></div>`).join('');
+  p.querySelectorAll('.mini').forEach(m=>{
+    m.addEventListener('pointerdown',e=>huzasIndit(e,m));
+    m.addEventListener('dragstart',e=>e.preventDefault());
+    m.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); kivalaszt(m.dataset.id);} });
+  });
 }
 /* ══ A LAPOZÁS HANGJA ═════════════════════════════════════════════════
    Nincs hozzá hangfájl: a böngésző kelti. Fehér zaj SZAGGATOTT
@@ -1010,7 +1233,22 @@ document.getElementById('tjZar').addEventListener('click',tartalomZar);
 _tjHatter.addEventListener('click',e=>{ if(e.target===_tjHatter) tartalomZar(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') tartalomZar(); });
 
-rajzol(); pakli();
+/* AZ ALBUM MÉRETE (2026-10-29): asztali gépen és tableten akkora, hogy a
+   lap és alatta a kártyasáv egyszerre elférjen a képernyőn. Telefonon
+   nem kicsinyítünk – ott a lap úgyis egy hasábos, és apró betű lenne.
+   Legfeljebb 78%-ra kicsinyít, hogy a betű olvasható maradjon. */
+function igazit(){
+  const sz=document.querySelector('.szinpad'); if(!sz) return;
+  if(window.innerWidth<761 || !('zoom' in document.body.style)){ sz.style.zoom=''; return; }
+  const dokk=document.getElementById('lapozo');
+  const hely=window.innerHeight - (dokk ? dokk.offsetHeight : 90) - 30;
+  const alap=664;   /* a lap legkisebb magassága (640) + az album kerete */
+  const z=Math.max(.78, Math.min(1, hely/alap));
+  sz.style.zoom = z<.995 ? z.toFixed(3) : '';
+}
+window.addEventListener('resize', igazit);
+
+rajzol(); pakli(); igazit();
 
 /* csak azok a lapok kerulnek a pakliba, amelyeknek tenyleg van kepuk */
 (async () => {
