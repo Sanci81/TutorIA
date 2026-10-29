@@ -452,6 +452,75 @@ body{overflow-x:clip}
      és az elrendezés VÁLTOZATLANOK. */
   body{font-family:Nunito,"Segoe UI",system-ui,sans-serif;
     background:radial-gradient(circle at 50% -10%,#1f6b52,#0E2A1E 48%,#06140e)}
+
+/* ══ SZEMÉLYLAP: HŐS-PLAKÁT (2026-10-29, Sándor választása: „A”) ═══════
+   Bal fele: a portré a lap teljes magasságában, rajta a név, mint egy
+   filmplakáton. Jobb fele: becenév és leírás, a két tény-doboz, alattuk a
+   két matricahely az idézettel, mellettük kiemelve a képesség. */
+.pl{display:grid;grid-template-columns:500px minmax(0,1fr);min-height:640px}
+.pl-kep{position:relative;overflow:hidden;background:#101830;min-height:640px}
+.pl-kep>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.pl-kep::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(8,12,30,.88) 100%),
+             linear-gradient(90deg,rgba(0,0,0,0) 86%,rgba(246,243,234,.95) 100%)}
+.pl-kep .nincs{position:absolute;inset:0;z-index:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:6px;color:#9aa0ad;font-weight:800;font-size:.95rem;text-align:center;padding:20px;
+  background:repeating-linear-gradient(135deg,rgba(255,255,255,.04) 0 12px,transparent 12px 24px),#1b2350}
+.pl-kep .nincs b{font-size:2rem;opacity:.5}
+.pl-nev{position:absolute;left:32px;right:32px;bottom:28px;z-index:3;color:#fff}
+.pl-nev h2{font-size:3rem;font-weight:900;line-height:.95;letter-spacing:-1.3px;text-shadow:0 4px 18px rgba(0,0,0,.55)}
+.pl-nev p{font-weight:800;font-size:.95rem;margin-top:8px;letter-spacing:.3px;
+  color:color-mix(in srgb,var(--fo) 35%,#fff);text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.pl-jobb{padding:38px 28px 24px 30px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.pl-bn b{display:block;font-size:2.6rem;font-weight:900;color:var(--fo);letter-spacing:-.8px;line-height:1}
+.pl-bn span{display:block;font-size:1rem;font-weight:700;line-height:1.45;margin-top:7px;color:#2b2f45}
+.pl-doboz{border-radius:4px;padding:9px 14px;box-shadow:0 5px 14px rgba(0,0,0,.22);font-size:.84rem;
+  line-height:1.42;font-weight:600}
+.pl-doboz b{display:block;font-size:.6rem;font-weight:900;letter-spacing:1.4px;margin-bottom:2px;opacity:.75}
+.pl-doboz.sarga{background:#f0c869;color:#1b1a24;transform:rotate(-.6deg)}
+.pl-doboz.kek{background:#1b2350;color:#fff;transform:rotate(.6deg)}
+.pl-also{display:grid;grid-template-columns:300px minmax(0,1fr);gap:18px;margin-top:4px;align-items:start}
+.pl-helyek{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pl-helyek .hely{min-width:0}
+.pl-idezet{grid-column:1/3;font-style:italic;font-weight:600;font-size:.8rem;line-height:1.4;color:#5d5a6a;
+  border-left:3px solid var(--fo);padding-left:10px;margin-top:2px}
+.pl-kepesseg{background:#fff;border:2px solid #1b2350;border-radius:12px;padding:14px 16px;
+  box-shadow:0 10px 24px rgba(27,35,80,.14);display:flex;flex-direction:column;gap:10px}
+.pl-kepesseg .pill{align-self:flex-start;background:linear-gradient(180deg,#dc4f49,#b62f2b);color:#fff;font-weight:900;
+  font-size:.7rem;letter-spacing:1.6px;padding:5px 12px;border-radius:6px}
+.pl-knev{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 8px;color:#1b2350}
+.pl-knev span{font-size:1.45rem;font-weight:900;line-height:1.05;min-width:0;overflow-wrap:break-word;hyphens:auto}
+.pl-knev b{font-size:1.55rem;font-weight:900}
+.pl-tudas{display:flex;align-items:center;gap:10px;color:#1b2350}
+.pl-tudas b{font-size:2.2rem;font-weight:900;line-height:1}
+.pl-tudas span{font-size:.62rem;font-weight:900;letter-spacing:1.4px;color:#8a8796}
+.pl-tudas .erme{width:38px;height:38px;border-radius:50%;flex:none;position:relative;
+  background:radial-gradient(circle at 36% 30%,#b0915a,#8a6a35 45%,#6b4d20);border:4px solid #e4d8bf}
+.pl-tudas .erme::after{content:"★";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:#f1eef4;font-size:16px;font-style:normal}
+.pl-ritka{font-size:1.05rem;font-weight:900;color:#c99424;letter-spacing:.5px}
+.pl-lecke{border-top:1px solid #e2dccb;padding-top:8px;font-size:.76rem;font-weight:700;color:#5a5a6e}
+.pl-lecke i{display:block;font-style:normal;font-size:.58rem;letter-spacing:1.4px;font-weight:900;color:#8a8796}
+/* tableten (keskenyebb asztal): a kép keskenyebb, a képesség a helyek alá */
+@media (max-width:1099px) and (min-width:761px){
+  .pl{grid-template-columns:42% minmax(0,1fr)}
+  .pl-also{grid-template-columns:1fr}
+  .pl-helyek{max-width:420px}
+}
+/* TELEFON: ugyanez egymás alatt; a plakát a lap teteje, a név rajta */
+@media (max-width:760px){
+  .pl{display:block;min-height:0}
+  .pl-kep{min-height:0;aspect-ratio:1/1}
+  .pl-kep::after{background:linear-gradient(180deg,rgba(0,0,0,0) 45%,rgba(8,12,30,.88) 100%)}
+  .pl-nev{left:18px;right:18px;bottom:16px}
+  .pl-nev h2{font-size:2rem;letter-spacing:-.8px}
+  .pl-nev p{font-size:.85rem}
+  .pl-jobb{padding:18px 16px 20px;gap:11px}
+  .pl-bn b{font-size:1.9rem}
+  .pl-bn span{font-size:.95rem}
+  .pl-doboz{font-size:.88rem}
+  .pl-also{grid-template-columns:1fr;gap:14px}
+}
 </style>
 </head><body>
 {% include "_gyerek_menu.html" %}
@@ -842,29 +911,29 @@ function rajzol(){
         Egy másodikos ugyanúgy megkaphat egy olyan lapot, ami hetedikes
         anyaghoz készült – a leírás abból is tanít. Csak a tantárgy marad. #}
      <div class="sz-tag" style="background:${k.szin}">${k.targy.toUpperCase()}</div>
-     <div class="sz-fejlec"><div class="sz-nev">${k.nev}</div>
-       <div class="sz-alnev" style="color:${k.szin}">${k.alnev}</div></div>
-     <div class="sz-torzs" style="--fo:${k.szin}">
-      <div class="sz-bal">
-       <div class="sz-kep"><img src="${KEPUT(k)}" ${HIBAKEP}>
-         <span class="nincs"><b style="font-size:1.5rem;opacity:.45">?</b>
-         ${k.nev} lapja még készül</span></div>
-       <div class="becenev" style="background:${k.szin}"><b>${k.becenev}</b><span>${k.leiras}</span></div>
-       <div class="dobozok">
-        <div class="doboz"><b>A TÉNY</b><span>${k.teny}</span></div>
-        <div class="doboz kek"><b>AMIT KEVESEN TUDNAK</b><span>${k.erd}</span></div></div>
+     <div class="pl" style="--fo:${k.szin}">
+      <div class="pl-kep">
+       <img src="${KEPUT(k)}" alt="" ${HIBAKEP}>
+       <span class="nincs"><b>?</b>${k.nev} képe még készül</span>
+       <div class="pl-nev"><h2>${k.nev}</h2><p>${k.alnev}</p></div>
       </div>
-      <div class="sz-jobb">
-       <div class="adatlap"><div class="fej">ADATLAP</div><table>
-         <tr><td>Szakterülete</td><td>${k.targy}</td></tr>
-         <tr><td>Élt</td><td>${k.alnev.split('· ')[1]||''}</td></tr>
-         <tr><td>Képessége</td><td>${k.kepesseg}</td></tr>
-         <tr><td>Ereje</td><td>${k.ero}</td></tr>
-         <tr><td>Ritkaság</td><td>${k.csillag} ${k.cimke}</td></tr>
-         <tr><td>Lecke</td><td>${k.lecke}</td></tr></table></div>
-       <div class="helyek">${helyHTML(k,k.hely1,false)}${helyHTML(k,k.hely2,true)}</div>
-       <div class="idezet">„${k.idezet}”</div>
-      </div></div>`;
+      <div class="pl-jobb">
+       <div class="pl-bn"><b>${k.becenev}</b><span>${k.leiras}</span></div>
+       <div class="pl-doboz sarga"><b>A TÉNY</b>${k.teny}</div>
+       <div class="pl-doboz kek"><b>AMIT KEVESEN TUDNAK</b>${k.erd}</div>
+       <div class="pl-also">
+        <div class="pl-helyek">${helyHTML(k,k.hely1,false)}${helyHTML(k,k.hely2,true)}
+          <div class="pl-idezet">„${k.idezet}”</div></div>
+        <div class="pl-kepesseg">
+         <span class="pill">KÉPESSÉG</span>
+         <div class="pl-knev"><span>${k.kepesseg}</span><b>${k.kepero||''}</b></div>
+         <div class="pl-tudas"><i class="erme"></i><b>${k.ero}</b><span>TUDÁS</span></div>
+         <div class="pl-ritka">${k.csillag} ${k.cimke}</div>
+         <div class="pl-lecke"><i>LECKE</i>${k.lecke}</div>
+        </div>
+       </div>
+      </div>
+     </div>`;
     kotesek();
   } else if(o.t==="checklist"){
     lap.className="lap checklist";
@@ -1301,7 +1370,7 @@ function igazit(){
   if(window.innerWidth<761 || !('zoom' in document.body.style)){ sz.style.zoom=''; return; }
   const dokk=document.getElementById('lapozo');
   const hely=window.innerHeight - (dokk ? dokk.offsetHeight : 90) - 30;
-  const alap=664;   /* a lap legkisebb magassága (640) + az album kerete */
+  const alap=664;   /* a lap (plakát) magassága (640) + az album kerete */
   const z=Math.max(.78, Math.min(1, hely/alap));
   sz.style.zoom = z<.995 ? z.toFixed(3) : '';
 }

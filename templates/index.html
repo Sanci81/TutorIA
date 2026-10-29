@@ -204,6 +204,10 @@
 .fo .fo-album-sor .fo-borito{width:460px;border-radius:16px;box-shadow:0 22px 40px rgba(14,42,30,.25),0 0 0 6px #fff;transform:rotate(-2deg)}
 .fo .fo-album-sor .fo-lapok{display:grid;grid-template-columns:repeat(3,132px);gap:16px 20px;justify-content:start}
 .fo .fo-album-sor .fo-lapok img{width:132px}
+.fo .fo-lapok img.fo-arany{border-color:#f0c869;box-shadow:0 0 0 2px #c99424,0 0 22px rgba(240,200,105,.75),0 10px 20px rgba(0,0,0,.18)}
+.fo .fo-albumlap{max-width:1000px;margin:46px auto 0}
+.fo .fo-albumlap img{width:100%;display:block;border-radius:14px;box-shadow:0 22px 40px rgba(14,42,30,.25),0 0 0 6px #fff;transform:rotate(.6deg)}
+.fo .fo-albumlap figcaption{color:var(--halvany);font-size:16px;margin-top:18px}
 @media (max-width:760px){
   .fo .fo-album-sor{grid-template-columns:1fr;gap:26px;justify-items:center}
   .fo .fo-album-sor .fo-borito{width:300px}
@@ -453,12 +457,20 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
   <div class="fo-album-sor">
     <img class="fo-borito" loading="lazy" src="{{ url_for('static', filename='bemutato/album_borito.jpg') }}" alt="{{ t('bem_album_cim') }}">
     <div class="fo-lapok">
-      {% for kep, nev in [('curie.jpg', 'Marie Curie'), ('newton.jpg', 'Isaac Newton'), ('galilei.jpg', 'Galileo Galilei'),
-                          ('mengyelejev.jpg', 'Mengyelejev'), ('euklidesz.jpg', 'Eukleidész'), ('darwin.jpg', 'Charles Darwin')] %}
-      <img loading="lazy" src="{{ url_for('static', filename='bemutato/' ~ kep) }}" alt="{{ nev }}">
+      {# 2026-10-29: két ARANY lap is a sorban – a gyerek lássa, hogy van ritkább, csillogóbb változat. #}
+      {% for kep, nev, arany in [('curie.jpg', 'Marie Curie', 0), ('newton_arany.jpg', 'Isaac Newton', 1), ('galilei.jpg', 'Galileo Galilei', 0),
+                          ('mengyelejev.jpg', 'Mengyelejev', 0), ('szechenyi_arany.jpg', 'Széchenyi István', 1), ('darwin.jpg', 'Charles Darwin', 0)] %}
+      <img loading="lazy" {% if arany %}class="fo-arany"{% endif %} src="{{ url_for('static', filename='bemutato/' ~ kep) }}" alt="{{ nev }}{{ (' – aranylap' if not es else ' – cromo dorado') if arany else '' }}">
       {% endfor %}
     </div>
   </div>
+  {% if not es %}
+  {# 2026-10-29: egy albumoldal is, ahogy a gyerek látja – a kép magyar feliratú, ezért csak a magyar oldalon. #}
+  <figure class="fo-albumlap">
+    <img loading="lazy" src="{{ url_for('static', filename='bemutato/album_lap.jpg') }}" alt="Egy oldal a gyűjtőalbumból: Marie Curie, a két beragasztott lapjával">
+    <figcaption>Minden lapnak saját oldala van az albumban: érdekesség, tény, és a hely, ahová beragasztja.</figcaption>
+  </figure>
+  {% endif %}
 </section>
 
 <section class="fo-osztaly">
