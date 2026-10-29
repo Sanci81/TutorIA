@@ -9324,7 +9324,7 @@ _DM_FELULETEK = [
      'MÁQUINA DE FUNCIONES – la máquina transforma el número con la regla x × "szorzo" + "hozzaad"; el niño mete números y elige la regla entre 4. "szorzo" 1–10, "hozzaad" −10…10 (no vale ×1 + 0). NO escribas la regla en la pregunta:\n'
      '   <FELADAT>{"tipus":"fgep","szorzo":3,"hozzaad":-1}</FELADAT>',
      'szabály, függvény, hozzárendelés     → fgep', 'regla, función, máquina de números   → fgep'),
-    ("venn", {"matek", "kornyezet"}, 3, 6,
+    ("venn", {"matek", "kornyezet"}, 3, 8,
      'HALMAZOK (VENN-ÁBRA) – két kör, a gyerek a kártyákat a jó részbe húzza. "a" és "b" a két tulajdonság (max. 16 betű), "elemek": [szöveg (max. 10 betű), A-ba való (1/0), B-be való (1/0)]; 4–10 elem, legyen csak A-s, csak B-s és közös is:\n'
      '   <FELADAT>{"tipus":"venn","kerdes":"Rendezd el a számokat!","a":"páros","b":"3-mal osztható","elemek":[["6",1,1],["4",1,0],["9",0,1],["12",1,1],["8",1,0],["3",0,1],["7",0,0]]}</FELADAT>',
      'CONJUNTOS (DIAGRAMA DE VENN) – dos círculos; el niño arrastra cada tarjeta a su zona. "a" y "b" son las dos propiedades (máx. 16 letras), "elemek": [texto (máx. 10 letras), está en A (1/0), está en B (1/0)]; 4–10 elementos, con alguno solo en A, solo en B y en los dos:\n'
@@ -10404,20 +10404,51 @@ def _teszt_kapu_szoveg(
             " hogy ki is próbálhatja, ha szeretné. Ne sürgesd.\n" + zaras)
 
 
+def _lecke_felulet_tipp(child, subject_label: str, current_topic: str, idegen: bool) -> str:
+    """Ha a mostani lecke témája szerepel egy interaktív felület választó-sorában
+    (pl. „Halmazok” → venn), név szerint megmondja a tanárnak, hogy azt használja.
+    Csak olyan felületet ajánl, ami az évfolyam/tantárgy listájában amúgy is benne van."""
+    try:
+        t = unicodedata.normalize("NFD", (current_topic or "").lower())
+        t = "".join(c for c in t if unicodedata.category(c) != "Mn")
+        if len(t) < 4:
+            return ""
+        try:
+            grade = int(_chat_grade_num(child)) if child else 0
+        except Exception:
+            grade = 0
+        es = (_active_curriculum() or "HU").upper() == "ES"
+        cimkek = _dm_cimkek(subject_label, idegen)
+        talalt = []
+        for f in _DM_FELULETEK:
+            if not (f[1] & cimkek) or not (f[2] - 1 <= grade <= f[3] + 1):
+                continue
+            sor = f[7] if es else f[6]
+            if not sor or not (f[5] if es else f[4]):
+                continue
+            for k in sor.split("→")[0].split(","):
+                k = unicodedata.normalize("NFD", k.lower())
+                k = "".join(c for c in k if unicodedata.category(c) != "Mn").strip(" „\"«»!?.")
+                if len(k) >= 5 and (k in t or (len(t) >= 5 and t in k)):
+                    talalt.append(f[0])
+                    break
+        if not talalt:
+            return ""
+        nevek = ", ".join(talalt[:3])
+        if es:
+            return ("\n\n=== ESTA LECCIÓN TIENE SU PROPIA SUPERFICIE INTERACTIVA ===\n"
+                    f"Para practicar «{current_topic}» usa: {nevek}. Dala al menos una vez en la clase, y "
+                    "SIEMPRE que el niño pida un dibujo o diagrama.\n")
+        return ("\n\n=== EHHEZ A LECKÉHEZ VAN SAJÁT INTERAKTÍV FELÜLET ===\n"
+                f"A(z) „{current_topic}” gyakorlásához ezt használd: {nevek}. Az órán legalább egyszer "
+                "add ezt a feladatot, és MINDIG ezt add, ha a gyerek ábrát vagy rajzot kér.\n")
+    except Exception:
+        return ""
+
+
 def _build_chat_system_prompt(*args, **kwargs) -> str:
     """A prompt + (ha a gépi rajzok ki vannak kapcsolva) a rajztilalom a végén."""
     prompt = _build_chat_system_prompt_alap(*args, **kwargs)
-    # A személyes-adat szűrő „[elrejtve]”-re cseréli a címet/telefont (2026-10-28).
-    prompt += (
-        "\n\n=== [elrejtve] A GYEREK ÜZENETÉBEN ===\n"
-        "Ha a gyerek üzenetében „[elrejtve]” áll, személyes adatot (címet, telefonszámot, e-mailt) írt, "
-        "amit a rendszer a védelme érdekében elrejtett. Ilyenkor EGY rövid, kedves mondattal mondd: "
-        "„Ilyen személyes adatot, mint a címed vagy a telefonszámod, nem kell ide írnod – ezt jobb megtartani "
-        "magadnak.” Ne írd, hogy nem látod vagy nem tudod ellenőrizni a választ, és ne kérd újra. "
-        "Utána folytasd a leckét.\n"
-        "Si en el mensaje del niño aparece «[elrejtve]», escribió un dato personal que el sistema ocultó. "
-        "Dile con UNA frase amable que no hace falta escribir aquí su dirección ni su teléfono, y sigue con la "
-        "lección. No digas que no puedes ver o comprobar su respuesta.\n")
     # Személyes-adat szűrő (2026-10-28): a gyerek üzenetében [elrejtve] áll.
     prompt += (
         "\n\n=== HA A GYEREK ÜZENETÉBEN [elrejtve] ÁLL ===\n"
@@ -10428,11 +10459,29 @@ def _build_chat_system_prompt(*args, **kwargs) -> str:
         "Si en el mensaje del niño aparece [elrejtve], ha escrito un dato personal (dirección, teléfono, "
         "correo) y el sistema lo ha ocultado: pídele con una frase amable que no lo escriba aquí y repite "
         "la pregunta anterior. NUNCA digas que «aparece oculto».\n")
+    # 2026-10-29: Halmazok órán a gyerek tízszer kért halmazábrát, a tanár
+    # mégis azt írta, hogy „most nem tudok rajzos diagramot betenni”, és
+    # szövegben sorolta a köröket. Pedig a Venn-felület kész. Ezért: ha a
+    # mostani leckéhez van saját felület, NÉVVEL megmondjuk a tanárnak.
+    prompt += _lecke_felulet_tipp(
+        args[0] if args else kwargs.get("child"),
+        kwargs.get("subject_label", ""), kwargs.get("current_topic", ""),
+        bool(kwargs.get("is_foreign_language")))
+    prompt += (
+        "\n\n=== HA A GYEREK ÁBRÁT, RAJZOT, KÉPET KÉR ===\n"
+        "Ha azt kéri, hogy „rajzold le”, „mutasd meg képpel”, „ábrán”, „diagramon”, vagy hogy "
+        "„ahová be kell illesztenem a dolgokat”: SOHA ne írd, hogy nem tudsz rajzolni vagy ábrát "
+        "betenni, és NE szövegben írd le az ábrát. Válaszd ki a fenti interaktív felületek közül "
+        "azt, amelyik illik (pl. halmazok → venn), és add <FELADAT>-ként – EZ az ábrád.\n"
+        "Si el niño pide un dibujo, un diagrama o «verlo con imagen»: NUNCA digas que no puedes "
+        "dibujar ni lo describas con texto. Elige la superficie interactiva que encaje (p. ej. "
+        "conjuntos → venn) y dala como <FELADAT>.\n")
     if not ABRA_RAJZOK:
         prompt += (
             "\n\n=== RAJZ: MOST NINCS (ez felülír minden korábbi ábra-szabályt) ===\n"
             "NE küldj <ABRA> blokkot, SVG-t vagy bármilyen rajzot, és NE hivatkozz ábrára "
-            "(„az ábrán”, „nézd meg a rajzot”). A szemléltetést a <FELADAT> elemek adják.\n"
+            "(„az ábrán”, „nézd meg a rajzot”). A szemléltetést a <FELADAT> elemek adják: ha a gyerek ábrát kér, "
+            "interaktív <FELADAT>-ot adj, és ne mondd, hogy nem tudsz rajzolni.\n"
             "NO envíes <ABRA>, SVG ni dibujos, y NO menciones ningún dibujo («en el dibujo»).\n"
         )
     return prompt

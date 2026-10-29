@@ -295,6 +295,13 @@
     .chat-layout:not(.teljes-mod):has(.uj-felulet) .topic-sidebar{
         align-self:start;height:calc(100% - 320px);min-height:220px;
         max-height:none}
+    /* A LISTA KÁRTYÁJA se lógjon ki a neki szánt sávból (2026-10-29).
+       A style.css-ben a kártya magassága az ABLAKHOZ igazodik
+       (100vh - 140px), nem a sávhoz – ezért alacsonyabb sávban a kártya
+       lelógott, és a figura feje belelógott a listába. Most a sávon belül
+       marad, a lista magától görög tovább. */
+    .chat-layout:not(.teljes-mod):has(.uj-felulet) .topic-sidebar-card{
+        max-height:100%;box-sizing:border-box}
 
     /* A FIGURA EGY HELYBEN: a felület bal alsó sarkában, a témalista alatt. */
     .chat-layout:has(.uj-felulet) .chat-kabala-oszlop{
