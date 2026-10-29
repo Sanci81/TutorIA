@@ -16,7 +16,11 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
 
 .borito,.hatso{display:flex;flex-direction:column;align-items:center;justify-content:center;
  gap:14px;padding:34px;color:#fff;background:linear-gradient(165deg,#2b3568,#3d4a8c 48%,#1e2650)}
-.meh{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;width:100%;max-width:700px}
+.meh{--g:6px;width:100%;max-width:700px;display:flex;flex-direction:column;align-items:center}
+.meh-sor{display:flex;justify-content:center;gap:var(--g);width:100%}
+/* a sorok egymásba csúsznak: a hatszög magasságának negyedével (1,12 x szélesség) */
+.meh-sor+.meh-sor{margin-top:calc((100% - (var(--c) - 1) * var(--g)) / var(--c) * -0.28 + var(--g))}
+.meh .hx{flex:0 0 calc((100% - (var(--c) - 1) * var(--g)) / var(--c))}
 .hx{aspect-ratio:1/1.12;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
  overflow:hidden;background:#0e1430;display:flex;align-items:center;justify-content:center}
 .hx img{width:100%;height:100%;object-fit:cover}.hx span{color:rgba(240,200,105,.45);font-weight:900}
@@ -30,7 +34,8 @@ h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
 .szfej h2{font-size:3.2rem;font-weight:900;letter-spacing:-1.6px;line-height:.92}
 .szfej .db{position:absolute;top:28px;right:32px;background:rgba(0,0,0,.3);
  border:2px solid rgba(255,255,255,.35);border-radius:10px;padding:8px 14px;text-align:center}
-.szfej .db b{display:block;font-size:1.6rem;font-weight:900;line-height:1}
+.szfej .db b{display:block;font-size:1.6rem;font-weight:900;line-height:1;margin:3px 0 2px}
+.szfej .db span{display:block}
 .szfej .db span{font-size:.6rem;letter-spacing:1.5px;opacity:.8}
 .arcsor{flex:1;background:rgba(0,0,0,.18);padding:18px 32px 24px;display:grid;
  grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:13px;align-content:start}
@@ -316,7 +321,7 @@ body{overflow-x:clip}
 
   /* A többi lap is elfér: borító, szakasz, checklist. */
   .focim{font-size:1.9rem;letter-spacing:1px}
-  .meh{grid-template-columns:repeat(4,1fr);gap:6px}
+  .meh{--g:4px}
   .szfej{padding:20px 16px 12px}
   .szfej h2{font-size:2rem;letter-spacing:-.9px}
   .szfej .db{top:20px;right:16px;padding:6px 10px}
@@ -573,6 +578,34 @@ function boritoOszlop(n){
   return Math.min(n, 5);
 }
 
+/* MÉHSEJT A BORÍTÓN (2026-10-29). Eddig rácsban, soronként 4-5 hatszög:
+   26 laphoz hosszú, keskeny oszlop lett. Most a sorok felváltva N és N-1
+   hatszögből állnak, és egymásba illeszkednek, mint a lépben: 26 = 9+8+9.
+   Ha a darabszám így nem jön ki pontosan, a sorok egyformák (N), és az
+   utolsó, rövidebb sor középre kerül. */
+function mehsejtSorok(n){
+  if(n<=0) return [];
+  /* telefonon kevesebb egy sorban, hogy a hatszögek ne legyenek aprók */
+  const jelolt = window.innerWidth < 600 ? [7,6,5,4,8] : [9,8,10,7,6,5,4];
+  for(const c of jelolt){
+    const sorok=[]; let ossz=0, i=0;
+    while(ossz<n){ const db=(i%2===0)?c:c-1; sorok.push(db); ossz+=db; i++; }
+    if(ossz===n && sorok.length>1) return {c, sorok};
+  }
+  const c=Math.min(n,8), sorok=[];
+  for(let m=n; m>0; m-=c) sorok.push(Math.min(c,m));
+  return {c, sorok};
+}
+function mehsejtHTML(lapok){
+  const r=mehsejtSorok(lapok.length); if(!r.sorok) return '';
+  let i=0;
+  return `<div class="meh" style="--c:${r.c};max-width:${r.c*96}px">`
+    + r.sorok.map(db=>`<div class="meh-sor">`+lapok.slice(i,i+=db).map(k=>
+      `<div class="hx"><img src="${KEPUT(k)}" onerror="this.style.display='none';`
+      + `this.nextElementSibling.style.display='flex'"><span style="display:none">?</span></div>`
+      ).join('')+`</div>`).join('') + `</div>`;
+}
+
 function boritoHTML(T){
   return `<div class="bo-arny"></div>
   <div class="bo-tart">
@@ -580,10 +613,7 @@ function boritoHTML(T){
     <div class="bo-nev">Tutor<span>IA</span></div>
     <div class="bo-vonal"><i></i><b>${T.hivatalos}</b><i></i></div>
     <div class="focim">${T.focim}</div>
-    <div class="meh" style="grid-template-columns:repeat(${boritoOszlop(boritoLapok().length)},1fr);max-width:${boritoOszlop(boritoLapok().length)*104}px">${boritoLapok().map(k=>
-      `<div class="hx"><img src="${KEPUT(k)}" onerror="this.style.display='none';`
-      + `this.nextElementSibling.style.display='flex'"><span style="display:none">?</span></div>`
-      ).join('')}</div>
+    ${mehsejtHTML(boritoLapok())}
     <div class="bo-also">
       <span><b>${K.length}</b>${T.szemely}</span><i></i>
       <span><b>${K.length*2}</b>${T.lap}</span><i></i>
@@ -679,7 +709,9 @@ function rajzol(){
     lap.style.background=`linear-gradient(150deg,${(o.tagok[0]||{}).szin||'#3f6fd8'},#141a3c)`;
     lap.innerHTML=`<div class="szfej"><h2>${o.targy.toUpperCase()}</h2>
        <div class="kicsi" style="margin-top:6px">${o.tagok.length} SZEMÉLY</div>
-       <div class="db"><b>${o.tagok.length*2}</b><span>LAP</span></div></div>
+       <div class="db"><span>${o.tagok.length*2} HELYBŐL</span>
+         <b>${o.tagok.reduce((n,k)=>n+(beragasztva.has(k.hely1)?1:0)+(beragasztva.has(k.hely2)?1:0),0)}</b>
+         <span>BERAGASZTVA</span></div></div>
       <div class="arcsor">${o.tagok.map(k=>{
         const van=beragasztva.has(k.hely1)||beragasztva.has(k.hely2);
         return `<div class="arc"><div class="ker ${van?'':'hianyzik'}">
