@@ -4263,18 +4263,41 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             "Coloca cada tarjeta en su casilla." if es_tanterv else "Tedd a kártyákat a táblázat jó mezőjébe!")
 
         # A TAGADÁS magyarosan (2026-10-30, Sándor): „nem 10-nél nagyobb" nem
-        # magyar. A „nem" a melléknév elé kerül: „10-nél nem nagyobb". (Nem
-        # „10-nél kisebb": a 10 maga sem nagyobb 10-nél, de nem is kisebb.)
+        # magyar. A „nem" a melléknév elé kerül: „nem páros".
+        # 2026-10-30 (Sándor): összehasonlításnál az ELLENTÉT kell, nem a „nem":
+        # „10-nél nagyobb" → „10-nél kisebb". Ha maga a szám (10) is a kártyák
+        # között van, akkor „legfeljebb 10" – különben a 10-nek nem lenne helye.
+        _ELLENTET = {"nagyobb": "kisebb", "kisebb": "nagyobb", "hosszabb": "rövidebb",
+                     "rövidebb": "hosszabb", "magasabb": "alacsonyabb", "alacsonyabb": "magasabb",
+                     "nehezebb": "könnyebb", "könnyebb": "nehezebb", "több": "kevesebb", "kevesebb": "több"}
+        _ELLENTET_ES = {"mayor": "menor", "menor": "mayor"}
+        _nevek = {str(e[0]).strip() for e in elemek}
+
         def _tagad(szo, kulcs):
             sajat = _rov(adat.get(kulcs), 24)
             if sajat:
                 return sajat
             if es_tanterv:
+                m = re.match(r"^(mayor|menor) que (\d+)$", szo.strip(), re.IGNORECASE)
+                if m:
+                    if m.group(2) in _nevek:
+                        return m.group(2) + (" o menos" if m.group(1).lower() == "mayor" else " o más")
+                    return _ELLENTET_ES[m.group(1).lower()] + " que " + m.group(2)
                 return "no " + szo
+            reszek = szo.strip().split(" ")
+            if len(reszek) > 1 and reszek[-1].lower() in _ELLENTET:
+                m = re.match(r"^(\d+)-\S+$", reszek[0])
+                if len(reszek) == 2 and m and m.group(1) in _nevek and reszek[-1].lower() in ("nagyobb", "kisebb"):
+                    return ("legfeljebb " if reszek[-1].lower() == "nagyobb" else "legalább ") + m.group(1)
+                return " ".join(reszek[:-1] + [_ELLENTET[reszek[-1].lower()]])
             reszek = szo.split(" ")
             return " ".join(reszek[:-1] + ["nem", reszek[-1]])
+        # JELENET (2026-10-30): alsósoknak játékbolt-polc, felsősöknek letisztult
+        # „kutatói tábla". Ugyanaz a feladat, a korosztályhoz illő köntösben.
+        jelenet = "bolt" if (grade is not None and int(grade) <= 4) else "kutato"
         return {"tipus": "carroll", "a": a, "b": b, "na": _tagad(a, "nem_a"), "nb": _tagad(b, "nem_b"),
-                "elemek": elemek, "kerdes": kerdes}
+                "elemek": elemek, "kerdes": kerdes, "jelenet": jelenet,
+                "kontextus": _rov(adat.get("kontextus"), 110) or ""}
 
     if tipus == "igazhamis":
         lista = []

@@ -871,6 +871,68 @@
 .dm .carroll .c-mezo .kartya{font-size:13.5px;padding:6px 8px}
 .dm .carroll .c-mezo.cel{background:#FFF4E0}
 .dm .rossz-k{border-color:var(--pink)!important;background:#FDE8F1!important}
+/* Carroll – JÁTÉKBOLT (alsó tagozat) */
+.dm .cb-bolt{position:relative;background:linear-gradient(#FFF7EA,#FDEFD8);border-radius:18px;padding:0 12px 14px;overflow:hidden;
+    box-shadow:inset 0 0 0 2px #F1DDBA}
+.dm .cb-ponyva{height:30px;margin:0 -12px;background:repeating-linear-gradient(90deg,#E8505B 0 36px,#fff 36px 72px);position:relative}
+.dm .cb-ponyva::after{content:"";position:absolute;left:0;right:0;bottom:-12px;height:12px;
+    background:radial-gradient(circle at 18px 0,#E8505B 17px,transparent 18px) 0 0/72px 12px,
+               radial-gradient(circle at 54px 0,#fff 17px,transparent 18px) 0 0/72px 12px}
+.dm .cb-cegtabla{display:table;margin:18px auto 10px;background:#6B3E1E;color:#FFE7B8;font-weight:900;letter-spacing:3px;font-size:15px;
+    padding:6px 18px;border-radius:8px;box-shadow:0 3px 0 #4A2A12,inset 0 0 0 2px #8A5730}
+.dm .cb-kosar{position:relative;background:repeating-linear-gradient(45deg,#E2B77C 0 8px,#D7A863 8px 16px);border-radius:14px;
+    padding:28px 8px 10px;margin-bottom:14px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.08),0 3px 0 #B88A4C}
+.dm .cb-kosar-nev{position:absolute;top:6px;left:0;right:0;text-align:center;font-size:12.5px;font-weight:900;color:#5A3A12}
+.dm .cb-kosar .kartyak{margin:0;min-height:58px}
+.dm .cb-polc{background:#C8874A;padding:8px;border-radius:14px;box-shadow:0 6px 0 #9C6533,inset 0 0 0 3px #B5763D;gap:8px;margin-top:0}
+.dm .cb-polc .c-sarok{background:transparent}
+.dm .cb-polc .c-fej{background:transparent!important;padding:0}
+.dm .cb-polc .c-fej span{display:inline-block;background:#FFFDF6;color:#3A2A14;border-radius:8px;padding:6px 10px;font-size:13.5px;
+    box-shadow:0 2px 0 rgba(0,0,0,.18);position:relative}
+.dm .cb-polc .c-b span,.dm .cb-polc .c-nb span{margin-top:6px}
+.dm .cb-polc .c-b span::before,.dm .cb-polc .c-nb span::before{content:"";position:absolute;top:-8px;left:50%;width:2px;height:8px;background:#7A4A22}
+.dm .cb-polc .c-a span{border-left:5px solid #E0609B}.dm .cb-polc .c-na span{border-left:5px solid #9AA6B2}
+.dm .cb-polc .c-b span{border-top:5px solid #2F8FD8}.dm .cb-polc .c-nb span{border-top:5px solid #9AA6B2}
+.dm .cb-polc .c-mezo{background:#FFF3DF;border:0;border-radius:8px;min-height:104px;justify-content:flex-end;padding:8px 6px 16px;
+    box-shadow:inset 0 6px 10px rgba(110,60,20,.18)}
+.dm .cb-polc .c-mezo .tarto{align-content:flex-end;min-height:60px}
+.dm .cb-polc .c-mezo.cel{background:#FFE6B8}
+.dm .cb-deszka{position:absolute;left:-2px;right:-2px;bottom:0;height:12px;background:linear-gradient(#D9995A,#B5763D);border-radius:0 0 6px 6px}
+.dm .cb-jatek{--sz:#E8505B;background:var(--sz);border:0;color:#fff;border-radius:10px;min-width:46px;min-height:46px;padding:6px 10px;
+    display:inline-flex;align-items:center;justify-content:center;flex-direction:column;
+    box-shadow:inset 0 -6px 0 rgba(0,0,0,.18),inset 0 3px 0 rgba(255,255,255,.35),0 3px 0 rgba(0,0,0,.15)}
+.dm .cb-jatek b{font-size:20px;font-weight:900;text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.dm .cb-jatek span:first-child{filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
+.dm .cb-jatek span:last-child{font-size:12px;font-weight:900}
+.dm .cb-jatek.rossz-k{background:var(--sz)!important;outline:4px solid #fff;box-shadow:0 0 0 7px var(--pink)!important}
+@keyframes cb-ugrik{0%,100%{transform:none}40%{transform:translateY(-12px) rotate(-4deg)}70%{transform:translateY(0) rotate(2deg)}}
+.dm .cb-ugrik{animation:cb-ugrik .5s ease}
+/* Carroll – KUTATÓI TÁBLA (felső tagozat) */
+.dm .ck-kutato{background:#0F2A22;border-radius:16px;padding:14px 14px 10px;color:#E6F2EC}
+.dm .ck-fej span{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;letter-spacing:2px;color:#7FD3A8;font-weight:700}
+.dm .ck-fej p{margin:6px 0 0;font-size:15px;font-weight:700;color:#CFE6DA;line-height:1.4}
+.dm .ck-adatok{margin:12px 0;border:1px dashed #3B6152;border-radius:12px;padding:8px}
+.dm .ck-cimke{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:10.5px;letter-spacing:1.5px;color:#8FB4A3;text-transform:uppercase}
+.dm .ck-adatok .kartyak{margin:4px 0 0}
+.dm .ck-adat{background:#16392E;border:1px solid #3B6152;color:#E6F2EC;border-radius:8px;font-weight:800;font-size:15px;padding:6px 10px}
+.dm .ck-adat.huzott{background:#1E4A3B}
+.dm .ck-tabla{grid-template-columns:minmax(78px,.75fr) 1fr 1fr 44px;gap:0;border:1px solid #3B6152;border-radius:10px;overflow:hidden;margin-top:4px}
+.dm .ck-tabla>*{border-right:1px solid #2C5244;border-bottom:1px solid #2C5244}
+.dm .ck-tabla .c-sarok{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:4px 6px;font-size:10.5px;color:#8FB4A3;font-weight:800}
+.dm .ck-tabla .c-fej{border-radius:0;background:#123328!important;color:#E6F2EC!important;font-size:13px;font-family:inherit}
+.dm .ck-tabla .c-b,.dm .ck-tabla .c-a{color:#9FE3C1!important}
+.dm .ck-tabla .ck-ossz{color:#F5C46B!important;font-size:16px}
+.dm .ck-tabla .c-mezo{background:#0F2A22;border:0;border-right:1px solid #2C5244;border-bottom:1px solid #2C5244;border-radius:0;min-height:92px;position:relative;padding:6px 6px 18px}
+.dm .ck-tabla .c-mezo.cel{background:#1A4637}
+.dm .ck-tabla .c-mezo .kartya{font-size:13.5px;padding:5px 8px}
+.dm .ck-tabla .c-mezo .tarto{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;align-content:center;min-height:66px}
+.dm .ck-n{position:absolute;right:6px;bottom:3px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;color:#7FD3A8}
+.dm .ck-sum{display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;
+    color:#F5C46B;background:#123328;font-size:15px;min-height:34px}
+.dm .ck-mind{color:#fff}
+.dm .ck-tabla .rossz-k{border-color:#FF7AA8!important;background:#4A1F33!important}
+.dm .ck-sugo{color:#8FB4A3;font-size:13px;margin-top:8px}
+.dm .ck-kutato~.gombok,.dm .ck-kutato~.visszajelzes{margin-top:12px}
 .dm .ih-pottyok{display:flex;gap:8px;justify-content:center;margin:8px 0 10px}
 .dm .ih-pottyok i{width:14px;height:14px;border-radius:50%;background:#E3EAE5;transition:all .2s}
 .dm .ih-pottyok i.most{background:var(--narancs);transform:scale(1.25)}
@@ -917,7 +979,8 @@
 .dm .pb-op:hover{border-color:#2F8FD8}
 .dm .pb-op.rossz-op{border-color:var(--pink);background:#FDE8F1;opacity:.75}
 @media (max-width:600px){.dm .carroll{grid-template-columns:62px 1fr 1fr}.dm .carroll .c-fej{font-size:12.5px}
-    .dm .ih-szoveg{font-size:19px}.dm .hv-szoveg{font-size:19px}}
+    .dm .ih-szoveg{font-size:19px}.dm .hv-szoveg{font-size:19px}
+    .dm .carroll.ck-tabla{grid-template-columns:66px 1fr 1fr 36px}.dm .ck-tabla .c-sarok{font-size:9.5px;padding:4px}.dm .ck-kutato{padding:12px 10px 10px}}
 .dm .betuk{display:flex;align-items:center;font-size:40px;font-weight:900;flex-wrap:wrap;justify-content:center}
 .dm .res{width:20px;height:56px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .dm .res::after{content:"";width:2px;height:26px;background:#DDE7E1;border-radius:2px;transition:all .15s}
@@ -2796,32 +2859,67 @@
     /* ══ ÚJ FELADATOK (2026-10-30) ═══════════════════════════════════════ */
 
     /* ── CARROLL-TÁBLA: két szempont, 2×2 mező ─────────────────────────── */
+    /* Két köntös (2026-10-30): alsósoknak JÁTÉKBOLT – a kártyák játékkockák,
+       a mezők egy polc rekeszei; felsősöknek KUTATÓI TÁBLA – letisztult
+       kétszempontú táblázat, soronként és oszloponként élő összesítéssel
+       (ez már a statisztika kétutas táblázata). A működés ugyanaz. */
     DM.carroll = function (f, D) {
         var nem = D.T('nem ', 'no '), NA = f.na || (nem + f.a), NB = f.nb || (nem + f.b);
-        D.html('<div class="allas">' + D.T('Húzd vagy koppintsd a kártyákat a jó mezőbe! Sorban az első szempont, oszlopban a második.',
-            '¡Arrastra o toca las tarjetas y ponlas en su casilla! Las filas son el primer criterio y las columnas el segundo.') +
-            '</div><div class="kartyak" data-id="kt"></div><div class="carroll" data-id="tab"></div>');
+        var bolt = f.jelenet === 'bolt';
+        var SZIN = ['#E8505B', '#2F8FD8', '#F5A01E', '#22A06B', '#8A5CD6', '#E0609B'];
+        function mezo(a, b) { return '<div class="hely c-mezo" data-a="' + a + '" data-b="' + b + '" data-tobb="1"><div class="tarto"></div>' +
+            (bolt ? '<i class="cb-deszka"></i>' : '<span class="ck-n" data-n></span>') + '</div>'; }
+        if (bolt) {
+            D.html('<div class="cb-bolt"><div class="cb-ponyva"></div><div class="cb-cegtabla">' + D.T('JÁTÉKBOLT', 'JUGUETERÍA') + '</div>' +
+                '<div class="cb-kosar"><span class="cb-kosar-nev">' + D.T('Pakold ki a kosárból a polcra!', '¡Saca los juguetes de la cesta y ponlos en la estantería!') + '</span>' +
+                '<div class="kartyak" data-id="kt"></div></div>' +
+                '<div class="carroll cb-polc" data-id="tab"><div class="c-sarok"></div>' +
+                '<div class="c-fej c-b"><span>' + f.b + '</span></div><div class="c-fej c-nb"><span>' + NB + '</span></div>' +
+                '<div class="c-fej c-a"><span>' + f.a + '</span></div>' + mezo(1, 1) + mezo(1, 0) +
+                '<div class="c-fej c-na"><span>' + NA + '</span></div>' + mezo(0, 1) + mezo(0, 0) + '</div></div>');
+        } else {
+            D.html('<div class="ck-kutato"><div class="ck-fej"><span>' + D.T('ADATLAP · KÉT SZEMPONT', 'FICHA · DOS CRITERIOS') + '</span>' +
+                (f.kontextus ? '<p>' + f.kontextus + '</p>' : '') + '</div>' +
+                '<div class="ck-adatok"><span class="ck-cimke">' + D.T('Besorolandó', 'Por clasificar') + '</span><div class="kartyak" data-id="kt"></div></div>' +
+                '<div class="carroll ck-tabla" data-id="tab"><div class="c-sarok"><span>' + f.a + ' ↓</span><span>' + f.b + ' →</span></div>' +
+                '<div class="c-fej c-b">' + f.b + '</div><div class="c-fej c-nb">' + NB + '</div><div class="c-fej ck-ossz">Σ</div>' +
+                '<div class="c-fej c-a">' + f.a + '</div>' + mezo(1, 1) + mezo(1, 0) + '<div class="ck-sum" data-s="a1"></div>' +
+                '<div class="c-fej c-na">' + NA + '</div>' + mezo(0, 1) + mezo(0, 0) + '<div class="ck-sum" data-s="a0"></div>' +
+                '<div class="c-fej ck-ossz">Σ</div><div class="ck-sum" data-s="b1"></div><div class="ck-sum" data-s="b0"></div><div class="ck-sum ck-mind" data-s="all"></div>' +
+                '</div>' + '<div class="allas ck-sugo">' + D.T('Húzd vagy koppintsd az adatokat a jó mezőbe. A Σ sor és oszlop összesít.',
+                    'Arrastra o toca los datos hasta su casilla. La fila y la columna Σ suman.') + '</div></div>');
+        }
         var kt = D.$('kt'), tab = D.$('tab');
-        tab.innerHTML = '<div class="c-sarok"></div><div class="c-fej c-b">' + f.b + '</div><div class="c-fej c-nb">' + NB + '</div>' +
-            '<div class="c-fej c-a">' + f.a + '</div><div class="hely c-mezo" data-a="1" data-b="1" data-tobb="1"><div class="tarto"></div></div><div class="hely c-mezo" data-a="1" data-b="0" data-tobb="1"><div class="tarto"></div></div>' +
-            '<div class="c-fej c-na">' + NA + '</div><div class="hely c-mezo" data-a="0" data-b="1" data-tobb="1"><div class="tarto"></div></div><div class="hely c-mezo" data-a="0" data-b="0" data-tobb="1"><div class="tarto"></div></div>';
         var mezok = Array.prototype.slice.call(tab.querySelectorAll('.c-mezo'));
-        D.huzosLista(kt, function () { return mezok; },
-            D.kever(f.elemek.map(function (e) { return D.szovegKartya(e[0], e[1] + '' + e[2], e[3] || ''); })));
+        var kartyak = D.kever(f.elemek.map(function (e, k) {
+            var c = D.szovegKartya(e[0], e[1] + '' + e[2], e[3] || '');
+            if (bolt) { c.classList.add('cb-jatek'); c.style.setProperty('--sz', SZIN[k % SZIN.length]);
+                if (!e[3]) { c.innerHTML = '<b></b>'; c.firstChild.textContent = e[0]; } }
+            else { c.classList.add('ck-adat'); }
+            return c; }));
+        D.huzosLista(kt, function () { return mezok; }, kartyak);
+        function osszesit() { if (bolt) { return; }
+            var s = {a1: 0, a0: 0, b1: 0, b0: 0, all: 0};
+            mezok.forEach(function (h) { var n = h.querySelectorAll('.kartya').length; h.querySelector('[data-n]').textContent = n ? 'n = ' + n : '';
+                s['a' + h.dataset.a] += n; s['b' + h.dataset.b] += n; s.all += n; });
+            Array.prototype.forEach.call(tab.querySelectorAll('.ck-sum'), function (x) { x.textContent = s[x.dataset.s]; }); }
+        if (!bolt) { var mo = new MutationObserver(osszesit); mezok.forEach(function (h) { mo.observe(h.querySelector('.tarto'), {childList: true}); }); osszesit(); }
         function nev(a, b) { return (a ? f.a : NA) + ' + ' + (b ? f.b : NB); }
         D.ellenoriz(function () {
             var m = kt.querySelectorAll('.kartya').length;
-            if (m) { return {hianyzik: D.T('Még ' + m + ' kártya nincs a helyén!', m === 1 ? 'Todavía falta 1 tarjeta.' : 'Todavía faltan ' + m + ' tarjetas.')}; }
+            if (m) { return {hianyzik: bolt ? D.T('Még ' + m + ' játék van a kosárban!', m === 1 ? 'Queda 1 juguete en la cesta.' : 'Quedan ' + m + ' juguetes en la cesta.')
+                : D.T('Még ' + m + ' adat nincs besorolva!', m === 1 ? 'Falta 1 dato por clasificar.' : 'Faltan ' + m + ' datos por clasificar.')}; }
             var rossz = [], leiras = [];
             mezok.forEach(function (h) { var sz = [];
                 Array.prototype.forEach.call(h.querySelectorAll('.kartya'), function (c) { var szo = c.dataset.szo || c.textContent; sz.push(szo);
-                    var ok = c.dataset.nev === h.dataset.a + h.dataset.b; c.classList.toggle('rossz-k', !ok); if (!ok) { rossz.push(szo); } });
+                    var ok = c.dataset.nev === h.dataset.a + h.dataset.b; c.classList.toggle('rossz-k', !ok); if (!ok) { rossz.push(szo); D.animal(c, 'rezeg'); }
+                    else if (bolt) { D.animal(c, 'cb-ugrik'); } });
                 leiras.push(nev(+h.dataset.a, +h.dataset.b) + ': ' + (sz.join(', ') || '–')); });
-            if (rossz.length) { D.animal(tab, 'rezeg'); }
             return {jo: !rossz.length,
                 uzenet: rossz.length ? D.T('Ezeket nézd meg még egyszer: <b>' + rossz.join(', ') + '</b>. Kérdezd meg mindegyiknél: ' + f.a + '? És ' + f.b + '?',
                         'Revisa otra vez: <b>' + rossz.join(', ') + '</b>. Pregúntate en cada una: ¿' + f.a + '? ¿Y ' + f.b + '?')
-                    : D.T('Minden kártya a helyén! Mindegyiknél két kérdésre feleltél egyszerre.', '¡Todo en su sitio! En cada tarjeta has respondido a dos preguntas a la vez.'),
+                    : bolt ? D.T('Rend van a polcon! Mindegyiknél két kérdésre feleltél egyszerre.', '¡La estantería está ordenada! En cada juguete has respondido a dos preguntas a la vez.')
+                    : D.T('Minden adat a helyén. Nézd meg a Σ sort és oszlopot: így olvasható le egy kétszempontú táblázat.', 'Todo en su sitio. Mira la fila y la columna Σ: así se lee una tabla de doble entrada.'),
                 valasz: D.T('Így rendeztem – ', 'Lo he colocado así – ') + leiras.join('; ')};
         });
     };
