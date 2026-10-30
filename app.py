@@ -451,7 +451,7 @@ def inject_helpers():
     # és a régit hónapokig őrzi — hiába írjuk felül a fájlt, a telefonon a
     # régi vágott kép marad. Ha új képet csinálunk, a szám nő eggyel, és
     # onnantól a Facebooknak le KELL töltenie, mert még sosem látta.
-    og_kepfajl = "img/og_es2.png" if g.lang == "es" else "img/og_hu2.png"
+    og_kepfajl = "img/og_es2.png" if g.lang == "es" else "img/og_hu3.png"
     try:
         og_url = _oldal_url(request.path or "/")
         # A Python-beli url_for NINCS átkötve: a Jinja-s igen. Itt ezért
@@ -9897,7 +9897,7 @@ _DM_FELULETEK = [
      'tápláléklánc, termelő, ragadozó      → tapl', 'cadena alimentaria, productor     → tapl'),
     # ── 2026-10-30: új feladatok ──
     ("carroll", {"matek", "kornyezet", "magyar", "nyelv"}, 1, 6,
-     'CARROLL-TÁBLA – két szempont, 2×2 mező (pl. páros/nem páros × 10-nél nagyobb/nem). Az elem: [név, a-hoz tartozik 1/0, b-hez tartozik 1/0, nem kötelező emoji]. 4–10 elem, legalább 3 mezőbe kerüljön valami:\n'
+     'CARROLL-TÁBLA – két szempont, 2×2 mező (pl. páros/nem páros × 10-nél nagyobb/kisebb; magát a határszámot ne tedd az elemek közé). Ha a szempont nem egyszerű melléknév, add meg a párját is magyarosan: \"nem_b\":\"nem vízben él\". Az elem: [név, a-hoz tartozik 1/0, b-hez tartozik 1/0, nem kötelező emoji]. 4–10 elem, legalább 3 mezőbe kerüljön valami:\n'
      '   <FELADAT>{"tipus":"carroll","kerdes":"Tedd a számokat a jó mezőbe!","a":"páros","b":"10-nél nagyobb","elemek":[["12",1,1],["4",1,0],["15",0,1],["7",0,0],["18",1,1],["3",0,0]]}</FELADAT>',
      'TABLA DE CARROLL – dos criterios, 2×2 casillas. Elemento: [nombre, cumple a 1/0, cumple b 1/0, emoji opcional]. 4–10 elementos:\n'
      '   <FELADAT>{"tipus":"carroll","kerdes":"Coloca los números en su casilla.","a":"par","b":"mayor que 10","elemek":[["12",1,1],["4",1,0],["15",0,1],["7",0,0],["18",1,1],["3",0,0]]}</FELADAT>',
