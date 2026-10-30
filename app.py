@@ -4236,6 +4236,103 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         s = str(s or "").strip()
         return s if 0 < len(s) <= n else None
 
+    # ══ ÚJ FELADATOK (2026-10-30): Carroll-tábla, igaz-hamis gyorskör,
+    #    hibavadász, párbeszéd ══════════════════════════════════════════════
+    if tipus == "carroll":
+        a, b = _rov(adat.get("a"), 22), _rov(adat.get("b"), 22)
+        elemek = []
+        for e in adat.get("elemek") or []:
+            try:
+                nev, ia, ib = _rov(e[0], 22), int(e[1]), int(e[2])
+            except Exception:
+                return None
+            if not nev or ia not in (0, 1) or ib not in (0, 1):
+                return None
+            kep = str(e[3]).strip()[:4] if len(e) > 3 and e[3] else ""
+            if kep and any(ch.isalnum() for ch in kep):
+                kep = ""
+            elemek.append([nev, ia, ib, kep] if kep else [nev, ia, ib])
+        if not a or not b or not (4 <= len(elemek) <= 10):
+            return None
+        if len({x[0].lower() for x in elemek}) != len(elemek):
+            return None
+        # legalább három különböző mezőbe kerüljön valami, különben nem tábla
+        if len({(x[1], x[2]) for x in elemek}) < 3:
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "Coloca cada tarjeta en su casilla." if es_tanterv else "Tedd a kártyákat a táblázat jó mezőjébe!")
+        return {"tipus": "carroll", "a": a, "b": b, "elemek": elemek, "kerdes": kerdes}
+
+    if tipus == "igazhamis":
+        lista = []
+        for e in adat.get("allitasok") or []:
+            try:
+                sz, ig = _rov(e[0], 140), e[1]
+            except Exception:
+                return None
+            if not sz or not isinstance(ig, bool):
+                return None
+            lista.append([sz, ig])
+        if not (3 <= len(lista) <= 6):
+            return None
+        if all(x[1] for x in lista) or not any(x[1] for x in lista):
+            return None        # ne legyen mind igaz vagy mind hamis
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "¿Verdadero o falso? ¡Rápido!" if es_tanterv else "Igaz vagy hamis? Gyorskör!")
+        return {"tipus": "igazhamis", "allitasok": lista, "kerdes": kerdes}
+
+    if tipus == "hibavadasz":
+        szoveg = str(adat.get("szoveg") or "").strip()
+        if not (10 <= len(szoveg) <= 260):
+            return None
+        szavak = re.findall(r"[\wÀ-ÿŐőŰű'-]+", szoveg)
+        lsz = [s.lower() for s in szavak]
+        hibak = []
+        for e in adat.get("hibak") or []:
+            try:
+                rossz, jo = str(e[0]).strip(), str(e[1]).strip()
+            except Exception:
+                return None
+            if not rossz or not jo or rossz.lower() == jo.lower() or len(jo) > 30:
+                return None
+            if lsz.count(rossz.lower()) != 1:   # pontosan egyszer szerepeljen
+                return None
+            hibak.append([rossz, jo])
+        if not (1 <= len(hibak) <= 4):
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "Encuentra los errores y corrígelos." if es_tanterv else "Keresd meg a hibákat, és javítsd ki őket!")
+        return {"tipus": "hibavadasz", "szoveg": szoveg, "hibak": hibak, "kerdes": kerdes}
+
+    if tipus == "parbeszed":
+        sorok, valaszt = [], 0
+        for s in adat.get("sorok") or []:
+            if not isinstance(s, dict):
+                return None
+            ki = "B" if str(s.get("ki") or "A").upper().startswith("B") else "A"
+            if s.get("opciok"):
+                op = [_rov(o, 80) for o in s.get("opciok")]
+                try:
+                    jo = int(s.get("jo", 0))
+                except Exception:
+                    return None
+                if not (2 <= len(op) <= 4) or None in op or not (0 <= jo < len(op)):
+                    return None
+                if len({o.lower() for o in op}) != len(op):
+                    return None
+                sorok.append({"ki": ki, "opciok": op, "jo": jo})
+                valaszt += 1
+            else:
+                sz = _rov(s.get("szoveg"), 120)
+                if not sz:
+                    return None
+                sorok.append({"ki": ki, "szoveg": sz})
+        if not (2 <= len(sorok) <= 8) or not (1 <= valaszt <= 4):
+            return None
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "Completa la conversación." if es_tanterv else "Fejezd be a párbeszédet!")
+        return {"tipus": "parbeszed", "sorok": sorok, "kerdes": kerdes}
+
     if tipus == "csoport":
         csop = [_rov(c, 20) for c in (adat.get("csoportok") or [])]
         elemek = []
@@ -9758,6 +9855,31 @@ _DM_FELULETEK = [
      'CADENA ALIMENTARIA – planta → consumidor → depredador. "lanc" opcional 3–5:\n'
      '   <FELADAT>{"tipus":"tapl"}</FELADAT>',
      'tápláléklánc, termelő, ragadozó      → tapl', 'cadena alimentaria, productor     → tapl'),
+    # ── 2026-10-30: új feladatok ──
+    ("carroll", {"matek", "kornyezet", "magyar", "nyelv"}, 1, 6,
+     'CARROLL-TÁBLA – két szempont, 2×2 mező (pl. páros/nem páros × 10-nél nagyobb/nem). Az elem: [név, a-hoz tartozik 1/0, b-hez tartozik 1/0, nem kötelező emoji]. 4–10 elem, legalább 3 mezőbe kerüljön valami:\n'
+     '   <FELADAT>{"tipus":"carroll","kerdes":"Tedd a számokat a jó mezőbe!","a":"páros","b":"10-nél nagyobb","elemek":[["12",1,1],["4",1,0],["15",0,1],["7",0,0],["18",1,1],["3",0,0]]}</FELADAT>',
+     'TABLA DE CARROLL – dos criterios, 2×2 casillas. Elemento: [nombre, cumple a 1/0, cumple b 1/0, emoji opcional]. 4–10 elementos:\n'
+     '   <FELADAT>{"tipus":"carroll","kerdes":"Coloca los números en su casilla.","a":"par","b":"mayor que 10","elemek":[["12",1,1],["4",1,0],["15",0,1],["7",0,0],["18",1,1],["3",0,0]]}</FELADAT>',
+     'két szempont szerinti válogatás, táblázat → carroll', 'clasificar por dos criterios, tabla  → carroll'),
+    ("igazhamis", {"*"}, 1, 8,
+     'IGAZ-HAMIS GYORSKÖR – 3–6 rövid állítás egymás után, a gyerek gyorsan dönt (ne legyen mind igaz vagy mind hamis). Ismétléshez, óra végi összefoglaláshoz kiváló:\n'
+     '   <FELADAT>{"tipus":"igazhamis","kerdes":"Igaz vagy hamis?","allitasok":[["A bálna emlős.",true],["A pók rovar.",false],["A béka kétéltű.",true],["A denevér madár.",false]]}</FELADAT>',
+     'VERDADERO/FALSO RÁPIDO – 3–6 afirmaciones cortas seguidas (no todas iguales):\n'
+     '   <FELADAT>{"tipus":"igazhamis","kerdes":"¿Verdadero o falso?","allitasok":[["La ballena es un mamífero.",true],["La araña es un insecto.",false],["La rana es un anfibio.",true],["El murciélago es un ave.",false]]}</FELADAT>',
+     'ismétlés, igaz vagy hamis, gyorskör   → igazhamis', 'repaso, verdadero o falso          → igazhamis'),
+    ("hibavadasz", {"magyar", "nyelv"}, 3, 8,
+     'HIBAVADÁSZ – rövid szöveg 1–4 helyesírási vagy nyelvtani HIBÁVAL; a gyerek rákoppint a hibás szóra és kijavítja. A "hibak" párjai: [hibás szó, ahogy a szövegben áll; helyes alak]. Minden hibás szó pontosan egyszer szerepeljen:\n'
+     '   <FELADAT>{"tipus":"hibavadasz","szoveg":"Tegnap elmentünk a botba, és vetünk friss kenyeret.","hibak":[["botba","boltba"],["vetünk","vettünk"]]}</FELADAT>',
+     'CAZAERRORES – texto breve con 1–4 errores; el niño toca la palabra mal escrita y la corrige. "hibak": [palabra errónea tal como aparece, forma correcta]:\n'
+     '   <FELADAT>{"tipus":"hibavadasz","szoveg":"Ayer fuimos a la tienda y conpramos pan.","hibak":[["conpramos","compramos"]]}</FELADAT>',
+     'helyesírás, hibajavítás, nyelvtan     → hibavadasz', 'ortografía, corregir errores       → hibavadasz'),
+    ("parbeszed", {"nyelv"}, 2, 8,
+     'PÁRBESZÉD – két szereplő (A és B) chat-buborékokban; ahol a gyerek következik, ott 2–4 válaszlehetőség, ebből egy jó ("jo" = sorszám 0-tól). 2–8 sor, 1–4 választás. A tanult nyelven:\n'
+     '   <FELADAT>{"tipus":"parbeszed","kerdes":"Fejezd be a párbeszédet!","sorok":[{"ki":"A","szoveg":"Hi! What\'s your name?"},{"ki":"B","opciok":["My name is Tom.","I\'m fine.","Yes, I do."],"jo":0},{"ki":"A","szoveg":"How old are you?"},{"ki":"B","opciok":["I\'m ten.","I\'m Tom.","It\'s blue."],"jo":0}]}</FELADAT>',
+     'DIÁLOGO – dos personajes (A y B) en burbujas; donde le toca al niño, 2–4 opciones, una correcta ("jo" desde 0). En el idioma que se aprende:\n'
+     '   <FELADAT>{"tipus":"parbeszed","kerdes":"Completa la conversación.","sorok":[{"ki":"A","szoveg":"Hi! What\'s your name?"},{"ki":"B","opciok":["My name is Tom.","I\'m fine.","Yes, I do."],"jo":0},{"ki":"A","szoveg":"How old are you?"},{"ki":"B","opciok":["I\'m ten.","I\'m Tom.","It\'s blue."],"jo":0}]}</FELADAT>',
+     'párbeszéd, kérdés-válasz, beszélgetés → parbeszed', 'diálogo, pregunta y respuesta      → parbeszed'),
 ]
 
 

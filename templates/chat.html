@@ -860,6 +860,63 @@
 .dm .kosar .nev{position:absolute;top:6px;left:0;right:0;text-align:center;font-weight:900;color:var(--zold);font-size:14px}
 .dm .kosar.cel{background:#FFF4E0}
 .dm .kosar .kartya{font-size:13.5px;padding:6px 8px}
+/* ══ ÚJ FELADATOK (2026-10-30) ══ */
+.dm .carroll{display:grid;grid-template-columns:minmax(70px,.7fr) 1fr 1fr;gap:6px;margin-top:10px}
+.dm .carroll .c-fej{display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:14px;
+    border-radius:10px;padding:6px 4px;line-height:1.15}
+.dm .carroll .c-b{background:#E3F1FC;color:#1F6FB0}.dm .carroll .c-nb{background:#EEF2F5;color:#5B6B7A}
+.dm .carroll .c-a{background:#FDE8F1;color:#B03D74}.dm .carroll .c-na{background:#EEF2F5;color:#5B6B7A}
+.dm .carroll .c-mezo{min-height:96px;flex-direction:column;align-items:stretch;justify-content:flex-start;padding:6px}
+.dm .carroll .c-mezo .tarto{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+.dm .carroll .c-mezo .kartya{font-size:13.5px;padding:6px 8px}
+.dm .carroll .c-mezo.cel{background:#FFF4E0}
+.dm .rossz-k{border-color:var(--pink)!important;background:#FDE8F1!important}
+.dm .ih-pottyok{display:flex;gap:8px;justify-content:center;margin:8px 0 10px}
+.dm .ih-pottyok i{width:14px;height:14px;border-radius:50%;background:#E3EAE5;transition:all .2s}
+.dm .ih-pottyok i.most{background:var(--narancs);transform:scale(1.25)}
+.dm .ih-pottyok i.jo{background:var(--menta)}.dm .ih-pottyok i.rossz{background:var(--pink)}
+.dm .ih-lap{background:#FFF9EE;border:2.5px solid #F5C77A;border-radius:18px;padding:18px 16px 22px;text-align:center;min-height:120px;
+    display:flex;flex-direction:column;justify-content:center;transition:background .2s,border-color .2s}
+.dm .ih-lap.ih-jo{background:#E7F6EE;border-color:var(--menta)}.dm .ih-lap.ih-rossz{background:#FDE8F1;border-color:var(--pink)}
+.dm .ih-szam{font-size:13px;font-weight:900;color:var(--halvany);letter-spacing:1px}
+.dm .ih-szoveg{font-size:21px;font-weight:900;line-height:1.35;margin-top:6px}
+@keyframes ih-be{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
+.dm .ih-be{animation:ih-be .28s ease-out}
+.dm .ih-gombok{display:flex;gap:12px;margin-top:14px}
+.dm .ih-gombok button{flex:1;font-size:19px;padding:16px 10px;color:#fff}
+.dm .ih-igaz{background:#22A06B;box-shadow:0 5px 0 #17784F}.dm .ih-hamis{background:#E0609B;box-shadow:0 5px 0 #B03D74}
+.dm .ih-gombok button:active{transform:translateY(3px);box-shadow:none}
+.dm .ih-osszegzes{display:flex;flex-direction:column;gap:6px}
+.dm .ih-osszegzes div{border-radius:12px;padding:8px 12px;font-weight:700;font-size:15px;line-height:1.35}
+.dm .ih-osszegzes .jo{background:#E7F6EE}.dm .ih-osszegzes .rossz{background:#FDE8F1}
+.dm .ih-osszegzes em{font-style:normal;font-weight:900;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--halvany);margin-left:4px}
+.dm .hv-szoveg{font-size:21px;line-height:2.1;font-weight:700;word-spacing:2px;background:#FFFDF6;border:2px solid #EFE3C4;border-radius:16px;padding:12px 16px;margin:8px 0}
+.dm .hv-szo{cursor:pointer;border-radius:7px;padding:1px 2px;margin:0 -2px;transition:background .15s}
+.dm .hv-szo:hover{background:#FFF1D6}
+.dm .hv-szo.kijelolt{background:#FFE4A3;box-shadow:0 0 0 2px var(--narancs)}
+.dm .hv-szo.nem-hiba{background:#EEF2F5}
+.dm .hv-szo.javitva{background:#E7F6EE;color:var(--zold-s);box-shadow:0 0 0 2px var(--menta);cursor:default}
+.dm .hv-javit{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.dm .hv-javit[hidden]{display:none}
+.dm .hv-javit span{font-weight:900;font-size:17px;color:#8A4B00}
+.dm .hv-javit input{flex:1;min-width:140px;font:inherit;font-size:19px;font-weight:800;border:3px solid #CFE3D7;border-radius:12px;padding:8px 12px;color:var(--zold)}
+.dm .hv-javit button{padding:10px 18px}
+.dm .hv-szamlalo{font-weight:800;color:var(--halvany);font-size:14px;margin-top:4px}
+.dm .pb-chat{display:flex;flex-direction:column;gap:8px;max-height:340px;overflow-y:auto;padding:6px 2px}
+.dm .pb-b{max-width:82%;border-radius:18px;padding:9px 14px 10px;font-weight:700;font-size:17px;line-height:1.35;position:relative;display:flex;gap:8px;align-items:flex-start}
+.dm .pb-A{align-self:flex-start;background:#EEF4EF;border-bottom-left-radius:6px}
+.dm .pb-B{align-self:flex-end;background:#2F8FD8;color:#fff;border-bottom-right-radius:6px}
+.dm .pb-ki{font-size:11px;font-weight:900;opacity:.65;margin-top:3px}
+.dm .pb-gepel .pb-sz{letter-spacing:3px;animation:pb-pulz 1s infinite}
+@keyframes pb-pulz{50%{opacity:.35}}
+.dm .pb-mutatott{background:#FFF1E0;color:#8A4B00}
+.dm .pb-hang{background:transparent;padding:0 2px;font-size:15px;box-shadow:none}
+.dm .pb-opciok{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.dm .pb-op{background:#fff;border:2.5px solid #CFE3D7;color:var(--szoveg);text-align:left;font-size:17px;padding:11px 14px}
+.dm .pb-op:hover{border-color:#2F8FD8}
+.dm .pb-op.rossz-op{border-color:var(--pink);background:#FDE8F1;opacity:.75}
+@media (max-width:600px){.dm .carroll{grid-template-columns:62px 1fr 1fr}.dm .carroll .c-fej{font-size:12.5px}
+    .dm .ih-szoveg{font-size:19px}.dm .hv-szoveg{font-size:19px}}
 .dm .betuk{display:flex;align-items:center;font-size:40px;font-weight:900;flex-wrap:wrap;justify-content:center}
 .dm .res{width:20px;height:56px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .dm .res::after{content:"";width:2px;height:26px;background:#DDE7E1;border-radius:2px;transition:all .15s}
@@ -2733,6 +2790,159 @@
                     : D.T('Minden kártya a jó helyen van!', '¡Todas las tarjetas están en su sitio!'),
                 valasz: D.T('Így csoportosítottam – ', 'Así lo he agrupado – ') + leiras.join('; ')};
         });
+    };
+
+    /* ══ ÚJ FELADATOK (2026-10-30) ═══════════════════════════════════════ */
+
+    /* ── CARROLL-TÁBLA: két szempont, 2×2 mező ─────────────────────────── */
+    DM.carroll = function (f, D) {
+        var nem = D.T('nem ', 'no ');
+        D.html('<div class="allas">' + D.T('Húzd vagy koppintsd a kártyákat a jó mezőbe! Sorban az első szempont, oszlopban a második.',
+            '¡Arrastra o toca las tarjetas y ponlas en su casilla! Las filas son el primer criterio y las columnas el segundo.') +
+            '</div><div class="kartyak" data-id="kt"></div><div class="carroll" data-id="tab"></div>');
+        var kt = D.$('kt'), tab = D.$('tab');
+        tab.innerHTML = '<div class="c-sarok"></div><div class="c-fej c-b">' + f.b + '</div><div class="c-fej c-nb">' + nem + f.b + '</div>' +
+            '<div class="c-fej c-a">' + f.a + '</div><div class="hely c-mezo" data-a="1" data-b="1" data-tobb="1"><div class="tarto"></div></div><div class="hely c-mezo" data-a="1" data-b="0" data-tobb="1"><div class="tarto"></div></div>' +
+            '<div class="c-fej c-na">' + nem + f.a + '</div><div class="hely c-mezo" data-a="0" data-b="1" data-tobb="1"><div class="tarto"></div></div><div class="hely c-mezo" data-a="0" data-b="0" data-tobb="1"><div class="tarto"></div></div>';
+        var mezok = Array.prototype.slice.call(tab.querySelectorAll('.c-mezo'));
+        D.huzosLista(kt, function () { return mezok; },
+            D.kever(f.elemek.map(function (e) { return D.szovegKartya(e[0], e[1] + '' + e[2], e[3] || ''); })));
+        function nev(a, b) { return (a ? '' : nem) + f.a + ' + ' + (b ? '' : nem) + f.b; }
+        D.ellenoriz(function () {
+            var m = kt.querySelectorAll('.kartya').length;
+            if (m) { return {hianyzik: D.T('Még ' + m + ' kártya nincs a helyén!', m === 1 ? 'Todavía falta 1 tarjeta.' : 'Todavía faltan ' + m + ' tarjetas.')}; }
+            var rossz = [], leiras = [];
+            mezok.forEach(function (h) { var sz = [];
+                Array.prototype.forEach.call(h.querySelectorAll('.kartya'), function (c) { var szo = c.dataset.szo || c.textContent; sz.push(szo);
+                    var ok = c.dataset.nev === h.dataset.a + h.dataset.b; c.classList.toggle('rossz-k', !ok); if (!ok) { rossz.push(szo); } });
+                leiras.push(nev(+h.dataset.a, +h.dataset.b) + ': ' + (sz.join(', ') || '–')); });
+            if (rossz.length) { D.animal(tab, 'rezeg'); }
+            return {jo: !rossz.length,
+                uzenet: rossz.length ? D.T('Ezeket nézd meg még egyszer: <b>' + rossz.join(', ') + '</b>. Kérdezd meg mindegyiknél: ' + f.a + '? És ' + f.b + '?',
+                        'Revisa otra vez: <b>' + rossz.join(', ') + '</b>. Pregúntate en cada una: ¿' + f.a + '? ¿Y ' + f.b + '?')
+                    : D.T('Minden kártya a helyén! Mindegyiknél két kérdésre feleltél egyszerre.', '¡Todo en su sitio! En cada tarjeta has respondido a dos preguntas a la vez.'),
+                valasz: D.T('Így rendeztem – ', 'Lo he colocado así – ') + leiras.join('; ')};
+        });
+    };
+
+    /* ── IGAZ-HAMIS GYORSKÖR ───────────────────────────────────────────── */
+    DM.igazhamis = function (f, D) {
+        var i = 0, eredm = [], N = f.allitasok.length, zar = false;
+        D.html('<div class="allas">' + D.T('Olvasd el, és döntsd el gyorsan: igaz vagy hamis?', 'Lee y decide rápido: ¿verdadero o falso?') +
+            '</div><div class="ih-pottyok" data-id="p"></div><div class="ih-lap" data-id="lap"><div class="ih-szam" data-id="sz"></div><div class="ih-szoveg" data-id="sv"></div></div>' +
+            '<div class="ih-gombok" data-id="g"></div><div class="ih-osszegzes" data-id="ossz"></div>');
+        var p = D.$('p'), lap = D.$('lap'), g = D.$('g');
+        for (var k = 0; k < N; k++) { var pt = document.createElement('i'); p.appendChild(pt); }
+        var bI = D.gomb('✓ ' + D.T('IGAZ', 'VERDADERO'), 'ih-igaz', function () { valaszt(true); });
+        var bH = D.gomb('✗ ' + D.T('HAMIS', 'FALSO'), 'ih-hamis', function () { valaszt(false); });
+        g.appendChild(bI); g.appendChild(bH);
+        function mutat() { D.$('sz').textContent = (i + 1) + ' / ' + N; D.$('sv').textContent = f.allitasok[i][0];
+            p.children[i].className = 'most'; D.animal(lap, 'ih-be'); }
+        function valaszt(v) {
+            if (zar) { return; } zar = true;
+            var jo = v === f.allitasok[i][1]; eredm.push(jo);
+            p.children[i].className = jo ? 'jo' : 'rossz';
+            lap.classList.add(jo ? 'ih-jo' : 'ih-rossz'); D.hang('sine', jo ? 880 : 220);
+            setTimeout(function () { lap.classList.remove('ih-jo', 'ih-rossz'); i++; zar = false;
+                if (i < N) { mutat(); return; } vege(); }, jo ? 650 : 1100);
+        }
+        function vege() {
+            g.style.display = 'none'; lap.style.display = 'none';
+            var db = eredm.filter(Boolean).length;
+            D.$('ossz').innerHTML = f.allitasok.map(function (a, k) { return '<div class="' + (eredm[k] ? 'jo' : 'rossz') + '"><b>' + (eredm[k] ? '✓' : '✗') + '</b> ' +
+                a[0].replace(/</g, '&lt;') + ' <em>' + (a[1] ? D.T('igaz', 'verdadero') : D.T('hamis', 'falso')) + '</em></div>'; }).join('');
+            var rossz = f.allitasok.filter(function (a, k) { return !eredm[k]; }).map(function (a) { return '„' + a[0] + '” (' + (a[1] ? D.T('igaz', 'verdadero') : D.T('hamis', 'falso')) + ')'; });
+            D.vege(db === N, db === N ? D.T('Mind a ' + N + ' jó! Villámgyors vagy!', '¡Las ' + N + ' bien! ¡Eres un rayo!')
+                    : D.T(db + ' / ' + N + ' jó. Nézd meg, amit elvétettél – a tanár segít.', db + ' de ' + N + ' bien. Mira las que fallaste; tu profe te ayuda.'),
+                D.T('Igaz-hamis gyorskör: ' + db + ' / ' + N + ' jó.', 'Verdadero o falso: ' + db + ' de ' + N + ' bien.') +
+                (rossz.length ? D.T(' Ezeket rontottam el: ', ' He fallado: ') + rossz.join('; ') + '.' : ''));
+        }
+        mutat();
+    };
+
+    /* ── HIBAVADÁSZ ────────────────────────────────────────────────────── */
+    DM.hibavadasz = function (f, D) {
+        var HIBA = {}, keresett = f.hibak.length, talalt = {}, aktiv = null, tipp = 0;
+        f.hibak.forEach(function (h) { HIBA[h[0].toLowerCase()] = h[1]; });
+        D.html('<div class="allas">' + D.T('A szövegben ' + keresett + ' hiba bújt el. Koppints a hibás szóra, és írd be helyesen!',
+            (keresett === 1 ? 'En el texto hay 1 error.' : 'En el texto hay ' + keresett + ' errores.') + ' Toca la palabra incorrecta y escríbela bien.') +
+            '</div><div class="hv-szoveg" data-id="sz"></div><div class="hv-javit" data-id="jav" hidden><span data-id="ered"></span><input data-id="be" autocomplete="off" autocapitalize="off" spellcheck="false"><button type="button" class="fo" data-id="ok">OK</button></div>' +
+            '<div class="hv-szamlalo" data-id="db"></div>');
+        var sz = D.$('sz'), jav = D.$('jav'), be = D.$('be');
+        f.szoveg.split(/(\s+)/).forEach(function (darab) {
+            if (/^\s+$/.test(darab) || !darab) { sz.appendChild(document.createTextNode(darab)); return; }
+            var m = darab.match(/^([^\wÀ-ÿŐőŰű'-]*)([\wÀ-ÿŐőŰű'-]+)([^\wÀ-ÿŐőŰű'-]*)$/);
+            if (!m) { sz.appendChild(document.createTextNode(darab)); return; }
+            if (m[1]) { sz.appendChild(document.createTextNode(m[1])); }
+            var s = document.createElement('span'); s.className = 'hv-szo'; s.textContent = m[2];
+            s.onclick = function () { if (D.kesz() || s.classList.contains('javitva')) { return; } D.torol();
+                Array.prototype.forEach.call(sz.querySelectorAll('.hv-szo.kijelolt'), function (x) { x.classList.remove('kijelolt'); });
+                s.classList.add('kijelolt'); aktiv = s; D.$('ered').textContent = m[2] + ' →'; be.value = ''; jav.hidden = false;
+                setTimeout(function () { try { be.focus(); } catch (e) {} }, 30); };
+            sz.appendChild(s);
+            if (m[3]) { sz.appendChild(document.createTextNode(m[3])); }
+        });
+        function szamlalo() { D.$('db').textContent = D.T('Megtalált hibák: ', 'Errores encontrados: ') + Object.keys(talalt).length + ' / ' + keresett; }
+        function rogzit() {
+            if (!aktiv || D.kesz()) { return; }
+            var szo = aktiv.textContent, kulcs = szo.toLowerCase(), uj = be.value.trim();
+            if (!uj) { return; }
+            if (!(kulcs in HIBA)) { var nemh = aktiv; aktiv = null; nemh.classList.remove('kijelolt'); nemh.classList.add('nem-hiba'); D.animal(nemh, 'rezeg');
+                D._nemRossz = true; D.jelez(false, D.T('A „' + szo + '” jól van írva – keress tovább!', '«' + szo + '» está bien escrita. ¡Sigue buscando!')); D._nemRossz = false;
+                setTimeout(function () { nemh.classList.remove('nem-hiba'); }, 1200); jav.hidden = true; return; }
+            if (uj.toLowerCase() !== HIBA[kulcs].toLowerCase()) { tipp++; D.animal(be, 'rezeg');
+                D._nemRossz = true; D.jelez(false, D.T('Ez valóban hibás, de nem így kell javítani. Próbáld újra!', 'Sí, está mal, pero no se corrige así. ¡Inténtalo otra vez!')); D._nemRossz = false; return; }
+            talalt[kulcs] = uj; aktiv.textContent = HIBA[kulcs]; aktiv.classList.remove('kijelolt'); aktiv.classList.add('javitva');
+            aktiv = null; jav.hidden = true; D.torol(); D.hang('sine', 880); szamlalo();
+            if (Object.keys(talalt).length === keresett) {
+                D.vege(true, D.T('Mind a ' + keresett + ' hibát megtaláltad és kijavítottad!', '¡Has encontrado y corregido los ' + keresett + ' errores!'),
+                    D.T('Megtaláltam és kijavítottam: ', 'He encontrado y corregido: ') + f.hibak.map(function (h) { return h[0] + ' → ' + h[1]; }).join(', ') + '.'); }
+        }
+        D.$('ok').onclick = rogzit;
+        be.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); rogzit(); } });
+        szamlalo();
+        var kesz = D.ellenoriz(function () {
+            var hiany = f.hibak.filter(function (h) { return !(h[0].toLowerCase() in talalt); });
+            if (!hiany.length) { return {jo: true}; }
+            return {jo: false,
+                uzenet: D.T('Még ' + hiany.length + ' hiba bújik a szövegben. Olvasd el lassan, szóról szóra!', 'Aún quedan ' + hiany.length + ' errores. ¡Lee despacio, palabra por palabra!'),
+                valasz: D.T('Ezeket találtam meg: ', 'He encontrado: ') + (Object.keys(talalt).join(', ') || '–') + D.T('. Nem találtam meg: ', '. No he encontrado: ') +
+                    hiany.map(function (h) { return h[0]; }).join(', ') + '.'};
+        }, D.T('Nem találok több hibát', 'No encuentro más'));
+    };
+
+    /* ── PÁRBESZÉD ─────────────────────────────────────────────────────── */
+    DM.parbeszed = function (f, D) {
+        var i = 0, rossz = [], jo = 0, valasztas = 0;
+        D.html('<div class="allas">' + D.T('Olvasd el (vagy hallgasd meg), és válaszd ki, mit mondana B!', 'Lee (o escucha) y elige lo que diría B.') +
+            '</div><div class="pb-chat" data-id="ch"></div><div class="pb-opciok" data-id="op"></div>');
+        var ch = D.$('ch'), op = D.$('op');
+        function buborek(ki, sz, extra) { var d = document.createElement('div'); d.className = 'pb-b pb-' + ki + (extra ? ' ' + extra : '');
+            d.innerHTML = '<span class="pb-ki">' + ki + '</span><span class="pb-sz"></span>'; d.lastChild.textContent = sz;
+            if (ki === 'A') { var h = document.createElement('button'); h.type = 'button'; h.className = 'pb-hang'; h.textContent = '🔊'; h.onclick = function () { D.mond(sz); }; d.appendChild(h); }
+            ch.appendChild(d); D.animal(d, 'pattan'); ch.scrollTop = ch.scrollHeight; return d; }
+        function kov() {
+            if (i >= f.sorok.length) { return zar(); }
+            var s = f.sorok[i];
+            if (!s.opciok) { buborek(s.ki, s.szoveg); if (s.ki === 'A') { D.mond(s.szoveg); } i++; setTimeout(kov, 700); return; }
+            valasztas++;
+            var gepel = buborek(s.ki, '…', 'pb-gepel'), probalt = 0;
+            op.innerHTML = '';
+            D.kever(s.opciok.map(function (o, k) { return [o, k]; })).forEach(function (o) {
+                op.appendChild(D.gomb(o[0], 'pb-op', function () {
+                    if (o[1] === s.jo) { gepel.remove(); buborek(s.ki, o[0]); op.innerHTML = ''; D.hang('sine', 880); if (!probalt) { jo++; } i++; setTimeout(kov, 600); return; }
+                    probalt++; this.disabled = true; this.classList.add('rossz-op'); D.animal(this, 'rezeg');
+                    if (probalt === 1) { rossz.push(o[0]); }
+                    if (probalt >= 2) { gepel.remove(); buborek(s.ki, s.opciok[s.jo], 'pb-mutatott'); op.innerHTML = ''; i++; setTimeout(kov, 1100); } }));
+            });
+        }
+        function zar() {
+            D.vege(jo === valasztas, jo === valasztas ? D.T('Kész a párbeszéd – minden válaszod talált!', '¡Diálogo terminado: todas tus respuestas encajan!')
+                    : D.T('Kész a párbeszéd. ' + jo + ' / ' + valasztas + ' válasz elsőre jó.', 'Diálogo terminado. ' + jo + ' de ' + valasztas + ' respuestas bien a la primera.'),
+                D.T('Párbeszéd: ' + jo + ' / ' + valasztas + ' válasz elsőre jó.', 'Diálogo: ' + jo + ' de ' + valasztas + ' bien a la primera.') +
+                (rossz.length ? D.T(' Ezeket választottam rosszul: ', ' Elegí mal: ') + rossz.join('; ') + '.' : ''));
+        }
+        kov();
     };
 
     /* ── 2. SZÓTAGOLÁS ───────────────────────────────────────────────── */
