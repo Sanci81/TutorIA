@@ -1675,6 +1675,9 @@
     <form method="get" style="position:fixed;left:12px;bottom:12px;z-index:9999;background:#fff;border:2px solid #1F7A4D;border-radius:12px;padding:8px 10px;font:14px Nunito,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.12)">
         {% for k, v in request.args.items() %}{% if k != 'proba' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endif %}{% endfor %}
         <b>Feladat-próba:</b>
+        {# KERESŐ (2026-10-30): sok feladat van már – gépelésre szűri a listát (ékezet nélkül is). #}
+        <input type="search" placeholder="keresés… (pl. carroll, venn)" autocomplete="off" style="width:190px;padding:3px 6px;border:1px solid #9BC3AE;border-radius:8px;font:inherit"
+               oninput="(function(i){var n=function(x){return x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');},q=n(i.value.trim()),s=i.nextElementSibling,db=0,elso=null;Array.prototype.forEach.call(s.options,function(o,k){if(!k){return;}var l=!q||n(o.text).indexOf(q)>-1;o.hidden=!l;if(l){db++;elso=elso||o;}});s.options[0].text=q?('– ' + db + ' találat –'):'– válassz –';if(db===1&&elso.value!==s.value){s.value=elso.value;s.onchange();}})(this)">
         <select name="proba" style="max-width:260px" onchange="(function(s){fetch('{{ url_for('feladat_proba_json') }}?tipus=' + encodeURIComponent(s.value) + '&evfolyam={{ grade_num or '' }}&nyelv={{ language or '' }}').then(function(r){return r.json();}).then(function(d){ if (d.feladat && window.__probaBe) { window.__probaBe(d.feladat); } });})(this)">
             <option value="">– válassz –</option>
             {% for tip, cim in proba_lista %}<option value="{{ tip }}" {% if request.args.get('proba') == tip %}selected{% endif %}>{{ tip }} – {{ cim }}</option>{% endfor %}
