@@ -884,6 +884,17 @@
     padding:28px 8px 10px;margin-bottom:14px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.08),0 3px 0 #B88A4C}
 .dm .cb-kosar-nev{position:absolute;top:6px;left:0;right:0;text-align:center;font-size:12.5px;font-weight:900;color:#5A3A12}
 .dm .cb-kosar .kartyak{margin:0;min-height:58px}
+/* LAPTOPON (2026-10-30, Sándor: „nagyítva sem fér bele”): a kosár a polc MELLÉ
+   kerül, a polcmezők alacsonyabbak – így az egész bolt egy képernyőn látszik. */
+@media (min-width:900px){
+    .dm .cb-bolt{display:grid;grid-template-columns:150px 1fr;column-gap:12px;align-items:stretch}
+    .dm .cb-ponyva,.dm .cb-cegtabla{grid-column:1/-1}
+    .dm .cb-cegtabla{justify-self:center;margin:16px auto 8px}
+    .dm .cb-kosar{margin:0 0 6px;padding:50px 8px 10px}
+    .dm .cb-kosar .kartyak{justify-content:center;align-content:flex-start}
+    .dm .cb-polc .c-mezo{min-height:84px}
+    .dm .cb-polc .c-mezo .tarto{min-height:46px}
+}
 .dm .cb-polc{background:#C8874A;padding:8px;border-radius:14px;box-shadow:0 6px 0 #9C6533,inset 0 0 0 3px #B5763D;gap:8px;margin-top:0}
 .dm .cb-polc .c-sarok{background:transparent}
 .dm .cb-polc .c-fej{background:transparent!important;padding:0}
