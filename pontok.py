@@ -37,6 +37,13 @@ PONT_TESZT_ISMETLES = [60, 40]   # első ismétlés 60, onnantól 40
 # Próbálkozásonként csökken: az első felmérő ér a legtöbbet.
 PONT_SZINTFELMERO = [150, 100, 60]
 
+# ── kitérő (2026-10-30) ─────────────────────────────────────────────────────
+# Ha a gyerek a leckén belül MÁS anyagról kérdez (pl. mert az iskolában most
+# azt veszik), a tanár elmagyarázza. Ez nem a lecke ideje, de a jól megoldott
+# kitérő feladatért jár egy kis pont – naponta legfeljebb ennyi.
+PONT_KITERO = 5
+PONT_KITERO_NAPI_MAX = 25
+
 
 def lecke_pont(mar_volt: bool = False) -> int:
     """A csevegésben befejezett lecke pontja."""
@@ -79,6 +86,7 @@ def indoklas(fajta: str, pont: int, nyelv: str = "hu") -> str:
             "teszt_kivalo": "por un examen excelente",
             "teszt_ismetles": "por repetir el examen",
             "szintfelmero": "por la prueba de nivel",
+            "kitero": "por la tarea extra",
         }
     else:
         szotar = {
@@ -88,5 +96,6 @@ def indoklas(fajta: str, pont: int, nyelv: str = "hu") -> str:
             "teszt_kivalo": "a kiváló tesztért",
             "teszt_ismetles": "a teszt ismétléséért",
             "szintfelmero": "a szintfelmérőért",
+            "kitero": "a kitérő feladatért",
         }
     return f"+{pont} {szotar.get(fajta, '')}".strip()

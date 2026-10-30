@@ -6611,6 +6611,9 @@ def _feladat_szovegbol(szoveg: str, *, grade: int | None = None,
 _CHAT_MARKER_TOPIC = re.compile(r"<TOPIC_COMPLETE>", re.IGNORECASE)
 # A gyerek válasza jó volt-e – a tanár jelzi, a kabala ebből reagál (rejtett).
 _CHAT_MARKER_EREDMENY = re.compile(r"<\s*EREDMENY\s*:\s*(jo|jó|rossz)\s*>", re.IGNORECASE)
+# Kitérő (2026-10-30): a tanár ezzel jelzi, hogy a válasza NEM a mostani lecke
+# anyaga (a gyerek másról kérdezett). Ilyenkor a lecke órája áll.
+_CHAT_MARKER_KITERO = re.compile(r"<\s*KITER[OŐ]\s*/?\s*>", re.IGNORECASE)
 _CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
 _CHAT_MARKER_VOCAB = re.compile(
     r"[<\[]\s*VOCAB\s*[>\]]\s*([^=\n<\[]+?)\s*=\s*([^<\[\n]+?)\s*(?:[<\[]\s*/\s*VOCAB\s*[>\]]|$)",
@@ -6942,6 +6945,7 @@ _MODELL_TOKEN = re.compile(r"<\|[A-Za-z_][A-Za-z0-9_]{1,30}\|>")
 def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[str, str]], list[str]]:
     """Belső jelölők eltávolítása; topic, level, szójegyzék párok, SVG ábrák."""
     text = _CHAT_MARKER_EREDMENY.sub("", text or "")
+    text = _CHAT_MARKER_KITERO.sub("", text)
     level_val: int | None = None
     level_match = _CHAT_MARKER_LEVEL.search(text)
     if level_match:
@@ -10449,6 +10453,27 @@ def _lecke_felulet_tipp(child, subject_label: str, current_topic: str, idegen: b
 def _build_chat_system_prompt(*args, **kwargs) -> str:
     """A prompt + (ha a gépi rajzok ki vannak kapcsolva) a rajztilalom a végén."""
     prompt = _build_chat_system_prompt_alap(*args, **kwargs)
+    # KITÉRŐ (2026-10-30, Sándor): a lecke zárva marad, de ha a gyerek másról
+    # kérdez (az iskola más tempóban halad), a tanár segít. Ez nem a lecke
+    # ideje – a <KITERO> jelölőre a böngésző megállítja a lecke óráját.
+    prompt += (
+        "\n\n=== HA A GYEREK MÁS ANYAGRÓL KÉRDEZ (KITÉRŐ) ===\n"
+        "Ha a GYEREK olyasmiről kérdez, ami nem ennek a leckének az anyaga – ebben a tantárgyban egy "
+        "későbbi vagy korábbi lecke (pl. mert az iskolában most azt veszik), alsóbb vagy felsőbb "
+        "évfolyam anyaga, vagy másik tantárgy –, SEGÍTS. Ne utasítsd el, és ne mondd, hogy nem ide "
+        "tartozik. Magyarázd el érthetően, az ő szintjén, lépésenként; ha illik, adj rá egy gyakorló "
+        "feladatot (<FELADAT>). Felsőbb évfolyam anyagánál maradj az alapoknál.\n"
+        "Minden ilyen válaszod VÉGÉRE írd oda: <KITERO> (a gyerek nem látja). Ha egy kitérő feladatra "
+        "adott válaszát értékeled, a <KITERO> mellett az <EREDMENY:…> jelölő is kell.\n"
+        "Ha a kérdése megoldódott, egy mondattal kérdezd meg, folytatjátok-e a leckét. Amikor "
+        "visszatértek a lecke anyagához, a <KITERO> jelölőt már NE írd.\n"
+        "A kitérő NEM a lecke része: a lecke tervében nem lépsz előre miatta, nem mondod, hogy a "
+        "lecke kész, és nem jelölöd befejezettnek. Te magadtól ne térj el a leckétől – csak ha a "
+        "gyerek kérdez.\n"
+        "Si el NIÑO pregunta por algo que no es de esta lección (otra lección de la asignatura, otro "
+        "curso u otra asignatura), AYÚDALE: explícalo a su nivel y, si encaja, dale una tarea "
+        "(<FELADAT>). Al FINAL de cada respuesta así escribe <KITERO> (no lo ve). Cuando volváis a la "
+        "lección, ya NO lo escribas. No cuenta como parte de la lección ni la da por terminada.\n")
     # Személyes-adat szűrő (2026-10-28): a gyerek üzenetében [elrejtve] áll.
     prompt += (
         "\n\n=== HA A GYEREK ÜZENETÉBEN [elrejtve] ÁLL ===\n"
@@ -13736,6 +13761,7 @@ def child_chat_send(child_id: int):
     _er = _CHAT_MARKER_EREDMENY.search(raw_reply or "")
     _eredmeny = ("jo" if _er.group(1).lower() in ("jo", "jó") else "rossz") if _er else ""
     print(f"[EREDMENY] tanari jelzes: {_eredmeny or 'nincs'}", flush=True)
+    _kitero = bool(_CHAT_MARKER_KITERO.search(raw_reply or ""))
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:
@@ -14101,6 +14127,17 @@ def child_chat_send(child_id: int):
         except Exception as _exc:
             print(f"[PONT] hiba ({fajta}): {_exc}", flush=True)
 
+    # Kitérő feladat jól megoldva → kis pont, naponta korlátozva.
+    if _kitero and _eredmeny == "jo":
+        try:
+            _kk = f"kitero_pont_{child_id}_{date.today().isoformat()}"
+            _eddig = int(session.get(_kk, 0) or 0)
+            if _eddig + pontok.PONT_KITERO <= pontok.PONT_KITERO_NAPI_MAX:
+                session[_kk] = _eddig + pontok.PONT_KITERO
+                _pont_jar("kitero", pontok.PONT_KITERO)
+        except Exception:
+            logger.exception("Kitero pont hiba")
+
     if topic_done:
         _mar_volt = bool(
             current_topic
@@ -14215,6 +14252,7 @@ def child_chat_send(child_id: int):
     return jsonify(
         {
             "reply": reply,
+            "kitero": _kitero,
             "eredmeny": _eredmeny,
             # Ha a szűrő kitakart valamit, a gyerek buborékja is a kitakart szöveget mutassa.
             "sajat_uzenet": user_text if user_text != _eredeti else "",

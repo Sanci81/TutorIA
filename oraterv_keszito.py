@@ -144,7 +144,61 @@ _fajlnev = oraterv.fajlnev
 
 
 # ── 1. A TERV MEGÍRÁSA ──────────────────────────────────────────────────────
-def _terv_keres(cimke, evfolyam, nyelv, temakor) -> str:
+# ── A HASZNÁLHATÓ INTERAKTÍV FELADATOK (2026-10-30) ─────────────────────────
+# Halmazok órán a gyerek tízszer kért halmazábrát, a tanár mégsem adta a kész
+# Venn-feladatot: a tervben nem állt, hogy melyik lépéshez melyik feladat
+# való. Most a terv minden lépéshez megnevezi – de CSAK olyat, ami ehhez a
+# tantárgyhoz és évfolyamhoz ténylegesen létezik az oldalon.
+_ALAP_NEV = {
+    "szamolo": "írásbeli művelet oszlopban (összeadás, kivonás, szorzás, osztás)",
+    "szam": "egy szám beírása (fejszámolás, egyenlet, mértékegység)",
+    "valaszt": "válaszgombok – egy jó a 2–6 közül",
+    "parosit": "párosítás (szó–jelentés, fogalom–meghatározás)",
+    "sorrend": "sorba rendezés (időrend, lépések, nagyság)",
+    "hianyzo": "hiányzó szó a mondatban, felkínált szavakkal",
+}
+
+
+# Ezeket NEM ajánljuk: a gép rajzolná meg az ábrát SVG-ben, és a gépi
+# rajzok rosszak voltak (2026-10, kikapcsolva). Ha a rajzok visszajönnek,
+# innen kell kivenni.
+_TILTOTT = {"abra"}
+
+
+def _feluletek(fajl, cimke, evfolyam, idegen) -> dict:
+    """{tipus: "leírás — minta: <FELADAT>{…}</FELADAT>"} – amit ennél a
+    tantárgynál és évfolyamnál a tanár adhat. A MINTA is benne van, mert a
+    névből a modell nem tudja, mire képes a felület: a Halmazok tervben a
+    „béka" (adott számról ugrál előre-hátra) került egy olyan lépéshez, ahol
+    számokat kellett volna kijelölni a számegyenesen – arra a béka nem jó."""
+    ki = {}
+    try:
+        blokk = app._FELADAT_BLOKK_HU
+        for t, minta in app._alap_feladat_peldak(False).items():
+            if t in _TILTOTT:
+                continue
+            eleje = blokk[:blokk.find(minta)]
+            m = list(re.finditer(r"\n\s*\d+\)\s*([^\n]+)", eleje))
+            cim = m[-1].group(1).strip() if m else t
+            leiras = _ALAP_NEV.get(t) or re.split(r"\s[—–-]\s|\.\s", cim)[0][:90]
+            ki[t] = f"{leiras}\n               minta: {minta}"
+    except Exception:
+        ki.update({t: l for t, l in _ALAP_NEV.items()})
+    try:
+        cimkek = app._dm_cimkek(cimke, idegen)
+        for f in app._DM_FELULETEK:
+            if f[0] in _TILTOTT:
+                continue
+            if (f[1] & cimkek) and f[2] - 1 <= evfolyam <= f[3] + 1 and f[4]:
+                leiras = (f[6] or f[0]).split("→")[0].strip().strip('„"')
+                mm = re.search(r"<FELADAT>.*?</FELADAT>", f[4], re.S)
+                ki[f[0]] = leiras + (f"\n               minta: {mm.group(0)}" if mm else "")
+    except Exception:
+        pass
+    return ki
+
+
+def _terv_keres(cimke, evfolyam, nyelv, temakor, feluletek=None) -> str:
     kor = evfolyam + 6
     sorrend = temakor.get("nyelvtan") or []
     sorrend_szoveg = ""
@@ -180,10 +234,26 @@ MINDEN LÉPÉSHEZ:
              Nyelvnél: ne írj olyan mondatot, aminek a nyelvtanát még nem vették.
   kerdes   – EGY ellenőrző kérdés. NEM ugyanarról a példáról, amit fentebb
              mutattál – MÁSIK esetről, hogy a gyerek ne másolhassa a választ.
+  feladat  – azon az interaktív feladat TÍPUSA az alábbi listából, amellyel a
+             gyerek ezt a lépést GYAKOROLJA (a kérdést ezzel kapja meg).
+             CSAK a listából választhatsz, a nevét pontosan úgy írd. Válaszd
+             azt, ami a lépés tartalmához a LEGJOBBAN illik: halmazokhoz a
+             halmazábrás, törthöz a törtes, időrendhez a sorbarendezés.
+             NÉZD MEG A MINTÁJÁT: a feladat CSAK azt tudja, ami a mintájában
+             van (milyen mezői vannak). Ha a lépés kérdését azzal a felülettel
+             nem lehet pontosan feltenni, NE azt válaszd – akkor a sima
+             válaszgomb (valaszt) vagy számbeírás (szam) a jó.
+             Egy órán legyen VÁLTOZATOS: ne ugyanaz a típus minden lépésnél.
+  feladat_mit – egy mondat: konkrétan mit tartalmazzon a feladat, a minta
+             mezőivel összhangban (pl. „a: páros, b: 3-mal osztható, elemek:
+             a számok 1–12 között").
+
+A HASZNÁLHATÓ FELADATOK (típus – mire való):
+{chr(10).join(f"  {t:10} – {l}" for t, l in (feluletek or {}).items())}
 
 Adj vissza json választ:
 {{"lepesek": [{{"cim": "...", "mit": "...", "epul": [1], "pelda": "...",
-"kerdes": "..."}}]}}
+"kerdes": "...", "feladat": "...", "feladat_mit": "..."}}]}}
 
 Magyarul írj{f", a {nyelv} szavakat és mondatokat viszont {nyelv}ul" if nyelv else ""}."""
 
@@ -211,6 +281,9 @@ Amit keresel:
   · pontatlan magyar szóhasználat (pl. "életképes dalok" a "életképet
     bemutató dalok" helyett)
   · olyan példa vagy kérdés, aminek nincs helyes válasza
+
+A "feladat" és a "feladat_mit" mezőt HAGYD MEG, ahogy van (ha a kérdést
+javítod, a feladat_mit-et igazítsd hozzá).
 
 Ha találsz hibát, JAVÍTSD KI a lépést, és írd le, mit javítottál.
 Ha valami helyes, NE nyúlj hozzá — a fölösleges átírás is kár.
@@ -244,9 +317,10 @@ def _gyanus(lepesek: list) -> list[str]:
     return talalatok
 
 
-def _egy_temakor(kliens, cimke, evfolyam, nyelv, temakor) -> dict:
+def _egy_temakor(kliens, cimke, evfolyam, nyelv, temakor, feluletek=None) -> dict:
+    feluletek = feluletek or {}
     terv = _json_valasz(kliens, KESZITO_MODELL,
-                        _terv_keres(cimke, evfolyam, nyelv, temakor))
+                        _terv_keres(cimke, evfolyam, nyelv, temakor, feluletek))
     lepesek = terv.get("lepesek") or []
     if not lepesek:
         raise RuntimeError("a terv üres lett")
@@ -255,6 +329,17 @@ def _egy_temakor(kliens, cimke, evfolyam, nyelv, temakor) -> dict:
                        _ellenor_keres(cimke, evfolyam, temakor, lepesek))
     javitott = ell.get("lepesek") or lepesek
     javitasok = ell.get("javitasok") or []
+    # A feladat típusa nem az ellenőrző dolga: ha elhagyta, visszatesszük;
+    # és csak létező típus maradhat (egy kitalált név a tanárt félrevinné).
+    for i, lep in enumerate(javitott):
+        if not isinstance(lep, dict):
+            continue
+        if not lep.get("feladat") and i < len(lepesek) and isinstance(lepesek[i], dict):
+            lep["feladat"] = lepesek[i].get("feladat", "")
+            lep.setdefault("feladat_mit", lepesek[i].get("feladat_mit", ""))
+        if feluletek and lep.get("feladat") not in feluletek:
+            lep["feladat"] = ""
+            lep["feladat_mit"] = ""
 
     return {
         "temakor_id": temakor["id"],
@@ -275,6 +360,8 @@ def main() -> int:
     p.add_argument("--tantargy", help="a tantárgy nevének egy részlete")
     p.add_argument("--evfolyam", type=int, action="append")
     p.add_argument("--mind", action="store_true", help="minden tantárgy")
+    p.add_argument("--temakor", help="csak az a témakör, amelynek a nevében ez szerepel "
+                   "(pl. Halmazok) – a fájl többi témakörét megtartja")
     p.add_argument("--ujra", action="store_true",
                    help="a már kész fájlokat is újragenerálja")
     p.add_argument("--olcso", action="store_true",
@@ -321,7 +408,7 @@ def main() -> int:
     tennivalo = []
     for fajl, cimke, evf, nyelv in munka:
         ki = _fajlnev(fajl, evf, nyelv)
-        if ki.exists() and not a.ujra:
+        if ki.exists() and not a.ujra and not a.temakor:
             continue
         tennivalo.append((fajl, cimke, evf, nyelv, ki))
 
@@ -358,11 +445,17 @@ def main() -> int:
             print(f"[{i}/{len(tennivalo)}] {jel} – nincs tananyag, kihagyva")
             continue
 
+        if a.temakor:
+            katalogus = [t for t in katalogus
+                         if a.temakor.lower() in (t.get("name") or "").lower()]
+            if not katalogus:
+                continue
+        feluletek = _feluletek(fajl, cimke, evf, bool(nyelv))
         print(f"[{i}/{len(tennivalo)}] {jel} – {len(katalogus)} témakör")
         tervek = []
         for t in katalogus:
             try:
-                terv = _egy_temakor(kliens, cimke, evf, nyelv, t)
+                terv = _egy_temakor(kliens, cimke, evf, nyelv, t, feluletek)
             except KeyboardInterrupt:
                 print("\nMegszakítva. Ami kész, az megmaradt.")
                 _token_jelentes(kesz_darab)
@@ -373,7 +466,8 @@ def main() -> int:
                 continue
             db = len(terv["tenyellenorzes"]["javitasok"])
             osszes_javitas += db
-            print(f"      · {t['name'][:44]:44} {len(terv['lepesek'])} lépés"
+            tipusok = ", ".join(l.get("feladat") or "–" for l in terv["lepesek"])
+            print(f"      · {t['name'][:44]:44} {len(terv['lepesek'])} lépés  [{tipusok}]"
                   + (f", {db} ténybeli javítás" if db else ""))
             for gy in terv["tenyellenorzes"]["gyanus_maradt"]:
                 print(f"        ! bennemaradt: {gy}")
@@ -381,6 +475,14 @@ def main() -> int:
 
         if not tervek:
             continue
+        if a.temakor and ki.exists():
+            # csak a most készült témakörök cserélődnek, a többi marad
+            try:
+                regi = json.loads(ki.read_text(encoding="utf-8")).get("temakorok") or []
+            except Exception:
+                regi = []
+            uj_id = {t["temakor_id"] for t in tervek}
+            tervek = [t for t in regi if t.get("temakor_id") not in uj_id] + tervek
         ki.write_text(json.dumps({
             "tantargy_fajl": fajl,
             "tantargy": cimke,

@@ -1,0 +1,112 @@
+{
+ "tantargy_fajl": "Matematika_1_4.json",
+ "tantargy": "Matematika",
+ "evfolyam": 3,
+ "nyelv": null,
+ "keszult": "2026-10-30",
+ "keszito_modell": "gpt-5.4",
+ "temakorok": [
+  {
+   "temakor_id": "t0",
+   "temakor": "Válogatás, halmazok alkotása, vizsgálata",
+   "ujjlenyomat": "abaa3bf293fdd0a6",
+   "lepesek": [
+    {
+     "cim": "Mi milyen?",
+     "mit": "A tanuló észreveszi és megnevezi tárgyak és alakzatok egyszerű tulajdonságait.",
+     "epul": [],
+     "pelda": "A tanár mutat egy piros kört és egy kék négyzetet, és kimondja: ez piros és kerek; ez kék és négyzet alakú.",
+     "kerdes": "Milyen a sárga háromszög: milyen a színe és milyen az alakja?",
+     "feladat": "parosit",
+     "feladat_mit": "Tulajdonságok párosítása képi elemekhez, például: piros kör – piros és kerek; kék négyzet – kék és négyzet."
+    },
+    {
+     "cim": "Egyféleképpen válogatunk",
+     "mit": "A tanuló egy adott szempont szerint két csoportba válogat elemeket.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár több alakzat közül külön rakja a pirosakat és a nem pirosakat.",
+     "kerdes": "Tedd két csoportba ezeket: piros csillag, kék csillag, piros kör, zöld kör a piros és a nem piros csoportba.",
+     "feladat": "csoport",
+     "feladat_mit": "Két csoport legyen: piros és nem piros; elemek: egyszerű színes alakzatok vegyesen."
+    },
+    {
+     "cim": "Mi volt a szabály?",
+     "mit": "A tanuló felismeri és megfogalmazza egy megkezdett válogatás szempontját.",
+     "epul": [
+      1,
+      2
+     ],
+     "pelda": "Az egyik dobozban kör, háromszög és négyzet van mind piros színben, a másikban ugyanilyen alakzatok kékben; a tanár megfogalmazza: ide a pirosak kerültek.",
+     "kerdes": "Az egyik kupacban 2, 4, 6 van, a másikban 1, 3, 5. Mi lehetett a válogatás szabálya?",
+     "feladat": "valaszt",
+     "feladat_mit": "A kérdés egy kész válogatás szabályára kérdezzen rá, 3–4 válaszlehetőséggel, például: páros számok, nagy számok, piros dolgok."
+    },
+    {
+     "cim": "Ki nem illik ide?",
+     "mit": "A tanuló megtalálja a halmazba nem való elemet, és használja a nem szót.",
+     "epul": [
+      1,
+      2,
+      3
+     ],
+     "pelda": "A tanár kirak három kört és egy háromszöget, majd mondja: a háromszög nem kör, ezért nem illik ide.",
+     "kerdes": "Melyik nem való a körök közé: kör, kör, négyzet, kör?",
+     "feladat": "valaszt",
+     "feladat_mit": "Egy válaszos feladatban 4 lehetőség közül kell kiválasztani a halmazba nem illő elemet, például a körök közül a négyzetet."
+    },
+    {
+     "cim": "Halmazábrába tesszük",
+     "mit": "A tanuló egy tulajdonság szerint elhelyez elemeket egyszerű halmazábrában, és ellenőrzi a helyüket.",
+     "epul": [
+      2,
+      3,
+      4
+     ],
+     "pelda": "A tanár egy karikát rajzol kék felirattal, és a kék körlapot bele, a piros körlapot pedig kívülre teszi.",
+     "kerdes": "Hova kerül a zöld háromszög a kék feliratú karikánál: bele vagy kívülre?",
+     "feladat": "venn",
+     "feladat_mit": "Egyhalmazos értelmezéssel használjuk a Venn-feladatot: a: kék, b: üres második szempont helyett egyszerűen csak a kék és nem kék elemek szerepeljenek könnyű alakzatokkal."
+    },
+    {
+     "cim": "Két szabály egyszerre",
+     "mit": "A tanuló két tulajdonságot egyszerre figyel meg, és ezek szerint válogat.",
+     "epul": [
+      1,
+      2,
+      4,
+      5
+     ],
+     "pelda": "A tanár azt mondja: keresem azokat, amelyek pirosak és körök; a piros kör megy a közös helyre, a piros háromszög nem.",
+     "kerdes": "Melyik jó a piros és kerek csoportba: piros kör, kék kör, piros négyzet, zöld háromszög?",
+     "feladat": "csoport",
+     "feladat_mit": "Négy csoport legyen két tulajdonság szerint: piros és kerek, piros és nem kerek, nem piros és kerek, nem piros és nem kerek; elemek: színes alakzatok."
+    },
+    {
+     "cim": "Kétkarikás halmazábra",
+     "mit": "A tanuló Venn-diagramon elhelyezi az elemeket két szempont szerint, és egyszerű igaz-hamis állításokat mond róluk.",
+     "epul": [
+      5,
+      6
+     ],
+     "pelda": "A tanár két egymásba érő karikát rajzol: az egyik a piros elemeket, a másik a kör alakú elemeket jelöli; a piros kör a közös részbe kerül, a kék kör csak a kör karikába.",
+     "kerdes": "Igaz vagy hamis: a piros kör a piros és a kör közös részébe kerül?",
+     "feladat": "venn",
+     "feladat_mit": "a: piros, b: kör, elemek: piros kör, piros négyzet, kék kör, zöld háromszög; a feladatban az elemeket kell a megfelelő helyre rendezni."
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "Az 1. lépés példájában javítottam a megfogalmazást: az alakzat tulajdonságait párhuzamosan, helyesen mondja ki: „ez piros és kerek; ez kék és négyzet alakú”.",
+     "A 2. lépés kérdésében nyelvtanilag pontosítottam a felsorolást: „a piros és a nem piros csoportba”.",
+     "Az 5. lépés példája tényszerűen hibás volt, mert a karika „kék” feliratához nem illeszkedett a bele tett piros körlap; javítottam úgy, hogy a kék körlap kerül bele, a piros pedig kívülre.",
+     "A 7. lépés példájában pontosítottam a megfogalmazást: nem a karikák „pirosak” és „körök”, hanem az egyik a piros elemeket, a másik a kör alakú elemeket jelöli.",
+     "A 7. lépés kérdésében a természetesebb és pontosabb párhuzamos szerkezetet használtam: „a piros és a kör közös részébe kerül”."
+    ],
+    "gyanus_maradt": []
+   }
+  }
+ ]
+}

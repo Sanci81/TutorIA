@@ -41,6 +41,9 @@
   /* ══ HÁTRALÉVŐ IDŐ ═══════════════════════════════════════════════════
      Egy sor a sín alatt. Nem riogat és nem versenyeztet: csak megmondja,
      mennyi van még — ettől lesz a leckének vége, nem csak eleje. */
+  .kitero-jel{margin:6px 8px 0;font-size:12px;font-weight:700;color:#8a5a00;background:#fff4d6;
+    border:1px solid #f0d58a;border-radius:999px;padding:4px 12px;display:inline-block}
+  .kitero-jel[hidden]{display:none}
   .lecke-hatra{margin:34px 8px 0;font-size:12.5px;color:#5c7386;
                font-weight:600;letter-spacing:.01em;text-align:right}
 
@@ -1446,6 +1449,9 @@
                     ✅ {{ t('lecke_ideje_letelt') }}
                 {% endif %}
             </p>
+            {# KITÉRŐ (2026-10-30): ha a gyerek másról kérdezett, ez jelzi, hogy most
+               nem a lecke ideje telik. #}
+            <p class="kitero-jel" id="kitero-jel" hidden>{{ '⏸ Pregunta aparte – no cuenta en el tiempo de la lección' if g.lang == 'es' else '⏸ Kitérő – ez nem számít bele a lecke idejébe' }}</p>
             {% endif %}
             <div class="erme-csik">
                 <span>🪙</span>
@@ -1953,8 +1959,29 @@
         learningPaused = true;
     }
 
+    /* KITÉRŐ: amíg a tanár másról magyaráz (a gyerek kérdezett), a lecke
+       órája áll – a tevékenység sem indítja újra. */
+    var kiteroBen = false;
+    window.kiteroAllit = function (be, pontEsemenyek) {
+        try {
+            var jel = document.getElementById('kitero-jel');
+            if (be && !kiteroBen) { oraMegall(); kiteroBen = true; heartbeat(); }
+            else if (!be && kiteroBen) { kiteroBen = false; oraIndul(); }
+            if (jel) {
+                jel.hidden = !kiteroBen;
+                var p = (pontEsemenyek || []).filter(function (e) { return e && e.fajta === 'kitero'; })[0];
+                if (p && kiteroBen) {
+                    var alap = jel.getAttribute('data-alap') || jel.textContent;
+                    jel.setAttribute('data-alap', alap);
+                    jel.textContent = '⭐ ' + p.szoveg;
+                    setTimeout(function () { jel.textContent = jel.getAttribute('data-alap'); }, 4000);
+                }
+            }
+        } catch (e) {}
+    };
+
     function oraIndul() {
-        if (!learningPaused) return;
+        if (!learningPaused || kiteroBen) return;
         learningPaused = false;
         szakaszKezdet = Date.now();
     }
@@ -10836,6 +10863,7 @@
                 }
                 var aiMessage = res.data.reply || '';
                 window.kabalaEredmeny = res.data.eredmeny || '';
+                if (typeof window.kiteroAllit === 'function') { window.kiteroAllit(!!res.data.kitero, res.data.pont_esemenyek); }
                 sajatUzenetFrissit(res.data.sajat_uzenet);
                 if (res.data.topic_done) {
                     setTimeout(function () {
@@ -11264,6 +11292,7 @@
                     }
                     var reply = res.data.reply || '';
                     window.kabalaEredmeny = res.data.eredmeny || '';
+                    if (typeof window.kiteroAllit === 'function') { window.kiteroAllit(!!res.data.kitero, res.data.pont_esemenyek); }
                     sajatUzenetFrissit(res.data.sajat_uzenet);
                     if (res.data.topic_done) {
                         setTimeout(function () {

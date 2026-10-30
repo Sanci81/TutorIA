@@ -7,7 +7,8 @@ body{font-family:"Segoe UI",system-ui,sans-serif;
  padding:18px 14px 60px}
 .top{max-width:1140px;margin:0 auto 12px;display:flex;justify-content:space-between;
  align-items:center;gap:14px;flex-wrap:wrap}
-h1{font-size:1.28rem}.sub{opacity:.6;font-size:.83rem}
+h1{font-size:1.28rem}
+.kotet-cim{font-size:.72rem;font-weight:700;color:#f0c869;opacity:.85;margin-left:6px;letter-spacing:.3px;white-space:nowrap}.sub{opacity:.6;font-size:.83rem}
 .prog{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);
  border-radius:999px;padding:7px 16px;font-size:.85rem;font-weight:700}.prog b{color:#f0c869}
 .album{max-width:1140px;margin:0 auto;background:linear-gradient(160deg,#26305e,#38457f 45%,#1c2348);
@@ -329,6 +330,9 @@ body{overflow-x:clip}
 
 .borito,.hatso{background-size:cover!important;background-position:center!important;
  background-repeat:no-repeat!important;position:relative;overflow:hidden}
+.bo-kotet{position:absolute;top:18px;right:20px;z-index:2;font-size:.66rem;font-weight:900;letter-spacing:1.6px;
+ color:#f0c869;border:1px solid rgba(240,200,105,.55);border-radius:999px;padding:5px 12px;background:rgba(8,12,30,.35)}
+@media (max-width:760px){.bo-kotet{top:10px;right:10px;font-size:.56rem;padding:4px 9px}}
 .bo-arny{position:absolute;inset:0;z-index:0;
  background:radial-gradient(ellipse at 50% 36%,rgba(0,0,0,0) 26%,rgba(6,9,22,.86) 100%)}
 .bo-tart{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;
@@ -542,7 +546,7 @@ body{overflow-x:clip}
 
 <div class="top">
  <a class="vissza-gomb" href="{{ vissza_url }}">← Vissza a tanuláshoz</a>
- <div class="topkozep"><h1>TutorIA – Gyűjtőalbum</h1>
+ <div class="topkozep"><h1>TutorIA – Gyűjtőalbum <small class="kotet-cim">Nagy nevek · 1. kötet</small></h1>
    <div class="sub">Húzd vagy koppintsd a lapjaidat a saját helyükre. A sima lap a sima helyre, az arany az aranyra.</div></div>
  <div class="prog">Beragasztva: <b id="db">0</b> / <span id="ossz"></span></div>
 </div>
@@ -803,8 +807,12 @@ function mehsejtHTML(lapok){
       ).join('')+`</div>`).join('') + `</div>`;
 }
 
+/* A KÖTET (2026-10-30): a sorozat címe és a kötet száma – kicsiben, a
+   borító sarkában, mint a Panini-albumokon a kiadás jelzése. */
+const KOTET = (ADAT.kepgyoker || '').indexOf('/es/') >= 0
+  ? 'GRANDES NOMBRES · TOMO 1' : 'NAGY NEVEK · 1. KÖTET';
 function boritoHTML(T){
-  return `<div class="bo-arny"></div>
+  return `<div class="bo-arny"></div><div class="bo-kotet">${KOTET}</div>
   <div class="bo-tart">
     ${CIMER}
     <div class="bo-nev">Tutor<span>IA</span></div>

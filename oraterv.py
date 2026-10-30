@@ -129,6 +129,11 @@ HOGYAN HASZNÁLD A TERVET
   mond, az a pontos összeg: dicsérd meg, és annyit tegyél hozzá, hogy
   becsléssel 5900 jönne ki. NE mondd rá, hogy "elcsúszott".
 
+· HA A LÉPÉSNÉL "feladat" ÁLL, AZ ELLENŐRZŐ KÉRDÉST EZZEL A TÍPUSSAL ADD,
+  <FELADAT>-ként, a válaszod végén (pl. feladat: venn → <FELADAT>{"tipus":"venn",…}).
+  Ne helyettesítsd sima kérdéssel vagy válaszgombbal, és ne mondd, hogy nem
+  tudsz ábrát adni: EZ a feladat az ábra. Ha a gyerek ugyanerre a lépésre
+  még egy gyakorlást kér, ugyanilyen típusú, de más tartalmú feladatot adj.
 · A "példa" és a "kérdés" MINTA, nem felolvasandó szöveg. Mondhatod a saját
   szavaiddal, de a TARTALMÁTÓL ne térj el: ezeket a tényeket ellenőriztük.
 · Ha a gyerek egy későbbi lépésre kérdez rá, válaszolj röviden, aztán térj
@@ -169,6 +174,9 @@ CÓMO USAR EL PLAN
   felicítale y añade que la estimación daría 5900. NO digas que "se ha
   desviado".
 
+· SI EL PASO TIENE "tarea", LA PREGUNTA DE COMPROBACIÓN SE DA CON ESE TIPO,
+  como <FELADAT>, al final de tu respuesta. No la cambies por una pregunta
+  normal ni digas que no puedes dar un dibujo: ESA tarea es el dibujo.
 · El "ejemplo" y la "pregunta" son MODELOS, no un texto para leer en voz alta.
   Puedes decirlo con tus palabras, pero no cambies el CONTENIDO: estos datos
   están verificados.
@@ -212,6 +220,11 @@ def prompt_blokk(lepes_lista: list[dict], *, spanyol: bool = False) -> str:
             ertek = (lep.get(kulcs) or "").strip()
             if ertek:
                 sorok.append(f"     {szo}: {ertek}")
+        tip = (lep.get("feladat") or "").strip()
+        if tip:
+            mit = (lep.get("feladat_mit") or "").strip()
+            sorok.append(f"     {'tarea' if spanyol else 'feladat'}: {tip}"
+                         + (f" – {mit}" if mit else ""))
 
     sorok.append(_HASZNALAT_ES if spanyol else _HASZNALAT_HU)
     return "\n".join(sorok)

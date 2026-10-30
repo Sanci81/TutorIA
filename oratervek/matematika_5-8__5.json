@@ -1,0 +1,118 @@
+{
+ "tantargy_fajl": "matematika_5-8.json",
+ "tantargy": "Matematika",
+ "evfolyam": 5,
+ "nyelv": null,
+ "keszult": "2026-10-30",
+ "keszito_modell": "gpt-5.4",
+ "temakorok": [
+  {
+   "temakor_id": "t0",
+   "temakor": "Halmazok",
+   "ujjlenyomat": "32a4c6d08e5cc091",
+   "lepesek": [
+    {
+     "cim": "Mi tartozik össze?",
+     "mit": "A tanuló megérti, hogy a halmaz olyan dolgok csoportja, amelyek egy megadott szabály szerint összetartoznak.",
+     "epul": [],
+     "pelda": "A tanár kirakja ezeket: alma, körte, autó, szilva; a gyümölcsök halmazába kerül az alma, a körte és a szilva.",
+     "kerdes": "Ezek közül melyik tartozik a madarak halmazába: veréb, macska, asztal?",
+     "feladat": "valaszt",
+     "feladat_mit": "Kérdés: „Melyik tartozik a gyümölcsök halmazába?” opciók: „répa”, „alma”, „szék”."
+    },
+    {
+     "cim": "Halmazokba válogatok",
+     "mit": "A tanuló elemeket egy megadott tulajdonság alapján halmazba rendez.",
+     "epul": [
+      1
+     ],
+     "pelda": "A tanár az 1, 2, 3, 4, 5, 6 számokat mutatja, és a páros számok halmazába teszi a 2-t, 4-et és 6-ot.",
+     "kerdes": "Az 5, 7, 8, 10 számok közül melyek kerülnek a páros számok halmazába?",
+     "feladat": "csoport",
+     "feladat_mit": "Kérdés: „Páros vagy nem páros?” csoportok: „páros”, „nem páros”; elemek: 1, 2, 3, 4, 5, 6 számok."
+    },
+    {
+     "cim": "Két szabály egyszerre",
+     "mit": "A tanuló két különböző tulajdonság szerint is tud válogatni elemeket.",
+     "epul": [
+      2
+     ],
+     "pelda": "A tanár az 1-től 10-ig terjedő számok közül külön nézi a párosakat és az 5-nél kisebbeket.",
+     "kerdes": "A 2, 5, 8, 9 számok közül melyek párosak, és melyek kisebbek 5-nél?",
+     "feladat": "venn",
+     "feladat_mit": "a: „páros”, b: „5-nél kisebb”, elemek: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10."
+    },
+    {
+     "cim": "Halmazábra olvasása",
+     "mit": "A tanuló felismeri, hogy a halmazábrán melyik elem melyik halmazba tartozik.",
+     "epul": [
+      3
+     ],
+     "pelda": "A tanár egy halmazábrán megmutatja, hogy a 4 a páros és az 5-nél kisebb részben van, a 8 csak a páros részben van.",
+     "kerdes": "Ha egy halmazábrán a 3 csak az „5-nél kisebb” körben van, akkor páros-e a 3?",
+     "feladat": "parosit",
+     "feladat_mit": "Párosítsa a helyeket a jelentésükkel: „csak A”, „csak B”, „mindkettő”, „egyik sem” ↔ „csak az első szabály igaz”, „csak a második szabály igaz”, „mindkét szabály igaz”, „egyik szabály sem igaz”."
+    },
+    {
+     "cim": "Részhalmaz keresése",
+     "mit": "A tanuló megérti, hogy egy részhalmaz minden eleme benne van egy nagyobb halmazban is.",
+     "epul": [
+      1,
+      2,
+      4
+     ],
+     "pelda": "A páros számok halmazában ott van a 2, 4, 6, 8; ezek közül a 2 és 4 egy kisebb halmazt alkotnak, ezért ez részhalmaz.",
+     "kerdes": "Részhalmaz-e a {1, 3} halmaz a páratlan számok {1, 3, 5, 7} halmazának?",
+     "feladat": "valaszt",
+     "feladat_mit": "Kérdés: „Melyik halmaz részhalmaza a páros számok halmazának?” opciók: „{2,4}”, „{1,2}”, „{3,5}”, „{1,3,5}”."
+    },
+    {
+     "cim": "Közös rész és egyesítés",
+     "mit": "A tanuló megállapítja két halmaz közös részét és egyesítését konkrét elemekkel.",
+     "epul": [
+      3,
+      4
+     ],
+     "pelda": "Az A halmaz a 10-nél kisebb páros számok halmaza, a B halmaz az 5-nél kisebb számok halmaza; a közös rész: 2, 4, az egyesítés: 1, 2, 3, 4, 6, 8, 9.",
+     "kerdes": "Ha A = {1, 2, 3} és B = {3, 4, 5}, mi a közös rész?",
+     "feladat": "venn",
+     "feladat_mit": "a: „páros”, b: „3-mal osztható”, elemek: 1, 2, 3, 4, 6, 8, 9, 12; a tanuló rendezze el őket a Venn-diagramban."
+    },
+    {
+     "cim": "Mi marad ki?",
+     "mit": "A tanuló megérti a kiegészítő halmazt: meg tudja mondani, mi nincs benne egy halmazban az alaphalmazból.",
+     "epul": [
+      1,
+      2,
+      6
+     ],
+     "pelda": "Az alaphalmaz az 1, 2, 3, 4, 5, 6 számok halmaza, a páros számok halmaza 2, 4, 6, ezért a kiegészítő halmaz: 1, 3, 5.",
+     "kerdes": "Az alaphalmaz {a, b, c, d}, és A = {a, c}; mely elemek tartoznak A kiegészítő halmazába?",
+     "feladat": "csoport",
+     "feladat_mit": "Kérdés: „Benne van a halmazban vagy a kiegészítő halmazban?” csoportok: „A halmaz”, „A kiegészítője”; elemek: 1, 2, 3, 4, 5, 6, ahol A a páros számok halmaza."
+    },
+    {
+     "cim": "Számhalmazok a számegyenesen",
+     "mit": "A tanuló számokat és egyszerű számhalmazokat számegyenesen is tud ábrázolni.",
+     "epul": [
+      2,
+      6,
+      7
+     ],
+     "pelda": "A tanár a 0-tól 10-ig tartó számegyenesen megjelöli a páros számokat: 0, 2, 4, 6, 8, 10.",
+     "kerdes": "Mely pontokat kell megjelölni a számegyenesen, ha az 1 és 7 közötti páratlan számokat ábrázoljuk?",
+     "feladat": "beka",
+     "feladat_mit": "Start: 0; lépés: 2; irány: „elore”; a tanuló a páros számok helyeinek felismerését gyakorolja a számegyenesen."
+    }
+   ],
+   "tenyellenorzes": {
+    "modell": "gpt-5.4",
+    "javitasok": [
+     "A 3. lépés kérdésében vesszőt tettem az összetett felsorolásba: „melyek párosak, és melyek kisebbek 5-nél?”, hogy egyértelműbb legyen a két szempont szerinti vizsgálat.",
+     "A 6. lépés példájában javítottam a halmazok leírását és az egyesítést, mert az „A halmaz a páros számok 1 és 10 között” megfogalmazás kétértelmű volt, és a megadott egyesítés hibásan kihagyta az 5-öt, valamint tartalmazta a 10-et; helyesen: A a 10-nél kisebb páros számok halmaza, B az 5-nél kisebb számok halmaza, az egyesítés pedig 1, 2, 3, 4, 6, 8, 9."
+    ],
+    "gyanus_maradt": []
+   }
+  }
+ ]
+}
