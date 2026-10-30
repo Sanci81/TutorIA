@@ -128,10 +128,25 @@
   .lap.fordul{transform:rotateY(180deg)}
   .lap .oldal{position:absolute;inset:0;backface-visibility:hidden;border-radius:11px;
     overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.6)}
-  .lap .hatlap{background:linear-gradient(155deg,#3d4a8c,#1c2348);
-    border:2px solid rgba(240,200,105,.45);display:flex;align-items:center;justify-content:center}
-  .lap .hatlap b{font-family:Georgia,serif;font-size:1.5rem;color:#f4ecd8}
+  /* A HÁTLAP (2026-10-30): az album stílusában – címer, arany dupla keret,
+     finom rácsminta, egy átfutó fény. Így a tasak, az album és a borító egy család. */
+  .lap .hatlap{background:radial-gradient(circle at 50% 42%,#3a4790 0%,#222a5e 45%,#11163a 100%);
+    display:flex;align-items:center;justify-content:center}
+  .lap .hatlap::before{content:"";position:absolute;inset:0;opacity:.18;
+    background:repeating-linear-gradient(45deg,#f0c869 0 1px,transparent 1px 14px),
+               repeating-linear-gradient(-45deg,#f0c869 0 1px,transparent 1px 14px)}
+  .lap .hatlap::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.16) 47%,transparent 58%)}
+  .lap .hatlap .k1{position:absolute;inset:7px;border:2px solid #d9b25a;border-radius:8px}
+  .lap .hatlap .k2{position:absolute;inset:12px;border:1px solid rgba(240,200,105,.5);border-radius:6px}
+  .lap .hatlap .gy{position:absolute;left:50%;width:16px;height:16px;margin-left:-8px;
+    border:2px solid #f0c869;transform:rotate(45deg);background:#11163a}
+  .lap .hatlap .gy.f{top:2px}.lap .hatlap .gy.a{bottom:2px}
+  .lap .hatlap .tart{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .lap .hatlap .hl-cimer{width:50%;height:auto;filter:drop-shadow(0 8px 16px rgba(0,0,0,.55))}
+  .lap .hatlap b{font-family:Georgia,serif;font-size:1.45rem;color:#f4ecd8;text-shadow:0 2px 6px rgba(0,0,0,.6)}
   .lap .hatlap b span{color:#f0c869}
+  .lap .hatlap small{font:800 .55rem/1 Arial,sans-serif;letter-spacing:2.5px;color:#d9b25a;text-transform:uppercase}
   .lap .elolap{transform:rotateY(180deg);background:#101830}
   .lap .elolap img{width:100%;height:100%;object-fit:contain;display:block}
   /* Ha a kártyakép nem tölt be, NE néma törött ikon legyen: írjuk ki, melyik
@@ -394,11 +409,59 @@ function bontas(t, lapok){
   };
 }
 
+const HATLAP = `<i class="k1"></i><i class="k2"></i><i class="gy f"></i><i class="gy a"></i>
+  <div class="tart"><svg viewBox="0 0 250 300" class="hl-cimer">
+ <defs>
+  <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+   <stop offset="0" stop-color="#f7e4a8"/><stop offset=".38" stop-color="#d9a94a"/>
+   <stop offset=".62" stop-color="#b9832f"/><stop offset="1" stop-color="#f0d78f"/></linearGradient>
+  <linearGradient id="cp" x1="0" y1="0" x2="0" y2="1">
+   <stop offset="0" stop-color="#232b57"/><stop offset="1" stop-color="#0e1230"/></linearGradient>
+  <radialGradient id="cf" cx=".5" cy=".42" r=".62">
+   <stop offset="0" stop-color="#fff4cf"/><stop offset=".45" stop-color="#e8c063"/>
+   <stop offset="1" stop-color="#8c5f1c"/></radialGradient>
+ </defs>
+ <g transform="translate(125,18)">
+  <path d="M0,-6 L96,22 C96,124 62,196 0,232 C-62,196 -96,124 -96,22 Z"
+        fill="url(#cp)" stroke="url(#cg)" stroke-width="7"/>
+  <path d="M0,6 L84,32 C84,120 55,183 0,215 C-55,183 -84,120 -84,32 Z"
+        fill="none" stroke="url(#cg)" stroke-width="2" opacity=".55"/>
+  <path d="M0,10 L0,205 M-82,74 L82,74" stroke="url(#cg)" stroke-width="3.4" opacity=".8"/>
+  <g fill="none" stroke="url(#cg)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+   <g transform="translate(-43,42) scale(.86)">
+    <path d="M-6,-15 L-6,-4 L-15,11 Q-18,17 -11,17 L11,17 Q18,17 15,11 L6,-4 L6,-15"/>
+    <path d="M-10,-15 L10,-15"/><path d="M-12,5 L12,5"/></g>
+   <g transform="translate(43,42) scale(.86)">
+    <path d="M-17,-11 Q-8,-15 0,-11 Q8,-15 17,-11 L17,11 Q8,7 0,11 Q-8,7 -17,11 Z"/>
+    <path d="M0,-11 L0,11"/></g>
+   <g transform="translate(-40,120) scale(.86)">
+    <circle cx="0" cy="-14" r="3.4" fill="url(#cg)" stroke="none"/>
+    <path d="M0,-11 L-11,16"/><path d="M0,-11 L11,16"/><path d="M-7,5 L7,5"/></g>
+   <g transform="translate(40,120) scale(.86)">
+    <ellipse cx="-6" cy="12" rx="7.6" ry="5.6" transform="rotate(-20 -6 12)"
+             fill="url(#cg)" stroke="none"/>
+    <path d="M1,12 L1,-15 Q12,-11 17,-3"/></g>
+  </g>
+  <circle cx="0" cy="74" r="31" fill="#0e1230" stroke="url(#cg)" stroke-width="5"/>
+  <circle cx="0" cy="74" r="24" fill="url(#cf)" opacity=".35"/>
+  <path transform="translate(0,74) scale(1.18)" fill="url(#cg)"
+        d="M0,-15 Q2.4,-2.4 15,0 Q2.4,2.4 0,15 Q-2.4,2.4 -15,0 Q-2.4,-2.4 0,-15 Z"/>
+  <circle cx="0" cy="196" r="5" fill="url(#cg)"/>
+ </g>
+ <g transform="translate(125,262)">
+  <path d="M-104,-15 L104,-15 L93,2 L104,19 L-104,19 L-93,2 Z"
+        fill="#8d2530" stroke="url(#cg)" stroke-width="2.5"/>
+  <text x="0" y="8" text-anchor="middle" font-family="Georgia,serif" font-weight="700"
+        font-size="16" letter-spacing="3.2" fill="#f6e6bd">TUTORIA</text>
+ </g>
+</svg><b>Tutor<span>IA</span></b>
+  <small>${(ADAT.nyelv === "es") ? "Cromo del saber" : "Tudáskártya"}</small></div>`;
+
 function lapokKi(lapok){
   $("utasitas").textContent = T.forditsd;
   $("lapsor").innerHTML = lapok.map((l, i) => `
     <div class="lap ${RITKA.has(l.ritkasag)?'ritka':''}" data-i="${i}">
-      <div class="oldal hatlap"><b>Tutor<span>IA</span></b></div>
+      <div class="oldal hatlap">${HATLAP}</div>
       <div class="oldal elolap"><img src="${l.kep}" alt="${l.nev}"></div>
       <div class="cimke ${l.uj?'uj':'dupla'}">${l.uj ? T.uj : T.dupla(DUPLA)}</div>
     </div>`).join('');
