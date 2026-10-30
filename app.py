@@ -4261,7 +4261,20 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             return None
         kerdes = _rov(adat.get("kerdes"), 120) or (
             "Coloca cada tarjeta en su casilla." if es_tanterv else "Tedd a kártyákat a táblázat jó mezőjébe!")
-        return {"tipus": "carroll", "a": a, "b": b, "elemek": elemek, "kerdes": kerdes}
+
+        # A TAGADÁS magyarosan (2026-10-30, Sándor): „nem 10-nél nagyobb" nem
+        # magyar. A „nem" a melléknév elé kerül: „10-nél nem nagyobb". (Nem
+        # „10-nél kisebb": a 10 maga sem nagyobb 10-nél, de nem is kisebb.)
+        def _tagad(szo, kulcs):
+            sajat = _rov(adat.get(kulcs), 24)
+            if sajat:
+                return sajat
+            if es_tanterv:
+                return "no " + szo
+            reszek = szo.split(" ")
+            return " ".join(reszek[:-1] + ["nem", reszek[-1]])
+        return {"tipus": "carroll", "a": a, "b": b, "na": _tagad(a, "nem_a"), "nb": _tagad(b, "nem_b"),
+                "elemek": elemek, "kerdes": kerdes}
 
     if tipus == "igazhamis":
         lista = []
@@ -4272,7 +4285,11 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
                 return None
             if not sz or not isinstance(ig, bool):
                 return None
-            lista.append([sz, ig])
+            # Nem kötelező harmadik elem: egy illő emoji – kép az állítás fölé.
+            kep = str(e[2]).strip()[:4] if len(e) > 2 and e[2] else ""
+            if kep and any(ch.isalnum() for ch in kep):
+                kep = ""
+            lista.append([sz, ig, kep] if kep else [sz, ig])
         if not (3 <= len(lista) <= 6):
             return None
         if all(x[1] for x in lista) or not any(x[1] for x in lista):
@@ -9863,10 +9880,10 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"carroll","kerdes":"Coloca los números en su casilla.","a":"par","b":"mayor que 10","elemek":[["12",1,1],["4",1,0],["15",0,1],["7",0,0],["18",1,1],["3",0,0]]}</FELADAT>',
      'két szempont szerinti válogatás, táblázat → carroll', 'clasificar por dos criterios, tabla  → carroll'),
     ("igazhamis", {"*"}, 1, 8,
-     'IGAZ-HAMIS GYORSKÖR – 3–6 rövid állítás egymás után, a gyerek gyorsan dönt (ne legyen mind igaz vagy mind hamis). Ismétléshez, óra végi összefoglaláshoz kiváló:\n'
-     '   <FELADAT>{"tipus":"igazhamis","kerdes":"Igaz vagy hamis?","allitasok":[["A bálna emlős.",true],["A pók rovar.",false],["A béka kétéltű.",true],["A denevér madár.",false]]}</FELADAT>',
+     'IGAZ-HAMIS GYORSKÖR – 3–6 rövid állítás egymás után, a gyerek gyorsan dönt (ne legyen mind igaz vagy mind hamis). Az elem harmadik része egy ILLŐ EMOJI (kép az állítás fölé – mindig add meg). Ismétléshez, óra végi összefoglaláshoz kiváló:\n'
+     '   <FELADAT>{"tipus":"igazhamis","kerdes":"Igaz vagy hamis?","allitasok":[["A bálna emlős.",true,"🐋"],["A pók rovar.",false,"🕷️"],["A béka kétéltű.",true,"🐸"],["A denevér madár.",false,"🦇"]]}</FELADAT>',
      'VERDADERO/FALSO RÁPIDO – 3–6 afirmaciones cortas seguidas (no todas iguales):\n'
-     '   <FELADAT>{"tipus":"igazhamis","kerdes":"¿Verdadero o falso?","allitasok":[["La ballena es un mamífero.",true],["La araña es un insecto.",false],["La rana es un anfibio.",true],["El murciélago es un ave.",false]]}</FELADAT>',
+     '   <FELADAT>{"tipus":"igazhamis","kerdes":"¿Verdadero o falso?","allitasok":[["La ballena es un mamífero.",true,"🐋"],["La araña es un insecto.",false,"🕷️"],["La rana es un anfibio.",true,"🐸"],["El murciélago es un ave.",false,"🦇"]]}</FELADAT>',
      'ismétlés, igaz vagy hamis, gyorskör   → igazhamis', 'repaso, verdadero o falso          → igazhamis'),
     ("hibavadasz", {"magyar", "nyelv"}, 3, 8,
      'HIBAVADÁSZ – rövid szöveg 1–4 helyesírási vagy nyelvtani HIBÁVAL; a gyerek rákoppint a hibás szóra és kijavítja. A "hibak" párjai: [hibás szó, ahogy a szövegben áll; helyes alak]. Minden hibás szó pontosan egyszer szerepeljen:\n'

@@ -879,6 +879,7 @@
     display:flex;flex-direction:column;justify-content:center;transition:background .2s,border-color .2s}
 .dm .ih-lap.ih-jo{background:#E7F6EE;border-color:var(--menta)}.dm .ih-lap.ih-rossz{background:#FDE8F1;border-color:var(--pink)}
 .dm .ih-szam{font-size:13px;font-weight:900;color:var(--halvany);letter-spacing:1px}
+.dm .ih-kep{font-size:64px;line-height:1.1;margin-top:6px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.12))}
 .dm .ih-szoveg{font-size:21px;font-weight:900;line-height:1.35;margin-top:6px}
 @keyframes ih-be{from{transform:translateX(24px);opacity:0}to{transform:none;opacity:1}}
 .dm .ih-be{animation:ih-be .28s ease-out}
@@ -2796,18 +2797,18 @@
 
     /* ── CARROLL-TÁBLA: két szempont, 2×2 mező ─────────────────────────── */
     DM.carroll = function (f, D) {
-        var nem = D.T('nem ', 'no ');
+        var nem = D.T('nem ', 'no '), NA = f.na || (nem + f.a), NB = f.nb || (nem + f.b);
         D.html('<div class="allas">' + D.T('Húzd vagy koppintsd a kártyákat a jó mezőbe! Sorban az első szempont, oszlopban a második.',
             '¡Arrastra o toca las tarjetas y ponlas en su casilla! Las filas son el primer criterio y las columnas el segundo.') +
             '</div><div class="kartyak" data-id="kt"></div><div class="carroll" data-id="tab"></div>');
         var kt = D.$('kt'), tab = D.$('tab');
-        tab.innerHTML = '<div class="c-sarok"></div><div class="c-fej c-b">' + f.b + '</div><div class="c-fej c-nb">' + nem + f.b + '</div>' +
+        tab.innerHTML = '<div class="c-sarok"></div><div class="c-fej c-b">' + f.b + '</div><div class="c-fej c-nb">' + NB + '</div>' +
             '<div class="c-fej c-a">' + f.a + '</div><div class="hely c-mezo" data-a="1" data-b="1" data-tobb="1"><div class="tarto"></div></div><div class="hely c-mezo" data-a="1" data-b="0" data-tobb="1"><div class="tarto"></div></div>' +
-            '<div class="c-fej c-na">' + nem + f.a + '</div><div class="hely c-mezo" data-a="0" data-b="1" data-tobb="1"><div class="tarto"></div></div><div class="hely c-mezo" data-a="0" data-b="0" data-tobb="1"><div class="tarto"></div></div>';
+            '<div class="c-fej c-na">' + NA + '</div><div class="hely c-mezo" data-a="0" data-b="1" data-tobb="1"><div class="tarto"></div></div><div class="hely c-mezo" data-a="0" data-b="0" data-tobb="1"><div class="tarto"></div></div>';
         var mezok = Array.prototype.slice.call(tab.querySelectorAll('.c-mezo'));
         D.huzosLista(kt, function () { return mezok; },
             D.kever(f.elemek.map(function (e) { return D.szovegKartya(e[0], e[1] + '' + e[2], e[3] || ''); })));
-        function nev(a, b) { return (a ? '' : nem) + f.a + ' + ' + (b ? '' : nem) + f.b; }
+        function nev(a, b) { return (a ? f.a : NA) + ' + ' + (b ? f.b : NB); }
         D.ellenoriz(function () {
             var m = kt.querySelectorAll('.kartya').length;
             if (m) { return {hianyzik: D.T('Még ' + m + ' kártya nincs a helyén!', m === 1 ? 'Todavía falta 1 tarjeta.' : 'Todavía faltan ' + m + ' tarjetas.')}; }
@@ -2829,7 +2830,7 @@
     DM.igazhamis = function (f, D) {
         var i = 0, eredm = [], N = f.allitasok.length, zar = false;
         D.html('<div class="allas">' + D.T('Olvasd el, és döntsd el gyorsan: igaz vagy hamis?', 'Lee y decide rápido: ¿verdadero o falso?') +
-            '</div><div class="ih-pottyok" data-id="p"></div><div class="ih-lap" data-id="lap"><div class="ih-szam" data-id="sz"></div><div class="ih-szoveg" data-id="sv"></div></div>' +
+            '</div><div class="ih-pottyok" data-id="p"></div><div class="ih-lap" data-id="lap"><div class="ih-szam" data-id="sz"></div><div class="ih-kep" data-id="kp"></div><div class="ih-szoveg" data-id="sv"></div></div>' +
             '<div class="ih-gombok" data-id="g"></div><div class="ih-osszegzes" data-id="ossz"></div>');
         var p = D.$('p'), lap = D.$('lap'), g = D.$('g');
         for (var k = 0; k < N; k++) { var pt = document.createElement('i'); p.appendChild(pt); }
@@ -2837,6 +2838,7 @@
         var bH = D.gomb('✗ ' + D.T('HAMIS', 'FALSO'), 'ih-hamis', function () { valaszt(false); });
         g.appendChild(bI); g.appendChild(bH);
         function mutat() { D.$('sz').textContent = (i + 1) + ' / ' + N; D.$('sv').textContent = f.allitasok[i][0];
+            D.$('kp').textContent = f.allitasok[i][2] || ''; D.$('kp').style.display = f.allitasok[i][2] ? '' : 'none';
             p.children[i].className = 'most'; D.animal(lap, 'ih-be'); }
         function valaszt(v) {
             if (zar) { return; } zar = true;
@@ -2849,7 +2851,7 @@
         function vege() {
             g.style.display = 'none'; lap.style.display = 'none';
             var db = eredm.filter(Boolean).length;
-            D.$('ossz').innerHTML = f.allitasok.map(function (a, k) { return '<div class="' + (eredm[k] ? 'jo' : 'rossz') + '"><b>' + (eredm[k] ? '✓' : '✗') + '</b> ' +
+            D.$('ossz').innerHTML = f.allitasok.map(function (a, k) { return '<div class="' + (eredm[k] ? 'jo' : 'rossz') + '"><b>' + (eredm[k] ? '✓' : '✗') + '</b> ' + (a[2] ? a[2] + ' ' : '') +
                 a[0].replace(/</g, '&lt;') + ' <em>' + (a[1] ? D.T('igaz', 'verdadero') : D.T('hamis', 'falso')) + '</em></div>'; }).join('');
             var rossz = f.allitasok.filter(function (a, k) { return !eredm[k]; }).map(function (a) { return '„' + a[0] + '” (' + (a[1] ? D.T('igaz', 'verdadero') : D.T('hamis', 'falso')) + ')'; });
             D.vege(db === N, db === N ? D.T('Mind a ' + N + ' jó! Villámgyors vagy!', '¡Las ' + N + ' bien! ¡Eres un rayo!')

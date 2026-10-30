@@ -6,6 +6,8 @@ Futtatás a TutorIA mappában:
     python hirdetes_kepek.py
 Egyet újra (ha nem tetszik):
     python hirdetes_kepek.py --csak bagoly --ujra
+Világos, színes változat (a feketék megmaradnak):
+    python hirdetes_kepek.py --szines
 
 Eredmény: kinézet képek/facebook/hirdetes/<név>.png  (1024x1024, négyzet)
 """
@@ -36,6 +38,17 @@ STILUS = (
     "the picture completely empty black (text will be placed there). Absolutely no "
     "text, no letters, no numbers, no speech bubbles, no watermark, no logo, no frame.")
 
+# SZÍNES változat (--szines): a fekete helyett a TutorIA saját világa – meleg,
+# világos, mesekönyves, mint a főoldal bézs háttere és a rajzai.
+STILUS_SZINES = (
+    "Premium children's picture-book illustration, warm painterly digital art with soft "
+    "natural light, rich but gentle colours, friendly expressive cartoon animals with big "
+    "eyes, on a warm light cream / beige paper background (#FBF5EA) with a subtle paper "
+    "texture and a soft ground shadow, simple and elegant with lots of calm empty space. "
+    "Leave the TOP fifth and the BOTTOM fifth of the picture empty cream background (text "
+    "will be placed there). Absolutely no text, no letters, no numbers, no speech bubbles, "
+    "no watermark, no logo, no frame.")
+
 KEPEK = {
     # „Ugyanaz a tábla – más magasság." Mindenkinek máshonnan kell elmagyarázni.
     "tabla": "A small school chalkboard on legs standing in the middle. A tall friendly "
@@ -63,6 +76,7 @@ def main():
     p.add_argument("--csak", default="")
     p.add_argument("--ujra", action="store_true")
     p.add_argument("--minoseg", default="high", choices=["low", "medium", "high"])
+    p.add_argument("--szines", action="store_true", help="világos, színes változat (<név>_szines.png)")
     a = p.parse_args()
     kulcs = os.environ.get("OPENAI_API_KEY")
     if not kulcs:
@@ -75,14 +89,14 @@ def main():
     for nev, leiras in KEPEK.items():
         if csak and nev not in csak:
             continue
-        ki = os.path.join(MAPPA, nev + ".png")
+        ki = os.path.join(MAPPA, nev + ("_szines" if a.szines else "") + ".png")
         if os.path.exists(ki) and not a.ujra:
             print("   megvan:", nev)
             continue
         print(f"{nev} …", flush=True)
         try:
             v = fk._hivas(kliens.images.generate, model=fk.MODELL, size="1024x1024", n=1,
-                          quality=a.minoseg, prompt=f"{leiras} {STILUS}")
+                          quality=a.minoseg, prompt=f"{leiras} {STILUS_SZINES if a.szines else STILUS}")
             with open(ki, "wb") as f:
                 f.write(fk._kep_bajt(v))
             print("   OK")
