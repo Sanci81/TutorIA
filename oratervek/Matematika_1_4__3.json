@@ -12,98 +12,243 @@
    "ujjlenyomat": "abaa3bf293fdd0a6",
    "lepesek": [
     {
-     "cim": "Mi milyen?",
-     "mit": "A tanuló észreveszi és megnevezi tárgyak és alakzatok egyszerű tulajdonságait.",
+     "cim": "Mi tartozik össze?",
+     "mit": "A tanuló észreveszi, hogy tárgyakat egy közös tulajdonság alapján egy csoportba lehet tenni.",
      "epul": [],
-     "pelda": "A tanár mutat egy piros kört és egy kék négyzetet, és kimondja: ez piros és kerek; ez kék és négyzet alakú.",
-     "kerdes": "Milyen a sárga háromszög: milyen a színe és milyen az alakja?",
-     "feladat": "parosit",
-     "feladat_mit": "Tulajdonságok párosítása képi elemekhez, például: piros kör – piros és kerek; kék négyzet – kék és négyzet."
+     "pelda": "A tanár kirak egy almát, egy körtét, egy autót és egy banánt, majd a gyümölcsöket egy kupacba teszi.",
+     "kerdes": "Melyik való az állatok közé: kutya, szék, ceruza?",
+     "feladat": "valaszt",
+     "feladat_mit": "Kérdés: „Melyik való az állatok közé?” Opciók: [„kutya”, „szék”, „ceruza”].",
+     "gyakorlo": [
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Melyik való a játékok közé?” Opciók: [„labda”, „kanál”, „könyv”]."
+      },
+      {
+       "feladat": "csoport",
+       "feladat_mit": "Kérdés: „Válogasd szét: gyümölcs vagy nem gyümölcs!” Csoportok: [„gyümölcs”, „nem gyümölcs”], elemek: alma, körte, autó, banán, szék."
+      }
+     ]
     },
     {
-     "cim": "Egyféleképpen válogatunk",
-     "mit": "A tanuló egy adott szempont szerint két csoportba válogat elemeket.",
+     "cim": "Mi a közös bennük?",
+     "mit": "A tanuló meg tudja mondani, milyen közös tulajdonság alapján kerültek egy csoportba elemek.",
      "epul": [
       1
      ],
-     "pelda": "A tanár több alakzat közül külön rakja a pirosakat és a nem pirosakat.",
-     "kerdes": "Tedd két csoportba ezeket: piros csillag, kék csillag, piros kör, zöld kör a piros és a nem piros csoportba.",
-     "feladat": "csoport",
-     "feladat_mit": "Két csoport legyen: piros és nem piros; elemek: egyszerű színes alakzatok vegyesen."
+     "pelda": "A tanár egy kupacba tesz egy piros ceruzát, egy piros kupakot és egy piros papírt, majd kimondja: „Ezek mind pirosak.”",
+     "kerdes": "Egy kupacban ez van: labda, baba, autó; mi lehet a közös tulajdonságuk, ha mind játékok?",
+     "feladat": "valaszt",
+     "feladat_mit": "Kérdés: „Mi a közös a labda, baba, autó csoportban?” Opciók: [„mind játékok”, „mind ehetők”, „mind állatok”].",
+     "gyakorlo": [
+      {
+       "feladat": "parosit",
+       "feladat_mit": "Párok: [ [„alma, körte, szilva”, „mind gyümölcsök”], [„kutya, macska, ló”, „mind állatok”] ]."
+      },
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Mi a közös a 2, 4, 6 számokban?” Opciók: [„mind páros”, „mind páratlan”, „mind háromjegyű”]."
+      }
+     ]
     },
     {
-     "cim": "Mi volt a szabály?",
-     "mit": "A tanuló felismeri és megfogalmazza egy megkezdett válogatás szempontját.",
+     "cim": "Folytasd a válogatást!",
+     "mit": "A tanuló felismeri a megkezdett válogatás szabályát, és tudja folytatni azt.",
      "epul": [
       1,
       2
      ],
-     "pelda": "Az egyik dobozban kör, háromszög és négyzet van mind piros színben, a másikban ugyanilyen alakzatok kékben; a tanár megfogalmazza: ide a pirosak kerültek.",
-     "kerdes": "Az egyik kupacban 2, 4, 6 van, a másikban 1, 3, 5. Mi lehetett a válogatás szabálya?",
+     "pelda": "A tanár két kupacot mutat: az egyikben kör, négyzet, háromszög van, a másikban alma és kutya; a gyerek rájön, hogy az első kupacban alakzatok vannak, ezért az új téglalapot is oda teszi.",
+     "kerdes": "Az egyik csoportban 1, 3, 5 van, a másikban 2, 4; hova kerül a 7?",
      "feladat": "valaszt",
-     "feladat_mit": "A kérdés egy kész válogatás szabályára kérdezzen rá, 3–4 válaszlehetőséggel, például: páros számok, nagy számok, piros dolgok."
+     "feladat_mit": "Kérdés: „Az egyik csoportban 1, 3, 5 van, a másikban 2, 4. Hova kerül a 7?” Opciók: [„az 1, 3, 5 csoportjába”, „a 2, 4 csoportjába”, „egyikbe sem”].",
+     "gyakorlo": [
+      {
+       "feladat": "csoport",
+       "feladat_mit": "Kérdés: „Válogasd szét: alakzat vagy nem alakzat!” Csoportok: [„alakzat”, „nem alakzat”], elemek: kör, négyzet, alma, háromszög, kutya."
+      },
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Az egyik csoportban piros tárgyak vannak. Hova kerül a piros labda?” Opciók: [„a pirosak közé”, „a nem pirosak közé”, „egyikbe sem”]."
+      }
+     ]
     },
     {
-     "cim": "Ki nem illik ide?",
-     "mit": "A tanuló megtalálja a halmazba nem való elemet, és használja a nem szót.",
+     "cim": "Ki lóg ki?",
+     "mit": "A tanuló megtalálja azt az elemet, amelyik nem illik egy adott halmazba.",
      "epul": [
       1,
       2,
       3
      ],
-     "pelda": "A tanár kirak három kört és egy háromszöget, majd mondja: a háromszög nem kör, ezért nem illik ide.",
-     "kerdes": "Melyik nem való a körök közé: kör, kör, négyzet, kör?",
+     "pelda": "A tanár ezt mutatja: kör, négyzet, alma, háromszög; a gyerek kiválasztja az almát, mert az nem alakzat.",
+     "kerdes": "Melyik nem illik a páros számok közé: 2, 8, 5, 10?",
      "feladat": "valaszt",
-     "feladat_mit": "Egy válaszos feladatban 4 lehetőség közül kell kiválasztani a halmazba nem illő elemet, például a körök közül a négyzetet."
+     "feladat_mit": "Kérdés: „Melyik nem illik a páros számok közé?” Opciók: [„2”, „8”, „5”, „10”].",
+     "gyakorlo": [
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Melyik nem illik a gyümölcsök közé?” Opciók: [„alma”, „körte”, „répa”, „szilva”]."
+      },
+      {
+       "feladat": "csoport",
+       "feladat_mit": "Kérdés: „Válogasd szét: páros vagy nem páros!” Csoportok: [„páros”, „nem páros”], elemek: 2, 5, 6, 9, 10."
+      }
+     ]
     },
     {
-     "cim": "Halmazábrába tesszük",
-     "mit": "A tanuló egy tulajdonság szerint elhelyez elemeket egyszerű halmazábrában, és ellenőrzi a helyüket.",
-     "epul": [
-      2,
-      3,
-      4
-     ],
-     "pelda": "A tanár egy karikát rajzol kék felirattal, és a kék körlapot bele, a piros körlapot pedig kívülre teszi.",
-     "kerdes": "Hova kerül a zöld háromszög a kék feliratú karikánál: bele vagy kívülre?",
-     "feladat": "venn",
-     "feladat_mit": "Egyhalmazos értelmezéssel használjuk a Venn-feladatot: a: kék, b: üres második szempont helyett egyszerűen csak a kék és nem kék elemek szerepeljenek könnyű alakzatokkal."
-    },
-    {
-     "cim": "Két szabály egyszerre",
-     "mit": "A tanuló két tulajdonságot egyszerre figyel meg, és ezek szerint válogat.",
+     "cim": "Nem ilyen",
+     "mit": "A tanuló megérti és használja a tagadást: meg tudja nevezni, mi tartozik a „nem ilyen” csoportba.",
      "epul": [
       1,
       2,
-      4,
-      5
+      4
      ],
-     "pelda": "A tanár azt mondja: keresem azokat, amelyek pirosak és körök; a piros kör megy a közös helyre, a piros háromszög nem.",
-     "kerdes": "Melyik jó a piros és kerek csoportba: piros kör, kék kör, piros négyzet, zöld háromszög?",
-     "feladat": "csoport",
-     "feladat_mit": "Négy csoport legyen két tulajdonság szerint: piros és kerek, piros és nem kerek, nem piros és kerek, nem piros és nem kerek; elemek: színes alakzatok."
+     "pelda": "A tanár azt mondja: „Keresd a nem piros dolgokat!”, és a piros alma, kék ceruza, zöld levél közül a ceruzát és a levelet választja külön.",
+     "kerdes": "Melyik tartozik a „nem állat” csoportba: macska, asztal, kutya?",
+     "feladat": "valaszt",
+     "feladat_mit": "Kérdés: „Melyik tartozik a nem állat csoportba?” Opciók: [„macska”, „asztal”, „kutya”].",
+     "gyakorlo": [
+      {
+       "feladat": "csoport",
+       "feladat_mit": "Kérdés: „Válogasd szét: piros vagy nem piros!” Csoportok: [„piros”, „nem piros”], elemek: piros labda, kék toll, piros könyv, zöld levél."
+      },
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Melyik nem alakzat?” Opciók: [„kör”, „négyzet”, „kanál”]."
+      }
+     ]
     },
     {
-     "cim": "Kétkarikás halmazábra",
-     "mit": "A tanuló Venn-diagramon elhelyezi az elemeket két szempont szerint, és egyszerű igaz-hamis állításokat mond róluk.",
+     "cim": "Két szabály egyszerre",
+     "mit": "A tanuló egyszerre két tulajdonságot is figyelembe vesz válogatás közben.",
+     "epul": [
+      1,
+      2,
+      3,
+      5
+     ],
+     "pelda": "A tanár azt kéri: „Keresd a piros és kerek dolgokat!”, és a piros labda, kék labda, piros doboz közül a piros labdát választja.",
+     "kerdes": "Melyik szám páros és nagyobb 5-nél: 4, 6, 7?",
+     "feladat": "valaszt",
+     "feladat_mit": "Kérdés: „Melyik szám páros és nagyobb 5-nél?” Opciók: [„4”, „6”, „7”].",
+     "gyakorlo": [
+      {
+       "feladat": "csoport",
+       "feladat_mit": "Kérdés: „Válogasd szét: páros vagy nem páros!” Csoportok: [„páros”, „nem páros”], elemek: 3, 4, 7, 8, 10, 11."
+      },
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Melyik tárgy piros és játék?” Opciók: [„piros labda”, „kék labda”, „piros bögre”]."
+      }
+     ]
+    },
+    {
+     "cim": "Két karika helye",
+     "mit": "A tanuló elhelyez elemeket két halmaz közös részét is mutató halmazábrában.",
      "epul": [
       5,
       6
      ],
-     "pelda": "A tanár két egymásba érő karikát rajzol: az egyik a piros elemeket, a másik a kör alakú elemeket jelöli; a piros kör a közös részbe kerül, a kék kör csak a kör karikába.",
-     "kerdes": "Igaz vagy hamis: a piros kör a piros és a kör közös részébe kerül?",
+     "pelda": "A tanár két karikát rajzol: az egyik címkéje „piros”, a másiké „kerek”; a piros labdát a közös részbe teszi, a piros könyvet csak a piros karikába.",
+     "kerdes": "Hova kerül a 6, ha az egyik karika címe „páros”, a másiké „3-mal osztható”?",
      "feladat": "venn",
-     "feladat_mit": "a: piros, b: kör, elemek: piros kör, piros négyzet, kék kör, zöld háromszög; a feladatban az elemeket kell a megfelelő helyre rendezni."
+     "feladat_mit": "Kérdés: „Rendezd el a számokat!” a: „páros”, b: „3-mal osztható”, elemek: 2, 3, 4, 6, 9, 12, 7.",
+     "gyakorlo": [
+      {
+       "feladat": "venn",
+       "feladat_mit": "Kérdés: „Rendezd el az alakzatokat!” a: „piros”, b: „háromszög”, elemek: piros háromszög, kék háromszög, piros kör, zöld négyzet."
+      },
+      {
+       "feladat": "venn",
+       "feladat_mit": "Kérdés: „Rendezd el a számokat!” a: „páros”, b: „5-nél nagyobb”, elemek: 2, 5, 6, 8, 9, 3."
+      }
+     ]
+    },
+    {
+     "cim": "Mondd el a helyét!",
+     "mit": "A tanuló megfogalmazza, milyen elemek kerülnek a halmazábra egyes részeibe a „nem” és az „és” szavakkal.",
+     "epul": [
+      5,
+      6,
+      7
+     ],
+     "pelda": "A tanár a két karikánál ezt mondja: „Ebben a részben azok vannak, amelyek pirosak és kerekek; itt pedig azok, amelyek pirosak, de nem kerekek.”",
+     "kerdes": "Hogyan mondanád egy olyan rész nevét, ahová a páros, de nem 3-mal osztható számok kerülnek?",
+     "feladat": "hianyzo",
+     "feladat_mit": "Mondat: „Ide azok a számok kerülnek, amelyek ___, de ___ 3-mal oszthatók.” Szavak: [„párosak”, „nem”, „kerekek”].",
+     "gyakorlo": [
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Melyik mondat jó a közös részre?” Opciók: [„piros és kerek”, „piros vagy kerek”, „nem piros”]."
+      },
+      {
+       "feladat": "hianyzo",
+       "feladat_mit": "Mondat: „Ide azok az alakzatok kerülnek, amelyek ___ és háromszögek.” Szavak: [„pirosak”, „nem”, „kicsik”]."
+      }
+     ]
+    },
+    {
+     "cim": "Igaz vagy hamis?",
+     "mit": "A tanuló eldönti, hogy egy halmazról szóló állítás igaz-e vagy hamis.",
+     "epul": [
+      2,
+      5,
+      6,
+      7,
+      8
+     ],
+     "pelda": "A tanár egy halmazban ezt mutatja: 2, 4, 6, majd azt mondja: „Mindegyik páros.” A gyerek eldönti, hogy ez igaz.",
+     "kerdes": "Ha egy csoportban ez van: alma, körte, szilva, igaz-e az állítás: „Van köztük banán.”?",
+     "feladat": "valaszt",
+     "feladat_mit": "Kérdés: „Egy csoportban alma, körte, szilva van. Igaz-e: Van köztük banán?” Opciók: [„igaz”, „hamis”].",
+     "gyakorlo": [
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Egy csoportban 1, 3, 5 van. Igaz-e: Mindegyik páratlan?” Opciók: [„igaz”, „hamis”]."
+      },
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Egy csoportban piros labda és kék labda van. Igaz-e: Mindegyik piros?” Opciók: [„igaz”, „hamis”]."
+      }
+     ]
+    },
+    {
+     "cim": "Okosan kérdezek",
+     "mit": "A tanuló barkochbás kérdésekkel kevés kérdésből kitalál egy elemet vagy halmaztulajdonságot.",
+     "epul": [
+      1,
+      2,
+      5,
+      6,
+      9
+     ],
+     "pelda": "A tanár gondol egy számra 1 és 10 között, a gyerek először ezt kérdezi: „Páros?”, majd ha igen, ezt: „Nagyobb 5-nél?”",
+     "kerdes": "Melyik a jobb első kérdés, ha egy 1 és 10 közötti számra gondoltam: „Páros?” vagy „6-nál nagyobb?”",
+     "feladat": "valaszt",
+     "feladat_mit": "Kérdés: „Melyik a jobb első barkochbakérdés egy 1 és 10 közötti számhoz?” Opciók: [„Páros?”, „6-nál nagyobb?”].",
+     "gyakorlo": [
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Melyik a jobb első kérdés egy állatra gondolva?” Opciók: [„Négylábú?”, „Kutya?”]."
+      },
+      {
+       "feladat": "valaszt",
+       "feladat_mit": "Kérdés: „Melyik kérdés segít jobban válogatni az alakzatokat?” Opciók: [„Van 4 oldala?”, „Ez a négyzet?”]."
+      }
+     ]
     }
    ],
    "tenyellenorzes": {
     "modell": "gpt-5.4",
     "javitasok": [
-     "Az 1. lépés példájában javítottam a megfogalmazást: az alakzat tulajdonságait párhuzamosan, helyesen mondja ki: „ez piros és kerek; ez kék és négyzet alakú”.",
-     "A 2. lépés kérdésében nyelvtanilag pontosítottam a felsorolást: „a piros és a nem piros csoportba”.",
-     "Az 5. lépés példája tényszerűen hibás volt, mert a karika „kék” feliratához nem illeszkedett a bele tett piros körlap; javítottam úgy, hogy a kék körlap kerül bele, a piros pedig kívülre.",
-     "A 7. lépés példájában pontosítottam a megfogalmazást: nem a karikák „pirosak” és „körök”, hanem az egyik a piros elemeket, a másik a kör alakú elemeket jelöli.",
-     "A 7. lépés kérdésében a természetesebb és pontosabb párhuzamos szerkezetet használtam: „a piros és a kör közös részébe kerül”."
+     "A 2. lépés kerdes mezőjében a „mind játék” megfogalmazást „mind játékok”-ra javítottam, hogy nyelvtanilag helyes legyen.",
+     "A 2. lépés feladat_mit mezőjében az opciókat többes számra javítottam: „mind játékok”, „mind ehetők”, „mind állatok”, hogy összhangban legyenek a felsorolt elemekkel.",
+     "A 2. lépés gyakorló parosit feladatában a meghatározásokat többes számra javítottam: „mind gyümölcsök”, „mind állatok”.",
+     "A 7. lépés feladat_mit mezőjéből eltávolítottam a megoldást eláruló részt („a 6-ot a közös részbe kell tenni”), mert ez nem a felületi minta része.",
+     "A 10. lépés kerdes mezőjében a „Hat?” példakérdést „6-nál nagyobb?” formára javítottam, mert a barkochbában a jó kérdés tulajdonságra kérdez rá, nem egyetlen konkrét számra.",
+     "A 10. lépés feladat_mit mezőjében a „Hat?” opciót „6-nál nagyobb?” formára javítottam, hogy a kérdésnek értelmes, általánosító alternatívái legyenek.",
+     "A 10. lépés gyakorló valaszt feladatában az „Él?” opciót „Négylábú?” kérdésre cseréltem, mert állatokra gondolva az „Él?” nem szűkít jól, így nem jó barkochbakérdés."
     ],
     "gyanus_maradt": []
    }

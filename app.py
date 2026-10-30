@@ -10307,6 +10307,17 @@ TESZT_MIN_PERC = 30
 LECKE_MIN_PERC = 30
 LECKE_MAX_PERC = 90
 
+# 2026-10-30 (Sándor): A LECKÉK TÚL RÖVIDEK VOLTAK. Egy 6 órás iskolai
+# témakör nálunk 30 perc volt; a 3. osztályos matek egész évben ~7 óra a
+# 137 iskolai óra helyett. A tanár így csak a lényeget érte el, gyakorolni
+# nem maradt idő. Innentől a lecke az iskolai óraszám kb. HARMADA (egyéni
+# tanítás – nem kell kivárni a 25 fős osztályt), legalább 30 perc,
+# legfeljebb 3 óra, és TÖBB NAPRA oszlik (a percek alkalmanként gyűlnek).
+# Napi 1 órával így a 8 évfolyam kb. 4–4,5 év. Aki már tudja, az a
+# szintfelmérővel bármikor továbbléphet.
+LECKE_ORA_ARANY = 0.3
+LECKE_UJ_MAX_PERC = 180
+
 
 def _temakor_suly(t: dict) -> float:
     """Egy témakör „mérete" – ebből lesz a nehézség a többihez képest."""
@@ -10337,6 +10348,17 @@ def _lecke_hossz_perc(topic: dict | None, catalog: list | None,
     if not isinstance(topic, dict):
         return alap
 
+    # Ha a tanterv megadja a témakör óraszámát: annak harmada.
+    try:
+        ora = float(topic.get("ora_szam") or 0)
+    except (TypeError, ValueError):
+        ora = 0.0
+    if ora > 0:
+        perc = int(round(ora * 60 * LECKE_ORA_ARANY / 5.0)) * 5
+        return max(LECKE_MIN_PERC, min(LECKE_UJ_MAX_PERC, perc))
+
+    # Óraszám nélkül (pl. a spanyol tanterv): a régi, nehézség szerinti
+    # becslés, ugyanolyan arányban megnövelve.
     sulyok = [_temakor_suly(t) for t in (catalog or []) if isinstance(t, dict)]
     atlag = (sum(sulyok) / len(sulyok)) if sulyok else 0.0
     if atlag <= 0:
@@ -10347,8 +10369,8 @@ def _lecke_hossz_perc(topic: dict | None, catalog: list | None,
     # egyetlen kiugró témakör miatt.
     arany = max(0.75, min(1.75, arany))
 
-    perc = int(round((alap * arany) / 5.0)) * 5
-    return max(LECKE_MIN_PERC, min(LECKE_MAX_PERC, perc))
+    perc = int(round((alap * arany * 3) / 5.0)) * 5
+    return max(LECKE_MIN_PERC, min(LECKE_UJ_MAX_PERC, perc))
 
 
 

@@ -134,6 +134,11 @@ HOGYAN HASZNÁLD A TERVET
   Ne helyettesítsd sima kérdéssel vagy válaszgombbal, és ne mondd, hogy nem
   tudsz ábrát adni: EZ a feladat az ábra. Ha a gyerek ugyanerre a lépésre
   még egy gyakorlást kér, ugyanilyen típusú, de más tartalmú feladatot adj.
+· A LECKE TÖBB ALKALMAS (akár 3 óra, több napon át). Ha egy lépés ellenőrző
+  feladata megvan, de a gyerek még bizonytalan, vagy a lecke ideje még nem
+  telt le, GYAKOROLTASS a "gyakorlás más formában" feladataiból – felváltva,
+  sosem ugyanazt a típust kétszer egymás után. Ha elfogytak, ugyanezeket adj
+  új tartalommal (más számokkal, szavakkal). A gyerek ne unja meg.
 · A "példa" és a "kérdés" MINTA, nem felolvasandó szöveg. Mondhatod a saját
   szavaiddal, de a TARTALMÁTÓL ne térj el: ezeket a tényeket ellenőriztük.
 · Ha a gyerek egy későbbi lépésre kérdez rá, válaszolj röviden, aztán térj
@@ -177,6 +182,9 @@ CÓMO USAR EL PLAN
 · SI EL PASO TIENE "tarea", LA PREGUNTA DE COMPROBACIÓN SE DA CON ESE TIPO,
   como <FELADAT>, al final de tu respuesta. No la cambies por una pregunta
   normal ni digas que no puedes dar un dibujo: ESA tarea es el dibujo.
+· LA LECCIÓN DURA VARIAS SESIONES. Si el paso ya está superado pero hace falta
+  practicar, usa las tareas de "práctica en otras formas", alternándolas, nunca
+  el mismo tipo dos veces seguidas; si se acaban, repítelas con contenido nuevo.
 · El "ejemplo" y la "pregunta" son MODELOS, no un texto para leer en voz alta.
   Puedes decirlo con tus palabras, pero no cambies el CONTENIDO: estos datos
   están verificados.
@@ -225,6 +233,10 @@ def prompt_blokk(lepes_lista: list[dict], *, spanyol: bool = False) -> str:
             mit = (lep.get("feladat_mit") or "").strip()
             sorok.append(f"     {'tarea' if spanyol else 'feladat'}: {tip}"
                          + (f" – {mit}" if mit else ""))
+        gyak = [g for g in (lep.get("gyakorlo") or []) if isinstance(g, dict) and g.get("feladat")]
+        if gyak:
+            sorok.append(f"     {'práctica en otras formas' if spanyol else 'gyakorlás más formában'}: "
+                         + "; ".join(f"{g['feladat']} – {(g.get('feladat_mit') or '').strip()}" for g in gyak))
 
     sorok.append(_HASZNALAT_ES if spanyol else _HASZNALAT_HU)
     return "\n".join(sorok)

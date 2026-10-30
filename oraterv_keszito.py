@@ -165,6 +165,45 @@ _ALAP_NEV = {
 _TILTOTT = {"abra"}
 
 
+# Gépi szűrő a tipikus félrehasználásokra – ezeket az AI-ellenőrző sem
+# vette észre (2026-10-30: a kétkörös halmazábrát „egyhalmazosnak"
+# használta, a békát számok kijelölésére).
+_ATERTELMEZES = re.compile(r"egyhalmaz|egy halmazos|üres második|nincs második|"
+                           r"helyett egyszerűen|értelmezéssel", re.IGNORECASE)
+
+
+def _illik(f: dict, lep: dict) -> bool:
+    tip = (f.get("feladat") or "").strip()
+    mit = str(f.get("feladat_mit") or "")
+    if not tip:
+        return False
+    if _ATERTELMEZES.search(mit):
+        return False
+    if tip == "beka":
+        # csak a lépés SAJÁT szövege számít (a feladat_mit-ben a minta mezőneve, a „lépés" is benne van)
+        szoveg = " ".join(str(lep.get(k) or "") for k in ("cim", "mit", "kerdes"))
+        if not re.search(r"ugr|lépked|előre|hátra|visszafelé", szoveg, re.IGNORECASE):
+            return False
+    return True
+
+
+def _szur(lepesek: list, feluletek: dict) -> int:
+    """Kiveszi a nem létező vagy rosszul illő feladatokat. Visszaadja, hányat."""
+    db = 0
+    for lep in lepesek:
+        if not isinstance(lep, dict):
+            continue
+        if lep.get("feladat") and (lep["feladat"] not in feluletek or not _illik(lep, lep)):
+            lep["feladat"] = "valaszt" if "valaszt" in feluletek else ""
+            lep["feladat_mit"] = lep.get("kerdes") or ""
+            db += 1
+        gy = [g for g in (lep.get("gyakorlo") or []) if isinstance(g, dict)]
+        jo = [g for g in gy if g.get("feladat") in feluletek and _illik(g, lep)]
+        db += len(gy) - len(jo)
+        lep["gyakorlo"] = jo
+    return db
+
+
 def _feluletek(fajl, cimke, evfolyam, idegen) -> dict:
     """{tipus: "leírás — minta: <FELADAT>{…}</FELADAT>"} – amit ennél a
     tantárgynál és évfolyamnál a tanár adhat. A MINTA is benne van, mert a
@@ -221,7 +260,7 @@ TÉMAKÖR: {temakor['name']}
 A KERETTANTERV SZÖVEGE:
 {(temakor.get('text') or '')[:9000]}
 
-FELADAT: bontsd a témakört 5-8 LÉPÉSRE, olyan sorrendben, hogy MINDEN lépés
+FELADAT: bontsd a témakört 6-10 LÉPÉSRE, olyan sorrendben, hogy MINDEN lépés
 csak az előzőkre épüljön. Ez a legfontosabb: ha a 4. lépés megértéséhez kell
 a 2., akkor a 2. NEM jöhet később.
 
@@ -243,23 +282,33 @@ MINDEN LÉPÉSHEZ:
              van (milyen mezői vannak). Ha a lépés kérdését azzal a felülettel
              nem lehet pontosan feltenni, NE azt válaszd – akkor a sima
              válaszgomb (valaszt) vagy számbeírás (szam) a jó.
-             Egy órán legyen VÁLTOZATOS: ne ugyanaz a típus minden lépésnél.
+             NE ERŐLTESD: a felületet nem lehet „átalakítani" (pl. a kétkörös
+             halmazábrát egy halmazra, a békát számok kijelölésére). Inkább
+             legyen valaszt vagy szam, mint egy rosszul illő felület.
+             Ahol több is illik, legyen változatos az óra.
   feladat_mit – egy mondat: konkrétan mit tartalmazzon a feladat, a minta
              mezőivel összhangban (pl. „a: páros, b: 3-mal osztható, elemek:
-             a számok 1–12 között").
+             a számok 1–12 között"). A "kerdes" és a "feladat_mit" UGYANAZT
+             kérdezze: a tanár a kérdést EZZEL a feladattal teszi fel.
+  gyakorlo – 2–3 TOVÁBBI gyakorló feladat UGYANEHHEZ a lépéshez, MÁS
+             formában (más típus a listából, ha van illő; különben ugyanaz a
+             típus más tartalommal). A lecke több napig tart, a gyerek egy
+             lépést többször gyakorol – ne unja meg: minden gyakorlás más
+             legyen. Formája: [{{"feladat": "...", "feladat_mit": "..."}}]
 
 A HASZNÁLHATÓ FELADATOK (típus – mire való):
 {chr(10).join(f"  {t:10} – {l}" for t, l in (feluletek or {}).items())}
 
 Adj vissza json választ:
 {{"lepesek": [{{"cim": "...", "mit": "...", "epul": [1], "pelda": "...",
-"kerdes": "...", "feladat": "...", "feladat_mit": "..."}}]}}
+"kerdes": "...", "feladat": "...", "feladat_mit": "...",
+"gyakorlo": [{{"feladat": "...", "feladat_mit": "..."}}]}}]}}
 
 Magyarul írj{f", a {nyelv} szavakat és mondatokat viszont {nyelv}ul" if nyelv else ""}."""
 
 
 # ── 2. A TÉNYEK ÁTNÉZÉSE ────────────────────────────────────────────────────
-def _ellenor_keres(cimke, evfolyam, temakor, terv) -> str:
+def _ellenor_keres(cimke, evfolyam, temakor, terv, feluletek=None) -> str:
     return f"""Egy {evfolyam}. osztályos {cimke} óraterv TÉNYBELI HELYESSÉGÉT
 ellenőrzöd. A témakör: {temakor['name']}.
 
@@ -282,8 +331,16 @@ Amit keresel:
     bemutató dalok" helyett)
   · olyan példa vagy kérdés, aminek nincs helyes válasza
 
-A "feladat" és a "feladat_mit" mezőt HAGYD MEG, ahogy van (ha a kérdést
-javítod, a feladat_mit-et igazítsd hozzá).
+A "feladat" MEZŐT IS ELLENŐRIZD: a lépés ellenőrző kérdése PONTOSAN
+feltehető-e azzal a felülettel, a MINTÁJA szerint (milyen mezői vannak)?
+Ha nem – pl. a béka csak egy számról ugrál előre-hátra, számokat kijelölni
+nem tud; a halmazábra mindig két halmaz –, cseréld olyanra a listából, ami
+pontosan illik, vagy "valaszt"-ra, és igazítsd hozzá a "feladat_mit"-et.
+Ugyanígy nézd át a "gyakorlo" lista elemeit is.
+Ami illik, azt NE cseréld. Minden cserét írj be a javítások közé.
+
+A HASZNÁLHATÓ FELADATOK:
+{chr(10).join(f"  {t:10} – {l}" for t, l in (feluletek or {}).items())}
 
 Ha találsz hibát, JAVÍTSD KI a lépést, és írd le, mit javítottál.
 Ha valami helyes, NE nyúlj hozzá — a fölösleges átírás is kár.
@@ -326,20 +383,24 @@ def _egy_temakor(kliens, cimke, evfolyam, nyelv, temakor, feluletek=None) -> dic
         raise RuntimeError("a terv üres lett")
 
     ell = _json_valasz(kliens, ELLENOR_MODELL,
-                       _ellenor_keres(cimke, evfolyam, temakor, lepesek))
+                       _ellenor_keres(cimke, evfolyam, temakor, lepesek, feluletek))
     javitott = ell.get("lepesek") or lepesek
     javitasok = ell.get("javitasok") or []
-    # A feladat típusa nem az ellenőrző dolga: ha elhagyta, visszatesszük;
-    # és csak létező típus maradhat (egy kitalált név a tanárt félrevinné).
+    # Ha az ellenőrző elhagyta a típust vagy a gyakorlást, visszatesszük;
+    # utána a gépi szűrő kiveszi, ami nem létezik vagy rosszul illik.
     for i, lep in enumerate(javitott):
         if not isinstance(lep, dict):
             continue
-        if not lep.get("feladat") and i < len(lepesek) and isinstance(lepesek[i], dict):
-            lep["feladat"] = lepesek[i].get("feladat", "")
-            lep.setdefault("feladat_mit", lepesek[i].get("feladat_mit", ""))
-        if feluletek and lep.get("feladat") not in feluletek:
-            lep["feladat"] = ""
-            lep["feladat_mit"] = ""
+        if i < len(lepesek) and isinstance(lepesek[i], dict):
+            if not lep.get("feladat"):
+                lep["feladat"] = lepesek[i].get("feladat", "")
+                lep.setdefault("feladat_mit", lepesek[i].get("feladat_mit", ""))
+            if not lep.get("gyakorlo"):
+                lep["gyakorlo"] = lepesek[i].get("gyakorlo") or []
+    if feluletek:
+        kiszurt = _szur(javitott, feluletek)
+        if kiszurt:
+            javitasok = list(javitasok) + [f"gépi szűrő: {kiszurt} rosszul illő feladat cserélve/kivéve"]
 
     return {
         "temakor_id": temakor["id"],
