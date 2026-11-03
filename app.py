@@ -6751,6 +6751,11 @@ _CHAT_MARKER_EREDMENY = re.compile(r"<\s*EREDMENY\s*:\s*(jo|jó|rossz)\s*>", re.
 # Kitérő (2026-10-30): a tanár ezzel jelzi, hogy a válasza NEM a mostani lecke
 # anyaga (a gyerek másról kérdezett). Ilyenkor a lecke órája áll.
 _CHAT_MARKER_KITERO = re.compile(r"<\s*KITER[OŐ]\s*/?\s*>", re.IGNORECASE)
+# TANÍTÓ TANÁR (2026-11-03): a tanár rejtve jelzi, MIÉRT hibázott a gyerek
+# (<HIBA:…>) és MELYIK magyarázatot használta most (<MODSZER:…>). Ebből tudjuk,
+# mit próbált már – így legközelebb nem ugyanazt mondja el ugyanúgy.
+_CHAT_MARKER_TANIT = re.compile(
+    r"<\s*(HIBA|MODSZER|MÓDSZER)\s*:\s*([A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű_-]+)\s*/?\s*>", re.IGNORECASE)
 _CHAT_MARKER_LEVEL = re.compile(r"<LEVEL:\s*([1-5])>", re.IGNORECASE)
 _CHAT_MARKER_VOCAB = re.compile(
     r"[<\[]\s*VOCAB\s*[>\]]\s*([^=\n<\[]+?)\s*=\s*([^<\[\n]+?)\s*(?:[<\[]\s*/\s*VOCAB\s*[>\]]|$)",
@@ -7083,6 +7088,7 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     """Belső jelölők eltávolítása; topic, level, szójegyzék párok, SVG ábrák."""
     text = _CHAT_MARKER_EREDMENY.sub("", text or "")
     text = _CHAT_MARKER_KITERO.sub("", text)
+    text = _CHAT_MARKER_TANIT.sub("", text)
     level_val: int | None = None
     level_match = _CHAT_MARKER_LEVEL.search(text)
     if level_match:
@@ -10634,6 +10640,128 @@ def _lecke_felulet_tipp(child, subject_label: str, current_topic: str, idegen: b
         return ""
 
 
+# ── TANÍTÓ TANÁR (2026-11-03, Sándor: „mindig segítsen a gyereknek; ha valamit
+# elront, magyarázza újra, ha látja, hogy nem megy, máshogy magyarázzon”) ──
+# 1) HIBAELEMZÉS: előbb azt dönti el, MIÉRT hibázott (figyelmetlenség /
+#    félreértés / hiányzó előismeret), és ahhoz igazítja a segítséget.
+# 2) MAGYARÁZATLÉTRA: soha nem ugyanazt mondja el újra; mindig a következő,
+#    még nem próbált módszert veszi elő. Hogy mit próbált már, azt a
+#    <MODSZER:…> jelölőből mi tartjuk számon (lásd _tanito_allapot_blokk).
+_MODSZER_LETRA = ["pelda", "tabla", "hasonlat", "lepesek", "elozo"]
+_MODSZER_NEV = {
+    "hu": {"pelda": "konkrét PÉLDA a gyerek világából", "tabla": "interaktív FELADAT a táblán",
+           "hasonlat": "HASONLAT valamivel, amit már ismer", "lepesek": "apró LÉPÉSEKRE bontás",
+           "elozo": "visszalépés az ELŐISMERETRE"},
+    "es": {"pelda": "un EJEMPLO concreto de su mundo", "tabla": "una TAREA interactiva en la pizarra",
+           "hasonlat": "una COMPARACIÓN con algo que ya conoce", "lepesek": "dividirlo en PASOS pequeños",
+           "elozo": "volver a lo que necesita SABER ANTES"},
+}
+_TANITO_TANAR_SZABALY = (
+    "\n\n=== TANÍTÓ TANÁR: HA A GYEREK HIBÁZIK VAGY ELAKAD ===\n"
+    "Úgy segíts, mint egy jó tanító, aki ott ül mellette.\n"
+    "1. ELŐSZÖR DÖNTSD EL MAGADBAN, MIÉRT hibázott, és ehhez igazítsd a segítséget:\n"
+    "   - FIGYELMETLENSÉG (a szabályt tudja, csak elnézte, elírta, elszámolta – eddig jól csinálta, "
+    "a hiba apró): NE magyarázd el újra az egészet, és NE mondd meg a választ. Mutasd meg, HOL "
+    "nézze meg újra („Nézd meg még egyszer a második számot!”), és hagyd, hogy ő javítsa.\n"
+    "   - FÉLREÉRTÉS (rosszul érti a szabályt vagy a fogalmat – a hibája a saját fejében logikus): "
+    "nevezd meg kedvesen, mit gondolhatott („Úgy tűnik, azt gondoltad, hogy…”), mutass egy "
+    "ellenpéldát, és magyarázd el a helyeset MÁS MÓDON, mint először.\n"
+    "   - HIÁNYZÓ ELŐISMERET (az alap hiányzik, amire ez épül): lépj vissza röviden az alapra, "
+    "gyakoroltasd egy könnyű példán, és csak utána térj vissza.\n"
+    "2. MAGYARÁZATLÉTRA – SOHA ne ismételd ugyanazt a magyarázatot ugyanazokkal a szavakkal. Ha újra "
+    "magyarázol, a létra következő fokát használd, amit ennél a résznél MÉG NEM próbáltál:\n"
+    "   a) PÉLDA: konkrét, hétköznapi példa a gyerek világából;\n"
+    "   b) TÁBLA: egy interaktív <FELADAT> a táblán, ahol a gyerek maga csinálja;\n"
+    "   c) HASONLAT: hasonlat valamivel, amit már ismer;\n"
+    "   d) LÉPÉSEK: apró lépésekre bontva, egyszerre egy lépés, és lépésenként kérdezz;\n"
+    "   e) ELŐZŐ: visszalépés az előismeretre, amire ez épül.\n"
+    "   Amikor újramagyarázol, a válaszod VÉGÉRE írd oda a használt fokot: <MODSZER:pelda>, "
+    "<MODSZER:tabla>, <MODSZER:hasonlat>, <MODSZER:lepesek> vagy <MODSZER:elozo>. Rossz válasz után "
+    "a hiba fajtáját is: <HIBA:figyelmetlenseg>, <HIBA:felreertes> vagy <HIBA:eloismeret>. "
+    "(Rejtett jelölők, a gyerek nem látja.)\n"
+    "3. A magyarázat után MINDIG egy ÚJ, hasonló kérdés vagy feladat jön (nem ugyanaz), hogy "
+    "kiderüljön, most már érti-e.\n"
+    "4. Ha HÁROMSZOR egymás után sem megy: mondd meg a helyes megoldást lépésenként, nyugodtan; "
+    "dicsérd meg, hogy kitartott; és adj egy KÖNNYEBB példát, amin sikerélménye lesz.\n"
+    "5. Bátoríts, de őszintén: rossz választ soha ne nevezz jónak, és soha ne éreztesd vele, hogy "
+    "lassú vagy buta.\n"
+    "PROFESOR QUE ENSEÑA – si el niño se equivoca: 1) decide primero POR QUÉ (despiste → no lo "
+    "expliques todo ni des la respuesta, solo dile DÓNDE mirar otra vez; malentendido → nombra lo que "
+    "pudo pensar, da un contraejemplo y explícalo DE OTRA MANERA; le falta una base → repasa la base "
+    "con un ejemplo fácil). 2) NUNCA repitas la misma explicación: usa el siguiente escalón aún no "
+    "usado: ejemplo → tarea en la pizarra (<FELADAT>) → comparación → pasos pequeños → lo que necesita "
+    "saber antes. Al final escribe <MODSZER:pelda|tabla|hasonlat|lepesek|elozo> y tras un error "
+    "<HIBA:figyelmetlenseg|felreertes|eloismeret> (ocultos). 3) Después, siempre una pregunta NUEVA "
+    "parecida. 4) Si falla tres veces seguidas, dale la solución paso a paso, elogia su esfuerzo y "
+    "dale un ejemplo MÁS FÁCIL. 5) Nunca llames correcta a una respuesta incorrecta.\n"
+)
+
+
+def _tanito_allapot_kulcs(child_id, session_id, topic_id) -> str:
+    return f"tanit_{child_id}_{session_id}_{topic_id}"
+
+
+def _tanito_allapot_olvas(kulcs: str) -> dict | None:
+    t = session.get("tanit") or {}
+    return t.get("a") if isinstance(t, dict) and t.get("k") == kulcs else None
+
+
+def _tanito_allapot_blokk(allapot: dict | None, es: bool) -> str:
+    """Mit próbált már a tanár ennél a résznél – csak ha a gyerek épp elakadt."""
+    if not allapot or int(allapot.get("rossz", 0) or 0) < 1:
+        return ""
+    nyelv = "es" if es else "hu"
+    probalt = [m for m in (allapot.get("probalt") or []) if m in _MODSZER_LETRA]
+    kov = next((m for m in _MODSZER_LETRA if m not in probalt), None)
+    n = int(allapot["rossz"])
+    if es:
+        sor = ["\n\n=== ESTADO DE LA ENSEÑANZA (solo para ti) ===",
+               "El niño acaba de responder mal." if n == 1 else f"El niño ha fallado {n} veces seguidas en esta parte."]
+        sor.append("Explicaciones ya usadas aquí: " + (", ".join(_MODSZER_NEV[nyelv][m] for m in probalt) or "ninguna") + ".")
+        if n >= 3:
+            sor.append("Ahora dale la solución paso a paso, elogia su esfuerzo y dale un ejemplo MÁS FÁCIL (regla 4).")
+        else:
+            sor.append(f"Si tienes que explicarlo otra vez, toca el siguiente escalón aún no usado: {_MODSZER_NEV[nyelv][kov]}." if kov
+                       else "Ya has usado todos los escalones: vuelve a la base, muy despacio.")
+    else:
+        szor = {1: "1-szer", 2: "2-szer", 3: "3-szor", 4: "4-szer", 5: "5-ször", 6: "6-szor", 7: "7-szer", 8: "8-szor"}.get(n, f"{n}-szer")
+        sor = ["\n\n=== TANÍTÁSI ÁLLAPOT (csak neked) ===",
+               "A gyerek az előbb rosszul válaszolt." if n == 1 else
+               f"A gyerek ennél a résznél már {szor} válaszolt rosszul egymás után."]
+        sor.append("Ennél a résznél eddig próbált magyarázatok: " + (", ".join(_MODSZER_NEV[nyelv][m] for m in probalt) or "még egyik sem") + ".")
+        if n >= 3:
+            sor.append("Most már mondd meg a megoldást lépésenként, dicsérd a kitartását, és adj egy KÖNNYEBB példát (4. szabály).")
+        else:
+            sor.append(f"Ha újra kell magyaráznod, a létra következő, MÉG NEM próbált foka jön: {_MODSZER_NEV[nyelv][kov]}." if kov
+                       else "A létra minden fokát próbáltad már – lépj vissza az előismeretre, nagyon lassan.")
+    hibak = [h for h in (allapot.get("hibak") or []) if h]
+    if hibak:
+        _hn = ({"figyelmetlenseg": "despiste", "felreertes": "malentendido", "eloismeret": "le falta una base"} if es else
+               {"figyelmetlenseg": "figyelmetlenség", "felreertes": "félreértés", "eloismeret": "hiányzó előismeret"})
+        sor.append(("Tipos de error anteriores: " if es else "Az eddigi hibák fajtája: ") + ", ".join(_hn.get(h, h) for h in hibak[-3:]) + ".")
+    return "\n".join(sor) + "\n"
+
+
+def _tanito_allapot_frissit(allapot: dict | None, raw_reply: str, eredmeny: str) -> dict:
+    """A tanár válasza után: hányszor rossz egymás után, és mit próbált már."""
+    a = dict(allapot or {})
+    a.setdefault("rossz", 0); a.setdefault("probalt", []); a.setdefault("hibak", [])
+    if eredmeny == "jo":
+        # Ami utoljára elhangzott, az vált be – ezt jegyezzük meg (a gyerekprofilhoz).
+        a["bevalt"] = (a["probalt"][-1] if a["probalt"] else "") if a["rossz"] else ""
+        a["rossz"], a["probalt"], a["hibak"] = 0, [], []
+    elif eredmeny == "rossz":
+        a["rossz"] = min(9, int(a["rossz"]) + 1)
+        a["bevalt"] = ""
+    for fajta, ertek in _CHAT_MARKER_TANIT.findall(raw_reply or ""):
+        ertek = ertek.lower().replace("ő", "o").replace("é", "e").replace("á", "a").replace("ö", "o").replace("ü", "u")
+        if fajta.upper().startswith("M") and ertek in _MODSZER_LETRA and ertek not in a["probalt"]:
+            a["probalt"] = (a["probalt"] + [ertek])[-5:]
+        elif fajta.upper() == "HIBA" and ertek in ("figyelmetlenseg", "felreertes", "eloismeret"):
+            a["hibak"] = (a["hibak"] + [ertek])[-3:]
+    return a
+
+
 def _build_chat_system_prompt(*args, **kwargs) -> str:
     """A prompt + (ha a gépi rajzok ki vannak kapcsolva) a rajztilalom a végén."""
     prompt = _build_chat_system_prompt_alap(*args, **kwargs)
@@ -10658,6 +10786,7 @@ def _build_chat_system_prompt(*args, **kwargs) -> str:
         "curso u otra asignatura), AYÚDALE: explícalo a su nivel y, si encaja, dale una tarea "
         "(<FELADAT>). Al FINAL de cada respuesta así escribe <KITERO> (no lo ve). Cuando volváis a la "
         "lección, ya NO lo escribas. No cuenta como parte de la lección ni la da por terminada.\n")
+    prompt += _TANITO_TANAR_SZABALY
     # Személyes-adat szűrő (2026-10-28): a gyerek üzenetében [elrejtve] áll.
     prompt += (
         "\n\n=== HA A GYEREK ÜZENETÉBEN [elrejtve] ÁLL ===\n"
@@ -13730,14 +13859,23 @@ def child_chat_send(child_id: int):
         system_prompt += (
             "\n\n=== ÍRÁSOS MÓD ===\nA gyerek most GÉPEL vagy GOMBRA KOPPINT – itt nincs "
             "félrehallás. SOHA ne írd, hogy „nem hallottam jól”. Ha a válasza rossz, mondd meg "
-            "kedvesen, hogy ez most nem jó, mondd meg, mi a helyes és miért, és adj egy "
-            "hasonló kérdést.\n"
+            "kedvesen, hogy ez most nem jó, és a TANÍTÓ TANÁR szabályai szerint segíts "
+            "(figyelmetlenségnél csak azt mutasd meg, hol nézze meg újra; különben magyarázd "
+            "el másképp, mi a helyes és miért), majd adj egy ÚJ, hasonló kérdést.\n"
             "MODO ESCRITO: el niño escribe o toca un botón; NUNCA digas «no te he oído bien». "
             "Si la respuesta es incorrecta, díselo con cariño, explica la correcta y por qué.\n")
         # Ha az előző választ nehezen lehetett érteni, a tanár most kedvesen
         # visszakérdez rá. Kártya nélkül, szám nélkül — ahogy egy ember tenné.
         system_prompt += _kiejtes_visszakerdezes(
             "es" if _active_curriculum() == "ES" else "hu")
+
+    # TANÍTÓ TANÁR: ha a gyerek épp elakadt, megmondjuk, mit próbált már a tanár.
+    _tanit_kulcs = _tanito_allapot_kulcs(child_id, session_id, current_topic_id)
+    try:
+        system_prompt += _tanito_allapot_blokk(_tanito_allapot_olvas(_tanit_kulcs),
+                                               (_active_curriculum() or "HU").upper() == "ES")
+    except Exception:
+        logger.exception("Tanito allapot blokk hiba")
 
     history = database.get_chat_messages(session_id, limit=20)
 
@@ -13946,6 +14084,15 @@ def child_chat_send(child_id: int):
     _eredmeny = ("jo" if _er.group(1).lower() in ("jo", "jó") else "rossz") if _er else ""
     print(f"[EREDMENY] tanari jelzes: {_eredmeny or 'nincs'}", flush=True)
     _kitero = bool(_CHAT_MARKER_KITERO.search(raw_reply or ""))
+    if not _kitero:
+        try:
+            _tanit_uj = _tanito_allapot_frissit(_tanito_allapot_olvas(_tanit_kulcs), raw_reply, _eredmeny)
+            # EGYETLEN kulcs a sütiben: csak a mostani lecke állapota (a süti mérete véges).
+            session["tanit"] = {"k": _tanit_kulcs, "a": _tanit_uj}
+            print(f"[TANIT] rossz={_tanit_uj.get('rossz')} probalt={_tanit_uj.get('probalt')} "
+                  f"hibak={_tanit_uj.get('hibak')} bevalt={_tanit_uj.get('bevalt') or '-'}", flush=True)
+        except Exception:
+            logger.exception("Tanito allapot frissites hiba")
     reply, topic_done, level_set, vocab_pairs, raw_svgs = _parse_chat_markers(raw_reply)
     figures: list[str] = []
     for s in raw_svgs:
