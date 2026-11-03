@@ -3520,6 +3520,51 @@ _FELADAT_JELEK = {"+": "+", "-": "−", "−": "−", "*": "×", "x": "×",
                   "×": "×", "/": "÷", ":": "÷", "÷": "÷"}
 
 
+# OSZLOP KÉRÉSRE (2026-11-03, Sándor: „megkértem, tegye egymás alá, hogy ki
+# tudjam számolni”). A tanár hiába kapta meg a szabályt, többször is egy sorba
+# írt feladatot adott, és közben azt állította, hogy egymás alá tette. Ezért
+# nem a modellre bízzuk: ha a gyerek MOST kéri, a válaszban lévő +, −, ×
+# feladatot MI tesszük oszlopba. Csak erre az egy kérésre – nem minden esetben.
+_KERES_NEM_VALASZ = re.compile(
+    r"egym[áa]s\s+al[áa]|egym[áa]s\s+mell[ée]|nem\s+ezt\s+k[ée]rtem|nem\s+[ée]rtem|"
+    r"\btedd\b|\b[íi]rd\b|mutasd|magyar[áa]zd|k[ée]rlek|nem\s+azt|"
+    r"no\s+es\s+lo\s+que|no\s+lo\s+entiendo|\bponlo\b|expl[íi]camelo|por\s+favor", re.IGNORECASE)
+_OSZLOP_KERES = re.compile(
+    r"egym[áa]s\s+al[áa]|oszlop|al[áa]\s*(?:írd|ird|írva|irva|tedd|tegyed)|"
+    r"uno\s+(?:debajo|encima)|en\s+columna|debajo\s+del\s+otro", re.IGNORECASE)
+_SZAM_MUVELET = re.compile(r"(\d[\d\s.]*)\s*([+\-−×x*·])\s*(\d[\d\s.]*)")
+
+
+def _oszlopra(feladat: dict) -> dict | None:
+    """Egy sorba írt +, −, × feladatból oszlopos (szamolo, oszlop=True)."""
+    if not isinstance(feladat, dict):
+        return None
+    if feladat.get("tipus") == "szamolo":
+        uj = dict(feladat); uj["oszlop"] = True
+        return uj
+    if feladat.get("tipus") != "szam":
+        return None
+    m = _SZAM_MUVELET.search(str(feladat.get("muvelet") or ""))
+    if not m:
+        return None
+    jel = {"·": "×"}.get(m.group(2), m.group(2))
+    jel = _FELADAT_JELEK.get(jel)
+    if jel not in ("+", "−", "×"):
+        return None
+    try:
+        a = int(re.sub(r"[\s.]", "", m.group(1))); b = int(re.sub(r"[\s.]", "", m.group(3)))
+    except ValueError:
+        return None
+    uj = _szamolo_feladat(jel, a, b)
+    if not uj:
+        return None
+    uj["oszlop"] = True
+    for k in ("kerdes", "cim", "utasitas"):
+        if feladat.get(k):
+            uj[k] = feladat[k]
+    return uj
+
+
 def _szamolo_feladat(jel: str | None, a_nyers, b_nyers) -> dict | None:
     """Oszlopos számolás leírása. A HELYES EREDMÉNYT MI SZÁMOLJUK KI.
 
@@ -14062,6 +14107,14 @@ def child_chat_send(child_id: int):
         except Exception:
             logger.exception("Feladat-potlas hiba")
             feladat = None
+    if isinstance(feladat, dict) and _OSZLOP_KERES.search(user_text or ""):
+        try:
+            _osz = _oszlopra(feladat)
+            if _osz:
+                print(f"[OSZLOP] a gyerek egymas ala kerte: {feladat.get('tipus')} -> szamolo", flush=True)
+                feladat = _osz
+        except Exception:
+            logger.exception("Oszlopra hiba")
     if (isinstance(feladat, dict) and not feladat.get("kerdes")
             and not feladat.get("cim")):
         # Feladat van, kérdés nincs: a tábla címe a lecke neve lenne.
@@ -14102,6 +14155,12 @@ def child_chat_send(child_id: int):
             logger.exception("Kerdes-potlas hiba")
     _er = _CHAT_MARKER_EREDMENY.search(raw_reply or "")
     _eredmeny = ("jo" if _er.group(1).lower() in ("jo", "jó") else "rossz") if _er else ""
+    # KÉRÉS ≠ VÁLASZ (2026-11-03): „tedd egymás alá, kérlek” után a robot ugrált és
+    # „Szuper!”-t mondott. Ha a gyerek üzenetében nincs szám és kérés/panasz, az nem
+    # válasz – a tanár jelzését figyelmen kívül hagyjuk (pont, kabala, létra).
+    if _eredmeny and not re.search(r"\d", user_text or "") and _KERES_NEM_VALASZ.search(user_text or ""):
+        print(f"[EREDMENY] kérés/panasz, nem válasz – {_eredmeny} figyelmen kívül", flush=True)
+        _eredmeny = ""
     print(f"[EREDMENY] tanari jelzes: {_eredmeny or 'nincs'}", flush=True)
     _kitero = bool(_CHAT_MARKER_KITERO.search(raw_reply or ""))
     if not _kitero:
