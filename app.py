@@ -4363,7 +4363,10 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             kep = str(e[2]).strip()[:4] if len(e) > 2 and e[2] else ""
             if kep and any(ch.isalnum() for ch in kep):
                 kep = ""
-            lista.append([sz, ig, kep] if kep else [sz, ig])
+            # 2026-11-03: negyedik elem – egy mondat, MIÉRT igaz/hamis. Tippelésnél
+            # is ebből tanul a gyerek, nem csak abból, hogy eltalálta-e.
+            miert = _rov(e[3], 160) if len(e) > 3 and e[3] else ""
+            lista.append([sz, ig, kep, miert] if miert else ([sz, ig, kep] if kep else [sz, ig]))
         if not (3 <= len(lista) <= 6):
             return None
         if all(x[1] for x in lista) or not any(x[1] for x in lista):
@@ -6508,8 +6511,18 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             if not (kerdes and _VALASZTOS_KERDES.search(kerdes) and not muvelet):
                 return {"tipus": "szam", "muvelet": ""}
         _vk = str(adat.get("kerdes") or "").strip()[:120]
-        return ({"tipus": "valaszt", "opciok": tiszta, "cim": _vk} if len(_vk) >= 3
-                else {"tipus": "valaszt", "opciok": tiszta})
+        _vf = ({"tipus": "valaszt", "opciok": tiszta, "cim": _vk} if len(_vk) >= 3
+               else {"tipus": "valaszt", "opciok": tiszta})
+        # 2026-11-03: ha a tanár megadja, melyik a JÓ („jo”: sorszám 0-tól), a tábla
+        # azonnal visszajelez (konfetti / „próbáld újra”) – nem kell a tanárra várni.
+        _jo = adat.get("jo")
+        if isinstance(_jo, bool):
+            _jo = None
+        if isinstance(_jo, str) and _jo.strip() in tiszta:
+            _jo = tiszta.index(_jo.strip())
+        if isinstance(_jo, int) and 0 <= _jo < len(tiszta) and len(tiszta) == len(opciok):
+            _vf["jo"] = _jo
+        return _vf
 
     return None
 
@@ -9960,10 +9973,10 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"carroll","kerdes":"Coloca los números en su casilla.","a":"par","b":"mayor que 10","elemek":[["12",1,1],["4",1,0],["15",0,1],["7",0,0],["18",1,1],["3",0,0]]}</FELADAT>',
      'két szempont szerinti válogatás, táblázat → carroll', 'clasificar por dos criterios, tabla  → carroll'),
     ("igazhamis", {"*"}, 1, 8,
-     'IGAZ-HAMIS GYORSKÖR – 3–6 rövid állítás egymás után, a gyerek gyorsan dönt (ne legyen mind igaz vagy mind hamis). Az elem harmadik része egy ILLŐ EMOJI (kép az állítás fölé – mindig add meg). Ismétléshez, óra végi összefoglaláshoz kiváló:\n'
-     '   <FELADAT>{"tipus":"igazhamis","kerdes":"Igaz vagy hamis?","allitasok":[["A bálna emlős.",true,"🐋"],["A pók rovar.",false,"🕷️"],["A béka kétéltű.",true,"🐸"],["A denevér madár.",false,"🦇"]]}</FELADAT>',
-     'VERDADERO/FALSO RÁPIDO – 3–6 afirmaciones cortas seguidas (no todas iguales):\n'
-     '   <FELADAT>{"tipus":"igazhamis","kerdes":"¿Verdadero o falso?","allitasok":[["La ballena es un mamífero.",true,"🐋"],["La araña es un insecto.",false,"🕷️"],["La rana es un anfibio.",true,"🐸"],["El murciélago es un ave.",false,"🦇"]]}</FELADAT>',
+     'IGAZ-HAMIS GYORSKÖR – 3–6 rövid állítás egymás után, a gyerek gyorsan dönt (ne legyen mind igaz vagy mind hamis). Az elem harmadik része egy ILLŐ EMOJI (kép az állítás fölé), a negyedik egy rövid MAGYARÁZAT (1 mondat), MIÉRT igaz vagy hamis – mindkettőt mindig add meg. Ismétléshez, óra végi összefoglaláshoz kiváló:\n'
+     '   <FELADAT>{"tipus":"igazhamis","kerdes":"Igaz vagy hamis?","allitasok":[["A bálna emlős.",true,"🐋","Tüdővel lélegzik, és tejjel táplálja a kicsinyét."],["A pók rovar.",false,"🕷️","A póknak 8 lába van, a rovaroknak 6 – a pók pókféle."],["A béka kétéltű.",true,"🐸","Vízben kel ki, később a szárazon is él."],["A denevér madár.",false,"🦇","Szőrös, és tejjel szoptat: emlős, csak repül."]]}</FELADAT>',
+     'VERDADERO/FALSO RÁPIDO – 3–6 afirmaciones cortas seguidas (no todas iguales). Tercer elemento: un emoji; cuarto: UNA frase que explique POR QUÉ es verdadero o falso (ponlos siempre):\n'
+     '   <FELADAT>{"tipus":"igazhamis","kerdes":"¿Verdadero o falso?","allitasok":[["La ballena es un mamífero.",true,"🐋","Respira con pulmones y amamanta a sus crías."],["La araña es un insecto.",false,"🕷️","La araña tiene 8 patas; los insectos, 6."],["La rana es un anfibio.",true,"🐸","Nace en el agua y luego vive también en tierra."],["El murciélago es un ave.",false,"🦇","Tiene pelo y amamanta: es un mamífero que vuela."]]}</FELADAT>',
      'ismétlés, igaz vagy hamis, gyorskör   → igazhamis', 'repaso, verdadero o falso          → igazhamis'),
     ("hibavadasz", {"magyar", "nyelv"}, 3, 8,
      'HIBAVADÁSZ – rövid szöveg 1–4 helyesírási vagy nyelvtani HIBÁVAL; a gyerek rákoppint a hibás szóra és kijavítja. A "hibak" párjai: [hibás szó, ahogy a szövegben áll; helyes alak]. Minden hibás szó pontosan egyszer szerepeljen:\n'
@@ -10055,8 +10068,9 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
    rövid feliratot: <FELADAT>{"tipus":"szam","muvelet":"3x + 5 = 20, x"}</FELADAT>
 
 3) VÁLASZGOMBOK — csak NEM SZÁMOLÓS kérdéshez:
-   <FELADAT>{"tipus":"valaszt","kerdes":"Melyik állat ugat?","opciok":["macska","kutya","ló"]}</FELADAT>
-   Kettő és hat közötti lehetőség, pontosan egy legyen jó. A KÉRDÉST a
+   <FELADAT>{"tipus":"valaszt","kerdes":"Melyik állat ugat?","opciok":["macska","kutya","ló"],"jo":1}</FELADAT>
+   Kettő és hat közötti lehetőség, pontosan egy legyen jó. A "jo" a JÓ lehetőség
+   sorszáma 0-tól (itt a kutya = 1) – mindig add meg, ebből jelez vissza azonnal a tábla. A KÉRDÉST a
    szövegben is tedd fel, ÉS írd be a "kerdes" mezőbe is (rövid, kérdőjellel).
    Kérdés nélkül SOHA ne adj válaszgombokat – a gyerek nem tudja, mit kell választania.
    Példák: melyik szó a helyes fordítás; melyik állat emlős; melyik jel
@@ -10290,8 +10304,9 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
    <FELADAT>{"tipus":"szam","muvelet":"3x + 5 = 20, x"}</FELADAT>
 
 3) BOTONES DE RESPUESTA — solo para preguntas QUE NO SEAN DE CÁLCULO:
-   <FELADAT>{"tipus":"valaszt","kerdes":"¿Qué animal ladra?","opciok":["gato","perro","caballo"]}</FELADAT>
-   Entre dos y seis opciones, exactamente una correcta. Haz la PREGUNTA en el
+   <FELADAT>{"tipus":"valaszt","kerdes":"¿Qué animal ladra?","opciok":["gato","perro","caballo"],"jo":1}</FELADAT>
+   Entre dos y seis opciones, exactamente una correcta. "jo" es el número de la opción
+   CORRECTA empezando por 0 (aquí perro = 1) – ponlo siempre. Haz la PREGUNTA en el
    texto Y escríbela también en el campo "kerdes" (corta, con signo de
    interrogación). NUNCA des botones sin pregunta: el niño no sabría qué elegir.
 
@@ -14158,7 +14173,8 @@ def child_chat_send(child_id: int):
     # KÉRÉS ≠ VÁLASZ (2026-11-03): „tedd egymás alá, kérlek” után a robot ugrált és
     # „Szuper!”-t mondott. Ha a gyerek üzenetében nincs szám és kérés/panasz, az nem
     # válasz – a tanár jelzését figyelmen kívül hagyjuk (pont, kabala, létra).
-    if _eredmeny and not re.search(r"\d", user_text or "") and _KERES_NEM_VALASZ.search(user_text or ""):
+    _nem_valasz = bool(not re.search(r"\d", user_text or "") and _KERES_NEM_VALASZ.search(user_text or ""))
+    if _eredmeny and _nem_valasz:
         print(f"[EREDMENY] kérés/panasz, nem válasz – {_eredmeny} figyelmen kívül", flush=True)
         _eredmeny = ""
     print(f"[EREDMENY] tanari jelzes: {_eredmeny or 'nincs'}", flush=True)
@@ -14663,7 +14679,7 @@ def child_chat_send(child_id: int):
         {
             "reply": reply,
             "kitero": _kitero,
-            "eredmeny": _eredmeny,
+            "eredmeny": _eredmeny or ("nincs" if _nem_valasz else ""),
             # Ha a szűrő kitakart valamit, a gyerek buborékja is a kitakart szöveget mutassa.
             "sajat_uzenet": user_text if user_text != _eredeti else "",
             "session_id": session_id,

@@ -550,7 +550,18 @@
      (12+) letisztult, sötét „adatlap” – ugyanaz a nyelv, mint a Carroll
      kutatói táblája. A logika nem változott, csak a köntös. */
   .fv2{display:block;background:linear-gradient(#FFF8EC,#FDF0DA);border-radius:18px;padding:12px 14px 16px;box-shadow:inset 0 0 0 2px #F1DDBA}
-  .fv2 .fv-egosor{height:14px;margin:0 4px 12px;background:radial-gradient(circle,#FFD34D 0 4px,rgba(255,211,77,.35) 5px,transparent 7px) 0 50%/22px 14px repeat-x}
+  @keyframes fbRezeg{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .fv2 .feladat-opcio.fv-jo,.fv2 .feladat-opcio.fv-jo:hover{background:#22A06B!important;color:#fff;outline:3px solid #fff;box-shadow:0 0 0 5px #22A06B;opacity:1!important}
+  .fv2 .feladat-opcio.fv-jo .fv-betu{color:#22A06B}
+  .fv2 .feladat-opcio.fv-rossz,.fv2 .feladat-opcio.fv-rossz:hover{background:#B8C0C9!important;outline:0;box-shadow:none;transform:none;animation:fbRezeg .35s}
+  .fv2 .feladat-opcio.fv-rossz .fv-betu{color:#8A949E}
+  .fv2 .feladat-opcio.fv-rossz .fv-sz{text-decoration:line-through}
+  .fp2 .fpar-elem.fpar-rossz{border-color:#E5484D!important;color:#B42318!important;box-shadow:0 3px 0 #E5484D!important;animation:fbRezeg .35s}
+  .fp2 .fpar-elem.fpar-jo{border-color:#22A06B!important;color:#1E7A4D!important;box-shadow:0 3px 0 #22A06B!important}
+  .kor-felso .fp2 .fpar-elem.fpar-rossz{color:#FFB4B4!important;box-shadow:none!important}
+  .kor-felso .fp2 .fpar-elem.fpar-jo{color:#9FE3C1!important;box-shadow:none!important}
+  .fs2 .fsor-kocsi.fsor-rossz{outline:3px solid #E5484D;outline-offset:1px;animation:fbRezeg .35s}
+  .fs2 .fsor-kocsi.fsor-jo{outline:3px solid #22A06B;outline-offset:1px}
   .fv2 .fv-fej{display:none}
   .fv2 .fv-opciok{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .fv2.fv-hosszu .fv-opciok{grid-template-columns:1fr}
@@ -1065,6 +1076,12 @@
 .dm .ih-osszegzes div{border-radius:12px;padding:8px 12px;font-weight:700;font-size:15px;line-height:1.35}
 .dm .ih-osszegzes .jo{background:#E7F6EE}.dm .ih-osszegzes .rossz{background:#FDE8F1}
 .dm .ih-osszegzes em{font-style:normal;font-weight:900;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--halvany);margin-left:4px}
+.dm .ih-osszegzes small{display:block;font-weight:600;font-size:13.5px;color:#4B5B54;margin-top:2px}
+.dm .ih-miert{margin-top:14px;border-radius:14px;padding:12px 14px;font-size:16.5px;line-height:1.45;font-weight:600;color:#23332C}
+.dm .ih-miert.jo{background:#E7F6EE;box-shadow:inset 4px 0 0 #22A06B}.dm .ih-miert.rossz{background:#FDE8F1;box-shadow:inset 4px 0 0 #E0609B}
+.dm .ih-miert b{font-weight:900}
+.dm .ih-tovabb{display:flex;justify-content:flex-end;margin-top:10px}
+.dm .pb-sugo{margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:#FFF6E0;color:#7A5A12;font-weight:700;font-size:14.5px}
 .dm .hv-szoveg{font-size:21px;line-height:2.1;font-weight:700;word-spacing:2px;background:#FFFDF6;border:2px solid #EFE3C4;border-radius:16px;padding:12px 16px;margin:8px 0}
 .dm .hv-szo{cursor:pointer;border-radius:7px;padding:1px 2px;margin:0 -2px;transition:background .15s}
 .dm .hv-szo:hover{background:#FFF1D6}
@@ -3044,28 +3061,43 @@
         var i = 0, eredm = [], N = f.allitasok.length, zar = false;
         D.html('<div class="allas">' + D.T('Olvasd el, és döntsd el gyorsan: igaz vagy hamis?', 'Lee y decide rápido: ¿verdadero o falso?') +
             '</div><div class="ih-pottyok" data-id="p"></div><div class="ih-lap" data-id="lap"><div class="ih-szam" data-id="sz"></div><div class="ih-kep" data-id="kp"></div><div class="ih-szoveg" data-id="sv"></div></div>' +
-            '<div class="ih-gombok" data-id="g"></div><div class="ih-osszegzes" data-id="ossz"></div>');
+            '<div class="ih-gombok" data-id="g"></div><div class="ih-miert" data-id="mz" style="display:none"></div>' +
+            '<div class="ih-tovabb" data-id="tb" style="display:none"></div><div class="ih-osszegzes" data-id="ossz"></div>');
         var p = D.$('p'), lap = D.$('lap'), g = D.$('g');
         for (var k = 0; k < N; k++) { var pt = document.createElement('i'); p.appendChild(pt); }
         var bI = D.gomb('✓ ' + D.T('IGAZ', 'VERDADERO'), 'ih-igaz', function () { valaszt(true); });
         var bH = D.gomb('✗ ' + D.T('HAMIS', 'FALSO'), 'ih-hamis', function () { valaszt(false); });
         g.appendChild(bI); g.appendChild(bH);
+        var mz = D.$('mz'), tb = D.$('tb');
+        tb.appendChild(D.gomb(D.T('Tovább →', 'Siguiente →'), 'fo', function () { tovabb(); }));
         function mutat() { D.$('sz').textContent = (i + 1) + ' / ' + N; D.$('sv').textContent = f.allitasok[i][0];
             D.$('kp').textContent = f.allitasok[i][2] || ''; D.$('kp').style.display = f.allitasok[i][2] ? '' : 'none';
             p.children[i].className = 'most'; D.animal(lap, 'ih-be'); }
         function valaszt(v) {
             if (zar) { return; } zar = true;
-            var jo = v === f.allitasok[i][1]; eredm.push(jo);
+            var a = f.allitasok[i], jo = v === a[1], miert = a[3] || ''; eredm.push(jo);
             p.children[i].className = jo ? 'jo' : 'rossz';
             lap.classList.add(jo ? 'ih-jo' : 'ih-rossz'); D.hang('sine', jo ? 880 : 220);
-            setTimeout(function () { lap.classList.remove('ih-jo', 'ih-rossz'); i++; zar = false;
-                if (i < N) { mutat(); return; } vege(); }, jo ? 650 : 1100);
+            // 2026-11-03 (Sándor): akkor is elmondja, MIÉRT, ha eltalálta – lehet, hogy csak tippelt.
+            if (!miert) { setTimeout(tovabb, jo ? 650 : 1100); return; }
+            mz.className = 'ih-miert ' + (jo ? 'jo' : 'rossz');
+            mz.innerHTML = '<b></b><span></span>';
+            mz.firstChild.textContent = (jo ? D.T('Jó! ', '¡Bien! ') : D.T('Nem egészen. ', 'No del todo. ')) +
+                (a[1] ? D.T('Igaz', 'Verdadero') : D.T('Hamis', 'Falso')) + ' – ';
+            mz.lastChild.textContent = miert;
+            mz.style.display = ''; tb.style.display = ''; g.style.display = 'none';
+        }
+        function tovabb() {
+            lap.classList.remove('ih-jo', 'ih-rossz'); mz.style.display = 'none'; tb.style.display = 'none'; g.style.display = '';
+            i++; zar = false;
+            if (i < N) { mutat(); return; } vege();
         }
         function vege() {
             g.style.display = 'none'; lap.style.display = 'none';
             var db = eredm.filter(Boolean).length;
             D.$('ossz').innerHTML = f.allitasok.map(function (a, k) { return '<div class="' + (eredm[k] ? 'jo' : 'rossz') + '"><b>' + (eredm[k] ? '✓' : '✗') + '</b> ' + (a[2] ? a[2] + ' ' : '') +
-                a[0].replace(/</g, '&lt;') + ' <em>' + (a[1] ? D.T('igaz', 'verdadero') : D.T('hamis', 'falso')) + '</em></div>'; }).join('');
+                a[0].replace(/</g, '&lt;') + ' <em>' + (a[1] ? D.T('igaz', 'verdadero') : D.T('hamis', 'falso')) + '</em>' +
+                (a[3] ? '<small>' + String(a[3]).replace(/</g, '&lt;') + '</small>' : '') + '</div>'; }).join('');
             var rossz = f.allitasok.filter(function (a, k) { return !eredm[k]; }).map(function (a) { return '„' + a[0] + '” (' + (a[1] ? D.T('igaz', 'verdadero') : D.T('hamis', 'falso')) + ')'; });
             D.vege(db === N, db === N ? D.T('Mind a ' + N + ' jó! Villámgyors vagy!', '¡Las ' + N + ' bien! ¡Eres un rayo!')
                     : D.T(db + ' / ' + N + ' jó. Nézd meg, amit elvétettél – a tanár segít.', db + ' de ' + N + ' bien. Mira las que fallaste; tu profe te ayuda.'),
@@ -3128,13 +3160,13 @@
 
     /* ── PÁRBESZÉD ─────────────────────────────────────────────────────── */
     DM.parbeszed = function (f, D) {
-        var i = 0, rossz = [], jo = 0, valasztas = 0;
+        var i = 0, rossz = [], jo = 0, valasztas = 0, utolsoA = '', sugo = null;
         D.html('<div class="allas">' + D.T('Olvasd el (vagy hallgasd meg), és válaszd ki, mit mondana B!', 'Lee (o escucha) y elige lo que diría B.') +
             '</div><div class="pb-chat" data-id="ch"></div><div class="pb-opciok" data-id="op"></div>');
         var ch = D.$('ch'), op = D.$('op');
         function buborek(ki, sz, extra) { var d = document.createElement('div'); d.className = 'pb-b pb-' + ki + (extra ? ' ' + extra : '');
             d.innerHTML = '<span class="pb-ki">' + ki + '</span><span class="pb-sz"></span>'; d.lastChild.textContent = sz;
-            if (ki === 'A') { var h = document.createElement('button'); h.type = 'button'; h.className = 'pb-hang'; h.textContent = '🔊'; h.onclick = function () { D.mond(sz); }; d.appendChild(h); }
+            if (ki === 'A') { utolsoA = sz; var h = document.createElement('button'); h.type = 'button'; h.className = 'pb-hang'; h.textContent = '🔊'; h.onclick = function () { D.mond(sz); }; d.appendChild(h); }
             ch.appendChild(d); D.animal(d, 'pattan'); ch.scrollTop = ch.scrollHeight; return d; }
         function kov() {
             if (i >= f.sorok.length) { return zar(); }
@@ -3145,10 +3177,17 @@
             op.innerHTML = '';
             D.kever(s.opciok.map(function (o, k) { return [o, k]; })).forEach(function (o) {
                 op.appendChild(D.gomb(o[0], 'pb-op', function () {
-                    if (o[1] === s.jo) { gepel.remove(); buborek(s.ki, o[0]); op.innerHTML = ''; D.hang('sine', 880); if (!probalt) { jo++; } i++; setTimeout(kov, 600); return; }
+                    if (o[1] === s.jo) { if (sugo) { sugo.style.display = 'none'; } gepel.remove(); buborek(s.ki, o[0]); op.innerHTML = ''; D.hang('sine', 880); if (!probalt) { jo++; } i++; setTimeout(kov, 600); return; }
                     probalt++; this.disabled = true; this.classList.add('rossz-op'); D.animal(this, 'rezeg');
-                    if (probalt === 1) { rossz.push(o[0]); }
-                    if (probalt >= 2) { gepel.remove(); buborek(s.ki, s.opciok[s.jo], 'pb-mutatott'); op.innerHTML = ''; i++; setTimeout(kov, 1100); } }));
+                    // 2026-11-03: első tévedésnél SÚGÓ (és A még egyszer elhangzik), a másodiknál
+                    // megmutatjuk ÉS felolvassuk a jót – így hallja is, nem csak látja.
+                    if (probalt === 1) { rossz.push(o[0]);
+                        if (!sugo) { sugo = document.createElement('div'); sugo.className = 'pb-sugo'; op.parentNode.insertBefore(sugo, op); }
+                        sugo.style.display = ''; sugo.textContent = D.T('Ez nem illik ide. Hallgasd meg újra, mit mondott A, és válassz újra!',
+                            'Esto no encaja. Escucha otra vez lo que dijo A y elige de nuevo.');
+                        if (utolsoA) { D.mond(utolsoA); } }
+                    if (probalt >= 2) { if (sugo) { sugo.style.display = 'none'; } gepel.remove(); buborek(s.ki, s.opciok[s.jo], 'pb-mutatott');
+                        D.mond(s.opciok[s.jo]); op.innerHTML = ''; i++; setTimeout(kov, 2400); } }));
             });
         }
         function zar() {
@@ -10148,23 +10187,47 @@
         doboz.className = 'feladat feladat-valaszt fv2';
         var ES = (document.documentElement.lang || '').slice(0, 2) === 'es';
         var BETU = 'ABCDEFGH';
-        doboz.innerHTML = '<div class="fv-egosor" aria-hidden="true"></div>' +
-            '<div class="fv-fej" aria-hidden="true">' + (ES ? 'ELIGE UNA' : 'VÁLASSZ EGYET') + '<span class="fv-bill"> · ' + (ES ? 'TECLAS A–' : 'BILLENTYŰ A–') +
+        doboz.innerHTML = '<div class="fv-fej" aria-hidden="true">' + (ES ? 'ELIGE UNA' : 'VÁLASSZ EGYET') + '<span class="fv-bill"> · ' + (ES ? 'TECLAS A–' : 'BILLENTYŰ A–') +
             BETU.charAt(Math.max(0, f.opciok.length - 1)) + '</span></div><div class="fv-opciok"></div>';
-        var hely = doboz.lastChild, gombok = [];
+        var hely = doboz.lastChild, gombok = [], probalt = 0, vj = null;
+        function uzen(h, jo) {
+            if (!vj) { vj = document.createElement('div'); doboz.appendChild(vj); }
+            vj.className = 'visszajelzes ' + (jo ? 'jo' : 'rossz'); vj.innerHTML = h;
+        }
         if (f.opciok.some(function (o) { return String(o).length > 26; })) { doboz.classList.add('fv-hosszu'); }
         if (f.opciok.some(function (o) { return String(o).length > 12; })) { doboz.classList.add('fv-kozep'); }
         f.opciok.forEach(function (opcio, k) {
             var g = document.createElement('button');
             g.type = 'button';
             g.className = 'feladat-opcio';
-            g.style.setProperty('--fvsz', ['#2F8FD8', '#E8505B', '#22A06B', '#F5A01E', '#8A5CD6', '#E0609B'][k % 6]);
+            // Piros és zöld NINCS a színek között: azok a „rossz” és „jó” jelei.
+            g.style.setProperty('--fvsz', ['#2F8FD8', '#8A5CD6', '#F59E0B', '#0EA5B7', '#5B6CE0', '#D9467F'][k % 6]);
             var b = document.createElement('span'); b.className = 'fv-betu'; b.textContent = BETU.charAt(k);
             var t = document.createElement('span'); t.className = 'fv-sz'; t.textContent = opcio;
             g.appendChild(b); g.appendChild(t);
             g.addEventListener('click', function () {
-                if (doboz.classList.contains('feladat-kesz')) { return; }
+                if (doboz.classList.contains('feladat-kesz') || doboz._zar || g.disabled) { return; }
                 gombok.forEach(function (x) { x.classList.toggle('fv-valasztott', x === g); });
+                // HA TUDJUK, MELYIK A JÓ (a tanár „jo” mezője): azonnal visszajelzünk.
+                if (typeof f.jo === 'number' && gombok[f.jo]) {
+                    if (k === f.jo) {
+                        doboz._zar = true; g.classList.add('fv-jo'); if (vj) { vj.className = 'visszajelzes'; vj.innerHTML = ''; } ieUnnep(doboz);
+                        setTimeout(function () { feladatKuld(doboz, opcio); }, 1800);
+                        return;
+                    }
+                    probalt++;
+                    g.classList.add('fv-rossz'); g.disabled = true;
+                    if (probalt >= 2 || gombok.length <= 2) {
+                        doboz._zar = true; gombok[f.jo].classList.add('fv-jo');
+                        uzen(ES ? 'La correcta es: <b>' + gombok[f.jo].lastChild.textContent + '</b>. Tu profe te lo explica.'
+                                : 'A jó válasz: <b>' + gombok[f.jo].lastChild.textContent + '</b>. A tanár elmagyarázza.', false);
+                        setTimeout(function () { feladatKuld(doboz, opcio); }, 2200);
+                    } else {
+                        uzen(ES ? 'Esta no es. ¡Piénsalo otra vez!' : 'Ez nem jó. Gondold át még egyszer!', false);
+                        if (typeof kabalaSzomoru === 'function') { try { kabalaSzomoru(); } catch (e) {} }
+                    }
+                    return;
+                }
                 feladatKuld(doboz, opcio);
             });
             gombok.push(g);
@@ -10246,9 +10309,18 @@
         svg.setAttribute('aria-hidden', 'true');
         racs.appendChild(svg);
 
-        var SZINEK = ['#2f8fd8', '#ef5f5f', '#17b8a6', '#7b5bd6', '#f5a623', '#e0609b'];
+        // Piros és zöld NINCS a színek között: azok a „rossz” és „jó” jelei.
+        var SZINEK = ['#2f8fd8', '#7b5bd6', '#f59e0b', '#0ea5b7', '#5b6ce0', '#d9467f'];
         var kivalasztottBal = null;
-        var kotesek = [];        // [{bal: gomb, jobb: gomb, szin}]
+        var kotesek = [];
+        var JO = {};             // bal szöveg -> a jó jobb oldali szöveg
+        f.parok.forEach(function (p) { JO[String(p[0])] = String(p[1]); });
+        var ES = (document.documentElement.lang || '').slice(0, 2) === 'es';
+        var probaSzam = 0, vj = null;
+        function uzen(h, jo) {
+            if (!vj) { vj = document.createElement('div'); doboz.insertBefore(vj, kesz); }
+            vj.className = 'visszajelzes ' + (jo ? 'jo' : 'rossz'); vj.innerHTML = h;
+        }        // [{bal: gomb, jobb: gomb, szin}]
 
         function kotesE(g) {
             for (var i = 0; i < kotesek.length; i++) {
@@ -10258,7 +10330,7 @@
         }
         function bont(k) {
             kotesek.splice(kotesek.indexOf(k), 1);
-            [k.bal, k.jobb].forEach(function (g) { g.classList.remove('fpar-kesz'); g.style.removeProperty('--fpsz'); });
+            [k.bal, k.jobb].forEach(function (g) { g.classList.remove('fpar-kesz', 'fpar-jo', 'fpar-rossz'); g.style.removeProperty('--fpsz'); });
         }
         function szabadSzin() {
             for (var i = 0; i < SZINEK.length; i++) {
@@ -10351,7 +10423,7 @@
             g.textContent = szoveg;
             g.dataset.oldal = oldal;
             g.addEventListener('pointerdown', function (e) {
-                if (doboz.classList.contains('feladat-kesz') || huz || (e.pointerType === 'mouse' && e.button !== 0)) { return; }
+                if (doboz.classList.contains('feladat-kesz') || doboz._zar || huz || (e.pointerType === 'mouse' && e.button !== 0)) { return; }
                 huz = {g: g, id: e.pointerId, x: e.clientX, y: e.clientY, megy: false};
                 try { g.releasePointerCapture(e.pointerId); } catch (x) {}
                 document.addEventListener('pointermove', huzasMozog);
@@ -10359,7 +10431,7 @@
                 document.addEventListener('pointercancel', huzasMegszakad);
             });
             g.addEventListener('click', function () {
-                if (doboz.classList.contains('feladat-kesz') || huzottMost) { return; }
+                if (doboz.classList.contains('feladat-kesz') || doboz._zar || huzottMost) { return; }
                 var k = kotesE(g);
                 if (oldal === 'bal') {
                     if (k) { bont(k); }
@@ -10390,14 +10462,41 @@
         kesz.className = 'feladat-kesz-gomb';
         kesz.textContent = L.feladatKesz;
         kesz.addEventListener('click', function () {
+            if (doboz._zar) { return; }
             // A sorrend a bal oszlopé – így a tanár ugyanúgy olvassa, mint eddig.
-            var lista = [];
+            var lista = [], rossz = [];
             Array.prototype.forEach.call(balOszlop.children, function (g) {
                 var k = kotesE(g);
-                if (k) { lista.push(g.textContent + ' – ' + k.jobb.textContent); }
+                if (k) {
+                    lista.push(g.textContent + ' – ' + k.jobb.textContent);
+                    if (JO[g.textContent] !== k.jobb.textContent) { rossz.push(k); }
+                }
             });
             if (!lista.length) { return; }
-            feladatKuld(doboz, lista.join(', '));
+            var hiany = f.parok.length - lista.length;
+            if (hiany > 0) {
+                uzen(ES ? (hiany === 1 ? 'Falta 1 pareja.' : 'Faltan ' + hiany + ' parejas.')
+                        : 'Még ' + hiany + ' pár hiányzik.', false);
+                return;
+            }
+            // AZONNALI VISSZAJELZÉS (2026-11-03, Sándor: „nincs konfetti, nem tudom, jó-e”).
+            kotesek.forEach(function (k) { var ok = rossz.indexOf(k) < 0;
+                [k.bal, k.jobb].forEach(function (x) { x.classList.toggle('fpar-jo', ok); x.classList.toggle('fpar-rossz', !ok); }); });
+            if (!rossz.length) {
+                doboz._zar = true; if (vj) { vj.className = 'visszajelzes'; vj.innerHTML = ''; } ieUnnep(doboz);
+                setTimeout(function () { feladatKuld(doboz, lista.join(', ')); }, 1800);
+                return;
+            }
+            probaSzam++;
+            if (probaSzam >= 2) {
+                doboz._zar = true;
+                uzen(ES ? 'Todavía hay ' + rossz.length + ' mal. Tu profe te ayuda.' : 'Még ' + rossz.length + ' pár nem jó. A tanár segít.', false);
+                setTimeout(function () { feladatKuld(doboz, lista.join(', ')); }, 2000);
+                return;
+            }
+            uzen(ES ? (rossz.length === 1 ? '1 pareja no está bien. ¡Corrígela!' : rossz.length + ' parejas no están bien. ¡Corrígelas!')
+                    : rossz.length + ' pár nem jó (pirossal jelölve). Javítsd ki!', false);
+            if (typeof kabalaSzomoru === 'function') { try { kabalaSzomoru(); } catch (e) {} }
         });
         doboz.appendChild(kesz);
         setTimeout(rajzol, 60);
@@ -10427,7 +10526,7 @@
         var lista = document.createElement('div');
         lista.className = 'fsor-lista';
         doboz.appendChild(lista);
-        var SZIN = ['#2F8FD8', '#E8505B', '#22A06B', '#F5A01E', '#8A5CD6', '#E0609B'];
+        var SZIN = ['#2F8FD8', '#8A5CD6', '#F59E0B', '#0EA5B7', '#5B6CE0', '#D9467F'];
 
         function frissit() {
             lista.querySelectorAll('.fsor-elem').forEach(function (e) {
@@ -10451,13 +10550,19 @@
             kesz.disabled = sorrend.length < f.elemek.length;
         }
         function valt(szoveg) {
-            if (doboz.classList.contains('feladat-kesz')) { return; }
+            if (doboz.classList.contains('feladat-kesz') || doboz._zar) { return; }
+            if (vj) { vj.className = 'visszajelzes'; vj.innerHTML = ''; }
             var hol = sorrend.indexOf(szoveg);
             if (hol >= 0) { sorrend.splice(hol, 1); } else { sorrend.push(szoveg); }
             frissit();
         }
 
-        keverd(f.elemek).forEach(function (szoveg) {
+        // SOHA ne a helyes sorrendben kerüljenek elő (2026-11-03: „a Tojás elöl
+        // elég félrevezető” – négy elemnél minden 24. keverés a megoldás lenne).
+        var kevert = keverd(f.elemek);
+        for (var kv = 0; kv < 8 && kevert.join('|') === f.elemek.join('|'); kv++) { kevert = keverd(f.elemek); }
+        var probaSzam = 0, vj = null;
+        kevert.forEach(function (szoveg) {
             var g = document.createElement('button');
             g.type = 'button';
             g.className = 'fsor-elem';
@@ -10476,10 +10581,32 @@
         kesz.className = 'feladat-kesz-gomb';
         kesz.textContent = L.feladatKesz;
         kesz.addEventListener('click', function () {
-            if (sorrend.length < f.elemek.length) { return; }
-            feladatKuld(doboz, sorrend.map(function (x, i) {
-                return (i + 1) + '. ' + x;
-            }).join(' '));
+            if (sorrend.length < f.elemek.length || doboz._zar) { return; }
+            var valasz = sorrend.map(function (x, i) { return (i + 1) + '. ' + x; }).join(' ');
+            // AZONNALI VISSZAJELZÉS: a helyes sorrend a tanár listája.
+            var rosszHely = [];
+            kocsik.querySelectorAll('.fsor-kocsi').forEach(function (k, i) {
+                var ok = sorrend[i] === f.elemek[i];
+                k.classList.toggle('fsor-jo', ok); k.classList.toggle('fsor-rossz', !ok);
+                if (!ok) { rosszHely.push(i); }
+            });
+            if (!vj) { vj = document.createElement('div'); doboz.insertBefore(vj, kesz); }
+            if (!rosszHely.length) {
+                doboz._zar = true; vj.className = 'visszajelzes'; vj.innerHTML = ''; ieUnnep(doboz);
+                setTimeout(function () { feladatKuld(doboz, valasz); }, 1800);
+                return;
+            }
+            probaSzam++;
+            vj.className = 'visszajelzes rossz';
+            if (probaSzam >= 2) {
+                doboz._zar = true;
+                vj.innerHTML = ES ? 'Todavía no está bien. Tu profe te ayuda.' : 'Még nem jó a sorrend. A tanár segít.';
+                setTimeout(function () { feladatKuld(doboz, valasz); }, 2000);
+                return;
+            }
+            vj.innerHTML = ES ? (rosszHely.length === 1 ? '1 elemento no está en su sitio.' : rosszHely.length + ' elementos no están en su sitio.') + ' Toca arriba los marcados para quitarlos y vuelve a ordenarlos.'
+                              : rosszHely.length + ' elem nincs a helyén (pirossal jelölve). Fent koppints rájuk, és rakd újra őket!';
+            if (typeof kabalaSzomoru === 'function') { try { kabalaSzomoru(); } catch (e) {} }
         });
         doboz.appendChild(kesz);
         frissit();
@@ -10880,7 +11007,7 @@
        „PRÓBÁLD ki” szomorúságot váltott ki. Most CSAK az első mondat ELEJÉT
        nézzük, és csak egyértelmű dicséretre / javításra reagálunk. */
     var KABALA_DICSER = new RegExp('^(ügyes|szuper|remek|pontosan|bravó|'
-        + 'nagyszerű|kitűnő|így van|helyes|eltaláltad|igazad van|jó válasz|'
+        + 'nagyszerű|kitűnő|így van|helyes|eltaláltad|jó válasz|'
         + 'igen,|igen!|nagyon jó|szép munka|tökéletes|sí,|¡sí|'
         + 'muy bien|excelente|perfecto|correcto|genial|así es|eso es|¡?bien)', 'i');
     var KABALA_JAVIT = new RegExp('^(nem egészen|nem pontosan|majdnem|'
@@ -10893,6 +11020,7 @@
         /* ELSŐDLEGES: a tanár rejtett jelzése (<EREDMENY:jo|rossz>). */
         var _er = window.kabalaEredmeny || '';
         window.kabalaEredmeny = '';
+        if (_er === 'nincs') { return; }   /* a gyerek kérdezett/kért valamit – nem válasz */
         if (_er === 'jo') { kabalaRontas = 0; kabalaOrul(); return; }
         if (_er === 'rossz') { kabalaRontas += 1; kabalaSzomoru(); return; }
         if (!szoveg) { return; }
