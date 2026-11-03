@@ -3,7 +3,7 @@
 Ez a fájl azért van, hogy semmi ne egy beszélgetés emlékezetén múljon.
 Ha egy tétel elkészült, húzd át vagy töröld. Ha újat találsz, írd ide.
 
-Utolsó frissítés: 2026-10-03 (este)
+Utolsó frissítés: 2026-11-03
 
 ---
 
@@ -687,3 +687,24 @@ Tervezett elemek:
 31. [ ] NYITÓOLDAL (DeepSeek-vélemény alapján): 1) első képernyőn egy mondat: „AI-tanár, ami a gyerek tempójában tanít”; 2) ár / mennyi a próba után; 3) 2–3 szülői vélemény a tesztelőktől; 4) adatvédelmi blokk (GDPR, hol tárolódik, mit lát a szülő); 5) felső tagozatnak szóló rész is (8. osztály, történelem); 6) a magyar/spanyol tanterv viszonya egy mondatban.
 
 32. [ ] KÉPES MONDATKIEGÉSZÍTŐ („Composition” lapok mintájára, Sándor képei 2026-10-28): témánként egy nagy, színes kép (Az iskolám, A kisállatom, A családom, A legjobb barátom, Anyukám, Kedvenc ételem, A kertem, Kedvenc évszakom…), alatta 7–8 mondat egy-egy hiánnyal, lent szóbank – a gyerek a szót a helyére húzza/koppintja. MINDEN tanult nyelven (angol, német, francia, spanyol, és magyar anyanyelvi is). A kép felirat NÉLKÜL készül, így minden nyelvhez ugyanaz jó; a mondatok és a szóbank nyelvenként külön. Figyelni: a szóbankban ne legyen ismétlődő szó (a mintában a „My Garden” lapon kétszer van a garden és a flowers).
+
+## FOLYAMATBAN / KÖVETKEZŐ – a sorrend (2026-11-03, Sándor jóváhagyta)
+
+1. [ ] FEJLÉC C2: lépés-gombok (✓ Tanulás › ● Gyakorlás 2/5 › 3 Teszt › 🏆 Kész), a gyerek figurája a mostani lépésen ül; laptopon második sorban, telefonon csak a mostani lépés neve. Mintakép kész, jóváhagyásra vár.
+2. [ ] TANÍTÓ TANÁR 3. rész – GYEREKPROFIL: adatbázisba, melyik magyarázat vált be az adott gyereknél (pelda/tabla/hasonlat/lepesek/elozo), a következő órán a tanár ezzel kezd. Az alap már megvan (a „bevalt” mező a session-ben).
+3. [ ] TANÍTÓ TANÁR 4. rész – RENDSZERSZINTŰ TANULÁS: név nélkül összesíteni leckénként, melyik magyarázat után válaszoltak jól; bekerül az óratervbe („ha itt elakad, ez működik”).
+4. [ ] LÁTOGATOTTSÁG-SZÁMLÁLÓ: saját (nem külső szolgáltató), IP nélkül, naponta cserélődő kóddal; Sándor gépei/telefonja egy titkos linkkel kizárva; admin oldalon napi látogató, mobil/gép, honnan (Facebook/Google/UTM), hány regisztráció.
+5. [ ] FŐOLDAL FRISSÍTÉSE: „A tábla igazodik hozzá” (Játékbolt + kutatói adatlap), „Másképp magyaráz, ha nem érti” (3 lépés), „Azonnal látja, jól csinálta-e” (párosító konfettivel, igaz-hamis magyarázattal).
+6. [ ] ÁTDOLGOZNI jelenetes stílusban: hiányzó szó (hianyzo), mondatépítő (epito), szövegjelölő (szoveg).
+7. [ ] 6 ÚJ FELADAT: barkochba, ki vagyok, mondatelemző, igeidő-gép, ok-okozat, forrásnyomozó.
+8. [ ] ÓRATERVEK: a készítőt felkészíteni a spanyol oldalra, utána egyben magyar + spanyol, és együtt átnézni a hibákat (a feladatok UTÁN, mert a tervek a feladatokból válogatnak).
+
+## Később – ne vesszen el (2026-11-03)
+
+- [ ] AVATAROK a nagyobbaknak (24 db, fele fiús, fele lányos): Nagy nevek (8, kártyával nyílik), Sport (4), Stílus (6), Saját hősök (6). Stílus: matrica (a Nagy nevek esetleg festett). Villám helyett Szikra – a minta futtatásra vár: `python avatar_minta.py --csak villam --ujra`. Valódi focista, Barbie, Marvel/DC NEM lehet.
+- [ ] SAJÁT AVATAR-ÉPÍTŐ bővítése a nagyobbaknak (fénykép-feltöltés helyett): szemüveg, sapka, fejhallgató, mez, dzseki, több frizura.
+- [ ] FACEBOOK-BORÍTÓ a zsiráfos képből (1640×624, a lényeg középen).
+- [ ] SPANYOL megosztási kép (og_es3) a magyar mintájára – amikor lesz spanyol Facebook-oldal.
+- [ ] FACEBOOK-HIRDETÉS: a weboldalra vigyen (nem az oldal-kedvelésre); UTM-címkével, hogy a számláló lássa, hányan jöttek és regisztráltak. Meta Pixelhez sütis hozzájárulás kellene – előbb a saját számláló.
+- [ ] TÖBB FELADAT minden tantárgyhoz, csak olyan, amiből tanul a gyerek: helyesírás-választó („melyik írás helyes?”), igepárok képpel (eat – ate), mondatkiegészítő képpel (az „English With FK” lapok mintájára, minden nyelven); fizika és kémia (mérés, kísérlet lépései, anyagok tulajdonságai); testnevelés (képsor vagy rövid videó a gyakorlat bemutatására).
+- [ ] KÖLTSÉG: a gyakorló felületek egy hívásban sok tételt küldenek a tanárnak (pl. 4 igaz-hamis = 1 hívás) – ezt kihasználni, hogy kevesebb tanári hívás legyen gyerekenként.

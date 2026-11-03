@@ -9973,10 +9973,10 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"carroll","kerdes":"Coloca los números en su casilla.","a":"par","b":"mayor que 10","elemek":[["12",1,1],["4",1,0],["15",0,1],["7",0,0],["18",1,1],["3",0,0]]}</FELADAT>',
      'két szempont szerinti válogatás, táblázat → carroll', 'clasificar por dos criterios, tabla  → carroll'),
     ("igazhamis", {"*"}, 1, 8,
-     'IGAZ-HAMIS GYORSKÖR – 3–6 rövid állítás egymás után, a gyerek gyorsan dönt (ne legyen mind igaz vagy mind hamis). Az elem harmadik része egy ILLŐ EMOJI (kép az állítás fölé), a negyedik egy rövid MAGYARÁZAT (1 mondat), MIÉRT igaz vagy hamis – mindkettőt mindig add meg. Ismétléshez, óra végi összefoglaláshoz kiváló:\n'
-     '   <FELADAT>{"tipus":"igazhamis","kerdes":"Igaz vagy hamis?","allitasok":[["A bálna emlős.",true,"🐋","Tüdővel lélegzik, és tejjel táplálja a kicsinyét."],["A pók rovar.",false,"🕷️","A póknak 8 lába van, a rovaroknak 6 – a pók pókféle."],["A béka kétéltű.",true,"🐸","Vízben kel ki, később a szárazon is él."],["A denevér madár.",false,"🦇","Szőrös, és tejjel szoptat: emlős, csak repül."]]}</FELADAT>',
-     'VERDADERO/FALSO RÁPIDO – 3–6 afirmaciones cortas seguidas (no todas iguales). Tercer elemento: un emoji; cuarto: UNA frase que explique POR QUÉ es verdadero o falso (ponlos siempre):\n'
-     '   <FELADAT>{"tipus":"igazhamis","kerdes":"¿Verdadero o falso?","allitasok":[["La ballena es un mamífero.",true,"🐋","Respira con pulmones y amamanta a sus crías."],["La araña es un insecto.",false,"🕷️","La araña tiene 8 patas; los insectos, 6."],["La rana es un anfibio.",true,"🐸","Nace en el agua y luego vive también en tierra."],["El murciélago es un ave.",false,"🦇","Tiene pelo y amamanta: es un mamífero que vuela."]]}</FELADAT>',
+     'IGAZ-HAMIS GYORSKÖR – 3–6 rövid állítás egymás után, a gyerek gyorsan dönt (ne legyen mind igaz vagy mind hamis). Az elem harmadik része egy ILLŐ EMOJI (kép az állítás fölé), a negyedik egy rövid MAGYARÁZAT (1 mondat), MIÉRT igaz vagy hamis – mindkettőt mindig add meg. A magyarázat a gyerek nyelvén szóljon, hétköznapi szavakkal (ne „táplálja kicsinyét”, hanem „anyatejjel eteti a kicsinyét”), de ne gügyögve; mondja ki a helyes tényt. Ismétléshez, óra végi összefoglaláshoz kiváló:\n'
+     '   <FELADAT>{"tipus":"igazhamis","kerdes":"Igaz vagy hamis?","allitasok":[["A bálna emlős.",true,"🐋","Bár a tengerben él, levegőt vesz, mint mi, és a kicsinyét anyatejjel eteti – ezért emlős."],["A pók rovar.",false,"🕷️","A póknak 8 lába van, a rovaroknak csak 6 – a pók ezért nem rovar, hanem pókféle."],["A béka kétéltű.",true,"🐸","Az ebihal a vízben nő fel, a kifejlett béka pedig a szárazon is él – ezért kétéltű."],["A denevér madár.",false,"🦇","Tud repülni, de szőrös, és a kicsinyét anyatejjel eteti – tehát emlős, nem madár."]]}</FELADAT>',
+     'VERDADERO/FALSO RÁPIDO – 3–6 afirmaciones cortas seguidas (no todas iguales). Tercer elemento: un emoji; cuarto: UNA frase que explique POR QUÉ es verdadero o falso, con palabras sencillas del niño pero sin infantilizar (ponlos siempre):\n'
+     '   <FELADAT>{"tipus":"igazhamis","kerdes":"¿Verdadero o falso?","allitasok":[["La ballena es un mamífero.",true,"🐋","Aunque vive en el mar, respira aire como nosotros y alimenta a su cría con leche: por eso es mamífero."],["La araña es un insecto.",false,"🕷️","La araña tiene 8 patas y los insectos solo 6: no es un insecto, es un arácnido."],["La rana es un anfibio.",true,"🐸","El renacuajo crece en el agua y la rana adulta vive también en tierra: por eso es anfibio."],["El murciélago es un ave.",false,"🦇","Vuela, pero tiene pelo y alimenta a sus crías con leche: es un mamífero, no un ave."]]}</FELADAT>',
      'ismétlés, igaz vagy hamis, gyorskör   → igazhamis', 'repaso, verdadero o falso          → igazhamis'),
     ("hibavadasz", {"magyar", "nyelv"}, 3, 8,
      'HIBAVADÁSZ – rövid szöveg 1–4 helyesírási vagy nyelvtani HIBÁVAL; a gyerek rákoppint a hibás szóra és kijavítja. A "hibak" párjai: [hibás szó, ahogy a szövegben áll; helyes alak]. Minden hibás szó pontosan egyszer szerepeljen:\n'
@@ -10083,7 +10083,7 @@ a jelölőt, a gyerek nem gépel, hanem beír vagy rákattint:
 
 5) SORBARENDEZÉS — események időrendje, mese lépései, egy kísérlet menete,
    mondatrészek, számok nagyság szerint:
-   <FELADAT>{"tipus":"sorrend","elemek":["Tojás","Lárva","Báb","Lepke"]}</FELADAT>
+   <FELADAT>{"tipus":"sorrend","elemek":["Pete","Hernyó","Báb","Lepke"]}</FELADAT>
    HELYES sorrendben írd le őket; a program keverve mutatja a gyereknek.
    Kettő és hat elem.
 
@@ -10317,7 +10317,7 @@ respuesta, el niño no teclea: rellena casillas o pulsa un botón.
 
 5) ORDENAR — orden cronológico, pasos de un cuento o de un experimento,
    partes de la oración, números por tamaño:
-   <FELADAT>{"tipus":"sorrend","elemek":["Huevo","Larva","Crisálida","Mariposa"]}</FELADAT>
+   <FELADAT>{"tipus":"sorrend","elemek":["Huevo","Oruga","Crisálida","Mariposa"]}</FELADAT>
    Escríbelos en el orden CORRECTO; el programa los baraja al mostrarlos.
 
 6) PALABRA QUE FALTA en la frase — gramática, ortografía, lengua

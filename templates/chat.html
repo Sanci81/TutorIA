@@ -1077,9 +1077,15 @@
 .dm .ih-osszegzes .jo{background:#E7F6EE}.dm .ih-osszegzes .rossz{background:#FDE8F1}
 .dm .ih-osszegzes em{font-style:normal;font-weight:900;font-size:12px;letter-spacing:.5px;text-transform:uppercase;color:var(--halvany);margin-left:4px}
 .dm .ih-osszegzes small{display:block;font-weight:600;font-size:13.5px;color:#4B5B54;margin-top:2px}
-.dm .ih-miert{margin-top:14px;border-radius:14px;padding:12px 14px;font-size:16.5px;line-height:1.45;font-weight:600;color:#23332C}
-.dm .ih-miert.jo{background:#E7F6EE;box-shadow:inset 4px 0 0 #22A06B}.dm .ih-miert.rossz{background:#FDE8F1;box-shadow:inset 4px 0 0 #E0609B}
-.dm .ih-miert b{font-weight:900}
+.dm .ih-miert{margin-top:14px;border-radius:16px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start;
+    font-size:16.5px;line-height:1.5;color:#23332C;border:1.5px solid transparent}
+.dm .ih-miert.jo{background:#EEF9F2;border-color:#BFE5CE}
+.dm .ih-miert.rossz{background:#FFF7EA;border-color:#F3DDB4}
+.dm .ih-lampa{flex:0 0 42px;width:42px;height:42px;border-radius:12px;box-shadow:0 3px 8px rgba(15,42,34,.25)}
+.dm .ih-miert b{display:block;font-size:17.5px;font-weight:900;margin-bottom:2px}
+.dm .ih-miert.jo b{color:#1E7A4D}.dm .ih-miert.rossz b{color:#9A5B00}
+.dm .ih-miert em{font-style:normal;font-weight:800;margin-right:6px}
+.dm .ih-miert span{font-weight:500}
 .dm .ih-tovabb{display:flex;justify-content:flex-end;margin-top:10px}
 .dm .pb-sugo{margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:#FFF6E0;color:#7A5A12;font-weight:700;font-size:14.5px}
 .dm .hv-szoveg{font-size:21px;line-height:2.1;font-weight:700;word-spacing:2px;background:#FFFDF6;border:2px solid #EFE3C4;border-radius:16px;padding:12px 16px;margin:8px 0}
@@ -3057,6 +3063,7 @@
     };
 
     /* ── IGAZ-HAMIS GYORSKÖR ───────────────────────────────────────────── */
+    var IH_LAMPA = {{ url_for('static', filename='img/tutoria_logo.png')|tojson }};
     DM.igazhamis = function (f, D) {
         var i = 0, eredm = [], N = f.allitasok.length, zar = false;
         D.html('<div class="allas">' + D.T('Olvasd el, és döntsd el gyorsan: igaz vagy hamis?', 'Lee y decide rápido: ¿verdadero o falso?') +
@@ -3080,11 +3087,13 @@
             lap.classList.add(jo ? 'ih-jo' : 'ih-rossz'); D.hang('sine', jo ? 880 : 220);
             // 2026-11-03 (Sándor): akkor is elmondja, MIÉRT, ha eltalálta – lehet, hogy csak tippelt.
             if (!miert) { setTimeout(tovabb, jo ? 650 : 1100); return; }
+            // 2026-11-03 (Sándor): ízlésesen, a TutorIA lámpájával; jó: „Így van!”,
+            // rossz: „Sajnos nem lett jó.” – utána a helyes tény, érthetően.
             mz.className = 'ih-miert ' + (jo ? 'jo' : 'rossz');
-            mz.innerHTML = '<b></b><span></span>';
-            mz.firstChild.textContent = (jo ? D.T('Jó! ', '¡Bien! ') : D.T('Nem egészen. ', 'No del todo. ')) +
-                (a[1] ? D.T('Igaz', 'Verdadero') : D.T('Hamis', 'Falso')) + ' – ';
-            mz.lastChild.textContent = miert;
+            mz.innerHTML = '<img class="ih-lampa" alt="" src="' + IH_LAMPA + '"><div><b></b><em></em><span></span></div>';
+            mz.querySelector('b').textContent = jo ? D.T('Így van!', '¡Así es!') : D.T('Sajnos nem lett jó.', 'Esta vez no.');
+            mz.querySelector('em').textContent = a[1] ? D.T('Ez igaz.', 'Es verdadero.') : D.T('Ez hamis.', 'Es falso.');
+            mz.querySelector('span').textContent = miert;
             mz.style.display = ''; tb.style.display = ''; g.style.display = 'none';
         }
         function tovabb() {
