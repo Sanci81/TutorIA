@@ -545,6 +545,107 @@
   .kor-kicsi .munkater-cim{font-size:20px;color:#6b5416}
   .kor-kicsi .munkater-utasitas{font-size:15px;color:#8a7440}
   .kor-kicsi .munkater .feladat{font-size:118%}
+  /* ═══ JELENETES ALAPFELADATOK (2026-10-30) ═══════════════════════════
+     Alapból játékos (kvízműsor, zsinóros párosító, vonat); .kor-felso alatt
+     (12+) letisztult, sötét „adatlap” – ugyanaz a nyelv, mint a Carroll
+     kutatói táblája. A logika nem változott, csak a köntös. */
+  .fv2{display:block;background:linear-gradient(#FFF8EC,#FDF0DA);border-radius:18px;padding:12px 14px 16px;box-shadow:inset 0 0 0 2px #F1DDBA}
+  .fv2 .fv-egosor{height:14px;margin:0 4px 12px;background:radial-gradient(circle,#FFD34D 0 4px,rgba(255,211,77,.35) 5px,transparent 7px) 0 50%/22px 14px repeat-x}
+  .fv2 .fv-fej{display:none}
+  .fv2 .fv-opciok{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .fv2.fv-hosszu .fv-opciok{grid-template-columns:1fr}
+  .fv2 .feladat-opcio{display:flex;align-items:center;gap:12px;text-align:left;background:var(--fvsz);color:#fff;border:0;border-radius:14px;
+      padding:12px 14px;font-size:17px;font-weight:800;box-shadow:0 4px 0 rgba(0,0,0,.18);min-height:58px}
+  .fv2 .feladat-opcio:hover{background:var(--fvsz);border:0;transform:translateY(-2px);filter:brightness(1.06)}
+  .fv2 .fv-betu{flex:0 0 34px;height:34px;border-radius:50%;background:#fff;color:var(--fvsz);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px}
+  .fv2 .fv-sz{line-height:1.25}
+  .fv2 .fv-valasztott{outline:3px solid #fff;box-shadow:0 0 0 5px var(--fvsz)}
+  @media (hover:none){.fv2 .fv-bill{display:none}}
+  .fv2.feladat-kesz .feladat-opcio:not(.fv-valasztott){opacity:.45}
+  .kor-felso .fv2{background:#0F2A22;box-shadow:none;padding:14px}
+  .kor-felso .fv2 .fv-egosor{display:none}
+  .kor-felso .fv2 .fv-fej{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;letter-spacing:2px;color:#7FD3A8;font-weight:700;margin:0 0 10px}
+  .kor-felso .fv2 .feladat-opcio{background:#16392E;border:1px solid #3B6152;color:#E6F2EC;box-shadow:none;border-radius:10px;font-weight:700;font-size:16px;min-height:52px}
+  .kor-felso .fv2 .feladat-opcio:hover{background:#1E4A3B;border:1px solid #7FD3A8;transform:none;filter:none}
+  .kor-felso .fv2 .fv-betu{flex-basis:28px;width:28px;height:28px;border-radius:6px;background:transparent;border:1px solid #7FD3A8;color:#7FD3A8;
+      font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+  .kor-felso .fv2 .fv-valasztott{outline:2px solid #7FD3A8;box-shadow:none;background:#1E4A3B}
+
+  .munkater-test > .fv2,.munkater-test > .fp2,.munkater-test > .fs2{flex:0 1 560px;width:100%;min-width:0;box-sizing:border-box}
+  .fp2{background:linear-gradient(#F4FAFF,#EAF4FB);border-radius:18px;padding:14px;box-shadow:inset 0 0 0 2px #D6E7F5}
+  .fp2 .fpar-racs{position:relative;gap:10px 64px}
+  .fp2 .fpar-vonalak{position:absolute;left:0;top:0;pointer-events:none;overflow:visible}
+  .fp2 .fpar-vonalak path{fill:none;stroke-width:5;stroke-linecap:round;opacity:.9}
+  .fp2 .fpar-elem{position:relative;background:#fff;border:2px solid #D6E2EC;border-radius:14px;font-weight:800;padding:11px 14px;box-shadow:0 3px 0 #D6E2EC}
+  .fp2 .fpar-bal .fpar-elem::after,.fp2 .fpar-jobb .fpar-elem::before{content:"";position:absolute;top:50%;width:12px;height:12px;margin-top:-6px;
+      border-radius:50%;background:#fff;border:3px solid #B9CBDB;box-sizing:content-box}
+  .fp2 .fpar-bal .fpar-elem::after{right:-10px}.fp2 .fpar-jobb .fpar-elem::before{left:-10px}
+  .fp2 .fpar-aktiv{border-color:#1e7a4d;box-shadow:0 0 0 4px rgba(30,122,77,.2)}
+  .fp2 .fpar-elem{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overflow-wrap:break-word;hyphens:auto;line-height:1.25}
+  .fp2 .fpar-vonalak .fpar-ideig{stroke:#1e7a4d;stroke-width:4;stroke-dasharray:2 9;opacity:1}
+  .fp2 .fpar-cel{border-color:#1e7a4d;box-shadow:0 0 0 4px rgba(30,122,77,.25);transform:scale(1.03)}
+  .fp2 .fpar-huz{cursor:grabbing}
+  .kor-felso .fp2 .fpar-vonalak .fpar-ideig{stroke:#7FD3A8;stroke-width:2.5}
+  .kor-felso .fp2 .fpar-cel{border-color:#7FD3A8;box-shadow:0 0 0 3px rgba(127,211,168,.3)}
+  .fp2 .fpar-aktiv::after{border-color:#1e7a4d!important;background:#1e7a4d!important}
+  .fp2 .fpar-kesz{border-color:var(--fpsz);color:var(--fpsz);box-shadow:0 3px 0 var(--fpsz)}
+  .fp2 .fpar-kesz::after,.fp2 .fpar-kesz::before{border-color:var(--fpsz)!important;background:var(--fpsz)!important}
+  .kor-felso .fp2{background:#0F2A22;box-shadow:none}
+  .kor-felso .fp2 .fpar-elem{background:#16392E;border:1px solid #3B6152;color:#E6F2EC;box-shadow:none;border-radius:8px;font-weight:700}
+  .kor-felso .fp2 .fpar-bal .fpar-elem::after,.kor-felso .fp2 .fpar-jobb .fpar-elem::before{width:8px;height:8px;margin-top:-6px;border-radius:2px;border:2px solid #7FD3A8;background:#0F2A22}
+  .kor-felso .fp2 .fpar-vonalak path{stroke-width:2.5}
+  .kor-felso .fp2 .fpar-aktiv{border-color:#7FD3A8;box-shadow:0 0 0 3px rgba(127,211,168,.25)}
+  .kor-felso .fp2 .fpar-aktiv::after{border-color:#7FD3A8!important;background:#7FD3A8!important}
+  .kor-felso .fp2 .fpar-kesz{color:#fff;border-color:var(--fpsz);box-shadow:none}
+
+  .fs2{background:linear-gradient(#FFF8EC,#FDF0DA);border-radius:18px;padding:14px;box-shadow:inset 0 0 0 2px #F1DDBA}
+  .fs2 .fsor-sav{position:relative;display:flex;align-items:flex-end;gap:6px;min-height:84px;padding:10px 12px 20px;margin-bottom:12px;border-radius:14px;
+      background:linear-gradient(#DDEFFB,#EEF7FD)}
+  .fs2 .fsor-sav::after{content:"";position:absolute;left:10px;right:10px;bottom:9px;height:7px;
+      background:linear-gradient(#7D8A96,#7D8A96) 0 0/100% 2px no-repeat,repeating-linear-gradient(90deg,#9B7650 0 7px,transparent 7px 16px) 0 2px/100% 5px no-repeat}
+  .fs2 .fsor-mozdony{font-size:36px;line-height:1;position:relative;z-index:1}
+  .fs2 .fsor-mozdony::before{content:"🚂"}
+  .fs2 .fsor-kocsik{display:flex;flex-wrap:wrap;gap:6px 6px;align-items:flex-end;flex:1;min-width:0;position:relative;z-index:1}
+  .fs2 .fsor-kocsi{position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;background:var(--fssz);color:#fff;border:0;
+      border-radius:8px 8px 4px 4px;padding:6px 10px 11px;font:inherit;font-weight:800;font-size:14px;max-width:100%;cursor:pointer;
+      box-shadow:0 3px 0 rgba(0,0,0,.18);margin-bottom:6px}
+  .fs2 .fsor-kocsi::after{content:"";position:absolute;bottom:-7px;left:4px;right:4px;height:11px;
+      background:radial-gradient(circle at 7px 5px,#2B2B2B 4.5px,transparent 5.5px),radial-gradient(circle at calc(100% - 7px) 5px,#2B2B2B 4.5px,transparent 5.5px)}
+  .fs2 .fsor-kocsi b{font-size:11px;opacity:.85;letter-spacing:.5px}
+  .fs2 .fsor-kocsi span{line-height:1.2;text-align:center}
+  .fs2 .fsor-ures{position:absolute;inset:0 12px 14px 62px;display:flex;align-items:center;justify-content:center;text-align:center;color:#4E6E86;font-weight:700;font-size:14px}
+  .fs2 .fsor-van .fsor-ures{display:none}
+  .fs2 .fsor-elem{background:#fff;border-color:#EAD9BB;box-shadow:0 3px 0 #EAD9BB;border-radius:14px}
+  .fs2 .fsor-elem.fsor-valasztott{opacity:.45;box-shadow:none}
+  .kor-felso .fs2{background:#0F2A22;box-shadow:none}
+  .kor-felso .fs2 .fsor-sav{background:#12352A;border:1px dashed #3B6152;padding:10px;min-height:62px;align-items:center}
+  .kor-felso .fs2 .fsor-sav::after,.kor-felso .fs2 .fsor-mozdony{display:none}
+  .kor-felso .fs2 .fsor-kocsik{gap:8px 22px;align-items:center}
+  .kor-felso .fs2 .fsor-kocsi{flex-direction:row;gap:8px;background:#16392E;border:1px solid #3B6152;color:#E6F2EC;border-radius:8px;padding:7px 10px;box-shadow:none;margin:0;font-weight:700}
+  .kor-felso .fs2 .fsor-kocsi::after{display:none}
+  .kor-felso .fs2 .fsor-kocsi+.fsor-kocsi::before{content:"→";position:absolute;left:-17px;top:50%;margin-top:-10px;color:#7FD3A8;font-weight:900}
+  .kor-felso .fs2 .fsor-kocsi b{font-family:ui-monospace,Menlo,Consolas,monospace;color:#7FD3A8;opacity:1;font-size:12px}
+  .kor-felso .fs2 .fsor-ures{inset:0 12px;color:#8FB4A3}
+  .kor-felso .fs2 .fsor-elem{background:#16392E;border:1px solid #3B6152;color:#E6F2EC;box-shadow:none;border-radius:8px;font-weight:700}
+  .kor-felso .fs2 .fsor-szam{border-color:#3B6152;color:#7FD3A8;font-family:ui-monospace,Menlo,Consolas,monospace}
+  @media (max-width:560px){
+      .fv2.fv-kozep .fv-opciok{grid-template-columns:1fr}
+      .fp2 .fpar-racs{gap:8px 40px}
+      .fv2 .feladat-opcio{font-size:16px;min-height:52px}
+  }
+  /* KICSI TELEFON (320–380 px): minden elem kényelmesen koppintható marad (min. 44 px magas). */
+  @media (max-width:380px){
+      .fv2,.fp2,.fs2{padding:10px;border-radius:14px}
+      .fv2 .feladat-opcio{font-size:15px;padding:10px 12px;gap:10px;min-height:48px}
+      .fv2 .fv-betu{flex-basis:28px;height:28px;font-size:14px}
+      .fv2 .fv-opciok{gap:8px}
+      .fp2 .fpar-racs{gap:8px 28px}
+      .fp2 .fpar-elem{font-size:14px;padding:10px 8px;min-height:46px}
+      .fs2 .fsor-mozdony{font-size:28px}
+      .fs2 .fsor-kocsi{font-size:13px;padding:5px 8px 10px}
+      .fs2 .fsor-ures{left:48px;font-size:13px}
+      .fs2 .fsor-elem{min-height:46px}
+  }
 
   /* ── 9–11 év: tárgyszerű, világos, a lépések látszanak ── */
   .kor-kozep .munkater{background:#fbfcfd;border-color:#dae4ee}
@@ -10037,17 +10138,47 @@
     }
 
     // Válaszgombok: minden tantárgynál működik, nem csak matekban.
+    // JELENET (2026-10-30): a kisebbeknek kvízműsor (színes táblák, A/B/C
+    // betűkorong, égősor), a felsősöknek letisztult „döntéslap” – ott az
+    // A/B/C/D (vagy 1–4) billentyűvel is lehet választani. A logika és a
+    // tanárnak menő válasz UGYANAZ, mint eddig: a gomb szövege megy el.
     function valasztGombok(f) {
         var doboz = document.createElement('div');
-        doboz.className = 'feladat feladat-valaszt';
-        f.opciok.forEach(function (opcio) {
+        doboz.className = 'feladat feladat-valaszt fv2';
+        var ES = (document.documentElement.lang || '').slice(0, 2) === 'es';
+        var BETU = 'ABCDEFGH';
+        doboz.innerHTML = '<div class="fv-egosor" aria-hidden="true"></div>' +
+            '<div class="fv-fej" aria-hidden="true">' + (ES ? 'ELIGE UNA' : 'VÁLASSZ EGYET') + '<span class="fv-bill"> · ' + (ES ? 'TECLAS A–' : 'BILLENTYŰ A–') +
+            BETU.charAt(Math.max(0, f.opciok.length - 1)) + '</span></div><div class="fv-opciok"></div>';
+        var hely = doboz.lastChild, gombok = [];
+        if (f.opciok.some(function (o) { return String(o).length > 26; })) { doboz.classList.add('fv-hosszu'); }
+        if (f.opciok.some(function (o) { return String(o).length > 12; })) { doboz.classList.add('fv-kozep'); }
+        f.opciok.forEach(function (opcio, k) {
             var g = document.createElement('button');
             g.type = 'button';
             g.className = 'feladat-opcio';
-            g.textContent = opcio;
-            g.addEventListener('click', function () { feladatKuld(doboz, opcio); });
-            doboz.appendChild(g);
+            g.style.setProperty('--fvsz', ['#2F8FD8', '#E8505B', '#22A06B', '#F5A01E', '#8A5CD6', '#E0609B'][k % 6]);
+            var b = document.createElement('span'); b.className = 'fv-betu'; b.textContent = BETU.charAt(k);
+            var t = document.createElement('span'); t.className = 'fv-sz'; t.textContent = opcio;
+            g.appendChild(b); g.appendChild(t);
+            g.addEventListener('click', function () {
+                if (doboz.classList.contains('feladat-kesz')) { return; }
+                gombok.forEach(function (x) { x.classList.toggle('fv-valasztott', x === g); });
+                feladatKuld(doboz, opcio);
+            });
+            gombok.push(g);
+            hely.appendChild(g);
         });
+        function billentyu(e) {
+            if (!doboz.isConnected) { document.removeEventListener('keydown', billentyu); return; }
+            if (doboz.classList.contains('feladat-kesz') || e.ctrlKey || e.metaKey || e.altKey) { return; }
+            var cel = e.target && e.target.tagName;
+            if (cel === 'INPUT' || cel === 'TEXTAREA' || (e.target && e.target.isContentEditable)) { return; }
+            var k = BETU.indexOf((e.key || '').toUpperCase());
+            if (k < 0 && /^[1-8]$/.test(e.key || '')) { k = +e.key - 1; }
+            if (k >= 0 && k < gombok.length) { e.preventDefault(); gombok[k].click(); }
+        }
+        document.addEventListener('keydown', billentyu);
         return doboz;
     }
 
@@ -10091,24 +10222,126 @@
     // PÁROSÍTÁS. Bal oldalon a szavak, jobb oldalon a jelentések keverve.
     // A gyerek rákattint egy balra, majd egy jobbra – összekapcsolódnak,
     // és azonos színt kapnak. Nyelvtől történelemig minden tárgyhoz jó.
+    // JELENET (2026-10-30): a párokat egy ÍVELT VONAL köti össze (kicsiknek
+    // vastag, színes zsinór, felsősöknek vékony „kábel” egy kapcsolótáblán).
+    // Egy már összekötött elemre koppintva a pár FELBOMLIK – eddig nem
+    // lehetett javítani, a régi szín rajta maradt.
     function parositas(f) {
         var doboz = document.createElement('div');
-        doboz.className = 'feladat feladat-parosit';
+        doboz.className = 'feladat feladat-parosit fp2';
         var racs = document.createElement('div');
         racs.className = 'fpar-racs';
         doboz.appendChild(racs);
 
         var balOszlop = document.createElement('div');
         var jobbOszlop = document.createElement('div');
-        balOszlop.className = 'fpar-oszlop';
-        jobbOszlop.className = 'fpar-oszlop';
+        balOszlop.className = 'fpar-oszlop fpar-bal';
+        jobbOszlop.className = 'fpar-oszlop fpar-jobb';
         racs.appendChild(balOszlop);
         racs.appendChild(jobbOszlop);
+        var NS = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(NS, 'svg');
+        svg.setAttribute('class', 'fpar-vonalak');
+        svg.setAttribute('aria-hidden', 'true');
+        racs.appendChild(svg);
 
         var SZINEK = ['#2f8fd8', '#ef5f5f', '#17b8a6', '#7b5bd6', '#f5a623', '#e0609b'];
         var kivalasztottBal = null;
-        var parok = {};          // bal szöveg -> jobb szöveg
-        var kovSzin = 0;
+        var kotesek = [];        // [{bal: gomb, jobb: gomb, szin}]
+
+        function kotesE(g) {
+            for (var i = 0; i < kotesek.length; i++) {
+                if (kotesek[i].bal === g || kotesek[i].jobb === g) { return kotesek[i]; }
+            }
+            return null;
+        }
+        function bont(k) {
+            kotesek.splice(kotesek.indexOf(k), 1);
+            [k.bal, k.jobb].forEach(function (g) { g.classList.remove('fpar-kesz'); g.style.removeProperty('--fpsz'); });
+        }
+        function szabadSzin() {
+            for (var i = 0; i < SZINEK.length; i++) {
+                if (!kotesek.some(function (k) { return k.szin === SZINEK[i]; })) { return SZINEK[i]; }
+            }
+            return SZINEK[kotesek.length % SZINEK.length];
+        }
+        function rajzol() {
+            var r = racs.getBoundingClientRect();
+            if (!r.width) { return; }
+            svg.setAttribute('viewBox', '0 0 ' + r.width + ' ' + r.height);
+            svg.setAttribute('width', r.width); svg.setAttribute('height', r.height);
+            while (svg.firstChild) { svg.removeChild(svg.firstChild); }
+            kotesek.forEach(function (k) {
+                var a = k.bal.getBoundingClientRect(), b = k.jobb.getBoundingClientRect();
+                var x1 = a.right - r.left, y1 = a.top + a.height / 2 - r.top;
+                var x2 = b.left - r.left, y2 = b.top + b.height / 2 - r.top, dx = Math.max(18, (x2 - x1) * 0.5);
+                var ut = document.createElementNS(NS, 'path');
+                ut.setAttribute('d', 'M' + x1 + ',' + y1 + ' C' + (x1 + dx) + ',' + y1 + ' ' + (x2 - dx) + ',' + y2 + ' ' + x2 + ',' + y2);
+                ut.setAttribute('stroke', k.szin);
+                svg.appendChild(ut);
+            });
+        }
+        if (window.ResizeObserver) { new ResizeObserver(rajzol).observe(racs); }
+
+        function kot(bal, jobb) {
+            [kotesE(bal), kotesE(jobb)].forEach(function (k) { if (k && kotesek.indexOf(k) >= 0) { bont(k); } });
+            var uj = {bal: bal, jobb: jobb, szin: szabadSzin()};
+            kotesek.push(uj);
+            [bal, jobb].forEach(function (x) { x.classList.add('fpar-kesz'); x.style.setProperty('--fpsz', uj.szin); });
+            if (kivalasztottBal) { kivalasztottBal.classList.remove('fpar-aktiv'); }
+            kivalasztottBal = null;
+            rajzol();
+        }
+
+        // HÚZÁS (2026-11-03, Sándor: „mobilon is össze tudja húzni”): az ujjal
+        // vagy egérrel egy elemről a túloldali párjára húzva is összeköt.
+        // A koppintás ugyanúgy működik. Az elemeken a böngésző NEM görget
+        // (touch-action: none) – különben a ferde húzást görgetésnek venné, és
+        // megszakítaná. Görgetni az elemek közötti részen lehet.
+        var huz = null, huzottMost = false, ideig = null;
+        function elemAlatta(x, y) {
+            var e = document.elementFromPoint(x, y);
+            e = e && e.closest ? e.closest('.fpar-elem') : null;
+            return e && racs.contains(e) ? e : null;
+        }
+        function huzasRajz(x, y) {
+            var r = racs.getBoundingClientRect(), a = huz.g.getBoundingClientRect();
+            var x1 = (huz.g.dataset.oldal === 'bal' ? a.right : a.left) - r.left, y1 = a.top + a.height / 2 - r.top;
+            var x2 = x - r.left, y2 = y - r.top, dx = (x2 - x1) * 0.5;
+            if (!ideig) { ideig = document.createElementNS(NS, 'path'); ideig.setAttribute('class', 'fpar-ideig'); }
+            ideig.setAttribute('d', 'M' + x1 + ',' + y1 + ' C' + (x1 + dx) + ',' + y1 + ' ' + (x2 - dx) + ',' + y2 + ' ' + x2 + ',' + y2);
+            if (ideig.parentNode !== svg) { svg.appendChild(ideig); }
+        }
+        function huzasVege(e, ervenyes) {
+            document.removeEventListener('pointermove', huzasMozog);
+            document.removeEventListener('pointerup', huzasFel);
+            document.removeEventListener('pointercancel', huzasMegszakad);
+            if (!huz) { return; }
+            var h = huz; huz = null;
+            racs.querySelectorAll('.fpar-cel').forEach(function (x) { x.classList.remove('fpar-cel'); });
+            racs.classList.remove('fpar-huz');
+            if (ideig && ideig.parentNode) { ideig.parentNode.removeChild(ideig); }
+            if (!h.megy) { return; }
+            huzottMost = true; setTimeout(function () { huzottMost = false; }, 0);
+            var cel = ervenyes ? elemAlatta(e.clientX, e.clientY) : null;
+            if (cel && cel.dataset.oldal !== h.g.dataset.oldal) {
+                kot(h.g.dataset.oldal === 'bal' ? h.g : cel, h.g.dataset.oldal === 'bal' ? cel : h.g);
+            } else { rajzol(); }
+        }
+        function huzasMozog(e) {
+            if (!huz || e.pointerId !== huz.id) { return; }
+            if (!huz.megy) {
+                if (Math.abs(e.clientX - huz.x) + Math.abs(e.clientY - huz.y) < 10) { return; }
+                huz.megy = true; racs.classList.add('fpar-huz');
+                var k = kotesE(huz.g); if (k) { bont(k); rajzol(); }
+            }
+            huzasRajz(e.clientX, e.clientY);
+            var cel = elemAlatta(e.clientX, e.clientY);
+            racs.querySelectorAll('.fpar-cel').forEach(function (x) { if (x !== cel) { x.classList.remove('fpar-cel'); } });
+            if (cel && cel.dataset.oldal !== huz.g.dataset.oldal) { cel.classList.add('fpar-cel'); }
+        }
+        function huzasFel(e) { if (huz && e.pointerId === huz.id) { huzasVege(e, true); } }
+        function huzasMegszakad(e) { if (huz && e.pointerId === huz.id) { huzasVege(e, false); } }
 
         function gomb(szoveg, oldal) {
             var g = document.createElement('button');
@@ -10116,30 +10349,39 @@
             g.className = 'fpar-elem';
             g.textContent = szoveg;
             g.dataset.oldal = oldal;
+            g.addEventListener('pointerdown', function (e) {
+                if (doboz.classList.contains('feladat-kesz') || huz || (e.pointerType === 'mouse' && e.button !== 0)) { return; }
+                huz = {g: g, id: e.pointerId, x: e.clientX, y: e.clientY, megy: false};
+                try { g.releasePointerCapture(e.pointerId); } catch (x) {}
+                document.addEventListener('pointermove', huzasMozog);
+                document.addEventListener('pointerup', huzasFel);
+                document.addEventListener('pointercancel', huzasMegszakad);
+            });
             g.addEventListener('click', function () {
-                if (doboz.classList.contains('feladat-kesz')) { return; }
+                if (doboz.classList.contains('feladat-kesz') || huzottMost) { return; }
+                var k = kotesE(g);
                 if (oldal === 'bal') {
+                    if (k) { bont(k); }
                     if (kivalasztottBal) { kivalasztottBal.classList.remove('fpar-aktiv'); }
-                    kivalasztottBal = (kivalasztottBal === g) ? null : g;
+                    kivalasztottBal = (kivalasztottBal === g && !k) ? null : g;
                     if (kivalasztottBal) { g.classList.add('fpar-aktiv'); }
                 } else if (kivalasztottBal) {
-                    var szin = SZINEK[kovSzin % SZINEK.length];
-                    kovSzin++;
-                    kivalasztottBal.classList.remove('fpar-aktiv');
-                    kivalasztottBal.classList.add('fpar-kesz');
-                    g.classList.add('fpar-kesz');
-                    kivalasztottBal.style.borderColor = szin;
-                    g.style.borderColor = szin;
-                    kivalasztottBal.style.color = szin;
-                    g.style.color = szin;
-                    parok[kivalasztottBal.textContent] = g.textContent;
-                    kivalasztottBal = null;
+                    kot(kivalasztottBal, g);
+                    return;
+                } else if (k) {
+                    bont(k);
                 }
+                rajzol();
             });
             return g;
         }
 
         f.parok.forEach(function (p) { balOszlop.appendChild(gomb(p[0], 'bal')); });
+        // A két oszlop a szövegek hosszához igazodik: „Államalapítás” ↔ „1000”
+        // esetén a bal oszlop szélesebb – így kis telefonon sem törik ketté a szó.
+        var hossz = function (i) { return Math.max.apply(null, f.parok.map(function (p) { return String(p[i]).length; })) || 1; };
+        var arany = Math.max(0.6, Math.min(1.7, hossz(0) / hossz(1)));
+        racs.style.gridTemplateColumns = 'minmax(0,' + arany.toFixed(2) + 'fr) minmax(0,1fr)';
         keverd(f.parok).forEach(function (p) { jobbOszlop.appendChild(gomb(p[1], 'jobb')); });
 
         var kesz = document.createElement('button');
@@ -10147,25 +10389,72 @@
         kesz.className = 'feladat-kesz-gomb';
         kesz.textContent = L.feladatKesz;
         kesz.addEventListener('click', function () {
-            var lista = Object.keys(parok).map(function (b) { return b + ' – ' + parok[b]; });
+            // A sorrend a bal oszlopé – így a tanár ugyanúgy olvassa, mint eddig.
+            var lista = [];
+            Array.prototype.forEach.call(balOszlop.children, function (g) {
+                var k = kotesE(g);
+                if (k) { lista.push(g.textContent + ' – ' + k.jobb.textContent); }
+            });
             if (!lista.length) { return; }
             feladatKuld(doboz, lista.join(', '));
         });
         doboz.appendChild(kesz);
+        setTimeout(rajzol, 60);
         return doboz;
     }
 
     // SORBARENDEZÉS. A gyerek a helyes sorrendben kattint rájuk; minden
     // kattintás sorszámot ad. Események időrendje, mese lépései, egy
     // kísérlet menete, mondatrészek – sok tárgynál ez a természetes feladat.
+    // JELENET (2026-10-30): a kiválasztott sorrend fent ÖSSZEÁLL – kicsiknek
+    // vonatként (mozdony + kocsik), felsősöknek számozott folyamatsorként
+    // (01 → 02 → …). Fent egy elemre koppintva visszakerül a „raktárba”.
+    // A tanárnak menő válasz ugyanaz: „1. … 2. …”.
     function sorbarendezes(f) {
         var doboz = document.createElement('div');
-        doboz.className = 'feladat feladat-sorrend';
+        doboz.className = 'feladat feladat-sorrend fs2';
         var sorrend = [];
+        var ES = (document.documentElement.lang || '').slice(0, 2) === 'es';
+
+        var sav = document.createElement('div');
+        sav.className = 'fsor-sav';
+        sav.innerHTML = '<span class="fsor-mozdony" aria-hidden="true"></span><div class="fsor-kocsik"></div>' +
+            '<span class="fsor-ures">' + (ES ? 'Toca los elementos en orden: aquí se va formando la secuencia.' : 'Koppints rájuk sorban – itt áll össze a sorrend.') + '</span>';
+        doboz.appendChild(sav);
+        var kocsik = sav.querySelector('.fsor-kocsik');
 
         var lista = document.createElement('div');
         lista.className = 'fsor-lista';
         doboz.appendChild(lista);
+        var SZIN = ['#2F8FD8', '#E8505B', '#22A06B', '#F5A01E', '#8A5CD6', '#E0609B'];
+
+        function frissit() {
+            lista.querySelectorAll('.fsor-elem').forEach(function (e) {
+                var i = sorrend.indexOf(e.lastChild.textContent);
+                e.firstChild.textContent = i >= 0 ? (i + 1) : '';
+                e.classList.toggle('fsor-valasztott', i >= 0);
+            });
+            kocsik.innerHTML = '';
+            sorrend.forEach(function (sz, i) {
+                var k = document.createElement('button');
+                k.type = 'button';
+                k.className = 'fsor-kocsi';
+                k.style.setProperty('--fssz', SZIN[i % SZIN.length]);
+                k.innerHTML = '<b></b><span></span>';
+                k.firstChild.textContent = i < 9 ? '0' + (i + 1) : String(i + 1);
+                k.lastChild.textContent = sz;
+                k.addEventListener('click', function () { valt(sz); });
+                kocsik.appendChild(k);
+            });
+            sav.classList.toggle('fsor-van', sorrend.length > 0);
+            kesz.disabled = sorrend.length < f.elemek.length;
+        }
+        function valt(szoveg) {
+            if (doboz.classList.contains('feladat-kesz')) { return; }
+            var hol = sorrend.indexOf(szoveg);
+            if (hol >= 0) { sorrend.splice(hol, 1); } else { sorrend.push(szoveg); }
+            frissit();
+        }
 
         keverd(f.elemek).forEach(function (szoveg) {
             var g = document.createElement('button');
@@ -10177,17 +10466,7 @@
             cim.textContent = szoveg;
             g.appendChild(jel);
             g.appendChild(cim);
-            g.addEventListener('click', function () {
-                if (doboz.classList.contains('feladat-kesz')) { return; }
-                var hol = sorrend.indexOf(szoveg);
-                if (hol >= 0) { sorrend.splice(hol, 1); } else { sorrend.push(szoveg); }
-                lista.querySelectorAll('.fsor-elem').forEach(function (e) {
-                    var sz = e.lastChild.textContent;
-                    var i = sorrend.indexOf(sz);
-                    e.firstChild.textContent = i >= 0 ? (i + 1) : '';
-                    e.classList.toggle('fsor-valasztott', i >= 0);
-                });
-            });
+            g.addEventListener('click', function () { valt(szoveg); });
             lista.appendChild(g);
         });
 
@@ -10202,6 +10481,7 @@
             }).join(' '));
         });
         doboz.appendChild(kesz);
+        frissit();
         return doboz;
     }
 
