@@ -2566,11 +2566,11 @@
 
     /* Rövid utasítás feladattípusonként. A tanár később saját szöveget is
        küldhet az "utasitas" mezőben – az mindig erősebb ennél. */
-    function alapUtasitas(tipus) {
+    function alapUtasitas(tipus, f) {
         if (DM[tipus]) { return ''; }
         /* Fejben számolós témakörben a számoló egyetlen mezőként jelenik meg –
            ott a „jobbról balra” utasítás értelmetlen. */
-        if (tipus === 'szamolo') { return fejbenSzamolosTemakor() ? '' : L.utasitasSzamolo; }
+        if (tipus === 'szamolo') { return (fejbenSzamolosTemakor() && !(f && f.oszlop)) ? '' : L.utasitasSzamolo; }
         if (tipus === 'osztas') { return L.utasitasOsztas; }
         if (tipus === 'parosit') { return L.utasitasParosit; }
         if (tipus === 'sorrend') { return L.utasitasSorrend; }
@@ -2667,7 +2667,7 @@
         if (!cim && feladat && feladat.kerdes) { cim = String(feladat.kerdes); }
         munkaterCim.textContent = cim || currentTopicName || '';
         munkaterUtasitas.textContent = (feladat && feladat.utasitas)
-            || alapUtasitas(feladat && feladat.tipus);
+            || alapUtasitas(feladat && feladat.tipus, feladat);
         munkater.hidden = false;
         if (munkaSav) { munkaSav.classList.add('van-munka'); }
         mobilFeladatLatszik();
@@ -8354,7 +8354,8 @@
 
     function feladatElem(f) {
         if (!f || !f.tipus) { return null; }
-        if (f.tipus === 'szamolo' && fejbenSzamolosTemakor()) {
+        // "oszlop": a gyerek kifejezetten egymás alá kérte – akkor fejben számolás órán is oszlop.
+        if (f.tipus === 'szamolo' && fejbenSzamolosTemakor() && !f.oszlop) {
             var jel = f.jel || '+';
             return szamMezo({ muvelet: String(f.a) + ' ' + jel + ' ' + String(f.b) });
         }

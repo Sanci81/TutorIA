@@ -3867,7 +3867,13 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         if _jel == "÷":
             return _osztas_feladat(adat.get("a"), adat.get("b"),
                                    temakor=temakor, es_tanterv=es_tanterv)
-        return _szamolo_feladat(_jel, adat.get("a"), adat.get("b"))
+        _osz = _szamolo_feladat(_jel, adat.get("a"), adat.get("b"))
+        # 2026-11-03: fejben számolás órán a gyerek „egymás alá” kérte a számokat, a
+        # tanár szamolo-t adott, de a böngésző ilyen témakörben egy sorba írta át
+        # („Most tényleg egymás alatt” – nem volt). Az "oszlop": true ezt felülírja.
+        if _osz and adat.get("oszlop") is True:
+            _osz["oszlop"] = True
+        return _osz
 
     if tipus == "szam":
         # EGY SZÁMOT KELL KISZÁMOLNI ÉS BEÍRNI. Fejben számoláshoz ez való,
@@ -10787,6 +10793,14 @@ def _build_chat_system_prompt(*args, **kwargs) -> str:
         "(<FELADAT>). Al FINAL de cada respuesta así escribe <KITERO> (no lo ve). Cuando volváis a la "
         "lección, ya NO lo escribas. No cuenta como parte de la lección ni la da por terminada.\n")
     prompt += _TANITO_TANAR_SZABALY
+    prompt += (
+        "\n\n=== HA A GYEREK EGYMÁS ALÁ (OSZLOPBA) KÉRI A SZÁMOKAT ===\n"
+        "Akkor ezt add, a végén \"oszlop\":true – csak így jelenik meg egymás alatt:\n"
+        "   <FELADAT>{\"tipus\":\"szamolo\",\"jel\":\"+\",\"a\":3000,\"b\":240,\"oszlop\":true}</FELADAT>\n"
+        "SOHA ne állítsd, hogy a táblán valami megváltozott (pl. „most egymás alatt vannak”), ha "
+        "nem küldtél hozzá új <FELADAT>-ot.\n"
+        "Si el niño pide los números «uno debajo del otro» (en columna): usa tipus szamolo con "
+        "\"oszlop\":true. NUNCA digas que la pizarra ha cambiado si no has enviado un <FELADAT> nuevo.\n")
     # Személyes-adat szűrő (2026-10-28): a gyerek üzenetében [elrejtve] áll.
     prompt += (
         "\n\n=== HA A GYEREK ÜZENETÉBEN [elrejtve] ÁLL ===\n"
@@ -11029,7 +11043,9 @@ Tema actual: {current_topic}
         prompt += (
             "\nSi el niño acaba de RESPONDER a una pregunta tuya, empieza tu mensaje con "
             "<EREDMENY:jo> si la respuesta es correcta o <EREDMENY:rossz> si no lo es "
-            "(oculto, el niño no lo ve). Si no ha respondido a nada, no lo pongas.\n"
+            "(oculto, el niño no lo ve). Si no ha respondido a nada, no lo pongas. Si solo pregunta, "
+            "pide algo, se queja («no es lo que pedí», «no lo entiendo») o escribe otra cosa, NO es una "
+            "respuesta: NO pongas <EREDMENY>.\n"
             "\nCuando hayas TERMINADO la materia del tema (oculto): <TOPIC_COMPLETE>\n"
             "Esto NO cierra la lección: solo abre la prueba final. La lección\n"
             "se cierra únicamente al aprobar la prueba, y el siguiente tema se\n"
@@ -11283,7 +11299,9 @@ Tema actual: {current_topic}
         prompt += (
             "\nSi el niño acaba de RESPONDER a una pregunta tuya, empieza tu mensaje con "
             "<EREDMENY:jo> si la respuesta es correcta o <EREDMENY:rossz> si no lo es "
-            "(oculto, el niño no lo ve). Si no ha respondido a nada, no lo pongas.\n"
+            "(oculto, el niño no lo ve). Si no ha respondido a nada, no lo pongas. Si solo pregunta, "
+            "pide algo, se queja («no es lo que pedí», «no lo entiendo») o escribe otra cosa, NO es una "
+            "respuesta: NO pongas <EREDMENY>.\n"
             "\nCuando hayas TERMINADO la materia del tema (oculto): <TOPIC_COMPLETE>\n"
             "Esto NO cierra la lección: solo abre la prueba final. La lección\n"
             "se cierra únicamente al aprobar la prueba, y el siguiente tema se\n"
@@ -11680,7 +11698,9 @@ Jelenlegi témakör: {current_topic}
     prompt += (
         "\nHa a gyerek épp VÁLASZOLT egy kérdésedre, az üzenetedet ezzel kezdd: "
         "<EREDMENY:jo>, ha jó a válasza, vagy <EREDMENY:rossz>, ha nem "
-        "(rejtett, a gyerek nem látja). Ha nem válaszolt semmire, ne írd ki.\n"
+        "(rejtett, a gyerek nem látja). Ha nem válaszolt semmire, ne írd ki. Ha csak kérdez, kér "
+        "valamit, panaszkodik („nem ezt kértem”, „nem értem”, „megint egymás mellé tetted”) vagy mást "
+        "ír, az NEM válasz: ilyenkor NE írj <EREDMENY>-t.\n"
         "\nHa VÉGIGVETTED a témakör anyagát (rejtett): <TOPIC_COMPLETE>\n"
         "Ez NEM zárja le a leckét, csak elindítja a záró tesztet. A leckét\n"
         "egyedül a sikeres teszt zárja le, és a következő lecke is csak\n"
