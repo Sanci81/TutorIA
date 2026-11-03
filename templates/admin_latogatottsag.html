@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Látogatottság · TutorIA{% endblock %}
+
+{% block content %}
+{# LÁTOGATOTTSÁG (2026-11-03): saját számláló, IP nélkül. Csak a nyilvános
+   oldalakat és csak a be nem jelentkezett látogatókat számolja; a /nem-szamolj
+   címmel megjelölt eszközöket (Sándor gépei) kihagyja. #}
+<style>
+  .lt{max-width:980px;margin:24px auto 60px;padding:0 16px;font-family:inherit;color:#1d2b25}
+  .lt h1{font-size:26px;margin:0 0 4px}
+  .lt .al{color:#5f7469;margin:0 0 18px}
+  .lt .kartyak{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+  .lt .k{background:#fff;border:1px solid #e3eee8;border-radius:14px;padding:14px 16px}
+  .lt .k b{display:block;font-size:28px;color:#14532d;line-height:1.1}
+  .lt .k span{font-size:13px;color:#5f7469;font-weight:700}
+  .lt .forras{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+  .lt .forras span{background:#eef8f2;border:1px solid #bfe5ce;border-radius:999px;padding:4px 12px;font-size:13.5px;font-weight:700;color:#1e7a4d}
+  .lt table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e3eee8;border-radius:14px;overflow:hidden}
+  .lt th,.lt td{padding:9px 12px;text-align:left;font-size:14px;border-bottom:1px solid #eef3f0}
+  .lt th{background:#f4faf6;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:#5f7469}
+  .lt td.sz{text-align:right;font-variant-numeric:tabular-nums}
+  .lt td small{color:#5f7469}
+  .lt .nul td{color:#a3b3ab}
+  .lt .valt a{margin-right:10px;font-weight:700}
+  .lt .figy{background:#fff7ea;border:1px solid #f3ddb4;border-radius:12px;padding:10px 14px;margin:0 0 16px;font-size:14px}
+  .lt .ok{background:#eef8f2;border:1px solid #bfe5ce;border-radius:12px;padding:10px 14px;margin:0 0 16px;font-size:14px}
+  @media (max-width:640px){.lt .kartyak{grid-template-columns:repeat(2,minmax(0,1fr))}.lt .mob-rejt{display:none}}
+</style>
+<div class="lt">
+  <h1>Látogatottság</h1>
+  <p class="al">Nyilvános oldalak (főoldal, csomagok, regisztráció, GYIK, blog), be nem jelentkezett látogatók. Robotok és a saját eszközeid nélkül.</p>
+  {% if kizarva %}
+  <p class="ok">✅ Ez az eszköz ki van zárva a számolásból.</p>
+  {% else %}
+  <p class="figy">⚠️ Ez az eszköz MÉG számít. Nyisd meg egyszer: <a href="{{ url_for('nem_szamolj') }}">/nem-szamolj</a> – minden gépeden és a telefonodon is.</p>
+  {% endif %}
+
+  <div class="kartyak">
+    <div class="k"><b>{{ osszes.latogato }}</b><span>látogató az utolsó 7 napban</span></div>
+    <div class="k"><b>{{ osszes.megnyitas }}</b><span>oldalmegnyitás</span></div>
+    <div class="k"><b>{{ (100 * osszes.mobil / osszes.latogato)|round|int if osszes.latogato else 0 }}%</b><span>telefonról</span></div>
+    <div class="k"><b>{{ osszes.reg }}</b><span>új regisztráció</span></div>
+  </div>
+
+  {% if forras_het %}
+  <div class="forras">{% for k, v in forras_het %}<span>{{ {'facebook':'Facebook','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Oldalon belül'}.get(k, k) }}: {{ v }}</span>{% endfor %}</div>
+  {% endif %}
+
+  <p class="valt">Időszak:
+    {% for n in [7, 30, 90] %}<a href="{{ url_for('admin_latogatottsag', napok=n) }}"{% if n == napok %} style="text-decoration:underline"{% endif %}>{{ n }} nap</a>{% endfor %}
+  </p>
+  <table>
+    <tr><th>Nap</th><th class="sz">Látogató</th><th class="sz">Megnyitás</th><th class="sz mob-rejt">Telefon</th><th class="mob-rejt">Honnan</th><th class="sz">Regisztráció</th></tr>
+    {% for x in sorok %}
+    <tr class="{{ 'nul' if not x.latogato and not x.reg }}">
+      <td>{{ x.nap.strftime('%m.%d.') }} <small>{{ ['H','K','Sze','Cs','P','Szo','V'][x.nap.weekday()] }}</small></td>
+      <td class="sz">{{ x.latogato }}</td>
+      <td class="sz">{{ x.megnyitas }}</td>
+      <td class="sz mob-rejt">{{ x.mobil }}</td>
+      <td class="mob-rejt"><small>{% for k, v in x.forras.items() %}{{ {'facebook':'Facebook','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Belső'}.get(k, k) }} {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</small></td>
+      <td class="sz">{{ x.reg }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <p class="al" style="margin-top:14px">A Facebook-hirdetés linkjének végére írd: <code>?utm_source=facebook_hirdetes</code> – így külön sorban látod, hányan jöttek a hirdetésből.</p>
+</div>
+{% endblock %}

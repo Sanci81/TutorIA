@@ -3602,3 +3602,79 @@ def count_child_cards(child_id: int) -> int:
         )
     finally:
         db.close()
+
+
+# ══ LÁTOGATOTTSÁG (2026-11-03, Sándor) ═══════════════════════════════════
+# Hányan nézik meg az oldalt – SAJÁT számláló, külső szolgáltató nélkül.
+# IP-címet NEM tárolunk: a "latogato" egy naponta cserélődő, visszafejthetetlen
+# kód (a napi titokból + IP + böngésző). Másnapra ugyanaz az ember új kódot
+# kap, így senkit nem lehet napokon át követni. Bejelentkezett szülőt és a
+# „ne számolj” sütivel megjelölt gépet (Sándor gépei) nem számoljuk.
+class Latogatas(Base):
+    __tablename__ = "latogatasok"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    nap: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    latogato: Mapped[str] = mapped_column(String(16), nullable=False)
+    utvonal: Mapped[str] = mapped_column(String(120), nullable=False, server_default="/")
+    eszkoz: Mapped[str] = mapped_column(String(10), nullable=False, server_default="gep")
+    forras: Mapped[str] = mapped_column(String(40), nullable=False, server_default="kozvetlen")
+    ido: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+def latogatas_rogzit(nap: date, latogato: str, utvonal: str, eszkoz: str, forras: str) -> None:
+    db = _session()
+    try:
+        db.add(Latogatas(nap=nap, latogato=latogato[:16], utvonal=(utvonal or "/")[:120],
+                         eszkoz=(eszkoz or "gep")[:10], forras=(forras or "kozvetlen")[:40]))
+        db.commit()
+    except Exception:
+        db.rollback()
+        logger.warning("latogatas_rogzit sikertelen", exc_info=True)
+    finally:
+        db.close()
+
+
+def latogatas_osszesites(napok: int = 30) -> list[dict[str, Any]]:
+    """Naponként: egyedi látogató, oldalmegnyitás, mobilos látogató, források,
+    és hány új szülői fiók jött létre aznap. A legfrissebb nap van elöl."""
+    kezdo = date.today() - timedelta(days=max(1, napok) - 1)
+    db = _session()
+    try:
+        sorok = db.execute(
+            select(Latogatas.nap, Latogatas.latogato, Latogatas.eszkoz, Latogatas.forras)
+            .where(Latogatas.nap >= kezdo)
+        ).all()
+        regek = db.execute(
+            select(Parent.created_at).where(Parent.created_at >= datetime.combine(kezdo, datetime.min.time()))
+        ).all()
+    finally:
+        db.close()
+    napi: dict[date, dict[str, Any]] = {}
+    for i in range(max(1, napok)):
+        d = kezdo + timedelta(days=i)
+        napi[d] = {"nap": d, "latogatok": set(), "megnyitas": 0, "mobil": set(), "forras": {}, "reg": 0}
+    for nap, ki, eszkoz, forras in sorok:
+        n = napi.get(nap)
+        if n is None:
+            continue
+        n["megnyitas"] += 1
+        if ki not in n["latogatok"]:
+            n["forras"][forras] = n["forras"].get(forras, 0) + 1
+        n["latogatok"].add(ki)
+        if eszkoz in ("mobil", "tablet"):
+            n["mobil"].add(ki)
+    for (letrejott,) in regek:
+        if letrejott is None:
+            continue
+        d = letrejott.date() if hasattr(letrejott, "date") else letrejott
+        if d in napi:
+            napi[d]["reg"] += 1
+    ki = []
+    for d in sorted(napi, reverse=True):
+        n = napi[d]
+        ki.append({"nap": d, "latogato": len(n["latogatok"]), "megnyitas": n["megnyitas"],
+                   "mobil": len(n["mobil"]), "forras": dict(sorted(n["forras"].items(), key=lambda x: -x[1])),
+                   "reg": n["reg"]})
+    return ki
+

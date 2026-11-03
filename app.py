@@ -10,6 +10,7 @@ Funkciók (1. fázis):
 import base64
 import difflib
 import hashlib
+import hmac
 import json
 import logging
 import math
@@ -331,6 +332,61 @@ def _biztonsagi_fejlecek(resp):
     resp.headers.setdefault("Permissions-Policy", "camera=(), geolocation=(), microphone=(self)")
     if _ELES:
         resp.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+    return resp
+
+
+# ── LÁTOGATOTTSÁG (2026-11-03, Sándor) ───────────────────────────────────
+# Csak a NYILVÁNOS oldalakat számoljuk (főoldal, csomagok, regisztráció…), és
+# csak a be NEM jelentkezett látogatót – a szülők a saját fiókjukat nézik, az
+# nem érdeklődő. Sándor gépeit a „ne számolj” süti zárja ki (/nem-szamolj).
+# IP-t nem tárolunk: naponta cserélődő, visszafejthetetlen kódot (HMAC).
+_LATOGATAS_OLDALAK = {"index", "register", "csomagok", "gyik", "adatvedelem", "feltetelek",
+                      "blog", "blog_ai_tanulas", "login"}
+_NEM_SZAMOL_SUTI = "tutoria_nem_szamol"
+_ROBOT_UA = re.compile(
+    r"bot|crawl|spider|slurp|facebookexternalhit|facebot|meta-external|preview|curl|wget|python|httpx|"
+    r"go-http|headless|lighthouse|pingdom|uptime|monitor|scan|semrush|ahrefs|bing|yandex|whatsapp|"
+    r"telegram|discord|node-fetch|axios|java/|okhttp|postman|insomnia", re.IGNORECASE)
+
+
+def _latogatas_forras() -> str:
+    utm = (request.args.get("utm_source") or "").strip().lower()
+    if utm:
+        return re.sub(r"[^a-z0-9_.-]", "", utm)[:40] or "utm"
+    ref = (request.headers.get("Referer") or "").lower()
+    if not ref:
+        return "kozvetlen"
+    gep = re.sub(r"^https?://", "", ref).split("/")[0].split(":")[0]
+    sajat = (request.host or "").split(":")[0].lower()
+    if gep == sajat or gep.endswith("tutoriacademia.com") or gep.endswith("railway.app"):
+        return "belso"
+    if "facebook" in gep or gep in ("fb.com", "l.facebook.com", "m.facebook.com", "lm.facebook.com") or "fb." in gep:
+        return "facebook"
+    if "instagram" in gep:
+        return "instagram"
+    if "google" in gep:
+        return "google"
+    return gep[:40] or "egyeb"
+
+
+@app.after_request
+def _latogatas_szamol(resp):
+    try:
+        if (request.method == "GET" and resp.status_code == 200
+                and request.endpoint in _LATOGATAS_OLDALAK
+                and not session.get("parent_id")
+                and request.cookies.get(_NEM_SZAMOL_SUTI) != "1"):
+            ua = request.headers.get("User-Agent") or ""
+            if ua and not _ROBOT_UA.search(ua):
+                ip = (request.headers.get("X-Forwarded-For") or request.remote_addr or "").split(",")[0].strip()
+                ma = date.today()
+                kulcs = (str(app.config.get("SECRET_KEY") or "") + ma.isoformat()).encode()
+                ki = hmac.new(kulcs, (ip + "|" + ua).encode(), hashlib.sha256).hexdigest()[:16]
+                eszkoz = ("tablet" if re.search(r"ipad|tablet", ua, re.I)
+                          else "mobil" if re.search(r"mobi|android|iphone", ua, re.I) else "gep")
+                database.latogatas_rogzit(ma, ki, request.path, eszkoz, _latogatas_forras())
+    except Exception:
+        logger.warning("Latogatas szamlalo hiba", exc_info=True)
     return resp
 
 
@@ -17021,6 +17077,45 @@ def _gyerek_koltseg(gy: dict) -> float:
            + gy["be_token"] / 1_000_000 * _dij("BE_1M", 0.10)
            + gy["ki_token"] / 1_000_000 * _dij("KI_1M", 0.60))
     return usd * _dij("EUR_USD", 0.92)
+
+
+@app.route("/nem-szamolj")
+@login_required
+def nem_szamolj():
+    """Sándor gépein/telefonján egyszer megnyitva: ezt az eszközt a látogatottság
+    nem számolja (2 évig, vagy amíg a sütit nem törli). Csak üzemeltetőnek."""
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
+    resp = Response(
+        "<!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
+        "<div style=\"font:17px/1.6 system-ui,sans-serif;max-width:560px;margin:60px auto;padding:0 20px\">"
+        "<h2>✅ Kész</h2><p>Ezen az eszközön (ebben a böngészőben) mostantól <b>nem számoljuk</b> a "
+        "látogatást. A többi gépeden és a telefonodon is nyisd meg egyszer ezt a címet.</p>"
+        "<p><a href='/admin/latogatottsag'>Látogatottság megnézése →</a></p></div>", mimetype="text/html")
+    resp.set_cookie(_NEM_SZAMOL_SUTI, "1", max_age=2 * 365 * 24 * 3600, samesite="Lax",
+                    secure=_ELES, httponly=True)
+    return resp
+
+
+@app.route("/admin/latogatottsag")
+@login_required
+def admin_latogatottsag():
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
+    napok = max(7, min(90, int(request.args.get("napok", 30) or 30)))
+    sorok = database.latogatas_osszesites(napok)
+    het = sorok[:7]
+    osszes = {"latogato": sum(x["latogato"] for x in het), "megnyitas": sum(x["megnyitas"] for x in het),
+              "mobil": sum(x["mobil"] for x in het), "reg": sum(x["reg"] for x in het)}
+    forras_het: dict = {}
+    for x in het:
+        for k, v in x["forras"].items():
+            forras_het[k] = forras_het.get(k, 0) + v
+    return render_template("admin_latogatottsag.html", sorok=sorok, napok=napok, osszes=osszes,
+                           forras_het=sorted(forras_het.items(), key=lambda x: -x[1]),
+                           kizarva=request.cookies.get(_NEM_SZAMOL_SUTI) == "1")
 
 
 @app.route("/admin")
