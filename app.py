@@ -8641,6 +8641,9 @@ _FOREIGN_DETECT_CACHE: dict[str, dict[str, str]] = {}
 # Fordítva („Engem Leilának hívnak = Me llamo Leila”): „…, spanyolul így
 # mondjuk: …” – mindig annak a nyelvnek a nevével, AMIRE fordítunk. A számtan
 # („3 + 4 = 7”) érintetlen: ott nincs idegen részlet, marad az „egyenlő”.
+_MELYIK_SZOREND = re.compile(
+    r"\b([Mm]elyik(?:\s+[a-záéíóöőúüű]+){0,2})\s+(azt)\s+(jelenti|jelentik|jelentette)\b")
+_NEVELO_IDEGEN = re.compile(r"^(?:[Aa]z?)\s+(\S+)$")
 _NYELV_HATAROZO = {
     "hu": {"en": "angolul", "de": "németül", "es": "spanyolul", "fr": "franciául", "it": "olaszul",
            "pt": "portugálul", "la": "latinul", "ru": "oroszul", "ca": "katalánul", "hu": "magyarul"},
@@ -8781,6 +8784,12 @@ def _detect_foreign_words(text: str, base_lang: str) -> dict[str, str]:
             # Egybetűs találatot NEM fogadunk el önállóan: az "a" és az "I"
             # a magyar szövegben is előfordul, és mindent elrontana. Ezek úgyis
             # a hosszabb idegen mondat részeként jönnek vissza.
+            # „A vivir helyes” – a magyar névelő ne kerüljön az idegen részletbe
+            # (2026-11-04: a spanyol hang „a vivir”-t mondott). Csak névelő + EGY szó.
+            if base_lang == "hu":
+                _nm = _NEVELO_IDEGEN.match(w)
+                if _nm:
+                    w = _nm.group(1).strip(" .,;:!?\"'„”")
             if w and len(w) >= 2 and lg in FL_CODE_VOICES and w in text:
                 out[w] = lg
         if len(_FOREIGN_DETECT_CACHE) > 400:
@@ -10111,7 +10120,7 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"carroll","kerdes":"Coloca los números en su casilla.","a":"par","b":"mayor que 10","elemek":[["12",1,1],["4",1,0],["15",0,1],["7",0,0],["18",1,1],["3",0,0]]}</FELADAT>',
      'két szempont szerinti válogatás, táblázat → carroll', 'clasificar por dos criterios, tabla  → carroll'),
     ("igazhamis", {"*"}, 1, 8,
-     'IGAZ-HAMIS GYORSKÖR – 3–6 rövid állítás egymás után, a gyerek gyorsan dönt (ne legyen mind igaz vagy mind hamis). Az elem harmadik része egy ILLŐ EMOJI (kép az állítás fölé), a negyedik egy rövid MAGYARÁZAT (1 mondat), MIÉRT igaz vagy hamis – mindkettőt mindig add meg. A magyarázat a gyerek nyelvén szóljon, hétköznapi szavakkal (ne „táplálja kicsinyét”, hanem „anyatejjel eteti a kicsinyét”), de ne gügyögve; mondja ki a helyes tényt. Ismétléshez, óra végi összefoglaláshoz kiváló:\n'
+     'IGAZ-HAMIS GYORSKÖR – 3–6 rövid állítás egymás után, a gyerek gyorsan dönt (ne legyen mind igaz vagy mind hamis). Az elem harmadik része egy ILLŐ EMOJI (kép az állítás fölé), a negyedik egy rövid MAGYARÁZAT (1 mondat), MIÉRT igaz vagy hamis – mindkettőt mindig add meg. A magyarázat a gyerek nyelvén szóljon, hétköznapi szavakkal (ne „táplálja kicsinyét”, hanem „anyatejjel táplálja a kicsinyét”), de ne gügyögve; mondja ki a helyes tényt. Ismétléshez, óra végi összefoglaláshoz kiváló:\n'
      '   <FELADAT>{"tipus":"igazhamis","kerdes":"Igaz vagy hamis?","allitasok":[["A bálna emlős.",true,"🐋","Bár a tengerben él, levegőt vesz, mint mi, és a kicsinyét anyatejjel eteti – ezért emlős."],["A pók rovar.",false,"🕷️","A póknak 8 lába van, a rovaroknak csak 6 – a pók ezért nem rovar, hanem pókféle."],["A béka kétéltű.",true,"🐸","Az ebihal a vízben nő fel, a kifejlett béka pedig a szárazon is él – ezért kétéltű."],["A denevér madár.",false,"🦇","Tud repülni, de szőrös, és a kicsinyét anyatejjel eteti – tehát emlős, nem madár."]]}</FELADAT>',
      'VERDADERO/FALSO RÁPIDO – 3–6 afirmaciones cortas seguidas (no todas iguales). Tercer elemento: un emoji; cuarto: UNA frase que explique POR QUÉ es verdadero o falso, con palabras sencillas del niño pero sin infantilizar (ponlos siempre):\n'
      '   <FELADAT>{"tipus":"igazhamis","kerdes":"¿Verdadero o falso?","allitasok":[["La ballena es un mamífero.",true,"🐋","Aunque vive en el mar, respira aire como nosotros y alimenta a su cría con leche: por eso es mamífero."],["La araña es un insecto.",false,"🕷️","La araña tiene 8 patas y los insectos solo 6: no es un insecto, es un arácnido."],["La rana es un anfibio.",true,"🐸","El renacuajo crece en el agua y la rana adulta vive también en tierra: por eso es anfibio."],["El murciélago es un ave.",false,"🦇","Vuela, pero tiene pelo y alimenta a sus crías con leche: es un mamífero, no un ave."]]}</FELADAT>',
@@ -10991,6 +11000,18 @@ def _build_chat_system_prompt(*args, **kwargs) -> str:
         "(<FELADAT>). Al FINAL de cada respuesta así escribe <KITERO> (no lo ve). Cuando volváis a la "
         "lección, ya NO lo escribas. No cuenta como parte de la lección ni la da por terminada.\n")
     prompt += _TANITO_TANAR_SZABALY
+    # 2026-11-04 (Sándor): három nyelvi hiba a spanyolórán.
+    prompt += (
+        "\n\n=== MAGYAR SZÓREND ÉS IDEGEN SZAVAK ===\n"
+        "- Kérdőszós kérdésben a kérdőszó (melyik/mi/ki) KÖZVETLENÜL az ige előtt áll: „Melyik kérdés JELENTI AZT, "
+        "hogy …?”, „Melyik szó jelenti azt, hogy …?” – SOHA nem „melyik kérdés azt jelenti”.\n"
+        "- Idegen szóra mindig így hivatkozz: a „vivir” szó, a „llamarse” alak – a névelő a magyar szó (szó, alak, "
+        "kifejezés) elé kerüljön, ne közvetlenül az idegen szó elé („A vivir helyes” rossz: a felolvasó a névelőt is "
+        "idegenül mondja). Helyesen: „A „vivir” szó a helyes.”\n"
+        "- Választós kérdésben mindig mondd meg, MIT keresünk („Melyik jelenti azt, hogy »valakit valahogy hívnak«: a "
+        "llamarse vagy a llamar?”). Ha mindkét lehetőség létező szó, a magyarázatban mondd ki a különbséget is "
+        "(llamar = hívni valakit, pl. telefonon; llamarse = valahogy hívják). Soha ne kérdezd puszta „melyik a jó?”-val.\n"
+        "- Állatoknál: „anyatejjel táplálja a kicsinyét” (nem „eteti”).\n")
     prompt += (
         "\n\n=== HA A GYEREK EGYMÁS ALÁ (OSZLOPBA) KÉRI A SZÁMOKAT ===\n"
         "Akkor ezt add, a végén \"oszlop\":true – csak így jelenik meg egymás alatt:\n"
@@ -14232,6 +14253,10 @@ def child_chat_send(child_id: int):
 
     # A modell néha egy szó közepén ír át másik írásrendszerre ("интернетen").
     raw_reply = ellenoriz.latinra(raw_reply)
+    # MAGYAR SZÓREND (2026-11-04): „melyik kérdés azt jelenti” → „melyik kérdés
+    # jelenti azt”. A kérdőszó után közvetlenül az igének kell állnia.
+    if (_active_curriculum() or "HU").upper() != "ES":
+        raw_reply = _MELYIK_SZOREND.sub(lambda m: m.group(1) + " " + m.group(3) + " " + m.group(2), raw_reply)
 
     _remember_fl_words(raw_reply)
     # A gyakorló feladatot a NYERS válaszból olvassuk ki, mielőtt a jelölők
