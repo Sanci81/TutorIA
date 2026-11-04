@@ -8647,38 +8647,73 @@ _NYELV_HATAROZO = {
     "es": {"en": "en inglés", "de": "en alemán", "es": "en español", "fr": "en francés", "it": "en italiano",
            "pt": "en portugués", "la": "en latín", "ru": "en ruso", "ca": "en catalán", "hu": "en húngaro"},
 }
-_FORDITAS_SOR = re.compile(r"^(\s*(?:[-•*]\s*)?)(.*?\S)\s+=\s+(\S.*?)\s*$")
+# A „=” két oldalát RÖVIDEN nézzük: balra a mondathatárig, jobbra az első
+# pontig/zárójelig. 2026-11-04: „idioma = nyelv. Például: El español es un
+# idioma.” – a sor egészében mindkét oldalon volt spanyol, ezért maradt az
+# „egyenlő”. Így csak az „idioma” ↔ „nyelv” párt nézzük.
+_FORDITAS_JEL = re.compile(
+    r"(?P<bal>[^\n.!?:;=()\[\]]{1,70}?)[.!?]?[ \t]+=[ \t]+(?P<jobb>[^\n.!?;=(\[]{1,90})")
 
 
 def _forditas_kimondva(szoveg: str, idegen: dict, alap: str) -> str:
     if "=" not in (szoveg or "") or not idegen:
         return szoveg
-    reszek = [(k.lower(), (v or "").lower()[:2]) for k, v in idegen.items() if k and len(k) >= 2]
+    reszek = [(k.lower().strip(), (v or "").lower()[:2]) for k, v in idegen.items() if k and len(k.strip()) >= 2]
 
     def nyelve(darab: str) -> str | None:
-        d = darab.lower()
+        d = darab.lower().strip(" -•*\t\"„”'")
+        if not d:
+            return None
         for k, v in reszek:
-            if k in d:
+            # Az idegen részlet benne van ebben az oldalban (egész szóként)…
+            if re.search(r"(?<!\w)" + re.escape(k) + r"(?!\w)", d):
+                return v or "?"
+            # …vagy ez az oldal (egy szó / rövid kifejezés) egy felismert idegen
+            # mondat része: „idioma” ⊂ „El español es un idioma”.
+            if len(d) >= 3 and re.search(r"(?<!\w)" + re.escape(d) + r"(?!\w)", k):
                 return v or "?"
         return None
 
     hat = _NYELV_HATAROZO.get(alap, _NYELV_HATAROZO["hu"])
-    ki = []
-    for sor in szoveg.split("\n"):
-        m = _FORDITAS_SOR.match(sor)
-        if m and m.group(2).count("=") == 0 and m.group(3).count("=") == 0:
-            elo, bal, jobb = m.group(1), m.group(2), m.group(3)
-            nb, nj = nyelve(bal), nyelve(jobb)
-            bal_v = bal.rstrip(" .")
-            if nb and not nj:
-                kotes = ", en español significa: " if alap == "es" else ", magyarul azt jelenti: "
-                sor = elo + bal_v + kotes + jobb
-            elif nj and not nb:
-                nev = hat.get(nj) or ("en otro idioma" if alap == "es" else "idegen nyelven")
-                kotes = f", {nev} se dice: " if alap == "es" else f", {nev} így mondjuk: "
-                sor = elo + bal_v + kotes + jobb
-        ki.append(sor)
-    return "\n".join(ki)
+    talalat = []
+    for m in _FORDITAS_JEL.finditer(szoveg):
+        bal, jobb = m.group("bal"), m.group("jobb")
+        if re.search(r"\d\s*[+\-−×x*·:/÷]?\s*$", bal) and re.search(r"^\s*[\d(]", jobb):
+            continue                      # számtan: „3 + 4 = 7”
+        if not re.search(r"[^\W\d_]{2}", bal) or not re.search(r"[^\W\d_]{2}", jobb):
+            continue
+        nb, nj = nyelve(bal), nyelve(jobb)
+        irany = ("bal", nb) if (nb and not nj) else (("jobb", nj) if (nj and not nb) else None)
+        sor = szoveg.count("\n", 0, m.start())
+        talalat.append([m, irany, sor])
+    # Egymás alatti sorok egy csoport („soy = én vagyok” / „eres = te vagy”):
+    # ha egyikük iránya ismert, a többi fel nem ismert ugyanazt kapja.
+    k = 0
+    while k < len(talalat):
+        v = k
+        while v + 1 < len(talalat) and talalat[v + 1][2] - talalat[v][2] <= 1:
+            v += 1
+        ismert = [t[1] for t in talalat[k:v + 1] if t[1]]
+        if ismert:
+            for t in talalat[k:v + 1]:
+                if not t[1]:
+                    t[1] = ismert[0]
+        k = v + 1
+    ki, utolso = [], 0
+    for m, irany, _ in talalat:
+        if not irany:
+            continue
+        oldal, nyelv = irany
+        if oldal == "bal":
+            kotes = ", en español significa: " if alap == "es" else ", magyarul azt jelenti: "
+        else:
+            nev = hat.get(nyelv) or ("en otro idioma" if alap == "es" else "idegen nyelven")
+            kotes = f", {nev} se dice: " if alap == "es" else f", {nev} így mondjuk: "
+        bal = m.group("bal")
+        ki.append(szoveg[utolso:m.start()] + bal.rstrip(" .") + kotes)
+        utolso = m.start("jobb")
+    ki.append(szoveg[utolso:])
+    return "".join(ki)
 
 
 def _detect_foreign_words(text: str, base_lang: str) -> dict[str, str]:
@@ -15977,7 +16012,9 @@ def api_voice_speak():
             _acc.update(_found)
             session["tts_fl_words"] = dict(list(_acc.items())[-150:])
         # „X = Y” fordításnál a „=” helyett „magyarul azt jelenti” (lásd fent).
-        text = _forditas_kimondva(text, _found or {}, _base)
+        _ismert = dict(session.get("tts_fl_words") or {})
+        _ismert.update(_found or {})
+        text = _forditas_kimondva(text, _ismert, _base)
     except Exception:
         pass
     # ── 0. MATEMATIKAI JELEK ────────────────────────────────────────────
