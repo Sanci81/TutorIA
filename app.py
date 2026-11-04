@@ -8634,6 +8634,53 @@ def _segments_from_marked(marked: str, gender: str) -> list[tuple[str, str | Non
 _FOREIGN_DETECT_CACHE: dict[str, dict[str, str]] = {}
 
 
+# FORDÍTÁS FELOLVASVA (2026-11-04, Sándor): a táblán „Me llamo Leila. = Engem
+# Leilának hívnak.” áll, és a felolvasó „egyenlő”-t mondott. Ha a sor egyik
+# oldala idegen nyelvű, a másik a gyereké, a „=” helyett azt mondjuk ki, hogy
+# „…, magyarul azt jelenti: …” (a spanyol oldalon: „…, en español significa: …”).
+# Fordítva („Engem Leilának hívnak = Me llamo Leila”): „…, spanyolul így
+# mondjuk: …” – mindig annak a nyelvnek a nevével, AMIRE fordítunk. A számtan
+# („3 + 4 = 7”) érintetlen: ott nincs idegen részlet, marad az „egyenlő”.
+_NYELV_HATAROZO = {
+    "hu": {"en": "angolul", "de": "németül", "es": "spanyolul", "fr": "franciául", "it": "olaszul",
+           "pt": "portugálul", "la": "latinul", "ru": "oroszul", "ca": "katalánul", "hu": "magyarul"},
+    "es": {"en": "en inglés", "de": "en alemán", "es": "en español", "fr": "en francés", "it": "en italiano",
+           "pt": "en portugués", "la": "en latín", "ru": "en ruso", "ca": "en catalán", "hu": "en húngaro"},
+}
+_FORDITAS_SOR = re.compile(r"^(\s*(?:[-•*]\s*)?)(.*?\S)\s+=\s+(\S.*?)\s*$")
+
+
+def _forditas_kimondva(szoveg: str, idegen: dict, alap: str) -> str:
+    if "=" not in (szoveg or "") or not idegen:
+        return szoveg
+    reszek = [(k.lower(), (v or "").lower()[:2]) for k, v in idegen.items() if k and len(k) >= 2]
+
+    def nyelve(darab: str) -> str | None:
+        d = darab.lower()
+        for k, v in reszek:
+            if k in d:
+                return v or "?"
+        return None
+
+    hat = _NYELV_HATAROZO.get(alap, _NYELV_HATAROZO["hu"])
+    ki = []
+    for sor in szoveg.split("\n"):
+        m = _FORDITAS_SOR.match(sor)
+        if m and m.group(2).count("=") == 0 and m.group(3).count("=") == 0:
+            elo, bal, jobb = m.group(1), m.group(2), m.group(3)
+            nb, nj = nyelve(bal), nyelve(jobb)
+            bal_v = bal.rstrip(" .")
+            if nb and not nj:
+                kotes = ", en español significa: " if alap == "es" else ", magyarul azt jelenti: "
+                sor = elo + bal_v + kotes + jobb
+            elif nj and not nb:
+                nev = hat.get(nj) or ("en otro idioma" if alap == "es" else "idegen nyelven")
+                kotes = f", {nev} se dice: " if alap == "es" else f", {nev} így mondjuk: "
+                sor = elo + bal_v + kotes + jobb
+        ki.append(sor)
+    return "\n".join(ki)
+
+
 def _detect_foreign_words(text: str, base_lang: str) -> dict[str, str]:
     """{szó: nyelvkód} az idegen eredetű szavakra. Hiba esetén üres dict."""
     text = (text or "").strip()
@@ -15929,6 +15976,8 @@ def api_voice_speak():
             _acc = dict(session.get("tts_fl_words") or {})
             _acc.update(_found)
             session["tts_fl_words"] = dict(list(_acc.items())[-150:])
+        # „X = Y” fordításnál a „=” helyett „magyarul azt jelenti” (lásd fent).
+        text = _forditas_kimondva(text, _found or {}, _base)
     except Exception:
         pass
     # ── 0. MATEMATIKAI JELEK ────────────────────────────────────────────
