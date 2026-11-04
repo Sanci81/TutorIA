@@ -25,6 +25,13 @@
   .lt .valt a{margin-right:10px;font-weight:700}
   .lt .figy{background:#fff7ea;border:1px solid #f3ddb4;border-radius:12px;padding:10px 14px;margin:0 0 16px;font-size:14px}
   .lt .ok{background:#eef8f2;border:1px solid #bfe5ce;border-radius:12px;padding:10px 14px;margin:0 0 16px;font-size:14px}
+  .lt .tolcser{background:#fff;border:1px solid #e3eee8;border-radius:14px;padding:12px 16px}
+  .lt .t-sor{display:grid;grid-template-columns:230px 1fr 46px 46px;gap:12px;align-items:center;padding:6px 0;font-size:14.5px}
+  .lt .t-sav{height:12px;background:#eef3f0;border-radius:6px;overflow:hidden}.lt .t-sav i{display:block;height:100%;background:linear-gradient(90deg,#3DBB86,#1E9A55)}
+  .lt .t-sor b{text-align:right}.lt .t-sor small{color:#5f7469;text-align:right}
+  .lt .ket-hasab{display:grid;grid-template-columns:1fr 1.4fr;gap:14px;margin:16px 0 22px}
+  .lt h3{font-size:15px;margin:0 0 6px;color:#14532d}
+  @media (max-width:640px){.lt .ket-hasab{grid-template-columns:1fr}.lt .t-sor{grid-template-columns:1fr 40px 40px}.lt .t-sav{display:none}}
   @media (max-width:640px){.lt .kartyak{grid-template-columns:repeat(2,minmax(0,1fr))}.lt .mob-rejt{display:none}}
 </style>
 <div class="lt">
@@ -45,6 +52,32 @@
 
   {% if forras_het %}
   <div class="forras">{% for k, v in forras_het %}<span>{{ {'facebook':'Facebook','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Oldalon belül'}.get(k, k) }}: {{ v }}</span>{% endfor %}</div>
+  {% endif %}
+
+  {% if reszlet %}
+  {% set T = reszlet.tolcser %}
+  {% set NEV = {'/':'Főoldal','/csomagok':'Csomagok','/register':'Regisztráció','/login':'Belépés','/gyik':'GYIK','/blog':'Blog','/adatvedelem':'Adatvédelem','/feltetelek':'Feltételek'} %}
+  {% set HIBA = {'hiba_jelszo_rovid':'Túl rövid jelszó','hiba_jelszo_nem_egyezik':'A két jelszó nem egyezett','hiba_nem_fogadta_el':'Nem pipálta be az elfogadást','hiba_pin':'Rossz szülői PIN (nem 4 számjegy)','hiba_email_foglalt':'Már regisztrált e-mail'} %}
+  {% set FN = {'facebook':'Facebook','facebook_hirdetes':'Facebook-hirdetés','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Ismeretlen'} %}
+  <h2 style="font-size:20px;margin:22px 0 10px">Hol akadnak el? <small style="font-weight:600;color:#5f7469">(utolsó {{ napok }} nap)</small></h2>
+  <div class="tolcser">
+    {% for cim, n in [('Megnyitotta az oldalt', T.latogato), ('Megnézte a csomagokat', T.csomagok), ('Eljutott a regisztrációhoz', T.reg_oldal), ('Beküldte az űrlapot', T.bekuldte), ('Regisztrált', T.regisztralt)] %}
+    <div class="t-sor"><span class="t-cim">{{ cim }}</span>
+      <span class="t-sav"><i style="width:{{ (100 * n / T.latogato)|round|int if T.latogato else 0 }}%"></i></span>
+      <b>{{ n }}</b><small>{{ (100 * n / T.latogato)|round|int if T.latogato else 0 }}%</small></div>
+    {% endfor %}
+  </div>
+  {% if reszlet.hibak %}
+  <p class="figy" style="margin-top:12px"><b>Ezen akadtak el a regisztrációnál:</b>
+    {% for k, v in reszlet.hibak %}{{ HIBA.get(k, k) }}: {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
+  {% endif %}
+  <div class="ket-hasab">
+    <div><h3>Melyik oldalt nézték</h3>
+      <table>{% for o, v in reszlet.oldalak[:10] %}<tr><td>{{ NEV.get(o, o) }}</td><td class="sz">{{ v }}</td></tr>{% else %}<tr><td>–</td></tr>{% endfor %}</table></div>
+    <div><h3>Honnan jöttek → regisztráltak</h3>
+      <table><tr><th>Forrás</th><th class="sz">Látogató</th><th class="sz">Reg. oldal</th><th class="sz">Regisztrált</th></tr>
+      {% for f, v in reszlet.forras %}<tr><td>{{ FN.get(f, f) }}</td><td class="sz">{{ v.latogato }}</td><td class="sz">{{ v.reg_oldal }}</td><td class="sz">{{ v.regisztralt }}</td></tr>{% endfor %}</table></div>
+  </div>
   {% endif %}
 
   <p class="valt">Időszak:

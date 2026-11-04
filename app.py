@@ -340,7 +340,7 @@ def _biztonsagi_fejlecek(resp):
 # csak a be NEM jelentkezett látogatót – a szülők a saját fiókjukat nézik, az
 # nem érdeklődő. Sándor gépeit a „ne számolj” süti zárja ki (/nem-szamolj).
 # IP-t nem tárolunk: naponta cserélődő, visszafejthetetlen kódot (HMAC).
-_LATOGATAS_OLDALAK = {"index", "register", "csomagok", "gyik", "adatvedelem", "feltetelek",
+_LATOGATAS_OLDALAK = {"index", "register", "csomagok", "csomagok_oldal", "gyik", "adatvedelem", "feltetelek",
                       "blog", "blog_ai_tanulas", "login"}
 _NEM_SZAMOL_SUTI = "tutoria_nem_szamol"
 _ROBOT_UA = re.compile(
@@ -369,6 +369,31 @@ def _latogatas_forras() -> str:
     return gep[:40] or "egyeb"
 
 
+def _latogato_kod() -> str:
+    ua = request.headers.get("User-Agent") or ""
+    ip = (request.headers.get("X-Forwarded-For") or request.remote_addr or "").split(",")[0].strip()
+    kulcs = (str(app.config.get("SECRET_KEY") or "") + date.today().isoformat()).encode()
+    return hmac.new(kulcs, (ip + "|" + ua).encode(), hashlib.sha256).hexdigest()[:16]
+
+
+def _latogatas_esemeny(nev: str) -> None:
+    """A regisztrációs tölcsér lépései (2026-11-04, Sándor: „hol akadnak el,
+    miért nem regelnek?”). Ugyanaz a napi kód, mint az oldalmegnyitásnál, így
+    látszik, hogy aki aznap a főoldalra jött, eljutott-e a beküldésig, és ha
+    elakadt, MIN (rövid jelszó, PIN, foglalt e-mail…). Süti nincs, IP nincs."""
+    try:
+        if session.get("parent_id") or request.cookies.get(_NEM_SZAMOL_SUTI) == "1":
+            return
+        ua = request.headers.get("User-Agent") or ""
+        if not ua or _ROBOT_UA.search(ua):
+            return
+        eszkoz = ("tablet" if re.search(r"ipad|tablet", ua, re.I)
+                  else "mobil" if re.search(r"mobi|android|iphone", ua, re.I) else "gep")
+        database.latogatas_rogzit(date.today(), _latogato_kod(), "#" + nev, eszkoz, "esemeny")
+    except Exception:
+        logger.warning("Latogatas esemeny hiba", exc_info=True)
+
+
 @app.after_request
 def _latogatas_szamol(resp):
     try:
@@ -378,10 +403,8 @@ def _latogatas_szamol(resp):
                 and request.cookies.get(_NEM_SZAMOL_SUTI) != "1"):
             ua = request.headers.get("User-Agent") or ""
             if ua and not _ROBOT_UA.search(ua):
-                ip = (request.headers.get("X-Forwarded-For") or request.remote_addr or "").split(",")[0].strip()
                 ma = date.today()
-                kulcs = (str(app.config.get("SECRET_KEY") or "") + ma.isoformat()).encode()
-                ki = hmac.new(kulcs, (ip + "|" + ua).encode(), hashlib.sha256).hexdigest()[:16]
+                ki = _latogato_kod()
                 eszkoz = ("tablet" if re.search(r"ipad|tablet", ua, re.I)
                           else "mobil" if re.search(r"mobi|android|iphone", ua, re.I) else "gep")
                 database.latogatas_rogzit(ma, ki, request.path, eszkoz, _latogatas_forras())
@@ -1873,23 +1896,28 @@ def register():
             flash(i18n.t("flash_tul_sok_proba", g.lang), "error")
             return render_template("register.html", email=email)
 
+        _latogatas_esemeny("bekuldte")
         if len(password) < 6:
+            _latogatas_esemeny("hiba_jelszo_rovid")
             flash(i18n.t("flash_password_short", g.lang), "error")
             return render_template("register.html", email=email)
 
         if password != confirm:
+            _latogatas_esemeny("hiba_jelszo_nem_egyezik")
             flash(i18n.t("flash_password_mismatch", g.lang), "error")
             return render_template("register.html", email=email)
 
         # A hozzájárulás nem lehet előre bepipálva, és nem lehet kihagyni:
         # ez a jogalapunk arra, hogy egyáltalán adatot kezeljünk.
         if not request.form.get("elfogadom"):
+            _latogatas_esemeny("hiba_nem_fogadta_el")
             flash(i18n.t("register_accept_required", g.lang), "error")
             return render_template("register.html", email=email)
 
         # A SZÜLŐI PIN. Kötelező, mert a gyerek ugyanezen a gépen ül majd.
         pin = (request.form.get("szuloi_pin") or "").strip()
         if not _pin_alak_jo(pin):
+            _latogatas_esemeny("hiba_pin")
             flash(i18n.t("pin_alak", g.lang), "error")
             return render_template("register.html", email=email)
 
@@ -1897,9 +1925,11 @@ def register():
             email, generate_password_hash(password),
             szuloi_pin=generate_password_hash(pin))
         if parent_id is None:
+            _latogatas_esemeny("hiba_email_foglalt")
             flash(i18n.t("flash_email_taken", g.lang), "error")
             return render_template("register.html", email=email)
 
+        _latogatas_esemeny("regisztralt")
         session["parent_id"] = parent_id
         _pin_megujit()          # regisztráció után ne kérje rögtön újra
         flash(i18n.t("flash_registered", g.lang), "success")
@@ -17224,7 +17254,12 @@ def admin_latogatottsag():
     for x in het:
         for k, v in x["forras"].items():
             forras_het[k] = forras_het.get(k, 0) + v
-    return render_template("admin_latogatottsag.html", sorok=sorok, napok=napok, osszes=osszes,
+    try:
+        reszlet = database.latogatas_reszletek(napok)
+    except Exception:
+        logger.exception("latogatas_reszletek hiba")
+        reszlet = None
+    return render_template("admin_latogatottsag.html", sorok=sorok, napok=napok, osszes=osszes, reszlet=reszlet,
                            forras_het=sorted(forras_het.items(), key=lambda x: -x[1]),
                            kizarva=request.cookies.get(_NEM_SZAMOL_SUTI) == "1")
 

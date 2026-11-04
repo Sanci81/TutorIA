@@ -3656,7 +3656,7 @@ def latogatas_osszesites(napok: int = 30) -> list[dict[str, Any]]:
         napi[d] = {"nap": d, "latogatok": set(), "megnyitas": 0, "mobil": set(), "forras": {}, "reg": 0}
     for nap, ki, eszkoz, forras in sorok:
         n = napi.get(nap)
-        if n is None:
+        if n is None or forras == "esemeny":
             continue
         n["megnyitas"] += 1
         if ki not in n["latogatok"]:
@@ -3677,4 +3677,65 @@ def latogatas_osszesites(napok: int = 30) -> list[dict[str, Any]]:
                    "mobil": len(n["mobil"]), "forras": dict(sorted(n["forras"].items(), key=lambda x: -x[1])),
                    "reg": n["reg"]})
     return ki
+
+
+def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
+    """Részletes kép (2026-11-04): melyik oldalt nézik, honnan érkeznek, és a
+    regisztrációs tölcsér – hányan jutnak el a regisztrációs oldalig, hányan
+    küldik be, hol akadnak el. Egy „látogató” = egy napi kód egy adott napon."""
+    kezdo = date.today() - timedelta(days=max(1, napok) - 1)
+    db = _session()
+    try:
+        sorok = db.execute(
+            select(Latogatas.nap, Latogatas.latogato, Latogatas.utvonal, Latogatas.forras, Latogatas.ido)
+            .where(Latogatas.nap >= kezdo).order_by(Latogatas.ido)
+        ).all()
+    finally:
+        db.close()
+    ut: dict[tuple, dict[str, Any]] = {}
+    for nap, ki, utvonal, forras, ido in sorok:
+        u = ut.setdefault((nap, ki), {"oldalak": [], "forras": None, "esemeny": set()})
+        if forras == "esemeny":
+            u["esemeny"].add((utvonal or "").lstrip("#"))
+            continue
+        u["oldalak"].append(utvonal or "/")
+        if u["forras"] is None and forras != "belso":
+            u["forras"] = forras
+    def norm(p: str) -> str:
+        p = (p or "/").split("?")[0]
+        if p.startswith("/es/") or p == "/es":
+            p = p[3:] or "/"
+        return p.rstrip("/") or "/"
+    oldal_db: dict[str, set] = {}
+    belepes: dict[str, int] = {}
+    forras_t: dict[str, dict[str, int]] = {}
+    hibak: dict[str, int] = {}
+    t = {"latogato": 0, "csomagok": 0, "reg_oldal": 0, "bekuldte": 0, "regisztralt": 0}
+    for kulcs, u in ut.items():
+        oldalak = [norm(x) for x in u["oldalak"]]
+        if not oldalak and not u["esemeny"]:
+            continue
+        t["latogato"] += 1
+        for o in set(oldalak):
+            oldal_db.setdefault(o, set()).add(kulcs)
+        if oldalak:
+            belepes[oldalak[0]] = belepes.get(oldalak[0], 0) + 1
+        latta_cs = "/csomagok" in oldalak
+        latta_reg = "/register" in oldalak or "bekuldte" in u["esemeny"]
+        bek = "bekuldte" in u["esemeny"]
+        reg = "regisztralt" in u["esemeny"]
+        t["csomagok"] += latta_cs; t["reg_oldal"] += latta_reg; t["bekuldte"] += bek; t["regisztralt"] += reg
+        f = u["forras"] or "belso"
+        ft = forras_t.setdefault(f, {"latogato": 0, "reg_oldal": 0, "regisztralt": 0})
+        ft["latogato"] += 1; ft["reg_oldal"] += latta_reg; ft["regisztralt"] += reg
+        for e in u["esemeny"]:
+            if e.startswith("hiba_"):
+                hibak[e] = hibak.get(e, 0) + 1
+    return {
+        "tolcser": t,
+        "oldalak": sorted(((o, len(v)) for o, v in oldal_db.items()), key=lambda x: -x[1]),
+        "belepes": sorted(belepes.items(), key=lambda x: -x[1]),
+        "forras": sorted(forras_t.items(), key=lambda x: -x[1]["latogato"]),
+        "hibak": sorted(hibak.items(), key=lambda x: -x[1]),
+    }
 
