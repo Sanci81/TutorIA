@@ -91,6 +91,8 @@ TANAR_API_BASE = os.environ.get("TANAR_API_BASE", "").strip()
 TANAR_API_KEY = os.environ.get("TANAR_API_KEY", "").strip().strip("'\"")
 # Ár millió tokenenként (bemenet, kimenet), 2026. október – csak becsléshez.
 ARAK = {"gpt-6-luna": (0.10, 0.50), "gpt-5.4-mini": (0.75, 4.50),
+        "gpt-6.1-terra": (1.00, 5.00), "gpt-6.1-sol": (2.00, 10.00),   # 2026. nov.
+        "claude-haiku-5-5": (0.10, 0.50), "claude-haiku-5.5": (0.10, 0.50),
         "mistral-large-latest": (0.50, 1.50),
         "gemini-3-flash-preview": (0.50, 3.00)}
 STAT = {"hivas": 0, "hiba": 0, "ido": 0.0, "be": 0, "ki": 0}

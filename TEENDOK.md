@@ -9,7 +9,7 @@ Utolsó frissítés: 2026-11-03
 
 ## Azonnal (a poszt már kiment, a cím publikus)
 
-- [ ] **Robot elleni védelem.** Percenkénti korlát a regisztrációra, a
+- [x] **Robot elleni védelem.** (KÉSZ – 2026-11-03 ellenőrizve: csapda-mező + időbélyeg + regisztráció 5/óra, belépés 10/10 perc, elfelejtett jelszó 5/óra.) Percenkénti korlát a regisztrációra, a
       belépésre és a chatre. Enélkül valaki robottal fiókokat gyárthat és
       égetheti a hangperceket. Ez a legsürgősebb.
 - [ ] **Próba (staging) oldal.** Külön Railway service a `proba` ágról,
@@ -693,7 +693,7 @@ Tervezett elemek:
 1. [ ] FEJLÉC C2: lépés-gombok (✓ Tanulás › ● Gyakorlás 2/5 › 3 Teszt › 🏆 Kész), a gyerek figurája a mostani lépésen ül; laptopon második sorban, telefonon csak a mostani lépés neve. Mintakép kész, jóváhagyásra vár.
 2. [ ] TANÍTÓ TANÁR 3. rész – GYEREKPROFIL: adatbázisba, melyik magyarázat vált be az adott gyereknél (pelda/tabla/hasonlat/lepesek/elozo), a következő órán a tanár ezzel kezd. Az alap már megvan (a „bevalt” mező a session-ben).
 3. [ ] TANÍTÓ TANÁR 4. rész – RENDSZERSZINTŰ TANULÁS: név nélkül összesíteni leckénként, melyik magyarázat után válaszoltak jól; bekerül az óratervbe („ha itt elakad, ez működik”).
-4. [ ] LÁTOGATOTTSÁG-SZÁMLÁLÓ: saját (nem külső szolgáltató), IP nélkül, naponta cserélődő kóddal; Sándor gépei/telefonja egy titkos linkkel kizárva; admin oldalon napi látogató, mobil/gép, honnan (Facebook/Google/UTM), hány regisztráció.
+4. [x] LÁTOGATOTTSÁG-SZÁMLÁLÓ (kész 2026-11-03: /admin/latogatottsag, kizárás: /nem-szamolj): saját (nem külső szolgáltató), IP nélkül, naponta cserélődő kóddal; Sándor gépei/telefonja egy titkos linkkel kizárva; admin oldalon napi látogató, mobil/gép, honnan (Facebook/Google/UTM), hány regisztráció.
 5. [ ] FŐOLDAL FRISSÍTÉSE: „A tábla igazodik hozzá” (Játékbolt + kutatói adatlap), „Másképp magyaráz, ha nem érti” (3 lépés), „Azonnal látja, jól csinálta-e” (párosító konfettivel, igaz-hamis magyarázattal).
 6. [ ] ÁTDOLGOZNI jelenetes stílusban: hiányzó szó (hianyzo), mondatépítő (epito), szövegjelölő (szoveg).
 7. [ ] 6 ÚJ FELADAT: barkochba, ki vagyok, mondatelemző, igeidő-gép, ok-okozat, forrásnyomozó.
@@ -708,3 +708,6 @@ Tervezett elemek:
 - [ ] FACEBOOK-HIRDETÉS: a weboldalra vigyen (nem az oldal-kedvelésre); UTM-címkével, hogy a számláló lássa, hányan jöttek és regisztráltak. Meta Pixelhez sütis hozzájárulás kellene – előbb a saját számláló.
 - [ ] TÖBB FELADAT minden tantárgyhoz, csak olyan, amiből tanul a gyerek: helyesírás-választó („melyik írás helyes?”), igepárok képpel (eat – ate), mondatkiegészítő képpel (az „English With FK” lapok mintájára, minden nyelven); fizika és kémia (mérés, kísérlet lépései, anyagok tulajdonságai); testnevelés (képsor vagy rövid videó a gyakorlat bemutatására).
 - [ ] KÖLTSÉG: a gyakorló felületek egy hívásban sok tételt küldenek a tanárnak (pl. 4 igaz-hamis = 1 hívás) – ezt kihasználni, hogy kevesebb tanári hívás legyen gyerekenként.
+- [ ] ADATVÉDELMI TÁJÉKOZTATÓ: beírni, hogy a nyilvános oldalakon név és IP-cím nélküli, naponta cserélődő kóddal számoljuk a látogatást (jogos érdek, nincs követés, nincs külső szolgáltató).
+- [ ] HIRDETÉSI VIDEÓ: rövid (6–8 mp) „életre kelő” nyitókép a zsiráfos képből Google Veo 3.1 Fast-tal (Gemini API, kép→videó, ~0,12 $/mp), utána a valódi felvételek; a végén az oldalra irányít. (A Sora API 2026.09.24-én megszűnt.)
+- [ ] TANÁR-MODELL TESZT: Claude Haiku 5.5 (0,10 $ / 0,50 $ – kb. 7× olcsóbb a gpt-5.4-mininél, a BenchLM-ben hasonló pontszám). tanar_teszt.py-jal lemérni (Anthropic-kulcs kell, OpenAI-kompatibilis cím: https://api.anthropic.com/v1/), főleg a MAGYAR nyelvhelyességet nézni.
