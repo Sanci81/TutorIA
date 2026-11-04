@@ -179,5 +179,35 @@
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts %}{% endblock %}
+    {% if meres_be %}
+    {# KATTINTÁS- ÉS GÖRGETÉSMÉRÉS (2026-11-04): csak nyilvános oldalon, be nem
+       jelentkezett látogatónál. Süti nincs, beírt adatot nem küld: csak a
+       megnyomott gomb/link FELIRATÁT, a görgetés mélységét és az időt. #}
+    <script>
+    (function () {
+      var P = location.pathname, sor = [], max = 0, jelzett = {}, kezd = Date.now(), aktiv = 0, utolso = Date.now(), lathato = !document.hidden;
+      function kuld() { if (!sor.length) { return; } var d = JSON.stringify(sor.splice(0, 30));
+        try { if (!(navigator.sendBeacon && navigator.sendBeacon('/_m', new Blob([d], {type: 'text/plain'})))) {
+          fetch('/_m', {method: 'POST', body: d, keepalive: true, headers: {'Content-Type': 'text/plain'}}); } } catch (e) {} }
+      document.addEventListener('click', function (e) {
+        var el = e.target && e.target.closest ? e.target.closest('a,button,[data-mer],summary,label,input[type=submit]') : null;
+        if (!el || el.matches('input[type=text],input[type=email],input[type=password],textarea')) { return; }
+        var c = el.getAttribute('data-mer') || el.getAttribute('aria-label') || (el.innerText || el.value || '').trim() ||
+                (el.getAttribute('href') || '').replace(/^https?:\/\/[^/]+/, '') || el.tagName.toLowerCase();
+        sor.push({f: 'katt', p: P, c: c.replace(/\s+/g, ' ').slice(0, 60)});
+        if (el.tagName === 'A' || el.type === 'submit' || sor.length >= 10) { kuld(); }
+      }, true);
+      function gorg() { var h = document.documentElement, l = Math.max(1, h.scrollHeight - innerHeight);
+        var sz = Math.min(100, Math.round(100 * (scrollY || h.scrollTop) / l)); if (h.scrollHeight <= innerHeight + 4 || sz >= 97) { sz = 100; }
+        if (sz > max) { max = sz; [25, 50, 75, 100].forEach(function (k) { if (max >= k && !jelzett[k]) { jelzett[k] = 1; sor.push({f: 'gorget', p: P, v: k}); } }); } }
+      addEventListener('scroll', function () { if (!gorg._t) { gorg._t = setTimeout(function () { gorg._t = 0; gorg(); }, 250); } }, {passive: true});
+      setTimeout(gorg, 1200);
+      function ido() { var most = Date.now(); if (lathato) { aktiv += most - utolso; } utolso = most; }
+      document.addEventListener('visibilitychange', function () { ido(); lathato = !document.hidden;
+        if (document.hidden) { sor.push({f: 'ido', p: P, v: Math.round(aktiv / 1000)}); kuld(); } });
+      addEventListener('pagehide', function () { ido(); sor.push({f: 'ido', p: P, v: Math.round(aktiv / 1000)}); kuld(); });
+    })();
+    </script>
+    {% endif %}
 </body>
 </html>

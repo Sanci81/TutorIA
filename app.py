@@ -394,6 +394,50 @@ def _latogatas_esemeny(nev: str) -> None:
         logger.warning("Latogatas esemeny hiba", exc_info=True)
 
 
+@app.context_processor
+def _meres_sablonba():
+    """A nyilvános oldalakon, be nem jelentkezett látogatónál kerül be a
+    kattintás- és görgetésmérő kis szkript (base.html)."""
+    try:
+        be = (request.endpoint in _LATOGATAS_OLDALAK and not session.get("parent_id")
+              and request.cookies.get(_NEM_SZAMOL_SUTI) != "1")
+    except Exception:
+        be = False
+    return {"meres_be": be}
+
+
+_MERES_FAJTAK = {"katt", "gorget", "ido"}
+
+
+@app.route("/_m", methods=["POST"])
+def meres_fogad():
+    """A böngésző ide küldi (sendBeacon): kattintás, görgetés, idő. Mindig 204."""
+    try:
+        if session.get("parent_id") or request.cookies.get(_NEM_SZAMOL_SUTI) == "1":
+            return ("", 204)
+        ua = request.headers.get("User-Agent") or ""
+        if not ua or _ROBOT_UA.search(ua) or _tul_sok_proba("meres", 120, 600):
+            return ("", 204)
+        adat = json.loads(request.get_data(as_text=True)[:4000] or "{}")
+        tetelek = adat if isinstance(adat, list) else [adat]
+        ma, ki = date.today(), _latogato_kod()
+        for t in tetelek[:30]:
+            if not isinstance(t, dict) or t.get("f") not in _MERES_FAJTAK:
+                continue
+            oldal = re.sub(r"[^\w/\-]", "", str(t.get("p") or "/"))[:60] or "/"
+            if oldal.startswith("/es/") or oldal == "/es":
+                oldal = oldal[3:] or "/"
+            cimke = re.sub(r"\s+", " ", str(t.get("c") or "")).strip()[:60]
+            try:
+                ertek = int(float(t.get("v") or 0))
+            except (TypeError, ValueError):
+                ertek = 0
+            database.meres_rogzit(ma, ki, oldal.rstrip("/") or "/", t["f"], cimke, ertek)
+    except Exception:
+        logger.warning("Meres fogadas hiba", exc_info=True)
+    return ("", 204)
+
+
 @app.after_request
 def _latogatas_szamol(resp):
     try:
@@ -17259,7 +17303,12 @@ def admin_latogatottsag():
     except Exception:
         logger.exception("latogatas_reszletek hiba")
         reszlet = None
-    return render_template("admin_latogatottsag.html", sorok=sorok, napok=napok, osszes=osszes, reszlet=reszlet,
+    try:
+        meres = database.meres_osszesites(napok)
+    except Exception:
+        logger.exception("meres_osszesites hiba")
+        meres = []
+    return render_template("admin_latogatottsag.html", sorok=sorok, napok=napok, osszes=osszes, reszlet=reszlet, meres=meres,
                            forras_het=sorted(forras_het.items(), key=lambda x: -x[1]),
                            kizarva=request.cookies.get(_NEM_SZAMOL_SUTI) == "1")
 

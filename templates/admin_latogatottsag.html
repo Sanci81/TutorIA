@@ -31,6 +31,12 @@
   .lt .t-sor b{text-align:right}.lt .t-sor small{color:#5f7469;text-align:right}
   .lt .ket-hasab{display:grid;grid-template-columns:1fr 1.4fr;gap:14px;margin:16px 0 22px}
   .lt h3{font-size:15px;margin:0 0 6px;color:#14532d}
+  .lt .mo{background:#fff;border:1px solid #e3eee8;border-radius:14px;padding:12px 16px;margin-bottom:12px}
+  .lt .mo-fej{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}.lt .mo-fej span{color:#5f7469;font-size:13.5px}
+  .lt .mo-g{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+  .lt .mo-g div{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center}.lt .mo-g small{grid-column:1/-1;color:#5f7469}
+  .lt .mo table{border:0}.lt .mo td{border-bottom:1px solid #f1f5f2}
+  @media (max-width:640px){.lt .mo-g{grid-template-columns:1fr 1fr}}
   @media (max-width:640px){.lt .ket-hasab{grid-template-columns:1fr}.lt .t-sor{grid-template-columns:1fr 40px 40px}.lt .t-sav{display:none}}
   @media (max-width:640px){.lt .kartyak{grid-template-columns:repeat(2,minmax(0,1fr))}.lt .mob-rejt{display:none}}
 </style>
@@ -78,6 +84,21 @@
       <table><tr><th>Forrás</th><th class="sz">Látogató</th><th class="sz">Reg. oldal</th><th class="sz">Regisztrált</th></tr>
       {% for f, v in reszlet.forras %}<tr><td>{{ FN.get(f, f) }}</td><td class="sz">{{ v.latogato }}</td><td class="sz">{{ v.reg_oldal }}</td><td class="sz">{{ v.regisztralt }}</td></tr>{% endfor %}</table></div>
   </div>
+  {% endif %}
+
+  {% if meres %}
+  <h2 style="font-size:20px;margin:22px 0 10px">Mit csináltak az oldalon? <small style="font-weight:600;color:#5f7469">(kattintások, görgetés, idő)</small></h2>
+  {% for o in meres[:6] %}
+  <div class="mo">
+    <div class="mo-fej"><b>{{ NEV.get(o.oldal, o.oldal) if NEV is defined else o.oldal }}</b>
+      <span>{{ o.latogato }} látogató · átlagosan {{ o.ido_median // 60 }} perc {{ o.ido_median % 60 }} mp az oldalon</span></div>
+    {% if o.gorget_n %}
+    <div class="mo-g">{% for sz in [25, 50, 75, 100] %}<div><small>lejutott {{ sz }}%-ig</small>
+      <span class="t-sav"><i style="width:{{ (100 * o.gorget[sz] / o.gorget_n)|round|int }}%"></i></span><b>{{ (100 * o.gorget[sz] / o.gorget_n)|round|int }}%</b></div>{% endfor %}</div>
+    {% endif %}
+    <table>{% for c, v in o.katt %}<tr><td>🖱 {{ c }}</td><td class="sz">{{ v }}</td></tr>{% else %}<tr><td><small>Még senki nem kattintott semmire ezen az oldalon.</small></td></tr>{% endfor %}</table>
+  </div>
+  {% endfor %}
   {% endif %}
 
   <p class="valt">Időszak:

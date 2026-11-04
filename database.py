@@ -3739,3 +3739,70 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
         "hibak": sorted(hibak.items(), key=lambda x: -x[1]),
     }
 
+
+# ══ KATTINTÁS ÉS GÖRGETÉS (2026-11-04, Sándor: „hova kattintanak, mit néznek
+# meg?”) ═══════════════════════════════════════════════════════════════════
+# Saját mérés, süti és külső cég nélkül, csak a nyilvános oldalakon. Nem az
+# egér útját rögzítjük, hanem: melyik gombra/linkre kattintottak (a felirata),
+# meddig görgettek le (25/50/75/100 %), és mennyi ideig voltak az oldalon.
+# Beírt adatot (e-mail, jelszó) SOHA nem küld a böngésző.
+class Meres(Base):
+    __tablename__ = "meresek"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    nap: Mapped[date] = mapped_column(Date, nullable=False, index=True)
+    latogato: Mapped[str] = mapped_column(String(16), nullable=False)
+    oldal: Mapped[str] = mapped_column(String(60), nullable=False)
+    fajta: Mapped[str] = mapped_column(String(10), nullable=False)   # katt | gorget | ido
+    cimke: Mapped[str] = mapped_column(String(60), nullable=False, server_default="")
+    ertek: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0")
+
+
+def meres_rogzit(nap: date, latogato: str, oldal: str, fajta: str, cimke: str, ertek: int) -> None:
+    db = _session()
+    try:
+        db.add(Meres(nap=nap, latogato=latogato[:16], oldal=(oldal or "/")[:60], fajta=fajta[:10],
+                     cimke=(cimke or "")[:60], ertek=max(0, min(int(ertek or 0), 100000))))
+        db.commit()
+    except Exception:
+        db.rollback()
+        logger.warning("meres_rogzit sikertelen", exc_info=True)
+    finally:
+        db.close()
+
+
+def meres_osszesites(napok: int = 30) -> list[dict[str, Any]]:
+    """Oldalanként: hány látogató mérhető, mire kattintottak (egyedi látogató
+    szerint), hányan jutottak le 25/50/75/100 %-ig, és a medián idő (mp)."""
+    kezdo = date.today() - timedelta(days=max(1, napok) - 1)
+    db = _session()
+    try:
+        sorok = db.execute(select(Meres.nap, Meres.latogato, Meres.oldal, Meres.fajta, Meres.cimke, Meres.ertek)
+                           .where(Meres.nap >= kezdo)).all()
+    finally:
+        db.close()
+    o: dict[str, dict[str, Any]] = {}
+    for nap, ki, oldal, fajta, cimke, ertek in sorok:
+        x = o.setdefault(oldal, {"ki": set(), "katt": {}, "gorget": {}, "ido": {}})
+        k = (nap, ki)
+        x["ki"].add(k)
+        if fajta == "katt":
+            x["katt"].setdefault(cimke, set()).add(k)
+        elif fajta == "gorget":
+            x["gorget"][k] = max(x["gorget"].get(k, 0), ertek)
+        elif fajta == "ido":
+            x["ido"][k] = max(x["ido"].get(k, 0), ertek)
+    ki_lista = []
+    for oldal, x in o.items():
+        n = len(x["ki"])
+        g = list(x["gorget"].values())
+        idok = sorted(x["ido"].values())
+        ki_lista.append({
+            "oldal": oldal, "latogato": n,
+            "katt": sorted(((c, len(v)) for c, v in x["katt"].items()), key=lambda y: -y[1])[:15],
+            "gorget": {sz: sum(1 for v in g if v >= sz) for sz in (25, 50, 75, 100)},
+            "gorget_n": len(g),
+            "ido_median": idok[len(idok) // 2] if idok else 0,
+        })
+    return sorted(ki_lista, key=lambda y: -y["latogato"])
+
