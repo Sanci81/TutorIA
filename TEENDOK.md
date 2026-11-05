@@ -376,6 +376,22 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 - [ ] GYIK (2026-11-05 átnézve): a meglévő 6 kérdés rendben. Hiányzik: mennyibe kerül / mi van
       az ingyenes próbában; látja-e a szülő, mit tanul; megoldja-e a házit a gyerek helyett;
       biztonságos-e az AI; napi mennyi tanulás ajánlott. Csomag-döntés UTÁN megírni (HU+ES).
+- [ ] GYORSÍTÓTÁR BEÉPÍTVE (2026-11-05, app.py GYORSITOTAR): a percenként változó „A TESZT
+      ÁLLAPOTA” bekezdés szóról szóra ugyanaz, csak a tanár utasításainak VÉGÉRE került
+      (eddig középen állt, és utána semmi nem lehetett olcsóbb) + gyerekenkénti
+      prompt_cache_key. VISSZAÁLLÁS: Railway Variables GYORSITOTAR=0. Ellenőrzés: próbaóra
+      után Railway napló „[CACHE]” sorai (ebbol_cache %); hang_teszt.py; rövid tanar_teszt.
+- [x] GYIK: a teszt-kérdés pontosítva a kód szerint (HU+ES): szintfelmérő 30 perc tanulás után,
+      max. 3 próba, 100% kell; leckezáró a lecke idejének letelte után, 70%, korlátlan.
+- [ ] ÚJ CSOMAGÖTLET – ÓRA-BÉRLET (előre fizetett órák, 1 óra = 45 perc, pl. 3 hónapig érvényes):
+      4 óra 13,90 € · 8 óra 24,90 € · 16 óra 44,90 € (≈1370 / 1230 / 1110 Ft/óra; magántanár
+      ~6000 Ft). Haszon akkor is, ha MINDEN órát elhasznál: +5,8 / +9,6 / +15,6 € (55/51/46%).
+      200 család, havi 1 bérlet (100/70/30): +1274 €/hó a fix költség után, akkor is, ha
+      mindent elhasználnak → nem kell izgulni a használaton. Kényelmi lehetőség: automatikus
+      havi megújítás.
+- [ ] TÉMAZÁRÓ-FELKÉSZÍTŐ (Sándor: a tanárnak specifikusan, okosan kell segítenie): a gyerek
+      megadja a témazáró témáját/idejét → rövid felmérés, hol hiányos → célzott magyarázat
+      és gyakorlás → próbadolgozat → értékelés a szülőnek. Megtervezni.
 - [x] Laptop: a kapszula-fejléc gyerek-munkamenetben a színes gyereksávot eltakarta → ott nincs
       kapszula (style.css :not(:has(.gymenu))).
       Sándor kérése: a TANÍTÁS MINŐSÉGE nem romolhat – minden megtakarítás csak tanar_teszt
