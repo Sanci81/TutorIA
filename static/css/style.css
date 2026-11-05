@@ -4012,3 +4012,63 @@ html, body {
     .menu-nyitva .kab *, .menu-nyitva .kab-hely { animation: none !important; }
     .menu-nyitva .kab-b1 { opacity: 1; transform: none; }
 }
+
+
+/* ═══ MENÜ-VÁLTOZATOK KIPRÓBÁLÁSRA (2026-11-05, ideiglenes) ═══════════════
+   Bekapcsolás: ?menu=b vagy ?menu=c a cím végén (?menu=a = vissza az alapra). */
+@media (max-width: 1180px) {
+    /* ── B: felülről nyíló, világos mentazöld kártya, kabala nélkül ── */
+    html.menu-b .kab { display: none !important; }
+    html.menu-b .nav-links { top: 70px; bottom: auto; left: 10px; right: 10px; border-radius: 26px;
+        padding: 16px !important; background: linear-gradient(180deg, #F2FBF6, #E4F5EC);
+        border: 1px solid #CBEBDC; box-shadow: 0 24px 50px rgba(14,42,30,.25);
+        max-height: calc(100vh - 90px); overflow-y: auto;
+        transform: translateY(-10px) scale(.97); opacity: 0; transform-origin: top right;
+        transition: transform .24s cubic-bezier(.2,.8,.2,1), opacity .2s, visibility 0s linear .24s; }
+    html.menu-b .menu-nyitva .nav-links { transform: none; opacity: 1; visibility: visible;
+        transition: transform .24s cubic-bezier(.2,.8,.2,1), opacity .2s; }
+    html.menu-b .nav-links::before { display: none; }
+    html.menu-b .nav-links > .belepve { background: #fff; }
+
+    /* ── C: állandó alsó sáv, mint egy appban (nincs ☰ gomb) ── */
+    html.menu-c body { padding-bottom: 86px; }
+    html.menu-c .menu-gomb, html.menu-c .kab { display: none !important; }
+    html.menu-c .navbar::after { display: none; }
+    html.menu-c .nav-links { display: flex; flex-direction: row; align-items: stretch; gap: 2px;
+        top: auto; bottom: 0; left: 0; right: 0; max-height: none; overflow: visible;
+        padding: 6px 6px calc(8px + env(safe-area-inset-bottom)) !important;
+        border-radius: 22px 22px 0 0; border: 0; border-top: 1px solid #EFE3CC;
+        background: rgba(255,253,248,.95); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+        box-shadow: 0 -6px 24px rgba(14,42,30,.14);
+        transform: none !important; visibility: visible !important; opacity: 1 !important; transition: none; }
+    html.menu-c .nav-links::before { display: none; }
+    html.menu-c .nav-links > .belepve { display: none !important; }
+    html.menu-c .nav-links > .pin-nyitva { position: absolute; right: 10px; top: -42px; margin: 0;
+        box-shadow: 0 4px 14px rgba(0,0,0,.14); background: #FFF6E6; }
+    html.menu-c .nav-links > a.mn, html.menu-c .nav-links > a.mn-ki {
+        flex: 1 1 0; min-width: 0; min-height: 0; margin: 0; padding: 6px 2px 4px; gap: 3px;
+        flex-direction: column; align-items: center; justify-content: flex-start;
+        background: none !important; box-shadow: none !important; border: 0; border-radius: 14px;
+        color: #5f7469 !important; }
+    html.menu-c .nav-links > a.mn:active { transform: scale(.94); }
+    html.menu-c .mn .mi { margin: 0; width: 50px; height: 30px; flex-basis: auto !important; border-radius: 99px;
+        background: none; transition: background .2s; }
+    html.menu-c .mn .mi svg { width: 22px; height: 22px; }
+    html.menu-c .t-zold .mi svg { stroke: #1E9A63; } html.menu-c .t-kek .mi svg { stroke: #2C6AD3; }
+    html.menu-c .t-narancs .mi svg { stroke: #E08A0B; } html.menu-c .t-rozsa .mi svg { stroke: #D24F8C; }
+    html.menu-c .mn-ki .mi svg { stroke: #8A9A92 !important; }
+    html.menu-c .mn .mt { margin: 0; align-items: center; text-align: center; }
+    html.menu-c .mn .mt b { font-size: .7rem; font-weight: 800; white-space: nowrap; overflow: hidden;
+        text-overflow: ellipsis; max-width: 100%; color: inherit !important; }
+    html.menu-c .mn .ms, html.menu-c .mn .mc { display: none; }
+    /* az aktuális oldal: színes „kapszula” az ikon mögött */
+    html.menu-c .t-zold.aktiv { color: #157049 !important; } html.menu-c .t-zold.aktiv .mi { background: #DDF5EA; }
+    html.menu-c .t-kek.aktiv { color: #1F4FA3 !important; } html.menu-c .t-kek.aktiv .mi { background: #E2EEFB; }
+    html.menu-c .t-narancs.aktiv { color: #B26A05 !important; } html.menu-c .t-narancs.aktiv .mi { background: #FFEBCF; }
+    html.menu-c .t-rozsa.aktiv { color: #A73A6D !important; } html.menu-c .t-rozsa.aktiv .mi { background: #FDE3EE; }
+    /* belépés nélkül: Előfizetés, Belépés + széles narancs Regisztráció */
+    html.menu-c .nav-links > .nav-cta { flex: 2.3 1 0; margin: 4px 2px 2px; padding: 8px 6px; border-radius: 16px;
+        display: flex; align-items: center; justify-content: center; }
+    html.menu-c .nav-cta .mt b { font-size: 1rem; }
+    html.menu-c .nav-cta .ms { font-size: .7rem; margin-top: 1px; }
+}
