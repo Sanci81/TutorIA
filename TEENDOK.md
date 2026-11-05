@@ -216,6 +216,23 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 - [ ] Az `info@tutoriacademia.com` postafiók ellenőrzése: tényleg
       megérkezik-e oda a levél (az Azure válasza is oda jön).
 
+## ⏰ FIGYELMEZTETÉSEK — mikor mit kell elővenni (Claude minden munkamenet elején nézze át)
+
+- **Amikor a fizetésen kezdünk dolgozni:** autónomo (vida laboral → tarifa
+  plana), ÁSZF fizetős változat, Stripe vagy Paddle döntés, a nyilvántartás
+  5. pontja (fizetés), számlázás. Mind lent, a „Fizetés bekötése ELŐTT” részben.
+- **Ha az autónomo vagy az ÁFA kérdés nem tisztázódik:** Your Europe Advice
+  (europa.eu/youreurope/advice) – az EU ingyenes jogi tanácsadása. Űrlapon
+  leírod a kérdést, egy héten belül MAGYARUL válaszol egy jogász. Claude
+  megírja a kérdést.
+- **Ha a nem spanyol EU-s vevőktől jövő éves bevétel 8 000 € fölé megy:** OSS
+  vagy Paddle (10 000 €-nál kötelező a vevő országának ÁFÁ-ja).
+- **Ha új szolgáltatót kötünk be (pl. Clarity, Stripe):** DPA + adatvédelmi
+  oldal + jogi/adatkezelesi_nyilvantartas.md frissítése.
+- **Ha adatvédelmi gond van (rossz helyre ment adat, feltörés):** azonnal
+  Claude-nak szólni – 72 órán belül be kell jelenteni az AEPD-nek.
+- **Railway régió váltásakor:** RAILWAY_REGIO változó + nyilvántartás átírása.
+
 ## Jogi / GDPR (2026-11-04 átnézve)
 
 - [x] OpenAI DPA: automatikusan része a szerződésnek (OpenAI Ireland). PDF-mentés
@@ -244,10 +261,16 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       laboral” igazolásból (Seguridad Social, online) megnézni a kijelentés
       pontos dátumát → tarifa plana (80 €/hó) jár, ha 2 éve (ha akkor is
       tarifa planán volt: 3 éve) nem volt autónomo. Spanyol levelet Claude ír.
-- [ ] Fizetés módja: megfontolni „Merchant of Record” szolgáltatót (Paddle /
-      Lemon Squeezy): ő a hivatalos eladó, ő számol ÁFÁ-t minden országra, ő
-      állít ki és őriz számlát → nincs OSS, nincs 10 000 €-figyelés. Díj ~5%.
-      Gestoríával egyeztetni, hogyan kell ezt a spanyol adóbevallásba tenni.
+- [ ] Fizetés módja – két út (gestoríával eldönteni):
+      a) Stripe: kb. 1,5% + 0,25 € fizetésenként (14,90 €-nál ~0,47 €). 10 000 €
+         alatt mindenkinek spanyol 21% ÁFA, a számlát a Stripe küldi.
+      b) Paddle / Lemon Squeezy: kb. 5% + 0,50 $ (14,90 €-nál ~1,20 €), de ő
+         intéz minden ÁFÁ-t, számlát, OSS-t.
+      Javaslat: indulni Stripe-pal, 8 000 € körül átgondolni. Az éves csomag
+      kevesebb díjat visz (egy fizetés egy év helyett 12).
+- [ ] KÖLTSÉGBE FELVENNI: az árak ÁFÁ-val értendők → 14,90 €-ból 21% ÁFA után
+      ~12,31 € marad, ebből megy még a fizetési díj. Ezt a koltseg
+      számításba be kell tenni.
 - [ ] ÁSZF: Claude írja meg (más oldal szövegét lemásolni nem szabad – szerzői
       jog, és nem illik a mi szolgáltatásunkra).
 - [ ] ÁSZF (feltételek) frissítése fizetéshez: ár ÁFÁ-val, lemondás, 14 napos
