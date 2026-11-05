@@ -265,6 +265,12 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       szabályok (a magyar oldalon a spanyol szabályok is elmennek, és fordítva);
       a változó részek a prompt VÉGÉRE, hogy az OpenAI gyorsítótára működjön.
       Railway napló [CACHE] sorai mutatják a gyorsítótár %-át.
+- [ ] ÖTLET (Sándor, 2026-11-05): HÁZI FELADAT / LECKE MEGÉRTŐ. A szülő
+      lefényképezi a feladatot vagy a füzetet, az AI elmagyarázza (példákkal),
+      és lépésenként VELE oldja meg – nem adja ki kész megoldásként (a TutorIA
+      lényege: „megvárja”). Átgondolandó: a fotót ne tároljuk (csak feldolgozás,
+      utána törlés – név, iskola lehet rajta) → adatvédelmi oldal + nyilvántartás
+      frissítése; költség: egy kép kb. 1–2 ezer token (olcsó); melyik csomagban.
 - [ ] Főoldal felső címke: „Magyar és spanyol tanterv szerint” → Sándor
       szabálya szerint nem állíthatjuk (nem hivatalos kerettanterv). Javaslat:
       „AI-tanár · 1–8. osztály · az évfolyam témakörei szerint” – jóváhagyásra vár.
