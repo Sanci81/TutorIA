@@ -3805,8 +3805,17 @@ def meres_osszesites(napok: int = 30) -> list[dict[str, Any]]:
     try:
         sorok = db.execute(select(Meres.nap, Meres.latogato, Meres.oldal, Meres.fajta, Meres.cimke, Meres.ertek)
                            .where(Meres.nap >= kezdo)).all()
+        # 2026-11-05: honnan jött – hogy látsszon, a hirdetésből jövők
+        # maradnak-e rövidebb ideig (első nem belső forrás aznap).
+        lat_sorok = db.execute(select(Latogatas.nap, Latogatas.latogato, Latogatas.forras)
+                               .where(Latogatas.nap >= kezdo).order_by(Latogatas.ido)).all()
     finally:
         db.close()
+    honnan: dict[tuple, str] = {}
+    for nap, ki, forras in lat_sorok:
+        if forras in ("esemeny", "belso"):
+            continue
+        honnan.setdefault((nap, ki), forras)
     o: dict[str, dict[str, Any]] = {}
     for nap, ki, oldal, fajta, cimke, ertek in sorok:
         x = o.setdefault(oldal, {"ki": set(), "katt": {}, "gorget": {}, "ido": {}})
@@ -3823,12 +3832,18 @@ def meres_osszesites(napok: int = 30) -> list[dict[str, Any]]:
         n = len(x["ki"])
         g = list(x["gorget"].values())
         idok = sorted(x["ido"].values())
+        f_ido: dict[str, list[int]] = {}
+        for k, v in x["ido"].items():
+            f_ido.setdefault(honnan.get(k, "belso"), []).append(v)
+        forras_ido = sorted(((f, len(v), sorted(v)[len(v) // 2]) for f, v in f_ido.items()),
+                            key=lambda y: -y[1])
         ki_lista.append({
             "oldal": oldal, "latogato": n,
             "katt": sorted(((c, len(v)) for c, v in x["katt"].items()), key=lambda y: -y[1])[:15],
             "gorget": {sz: sum(1 for v in g if v >= sz) for sz in (25, 50, 75, 100)},
             "gorget_n": len(g),
             "ido_median": idok[len(idok) // 2] if idok else 0,
+            "forras_ido": forras_ido,
         })
     return sorted(ki_lista, key=lambda y: -y["latogato"])
 

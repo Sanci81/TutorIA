@@ -38,7 +38,8 @@
   .lt .mo table{border:0}.lt .mo td{border-bottom:1px solid #f1f5f2}
   @media (max-width:640px){.lt .mo-g{grid-template-columns:1fr 1fr}}
   @media (max-width:640px){.lt .ket-hasab{grid-template-columns:1fr}.lt .t-sor{grid-template-columns:1fr 40px 40px}.lt .t-sav{display:none}}
-  @media (max-width:640px){.lt .kartyak{grid-template-columns:repeat(2,minmax(0,1fr))}.lt .mob-rejt{display:none}}
+  .lt .mob-csak{display:none}.lt .mo-honnan{margin:2px 0 10px;color:#5f7469;line-height:1.6}
+  @media (max-width:640px){.lt .kartyak{grid-template-columns:repeat(2,minmax(0,1fr))}.lt .mob-rejt{display:none}.lt .mob-csak{display:inline}}
 </style>
 <div class="lt">
   <h1>Látogatottság</h1>
@@ -92,6 +93,8 @@
   <div class="mo">
     <div class="mo-fej"><b>{{ NEV.get(o.oldal, o.oldal) if NEV is defined else o.oldal }}</b>
       <span>{{ o.latogato }} látogató · átlagosan {{ o.ido_median // 60 }} perc {{ o.ido_median % 60 }} mp az oldalon</span></div>
+    {% if o.forras_ido %}<p class="mo-honnan"><small>Idő az oldalon, honnan jöttek szerint:
+      {% for f, db, mp in o.forras_ido %}<b>{{ FN.get(f, f) if FN is defined else f }}</b> {{ mp // 60 }} p {{ mp % 60 }} mp ({{ db }} fő){% if not loop.last %} · {% endif %}{% endfor %}</small></p>{% endif %}
     {% if o.gorget_n %}
     <div class="mo-g">{% for sz in [25, 50, 75, 100] %}<div><small>lejutott {{ sz }}%-ig</small>
       <span class="t-sav"><i style="width:{{ (100 * o.gorget[sz] / o.gorget_n)|round|int }}%"></i></span><b>{{ (100 * o.gorget[sz] / o.gorget_n)|round|int }}%</b></div>{% endfor %}</div>
@@ -105,7 +108,7 @@
     {% for n in [7, 30, 90] %}<a href="{{ url_for('admin_latogatottsag', napok=n) }}"{% if n == napok %} style="text-decoration:underline"{% endif %}>{{ n }} nap</a>{% endfor %}
   </p>
   <table>
-    <tr><th>Nap</th><th class="sz">Látogató</th><th class="sz">Megnyitás</th><th class="sz mob-rejt">Telefon</th><th class="mob-rejt">Honnan</th><th class="sz">Regisztráció</th></tr>
+    <tr><th>Nap</th><th class="sz">Látogató</th><th class="sz">Megnyitás</th><th class="sz mob-rejt">Telefon</th><th class="mob-rejt">Honnan</th><th class="sz"><span class="mob-rejt">Regisztráció</span><span class="mob-csak">Reg.</span></th></tr>
     {% for x in sorok %}
     <tr class="{{ 'nul' if not x.latogato and not x.reg }}">
       <td>{{ x.nap.strftime('%m.%d.') }} <small>{{ ['H','K','Sze','Cs','P','Szo','V'][x.nap.weekday()] }}</small></td>

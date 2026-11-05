@@ -221,6 +221,9 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 - **Amikor a fizetésen kezdünk dolgozni:** autónomo (vida laboral → tarifa
   plana), ÁSZF fizetős változat, Stripe vagy Paddle döntés, a nyilvántartás
   5. pontja (fizetés), számlázás. Mind lent, a „Fizetés bekötése ELŐTT” részben.
+- **FONTOS, MINDENKÉPP MEGCSINÁLNI (Sándor kérte, 2026-11-05), a fizetés
+  ELŐTT:** Your Europe Advice kérdés (autónomo, ÁFA, magyar vevők több
+  országból, ÁSZF). Claude írja meg magyarul, Sándor küldi be.
 - **Ha az autónomo vagy az ÁFA kérdés nem tisztázódik:** Your Europe Advice
   (europa.eu/youreurope/advice) – az EU ingyenes jogi tanácsadása. Űrlapon
   leírod a kérdést, egy héten belül MAGYARUL válaszol egy jogász. Claude
@@ -242,12 +245,38 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 - [x] Adatkezelési nyilvántartás (30. cikk): jogi/adatkezelesi_nyilvantartas.md.
       Railway régiót beírni (Railway → szolgáltatás → Settings → Region);
       fizetés bekötésekor az 5. pontot kitölteni (Claude emlékeztet).
-- [ ] resend-dpa-signed.pdf áthelyezése a jogi/ mappába.
+- [ ] VÉDELEM ÁTNÉZÉSE (Sándor: „nagyon fontos”, 2026-11-05) – a számolás és a
+      főoldal után: (1) adatbázis-mentés: Railway Postgres → Backups, napi
+      automatikus mentés be van-e kapcsolva; (2) oldalvédelem: belépés/regisztráció
+      korlát, admin kapu, biztonsági fejlécek, jelszó-hash, titkos kulcsok;
+      (3) jogi védelem: ami a FIGYELMEZTETÉSEK részben van.
 - [ ] jogi/incidensek.md (üres napló) – adatvédelmi incidens esetén 72 óra.
 - [x] Csomagok oldal: a gombok kattintása csomagonként látszik a mérésben
       (data-mer). Bejelentkezett szülőnél az „Érdekel” gomb eddig is mentette.
 - [ ] FB hirdetés: elhelyezésnél az Audience Network kikapcsolása (sok
       véletlen kattintás: 61 látogató 1,94 €-ért, 6 mp az oldalon).
+      Az „ajánlott beállításos” kampányban ZÁROLT (Meta, 2026-11-05). Előbb
+      megnézni: Kimutatás → Bontás → Kézbesítés → Elhelyezés – honnan jött a
+      kattintás. Ha főleg Audience Network: új hirdetéssorozat kézi
+      elhelyezéssel (Facebook + Instagram), a régit kikapcsolni.
+- [ ] PROMPT-DIÉTA (a legnagyobb megtakarítás): mért adat (tanar_teszt
+      2026-11-03): egy gyerek-üzenetre 22 500 bemenő token megy el, a válasz
+      csak ~430. Előbb kimérni, mekkora ebből a tananyag és mekkora a
+      szabályok (a magyar oldalon a spanyol szabályok is elmennek, és fordítva);
+      a változó részek a prompt VÉGÉRE, hogy az OpenAI gyorsítótára működjön.
+      Railway napló [CACHE] sorai mutatják a gyorsítótár %-át.
+- [ ] Főoldal felső címke: „Magyar és spanyol tanterv szerint” → Sándor
+      szabálya szerint nem állíthatjuk (nem hivatalos kerettanterv). Javaslat:
+      „AI-tanár · 1–8. osztály · az évfolyam témakörei szerint” – jóváhagyásra vár.
+- [ ] ÚJRASZÁMOLNI a megéri-e számítást VALÓS mért adatokkal (a megerie.html
+      2026-10-05-ös, ÁFÁ-val és Stripe-pal már számolt, de a perc-költség még
+      becslés volt). Kell hozzá: /admin gyerek-sorok (perc, be/ki token),
+      Railway napló [CACHE] sorai, OpenAI és Azure októberi számla.
+      Új tételek: autónomo 80 €/hó (tarifa plana) 300 helyett; jövedelemadó
+      (IRPF, negyedéves előleg a nyereség 20%-a); Resend fizetős 100 család
+      felett.
+- [x] OpenAI és Resend DPA PDF a jogi/ mappában (2026-11-05). A gyökérben
+      lévő két példány törölhető.
 - [ ] Főoldal első képernyője: a hirdetésből jövők 6 mp után elmennek, senki
       nem nézi meg a csomagokat → az első képernyőt erősíteni.
 - [ ] Hirdetés: a hirdetést a SZÜLŐNEK szóljon (Meta: 18+ célzás), gyereket
@@ -261,6 +290,11 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       laboral” igazolásból (Seguridad Social, online) megnézni a kijelentés
       pontos dátumát → tarifa plana (80 €/hó) jár, ha 2 éve (ha akkor is
       tarifa planán volt: 3 éve) nem volt autónomo. Spanyol levelet Claude ír.
+      Sándor szerint: kb. 2023 tavaszán jelentkezett be, 2023 szeptemberében
+      ki → 2026 szeptember óta mindkét feltétel teljesül → 80 €/hó az első
+      12 hónapban (+12 hónap, ha a nettó jövedelem a minimálbér alatt marad).
+      Andalúz „Cuota Cero” (a Junta visszafizeti a 80 €-t): jelenleg ZÁRVA,
+      figyelni, újranyílik-e (infoautonomos.com/seguridad-social/cuota-cero-autonomos).
 - [ ] Fizetés módja – két út (gestoríával eldönteni):
       a) Stripe: kb. 1,5% + 0,25 € fizetésenként (14,90 €-nál ~0,47 €). 10 000 €
          alatt mindenkinek spanyol 21% ÁFA, a számlát a Stripe küldi.
