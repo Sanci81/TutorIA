@@ -283,8 +283,14 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       beállításnál ne mozogjon. Előbb egy rövid próbavideó, csak utána beépítés.
       2026-11-05: BEÉPÍTVE (base.html + style.css vége + static/kabala/menu/*.webp,
       6 rész, ~60 KB, csak telefonon töltődik). Besétál, köszön, integet, beszél,
-      pislog, a végén fejet vakar és gondolkodik. Próbaoldalon nézni. Ha jó: a
-      csempéket nem egyformára (bento), aztán C (alsó sáv) átgondolva, végül B.
+      pislog, a végén fejet vakar és gondolkodik. Próbaoldalon nézni.
+      Sándor SORBAN nézi meg, külön felküldve (nem ?menu= kapcsolóval): most B,
+      utána C (base.html „IDEIGLENES” sor: 'menu-b' → 'menu-c'). Ha választott: a
+      többit KI KELL VENNI (base.html „IDEIGLENES” sor + style.css „MENÜ-VÁLTOZATOK”).
+      Utána: laptopos szülői fejléc (összefolyó zöld). Ötlet még: nem egyforma csempék.
+- [ ] Hirdetés/főoldal szöveg: sok szülő tart az AI-tól (FB-hozzászólások) →
+      kipróbálni, hogy az „AI-tanár” helyett a gyerek haszna és a szülői kontroll
+      legyen elöl (pl. „Türelmes online tanító – a szülő mindent lát”).
 - [ ] PROMPT-DIÉTA (a legnagyobb megtakarítás): mért adat (tanar_teszt
       2026-11-03): egy gyerek-üzenetre 22 500 bemenő token megy el, a válasz
       csak ~430. Előbb kimérni, mekkora ebből a tananyag és mekkora a
