@@ -944,8 +944,8 @@ TRANSLATIONS = {
               "privacidad.",
     },
     "og_cim": {
-        "hu": "TutorIA – tanulótárs a gyereknek, magyar és spanyol tanterv szerint",
-        "es": "TutorIA – un compañero de estudio con currículo español y húngaro",
+        "hu": "TutorIAcademia – tanulótárs a gyereknek, az évfolyam témakörei szerint",
+        "es": "TutorIAcademia – un compañero de estudio según los temas de cada curso",
     },
     "og_leiras": {
         "hu": "A gyerek leckéről leckére halad: a rendszer elmagyarázza, kérdez "

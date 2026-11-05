@@ -265,15 +265,18 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       szabályok (a magyar oldalon a spanyol szabályok is elmennek, és fordítva);
       a változó részek a prompt VÉGÉRE, hogy az OpenAI gyorsítótára működjön.
       Railway napló [CACHE] sorai mutatják a gyorsítótár %-át.
+      BIZTONSÁG: csak próbaoldalon, kis lépésekben; minden lépés előtt és után
+      tanar_teszt.py (minőség) + hang_teszt.py; ha romlik, visszavonjuk.
 - [ ] ÖTLET (Sándor, 2026-11-05): HÁZI FELADAT / LECKE MEGÉRTŐ. A szülő
       lefényképezi a feladatot vagy a füzetet, az AI elmagyarázza (példákkal),
       és lépésenként VELE oldja meg – nem adja ki kész megoldásként (a TutorIA
       lényege: „megvárja”). Átgondolandó: a fotót ne tároljuk (csak feldolgozás,
       utána törlés – név, iskola lehet rajta) → adatvédelmi oldal + nyilvántartás
       frissítése; költség: egy kép kb. 1–2 ezer token (olcsó); melyik csomagban.
-- [ ] Főoldal felső címke: „Magyar és spanyol tanterv szerint” → Sándor
-      szabálya szerint nem állíthatjuk (nem hivatalos kerettanterv). Javaslat:
-      „AI-tanár · 1–8. osztály · az évfolyam témakörei szerint” – jóváhagyásra vár.
+- [x] Főoldal felső címke + megosztási cím (og_cim) átírva (2026-11-05):
+      HU „AI-tanár · 1–8. osztály · az évfolyam témakörei szerint”, ES
+      „Profesor con IA · de 1.º a 6.º de Primaria · según los temas de cada curso”
+      (az ES oldalon is volt „Según el currículo escolar (LOMLOE)” – az is ki).
 - [ ] ÚJRASZÁMOLNI a megéri-e számítást VALÓS mért adatokkal (a megerie.html
       2026-10-05-ös, ÁFÁ-val és Stripe-pal már számolt, de a perc-költség még
       becslés volt). Kell hozzá: /admin gyerek-sorok (perc, be/ki token),
