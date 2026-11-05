@@ -3622,7 +3622,33 @@ class Latogatas(Base):
     ido: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
 
+# Megőrzés (2026-11-04, GDPR 5. cikk e) + AEPD: legfeljebb 13 hónap). Naponta
+# egyszer (az első rögzítéskor) törli a 13 hónapnál régebbi látogatás- és
+# mérés-sorokat. Hiba esetén csak naplóz, a látogatás rögzítése megy tovább.
+_MEGORZES_NAP = 396
+_utolso_takaritas: date | None = None
+
+
+def _regi_meresek_torlese(ma: date) -> None:
+    global _utolso_takaritas
+    if _utolso_takaritas == ma:
+        return
+    _utolso_takaritas = ma
+    hatar = ma - timedelta(days=_MEGORZES_NAP)
+    db = _session()
+    try:
+        db.execute(delete(Latogatas).where(Latogatas.nap < hatar))
+        db.execute(delete(Meres).where(Meres.nap < hatar))
+        db.commit()
+    except Exception:
+        db.rollback()
+        logger.warning("regi meresek torlese sikertelen", exc_info=True)
+    finally:
+        db.close()
+
+
 def latogatas_rogzit(nap: date, latogato: str, utvonal: str, eszkoz: str, forras: str) -> None:
+    _regi_meresek_torlese(nap)
     db = _session()
     try:
         db.add(Latogatas(nap=nap, latogato=latogato[:16], utvonal=(utvonal or "/")[:120],

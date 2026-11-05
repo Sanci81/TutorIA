@@ -3,7 +3,7 @@
 Ez a fájl azért van, hogy semmi ne egy beszélgetés emlékezetén múljon.
 Ha egy tétel elkészült, húzd át vagy töröld. Ha újat találsz, írd ide.
 
-Utolsó frissítés: 2026-11-03
+Utolsó frissítés: 2026-11-04
 
 ---
 
@@ -216,9 +216,49 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 - [ ] Az `info@tutoriacademia.com` postafiók ellenőrzése: tényleg
       megérkezik-e oda a levél (az Azure válasza is oda jön).
 
+## Jogi / GDPR (2026-11-04 átnézve)
+
+- [x] OpenAI DPA: automatikusan része a szerződésnek (OpenAI Ireland). PDF-mentés
+      nem kötelező (Claude nem éri el az openai.com-ot, kihagytuk).
+- [x] Látogatottság-mérés: AEPD közönségmérési kivételen belül. 13 hónapos
+      automatikus törlés + nyilvános leiratkozás (/ne-merj) kész.
+- [x] Adatkezelési nyilvántartás (30. cikk): jogi/adatkezelesi_nyilvantartas.md.
+      Railway régiót beírni (Railway → szolgáltatás → Settings → Region);
+      fizetés bekötésekor az 5. pontot kitölteni (Claude emlékeztet).
+- [ ] resend-dpa-signed.pdf áthelyezése a jogi/ mappába.
+- [ ] jogi/incidensek.md (üres napló) – adatvédelmi incidens esetén 72 óra.
+- [x] Csomagok oldal: a gombok kattintása csomagonként látszik a mérésben
+      (data-mer). Bejelentkezett szülőnél az „Érdekel” gomb eddig is mentette.
+- [ ] FB hirdetés: elhelyezésnél az Audience Network kikapcsolása (sok
+      véletlen kattintás: 61 látogató 1,94 €-ért, 6 mp az oldalon).
+- [ ] Főoldal első képernyője: a hirdetésből jövők 6 mp után elmennek, senki
+      nem nézi meg a csomagokat → az első képernyőt erősíteni.
+- [ ] Hirdetés: a hirdetést a SZÜLŐNEK szóljon (Meta: 18+ célzás), gyereket
+      ne célozzunk; a hirdetésben ne ígérjünk olyat, amit az oldal nem tud.
+
 ## Fizetés bekötése ELŐTT (kötelező)
 
-- [ ] Vállalkozói (autónomo) — enélkül a többi nem indulhat.
+- [ ] Vállalkozói (autónomo) — enélkül a többi nem indulhat. Az ingyenes
+      próba alatt (nincs bevétel) még nem kell; az ELSŐ fizetős eladás előtt
+      igen. Sándor ~3 éve volt autónomo (Nestlé), azóta kijelentve: a „vida
+      laboral” igazolásból (Seguridad Social, online) megnézni a kijelentés
+      pontos dátumát → tarifa plana (80 €/hó) jár, ha 2 éve (ha akkor is
+      tarifa planán volt: 3 éve) nem volt autónomo. Spanyol levelet Claude ír.
+- [ ] Fizetés módja: megfontolni „Merchant of Record” szolgáltatót (Paddle /
+      Lemon Squeezy): ő a hivatalos eladó, ő számol ÁFÁ-t minden országra, ő
+      állít ki és őriz számlát → nincs OSS, nincs 10 000 €-figyelés. Díj ~5%.
+      Gestoríával egyeztetni, hogyan kell ezt a spanyol adóbevallásba tenni.
+- [ ] ÁSZF: Claude írja meg (más oldal szövegét lemásolni nem szabad – szerzői
+      jog, és nem illik a mi szolgáltatásunkra).
+- [ ] ÁSZF (feltételek) frissítése fizetéshez: ár ÁFÁ-val, lemondás, 14 napos
+      elállás digitális szolgáltatásnál (ha azonnal indul: kifejezett
+      beleegyezés + tudomásulvétel jelölőnégyzet), panaszkezelés, alkalmazandó
+      jog. Magyar és spanyol nyelven.
+- [ ] ÁFA: spanyol ÁFA (21%) a számlán; ha a nem spanyol EU-s magánvevők
+      éves összege eléri a 10 000 €-t → OSS regisztráció, a vevő országának ÁFÁ-ja.
+      Nem EU-s vevő (UK, Svájc, Norvégia, USA…): külön szabály – gestoríával.
+- [ ] Számlázás: minden eladásról számla (Stripe/számlázó), 6 év megőrzés.
+- [ ] Fizetési adatok: kártyát csak a Stripe kezeljen, mi ne tároljuk.
 - [ ] Bankkártyás fizetés (Stripe) + számlázás.
 - [ ] **A tanterv rögzítése fizetéskor.** A kód kész (`csomag_tanterv`),
       egyetlen sort kell hozzáadni a fizetés lezárásánál. Szabály:

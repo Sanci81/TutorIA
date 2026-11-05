@@ -17283,6 +17283,29 @@ def nem_szamolj():
     return resp
 
 
+@app.route("/ne-merj")
+def ne_merj():
+    """Nyilvános leiratkozás a látogatottság-mérésről (2026-11-04, GDPR 21. cikk,
+    AEPD közönségmérési kivétel). Ugyanazt a „ne számolj” sütit teszi le, mint
+    az üzemeltetői /nem-szamolj – ez a süti csak a tiltást jegyzi meg."""
+    es = request.args.get("l") == "es" or getattr(g, "lang", "") == "es"
+    if es:
+        cim, szoveg, vissza = ("Hecho", "En este navegador ya <b>no medimos</b> tu visita. Si borras las "
+                               "cookies, vuelve a abrir esta dirección.", "Volver a la política de privacidad")
+    else:
+        cim, szoveg, vissza = ("Kész", "Ebben a böngészőben mostantól <b>nem mérjük</b> a látogatásodat. "
+                               "Ha törlöd a sütiket, nyisd meg újra ezt a címet.", "Vissza az adatvédelemhez")
+    hova = url_for("adatvedelem")
+    resp = Response(
+        "<!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
+        "<meta name='robots' content='noindex'>"
+        "<div style=\"font:17px/1.6 system-ui,sans-serif;max-width:560px;margin:60px auto;padding:0 20px\">"
+        f"<h2>✅ {cim}</h2><p>{szoveg}</p><p><a href='{hova}'>{vissza} →</a></p></div>", mimetype="text/html")
+    resp.set_cookie(_NEM_SZAMOL_SUTI, "1", max_age=2 * 365 * 24 * 3600, samesite="Lax",
+                    secure=_ELES, httponly=True)
+    return resp
+
+
 @app.route("/admin/latogatottsag")
 @login_required
 def admin_latogatottsag():
