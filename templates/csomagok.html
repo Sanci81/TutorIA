@@ -279,8 +279,8 @@
            árat. Alapból a HAVI szám áll elöl, mert azt érti meg azonnal;
            az éves lehetőség alatta, konkrét megtakarítással. #}
         <div class="ar-valto" role="group">
-          <button type="button" class="be" data-mod="honap">{{ t('csomag_havonta_gomb') }}</button>
-          <button type="button" data-mod="ev">{{ t('csomag_evente_gomb') }}</button>
+          <button type="button" class="be" data-mod="honap" data-mer="Csomagok: havi ár">{{ t('csomag_havonta_gomb') }}</button>
+          <button type="button" data-mod="ev" data-mer="Csomagok: éves ár">{{ t('csomag_evente_gomb') }}</button>
         </div>
         <p class="ar" data-ar
            data-honap="{{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €<small> / {{ t('csomag_ho') }}</small>"
@@ -342,10 +342,10 @@
       {% if cs.kulcs == sajat_csomag %}
         <span class="gomb enyem">{{ t('csomag_ez_a_tied') }}</span>
       {% elif not cs.fizetos %}
-        <a class="gomb" href="{{ url_for('register') if not session.get('parent_id') else url_for('dashboard') }}">
+        <a class="gomb" data-mer="Csomag: {{ cs.kulcs }} – ingyenes" href="{{ url_for('register') if not session.get('parent_id') else url_for('dashboard') }}">
           {{ t('csomag_ingyen_gomb') }}</a>
       {% elif fizetes_el %}
-        <a class="gomb" href="{{ url_for('fiok') }}">{{ t('csomag_elofizetek') }}</a>
+        <a class="gomb" data-mer="Csomag: {{ cs.kulcs }} – előfizetek" href="{{ url_for('fiok') }}">{{ t('csomag_elofizetek') }}</a>
       {% elif session.get('parent_id') %}
         {# Még nincs fizetés. Nem ígérünk semmit – csak eltároljuk, hogy ez
            a szülő ezt a csomagot kérné. Ebből tudjuk meg, mikor indulhatunk. #}
@@ -358,7 +358,7 @@
         </form>
         {% endif %}
       {% else %}
-        <a class="gomb" href="{{ url_for('register') }}">{{ t('csomag_regisztralok') }}</a>
+        <a class="gomb" data-mer="Csomag: {{ cs.kulcs }} – regisztrálok" href="{{ url_for('register') }}">{{ t('csomag_regisztralok') }}</a>
       {% endif %}
     </div>
     {% endfor %}
