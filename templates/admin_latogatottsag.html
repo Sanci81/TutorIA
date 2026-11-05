@@ -99,7 +99,7 @@
     <div class="mo-g">{% for sz in [25, 50, 75, 100] %}<div><small>lejutott {{ sz }}%-ig</small>
       <span class="t-sav"><i style="width:{{ (100 * o.gorget[sz] / o.gorget_n)|round|int }}%"></i></span><b>{{ (100 * o.gorget[sz] / o.gorget_n)|round|int }}%</b></div>{% endfor %}</div>
     {% endif %}
-    <table>{% for c, v in o.katt %}<tr><td>🖱 {{ c }}</td><td class="sz">{{ v }}</td></tr>{% else %}<tr><td><small>Még senki nem kattintott semmire ezen az oldalon.</small></td></tr>{% endfor %}</table>
+    <table>{% for c, v in o.katt %}<tr><td>Rákattintott erre: <b>„{{ c }}”</b></td><td class="sz">{{ v }}</td></tr>{% else %}<tr><td><small>Ezen az oldalon még senki nem kattintott semmire.</small></td></tr>{% endfor %}</table>
   </div>
   {% endfor %}
   {% endif %}

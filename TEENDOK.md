@@ -284,10 +284,16 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       2026-11-05: BEÉPÍTVE (base.html + style.css vége + static/kabala/menu/*.webp,
       6 rész, ~60 KB, csak telefonon töltődik). Besétál, köszön, integet, beszél,
       pislog, a végén fejet vakar és gondolkodik. Próbaoldalon nézni.
-      Sándor SORBAN nézi meg, külön felküldve (nem ?menu= kapcsolóval): most B,
-      utána C (base.html „IDEIGLENES” sor: 'menu-b' → 'menu-c'). Ha választott: a
-      többit KI KELL VENNI (base.html „IDEIGLENES” sor + style.css „MENÜ-VÁLTOZATOK”).
+      DÖNTÉS (2026-11-05): „A” – alulról felcsúszó lap, KABALA NÉLKÜL (kézzel jobban
+      elérhető). B, C, kabala kivéve a kódból. A kabala képei megmaradtak
+      (static/kabala/menu/, „Claude outputs/kabala_proba/”), ha később kellene.
       Utána: laptopos szülői fejléc (összefolyó zöld). Ötlet még: nem egyforma csempék.
+- [ ] Főoldal felső rész – javaslat képen (2026-11-05): címke „Türelmes online
+      tanító · 1–8. osztály”, a leírás alatt kék doboz: „A tanító mesterséges
+      intelligencia (AI). Nem oldja meg a feladatot a gyerek helyett – és te minden
+      beszélgetést látsz.” Beépítés ELŐTT ellenőrizni: tényleg látja-e a szülő a
+      beszélgetéseket; és hogy a gyerek tanulóoldalán is jól látszik-e, hogy AI-val
+      beszél (EU MI-rendelet 50. cikk). Spanyol oldalra ugyanez spanyolul.
 - [ ] Hirdetés/főoldal szöveg: sok szülő tart az AI-tól (FB-hozzászólások) →
       kipróbálni, hogy az „AI-tanár” helyett a gyerek haszna és a szülői kontroll
       legyen elöl (pl. „Türelmes online tanító – a szülő mindent lát”).
