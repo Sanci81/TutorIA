@@ -236,6 +236,10 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
   Claude-nak szólni – 72 órán belül be kell jelenteni az AEPD-nek.
 - **Railway régió váltásakor:** RAILWAY_REGIO változó + nyilvántartás átírása.
 
+- [x] 2026-11-05 SOS: az élő oldal „szétesett” (óriási fekete ikonok) – az új base.html
+      ment ki, de a böngésző/Cloudflare a régi style.css-t adta. Javítva: ?v=<verzió> a
+      CSS/JS címeken (app.py _STATIK_V), és az ikonoknak saját méret is van CSS nélkül.
+
 ## Jogi / GDPR (2026-11-04 átnézve)
 
 - [x] OpenAI DPA: automatikusan része a szerződésnek (OpenAI Ireland). PDF-mentés
@@ -327,6 +331,18 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       JAVASLAT a csomagokra (legrosszabb esetben is ≥0, havi ÉS éves fizetésnél):
       Alap 400 perc (ebből 250 hangos) · Pro 750 (300 hangos) · Max 1200 (450 hangos).
       Csak csomagok.py: havi_perc / hangos_perc. Előbb a gyorsítótár, utána dönt Sándor.
+      Sándor (2026-11-05): ez LOGIKAILAG rossz – a nagyobb csomagban drágább a perc, két
+      Alap jobban megéri, mint egy Pro. Új javaslat: a perc ára csökkenjen felfelé:
+      Alap 400 (3,72 c/perc) · Pro 750 (3,32) · Max 1300 (3,07); mind lehet hangos;
+      + perc-feltöltés 200 perc 7,90 € a sokat tanulóknak. Legrosszabb eset (havi/éves):
+      Alap +0,8/−0,9 · Pro −0,6/−3,6 · Max −3,4/−8,2; 50%-os használatnál: Alap +6,0/+4,3 ·
+      Pro +9,1/+6,2 · Max +13,5/+8,6 €/fő/hó. Az ingyenes próba marad: 120 perc, 30 hangos.
+      Sándornak ez sem tetszik → ki kell dolgozni, versenytársakat megnézni. Talált árak
+      (2026): Khanmigo 4 $/hó (44 $/év, max 10 gyerek, nonprofit), Synthesis Tutor 29 $/hó
+      (119 $/év, 7 gyerek); magyar magántanár kb. 6000 Ft / 45 perc. A költséglap
+      (koltsegek_pontos.html) token/perc alapértéke 16 000 / 1 600 lett (mért); a
+      beszélgetés hosszával nő (okt.: 30–60 ezer) → az előzmény rövidítése is megtakarítás.
+      295 előfizetős példa (100/95/100): 100% használat −353 €/hó, 50% +2749, 30% +3990.
       Sándor kérése: a TANÍTÁS MINŐSÉGE nem romolhat – minden megtakarítás csak tanar_teszt
       összevetés után, és csak ha ugyanolyan jó.
       Becslés: felezett prompt + 80% gyorsítótár → ~1,5 cent/perc → legrosszabb esetben

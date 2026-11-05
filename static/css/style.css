@@ -3929,29 +3929,31 @@ html, body {
    A szülői és nyilvános aloldalakon (ahol a tetején zöld sáv van) a fejléc
    nem olvad bele a zöldbe: világos, lekerekített sáv lebeg felette.
    A homályosítás egy ::before rétegen van, NEM magán a sávon – különben a
-   telefonos alsó menülap a sávhoz igazodna a képernyő helyett. */
-body:has(.fp-sav) .navbar { background: transparent !important; box-shadow: none !important;
+   telefonos alsó menülap a sávhoz igazodna a képernyő helyett.
+   Gyerek-munkamenetben (alatta a színes gyereksáv, .gymenu) NEM lebeg: ott a régi
+   zöld fejléc marad, különben a gyereksáv a kapszula alá csúszna (2026-11-05). */
+body:has(.fp-sav):not(:has(.gymenu)) .navbar { background: transparent !important; box-shadow: none !important;
     border: 0 !important; margin-bottom: -80px; }
-body:has(.fp-sav) .navbar-inner { position: relative; isolation: isolate; margin: 10px auto;
+body:has(.fp-sav):not(:has(.gymenu)) .navbar-inner { position: relative; isolation: isolate; margin: 10px auto;
     width: calc(100% - 20px); max-width: 1260px; border-radius: 22px; padding: .55rem 1rem .55rem .7rem;
     box-shadow: 0 12px 32px rgba(10,40,28,.22); }
-body:has(.fp-sav) .navbar-inner::before { content: ""; position: absolute; inset: 0; z-index: -1;
+body:has(.fp-sav):not(:has(.gymenu)) .navbar-inner::before { content: ""; position: absolute; inset: 0; z-index: -1;
     border-radius: inherit; background: rgba(255,253,248,.9); border: 1px solid rgba(255,255,255,.7);
     -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
-body:has(.fp-sav) .navbar .brand-name { color: #0E2A1E !important; }
-body:has(.fp-sav) .nav-links > a:not(.nav-cta):not(.pin-nyitva) { color: #163A2E !important; }
-body:has(.fp-sav) .navbar .lang-switch { background: #EEF4F0 !important; }
-body:has(.fp-sav) .navbar .lang-switch .lang-btn { color: #5f7469 !important; }
-body:has(.fp-sav) .navbar .lang-switch .lang-btn.active { background: #167A5E !important; color: #fff !important; }
-body:has(.fp-sav) .fp-sav { padding-top: 112px !important; }
-body:has(.fp-sav) .flash-container { margin-top: 92px; }
+body:has(.fp-sav):not(:has(.gymenu)) .navbar .brand-name { color: #0E2A1E !important; }
+body:has(.fp-sav):not(:has(.gymenu)) .nav-links > a:not(.nav-cta):not(.pin-nyitva) { color: #163A2E !important; }
+body:has(.fp-sav):not(:has(.gymenu)) .navbar .lang-switch { background: #EEF4F0 !important; }
+body:has(.fp-sav):not(:has(.gymenu)) .navbar .lang-switch .lang-btn { color: #5f7469 !important; }
+body:has(.fp-sav):not(:has(.gymenu)) .navbar .lang-switch .lang-btn.active { background: #167A5E !important; color: #fff !important; }
+body:has(.fp-sav):not(:has(.gymenu)) .fp-sav { padding-top: 112px !important; }
+body:has(.fp-sav):not(:has(.gymenu)) .flash-container { margin-top: 92px; }
 @media (max-width: 1180px) {
-    body:has(.fp-sav) .navbar-inner { margin: 8px auto; width: calc(100% - 16px); border-radius: 20px; }
-    body:has(.fp-sav) .menu-gomb { background: #EEF4F0 !important; }
-    body:has(.fp-sav) .menu-gomb i { background: #0E2A1E !important; }
-    body:has(.fp-sav) .navbar::after { inset: 0; }
-    body:has(.fp-sav) .fp-sav { padding-top: 98px !important; }
+    body:has(.fp-sav):not(:has(.gymenu)) .navbar-inner { margin: 8px auto; width: calc(100% - 16px); border-radius: 20px; }
+    body:has(.fp-sav):not(:has(.gymenu)) .menu-gomb { background: #EEF4F0 !important; }
+    body:has(.fp-sav):not(:has(.gymenu)) .menu-gomb i { background: #0E2A1E !important; }
+    body:has(.fp-sav):not(:has(.gymenu)) .navbar::after { inset: 0; }
+    body:has(.fp-sav):not(:has(.gymenu)) .fp-sav { padding-top: 98px !important; }
     /* a lenyíló lap menüpontjai maradnak a csempe-színekben */
-    body:has(.fp-sav) .nav-links > a.mn { color: #fff !important; }
-    body:has(.fp-sav) .nav-links > a.mn-ki { color: #5f7469 !important; }
+    body:has(.fp-sav):not(:has(.gymenu)) .nav-links > a.mn { color: #fff !important; }
+    body:has(.fp-sav):not(:has(.gymenu)) .nav-links > a.mn-ki { color: #5f7469 !important; }
 }
