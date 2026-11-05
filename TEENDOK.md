@@ -259,6 +259,15 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       megnézni: Kimutatás → Bontás → Kézbesítés → Elhelyezés – honnan jött a
       kattintás. Ha főleg Audience Network: új hirdetéssorozat kézi
       elhelyezéssel (Facebook + Instagram), a régit kikapcsolni.
+- [ ] SÜRGŐS – REGISZTRÁCIÓS ŰRLAP (2026-11-05 mérés): 3 látogató megnyitotta,
+      44 mp-ig ott volt, végig legörgetett, de SENKI nem küldte be. Átnézni az
+      űrlapot telefonon: hány mező, mi kötelező, érthető-e, van-e hiba
+      (admin/latogatottsag → „hibák” rész), ijesztő-e valami (jelszó, PIN, gyerek adatai).
+- [ ] FB hirdetés: fusson tovább kis költséggel; ha az űrlap javítva van, új
+      hirdetéssorozat kézi elhelyezéssel (Audience Network nélkül).
+- [ ] FEJLÉC EGY SORBAN + telefonon ☰ menü (2026-11-05): kész a fix67-ben
+      (base.html + style.css vége), képen megmutatva – Sándor jóváhagyására vár,
+      utána kerül a gépére és a próbaoldalra.
 - [ ] PROMPT-DIÉTA (a legnagyobb megtakarítás): mért adat (tanar_teszt
       2026-11-03): egy gyerek-üzenetre 22 500 bemenő token megy el, a válasz
       csak ~430. Előbb kimérni, mekkora ebből a tananyag és mekkora a
