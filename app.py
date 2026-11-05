@@ -17232,8 +17232,8 @@ def _admin_kapu():
 #   TTS_1M     Azure neurális felolvasás, 1 millió karakter        16.00 USD
 #   TTS_INGYEN Azure havi ingyenes keret, karakter               500 000
 #   HANG_PERC  gpt-transcribe, egy perc hang                       0.0045 USD
-#   BE_1M      chat modell, 1 millió bemeneti token                0.10 USD
-#   KI_1M      chat modell, 1 millió kimeneti token                0.60 USD
+#   BE_1M      chat modell, 1 millió bemeneti token                0.75 USD (gpt-5.4-mini, 2026-11-05)
+#   KI_1M      chat modell, 1 millió kimeneti token                4.50 USD (gpt-5.4-mini)
 # A HANG_PERC 2026. augusztus 28-án frissült, amikor a felismerő modellt
 # gpt-4o-mini-transcribe-ról gpt-transcribe-ra váltottuk (0.003 → 0.0045).
 ARAK_ELLENORIZVE = "2026. augusztus 28."
@@ -17259,8 +17259,8 @@ def _gyerek_koltseg(gy: dict) -> float:
     """Egy gyerek HAVI költsége euróban, a mért fogyasztásból."""
     usd = (gy["tts_karakter"] / 1_000_000 * _dij("TTS_1M", 16.0)
            + gy["hang_mp"] / 60.0 * _dij("HANG_PERC", 0.0045)
-           + gy["be_token"] / 1_000_000 * _dij("BE_1M", 0.10)
-           + gy["ki_token"] / 1_000_000 * _dij("KI_1M", 0.60))
+           + gy["be_token"] / 1_000_000 * _dij("BE_1M", 0.75)
+           + gy["ki_token"] / 1_000_000 * _dij("KI_1M", 4.50))
     return usd * _dij("EUR_USD", 0.92)
 
 
@@ -17575,7 +17575,7 @@ def admin_attekintes():
         modellek={
             "tanar": MODELL_TANAR, "seged": MODELL_SEGED,
             "abra": MODELL_ABRA, "stt": STT_MODEL,
-            "be_ar": _dij("BE_1M", 0.10), "ki_ar": _dij("KI_1M", 0.60),
+            "be_ar": _dij("BE_1M", 0.75), "ki_ar": _dij("KI_1M", 4.50),
         },
         elakadas=elakadas,
         elakadas_szoveg=elakadas_szoveg,

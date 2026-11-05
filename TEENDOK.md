@@ -293,8 +293,14 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       fejlécében végig ott a „🤖 AI-tanár” (chat.html, ai-jelzes) → MEGFELEL. A főoldalra
       nem kell külön doboz. (Sándor: a kék doboz-javaslat nem illett az oldalhoz – elvetve.)
 - [ ] SZÜLŐI OLDALAK FEJLÉCE (laptop, tablet, telefon – a főoldal kivételével): a zöld
-      fejléc beleolvad a zöld sávba. Képen 2 ötlet: lebegő VILÁGOS kapszula / lebegő
-      SÖTÉTZÖLD kapszula. Sándor dönt.
+      fejléc beleolvad a zöld sávba. A VILÁGOS lebegő kapszula beépítve (style.css vége,
+      csak a zöld sávos oldalakon: body:has(.fp-sav)) – próbaoldalon laptopon, tableten,
+      telefonon megnézni. Ha nem jó: a sötétzöld változat, vagy a blokk törlése.
+- [ ] KÖLTSÉGLAP (koltsegek_pontos.html) legrosszabb esethez: ÁFA 27% (magyar vevő OSS
+      után), jutalék 2,2% (Stripe 1,5% + Stripe Billing 0,7%; + 0,5% ha Stripe Tax),
+      kimenő token/perc 3000 → kb. 1000 (mérés: ~430/válasz), könyvelő 80, Railway alap
+      +18 (Resend fizetős 100 család felett). Admin: Railway Variables BE_1M=0.75,
+      KI_1M=4.50 legyen, különben az admin költség hamis.
 - [ ] Főoldal felső rész – javaslat képen (2026-11-05): címke „Türelmes online
       tanító · 1–8. osztály”, a leírás alatt kék doboz: „A tanító mesterséges
       intelligencia (AI). Nem oldja meg a feladatot a gyerek helyett – és te minden
