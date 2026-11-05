@@ -102,11 +102,28 @@
             {% set van_menu = not (aktiv_gyerek and not gyerek_menu_nelkul) %}
             {% if van_menu %}
             <button type="button" class="menu-gomb" aria-label="Menü" aria-expanded="false"
-                    onclick="var n=this.closest('.navbar');var o=n.classList.toggle('menu-nyitva');this.setAttribute('aria-expanded',o);if(!n._z){n._z=1;n.addEventListener('click',function(e){if(e.target===n){n.classList.remove('menu-nyitva');n.querySelector('.menu-gomb').setAttribute('aria-expanded','false')}})}">
+                    onclick="window.kabBetolt&&kabBetolt();var n=this.closest('.navbar');var o=n.classList.toggle('menu-nyitva');this.setAttribute('aria-expanded',o);if(!n._z){n._z=1;n.addEventListener('click',function(e){if(e.target===n){n.classList.remove('menu-nyitva');n.querySelector('.menu-gomb').setAttribute('aria-expanded','false')}})}">
                 <i></i><i></i><i></i>
             </button>
             {% endif %}
             <nav class="nav-links">
+                {# KABALA A TELEFONOS MENÜBEN (2026-11-05, Sándor): besétál, integet,
+                   beszél, aztán vakarja a fejét – „melyiket választod?”. Csak telefonon
+                   látszik; a képek csak akkor töltődnek, ha kell (kb. 60 KB). #}
+                {% if van_menu %}
+                <div class="kab" aria-hidden="true">
+                  <div class="kab-hely"><div class="kab-seta"><div class="kab-bob"><div class="kab-fig">
+                    <img class="kp kab-labb" data-src="{{ url_for('static', filename='kabala/menu/labb.webp') }}" alt=""><img class="kp kab-labj" data-src="{{ url_for('static', filename='kabala/menu/labj.webp') }}" alt=""><img class="kp kab-test" data-src="{{ url_for('static', filename='kabala/menu/test.webp') }}" alt="">
+                    <div class="kab-fej"><img class="kp kab-fejkep" data-src="{{ url_for('static', filename='kabala/menu/fej.webp') }}" alt=""><img class="kp kab-szaj" data-src="{{ url_for('static', filename='kabala/menu/szaj.webp') }}" alt="">
+                      <svg class="kab-rajz kab-pilla" viewBox="0 0 380 640"><g class="pb"><ellipse cx="175" cy="156" rx="21" ry="22"/><path d="M155 162q20 9 40 0"/></g><g class="pj"><ellipse cx="248" cy="177" rx="21" ry="22"/><path d="M228 183q20 9 40 0"/></g></svg>
+                      <svg class="kab-rajz kab-hmm" viewBox="0 0 380 640"><path d="M182 213q17 8 34 -3"/></svg>
+                    </div>
+                    <img class="kp kab-kar" data-src="{{ url_for('static', filename='kabala/menu/kar.webp') }}" alt="">
+                  </div></div></div></div>
+                  <span class="kab-bub kab-b1">{{ '¡Hola! ¿A dónde vamos?' if lang == 'es' else 'Szia! Hova menjünk?' }}<small>{{ 'Elige y te llevo.' if lang == 'es' else 'Válassz, és már viszlek is.' }}</small></span>
+                  <span class="kab-bub kab-b2">{{ 'Hmm… ¿cuál eliges?' if lang == 'es' else 'Hmm… melyiket választod?' }}<em><i></i><i></i><i></i></em></span>
+                </div>
+                {% endif %}
                 {% if aktiv_gyerek and not gyerek_menu_nelkul %}
                     {# Gyerek-munkamenet a gyerek saját oldalain: a felső sáv
                        nem mutat szülői menüpontot – alatta ott a gyereksáv,
@@ -150,6 +167,8 @@
                 {% endif %}
 
             </nav>
+            <script>(function(){function l(){document.querySelectorAll('.kab img[data-src]').forEach(function(i){i.src=i.getAttribute('data-src');i.removeAttribute('data-src')})}
+            window.kabBetolt=l;if(window.matchMedia&&matchMedia('(max-width:1180px)').matches){addEventListener('load',function(){setTimeout(l,1500)})}})();</script>
             <div class="lang-switch">
                 {% for code, label in (elerheto_nyelvek or languages).items() %}
                     <a class="lang-btn {{ 'active' if code == lang else '' }}"

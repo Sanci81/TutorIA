@@ -265,9 +265,26 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       (admin/latogatottsag → „hibák” rész), ijesztő-e valami (jelszó, PIN, gyerek adatai).
 - [ ] FB hirdetés: fusson tovább kis költséggel; ha az űrlap javítva van, új
       hirdetéssorozat kézi elhelyezéssel (Audience Network nélkül).
-- [ ] FEJLÉC EGY SORBAN + telefonon ☰ menü (2026-11-05): kész a fix67-ben
-      (base.html + style.css vége), képen megmutatva – Sándor jóváhagyására vár,
-      utána kerül a gépére és a próbaoldalra.
+- [ ] FEJLÉC EGY SORBAN + telefonon ☰ menü (2026-11-05): „A” változat (alulról
+      felcsúszó lap, színes csempék) a gépen, PRÓBAOLDALON nézzük meg. Ha nem
+      tetszik: a krémszínű lista-változat mentve: „Claude outputs/fejlec_lista_valtozat/”
+      (base.html, style.css) – Claude visszateszi. Képen megmutatva még: „B” sötét
+      kártya felül, „C” állandó alsó sáv, „D” kabala (integető fiú) a lapon.
+      A CSS-ük: „Claude outputs/fejlec_valtozatok.css”. Sándor dönt.
+- [ ] Szülői oldalak (laptop): a zöld fejléc összefolyik a zöld sávval → javaslat:
+      sötétebb fejléc (#0E4A38) azokon az oldalakon, ahol zöld sáv van alatta.
+      Képen megmutatva, jóváhagyásra vár (ugyanabban a CSS-fájlban). További 3 ötlet
+      képen (2026-11-05): krém fejléc / egybeolvasztva vékony csíkkal / zöld fejléc + világos sáv.
+- [ ] ÖTLET – ÉLŐ KABALA A MENÜBEN (Sándor kérte, 2026-11-05): a figura a lap
+      tetején besétál, beszél (száj mozog, buborék) és gesztikulál, de ne legyen
+      „AI-s”. Terv: az integető fiú/lány képét részekre vágni (fej, kar, test,
+      láb – avatar_darabolo.py), CSS-animáció: séta, karmozdulat, 2–3 szájállás.
+      Csak megnyitáskor fusson ~2–3 mp-ig, utána álljon meg; „mozgás csökkentése”
+      beállításnál ne mozogjon. Előbb egy rövid próbavideó, csak utána beépítés.
+      2026-11-05: BEÉPÍTVE (base.html + style.css vége + static/kabala/menu/*.webp,
+      6 rész, ~60 KB, csak telefonon töltődik). Besétál, köszön, integet, beszél,
+      pislog, a végén fejet vakar és gondolkodik. Próbaoldalon nézni. Ha jó: a
+      csempéket nem egyformára (bento), aztán C (alsó sáv) átgondolva, végül B.
 - [ ] PROMPT-DIÉTA (a legnagyobb megtakarítás): mért adat (tanar_teszt
       2026-11-03): egy gyerek-üzenetre 22 500 bemenő token megy el, a válasz
       csak ~430. Előbb kimérni, mekkora ebből a tananyag és mekkora a
