@@ -394,6 +394,17 @@ def _latogatas_esemeny(nev: str) -> None:
         logger.warning("Latogatas esemeny hiba", exc_info=True)
 
 
+# 2026-11-05 (Sándor: „szétesett a főoldal”): új kód ment ki, de a böngésző és
+# a Cloudflare a RÉGI style.css-t adta → a menü ikonjai óriásira nőttek. Ezért
+# minden telepítésnél új „?v=” kerül a CSS/JS címek végére: mindig a friss megy.
+_STATIK_V = (os.environ.get("RAILWAY_GIT_COMMIT_SHA") or str(int(time.time())))[:10]
+
+
+@app.context_processor
+def _statik_verzio():
+    return {"statik_v": _STATIK_V}
+
+
 @app.context_processor
 def _meres_sablonba():
     """A nyilvános oldalakon, be nem jelentkezett látogatónál kerül be a

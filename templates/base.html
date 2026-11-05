@@ -7,11 +7,11 @@
     {# A betűtípust SAJÁT szerverről szolgáljuk ki. A Google-tól betöltött
        webfont minden látogató IP-címét elküldi a Google-nek – emiatt már
        volt EU-s bírósági marasztalás. Így nincs külső kérés. #}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/betutipus.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/betutipus.css', v=statik_v) }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=statik_v) }}">
     {# Az új kinézet közös része. A szülői és bemutató oldalakon csak a
        class="fp" dobozban hat, a gyerek oldalain a háttérre és a menüsávra. #}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css', v=statik_v) }}">
 
     {# ═══ AMIT A FACEBOOK MUTAT, HA VALAKI BELINKELI AZ OLDALT ═══════════
        Enélkül a Facebook maga keresett képet az oldalon, és a kabalafigurát
@@ -71,7 +71,7 @@
                 {# Az égő: sötét lekerekített négyzet, benne a körte, és a
                    körtében a T betű hálózati pontokból. #}
                 <span class="brand-mark" aria-hidden="true">
-                  <svg viewBox="0 0 120 120">
+                  <svg width="38" height="38" viewBox="0 0 120 120">
                     <defs>
                       <radialGradient id="brand-izzas" cx="50%" cy="42%" r="54%">
                         <stop offset="0%" stop-color="#ffe9a8" stop-opacity=".55"/>
@@ -120,7 +120,7 @@
                     {# LÁTSZÓDJON, hogy a szülői rész most nyitva van, és
                        egy kattintással be lehessen csukni. #}
                     <a class="pin-nyitva" href="{{ url_for('szuloi_pin_bezar') }}">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V6a4 4 0 0 1 7-2.6"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V6a4 4 0 0 1 7-2.6"/></svg>
                         {{ t('pin_nyitva_cimke') }}
                     </a>
                     {% endif %}
@@ -129,23 +129,23 @@
                        nem lehetett látni, hogy KI. #}
                     {% if belepett_szulo %}
                     <span class="belepve" title="{{ belepett_szulo }}">
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20c1.2-3.6 4-5.4 7.2-5.4s6 1.8 7.2 5.4"/></svg>
+                        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20c1.2-3.6 4-5.4 7.2-5.4s6 1.8 7.2 5.4"/></svg>
                         <b>{{ belepett_szulo }}</b>
                     </span>
                     {% endif %}
                     {# 2026-11-05: ikon és alcím csak a telefonos lenyíló menüben látszik. #}
-                    <a class="mn t-zold{{ ' aktiv' if request.endpoint == 'dashboard' }}" href="{{ url_for('dashboard') }}"><i class="mi mi-zold"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3.5 19c.8-3.2 3-5 5.5-5s4.7 1.8 5.5 5M14.5 15.2c.8-.5 1.6-.7 2.5-.7 2 0 3.6 1.4 4.2 4.5"/></svg></i><span class="mt"><b>{{ t('nav_dashboard') }}</b><small class="ms">{{ 'Empezar a aprender' if lang == 'es' else 'Tanulás indítása' }}</small></span><svg class="mc" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+                    <a class="mn t-zold{{ ' aktiv' if request.endpoint == 'dashboard' }}" href="{{ url_for('dashboard') }}"><i class="mi mi-zold"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9.5" r="2.4"/><path d="M3.5 19c.8-3.2 3-5 5.5-5s4.7 1.8 5.5 5M14.5 15.2c.8-.5 1.6-.7 2.5-.7 2 0 3.6 1.4 4.2 4.5"/></svg></i><span class="mt"><b>{{ t('nav_dashboard') }}</b><small class="ms">{{ 'Empezar a aprender' if lang == 'es' else 'Tanulás indítása' }}</small></span><svg class="mc" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
                     {# A haladás a szülőnek a legfontosabb kérdés: amiért
                        fizet, az működik-e. Ezért a Csomagok ELŐTT áll. #}
-                    <a class="mn t-kek{{ ' aktiv' if request.endpoint == 'hogy_megy' }}" href="{{ url_for('hogy_megy') }}"><i class="mi mi-kek"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/></svg></i><span class="mt"><b>{{ t('hogymegy_cim') }}</b><small class="ms">{{ 'Progreso y resultados' if lang == 'es' else 'Haladás, eredmények' }}</small></span><svg class="mc" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-                    <a class="mn t-narancs{{ ' aktiv' if request.endpoint == 'csomagok_oldal' }}" href="{{ url_for('csomagok_oldal') }}"><i class="mi mi-narancs"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg></i><span class="mt"><b>{{ t('csomag_cim') }}</b><small class="ms">{{ 'Planes y precios' if lang == 'es' else 'Csomagok és árak' }}</small></span><svg class="mc" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-                    <a class="mn t-rozsa{{ ' aktiv' if request.endpoint == 'fiok' }}" href="{{ url_for('fiok') }}"><i class="mi mi-rozsa"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20c1.2-3.6 4-5.4 7.2-5.4s6 1.8 7.2 5.4"/></svg></i><span class="mt"><b>{{ t('nav_account') }}</b><small class="ms">{{ 'Datos, contraseña, PIN' if lang == 'es' else 'Adatok, jelszó, PIN' }}</small></span><svg class="mc" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-                    <a class="mn mn-ki" href="{{ url_for('logout') }}"><i class="mi mi-szurke"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M14 16l4-4-4-4M18 12H8"/></svg></i><span class="mt"><b>{{ t('nav_logout') }}</b></span></a>
+                    <a class="mn t-kek{{ ' aktiv' if request.endpoint == 'hogy_megy' }}" href="{{ url_for('hogy_megy') }}"><i class="mi mi-kek"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/></svg></i><span class="mt"><b>{{ t('hogymegy_cim') }}</b><small class="ms">{{ 'Progreso y resultados' if lang == 'es' else 'Haladás, eredmények' }}</small></span><svg class="mc" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+                    <a class="mn t-narancs{{ ' aktiv' if request.endpoint == 'csomagok_oldal' }}" href="{{ url_for('csomagok_oldal') }}"><i class="mi mi-narancs"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg></i><span class="mt"><b>{{ t('csomag_cim') }}</b><small class="ms">{{ 'Planes y precios' if lang == 'es' else 'Csomagok és árak' }}</small></span><svg class="mc" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+                    <a class="mn t-rozsa{{ ' aktiv' if request.endpoint == 'fiok' }}" href="{{ url_for('fiok') }}"><i class="mi mi-rozsa"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.6"/><path d="M4.8 20c1.2-3.6 4-5.4 7.2-5.4s6 1.8 7.2 5.4"/></svg></i><span class="mt"><b>{{ t('nav_account') }}</b><small class="ms">{{ 'Datos, contraseña, PIN' if lang == 'es' else 'Adatok, jelszó, PIN' }}</small></span><svg class="mc" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+                    <a class="mn mn-ki" href="{{ url_for('logout') }}"><i class="mi mi-szurke"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4M14 16l4-4-4-4M18 12H8"/></svg></i><span class="mt"><b>{{ t('nav_logout') }}</b></span></a>
                 {% else %}
                     {# Az árnak belépés NÉLKÜL is látszania kell: a szülő azt
                        nézi meg először, és ha nem találja, elmegy. #}
-                    <a class="mn t-zold{{ ' aktiv' if request.endpoint == 'csomagok_oldal' }}" href="{{ url_for('csomagok_oldal') }}"><i class="mi mi-zold"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg></i><span class="mt"><b>{{ t('csomag_cim') }}</b><small class="ms">{{ 'Planes y precios' if lang == 'es' else 'Csomagok és árak' }}</small></span><svg class="mc" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
-                    <a class="mn t-kek{{ ' aktiv' if request.endpoint == 'login' }}" href="{{ url_for('login') }}"><i class="mi mi-kek"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l4-4-4-4M14 12H4"/></svg></i><span class="mt"><b>{{ t('nav_login') }}</b><small class="ms">{{ '¿Ya tienes cuenta?' if lang == 'es' else 'Van már fiókod?' }}</small></span><svg class="mc" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+                    <a class="mn t-zold{{ ' aktiv' if request.endpoint == 'csomagok_oldal' }}" href="{{ url_for('csomagok_oldal') }}"><i class="mi mi-zold"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2.5"/><path d="M3 10h18M7 15h4"/></svg></i><span class="mt"><b>{{ t('csomag_cim') }}</b><small class="ms">{{ 'Planes y precios' if lang == 'es' else 'Csomagok és árak' }}</small></span><svg class="mc" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
+                    <a class="mn t-kek{{ ' aktiv' if request.endpoint == 'login' }}" href="{{ url_for('login') }}"><i class="mi mi-kek"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l4-4-4-4M14 12H4"/></svg></i><span class="mt"><b>{{ t('nav_login') }}</b><small class="ms">{{ '¿Ya tienes cuenta?' if lang == 'es' else 'Van már fiókod?' }}</small></span><svg class="mc" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a>
                     <a class="nav-cta" href="{{ url_for('register') }}"><span class="mt"><b>{{ t('nav_register') }}</b><small class="ms">{{ 'Prueba gratuita' if lang == 'es' else 'Ingyenes kipróbálás' }}</small></span></a>
                 {% endif %}
 
@@ -187,7 +187,7 @@
         </p>
     </footer>
 
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js', v=statik_v) }}"></script>
     {% block scripts %}{% endblock %}
     {% if meres_be %}
     {# KATTINTÁS- ÉS GÖRGETÉSMÉRÉS (2026-11-04): csak nyilvános oldalon, be nem

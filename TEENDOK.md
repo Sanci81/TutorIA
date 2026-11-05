@@ -310,6 +310,28 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 - [ ] Hirdetés/főoldal szöveg: sok szülő tart az AI-tól (FB-hozzászólások) →
       kipróbálni, hogy az „AI-tanár” helyett a gyerek haszna és a szülői kontroll
       legyen elöl (pl. „Türelmes online tanító – a szülő mindent lát”).
+- [ ] !!! MEGÉRI-E – A KÖVETKEZŐ LÉPÉS (2026-11-05). Legrosszabb esetben (teljes keret,
+      végig hangos, 0% gyorsítótár) MINDEN csomag veszteséges: Alap −2, Pro −10,8,
+      Max −28,9 €/fő/hó. Ok: az okt. 5-i „megéri” a gpt-6-luna modellel számolt, de a
+      tanár maradt gpt-5.4-mini (minőség miatt). A 6–10% kihasználtság Sándor saját
+      tesztje volt – NEM valós adat. Sorrend: (1) admin költség most valós áron számol
+      (app.py alapár 0.75/4.50 – ha a Railway Variables-ben van BE_1M/KI_1M, törölni);
+      Sándor tesztórái után leolvasni: € / tanulási perc; (2) [CACHE] arány a naplóból;
+      (3) ELŐSZÖR a gyorsítótár (a prompt ugyanaz marad, csak a változatlan rész kerül
+      előre – a tanítást NEM érinti); (4) prompt-diéta CSAK ha tanar_teszt szerint a
+      tanítás nem romlik (Sándor: „rosszabb tanár nem ér semmit”); (5) újraszámolás.
+      Sándor tette be a Railway-be a BE_1M/KI_1M-et (Claude kérte okt. 5-én) – NEM kell
+      törölni; ELLENŐRIZVE: 0.75 / 4.5 → az admin 3,33 € (186 perc) valós: ~1,8 cent/perc.
+      Ezzel a legrosszabb eset (27% ÁFA, 2,2% jutalék): csak szöveg: Alap +4,0, Pro +2,7,
+      Max −1,9 €/fő/hó; végig hangos (+0,8 cent/perc): Alap +0,8, Pro −4,5, Max −16,3.
+      JAVASLAT a csomagokra (legrosszabb esetben is ≥0, havi ÉS éves fizetésnél):
+      Alap 400 perc (ebből 250 hangos) · Pro 750 (300 hangos) · Max 1200 (450 hangos).
+      Csak csomagok.py: havi_perc / hangos_perc. Előbb a gyorsítótár, utána dönt Sándor.
+      Sándor kérése: a TANÍTÁS MINŐSÉGE nem romolhat – minden megtakarítás csak tanar_teszt
+      összevetés után, és csak ha ugyanolyan jó.
+      Becslés: felezett prompt + 80% gyorsítótár → ~1,5 cent/perc → legrosszabb esetben
+      is mindhárom csomag nullán felül. Ha nem jön ki: hangos perc korlátozása a nagy
+      csomagokban, vagy olcsóbb modell az egyszerű lépésekhez.
 - [ ] PROMPT-DIÉTA (a legnagyobb megtakarítás): mért adat (tanar_teszt
       2026-11-03): egy gyerek-üzenetre 22 500 bemenő token megy el, a válasz
       csak ~430. Előbb kimérni, mekkora ebből a tananyag és mekkora a
