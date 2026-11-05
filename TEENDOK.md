@@ -343,6 +343,41 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       (koltsegek_pontos.html) token/perc alapértéke 16 000 / 1 600 lett (mért); a
       beszélgetés hosszával nő (okt.: 30–60 ezer) → az előzmény rövidítése is megtakarítás.
       295 előfizetős példa (100/95/100): 100% használat −353 €/hó, 50% +2749, 30% +3990.
+      KÉT MODELL (2026-11-05, 2,57 cent/hangos perc, 27% ÁFA, 2,2% díj; éves = 11 hónap ára):
+      M1 családi keret: Alap 14,90/400 · Család 24,90/800 · Nagycsalád 39,90/1400 → legrosszabb
+         +0,9 / −1,8 / −5,7 €; 40%-nál +7,0 / +10,6 / +15,9 €.
+      M2 GYEREKENKÉNT (Claude javaslata): 1. gyerek 14,90 € / 400 perc, minden testvér 9,90 € /
+         300 perc, saját keret gyerekenként (nem veszik el egymás elől) → legrosszabb +0,9 / −0,1 €;
+         40%-nál +7,0 / +4,5 €. + perc-feltöltés 200 perc 7,90 € (+0,7). Opcionális napi
+         korlát kor szerint (1–2.: 30, 3–4.: 40, 5–8.: 60 perc).
+      Költségcsökkentő, ami a tanítást JAVÍTJA: több interaktív feladat (a böngésző értékel,
+      nem kerül tokenbe) – a magyarázat marad.
+- [ ] Sándornak egyik modell sem tetszik (2026-11-05). Versenytársak hanggal/AI-jal: Ello (olvasás,
+      hang) 14,99 $/hó, évesen 9,99 $/hó; Buddy.ai (3–8 év, hang) 12,49 $/hó, évesen ~4 $/hó,
+      ajánlás: heti 3–5 alkalom, 15–30 perc; Synthesis 29 $/hó (főleg előre kész leckék).
+      → Az ár (14,90 €) a piacon van; a gond a PERC ÁRA (2,57 cent). Cél: ~1 cent/perc
+      a tanítás rontása nélkül: (1) gyorsítótár, (2) beszédfelismerés a böngészőben
+      (ingyenes, hu-HU) az OpenAI helyett – minőséget tesztelni, (3) több interaktív feladat
+      (nem kerül tokenbe), (4) hosszú beszélgetésnél összefoglaló a teljes előzmény helyett –
+      csak tanar_teszt után. ~1 centnél gyerekenként 400 perc ≈ 4 € költség → legrosszabb
+      esetben is ~+7 €/gyerek/hó. További ötlet: külföldi magyarok (EUR), hétvégi magyar
+      iskolák, pályázat (diaszpóra-oktatás).
+- [ ] ÚJ CSOMAGÖTLET (2026-11-05) – „korrepetálás-órák” (1 óra = 45 perc, gyerekenként,
+      összevethető a magántanárral, ~6000 Ft/45 perc): Kezdő 8 óra 14,90 € · Szorgalmas
+      16 óra 24,90 € · Profi 26 óra 39,90 €; óradíj 1,86 / 1,56 / 1,53 € (felfelé olcsóbb).
+      Legrosszabb eset (mind hangos, mind elhasználva): +1,9 / +0,3 / +0,2 €; 40%-nál
+      +7,5 / +11,4 / +18,3 €. Éves (11 hónap ára) legrosszabb: +1,2 / −1,1 / −2,1.
+      Egyszeri: „Témazáró-felkészítő” 5 óra 9,90 € (+1,5); +1 óra 2,49 € (+0,5).
+      200 család (120 Kezdő / 60 Szorgalmas / 20 Profi), havi eredmény a fix költség (440 €)
+      után, adó előtt: 100% használat −189 · 60% +940 · 40% +1504 · 25% +1927 €.
+      Ha a perc 1,8 cent (gyorsítótár után): 100% +656 · 60% +1447 · 40% +1842 €.
+      A négy költségcsökkentőből a „beszélgetés-összefoglaló” EL VAN VETVE (Sándor fél,
+      hogy ront); a böngészős beszédfelismerés csak teszt után. Magyarország az első piac.
+- [ ] GYIK (2026-11-05 átnézve): a meglévő 6 kérdés rendben. Hiányzik: mennyibe kerül / mi van
+      az ingyenes próbában; látja-e a szülő, mit tanul; megoldja-e a házit a gyerek helyett;
+      biztonságos-e az AI; napi mennyi tanulás ajánlott. Csomag-döntés UTÁN megírni (HU+ES).
+- [x] Laptop: a kapszula-fejléc gyerek-munkamenetben a színes gyereksávot eltakarta → ott nincs
+      kapszula (style.css :not(:has(.gymenu))).
       Sándor kérése: a TANÍTÁS MINŐSÉGE nem romolhat – minden megtakarítás csak tanar_teszt
       összevetés után, és csak ha ugyanolyan jó.
       Becslés: felezett prompt + 80% gyorsítótár → ~1,5 cent/perc → legrosszabb esetben

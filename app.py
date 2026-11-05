@@ -121,6 +121,15 @@ AZURE_VOICE_ES = "es-ES-ElviraNeural"
 
 # A TANÁR. Ez beszélget a gyerekkel – innen jön a számla java.
 MODELL_TANAR = os.environ.get("MODELL_TANAR", "gpt-5.4-mini")
+# GYORSÍTÓTÁR (2026-11-05). Az OpenAI tized áron számolja a kérés ELEJÉT, ha az
+# szóról szóra ugyanaz, mint az előző kérésé. Eddig a tanár utasításainak
+# KÖZEPÉN állt a percenként változó „A TESZT ÁLLAPOTA” bekezdés („Még 23 perc
+# tanulás kell…”), ezért utána semmi nem lehetett olcsóbb. Most ez a bekezdés
+# szóról szóra ugyanaz, csak az utasítások VÉGÉRE kerül, és a kéréshez egy
+# „gyorsítótár-kulcs” is megy (gyerekenként), hogy az OpenAI ugyanoda irányítsa.
+# A tanár PONTOSAN ugyanazt a szöveget kapja. VISSZAÁLLÁS: Railway → web →
+# Variables → GYORSITOTAR = 0 (és újraindul) – akkor minden a régi.
+GYORSITOTAR = os.environ.get("GYORSITOTAR", "1").strip().lower() not in ("0", "false", "nem", "ki")
 
 # SEGÉDMUNKÁK: gyakorlófeladat, válaszellenőrzés, kvíz, szófelismerés,
 # szóbeli válasz értékelése. Rövid, egyszerű kérések. (11 hívás.)
@@ -167,6 +176,10 @@ def _ai_keszit(client, **kw):
                 continue
             if "max_tokens" in uz and "max_tokens" in kw:
                 kw["max_completion_tokens"] = kw.pop("max_tokens")
+                continue
+            if "prompt_cache_key" in uz and "extra_body" in kw:
+                # A modell vagy a fiók nem ismeri a gyorsítótár-kulcsot: nélküle megy.
+                kw.pop("extra_body", None)
                 continue
             raise
     return client.chat.completions.create(**kw)
@@ -12984,10 +12997,13 @@ def _call_ai_for_chat(
 
     client = _openai_client(api_key, request_timeout=max(8.0, idokorlat),
                             max_retries=max(0, ujra))
+    _kulcs = ({"extra_body": {"prompt_cache_key": f"tutoria-gy{int(child_id)}"}}
+              if GYORSITOTAR and child_id else {})
     response = _ai_keszit(client, 
         model=MODELL_TANAR,
         messages=messages,
         reasoning_effort="low",
+        **_kulcs,
     )
     # A mérést a burkolt kliens végzi (_MertKliens), ezért itt NINCS külön
     # add_usage – különben kétszer könyvelnénk ugyanazt a hívást.
@@ -14149,6 +14165,9 @@ def child_chat_send(child_id: int):
         )
         session_id = chat_session_row["id"]
 
+    # A teszt-állapot percenként változik → GYORSITOTAR esetén a végére kerül.
+    _teszt_szoveg = _teszt_kapu_szoveg(
+        child_id, progress_subject, grade_num, current_topic_id, catalog)
     system_prompt = _build_chat_system_prompt(
         child,
         subject_label=subject_label,
@@ -14164,8 +14183,7 @@ def child_chat_send(child_id: int):
         teaching_language=teaching_language,
         szokincs=current_topic_item.get("szokincs") if is_foreign and current_topic_item else None,
         spiralis=bool(chat_curriculum.get("spiralis")),
-        teszt_info=_teszt_kapu_szoveg(
-            child_id, progress_subject, grade_num, current_topic_id, catalog),
+        teszt_info=("" if GYORSITOTAR else _teszt_szoveg),
     )
     system_prompt += _topic_teaching_prompt_block(
         current_topic_item,
@@ -14200,6 +14218,8 @@ def child_chat_send(child_id: int):
                                                (_active_curriculum() or "HU").upper() == "ES")
     except Exception:
         logger.exception("Tanito allapot blokk hiba")
+    if GYORSITOTAR and _teszt_szoveg:
+        system_prompt += _teszt_szoveg
 
     history = database.get_chat_messages(session_id, limit=20)
 
