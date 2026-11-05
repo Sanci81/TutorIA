@@ -288,6 +288,13 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       elérhető). B, C, kabala kivéve a kódból. A kabala képei megmaradtak
       (static/kabala/menu/, „Claude outputs/kabala_proba/”), ha később kellene.
       Utána: laptopos szülői fejléc (összefolyó zöld). Ötlet még: nem egyforma csempék.
+- [x] EU MI-rendelet 50. cikk (2026-08-02 óta él, a Digital Omnibus NEM halasztotta):
+      a gyereknek az első beszélgetéstől tudnia kell, hogy AI-val beszél. A tanulóoldal
+      fejlécében végig ott a „🤖 AI-tanár” (chat.html, ai-jelzes) → MEGFELEL. A főoldalra
+      nem kell külön doboz. (Sándor: a kék doboz-javaslat nem illett az oldalhoz – elvetve.)
+- [ ] SZÜLŐI OLDALAK FEJLÉCE (laptop, tablet, telefon – a főoldal kivételével): a zöld
+      fejléc beleolvad a zöld sávba. Képen 2 ötlet: lebegő VILÁGOS kapszula / lebegő
+      SÖTÉTZÖLD kapszula. Sándor dönt.
 - [ ] Főoldal felső rész – javaslat képen (2026-11-05): címke „Türelmes online
       tanító · 1–8. osztály”, a leírás alatt kék doboz: „A tanító mesterséges
       intelligencia (AI). Nem oldja meg a feladatot a gyerek helyett – és te minden
