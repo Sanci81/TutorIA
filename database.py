@@ -324,6 +324,14 @@ class ChildLearningTime(Base):
     # energiát tenni – csak tippelni lehetett. VISSZAMENŐLEG nem derül ki:
     # a régi sorokban üresen marad, ami így is helyes (nem tudjuk).
     keszulek: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    # SZERVEROLDALI IDŐMÉRÉS (2026-11-06). A böngésző mérése kijátszható
+    # (le lehet tiltani a küldést), ezért a szerver is számol: a gyerek
+    # tényleges lépései (chat üzenet, feladat-ellenőrzés) között eltelt időt
+    # adja össze, lépésenként legfeljebb 3 percet. Az elszámolt perc soha nem
+    # kevesebb ennél. Vitában ez a napló mutatja meg, mi történt.
+    szerver_perc: Mapped[float | None] = mapped_column(Float, nullable=True)
+    utolso_lepes: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -601,6 +609,7 @@ def init_db() -> None:
     ensure_child_usage_table()
     ensure_parents_last_seen_column()
     ensure_learning_time_mode_column()
+    ensure_learning_time_szerver_columns()
     ensure_learning_time_grade_column()
     ensure_parents_ertesites_columns()
     ensure_parents_pin_column()
@@ -952,6 +961,44 @@ def tanulasi_perc_naponta(parent_id: int, tol: date, ig: date) -> dict[date, flo
         db.close()
 
 
+SZERVER_LEPES_MAX_PERC = 3.0
+
+
+def szerver_lepes(child_id: int) -> None:
+    """A gyerek egy TÉNYLEGES lépése (üzenet, feladat-ellenőrzés) a szerveren.
+
+    A legutóbb indított mai órájához hozzáadja az előző lépés óta eltelt
+    időt, de legfeljebb 3 percet (a hosszabb szünet nem számít, ugyanúgy,
+    mint a böngészőben). Az elszámolt perc ennél soha nem lehet kevesebb."""
+    db = _session()
+    try:
+        row = db.scalars(
+            select(ChildLearningTime)
+            .where(ChildLearningTime.child_id == child_id)
+            .where(ChildLearningTime.date == datetime.now(timezone.utc).date())
+            .order_by(ChildLearningTime.session_start.desc())
+            .limit(1)).first()
+        if not row:
+            return
+        now = datetime.now(timezone.utc)
+        elozo = row.utolso_lepes or row.session_start
+        if elozo is not None and elozo.tzinfo is None:
+            elozo = elozo.replace(tzinfo=timezone.utc)
+        if elozo is not None:
+            res = (now - elozo).total_seconds() / 60.0
+            if 0 < res <= SZERVER_LEPES_MAX_PERC:
+                row.szerver_perc = round(float(row.szerver_perc or 0.0) + res, 2)
+        row.utolso_lepes = now
+        if float(row.szerver_perc or 0.0) > float(row.minutes or 0.0):
+            row.minutes = round(float(row.szerver_perc), 1)
+        db.commit()
+    except Exception:                                      # pragma: no cover
+        db.rollback()
+        logger.exception("szerver_lepes(): nem sikerült")
+    finally:
+        db.close()
+
+
 def hangos_ora_jelol(child_id: int) -> None:
     """A gyerek MOSTANI (legutóbb indított mai) óráját hangosnak jelöli.
 
@@ -1196,6 +1243,21 @@ def ensure_learning_time_mode_column() -> None:
                 "mode VARCHAR(10)"))
     except Exception as exc:
         logger.warning("ensure_learning_time_mode_column: kihagyva: %s", exc)
+
+
+def ensure_learning_time_szerver_columns() -> None:
+    """child_learning_time.szerver_perc + utolso_lepes – szerveroldali mérés."""
+    from sqlalchemy import text
+
+    for sql in ("ALTER TABLE child_learning_time ADD COLUMN IF NOT EXISTS "
+                "szerver_perc FLOAT",
+                "ALTER TABLE child_learning_time ADD COLUMN IF NOT EXISTS "
+                "utolso_lepes TIMESTAMP WITH TIME ZONE"):
+        try:
+            with _get_engine().begin() as conn:
+                conn.execute(text(sql))
+        except Exception as exc:
+            logger.warning("ensure_learning_time_szerver_columns: kihagyva: %s", exc)
 
 
 def ensure_learning_time_grade_column() -> None:
@@ -2682,6 +2744,8 @@ def start_learning_session(
             date=now.date(),
             minutes=0.0,
             session_start=now,
+            utolso_lepes=now,
+            szerver_perc=0.0,
             mode=(mode or None),
             keszulek=(keszulek or None),
         )
@@ -2733,7 +2797,8 @@ def end_learning_session(session_id: int, minutes: float,
             minutes = min(float(minutes), (now - kezd).total_seconds() / 60.0 + 1.0)
         # Legfeljebb 3,5 percet csökkenhet: ennyit von le a böngésző, amikor
         # a tétlenség után kiveszi a tétlen perceket (chat.html).
-        minutes = max(float(minutes), float(row.minutes or 0.0) - 3.5, 0.0)
+        minutes = max(float(minutes), float(row.minutes or 0.0) - 3.5,
+                      float(row.szerver_perc or 0.0), 0.0)
         row.session_end = now
         row.minutes = round(minutes, 1)
         db.commit()

@@ -1209,6 +1209,8 @@ TRANSLATIONS = {
         "es": "Clases con voz: 30 min, después por escrito",
     },
     "csomag_hang_maradt": {"hu": "Hangos idő még", "es": "Tiempo con voz restante"},
+    "csomag_egyszeri_perc": {"hu": "perc (egyszeri keret)", "es": "min (una sola vez)"},
+    "csomag_elhasznalt_ossz": {"hu": "Eddig elhasználva", "es": "Usado hasta ahora"},
     "csomag_atvitt": {"hu": "ebből az előző hónapokból átjött",
                       "es": "de ellos, pasados de meses anteriores"},
     "csomag_jelenlegi": {"hu": "A csomagod", "es": "Tu plan"},
@@ -1432,7 +1434,9 @@ TRANSLATIONS = {
               "minden hónap órái 3 hónapig érvényesek (a vásárlás hónapjával "
               "együtt), és mindig a legrégebbi óra fogy először – így "
               "egyszerre legfeljebb 3 havi óra gyűlhet össze. Hogy mennyi van "
-              "még, azt a Fiókom oldalon mindig látod.",
+              "még, azt a Fiókom oldalon mindig látod. Minden órát naplózunk, "
+              "és a program a gyerek tényleges lépéseiből (üzenetek, "
+              "feladatok) is ellenőrzi az időt – kérésre megmutatjuk.",
         "es": "1 hora = 45 minutos de estudio con el profesor de TutorIA "
               "(inteligencia artificial), en cualquier asignatura. Solo cuenta "
               "el tiempo ACTIVO: si durante tres minutos el niño no escribe, no "
@@ -1442,7 +1446,9 @@ TRANSLATIONS = {
               "voz. En el bono, las horas de cada mes valen 3 meses (contando "
               "el mes de compra) y siempre se gastan primero las más antiguas: "
               "como mucho se juntan 3 meses de horas. Lo que te queda lo ves "
-              "siempre en Mi cuenta.",
+              "siempre en Mi cuenta. Registramos cada clase y el programa "
+              "comprueba el tiempo también con los pasos reales del niño "
+              "(mensajes, ejercicios); si lo pides, te lo mostramos.",
     },
     "csomag_gyik_profil_cim": {"hu": "Több gyereknek külön kell fizetni?",
                                "es": "¿Hay que pagar por cada hijo?"},

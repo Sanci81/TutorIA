@@ -73,7 +73,7 @@
     {# A HANGOS KERET IS IDE KELL. A hangos perc sokkal drágább, ezért az
        ingyenes próbánál kevesebb jár belőle, mint az összes percből – ha ezt
        itt nem írjuk ki, a szülő azt hiszi, mind a 120 perc beszélhető. #}
-    <p class="adat"><b>{{ keret.csomag_nev }}</b> — {{ keret.keret }} {{ t('csomag_havi_perc') }}{%
+    <p class="adat"><b>{{ keret.csomag_nev }}</b> — {{ keret.keret }} {{ t('csomag_egyszeri_perc' if keret.egyszeri else 'csomag_havi_perc') }}{%
       if keret.hangos and keret.hangos < keret.keret %} · {{ t('csomag_hang_ebbol') }}
       <b>{{ keret.hangos }}</b> {{ t('csomag_perc') }}{% endif %}{%
       if keret.atvitt %} · {{ t('csomag_atvitt') }}: <b>{{ keret.atvitt|round(0)|int }}</b> {{ t('csomag_perc') }}{% endif %}</p>
@@ -84,7 +84,7 @@
       <span style="width: {{ ((keret.elhasznalt / keret.keret * 100) if keret.keret else 0)|round(0, 'floor') }}%"></span>
     </div>
     <p class="adat">
-      {{ t('csomag_elhasznalt') }}: <b>{{ keret.elhasznalt }}</b> {{ t('csomag_perc') }} ·
+      {{ t('csomag_elhasznalt_ossz' if keret.egyszeri else 'csomag_elhasznalt') }}: <b>{{ keret.elhasznalt }}</b> {{ t('csomag_perc') }} ·
       {{ t('csomag_maradek') }}: <b>{{ keret.maradek }}</b> {{ t('csomag_perc') }}
     </p>
     {# Ha elfogyott a keret, a GYEREK csak annyit lát, hogy erre a hónapra

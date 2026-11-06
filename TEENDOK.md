@@ -9,7 +9,12 @@ Utolsó frissítés: 2026-11-06
 
 ## ⚠️ SÜRGŐS – SORRENDBEN (2026-11-06, Sándor kérte a rangsort)
 
-1. **Az időmérés a szerveren is** (fizetés ELŐTT kötelező). Most a böngésző méri és küldi
+1. ✔ RÉSZBEN KÉSZ (fix77): a szerver is számol (database.szerver_lepes: chat üzenet és
+   feladat-ellenőrzés között legfeljebb 3 perc), az elszámolt perc ennél nem lehet kevesebb.
+   Hátra: élesben összevetni a böngésző és a szerver percét (admin), és ha nagy az eltérés,
+   további lépéseket bekötni (teszt-válaszok, widgetek). Ismert kiskapu: aki mindig kivárja a
+   3 percet, annak az a szünet nem számít – Sándor: később nézzük meg, kihasználják-e.
+   (Eredeti leírás:) **Az időmérés a szerveren is** (fizetés ELŐTT kötelező). Most a böngésző méri és küldi
    a perceket → kijátszható, és vitában nincs mire hivatkozni. Terv: a szerver is számol a
    gyerek tényleges lépéseiből (chat üzenet, feladat-ellenőrzés, felolvasás), két lépés
    között legfeljebb 3 percet számítva; elszámolásnál a kettő közül a nagyobb, de soha nem
@@ -25,6 +30,9 @@ Utolsó frissítés: 2026-11-06
    nélkül, link a regisztrációra. Adat 11.04–06: a főoldalon 183 látogatóból csak 12
    görgetett egyáltalán, medián 7 mp → nagyrészt véletlen/érdektelen kattintás.
 6. **ÁSZF**: fizetés előtt a teljes bérlet-szöveg ügyvéddel/gestoríával átnézetve.
+7. **Elsősök szüleinek jelzés** (alacsony): a csomagoldalon már ott van „30 perc hangos,
+   utána írásban” – jogilag ez elég; a gyerek felvételekor egy mondat csak kényelmi.
+8. **Éves ár**: most nincs. Az első fizetős hónapok adatai után döntünk.
 
 
 ## Azonnal (a poszt már kiment, a cím publikus)

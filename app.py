@@ -3591,6 +3591,7 @@ def check_task_answer(child_id: int):
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
+    database.szerver_lepes(child_id)      # szerveroldali időmérés
 
     data = request.get_json(silent=True) or {}
     try:
@@ -14115,6 +14116,9 @@ def child_chat_send(child_id: int):
     )
     if not chat_session_row:
         return jsonify({"error": "invalid_session"}), 403
+
+    # SZERVEROLDALI IDŐMÉRÉS: ez a gyerek egy tényleges lépése.
+    database.szerver_lepes(child_id)
 
     # HANGOS ÓRA (2026-11-06): a hangos módban küldött üzenet az órát hangosnak
     # jelöli – ebből számoljuk a csomag hangos idejét (pl. próba: 30 perc).
