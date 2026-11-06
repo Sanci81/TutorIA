@@ -21,3 +21,6 @@ teszt_kep.png
 
 szokep_uj/
 kep_fogalmak/
+
+# Látogatottsági letöltések Claude-nak (csak összesített számok) – nem kell a gitbe
+adatok/

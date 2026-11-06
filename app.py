@@ -17431,6 +17431,32 @@ def admin_latogatottsag():
                            kizarva=request.cookies.get(_NEM_SZAMOL_SUTI) == "1")
 
 
+@app.route("/admin/latogatottsag/letoltes")
+@login_required
+def admin_latogatottsag_letoltes():
+    """Ugyanaz, mint a Látogatottság oldal, egy kis szövegfájlban – hogy
+    Claude a TutorIA\\adatok mappából olvassa, ne képernyőképekből.
+    Csak összesített számok; e-mail, látogatói kód, IP nincs benne."""
+    tiltas = _admin_kapu()
+    if tiltas is not None:
+        return tiltas
+    napok = max(7, min(90, int(request.args.get("napok", 30) or 30)))
+    adat: dict[str, Any] = {"keszult": datetime.now().isoformat(timespec="minutes"),
+                            "napok": napok}
+    for nev, fv in (("naponta", lambda: database.latogatas_osszesites(napok)),
+                    ("reszlet", lambda: database.latogatas_reszletek(napok)),
+                    ("meres", lambda: database.meres_osszesites(napok))):
+        try:
+            adat[nev] = fv()
+        except Exception:
+            logger.exception("latogatottsag letoltes: %s", nev)
+            adat[nev] = None
+    szoveg = json.dumps(adat, ensure_ascii=False, default=str, separators=(",", ":"))
+    fajl = f"latogatottsag_{date.today().isoformat()}.json"
+    return Response(szoveg, mimetype="application/json",
+                    headers={"Content-Disposition": f'attachment; filename="{fajl}"'})
+
+
 @app.route("/admin")
 @login_required
 def admin_attekintes():
