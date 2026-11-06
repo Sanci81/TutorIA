@@ -12,7 +12,7 @@
 </section>
 <section class="fp-alap">
   <div class="fp-kartya" style="text-align:center">
-    <p class="fp-szoveg">{{ t('notify_unsub_text') }}</p>
+    <p class="fp-szoveg">{{ t(szoveg_kulcs or 'notify_unsub_text') }}</p>
     <a class="fp-gomb" href="{{ url_for('index') }}">{{ t('app_name') }}</a>
   </div>
 </section>

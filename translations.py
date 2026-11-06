@@ -1211,6 +1211,20 @@ TRANSLATIONS = {
         "es": "Clases con voz: 30 min, después por escrito",
     },
     "csomag_hang_maradt": {"hu": "Hangos idő még", "es": "Tiempo con voz restante"},
+    "emlekezteto_leiratkozva": {
+        "hu": "Leiratkoztál az emlékeztetőkről. A heti jelentést (ha kéred) "
+              "továbbra is megkapod. A Fiókom oldalon bármikor visszakapcsolhatod.",
+        "es": "Te has dado de baja de los recordatorios. El informe semanal (si "
+              "lo pediste) lo sigues recibiendo. Puedes reactivarlos en Mi cuenta.",
+    },
+    "emlekezteto_fiok": {
+        "hu": "Emlékeztető e-mail, ha rég nem volt tanulás (7 és 21 nap után)",
+        "es": "Correo recordatorio si hace tiempo que no hay clases (a los 7 y 21 días)",
+    },
+    "emlekezteto_be_cimke": {"hu": "bekapcsolva", "es": "activado"},
+    "emlekezteto_ki_cimke": {"hu": "kikapcsolva", "es": "desactivado"},
+    "emlekezteto_kikapcsol": {"hu": "Kikapcsolom", "es": "Desactivar"},
+    "emlekezteto_bekapcsol": {"hu": "Bekapcsolom", "es": "Activar"},
     "csomag_egyszeri_perc": {"hu": "perc (egyszeri keret)", "es": "min (una sola vez)"},
     "csomag_elhasznalt_ossz": {"hu": "Eddig elhasználva", "es": "Usado hasta ahora"},
     "csomag_atvitt": {"hu": "ebből az előző hónapokból átjött",

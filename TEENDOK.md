@@ -37,14 +37,19 @@ Utolsó frissítés: 2026-11-06
 4. **Elsősök (≤7 év, csak hangos profil) az ingyenes próbában**: 30 hangos perc után nekik
    is írásban folytatódik (Sándor döntése: kivétel nincs, mert az életkort a szülő írja be).
    Mivel még nem olvasnak, a szülőnek ezt előre jelezni kell (pl. a gyerek felvételekor).
-5. **Hirdetés**: új kampány kézi elhelyezéssel (FB + IG hírfolyam/Reels), Audience Network
+5. **Hirdetés – adat 11.06. 20:14-ig**: a regisztrációra küldő új hirdetés után a hirdetésből
+   jöttek közül 37 jutott a regisztrációs oldalra (reggel még 2), de a medián idő ott 2 mp,
+   és senki nem kezdte el kitölteni → továbbra is főleg véletlen/érdektelen kattintás vagy a
+   Facebook előtöltése. A/B (fb_regisztracio / fb_fooldal) NEM indult el: a linkben még a
+   régi utm_source=facebook_hirdetes van. Meta-ban nézni: elhelyezések, „céloldal-megtekintés”.
+   (Eredeti:) **Hirdetés**: új kampány kézi elhelyezéssel (FB + IG hírfolyam/Reels), Audience Network
    nélkül, link a regisztrációra. Adat 11.04–06: a főoldalon 183 látogatóból csak 12
    görgetett egyáltalán, medián 7 mp → nagyrészt véletlen/érdektelen kattintás.
 6. **ÁSZF**: fizetés előtt a teljes bérlet-szöveg ügyvéddel/gestoríával átnézetve.
 7. **Elsősök szüleinek jelzés** (alacsony): a csomagoldalon már ott van „30 perc hangos,
    utána írásban” – jogilag ez elég; a gyerek felvételekor egy mondat csak kényelmi.
 8. **Éves ár**: most nincs. Az első fizetős hónapok adatai után döntünk.
-9. **STRIPE / PAYPAL BEKÖTÉSEKOR – NE FELEJTSD (Sándor kérte, 2026-11-06):**
+9. **‼️ STRIPE / PAYPAL BEKÖTÉSEKOR – NE FELEJTSD, NAGYON FONTOS (Sándor kérte, 2026-11-06):**
    - A fizetés (webhook) állítsa a szülő `csomag`, `csomag_kezdet`, `csomag_lejar` mezőjét →
      a hang és a keret a következő oldalbetöltéstől azonnal él. Lemondáskor/elmaradt fizetésnél
      csak a `csomag_lejar` kerüljön a kifizetett időszak végére (a megmaradt órák a saját
@@ -53,11 +58,26 @@ Utolsó frissítés: 2026-11-06
      számol visszamenőleg is).
    - A hangos idő próbaoldali tesztkapcsolója (session „teszt_hang_elfogyott”) csak a
      próbaoldalon él – élesben nincs.
+   - ELFELEJTETT / SIKERTELEN FIZETÉS: a bérlet havonta AUTOMATIKUSAN levonódik (az ÁSZF ezt
+     írja). Ha a levonás nem sikerül (lejárt kártya stb.): a Stripe pár napig újrapróbálja, és
+     mi levelet küldünk („nem sikerült a levonás – frissítsd a kártyát: link”). Ha végleg nem
+     sikerül: csomag_lejar = a kifizetett időszak vége (a megmaradt órák a saját 3 hónapjukig
+     élnek). Levonás előtti havi figyelmeztető levél NEM kötelező, de a GYIK régi szövege ígérte
+     – döntés: küldjünk-e 3 nappal előtte egy rövid levelet.
    - Szövegek: ÁSZF 7. pont (fizetés, megújulás, lemondás, számla), Adatvédelmi tájékoztató
      5. pont (fizetési szolgáltató neve, számlázási adatok, megőrzés), adatkezelési
      nyilvántartás 5. pont kitöltése, csomagoldalon a „Tervezett ár” jelölés levétele,
      FIZETES_ELERHETO=1.
-10. **„Rég jártál itt” emlékeztető e-mail** (Sándor ötlete, 2026-11-06) – JAVASLAT: 7 nap
+10. ✔ KÉSZ (fix81): _emlekezteto_kor – 7 nap után 1., 21 nap után (és ≥14 nappal az 1. után)
+    2. levél, több nincs; újra tanulás nullázza; 90 napnál régebben tétlennek nem; leiratkozott,
+    admin, elfogyott próba, lejárt bérlet: nem. Napközben, óránként egyszer (háttérszál,
+    MENTES_DIR kell). Visszaállás: EMLEKEZTETO=0. Adatvédelmi tájékoztató 3. pont kiegészítve.
+    Külön leiratkozás (fix81b): az emlékeztető saját linkje csak az emlékeztetőt kapcsolja ki
+    (parents.emlekezteto_ki), a heti jelentés marad; Fiókom oldalon vissza-/kikapcsolható.
+    A levél a csomaghoz igazodik: próbánál nincs kártya/album, a maradék ingyenes perc;
+    bérletnél a maradék óra + „3 hónapig érvényes”. Próbaoldalon: „🧪 Emlékeztető levél
+    küldése most nekem” gomb a Fiókom oldalon.
+    (Eredeti:) **„Rég jártál itt” emlékeztető e-mail** (Sándor ötlete, 2026-11-06) – JAVASLAT: 7 nap
     tétlenség után egy levél, 21 nap után még egy, utána nincs több. Csak ha a szülő nem
     iratkozott le (a meglévő ertesites/leiratkozás rendszert használja), minden levélben
     leiratkozó link. Fizetőknek is (a kifizetett órák elvesznének). Szöveg kell az Adatvédelmi

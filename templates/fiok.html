@@ -151,6 +151,18 @@
       </div>
       <button type="submit" class="gomb">{{ t('notify_save') }}</button>
     </form>
+    {# EMLÉKEZTETŐ – külön kapcsoló, a heti jelentéstől függetlenül. #}
+    <form method="post" action="{{ url_for('emlekezteto_valt') }}" style="margin-top:16px">
+      <p class="adat">{{ t('emlekezteto_fiok') }}:
+        <b>{{ t('emlekezteto_ki_cimke') if szulo.get('emlekezteto_ki') else t('emlekezteto_be_cimke') }}</b></p>
+      <button type="submit" class="gomb gomb-halvany">{{ t('emlekezteto_bekapcsol') if szulo.get('emlekezteto_ki') else t('emlekezteto_kikapcsol') }}</button>
+    </form>
+    {% if proba_oldal %}
+    <form method="post" action="{{ url_for('teszt_emlekezteto') }}" style="margin-top:10px">
+      <button type="submit" style="border:2px dashed #b45309;background:#fff7ed;color:#7c2d12;border-radius:999px;padding:6px 12px;font-weight:800;cursor:pointer">
+        🧪 Emlékeztető levél küldése most nekem (csak próbaoldal)</button>
+    </form>
+    {% endif %}
   </div>
 
   {# SZÜLŐI KÓD – itt lehet később megváltoztatni. #}

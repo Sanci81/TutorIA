@@ -419,7 +419,7 @@ _STATIK_V = (os.environ.get("RAILWAY_GIT_COMMIT_SHA") or str(int(time.time())))[
 
 @app.context_processor
 def _statik_verzio():
-    return {"statik_v": _STATIK_V}
+    return {"statik_v": _STATIK_V, "proba_oldal": PROBA_OLDAL}
 
 
 @app.context_processor
@@ -2729,6 +2729,47 @@ def ertesites_leiratkozas(jegy: str):
         abort(404)
     database.szulo_ertesites_beallit(parent_id, "ki")
     return render_template("leiratkozas.html")
+
+
+@app.route("/leiratkozas-emlekezteto/<jegy>")
+def emlekezteto_leiratkozas(jegy: str):
+    """Leiratkozás CSAK az emlékeztetőről, belépés nélkül (aláírt jegy).
+    A heti jelentés nem változik."""
+    try:
+        parent_id = int(_emlekezteto_jel().loads(jegy))
+    except Exception:
+        abort(404)
+    database.emlekezteto_ki_allit(parent_id, True)
+    return render_template("leiratkozas.html", szoveg_kulcs="emlekezteto_leiratkozva")
+
+
+@app.route("/emlekezteto/valt", methods=["POST"])
+@login_required
+def emlekezteto_valt():
+    """Fiókom: az emlékeztető ki- vagy visszakapcsolása."""
+    szulo = database.get_parent_by_id(session["parent_id"]) or {}
+    database.emlekezteto_ki_allit(session["parent_id"], not szulo.get("emlekezteto_ki"))
+    flash(i18n.t("notify_saved", g.lang), "success")
+    return redirect(url_for("fiok"))
+
+
+@app.route("/teszt/emlekezteto", methods=["POST"])
+@login_required
+def teszt_emlekezteto():
+    """CSAK A PRÓBAOLDALON: az emlékeztető levél azonnal kimegy a belépett
+    szülőnek (időzítés és számláló nélkül), hogy a szöveget és a
+    leiratkozó linket ki lehessen próbálni."""
+    if not PROBA_OLDAL:
+        abort(404)
+    pid = session["parent_id"]
+    sz = next((x for x in database.szulok_keret_allapota() if x["id"] == pid), None)
+    if sz:
+        leir = _oldal_url("/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(pid)))
+        fizetos, maradek = _emlekezteto_adatok(sz, date.today())
+        ok = _emlekezteto_level(sz["email"], g.lang, 1, leir, fizetos, maradek)
+        flash("Teszt-emlékeztető " + ("elküldve: " + sz["email"] if ok else "NEM ment ki (e-mail beállítás?)"),
+              "success" if ok else "error")
+    return redirect(url_for("fiok"))
 
 
 @app.route("/feladat/ertesites")
@@ -18122,6 +18163,143 @@ def _keret_level(cimzett: str, nyelv: str, ingyenes: bool) -> bool:
     return _level_kuld(cimzett, targy, szoveg)
 
 
+# ── „RÉG JÁRTÁL ITT” EMLÉKEZTETŐ (2026-11-06, Sándor) ──────────────────────
+# 7 nap tétlenség után egy levél, 21 nap után még egy, utána NINCS több.
+# Ha közben újra tanult, a számláló nullázódik. Leiratkozott szülőnek
+# (ertesites = "ki") soha. Akinek elfogyott az ingyenes próbája vagy lejárt a
+# bérlete, annak nem ez megy (az a keret-levél dolga). Visszaállás:
+# EMLEKEZTETO=0 (Railway).
+EMLEKEZTETO = os.environ.get("EMLEKEZTETO", "1").strip().lower() not in ("0", "false", "nem", "ki")
+EMLEKEZTETO_NAPOK = (7, 21)
+
+
+def _emlekezteto_jel():
+    """Aláírt jegy az emlékeztető leiratkozásához (más sóval, mint a jelentésé)."""
+    from itsdangerous import URLSafeSerializer
+    return URLSafeSerializer(app.config["SECRET_KEY"], salt="emlekezteto")
+
+
+def _emlekezteto_level(cimzett: str, nyelv: str, hanyadik: int, leiratkozo: str,
+                       fizetos: bool, maradek_perc: float) -> bool:
+    """A levél a CSOMAGHOZ igazodik: az ingyenes próbában nincs kártya és
+    album, ott a még meglévő ingyenes percet írjuk; bérletnél a még meglévő
+    órákat és azt, hogy azok nem örökre érvényesek."""
+    folytat = _oldal_url("/dashboard")
+    perc = int(max(0, round(maradek_perc)))
+    ora = round(perc / 45.0, 1)
+    if nyelv == "es":
+        targy = ("TutorIA – ¿seguimos?" if hanyadik == 1
+                 else "TutorIA – tu cuenta te espera")
+        if fizetos:
+            mi = ("El progreso, el álbum, las cartas y las monedas de tu hijo o "
+                  "hija siguen ahí: puede seguir justo donde lo dejó.\n\n"
+                  + (f"En vuestro bono quedan unas {ora} horas de estudio. "
+                     "Recuerda que las horas de cada mes valen 3 meses.\n\n"
+                     if perc > 0 else ""))
+        else:
+            mi = ("El progreso de tu hijo o hija sigue ahí: puede seguir justo "
+                  "donde lo dejó.\n\n"
+                  + (f"De la prueba gratuita aún quedan {perc} minutos.\n\n"
+                     if perc > 0 else ""))
+        szoveg = (
+            "¡Hola!\n\n"
+            + ("Hace un tiempo que no hay clases en TutorIA. "
+               if hanyadik == 1 else "Hace ya semanas que no hay clases en TutorIA. ")
+            + mi
+            + f"Seguir aprendiendo: {folytat}\n\n"
+            + ("" if hanyadik == 1 else "Este es el último recordatorio; no "
+               "volveremos a escribir por esto.\n\n")
+            + "Si no quieres recibir estos recordatorios (el informe semanal "
+            f"no cambia): {leiratkozo}\n\nTutorIA"
+        )
+    else:
+        targy = ("TutorIA – folytatjuk?" if hanyadik == 1
+                 else "TutorIA – vár a fiókod")
+        if fizetos:
+            mi = ("A gyereked haladása, albuma, kártyái és érméi megvannak: ott "
+                  "folytathatja, ahol abbahagyta.\n\n"
+                  + (f"A bérletetekben még kb. {str(ora).replace('.', ',')} óra tanulási idő van. "
+                     "Ne feledd: minden hónap órái 3 hónapig érvényesek.\n\n"
+                     if perc > 0 else ""))
+        else:
+            mi = ("A gyereked haladása megvan: ott folytathatja, ahol "
+                  "abbahagyta.\n\n"
+                  + (f"Az ingyenes próbából még {perc} perc van hátra.\n\n"
+                     if perc > 0 else ""))
+        szoveg = (
+            "Szia!\n\n"
+            + ("Egy ideje nem volt tanulás a TutorIA-ban. "
+               if hanyadik == 1 else "Már hetek óta nem volt tanulás a TutorIA-ban. ")
+            + mi
+            + f"Folytatás: {folytat}\n\n"
+            + ("" if hanyadik == 1 else "Ez az utolsó emlékeztető, emiatt "
+               "többet nem írunk.\n\n")
+            + "Ha nem kérsz ilyen emlékeztetőt (a heti jelentés ettől nem "
+            f"változik), itt leiratkozhatsz: {leiratkozo}\n\nTutorIA"
+        )
+    return _level_kuld(cimzett, targy, szoveg)
+
+
+def _emlekezteto_adatok(sz: dict, ma: date) -> tuple[bool, float]:
+    """(fizetős-e, hány perc van még) a szülő MOSTANI csomagja szerint."""
+    kulcs = (sz.get("csomag") or "").strip() or csomagok.FREE
+    if csomagok.egyszeri(kulcs):
+        return False, csomagok.havi_perc(kulcs) - float(sz.get("perc_ossz") or 0)
+    fizetos = csomagok.fizetos(kulcs)
+    kezdet = sz.get("csomag_kezdet")
+    if fizetos and kezdet and BERLET_ATVITEL and kezdet <= ma:
+        b = _berlet_keret(sz["id"], csomagok.havi_perc(kulcs), kezdet, ma)
+        return True, b["keret"] - b["elhasznalt"]
+    return fizetos, csomagok.havi_perc(kulcs) - float(sz.get("perc_ho") or 0)
+
+
+def _emlekezteto_kor() -> None:
+    """Végignézi a szülőket, és akinek esedékes, annak emlékeztetőt küld."""
+    if not EMLEKEZTETO or not _mail_is_configured():
+        return
+    ma = date.today()
+    for sz in database.szulok_keret_allapota():
+        try:
+            if (sz.get("email") or "").strip().lower() in _admin_cimek():
+                continue
+            if (sz.get("ertesites") or "heti") == "ki" or sz.get("emlekezteto_ki"):
+                continue
+            utolso = max([d for d in (sz.get("utolso_tanulas"), sz.get("regisztralt")) if d]
+                         or [ma])
+            szam = int(sz.get("emlekezteto_szam") or 0)
+            kuldve = sz.get("emlekezteto_kuldve")
+            # Újra tanult az emlékeztető után → elölről indul a számlálás.
+            if szam and kuldve and utolso > kuldve:
+                database.emlekezteto_allit(sz["id"], 0, None)
+                szam, kuldve = 0, None
+            if szam >= len(EMLEKEZTETO_NAPOK):
+                continue
+            if (ma - utolso).days < EMLEKEZTETO_NAPOK[szam]:
+                continue
+            # A második levél legalább 14 nappal az első után megy – a régóta
+            # tétlen fiók se kapja meg a kettőt egymás után.
+            if szam == 1 and kuldve and (ma - kuldve).days < 14:
+                continue
+            # 90 napnál régebben tétlen fióknak már nem írunk.
+            if szam == 0 and (ma - utolso).days > 90:
+                continue
+            # Elfogyott próba / lejárt bérlet: ott nem ez a levél való.
+            kulcs = (sz.get("csomag") or "").strip() or csomagok.FREE
+            lejar = sz.get("csomag_lejar")
+            if lejar and lejar < ma:
+                continue
+            if csomagok.egyszeri(kulcs) and sz.get("perc_ossz", 0) >= csomagok.havi_perc(kulcs):
+                continue
+            leir = _oldal_url("/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(sz["id"])))
+            fizetos, maradek = _emlekezteto_adatok(sz, ma)
+            if _emlekezteto_level(sz["email"], sz.get("nyelv") or "hu", szam + 1, leir,
+                                  fizetos, maradek):
+                database.emlekezteto_allit(sz["id"], szam + 1, ma)
+                app.logger.warning("Emlekezteto (%s.) kiment: %s", szam + 1, sz["email"])
+        except Exception:                                  # pragma: no cover
+            app.logger.exception("Emlékeztető hiba (szülő %s)", sz.get("id"))
+
+
 def _keret_ertesito_kor() -> None:
     """Végignézi a szülőket, és akinek elfogyott a kerete, annak szól."""
     if not _mail_is_configured():
@@ -18184,6 +18362,14 @@ def _mentes_szal_indit() -> None:
                         _keret_ertesito_kor()
             except Exception:                              # pragma: no cover
                 app.logger.exception("A keret-értesítő hibára futott")
+            # Emlékeztető: napközben (kb. 9–20 óra Spanyolországban és
+            # Magyarországon), óránként legfeljebb egyszer nézzük.
+            try:
+                if 8 <= datetime.now(timezone.utc).hour <= 18 and _munka_zar("emlekezteto", 3600):
+                    with app.app_context():
+                        _emlekezteto_kor()
+            except Exception:                              # pragma: no cover
+                app.logger.exception("Az emlékeztető hibára futott")
             time.sleep(1800)
 
     threading.Thread(target=fut, name="hatter", daemon=True).start()

@@ -158,6 +158,12 @@ class Parent(Base):
     # Mikor szóltunk utoljára, hogy elfogyott a tanulási kerete. Enélkül
     # minden órában újraküldenénk ugyanazt a levelet.
     keret_ertesitve: Mapped[date | None] = mapped_column(Date, nullable=True)
+    # „RÉG JÁRTÁL ITT” EMLÉKEZTETŐ (2026-11-06): hányat küldtünk ebben a
+    # tétlen időszakban (legfeljebb 2), és mikor az utolsót.
+    emlekezteto_szam: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    emlekezteto_kuldve: Mapped[date | None] = mapped_column(Date, nullable=True)
+    # Külön leiratkozás CSAK az emlékeztetőről – a heti jelentés marad.
+    emlekezteto_ki: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     # Mikor ment ki neki az indulás-levél. Amíg üres, még nem kapott.
     # Ez akadályozza meg, hogy bárki kétszer kapja meg ugyanazt.
     erdeklodes_ertesitve: Mapped[date | None] = mapped_column(Date, nullable=True)
@@ -521,6 +527,7 @@ def _parent_dict(parent: Parent) -> dict[str, Any]:
         "erdeklodes": (getattr(parent, "erdeklodes", None) or "").strip(),
         "erdeklodes_datum": getattr(parent, "erdeklodes_datum", None),
         "van_pin": bool(parent.szuloi_pin),
+        "emlekezteto_ki": bool(getattr(parent, "emlekezteto_ki", None)),
     }
 
 
@@ -737,6 +744,7 @@ def szulok_keret_allapota() -> list[dict]:
         ho_eleje = ma.replace(day=1)
         perc_ossz: dict[int, float] = {}
         perc_ho: dict[int, float] = {}
+        utolso_tanulas: dict[int, date] = {}
         gyerek_szulo = {c.id: c.parent_id for c in db.scalars(select(Child)).all()}
         tantervek: dict[int, set] = {}
         for c in db.scalars(select(Child)).all():
@@ -750,6 +758,8 @@ def szulok_keret_allapota() -> list[dict]:
             perc_ossz[pid] = perc_ossz.get(pid, 0.0) + perc
             if t.date and t.date >= ho_eleje:
                 perc_ho[pid] = perc_ho.get(pid, 0.0) + perc
+            if t.date and perc > 0 and (pid not in utolso_tanulas or t.date > utolso_tanulas[pid]):
+                utolso_tanulas[pid] = t.date
 
         ki = []
         for p in db.scalars(select(Parent)).all():
@@ -763,6 +773,12 @@ def szulok_keret_allapota() -> list[dict]:
                 "keret_ertesitve": p.keret_ertesitve,
                 "perc_ossz": round(perc_ossz.get(p.id, 0.0), 1),
                 "perc_ho": round(perc_ho.get(p.id, 0.0), 1),
+                "utolso_tanulas": utolso_tanulas.get(p.id),
+                "regisztralt": p.created_at.date() if p.created_at else None,
+                "ertesites": (p.ertesites or "heti"),
+                "emlekezteto_szam": int(p.emlekezteto_szam or 0),
+                "emlekezteto_kuldve": p.emlekezteto_kuldve,
+                "emlekezteto_ki": bool(p.emlekezteto_ki),
                 # Ha a családnak CSAK spanyol tantervű gyereke van, spanyolul írunk.
                 "nyelv": "es" if tant == {"ES"} else "hu",
             })
@@ -770,6 +786,43 @@ def szulok_keret_allapota() -> list[dict]:
     except Exception:                                      # pragma: no cover
         logger.exception("szulok_keret_allapota(): nem sikerült")
         return []
+    finally:
+        db.close()
+
+
+def emlekezteto_allit(parent_id: int, szam: int, kuldve: date | None) -> bool:
+    """Az emlékeztető számlálója (0 = újra tanult, 1–2 = ennyit küldtünk)."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if not p:
+            return False
+        p.emlekezteto_szam = int(szam)
+        p.emlekezteto_kuldve = kuldve
+        db.commit()
+        return True
+    except Exception:                                      # pragma: no cover
+        db.rollback()
+        logger.exception("emlekezteto_allit(%s)", parent_id)
+        return False
+    finally:
+        db.close()
+
+
+def emlekezteto_ki_allit(parent_id: int, ki: bool) -> bool:
+    """Emlékeztető ki/be – CSAK az emlékeztető, a heti jelentés nem."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if not p:
+            return False
+        p.emlekezteto_ki = bool(ki)
+        db.commit()
+        return True
+    except Exception:                                      # pragma: no cover
+        db.rollback()
+        logger.exception("emlekezteto_ki_allit(%s)", parent_id)
+        return False
     finally:
         db.close()
 
@@ -1224,6 +1277,9 @@ def ensure_parents_ertesites_columns() -> None:
         "ALTER TABLE parents ADD COLUMN IF NOT EXISTS "
         "ertesites VARCHAR(10) NOT NULL DEFAULT 'heti'",
         "ALTER TABLE parents ADD COLUMN IF NOT EXISTS utolso_ertesites DATE",
+        "ALTER TABLE parents ADD COLUMN IF NOT EXISTS emlekezteto_szam INTEGER",
+        "ALTER TABLE parents ADD COLUMN IF NOT EXISTS emlekezteto_kuldve DATE",
+        "ALTER TABLE parents ADD COLUMN IF NOT EXISTS emlekezteto_ki BOOLEAN",
     ):
         try:
             with _get_engine().begin() as conn:
