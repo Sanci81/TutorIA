@@ -19,9 +19,13 @@ Utolsó frissítés: 2026-11-06
    gyerek tényleges lépéseiből (chat üzenet, feladat-ellenőrzés, felolvasás), két lépés
    között legfeljebb 3 percet számítva; elszámolásnál a kettő közül a nagyobb, de soha nem
    több, mint az óra kezdete óta eltelt idő. Naplózva → panasznál megmutatható, mi történt.
-2. **Beszédfelismerés (STT) is álljon le**, ha a hangos idő elfogyott (most csak a
+2. ✔ KÉSZ (fix78): az STT is 429-et ad, ha elfogyott; hangos módból 3,5 mp után írásosra vált,
+   a hangos mód gombja eltűnik. Próbaoldalon „🧪 Hangkeret: VAN/ELFOGYOTT” gomb a teszthez.
+   (Eredeti:) **Beszédfelismerés (STT) is álljon le**, ha a hangos idő elfogyott (most csak a
    felolvasás áll le; a hangköltség kb. fele az STT).
-3. **Hangos módban a teljes választ olvassa fel**: a felolvasás nem küldi a mode=voice-ot,
+3. ✔ NEM KELL (ellenőrizve 2026-11-06): hang.py-ban MAX_KARAKTER = MAX_KARAKTER_HANG = 3000,
+   tehát a felolvasás mindkét módban ugyanannyit olvas fel – nincs rövidítés-különbség.
+   (Eredeti:) **Hangos módban a teljes választ olvassa fel**: a felolvasás nem küldi a mode=voice-ot,
    ezért a szerver a rövidített változatot olvassa fel. (Hangmód – Sándor engedélyével.)
 4. **Elsősök (≤7 év, csak hangos profil) az ingyenes próbában**: 30 hangos perc után nekik
    is írásban folytatódik (Sándor döntése: kivétel nincs, mert az életkort a szülő írja be).

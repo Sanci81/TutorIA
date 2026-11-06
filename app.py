@@ -130,6 +130,10 @@ MODELL_TANAR = os.environ.get("MODELL_TANAR", "gpt-5.4-mini")
 # A tanár PONTOSAN ugyanazt a szöveget kapja. VISSZAÁLLÁS: Railway → web →
 # Variables → GYORSITOTAR = 0 (és újraindul) – akkor minden a régi.
 GYORSITOTAR = os.environ.get("GYORSITOTAR", "1").strip().lower() not in ("0", "false", "nem", "ki")
+# PRÓBAOLDAL: a Railway a proba ágról épülő szolgáltatásnál RAILWAY_GIT_BRANCH=proba.
+# Kézzel is bekapcsolható: PROBA_OLDAL=1. Az éles oldalon (main) SOHA nem igaz.
+PROBA_OLDAL = (os.environ.get("PROBA_OLDAL", "").strip().lower() in ("1", "igen", "true")
+               or os.environ.get("RAILWAY_GIT_BRANCH", "").strip() == "proba")
 
 # SEGÉDMUNKÁK: gyakorlófeladat, válaszellenőrzés, kvíz, szófelismerés,
 # szóbeli válasz értékelése. Rövid, egyszerű kérések. (11 hívás.)
@@ -13519,6 +13523,14 @@ def child_chat(child_id: int):
     effective_age = _child_effective_age(child)
     chat_profile = _chat_interaction_profile(effective_age, _active_grade(child))
     chat_mode = _normalize_chat_mode(request.args.get("mode"), chat_profile)
+    # Ha a csomag hangos ideje elfogyott, a lecke írásban nyílik meg, és a
+    # hangos mód gombja eltűnik. (A csak hangos profilnál nincs írásos mód.)
+    try:
+        hang_elfogyott = _hang_keret_elfogyott(child_id)
+    except Exception:
+        hang_elfogyott = False
+    if hang_elfogyott and chat_mode == "voice" and chat_profile != _CHAT_PROFILE_VOICE_ONLY:
+        chat_mode = "chat"
 
     chat_curriculum = _chat_load_curriculum(
         subject, _active_grade_str(child), language=language or None
@@ -14036,6 +14048,9 @@ def child_chat(child_id: int):
         chat_switch_url=chat_switch_url,
         voice_switch_url=voice_switch_url,
         show_chat_switch=chat_profile != _CHAT_PROFILE_VOICE_ONLY,
+        hang_elfogyott=hang_elfogyott,
+        proba_oldal=PROBA_OLDAL,
+        teszt_hang_elfogyott=bool(session.get("teszt_hang_elfogyott")),
         learning_today=learning_today,
         show_early_test=show_early_test,
         lecke_hossz_perc=int(_teszt_req or 0),
@@ -15992,6 +16007,19 @@ def api_voice_transcribe():
         return jsonify({"error": "audio_too_short"}), 400
     language = (request.form.get("language") or "hu").strip().lower()
 
+    # A CSOMAG HANGOS IDEJE: ha elfogyott, a beszédfelismerés sem fut tovább
+    # (a hangköltség kb. fele). A gyerek írásban folytatja.
+    try:
+        _hcid = int(request.form.get("child_id") or session.get("chat_child_id") or 0)
+        if _hcid and _hang_keret_elfogyott(_hcid):
+            r = jsonify({"error": "voice_budget_spent",
+                         "message": i18n.t("csomag_hang_elfogyott", g.lang)})
+            r.status_code = 429
+            r.headers["X-Hang-Ok"] = "csomag"
+            return r
+    except Exception:
+        app.logger.exception("A hangos keretet nem sikerült ellenőrizni (STT)")
+
     # MÉRÉS: a beszédfelismerés percre megy. A hossz becslése a fájlméretből
     # történik (a böngésző kb. 24 kB/mp-es webm-et küld) – nem pontos, de a
     # nagyságrendhez elég, és nem kell hozzá hangfájlt feldolgozni.
@@ -16867,6 +16895,10 @@ def _hang_keret_elfogyott(child_id: int) -> bool:
     child = database.get_child_by_id(child_id, session.get("parent_id"))
     if not child:
         return False
+    # PRÓBAOLDAL-KAPCSOLÓ: Sándor itt ki-be tudja kapcsolni, hogy a hangos
+    # idő „elfogyott”-e – így nem kell 30 percet beszélnie a teszthez.
+    if PROBA_OLDAL and session.get("teszt_hang_elfogyott"):
+        return True
     k = _havi_keret()
     return bool(k.get("hangos_korlatos")) and k.get("hangos_maradek", 1) <= 0
 
@@ -17506,6 +17538,17 @@ def admin_latogatottsag():
     return render_template("admin_latogatottsag.html", sorok=sorok, napok=napok, osszes=osszes, reszlet=reszlet, meres=meres,
                            forras_het=sorted(forras_het.items(), key=lambda x: -x[1]),
                            kizarva=request.cookies.get(_NEM_SZAMOL_SUTI) == "1")
+
+
+@app.route("/teszt/hangkeret", methods=["POST"])
+@login_required
+def teszt_hangkeret():
+    """CSAK A PRÓBAOLDALON: a hangos idő „elfogyott” állapotát kapcsolja
+    ki-be, hogy a lejáratot percek nélkül ki lehessen próbálni."""
+    if not PROBA_OLDAL:
+        abort(404)
+    session["teszt_hang_elfogyott"] = not session.get("teszt_hang_elfogyott")
+    return redirect(request.referrer or url_for("dashboard"))
 
 
 @app.route("/admin/latogatottsag/letoltes")

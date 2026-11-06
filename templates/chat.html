@@ -1712,8 +1712,16 @@
                     <span class="chat-mode-toggle chat-mode-voice">{{ t('chat_mode_voice') }}</span>
                 {% elif chat_mode == 'voice' %}
                     <a class="chat-mode-toggle chat-mode-chat" href="{{ chat_switch_url }}">{{ t('chat_mode_chat') }}</a>
-                {% else %}
+                {% elif not hang_elfogyott %}
                     <a class="chat-mode-toggle chat-mode-voice" href="{{ voice_switch_url }}">{{ t('chat_mode_voice') }}</a>
+                {% endif %}
+                {% if proba_oldal %}
+                {# CSAK A PRÓBAOLDALON látszik: a hangos idő lejáratának tesztje. #}
+                <form method="post" action="{{ url_for('teszt_hangkeret') }}" style="display:inline;margin:0">
+                    <button type="submit" title="Csak a próbaoldalon"
+                            style="border:2px dashed #b45309;background:#fff7ed;color:#7c2d12;border-radius:999px;padding:4px 10px;font-weight:800;font-size:12px;cursor:pointer">
+                        🧪 Hangkeret: {{ 'ELFOGYOTT' if teszt_hang_elfogyott else 'VAN' }}</button>
+                </form>
                 {% endif %}
             </div>
 
@@ -2038,6 +2046,15 @@
         var csomag = false;
         try { csomag = !!(r && r.headers && r.headers.get('X-Hang-Ok') === 'csomag'); } catch (e) {}
         try { appendBubble('assistant', csomag ? L.voiceBudgetCsomag : L.voiceBudgetSpent); } catch (e) {}
+        /* Ha a CSOMAG hangos ideje fogyott el, hangos módból átváltunk
+           írásosra (a mikrofon is leáll). A csak hangos profilnál nincs
+           írásos mód, ott a link hiányzik, és minden marad. */
+        if (csomag && chatMode === 'voice') {
+            var irasos = document.querySelector('a.chat-mode-toggle.chat-mode-chat');
+            if (irasos && irasos.href) {
+                setTimeout(function () { window.location.href = irasos.href; }, 3500);
+            }
+        }
     }
 
     // A buborékok 🔊 gombja. Ugyanaz a keret- és hibakezelés, mint a hangos
@@ -12155,8 +12172,13 @@
                 fd.append('frame', chatFrame.value);
             }
             fetchIdovel(transcribeUrl, { method: 'POST', body: fd })
-                .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); })
+                .then(function (r) {
+                    /* Elfogyott a hangos idő: nem „nem értettem”, hanem szólunk. */
+                    if (r.status === 429) { hangKeretVege(r); return { ok: false, keret: true, data: {} }; }
+                    return r.json().then(function (d) { return { ok: r.ok, data: d }; });
+                })
                 .then(function (res) {
+                    if (res.keret) { setVoiceUi('idle'); return; }
                     if (!res.ok || !res.data.text) {
                         appendBubble('assistant', L.errNotUnderstood);
                         setVoiceUi('idle');
