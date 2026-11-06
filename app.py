@@ -924,7 +924,8 @@ def _oldal_url(utvonal: str = "/") -> str:
     return alap + (utvonal if utvonal.startswith("/") else "/" + utvonal)
 
 
-def _level_kuld(cimzett: str, targy: str, szoveg: str) -> bool:
+def _level_kuld(cimzett: str, targy: str, szoveg: str,
+                html: str | None = None, fejlecek: dict | None = None) -> bool:
     """Egy sima szöveges levél. SOHA nem dob hibát a hívóra.
 
     A levél SEGÉDLET, nem a művelet lényege: ha a Resend épp nem elérhető,
@@ -936,12 +937,17 @@ def _level_kuld(cimzett: str, targy: str, szoveg: str) -> bool:
         return False
     try:
         resend.api_key = api_key
-        resend.Emails.send({
+        uzenet = {
             "from": _resend_from_address(),
             "to": [cimzett],
             "subject": targy,
             "text": szoveg,
-        })
+        }
+        if html:
+            uzenet["html"] = html
+        if fejlecek:
+            uzenet["headers"] = fejlecek
+        resend.Emails.send(uzenet)
         return True
     except Exception:                                      # pragma: no cover
         app.logger.exception("A levelet nem sikerült elküldeni: %s", targy)
@@ -2731,7 +2737,7 @@ def ertesites_leiratkozas(jegy: str):
     return render_template("leiratkozas.html")
 
 
-@app.route("/leiratkozas-emlekezteto/<jegy>")
+@app.route("/leiratkozas-emlekezteto/<jegy>", methods=["GET", "POST"])
 def emlekezteto_leiratkozas(jegy: str):
     """Leiratkozás CSAK az emlékeztetőről, belépés nélkül (aláírt jegy).
     A heti jelentés nem változik."""
@@ -2771,9 +2777,10 @@ def teszt_emlekezteto():
         fizetos, maradek = _emlekezteto_adatok(sz, date.today())
         ma = date.today()
         utolso = max([d for d in (sz.get("utolso_tanulas"), sz.get("regisztralt")) if d] or [ma])
-        ok = _emlekezteto_level(sz["email"], g.lang, 1, leir, fizetos, maradek,
-                                _emlekezteto_nevek(pid, g.lang), (ma - utolso).days,
-                                folytat=alap + "/dashboard")
+        nevek, gyerek_db = _emlekezteto_nevek(pid, g.lang)
+        hanyadik = 2 if request.form.get("hanyadik") == "2" else 1
+        ok = _emlekezteto_level(sz["email"], g.lang, hanyadik, leir, fizetos, maradek,
+                                nevek, (ma - utolso).days, gyerek_db=gyerek_db, alap=alap)
         flash("Teszt-emlékeztető " + ("elküldve: " + sz["email"] if ok else "NEM ment ki (e-mail beállítás?)"),
               "success" if ok else "error")
     return redirect(url_for("fiok"))
@@ -18186,89 +18193,139 @@ def _emlekezteto_jel():
     return URLSafeSerializer(app.config["SECRET_KEY"], salt="emlekezteto")
 
 
-def _emlekezteto_nevek(parent_id: int, nyelv: str) -> str:
-    """A gyerekek keresztneve a levélbe: „Leila”, „Leila és Sándor”.
-    A magyar névben a keresztnév a végén, a spanyolban az elején áll."""
+def _emlekezteto_nevek(parent_id: int, nyelv: str) -> tuple[str, int]:
+    """(megszólítás, gyerekek száma). Nevet CSAK akkor írunk, ha biztosan
+    keresztnév: ha a szülő egy szót írt be („Leila”). Ha teljes nevet adott
+    meg („Vigh Leila”, „Sándor Vigh”), nem találgatunk – akkor nincs név."""
     try:
-        nevek = []
-        for c in database.get_children_for_parent(parent_id) or []:
-            tag = (c.get("name") or "").split()
-            if tag:
-                nevek.append(tag[0] if nyelv == "es" else tag[-1])
-        nevek = list(dict.fromkeys(nevek))[:3]
+        gyerekek = database.get_children_for_parent(parent_id) or []
     except Exception:
-        nevek = []
+        gyerekek = []
+    nevek = []
+    for c in gyerekek:
+        tag = (c.get("name") or "").split()
+        if len(tag) != 1:
+            return "", len(gyerekek)
+        nevek.append(tag[0])
+    nevek = list(dict.fromkeys(nevek))[:3]
     if not nevek:
-        return ""
+        return "", len(gyerekek)
     es_szo = " y " if nyelv == "es" else " és "
-    return nevek[0] if len(nevek) == 1 else ", ".join(nevek[:-1]) + es_szo + nevek[-1]
+    return (nevek[0] if len(nevek) == 1 else ", ".join(nevek[:-1]) + es_szo + nevek[-1]), len(gyerekek)
+
+
+def _emlekezteto_html(cim: str, szoveg: str, gomb: str, gomb_url: str, kep_url: str,
+                      doboz: str, doboz_al: str, lab: str) -> str:
+    """Duolingo-szerű, egyszerű HTML levél: logó, nagy gomb, mozgó tanító,
+    cím, két mondat, egy narancs doboz, és alul a leiratkozás. Csak inline
+    stílus és táblázat – így minden levelezőben ugyanúgy néz ki."""
+    from markupsafe import escape as e
+    doboz_html = ""
+    if doboz:
+        doboz_html = (
+            '<tr><td style="padding:8px 24px 24px">'
+            '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" '
+            'style="border:1px solid #f1e3c8;border-radius:18px;overflow:hidden">'
+            f'<tr><td style="background:#F5A01E;color:#fff;font:700 20px Arial,sans-serif;padding:18px 22px">{e(doboz)}</td></tr>'
+            + (f'<tr><td style="background:#fff;color:#555;font:15px Arial,sans-serif;padding:14px 22px">{e(doboz_al)}</td></tr>' if doboz_al else "")
+            + '</table></td></tr>')
+    return (
+        '<!doctype html><html><body style="margin:0;background:#f6f6f6">'
+        '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f6f6">'
+        '<tr><td align="center" style="padding:20px 10px">'
+        '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" '
+        'style="max-width:560px;background:#ffffff;border-radius:20px">'
+        '<tr><td align="center" style="padding:26px 24px 6px;font:800 24px Arial,sans-serif;color:#17604A">'
+        'Tutor<span style="color:#F5A01E">IA</span>cademia</td></tr>'
+        f'<tr><td align="center" style="padding:14px 24px"><a href="{e(gomb_url)}" '
+        'style="display:inline-block;background:#22A06B;color:#ffffff;text-decoration:none;'
+        'font:800 18px Arial,sans-serif;letter-spacing:.5px;padding:16px 40px;border-radius:14px;'
+        f'border-bottom:4px solid #167A5E">{e(gomb)}</a></td></tr>'
+        f'<tr><td align="center" style="padding:10px 24px 0"><img src="{e(kep_url)}" width="320" '
+        'alt="TutorIA" style="display:block;width:320px;max-width:100%;height:auto;border-radius:16px"></td></tr>'
+        f'<tr><td align="center" style="padding:22px 24px 6px;font:800 26px Arial,sans-serif;color:#3c3c3c">{e(cim)}</td></tr>'
+        f'<tr><td align="center" style="padding:0 34px 20px;font:17px/1.55 Arial,sans-serif;color:#555">{e(szoveg)}</td></tr>'
+        + doboz_html +
+        f'<tr><td align="center" style="padding:18px 30px 28px;border-top:1px solid #eee;'
+        f'font:12px/1.6 Arial,sans-serif;color:#9a9a9a">{lab}</td></tr>'
+        '</table></td></tr></table></body></html>')
 
 
 def _emlekezteto_level(cimzett: str, nyelv: str, hanyadik: int, leiratkozo: str,
                        fizetos: bool, maradek_perc: float, nevek: str = "",
-                       napok: int = 0, folytat: str = "") -> bool:
-    """Barátságos, rövid emlékeztető. A CSOMAGHOZ igazodik: az ingyenes
-    próbában nincs kártya és album – ott a még meglévő ingyenes percet írjuk;
-    bérletnél a még meglévő órákat, és hogy azok nem örökre érvényesek."""
-    folytat = folytat or _oldal_url("/dashboard")
+                       napok: int = 0, folytat: str = "", gyerek_db: int = 1,
+                       alap: str = "") -> bool:
+    """Duolingo-szerű emlékeztető. A TANÍTÓ szól (mint Duónál a bagoly), a
+    levél a CSOMAGHOZ igazodik (próbában nincs kártya/album), és ha még nincs
+    gyerek felvéve, arra biztat. Nevet csak biztos keresztnévnél ír."""
+    alap = (alap or _oldal_url("/")).rstrip("/")
+    folytat = folytat or (alap + "/dashboard")
+    kep = alap + "/static/email/tanito.gif"
+    from markupsafe import escape as e
     perc = int(max(0, round(maradek_perc)))
-    ora = round(perc / 45.0, 1)
-    tobb = " y " in nevek or "," in nevek or " és " in nevek
+    ora = str(round(perc / 45.0, 1)).replace(".", ",")
+    jogi = _jogi_adatok()
     if nyelv == "es":
-        ki = nevek or "Tu hijo o hija"
-        ido = (f"hace {napok} días" if napok and napok < 14
-               else "hace ya unas semanas" if napok else "hace un tiempo")
-        targy = (f"{ki} – ¿seguimos aprendiendo? 📚" if hanyadik == 1
-                 else f"{ki} – tu profesor sigue esperando")
-        szoveg = (
-            "¡Hola!\n\n"
-            + (f"{ki} no ha estudiado en TutorIA desde {ido}. " if nevek
-               else f"No ha habido clases en TutorIA desde {ido}. ")
-            + "El profesor le espera justo donde lo dejasteis; no se ha "
-            "perdido nada.\n\n"
-            + (("En vuestro bono quedan unas "
-                f"{str(ora).replace('.', ',')} horas. Recuerda que las horas de "
-                "cada mes valen 3 meses: ¡que no se pierdan!\n\n")
-               if fizetos and perc > 0 else
-               (f"De la prueba gratuita aún quedan {perc} minutos.\n\n"
-                if not fizetos and perc > 0 else ""))
-            + "Bastan 10 minutos: un repaso corto hoy hace más fácil la "
-            "próxima clase en el cole.\n\n"
-            + f"👉 Seguimos: {folytat}\n\n"
-            + ("Este es nuestro último recordatorio; no queremos molestar.\n\n"
-               if hanyadik > 1 else "")
-            + "Un saludo,\nTutorIA\n\n—\n"
-            + "¿No quieres más recordatorios? Date de baja aquí (el informe "
-            f"semanal no cambia): {leiratkozo}"
-        )
+        if gyerek_db == 0:
+            targy = "Solo falta un paso para la primera clase 🙂"
+            cim, szoveg, gomb = ("¡Solo falta un paso!",
+                                 "Tu cuenta está lista, pero aún no has añadido a tu hijo o hija. "
+                                 "Es un minuto, y empieza la primera clase gratis.",
+                                 "AÑADIR NIÑO/A")
+        elif hanyadik == 1:
+            targy = ((f"{nevek}, " if nevek else "") +
+                     (f"hace {napok} días que no te vemos… 🥺" if 0 < napok < 14 else "hace tiempo que no te vemos… 🥺"))
+            cim = "¡Hola, soy tu profesor de TutorIA!"
+            szoveg = (("¡Echo de menos aprender contigo" + (f", {nevek}" if nevek else "") + "! ")
+                      + "¿Tienes 10 minutos para una lección corta? Seguimos justo donde lo dejamos.")
+            gomb = "SEGUIR APRENDIENDO"
+        else:
+            targy = "Esta es mi última carta 👋"
+            cim = "Esta es mi última carta"
+            szoveg = ("No quiero molestar, así que no volveré a escribir. Si un día quieres "
+                      "volver, te espero donde lo dejamos: no se ha perdido nada.")
+            gomb = "VOLVER A APRENDER"
+        doboz = (f"En tu bono quedan: unas {ora} horas" if fizetos and perc > 0 else
+                 f"De la prueba gratuita quedan: {perc} minutos" if perc > 0 else "")
+        doboz_al = "Las horas de cada mes valen 3 meses." if fizetos and perc > 0 else ""
+        lab = (f'Recibes este correo porque te registraste en TutorIA. '
+               f'<a href="{e(leiratkozo)}" style="color:#9a9a9a">Darse de baja de los recordatorios</a> '
+               f'(el informe semanal no cambia).<br>TutorIAcademia · {e(jogi["uzemelteto"])} · España · {e(jogi["kapcsolat"])}')
+        szoveg_txt = f"{cim}\n\n{szoveg}\n\n{doboz}\n{doboz_al}\n\n{gomb}: {folytat}\n\n—\nDarse de baja de los recordatorios: {leiratkozo}"
     else:
-        ki = nevek or "A gyereked"
-        ige = "nem tanultak" if tobb else "nem tanult"
-        ido = (f"{napok} napja" if napok and napok < 14
-               else "már hetek óta" if napok else "egy ideje")
-        targy = (f"{ki}, folytatjuk a tanulást? 📚" if hanyadik == 1
-                 else f"{ki} tanítója még mindig vár")
-        szoveg = (
-            "Szia!\n\n"
-            + f"{ki} {ido} {ige} a TutorIA-ban. "
-            + "A tanító ott várja, ahol legutóbb abbahagyták – semmi nem "
-            "veszett el.\n\n"
-            + ((f"A bérletetekben még kb. {str(ora).replace('.', ',')} óra van. "
-                "Minden hónap órái 3 hónapig érvényesek – kár lenne, ha "
-                "elvesznének.\n\n")
-               if fizetos and perc > 0 else
-               (f"Az ingyenes próbából még {perc} perc van hátra.\n\n"
-                if not fizetos and perc > 0 else ""))
-            + "Már 10 perc is sokat számít: egy rövid ismétlés után könnyebb "
-            "lesz a következő óra az iskolában.\n\n"
-            + f"👉 Folytatjuk: {folytat}\n\n"
-            + ("Ez az utolsó emlékeztetőnk, nem szeretnénk zavarni.\n\n"
-               if hanyadik > 1 else "")
-            + "Üdv,\nTutorIA\n\n—\n"
-            + "Nem kérsz több emlékeztetőt? Itt leiratkozhatsz (a heti "
-            f"jelentést ettől továbbra is megkapod): {leiratkozo}"
-        )
-    return _level_kuld(cimzett, targy, szoveg)
+        if gyerek_db == 0:
+            targy = "Már csak egy lépés az első óráig 🙂"
+            cim, szoveg, gomb = ("Már csak egy lépés!",
+                                 "A fiókod kész, de még nem vettél fel gyereket. Egy perc az egész, "
+                                 "és indulhat az első ingyenes óra.",
+                                 "GYEREK HOZZÁADÁSA")
+        elif hanyadik == 1:
+            targy = ((f"{nevek}, " if nevek else "") +
+                     (f"{napok} napja nem láttunk… 🥺" if 0 < napok < 14 else "rég nem láttunk… 🥺"))
+            if not nevek:
+                targy = targy[0].upper() + targy[1:]
+            cim = "Szia, a TutorIA tanítója vagyok!"
+            szoveg = ("Hiányzik, hogy együtt tanuljunk" + (f", {nevek}" if nevek else "") + "! "
+                      "Van 10 perced egy rövid leckére? Ott folytatjuk, ahol abbahagytuk.")
+            gomb = "TANULÁS FOLYTATÁSA"
+        else:
+            targy = "Ez az utolsó levelem 👋"
+            cim = "Ez az utolsó levelem"
+            szoveg = ("Nem szeretnék zavarni, ezért többet nem írok. Ha egyszer újra tanulnál, "
+                      "ott várlak, ahol abbahagytuk – semmi nem veszett el.")
+            gomb = "VISSZA A TANULÁSHOZ"
+        doboz = (f"A bérletben még: kb. {ora} óra" if fizetos and perc > 0 else
+                 f"Az ingyenes próbából még: {perc} perc" if perc > 0 else "")
+        doboz_al = "Minden hónap órái 3 hónapig érvényesek." if fizetos and perc > 0 else ""
+        lab = (f'Azért kapod ezt a levelet, mert regisztráltál a TutorIA-ra. '
+               f'<a href="{e(leiratkozo)}" style="color:#9a9a9a">Leiratkozás az emlékeztetőkről</a> '
+               f'(a heti jelentés marad).<br>TutorIAcademia · {e(jogi["uzemelteto"])} · Spanyolország · {e(jogi["kapcsolat"])}')
+        szoveg_txt = f"{cim}\n\n{szoveg}\n\n{doboz}\n{doboz_al}\n\n{gomb}: {folytat}\n\n—\nLeiratkozás az emlékeztetőkről: {leiratkozo}"
+    html = _emlekezteto_html(cim, szoveg, gomb, folytat, kep, doboz, doboz_al, lab)
+    # A Gmail ettől mutat „Leiratkozás” gombot a feladó mellett (mint Duónál).
+    fejlec = {"List-Unsubscribe": f"<{leiratkozo}>",
+              "List-Unsubscribe-Post": "List-Unsubscribe=One-Click"}
+    return _level_kuld(cimzett, targy, szoveg_txt, html=html, fejlecek=fejlec)
 
 
 def _emlekezteto_adatok(sz: dict, ma: date) -> tuple[bool, float]:
@@ -18324,8 +18381,9 @@ def _emlekezteto_kor() -> None:
             leir = _oldal_url("/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(sz["id"])))
             fizetos, maradek = _emlekezteto_adatok(sz, ma)
             nyelv = sz.get("nyelv") or "hu"
+            nevek, gyerek_db = _emlekezteto_nevek(sz["id"], nyelv)
             if _emlekezteto_level(sz["email"], nyelv, szam + 1, leir, fizetos, maradek,
-                                  _emlekezteto_nevek(sz["id"], nyelv), (ma - utolso).days):
+                                  nevek, (ma - utolso).days, gyerek_db=gyerek_db):
                 database.emlekezteto_allit(sz["id"], szam + 1, ma)
                 app.logger.warning("Emlekezteto (%s.) kiment: %s", szam + 1, sz["email"])
         except Exception:                                  # pragma: no cover

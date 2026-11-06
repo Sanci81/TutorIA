@@ -62,8 +62,16 @@ Utolsó frissítés: 2026-11-06
      írja). Ha a levonás nem sikerül (lejárt kártya stb.): a Stripe pár napig újrapróbálja, és
      mi levelet küldünk („nem sikerült a levonás – frissítsd a kártyát: link”). Ha végleg nem
      sikerül: csomag_lejar = a kifizetett időszak vége (a megmaradt órák a saját 3 hónapjukig
-     élnek). Levonás előtti havi figyelmeztető levél NEM kötelező, de a GYIK régi szövege ígérte
-     – döntés: küldjünk-e 3 nappal előtte egy rövid levelet.
+     élnek).
+   - ‼️ KÖTELEZŐ ÉRTESÍTÉS MINDEN LEVONÁS ELŐTT: spanyol Ley 10/2025 (Ley de servicios de
+     atención a la clientela, BOE 2025.12.27; TRLGDCU 97.1 p) módosítása): az automatikusan
+     megújuló szerződésnél a megújítási díj levonása előtt LEGALÁBB 15 NAPPAL értesíteni kell,
+     és le kell írni, mi történik, ha nem mondja le. A forrás nem tesz különbséget havi és éves
+     között → HAVONTA, minden levonás előtt ≥15 nappal levél (pl. a 14. napon a fordulónap
+     előtt 16 nappal): összeg, levonás napja, egykattintásos lemondás linkje. Lemondás:
+     egyszerű, akadály nélkül (Fiókom → egy gomb). ÁSZF 7. pontba beírni. Forrás:
+     dsca.gob.es „Nota informativa sobre nueva regulación de suscripciones”.
+     Fizetés indulása előtt gestoríával megerősíteni.
    - Szövegek: ÁSZF 7. pont (fizetés, megújulás, lemondás, számla), Adatvédelmi tájékoztató
      5. pont (fizetési szolgáltató neve, számlázási adatok, megőrzés), adatkezelési
      nyilvántartás 5. pont kitöltése, csomagoldalon a „Tervezett ár” jelölés levétele,
@@ -72,6 +80,12 @@ Utolsó frissítés: 2026-11-06
     2. levél, több nincs; újra tanulás nullázza; 90 napnál régebben tétlennek nem; leiratkozott,
     admin, elfogyott próba, lejárt bérlet: nem. Napközben, óránként egyszer (háttérszál,
     MENTES_DIR kell). Visszaállás: EMLEKEZTETO=0. Adatvédelmi tájékoztató 3. pont kiegészítve.
+    fix83: Duolingo-szerű HTML levél (nagy zöld gomb, mozgó zsiráf-tanító GIF:
+    static/email/tanito.gif ~850 KB a veo_nyito_1.mp4-ből, narancs doboz a maradék idővel),
+    a tanító szól; név csak ha a szülő egy szót írt be; gyerek nélkül „Már csak egy lépés”;
+    List-Unsubscribe fejléc (Gmail „Leiratkozás” gomb), egykattintásos POST is.
+    fix82: új, barátságosabb szöveg (gyerek keresztneve, napok száma, „10 perc is sokat
+    számít”), a próbaoldali tesztlevél linkjei a próbaoldalra mutatnak.
     Külön leiratkozás (fix81b): az emlékeztető saját linkje csak az emlékeztetőt kapcsolja ki
     (parents.emlekezteto_ki), a heti jelentés marad; Fiókom oldalon vissza-/kikapcsolható.
     A levél a csomaghoz igazodik: próbánál nincs kártya/album, a maradék ingyenes perc;

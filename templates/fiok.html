@@ -160,7 +160,12 @@
     {% if proba_oldal %}
     <form method="post" action="{{ url_for('teszt_emlekezteto') }}" style="margin-top:10px">
       <button type="submit" style="border:2px dashed #b45309;background:#fff7ed;color:#7c2d12;border-radius:999px;padding:6px 12px;font-weight:800;cursor:pointer">
-        🧪 Emlékeztető levél küldése most nekem (csak próbaoldal)</button>
+        🧪 Emlékeztető levél küldése most nekem – 1. levél (csak próbaoldal)</button>
+    </form>
+    <form method="post" action="{{ url_for('teszt_emlekezteto') }}" style="margin-top:6px">
+      <input type="hidden" name="hanyadik" value="2">
+      <button type="submit" style="border:2px dashed #b45309;background:#fff7ed;color:#7c2d12;border-radius:999px;padding:6px 12px;font-weight:800;cursor:pointer">
+        🧪 … a 2. (utolsó) levél</button>
     </form>
     {% endif %}
   </div>
