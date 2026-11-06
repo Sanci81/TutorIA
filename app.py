@@ -2764,9 +2764,16 @@ def teszt_emlekezteto():
     pid = session["parent_id"]
     sz = next((x for x in database.szulok_keret_allapota() if x["id"] == pid), None)
     if sz:
-        leir = _oldal_url("/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(pid)))
+        # A TESZTLEVÉL LINKJEI A PRÓBAOLDALRA mutatnak (ahonnan küldted) –
+        # az éles levél linkjei a főoldalra.
+        alap = request.host_url.rstrip("/")
+        leir = alap + "/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(pid))
         fizetos, maradek = _emlekezteto_adatok(sz, date.today())
-        ok = _emlekezteto_level(sz["email"], g.lang, 1, leir, fizetos, maradek)
+        ma = date.today()
+        utolso = max([d for d in (sz.get("utolso_tanulas"), sz.get("regisztralt")) if d] or [ma])
+        ok = _emlekezteto_level(sz["email"], g.lang, 1, leir, fizetos, maradek,
+                                _emlekezteto_nevek(pid, g.lang), (ma - utolso).days,
+                                folytat=alap + "/dashboard")
         flash("Teszt-emlékeztető " + ("elküldve: " + sz["email"] if ok else "NEM ment ki (e-mail beállítás?)"),
               "success" if ok else "error")
     return redirect(url_for("fiok"))
@@ -18179,63 +18186,87 @@ def _emlekezteto_jel():
     return URLSafeSerializer(app.config["SECRET_KEY"], salt="emlekezteto")
 
 
+def _emlekezteto_nevek(parent_id: int, nyelv: str) -> str:
+    """A gyerekek keresztneve a levélbe: „Leila”, „Leila és Sándor”.
+    A magyar névben a keresztnév a végén, a spanyolban az elején áll."""
+    try:
+        nevek = []
+        for c in database.get_children_for_parent(parent_id) or []:
+            tag = (c.get("name") or "").split()
+            if tag:
+                nevek.append(tag[0] if nyelv == "es" else tag[-1])
+        nevek = list(dict.fromkeys(nevek))[:3]
+    except Exception:
+        nevek = []
+    if not nevek:
+        return ""
+    es_szo = " y " if nyelv == "es" else " és "
+    return nevek[0] if len(nevek) == 1 else ", ".join(nevek[:-1]) + es_szo + nevek[-1]
+
+
 def _emlekezteto_level(cimzett: str, nyelv: str, hanyadik: int, leiratkozo: str,
-                       fizetos: bool, maradek_perc: float) -> bool:
-    """A levél a CSOMAGHOZ igazodik: az ingyenes próbában nincs kártya és
-    album, ott a még meglévő ingyenes percet írjuk; bérletnél a még meglévő
-    órákat és azt, hogy azok nem örökre érvényesek."""
-    folytat = _oldal_url("/dashboard")
+                       fizetos: bool, maradek_perc: float, nevek: str = "",
+                       napok: int = 0, folytat: str = "") -> bool:
+    """Barátságos, rövid emlékeztető. A CSOMAGHOZ igazodik: az ingyenes
+    próbában nincs kártya és album – ott a még meglévő ingyenes percet írjuk;
+    bérletnél a még meglévő órákat, és hogy azok nem örökre érvényesek."""
+    folytat = folytat or _oldal_url("/dashboard")
     perc = int(max(0, round(maradek_perc)))
     ora = round(perc / 45.0, 1)
+    tobb = " y " in nevek or "," in nevek or " és " in nevek
     if nyelv == "es":
-        targy = ("TutorIA – ¿seguimos?" if hanyadik == 1
-                 else "TutorIA – tu cuenta te espera")
-        if fizetos:
-            mi = ("El progreso, el álbum, las cartas y las monedas de tu hijo o "
-                  "hija siguen ahí: puede seguir justo donde lo dejó.\n\n"
-                  + (f"En vuestro bono quedan unas {ora} horas de estudio. "
-                     "Recuerda que las horas de cada mes valen 3 meses.\n\n"
-                     if perc > 0 else ""))
-        else:
-            mi = ("El progreso de tu hijo o hija sigue ahí: puede seguir justo "
-                  "donde lo dejó.\n\n"
-                  + (f"De la prueba gratuita aún quedan {perc} minutos.\n\n"
-                     if perc > 0 else ""))
+        ki = nevek or "Tu hijo o hija"
+        ido = (f"hace {napok} días" if napok and napok < 14
+               else "hace ya unas semanas" if napok else "hace un tiempo")
+        targy = (f"{ki} – ¿seguimos aprendiendo? 📚" if hanyadik == 1
+                 else f"{ki} – tu profesor sigue esperando")
         szoveg = (
             "¡Hola!\n\n"
-            + ("Hace un tiempo que no hay clases en TutorIA. "
-               if hanyadik == 1 else "Hace ya semanas que no hay clases en TutorIA. ")
-            + mi
-            + f"Seguir aprendiendo: {folytat}\n\n"
-            + ("" if hanyadik == 1 else "Este es el último recordatorio; no "
-               "volveremos a escribir por esto.\n\n")
-            + "Si no quieres recibir estos recordatorios (el informe semanal "
-            f"no cambia): {leiratkozo}\n\nTutorIA"
+            + (f"{ki} no ha estudiado en TutorIA desde {ido}. " if nevek
+               else f"No ha habido clases en TutorIA desde {ido}. ")
+            + "El profesor le espera justo donde lo dejasteis; no se ha "
+            "perdido nada.\n\n"
+            + (("En vuestro bono quedan unas "
+                f"{str(ora).replace('.', ',')} horas. Recuerda que las horas de "
+                "cada mes valen 3 meses: ¡que no se pierdan!\n\n")
+               if fizetos and perc > 0 else
+               (f"De la prueba gratuita aún quedan {perc} minutos.\n\n"
+                if not fizetos and perc > 0 else ""))
+            + "Bastan 10 minutos: un repaso corto hoy hace más fácil la "
+            "próxima clase en el cole.\n\n"
+            + f"👉 Seguimos: {folytat}\n\n"
+            + ("Este es nuestro último recordatorio; no queremos molestar.\n\n"
+               if hanyadik > 1 else "")
+            + "Un saludo,\nTutorIA\n\n—\n"
+            + "¿No quieres más recordatorios? Date de baja aquí (el informe "
+            f"semanal no cambia): {leiratkozo}"
         )
     else:
-        targy = ("TutorIA – folytatjuk?" if hanyadik == 1
-                 else "TutorIA – vár a fiókod")
-        if fizetos:
-            mi = ("A gyereked haladása, albuma, kártyái és érméi megvannak: ott "
-                  "folytathatja, ahol abbahagyta.\n\n"
-                  + (f"A bérletetekben még kb. {str(ora).replace('.', ',')} óra tanulási idő van. "
-                     "Ne feledd: minden hónap órái 3 hónapig érvényesek.\n\n"
-                     if perc > 0 else ""))
-        else:
-            mi = ("A gyereked haladása megvan: ott folytathatja, ahol "
-                  "abbahagyta.\n\n"
-                  + (f"Az ingyenes próbából még {perc} perc van hátra.\n\n"
-                     if perc > 0 else ""))
+        ki = nevek or "A gyereked"
+        ige = "nem tanultak" if tobb else "nem tanult"
+        ido = (f"{napok} napja" if napok and napok < 14
+               else "már hetek óta" if napok else "egy ideje")
+        targy = (f"{ki}, folytatjuk a tanulást? 📚" if hanyadik == 1
+                 else f"{ki} tanítója még mindig vár")
         szoveg = (
             "Szia!\n\n"
-            + ("Egy ideje nem volt tanulás a TutorIA-ban. "
-               if hanyadik == 1 else "Már hetek óta nem volt tanulás a TutorIA-ban. ")
-            + mi
-            + f"Folytatás: {folytat}\n\n"
-            + ("" if hanyadik == 1 else "Ez az utolsó emlékeztető, emiatt "
-               "többet nem írunk.\n\n")
-            + "Ha nem kérsz ilyen emlékeztetőt (a heti jelentés ettől nem "
-            f"változik), itt leiratkozhatsz: {leiratkozo}\n\nTutorIA"
+            + f"{ki} {ido} {ige} a TutorIA-ban. "
+            + "A tanító ott várja, ahol legutóbb abbahagyták – semmi nem "
+            "veszett el.\n\n"
+            + ((f"A bérletetekben még kb. {str(ora).replace('.', ',')} óra van. "
+                "Minden hónap órái 3 hónapig érvényesek – kár lenne, ha "
+                "elvesznének.\n\n")
+               if fizetos and perc > 0 else
+               (f"Az ingyenes próbából még {perc} perc van hátra.\n\n"
+                if not fizetos and perc > 0 else ""))
+            + "Már 10 perc is sokat számít: egy rövid ismétlés után könnyebb "
+            "lesz a következő óra az iskolában.\n\n"
+            + f"👉 Folytatjuk: {folytat}\n\n"
+            + ("Ez az utolsó emlékeztetőnk, nem szeretnénk zavarni.\n\n"
+               if hanyadik > 1 else "")
+            + "Üdv,\nTutorIA\n\n—\n"
+            + "Nem kérsz több emlékeztetőt? Itt leiratkozhatsz (a heti "
+            f"jelentést ettől továbbra is megkapod): {leiratkozo}"
         )
     return _level_kuld(cimzett, targy, szoveg)
 
@@ -18292,8 +18323,9 @@ def _emlekezteto_kor() -> None:
                 continue
             leir = _oldal_url("/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(sz["id"])))
             fizetos, maradek = _emlekezteto_adatok(sz, ma)
-            if _emlekezteto_level(sz["email"], sz.get("nyelv") or "hu", szam + 1, leir,
-                                  fizetos, maradek):
+            nyelv = sz.get("nyelv") or "hu"
+            if _emlekezteto_level(sz["email"], nyelv, szam + 1, leir, fizetos, maradek,
+                                  _emlekezteto_nevek(sz["id"], nyelv), (ma - utolso).days):
                 database.emlekezteto_allit(sz["id"], szam + 1, ma)
                 app.logger.warning("Emlekezteto (%s.) kiment: %s", szam + 1, sz["email"])
         except Exception:                                  # pragma: no cover
