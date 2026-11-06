@@ -178,6 +178,8 @@
     <footer class="footer">
         <p>{{ t('footer_text') }}</p>
         {# A jogi oldalaknak MINDEN oldalról elérhetőnek kell lenniük. #}
+        {# A jogi linkek eddig sötétzöldek voltak a zöld láblécen, alig látszottak. #}
+        <style>.footer-jogi a{color:#BFE6D3}.footer-jogi a:hover{color:#fff}</style>
         <p class="footer-jogi">
             <a href="{{ url_for('adatvedelem') }}">{{ t('privacy_title') }}</a>
             &nbsp;·&nbsp;
@@ -186,6 +188,15 @@
             <a href="{{ url_for('gyik') }}">{{ 'Preguntas frecuentes' if lang == 'es' else 'Gyakori kérdések' }}</a>
             &nbsp;·&nbsp;
             <a href="{{ url_for('impresszum') }}">{{ 'Aviso legal' if lang == 'es' else 'Impresszum' }}</a>
+        </p>
+        {# A NYILVÁNOS Facebook-oldal (nem az admin felület). Új lapon nyílik. #}
+        <p class="footer-kozosseg">
+            <a href="https://www.facebook.com/profile.php?id=61594854042337" target="_blank" rel="noopener"
+               aria-label="Facebook" data-mer="Lábléc: Facebook"
+               style="display:inline-flex;align-items:center;gap:8px;font-weight:700;color:#E6F4EE;text-decoration:none">
+                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path fill="#fff" d="M13.4 19.5v-6.2h2.1l.3-2.4h-2.4V9.4c0-.7.2-1.2 1.2-1.2h1.3V6.1c-.2 0-1-.1-1.9-.1-1.9 0-3.2 1.2-3.2 3.3v1.8H8.7v2.4h2.1v6.2z"/></svg>
+                {{ 'Síguenos en Facebook' if lang == 'es' else 'Kövess minket a Facebookon' }}
+            </a>
         </p>
     </footer>
 

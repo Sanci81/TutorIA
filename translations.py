@@ -1205,9 +1205,8 @@ TRANSLATIONS = {
               "¡Seguimos aprendiendo!",
     },
     "csomag_hang_proba": {
-        "hu": "Hangos tanítás: 30 perc, utána írásban (elsősöknek végig hangosan)",
-        "es": "Clases con voz: 30 min, después por escrito (1.º de Primaria: "
-              "siempre con voz)",
+        "hu": "Hangos tanítás: 30 perc, utána írásban",
+        "es": "Clases con voz: 30 min, después por escrito",
     },
     "csomag_hang_maradt": {"hu": "Hangos idő még", "es": "Tiempo con voz restante"},
     "csomag_atvitt": {"hu": "ebből az előző hónapokból átjött",

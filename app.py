@@ -16205,8 +16205,7 @@ def api_voice_speak():
             pass
         # A CSOMAG HANGOS KERETE (2026-11-06). Ha elfogyott, a felolvasás
         # elhallgat, a tanítás írásban megy tovább (ugyanúgy, mint a napi
-        # keretnél). KIVÉTEL: a legkisebbek (csak hangos profil), akik még nem
-        # tudnak olvasni – őket soha nem hagyjuk hang nélkül.
+        # keretnél). Kivétel nincs (lásd _hang_keret_elfogyott).
         try:
             if _hang_keret_elfogyott(_cid):
                 print(f"[TTS] child={_cid} a csomag hangos ideje elfogyott", flush=True)
@@ -16856,13 +16855,13 @@ def _berlet_keret(pid: int, havi: float, kezdet: date, ma: date,
 
 
 def _hang_keret_elfogyott(child_id: int) -> bool:
-    """Elfogyott-e a CSOMAG hangos ideje ennél a gyereknél? A csak hangos
-    profilú (még nem olvasó) gyereknél soha – ő hang nélkül elakadna."""
+    """Elfogyott-e a CSOMAG hangos ideje ennél a gyereknél?
+
+    KIVÉTEL NINCS (Sándor döntése, 2026-11-06): az életkort a szülő írja be,
+    ezért egy „7 évesnél fiatalabb” kivételt bárki kihasználhatna. Az ingyenes
+    próbában mindenkinek 30 perc hangos jár, utána írásban megy tovább."""
     child = database.get_child_by_id(child_id, session.get("parent_id"))
     if not child:
-        return False
-    if _chat_interaction_profile(_child_effective_age(child),
-                                 _chat_grade_num(child)) == _CHAT_PROFILE_VOICE_ONLY:
         return False
     k = _havi_keret()
     return bool(k.get("hangos_korlatos")) and k.get("hangos_maradek", 1) <= 0

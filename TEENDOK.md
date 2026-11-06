@@ -3,9 +3,29 @@
 Ez a fájl azért van, hogy semmi ne egy beszélgetés emlékezetén múljon.
 Ha egy tétel elkészült, húzd át vagy töröld. Ha újat találsz, írd ide.
 
-Utolsó frissítés: 2026-11-04
+Utolsó frissítés: 2026-11-06
 
 ---
+
+## ⚠️ SÜRGŐS – SORRENDBEN (2026-11-06, Sándor kérte a rangsort)
+
+1. **Az időmérés a szerveren is** (fizetés ELŐTT kötelező). Most a böngésző méri és küldi
+   a perceket → kijátszható, és vitában nincs mire hivatkozni. Terv: a szerver is számol a
+   gyerek tényleges lépéseiből (chat üzenet, feladat-ellenőrzés, felolvasás), két lépés
+   között legfeljebb 3 percet számítva; elszámolásnál a kettő közül a nagyobb, de soha nem
+   több, mint az óra kezdete óta eltelt idő. Naplózva → panasznál megmutatható, mi történt.
+2. **Beszédfelismerés (STT) is álljon le**, ha a hangos idő elfogyott (most csak a
+   felolvasás áll le; a hangköltség kb. fele az STT).
+3. **Hangos módban a teljes választ olvassa fel**: a felolvasás nem küldi a mode=voice-ot,
+   ezért a szerver a rövidített változatot olvassa fel. (Hangmód – Sándor engedélyével.)
+4. **Elsősök (≤7 év, csak hangos profil) az ingyenes próbában**: 30 hangos perc után nekik
+   is írásban folytatódik (Sándor döntése: kivétel nincs, mert az életkort a szülő írja be).
+   Mivel még nem olvasnak, a szülőnek ezt előre jelezni kell (pl. a gyerek felvételekor).
+5. **Hirdetés**: új kampány kézi elhelyezéssel (FB + IG hírfolyam/Reels), Audience Network
+   nélkül, link a regisztrációra. Adat 11.04–06: a főoldalon 183 látogatóból csak 12
+   görgetett egyáltalán, medián 7 mp → nagyrészt véletlen/érdektelen kattintás.
+6. **ÁSZF**: fizetés előtt a teljes bérlet-szöveg ügyvéddel/gestoríával átnézetve.
+
 
 ## Azonnal (a poszt már kiment, a cím publikus)
 
