@@ -16238,8 +16238,11 @@ def api_voice_speak():
         # A CSOMAG HANGOS KERETE (2026-11-06). Ha elfogyott, a felolvasás
         # elhallgat, a tanítás írásban megy tovább (ugyanúgy, mint a napi
         # keretnél). Kivétel nincs (lásd _hang_keret_elfogyott).
+        # A FELADATOK SAJÁT RÖVID HANGJAI (egy szó, egy mondat a „Meghallgatom”
+        # gombon) mindig mennek – nélkülük a hallás utáni feladat nem oldható
+        # meg. Ezek fillérek; a keret a tanító hosszú felolvasásait állítja le.
         try:
-            if _hang_keret_elfogyott(_cid):
+            if len((data.get("text") or "").strip()) > 200 and _hang_keret_elfogyott(_cid):
                 print(f"[TTS] child={_cid} a csomag hangos ideje elfogyott", flush=True)
                 r = jsonify({"error": "voice_budget_spent",
                              "message": i18n.t("csomag_hang_elfogyott", g.lang)})

@@ -1596,6 +1596,7 @@
   .dm .kk-torony{display:flex !important;flex-direction:column;align-items:center;gap:3px !important;padding:6px 6px !important;flex:none !important;border-radius:12px;background:#fff;border:2px solid #E2E8EE;cursor:pointer}
   .dm .kk-torony .kk-szam{font:900 18px Nunito,sans-serif;color:#22364B}
   .kk-torony:active{transform:translateY(2px)}
+  body.hang-elfogyott .bubble-replay-wrap{display:none}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -2038,6 +2039,30 @@
     // csendben maradunk. A tanulás írásban zavartalanul megy tovább – a
     // gyerek soha nem lát hibaüzenetet, és nem is akad el.
     var hangKeretElfogyott = false;
+    /* Felül megjelenő sáv a hangos idő elfogyásáról. A 🔊 gombok eltűnnek,
+       a feladatok saját rövid hangjai (szavak, „Meghallgatom”) maradnak. */
+    function hangKeretJelez(szoveg) {
+        try {
+            document.body.classList.add('hang-elfogyott');
+            var regi = document.getElementById('hang-keret-jel');
+            if (regi) { regi.remove(); }
+            var d = document.createElement('div');
+            d.id = 'hang-keret-jel';
+            d.setAttribute('role', 'status');
+            d.style.cssText = 'position:fixed;top:84px;left:50%;transform:translateX(-50%);z-index:9999;' +
+                'max-width:92%;background:#fff7ed;border:2px solid #f59e0b;color:#7c2d12;border-radius:16px;' +
+                'padding:10px 40px 10px 16px;font-weight:700;box-shadow:0 10px 24px rgba(0,0,0,.15)';
+            d.textContent = szoveg;
+            var x = document.createElement('button');
+            x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'OK');
+            x.style.cssText = 'position:absolute;right:8px;top:4px;border:0;background:none;font-size:22px;cursor:pointer;color:#7c2d12';
+            x.onclick = function () { d.remove(); };
+            d.appendChild(x);
+            document.body.appendChild(d);
+            setTimeout(function () { if (d.parentNode) { d.remove(); } }, 10000);
+        } catch (e) {}
+    }
+
     function hangKeretVege(r) {
         if (hangKeretElfogyott) return;
         hangKeretElfogyott = true;
@@ -2045,7 +2070,9 @@
            ideje (pl. ingyenes próba: 30 perc). A szerver fejlécben jelzi. */
         var csomag = false;
         try { csomag = !!(r && r.headers && r.headers.get('X-Hang-Ok') === 'csomag'); } catch (e) {}
-        try { appendBubble('assistant', csomag ? L.voiceBudgetCsomag : L.voiceBudgetSpent); } catch (e) {}
+        /* NEM buborékként: az új felületen a buborék a lecke szövegének
+           helyére került volna, és eltüntette a magyarázatot. Külön sáv. */
+        hangKeretJelez(csomag ? L.voiceBudgetCsomag : L.voiceBudgetSpent);
         /* Ha a CSOMAG hangos ideje fogyott el, hangos módból átváltunk
            írásosra (a mikrofon is leáll). A csak hangos profilnál nincs
            írásos mód, ott a link hiányzik, és minden marad. */
@@ -2212,6 +2239,7 @@
         feladatMaradek: {{ t('feladat_maradek')|tojson }},
         voiceBudgetSpent: {{ t('voice_budget_spent')|tojson }},
         voiceBudgetCsomag: {{ t('csomag_hang_elfogyott')|tojson }},
+        hangElfogyottBetolteskor: {{ (hang_elfogyott or false)|tojson }},
         think: [
             {{ t('chat_think_1')|tojson }},
             {{ t('chat_think_2')|tojson }},
@@ -2219,6 +2247,14 @@
             {{ t('chat_think_4')|tojson }}
         ]
     };
+
+    if (L.hangElfogyottBetolteskor) {
+        hangKeretElfogyott = true;
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function () { hangKeretJelez(L.voiceBudgetCsomag); });
+        } else { hangKeretJelez(L.voiceBudgetCsomag); }
+    }
+
     function fmt(tpl, vars) {
         return String(tpl).replace(/\{(\w+)\}/g, function (_, k) {
             return (vars && vars[k] !== undefined) ? vars[k] : '';
