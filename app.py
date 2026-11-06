@@ -17589,7 +17589,8 @@ def admin_latogatottsag_letoltes():
             logger.exception("latogatottsag letoltes: %s", nev)
             adat[nev] = None
     szoveg = json.dumps(adat, ensure_ascii=False, default=str, separators=(",", ":"))
-    fajl = f"latogatottsag_{date.today().isoformat()}.json"
+    # Óra-perc is a névben, hogy egy napon belül se írja felül az előzőt.
+    fajl = f"latogatottsag_{datetime.now().strftime('%Y-%m-%d_%H%M')}.json"
     return Response(szoveg, mimetype="application/json",
                     headers={"Content-Disposition": f'attachment; filename="{fajl}"'})
 

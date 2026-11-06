@@ -44,6 +44,26 @@ Utolsó frissítés: 2026-11-06
 7. **Elsősök szüleinek jelzés** (alacsony): a csomagoldalon már ott van „30 perc hangos,
    utána írásban” – jogilag ez elég; a gyerek felvételekor egy mondat csak kényelmi.
 8. **Éves ár**: most nincs. Az első fizetős hónapok adatai után döntünk.
+9. **STRIPE / PAYPAL BEKÖTÉSEKOR – NE FELEJTSD (Sándor kérte, 2026-11-06):**
+   - A fizetés (webhook) állítsa a szülő `csomag`, `csomag_kezdet`, `csomag_lejar` mezőjét →
+     a hang és a keret a következő oldalbetöltéstől azonnal él. Lemondáskor/elmaradt fizetésnél
+     csak a `csomag_lejar` kerüljön a kifizetett időszak végére (a megmaradt órák a saját
+     3 hónapjukig élnek – _berlet_keret fizetett_ig).
+   - Csomagváltáskor a `csomag_kezdet` újraindítása (a program a MOSTANI csomag havi keretével
+     számol visszamenőleg is).
+   - A hangos idő próbaoldali tesztkapcsolója (session „teszt_hang_elfogyott”) csak a
+     próbaoldalon él – élesben nincs.
+   - Szövegek: ÁSZF 7. pont (fizetés, megújulás, lemondás, számla), Adatvédelmi tájékoztató
+     5. pont (fizetési szolgáltató neve, számlázási adatok, megőrzés), adatkezelési
+     nyilvántartás 5. pont kitöltése, csomagoldalon a „Tervezett ár” jelölés levétele,
+     FIZETES_ELERHETO=1.
+10. **„Rég jártál itt” emlékeztető e-mail** (Sándor ötlete, 2026-11-06) – JAVASLAT: 7 nap
+    tétlenség után egy levél, 21 nap után még egy, utána nincs több. Csak ha a szülő nem
+    iratkozott le (a meglévő ertesites/leiratkozás rendszert használja), minden levélben
+    leiratkozó link. Fizetőknek is (a kifizetett órák elvesznének). Szöveg kell az Adatvédelmi
+    tájékoztatóba (cél: emlékeztető a szolgáltatás használatára; jogalap: jogos érdek,
+    leiratkozható). Sándor döntésére vár.
+11. **Látogatottság-letöltés**: a fájlnévben már óra-perc is van (fix80), nem írja felül egymást.
 
 
 ## Azonnal (a poszt már kiment, a cím publikus)

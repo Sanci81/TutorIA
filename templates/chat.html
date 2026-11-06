@@ -2098,8 +2098,19 @@
 
     // A buborékok 🔊 gombja. Ugyanaz a keret- és hibakezelés, mint a hangos
     // módban, és a lejátszás után elengedjük a memóriát.
+    /* EGYSZERRE CSAK EGY FELOLVASÁS (2026-11-06). A türelmetlen többszöri
+       kattintás eddig párhuzamosan, többször indította el ugyanazt. Most:
+       amíg tölt vagy szól, ugyanarra a szövegre a gomb nem csinál semmit;
+       másik üzenet 🔊-ja leállítja az előzőt, és azt indítja. */
+    var ujraAudio = null, ujraSzoveg = null, ujraTolt = false;
     function ujraOlvas(szoveg) {
         if (hangKeretElfogyott) return;
+        var szol = ujraAudio && !ujraAudio.paused && !ujraAudio.ended;
+        if ((ujraTolt || szol) && szoveg === ujraSzoveg) return;
+        if (ujraTolt) return;
+        if (szol) { try { ujraAudio.pause(); } catch (e) {} }
+        ujraSzoveg = szoveg;
+        ujraTolt = true;
         fetch(speakUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -2111,13 +2122,15 @@
                 return r.blob();
             })
             .then(function (blob) {
+                ujraTolt = false;
                 if (!blob) return;
                 var url = URL.createObjectURL(blob);
                 var audio = new Audio(url);
+                ujraAudio = audio;
                 audio.onended = function () { URL.revokeObjectURL(url); };
                 audio.play();
             })
-            .catch(function () {});
+            .catch(function () { ujraTolt = false; });
     }
 
     // Feliratok az aktív tanterv nyelvén (HU/ES) – a t() az aktív g.lang alapján ad vissza.
@@ -9923,7 +9936,8 @@
     var ieSzoHang = {};
     function ieSzoKimond(szo) {
         if (hangKeretElfogyott || !szo) { return; }
-        function jatszd(url) { try { var a = new Audio(url); a.play().catch(function () {}); } catch (e) {} }
+        /* Egy szó egyszerre csak egyszer szóljon: az előzőt leállítjuk. */
+        function jatszd(url) { try { if (window._ieSzoAudio) { window._ieSzoAudio.pause(); } var a = new Audio(url); window._ieSzoAudio = a; a.play().catch(function () {}); } catch (e) {} }
         if (ieSzoHang[szo]) { jatszd(ieSzoHang[szo]); return; }
         fetch(speakUrl, {method: 'POST', headers: {'Content-Type': 'application/json'},
                          body: JSON.stringify({text: szo, child_id: childId})})
