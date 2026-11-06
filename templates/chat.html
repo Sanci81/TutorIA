@@ -2030,10 +2030,14 @@
     // csendben maradunk. A tanulás írásban zavartalanul megy tovább – a
     // gyerek soha nem lát hibaüzenetet, és nem is akad el.
     var hangKeretElfogyott = false;
-    function hangKeretVege() {
+    function hangKeretVege(r) {
         if (hangKeretElfogyott) return;
         hangKeretElfogyott = true;
-        try { appendBubble('assistant', L.voiceBudgetSpent); } catch (e) {}
+        /* Két oka lehet: a napi felolvasás fogyott el, vagy a csomag hangos
+           ideje (pl. ingyenes próba: 30 perc). A szerver fejlécben jelzi. */
+        var csomag = false;
+        try { csomag = !!(r && r.headers && r.headers.get('X-Hang-Ok') === 'csomag'); } catch (e) {}
+        try { appendBubble('assistant', csomag ? L.voiceBudgetCsomag : L.voiceBudgetSpent); } catch (e) {}
     }
 
     // A buborékok 🔊 gombja. Ugyanaz a keret- és hibakezelés, mint a hangos
@@ -2046,7 +2050,7 @@
             body: JSON.stringify({ text: szoveg, child_id: childId })
         })
             .then(function (r) {
-                if (r.status === 429) { hangKeretVege(); return null; }
+                if (r.status === 429) { hangKeretVege(r); return null; }
                 if (!r.ok) return null;
                 return r.blob();
             })
@@ -2190,6 +2194,7 @@
         feladatKesz: {{ t('feladat_kesz')|tojson }},
         feladatMaradek: {{ t('feladat_maradek')|tojson }},
         voiceBudgetSpent: {{ t('voice_budget_spent')|tojson }},
+        voiceBudgetCsomag: {{ t('csomag_hang_elfogyott')|tojson }},
         think: [
             {{ t('chat_think_1')|tojson }},
             {{ t('chat_think_2')|tojson }},
@@ -2353,11 +2358,19 @@
         }
     }
 
+    /* A TÉTLEN PERCEK NEM SZÁMÍTANAK (2026-11-06). Eddig a 3 perc várakozás
+       is beleszámított, mielőtt az óra megállt – a nyitva felejtett lap így
+       3 percet „evett”. Most az óra az UTOLSÓ tevékenység pillanatánál áll meg. */
+    var utolsoTevekenyseg = Date.now();
     function resetInactivity() {
         oraIndul();
+        utolsoTevekenyseg = Date.now();
         clearTimeout(inactivityTimer);
         inactivityTimer = setTimeout(function () {
-            oraMegall();
+            if (!learningPaused) {
+                aktivPercek += Math.max(0, utolsoTevekenyseg - szakaszKezdet) / 60000;
+                learningPaused = true;
+            }
             heartbeat();
         }, INACTIVITY_LIMIT);
     }
@@ -9849,7 +9862,7 @@
         if (ieSzoHang[szo]) { jatszd(ieSzoHang[szo]); return; }
         fetch(speakUrl, {method: 'POST', headers: {'Content-Type': 'application/json'},
                          body: JSON.stringify({text: szo, child_id: childId})})
-            .then(function (r) { if (r.status === 429) { hangKeretVege(); return null; } return r.ok ? r.blob() : null; })
+            .then(function (r) { if (r.status === 429) { hangKeretVege(r); return null; } return r.ok ? r.blob() : null; })
             .then(function (b) { if (!b) { return; } ieSzoHang[szo] = URL.createObjectURL(b); jatszd(ieSzoHang[szo]); })
             .catch(function () {});
     }
@@ -10769,7 +10782,7 @@
             body: JSON.stringify({ text: text, child_id: childId })
         })
             .then(function (r) {
-                if (r.status === 429) { hangKeretVege(); throw new Error('keret'); }
+                if (r.status === 429) { hangKeretVege(r); throw new Error('keret'); }
                 if (!r.ok) throw new Error('tts');
                 return r.blob();
             })

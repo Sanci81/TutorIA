@@ -77,6 +77,9 @@
       if keret.hangos and keret.hangos < keret.keret %} · {{ t('csomag_hang_ebbol') }}
       <b>{{ keret.hangos }}</b> {{ t('csomag_perc') }}{% endif %}{%
       if keret.atvitt %} · {{ t('csomag_atvitt') }}: <b>{{ keret.atvitt|round(0)|int }}</b> {{ t('csomag_perc') }}{% endif %}</p>
+    {% if keret.hangos_korlatos %}
+    <p class="adat">{{ t('csomag_hang_maradt') }}: <b>{{ keret.hangos_maradek|round(0)|int }}</b> / {{ keret.hangos }} {{ t('csomag_perc') }}</p>
+    {% endif %}
     <div class="keret-sav" aria-hidden="true">
       <span style="width: {{ ((keret.elhasznalt / keret.keret * 100) if keret.keret else 0)|round(0, 'floor') }}%"></span>
     </div>

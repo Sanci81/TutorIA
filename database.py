@@ -952,6 +952,52 @@ def tanulasi_perc_naponta(parent_id: int, tol: date, ig: date) -> dict[date, flo
         db.close()
 
 
+def hangos_ora_jelol(child_id: int) -> None:
+    """A gyerek MOSTANI (legutóbb indított mai) óráját hangosnak jelöli.
+
+    A felolvasás (/api/voice/speak, hangos módban) hívja. Így az az óra
+    számít hangosnak, amelyben a tanító ténylegesen felolvasott – a böngésző
+    nem tudja „szövegesnek” hazudni. Csak akkor ír, ha még nem volt az."""
+    db = _session()
+    try:
+        row = db.scalars(
+            select(ChildLearningTime)
+            .where(ChildLearningTime.child_id == child_id)
+            .where(ChildLearningTime.date == datetime.now(timezone.utc).date())
+            .order_by(ChildLearningTime.session_start.desc())
+            .limit(1)).first()
+        if row and row.mode != "voice":
+            row.mode = "voice"
+            db.commit()
+    except Exception:                                      # pragma: no cover
+        db.rollback()
+        logger.exception("hangos_ora_jelol(): nem sikerült")
+    finally:
+        db.close()
+
+
+def hangos_perc_kozott(parent_id: int, tol: date | None, ig: date) -> float:
+    """A szülő gyerekeinek HANGOS órákban töltött perce (tol=None: kezdettől)."""
+    db = _session()
+    try:
+        gyerekek = db.scalars(
+            select(Child.id).where(Child.parent_id == parent_id)).all()
+        if not gyerekek:
+            return 0.0
+        q = (select(func.coalesce(func.sum(ChildLearningTime.minutes), 0))
+             .where(ChildLearningTime.child_id.in_(gyerekek))
+             .where(ChildLearningTime.mode == "voice")
+             .where(ChildLearningTime.date <= ig))
+        if tol is not None:
+            q = q.where(ChildLearningTime.date >= tol)
+        return float(db.scalar(q) or 0.0)
+    except Exception:                                      # pragma: no cover
+        logger.exception("hangos_perc_kozott(): nem sikerült lekérni")
+        return 0.0
+    finally:
+        db.close()
+
+
 def havi_tanulasi_perc(parent_id: int, ev: int, honap: int) -> float:
     """A szülő ÖSSZES gyerekének tanulási perce egy adott hónapban.
 
@@ -2661,14 +2707,34 @@ def start_learning_session(
         db.close()
 
 
-def end_learning_session(session_id: int, minutes: float) -> bool:
-    """Zárja a tanulási session-t a pontos percekkel."""
+def end_learning_session(session_id: int, minutes: float,
+                         parent_id: int | None = None) -> bool:
+    """Zárja a tanulási session-t a pontos percekkel.
+
+    VÉDELEM (2026-11-06): a percet a böngésző küldi, ezért a szerver
+    ellenőrzi. (1) Csak a SAJÁT gyereke órájához írhat a szülő. (2) Nem lehet
+    több, mint az óra kezdete óta eltelt idő (+1 perc ráhagyás). (3) Egy kéréssel
+    legfeljebb 3,5 percet csökkenhet (a tétlen percek levonása), így a keretet
+    nem lehet egy hamis kéréssel nullára „visszatekerni”."""
     db = _session()
     try:
         row = db.get(ChildLearningTime, session_id)
         if not row:
             return False
-        row.session_end = datetime.now(timezone.utc)
+        if parent_id is not None:
+            gyerek = db.get(Child, row.child_id)
+            if not gyerek or gyerek.parent_id != parent_id:
+                return False
+        now = datetime.now(timezone.utc)
+        kezd = row.session_start
+        if kezd is not None and kezd.tzinfo is None:
+            kezd = kezd.replace(tzinfo=timezone.utc)
+        if kezd is not None:
+            minutes = min(float(minutes), (now - kezd).total_seconds() / 60.0 + 1.0)
+        # Legfeljebb 3,5 percet csökkenhet: ennyit von le a böngésző, amikor
+        # a tétlenség után kiveszi a tétlen perceket (chat.html).
+        minutes = max(float(minutes), float(row.minutes or 0.0) - 3.5, 0.0)
+        row.session_end = now
         row.minutes = round(minutes, 1)
         db.commit()
         return True

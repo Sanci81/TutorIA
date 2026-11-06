@@ -131,15 +131,15 @@ CSOMAGOK: dict[str, dict] = {
         "hangos_perc": 450,
         "profil": 5,
         "napi_jelentes": True,
-        "ar_honap": 26.90,
+        "ar_honap": 24.90,        # 2026-11-06: óránként olcsóbb, mint a 6 órás
         "ar_ev": 0.0,
     },
     "max": {
         "nev_hu": "18 órás bérlet",
         "nev_es": "Bono de 18 horas",
         "tantervek": (HU, ES),
-        "havi_perc": 810,         # 14 óra + 4 óra írásban ajándék = 18 × 45 perc
-        "hangos_perc": 630,       # ebből 14 óra lehet hangos
+        "havi_perc": 810,         # 18 × 45 perc, mind lehet hangos (2026-11-06)
+        "hangos_perc": 810,
         "profil": 5,
         "napi_jelentes": True,
         "ar_honap": 39.90,

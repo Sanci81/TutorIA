@@ -1193,9 +1193,23 @@ TRANSLATIONS = {
     "csomag_hang_minden_ora": {"hu": "Hangos tanítás minden órában",
                                "es": "Clases con voz en todas las horas"},
     "csomag_megmarad": {
-        "hu": "A fel nem használt óra 3 hónapig megmarad",
-        "es": "Las horas no usadas se guardan 3 meses",
+        "hu": "A fel nem használt óra átvihető: minden hónap órái 3 hónapig "
+              "érvényesek (a vásárlás hónapjával együtt)",
+        "es": "Las horas no usadas se acumulan: las de cada mes valen 3 meses "
+              "(contando el mes de compra)",
     },
+    "csomag_hang_elfogyott": {
+        "hu": "Elfogyott a hangos idő – a tanító mostantól írásban folytatja. "
+              "A tanulás megy tovább!",
+        "es": "Se ha acabado el tiempo con voz: el profesor sigue por escrito. "
+              "¡Seguimos aprendiendo!",
+    },
+    "csomag_hang_proba": {
+        "hu": "Hangos tanítás: 30 perc, utána írásban (elsősöknek végig hangosan)",
+        "es": "Clases con voz: 30 min, después por escrito (1.º de Primaria: "
+              "siempre con voz)",
+    },
+    "csomag_hang_maradt": {"hu": "Hangos idő még", "es": "Tiempo con voz restante"},
     "csomag_atvitt": {"hu": "ebből az előző hónapokból átjött",
                       "es": "de ellos, pasados de meses anteriores"},
     "csomag_jelenlegi": {"hu": "A csomagod", "es": "Tu plan"},
@@ -1411,17 +1425,25 @@ TRANSLATIONS = {
     "csomag_gyik_perc": {
         "hu": "1 óra = 45 perc tanulás a TutorIA tanítójával (mesterséges "
               "intelligencia), bármelyik tantárgyban. Csak azt az időt "
-              "számoljuk, amíg a gyerek ténylegesen dolgozik: az óra megáll, "
-              "ha öt percig nem történik semmi, és azonnal megáll, ha a gyerek "
-              "átvált egy másik ablakra — a nyitva felejtett beszélgetés tehát "
-              "nem fogyaszt semmit. A bérletben fel nem használt órák 3 "
-              "hónapig megmaradnak.",
+              "számoljuk, amíg a gyerek ténylegesen dolgozik: ha három percig "
+              "nem ír, nem beszél és nem nyom meg semmit, az óra az utolsó "
+              "mozdulatánál megáll, és akkor is megáll, ha másik lapra vált. "
+              "A nyitva felejtett oldal tehát nem fogyaszt. Hangos órának az "
+              "számít, amelyben a gyerek hangos módban tanult. A bérletben "
+              "minden hónap órái 3 hónapig érvényesek (a vásárlás hónapjával "
+              "együtt), és mindig a legrégebbi óra fogy először – így "
+              "egyszerre legfeljebb 3 havi óra gyűlhet össze. Hogy mennyi van "
+              "még, azt a Fiókom oldalon mindig látod.",
         "es": "1 hora = 45 minutos de estudio con el profesor de TutorIA "
               "(inteligencia artificial), en cualquier asignatura. Solo cuenta "
-              "el tiempo ACTIVO: si durante cinco minutos no ocurre nada, o el "
-              "niño cambia a otra pestaña, el reloj se para. Una conversación "
-              "olvidada abierta no consume tiempo. Las horas no usadas del "
-              "bono se guardan 3 meses.",
+              "el tiempo ACTIVO: si durante tres minutos el niño no escribe, no "
+              "habla ni pulsa nada, el reloj se para en su último movimiento, "
+              "y también se para si cambia de pestaña. Una página olvidada no "
+              "consume. Cuenta como hora con voz la que el niño estudia en modo "
+              "voz. En el bono, las horas de cada mes valen 3 meses (contando "
+              "el mes de compra) y siempre se gastan primero las más antiguas: "
+              "como mucho se juntan 3 meses de horas. Lo que te queda lo ves "
+              "siempre en Mi cuenta.",
     },
     "csomag_gyik_profil_cim": {"hu": "Több gyereknek külön kell fizetni?",
                                "es": "¿Hay que pagar por cada hijo?"},
@@ -1437,16 +1459,16 @@ TRANSLATIONS = {
     "csomag_gyik_valtas_cim": {"hu": "Lehet váltani vagy lemondani?",
                                "es": "¿Se puede cambiar o cancelar?"},
     "csomag_gyik_valtas": {
-        "hu": "Bármikor, indoklás nélkül, hűségidő nélkül. Lemondás után a "
-              "már kifizetett hónap végéig minden megmaradt órát "
-              "felhasználhattok, az előző hónapokból átjötteket is. Utána a "
-              "gyerekeid adatai és gyűjteményük megmaradnak – csak új óra nem "
-              "indul.",
-        "es": "Cuando quieras, sin explicaciones y sin permanencia. Al "
-              "cancelar, podéis usar todas las horas que os queden, también "
-              "las de meses anteriores, hasta el final del mes ya pagado. "
-              "Después, los datos y la colección de tus hijos siguen ahí; "
-              "solo no se empiezan horas nuevas.",
+        "hu": "Bármikor, indoklás nélkül, hűségidő nélkül. Ha lemondod, vagy "
+              "nem fizeted ki a következő hónapot, a már kifizetett órák "
+              "megmaradnak: mindegyiket a saját 3 hónapos érvényességének a "
+              "végéig felhasználhatjátok. Utána a gyerekeid adatai és "
+              "gyűjteményük megmaradnak – csak új óra nem indul.",
+        "es": "Cuando quieras, sin explicaciones y sin permanencia. Si "
+              "cancelas o no pagas el mes siguiente, las horas ya pagadas no se "
+              "pierden: podéis usar cada una hasta el final de sus 3 meses de "
+              "validez. Después, los datos y la colección de tus hijos siguen "
+              "ahí; solo no se empiezan horas nuevas.",
     },
 
     # ── GYAKORLÓ FELADAT A BESZÉLGETÉSBEN ────────────────────────────────

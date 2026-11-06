@@ -2046,7 +2046,7 @@ def _jogi_adatok() -> dict[str, str]:
 # A jogi oldalak frissítési dátuma. EGY helyen kell átírni (ISO alakban),
 # a magyar és a spanyol szöveg innen kapja a saját nyelvének megfelelő
 # formát – így nem fordulhat elő, hogy a spanyol oldalon magyar dátum áll.
-JOGI_FRISSITVE_ISO = "2026-09-15"
+JOGI_FRISSITVE_ISO = "2026-11-06"
 
 _HO_HU = ("január", "február", "március", "április", "május", "június",
           "július", "augusztus", "szeptember", "október", "november",
@@ -14116,6 +14116,11 @@ def child_chat_send(child_id: int):
     if not chat_session_row:
         return jsonify({"error": "invalid_session"}), 403
 
+    # HANGOS ÓRA (2026-11-06): a hangos módban küldött üzenet az órát hangosnak
+    # jelöli – ebből számoljuk a csomag hangos idejét (pl. próba: 30 perc).
+    if chat_mode == "voice":
+        database.hangos_ora_jelol(child_id)
+
     chat_curriculum = _chat_load_curriculum(
         subject, _active_grade_str(child), language=language or None
     )
@@ -16198,6 +16203,20 @@ def api_voice_speak():
                                 "message": i18n.t("voice_budget_spent", g.lang)}), 429
         except Exception:
             pass
+        # A CSOMAG HANGOS KERETE (2026-11-06). Ha elfogyott, a felolvasás
+        # elhallgat, a tanítás írásban megy tovább (ugyanúgy, mint a napi
+        # keretnél). KIVÉTEL: a legkisebbek (csak hangos profil), akik még nem
+        # tudnak olvasni – őket soha nem hagyjuk hang nélkül.
+        try:
+            if _hang_keret_elfogyott(_cid):
+                print(f"[TTS] child={_cid} a csomag hangos ideje elfogyott", flush=True)
+                r = jsonify({"error": "voice_budget_spent",
+                             "message": i18n.t("csomag_hang_elfogyott", g.lang)})
+                r.status_code = 429
+                r.headers["X-Hang-Ok"] = "csomag"
+                return r
+        except Exception:
+            app.logger.exception("A csomag hangos keretét nem sikerült ellenőrizni")
 
     # ── 2. GYORSTÁR ─────────────────────────────────────────────────────
     # A visszatérő mondatok ("Ügyes vagy!") egyszer készülnek el. A mentett
@@ -16295,7 +16314,7 @@ def api_learning_heartbeat():
     minutes = float(data.get("minutes", 0))
     if not session_id or minutes < 0:
         return jsonify({"error": "invalid"}), 400
-    database.end_learning_session(session_id, minutes)
+    database.end_learning_session(session_id, minutes, parent_id=session.get("parent_id"))
     return jsonify({"ok": True})
 
 
@@ -16307,7 +16326,7 @@ def api_learning_end():
     session_id = data.get("session_id")
     minutes = float(data.get("minutes", 0))
     if session_id:
-        database.end_learning_session(session_id, minutes)
+        database.end_learning_session(session_id, minutes, parent_id=session.get("parent_id"))
     return jsonify({"ok": True})
 
 
@@ -16699,6 +16718,15 @@ def _szulo_csomag(parent_id: int | None = None) -> str:
         # elhasználta. Különben minden lejáratkor kapna egy újabb ingyen
         # kört, és soha nem kellene fizetnie.
         if lejar and lejar < date.today():
+            # A már KIFIZETETT órák a saját 3 havi lejáratukig felhasználhatók,
+            # akkor is, ha nem fizetett tovább. Amíg van ilyen, a csomag él.
+            kezdet = szulo.get("csomag_kezdet")
+            if (BERLET_ATVITEL and kezdet and csomagok.fizetos(kulcs)
+                    and not csomagok.egyszeri(kulcs)):
+                b = _berlet_keret(pid, csomagok.havi_perc(kulcs), kezdet,
+                                  date.today(), fizetett_ig=lejar)
+                if b["keret"] - b["elhasznalt"] > 0:
+                    return kulcs
             return csomagok.LEJART
         # AKINEK NINCS CSOMAGJA, AZ AZ INGYENES PRÓBÁT KAPJA, nem a teszt
         # csomagot. Eddig fordítva volt: a create_parent nem tölti ki a
@@ -16787,11 +16815,16 @@ BERLET_ATVITEL = os.environ.get("BERLET_ATVITEL", "1").strip().lower() not in (
     "0", "false", "nem", "ki")
 
 
-def _berlet_keret(pid: int, havi: float, kezdet: date, ma: date) -> dict:
+def _berlet_keret(pid: int, havi: float, kezdet: date, ma: date,
+                  fizetett_ig: date | None = None) -> dict:
     """Az átvitt órákkal együtt számolt keret a MOSTANI fordulóban.
 
     Vissza: keret (a forduló elején elérhető összes perc), elhasznalt (ebben
     a fordulóban), atvitt (ebből az előző hónapokból jött perc).
+
+    fizetett_ig: ha a szülő NEM fizetett tovább (a bérlet lejárt), ettől a
+    naptól nem jár új havi keret – de a már KIFIZETETT órák a saját 3 havi
+    lejáratukig felhasználhatók (Sándor döntése, 2026-11-06).
     """
     ciklusok = []
     forduló = kezdet
@@ -16800,14 +16833,16 @@ def _berlet_keret(pid: int, havi: float, kezdet: date, ma: date) -> dict:
         ciklusok.append((forduló, kov))
         forduló = kov
     if not ciklusok:
-        return {"keret": havi, "elhasznalt": 0.0, "atvitt": 0.0}
+        return {"keret": havi, "elhasznalt": 0.0, "atvitt": 0.0, "uj": True}
     naponta = database.tanulasi_perc_naponta(pid, kezdet, ma)
     elo: list[list[float]] = []            # [maradt perc, utolsó forduló sorszáma]
     elhasznalt = atvitt = 0.0
     for i, (tol, kov) in enumerate(ciklusok):
         elo = [x for x in elo if x[1] >= i and x[0] > 0]
         atvitt = sum(x[0] for x in elo)
-        elo.append([float(havi), i + BERLET_ERVENYES_HONAP - 1])
+        uj = fizetett_ig is None or tol < fizetett_ig
+        if uj:
+            elo.append([float(havi), i + BERLET_ERVENYES_HONAP - 1])
         elhasznalt = sum(m for d, m in naponta.items() if tol <= d < kov)
         maradek = elhasznalt
         for x in elo:                       # a legrégebbi órák fogynak először
@@ -16816,8 +16851,21 @@ def _berlet_keret(pid: int, havi: float, kezdet: date, ma: date) -> dict:
             maradek -= levon
             if maradek <= 0:
                 break
-    return {"keret": float(havi) + atvitt, "elhasznalt": elhasznalt,
-            "atvitt": atvitt}
+    return {"keret": (float(havi) if uj else 0.0) + atvitt, "elhasznalt": elhasznalt,
+            "atvitt": atvitt, "uj": uj}
+
+
+def _hang_keret_elfogyott(child_id: int) -> bool:
+    """Elfogyott-e a CSOMAG hangos ideje ennél a gyereknél? A csak hangos
+    profilú (még nem olvasó) gyereknél soha – ő hang nélkül elakadna."""
+    child = database.get_child_by_id(child_id, session.get("parent_id"))
+    if not child:
+        return False
+    if _chat_interaction_profile(_child_effective_age(child),
+                                 _chat_grade_num(child)) == _CHAT_PROFILE_VOICE_ONLY:
+        return False
+    k = _havi_keret()
+    return bool(k.get("hangos_korlatos")) and k.get("hangos_maradek", 1) <= 0
 
 
 def _havi_keret() -> dict:
@@ -16837,6 +16885,8 @@ def _havi_keret() -> dict:
 
     ujraindul = None
     atvitt = 0.0
+    hang_tol: date | None = None
+    lejart = False
     try:
         if not pid:
             elhasznalt = 0.0
@@ -16846,25 +16896,49 @@ def _havi_keret() -> dict:
         elif kezdet:
             # Van előfizetés: a FORDULÓNAPHOZ igazodunk, nem elsejéhez.
             tol, ujraindul = _elofizetesi_ciklus(kezdet, ma)
+            hang_tol = tol
+            lejar = szulo.get("csomag_lejar")
+            lejart = bool(lejar and lejar < ma)
             if BERLET_ATVITEL and kezdet <= ma:
-                # Bérlet: a fel nem használt óra 3 hónapig átvihető.
-                b = _berlet_keret(pid, keret, kezdet, ma)
+                # Bérlet: a fel nem használt óra 3 hónapig átvihető; lejárt
+                # bérletnél csak a már kifizetett órák maradnak.
+                b = _berlet_keret(pid, keret, kezdet, ma,
+                                  fizetett_ig=lejar if lejart else None)
                 keret, elhasznalt, atvitt = b["keret"], b["elhasznalt"], b["atvitt"]
+                if lejart:
+                    ujraindul = None
             else:
                 elhasznalt = database.tanulasi_perc_kozott(pid, tol, ma)
         else:
             # Tesztidőszak: nincs fizetés, tehát nincs fordulónap sem.
             elhasznalt = database.havi_tanulasi_perc(pid, ma.year, ma.month)
             ujraindul = _kovetkezo_ho_elseje(ma)
+            hang_tol = date(ma.year, ma.month, 1)
     except Exception:                                      # pragma: no cover
         app.logger.exception("A tanulási időt nem sikerült lekérni")
         elhasznalt = 0.0
+
+    # HANGOS IDŐ: csak ott korlátos, ahol a csomag kevesebb hangos percet ad,
+    # mint összeset (pl. ingyenes próba: 120-ból 30). Próbánál a kezdettől,
+    # máskor az aktuális fordulóban számoljuk.
+    hangos_keret = csomagok.hangos_perc(kulcs)
+    hangos_korlatos = bool(pid) and hangos_keret < csomagok.havi_perc(kulcs)
+    hangos_elhasznalt = 0.0
+    if hangos_korlatos:
+        try:
+            hangos_elhasznalt = database.hangos_perc_kozott(
+                pid, None if egyszeri else hang_tol, ma)
+        except Exception:                                  # pragma: no cover
+            app.logger.exception("A hangos időt nem sikerült lekérni")
 
     return {
         "csomag": kulcs,
         "csomag_nev": csomagok.nev(kulcs, g.lang if hasattr(g, "lang") else "hu"),
         "keret": int(round(keret)),
-        "hangos": csomagok.hangos_perc(kulcs),
+        "hangos": hangos_keret,
+        "hangos_korlatos": hangos_korlatos,
+        "hangos_elhasznalt": round(hangos_elhasznalt, 1),
+        "hangos_maradek": max(0.0, round(hangos_keret - hangos_elhasznalt, 1)),
         "elhasznalt": round(elhasznalt, 1),
         "maradek": max(0.0, round(keret - elhasznalt, 1)),
         "elfogyott": elhasznalt >= keret,
@@ -16874,7 +16948,7 @@ def _havi_keret() -> dict:
         "egyszeri": egyszeri,
         "ujraindul": None if egyszeri else ujraindul,
         # Fizetős csomagnál a fordulónapon van a következő levonás is.
-        "kovetkezo_dij": ujraindul if (kezdet and not egyszeri) else None,
+        "kovetkezo_dij": ujraindul if (kezdet and not egyszeri and not lejart) else None,
         "lejar": szulo.get("csomag_lejar"),
     }
 

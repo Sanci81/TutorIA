@@ -321,6 +321,8 @@
               {{ ((cs.havi_perc - cs.hangos_perc) / 45)|round(0)|int }} {{ t('csomag_ora_irasban') }}</li>
         {% elif cs.hangos_perc >= cs.havi_perc %}
           <li>{{ t('csomag_hang_mind') }}</li>
+        {% elif cs.egyszeri %}
+          <li>{{ t('csomag_hang_proba') }}</li>
         {% else %}
           <li>{{ t('csomag_hang_ebbol') }} {{ cs.hangos_perc }} {{ t('csomag_perc_sima') }}</li>
         {% endif %}

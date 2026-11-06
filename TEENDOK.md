@@ -430,10 +430,24 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       ÁSZF-be BE KELL ÍRNI fizetés előtt: 1 óra = 45 perc, 3 hónapos átvitel, mi lesz lemondáskor.
       FIGYELEM: csomagváltáskor (Stripe) a csomag_kezdet-et újra kell indítani, mert a program a
       MOSTANI csomag havi keretével számol visszamenőleg is.
-- [ ] !!! A HANGOS PERC KORLÁT NINCS BEKAPCSOLVA (app.py-ban sehol nem ellenőrzi): az ingyenes
-      próba „ebből 30 perc hangos” és a 18 órás „14 óra hangos + 4 írásban” most csak felirat –
-      a 120 perc mind lehet hangos. Csak a napi 30 000 karakteres hangkorlát él (hang.py).
-      Bekapcsolása a hangmódhoz nyúl → csak Sándor engedélyével.
+- [x] KÉSZ (fix75, 2026-11-06):
+      • A kifizetett órák a saját 3 hónapjukig megmaradnak akkor is, ha nem fizet tovább
+        (_szulo_csomag / _berlet_keret fizetett_ig). Szöveg: csomagoldal, GYIK, ÁSZF 7. pont (HU+ES).
+      • HANGOS KORLÁT BEKAPCSOLVA: ha a csomag hangos ideje kevesebb, mint az összes (most csak
+        az ingyenes próba: 120-ból 30), elfogyásakor a felolvasás 429-cel elhallgat, a tanítás
+        írásban megy tovább, a gyerek üzenetet kap. KIVÉTEL: elsős ≤7 év (csak hangos profil).
+        Hangos óra = amelyben hangos módban küldött üzenetet (chat/send mode=voice).
+        Fiókom: „Hangos idő még: X / 30 perc”.
+      • ÁR: 10 órás 26,90 → 24,90 €; 18 órás mind a 18 óra hangos (nincs „4 írásban”). Óránként:
+        2,65 / 2,49 / 2,22 € – felfelé olcsóbb. Haszon végig hangosan: ~5,0 / ~7,2 / ~9,5 €/hó.
+      • Időmérés: a tétlen 3 perc már nem számít bele (chat.html); a szerver nem fogad el több
+        percet, mint amennyi az óra kezdete óta eltelt, és csak a saját gyerek órájához ír.
+- [ ] !!! FIZETÉS ELŐTT: a tanulási időt a BÖNGÉSZŐ méri és küldi – ügyes szülő letilthatja a
+      küldést. Biztos megoldás: a szerver is számoljon (pl. a chat üzenetekből). 
+- [ ] HANGMÓD – Sándornak megmutatni, NEM javítottam: (1) a felolvasás (playTts) nem küldi a
+      mode=voice-ot, ezért a szerver hangos módban is a rövid (MAX_KARAKTER) változatot olvassa
+      fel – a kód szerint ezt el akartuk kerülni. (2) A beszédfelismerés (STT) a hangos keret
+      elfogyása után is megy – a hangköltség kb. fele.
 - [ ] HIRDETÉS-ADAT (2026-11-04–06): 148 hirdetésből jött látogató, átlag 6 mp a főoldalon,
       2 jutott a regisztrációig, 0 regisztrált. A gond a hirdetés és a főoldal között van, nem
       az űrlapon. Teendő: új hirdetéssorozat kézi elhelyezéssel (csak Facebook + Instagram

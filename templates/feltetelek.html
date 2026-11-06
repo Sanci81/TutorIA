@@ -102,16 +102,25 @@
   cambio, se refiere al currículo que contrate; el otro requiere una suscripción
   aparte. Si desea los dos, escríbanos a
   <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a>.</p>
-  <p>Los planes, los minutos incluidos y los precios figuran en la página
-  <a href="{{ url_for('csomagok_oldal') }}">Planes</a>. Los precios son finales, con el
-  IVA incluido. El tiempo de estudio pertenece a la familia: todos los perfiles
-  consumen de la misma bolsa, que se repone en la fecha de renovación. La prueba
-  gratuita es de una sola vez y no se repone.</p>
-  <p>La suscripción se <strong>renueva automáticamente</strong> —cada mes o cada
-  año, según el plan elegido— hasta que usted la cancele. Puede cancelarla en
-  cualquier momento desde <a href="{{ url_for('fiok') }}">Mi cuenta</a>: seguirá
-  usando el servicio hasta el final del periodo ya pagado y no le volveremos a
-  cobrar. Enviamos la factura por correo electrónico.</p>
+  <p>Los bonos, las horas incluidas y los precios figuran en la página
+  <a href="{{ url_for('csomagok_oldal') }}">Planes</a>. <strong>1 hora = 45 minutos
+  de estudio con el profesor de inteligencia artificial de TutorIA</strong> (no
+  es un profesor humano), en cualquier asignatura. Los precios son finales, con
+  el IVA incluido. El tiempo de estudio pertenece a la familia: todos los
+  perfiles consumen de la misma bolsa. Solo cuenta el tiempo activo (los
+  detalles están en <a href="{{ url_for('gyik') }}">Preguntas frecuentes</a>).</p>
+  <p><strong>Horas acumulables.</strong> En cada fecha de renovación se añaden
+  las horas mensuales del bono. Las horas no usadas se acumulan: las de cada mes
+  valen 3 meses, contando el mes de compra, y siempre se gastan primero las más
+  antiguas; como mucho se juntan 3 meses de horas. Si el tiempo con voz del plan
+  es limitado (por ejemplo, en la prueba gratuita), al agotarse la clase sigue
+  por escrito. La prueba gratuita es de una sola vez y no se repone.</p>
+  <p>La suscripción se <strong>renueva automáticamente cada mes</strong> hasta
+  que usted la cancele. Puede cancelarla en cualquier momento desde
+  <a href="{{ url_for('fiok') }}">Mi cuenta</a> y no le volveremos a cobrar.
+  <strong>Las horas ya pagadas y no usadas no se pierden al cancelar (ni si no
+  paga el mes siguiente)</strong>: cada una puede usarse hasta el final de sus
+  3 meses de validez. Enviamos la factura por correo electrónico.</p>
   <p>Si cambiamos los precios, se lo comunicaremos por correo electrónico al
   menos <strong>30 días antes</strong>. El precio nuevo solo se aplica a partir
   de la siguiente renovación, y hasta esa fecha puede cancelar.</p>
@@ -209,16 +218,26 @@
   tantervre szól, amelyikre megkötöd; a másikhoz külön előfizetés tartozik. Ha
   mindkettőt szeretnéd, írj a
   <a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a> címre.</p>
-  <p>A csomagokat, a bennük foglalt perceket és az árakat a
-  <a href="{{ url_for('csomagok_oldal') }}">Csomagok</a> oldal tartalmazza. Az árak
+  <p>A bérleteket, a bennük foglalt órákat és az árakat a
+  <a href="{{ url_for('csomagok_oldal') }}">Csomagok</a> oldal tartalmazza.
+  <strong>1 óra = 45 perc tanulási idő a TutorIA mesterséges intelligencia
+  tanítójával</strong> (nem élő tanár), bármelyik tantárgyban. Az árak
   véglegesek, az áfát tartalmazzák. A tanulási idő a CSALÁDÉ: minden profil
-  ugyanabból a keretből fogyaszt, és a keret a fordulónapon áll vissza. Az
-  ingyenes próba egyszer jár, az nem töltődik újra.</p>
-  <p>Az előfizetés <strong>automatikusan megújul</strong> — a választott
-  csomagtól függően havonta vagy évente —, amíg fel nem mondod. Felmondani
-  bármikor tudsz a <a href="{{ url_for('fiok') }}">Fiókom</a> oldalon: a már
-  kifizetett időszak végéig használhatod a szolgáltatást, és utána nem terhelünk
-  többet. A számlát e-mailben küldjük.</p>
+  ugyanabból a keretből fogyaszt. Tanulási időnek csak az aktív idő számít (a
+  részleteket a <a href="{{ url_for('gyik') }}">Gyakori kérdések</a> oldal írja le).</p>
+  <p><strong>Átvihető órák.</strong> Minden fordulónapon jár a bérlet havi
+  órakerete. A fel nem használt órák átvihetők: egy hónap órái 3 hónapig
+  érvényesek, a vásárlás hónapjával együtt, és mindig a legrégebbi óra fogy
+  először – így egyszerre legfeljebb 3 havi óra gyűlhet össze. Ha a csomag
+  hangos ideje korlátozott (például az ingyenes próbában), annak elfogyása után
+  a tanítás írásban folytatódik. Az ingyenes próba egyszer jár, az nem töltődik
+  újra.</p>
+  <p>Az előfizetés <strong>havonta automatikusan megújul</strong>, amíg fel nem
+  mondod. Felmondani bármikor tudsz a <a href="{{ url_for('fiok') }}">Fiókom</a>
+  oldalon, és utána nem terhelünk többet. <strong>A már kifizetett, fel nem
+  használt órák a felmondás után (vagy ha a következő hónapot nem fizeted ki)
+  is megmaradnak</strong>, és mindegyik a saját 3 hónapos érvényességének a
+  végéig felhasználható. A számlát e-mailben küldjük.</p>
   <p>Ha árat változtatunk, arról <strong>legalább 30 nappal előbb</strong>
   e-mailben szólunk. Az új ár csak a következő megújulástól él, addig pedig
   felmondhatsz.</p>
