@@ -22,7 +22,10 @@ Utolsó frissítés: 2026-11-06
 2. ✔ KÉSZ (fix78): az STT is 429-et ad, ha elfogyott; hangos módból 3,5 mp után írásosra vált,
    a hangos mód gombja eltűnik. Próbaoldalon „🧪 Hangkeret: VAN/ELFOGYOTT” gomb a teszthez.
    Kiegészítés: az értesítés felső sávban jön (nem a lecke szövegének helyén), a 🔊 gombok
-   eltűnnek; a feladatok rövid hangjai (≤200 karakter, pl. „Meghallgatom”) mindig mennek.
+   a feladatok rövid hangjai (≤200 karakter, pl. „Meghallgatom”) mindig mennek.
+   fix79: a 🔊 NEM tűnik el: a már felolvasott üzenet (gyorstár, ingyen) újra szól, és az
+   elfogyás pillanatában soron lévő üzenet még egyszer elhangzik (session „hang_kegy”).
+   Leírva: ÁSZF 7. pont (HU+ES) és a sárga sávban.
    Fizetés után a hang AZONNAL visszajön: a program minden kérésnél a szülő aktuális
    csomagját nézi (a Stripe-webhook átírja a csomagot → a következő oldalbetöltéstől él).
    (Eredeti:) **Beszédfelismerés (STT) is álljon le**, ha a hangos idő elfogyott (most csak a

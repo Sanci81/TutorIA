@@ -1596,7 +1596,6 @@
   .dm .kk-torony{display:flex !important;flex-direction:column;align-items:center;gap:3px !important;padding:6px 6px !important;flex:none !important;border-radius:12px;background:#fff;border:2px solid #E2E8EE;cursor:pointer}
   .dm .kk-torony .kk-szam{font:900 18px Nunito,sans-serif;color:#22364B}
   .kk-torony:active{transform:translateY(2px)}
-  body.hang-elfogyott .bubble-replay-wrap{display:none}
 </style>
 {# A KOROSZTÁLY dönti el a felület stílusát. Egy hatévesnek nagy elemek
    és két mondat kell; egy nyolcadikosnak az, hogy NE nézzék óvodásnak.
@@ -2043,7 +2042,6 @@
        a feladatok saját rövid hangjai (szavak, „Meghallgatom”) maradnak. */
     function hangKeretJelez(szoveg) {
         try {
-            document.body.classList.add('hang-elfogyott');
             var regi = document.getElementById('hang-keret-jel');
             if (regi) { regi.remove(); }
             var d = document.createElement('div');
@@ -2063,13 +2061,27 @@
         } catch (e) {}
     }
 
+    var hangSavMutatva = false;
     function hangKeretVege(r) {
-        if (hangKeretElfogyott) return;
-        hangKeretElfogyott = true;
         /* Két oka lehet: a napi felolvasás fogyott el, vagy a csomag hangos
            ideje (pl. ingyenes próba: 30 perc). A szerver fejlécben jelzi. */
         var csomag = false;
         try { csomag = !!(r && r.headers && r.headers.get('X-Hang-Ok') === 'csomag'); } catch (e) {}
+        /* CSOMAG: a 🔊 nem tiltódik le a böngészőben – a már felolvasott
+           üzenetek (gyorstár) továbbra is szólnak, ezt a szerver dönti el.
+           A sávot csak egyszer mutatjuk. */
+        if (csomag) {
+            if (!hangSavMutatva) { hangSavMutatva = true; hangKeretJelez(L.voiceBudgetCsomag); }
+            if (chatMode === 'voice') {
+                var irasos0 = document.querySelector('a.chat-mode-toggle.chat-mode-chat');
+                if (irasos0 && irasos0.href) {
+                    setTimeout(function () { window.location.href = irasos0.href; }, 3500);
+                }
+            }
+            return;
+        }
+        if (hangKeretElfogyott) return;
+        hangKeretElfogyott = true;
         /* NEM buborékként: az új felületen a buborék a lecke szövegének
            helyére került volna, és eltüntette a magyarázatot. Külön sáv. */
         hangKeretJelez(csomag ? L.voiceBudgetCsomag : L.voiceBudgetSpent);
@@ -2249,7 +2261,7 @@
     };
 
     if (L.hangElfogyottBetolteskor) {
-        hangKeretElfogyott = true;
+        hangSavMutatva = true;
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function () { hangKeretJelez(L.voiceBudgetCsomag); });
         } else { hangKeretJelez(L.voiceBudgetCsomag); }

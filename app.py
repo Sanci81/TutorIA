@@ -16217,6 +16217,7 @@ def api_voice_speak():
         text, hang.MAX_KARAKTER_HANG if _hangos else hang.MAX_KARAKTER)
 
     _cid = None
+    _csomag_tiltva = False
     try:
         # A MENESZTŐ oldal az elsődleges: a böngészőből érkező child_id csak
         # tartalék. Így a keretet nem lehet másik gyerek nevére átterhelni.
@@ -16243,12 +16244,7 @@ def api_voice_speak():
         # meg. Ezek fillérek; a keret a tanító hosszú felolvasásait állítja le.
         try:
             if len((data.get("text") or "").strip()) > 200 and _hang_keret_elfogyott(_cid):
-                print(f"[TTS] child={_cid} a csomag hangos ideje elfogyott", flush=True)
-                r = jsonify({"error": "voice_budget_spent",
-                             "message": i18n.t("csomag_hang_elfogyott", g.lang)})
-                r.status_code = 429
-                r.headers["X-Hang-Ok"] = "csomag"
-                return r
+                _csomag_tiltva = True
         except Exception:
             app.logger.exception("A csomag hangos keretét nem sikerült ellenőrizni")
 
@@ -16269,8 +16265,25 @@ def api_voice_speak():
                          or os.path.join(app.root_path, "hangcache"))
     _kesz = _tar.olvas(text, _hangnev)
     if _kesz is not None:
+        # A MÁR FELOLVASOTT üzenet a gyorstárból jön, ingyen – ezt a hangos
+        # idő elfogyása után is meg lehet hallgatni a 🔊 gombbal.
         print(f"[TTS] gyorstarbol ({len(text)} karakter megsporolva)", flush=True)
         return Response(_kesz, mimetype="audio/mpeg")
+
+    # ELFOGYOTT A CSOMAG HANGOS IDEJE. Az elfogyás pillanatában éppen soron
+    # lévő (mostani) üzenet még EGYSZER elhangzik – utána csak a már
+    # felolvasottak (gyorstár) és a feladatok rövid hangjai szólnak.
+    if _csomag_tiltva:
+        if not session.get("hang_kegy"):
+            session["hang_kegy"] = True
+            print(f"[TTS] child={_cid} hangos ido elfogyott – a mostani uzenet meg elhangzik", flush=True)
+        else:
+            print(f"[TTS] child={_cid} a csomag hangos ideje elfogyott", flush=True)
+            r = jsonify({"error": "voice_budget_spent",
+                         "message": i18n.t("csomag_hang_elfogyott", g.lang)})
+            r.status_code = 429
+            r.headers["X-Hang-Ok"] = "csomag"
+            return r
 
     # MÉRÉS: csak azt számoljuk, amiért TÉNYLEG fizetünk.
     if _cid:
@@ -17551,6 +17564,7 @@ def teszt_hangkeret():
     if not PROBA_OLDAL:
         abort(404)
     session["teszt_hang_elfogyott"] = not session.get("teszt_hang_elfogyott")
+    session.pop("hang_kegy", None)       # újra lehessen tesztelni a „mostani még szól”-t
     return redirect(request.referrer or url_for("dashboard"))
 
 

@@ -1200,9 +1200,11 @@ TRANSLATIONS = {
     },
     "csomag_hang_elfogyott": {
         "hu": "Elfogyott a hangos idő – a tanító mostantól írásban folytatja. "
-              "A tanulás megy tovább!",
+              "A mostani üzenetet és a már felolvasottakat a 🔊 gombbal még "
+              "meghallgathatod.",
         "es": "Se ha acabado el tiempo con voz: el profesor sigue por escrito. "
-              "¡Seguimos aprendiendo!",
+              "El mensaje actual y los que ya se leyeron puedes escucharlos "
+              "aún con el botón 🔊.",
     },
     "csomag_hang_proba": {
         "hu": "Hangos tanítás: 30 perc, utána írásban",
