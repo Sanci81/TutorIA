@@ -353,7 +353,7 @@ def _biztonsagi_fejlecek(resp):
 # csak a be NEM jelentkezett látogatót – a szülők a saját fiókjukat nézik, az
 # nem érdeklődő. Sándor gépeit a „ne számolj” süti zárja ki (/nem-szamolj).
 # IP-t nem tárolunk: naponta cserélődő, visszafejthetetlen kódot (HMAC).
-_LATOGATAS_OLDALAK = {"index", "register", "csomagok", "csomagok_oldal", "gyik", "adatvedelem", "feltetelek",
+_LATOGATAS_OLDALAK = {"index", "register", "csomagok", "csomagok_oldal", "gyik", "adatvedelem", "feltetelek", "impresszum",
                       "blog", "blog_ai_tanulas", "login"}
 _NEM_SZAMOL_SUTI = "tutoria_nem_szamol"
 _ROBOT_UA = re.compile(
@@ -2021,6 +2021,11 @@ def _jogi_adatok() -> dict[str, str]:
     return {
         "uzemelteto": os.environ.get("UZEMELTETO", "Vigh Sándor"),
         "kapcsolat": os.environ.get("KAPCSOLAT_EMAIL", "info@tutoriacademia.com"),
+        # Impresszum: cím és adószám a fizetős indulás előtt. Railway
+        # változóval kell beállítani, kódot nem kell hozzá írni. Üresen az
+        # oldal azt írja: „a fizetős szolgáltatás indulása előtt közzétesszük”.
+        "uzemelteto_cim": os.environ.get("UZEMELTETO_CIM", "").strip(),
+        "uzemelteto_nif": os.environ.get("UZEMELTETO_NIF", "").strip(),
         # A Railway régiója MÉRT adat, nem tipp: a projekt beállításainál
         # "US West (California, USA)" áll. Ha egyszer EU-ba költözik az
         # adatbázis, elég ezt az egy sort átírni – vagy a RAILWAY_REGIO
@@ -2097,6 +2102,13 @@ def adatvedelem():
 @app.route("/feltetelek")
 def feltetelek():
     return render_template("feltetelek.html", **_jogi_adatok())
+
+
+@app.route("/impresszum")
+@app.route("/aviso-legal")
+def impresszum():
+    """Impresszum / Aviso legal (LSSI 10. cikk): ki üzemelteti az oldalt."""
+    return render_template("impresszum.html", **_jogi_adatok())
 
 
 @app.route("/gyik")

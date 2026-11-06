@@ -106,38 +106,44 @@ CSOMAGOK: dict[str, dict] = {
         "rejtett": True,
     },
 
+    # ── TERVEZETT BÉRLETEK (2026-11-06, Sándor döntése) ──
+    # Havi ÓRAKERET, 1 óra = 45 perc tanulás a TutorIA tanítójával, BÁRMELYIK
+    # tantárgyra. Még NEM vásárolható: a belépett szülő „tervezett árként”
+    # látja, és jelezheti, melyiket kérné. A kulcsok (alap/pro/max) maradtak,
+    # hogy a már leadott „Érdekel” jelzések és az admin lista ne vesszenek el.
+    # Számítás: TEENDOK.md „BÉRLET – PONTOSÍTVA”.
     "alap": {
-        "nev_hu": "Alap",
-        "nev_es": "Básico",
+        "nev_hu": "6 órás bérlet",
+        "nev_es": "Bono de 6 horas",
         "tantervek": (HU, ES),
-        "havi_perc": 400,         # napi ~13 perc
-        "hangos_perc": 400,
+        "havi_perc": 270,         # 6 × 45 perc – kb. egy tantárgy egész éves anyaga
+        "hangos_perc": 270,
         "profil": 3,
         "napi_jelentes": False,
-        "ar_honap": 14.90,
-        "ar_ev": 149.0,
+        "ar_honap": 15.90,
+        "ar_ev": 0.0,             # tanév-bérlet később
     },
     "pro": {
-        "nev_hu": "Pro",
-        "nev_es": "Pro",
+        "nev_hu": "10 órás bérlet",
+        "nev_es": "Bono de 10 horas",
         "tantervek": (HU, ES),
-        "havi_perc": 900,         # napi ~30 perc
-        "hangos_perc": 900,
+        "havi_perc": 450,         # 10 × 45 perc – kb. matek + magyar egész évre
+        "hangos_perc": 450,
         "profil": 5,
         "napi_jelentes": True,
-        "ar_honap": 24.90,
-        "ar_ev": 249.0,
+        "ar_honap": 26.90,
+        "ar_ev": 0.0,
     },
     "max": {
-        "nev_hu": "Max",
-        "nev_es": "Max",
+        "nev_hu": "18 órás bérlet",
+        "nev_es": "Bono de 18 horas",
         "tantervek": (HU, ES),
-        "havi_perc": 1800,        # napi ~60 perc
-        "hangos_perc": 1800,
+        "havi_perc": 810,         # 14 óra + 4 óra írásban ajándék = 18 × 45 perc
+        "hangos_perc": 630,       # ebből 14 óra lehet hangos
         "profil": 5,
         "napi_jelentes": True,
         "ar_honap": 39.90,
-        "ar_ev": 399.0,
+        "ar_ev": 0.0,
     },
 }
 

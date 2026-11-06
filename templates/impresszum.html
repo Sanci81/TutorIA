@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Aviso legal' if lang == 'es' else 'Impresszum' }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+{# IMPRESSZUM / AVISO LEGAL (2026-11-06). Spanyol LSSI 10. cikk: ki üzemelteti
+   az oldalt és hogyan érhető el. A cím és az adószám (NIF) a fizetős indulás
+   előtt kerül ide – kód nélkül, Railway változóval: UZEMELTETO_CIM, UZEMELTETO_NIF.
+   Amíg nincsenek beállítva, a „fizetős indulás előtt” mondat látszik. #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+<style>
+  .fp-imp .fp-alap{padding-top:0}
+  .imp{max-width:760px;margin:-56px auto 0;background:#fff;border-radius:26px;padding:30px 36px 34px;
+    box-shadow:0 2px 0 #F4EAD6,0 14px 30px rgba(22,58,46,.10);color:#163A2E;line-height:1.65}
+  .imp dl{display:grid;grid-template-columns:190px 1fr;gap:12px 20px;margin:0}
+  .imp dt{font-weight:800;color:#0E2A1E}
+  .imp dd{margin:0;color:#17604A}
+  .imp a{color:#167A5E;font-weight:700}
+  .imp .halk{color:#6b7280;font-size:.92rem}
+  .imp h2{color:#0E2A1E;font-size:1.15rem;margin:28px 0 8px;padding-left:12px;border-left:5px solid #F5A01E}
+  .imp p{margin:0 0 10px}
+  @media (max-width:640px){
+    .imp{padding:22px 18px 24px;border-radius:20px}
+    .imp dl{grid-template-columns:1fr;gap:2px}
+    .imp dd{margin-bottom:12px}
+  }
+</style>
+
+<div class="fo fp fp-imp">
+<section class="fp-sav">
+  <h1>{{ 'Aviso legal' if lang == 'es' else 'Impresszum' }}</h1>
+  <p>{{ "Quién está detrás de TutorIAcademia y cómo contactar." if lang == 'es'
+        else "Ki áll a TutorIAcademia mögött, és hogyan éred el." }}</p>
+</section>
+<section class="fp-alap">
+<div class="imp">
+{% if lang == 'es' %}
+  <dl>
+    <dt>Titular</dt><dd>{{ uzemelteto }} (persona física)</dd>
+    <dt>País</dt><dd>España</dd>
+    <dt>Sitio web</dt><dd>tutoriacademia.com (TutorIAcademia)</dd>
+    <dt>Contacto</dt><dd><a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a></dd>
+    <dt>Domicilio</dt><dd>{% if uzemelteto_cim %}{{ uzemelteto_cim }}{% else %}<span class="halk">Se publicará antes de que empiecen los servicios de pago.</span>{% endif %}</dd>
+    <dt>NIF</dt><dd>{% if uzemelteto_nif %}{{ uzemelteto_nif }}{% else %}<span class="halk">Se publicará antes de que empiecen los servicios de pago.</span>{% endif %}</dd>
+    <dt>Alojamiento</dt><dd>Railway Corporation – {{ railway_regio }}</dd>
+  </dl>
+  <h2>Situación actual</h2>
+  <p>TutorIAcademia está en periodo de prueba gratuito: por ahora no se vende
+     nada ni se cobra ningún importe.</p>
+  <h2>Profesor con inteligencia artificial</h2>
+  <p>El profesor de TutorIA es una inteligencia artificial y puede equivocarse.
+     Más información en las <a href="{{ url_for('feltetelek') }}">{{ t('terms_title') }}</a>
+     y en la <a href="{{ url_for('adatvedelem') }}">{{ t('privacy_title') }}</a>.</p>
+{% else %}
+  <dl>
+    <dt>Üzemeltető</dt><dd>{{ uzemelteto }} (magánszemély)</dd>
+    <dt>Ország</dt><dd>Spanyolország</dd>
+    <dt>Weboldal</dt><dd>tutoriacademia.com (TutorIAcademia)</dd>
+    <dt>Kapcsolat</dt><dd><a href="mailto:{{ kapcsolat }}">{{ kapcsolat }}</a></dd>
+    <dt>Cím</dt><dd>{% if uzemelteto_cim %}{{ uzemelteto_cim }}{% else %}<span class="halk">A fizetős szolgáltatás indulása előtt itt közzétesszük.</span>{% endif %}</dd>
+    <dt>Adószám (NIF)</dt><dd>{% if uzemelteto_nif %}{{ uzemelteto_nif }}{% else %}<span class="halk">A fizetős szolgáltatás indulása előtt itt közzétesszük.</span>{% endif %}</dd>
+    <dt>Tárhely</dt><dd>Railway Corporation – {{ railway_regio }}</dd>
+  </dl>
+  <h2>Jelenlegi állapot</h2>
+  <p>A TutorIAcademia ingyenes tesztidőszakban működik: jelenleg semmit nem
+     árusítunk, és semmilyen díjat nem szedünk.</p>
+  <h2>Mesterséges intelligencia tanító</h2>
+  <p>A TutorIA tanítója mesterséges intelligencia, és tévedhet. Részletek az
+     <a href="{{ url_for('feltetelek') }}">{{ t('terms_title') }}</a> és az
+     <a href="{{ url_for('adatvedelem') }}">{{ t('privacy_title') }}</a> oldalon.</p>
+{% endif %}
+</div>
+</section>
+</div>
+{% endblock %}

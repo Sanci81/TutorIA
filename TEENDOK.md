@@ -382,16 +382,85 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       prompt_cache_key. VISSZAÁLLÁS: Railway Variables GYORSITOTAR=0. Ellenőrzés: próbaóra
       után Railway napló „[CACHE]” sorai (ebbol_cache %); hang_teszt.py; rövid tanar_teszt.
 - [x] GYIK: a teszt-kérdés pontosítva a kód szerint (HU+ES): szintfelmérő 30 perc tanulás után,
-      max. 3 próba, 100% kell; leckezáró a lecke idejének letelte után, 70%, korlátlan.
+      max. 3 próba, 100% kell; leckezáró a lecke idejének letelte után: 70% fölött megnyílik
+      a következő lecke („Tovább” vagy „Még gyakorlok”), 70% alatt +60 perc tanulás, utána újra.
 - [ ] ÚJ CSOMAGÖTLET – ÓRA-BÉRLET (előre fizetett órák, 1 óra = 45 perc, pl. 3 hónapig érvényes):
       4 óra 13,90 € · 8 óra 24,90 € · 16 óra 44,90 € (≈1370 / 1230 / 1110 Ft/óra; magántanár
       ~6000 Ft). Haszon akkor is, ha MINDEN órát elhasznál: +5,8 / +9,6 / +15,6 € (55/51/46%).
       200 család, havi 1 bérlet (100/70/30): +1274 €/hó a fix költség után, akkor is, ha
       mindent elhasználnak → nem kell izgulni a használaton. Kényelmi lehetőség: automatikus
       havi megújítás.
+      FORINTBAN (2026-11-05, 395 Ft/€-val számolva, 27% ÁFA): 4 óra 5 490 Ft · 8 óra + 2 óra
+      írásban ajándék 9 490 Ft · 12 óra + 4 óra írásban 13 490 Ft · plusz 1 óra 1 490 Ft ·
+      TANÉV-BÉRLET 80 óra 84 900 Ft (szept.–jún.). Haszon, ha mind elfogy: +5,8 / +7,3 / +8,8 /
+      +1,5 / +71,7 €. Az írásos perc olcsóbb (1,79 c vs 2,57 c hangos). „Óra” = 45 perc tanulási
+      idő – a csomag oldalon és az ÁSZF-ben egyértelműen kiírni (nem élő tanár). Árfolyamkockázat:
+      a költség dollárban jön → évente felülvizsgálni az árakat (a megvett bérlet ára nem változik).
+      Házi feladat (fotó) később: ugyanabból az órakeretből.
+- [ ] !!! „ÓRA” A CSOMAGOKBAN – JOGI (Sándor kérte felírni): ha az órás/bérletes csomag lesz,
+      a csomagoldalon ÉS az ÁSZF-ben egyértelműen: „1 óra = 45 perc tanulási idő a TutorIA
+      (mesterséges intelligencia) tanítójával” – nem élő tanár. Az ÁSZF-et ehhez MÓDOSÍTANI kell.
+      Kérdés a jogi listára (Your Europe Advice): külföldi (spanyol) eladónál kötelező-e a
+      magyar vásárlónak forintban kiírni az árat.
+- [ ] PÉNZNEM: Sándor az EURÓT szeretné. Utánanézve (2026-11-05): Magyarországon az üzletekben a
+      forintos ár kötelező, a szolgáltatás díjára is – KIVÉVE a határon átnyúló szolgáltatást
+      (BFKH, Niveus). Mi spanyol szolgáltató vagyunk → valószínűleg elég az euró. Bizonyosság:
+      Your Europe Advice kérdés. Ha kell a „≈ Ft”, azt a program magától frissíti (EKB napi
+      árfolyam), kézzel senkinek nem kell. GYIK: egyes bankok átváltási díjat számolhatnak.
+- [x] DÖNTÉS (2026-11-06): Sándor elfogadta a BÉRLET modellt (6 / 10 / 18 órás, órakeret bármely
+      tárgyra, 1 óra = 45 perc, euróban, ≈ Ft tájékoztató).
+- [ ] JOGI BIZTONSÁG A TESZTIDŐSZAKBAN (Gemini figyelmeztetése alapján, 2026-11-06):
+      (1) Csomagoldal (Gemini + Meta + Claude egyetért, 2026-11-06): a NYILVÁNOS oldalon NINCS
+      ár – „Ingyenes tesztidőszak. A fizetős bérletek hamarosan indulnak.” A tervezett
+      árakat CSAK a belépett (regisztrált) szülő látja, „tervezett ár – még nem vásárolható”
+      jelöléssel + „Ennyiért kérném” (Érdekel) gomb → így mérjük, ki fizetne.
+      Döntési határidő: kb. 4–6 hét teszt, utána autónomo + fizetés, vagy változtatás.
+      (2) Impresszum / Aviso legal oldal (spanyol LSSI 10. cikk): név, e-mail, ország; az
+      adószám (NIF/NIE) és a cím legkésőbb az autónomo bejelentésekor.
+      ✔ KÉSZ (fix73, 2026-11-06): (1) csomagoldal – be nem lépve „Hamarosan”, ár a forrásban
+      sincs; belépve „Tervezett ár – még nem vásárolható” + „Ennyiért kérném” (a régi Érdekel
+      gomb, data-mer: „Csomag: X – ennyiért kérném”). (2) /impresszum és /aviso-legal + lábléc.
+      TEENDŐ az autónomo után: Railway változók UZEMELTETO_CIM és UZEMELTETO_NIF → az
+      impresszumon magától megjelenik (kód nem kell).
+- [ ] !!! FIZETÉS ELŐTT A KERET-MOTORT ÁT KELL ÍRNI: a csomagoldal már ÓRÁBAN mutatja a
+      bérletet és azt, hogy „a fel nem használt óra 3 hónapig megmarad” – a mostani program
+      viszont havi percet számol, és a maradék NEM vihető át (_havi_keret). Ugyanígy a
+      „18 órás” bérletnél a 4 írásos ajándékóra külön számolása. Stripe élesítés előtt kell.
+- [ ] REGISZTRÁCIÓS ŰRLAP (átnézve 2026-11-06, mobilon): 4 mező + pipa. Gyanús fékek:
+      a 4 jegyű szülői kód már a regisztrációnál (hosszú magyarázattal, mielőtt bármit látott),
+      és a „Jelszó megerősítése” (a szem ikon miatt fölösleges). Javaslat: kód az első
+      szülői oldal megnyitásakor kérjük, a megerősítő mező ki. Sándor döntésére vár.
+      Megjegyzés: 3 látogató túl kevés a biztos következtetéshez.
+      (3) Hirdetés mehet tovább, de CSAK az ingyenes tesztet hirdesse, ár nélkül.
+      (4) Autónomo: közvetlenül az első fizetős eladás (Stripe élesítés) ELŐTT; jelzés: ha
+      ~25 család megnyomta az „Érdekel”-t. Tarifa plana 80 €/hó jár. „Számlázó szövetkezet”
+      (cooperativa de facturación) NEM – Spanyolországban kockázatos/tiltott megoldásnak számít.
+- [ ] BÉRLET – PONTOSÍTVA (2026-11-05): hogy a lassabban haladó gyerek se maradjon le, ráhagyással:
+      Egy tantárgy 6 óra/hó 15,90 € (10 hónap = 60 óra ≥ matek max. ~45) · Fő tárgyak 10 óra
+      26,90 € (100 óra ≥ matek+magyar ~67–77) · Minden tárgy 14 + 4 írásos 39,90 € · plusz 1 óra
+      3,90 € · Tanév fő tárgyak 100 óra 229 €. Haszon, ha MIND elfogy, végig hangosan:
+      +5,0 / +8,8 / +10,9 / +59 €; ha végig írásban: +7,1 / +12,3 / +15,8 / +94 €.
+      A fel nem használt órák a bérlet lejártáig (3 hó) átvihetők a következő hónapra.
+      Fizetés EURÓBAN (Stripe), mellette „≈ Ft, tájékoztató” – a program az EKB napi
+      árfolyamával frissíti; a bevétel euróban marad → Sándornak nincs árfolyamkockázata.
+- [ ] CSOMAGOK: tantárgyanként NEM bontjuk – az órák bármelyik tárgyra mehetnek (a nevek csak
+      eligazítanak). Amíg nincs fizetés, a csomagoldalon jelezni: „az árak a fizetős indulásig
+      változhatnak” – így nem félrevezető, ha később változik.
+- [ ] MENNYI ÓRA KELL EGY TANÉVHEZ (a mi leckehosszainkból számolva, HU tanterv):
+      matek 1–2. o. ~39 óra · 3–4. ~45 · 5–6. ~36 · 7–8. ~22; magyar 1–2. ~28 · 3–4. ~32 ·
+      5–6. ~18 · 7–8. ~13; környezet 3. ~11 · 4. ~16; angol 5–8. ~36 óra/év (1 óra = 45 perc).
+      → Egy tárgy egész éve ≈ 4–5 óra/hó; matek+magyar ≈ 8–9 óra/hó (10 hónappal).
+      CÉL SZERINTI BÉRLET-JAVASLAT (EUR): Egy tárgy 5 óra 15,90 € · Fő tárgyak 9 óra 26,90 € ·
+      Minden tárgy 14 óra + 4 írásos ajándék 39,90 € · plusz 1 óra 3,90 € · Tanév „fő tárgyak”
+      90 óra 229 € · Tanév „minden” 140 óra 349 €. Haszon, ha MIND elfogy: +6,1 / +9,9 / +10,9 /
+      +1,6 / +70,9 / +105 €. (A gyakorlás/ismétlés miatt több idő is kellhet – mérni.)
 - [ ] TÉMAZÁRÓ-FELKÉSZÍTŐ (Sándor: a tanárnak specifikusan, okosan kell segítenie): a gyerek
       megadja a témazáró témáját/idejét → rövid felmérés, hol hiányos → célzott magyarázat
       és gyakorlás → próbadolgozat → értékelés a szülőnek. Megtervezni.
+      Ha a gyereknek EGYÁLTALÁN nem megy (Sándor): a tanár egy HASONLÓ példát végig megold és
+      elmagyaráz → az igazi feladatot lépésenként EGYÜTT oldják meg (a gyerek csinálja a
+      lépést, a tanár segít) → végül egy új, hasonló feladatot egyedül. Kész választ magyarázat
+      nélkül soha. Ugyanez a házi feladat segítőnél.
 - [x] Laptop: a kapszula-fejléc gyerek-munkamenetben a színes gyereksávot eltakarta → ott nincs
       kapszula (style.css :not(:has(.gymenu))).
       Sándor kérése: a TANÍTÁS MINŐSÉGE nem romolhat – minden megtakarítás csak tanar_teszt

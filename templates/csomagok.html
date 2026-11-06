@@ -4,9 +4,11 @@
 
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
-{# Az árak MINDENKINEK látszanak, belépés nélkül is: a szülő az árat akarja
-   megnézni, mielőtt regisztrál. A gyerek viszont soha nem látja ezt az
-   oldalt – neki nem adunk el semmit.
+{# ÁRAK (2026-11-06): amíg nincs fizetés, a NYILVÁNOS oldalon NINCS ár –
+   csak „hamarosan” és az ingyenes próba. A tervezett árat csak a belépett
+   szülő látja, „Tervezett ár – még nem vásárolható” jelöléssel és egy
+   „Ennyiért kérném” gombbal (ez méri, ki fizetne). Az ár be nem lépve a
+   forrásba sem kerül bele. A gyerek soha nem látja ezt az oldalt.
 
    A LAP KÉPE: minden csomag egy kilyukasztott füzetlap, margóvonallal, a
    tetején egy avatarral a saját készletünkből. Nem véletlen: ezt a gyerek
@@ -138,6 +140,12 @@
   .lap.ki .ar-alatt{color:#c8ded4}
   .megtakaritas{color:#166534;font-weight:800;font-size:.84rem;margin:2px 0 0;min-height:1.3em}
   .lap.ki .megtakaritas{color:#3ddc97}
+  /* „Tervezett ár – még nem vásárolható" / be nem lépve: „Hamarosan" */
+  .terv-cimke{display:inline-block;align-self:flex-start;font-size:.7rem;font-weight:800;
+              letter-spacing:.3px;text-transform:uppercase;color:#8a4b0d;background:#fdebc8;
+              border-radius:99px;padding:3px 10px;margin:0 0 8px}
+  .lap.ki .terv-cimke{background:rgba(255,255,255,.14);color:#ffd99a}
+  .ar.hamarosan{font-size:1.6rem;letter-spacing:-.5px}
 
   /* Az idő oszlopdiagramként – ránézésre látszik a különbség. */
   .ido{display:flex;align-items:flex-end;gap:3px;height:36px;margin:18px 0 6px}
@@ -239,7 +247,7 @@
 <div class="fo fp fp-csom">
 <section class="fp-sav">
   <h1>{{ t('csomag_oldal_cim') }}</h1>
-  <p>{{ t('csomag_oldal_bevezeto') }}</p>
+  <p>{{ t('csomag_oldal_bevezeto_belepve' if session.get('parent_id') else 'csomag_oldal_bevezeto') }}</p>
 </section>
 <section class="fp-alap">
 <div class="csom">
@@ -274,30 +282,17 @@
       </span>
       <h2>{{ cs.nev }}</h2>
 
-      {% if cs.fizetos %}
-        {# A havi/éves váltó MINDEN LAPON ott van, mert a szülő itt nézi az
-           árat. Alapból a HAVI szám áll elöl, mert azt érti meg azonnal;
-           az éves lehetőség alatta, konkrét megtakarítással. #}
-        <div class="ar-valto" role="group">
-          <button type="button" class="be" data-mod="honap" data-mer="Csomagok: havi ár">{{ t('csomag_havonta_gomb') }}</button>
-          <button type="button" data-mod="ev" data-mer="Csomagok: éves ár">{{ t('csomag_evente_gomb') }}</button>
-        </div>
-        <p class="ar" data-ar
-           data-honap="{{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €<small> / {{ t('csomag_ho') }}</small>"
-           data-ev="{{ cs.ar_ev|int }} €<small> / {{ t('csomag_ev') }}</small>">
-          {{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €<small> / {{ t('csomag_ho') }}</small></p>
-        <p class="ar-alatt" data-alatt
-           data-honap="{{ t('csomag_havi_alatt') }}"
-           data-ev="{{ t('csomag_eves_alatt') }} {{ '%.2f'|format(cs.ar_ev_havonta)|replace('.', ',') }} € / {{ t('csomag_ho') }}">
-          {{ t('csomag_havi_alatt') }}</p>
-        <p class="megtakaritas" data-megt
-           data-honap="{{ t('csomag_evesre_valtva') }} {{ ((cs.ar_honap * 12) - cs.ar_ev)|round(0)|int }} €"
-           data-ev="{{ t('csomag_megtakaritas') }}: {{ ((cs.ar_honap * 12) - cs.ar_ev)|round(0)|int }} € / {{ t('csomag_ev') }}">
-          {{ t('csomag_evesre_valtva') }} {{ ((cs.ar_honap * 12) - cs.ar_ev)|round(0)|int }} €</p>
+      {% if cs.fizetos and session.get('parent_id') %}
+        <span class="terv-cimke">{{ t('csomag_tervezett_ar') }}</span>
+        <p class="ar">{{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €<small> / {{ t('csomag_ho') }}</small></p>
+        <p class="ar-alatt">{{ t('csomag_havi_alatt') }}</p>
+      {% elif cs.fizetos %}
+        <span class="terv-cimke">{{ t('csomag_hamarosan_cimke') }}</span>
+        <p class="ar hamarosan">{{ t('csomag_hamarosan') }}</p>
+        <p class="ar-alatt">{{ t('csomag_ar_belepve') }}</p>
       {% else %}
         <p class="ar">{{ t('csomag_ingyen') }}</p>
         <p class="ar-alatt">{{ t('csomag_ingyen_alatt') }}</p>
-        <p class="megtakaritas"></p>
       {% endif %}
 
       {# Az idő oszlopdiagramként: a magasság a csomag percéből jön, a
@@ -312,16 +307,19 @@
         <p class="ido-szoveg">{{ cs.havi_perc }} {{ t('csomag_perc_egyszer') }}</p>
         <p class="ido-alatt">{{ t('csomag_nem_ujul') }}</p>
       {% else %}
-        <p class="ido-szoveg">{{ t('csomag_havonta') }} {{ cs.havi_perc }}
-           {{ t('csomag_perc_sima') }}</p>
-        <p class="ido-alatt">{{ t('csomag_kb_napi') }}
-           {{ (cs.havi_perc / 21.5)|round(0)|int }} {{ t('csomag_perc') }} ·
-           {{ t('csomag_kb_ora') }} {{ (cs.havi_perc / 4.3 / 45)|round(1) }}
-           {{ t('csomag_tanora') }}</p>
+        {# BÉRLET: órában (1 óra = 45 perc), bármelyik tantárgyra. #}
+        <p class="ido-szoveg">{{ t('csomag_havonta') }} {{ (cs.havi_perc / 45)|round(0)|int }}
+           {{ t('csomag_ora') }}</p>
+        <p class="ido-alatt">{{ t('csomag_ora_45') }}</p>
       {% endif %}
 
       <ul class="jellemzok">
-        {% if cs.hangos_perc >= cs.havi_perc %}
+        {% if cs.fizetos and cs.hangos_perc >= cs.havi_perc %}
+          <li>{{ t('csomag_hang_minden_ora') }}</li>
+        {% elif cs.fizetos %}
+          <li>{{ t('csomag_hang_ebbol') }} {{ (cs.hangos_perc / 45)|round(0)|int }} {{ t('csomag_ora') }} ·
+              {{ ((cs.havi_perc - cs.hangos_perc) / 45)|round(0)|int }} {{ t('csomag_ora_irasban') }}</li>
+        {% elif cs.hangos_perc >= cs.havi_perc %}
           <li>{{ t('csomag_hang_mind') }}</li>
         {% else %}
           <li>{{ t('csomag_hang_ebbol') }} {{ cs.hangos_perc }} {{ t('csomag_perc_sima') }}</li>
@@ -334,6 +332,7 @@
         {% endif %}
         {% if cs.fizetos %}
           <li>{{ t('csomag_kartyak') }}</li>
+          <li>{{ t('csomag_megmarad') }}</li>
         {% else %}
           <li class="nincs">{{ t('csomag_kartyak') }}</li>
         {% endif %}
@@ -354,11 +353,11 @@
         {% else %}
         <form method="post" action="{{ url_for('csomag_erdekel') }}">
           <input type="hidden" name="csomag" value="{{ cs.kulcs }}">
-          <button type="submit" class="gomb">{{ t('csomag_erdekel_gomb') }}</button>
+          <button type="submit" class="gomb" data-mer="Csomag: {{ cs.kulcs }} – ennyiért kérném">{{ t('csomag_erdekel_gomb') }}</button>
         </form>
         {% endif %}
       {% else %}
-        <a class="gomb" data-mer="Csomag: {{ cs.kulcs }} – regisztrálok" href="{{ url_for('register') }}">{{ t('csomag_regisztralok') }}</a>
+        <a class="gomb" data-mer="Csomag: {{ cs.kulcs }} – regisztrálok" href="{{ url_for('register') }}">{{ t('csomag_ingyen_gomb') }}</a>
       {% endif %}
     </div>
     {% endfor %}
@@ -414,28 +413,6 @@
 </div>
 
 <script>
-// ── Havi / éves váltó LAPONKÉNT ───────────────────────────────────────────
-// Az árakat a szerver írta a data- mezőkbe; itt csak átváltunk közöttük,
-// hogy a böngészőben ne legyen pénzügyi számolás, amit el lehet rontani.
-(function () {
-    document.querySelectorAll('.lap').forEach(function (lap) {
-        var gombok = lap.querySelectorAll('.ar-valto button');
-        if (!gombok.length) return;
-        var ar = lap.querySelector('[data-ar]');
-        var alatt = lap.querySelector('[data-alatt]');
-        var megt = lap.querySelector('[data-megt]');
-        gombok.forEach(function (g) {
-            g.addEventListener('click', function () {
-                var mod = g.dataset.mod;
-                gombok.forEach(function (x) { x.classList.toggle('be', x === g); });
-                if (ar) ar.innerHTML = ar.dataset[mod] || '';
-                if (alatt) alatt.textContent = alatt.dataset[mod] || '';
-                if (megt) megt.textContent = megt.dataset[mod] || '';
-            });
-        });
-    });
-})();
-
 // ── „Melyik csomag kell nekünk?" ──────────────────────────────────────────
 // Heti öt tanulónappal számolunk (≈ 21,5 nap havonta).
 (function () {
