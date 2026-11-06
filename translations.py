@@ -1196,6 +1196,8 @@ TRANSLATIONS = {
         "hu": "A fel nem használt óra 3 hónapig megmarad",
         "es": "Las horas no usadas se guardan 3 meses",
     },
+    "csomag_atvitt": {"hu": "ebből az előző hónapokból átjött",
+                      "es": "de ellos, pasados de meses anteriores"},
     "csomag_jelenlegi": {"hu": "A csomagod", "es": "Tu plan"},
     "csomag_ajanlott": {"hu": "Ezt ajánljuk", "es": "Recomendado"},
     "csomag_ho": {"hu": "hó", "es": "mes"},
@@ -1436,10 +1438,14 @@ TRANSLATIONS = {
                                "es": "¿Se puede cambiar o cancelar?"},
     "csomag_gyik_valtas": {
         "hu": "Bármikor, indoklás nélkül, hűségidő nélkül. Lemondás után a "
+              "már kifizetett hónap végéig minden megmaradt órát "
+              "felhasználhattok, az előző hónapokból átjötteket is. Utána a "
               "gyerekeid adatai és gyűjteményük megmaradnak – csak új óra nem "
               "indul.",
         "es": "Cuando quieras, sin explicaciones y sin permanencia. Al "
-              "cancelar, los datos y la colección de tus hijos siguen ahí; "
+              "cancelar, podéis usar todas las horas que os queden, también "
+              "las de meses anteriores, hasta el final del mes ya pagado. "
+              "Después, los datos y la colección de tus hijos siguen ahí; "
               "solo no se empiezan horas nuevas.",
     },
 

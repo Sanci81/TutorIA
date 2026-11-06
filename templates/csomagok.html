@@ -256,7 +256,7 @@
   <div class="sajat">
     {{ t('csomag_jelenlegi') }}: <b>{{ sajat_csomag_nev }}</b> —
     {{ t('csomag_elhasznalt') }}: <b>{{ keret.elhasznalt }}</b> / {{ keret.keret }}
-    {{ t('csomag_perc') }}.
+    {{ t('csomag_perc') }}{% if keret.atvitt %} ({{ t('csomag_atvitt') }}: {{ keret.atvitt|round(0)|int }} {{ t('csomag_perc') }}){% endif %}.
     {% if keret.egyszeri %}
       <span class="kiemelt-sor">{{ t('csomag_egyszeri_info') }}</span>
     {% elif keret.ujraindul %}

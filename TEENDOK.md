@@ -422,15 +422,26 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       gomb, data-mer: „Csomag: X – ennyiért kérném”). (2) /impresszum és /aviso-legal + lábléc.
       TEENDŐ az autónomo után: Railway változók UZEMELTETO_CIM és UZEMELTETO_NIF → az
       impresszumon magától megjelenik (kód nem kell).
-- [ ] !!! FIZETÉS ELŐTT A KERET-MOTORT ÁT KELL ÍRNI: a csomagoldal már ÓRÁBAN mutatja a
-      bérletet és azt, hogy „a fel nem használt óra 3 hónapig megmarad” – a mostani program
-      viszont havi percet számol, és a maradék NEM vihető át (_havi_keret). Ugyanígy a
-      „18 órás” bérletnél a 4 írásos ajándékóra külön számolása. Stripe élesítés előtt kell.
-- [ ] REGISZTRÁCIÓS ŰRLAP (átnézve 2026-11-06, mobilon): 4 mező + pipa. Gyanús fékek:
-      a 4 jegyű szülői kód már a regisztrációnál (hosszú magyarázattal, mielőtt bármit látott),
-      és a „Jelszó megerősítése” (a szem ikon miatt fölösleges). Javaslat: kód az első
-      szülői oldal megnyitásakor kérjük, a megerősítő mező ki. Sándor döntésére vár.
-      Megjegyzés: 3 látogató túl kevés a biztos következtetéshez.
+- [x] KÉSZ (fix74, 2026-11-06): A FEL NEM HASZNÁLT ÓRA 3 HÓNAPIG MEGMARAD (app.py _berlet_keret,
+      database.tanulasi_perc_naponta). Minden fordulónapon jár a havi keret; egy hónap órái a
+      vásárlás hónapja + 2 fordulóig élnek; mindig a legrégebbi óra fogy. A keret-elfogyott
+      levél is ezzel számol. Visszaállás: Railway BERLET_ATVITEL=0. Lemondás után a kifizetett
+      hónap végéig minden megmaradt óra használható (csomagoldal GYIK-ben leírva).
+      ÁSZF-be BE KELL ÍRNI fizetés előtt: 1 óra = 45 perc, 3 hónapos átvitel, mi lesz lemondáskor.
+      FIGYELEM: csomagváltáskor (Stripe) a csomag_kezdet-et újra kell indítani, mert a program a
+      MOSTANI csomag havi keretével számol visszamenőleg is.
+- [ ] !!! A HANGOS PERC KORLÁT NINCS BEKAPCSOLVA (app.py-ban sehol nem ellenőrzi): az ingyenes
+      próba „ebből 30 perc hangos” és a 18 órás „14 óra hangos + 4 írásban” most csak felirat –
+      a 120 perc mind lehet hangos. Csak a napi 30 000 karakteres hangkorlát él (hang.py).
+      Bekapcsolása a hangmódhoz nyúl → csak Sándor engedélyével.
+- [ ] HIRDETÉS-ADAT (2026-11-04–06): 148 hirdetésből jött látogató, átlag 6 mp a főoldalon,
+      2 jutott a regisztrációig, 0 regisztrált. A gond a hirdetés és a főoldal között van, nem
+      az űrlapon. Teendő: új hirdetéssorozat kézi elhelyezéssel (csak Facebook + Instagram
+      hírfolyam/Reels, Audience Network NÉLKÜL), a régi leállítva. A videóban (tutoria_reel_4x5.mp4)
+      nincs hangsáv – érdemes zenét tenni alá. A jelszó-megerősítés és a 4 jegyű kód MARAD
+      (Sándor döntése).
+- [x] REGISZTRÁCIÓS ŰRLAP átnézve (2026-11-06): Sándor döntése – a jelszó kétszer és a 4 jegyű
+      szülői kód marad. A fő gond, hogy el sem jutnak az űrlapig (lásd HIRDETÉS-ADAT).
       (3) Hirdetés mehet tovább, de CSAK az ingyenes tesztet hirdesse, ár nélkül.
       (4) Autónomo: közvetlenül az első fizetős eladás (Stripe élesítés) ELŐTT; jelzés: ha
       ~25 család megnyomta az „Érdekel”-t. Tarifa plana 80 €/hó jár. „Számlázó szövetkezet”

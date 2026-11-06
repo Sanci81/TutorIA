@@ -75,7 +75,8 @@
        itt nem írjuk ki, a szülő azt hiszi, mind a 120 perc beszélhető. #}
     <p class="adat"><b>{{ keret.csomag_nev }}</b> — {{ keret.keret }} {{ t('csomag_havi_perc') }}{%
       if keret.hangos and keret.hangos < keret.keret %} · {{ t('csomag_hang_ebbol') }}
-      <b>{{ keret.hangos }}</b> {{ t('csomag_perc') }}{% endif %}</p>
+      <b>{{ keret.hangos }}</b> {{ t('csomag_perc') }}{% endif %}{%
+      if keret.atvitt %} · {{ t('csomag_atvitt') }}: <b>{{ keret.atvitt|round(0)|int }}</b> {{ t('csomag_perc') }}{% endif %}</p>
     <div class="keret-sav" aria-hidden="true">
       <span style="width: {{ ((keret.elhasznalt / keret.keret * 100) if keret.keret else 0)|round(0, 'floor') }}%"></span>
     </div>

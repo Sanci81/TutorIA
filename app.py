@@ -16776,6 +16776,50 @@ def _kovetkezo_ho_elseje(mai: date | None = None) -> date:
                 1 if ma.month == 12 else ma.month + 1, 1)
 
 
+# ── BÉRLET: A FEL NEM HASZNÁLT ÓRA 3 HÓNAPIG MEGMARAD (2026-11-06) ───────────
+# Minden fordulónapon jár a bérlet havi órakerete. Ami egy hónapban
+# megmarad, az átmegy a következőbe, de egy hónap órái legfeljebb
+# 3 fordulóig élnek (a vásárlás hónapja + a következő kettő). A fogyasztás
+# mindig a LEGRÉGEBBI még élő órákból vesz el, hogy a szülő ne veszítsen.
+# Visszaállás: BERLET_ATVITEL=0 (Railway) → a régi, át nem vihető havi keret.
+BERLET_ERVENYES_HONAP = 3
+BERLET_ATVITEL = os.environ.get("BERLET_ATVITEL", "1").strip().lower() not in (
+    "0", "false", "nem", "ki")
+
+
+def _berlet_keret(pid: int, havi: float, kezdet: date, ma: date) -> dict:
+    """Az átvitt órákkal együtt számolt keret a MOSTANI fordulóban.
+
+    Vissza: keret (a forduló elején elérhető összes perc), elhasznalt (ebben
+    a fordulóban), atvitt (ebből az előző hónapokból jött perc).
+    """
+    ciklusok = []
+    forduló = kezdet
+    while forduló <= ma:
+        kov = _honapot_lep(forduló)
+        ciklusok.append((forduló, kov))
+        forduló = kov
+    if not ciklusok:
+        return {"keret": havi, "elhasznalt": 0.0, "atvitt": 0.0}
+    naponta = database.tanulasi_perc_naponta(pid, kezdet, ma)
+    elo: list[list[float]] = []            # [maradt perc, utolsó forduló sorszáma]
+    elhasznalt = atvitt = 0.0
+    for i, (tol, kov) in enumerate(ciklusok):
+        elo = [x for x in elo if x[1] >= i and x[0] > 0]
+        atvitt = sum(x[0] for x in elo)
+        elo.append([float(havi), i + BERLET_ERVENYES_HONAP - 1])
+        elhasznalt = sum(m for d, m in naponta.items() if tol <= d < kov)
+        maradek = elhasznalt
+        for x in elo:                       # a legrégebbi órák fogynak először
+            levon = min(x[0], maradek)
+            x[0] -= levon
+            maradek -= levon
+            if maradek <= 0:
+                break
+    return {"keret": float(havi) + atvitt, "elhasznalt": elhasznalt,
+            "atvitt": atvitt}
+
+
 def _havi_keret() -> dict:
     """Mennyi tanulási perc fogyott el, mennyi jár, és mikor indul újra.
 
@@ -16792,6 +16836,7 @@ def _havi_keret() -> dict:
     kezdet = szulo.get("csomag_kezdet")
 
     ujraindul = None
+    atvitt = 0.0
     try:
         if not pid:
             elhasznalt = 0.0
@@ -16801,7 +16846,12 @@ def _havi_keret() -> dict:
         elif kezdet:
             # Van előfizetés: a FORDULÓNAPHOZ igazodunk, nem elsejéhez.
             tol, ujraindul = _elofizetesi_ciklus(kezdet, ma)
-            elhasznalt = database.tanulasi_perc_kozott(pid, tol, ma)
+            if BERLET_ATVITEL and kezdet <= ma:
+                # Bérlet: a fel nem használt óra 3 hónapig átvihető.
+                b = _berlet_keret(pid, keret, kezdet, ma)
+                keret, elhasznalt, atvitt = b["keret"], b["elhasznalt"], b["atvitt"]
+            else:
+                elhasznalt = database.tanulasi_perc_kozott(pid, tol, ma)
         else:
             # Tesztidőszak: nincs fizetés, tehát nincs fordulónap sem.
             elhasznalt = database.havi_tanulasi_perc(pid, ma.year, ma.month)
@@ -16813,11 +16863,13 @@ def _havi_keret() -> dict:
     return {
         "csomag": kulcs,
         "csomag_nev": csomagok.nev(kulcs, g.lang if hasattr(g, "lang") else "hu"),
-        "keret": keret,
+        "keret": int(round(keret)),
         "hangos": csomagok.hangos_perc(kulcs),
         "elhasznalt": round(elhasznalt, 1),
         "maradek": max(0.0, round(keret - elhasznalt, 1)),
         "elfogyott": elhasznalt >= keret,
+        # Ennyi perc jött át az előző hónapokból (csak bérletnél).
+        "atvitt": round(atvitt, 1),
         # Egyszeri próbánál nincs újraindulás – ezt a sablon is így mutatja.
         "egyszeri": egyszeri,
         "ujraindul": None if egyszeri else ujraindul,
@@ -17926,6 +17978,13 @@ def _keret_ertesito_kor() -> None:
             continue                       # lejárt csomag: külön levél való rá
         egyszeri = csomagok.egyszeri(kulcs)
         elhasznalt = sz["perc_ossz"] if egyszeri else sz["perc_ho"]
+        # Bérletnél az átvitt órák is számítanak – különben szólnánk, hogy
+        # elfogyott, pedig van még az előző hónapokból.
+        kezdet = sz.get("csomag_kezdet")
+        if (not egyszeri and kezdet and BERLET_ATVITEL and kezdet <= ma
+                and kulcs != csomagok.LEJART):
+            b = _berlet_keret(sz["id"], keret, kezdet, ma)
+            keret, elhasznalt = b["keret"], b["elhasznalt"]
         if elhasznalt < keret:
             continue
         mikor = sz.get("keret_ertesitve")

@@ -750,6 +750,7 @@ def szulok_keret_allapota() -> list[dict]:
                 "email": p.email,
                 "csomag": (p.csomag or "").strip(),
                 "csomag_lejar": p.csomag_lejar,
+                "csomag_kezdet": p.csomag_kezdet,
                 "keret_ertesitve": p.keret_ertesitve,
                 "perc_ossz": round(perc_ossz.get(p.id, 0.0), 1),
                 "perc_ho": round(perc_ho.get(p.id, 0.0), 1),
@@ -922,6 +923,31 @@ def tanulasi_perc_kozott(parent_id: int, tol: date, ig: date) -> float:
     except Exception:                                      # pragma: no cover
         logger.exception("tanulasi_perc_kozott(): nem sikerült lekérni")
         return 0.0
+    finally:
+        db.close()
+
+
+def tanulasi_perc_naponta(parent_id: int, tol: date, ig: date) -> dict[date, float]:
+    """A szülő gyerekeinek tanulási perce NAPONKÉNT, két dátum között
+    (mindkettő beleértve) – EGY lekérdezéssel. A bérlet átvitt óráihoz kell:
+    abból számoljuk ki fordulónként, mennyi fogyott (_bérlet_keret)."""
+    db = _session()
+    try:
+        gyerekek = db.scalars(
+            select(Child.id).where(Child.parent_id == parent_id)).all()
+        if not gyerekek:
+            return {}
+        sorok = db.execute(
+            select(ChildLearningTime.date,
+                   func.coalesce(func.sum(ChildLearningTime.minutes), 0))
+            .where(ChildLearningTime.child_id.in_(gyerekek))
+            .where(ChildLearningTime.date >= tol)
+            .where(ChildLearningTime.date <= ig)
+            .group_by(ChildLearningTime.date)).all()
+        return {d: float(m or 0.0) for d, m in sorok}
+    except Exception:                                      # pragma: no cover
+        logger.exception("tanulasi_perc_naponta(): nem sikerült lekérni")
+        return {}
     finally:
         db.close()
 
