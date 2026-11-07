@@ -309,7 +309,7 @@
       {% else %}
         {# BÉRLET: órában (1 óra = 45 perc), bármelyik tantárgyra. #}
         <p class="ido-szoveg">{{ t('csomag_havonta') }} {{ (cs.havi_perc / 45)|round(0)|int }}
-           {{ t('csomag_ora') }}</p>
+           {{ t('csomag_ora') }} <span style="font-weight:600;opacity:.75">· {{ cs.havi_perc }} {{ t('csomag_perc') }}</span></p>
         <p class="ido-alatt">{{ t('csomag_ora_45') }}</p>
       {% endif %}
 
