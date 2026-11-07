@@ -164,6 +164,8 @@ class Parent(Base):
     emlekezteto_kuldve: Mapped[date | None] = mapped_column(Date, nullable=True)
     # Külön leiratkozás CSAK az emlékeztetőről – a heti jelentés marad.
     emlekezteto_ki: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
+    # MEGÚJÍTÁSI ÉRTESÍTŐ (Ley 10/2025): melyik fordulónapról szóltunk már.
+    megujitas_ertesitve: Mapped[date | None] = mapped_column(Date, nullable=True)
     # Mikor ment ki neki az indulás-levél. Amíg üres, még nem kapott.
     # Ez akadályozza meg, hogy bárki kétszer kapja meg ugyanazt.
     erdeklodes_ertesitve: Mapped[date | None] = mapped_column(Date, nullable=True)
@@ -779,6 +781,7 @@ def szulok_keret_allapota() -> list[dict]:
                 "emlekezteto_szam": int(p.emlekezteto_szam or 0),
                 "emlekezteto_kuldve": p.emlekezteto_kuldve,
                 "emlekezteto_ki": bool(p.emlekezteto_ki),
+                "megujitas_ertesitve": p.megujitas_ertesitve,
                 # Ha a családnak CSAK spanyol tantervű gyereke van, spanyolul írunk.
                 "nyelv": "es" if tant == {"ES"} else "hu",
             })
@@ -822,6 +825,24 @@ def emlekezteto_ki_allit(parent_id: int, ki: bool) -> bool:
     except Exception:                                      # pragma: no cover
         db.rollback()
         logger.exception("emlekezteto_ki_allit(%s)", parent_id)
+        return False
+    finally:
+        db.close()
+
+
+def megujitas_ertesitve_jelol(parent_id: int, fordulo: date) -> bool:
+    """Erről a fordulónapról szóltunk (így egyszer megy ki fordulónként)."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if not p:
+            return False
+        p.megujitas_ertesitve = fordulo
+        db.commit()
+        return True
+    except Exception:                                      # pragma: no cover
+        db.rollback()
+        logger.exception("megujitas_ertesitve_jelol(%s)", parent_id)
         return False
     finally:
         db.close()
@@ -1280,6 +1301,7 @@ def ensure_parents_ertesites_columns() -> None:
         "ALTER TABLE parents ADD COLUMN IF NOT EXISTS emlekezteto_szam INTEGER",
         "ALTER TABLE parents ADD COLUMN IF NOT EXISTS emlekezteto_kuldve DATE",
         "ALTER TABLE parents ADD COLUMN IF NOT EXISTS emlekezteto_ki BOOLEAN",
+        "ALTER TABLE parents ADD COLUMN IF NOT EXISTS megujitas_ertesitve DATE",
     ):
         try:
             with _get_engine().begin() as conn:

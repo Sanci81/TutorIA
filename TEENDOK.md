@@ -63,6 +63,11 @@ Utolsó frissítés: 2026-11-06
      mi levelet küldünk („nem sikerült a levonás – frissítsd a kártyát: link”). Ha végleg nem
      sikerül: csomag_lejar = a kifizetett időszak vége (a megmaradt órák a saját 3 hónapjukig
      élnek).
+   - ✔ ELŐKÉSZÍTVE (fix84): _megujitas_kor + _megujitas_level – 16 nappal a fordulónap előtt,
+     fordulónként egyszer (parents.megujitas_ertesitve), csak ha FIZETES_ELERHETO. ÁSZF 7. pontba
+     beírva (HU+ES). HÁTRA a Stripe-nál: a „MEGÚJÍTÁS LEMONDÁSA” gomb most a Fiókom oldalra
+     visz → ott kell egy egykattintásos lemondás (Stripe Customer Portal vagy saját gomb),
+     ami a csomag_lejar-t a fordulónapra állítja. Próbaoldalon: „🧪 Megújítási értesítő mintája”.
    - ‼️ KÖTELEZŐ ÉRTESÍTÉS MINDEN LEVONÁS ELŐTT: spanyol Ley 10/2025 (Ley de servicios de
      atención a la clientela, BOE 2025.12.27; TRLGDCU 97.1 p) módosítása): az automatikusan
      megújuló szerződésnél a megújítási díj levonása előtt LEGALÁBB 15 NAPPAL értesíteni kell,
@@ -80,6 +85,9 @@ Utolsó frissítés: 2026-11-06
     2. levél, több nincs; újra tanulás nullázza; 90 napnál régebben tétlennek nem; leiratkozott,
     admin, elfogyott próba, lejárt bérlet: nem. Napközben, óránként egyszer (háttérszál,
     MENTES_DIR kell). Visszaállás: EMLEKEZTETO=0. Adatvédelmi tájékoztató 3. pont kiegészítve.
+    fix84: a táblán felirat (HU „Várlak!”, ES „¡Te espero!”) – static/email/tanito_hu.gif és
+    tanito_es.gif; a régi tanito.gif már nem kell (törölhető). Gyerek neve mező: „Keresztnév
+    vagy becenév” (adattakarékosság, egyezik az adatvédelmi tájékoztatóval).
     fix83: Duolingo-szerű HTML levél (nagy zöld gomb, mozgó zsiráf-tanító GIF:
     static/email/tanito.gif ~850 KB a veo_nyito_1.mp4-ből, narancs doboz a maradék idővel),
     a tanító szól; név csak ha a szülő egy szót írt be; gyerek nélkül „Már csak egy lépés”;

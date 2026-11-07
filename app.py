@@ -2786,6 +2786,21 @@ def teszt_emlekezteto():
     return redirect(url_for("fiok"))
 
 
+@app.route("/teszt/megujitas", methods=["POST"])
+@login_required
+def teszt_megujitas():
+    """CSAK A PRÓBAOLDALON: a megújítási értesítő MINTÁJA a belépett szülőnek
+    (6 órás bérlettel, 16 nap múlva esedékes levonással)."""
+    if not PROBA_OLDAL:
+        abort(404)
+    szulo = database.get_parent_by_id(session["parent_id"]) or {}
+    ok = _megujitas_level(szulo.get("email") or "", g.lang, csomagok.nev("alap", g.lang),
+                          csomagok.ar("alap"), date.today() + timedelta(days=16),
+                          request.host_url.rstrip("/") + "/fiok")
+    flash("Megújítási minta " + ("elküldve" if ok else "NEM ment ki"), "success" if ok else "error")
+    return redirect(url_for("fiok"))
+
+
 @app.route("/feladat/ertesites")
 def feladat_ertesites():
     """A napi futtatás: kinek jár ma jelentés. Railway Cron hívja.
@@ -18260,7 +18275,7 @@ def _emlekezteto_level(cimzett: str, nyelv: str, hanyadik: int, leiratkozo: str,
     gyerek felvéve, arra biztat. Nevet csak biztos keresztnévnél ír."""
     alap = (alap or _oldal_url("/")).rstrip("/")
     folytat = folytat or (alap + "/dashboard")
-    kep = alap + "/static/email/tanito.gif"
+    kep = alap + ("/static/email/tanito_es.gif" if nyelv == "es" else "/static/email/tanito_hu.gif")
     from markupsafe import escape as e
     perc = int(max(0, round(maradek_perc)))
     ora = str(round(perc / 45.0, 1)).replace(".", ",")
@@ -18390,6 +18405,90 @@ def _emlekezteto_kor() -> None:
             app.logger.exception("Emlékeztető hiba (szülő %s)", sz.get("id"))
 
 
+# ── MEGÚJÍTÁSI ÉRTESÍTŐ (spanyol Ley 10/2025 – TRLGDCU 97.1 p) ──────────────
+# Automatikusan megújuló bérletnél MINDEN levonás előtt legalább 15 nappal
+# értesíteni kell: összeg, nap, mi történik, ha nem mondja le, és hogyan
+# mondhatja le. Mi 16 nappal előtte küldjük (biztonsági ráhagyás).
+# CSAK AKKOR FUT, HA A FIZETÉS ÉL (FIZETES_ELERHETO) – addig nincs levonás.
+MEGUJITAS_ELORE_NAP = 16
+
+
+def _megujitas_level(cimzett: str, nyelv: str, csomag_nev: str, osszeg: float,
+                     datum: date, lemondas_url: str, alap: str = "") -> bool:
+    from markupsafe import escape as e
+    jogi = _jogi_adatok()
+    ar = f"{osszeg:.2f}".replace(".", ",") + " €"
+    if nyelv == "es":
+        nap = datum.strftime("%d/%m/%Y")
+        targy = f"Tu bono de TutorIA se renueva el {nap} ({ar})"
+        sorok = [f"Tu {csomag_nev} se renueva automáticamente el {nap}, y ese día "
+                 f"cobraremos {ar} en la tarjeta indicada.",
+                 "Si queréis seguir, no tienes que hacer nada.",
+                 "Si no quieres renovar, cancélalo antes de esa fecha con un clic. "
+                 "Después de cancelar no cobraremos nada más, y las horas ya pagadas "
+                 "pueden usarse hasta el final de sus 3 meses de validez."]
+        gomb, lab = "CANCELAR LA RENOVACIÓN", (
+            "Este aviso es obligatorio por ley antes de cada renovación (Ley 10/2025).<br>"
+            f'TutorIAcademia · {e(jogi["uzemelteto"])} · España · {e(jogi["kapcsolat"])}')
+    else:
+        nap = datum.strftime("%Y. %m. %d.")
+        targy = f"A TutorIA bérleted {nap} megújul ({ar})"
+        sorok = [f"A(z) {csomag_nev} {nap} napon automatikusan megújul, és aznap "
+                 f"{ar} összeget vonunk le a megadott kártyádról.",
+                 "Ha folytatnátok, nincs teendőd.",
+                 "Ha nem szeretnéd megújítani, mondd le előtte egy kattintással. "
+                 "Lemondás után nem vonunk le többet, a már kifizetett órák pedig a "
+                 "saját 3 hónapos érvényességük végéig felhasználhatók."]
+        gomb, lab = "MEGÚJÍTÁS LEMONDÁSA", (
+            "Ezt az értesítést jogszabály írja elő minden megújítás előtt (spanyol Ley 10/2025).<br>"
+            f'TutorIAcademia · {e(jogi["uzemelteto"])} · Spanyolország · {e(jogi["kapcsolat"])}')
+    html = (
+        '<!doctype html><html><body style="margin:0;background:#f6f6f6">'
+        '<table role="presentation" width="100%" cellspacing="0" cellpadding="0"><tr><td align="center" style="padding:20px 10px">'
+        '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#fff;border-radius:20px">'
+        '<tr><td align="center" style="padding:26px 24px 10px;font:800 24px Arial,sans-serif;color:#17604A">'
+        'Tutor<span style="color:#F5A01E">IA</span>cademia</td></tr>'
+        f'<tr><td style="padding:10px 32px;font:800 22px Arial,sans-serif;color:#3c3c3c">{e(targy)}</td></tr>'
+        + "".join(f'<tr><td style="padding:6px 32px;font:16px/1.6 Arial,sans-serif;color:#444">{e(x)}</td></tr>' for x in sorok)
+        + f'<tr><td align="center" style="padding:20px 24px 26px"><a href="{e(lemondas_url)}" '
+        'style="display:inline-block;background:#ffffff;color:#B42318;text-decoration:none;border:2px solid #B42318;'
+        f'font:800 16px Arial,sans-serif;padding:12px 28px;border-radius:12px">{e(gomb)}</a></td></tr>'
+        f'<tr><td align="center" style="padding:16px 30px 26px;border-top:1px solid #eee;font:12px/1.6 Arial,sans-serif;color:#9a9a9a">{lab}</td></tr>'
+        '</table></td></tr></table></body></html>')
+    szoveg = targy + "\n\n" + "\n\n".join(sorok) + f"\n\n{gomb}: {lemondas_url}\n\nTutorIA"
+    return _level_kuld(cimzett, targy, szoveg, html=html)
+
+
+def _megujitas_kor() -> None:
+    """Akinek 16 napon belül megújul a bérlete, annak szól (fordulónként egyszer)."""
+    if not FIZETES_ELERHETO or not _mail_is_configured():
+        return
+    ma = date.today()
+    for sz in database.szulok_keret_allapota():
+        try:
+            kulcs = (sz.get("csomag") or "").strip()
+            kezdet = sz.get("csomag_kezdet")
+            if not kulcs or not kezdet or not csomagok.fizetos(kulcs) or csomagok.egyszeri(kulcs):
+                continue
+            if (sz.get("email") or "").strip().lower() in _admin_cimek():
+                continue
+            _tol, fordulo = _elofizetesi_ciklus(kezdet, ma)
+            lejar = sz.get("csomag_lejar")
+            if lejar and lejar <= fordulo:
+                continue                     # lemondta / lejár: nem újul meg
+            if (fordulo - ma).days > MEGUJITAS_ELORE_NAP or sz.get("megujitas_ertesitve") == fordulo:
+                continue
+            if (fordulo - ma).days < 15:
+                app.logger.warning("Megujitasi ertesito KESVE (%s nap): %s", (fordulo - ma).days, sz["email"])
+            nyelv = sz.get("nyelv") or "hu"
+            if _megujitas_level(sz["email"], nyelv, csomagok.nev(kulcs, nyelv),
+                                csomagok.ar(kulcs), fordulo, _oldal_url("/fiok")):
+                database.megujitas_ertesitve_jelol(sz["id"], fordulo)
+                app.logger.warning("Megujitasi ertesito kiment: %s (%s)", sz["email"], fordulo)
+        except Exception:                                  # pragma: no cover
+            app.logger.exception("Megújítási értesítő hiba (szülő %s)", sz.get("id"))
+
+
 def _keret_ertesito_kor() -> None:
     """Végignézi a szülőket, és akinek elfogyott a kerete, annak szól."""
     if not _mail_is_configured():
@@ -18454,6 +18553,12 @@ def _mentes_szal_indit() -> None:
                 app.logger.exception("A keret-értesítő hibára futott")
             # Emlékeztető: napközben (kb. 9–20 óra Spanyolországban és
             # Magyarországon), óránként legfeljebb egyszer nézzük.
+            try:
+                if 8 <= datetime.now(timezone.utc).hour <= 18 and _munka_zar("megujitas", 3600):
+                    with app.app_context():
+                        _megujitas_kor()
+            except Exception:                              # pragma: no cover
+                app.logger.exception("A megújítási értesítő hibára futott")
             try:
                 if 8 <= datetime.now(timezone.utc).hour <= 18 and _munka_zar("emlekezteto", 3600):
                     with app.app_context():

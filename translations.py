@@ -108,7 +108,9 @@ TRANSLATIONS = {
         "hu": "Add meg gyermeked adatait.",
         "es": "Introduce los datos de tu hijo/a.",
     },
-    "label_child_name": {"hu": "Név", "es": "Nombre"},
+    # ADATTAKARÉKOSSÁG (GDPR 5. cikk): csak keresztnév vagy becenév kell –
+    # az adatvédelmi tájékoztató is ezt írja. Vezetéknév nem kell.
+    "label_child_name": {"hu": "Keresztnév vagy becenév", "es": "Nombre de pila o apodo"},
     "label_child_birth_date": {
         "hu": "Születési dátum",
         "es": "Fecha de nacimiento",
