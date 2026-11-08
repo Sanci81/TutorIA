@@ -7,6 +7,35 @@ Utolsó frissítés: 2026-11-06
 
 ---
 
+## TANÍTÓ FEJLESZTÉSE (2026-11-08)
+- [ ] fix87: öt szabály a tanítónak (leragadás max. 2 azonos feladat, mindig kérdéssel zár,
+      a válasz ne álljon a kérdés előtt, eszközre csak <FELADAT>-tal hivatkozik – a csoport és a
+      robot felület MEGVAN, csak nem használta –, helyesírás). Kapcsoló: TANAR_JAVITAS
+      (próbaoldalon magától be, élesen csak TANAR_JAVITAS=1). Mérés: tanar_teszt.py
+      TANAR_JAVITAS=1-gyel, összevetés a 11-03-i jelentéssel (ugyanaz a véletlen sorrend, seed).
+      Ha jobb: Railway főoldal TANAR_JAVITAS=1.
+- [ ] fix87 MÉRÉS (11-08, gpt-5.4-mini, TANAR_JAVITAS=1): biztos hiba 12 → 9; nincs kérdés 8 → 1;
+      leragadás (biztos) 7 → 0; ígért-de-hiányzó 2 → 0; DE „kérdésben a válasz” 2 → 3 és
+      magyartalan 1 → 3. VIGYÁZAT: a 11-03-i mérés gpt-6-luna-val ment, ez gpt-5.4-mini-vel
+      (az éles modell) – nem teljesen összevethető. fix88: a 3. és 5. szabály erősítve.
+      Teszt ára gpt-5.4-mini-vel kb. 0,95 $ / futás (nem 0,12).
+- [ ] FEJLESZTÉSI LISTA (Sándor kérte felírni, 2026-11-08):
+      • Tanító folyamatos fejlesztése: tanar_teszt → javítás → újramérés (mindig ugyanazzal
+        a modellel, TANAR_JAVITAS=0 és =1 összevetve).
+      • Hetente új feladattípusok, MINDKÉT oldalra (HU+ES), Feladat-próba keresőnévvel.
+      • Témazáró-felkészítő: tantárgy + témakörök + dátum → felmérés → gyakorlás a módszerrel
+        → próbadolgozat; később füzetfotó-feltöltés (adatvédelmi kiegészítés + feldolgozás
+        utáni törlés kell).
+      • Házifeladat-segítő (külön menü, később).
+      • Napi 10 perces „küldetés” sorozattal (széria, mint Duolingo).
+      • Új reklámvideó (lent) + heti 2–3 Facebook-poszt (szöveg + kép).
+      • Spanyol oldal teljes átnézése (Claude), utána spanyol anyanyelvű szülő olvassa át.
+      • Statisztika: robot-gyanús látogatók KÜLÖN soron (nem kiszűrve, csak látni).
+      • Visszajelzés: szülői FB-csoportban 5 család egy hónap ingyen, cserébe vélemény.
+      • Elutasítva (Sándor): főoldal átalakítása, demo-oldal hirdetésre.
+- [ ] Új reklámvideó: a gyerek egyedül tanul, a szülő a kanapén megkapja: „Leila ma 15 percet
+      tanult” (mozgáshoz Gemini/Veo kell, kevés kredit – egy jelenet).
+
 ## ⚠️ SÜRGŐS – SORRENDBEN (2026-11-06, Sándor kérte a rangsort)
 
 1. ✔ RÉSZBEN KÉSZ (fix77): a szerver is számol (database.szerver_lepes: chat üzenet és

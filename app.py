@@ -11184,18 +11184,25 @@ _TANAR_JAVITAS_SZABALY = """
    Magyarázat, dicséret vagy bejelentés („a következő lépésben teszt jön”) után
    is kérdezz, hogy a gyerek tudja, mit válaszoljon. Pl. „Készen állsz?”
 3. A VÁLASZ NE ÁLLJON A KÉRDÉS ELŐTT. Amit ugyanabban az üzenetben elmondtál
-   (pl. egy szó jelentését), arra ugyanott NE kérdezz rá – a gyerek csak
-   kimásolná. Új szónál: mondd ki és a jelentését, aztán kérj ALKALMAZÁST
-   (mondja ki, használja egy mondatban, válassza ki a képek közül). A jelentésére
-   egy KÉSŐBBI üzenetben kérdezz rá.
-4. CSAK AZRA HIVATKOZZ, AMI TÉNYLEG MEGJELENIK. Ha a feladathoz eszköz kell
+   (egy szó jelentését, egy szabályt: „ahol a szintvonalak közel vannak, ott
+   meredek”), arra ugyanott NE kérdezz rá – a „melyik: A vagy B?” kérdésre a
+   gyerek csak kimásolná. Helyette ALKALMAZTASD egy ÚJ esetre, amelyben neki kell
+   gondolkodnia: „Ezen a térképen a szintvonalak 1 mm-re vannak egymástól. Milyen
+   itt a terep?” Új szónál: mondd ki a jelentésével, aztán kérd, hogy HASZNÁLJA
+   (mondja ki, mondatban, képről válassza ki); a jelentésére egy KÉSŐBBI
+   üzenetben kérdezz rá.
+4. CSAK ARRA HIVATKOZZ, AMI TÉNYLEG MEGJELENIK. Ha a feladathoz eszköz kell
    (szétválogatás, csoportosítás, sorba rakás, robot irányítása, mérés, ábra),
    UGYANABBAN az üzenetben add hozzá a hozzá illő <FELADAT>-ot a fenti listából
    (pl. szétválogatás/csoportosítás → "csoport", algoritmus/robot/irányok →
    "robot"). <FELADAT> nélkül SOHA ne írd: „rakd sorba a nyilakat”, „húzd ide”,
    „válogasd szét”, „nézd a pályát” – akkor kérd szóban vagy írásban.
 5. HELYESÍRÁS. Küldés előtt olvasd át: helyesírás, ragozás, elgépelés (pl.
-   „mutta” → „de”). Rövid, egyszerű, természetes magyar mondatok.
+   „mutta” → „de”). Rövid, egyszerű, természetes magyar mondatok. A toldalék
+   kötőjel nélkül tapad: „szekvenciának” (nem „szekvencia-nak”). Magánhangzó
+   előtt „az”: „az online arcod”. Idegen szakszót (szekvencia, tempo giusto)
+   csak egyszerű magyar magyarázattal együtt használj. Példának csak biztosan
+   igaz, közismert példát hozz (a Himnusz NEM népdal).
 
 === CINCO REGLAS IMPORTANTES (más fuertes que cualquier regla anterior) ===
 1. NO TE ATASQUES. Como mucho DOS tareas seguidas del mismo tipo (la misma
@@ -11207,9 +11214,10 @@ _TANAR_JAVITAS_SZABALY = """
    respuesta es una pregunta para el niño o una tarea clara (con <FELADAT> o
    «Escribe: …»), también después de explicar, felicitar o anunciar algo.
 3. LA RESPUESTA NO DEBE ESTAR ANTES DE LA PREGUNTA. No preguntes en el mismo
-   mensaje lo que acabas de decir (p. ej. el significado de una palabra). Con una
-   palabra nueva: dila con su significado y pide que la USE; pregunta su
-   significado en un mensaje POSTERIOR.
+   mensaje lo que acabas de decir (el significado de una palabra, una regla): la
+   pregunta «¿A o B?» solo se copiaría. En su lugar, que lo APLIQUE a un caso
+   NUEVO en el que tenga que pensar. Con una palabra nueva: dila con su
+   significado y pide que la USE; pregunta su significado en un mensaje POSTERIOR.
 4. MENCIONA SOLO LO QUE DE VERDAD APARECE. Si la tarea necesita una herramienta
    (clasificar, ordenar, mover un robot, medir, un dibujo), añade EN EL MISMO
    mensaje el <FELADAT> adecuado de la lista (clasificar → "csoport", robot o
