@@ -8826,6 +8826,31 @@ _FOREIGN_DETECT_CACHE: dict[str, dict[str, str]] = {}
 # Fordítva („Engem Leilának hívnak = Me llamo Leila”): „…, spanyolul így
 # mondjuk: …” – mindig annak a nyelvnek a nevével, AMIRE fordítunk. A számtan
 # („3 + 4 = 7”) érintetlen: ott nincs idegen részlet, marad az „egyenlő”.
+# ── „A” → „AZ” MAGÁNHANGZÓ ELŐTT (2026-11-08) ─────────────────────────────
+# A tanító néha „a Erdőjáróznak”, „a online” alakot ír. Magánhangzóval kezdődő
+# szó előtt a névelő mindig „az” – ez gépi szabály, AI nem kell hozzá.
+# ÓVATOSAN: csak magyar tantervben, nem idegen nyelvi és nem magyar nyelvtani
+# órán (ott a névelő lehet maga a feladat); idézőjelek, <FELADAT>/<ABRA> és más
+# jelölők belsejéhez nem nyúl; számjegyhez és egybetűs szóhoz sem.
+_A_AZ_VEDETT = re.compile(
+    r"(<FELADAT>.*?</FELADAT>|<ABRA>.*?</ABRA>|<[^>]{0,200}>|„[^”]{0,400}”|"
+    r"\"[^\"\n]{0,400}\"|«[^»]{0,400}»|'[^'\n]{0,200}'|`[^`]{0,200}`)",
+    re.DOTALL)
+_A_AZ_MINTA = re.compile(
+    r"(?<![0-9A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű\-])([Aa]) "
+    r"(?=[AEIOUÁÉÍÓÖŐÚÜŰaeiouáéíóöőúüű][0-9A-Za-zÁÉÍÓÖŐÚÜŰáéíóöőúüű\-])")
+
+
+def _a_az_javit(szoveg: str) -> str:
+    """„a alma” → „az alma”, „A online” → „Az online” – csak a védett részeken kívül."""
+    if not szoveg or " a" not in szoveg.lower() and not szoveg.startswith(("A ", "a ")):
+        return szoveg
+    darabok = _A_AZ_VEDETT.split(szoveg)
+    for i in range(0, len(darabok), 2):          # a páros indexűek a nem védett részek
+        darabok[i] = _A_AZ_MINTA.sub(lambda m: m.group(1) + "z ", darabok[i])
+    return "".join(darabok)
+
+
 _MELYIK_SZOREND = re.compile(
     r"\b([Mm]elyik(?:\s+[a-záéíóöőúüű]+){0,2})\s+(azt)\s+(jelenti|jelentik|jelentette)\b")
 _NEVELO_IDEGEN = re.compile(r"^(?:[Aa]z?)\s+(\S+)$")
@@ -11095,6 +11120,26 @@ _TANITO_TANAR_SZABALY = (
 )
 
 
+# ── OKOS TANÍTÓ: TEMPÓ ÉS ISMÉTLÉS (2026-11-08, Sándor) ──────────────────────
+# „Egy okos tanárt akarok, aki a gyerekhez igazodik, nem csak a leckét tolja.”
+# 1) TEMPÓ: ha 3-szor egymás után jól válaszol, ez a rész megy neki → ne
+#    gyakoroltasson tovább ugyanilyet, lépjen nehezebbre / a következő lépésre.
+#    Ha unatkozik vagy elfáradt (rövid „unom”, „nem tudom”, elterelés), váltson
+#    rövidebb, játékosabb feladatra – de a lecke anyagánál marad.
+# 2) ISMÉTLÉS: naponta az első üzenetnél 1–2 rövid ismétlő kérdés abból, amit
+#    legutóbb tanultak vagy rontott – hogy megmaradjon. Utána ugyanott folytatja.
+# A LECKÉT EZEK NEM ÍRJÁK FELÜL: a sorrend, a magyarázat és a tanítás marad.
+# Kapcsoló: TANAR_TEMPO – próbaoldalon magától BE, élesen csak =1-gyel; 0 = ki.
+_TT = os.environ.get("TANAR_TEMPO", "").strip().lower()
+TANAR_TEMPO = (_TT in ("1", "igen", "true", "be")
+               or (PROBA_OLDAL and _TT not in ("0", "nem", "false", "ki")))
+_UNALOM_MINTA = re.compile(
+    r"\bunom\b|unalmas|untat|\bunatkoz|nem\s+akarom|nem\s+érdekel|nem\s+erdekel|"
+    r"\bmindegy\b|valami\s+m[áa]st|vicces|j[áa]tsz(?:unk|ani)|f[áa]radt|el[ée]g\s+volt|"
+    r"me\s+aburr|aburrid|no\s+quiero|me\s+da\s+igual|otra\s+cosa|estoy\s+cansad",
+    re.IGNORECASE)
+
+
 def _tanito_allapot_kulcs(child_id, session_id, topic_id) -> str:
     return f"tanit_{child_id}_{session_id}_{topic_id}"
 
@@ -11105,9 +11150,33 @@ def _tanito_allapot_olvas(kulcs: str) -> dict | None:
 
 
 def _tanito_allapot_blokk(allapot: dict | None, es: bool) -> str:
-    """Mit próbált már a tanár ennél a résznél – csak ha a gyerek épp elakadt."""
-    if not allapot or int(allapot.get("rossz", 0) or 0) < 1:
+    """Mit próbált már a tanár ennél a résznél – csak ha a gyerek épp elakadt.
+    TANAR_TEMPO esetén: ha egy rész már jól megy, vagy unatkozik, azt is jelzi."""
+    if not allapot:
         return ""
+    if int(allapot.get("rossz", 0) or 0) < 1:
+        if not TANAR_TEMPO:
+            return ""
+        sor = []
+        jo = int(allapot.get("jo_sor", 0) or 0)
+        if jo >= 3:
+            sor.append(
+                (f"El niño ha respondido bien {jo} veces seguidas: esta parte ya la domina. No le des más "
+                 "tareas iguales: pasa a una versión más difícil o al siguiente paso de la lección. No te "
+                 "saltes la explicación ni el orden de la lección.") if es else
+                (f"A gyerek {jo}-szor egymás után jól válaszolt: ez a rész már megy neki. Ne adj több "
+                 "ugyanilyen feladatot: lépj a nehezebb változatra vagy a lecke következő lépésére. A lecke "
+                 "magyarázatát és sorrendjét ne hagyd ki."))
+        if int(allapot.get("unalom", 0) or 0) >= 1:
+            sor.append(
+                ("Parece aburrido o cansado. Sé breve, dale una tarea interactiva más divertida (<FELADAT>) "
+                 "o un pequeño reto, y elógialo; pero sigue con el tema de la lección.") if es else
+                ("Úgy tűnik, unatkozik vagy elfáradt. Legyél rövid, adj egy játékosabb interaktív feladatot "
+                 "(<FELADAT>) vagy egy kis kihívást, és dicsérd meg – de maradj a lecke anyagánál."))
+        if not sor:
+            return ""
+        return ("\n\n=== ESTADO DEL NIÑO (solo para ti) ===\n" if es else
+                "\n\n=== A GYEREK ÁLLAPOTA (csak neked) ===\n") + "\n".join(sor) + "\n"
     nyelv = "es" if es else "hu"
     probalt = [m for m in (allapot.get("probalt") or []) if m in _MODSZER_LETRA]
     kov = next((m for m in _MODSZER_LETRA if m not in probalt), None)
@@ -11140,10 +11209,21 @@ def _tanito_allapot_blokk(allapot: dict | None, es: bool) -> str:
     return "\n".join(sor) + "\n"
 
 
-def _tanito_allapot_frissit(allapot: dict | None, raw_reply: str, eredmeny: str) -> dict:
-    """A tanár válasza után: hányszor rossz egymás után, és mit próbált már."""
+def _tanito_allapot_frissit(allapot: dict | None, raw_reply: str, eredmeny: str,
+                           gyerek_szoveg: str = "") -> dict:
+    """A tanár válasza után: hányszor rossz egymás után, és mit próbált már.
+    Plusz (tempó): hányszor jó egymás után, és unatkozik-e."""
     a = dict(allapot or {})
     a.setdefault("rossz", 0); a.setdefault("probalt", []); a.setdefault("hibak", [])
+    a.setdefault("jo_sor", 0); a.setdefault("unalom", 0)
+    if eredmeny == "jo":
+        a["jo_sor"] = min(9, int(a["jo_sor"]) + 1)
+    elif eredmeny == "rossz":
+        a["jo_sor"] = 0
+    if _UNALOM_MINTA.search(gyerek_szoveg or ""):
+        a["unalom"] = min(3, int(a["unalom"]) + 1)
+    elif eredmeny:
+        a["unalom"] = 0
     if eredmeny == "jo":
         # Ami utoljára elhangzott, az vált be – ezt jegyezzük meg (a gyerekprofilhoz).
         a["bevalt"] = (a["probalt"][-1] if a["probalt"] else "") if a["rossz"] else ""
@@ -11167,8 +11247,9 @@ def _tanito_allapot_frissit(allapot: dict | None, raw_reply: str, eredmeny: str)
 # KAPCSOLÓ: a próbaoldalon magától BE; az éles oldalon csak TANAR_JAVITAS=1-gyel.
 # Kikapcsolás bárhol: TANAR_JAVITAS=0. A tanar_teszt.py-hoz: TANAR_JAVITAS=1.
 _TJ = os.environ.get("TANAR_JAVITAS", "").strip().lower()
-TANAR_JAVITAS = (_TJ in ("1", "igen", "true", "be")
-                 or (PROBA_OLDAL and _TJ not in ("0", "nem", "false", "ki")))
+# 2026-11-08 mérés (gpt-5.4-mini, szabály nélkül / vele): 10 / 9 / 11 biztos hiba –
+# nem segített mérhetően, ezért a próbaoldalon sem kapcsol be magától.
+TANAR_JAVITAS = _TJ in ("1", "igen", "true", "be")
 
 _TANAR_JAVITAS_SZABALY = """
 
@@ -14394,6 +14475,30 @@ def child_chat_send(child_id: int):
                                                (_active_curriculum() or "HU").upper() == "ES")
     except Exception:
         logger.exception("Tanito allapot blokk hiba")
+    # ISMÉTLÉS (TANAR_TEMPO): ma ennél a leckénél az első üzenet, és van mire
+    # visszanézni → 1–2 rövid ismétlő kérdés, utána ugyanott folytatja.
+    if TANAR_TEMPO:
+        try:
+            _ism_kulcs = f"ism_{child_id}_{session_id}"
+            _ma_str = date.today().isoformat()
+            if (session.get(_ism_kulcs) != _ma_str
+                    and len(database.get_chat_messages(session_id, limit=6) or []) >= 5):
+                session[_ism_kulcs] = _ma_str
+                system_prompt += (
+                    "\n\n=== REPASO AL EMPEZAR (solo hoy, una vez) ===\n"
+                    "Es el primer mensaje del niño hoy en esta lección. ANTES de seguir, hazle 1 o 2 "
+                    "preguntas de repaso MUY breves sobre lo último que aprendisteis o en lo que se "
+                    "equivocó (mira la conversación). Después sigue EXACTAMENTE donde estaba la lección: "
+                    "no la acortes ni te saltes la explicación.\n"
+                    if (_active_curriculum() or "HU").upper() == "ES" else
+                    "\n\n=== ISMÉTLÉS AZ ELEJÉN (csak ma, egyszer) ===\n"
+                    "Ma ez a gyerek első üzenete ennél a leckénél. MIELŐTT folytatod, tegyél fel 1–2 "
+                    "NAGYON rövid ismétlő kérdést abból, amit legutóbb tanultatok, vagy amiben hibázott "
+                    "(nézd meg a beszélgetést). Utána PONTOSAN ott folytasd a leckét, ahol tart: ne "
+                    "rövidítsd, és a magyarázatot ne hagyd ki.\n")
+                print(f"[ISMETLES] child={child_id} session={session_id}", flush=True)
+        except Exception:
+            logger.exception("Ismetles blokk hiba")
     if GYORSITOTAR and _teszt_szoveg:
         system_prompt += _teszt_szoveg
 
@@ -14538,6 +14643,9 @@ def child_chat_send(child_id: int):
     # jelenti azt”. A kérdőszó után közvetlenül az igének kell állnia.
     if (_active_curriculum() or "HU").upper() != "ES":
         raw_reply = _MELYIK_SZOREND.sub(lambda m: m.group(1) + " " + m.group(3) + " " + m.group(2), raw_reply)
+        # „a” → „az” magánhangzó előtt – NEM idegen nyelvi és NEM magyar órán.
+        if not is_foreign and "magyar" not in (subject or "").lower():
+            raw_reply = _a_az_javit(raw_reply)
 
     _remember_fl_words(raw_reply)
     # A gyakorló feladatot a NYERS válaszból olvassuk ki, mielőtt a jelölők
@@ -14625,10 +14733,12 @@ def child_chat_send(child_id: int):
     _kitero = bool(_CHAT_MARKER_KITERO.search(raw_reply or ""))
     if not _kitero:
         try:
-            _tanit_uj = _tanito_allapot_frissit(_tanito_allapot_olvas(_tanit_kulcs), raw_reply, _eredmeny)
+            _tanit_uj = _tanito_allapot_frissit(_tanito_allapot_olvas(_tanit_kulcs), raw_reply, _eredmeny,
+                                                gyerek_szoveg=user_text)
             # EGYETLEN kulcs a sütiben: csak a mostani lecke állapota (a süti mérete véges).
             session["tanit"] = {"k": _tanit_kulcs, "a": _tanit_uj}
-            print(f"[TANIT] rossz={_tanit_uj.get('rossz')} probalt={_tanit_uj.get('probalt')} "
+            print(f"[TANIT] rossz={_tanit_uj.get('rossz')} jo_sor={_tanit_uj.get('jo_sor')} "
+                  f"unalom={_tanit_uj.get('unalom')} probalt={_tanit_uj.get('probalt')} "
                   f"hibak={_tanit_uj.get('hibak')} bevalt={_tanit_uj.get('bevalt') or '-'}", flush=True)
         except Exception:
             logger.exception("Tanito allapot frissites hiba")

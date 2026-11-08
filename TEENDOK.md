@@ -19,6 +19,13 @@ Utolsó frissítés: 2026-11-06
       magyartalan 1 → 3. VIGYÁZAT: a 11-03-i mérés gpt-6-luna-val ment, ez gpt-5.4-mini-vel
       (az éles modell) – nem teljesen összevethető. fix88: a 3. és 5. szabály erősítve.
       Teszt ára gpt-5.4-mini-vel kb. 0,95 $ / futás (nem 0,12).
+- [x] MÉRÉS ÖSSZEVETVE (11-08, mind gpt-5.4-mini): szabály nélkül 10, szabállyal 9, erősítettel 11
+      biztos hiba → a prompt-szabályok nem segítettek mérhetően; a leragadás/hiányzó kérdés a
+      luna modell hibája volt. fix89: TANAR_JAVITAS a próbaoldalon is KI (csak =1-gyel él).
+      fix89: gépi „a → az” javítás magánhangzó előtt (_a_az_javit) – csak HU tanterv, nem idegen
+      nyelvi és nem magyar órán, idézőjelek/FELADAT/jelölők belsejét nem érinti, számot nem.
+      Következő tanító-fejlesztés: konkrét, gépileg ellenőrizhető hibák (mint az a/az), és a
+      tanar_teszt nagyobb mintán (--ora 16), több futás átlagával.
 - [ ] FEJLESZTÉSI LISTA (Sándor kérte felírni, 2026-11-08):
       • Tanító folyamatos fejlesztése: tanar_teszt → javítás → újramérés (mindig ugyanazzal
         a modellel, TANAR_JAVITAS=0 és =1 összevetve).
