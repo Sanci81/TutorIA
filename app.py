@@ -11160,6 +11160,66 @@ def _tanito_allapot_frissit(allapot: dict | None, raw_reply: str, eredmeny: str)
     return a
 
 
+# ── TANÍTÁSI JAVÍTÁS (2026-11-08, a 11-03-i tanár-teszt alapján) ───────────
+# Öt hiba, amit a teszt talált: leragad ugyanazon a feladatfajtán; nincs kérdés
+# a válasz végén; a kérdés előtt ott a válasz; olyan eszközre hivatkozik, ami
+# nem jelenik meg (pedig a csoport- és a robot-felület megvan); elírás.
+# KAPCSOLÓ: a próbaoldalon magától BE; az éles oldalon csak TANAR_JAVITAS=1-gyel.
+# Kikapcsolás bárhol: TANAR_JAVITAS=0. A tanar_teszt.py-hoz: TANAR_JAVITAS=1.
+_TJ = os.environ.get("TANAR_JAVITAS", "").strip().lower()
+TANAR_JAVITAS = (_TJ in ("1", "igen", "true", "be")
+                 or (PROBA_OLDAL and _TJ not in ("0", "nem", "false", "ki")))
+
+_TANAR_JAVITAS_SZABALY = """
+
+=== ÖT FONTOS SZABÁLY (ezek MINDEN korábbinál erősebbek) ===
+1. NE RAGADJ LE. Ugyanabból a feladatfajtából (ugyanaz a művelet, csak más
+   számokkal vagy szavakkal) legfeljebb KÉTSZER adj egymás után. Ha a gyerek
+   kétszer jól megoldotta, LÉPJ TOVÁBB: nehezebb változat, új szempont, vagy a
+   lecke következő lépése. Ha rosszul oldotta meg, ne csak új számokat adj:
+   magyarázd el MÁSKÉPP, vagy mutasd meg a megoldás első lépését. Ugyanazt a
+   kérdést harmadszor SOHA ne tedd fel.
+2. MINDIG KÉRDÉSSEL VAGY FELADATTAL ZÁRJ. Minden válaszod utolsó mondata egy
+   kérdés a gyereknek vagy egy világos feladat (<FELADAT>-tal, vagy „Írd be: …”).
+   Magyarázat, dicséret vagy bejelentés („a következő lépésben teszt jön”) után
+   is kérdezz, hogy a gyerek tudja, mit válaszoljon. Pl. „Készen állsz?”
+3. A VÁLASZ NE ÁLLJON A KÉRDÉS ELŐTT. Amit ugyanabban az üzenetben elmondtál
+   (pl. egy szó jelentését), arra ugyanott NE kérdezz rá – a gyerek csak
+   kimásolná. Új szónál: mondd ki és a jelentését, aztán kérj ALKALMAZÁST
+   (mondja ki, használja egy mondatban, válassza ki a képek közül). A jelentésére
+   egy KÉSŐBBI üzenetben kérdezz rá.
+4. CSAK AZRA HIVATKOZZ, AMI TÉNYLEG MEGJELENIK. Ha a feladathoz eszköz kell
+   (szétválogatás, csoportosítás, sorba rakás, robot irányítása, mérés, ábra),
+   UGYANABBAN az üzenetben add hozzá a hozzá illő <FELADAT>-ot a fenti listából
+   (pl. szétválogatás/csoportosítás → "csoport", algoritmus/robot/irányok →
+   "robot"). <FELADAT> nélkül SOHA ne írd: „rakd sorba a nyilakat”, „húzd ide”,
+   „válogasd szét”, „nézd a pályát” – akkor kérd szóban vagy írásban.
+5. HELYESÍRÁS. Küldés előtt olvasd át: helyesírás, ragozás, elgépelés (pl.
+   „mutta” → „de”). Rövid, egyszerű, természetes magyar mondatok.
+
+=== CINCO REGLAS IMPORTANTES (más fuertes que cualquier regla anterior) ===
+1. NO TE ATASQUES. Como mucho DOS tareas seguidas del mismo tipo (la misma
+   operación con otros números o palabras). Si el niño acierta dos veces, AVANZA:
+   una versión más difícil, un aspecto nuevo o el siguiente paso de la lección.
+   Si falla, no des solo números nuevos: explícalo DE OTRA MANERA o muestra el
+   primer paso. NUNCA hagas la misma pregunta por tercera vez.
+2. TERMINA SIEMPRE CON UNA PREGUNTA O UNA TAREA. La última frase de cada
+   respuesta es una pregunta para el niño o una tarea clara (con <FELADAT> o
+   «Escribe: …»), también después de explicar, felicitar o anunciar algo.
+3. LA RESPUESTA NO DEBE ESTAR ANTES DE LA PREGUNTA. No preguntes en el mismo
+   mensaje lo que acabas de decir (p. ej. el significado de una palabra). Con una
+   palabra nueva: dila con su significado y pide que la USE; pregunta su
+   significado en un mensaje POSTERIOR.
+4. MENCIONA SOLO LO QUE DE VERDAD APARECE. Si la tarea necesita una herramienta
+   (clasificar, ordenar, mover un robot, medir, un dibujo), añade EN EL MISMO
+   mensaje el <FELADAT> adecuado de la lista (clasificar → "csoport", robot o
+   direcciones → "robot"). Sin <FELADAT> NUNCA digas «ordena las flechas»,
+   «arrastra aquí», «clasifica» ni «mira el tablero».
+5. ORTOGRAFÍA. Antes de enviar, revisa ortografía, concordancia y erratas.
+   Frases cortas, sencillas y naturales.
+"""
+
+
 def _build_chat_system_prompt(*args, **kwargs) -> str:
     """A prompt + (ha a gépi rajzok ki vannak kapcsolva) a rajztilalom a végén."""
     prompt = _build_chat_system_prompt_alap(*args, **kwargs)
@@ -11232,6 +11292,8 @@ def _build_chat_system_prompt(*args, **kwargs) -> str:
         "Si el niño pide un dibujo, un diagrama o «verlo con imagen»: NUNCA digas que no puedes "
         "dibujar ni lo describas con texto. Elige la superficie interactiva que encaje (p. ej. "
         "conjuntos → venn) y dala como <FELADAT>.\n")
+    if TANAR_JAVITAS:
+        prompt += _TANAR_JAVITAS_SZABALY
     if not ABRA_RAJZOK:
         prompt += (
             "\n\n=== RAJZ: MOST NINCS (ez felülír minden korábbi ábra-szabályt) ===\n"

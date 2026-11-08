@@ -63,6 +63,11 @@ Utolsó frissítés: 2026-11-06
      mi levelet küldünk („nem sikerült a levonás – frissítsd a kártyát: link”). Ha végleg nem
      sikerül: csomag_lejar = a kifizetett időszak vége (a megmaradt órák a saját 3 hónapjukig
      élnek).
+   - LEMONDÁS GOMB a Fiókom oldalon („Bérlet lemondása”, egy kattintás, megerősítés nélkül
+     vagy egy „Biztos?” lépéssel) – Ley 10/2025: akadály nélkül. Stripe: cancel_at_period_end.
+   - FIÓK TÖRLÉSE = AZ ELŐFIZETÉS FELMONDÁSA IS (ÁSZF 9. pont, fix85): a törlés hívja meg a Stripe
+     előfizetés azonnali leállítását; a törlő oldal ELŐTTE írja ki: „Még X óra van a bérletben –
+     a törléssel ezek elvesznek.”
    - ✔ ELŐKÉSZÍTVE (fix84): _megujitas_kor + _megujitas_level – 16 nappal a fordulónap előtt,
      fordulónként egyszer (parents.megujitas_ertesitve), csak ha FIZETES_ELERHETO. ÁSZF 7. pontba
      beírva (HU+ES). HÁTRA a Stripe-nál: a „MEGÚJÍTÁS LEMONDÁSA” gomb most a Fiókom oldalra
@@ -549,6 +554,9 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
       mode=voice-ot, ezért a szerver hangos módban is a rövid (MAX_KARAKTER) változatot olvassa
       fel – a kód szerint ezt el akartuk kerülni. (2) A beszédfelismerés (STT) a hangos keret
       elfogyása után is megy – a hangköltség kb. fele.
+- [ ] HIRDETÉS-ADAT 11.07. 17:49-ig: a hirdetésből 239 látogató, ebből 83 a regisztrációs oldalon
+      (a link most oda visz), medián 5 mp, 0 regisztráció. Ötlet: a hirdetés vigyen a /demo
+      oldalra (regisztráció nélküli kipróbálás) – kisebb lépés a hideg látogatónak.
 - [ ] HIRDETÉS-ADAT (2026-11-04–06): 148 hirdetésből jött látogató, átlag 6 mp a főoldalon,
       2 jutott a regisztrációig, 0 regisztrált. A gond a hirdetés és a főoldal között van, nem
       az űrlapon. Teendő: új hirdetéssorozat kézi elhelyezéssel (csak Facebook + Instagram
