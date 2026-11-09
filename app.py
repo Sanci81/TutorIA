@@ -11149,6 +11149,61 @@ def _tanito_allapot_olvas(kulcs: str) -> dict | None:
     return t.get("a") if isinstance(t, dict) and t.get("k") == kulcs else None
 
 
+# ── NYITÓ FELADAT (2026-11-09, Sándor képe: 8. o. „függvény” lecke) ─────
+# A lecke ELSŐ táblaszövegét külön hívás írja (child_chat), és onnan a
+# <FELADAT> jelölőt a szöveg-tisztítás kidobta, a feladatot pedig senki nem
+# mentette el. A tábla így azzal zárult: „nézd meg, melyik szám jön ki a
+# gépből!” – és nem jött gép. Most a nyitó szövegből is kiolvassuk és mentjük.
+# Kapcsoló: NYITO_FELADAT – próbaoldalon magától BE, élesen csak =1-gyel; 0 = ki.
+_NYF = os.environ.get("NYITO_FELADAT", "").strip().lower()
+NYITO_FELADAT = (_NYF in ("1", "igen", "true", "be")
+                 or (PROBA_OLDAL and _NYF not in ("0", "nem", "false", "ki")))
+# ── FELADAT-TIPP (2026-11-09): ha a táblán interaktív feladat van, a tanító
+# megkapja, HOGYAN segítsen pont annál a feladatnál (kézzel írt, kipróbált
+# lépések), a táblán lévő számokkal – ne egy régi példával magyarázzon.
+# Kapcsoló: FELADAT_TIPP – próbaoldalon magától BE, élesen csak =1-gyel; 0 = ki.
+_FTP = os.environ.get("FELADAT_TIPP", "").strip().lower()
+FELADAT_TIPP = (_FTP in ("1", "igen", "true", "be")
+                or (PROBA_OLDAL and _FTP not in ("0", "nem", "false", "ki")))
+
+
+def _feladat_tipp_blokk(history: list, es: bool) -> str:
+    """A legutóbbi tanári üzenet feladatához tartozó segítési mód (ha van)."""
+    utolso = next((m for m in reversed(history or []) if m.get("role") == "assistant"), None)
+    f = (utolso or {}).get("feladat")
+    if not isinstance(f, dict):
+        return ""
+    if f.get("tipus") == "fgep":
+        try:
+            a, b = int(f.get("szorzo")), int(f.get("hozzaad"))
+        except Exception:
+            return ""
+        s = -(-(-b) // a) if b < 0 else 0          # a gép legkisebb bedobható száma
+        szab = "x" + (f" × {a}" if a != 1 else "") + (f" + {b}" if b > 0 else f" − {-b}" if b < 0 else "")
+        if es:
+            lep = ([f"1. Que meta el 0: lo que sale es lo que la máquina suma o resta, porque 0 × cualquier número = 0.",
+                    "2. Que meta el 1: ¿cuánto más sale que con el 0? Esa es la multiplicación (×)."] if s == 0 else
+                   [f"1. Que meta dos números seguidos ({s} y {s + 1}): la diferencia de lo que sale es la multiplicación (×).",
+                    f"2. Que multiplique su número por eso y lo compare con lo que salió: la diferencia es lo que la máquina suma o resta."])
+            return ("\n\n=== EN LA PIZARRA: MÁQUINA DE FUNCIONES (solo para ti) ===\n"
+                    f"Regla de la máquina: {szab}. NO la digas. Si el niño se atasca o pide ayuda, enséñale este método, "
+                    "UN paso cada vez, con frases cortas, hablando de la máquina de la pizarra (no de un ejemplo anterior):\n"
+                    + "\n".join(lep) +
+                    "\n3. Que lo compruebe con un tercer número y luego elija la regla entre los 4 botones.\n"
+                    "Pregunta por la regla así: «¿Qué hace la máquina con el número?» – la regla no es un número.\n")
+        lep = ([f"1. Dobja be a 0-t: ami kijön, annyit ad hozzá vagy von le a gép, mert 0-szor bármi 0.",
+                "2. Dobja be az 1-et: mennyivel több jön ki, mint a 0-nál? Annyiszor szoroz a gép."] if s == 0 else
+               [f"1. Dobjon be két egymás utáni számot ({s} és {s + 1}): amennyivel több jön ki a nagyobbiknál, annyiszor szoroz a gép.",
+                "2. Szorozza meg ezzel a bedobott számot, és nézze meg, mennyi hiányzik vagy mennyi a több a kijött számhoz képest: ennyit ad hozzá vagy von le a gép."])
+        return ("\n\n=== A TÁBLÁN: FÜGGVÉNYGÉP (csak neked) ===\n"
+                f"A gép szabálya: {szab}. NE áruld el. Ha a gyerek elakad vagy segítséget kér, ezt a módszert tanítsd, "
+                "egyszerre EGY lépést kérve, rövid mondatokkal, a TÁBLÁN lévő gépről beszélve (ne egy korábbi példáról):\n"
+                + "\n".join(lep) +
+                "\n3. Ellenőrizze egy harmadik számmal, aztán válassza ki a szabályt a 4 gomb közül.\n"
+                "A szabályra így kérdezz: „Mit csinál a gép a számmal?” – a szabály nem egy szám.\n")
+    return ""
+
+
 def _tanito_allapot_blokk(allapot: dict | None, es: bool) -> str:
     """Mit próbált már a tanár ennél a résznél – csak ha a gyerek épp elakadt.
     TANAR_TEMPO esetén: ha egy rész már jól megy, vagy unatkozik, azt is jelzi."""
@@ -13685,6 +13740,22 @@ def uj_felulet_kapcsolo():
 
 @app.route("/children/<int:child_id>/chat")
 @login_required
+def _nyito_feladat(nyers: str, tiszta: str, grade_num, active_curr, temakor, nyelv):
+    """A lecke nyitó szövegében kiírt <FELADAT> (eddig elveszett) – ingyen, AI nélkül."""
+    es = (active_curr or "HU").upper() == "ES"
+    f = _feladat_parse(nyers, grade=grade_num, es_tanterv=es, temakor=temakor)
+    if not isinstance(f, dict):
+        return None
+    if not f.get("kerdes") and not f.get("cim"):
+        kk = re.findall(r"[^.!?\n]*\?", re.sub(r"<[^>]{1,40}>", " ", tiszta or ""))
+        pk = re.sub(r"^[\s)\].,:;–—*_#>]+", "", kk[-1]).strip() if kk else ""
+        if 3 <= len(pk) <= 120:
+            f["cim"] = pk
+    _feladat_nyelvre(f, nyelv)
+    print(f"[NYITO-FELADAT] {f.get('tipus')}", flush=True)
+    return f
+
+
 def child_chat(child_id: int):
     """AI tanár chat – kizárólag kerettanterv JSON alapján."""
     kapu = _gyerek_kapu(child_id)
@@ -14006,8 +14077,17 @@ def child_chat(child_id: int):
                             _store = _store + "\n\n" + "".join(
                                 f"<ABRA>{_f}</ABRA>" for _f in _figs
                             )
+                        _nyito_f = None
+                        if NYITO_FELADAT:
+                            try:
+                                _nyito_f = _nyito_feladat(teaching_response, clean_teaching,
+                                                          grade_num, active_curr, current_topic,
+                                                          language if is_foreign else None)
+                            except Exception:
+                                logger.exception("Nyito feladat hiba")
                         database.add_chat_message(
                             chat_session["id"], "assistant", _store,
+                            feladat=_nyito_f,
                         )
             except Exception:
                 pass
@@ -14103,8 +14183,17 @@ def child_chat(child_id: int):
                             _store = _store + "\n\n" + "".join(
                                 f"<ABRA>{_f}</ABRA>" for _f in _figs
                             )
+                        _nyito_f = None
+                        if NYITO_FELADAT:
+                            try:
+                                _nyito_f = _nyito_feladat(teaching_response, clean_teaching,
+                                                          grade_num, active_curr, current_topic,
+                                                          language if is_foreign else None)
+                            except Exception:
+                                logger.exception("Nyito feladat hiba")
                         database.add_chat_message(
                             chat_session["id"], "assistant", _store,
+                            feladat=_nyito_f,
                         )
                         messages = database.get_chat_messages(chat_session["id"], limit=20)
             except Exception:
@@ -14525,6 +14614,14 @@ def child_chat_send(child_id: int):
             _sess_curr_send, session_id, child_id, language,
         )
         history = []
+    if FELADAT_TIPP:
+        try:
+            _ftipp = _feladat_tipp_blokk(history, (_active_curriculum() or "HU").upper() == "ES")
+            if _ftipp:
+                system_prompt += _ftipp
+                print("[FELADAT-TIPP] fgep", flush=True)
+        except Exception:
+            logger.exception("Feladat-tipp hiba")
     database.add_chat_message(session_id, "user", user_text)
 
     print(f"[HIST-DEBUG] history_len={len(history)}", flush=True)

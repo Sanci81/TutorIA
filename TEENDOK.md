@@ -63,6 +63,26 @@ Utolsó frissítés: 2026-11-06
 - [ ] Új reklámvideó: a gyerek egyedül tanul, a szülő a kanapén megkapja: „Leila ma 15 percet
       tanult” (mozgáshoz Gemini/Veo kell, kevés kredit – egy jelenet).
 
+## 🆕 2026-11-09 – NYITÓ FELADAT + FELADAT-TIPP (próbán BE, élesen KI)
+- [ ] HIBA (éles, 8. o. matek „A függvény fogalmának előkészítése”): a nyitó táblaszöveg
+      „nézd meg, melyik szám jön ki a gépből!” – és nem jött feladat. OK: a lecke nyitó
+      szövegéből a <FELADAT>-ot a tisztítás kidobta, és nem mentettük. Javítva (app.py
+      _nyito_feladat). Kapcsoló: NYITO_FELADAT (próbán magától BE; élesen Railway =1; 0 = ki).
+- [ ] FELADAT-TIPP: ha a táblán függvénygép (fgep) van, a tanító megkapja a kipróbált
+      segítési lépéseket (0-t, 1-et bedobni / két szomszédos szám → szorzó, aztán a
+      hozzáadott szám), és nem kérdezi, hogy „melyik szám a szabály”. Kapcsoló: FELADAT_TIPP
+      (próbán BE; élesen =1). Feladat-próba: „fgep”, spanyol oldalon is működik.
+- [ ] Próbán ellenőrizni (Sándor), utána: git push origin proba:main + Railway
+      NYITO_FELADAT=1 és FELADAT_TIPP=1.
+- [ ] OKOSÍTÁS – KÖVETKEZŐ LÉPÉS: minden interaktív feladathoz ugyanilyen kézzel írt
+      „ha elakad” tipp (venn, carroll, lift, recept, villam, szamolo…), egyesével, mindkét
+      oldalra. Sándor: a magyarázat segítségkérésre nem elég egyértelmű (általános, régi
+      példával magyaráz) – ez a lépés pont erre megy.
+- [ ] Több interaktív feladat kell (Sándor, 2026-11-09) – lásd ESZKÖZÖK lista.
+- [ ] Videó/poszt: a zsiráf helyett más figura (Sándor). A „Fáradt este” téma jó →
+      python video_kanape.py kep → kanape_jelenet.png legyen az 1. poszt képe is (poszt1.png
+      helyett), utána python video_kanape.py video.
+
 ## ⚠️ SÜRGŐS – SORRENDBEN (2026-11-06, Sándor kérte a rangsort)
 
 1. ✔ RÉSZBEN KÉSZ (fix77): a szerver is számol (database.szerver_lepes: chat üzenet és
