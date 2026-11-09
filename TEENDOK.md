@@ -93,8 +93,13 @@ Utolsó frissítés: 2026-11-06
           Kapcsoló: KERDES_LEKTOR (élesen =1). A lecke NYITÓ szövegén még nem fut.
       (5) Felsős választós feladat: a jó válasznál eltűnt a betű (zöld a zöldön) → fehér.
       (6) Railway naplóban keresni: [FELADAT-HIANY] – hol ígér feladatot a tanító, ami nem jön.
-- [ ] ÖTLET (Sándor): nehéz fogalmakhoz (exoterm, katalizátor) életszerű kép a táblára –
-      TABLA_KEPEK kapcsoló van, de ki van kapcsolva (költség). Átgondolni.
+- [ ] ‼️ KÖVETKEZŐ (Sándor: „ezt csináljuk meg”): nehéz fogalmakhoz (exoterm, katalizátor)
+      életszerű, pontos kép a táblára. TABLA_KEPEK kapcsoló van, de ki van kapcsolva (költség) –
+      megnézni, mit tud, mennyibe kerül, mindkét oldalra.
+- [x] fix95 (2026-11-09): a próbaoldal lecke-oldala 500-as hibát adott – Claude hibája: az új
+      _nyito_feladat függvény a child_chat útvonal-jelölői (@app.route, @login_required) közé
+      került. Javítva; az útvonal-térkép ellenőrizve (94 útvonal, mind a régi függvényen).
+- [x] fix96: a KÉRDÉS-LEKTOR a spanyol oldalon is fut (nem spanyol nyelv órán, nem idegen nyelven).
 - [ ] Videó EMBEREKKEL is (Sándor): python video_kanape.py kep --emberek (külön fájl,
       mesekönyves stílus, nem fotószerű).
 - [ ] Videó/poszt: a zsiráf helyett más figura (Sándor). A „Fáradt este” téma jó →

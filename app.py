@@ -11218,7 +11218,16 @@ _KERDES_LEKTOR_PROMPT = (
     "„Melyik adat mutatja a csapadékot: az eső mennyisége vagy a hőmérséklet?”")
 
 
-def _kerdes_lektor(szoveg: str, idokorlat: float) -> tuple[str, str] | None:
+_KERDES_LEKTOR_PROMPT_ES = (
+    "Eres corrector de español. Recibes una pregunta que un profesor ha escrito para un niño de primaria. "
+    "Si tiene un error gramatical o suena poco natural (concordancia, preposición, artículo, orden de las "
+    "palabras, tildes o signos ¿ ?), corrígela con el MENOR cambio posible. NO cambies el contenido, los "
+    "términos técnicos ni las opciones de respuesta. Si la pregunta está bien, devuélvela EXACTAMENTE igual. "
+    "Escribe solo la pregunta, nada más.\n"
+    "Ejemplo: «¿Cuál de estos animales es un mamíferos?» → «¿Cuál de estos animales es un mamífero?»")
+
+
+def _kerdes_lektor(szoveg: str, idokorlat: float, es: bool = False) -> tuple[str, str] | None:
     """(régi, új) kérdés, ha a lektor javított; különben None."""
     if idokorlat < 2.5:
         return None
@@ -11231,9 +11240,9 @@ def _kerdes_lektor(szoveg: str, idokorlat: float) -> tuple[str, str] | None:
     try:
         client = _openai_client(api_key, request_timeout=idokorlat, max_retries=0)
         resp = _ai_keszit(client, model=MODELL_SEGED, messages=[
-            {"role": "system", "content": _KERDES_LEKTOR_PROMPT},
+            {"role": "system", "content": _KERDES_LEKTOR_PROMPT_ES if es else _KERDES_LEKTOR_PROMPT},
             {"role": "user", "content": regi}])
-        uj = (resp.choices[0].message.content or "").strip().strip("„”\"").strip()
+        uj = (resp.choices[0].message.content or "").strip().strip("„”«»\"").strip()
     except Exception as exc:
         print(f"[LEKTOR] hiba: {exc}", flush=True)
         return None
@@ -13845,8 +13854,6 @@ def uj_felulet_kapcsolo():
     return redirect(request.referrer or url_for("dashboard"))
 
 
-@app.route("/children/<int:child_id>/chat")
-@login_required
 def _nyito_feladat(nyers: str, tiszta: str, grade_num, active_curr, temakor, nyelv, targy=""):
     """A lecke nyitó szövegében kiírt <FELADAT> (eddig elveszett) – ingyen, AI nélkül."""
     es = (active_curr or "HU").upper() == "ES"
@@ -13867,6 +13874,8 @@ def _nyito_feladat(nyers: str, tiszta: str, grade_num, active_curr, temakor, nye
     return f
 
 
+@app.route("/children/<int:child_id>/chat")
+@login_required
 def child_chat(child_id: int):
     """AI tanár chat – kizárólag kerettanterv JSON alapján."""
     kapu = _gyerek_kapu(child_id)
@@ -14867,6 +14876,15 @@ def child_chat_send(child_id: int):
                         raw_reply = raw_reply.replace(_lk[0], _lk[1], 1)
                 except Exception:
                     logger.exception("Kerdes-lektor hiba")
+    elif (KERDES_LEKTOR and not is_foreign
+          and not any(x in (subject or "").lower() for x in ("lengua", "castellan", "espanol", "español"))):
+        # SPANYOL OLDAL (2026-11-09, Sándor: „lassan a spanyol piacra is szeretnék menni”).
+        try:
+            _lk = _kerdes_lektor(raw_reply, min(6.0, _maradek() - 8), es=True)
+            if _lk and _lk[0] in raw_reply:
+                raw_reply = raw_reply.replace(_lk[0], _lk[1], 1)
+        except Exception:
+            logger.exception("Kerdes-lektor hiba (es)")
 
     _remember_fl_words(raw_reply)
     # A gyakorló feladatot a NYERS válaszból olvassuk ki, mielőtt a jelölők
