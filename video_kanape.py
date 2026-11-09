@@ -19,6 +19,12 @@ ELŐTTE (ugyanúgy, mint a nyitóképnél):
     $env:OPENAI_API_KEY = "ide-a-sajat-kulcsod"
     $env:GEMINI_API_KEY = "ide-a-sajat-kulcsod"
 
+EMBERES VÁLTOZAT (2026-11-09, Sándor kérte – a mackós marad, ez külön):
+    python video_kanape.py kep --emberek     → kanape_jelenet_emberek.png
+    python video_kanape.py video --emberek   → kanape_video_emberek.mp4
+    Ugyanaz a mesekönyves festett stílus, de anyuka és a kislánya (nem fotószerű:
+    valódinak tűnő gyerek-arcot nem készítünk, és így nem kell „AI-kép” címke sem).
+
 Utána szólj Claude-nak: összerakja a videót (felirat, értesítés, képernyő, logó).
 """
 import argparse
@@ -64,6 +70,27 @@ PROMPT = (
     "morphing faces. No dialogue, no music, only quiet evening room ambience.")
 
 
+VIDEO_NEV = "kanape_video"
+KEP_PROMPT_EMBER = KEP_PROMPT.replace(
+    "a kind, relaxed mother bear sits curled up on a soft sofa",
+    "a kind, relaxed young mother (about 35, casual home clothes) sits curled up on a soft sofa").replace(
+    "a small friendly monkey child sits at the kitchen table",
+    "her daughter, a cheerful girl of about nine, sits at the kitchen table") + (
+    " The people are drawn in the same simple storybook style with soft, stylized faces – clearly an "
+    "illustration, NOT photorealistic.")
+PROMPT_EMBER = PROMPT.replace("The mother bear on the sofa", "The mother on the sofa").replace(
+    "the little monkey taps", "the little girl taps").replace("the bear looks", "the mother looks")
+
+
+def emberes():
+    """--emberek: ugyanaz a jelenet emberekkel, KÜLÖN fájlokba (a mackós megmarad)."""
+    global BEMENET, KEP_PROMPT, PROMPT, VIDEO_NEV
+    if "--emberek" in sys.argv:
+        sys.argv.remove("--emberek")
+        BEMENET = os.path.join(MAPPA, "kanape_jelenet_emberek.png")
+        KEP_PROMPT, PROMPT, VIDEO_NEV = KEP_PROMPT_EMBER, PROMPT_EMBER, "kanape_video_emberek"
+
+
 def kulcs():
     for v in ("GEMINI_API_KEY", "GOOGLE_API_KEY", "TANAR_API_KEY"):
         k = (os.environ.get(v) or "").strip().strip("'\"")
@@ -98,6 +125,7 @@ def kep_keszit(ujra: bool) -> int:
 
 
 def main():
+    emberes()
     if len(sys.argv) > 1 and sys.argv[1] == "kep":
         return kep_keszit("--ujra" in sys.argv)
     if len(sys.argv) > 1 and sys.argv[1] == "video":
@@ -149,7 +177,7 @@ def main():
     kep_resz = {"type": "image", "uri": feltoltott.uri, "mime_type": "image/png"}
 
     for n in range(1, a.db + 1):
-        ki = os.path.join(MAPPA, "kanape_video.mp4" if n == 1 else f"kanape_video_{n}.mp4")
+        ki = os.path.join(MAPPA, f"{VIDEO_NEV}.mp4" if n == 1 else f"{VIDEO_NEV}_{n}.mp4")
         print(f"\n{n}. változat készül… (1–3 perc, ne zárd be)", flush=True)
         try:
             # HÁTTÉRBEN indítjuk (background), és 10 mp-enként rákérdezünk: így nem

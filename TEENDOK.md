@@ -79,6 +79,24 @@ Utolsó frissítés: 2026-11-06
       oldalra. Sándor: a magyarázat segítségkérésre nem elég egyértelmű (általános, régi
       példával magyaráz) – ez a lépés pont erre megy.
 - [ ] Több interaktív feladat kell (Sándor, 2026-11-09) – lásd ESZKÖZÖK lista.
+- [ ] 2026-11-09 este, Sándor próbája után (fix94, mind próbán BE, élesen KI):
+      (1) ÁLFELMÉRÉS: új tantárgynál (szint 0, nem a szintfelmérő gombbal) a prompt „5 kérdéses
+          szintfelmérőt + kész a felmérés” kért EGY üzenetben → a tanító kitalálta („Jöjjön az öt
+          felmérőállítás… Elkészült a felmérés”), a gyerek semmit nem látott. Most: nincs felmérés
+          a chatben, rögtön tanít, első válasznál <LEVEL:1>, pont nem jár érte. A gombos
+          szintfelmérő a régi. Kapcsoló: NYITO_FELADAT.
+      (2) Függvénygép szövegből: ha a tanító gépet ígér jelölő nélkül (5–8. o. matek), mi
+          rakjuk ki (új szabállyal). Kapcsoló: NYITO_FELADAT.
+      (3) „</assistant>final” a szöveg végén → kiszűrve (mindig).
+      (4) KÉRDÉS-LEKTOR: a tanító utolsó kérdését kis modell nyelvtanilag javítja (pl. „Melyik
+          adatot mutatja a csapadékot”). Csak magyar oldal, nem magyar/idegen nyelv órán.
+          Kapcsoló: KERDES_LEKTOR (élesen =1). A lecke NYITÓ szövegén még nem fut.
+      (5) Felsős választós feladat: a jó válasznál eltűnt a betű (zöld a zöldön) → fehér.
+      (6) Railway naplóban keresni: [FELADAT-HIANY] – hol ígér feladatot a tanító, ami nem jön.
+- [ ] ÖTLET (Sándor): nehéz fogalmakhoz (exoterm, katalizátor) életszerű kép a táblára –
+      TABLA_KEPEK kapcsoló van, de ki van kapcsolva (költség). Átgondolni.
+- [ ] Videó EMBEREKKEL is (Sándor): python video_kanape.py kep --emberek (külön fájl,
+      mesekönyves stílus, nem fotószerű).
 - [ ] Videó/poszt: a zsiráf helyett más figura (Sándor). A „Fáradt este” téma jó →
       python video_kanape.py kep → kanape_jelenet.png legyen az 1. poszt képe is (poszt1.png
       helyett), utána python video_kanape.py video.

@@ -7387,6 +7387,10 @@ def _vocab_valaszlehetosegek(szoveg: str) -> str:
 
 
 _MODELL_TOKEN = re.compile(r"<\|[A-Za-z_][A-Za-z0-9_]{1,30}\|>")
+# 2026-11-09, Sándor képe (kémia): a szöveg végén „</assistant>final” állt.
+_MODELL_SZEREP = re.compile(
+    r"</?\s*(?:assistant|system|user|analysis|commentary|final)\s*>(?:\s*(?:final|analysis|commentary)\b)?",
+    re.IGNORECASE)
 
 
 def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[str, str]], list[str]]:
@@ -7425,6 +7429,7 @@ def _parse_chat_markers(text: str) -> tuple[str, bool, int | None, list[tuple[st
     # MODELL-BELSŐ TOKENEK: a 20 órás magyar teszt (gpt-6-luna) a gyerek
     # elé tett ilyeneket: <|im_end|>, <|fim_suffix|>. Soha nem tartalom.
     clean = _MODELL_TOKEN.sub("", text)
+    clean = _MODELL_SZEREP.sub("", clean)
     # Az <FL:xx>szó</FL> jelölőből csak a jelölés tűnik el, a SZÓ marad.
     clean = _fl_zaro_ismetles_nelkul(clean)
     clean = _fl_lathatatlan(clean)
@@ -11167,6 +11172,80 @@ FELADAT_TIPP = (_FTP in ("1", "igen", "true", "be")
                 or (PROBA_OLDAL and _FTP not in ("0", "nem", "false", "ki")))
 
 
+_GEP_SZABALY = re.compile(r"\bg[ée]p.{0,120}szab[áa]ly|szab[áa]ly.{0,120}\bg[ée]p|m[áa]quina.{0,120}regla|regla.{0,120}m[áa]quina",
+                          re.IGNORECASE | re.DOTALL)
+
+
+def _fgep_szovegbol(szoveg: str, grade, es: bool, kerul: tuple | None = None, targy: str = "") -> dict | None:
+    """A tanár függvénygépet ígért, de jelölő nélkül → mi rakjuk ki (AI nélkül).
+    2026-11-09, Sándor: „Most egy másik gép szabályát keresd meg!” – és nem jött gép."""
+    if "mat" not in (targy or "").lower():
+        return None
+    try:
+        if not (5 <= int(grade or 0) <= 8):
+            return None
+    except (TypeError, ValueError):
+        return None
+    vege = (szoveg or "")[-260:]
+    if not _GEP_SZABALY.search(vege):
+        return None
+    for _ in range(20):
+        a, b = random.randint(2, 5), random.choice([-4, -3, -2, -1, 1, 2, 3, 4, 5])
+        if (a, b) != kerul:
+            break
+    kerdes = ("¿Qué hace la máquina con cada número? ¡Descubre su regla!" if es
+              else "Mit csinál a gép a számokkal? Találd ki a szabályát!")
+    print(f"[FELADAT] fgep a szovegbol: x*{a}{b:+d}", flush=True)
+    return {"tipus": "fgep", "szorzo": a, "hozzaad": b, "kerdes": kerdes}
+
+
+_FELADAT_IGERET = re.compile(
+    r"(?:feladat|a\s+táblán|keresd\s+meg|próbáld\s+ki|próbálj\s+ki|oldd\s+meg|következzen|jöjjön|"
+    r"ejercicio|en\s+la\s+pizarra|descubre|resuelve|prueba)[^.?!]*[.!]\s*$", re.IGNORECASE)
+
+# ── KÉRDÉS-LEKTOR (2026-11-09, Sándor: „Melyik adatot mutatja a csapadékot” – nyelvtani hiba)
+# A tanító utolsó kérdését egy kis modell nyelvtanilag átnézi; csak apró javítást fogadunk el.
+# Kapcsoló: KERDES_LEKTOR – próbaoldalon magától BE, élesen csak =1-gyel; 0 = ki.
+_KLE = os.environ.get("KERDES_LEKTOR", "").strip().lower()
+KERDES_LEKTOR = (_KLE in ("1", "igen", "true", "be")
+                 or (PROBA_OLDAL and _KLE not in ("0", "nem", "false", "ki")))
+_KERDES_LEKTOR_PROMPT = (
+    "Magyar nyelvi lektor vagy. Kapsz egy kérdést, amit egy tanító írt egy általános iskolás gyereknek. "
+    "Ha nyelvtanilag hibás vagy magyartalan (rossz rag, két tárgy egy igén, rossz szórend, rossz névelő), "
+    "javítsd a LEGKISEBB változtatással. A tartalmat, a szakszavakat és a felsorolt válaszlehetőségeket "
+    "NE változtasd. Ha a kérdés jó, írd vissza BETŰRE UGYANÚGY. Csak a kérdést írd ki, semmi mást.\n"
+    "Példa: „Melyik adatot mutatja a csapadékot: az eső mennyiségét vagy a hőmérsékletet?” → "
+    "„Melyik adat mutatja a csapadékot: az eső mennyisége vagy a hőmérséklet?”")
+
+
+def _kerdes_lektor(szoveg: str, idokorlat: float) -> tuple[str, str] | None:
+    """(régi, új) kérdés, ha a lektor javított; különben None."""
+    if idokorlat < 2.5:
+        return None
+    regi = _utolso_kerdes(_parse_chat_markers(szoveg or "")[0] or "")
+    if not (8 <= len(regi) <= 300):
+        return None
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    try:
+        client = _openai_client(api_key, request_timeout=idokorlat, max_retries=0)
+        resp = _ai_keszit(client, model=MODELL_SEGED, messages=[
+            {"role": "system", "content": _KERDES_LEKTOR_PROMPT},
+            {"role": "user", "content": regi}])
+        uj = (resp.choices[0].message.content or "").strip().strip("„”\"").strip()
+    except Exception as exc:
+        print(f"[LEKTOR] hiba: {exc}", flush=True)
+        return None
+    if not uj or uj == regi or not uj.endswith("?"):
+        return None
+    if difflib.SequenceMatcher(None, regi, uj).ratio() < 0.8 or abs(len(uj) - len(regi)) > max(12, len(regi) // 5):
+        print(f"[LEKTOR] elvetve: {regi!r} -> {uj!r}", flush=True)
+        return None
+    print(f"[LEKTOR] {regi!r} -> {uj!r}", flush=True)
+    return regi, uj
+
+
 def _feladat_tipp_blokk(history: list, es: bool) -> str:
     """A legutóbbi tanári üzenet feladatához tartozó segítési mód (ha van)."""
     utolso = next((m for m in reversed(history or []) if m.get("role") == "assistant"), None)
@@ -11365,9 +11444,37 @@ _TANAR_JAVITAS_SZABALY = """
 """
 
 
+_SZINTFELMERO_BLOKK = re.compile(
+    r"\nSZINTFELMÉRŐ MÓD:.*?Soha ne fejezd be az üzenetet a jelölővel\.\n"
+    r"|\nMODO EVALUACIÓN DE NIVEL:.*?termines el mensaje con el marcador\.\n", re.DOTALL)
+_UJ_TANTARGY_HU = (
+    "\nÚJ TANTÁRGY: a gyerek most kezdi nálunk ezt a tantárgyat. A beszélgetésben NE tarts "
+    "szintfelmérőt, és ne írd, hogy felmérés jön vagy volt (arra külön gomb van a lap tetején). "
+    "Kezdd rögtön a tanítást a mostani lecke elején. Amikor a gyerek először VÁLASZOL egy "
+    "kérdésedre, a válaszod elejére írd ki: <LEVEL:1> (rejtett).\n")
+_UJ_TANTARGY_ES = (
+    "\nASIGNATURA NUEVA: el niño empieza ahora esta asignatura con nosotros. En la conversación NO "
+    "hagas evaluación de nivel ni digas que viene o que ha habido una evaluación (para eso hay un "
+    "botón arriba). Empieza directamente a enseñar desde el principio de esta lección. Cuando el "
+    "niño RESPONDA por primera vez a una pregunta tuya, escribe al principio: <LEVEL:1> (oculto).\n")
+
+
+def _uj_tantargy(progress) -> bool:
+    """Szint 0, és NEM a szintfelmérő gombbal indult → nincs álfelmérés a chatben.
+    2026-11-09: a nyitó szöveg „öt felmérő állítást” ígért, majd „kész a felmérés” –
+    a gyerek egyet sem látott. A gombos szintfelmérő (próbálkozás > 0) a régi marad."""
+    p = progress or {}
+    return bool(NYITO_FELADAT and int(p.get("level", 0) or 0) == 0
+                and int(p.get("early_placement_attempts") or 0) == 0)
+
+
 def _build_chat_system_prompt(*args, **kwargs) -> str:
     """A prompt + (ha a gépi rajzok ki vannak kapcsolva) a rajztilalom a végén."""
+    _uj = kwargs.pop("uj_tantargy", False)
     prompt = _build_chat_system_prompt_alap(*args, **kwargs)
+    if _uj:
+        prompt = _SZINTFELMERO_BLOKK.sub(
+            lambda m: _UJ_TANTARGY_ES if m.group(0).startswith("\nMODO") else _UJ_TANTARGY_HU, prompt)
     # KITÉRŐ (2026-10-30, Sándor): a lecke zárva marad, de ha a gyerek másról
     # kérdez (az iskola más tempóban halad), a tanár segít. Ez nem a lecke
     # ideje – a <KITERO> jelölőre a böngésző megállítja a lecke óráját.
@@ -13740,11 +13847,15 @@ def uj_felulet_kapcsolo():
 
 @app.route("/children/<int:child_id>/chat")
 @login_required
-def _nyito_feladat(nyers: str, tiszta: str, grade_num, active_curr, temakor, nyelv):
+def _nyito_feladat(nyers: str, tiszta: str, grade_num, active_curr, temakor, nyelv, targy=""):
     """A lecke nyitó szövegében kiírt <FELADAT> (eddig elveszett) – ingyen, AI nélkül."""
     es = (active_curr or "HU").upper() == "ES"
     f = _feladat_parse(nyers, grade=grade_num, es_tanterv=es, temakor=temakor)
     if not isinstance(f, dict):
+        f = _fgep_szovegbol(tiszta, grade_num, es, targy=targy)
+    if not isinstance(f, dict):
+        if _FELADAT_IGERET.search((tiszta or "")[-200:]):
+            print(f"[FELADAT-HIANY] nyito: {(tiszta or '')[-160:]!r}", flush=True)
         return None
     if not f.get("kerdes") and not f.get("cim"):
         kk = re.findall(r"[^.!?\n]*\?", re.sub(r"<[^>]{1,40}>", " ", tiszta or ""))
@@ -14024,6 +14135,7 @@ def child_chat(child_id: int):
                         teszt_info=_teszt_kapu_szoveg(
                             child_id, progress_subject, grade_num,
                             current_topic_id, catalog),
+                        uj_tantargy=_uj_tantargy(progress),
                     )
                     trigger = (
                         "NE köszönj és NE mutatkozz be — a gyerek az előző "
@@ -14082,7 +14194,8 @@ def child_chat(child_id: int):
                             try:
                                 _nyito_f = _nyito_feladat(teaching_response, clean_teaching,
                                                           grade_num, active_curr, current_topic,
-                                                          language if is_foreign else None)
+                                                          language if is_foreign else None,
+                                                          targy=subject)
                             except Exception:
                                 logger.exception("Nyito feladat hiba")
                         database.add_chat_message(
@@ -14130,6 +14243,7 @@ def child_chat(child_id: int):
                         teszt_info=_teszt_kapu_szoveg(
                             child_id, progress_subject, grade_num,
                             current_topic_id, catalog),
+                        uj_tantargy=_uj_tantargy(progress),
                     )
                     trigger = (
                         "NE köszönj és NE mutatkozz be — a gyerek az előző "
@@ -14188,7 +14302,8 @@ def child_chat(child_id: int):
                             try:
                                 _nyito_f = _nyito_feladat(teaching_response, clean_teaching,
                                                           grade_num, active_curr, current_topic,
-                                                          language if is_foreign else None)
+                                                          language if is_foreign else None,
+                                                          targy=subject)
                             except Exception:
                                 logger.exception("Nyito feladat hiba")
                         database.add_chat_message(
@@ -14531,6 +14646,7 @@ def child_chat_send(child_id: int):
         szokincs=current_topic_item.get("szokincs") if is_foreign and current_topic_item else None,
         spiralis=bool(chat_curriculum.get("spiralis")),
         teszt_info=("" if GYORSITOTAR else _teszt_szoveg),
+        uj_tantargy=_uj_tantargy(progress),
     )
     system_prompt += _topic_teaching_prompt_block(
         current_topic_item,
@@ -14744,6 +14860,13 @@ def child_chat_send(child_id: int):
         # „a” → „az” magánhangzó előtt – NEM idegen nyelvi és NEM magyar órán.
         if not is_foreign and "magyar" not in (subject or "").lower():
             raw_reply = _a_az_javit(raw_reply)
+            if KERDES_LEKTOR:
+                try:
+                    _lk = _kerdes_lektor(raw_reply, min(6.0, _maradek() - 8))
+                    if _lk and _lk[0] in raw_reply:
+                        raw_reply = raw_reply.replace(_lk[0], _lk[1], 1)
+                except Exception:
+                    logger.exception("Kerdes-lektor hiba")
 
     _remember_fl_words(raw_reply)
     # A gyakorló feladatot a NYERS válaszból olvassuk ki, mielőtt a jelölők
@@ -14772,6 +14895,21 @@ def child_chat_send(child_id: int):
         except Exception:
             logger.exception("Feladat-potlas hiba")
             feladat = None
+    if not feladat and NYITO_FELADAT:
+        # A tanár függvénygépet ígért, de nem rakta ki → mi rakjuk ki.
+        try:
+            _elozo_f = next((m.get("feladat") for m in reversed(history)
+                             if m.get("role") == "assistant" and isinstance(m.get("feladat"), dict)), None)
+            _kerul = ((_elozo_f.get("szorzo"), _elozo_f.get("hozzaad"))
+                      if isinstance(_elozo_f, dict) and _elozo_f.get("tipus") == "fgep" else None)
+            feladat = _fgep_szovegbol(_parse_chat_markers(raw_reply)[0] or "", grade_num,
+                                      _es_tanterv, _kerul, targy=subject)
+            if not feladat:
+                _lat_v = (_parse_chat_markers(raw_reply)[0] or "")[-200:]
+                if _FELADAT_IGERET.search(_lat_v):
+                    print(f"[FELADAT-HIANY] {_lat_v[-160:]!r}", flush=True)
+        except Exception:
+            logger.exception("Fgep szovegbol hiba")
     if isinstance(feladat, dict) and _OSZLOP_KERES.search(user_text or ""):
         try:
             _osz = _oszlopra(feladat)
@@ -15229,6 +15367,7 @@ def child_chat_send(child_id: int):
         level_set is not None
         and int(progress.get("level", 0) or 0) == 0
         and int(level_set or 0) > 0
+        and not _uj_tantargy(progress)   # új tantárgy első válasza ≠ szintfelmérő
     ):
         _pont_jar(
             "szintfelmero",
