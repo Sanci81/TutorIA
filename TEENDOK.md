@@ -144,6 +144,18 @@ Utolsó frissítés: 2026-11-06
       csoport-felületet kapja ajánlásként 4–8 példával egy kérdés helyett (FELADAT_TIPP).
       A halmazállapot-felület (allapot, „vízforralás”) a kémián is elérhető, csak a tanító
       nem választotta – az a melegítést/hűtést mutatja, nem a fizikai/kémiai szétválogatást.
+- [ ] fix105: (1) CSOPORT: egyetlen 24 betűnél hosszabb kártya az egész feladatot eldobta (ezért
+      nem jött a „Válogasd szét…” feladat) → kártya 36 betűig, a túl hosszú kimarad, a feladat
+      marad. (2) Ha a tanító szétválogatást ígér, de nem rakja ki → a program pótolja (kis modell,
+      FELADAT_TIPP). A ✓ a böngészőben tesztelve működik – a próbaoldalon újra megnézni.
+- [ ] ‼️ RENDSZERES HIBAKERESÉS (Sándor: „rengeteg a hiba, évekig javíthatnánk egyenként”):
+      admin oldal, ami MINDEN elveszett/hiányzó feladatot, lektor-javítást, ígért-de-nem-jött
+      feladatot naplóz okkal együtt (FELADAT ELVESZETT, FELADAT-HIANY, LEKTOR…) → kategóriánként
+      javítunk (egy javítás = sok lecke). + tanar_teszt automatikus futás erre a naplóra.
+- [ ] REGISZTRÁCIÓ (11.09 adat): 834 látogató → 2 regisztráció. Főoldal: medián 6 mp, 448-ból
+      32 görgetett. Regisztrációs oldal: 174 látogató, medián 6 mp. Ötletek: kipróbálás
+      regisztráció nélkül (1 rövid mintalecke), videó a főoldal tetején, ismerősök/csoportok
+      (nem fizetett hirdetés), 2–3 valódi család véleménye.
 - [ ] TANÍTÓ: a táblára csak az utolsó kérdés kerül ki – legyen önmagában érthető (Sándor nem
       értette: „Melyik a helyes szó: monokultúra vagy fajgazdagság?” – mire?). Megoldást keresni.
       Helyette: ingyenes posztok + videó; új hirdetés csak jobb anyaggal és céllal.

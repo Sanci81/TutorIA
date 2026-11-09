@@ -4669,15 +4669,20 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         return {"tipus": "parbeszed", "sorok": sorok, "kerdes": kerdes}
 
     if tipus == "csoport":
-        csop = [_rov(c, 20) for c in (adat.get("csoportok") or [])]
+        # 2026-11-09 (Sándor, kémia: „Válogasd szét…” – és nem jött feladat): egyetlen 24 betűnél
+        # hosszabb kártya („a szódabikarbóna és az ecet reakciója”) az EGÉSZ feladatot eldobta.
+        # Most: kártya 36, csoportnév 26 betűig; a túl hosszú kártya kimarad, a feladat megmarad.
+        csop = [_rov(c, 26) for c in (adat.get("csoportok") or [])]
         elemek = []
         for e in adat.get("elemek") or []:
             try:
-                nev, idx = _rov(e[0], 24), int(e[1])
+                nev, idx = _rov(e[0], 36), int(e[1])
             except Exception:
                 return None
-            if not nev or not (0 <= idx < len(csop)):
+            if not (0 <= idx < len(csop)):
                 return None
+            if not nev:
+                continue
             # Harmadik, nem kötelező elem: egy illő emoji (kép a kártyára).
             kep = str(e[2]).strip()[:4] if len(e) > 2 and e[2] else ""
             if kep and any(ch.isalnum() for ch in kep):
@@ -6871,6 +6876,49 @@ def _utolso_kerdes(szoveg: str) -> str:
             continue
         return sor if sor.rstrip("\"”»)] ").endswith("?") else ""
     return ""
+
+
+_SZETVALOGAT = re.compile(
+    r"v[áa]logasd\s+sz[ée]t|csoportos[íi]tsd|sorold\s+(?:be|a\b)|h[úu]zd\s+(?:a\s+)?k[áa]rty|k[áa]rty[áa]kat\s+.{0,30}h[úu]z|"
+    r"clasifica|agrupa\b|arrastra\s+las\s+tarjetas|ordena\s+(?:los|las)\s+ejemplos",
+    re.IGNORECASE)
+_CSOPORT_POTLAS_PROMPT = (
+    "Feladatkészítő vagy egy gyerekeknek szóló oktatóprogramban. A tanár szétválogatós (csoportosító) "
+    "feladatot ígért, de nem írta meg. A tanár üzenete alapján készítsd el. Kizárólag ezt a JSON-t add "
+    'vissza: {"kerdes": "…", "csoportok": ["…", "…"], "elemek": [["kártya", 0, "🧊"], …]}\n'
+    "Szabályok: 2–3 csoport (a tanár által említett kategóriák, csoportnév legfeljebb 3 szó); 6 kártya, "
+    "minden csoportba legalább kettő; kártya legfeljebb 4 szó, hétköznapi példa, egyértelműen besorolható; "
+    "a szám a csoport sorszáma 0-tól; a harmadik egy illő emoji. A kérdés rövid felszólítás. A tanár "
+    "nyelvén írj. Ha a tanár üzenetéből nem derül ki egyértelműen a csoportosítás, ezt add vissza: {}")
+
+
+def _csoport_potlas(reply_text: str, *, es: bool, idokorlat: float, grade=None, temakor=None) -> dict | None:
+    """A tanár szétválogatást ígért („Válogasd szét…”), de nem rakta ki → pótoljuk."""
+    if idokorlat < 4.0 or not _SZETVALOGAT.search((reply_text or "")[-400:]):
+        return None
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        return None
+    try:
+        client = _openai_client(api_key, request_timeout=idokorlat, max_retries=0)
+        resp = _ai_keszit(client, model=MODELL_SEGED, messages=[
+            {"role": "system", "content": _CSOPORT_POTLAS_PROMPT},
+            {"role": "user", "content": (reply_text or "")[-2000:]}])
+        out = (resp.choices[0].message.content or "").strip()
+        m = re.search(r"\{.*\}", out, re.DOTALL)
+        adat = json.loads(m.group(0)) if m else {}
+    except Exception as exc:
+        print(f"[CSOPORT-POTLAS] hiba: {exc}", flush=True)
+        return None
+    if not adat.get("elemek"):
+        return None
+    adat["tipus"] = "csoport"
+    f = _feladat_parse_belso("<FELADAT>" + json.dumps(adat, ensure_ascii=False) + "</FELADAT>",
+                             grade=grade, es_tanterv=es, temakor=temakor)
+    if f:
+        f = _feladat_jelolok_nelkul(f)
+        print(f"[CSOPORT-POTLAS] {len(f.get('elemek') or [])} kartya", flush=True)
+    return f
 
 
 def _feladat_potlas(reply_text: str, *, es: bool, idokorlat: float,
@@ -10417,10 +10465,12 @@ def _dm_feladat_blokk(subject_label: str, grade: int, *, es: bool, idegen: bool 
     if FELADAT_TIPP and any(f[0] == "csoport" for f in talalt):
         sorok.append(
             "  Si la pregunta es CLASIFICAR en 2–3 categorías (cambio físico o químico, ser vivo o no, par o "
-            "impar…), no hagas una sola pregunta de elegir: usa csoport con 4–8 ejemplos de la vida diaria."
+            "impar…), no hagas una sola pregunta de elegir: usa csoport con 4–8 ejemplos de la vida diaria "
+            "(máximo 4 palabras por tarjeta, p. ej. «hielo que se derrite», «vela que arde»)."
             if es else
             "  Ha a kérdés 2–3 KATEGÓRIÁBA SOROLÁS (fizikai vagy kémiai változás, élő vagy élettelen, páros "
-            "vagy páratlan…), ne egyetlen választós kérdést adj: csoport-felület 4–8 hétköznapi példával.")
+            "vagy páratlan…), ne egyetlen választós kérdést adj: csoport-felület 4–8 hétköznapi példával "
+            "(kártyánként legfeljebb 4 szó, pl. „jég olvadása”, „gyertya égése”).")
     return "\n".join(sorok) + "\n"
 
 
@@ -14952,6 +15002,14 @@ def child_chat_send(child_id: int):
         if feladat:
             print(f"[FELADAT] jelolo nelkul, szovegbol: {feladat.get('tipus')}",
                   flush=True)
+    if not feladat and FELADAT_TIPP:
+        try:
+            feladat = _csoport_potlas(_parse_chat_markers(raw_reply)[0], es=_es_tanterv,
+                                      idokorlat=min(10.0, _maradek() - 4),
+                                      grade=grade_num, temakor=current_topic)
+        except Exception:
+            logger.exception("Csoport-potlas hiba")
+            feladat = None
     if not feladat:
         # Választós kérdés, válaszlehetőség nélkül: külön hívással pótoljuk.
         try:
