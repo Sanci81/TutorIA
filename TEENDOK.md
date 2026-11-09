@@ -111,6 +111,11 @@ Utolsó frissítés: 2026-11-06
       mondatban). A tanító ne találjon ki szavakat: „függvénygép” / „gép”.
 - [ ] Your Europe Advice: a hosszú szöveg túllépte a karakterkorlátot → rövid változat:
       jogi/yea_rovid.txt (1560 karakter, az autónomo kérdés kimaradt: az a gestoríáé).
+      ✔ ELKÜLDVE 2026-11-09 (Sándor). Válasz kb. 1 héten belül az info@tutoriacademia.com
+      címre. [ ] Válasz után: ÁSZF, adatvédelem, csomagoldal frissítése. [ ] Gestoríának a
+      spanyol levél (jogi/jogi_kerdesek_2026-11-09.txt) még nincs elküldve.
+- [ ] VIDEÓ v2 kész (tutoria_reel_este_v2.mp4, 18 mp): könyves jelenet, értesítés a
+      telefonnál, képernyőn a fizikás áramkör. Ha Sándor egyszerűbb leckét küld, csere.
 - [ ] Videó/poszt: a zsiráf helyett más figura (Sándor). A „Fáradt este” téma jó →
       python video_kanape.py kep → kanape_jelenet.png legyen az 1. poszt képe is (poszt1.png
       helyett), utána python video_kanape.py video.
