@@ -13854,6 +13854,24 @@ def uj_felulet_kapcsolo():
     return redirect(request.referrer or url_for("dashboard"))
 
 
+def _nyito_vag(szoveg: str) -> str:
+    """A nyitó szövegben a feladat UTÁN írt rész kimarad (rejtett jelölők maradnak).
+    2026-11-09, Sándor képe: „Döntsd el, igaz vagy hamis… Ügyes voltál, ha ezek ismerősek
+    voltak” – a gyerek még semmit nem oldott meg, a tanító előre megdicsérte."""
+    m = _CHAT_MARKER_FELADAT.search(szoveg or "")
+    if not m:
+        return szoveg
+    elotte_lathato = (_parse_chat_markers(szoveg[:m.start()])[0] or "").strip()
+    utana = szoveg[m.end():]
+    utana_lathato = (_parse_chat_markers(utana)[0] or "").strip()
+    if len(elotte_lathato) < 150 or len(utana_lathato) < 5:
+        return szoveg
+    jelolok = [x.group(0) for r in (_CHAT_MARKER_SVG, _CHAT_MARKER_VOCAB, _CHAT_MARKER_TOPIC,
+                                     _CHAT_MARKER_LEVEL) for x in r.finditer(utana)]
+    print(f"[NYITO-VAG] a feladat utani szoveg kimarad: {utana_lathato[:160]!r}", flush=True)
+    return szoveg[:m.end()] + ("\n" + "\n".join(jelolok) if jelolok else "")
+
+
 def _nyito_feladat(nyers: str, tiszta: str, grade_num, active_curr, temakor, nyelv, targy=""):
     """A lecke nyitó szövegében kiírt <FELADAT> (eddig elveszett) – ingyen, AI nélkül."""
     es = (active_curr or "HU").upper() == "ES"
@@ -14152,12 +14170,16 @@ def child_chat(child_id: int):
                         "furcsán hat. Kezdd RÖGTÖN a tanítással: mondd el, mit "
                         "tanulunk ma, majd mutass be 1-3 szót vagy egy fogalmat "
                         "a témakörből, példával, a TANÍTÁSI ALAPSZABÁLY szerint."
+                        " Ha interaktív feladatot (<FELADAT>) adsz, az legyen az üzenet LEGVÉGÉN, és"
+                        " utána már ne írj semmit – a gyerek még nem oldotta meg, ne dicsérd meg előre."
                         if active_curr != "ES"
                         else "NO saludes ni te presentes — el niño ya recibió un "
                         "saludo en el mensaje anterior y saludar dos veces suena "
                         "raro. Empieza DIRECTAMENTE con la clase: di qué vamos a "
                         "aprender hoy y enseña 1-3 palabras o un concepto del "
                         "tema, con ejemplos, según la REGLA BÁSICA DE ENSEÑANZA."
+                        " Si das una tarea interactiva (<FELADAT>), ponla al FINAL del mensaje y no"
+                        " escribas nada después: el niño todavía no la ha hecho, no lo felicites antes."
                     )
                     teaching_response = _call_ai_for_chat(
                         system_prompt,
@@ -14169,6 +14191,8 @@ def child_chat(child_id: int):
                         # <LEVEL:n>, <ABRA>) itt is ki kell szedni, különben
                         # nyersen megjelennek a buborékban, és a szójegyzék sem
                         # töltődik – a child_chat_send útvonal ugyanezt teszi.
+                        if NYITO_FELADAT:
+                            teaching_response = _nyito_vag(teaching_response)
                         _remember_fl_words(teaching_response)
                         clean_teaching, _td, _lvl, _vocab, _svgs = _parse_chat_markers(
                             teaching_response
@@ -14260,12 +14284,16 @@ def child_chat(child_id: int):
                         "furcsán hat. Kezdd RÖGTÖN a tanítással: mondd el, mit "
                         "tanulunk ma, majd mutass be 1-3 szót vagy egy fogalmat "
                         "a témakörből, példával, a TANÍTÁSI ALAPSZABÁLY szerint."
+                        " Ha interaktív feladatot (<FELADAT>) adsz, az legyen az üzenet LEGVÉGÉN, és"
+                        " utána már ne írj semmit – a gyerek még nem oldotta meg, ne dicsérd meg előre."
                         if active_curr != "ES"
                         else "NO saludes ni te presentes — el niño ya recibió un "
                         "saludo en el mensaje anterior y saludar dos veces suena "
                         "raro. Empieza DIRECTAMENTE con la clase: di qué vamos a "
                         "aprender hoy y enseña 1-3 palabras o un concepto del "
                         "tema, con ejemplos, según la REGLA BÁSICA DE ENSEÑANZA."
+                        " Si das una tarea interactiva (<FELADAT>), ponla al FINAL del mensaje y no"
+                        " escribas nada después: el niño todavía no la ha hecho, no lo felicites antes."
                     )
                     teaching_response = _call_ai_for_chat(
                         system_prompt,
@@ -14277,6 +14305,8 @@ def child_chat(child_id: int):
                         # <LEVEL:n>, <ABRA>) itt is ki kell szedni, különben
                         # nyersen megjelennek a buborékban, és a szójegyzék sem
                         # töltődik – a child_chat_send útvonal ugyanezt teszi.
+                        if NYITO_FELADAT:
+                            teaching_response = _nyito_vag(teaching_response)
                         _remember_fl_words(teaching_response)
                         clean_teaching, _td, _lvl, _vocab, _svgs = _parse_chat_markers(
                             teaching_response

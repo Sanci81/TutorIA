@@ -127,6 +127,14 @@ Utolsó frissítés: 2026-11-06
       (11.06 és 11.09; 1 a hirdetésből). A főoldalon a medián idő 6 mp, csak 32 görgetett.
 - [x] VIDEÓ v3 KÉSZ (tutoria_reel_este_v3.mp4, 18 mp) – képkockánként ellenőrizve (1 bögre,
       nincs gőz a konyhában). Mehet Facebook-posztba (nem hirdetésbe).
+      v4 (végleges): a képernyős részen a teljes áramkör, alul lágy áttűnéssel.
+- [ ] fix102 (próbán ellenőrizni): (1) a lecke nyitó szövegében a feladat UTÁN írt szöveg
+      kimarad („Ügyes voltál, ha ezek ismerősek voltak” – előre dicsért), és a tanító utasítást
+      kap, hogy a feladat legyen a végén (NYITO_FELADAT). (2) választós feladatnál a jó
+      válasz betűje helyén ✓ jelenik meg.
+- [ ] Próbaoldal-ellenőrzés (Sándor, 11.09): a függvénygép megjelent ✔, a jó válasz betűje
+      látszik ✔. A halmazok-lecke nyitásánál még álbemelegítés volt (fix102 javítja).
+- [ ] Apróság: a tanító „A háztartási lámpákat így kapcsolják be” – helyesen „így kötik be”.
       Helyette: ingyenes posztok + videó; új hirdetés csak jobb anyaggal és céllal.
 - [ ] Videó/poszt: a zsiráf helyett más figura (Sándor). A „Fáradt este” téma jó →
       python video_kanape.py kep → kanape_jelenet.png legyen az 1. poszt képe is (poszt1.png

@@ -10364,14 +10364,14 @@
                 // HA TUDJUK, MELYIK A JÓ (a tanár „jo” mezője): azonnal visszajelzünk.
                 if (typeof f.jo === 'number' && gombok[f.jo]) {
                     if (k === f.jo) {
-                        doboz._zar = true; g.classList.add('fv-jo'); if (vj) { vj.className = 'visszajelzes'; vj.innerHTML = ''; } ieUnnep(doboz);
+                        doboz._zar = true; g.classList.add('fv-jo'); g.firstChild.textContent = '✓'; if (vj) { vj.className = 'visszajelzes'; vj.innerHTML = ''; } ieUnnep(doboz);
                         setTimeout(function () { feladatKuld(doboz, opcio); }, 1800);
                         return;
                     }
                     probalt++;
                     g.classList.add('fv-rossz'); g.disabled = true;
                     if (probalt >= 2 || gombok.length <= 2) {
-                        doboz._zar = true; gombok[f.jo].classList.add('fv-jo');
+                        doboz._zar = true; gombok[f.jo].classList.add('fv-jo'); gombok[f.jo].firstChild.textContent = '✓';
                         uzen(ES ? 'La correcta es: <b>' + gombok[f.jo].lastChild.textContent + '</b>. Tu profe te lo explica.'
                                 : 'A jó válasz: <b>' + gombok[f.jo].lastChild.textContent + '</b>. A tanár elmagyarázza.', false);
                         setTimeout(function () { feladatKuld(doboz, opcio); }, 2200);
