@@ -100,8 +100,17 @@ Utolsó frissítés: 2026-11-06
       _nyito_feladat függvény a child_chat útvonal-jelölői (@app.route, @login_required) közé
       került. Javítva; az útvonal-térkép ellenőrizve (94 útvonal, mind a régi függvényen).
 - [x] fix96: a KÉRDÉS-LEKTOR a spanyol oldalon is fut (nem spanyol nyelv órán, nem idegen nyelven).
-- [ ] Videó EMBEREKKEL is (Sándor): python video_kanape.py kep --emberek (külön fájl,
-      mesekönyves stílus, nem fotószerű).
+- [ ] VIDEÓ (tutoria_reel_este.mp4, 2026-11-09) – Sándor javításai:
+      (1) a kislány mellett ne gőzölögjön semmi; (2) az anyuka könyvet olvas, teával, a telefon
+      felvillan → leteszi a könyvet, felveszi a telefont, mosolyog (a bögre végig a kezében) –
+      video_kanape.py átírva: kep --emberek --ujra, aztán video --emberek. Az értesítés a
+      telefon felvillanásához igazítva kerül rá.
+      (3) a képernyős rész („számgép”, zavaros szöveg) helyett egyszerű, érthető lecke kell –
+      Sándor küld képernyőképet (pl. 3–4. o. matek, interaktív feladattal).
+- [ ] TANÍTÓ: a függvénygépet „számgépnek” nevezte, és zavarosan magyarázott (2 lépés egy
+      mondatban). A tanító ne találjon ki szavakat: „függvénygép” / „gép”.
+- [ ] Your Europe Advice: a hosszú szöveg túllépte a karakterkorlátot → rövid változat:
+      jogi/yea_rovid.txt (1560 karakter, az autónomo kérdés kimaradt: az a gestoríáé).
 - [ ] Videó/poszt: a zsiráf helyett más figura (Sándor). A „Fáradt este” téma jó →
       python video_kanape.py kep → kanape_jelenet.png legyen az 1. poszt képe is (poszt1.png
       helyett), utána python video_kanape.py video.

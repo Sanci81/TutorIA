@@ -20,7 +20,7 @@ ELŐTTE (ugyanúgy, mint a nyitóképnél):
     $env:GEMINI_API_KEY = "ide-a-sajat-kulcsod"
 
 EMBERES VÁLTOZAT (2026-11-09, Sándor kérte – a mackós marad, ez külön):
-    python video_kanape.py kep --emberek     → kanape_jelenet_emberek.png
+    python video_kanape.py kep --emberek --ujra   → kanape_jelenet_emberek.png (új kép)
     python video_kanape.py video --emberek   → kanape_video_emberek.mp4
     Ugyanaz a mesekönyves festett stílus, de anyuka és a kislánya (nem fotószerű:
     valódinak tűnő gyerek-arcot nem készítünk, és így nem kell „AI-kép” címke sem).
@@ -71,15 +71,38 @@ PROMPT = (
 
 
 VIDEO_NEV = "kanape_video"
-KEP_PROMPT_EMBER = KEP_PROMPT.replace(
-    "a kind, relaxed mother bear sits curled up on a soft sofa",
-    "a kind, relaxed young mother (about 35, casual home clothes) sits curled up on a soft sofa").replace(
-    "a small friendly monkey child sits at the kitchen table",
-    "her daughter, a cheerful girl of about nine, sits at the kitchen table") + (
-    " The people are drawn in the same simple storybook style with soft, stylized faces – clearly an "
-    "illustration, NOT photorealistic.")
-PROMPT_EMBER = PROMPT.replace("The mother bear on the sofa", "The mother on the sofa").replace(
-    "the little monkey taps", "the little girl taps").replace("the bear looks", "the mother looks")
+# 2. változat (2026-11-09, Sándor): az anyuka KÖNYVET olvas, teával; a telefon mellette
+# fekszik, felvillan → leteszi a könyvet, felveszi a telefont, elolvassa, mosolyog.
+# A kislány mellett SEMMI ne gőzölögjön (az előzőn a tablet mellett gőz szállt fel).
+KEP_PROMPT_EMBER = (
+    "Hand-painted children's picture-book illustration in gouache and transparent watercolor with "
+    "delicate, slightly uneven visible pencil linework, on textured cotton watercolor paper. Soft, warm "
+    "evening light from a table lamp, harmonious gentle palette. NOT digital 3D, NOT photorealistic. "
+    "Wide 3:2 composition. Scene: a cozy family living room in the evening. In the LOWER RIGHT, a kind, "
+    "relaxed young mother (about 35, casual home clothes) sits curled up on a soft sofa under a knitted "
+    "blanket. She is reading an open paperback book held in her LEFT hand and holds a mug of tea in her "
+    "RIGHT hand. Her smartphone lies face-up on the sofa cushion right beside her, screen dark. In the "
+    "LEFT background, through a wide open doorway, the tidy kitchen is visible: her daughter, a cheerful "
+    "girl of about nine, sits at the kitchen table and learns on a tablet whose screen glows softly. "
+    "Nothing on the kitchen table except the tablet; the stove is off; there is NO steam, NO smoke and "
+    "NO cups anywhere in the kitchen. Bookshelves, a potted plant, a rug. People drawn in a simple "
+    "storybook style with soft, stylized faces. The TOP quarter of the image is calm, simple wall and "
+    "ceiling with no strong details (text goes there). Absolutely no text, no letters, no numbers, no "
+    "logos, no watermark, no frame.")
+PROMPT_EMBER = (
+    "Bring this hand-painted storybook illustration gently to life. Keep EXACTLY the same picture, "
+    "characters, colors and the soft gouache-and-watercolor picture-book style with visible paper texture. "
+    "Static locked-off camera: no zoom, no pan. The clip is 8 seconds: "
+    "[0-2s] the mother calmly reads her book and takes a small sip of tea. "
+    "[2-4s] the phone lying on the sofa beside her lights up softly; she notices it. "
+    "[4-6s] she lowers the book onto her lap, picks up the phone with that free hand and looks at the "
+    "screen; she keeps holding the tea mug in her other hand the whole time. "
+    "[6-8s] she reads the phone and smiles warmly, relaxed. "
+    "Meanwhile in the kitchen in the background the girl keeps tapping the glowing tablet and nods "
+    "happily. Only a faint wisp of steam from the mother's mug; NO steam or smoke in the kitchen, nothing "
+    "steaming near the girl. All movements subtle, slow and natural. Keep it hand-painted, not "
+    "photorealistic, not 3D. No text, no letters, no writing on any screen, no new characters, no "
+    "morphing faces or hands. No dialogue, no music, only quiet evening room ambience.")
 
 
 def emberes():
