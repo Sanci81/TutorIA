@@ -25,6 +25,13 @@ EMBERES VÁLTOZAT (2026-11-09, Sándor kérte – a mackós marad, ez külön):
     Ugyanaz a mesekönyves festett stílus, de anyuka és a kislánya (nem fotószerű:
     valódinak tűnő gyerek-arcot nem készítünk, és így nem kell „AI-kép” címke sem).
 
+3. VÁLTOZAT (2026-11-09, Sándor: „a régi, mobilozós kép a jó, csak a módosításokkal”):
+    python video_kanape.py javit      → a RÉGI képet (kanape_jelenet_emberek_regi.png) javítja:
+                                         könyv a kezében, telefon mellette, gőz nincs a konyhában
+                                         → kanape_jelenet_v3.png   (kb. 0,25 $)
+    ELŐBB SZÓLJ CLAUDE-NAK, megnézi a képet – csak ha jó:
+    python video_kanape.py video --v3 → kanape_video_v3.mp4      (kb. 0,9 $)
+
 Utána szólj Claude-nak: összerakja a videót (felirat, értesítés, képernyő, logó).
 """
 import argparse
@@ -105,9 +112,74 @@ PROMPT_EMBER = (
     "morphing faces or hands. No dialogue, no music, only quiet evening room ambience.")
 
 
+REGI_KEP = os.path.join(MAPPA, "kanape_jelenet_emberek_regi.png")
+V3_KEP = os.path.join(MAPPA, "kanape_jelenet_v3.png")
+JAVIT_PROMPT = (
+    "Edit this hand-painted storybook illustration. Keep EVERYTHING else exactly the same: the style, "
+    "paper texture, colors, light, composition, the room, the kitchen, the girl, the sofa, the lamp and "
+    "the mother's face, hair and clothes. Make ONLY these changes: "
+    "1) The mother now holds an open paperback book in her LEFT hand (instead of the phone) and is "
+    "reading it. "
+    "2) Her smartphone lies face-up on the sofa cushion right beside her, its screen dark. "
+    "3) She keeps holding the SAME single tea mug in her RIGHT hand – there is exactly ONE mug in the "
+    "whole picture on the sofa side. "
+    "4) Remove ALL steam in the kitchen: no steam above the pot, no steam near the girl. The pot has its "
+    "lid on. Nothing steams anywhere near the girl. "
+    "No text, no letters, no logos.")
+PROMPT_V3 = (
+    # Bal/jobb kéz NINCS a szövegben: a képen a könyv a néző felőli bal oldalon, a bögre a jobb
+    # oldalon van – a „left/right hand” összezavarná a modellt (előző videón két bögre lett).
+    "Bring this hand-painted storybook illustration gently to life. Keep EXACTLY the same picture, "
+    "characters, colors and the soft gouache-and-watercolor picture-book style with visible paper texture. "
+    "Static locked-off camera: no zoom, no pan. "
+    "IMPORTANT: the mother has exactly ONE tea mug. The hand that holds the mug keeps holding that same "
+    "mug for the whole clip; the mug never moves to the other hand and no second mug ever appears. "
+    "The clip is 8 seconds: "
+    "[0-2s] she calmly reads the book and takes a small sip from the mug. "
+    "[2-4s] the phone lying on the sofa cushion beside her lights up softly; she glances down at it. "
+    "[4-6s] she lays the open book down on her lap with the hand that was holding it, and with that same "
+    "free hand she picks up the glowing phone and looks at the screen. The mug stays in its hand. "
+    "[6-8s] she reads the phone and smiles warmly, relaxed. "
+    "In the kitchen in the background the girl keeps tapping the glowing tablet and smiles. "
+    "NO steam or smoke in the kitchen, the pot keeps its lid on and does not steam, nothing steams near "
+    "the girl; only a faint wisp of steam from the mother's mug. All movements subtle, slow and natural. "
+    "Keep it hand-painted, not photorealistic, not 3D. No text, no writing on any screen, no new "
+    "characters or objects, no morphing faces or hands. No dialogue, no music, only quiet evening room "
+    "ambience.")
+
+
+def javit() -> int:
+    """3. változat képe: a RÉGI (jó) képet javítja, nem újat rajzol."""
+    if not os.path.exists(REGI_KEP):
+        print("Nincs meg a régi kép:", REGI_KEP)
+        return 1
+    k = os.environ.get("OPENAI_API_KEY")
+    if not k:
+        print('Nincs OPENAI_API_KEY. PowerShellben: $env:OPENAI_API_KEY = "ide-a-sajat-kulcsod"')
+        return 1
+    import figura_kepek as fk
+    from openai import OpenAI
+    print("Kép javítása… (kb. 1 perc)", flush=True)
+    try:
+        with open(REGI_KEP, "rb") as kep:
+            v = fk._hivas(OpenAI(api_key=k).images.edit, model=fk.MODELL, image=kep, size="1536x1024",
+                          prompt=JAVIT_PROMPT, input_fidelity="high", quality="high")
+        with open(V3_KEP, "wb") as f:
+            f.write(fk._kep_bajt(v))
+        print("OK →", V3_KEP, "\nSzólj Claude-nak, megnézi. Csak utána: python video_kanape.py video --v3")
+        return 0
+    except Exception as e:
+        print(f"! nem sikerült: {type(e).__name__}: {str(e)[:300]}")
+        return 1
+
+
 def emberes():
     """--emberek: ugyanaz a jelenet emberekkel, KÜLÖN fájlokba (a mackós megmarad)."""
     global BEMENET, KEP_PROMPT, PROMPT, VIDEO_NEV
+    if "--v3" in sys.argv:
+        sys.argv.remove("--v3")
+        BEMENET, PROMPT, VIDEO_NEV = V3_KEP, PROMPT_V3, "kanape_video_v3"
+        return
     if "--emberek" in sys.argv:
         sys.argv.remove("--emberek")
         BEMENET = os.path.join(MAPPA, "kanape_jelenet_emberek.png")
@@ -149,6 +221,8 @@ def kep_keszit(ujra: bool) -> int:
 
 def main():
     emberes()
+    if len(sys.argv) > 1 and sys.argv[1] == "javit":
+        return javit()
     if len(sys.argv) > 1 and sys.argv[1] == "kep":
         return kep_keszit("--ujra" in sys.argv)
     if len(sys.argv) > 1 and sys.argv[1] == "video":

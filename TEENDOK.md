@@ -114,8 +114,15 @@ Utolsó frissítés: 2026-11-06
       ✔ ELKÜLDVE 2026-11-09 (Sándor). Válasz kb. 1 héten belül az info@tutoriacademia.com
       címre. [ ] Válasz után: ÁSZF, adatvédelem, csomagoldal frissítése. [ ] Gestoríának a
       spanyol levél (jogi/jogi_kerdesek_2026-11-09.txt) még nincs elküldve.
-- [ ] VIDEÓ v2 kész (tutoria_reel_este_v2.mp4, 18 mp): könyves jelenet, értesítés a
-      telefonnál, képernyőn a fizikás áramkör. Ha Sándor egyszerűbb leckét küld, csere.
+- [ ] VIDEÓ v2 ROSSZ: az új jelenetben két bögre van az anyuka kezében (Claude átnézte, de nem
+      vette észre). Sándor: a RÉGI, mobilozós kép a jó (konyha, minden) – azt kell javítani.
+      v3: python video_kanape.py javit (a régi képet javítja: könyv, telefon mellette, gőz nincs
+      a konyhában) → Claude MEGNÉZI → csak utána video --v3. Videónál Claude képkockánként
+      ellenőrzi a kezeket/bögrét, mielőtt összerakja. (Eddig ~4 € ment el a videókra.)
+      ✔ kanape_jelenet_v3.png kész és Claude átnézte (1 bögre, könyv, telefon a kanapén, a
+      konyhában fedő a lábason, nincs gőz). A videó-prompt bal/jobb kéz nélkül (fix100).
+- [x] HIRDETÉS LEÁLLÍTVA (Sándor, 2026-11-09): nem hozott regisztrációt, fogyott a pénz.
+      Helyette: ingyenes posztok + videó; új hirdetés csak jobb anyaggal és céllal.
 - [ ] Videó/poszt: a zsiráf helyett más figura (Sándor). A „Fáradt este” téma jó →
       python video_kanape.py kep → kanape_jelenet.png legyen az 1. poszt képe is (poszt1.png
       helyett), utána python video_kanape.py video.
