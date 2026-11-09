@@ -10412,6 +10412,15 @@ def _dm_feladat_blokk(subject_label: str, grade: int, *, es: bool, idegen: bool 
             sorok.append(f"{i}) {f[4]}")
         sorok.append("Így válassz (a fenti lista mellett):")
         sorok += ["  " + f[6] for f in talalt]
+    # 2026-11-09 (Sándor, kémia: „Melyik példa fizikai változás?” – két gomb; „lehet nem csak egy
+    # kérdés”): ha kategóriába sorolás a kérdés, EGY kérdés helyett több példa a csoport-felületen.
+    if FELADAT_TIPP and any(f[0] == "csoport" for f in talalt):
+        sorok.append(
+            "  Si la pregunta es CLASIFICAR en 2–3 categorías (cambio físico o químico, ser vivo o no, par o "
+            "impar…), no hagas una sola pregunta de elegir: usa csoport con 4–8 ejemplos de la vida diaria."
+            if es else
+            "  Ha a kérdés 2–3 KATEGÓRIÁBA SOROLÁS (fizikai vagy kémiai változás, élő vagy élettelen, páros "
+            "vagy páratlan…), ne egyetlen választós kérdést adj: csoport-felület 4–8 hétköznapi példával.")
     return "\n".join(sorok) + "\n"
 
 

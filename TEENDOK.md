@@ -140,6 +140,10 @@ Utolsó frissítés: 2026-11-06
       írt lehetőségeket, a program pótolta) a helyes válasz elveszett a keverésnél → most megmarad
       (POTLAS_JO, próbán BE). (2) Rossz válasz: piros keret; a felsős sötét lapon a „Ez nem jó…”
       szöveg eddig olvashatatlan volt → világos piros.
+- [ ] fix104: kategóriába sorolós kérdésnél (pl. fizikai vagy kémiai változás) a tanító a
+      csoport-felületet kapja ajánlásként 4–8 példával egy kérdés helyett (FELADAT_TIPP).
+      A halmazállapot-felület (allapot, „vízforralás”) a kémián is elérhető, csak a tanító
+      nem választotta – az a melegítést/hűtést mutatja, nem a fizikai/kémiai szétválogatást.
 - [ ] TANÍTÓ: a táblára csak az utolsó kérdés kerül ki – legyen önmagában érthető (Sándor nem
       értette: „Melyik a helyes szó: monokultúra vagy fajgazdagság?” – mire?). Megoldást keresni.
       Helyette: ingyenes posztok + videó; új hirdetés csak jobb anyaggal és céllal.
