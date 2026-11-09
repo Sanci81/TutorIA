@@ -6911,12 +6911,19 @@ def _feladat_potlas(reply_text: str, *, es: bool, idokorlat: float,
               if str(o).strip()]
     if len(opciok) < 2 or len({o.casefold() for o in opciok}) != len(opciok):
         return None
+    # 2026-11-09 (Sándor): a pótolt kérdésnél nem volt pipa/konfetti, mert a „helyes”
+    # sorszámot keverés után eldobtuk → a tábla nem tudta, melyik a jó. Most SZÖVEGKÉNT
+    # visszük tovább (keverés után is megtalálható). Kapcsoló: POTLAS_JO.
+    _h = adat.get("helyes")
+    _helyes = (opciok[_h] if POTLAS_JO and isinstance(_h, int) and not isinstance(_h, bool)
+               and 0 <= _h < len(opciok) and len(opciok) == len(adat.get("opciok") or []) else None)
     # A helyes ne mindig ugyanott álljon: megkeverjük.
     random.shuffle(opciok)
     # UGYANAZ az ellenőrzés, mint a tanár saját feladatánál.
-    jelolo = "<FELADAT>" + json.dumps(
-        {"tipus": "valaszt", "opciok": opciok}, ensure_ascii=False
-    ) + "</FELADAT>"
+    _pf = {"tipus": "valaszt", "opciok": opciok}
+    if _helyes:
+        _pf["jo"] = _helyes
+    jelolo = "<FELADAT>" + json.dumps(_pf, ensure_ascii=False) + "</FELADAT>"
     feladat = _feladat_parse_belso(jelolo, grade=grade, es_tanterv=es,
                                    temakor=temakor)
     if feladat:
@@ -11167,6 +11174,9 @@ NYITO_FELADAT = (_NYF in ("1", "igen", "true", "be")
 # megkapja, HOGYAN segítsen pont annál a feladatnál (kézzel írt, kipróbált
 # lépések), a táblán lévő számokkal – ne egy régi példával magyarázzon.
 # Kapcsoló: FELADAT_TIPP – próbaoldalon magától BE, élesen csak =1-gyel; 0 = ki.
+_PJO = os.environ.get("POTLAS_JO", "").strip().lower()
+POTLAS_JO = (_PJO in ("1", "igen", "true", "be")
+             or (PROBA_OLDAL and _PJO not in ("0", "nem", "false", "ki")))
 _FTP = os.environ.get("FELADAT_TIPP", "").strip().lower()
 FELADAT_TIPP = (_FTP in ("1", "igen", "true", "be")
                 or (PROBA_OLDAL and _FTP not in ("0", "nem", "false", "ki")))

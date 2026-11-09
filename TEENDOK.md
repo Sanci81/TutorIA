@@ -127,7 +127,8 @@ Utolsó frissítés: 2026-11-06
       (11.06 és 11.09; 1 a hirdetésből). A főoldalon a medián idő 6 mp, csak 32 görgetett.
 - [x] VIDEÓ v3 KÉSZ (tutoria_reel_este_v3.mp4, 18 mp) – képkockánként ellenőrizve (1 bögre,
       nincs gőz a konyhában). Mehet Facebook-posztba (nem hirdetésbe).
-      v4 (végleges): a képernyős részen a teljes áramkör, alul lágy áttűnéssel.
+      v4: Sándornak nem tetszett → a v3 a VÉGLEGES (tutoria_reel_este_v3.mp4).
+      (Az összerakás ingyenes, csak a „video” parancs fogyaszt Gemini-pénzt.)
 - [ ] fix102 (próbán ellenőrizni): (1) a lecke nyitó szövegében a feladat UTÁN írt szöveg
       kimarad („Ügyes voltál, ha ezek ismerősek voltak” – előre dicsért), és a tanító utasítást
       kap, hogy a feladat legyen a végén (NYITO_FELADAT). (2) választós feladatnál a jó
@@ -135,6 +136,12 @@ Utolsó frissítés: 2026-11-06
 - [ ] Próbaoldal-ellenőrzés (Sándor, 11.09): a függvénygép megjelent ✔, a jó válasz betűje
       látszik ✔. A halmazok-lecke nyitásánál még álbemelegítés volt (fix102 javítja).
 - [ ] Apróság: a tanító „A háztartási lámpákat így kapcsolják be” – helyesen „így kötik be”.
+- [ ] fix103: (1) A ✓/konfetti/„Szuper” NEM jött, mert a pótolt választós kérdésnél (a tanár nem
+      írt lehetőségeket, a program pótolta) a helyes válasz elveszett a keverésnél → most megmarad
+      (POTLAS_JO, próbán BE). (2) Rossz válasz: piros keret; a felsős sötét lapon a „Ez nem jó…”
+      szöveg eddig olvashatatlan volt → világos piros.
+- [ ] TANÍTÓ: a táblára csak az utolsó kérdés kerül ki – legyen önmagában érthető (Sándor nem
+      értette: „Melyik a helyes szó: monokultúra vagy fajgazdagság?” – mire?). Megoldást keresni.
       Helyette: ingyenes posztok + videó; új hirdetés csak jobb anyaggal és céllal.
 - [ ] Videó/poszt: a zsiráf helyett más figura (Sándor). A „Fáradt este” téma jó →
       python video_kanape.py kep → kanape_jelenet.png legyen az 1. poszt képe is (poszt1.png
