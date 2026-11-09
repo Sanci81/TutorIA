@@ -11159,7 +11159,8 @@ def _tanito_allapot_blokk(allapot: dict | None, es: bool) -> str:
             return ""
         sor = []
         jo = int(allapot.get("jo_sor", 0) or 0)
-        if jo >= 3:
+        # 3, 6, 9… jó válasz után egyszer szól – így nem siettet minden körben.
+        if jo >= 3 and jo % 3 == 0:
             sor.append(
                 (f"El niño ha respondido bien {jo} veces seguidas: esta parte ya la domina. No le des más "
                  "tareas iguales: pasa a una versión más difícil o al siguiente paso de la lección. No te "
@@ -11217,7 +11218,7 @@ def _tanito_allapot_frissit(allapot: dict | None, raw_reply: str, eredmeny: str,
     a.setdefault("rossz", 0); a.setdefault("probalt", []); a.setdefault("hibak", [])
     a.setdefault("jo_sor", 0); a.setdefault("unalom", 0)
     if eredmeny == "jo":
-        a["jo_sor"] = min(9, int(a["jo_sor"]) + 1)
+        a["jo_sor"] = min(99, int(a["jo_sor"]) + 1)
     elif eredmeny == "rossz":
         a["jo_sor"] = 0
     if _UNALOM_MINTA.search(gyerek_szoveg or ""):

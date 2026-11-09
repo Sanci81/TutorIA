@@ -26,6 +26,26 @@ Utolsó frissítés: 2026-11-06
       nyelvi és nem magyar órán, idézőjelek/FELADAT/jelölők belsejét nem érinti, számot nem.
       Következő tanító-fejlesztés: konkrét, gépileg ellenőrizhető hibák (mint az a/az), és a
       tanar_teszt nagyobb mintán (--ora 16), több futás átlagával.
+- [ ] OKOS TANÍTÓ (Sándor víziója, 2026-11-08): minden gyereket a képességei szerint, türelmesen,
+      empatikusan; a lecke sorrendje és a tanítás marad, csak a tempó/nehézség/forma igazodik.
+      ✔ 1. lépés (fix90, TANAR_TEMPO – próbán magától be, élesen =1): 3/6/9 jó válasz után „ez megy,
+        lépj tovább/nehezebbre”; unalom-jelekre („unom”, „vicces”, „fáradt”, „mindegy”) rövidebb,
+        játékosabb feladat. Napló: [TANIT] jo_sor/unalom.
+      ✔ 2. lépés (fix90): naponta az első üzenetnél leckénként 1–2 rövid ismétlő kérdés, utána
+        ugyanott folytatja (napló: [ISMETLES]).
+      [ ] 3. Tanulói profil (emlékezet): óra végén pár sor erősségről/gyengeségről, következő órán
+        a prompt elejére; melyik feladatforma megy jobban (írós/kattintós).
+      [ ] 4. Választható osztályzáró teszt (szülő kéri) → jelentés, szintlépés javaslata (a szülő dönt).
+      [ ] tanar_teszt.py: többféle gyerek (gyors, lassú/hibázó, unatkozó) – így mérhető az igazodás.
+      [ ] ESZKÖZÖK AZ OKOS TANÍTÓ KEZÉBEN (Sándor kérte felírni, 2026-11-08) – nem külön funkciók,
+          a tanító akkor veszi elő, amikor látja, hogy kell; a leckét nem írják felül:
+          • „Tanítsd meg te!” – a lecke végén a gyerek magyarázza el, amit tanult (ettől rögzül).
+          • Hibavadász – ha a gyerek már nagyon érti, a tanító szándékosan hibázik, ő keresi meg.
+          • Saját világ – a szöveges feladatokban a gyerek kedvenc állata/játéka (a szülő adja meg).
+          • Villámkvíz a lecke végén – 5 gyors kérdés, pontszámmal.
+          • Otthoni küldetés – „Mérd meg az asztalt, és írd be, hány centi!”
+      [ ] Facebook-posztok kész (kinézet képek/facebook/posztok, 4 db, utm_source=fb_poszt).
+      [ ] Reklámvideó: video_kanape.py (kep → video), utána Claude összerakja (15 mp).
 - [ ] FEJLESZTÉSI LISTA (Sándor kérte felírni, 2026-11-08):
       • Tanító folyamatos fejlesztése: tanar_teszt → javítás → újramérés (mindig ugyanazzal
         a modellel, TANAR_JAVITAS=0 és =1 összevetve).
@@ -366,6 +386,9 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 - **FONTOS, MINDENKÉPP MEGCSINÁLNI (Sándor kérte, 2026-11-05), a fizetés
   ELŐTT:** Your Europe Advice kérdés (autónomo, ÁFA, magyar vevők több
   országból, ÁSZF). Claude írja meg magyarul, Sándor küldi be.
+  ✔ MEGÍRVA (2026-11-09): jogi/jogi_kerdesek_2026-11-09.txt (magyar → Your Europe
+  Advice, spanyol → gestoría). [ ] Sándor elküldi. [ ] Válasz után: ÁSZF, adatvédelem,
+  csomagoldal, költségszámítás és ez a lista frissítése a válasz alapján.
 - **Ha az autónomo vagy az ÁFA kérdés nem tisztázódik:** Your Europe Advice
   (europa.eu/youreurope/advice) – az EU ingyenes jogi tanácsadása. Űrlapon
   leírod a kérdést, egy héten belül MAGYARUL válaszol egy jogász. Claude
