@@ -122,6 +122,11 @@ Utolsó frissítés: 2026-11-06
       ✔ kanape_jelenet_v3.png kész és Claude átnézte (1 bögre, könyv, telefon a kanapén, a
       konyhában fedő a lábason, nincs gőz). A videó-prompt bal/jobb kéz nélkül (fix100).
 - [x] HIRDETÉS LEÁLLÍTVA (Sándor, 2026-11-09): nem hozott regisztrációt, fogyott a pénz.
+      Végleges adat (11.04–11.09, latogatottsag_2026-11-09_1936.json): 834 látogató, ebből 399
+      a hirdetésből; 129 jutott a regisztrációs oldalra (99 a hirdetésből), 2 regisztrált
+      (11.06 és 11.09; 1 a hirdetésből). A főoldalon a medián idő 6 mp, csak 32 görgetett.
+- [x] VIDEÓ v3 KÉSZ (tutoria_reel_este_v3.mp4, 18 mp) – képkockánként ellenőrizve (1 bögre,
+      nincs gőz a konyhában). Mehet Facebook-posztba (nem hirdetésbe).
       Helyette: ingyenes posztok + videó; új hirdetés csak jobb anyaggal és céllal.
 - [ ] Videó/poszt: a zsiráf helyett más figura (Sándor). A „Fáradt este” téma jó →
       python video_kanape.py kep → kanape_jelenet.png legyen az 1. poszt képe is (poszt1.png
