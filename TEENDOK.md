@@ -162,6 +162,10 @@ Utolsó frissítés: 2026-11-06
       szakasz a „Mi a TutorIA?” alatt („Este 7. Te pihensz, ő tanul.” + 3 pont), static/video/.
       Próbaoldalon megnézni, utána élesre. SPANYOL oldalon NEM jelenik meg (magyar feliratú
       videó) – spanyol videó kell (összerakás ingyenes, spanyol lecke-képernyőkép kell hozzá).
+      fix111 (Sándor próbája után): teljes képernyőn a videó nem lóg ki (object-fit: contain);
+      a telefon a videó ELEJÉTŐL ott van a kanapén (sötét képernyővel, utána világít fel);
+      „Heti összefoglaló” helyett „TutorIAcademia · Jelentés – Lili ma 2 leckét végzett el”,
+      „E-mailben is látod” (nem csak hetente); háttérrajzok + zöld kör a szakaszban.
       2. lépés: „Nézz bele egy leckébe – regisztráció nélkül” gomb + mintalecke.
 - [ ] STRIPE: a megújítási levélben a csomag NEVE és ÁRA most a csomagok.py listaárából jön –
       ha valaki régebbi (más) áron fizet, a levélbe a Stripe-előfizetés valódi összege kell.

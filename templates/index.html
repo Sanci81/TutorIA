@@ -299,7 +299,21 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
   .fo-bizalom{margin-top:10px;font-size:.88rem;color:#4A5B53;line-height:1.5}
   .fo-bizalom a,.fo-apro a{color:inherit;text-decoration:underline}
 
-.fo .fo-este{background:#FBF5EA;padding:70px 22px 40px}
+.fo .fo-este{position:relative;background:#FBF5EA;padding:80px 22px 60px;overflow:hidden}
+.fo .fo-este::before{content:"";position:absolute;inset:0;background:url({{ url_for('static', filename='bemutato/rajzos_hatter.svg') }}) 0 0/1250px auto repeat;opacity:.45;pointer-events:none;z-index:0}
+.fo .fo-este-belso{position:relative;z-index:1}
+.fo .fo-este .fo-video{overflow:visible}
+.fo .fo-este .fo-video video{border-radius:28px}
+.fo .fo-este .fo-video::before{content:"";position:absolute;width:150%;aspect-ratio:1;left:-25%;top:4%;border-radius:50%;background:#4FD69C;opacity:.35;z-index:-1}
+.fo .fo-este-jelentes{position:absolute;right:-34px;bottom:34px;background:#fff;border-radius:16px;padding:10px 16px;box-shadow:0 12px 28px rgba(23,96,74,.2);
+  display:flex;flex-direction:column;gap:2px;min-width:150px}
+.fo .fo-este-jelentes small{color:#22A06B;font-weight:800;font-size:12px}
+.fo .fo-este-jelentes b{color:#17342C;font-size:20px}
+.fo .fo-este-jelentes span{color:#4D665D;font-size:13px}
+.fo .fo-video.megy .fo-este-jelentes{display:none}
+/* Teljes képernyőn a videó egésze látsszon (nem vágjuk le). */
+.fo .fo-video video:fullscreen{object-fit:contain;background:#000;border-radius:0}
+.fo .fo-video video:-webkit-full-screen{object-fit:contain;background:#000;border-radius:0}
 .fo .fo-este-belso{max-width:1060px;margin:0 auto;display:grid;grid-template-columns:360px 1fr;gap:64px;align-items:center}
 .fo .fo-este h2{font-size:36px;line-height:1.15;color:#17342C;margin:0 0 12px;font-weight:800}
 .fo .fo-este .fo-al{font-size:18px;line-height:1.5;color:#3E5A50;margin:0 0 26px}
@@ -318,7 +332,11 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
 .fo .fo-este-pont b{display:block;color:#17342C;font-size:18px}
 .fo .fo-este-pont span{color:#4D665D;font-size:16px}
 @media (max-width:820px){
-  .fo .fo-este{padding:50px 18px 30px}
+  .fo .fo-este .fo-video::before{width:110%;left:-5%;top:6%;opacity:.25}
+  .fo .fo-este .fo-video{margin-bottom:10px}
+  .fo .fo-este{padding:56px 18px 40px}
+  .fo .fo-este-jelentes{right:-8px;bottom:18px;min-width:130px;padding:8px 12px}
+  .fo .fo-este-jelentes b{font-size:17px}
   .fo .fo-este-belso{grid-template-columns:1fr;gap:34px}
   .fo .fo-video{width:min(320px,84vw);margin:0 auto}
   .fo .fo-este h2{font-size:28px}
@@ -401,7 +419,7 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
       <p class="fo-al">{{ 'Míralo en 18 segundos: así ayuda el profesor con los deberes.' if es else 'Nézd meg 18 másodpercben, hogyan segít a tanító a házi feladatban.' }}</p>
       <div class="fo-este-pont"><i>📚</i><div><b>{{ 'Se sienta con tu hijo' if es else 'Leül a gyerekkel' }}</b><span>{{ 'Explica paso a paso y espera la respuesta.' if es else 'Lépésről lépésre magyaráz, és megvárja a választ.' }}</span></div></div>
       <div class="fo-este-pont"><i>☕</i><div><b>{{ 'Tú puedes descansar' if es else 'Te közben pihenhetsz' }}</b><span>{{ 'No hace falta estar a su lado todo el rato.' if es else 'Nem kell végig mellette ülnöd.' }}</span></div></div>
-      <div class="fo-este-pont"><i>✉️</i><div><b>{{ 'Cada semana ves lo que ha aprendido' if es else 'Hetente látod, mit tanult' }}</b><span>{{ 'Te llega un resumen por correo.' if es else 'Összefoglalót kapsz e-mailben.' }}</span></div></div>
+      <div class="fo-este-pont"><i>✉️</i><div><b>{{ 'Ves lo que ha aprendido' if es else 'Látod, mit tanult' }}</b><span>{{ 'Por correo, cada día, cada semana o cada mes: tú eliges.' if es else 'E-mailben naponta, hetente vagy havonta – te döntöd el.' }}</span></div></div>
     </div>
   </div>
 </section>
