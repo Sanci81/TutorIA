@@ -246,6 +246,14 @@ MÉG HÁTRA (később):
 - [ ] ÖTLET később: Google-belépés (egy kattintás, nem kell megerősítés).
 - [ ] TTS: az angol leckében a „használt angol mondatot” MAGYAR szövegben az „angol” szót (?) az angol
       hang mondta – Sándor üzenete félbeszakadt, pontosítani.
+- [x] Biztonsági riasztás (új eszköz, rossz ADMIN_KOD) az info@tutoriacademia.com címre megy (fix118);
+      másik cím: RIASZTAS_EMAIL változó. Sándor: ellenőrizni, hogy az info@ leveleit olvassa.
+- [x] GitHub OPENAI_API_KEY beállítva (Sándor, 11.10). [ ] A .github/workflows másolás + push.
+- [ ] Gmail-szűrő a GitHub biztonsági leveleire (notifications@github.com, „Biztonsági ellenőrzés”)
+      → csillag + címke – később, ha sok a levél.
+- [x] Szülői jelentés-levél új kinézetben (fix119, level.py): TutorIAcademia fejléc, számdobozok,
+      tantárgyi csíkok – zsiráf nélkül.
+- [ ] KÖVETKEZŐ (Sándor kérte): mintalecke regisztráció nélkül; képek a nehéz fogalmakhoz.
 - [ ] ‼️ KÉTLÉPCSŐS AZONOSÍTÁS (2FA) bekapcsolása: Railway, GitHub, Gmail, Cloudflare, OpenAI,
       Resend, Meta – ha ezek valamelyikét feltörik, minden kód és adat veszélyben van.
 
