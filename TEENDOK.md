@@ -148,6 +148,16 @@ Utolsó frissítés: 2026-11-06
       nem jött a „Válogasd szét…” feladat) → kártya 36 betűig, a túl hosszú kimarad, a feladat
       marad. (2) Ha a tanító szétválogatást ígér, de nem rakja ki → a program pótolja (kis modell,
       FELADAT_TIPP). A ✓ a böngészőben tesztelve működik – a próbaoldalon újra megnézni.
+- [ ] FŐOLDALRA (main) MÉG NEM MENT (2026-11-10): minden a „Tanító: öt szabály” committól
+      („Csomagok: percek az órák mellett” a main utolsó commitja). Kapcsoló nélkül élesbe megy:
+      a/az javítás, „</assistant>final” szűrés, lecke-oldal 500 javítás, ✓ és piros keret,
+      olvasható „Ez nem jó”, betűszín, csoport-kártya 36 betű, nyitó-üzenet utasítás, új
+      elfogyott-levél, megújítási levél javítás. KAPCSOLÓVAL (élesen Railway =1 kell):
+      NYITO_FELADAT, FELADAT_TIPP, POTLAS_JO, KERDES_LEKTOR, TANAR_TEMPO (TANAR_JAVITAS marad KI).
+- [ ] STRIPE: a megújítási levélben a csomag NEVE és ÁRA most a csomagok.py listaárából jön –
+      ha valaki régebbi (más) áron fizet, a levélbe a Stripe-előfizetés valódi összege kell.
+- [ ] fix108: elfogyott-levélben a próba teljes kerete (120 perc) áll, nem a mért perc; a
+      megújítási levélben TutorIAcademia név, „Ha folytatnád” (HU), „Si quieres seguir” (ES).
 - [ ] fix107: „Elfogyott” levél új, vidám HTML formában (mint az emlékeztető): TutorIAcademia
       név, tanító-gif, egy gomb; próbánál nincs album/kártya említés; tesztidőszakban „Érdekel”
       (nem vásárlás). Próbaoldalon: Fiókom → „🧪 Elfogyott az ingyenes próba levél mintája”.

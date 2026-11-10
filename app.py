@@ -19005,10 +19005,10 @@ def _megujitas_level(cimzett: str, nyelv: str, csomag_nev: str, osszeg: float,
     ar = f"{osszeg:.2f}".replace(".", ",") + " €"
     if nyelv == "es":
         nap = datum.strftime("%d/%m/%Y")
-        targy = f"Tu bono de TutorIA se renueva el {nap} ({ar})"
-        sorok = [f"Tu {csomag_nev} se renueva automáticamente el {nap}, y ese día "
+        targy = f"Tu bono de TutorIAcademia se renueva el {nap} ({ar})"
+        sorok = [f"Tu {csomag_nev[:1].lower() + csomag_nev[1:]} se renueva automáticamente el {nap}, y ese día "
                  f"cobraremos {ar} en la tarjeta indicada.",
-                 "Si queréis seguir, no tienes que hacer nada.",
+                 "Si quieres seguir, no tienes que hacer nada.",
                  "Si no quieres renovar, cancélalo antes de esa fecha con un clic. "
                  "Después de cancelar no cobraremos nada más, y las horas ya pagadas "
                  "pueden usarse hasta el final de sus 3 meses de validez."]
@@ -19017,10 +19017,10 @@ def _megujitas_level(cimzett: str, nyelv: str, csomag_nev: str, osszeg: float,
             f'TutorIAcademia · {e(jogi["uzemelteto"])} · España · {e(jogi["kapcsolat"])}')
     else:
         nap = datum.strftime("%Y. %m. %d.")
-        targy = f"A TutorIA bérleted {nap} megújul ({ar})"
-        sorok = [f"A(z) {csomag_nev} {nap} napon automatikusan megújul, és aznap "
+        targy = f"A TutorIAcademia-bérleted {nap} megújul ({ar})"
+        sorok = [f"A {csomag_nev} {nap} napon automatikusan megújul, és aznap "
                  f"{ar} összeget vonunk le a megadott kártyádról.",
-                 "Ha folytatnátok, nincs teendőd.",
+                 "Ha folytatnád, nincs teendőd.",
                  "Ha nem szeretnéd megújítani, mondd le előtte egy kattintással. "
                  "Lemondás után nem vonunk le többet, a már kifizetett órák pedig a "
                  "saját 3 hónapos érvényességük végéig felhasználhatók."]
@@ -19040,7 +19040,7 @@ def _megujitas_level(cimzett: str, nyelv: str, csomag_nev: str, osszeg: float,
         f'font:800 16px Arial,sans-serif;padding:12px 28px;border-radius:12px">{e(gomb)}</a></td></tr>'
         f'<tr><td align="center" style="padding:16px 30px 26px;border-top:1px solid #eee;font:12px/1.6 Arial,sans-serif;color:#9a9a9a">{lab}</td></tr>'
         '</table></td></tr></table></body></html>')
-    szoveg = targy + "\n\n" + "\n\n".join(sorok) + f"\n\n{gomb}: {lemondas_url}\n\nTutorIA"
+    szoveg = targy + "\n\n" + "\n\n".join(sorok) + f"\n\n{gomb}: {lemondas_url}\n\nTutorIAcademia"
     return _level_kuld(cimzett, targy, szoveg, html=html)
 
 
@@ -19114,7 +19114,7 @@ def _keret_ertesito_kor() -> None:
         except Exception:
             _kn = ""
         if _keret_level(sz["email"], sz.get("nyelv") or "hu", egyszeri,
-                        perc=elhasznalt if egyszeri else 0, nevek=_kn):
+                        perc=keret if egyszeri else 0, nevek=_kn):
             database.keret_ertesitve_jelol(sz["id"])
             app.logger.warning("Keret-elfogyott levél kiment: %s", sz["email"])
 
