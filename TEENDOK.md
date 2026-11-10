@@ -200,6 +200,34 @@ Utolsó frissítés: 2026-11-06
       python video_kanape.py kep → kanape_jelenet.png legyen az 1. poszt képe is (poszt1.png
       helyett), utána python video_kanape.py video.
 
+## 🔒 BIZTONSÁGI ÁTNÉZÉS (2026-11-10, fix113) – kapcsoló nélkül, azonnal él
+JAVÍTVA:
+- [x] ‼️ Üzemeltetői jog: az info@tutoriacademia.com (KAPCSOLAT_EMAIL) is admin volt, és a
+      regisztráció nem kér e-mail-megerősítést → aki elsőként regisztrál vele, látta volna az összes
+      család adatát és letölthette volna az adatbázist. Most: admin csak a két saját cím +
+      ADMIN_EMAILEK; admin címmel nem lehet regisztrálni.
+- [x] Próbálkozás-korlát kijátszható volt (a hamisítható X-Forwarded-For első elemét nézte) →
+      valódi IP (Railway utolsó elem / Cloudflare CF-Connecting-IP). + fiókonként 10 rossz
+      jelszó / 15 perc, bárhonnan.
+- [x] Idegen gyerek adatai: /api/learning/early-placement/start (más gyerek szintjét nullázhatta),
+      /api/learning/today, /weekly, és a hang-keret (más gyerek keretével lehetett hangot kérni)
+      → csak a saját gyerek.
+- [x] /test-openai bárki számára hívható volt (pénz + belső hibaüzenet) → csak üzemeltető.
+- [x] Feltöltés-méret korlát nem volt → 20 MB.
+- [x] Sándor kérése: üzemeltetői belépés ÚJ ESZKÖZRŐL → e-mail (idő, IP, ország, böngésző);
+      rossz ADMIN_KOD → e-mail.
+- [x] ADMIN_KOD (második kulcs): Railway változó; ha be van állítva, az admin oldalakhoz a jelszó
+      mellé ez is kell (12 óráig érvényes). [ ] Sándor beállítja mindkét szolgáltatáson.
+RENDBEN VOLT: jelszavak hash-elve; szülő csak saját gyereket éri el (get_child_by_id szülőre szűr);
+admin oldalak mind ellenőrzöttek; mentés-letöltés névellenőrzéssel; süti HttpOnly+Secure+Lax;
+SECRET_KEY figyelmeztetés; nincs kód-ba írt kulcs; /teszt/* csak próbaoldalon.
+MÉG HÁTRA (később):
+- [ ] Jelszó minimum 6 → 8 karakter (fordítás + register/reset sablon).
+- [ ] E-mail-megerősítés regisztrációkor (a fizetés bekötése előtt).
+- [ ] A próbálkozás-korlát munkásonként (4 gunicorn) számol → adatbázisba tenni.
+- [ ] CSRF-token az űrlapokra (most a SameSite=Lax süti véd).
+- [ ] Automatikus AI-kódellenőrzés minden push után (becslés: havi 1–5 $) – fizetés előtt.
+
 ## ⚠️ SÜRGŐS – SORRENDBEN (2026-11-06, Sándor kérte a rangsort)
 
 1. ✔ RÉSZBEN KÉSZ (fix77): a szerver is számol (database.szerver_lepes: chat üzenet és

@@ -332,6 +332,9 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-only-insecure-key")
 # A munkamenet-süti JavaScriptből nem olvasható, más oldalról nem küldhető,
 # és élesben (Railway) csak HTTPS-en megy.
 _ELES = bool(os.environ.get("RAILWAY_ENVIRONMENT"))
+# Legnagyobb kérés: 20 MB (a hangfelvétel ennél jóval kisebb). Enélkül egy
+# óriási „hangfájl” feltöltése elfogyaszthatná a szerver memóriáját.
+app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024
 app.config.update(SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE="Lax",
                   SESSION_COOKIE_SECURE=_ELES)
 if _ELES and app.config["SECRET_KEY"] == "dev-only-insecure-key":
@@ -766,6 +769,17 @@ def set_language(lang_code):
 # ---------------------------------------------------------------------------
 # Segédek
 # ---------------------------------------------------------------------------
+
+def _sajat_gyerek_id(nyers) -> int | None:
+    """A böngészőből jött gyerek-azonosító, CSAK ha a belépett szülőé."""
+    try:
+        cid = int(nyers or 0)
+    except (TypeError, ValueError):
+        return None
+    if cid and session.get("parent_id") and database.get_child_by_id(cid, session["parent_id"]):
+        return cid
+    return None
+
 
 def login_required(view):
     @wraps(view)
@@ -1711,7 +1725,10 @@ def _call_ai_check_task_answer(
 
 @app.route("/test-openai")
 def test_openai():
-    """Egyszerű OpenAI diagnosztika – plain text válasz."""
+    """Egyszerű OpenAI diagnosztika – plain text válasz. CSAK üzemeltetőnek
+    (2026-11-10: bárki hívhatta, és a hibaüzenet belső részleteket mutatott)."""
+    if not session.get("parent_id") or _admin_kapu() is not None:
+        abort(404)
     try:
         api_key = _openai_api_key()
         if not api_key:
@@ -1831,8 +1848,7 @@ def generate_image():
     szoveg = re.sub(r"\s+", " ", szoveg)[:200]
     if not szoveg:
         return jsonify(ok=False, error=_kep_hiba(lang, ures=True)), 400
-    ip = request.headers.get("X-Forwarded-For", request.remote_addr or "")
-    ip = ip.split(",")[0].strip() or "ismeretlen"
+    ip = _kero_ip() or "ismeretlen"
     if not _kep_meg_fer(ip):
         return jsonify(ok=False, error=_kep_hiba(lang, sok=True)), 429
 
@@ -1913,9 +1929,43 @@ def _urlap_vedelem_sablonba():
     return {"urlap_vedelem": urlap_vedelem}
 
 
+_CF_HALOK = None
+
+
+def _cf_halo(ip: str) -> bool:
+    """A Cloudflare saját címtartományai (közzétett lista)."""
+    global _CF_HALOK
+    import ipaddress
+    if _CF_HALOK is None:
+        _CF_HALOK = [ipaddress.ip_network(x) for x in (
+            "173.245.48.0/20", "103.21.244.0/22", "103.22.200.0/22", "103.31.4.0/22",
+            "141.101.64.0/18", "108.162.192.0/18", "190.93.240.0/20", "188.114.96.0/20",
+            "197.234.240.0/22", "198.41.128.0/17", "162.158.0.0/15", "104.16.0.0/13",
+            "104.24.0.0/14", "172.64.0.0/13", "131.0.72.0/22", "2400:cb00::/32",
+            "2606:4700::/32", "2803:f800::/32", "2405:b500::/32", "2405:8100::/32",
+            "2a06:98c0::/29", "2c0f:f248::/32")]
+    try:
+        a = ipaddress.ip_address(ip)
+        return any(a in h for h in _CF_HALOK)
+    except ValueError:
+        return False
+
+
 def _kero_ip() -> str:
-    return (request.headers.get("X-Forwarded-For") or request.remote_addr
-            or "").split(",")[0].strip()
+    """A látogató VALÓDI címe.
+
+    2026-11-10 (biztonsági átnézés): eddig az X-Forwarded-For ELSŐ elemét
+    vettük – azt viszont a látogató maga írja, így minden próbálkozásnál
+    mást írva a próbálkozás-korlát kikerülhető volt. Most: a sor UTOLSÓ
+    eleme (azt a Railway teszi hozzá, nem hamisítható); ha az a Cloudflare
+    gépe, akkor a Cloudflare által küldött CF-Connecting-IP.
+    """
+    sor = [x.strip() for x in (request.headers.get("X-Forwarded-For") or "").split(",") if x.strip()]
+    utolso = sor[-1] if sor else (request.remote_addr or "")
+    cf = (request.headers.get("CF-Connecting-IP") or "").strip()
+    if cf and _cf_halo(utolso):
+        return cf
+    return utolso
 
 
 def _robot_gyanus(min_mp: float) -> bool:
@@ -1937,10 +1987,11 @@ def _robot_gyanus(min_mp: float) -> bool:
     return False
 
 
-def _tul_sok_proba(nev: str, db: int, ablak_mp: int) -> bool:
-    """Igaz, ha erről az IP-ről ennél többször próbálták az ablakon belül."""
+def _tul_sok_proba(nev: str, db: int, ablak_mp: int, ip_szerint: bool = True) -> bool:
+    """Igaz, ha erről az IP-ről (ip_szerint=False: bárhonnan) ennél többször
+    próbálták az ablakon belül."""
     most = time.time()
-    kulcs = f"{nev}|{_kero_ip()}"
+    kulcs = f"{nev}|{_kero_ip()}" if ip_szerint else nev
     with _PROBAK_ZAR:
         if len(_PROBAK) > 5000:            # ne nőjön a végtelenségig
             for k in [k for k, v in _PROBAK.items() if not v or most - v[-1] > 3600]:
@@ -1997,6 +2048,12 @@ def register():
         if not _pin_alak_jo(pin):
             _latogatas_esemeny("hiba_pin")
             flash(i18n.t("pin_alak", g.lang), "error")
+            return render_template("register.html", email=email)
+
+        # Üzemeltetői címmel idegen nem regisztrálhat (megerősítés nincs).
+        if email.strip().lower() in _admin_cimek():
+            _latogatas_esemeny("hiba_email_foglalt")
+            flash(i18n.t("flash_email_taken", g.lang), "error")
             return render_template("register.html", email=email)
 
         parent_id = database.create_parent(
@@ -2903,10 +2960,34 @@ def login():
             flash(i18n.t("flash_tul_sok_proba", g.lang), "error")
             return render_template("login.html", email=email)
 
+        # Fiókonként is: így több gépről sem lehet egy jelszót végigpróbálgatni.
+        if _tul_sok_proba("login_fiok|" + email.lower(), 10, 900, ip_szerint=False):
+            flash(i18n.t("flash_tul_sok_proba", g.lang), "error")
+            return render_template("login.html", email=email)
+
         parent = database.get_parent_by_email(email)
         if parent and check_password_hash(parent["password_hash"], password):
             session["parent_id"] = parent["id"]
-            return redirect(url_for("dashboard"))
+            valasz = redirect(url_for("dashboard"))
+            # ÜZEMELTETŐI FIÓK, ÚJ ESZKÖZ (2026-11-10, Sándor kérése): ha nem az
+            # ismert gépről/telefonról lépnek be, levelet kapsz (idő, IP, ország,
+            # böngésző). Az ismert eszközt egy aláírt, 1 évig élő süti jelzi.
+            try:
+                if (parent.get("email") or "").strip().lower() in _admin_cimek():
+                    from itsdangerous import URLSafeTimedSerializer
+                    jel = URLSafeTimedSerializer(app.config["SECRET_KEY"], salt="ismert-eszkoz")
+                    try:
+                        ismert = jel.loads(request.cookies.get("tia_eszkoz") or "",
+                                           max_age=366 * 86400) == parent["id"]
+                    except Exception:
+                        ismert = False
+                    if not ismert:
+                        _admin_riaszt(parent["email"], "Új eszközről léptek be az üzemeltetői fiókba")
+                    valasz.set_cookie("tia_eszkoz", jel.dumps(parent["id"]), max_age=366 * 86400,
+                                      httponly=True, samesite="Lax", secure=_ELES)
+            except Exception:
+                logger.exception("Ismert eszköz ellenőrzés hiba")
+            return valasz
 
         flash(i18n.t("flash_invalid_login", g.lang), "error")
         return render_template("login.html", email=email)
@@ -16622,7 +16703,7 @@ def api_voice_transcribe():
     # A CSOMAG HANGOS IDEJE: ha elfogyott, a beszédfelismerés sem fut tovább
     # (a hangköltség kb. fele). A gyerek írásban folytatja.
     try:
-        _hcid = int(request.form.get("child_id") or session.get("chat_child_id") or 0)
+        _hcid = int(session.get("chat_child_id") or _sajat_gyerek_id(request.form.get("child_id")) or 0)
         if _hcid and _hang_keret_elfogyott(_hcid):
             r = jsonify({"error": "voice_budget_spent",
                          "message": i18n.t("csomag_hang_elfogyott", g.lang)})
@@ -16636,7 +16717,7 @@ def api_voice_transcribe():
     # történik (a böngésző kb. 24 kB/mp-es webm-et küld) – nem pontos, de a
     # nagyságrendhez elég, és nem kell hozzá hangfájlt feldolgozni.
     try:
-        _cid = (request.form.get("child_id") or str(session.get("chat_child_id", ""))).strip()
+        _cid = str(session.get("chat_child_id") or _sajat_gyerek_id(request.form.get("child_id")) or "").strip()
         if _cid:
             database.add_usage(int(_cid), hang_mp=len(audio_bytes) / 24000.0)
     except Exception:
@@ -16833,7 +16914,7 @@ def api_voice_speak():
     try:
         # A MENESZTŐ oldal az elsődleges: a böngészőből érkező child_id csak
         # tartalék. Így a keretet nem lehet másik gyerek nevére átterhelni.
-        _cid = int(session.get("chat_child_id") or data.get("child_id") or 0) or None
+        _cid = int(session.get("chat_child_id") or _sajat_gyerek_id(data.get("child_id")) or 0) or None
     except (TypeError, ValueError):
         _cid = None
 
@@ -16993,7 +17074,7 @@ def api_learning_end():
 @login_required
 def api_learning_today():
     """Mai tanulási percek (opcionálisan: ?subject=X)."""
-    child_id = request.args.get("child_id")
+    child_id = _sajat_gyerek_id(request.args.get("child_id"))
     subject = request.args.get("subject")
     if not child_id:
         return jsonify({"error": "child_id required"}), 400
@@ -17005,7 +17086,7 @@ def api_learning_today():
 @login_required
 def api_learning_weekly():
     """Heti bontás: ?child_id=X&subject=Y."""
-    child_id = request.args.get("child_id")
+    child_id = _sajat_gyerek_id(request.args.get("child_id"))
     subject = request.args.get("subject")
     if not child_id or not subject:
         return jsonify({"error": "child_id and subject required"}), 400
@@ -17059,7 +17140,8 @@ def api_learning_early_placement():
 def api_learning_early_placement_start():
     """Korai szintfelmérő indítása – növeli a próbálkozások számát."""
     data = request.get_json(silent=True) or {}
-    child_id = data.get("child_id")
+    # 2026-11-10: eddig BÁRMELY gyerek szintjét nullázni lehetett az azonosítójával.
+    child_id = _sajat_gyerek_id(data.get("child_id"))
     subject = (data.get("subject") or "").strip()
     if not child_id or not subject:
         return jsonify({"error": "child_id and subject required"}), 400
@@ -18026,10 +18108,10 @@ def _admin_cimek() -> set[str]:
     """Kik láthatják az üzemeltetői oldalakat. A két saját cím mindig benne
     van; az ADMIN_EMAILEK környezeti változóval (vesszővel elválasztva) és a
     kapcsolattartási címmel bővíthető."""
-    nyers = ",".join(x for x in (
-        os.environ.get("ADMIN_EMAILEK") or "",
-        _jogi_adatok()["kapcsolat"] or "",
-    ) if x)
+    # 2026-11-10: a kapcsolattartási cím (info@…) KIKERÜLT: regisztráció
+    # e-mail-megerősítés nélkül van, így aki elsőként regisztrál vele, az
+    # üzemeltető lett volna (minden család adata, adatbázis-letöltés).
+    nyers = os.environ.get("ADMIN_EMAILEK") or ""
     cimek = {c.strip().lower() for c in nyers.split(",") if c.strip()}
     cimek.update(_ADMIN_ALAP)
     return cimek
@@ -18044,6 +18126,11 @@ def _admin_kapu():
     szulo = database.get_parent_by_id(session.get("parent_id") or 0)
     cim = (szulo or {}).get("email", "")
     if szulo and cim.strip().lower() in _admin_cimek():
+        # MÁSODIK KULCS (2026-11-10): ha az ADMIN_KOD be van állítva a Railway-en,
+        # a jelszó mellé ez is kell – 12 óráig érvényes. Így egy ellopott
+        # jelszóval sem lehet az üzemeltetői oldalakra jutni.
+        if ADMIN_KOD and time.time() - float(session.get("admin_kod_ok") or 0) > 12 * 3600:
+            return redirect(url_for("admin_kod", tovabb=request.full_path))
         return None
     return Response(
         "<!doctype html><meta charset='utf-8'>"
@@ -18136,6 +18223,65 @@ def ne_merj():
     resp.set_cookie(_NEM_SZAMOL_SUTI, "1", max_age=2 * 365 * 24 * 3600, samesite="Lax",
                     secure=_ELES, httponly=True)
     return resp
+
+
+ADMIN_KOD = (os.environ.get("ADMIN_KOD") or "").strip()
+
+
+@app.route("/admin/kod", methods=["GET", "POST"])
+@login_required
+def admin_kod():
+    """Az üzemeltetői második kulcs bekérése (csak ha ADMIN_KOD be van állítva)."""
+    szulo = database.get_parent_by_id(session.get("parent_id") or 0) or {}
+    if not ADMIN_KOD or (szulo.get("email") or "").strip().lower() not in _admin_cimek():
+        abort(404)
+    tovabb = request.values.get("tovabb") or "/admin"
+    if not tovabb.startswith("/admin") and not tovabb.startswith("/children/"):
+        tovabb = "/admin"
+    hiba = ""
+    if request.method == "POST":
+        if _tul_sok_proba("adminkod", 5, 900):
+            hiba = "Túl sok próbálkozás. Várj 15 percet."
+        elif hmac.compare_digest((request.form.get("kod") or "").strip().encode(), ADMIN_KOD.encode()):
+            session["admin_kod_ok"] = time.time()
+            return redirect(tovabb)
+        else:
+            hiba = "Nem jó a kód."
+            _admin_riaszt(szulo.get("email") or "", "Rossz üzemeltetői kódot írtak be")
+    from markupsafe import escape as e
+    return Response(
+        "<!doctype html><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
+        "<div style=\"font:16px/1.6 system-ui,sans-serif;max-width:420px;margin:70px auto;padding:0 20px\">"
+        "<h1 style='font-size:1.3rem'>Üzemeltetői kód</h1>"
+        "<p style='color:#5b6474'>A Railway-en beállított ADMIN_KOD kell (12 óráig érvényes).</p>"
+        + (f"<p style='color:#b42318;font-weight:700'>{e(hiba)}</p>" if hiba else "") +
+        f"<form method='post'><input type='hidden' name='tovabb' value='{e(tovabb)}'>"
+        "<input name='kod' type='password' autocomplete='one-time-code' autofocus "
+        "style='width:100%;padding:12px;font-size:18px;border:1px solid #ccc;border-radius:10px'>"
+        "<button style='margin-top:12px;padding:10px 22px;font-weight:800;border:0;border-radius:10px;"
+        "background:#17604A;color:#fff'>Belépés</button></form></div>",
+        mimetype="text/html; charset=utf-8")
+
+
+def _admin_riaszt(cim: str, mi: str) -> None:
+    """Levél az üzemeltetőnek: mikor, honnan, milyen böngészőből (ha nem ő volt: jelszócsere)."""
+    try:
+        try:
+            from zoneinfo import ZoneInfo
+            ido = datetime.now(ZoneInfo("Europe/Madrid")).strftime("%Y. %m. %d. %H:%M")
+        except Exception:
+            ido = datetime.now(timezone.utc).strftime("%Y. %m. %d. %H:%M") + " (UTC)"
+        ip = _kero_ip()
+        orszag = (request.headers.get("CF-IPCountry") or "?").upper()
+        bongeszo = (request.headers.get("User-Agent") or "?")[:160]
+        szoveg = (f"{mi}.\n\nFiók: {cim}\nIdő: {ido}\nIP-cím: {ip} (ország: {orszag})\n"
+                  f"Böngésző: {bongeszo}\n\nHa ez TE voltál, nincs teendőd.\n"
+                  f"Ha NEM te voltál: azonnal változtass jelszót itt: {_oldal_url('/forgot-password')}\n"
+                  "és állíts be új ADMIN_KOD-ot a Railway-en.\n\nTutorIAcademia biztonsági értesítés")
+        if cim.strip():
+            _level_kuld(cim.strip(), "TutorIAcademia – biztonsági értesítés: " + mi, szoveg)
+    except Exception:
+        logger.exception("Admin riasztás hiba")
 
 
 @app.route("/admin/latogatottsag")
