@@ -254,6 +254,13 @@ MÉG HÁTRA (később):
 - [x] Szülői jelentés-levél új kinézetben (fix119, level.py): TutorIAcademia fejléc, számdobozok,
       tantárgyi csíkok – zsiráf nélkül.
 - [ ] KÖVETKEZŐ (Sándor kérte): mintalecke regisztráció nélkül; képek a nehéz fogalmakhoz.
+- [x] Videó „Este 7.” helyett „Hosszú nap volt.” (v7), főoldali cím: „Te pihensz, ő tanul.” (fix120).
+      Hirdetéshez: kinézet képek/facebook/hirdetes/tutoria_reel_este_v7.mp4.
+- [ ] ‼️ ADMIN_KOD beállítása a Railway-en (web + próba) – Sándor: ne felejtsük el.
+- [ ] KÉT NYELV EGY FIÓKKAL: most egy fiók egy tantervre fizethet elő (csomag_tanterv: HU vagy ES), a
+      másik oldalra fizetés után nem léphet át. Aki mindkettőt akarja: két fiók kell. Döntés a
+      fizetés bekötésekor: kombinált bérlet (pl. kedvezménnyel) vagy két külön fiók.
+- [ ] 11.11: Sándor nézze meg az új szülői jelentés levelet (Claude emlékeztet). Arcos: szél, lehet net nélkül.
 - [ ] ‼️ KÉTLÉPCSŐS AZONOSÍTÁS (2FA) bekapcsolása: Railway, GitHub, Gmail, Cloudflare, OpenAI,
       Resend, Meta – ha ezek valamelyikét feltörik, minden kód és adat veszélyben van.
 
