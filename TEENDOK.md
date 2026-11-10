@@ -231,7 +231,23 @@ MÉG HÁTRA (később):
 - [ ] E-mail-megerősítés regisztrációkor (a fizetés bekötése előtt).
 - [ ] A próbálkozás-korlát munkásonként (4 gunicorn) számol → adatbázisba tenni.
 - [ ] CSRF-token az űrlapokra (most a SameSite=Lax süti véd).
-- [ ] Automatikus AI-kódellenőrzés minden push után (becslés: havi 1–5 $) – fizetés előtt.
+- [ ] AUTOMATIKUS AI-KÓDELLENŐRZÉS (fix115, Sándor: „most csináljuk”): .github/workflows/
+      biztonsagi_ellenorzes.yml + eszkozok/biztonsagi_ellenorzes.py. Minden proba-push után a
+      változást egy AI átnézi; komoly hibánál GitHub Issue → e-mail. Becslés: 1–3 cent/push.
+      [ ] Sándor: GitHub → repo → Settings → Secrets and variables → Actions → New repository
+      secret: OPENAI_API_KEY. Első futás után megnézni az Actions fülön.
+- [ ] E-MAIL-MEGERŐSÍTÉS – KEMÉNY (fix116, Sándor döntése): regisztráció után levél gombbal (3 napig
+      érvényes), belépni csak megerősítés után lehet; új levél kérhető; ugyanazzal a címmel újra
+      regisztrálva a meg nem erősített fiók felülíródik (elgépelés / idegen regisztráció ellen);
+      jelszó-visszaállítás e-mailből is megerősít; meg nem erősített címre emlékeztető nem megy.
+      RÉGI fiókokat nem érinti. Kapcsoló: EMAIL_MEGEROSITES (próbán BE, élesen Railway =1).
+      Teszt: vigh.sandor81+teszt1@gmail.com (ugyanabba a postafiókba érkezik).
+      Mérés: a látogatottságban „megerositette” esemény – figyelni, hány regisztráló erősít meg.
+- [ ] ÖTLET később: Google-belépés (egy kattintás, nem kell megerősítés).
+- [ ] TTS: az angol leckében a „használt angol mondatot” MAGYAR szövegben az „angol” szót (?) az angol
+      hang mondta – Sándor üzenete félbeszakadt, pontosítani.
+- [ ] ‼️ KÉTLÉPCSŐS AZONOSÍTÁS (2FA) bekapcsolása: Railway, GitHub, Gmail, Cloudflare, OpenAI,
+      Resend, Meta – ha ezek valamelyikét feltörik, minden kód és adat veszélyben van.
 
 ## ⚠️ SÜRGŐS – SORRENDBEN (2026-11-06, Sándor kérte a rangsort)
 

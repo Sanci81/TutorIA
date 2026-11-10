@@ -225,6 +225,39 @@ TRANSLATIONS = {
         "hu": "Sikeres regisztráció! Üdv a TutorIA-ban.",
         "es": "¡Registro completado! Bienvenido/a a TutorIA.",
     },
+    # --- e-mail-megerősítés (2026-11-10) ---
+    "megerosites_cim": {"hu": "Nézd meg a postafiókod!", "es": "¡Mira tu correo!"},
+    "megerosites_alcim": {
+        "hu": "Már csak egy kattintás, és indulhat az első óra.",
+        "es": "Solo falta un clic y empieza la primera clase.",
+    },
+    "megerosites_ide_kuldtuk": {"hu": "Levelet küldtünk ide:", "es": "Te hemos enviado un correo a:"},
+    "megerosites_lepes1": {
+        "hu": "Nyisd meg a TutorIAcademia levelét (ha nem látod, nézd meg a Spam / Promóciók mappát is).",
+        "es": "Abre el correo de TutorIAcademia (si no lo ves, mira también en Spam / Promociones).",
+    },
+    "megerosites_lepes2": {"hu": "Nyomd meg benne a „Megerősítem” gombot.",
+                           "es": "Pulsa el botón «Confirmar»."},
+    "megerosites_lepes3": {"hu": "Kész – automatikusan belépsz.", "es": "Listo: entrarás automáticamente."},
+    "megerosites_ujra_gomb": {"hu": "Új levelet kérek", "es": "Enviar otro correo"},
+    "megerosites_elgepelt": {"hu": "Elgépelted a címet?", "es": "¿Te equivocaste al escribir el correo?"},
+    "megerosites_ujra_reg": {"hu": "Regisztrálj újra a jó címmel.", "es": "Regístrate de nuevo con el correo correcto."},
+    "megerosites_elkuldve": {
+        "hu": "Ha ezzel a címmel van megerősítésre váró fiók, elküldtük az új levelet.",
+        "es": "Si hay una cuenta pendiente con ese correo, te hemos enviado otro mensaje.",
+    },
+    "megerosites_kesz": {
+        "hu": "Köszönjük, az e-mail-címed megerősítve! Üdv a TutorIAcademián.",
+        "es": "¡Gracias, tu correo está confirmado! Bienvenido/a a TutorIAcademia.",
+    },
+    "megerosites_lejart": {
+        "hu": "Ez a link már lejárt vagy hibás. Kérj új levelet lent.",
+        "es": "Este enlace ha caducado o no es válido. Pide otro correo abajo.",
+    },
+    "megerosites_belepes_elott": {
+        "hu": "Előbb erősítsd meg az e-mail-címed: a levélben lévő gombra kell kattintani.",
+        "es": "Primero confirma tu correo: pulsa el botón del mensaje que te enviamos.",
+    },
     "flash_email_taken": {
         "hu": "Ez az e-mail cím már foglalt.",
         "es": "Este correo electrónico ya está registrado.",

@@ -2006,6 +2006,80 @@ def _tul_sok_proba(nev: str, db: int, ablak_mp: int, ip_szerint: bool = True) ->
     return tul
 
 
+# ── E-MAIL-MEGERŐSÍTÉS (2026-11-10, Sándor: „kemény” – csak a link után léphet be) ──
+# Enélkül bárki regisztrálhatott idegen címmel, és a jelentés, emlékeztető, a
+# gyerek adatai egy idegenhez mentek volna. A RÉGI fiókokat nem érinti.
+# Kapcsoló: EMAIL_MEGEROSITES – próbaoldalon magától BE, élesen csak =1-gyel; 0 = ki.
+_EMG = os.environ.get("EMAIL_MEGEROSITES", "").strip().lower()
+EMAIL_MEGEROSITES = (_EMG in ("1", "igen", "true", "be")
+                     or (PROBA_OLDAL and _EMG not in ("0", "nem", "false", "ki")))
+MEGEROSITES_ERVENYES_NAP = 3
+
+
+def _megerosito_jel():
+    from itsdangerous import URLSafeTimedSerializer
+    return URLSafeTimedSerializer(app.config["SECRET_KEY"], salt="email-megerosites")
+
+
+def _megerosito_level(parent_id: int, cim: str, nyelv: str) -> bool:
+    """A megerősítő levél: egy nagy gomb, ugyanabban a formában, mint az emlékeztető."""
+    from markupsafe import escape as e
+    alap = request.host_url.rstrip("/") if request else _oldal_url("/").rstrip("/")
+    link = alap + url_for("megerosites", jegy=_megerosito_jel().dumps(int(parent_id)))
+    kep = alap + ("/static/email/tanito_es.gif" if nyelv == "es" else "/static/email/tanito_hu.gif")
+    jogi = _jogi_adatok()
+    if nyelv == "es":
+        targy, cim_s, szoveg, gomb = ("Confirma tu correo – TutorIAcademia",
+                                      "¡Solo falta un clic!",
+                                      "Pulsa el botón para confirmar tu correo y empezar la primera clase gratis.",
+                                      "CONFIRMAR")
+        lab = (f"Si no te has registrado tú en TutorIAcademia, ignora este mensaje: sin confirmación "
+               f"la cuenta no se puede usar. El enlace vale {MEGEROSITES_ERVENYES_NAP} días.<br>"
+               f"TutorIAcademia · {e(jogi['uzemelteto'])} · España · {e(jogi['kapcsolat'])}")
+    else:
+        targy, cim_s, szoveg, gomb = ("Erősítsd meg az e-mail-címed – TutorIAcademia",
+                                      "Már csak egy kattintás!",
+                                      "Nyomd meg a gombot, hogy megerősítsd az e-mail-címed, és indulhat az első ingyenes óra.",
+                                      "MEGERŐSÍTEM")
+        lab = (f"Ha nem te regisztráltál a TutorIAcademián, hagyd figyelmen kívül ezt a levelet: "
+               f"megerősítés nélkül a fiók nem használható. A link {MEGEROSITES_ERVENYES_NAP} napig érvényes.<br>"
+               f"TutorIAcademia · {e(jogi['uzemelteto'])} · Spanyolország · {e(jogi['kapcsolat'])}")
+    html = _emlekezteto_html(cim_s, szoveg, gomb, link, kep, "", "", lab)
+    return _level_kuld(cim, targy, f"{cim_s}\n\n{szoveg}\n\n{gomb}: {link}\n\nTutorIAcademia", html=html)
+
+
+@app.route("/megerosites/<jegy>")
+def megerosites(jegy: str):
+    try:
+        pid = int(_megerosito_jel().loads(jegy, max_age=MEGEROSITES_ERVENYES_NAP * 86400))
+    except Exception:
+        flash(i18n.t("megerosites_lejart", g.lang), "error")
+        return render_template("megerosites.html", email="")
+    if not database.get_parent_by_id(pid):
+        flash(i18n.t("megerosites_lejart", g.lang), "error")
+        return render_template("megerosites.html", email="")
+    database.email_megerosit(pid)
+    _latogatas_esemeny("megerositette")
+    session["parent_id"] = pid
+    _pin_megujit()
+    flash(i18n.t("megerosites_kesz", g.lang), "success")
+    return redirect(url_for("dashboard"))
+
+
+@app.route("/megerosites-ujra", methods=["POST"])
+def megerosites_ujra():
+    email = (request.form.get("email") or "").strip()
+    if _robot_gyanus(min_mp=0) or _tul_sok_proba("megerosit", 5, 3600) \
+            or _tul_sok_proba("megerosit|" + email.lower(), 3, 3600, ip_szerint=False):
+        flash(i18n.t("flash_tul_sok_proba", g.lang), "error")
+        return render_template("megerosites.html", email=email)
+    p = database.get_parent_by_email(email) if email else None
+    if p and p.get("megerositesre_var"):
+        _megerosito_level(p["id"], p["email"], g.lang)
+    flash(i18n.t("megerosites_elkuldve", g.lang), "success")
+    return render_template("megerosites.html", email=email)
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     # Aki már be van lépve, annak nincs dolga a regisztrációval. Enélkül a
@@ -2055,6 +2129,27 @@ def register():
             _latogatas_esemeny("hiba_email_foglalt")
             flash(i18n.t("flash_email_taken", g.lang), "error")
             return render_template("register.html", email=email)
+
+        if EMAIL_MEGEROSITES:
+            # Már van ilyen cím, de SOHA nem erősítették meg (elgépelés vagy idegen
+            # regisztrált vele): a régi adatokat felülírjuk, és új levél megy.
+            regi = database.get_parent_by_email(email)
+            if regi and regi.get("megerositesre_var"):
+                database.meg_nem_erositett_ujra(regi["id"], generate_password_hash(password),
+                                                generate_password_hash(pin))
+                parent_id = regi["id"]
+            else:
+                parent_id = database.create_parent(
+                    email, generate_password_hash(password),
+                    szuloi_pin=generate_password_hash(pin), megerositesre_var=True)
+            if parent_id is None:
+                _latogatas_esemeny("hiba_email_foglalt")
+                flash(i18n.t("flash_email_taken", g.lang), "error")
+                return render_template("register.html", email=email)
+            _latogatas_esemeny("regisztralt")
+            if not _megerosito_level(parent_id, email.strip().lower(), g.lang):
+                logger.error("Megerősítő levél NEM ment ki: %s", email)
+            return render_template("megerosites.html", email=email.strip().lower())
 
         parent_id = database.create_parent(
             email, generate_password_hash(password),
@@ -2967,6 +3062,9 @@ def login():
 
         parent = database.get_parent_by_email(email)
         if parent and check_password_hash(parent["password_hash"], password):
+            if EMAIL_MEGEROSITES and parent.get("megerositesre_var"):
+                flash(i18n.t("megerosites_belepes_elott", g.lang), "error")
+                return render_template("megerosites.html", email=parent["email"])
             session["parent_id"] = parent["id"]
             valasz = redirect(url_for("dashboard"))
             # ÜZEMELTETŐI FIÓK, ÚJ ESZKÖZ (2026-11-10, Sándor kérése): ha nem az
@@ -3058,6 +3156,7 @@ def reset_password(token):
             reset_row["parent_id"], generate_password_hash(password)
         )
         database.mark_reset_token_used(reset_row["id"])
+        database.email_megerosit(reset_row["parent_id"])   # a levelet megkapta → a cím az övé
         flash(i18n.t("flash_password_reset_success", g.lang), "success")
         return redirect(url_for("login"))
 
@@ -19098,6 +19197,8 @@ def _emlekezteto_kor() -> None:
                 continue
             if (sz.get("ertesites") or "heti") == "ki" or sz.get("emlekezteto_ki"):
                 continue
+            if sz.get("megerositesre_var"):
+                continue                  # meg nem erősített (lehet idegen) címre nem írunk
             utolso = max([d for d in (sz.get("utolso_tanulas"), sz.get("regisztralt")) if d]
                          or [ma])
             szam = int(sz.get("emlekezteto_szam") or 0)

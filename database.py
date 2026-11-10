@@ -166,6 +166,9 @@ class Parent(Base):
     emlekezteto_ki: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     # MEGÚJÍTÁSI ÉRTESÍTŐ (Ley 10/2025): melyik fordulónapról szóltunk már.
     megujitas_ertesitve: Mapped[date | None] = mapped_column(Date, nullable=True)
+    # E-MAIL-MEGERŐSÍTÉS (2026-11-10): True = regisztrált, de a levélben lévő
+    # linket még nem nyomta meg. ÜRES (NULL) = régi fiók vagy megerősítve.
+    megerositesre_var: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     # Mikor ment ki neki az indulás-levél. Amíg üres, még nem kapott.
     # Ez akadályozza meg, hogy bárki kétszer kapja meg ugyanazt.
     erdeklodes_ertesitve: Mapped[date | None] = mapped_column(Date, nullable=True)
@@ -518,6 +521,7 @@ def _parent_dict(parent: Parent) -> dict[str, Any]:
         "email": parent.email,
         "password_hash": parent.password_hash,
         "created_at": parent.created_at,
+        "megerositesre_var": bool(getattr(parent, "megerositesre_var", None)),
         "last_seen": parent.last_seen,
         "ertesites": parent.ertesites or "heti",
         "utolso_ertesites": parent.utolso_ertesites,
@@ -782,6 +786,7 @@ def szulok_keret_allapota() -> list[dict]:
                 "emlekezteto_kuldve": p.emlekezteto_kuldve,
                 "emlekezteto_ki": bool(p.emlekezteto_ki),
                 "megujitas_ertesitve": p.megujitas_ertesitve,
+                "megerositesre_var": bool(p.megerositesre_var),
                 # Ha a családnak CSAK spanyol tantervű gyereke van, spanyolul írunk.
                 "nyelv": "es" if tant == {"ES"} else "hu",
             })
@@ -1302,6 +1307,7 @@ def ensure_parents_ertesites_columns() -> None:
         "ALTER TABLE parents ADD COLUMN IF NOT EXISTS emlekezteto_kuldve DATE",
         "ALTER TABLE parents ADD COLUMN IF NOT EXISTS emlekezteto_ki BOOLEAN",
         "ALTER TABLE parents ADD COLUMN IF NOT EXISTS megujitas_ertesitve DATE",
+        "ALTER TABLE parents ADD COLUMN IF NOT EXISTS megerositesre_var BOOLEAN",
     ):
         try:
             with _get_engine().begin() as conn:
@@ -1622,7 +1628,8 @@ def ensure_password_reset_table() -> None:
 
 def create_parent(email: str, password_hash: str,
                   szuloi_pin: str | None = None,
-                  tanterv: str | None = None) -> int | None:
+                  tanterv: str | None = None,
+                  megerositesre_var: bool = False) -> int | None:
     """Új szülő létrehozása. Visszaadja az id-t, vagy None ha az email foglalt.
 
     A `szuloi_pin` MÁR TITKOSÍTVA érkezik – nyers számjegyet ide soha ne adj.
@@ -1638,7 +1645,8 @@ def create_parent(email: str, password_hash: str,
         curr = (tanterv or "").strip().upper()[:2]
         parent = Parent(email=email.strip().lower(), password_hash=password_hash,
                         szuloi_pin=szuloi_pin,
-                        csomag_tanterv=curr if curr in ("HU", "ES") else None)
+                        csomag_tanterv=curr if curr in ("HU", "ES") else None,
+                        megerositesre_var=True if megerositesre_var else None)
         db.add(parent)
         db.commit()
         db.refresh(parent)
@@ -2217,6 +2225,45 @@ def mark_reset_token_used(token_id: int) -> None:
         if reset_token:
             reset_token.used_at = datetime.now(timezone.utc)
             db.commit()
+    finally:
+        db.close()
+
+
+def email_megerosit(parent_id: int) -> bool:
+    """A szülő megnyomta a levélben lévő linket (vagy jelszót állított be e-mailből)."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if not p:
+            return False
+        p.megerositesre_var = None
+        db.commit()
+        return True
+    except Exception:                                      # pragma: no cover
+        db.rollback()
+        logger.exception("email_megerosit hiba")
+        return False
+    finally:
+        db.close()
+
+
+def meg_nem_erositett_ujra(parent_id: int, password_hash: str, szuloi_pin: str | None) -> bool:
+    """Ugyanazzal a címmel újra regisztrált, de még nem erősítette meg: a régi
+    (soha be nem lépett) adatokat felülírjuk – így egy elgépelt vagy idegen
+    regisztráció nem zárja ki a cím valódi tulajdonosát."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if not p or not p.megerositesre_var:
+            return False
+        p.password_hash = password_hash
+        p.szuloi_pin = szuloi_pin
+        db.commit()
+        return True
+    except Exception:                                      # pragma: no cover
+        db.rollback()
+        logger.exception("meg_nem_erositett_ujra hiba")
+        return False
     finally:
         db.close()
 

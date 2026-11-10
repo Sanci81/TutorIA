@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{# E-MAIL-MEGERŐSÍTÉS (2026-11-10): regisztráció után, és ha meg nem erősített
+   fiókkal próbál belépni. Új levelet itt kérhet. #}
+{% block title %}{{ t('megerosites_cim') }} · {{ t('app_name') }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+<style>
+  .fp-level{font-size:58px;line-height:1;margin-bottom:8px}
+  .fp-megerosit .fp-cim-email{font-weight:800;color:var(--zold);word-break:break-all}
+  .fp-megerosit ol{margin:14px 0 18px;padding-left:22px;line-height:1.7}
+  .fp-megerosit .fp-halvany{color:#5b6474;font-size:14.5px;margin-top:16px}
+</style>
+<div class="fo fp fp-kis fp-megerosit">
+<section class="fp-sav">
+  <div class="fp-level">✉️</div>
+  <h1>{{ t('megerosites_cim') }}</h1>
+  <p>{{ t('megerosites_alcim') }}</p>
+</section>
+<section class="fp-alap">
+  <div class="fp-kartya">
+    {% if email %}<p>{{ t('megerosites_ide_kuldtuk') }}<br><span class="fp-cim-email">{{ email }}</span></p>{% endif %}
+    <ol>
+      <li>{{ t('megerosites_lepes1') }}</li>
+      <li>{{ t('megerosites_lepes2') }}</li>
+      <li>{{ t('megerosites_lepes3') }}</li>
+    </ol>
+    <form method="post" action="{{ url_for('megerosites_ujra') }}">
+      {{ urlap_vedelem() }}
+      <div class="field">
+        <label for="email">{{ t('label_email') }}</label>
+        <input type="email" id="email" name="email" value="{{ email or '' }}" required autocomplete="email">
+      </div>
+      <button type="submit" class="fp-gomb fp-teli">{{ t('megerosites_ujra_gomb') }}</button>
+    </form>
+    <p class="fp-halvany">{{ t('megerosites_elgepelt') }} <a href="{{ url_for('register') }}">{{ t('megerosites_ujra_reg') }}</a></p>
+  </div>
+</section>
+</div>
+{% endblock %}
