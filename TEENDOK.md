@@ -154,6 +154,15 @@ Utolsó frissítés: 2026-11-06
       olvasható „Ez nem jó”, betűszín, csoport-kártya 36 betű, nyitó-üzenet utasítás, új
       elfogyott-levél, megújítási levél javítás. KAPCSOLÓVAL (élesen Railway =1 kell):
       NYITO_FELADAT, FELADAT_TIPP, POTLAS_JO, KERDES_LEKTOR, TANAR_TEMPO (TANAR_JAVITAS marad KI).
+- [ ] ÁREMELÉS (Sándor kérdése, 2026-11-10): futó bérletnél az új ár csak ELŐZETES értesítés
+      után (kb. 30 nappal előtte, e-mailben), a következő megújulástól érvényes, és a szülő
+      addig díjmentesen lemondhatja. Ezt az ÁSZF-be be kell írni (most nincs benne), és a
+      gestoríával/jogásszal megerősíteni. A megújítási levélben mindig a valódi levonás összege.
+- [ ] FŐOLDAL-VIDEÓ (fix110): az 1. terv (kisfiú helyére) Sándornak nem tetszett. 2. terv: külön
+      szakasz a „Mi a TutorIA?” alatt („Este 7. Te pihensz, ő tanul.” + 3 pont), static/video/.
+      Próbaoldalon megnézni, utána élesre. SPANYOL oldalon NEM jelenik meg (magyar feliratú
+      videó) – spanyol videó kell (összerakás ingyenes, spanyol lecke-képernyőkép kell hozzá).
+      2. lépés: „Nézz bele egy leckébe – regisztráció nélkül” gomb + mintalecke.
 - [ ] STRIPE: a megújítási levélben a csomag NEVE és ÁRA most a csomagok.py listaárából jön –
       ha valaki régebbi (más) áron fizet, a levélbe a Stripe-előfizetés valódi összege kell.
 - [ ] fix108: elfogyott-levélben a próba teljes kerete (120 perc) áll, nem a mért perc; a
