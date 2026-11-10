@@ -223,6 +223,11 @@ admin oldalak mind ellenőrzöttek; mentés-letöltés névellenőrzéssel; süt
 SECRET_KEY figyelmeztetés; nincs kód-ba írt kulcs; /teszt/* csak próbaoldalon.
 MÉG HÁTRA (később):
 - [ ] Jelszó minimum 6 → 8 karakter (fordítás + register/reset sablon).
+- [x] Sándor ellenőrizte a próbaoldalon (11.10): belépés, tanulás, hang, gyerekváltás, admin – jó.
+- [ ] TANÍTÓ (angol, „My name is”): „Nem kell a saját nevedet megírnod” – fölösleges, zavaró
+      mondat (a személyes-adat szabályt túl óvatosan alkalmazza). Megfigyelni, ismétlődik-e.
+- [ ] Hirdetéshez/poszthoz a JAVÍTOTT videó: kinézet képek/facebook/hirdetes/tutoria_reel_este_v6.mp4
+      (a v3-ban a telefon hirtelen jelent meg).
 - [ ] E-mail-megerősítés regisztrációkor (a fizetés bekötése előtt).
 - [ ] A próbálkozás-korlát munkásonként (4 gunicorn) számol → adatbázisba tenni.
 - [ ] CSRF-token az űrlapokra (most a SameSite=Lax süti véd).
