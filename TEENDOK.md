@@ -148,14 +148,28 @@ Utolsó frissítés: 2026-11-06
       nem jött a „Válogasd szét…” feladat) → kártya 36 betűig, a túl hosszú kimarad, a feladat
       marad. (2) Ha a tanító szétválogatást ígér, de nem rakja ki → a program pótolja (kis modell,
       FELADAT_TIPP). A ✓ a böngészőben tesztelve működik – a próbaoldalon újra megnézni.
+- [ ] fix107: „Elfogyott” levél új, vidám HTML formában (mint az emlékeztető): TutorIAcademia
+      név, tanító-gif, egy gomb; próbánál nincs album/kártya említés; tesztidőszakban „Érdekel”
+      (nem vásárlás). Próbaoldalon: Fiókom → „🧪 Elfogyott az ingyenes próba levél mintája”.
+- [x] Feltöltés rendben (git log: minden commit fent van az origin/proba-n, a tanító már a
+      csoport-ajánlás szerint beszélt). A régi kinézet oka: a lecke-oldal a feltöltés ELŐTT
+      volt megnyitva – a tábla kinézete csak újratöltéskor (F5) frissül.
+- [ ] ‼️ A fix102/fix103 chat.html változás (✓, piros keret, olvasható „Ez nem jó”) a 11.09-i
+      képeken NEM látszik a próbaoldalon, pedig Sándor feltöltötte. Az app.py a gépen hibátlanul
+      elindul (Claude kipróbálta). Ellenőrizni: git status / git log, és hogy a próbaoldal
+      forrásában benne van-e: „a rossz válasz legyen PIROS keretes”.
+- [ ] TANÍTÓ: ismeretlen szakszó magyarázat nélkül („két oldat összekeverése” – Sándor nem
+      tudta, mi az oldat). Új szakszót mindig egy hétköznapi példával kell bevezetni.
+- [ ] MINTALECKE regisztráció nélkül + VIDEÓ a főoldal tetején – Sándor: „nagyon profin,
+      hiba nélkül”. Élesítés előtt képernyőképek, próbaoldal.
 - [ ] ‼️ RENDSZERES HIBAKERESÉS (Sándor: „rengeteg a hiba, évekig javíthatnánk egyenként”):
       admin oldal, ami MINDEN elveszett/hiányzó feladatot, lektor-javítást, ígért-de-nem-jött
       feladatot naplóz okkal együtt (FELADAT ELVESZETT, FELADAT-HIANY, LEKTOR…) → kategóriánként
       javítunk (egy javítás = sok lecke). + tanar_teszt automatikus futás erre a naplóra.
 - [ ] REGISZTRÁCIÓ (11.09 adat): 834 látogató → 2 regisztráció. Főoldal: medián 6 mp, 448-ból
       32 görgetett. Regisztrációs oldal: 174 látogató, medián 6 mp. Ötletek: kipróbálás
-      regisztráció nélkül (1 rövid mintalecke), videó a főoldal tetején, ismerősök/csoportok
-      (nem fizetett hirdetés), 2–3 valódi család véleménye.
+      regisztráció nélkül (1 rövid mintalecke), videó a főoldal tetején. Ismerős családot
+      Sándor nem tud megkérni.
 - [ ] TANÍTÓ: a táblára csak az utolsó kérdés kerül ki – legyen önmagában érthető (Sándor nem
       értette: „Melyik a helyes szó: monokultúra vagy fajgazdagság?” – mire?). Megoldást keresni.
       Helyette: ingyenes posztok + videó; új hirdetés csak jobb anyaggal és céllal.

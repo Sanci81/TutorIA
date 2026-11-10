@@ -18700,38 +18700,81 @@ def _mentes_ha_esedekes() -> None:
 # EGYSZER MEGY KI: akinek szóltunk, az kap egy dátumot. Havi csomagnál a
 # következő hónapban újra szólhatunk, az ingyenes próbánál soha többé —
 # az egyszer jár.
-def _keret_level(cimzett: str, nyelv: str, ingyenes: bool) -> bool:
+def _keret_level(cimzett: str, nyelv: str, ingyenes: bool, *, perc: float = 0,
+                 nevek: str = "", alap: str = "") -> bool:
+    """2026-11-10 (Sándor: „sablonos, unalmas, és kétszer TutorIA, pedig TutorIAcademia
+    vagyunk”): ugyanaz a vidám HTML-forma, mint az emlékeztetőnél – a tanító szól, egy nagy
+    gomb, egy narancs doboz. A próbában nincs album/kártya, ezért ott csak a haladást írjuk.
+    Tesztidőszakban (FIZETES_ELERHETO nélkül) nem „vásárolj”, hanem „jelezd, melyik érdekel”."""
+    alap = (alap or _oldal_url("/")).rstrip("/")
+    csomag_url = alap + "/csomagok"
+    kep = alap + ("/static/email/tanito_es.gif" if nyelv == "es" else "/static/email/tanito_hu.gif")
+    from markupsafe import escape as e
+    jogi = _jogi_adatok()
+    p = int(max(0, round(perc or 0)))
     if nyelv == "es":
-        targy = "TutorIA – se ha agotado el tiempo de estudio"
-        szoveg = (
-            "¡Hola!\n\n"
-            "El tiempo de estudio de esta cuenta se ha agotado, así que por "
-            "ahora no se pueden empezar lecciones nuevas.\n\n"
-            "Lo que sigue disponible: el progreso, el álbum, las cartas y las "
-            "monedas que ya ganó tu hijo o hija. Eso no se pierde.\n\n"
-            + ("La prueba gratuita es de una sola vez. Si queréis seguir, "
-               "aquí están los planes:\n"
-               if ingyenes else
-               "El tiempo se renueva en la fecha de renovación. Si hace falta "
-               "más, aquí están los planes:\n")
-            + f"{_oldal_url('/csomagok')}\n\nTutorIA"
-        )
+        if ingyenes:
+            targy = (f"{nevek}, ¡has terminado la prueba gratuita! 🎉" if nevek
+                     else "¡Has terminado la prueba gratuita! 🎉")
+            cim = "¡Buen trabajo" + (f", {nevek}" if nevek else "") + "!"
+            szoveg = ((f"Hemos aprendido {p} minutos juntos. " if p >= 10 else "")
+                      + "La prueba gratuita ha terminado, pero nada se pierde: "
+                      "el progreso se guarda y seguimos justo donde lo dejamos.")
+            if FIZETES_ELERHETO:
+                gomb, doboz, doboz_al = ("VER LOS BONOS", "Los bonos empiezan en 6 horas al mes",
+                                         "Las horas que no uséis valen 3 meses. Se puede cancelar en cualquier momento.")
+            else:
+                gomb, doboz, doboz_al = ("ME INTERESA", "Los bonos de pago llegan muy pronto",
+                                         "En la página de bonos puedes marcar cuál te interesaría: te avisaremos.")
+        else:
+            targy = "Se han acabado las horas de este mes ⏳"
+            cim = "¡Este mes habéis aprendido mucho!"
+            szoveg = ("Las horas del bono de este mes se han terminado. El progreso, el álbum, "
+                      "las cartas y las monedas siguen ahí. Las horas vuelven en la fecha de renovación.")
+            gomb, doboz, doboz_al = ("VER LOS BONOS", "¿Necesitáis más horas antes?",
+                                     "Podéis elegir un bono más grande en la página de bonos.")
+        lab = (f'Recibes este correo porque te registraste en TutorIAcademia.<br>'
+               f'TutorIAcademia · {e(jogi["uzemelteto"])} · España · {e(jogi["kapcsolat"])}')
     else:
-        targy = "TutorIA – elfogyott a tanulási idő"
-        szoveg = (
-            "Szia!\n\n"
-            "Ezen a fiókon elfogyott a tanulási idő, ezért új leckét egyelőre "
-            "nem tud kezdeni a gyereked.\n\n"
-            "Ami megmarad: a haladása, az albuma, a kártyái és az érméi. "
-            "Azokat nem veszíti el.\n\n"
-            + ("Az ingyenes próba egyszer jár. Ha folytatnátok, itt vannak a "
-               "csomagok:\n"
-               if ingyenes else
-               "A keret a fordulónapon újraindul. Ha addig is kellene több, "
-               "itt vannak a csomagok:\n")
-            + f"{_oldal_url('/csomagok')}\n\nTutorIA"
-        )
-    return _level_kuld(cimzett, targy, szoveg)
+        if ingyenes:
+            targy = (f"{nevek}, " if nevek else "") + "végigértél az ingyenes próbán! 🎉"
+            targy = targy[0].upper() + targy[1:]
+            cim = "Szép munka volt" + (f", {nevek}" if nevek else "") + "!"
+            szoveg = ((f"{p} percet tanultunk együtt. " if p >= 10 else "")
+                      + "Az ingyenes próba véget ért, de semmi nem vész el: a haladás megmarad, "
+                      "és pontosan ott folytatjuk, ahol abbahagytuk.")
+            if FIZETES_ELERHETO:
+                gomb, doboz, doboz_al = ("BÉRLETEK MEGTEKINTÉSE", "Bérlet már havi 6 órától",
+                                         "A fel nem használt órák 3 hónapig megmaradnak. Bármikor lemondható.")
+            else:
+                gomb, doboz, doboz_al = ("ÉRDEKEL", "A fizetős bérletek hamarosan indulnak",
+                                         "A Bérletek oldalon jelezheted, melyik érdekelne – szólunk, amint indul.")
+        else:
+            targy = "Elfogyott az e havi órakeret ⏳"
+            cim = "Ebben a hónapban sokat tanultatok!"
+            szoveg = ("Az e havi órák elfogytak. A haladás, az album, a kártyák és az érmék "
+                      "megmaradnak, az órakeret pedig a fordulónapon újraindul.")
+            gomb, doboz, doboz_al = ("BÉRLETEK", "Kellene addig is még óra?",
+                                     "A Bérletek oldalon nagyobb bérletet választhattok.")
+        lab = (f'Azért kapod ezt a levelet, mert regisztráltál a TutorIAcademián.<br>'
+               f'TutorIAcademia · {e(jogi["uzemelteto"])} · Spanyolország · {e(jogi["kapcsolat"])}')
+    szoveg_txt = f"{cim}\n\n{szoveg}\n\n{doboz}\n{doboz_al}\n\n{gomb}: {csomag_url}\n\n—\nTutorIAcademia"
+    html = _emlekezteto_html(cim, szoveg, gomb, csomag_url, kep, doboz, doboz_al, lab)
+    return _level_kuld(cimzett, targy, szoveg_txt, html=html)
+
+
+@app.route("/teszt/keretlevel", methods=["POST"])
+@login_required
+def teszt_keretlevel():
+    """CSAK A PRÓBAOLDALON: az „elfogyott” levél mintája a belépett szülőnek."""
+    if not PROBA_OLDAL:
+        abort(404)
+    szulo = database.get_parent_by_id(session["parent_id"]) or {}
+    nevek, _db = _emlekezteto_nevek(session["parent_id"], g.lang)
+    ok = _keret_level(szulo.get("email") or "", g.lang, request.form.get("fajta") != "berlet",
+                      perc=120, nevek=nevek, alap=request.host_url.rstrip("/"))
+    flash("Elfogyott-levél mintája " + ("elküldve" if ok else "NEM ment ki"), "success" if ok else "error")
+    return redirect(url_for("fiok"))
 
 
 # ── „RÉG JÁRTÁL ITT” EMLÉKEZTETŐ (2026-11-06, Sándor) ──────────────────────
@@ -18799,7 +18842,7 @@ def _emlekezteto_html(cim: str, szoveg: str, gomb: str, gomb_url: str, kep_url: 
         'font:800 18px Arial,sans-serif;letter-spacing:.5px;padding:16px 40px;border-radius:14px;'
         f'border-bottom:4px solid #167A5E">{e(gomb)}</a></td></tr>'
         f'<tr><td align="center" style="padding:10px 24px 0"><img src="{e(kep_url)}" width="320" '
-        'alt="TutorIA" style="display:block;width:320px;max-width:100%;height:auto;border-radius:16px"></td></tr>'
+        'alt="TutorIAcademia" style="display:block;width:320px;max-width:100%;height:auto;border-radius:16px"></td></tr>'
         f'<tr><td align="center" style="padding:22px 24px 6px;font:800 26px Arial,sans-serif;color:#3c3c3c">{e(cim)}</td></tr>'
         f'<tr><td align="center" style="padding:0 34px 20px;font:17px/1.55 Arial,sans-serif;color:#555">{e(szoveg)}</td></tr>'
         + doboz_html +
@@ -19066,7 +19109,12 @@ def _keret_ertesito_kor() -> None:
                 continue                   # az ingyenes próba egyszer jár
             if mikor.year == ma.year and mikor.month == ma.month:
                 continue                   # ebben a hónapban már szóltunk
-        if _keret_level(sz["email"], sz.get("nyelv") or "hu", egyszeri):
+        try:
+            _kn = _emlekezteto_nevek(sz["id"], sz.get("nyelv") or "hu")[0]
+        except Exception:
+            _kn = ""
+        if _keret_level(sz["email"], sz.get("nyelv") or "hu", egyszeri,
+                        perc=elhasznalt if egyszeri else 0, nevek=_kn):
             database.keret_ertesitve_jelol(sz["id"])
             app.logger.warning("Keret-elfogyott levél kiment: %s", sz["email"])
 
