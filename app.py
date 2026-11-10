@@ -18377,8 +18377,11 @@ def _admin_riaszt(cim: str, mi: str) -> None:
                   f"Böngésző: {bongeszo}\n\nHa ez TE voltál, nincs teendőd.\n"
                   f"Ha NEM te voltál: azonnal változtass jelszót itt: {_oldal_url('/forgot-password')}\n"
                   "és állíts be új ADMIN_KOD-ot a Railway-en.\n\nTutorIAcademia biztonsági értesítés")
-        if cim.strip():
-            _level_kuld(cim.strip(), "TutorIAcademia – biztonsági értesítés: " + mi, szoveg)
+        # 2026-11-10 (Sándor): a riasztás az info@ címre megy, nem a belépett fiókéra.
+        # Másik cím: RIASZTAS_EMAIL változó a Railway-en.
+        hova = (os.environ.get("RIASZTAS_EMAIL") or _jogi_adatok()["kapcsolat"] or cim).strip()
+        if hova:
+            _level_kuld(hova, "TutorIAcademia – biztonsági értesítés: " + mi, szoveg)
     except Exception:
         logger.exception("Admin riasztás hiba")
 
