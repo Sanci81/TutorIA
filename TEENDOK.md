@@ -261,6 +261,15 @@ MÉG HÁTRA (később):
       szöveg (nincs AI-költség), valódi interaktív feladatok, a végén „Regisztrálok” gomb.
       Spanyol oldal: 1–6. Kérdés szövege: „Szerinted hány alma van összesen?”. Jóváhagyásra vár.
 - [x] Blog link a láblécben (csak a magyar oldalon; a blog magyar) – fix121.
+- [ ] FŐOLDAL DÖNTÉS (Sándor, 11.11): az „1. kép” változat – középen álló csempés kártya (2 oszlop,
+      1–8. osztály), a buborék és az ABC kockák MARADNAK, a felső „AI-tanár · …” címke VÁLTOZATLAN, a
+      keretes AI-sor NEM kell. Terv: outputs/fix122/index_csempe_abc_terv.html. Megépíteni a
+      mintaleckékkel együtt, próbaoldalon.
+- [x] MINTALECKE + CSEMPÉK megépítve (fix124): /minta (évfolyam-választó), /minta/<n> (3 lépés, előre megírt,
+      AI nélkül), mintalecke.py (HU 1–8, ES 1–6, évfolyamonként más tárgy). Főoldal: középen csempés kártya
+      (buborék + ABC marad). Kapcsoló: MINTALECKE (próbán BE, élesen Railway =1; 0 = régi főoldal).
+      Mérés: látogatottság „#minta_hu_N”, „#minta_vege” események. [ ] Sándor: próbán végignézni mind a 8-at.
+- [ ] Facebook-hozzászólás (Ágnes, AI-ellenes): ne rejtsük el; udvarias, egyetértő válasz, név nélkül.
 - [x] Videó „Este 7.” helyett „Hosszú nap volt.” (v7), főoldali cím: „Te pihensz, ő tanul.” (fix120).
       Hirdetéshez: kinézet képek/facebook/hirdetes/tutoria_reel_este_v7.mp4.
 - [ ] ‼️ ADMIN_KOD beállítása a Railway-en (web + próba) – Sándor: ne felejtsük el.

@@ -1879,6 +1879,51 @@ def generate_image():
         return jsonify(ok=False, error=_kep_hiba(lang)), 502
 
 
+# ── MINTALECKE regisztráció nélkül (2026-11-11, Sándor) ─────────────────────
+# A főoldal évfolyam-csempéi ide vezetnek. Előre megírt szöveg (mintalecke.py),
+# AI-hívás nincs, semmit nem mentünk. Kapcsoló: MINTALECKE – próbaoldalon
+# magától BE, élesen csak =1-gyel; 0 = ki (akkor a főoldal is a régi).
+_MLK = os.environ.get("MINTALECKE", "").strip().lower()
+MINTALECKE = (_MLK in ("1", "igen", "true", "be")
+              or (PROBA_OLDAL and _MLK not in ("0", "nem", "false", "ki")))
+
+
+@app.context_processor
+def _mintalecke_kapcsolo():
+    return {"mintalecke_be": MINTALECKE}
+
+
+@app.route("/minta")
+def mintalecke_valaszt():
+    if not MINTALECKE:
+        abort(404)
+    import mintalecke as _ml
+    ny = "es" if g.lang == "es" else "hu"
+    return render_template("mintalecke.html", lecke=None, evf=None,
+                           evfolyamok=_ml.evfolyamok(ny), gyerek_menu_nelkul=True)
+
+
+@app.route("/minta/<int:evf>")
+def mintalecke(evf: int):
+    if not MINTALECKE:
+        abort(404)
+    import mintalecke as _ml
+    ny = "es" if g.lang == "es" else "hu"
+    lk = _ml.lecke(ny, evf)
+    if not lk:
+        return redirect(url_for("mintalecke_valaszt"))
+    _latogatas_esemeny(f"minta_{ny}_{evf}")
+    return render_template("mintalecke.html", lecke=lk, evf=evf,
+                           evfolyamok=_ml.evfolyamok(ny), gyerek_menu_nelkul=True)
+
+
+@app.route("/minta/<int:evf>/vege", methods=["POST"])
+def mintalecke_vege(evf: int):
+    if MINTALECKE:
+        _latogatas_esemeny("minta_vege")
+    return ("", 204)
+
+
 @app.route("/blog")
 def blog():
     """A cikkek listája. Belépés nélkül, hogy a kereső és a megosztott link is elérje."""

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{# MINTALECKE regisztráció nélkül (2026-11-11). Előre megírt szöveg, AI-hívás nincs,
+   semmit nem mentünk. A főoldal évfolyam-csempéi ide vezetnek. #}
+{% set es = (lang == 'es') %}
+{% block title %}{{ ('Lección de prueba' if es else 'Mintalecke') }}{% if lecke %} · {{ evf }}.{% endif %} · {{ t('app_name') }}{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
+<style>
+  .ml{position:relative;background:#FBF5EA;min-height:70vh;padding:26px 16px 60px;overflow:hidden}
+  .ml::before{content:"";position:absolute;inset:0;background:url({{ url_for('static', filename='bemutato/rajzos_hatter.svg') }}) 0 0/1250px auto repeat;opacity:.4;pointer-events:none}
+  .ml-belso{position:relative;max-width:620px;margin:0 auto}
+  .ml-fej{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .ml-fej b{font-size:15px;color:#17604A}
+  .ml-fej span{font-size:13px;font-weight:800;background:#17604A;color:#fff;padding:5px 12px;border-radius:999px}
+  .ml-sav{display:flex;gap:6px;margin:6px 0 16px}.ml-sav i{flex:1;height:7px;border-radius:5px;background:#E2DACB;transition:background .3s}
+  .ml-sav i.k{background:#22A06B}
+  .ml-tan{display:flex;gap:12px;align-items:flex-start}
+  .ml-av{flex:0 0 46px;height:46px;border-radius:50%;background:#E3F3EA;display:flex;align-items:center;justify-content:center}
+  .ml-av img{width:30px;height:30px}
+  .ml-bub{flex:1;background:#fff;border-radius:4px 20px 20px 20px;padding:14px 16px;font-size:17px;line-height:1.5;color:#1F2D28;box-shadow:0 4px 14px rgba(23,96,74,.09)}
+  .ml-fel{margin-top:16px;background:#fff;border-radius:22px;padding:18px 16px 20px;box-shadow:0 6px 18px rgba(23,96,74,.10);position:relative}
+  .ml-kep{text-align:center;font-size:44px;line-height:1.25;margin:2px 0 10px;letter-spacing:2px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+  .ml-tanyer{font-size:26px;letter-spacing:0;background:#FFF4E0;border:3px solid #F1DDBA;border-radius:50%;width:92px;height:92px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;padding:8px;box-sizing:border-box;line-height:1.15}
+  .ml-kerdes{font-weight:800;font-size:19px;color:#17342C;text-align:center;margin:0 0 16px}
+  .ml-opciok{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+  .ml-op{border:0;border-radius:16px;color:#fff;font-weight:800;font-size:19px;font-family:inherit;padding:16px 10px;cursor:pointer;
+    box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .1s;min-height:62px}
+  .ml-op:hover{transform:translateY(-2px)}
+  .ml-op.jo{background:#22A06B!important;outline:3px solid #fff;box-shadow:0 0 0 6px #22A06B}
+  .ml-op.rossz{background:#B8C0C9!important;box-shadow:0 0 0 3px #E5484D;animation:mlRez .35s;text-decoration:line-through}
+  @keyframes mlRez{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .ml-visza{margin-top:14px;font-weight:700;text-align:center;min-height:1.4em}
+  .ml-visza.rossz{color:#B42318}.ml-visza.jo{color:#17604A}
+  .ml-szuper{position:absolute;right:14px;top:-16px;background:#17604A;color:#fff;font-weight:800;padding:7px 16px;border-radius:999px;
+    font-size:17px;transform:scale(0);transition:transform .25s}
+  .ml-szuper.lat{transform:scale(1)}
+  .ml-tovabb{display:none;margin:18px auto 0;border:0;background:#F5A01E;color:#fff;font-weight:800;font-size:18px;font-family:inherit;padding:14px 34px;
+    border-radius:14px;box-shadow:0 4px 0 #C97F0E;cursor:pointer}
+  .ml-megj{margin-top:18px;text-align:center;color:#6B756F;font-size:13.5px}
+  .ml-vege{text-align:center}
+  .ml-vege .nagy{font-size:64px}.ml-vege h1{margin:6px 0;font-size:30px;color:#17342C}
+  .ml-vege p{color:#4D665D;font-size:16.5px;line-height:1.5}
+  .ml-lista{text-align:left;background:#fff;border-radius:18px;padding:14px 18px;margin:16px 0 20px;font-size:16px;line-height:2;box-shadow:0 4px 14px rgba(23,96,74,.08)}
+  .ml-cta,.ml-cta2{text-decoration:none!important}
+  .ml-cta{display:block;text-align:center;background:#F5A01E;color:#fff!important;text-decoration:none;font-weight:800;font-size:19px;padding:16px;
+    border-radius:16px;box-shadow:0 5px 0 #C97F0E}
+  .ml-cta2{display:block;text-align:center;border:2px solid #17604A;color:#17604A!important;text-decoration:none;font-weight:800;font-size:16px;padding:12px;
+    border-radius:16px;margin-top:12px;background:#fff}
+  .ml-valaszt h1{text-align:center;color:#17342C;font-size:30px;margin:10px 0 4px}
+  .ml-valaszt p{text-align:center;color:#4D665D;margin:0 0 20px}
+  .ml-racs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .ml-cs{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:18px;color:#fff!important;text-decoration:none;
+    padding:16px 0 12px;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+  .ml-cs b{font-size:32px;line-height:1}.ml-cs span{font-size:13px;font-weight:700;margin-top:4px}
+  .ml-c1{background:#2F8FD8}.ml-c2{background:#8A5CD6}.ml-c3{background:#F59E0B}.ml-c4{background:#0EA5B7}
+  .ml-c5{background:#5B6CE0}.ml-c6{background:#D9467F}.ml-c7{background:#22A06B}.ml-c8{background:#E07B39}
+  #mlKonf{position:fixed;inset:0;pointer-events:none;z-index:50}
+  @media (max-width:520px){.ml-racs{grid-template-columns:repeat(4,1fr);gap:8px}.ml-cs b{font-size:26px}.ml-bub{font-size:16px}}
+</style>
+<div class="ml"><div class="ml-belso">
+{% if not lecke %}
+  <div class="ml-valaszt">
+    <h1>{{ '¿En qué curso está tu hijo?' if es else 'Hányadik osztályos a gyereked?' }}</h1>
+    <p>{{ 'Una lección corta y real, sin registro ni correo.' if es else 'Egy rövid, igazi lecke – regisztráció és e-mail nélkül.' }}</p>
+    <div class="ml-racs">
+      {% for n in evfolyamok %}<a class="ml-cs ml-c{{ n }}" href="{{ url_for('mintalecke', evf=n) }}" data-mer="Mintalecke: {{ n }}. évfolyam"><b>{{ n }}.</b><span>{{ 'curso' if es else 'osztály' }}</span></a>{% endfor %}
+    </div>
+    <p class="ml-megj">🛡️ {{ 'No guardamos nada. No hace falta ningún nombre.' if es else 'Semmit nem mentünk el. Nevet sem kell megadni.' }}</p>
+  </div>
+{% else %}
+  <div id="mlLecke">
+    <div class="ml-fej"><b>{{ lecke.targy }} · {{ lecke.tema }}</b><span>{{ (evf ~ '.º curso') if es else (evf ~ '. osztály') }}</span></div>
+    <div class="ml-sav">{% for s in lecke.lepesek %}<i></i>{% endfor %}</div>
+    <div class="ml-tan"><div class="ml-av"><img src="{{ url_for('static', filename='img/tutoria_logo.png') }}" alt=""></div>
+      <div class="ml-bub" id="mlTanit"></div></div>
+    <div class="ml-fel"><div class="ml-szuper" id="mlSzuper">{{ '¡Genial!' if es else 'Szuper!' }} 🎉</div>
+      <div class="ml-kep" id="mlKep"></div><div class="ml-kerdes" id="mlKerdes"></div>
+      <div class="ml-opciok" id="mlOpciok"></div>
+      <div class="ml-visza" id="mlVisza"></div>
+      <div style="text-align:center"><button class="ml-tovabb" id="mlTovabb" type="button">{{ 'Siguiente →' if es else 'Tovább →' }}</button></div>
+    </div>
+    <p class="ml-megj">{{ 'En la versión completa, el profesor (una inteligencia artificial) conversa con tu hijo, le responde y también se le puede hablar en voz alta.' if es else 'A teljes változatban a tanító (mesterséges intelligencia) beszélget a gyerekkel, válaszol neki, és hangosan is lehet beszélni vele.' }}</p>
+  </div>
+  <div id="mlVege" class="ml-vege" style="display:none">
+    <div class="nagy">🏆</div><h1>{{ '¡Muy bien!' if es else 'Ügyes volt!' }}</h1>
+    <p>{{ 'Esto ha sido una lección real en pequeño. En la versión completa hay mucho más:' if es else 'Ez egy igazi lecke volt kicsiben. A teljes TutorIAcademiában ennél sokkal több van:' }}</p>
+    <div class="ml-lista">{% if es %}✅ Todo el temario de 1.º a 6.º de Primaria<br>✅ El profesor responde y lo explica de otra manera<br>✅ Modo voz: también se le puede hablar<br>✅ Álbum de cromos con científicos famosos<br>✅ Informe por correo: ves lo que ha aprendido{% else %}✅ Az egész tananyag, 1–8. osztály<br>✅ A tanító válaszol, és másképp is elmagyarázza<br>✅ Hangos mód: beszélni is lehet vele<br>✅ Kártyagyűjtés híres tudósokkal<br>✅ Jelentés e-mailben: látod, mit tanult{% endif %}</div>
+    <a class="ml-cta" href="{{ url_for('register') }}" data-mer="Mintalecke vége: regisztráció">{{ 'Registrarme – 120 minutos gratis' if es else 'Regisztrálok – 120 perc ingyen' }}</a>
+    <a class="ml-cta2" href="{{ url_for('mintalecke_valaszt') }}" data-mer="Mintalecke vége: másik">{{ 'Otra lección de prueba' if es else 'Másik mintalecke' }}</a>
+    <p class="ml-megj">{{ 'No hace falta tarjeta.' if es else 'Bankkártya nem kell.' }}</p>
+  </div>
+  <canvas id="mlKonf"></canvas>
+  <script>
+  (function () {
+    var L = {{ lecke|tojson }}, ES = {{ 'true' if es else 'false' }};
+    var SZ = ['#2F8FD8', '#8A5CD6', '#F59E0B', '#0EA5B7', '#5B6CE0', '#D9467F'];
+    var i = 0, probalt = 0, kesz = false;
+    var $ = function (id) { return document.getElementById(id); };
+    var savok = document.querySelectorAll('.ml-sav i');
+    function konfetti(el) {
+      var c = $('mlKonf'), x = c.getContext('2d'); c.width = innerWidth; c.height = innerHeight;
+      var r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, p = [];
+      for (var k = 0; k < 90; k++) { var a = Math.random() * 6.28, s = 4 + Math.random() * 7;
+        p.push({x: cx, y: cy, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 4, m: 5 + Math.random() * 6, c: SZ[k % 6], t: 0}); }
+      (function rajz() { x.clearRect(0, 0, c.width, c.height); var el2 = false;
+        p.forEach(function (q) { if (q.t > 70) { return; } el2 = true; q.t++; q.vy += .25; q.x += q.vx; q.y += q.vy; x.fillStyle = q.c; x.fillRect(q.x, q.y, q.m, q.m * .6); });
+        if (el2) { requestAnimationFrame(rajz); } else { x.clearRect(0, 0, c.width, c.height); } })();
+    }
+    function lepes() {
+      var s = L.lepesek[i]; probalt = 0; kesz = false;
+      for (var k = 0; k < savok.length; k++) { savok[k].classList.toggle('k', k < i); }
+      $('mlTanit').innerHTML = s.tanit; var kp = $('mlKep'); kp.innerHTML = '';
+      (s.kep || '').split('|').forEach(function (d, k, tomb) { var e = document.createElement('span');
+        e.textContent = d; if (tomb.length > 1) { e.className = 'ml-tanyer'; } kp.appendChild(e); }); $('mlKerdes').textContent = s.kerdes;
+      $('mlVisza').textContent = ''; $('mlVisza').className = 'ml-visza'; $('mlTovabb').style.display = 'none';
+      $('mlSzuper').classList.remove('lat');
+      var h = $('mlOpciok'); h.innerHTML = '';
+      var rovid = s.opciok.every(function (o) { return String(o).length <= 10; });
+      h.style.gridTemplateColumns = rovid ? 'repeat(' + Math.min(s.opciok.length, 4) + ',1fr)' : '1fr';
+      s.opciok.forEach(function (o, k) {
+        var g = document.createElement('button'); g.type = 'button'; g.className = 'ml-op'; g.textContent = o;
+        g.style.background = SZ[k % SZ.length];
+        g.addEventListener('click', function () {
+          if (kesz || g.disabled) { return; }
+          if (k === s.jo) {
+            kesz = true; g.classList.add('jo'); g.textContent = '✓ ' + o; $('mlSzuper').classList.add('lat'); konfetti(g);
+            $('mlVisza').className = 'ml-visza jo'; $('mlVisza').innerHTML = s.miert; $('mlTovabb').style.display = 'inline-block';
+          } else {
+            probalt++; g.classList.add('rossz'); g.disabled = true;
+            if (probalt >= 2) {
+              kesz = true; var jg = h.children[s.jo]; jg.classList.add('jo'); jg.textContent = '✓ ' + s.opciok[s.jo];
+              $('mlVisza').className = 'ml-visza jo'; $('mlVisza').innerHTML = s.miert; $('mlTovabb').style.display = 'inline-block';
+            } else {
+              $('mlVisza').className = 'ml-visza rossz';
+              $('mlVisza').textContent = ES ? 'Esta no es. ¡Piénsalo otra vez!' : 'Ez nem jó. Gondold át még egyszer!';
+            }
+          }
+        });
+        h.appendChild(g);
+      });
+    }
+    $('mlTovabb').addEventListener('click', function () {
+      i++;
+      if (i >= L.lepesek.length) {
+        for (var k = 0; k < savok.length; k++) { savok[k].classList.add('k'); }
+        $('mlLecke').style.display = 'none'; $('mlVege').style.display = 'block'; window.scrollTo(0, 0);
+        try { fetch('{{ url_for('mintalecke_vege', evf=evf) }}', {method: 'POST'}); } catch (e) {}
+        return;
+      }
+      lepes(); window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+    lepes();
+  })();
+  </script>
+{% endif %}
+</div></div>
+{% endblock %}

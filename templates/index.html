@@ -341,7 +341,47 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
   .fo .fo-video{width:min(320px,84vw);margin:0 auto}
   .fo .fo-este h2{font-size:28px}
 }
-</style>
+{% if mintalecke_be %}
+/* ÉVFOLYAM-CSEMPÉK (2026-11-11, Sándor) – csak MINTALECKE kapcsolóval: a hős-részben, a kisfiú mellett → mintalecke. */
+@media (min-width:761px){
+  .fo .fo-hero-belso{max-width:1240px;grid-template-columns:1fr 1.05fr}
+  .fo .fo-hero h1{font-size:50px}
+  .fo .fo-hero .fo-kep img.fo-diak{right:-6px}
+  .fo .fo-hero .fo-folt{right:-30px}
+}
+@media (min-width:761px) and (max-width:1120px){
+  .fo .fo-hero .fo-kep img.fo-diak{height:330px;right:-20px}
+  .fo .fo-hero .fo-folt{width:300px;height:300px}
+  .fo .fo-hero h1{font-size:40px}
+  .fo .fo-csempek{width:220px!important}
+}
+.fo .fo-csempek{position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:3;width:250px;background:rgba(255,255,255,.96);border-radius:24px;
+  padding:18px 18px 20px;box-shadow:0 18px 40px rgba(23,96,74,.18)}
+.fo .fo-cs-cim{font-weight:800;font-size:19px;color:#17342C;text-align:center}
+.fo .fo-cs-al{font-size:13.5px;color:#4D665D;text-align:center;margin:2px 0 14px}
+.fo .fo-cs-racs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.fo .fo-cs{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:16px;color:#fff;text-decoration:none;
+  padding:12px 0 10px;box-shadow:0 4px 0 rgba(0,0,0,.18);transition:transform .12s}
+.fo .fo-cs:hover{transform:translateY(-3px)}
+.fo .fo-cs b{font-size:28px;line-height:1}.fo .fo-cs span{font-size:12.5px;font-weight:700;opacity:.92;margin-top:3px}
+.fo .fo-cs1{background:#2F8FD8}.fo .fo-cs2{background:#8A5CD6}.fo .fo-cs3{background:#F59E0B}.fo .fo-cs4{background:#0EA5B7}
+.fo .fo-cs5{background:#5B6CE0}.fo .fo-cs6{background:#D9467F}.fo .fo-cs7{background:#22A06B}.fo .fo-cs8{background:#E07B39}
+@media (max-width:760px){
+  .fo .fo-csempek{position:relative;left:auto;top:auto;transform:none;width:auto;margin:0 0 14px;order:-1}
+  .fo .fo-cs-racs{grid-template-columns:repeat(4,1fr)}
+  .fo .fo-kep{height:auto;display:flex;flex-direction:column}
+  .fo .fo-kep img.fo-diak{position:relative;right:auto;align-self:center;height:260px}
+  .fo .fo-kep .fo-folt{bottom:0}
+}
+
+@media (min-width:761px){
+  .fo .fo-hero .fo-bubor-uj{left:auto;right:150px;top:96px;width:190px;z-index:4;font-size:14px}
+  .fo .fo-hero .fo-abc-uj{left:258px;bottom:8px;z-index:4}
+  .fo .fo-hero .fo-abc-uj span{width:48px;height:48px;font-size:24px}
+}
+@media (max-width:760px){ .fo .fo-hero .fo-abc-uj{display:none} }
+
+{% endif %}</style>
 
 <div class="fo{% if es %} fo-es{% endif %}">
 
@@ -367,9 +407,23 @@ body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
     <div class="fo-kep">
       <div class="fo-folt"></div><div class="fo-folt2"></div>
       <div class="fo-forma fo-haromszog"></div>
-      <div class="fo-forma fo-abc"><span class="fo-k-a">A</span><span class="fo-k-b">B</span><span class="fo-k-c">C</span></div>
+      {% if not mintalecke_be %}<div class="fo-forma fo-abc"><span class="fo-k-a">A</span><span class="fo-k-b">B</span><span class="fo-k-c">C</span></div>{% endif %}
       <img class="fo-diak" src="{{ url_for('static', filename='img/diak.png') }}" alt="{{ 'Chico con cuadernos' if es else 'Kisfiú füzetekkel' }}">
+      {% if mintalecke_be %}
+      <div class="fo-forma fo-bubor fo-bubor-uj"><small>{{ 'El profesor pregunta:' if es else 'A tanár kérdezi:' }}</small>{{ '¿Cuánto es 3 × 5? ¡Piénsalo con calma!' if es else 'Mennyi 3 × 5? Gondold végig nyugodtan!' }}</div>
+      <div class="fo-forma fo-abc fo-abc-uj"><span class="fo-k-a">A</span><span class="fo-k-b">B</span><span class="fo-k-c">C</span></div>
+      <div class="fo-csempek">
+        <div class="fo-cs-cim">{{ '¿En qué curso está tu hijo?' if es else 'Hányadik osztályos a gyereked?' }}</div>
+        <div class="fo-cs-al">{{ 'Prueba una lección ahora, sin registrarte' if es else 'Próbálj ki most egy leckét – regisztráció nélkül' }}</div>
+        <div class="fo-cs-racs">
+          {% for n in range(1, 7 if es else 9) %}
+          <a href="{{ url_for('mintalecke', evf=n) }}" class="fo-cs fo-cs{{ n }}" data-mer="Főoldal csempe: {{ n }}. évfolyam"><b>{{ n }}.</b><span>{{ 'curso' if es else 'osztály' }}</span></a>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
       <div class="fo-forma fo-bubor"><small>{{ 'El profesor pregunta:' if es else 'A tanár kérdezi:' }}</small>{{ '¿Cuánto es 3 × 5? ¡Piénsalo con calma!' if es else 'Mennyi 3 × 5? Gondold végig nyugodtan!' }}</div>
+      {% endif %}
     </div>
   </div>
   <div class="fo-szel"><svg viewBox="0 0 1440 90" preserveAspectRatio="none"><path fill="#E9DFCB" d="M0,90 L0,34.0 L7,32.1 L22,28.4 L35,28.1 L46,28.9 L54,29.7 L66,35.5 L77,43.6 L75,35.3 L85,23.8 L87,43.3 L85,34.5 L92,33.5 L98,36.4 L110,37.2 L118,42.4 L123,30.1 L123,37.9 L137,32.6 L137,43.2 L150,47.9 L163,51.9 L177,48.7 L185,44.2 L194,42.5 L199,48.2 L206,54.4 L214,65.8 L212,56.6 L225,57.0 L232,54.7 L243,53.2 L257,65.6 L255,58.5 L260,46.8 L260,54.6 L270,56.9 L278,59.2 L289,57.3 L296,56.7 L302,51.5 L311,53.6 L326,57.1 L340,51.9 L348,53.3 L361,48.1 L373,50.3 L381,52.9 L390,49.9 L403,47.4 L410,50.0 L424,42.4 L424,48.9 L436,53.5 L447,58.2 L461,58.5 L467,52.7 L482,53.2 L488,47.6 L503,44.4 L512,44.5 L526,46.8 L531,44.1 L538,41.0 L553,44.7 L560,47.6 L565,42.3 L565,52.0 L576,53.5 L591,54.0 L596,45.4 L596,55.7 L612,55.7 L610,49.5 L615,44.7 L629,40.1 L641,36.6 L653,34.2 L663,33.6 L677,33.0 L682,35.1 L693,32.2 L700,26.1 L700,31.9 L706,32.1 L719,35.5 L732,39.5 L742,44.6 L756,38.8 L761,35.7 L771,32.8 L786,33.1 L793,33.6 L799,33.5 L806,32.4 L819,28.2 L824,28.2 L838,27.9 L845,32.2 L856,30.3 L864,31.0 L879,36.6 L891,22.2 L891,30.6 L904,27.5 L912,27.2 L925,25.2 L925,31.6 L936,30.4 L947,32.6 L961,36.4 L967,34.7 L980,38.9 L987,42.6 L999,44.1 L1008,43.1 L1013,44.7 L1024,55.4 L1022,45.4 L1031,42.9 L1045,39.1 L1053,42.4 L1059,38.1 L1059,44.6 L1067,41.9 L1076,41.8 L1091,35.8 L1099,33.5 L1112,28.2 L1118,24.7 L1125,17.7 L1125,25.4 L1139,23.9 L1148,24.5 L1163,31.7 L1161,23.2 L1167,23.3 L1174,26.0 L1184,30.3 L1199,35.2 L1211,36.2 L1224,38.3 L1236,26.1 L1236,32.5 L1249,37.2 L1256,31.9 L1264,35.4 L1278,38.0 L1288,37.2 L1300,33.8 L1306,28.8 L1318,23.0 L1329,16.8 L1339,16.5 L1351,16.1 L1364,20.2 L1371,6.3 L1371,17.5 L1386,18.5 L1392,15.2 L1404,16.4 L1412,14.9 L1424,8.1 L1424,16.6 L1437,19.9 L1440,19.9 L1440,90 Z"/><path fill="#228166" d="M0,90 L0,59.4 L11,54.0 L21,58.7 L28,54.4 L39,53.9 L50,49.9 L61,41.7 L61,49.3 L71,52.7 L85,50.2 L97,50.7 L108,55.9 L118,61.8 L132,64.7 L143,70.3 L158,71.4 L172,56.5 L172,68.3 L181,65.9 L188,65.7 L197,61.9 L203,60.9 L209,60.2 L219,57.6 L231,57.9 L244,58.5 L252,58.8 L260,63.2 L270,59.5 L282,62.2 L296,64.2 L304,67.7 L310,64.0 L319,65.3 L334,51.2 L334,63.5 L341,50.8 L341,60.4 L352,65.4 L357,68.4 L363,68.4 L372,65.4 L384,70.6 L396,65.4 L403,54.5 L403,60.9 L411,57.4 L411,65.1 L419,70.3 L426,65.2 L436,61.4 L436,66.9 L451,60.1 L464,64.9 L470,64.2 L479,62.8 L494,58.3 L507,60.9 L520,61.3 L534,64.3 L548,74.5 L546,67.6 L553,67.0 L565,65.8 L579,64.5 L588,71.4 L586,62.7 L595,50.1 L595,59.3 L601,57.6 L614,51.5 L628,55.1 L636,58.4 L648,53.8 L659,65.9 L657,57.4 L666,66.3 L664,57.8 L673,57.3 L686,54.7 L694,51.8 L702,49.7 L711,44.5 L724,41.0 L730,39.2 L739,34.8 L752,35.3 L766,38.1 L781,34.4 L790,40.2 L797,41.5 L809,41.3 L816,45.3 L830,41.8 L840,40.4 L846,41.2 L852,44.2 L861,39.6 L868,43.0 L875,43.1 L883,47.3 L894,49.9 L908,54.9 L920,56.3 L934,55.5 L947,45.5 L947,56.7 L961,56.9 L972,57.0 L978,57.1 L988,44.7 L988,56.5 L994,51.7 L1007,46.5 L1020,42.7 L1034,37.6 L1045,40.8 L1050,44.3 L1065,29.6 L1065,40.4 L1076,24.7 L1076,35.6 L1088,37.7 L1097,38.4 L1107,41.8 L1114,35.6 L1125,35.3 L1136,32.8 L1145,35.2 L1159,40.4 L1170,34.0 L1182,30.1 L1197,18.4 L1197,29.2 L1205,34.0 L1217,38.5 L1230,34.3 L1242,32.4 L1254,32.1 L1268,35.1 L1282,37.2 L1289,37.7 L1298,36.6 L1311,30.9 L1319,27.8 L1334,14.5 L1334,24.8 L1342,22.8 L1351,23.6 L1360,26.1 L1369,27.8 L1379,15.7 L1379,23.8 L1389,24.0 L1398,23.2 L1408,24.8 L1419,31.1 L1432,28.0 L1440,28.0 L1440,90 Z"/></svg></div>
