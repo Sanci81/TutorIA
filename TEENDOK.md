@@ -274,6 +274,12 @@ MÉG HÁTRA (később):
 - [x] fix128 (11.11): főoldal fejléce is a lebegő világos kapszula (mint a többi oldalon), gépen és telefonon;
       a telefonos lenyíló menü csempéi változatlanok. (A zöld 10.06 óta volt – a 11.06-i változat is zöld.)
       Visszaállítás: index.html „fix128” blokk törlése.
+- [x] fix129 (11.11): mintalecke – almák tányéronként 2×2 rácsban (laptopon kicsúsztak a körből);
+      béka (5. o. ige, HU+ES) és fazék (7. o. forrás) emoji helyett saját rajz: static/img/minta/*.svg
+      („img:nev” a mintalecke.py-ban). Főoldali fejléc gépen fehérebb + keret (telefon változatlan).
+- [ ] Mintalecke: a többi kép is emoji (Sándor: „nem profi”) → ha a béka/fazék stílus tetszik, a többit is
+      így megrajzolni (főleg a jelképes emojik: 🔟 🔁 ➕ ⚙️ 🔢 🔙 ⚖️ 📅).
+- [ ] Spanyol tanár-teszt Sándor gépén: python tanar_teszt.py --oldal es --gyors (jelentés magyarul, ~1 €).
 - [x] fix128: gyerekbarát adatvédelmi összefoglaló (GDPR 12. cikk) – adatvedelem.html 8. pont, HU + ES.
 - [ ] ‼️ ADMIN_KOD beállítása: Railway → web szolgáltatás → Variables → ADMIN_KOD (próbán is). Sándor.
 - [ ] Mintalecke élesítése: Sándor átnézi a 8 HU leckét → Railway web: MINTALECKE=1.

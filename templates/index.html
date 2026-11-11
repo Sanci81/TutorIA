@@ -312,6 +312,12 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
   body:has(.fo):not(:has(.gymenu)) .nav-links > a.mn-ki:not(.nav-cta):not(.pin-nyitva){color:#5f7469 !important}
 }
 @media (max-width:760px){ body:has(.fo):not(:has(.gymenu)) .fo .fo-hero{padding-top:108px} }
+/* fix129: gépen a bézs háttér előtt a sáv kicsit beleolvadt → fehérebb, kerettel, erősebb árnyékkal.
+   Telefonon (1180 px alatt) nem változik. */
+@media (min-width:1181px){
+  body:has(.fo):not(:has(.gymenu)) .navbar-inner{box-shadow:0 10px 28px rgba(10,40,28,.26),0 0 0 1px rgba(22,58,46,.10)}
+  body:has(.fo):not(:has(.gymenu)) .navbar-inner::before{background:rgba(255,255,255,.97)}
+}
 
   .fo-ai{margin:10px 0 14px;font-size:1.02rem;background:#EEF4FF;border:1px solid #C9D9F5;color:#24426F;border-radius:12px;padding:8px 12px;display:inline-block}
   .fo-bizalom{margin-top:10px;font-size:.88rem;color:#4A5B53;line-height:1.5}

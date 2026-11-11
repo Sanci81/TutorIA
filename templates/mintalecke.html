@@ -22,6 +22,9 @@
   .ml-fel{margin-top:16px;background:#fff;border-radius:22px;padding:18px 16px 20px;box-shadow:0 6px 18px rgba(23,96,74,.10);position:relative}
   .ml-kep{text-align:center;font-size:44px;line-height:1.25;margin:2px 0 10px;letter-spacing:2px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
   .ml-tanyer{font-size:26px;letter-spacing:0;background:#FFF4E0;border:3px solid #F1DDBA;border-radius:50%;width:92px;height:92px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;padding:8px;box-sizing:border-box;line-height:1.15}
+  .ml-tanyer{display:grid !important;grid-template-columns:repeat(2,30px);grid-auto-rows:30px;place-content:center;gap:0}
+  .ml-tanyer i{font-style:normal;font-size:24px;line-height:30px;width:30px;text-align:center;overflow:hidden}
+  .ml-rajz{height:120px;width:auto;max-width:100%}
   .ml-kerdes{font-weight:800;font-size:19px;color:#17342C;text-align:center;margin:0 0 16px}
   .ml-opciok{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
   .ml-op{border:0;border-radius:16px;color:#fff;font-weight:800;font-size:19px;font-family:inherit;padding:16px 10px;cursor:pointer;
@@ -107,12 +110,22 @@
         p.forEach(function (q) { if (q.t > 70) { return; } el2 = true; q.t++; q.vy += .25; q.x += q.vx; q.y += q.vy; x.fillStyle = q.c; x.fillRect(q.x, q.y, q.m, q.m * .6); });
         if (el2) { requestAnimationFrame(rajz); } else { x.clearRect(0, 0, c.width, c.height); } })();
     }
+    var KEPUT = "{{ url_for('static', filename='img/minta/X.svg') }}";
     function lepes() {
       var s = L.lepesek[i]; probalt = 0; kesz = false;
       for (var k = 0; k < savok.length; k++) { savok[k].classList.toggle('k', k < i); }
       $('mlTanit').innerHTML = s.tanit; var kp = $('mlKep'); kp.innerHTML = '';
+      // fix129: „img:nev” = rajz a static/img/minta mappából; tányéroknál minden darab külön
+      // cellába kerül (2 oszlop), így Windowson sem csúszik ki a körből.
+      if ((s.kep || '').indexOf('img:') === 0) {
+        var im = document.createElement('img'); im.className = 'ml-rajz'; im.alt = '';
+        im.src = KEPUT.replace('X.svg', s.kep.slice(4) + '.svg'); kp.appendChild(im);
+      } else {
       (s.kep || '').split('|').forEach(function (d, k, tomb) { var e = document.createElement('span');
-        e.textContent = d; if (tomb.length > 1) { e.className = 'ml-tanyer'; } kp.appendChild(e); }); $('mlKerdes').textContent = s.kerdes;
+        if (tomb.length > 1) { e.className = 'ml-tanyer';
+          Array.from(d).forEach(function (c) { var t = document.createElement('i'); t.textContent = c; e.appendChild(t); });
+        } else { e.textContent = d; } kp.appendChild(e); }); }
+      $('mlKerdes').textContent = s.kerdes;
       $('mlVisza').textContent = ''; $('mlVisza').className = 'ml-visza'; $('mlTovabb').style.display = 'none';
       $('mlSzuper').classList.remove('lat');
       var h = $('mlOpciok'); h.innerHTML = '';
