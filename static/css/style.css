@@ -3957,3 +3957,28 @@ body:has(.fp-sav):not(:has(.gymenu)) .flash-container { margin-top: 92px; }
     body:has(.fp-sav):not(:has(.gymenu)) .nav-links > a.mn { color: #fff !important; }
     body:has(.fp-sav):not(:has(.gymenu)) .nav-links > a.mn-ki { color: #5f7469 !important; }
 }
+
+
+/* ═══ EGYSÉGES FEJLÉC GÉPEN (fix138, 2026-11-11, Sándor) ═══════════════════
+   Minden oldalon olyan, mint a főoldalon: lebegő fehér kapszula, alul színes csík
+   a csempék színeiben. CSAK 1181 px fölött – telefonon/tableten semmi nem változik.
+   Gyerek-munkamenetben (gyerek-hatter, .gymenu) a régi zöld fejléc marad.
+   Visszaállítás: ezt a blokkot törölni. */
+@media (min-width: 1181px) {
+    /* zöld sávos oldalak: a kapszula már megvan, csak a csík kell */
+    body:has(.fp-sav):not(:has(.gymenu)) .navbar-inner { overflow: hidden; }
+    body:has(.fp-sav):not(:has(.gymenu)) .navbar-inner::after { content: ""; position: absolute; left: 0; right: 0;
+        bottom: 0; height: 5px; pointer-events: none; background: linear-gradient(90deg,#2F8FD8 0 12.5%,#8A5CD6 0 25%,#F59E0B 0 37.5%,#0EA5B7 0 50%,#5B6CE0 0 62.5%,#D9467F 0 75%,#22A06B 0 87.5%,#E07B39 0); }
+    /* a többi oldal (mintalecke, album, admin…): ugyanaz a kapszula, a tartalom fölött */
+    body:not(.gyerek-hatter):not(:has(.gymenu)):not(:has(.fo)):not(:has(.fp-sav)) .navbar { background: transparent !important; box-shadow: none !important; border: 0 !important; }
+    body:not(.gyerek-hatter):not(:has(.gymenu)):not(:has(.fo)):not(:has(.fp-sav)) .navbar-inner { position: relative; isolation: isolate; overflow: hidden; margin: 10px auto;
+        width: calc(100% - 20px); max-width: 1260px; border-radius: 22px; padding: .55rem 1rem .55rem .7rem;
+        box-shadow: 0 10px 28px rgba(10,40,28,.20), 0 0 0 1px rgba(22,58,46,.10); }
+    body:not(.gyerek-hatter):not(:has(.gymenu)):not(:has(.fo)):not(:has(.fp-sav)) .navbar-inner::before { content: ""; position: absolute; inset: 0; z-index: -1;
+        border-radius: inherit; background: rgba(255,255,255,.97);
+        -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+    body:not(.gyerek-hatter):not(:has(.gymenu)):not(:has(.fo)):not(:has(.fp-sav)) .nav-cta { background: #F5A01E !important; font-weight: 800;
+        box-shadow: 0 3px 0 #D27E0B; text-shadow: 0 1px 2px rgba(120,62,0,.55); }
+    body:not(.gyerek-hatter):not(:has(.gymenu)):not(:has(.fo)):not(:has(.fp-sav)) .navbar-inner::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+        height: 5px; pointer-events: none; background: linear-gradient(90deg,#2F8FD8 0 12.5%,#8A5CD6 0 25%,#F59E0B 0 37.5%,#0EA5B7 0 50%,#5B6CE0 0 62.5%,#D9467F 0 75%,#22A06B 0 87.5%,#E07B39 0); }
+}
