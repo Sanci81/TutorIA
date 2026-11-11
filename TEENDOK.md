@@ -295,7 +295,16 @@ MÉG HÁTRA (később):
       számláló/nevező (HU + ES).
 - [x] fix133 (11.11): HU 1. o. mintalecke – HAL: a betűk összekeverve (L, H, A; eddig a szó sorrendjében álltak);
       SÜN: a kérdés „Hány betűből…” (Sándor: a gyereknek betű, a tanító szövegében marad a hang).
-- [ ] Élesre (proba:main + MINTALECKE=1) csak akkor, ha Sándor a mintaleckéket rendben találta.
+- [x] Sándor 11.11: mintaleckék rendben → élesre (proba:main; Railway web: MINTALECKE=1, TANITO_PONTOS=1).
+- [x] fix134 (11.11): ES 1. o. mintalecke – OSO: betűk összekeverve (S, A, O).
+- [x] fix134: AJANDEK_CIMEK Railway-változó (web): vesszővel elválasztott e-mailek → bő teszt keret, „elfogyott”
+      levél nélkül. Clara családjának (Sándor kérése). Visszavonás: cím törlése.
+- [x] fix134: kartya_muhely_es.html – spanyol kártyaműhely a 26 ES kártyával (kartyak_es.py), spanyol kártyaszövegek.
+- [ ] Sándor: a 26 spanyol portré legenerálása Leonardóval, majd a műhelyben a kártyák mentése
+      (static/kartyak/es/<nev>.png + <nev>_kartya.png + <nev>_kartya_arany.png). Utána: spanyol album/tasakbontás
+      végignézése a próbán.
+- [ ] Hirdetés link: https://tutoriacademia.com/minta?utm_source=facebook&utm_campaign=mintalecke
+      (spanyol: https://tutoriacademia.com/es/minta?utm_source=facebook&utm_campaign=muestra).
 - [ ] Spanyol tanár-teszt Sándor gépén: python tanar_teszt.py --oldal es --gyors (jelentés magyarul, ~1 €).
 - [x] fix128: gyerekbarát adatvédelmi összefoglaló (GDPR 12. cikk) – adatvedelem.html 8. pont, HU + ES.
 - [ ] ‼️ ADMIN_KOD beállítása: Railway → web szolgáltatás → Variables → ADMIN_KOD (próbán is). Sándor.
@@ -630,8 +639,8 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 
 ## Tartalom
 
-- [ ] **Spanyol album.** Nincs kész: spanyol, az ottani tanterv szerinti
-      kártyák kellenek. Kártyaműhely sincs hozzá, mint a magyarhoz.
+- [ ] **Spanyol album.** A 26 kártya adatai kész (kartyak_es.py), a műhely is (kartya_muhely_es.html, 11.11);
+      a képek hiányoznak.
 - [ ] **Hiányzó kártyaképek: 52-ből 42.** Addig is kell egy szép
       helyőrző, hogy a hiányzó kép ne tűnjön hibának.
 

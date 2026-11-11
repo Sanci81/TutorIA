@@ -17617,7 +17617,7 @@ def _szulo_csomag(parent_id: int | None = None) -> str:
         lejar = szulo.get("csomag_lejar")
         # AZ ÜZEMELTETŐ MINDIG A BŐ TESZT KERETET KAPJA, adatbázis-piszkálás
         # nélkül. Ugyanaz a két cím, ami az áttekintő oldalt is nyitja.
-        if (szulo.get("email") or "").strip().lower() in _admin_cimek():
+        if (szulo.get("email") or "").strip().lower() in (_admin_cimek() | _ajandek_cimek()):
             return csomagok.TESZT
         # LEJÁRT ELŐFIZETÉS: belép, látja a haladását, nyitja az albumot és a
         # boltot — de ÚJ TANULÁS NEM INDUL. Nem esik vissza az ingyenes
@@ -18268,6 +18268,14 @@ def feladat_proba_json():
     es = (_active_curriculum() or "HU").upper() == "ES"
     return jsonify({"feladat": _proba_feladat_keszit(request.args.get("tipus"), grade, es,
                                                      request.args.get("nyelv"))})
+
+
+def _ajandek_cimek() -> set[str]:
+    """AJÁNDÉK KERET (2026-11-11, Sándor): egy-egy családnak bővebb keret, csak nekik.
+    Railway változó: AJANDEK_CIMEK = vesszővel elválasztott e-mail-címek.
+    Ezek a fiókok ugyanazt a bő keretet kapják, mint az üzemeltető (teszt csomag),
+    és nem kapnak „elfogyott a keret” levelet. Visszavonás: a cím törlése a változóból."""
+    return {c.strip().lower() for c in os.environ.get("AJANDEK_CIMEK", "").split(",") if c.strip()}
 
 
 def _admin_cimek() -> set[str]:
@@ -19420,8 +19428,8 @@ def _keret_ertesito_kor() -> None:
     for sz in database.szulok_keret_allapota():
         kulcs = (sz.get("csomag") or "").strip()
         # Az üzemeltetői címeknek soha nem szólunk — ők a teszt csomagon
-        # vannak, és amúgy is látják az admin oldalt.
-        if (sz.get("email") or "").strip().lower() in _admin_cimek():
+        # vannak, és amúgy is látják az admin oldalt. Az ajándék keretes családok sem kapnak ilyet.
+        if (sz.get("email") or "").strip().lower() in (_admin_cimek() | _ajandek_cimek()):
             continue
         lejar = sz.get("csomag_lejar")
         if lejar and lejar < ma:

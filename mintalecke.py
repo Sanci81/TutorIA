@@ -107,7 +107,7 @@ LECKEK = {
         1: {"targy": "Lengua", "tema": "Letras y sonidos", "lepesek": [
             {"tanit": "Las palabras están hechas de <b>sonidos</b>. Dilo despacio: <b>o-s-o</b>. La primera letra de <b>oso</b> es la <b>o</b>.",
              "kep": "img:medve", "kerdes": "¿Con qué letra empieza OSO?",
-             "opciok": ["O", "S", "A"], "jo": 0, "miert": "<b>O</b>-s-o: empieza por <b>o</b>."},
+             "opciok": ["S", "A", "O"], "jo": 2, "miert": "<b>O</b>-s-o: empieza por <b>o</b>."},
             {"tanit": "Fíjate en el principio de la palabra: <b>m</b>esa.",
              "kep": "img:asztal", "kerdes": "¿Qué palabra empieza como MESA?",
              "opciok": ["mano", "sol", "pato"], "jo": 0, "miert": "<b>M</b>ano y <b>m</b>esa empiezan por <b>m</b>."},
