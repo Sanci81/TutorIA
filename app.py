@@ -19011,6 +19011,27 @@ def _keret_level(cimzett: str, nyelv: str, ingyenes: bool, *, perc: float = 0,
     return _level_kuld(cimzett, targy, szoveg_txt, html=html)
 
 
+@app.route("/teszt/jelentes", methods=["POST"])
+@login_required
+def teszt_jelentes():
+    """CSAK A PRÓBAOLDALON: a szülői jelentés AZONNAL a belépett szülőnek
+    (az elmúlt 7 nap tanulásából), hogy a kinézetet ki lehessen próbálni –
+    a próbaoldalon nincs napi időzítő, ezért magától nem jön."""
+    if not PROBA_OLDAL:
+        abort(404)
+    szulo = database.get_parent_by_id(session["parent_id"]) or {}
+    jelentes = _jelentes_nevek(database.szuloi_jelentes(session["parent_id"], napok=7))
+    jelentes["mod"] = "heti"
+    targy, html, szoveg = level.keszit(
+        jelentes, nyelv=g.lang if g.lang in ("hu", "es") else "hu",
+        app_url=request.host_url.rstrip("/"),
+        leiratkozo_url=_leiratkozo_url(session["parent_id"]))
+    ok = _level_kuld(szulo.get("email") or "", targy, szoveg, html=html)
+    flash("Jelentés mintája " + ("elküldve: " + (szulo.get("email") or "") if ok else "NEM ment ki"),
+          "success" if ok else "error")
+    return redirect(url_for("fiok"))
+
+
 @app.route("/teszt/keretlevel", methods=["POST"])
 @login_required
 def teszt_keretlevel():
