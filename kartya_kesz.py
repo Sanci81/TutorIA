@@ -25,8 +25,8 @@ HASZNÁLAT
     python kartya_kesz.py magyar_7_petofi
         Elkészíti EZT az egyet, mindkét lépéssel.
 
-    Az eredmény:  kartya_kepek_uj/kesz/<fajlnev>.png
-    Ha jónak találod, másold át:  static/kartyak/<oldal>/<fajlnev>.png
+    Az eredmény:  kartya_kepek_uj/<oldal>/album1/<fajlnev>.png
+    Ha jónak találod, másold át:  static/kartyak/<oldal>/album1/<fajlnev>.png
 """
 
 from __future__ import annotations
@@ -40,7 +40,14 @@ GYOKER = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, GYOKER)
 
 KESZ_MAPPA = os.path.join(GYOKER, "static", "kartyak")
-CEL_MAPPA = os.path.join(GYOKER, "kartya_kepek_uj", "kesz")
+CEL_MAPPA = os.path.join(GYOKER, "kartya_kepek_uj", "kesz")   # régi, közös mappa – az új képek már nem ide kerülnek
+
+
+def cel_mappa(k: dict) -> str:
+    """2026-11-11 (Sándor): oldalanként és albumonként külön mappa, hogy ne keveredjenek:
+    kartya_kepek_uj/<oldal>/<album>/, pl. kartya_kepek_uj/es/album1/"""
+    import kartyak
+    return os.path.join(GYOKER, "kartya_kepek_uj", k.get("oldal", "hu"), kartyak.ALBUM)
 MODELL = "gpt-image-2"
 MERET = "1024x1024"
 
@@ -107,12 +114,20 @@ def kartyak_listaja() -> list[dict]:
 
 
 def vegleges_ut(k: dict) -> str:
-    return os.path.join(KESZ_MAPPA, k.get("oldal", "hu"), f"{k.get('kep')}.png")
+    """Ahová a kész portrét másolni kell: static/kartyak/<oldal>/<album>/<nev>.png"""
+    import kartyak
+    return os.path.join(GYOKER, "static", *kartyak.cel_mappa(k.get("oldal", "hu")).split("/"), f"{k.get('kep')}.png")
+
+
+def van_kepe(k: dict) -> bool:
+    """Van-e már végleges portré – az albummappában VAGY a régi, közös mappában."""
+    regi = os.path.join(KESZ_MAPPA, k.get("oldal", "hu"), f"{k.get('kep')}.png")
+    return os.path.exists(vegleges_ut(k)) or os.path.exists(regi)
 
 
 def hianyzok() -> list[dict]:
     """Akinek NINCS képe a static/kartyak mappában."""
-    return [k for k in kartyak_listaja() if not os.path.exists(vegleges_ut(k))]
+    return [k for k in kartyak_listaja() if not van_kepe(k)]
 
 
 def szabad_nev(ut: str) -> str:
@@ -128,9 +143,12 @@ def szabad_nev(ut: str) -> str:
 def minta_utak() -> list[str]:
     utak = []
     for n in MINTAK:
+        import kartyak
         for o in ("hu", "es"):
-            ut = os.path.join(KESZ_MAPPA, o, f"{n}.png")
-            if os.path.exists(ut):
+            jo = [os.path.join(GYOKER, "static", *kartyak.cel_mappa(o).split("/"), f"{n}.png"),
+                  os.path.join(KESZ_MAPPA, o, f"{n}.png")]
+            ut = next((u for u in jo if os.path.exists(u)), None)
+            if ut:
                 utak.append(ut)
                 break
     return utak
@@ -144,6 +162,30 @@ def kep_bajtok(valasz) -> bytes:
     import urllib.request
     with urllib.request.urlopen(elem.url, timeout=60) as v:
         return v.read()
+
+
+def spanyol_mind(db: int = 0) -> int:
+    """Minden hiányzó SPANYOL kártya, egyenként a bevált két lépéssel.
+    Ugyanazt csinálja, mintha egyesével futtatnád: python kartya_kesz.py <nev>."""
+    import subprocess
+    sor = [k for k in hianyzok() if k.get("oldal") == "es"
+           and not os.path.exists(os.path.join(cel_mappa(k), f"{k.get('kep')}.png"))]
+    if db:
+        sor = sor[:db]
+    if not sor:
+        print("Nincs hiányzó spanyol kártya (vagy már mind ott van a kartya_kepek_uj/es/album1 mappában).")
+        return 0
+    print(f"{len(sor)} spanyol kártya készül, összesen kb. {len(sor) * 6} cent. Ctrl+C-vel bármikor megállíthatod.\n")
+    hibas = []
+    for i, k in enumerate(sor, 1):
+        print(f"── {i}/{len(sor)}  {k.get('nev')} ──", flush=True)
+        r = subprocess.call([sys.executable, os.path.abspath(__file__), k.get("kep")])
+        if r != 0:
+            hibas.append(k.get("kep"))
+    print(f"\nKÉSZ. A képek itt vannak: {cel_mappa(sor[0])}")
+    if hibas:
+        print("Ezek nem sikerültek, futtasd újra őket egyesével: " + ", ".join(hibas))
+    return 0
 
 
 def main() -> int:
@@ -163,7 +205,16 @@ def main() -> int:
                           "kepen (fajlnev a kartya_kepek_uj/kesz mappabol).")
     ert.add_argument("--hiany", action="store_true",
                      help="csak kiírja, mi hiányzik – nem kerül semmibe")
+    # 2026-11-11: a SPANYOL kártyák egyben (Sándor: „csináld a képeket egy külön mappában").
+    ert.add_argument("--es", action="store_true",
+                     help="az ÖSSZES hiányzó spanyol kártya egymás után (kártyánként kb. 6 cent); "
+                          "amelyiknek már van képe a kartya_kepek_uj/kesz mappában, azt kihagyja")
+    ert.add_argument("--db", type=int, default=0,
+                     help="a --es mellett: legfeljebb ennyit csinál (próbának: --db 2)")
     args = ert.parse_args()
+
+    if args.es:
+        return spanyol_mind(args.db)
 
     if args.hiany or not args.kartya:
         h = hianyzok()
@@ -181,7 +232,7 @@ def main() -> int:
         return 1
     k = talalt[0]
 
-    if os.path.exists(vegleges_ut(k)) and not args.atrajzol:
+    if van_kepe(k) and not args.atrajzol:
         print(f"Ennek MÁR VAN végleges képe: {vegleges_ut(k)}")
         print("Ha mégis újat akarsz, előbb nevezd át a meglévőt.")
         return 0
@@ -202,7 +253,8 @@ def main() -> int:
         return 1
 
     kliens = OpenAI(api_key=kulcs)
-    os.makedirs(CEL_MAPPA, exist_ok=True)
+    CEL = cel_mappa(k)
+    os.makedirs(CEL, exist_ok=True)
 
     alany = (k.get("prompt") or "").strip() or \
         f"{k.get('nev','')}, {k.get('alnev','')}".strip(" ,")
@@ -211,7 +263,7 @@ def main() -> int:
         # Nincs 1. lépés: a megadott, már meglévő képet rajzoljuk át.
         ut1 = args.atrajzol
         if not os.path.isabs(ut1):
-            ut1 = os.path.join(CEL_MAPPA, ut1)
+            ut1 = os.path.join(CEL, ut1)
         if not ut1.lower().endswith(".png"):
             ut1 += ".png"
         if not os.path.exists(ut1):
@@ -233,7 +285,7 @@ def main() -> int:
             print(f"     HIBA: {exc}")
             return 1
 
-        ut1 = szabad_nev(os.path.join(CEL_MAPPA, f"{k.get('kep')}__1_alap.png"))
+        ut1 = szabad_nev(os.path.join(CEL, f"{k.get('kep')}__1_alap.png"))
         try:
             with open(ut1, "wb") as f:
                 f.write(adat1)
@@ -258,7 +310,7 @@ def main() -> int:
         for f in fajlok:
             f.close()
 
-    ut2 = szabad_nev(os.path.join(CEL_MAPPA, f"{k.get('kep')}.png"))
+    ut2 = szabad_nev(os.path.join(CEL, f"{k.get('kep')}.png"))
     try:
         with open(ut2, "wb") as f:
             f.write(adat2)

@@ -305,9 +305,26 @@ MÉG HÁTRA (később):
 - [x] fix134: AJANDEK_CIMEK Railway-változó (web): vesszővel elválasztott e-mailek → bő teszt keret, „elfogyott”
       levél nélkül. Clara családjának (Sándor kérése). Visszavonás: cím törlése.
 - [x] fix134: kartya_muhely_es.html – spanyol kártyaműhely a 26 ES kártyával (kartyak_es.py), spanyol kártyaszövegek.
-- [ ] Sándor: a 26 spanyol portré legenerálása Leonardóval, majd a műhelyben a kártyák mentése
-      (static/kartyak/es/<nev>.png + <nev>_kartya.png + <nev>_kartya_arany.png). Utána: spanyol album/tasakbontás
-      végignézése a próbán.
+- [x] fix137–138 (11.11): kártyák helye – az 1. album marad: static/kartyak/hu/ és static/kartyak/es/
+      (Sándor így akarja, semmit nem kell áthelyezni). Generált képek: kartya_kepek_uj/<oldal>/album1/.
+      Új albumnál: kartyak.py ALBUM = "album2" → static/kartyak/<oldal>/album2/.
+- [ ] Spanyol kártyák: 2 kész és bent (Ramón y Cajal, Mutis – static/kartyak/es). A többi 24:
+      python kartya_kesz.py --es (kb. 6 cent/db) → kartya_kepek_uj/es/album1; keret a kartya_muhely_es.html-ben;
+      minden fájl: static/kartyak/es/. Végül: spanyol album/tasakbontás a próbán.
+- [x] fix138: Coubertin prompt – „olympic charter” helyett kézzel írt charta + „No Olympic rings, no logos”
+      (az olimpiai karikák védjegy).
+- [ ] ‼️ FELTÖLTÉSRE VÁR (Sándor 11.11 este: még NEM futott le, a kártyagenerálás miatt):
+      (1) fejléc: git add static/css/style.css → proba → main;
+      (2) kártyák: static/kartyak/es + kartyak.py kartyak_es.py kartya_kesz.py app.py TEENDOK.md.
+- [ ] Spanyol képek átnézve (Claude, 11.11): 21 jó. ÚJRA kell: Goya (Beethovenre hasonlított), Sorolla (szöveg a vásznon,
+      szakáll hiányzott), Albéniz (márkanév a zongorán, szakáll hiányzott) – promptok javítva (fix140).
+      Apróság, maradhat: Torres Quevedo sakkautomatáján teljes bábukészlet (valójában csak pár bábu), Elcano kezében
+      kitalált műszer, Azarquiel mögött későbbi toledói katedrális, Peral egy tengeralattjáró-makettet tart.
+- [x] fix138: egységes fejléc GÉPEN minden oldalon (fehér kapszula + színes csík, narancs Regisztráció) –
+      style.css végén; gyerek-munkamenet és telefon nem változik.
+- [ ] Kártyapontok (Sándor kérdése): most a ritkasághoz kötött – ritka 300–360, nagyon ritka 400–450,
+      legendás 470–480 (+ magyar gyakori 200–210). Sándor 11.11: a KÖVETKEZŐ ALBUMBAN húzzuk szét
+      (pl. 150–500, a legnagyobbak a legtöbbet); az 1. album marad így.
 - [ ] Hirdetés link: https://tutoriacademia.com/minta?utm_source=facebook&utm_campaign=mintalecke
       (spanyol: https://tutoriacademia.com/es/minta?utm_source=facebook&utm_campaign=muestra).
 - [ ] Spanyol tanár-teszt Sándor gépén: python tanar_teszt.py --oldal es --gyors (jelentés magyarul, ~1 €).

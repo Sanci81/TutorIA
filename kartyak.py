@@ -21,6 +21,7 @@ MI EZ
 
 from __future__ import annotations
 
+import os
 import unicodedata
 
 # ── ritkasági szintek: keret és erősség-tartomány ───────────────────────────
@@ -610,12 +611,33 @@ def teljes_prompt(k: dict) -> str:
     return f"{STILUS_PROMPT}, {k.get('prompt', '')}"
 
 
+# ── ALBUMONKÉNT KÜLÖN MAPPA (2026-11-11, Sándor) ─────────────────────────────
+# Az 1. album képei: static/kartyak/hu/ és static/kartyak/es/ (ahol eddig is).
+# Ha új album lesz: ALBUM = "album2", és a képei a static/kartyak/<oldal>/album2/ mappába kerülnek,
+# így nem keverednek az elsővel. (A generált képek: kartya_kepek_uj/<oldal>/album1/.)
+ALBUM = "album1"
+_STATIC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static")
+
+
+def mappa(oldal: str) -> str:
+    """Ahonnan a program a képeket OLVASSA: static/kartyak/<oldal>/<ALBUM>, ha az a mappa
+    létezik, különben a mostani hely: static/kartyak/<oldal>/ (Sándor 11.11: az 1. album
+    képei maradnak ott, ahol vannak; ÚJ albumnál jön létre az album2 mappa)."""
+    uj = f"kartyak/{oldal or 'hu'}/{ALBUM}"
+    return uj if os.path.isdir(os.path.join(_STATIC, uj)) else f"kartyak/{oldal or 'hu'}"
+
+
+def cel_mappa(oldal: str) -> str:
+    """Ahová az új képeknek kerülniük kell – ugyanaz, ahonnan olvasunk."""
+    return mappa(oldal)
+
+
 def kep_utvonal(k: dict) -> str:
     """A PORTRÉ relatív útvonala a static mappán belül.
 
     Ez a nyers, generált arckép – ebből készül a kártyaműhelyben a lap.
     """
-    return f"kartyak/{k['oldal']}/{k['kep']}.png"
+    return f"{mappa(k['oldal'])}/{k['kep']}.png"
 
 
 def kartya_utvonal(k: dict, arany: bool = False) -> str:
@@ -626,7 +648,7 @@ def kartya_utvonal(k: dict, arany: bool = False) -> str:
     kártyaműhely menti ki `_kartya.png` néven.
     """
     veg = "_kartya_arany.png" if arany else "_kartya.png"
-    return f"kartyak/{k['oldal']}/{k['kep']}{veg}"
+    return f"{mappa(k['oldal'])}/{k['kep']}{veg}"
 
 
 # ── spanyol oldal ───────────────────────────────────────────────────────────

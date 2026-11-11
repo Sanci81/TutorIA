@@ -18063,7 +18063,7 @@ def _kartya_kepek(oldal: str) -> list[str]:
     `_kartya_arany` végződésűeket nem — a borítón az arckép szerepel.
     """
     from pathlib import Path
-    mappa = Path(app.static_folder or "static") / "kartyak" / (oldal or "hu")
+    mappa = Path(app.static_folder or "static") / kartyak.mappa(oldal or "hu")
     try:
         return sorted(
             f.stem for f in mappa.glob("*.png")
@@ -18112,7 +18112,7 @@ def child_album(child_id: int):
             "kartyak": [_album_kartya(k) for k in katalogus],
             "kezben": kezben,
             "beragasztva": beragasztva,
-            "kepgyoker": url_for("static", filename=f"kartyak/{oldal}/"),
+            "kepgyoker": url_for("static", filename=kartyak.mappa(oldal) + "/"),
             "hatterek": url_for("static", filename="kartyak/hatterek/"),
             # MELYIK KÁRTYÁHOZ VAN MÁR KÉP.
             # MIÉRT: a borítón eddig a katalógus ELSŐ 14 lapja szerepelt,

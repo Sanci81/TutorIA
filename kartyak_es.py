@@ -572,7 +572,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Ya mayor pintó una serie de cuadros directamente sobre las paredes de su casa, sin encargo y sin pensar en venderlos.",
         "idezet": "El sueño de la razón produce monstruos.",
         "idezet_tipus": "idezet",
-        "prompt": "Francisco de Goya, older man, wild grey hair, heavy brows, stubborn stare, dark coat with a loose neckcloth. At a workbench with a copper etching plate and a burin, beside a wall half-covered with a dark unfinished mural. Oil lamp light and deep brown shadow."
+        "prompt": "Francisco de Goya in his sixties, broad round face with full cheeks and heavy jowls, short dark curly hair turning grey with long sideburns (short and neat, NOT wild or windswept), thick dark eyebrows, small intense eyes, fleshy nose, clean-shaven, dark coat with a loose white neckcloth. At a workbench with a copper etching plate and a burin, beside a wall half-covered with a dark unfinished mural. Oil lamp light and deep brown shadow."
     },
     {
         "id": "es_artistica_2_sorolla",
@@ -599,7 +599,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Pintaba muy rápido y de pie, porque decía que la luz cambia y no espera a nadie.",
         "idezet": "La luz cambia mientras la miras: hay que pintar deprisa.",
         "idezet_tipus": "jelmondat",
-        "prompt": "Joaquin Sorolla, middle-aged man, dark moustache, straw hat, white shirt with rolled sleeves. Painting at a wooden easel planted in wet sand, a bright half-finished beach painting on it and a palette of white and blue in his hand, sea foam and children in the distance. Dazzling Mediterranean midday light."
+        "prompt": "Joaquin Sorolla, middle-aged man, short full dark beard and moustache, straw hat, white shirt with rolled sleeves. Painting at a wooden easel planted in wet sand, a bright half-finished beach painting on it with no writing, numbers or labels anywhere on the canvas and a palette of white and blue in his hand, sea foam and children in the distance. Dazzling Mediterranean midday light."
     },
     {
         "id": "es_artistica_3_falla",
@@ -653,7 +653,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Era un niño prodigio y daba conciertos siendo muy pequeño. De mayor le encantaba contar historias exageradas sobre sus viajes de infancia.",
         "idezet": "Doce piezas que casi nadie podía tocar.",
         "idezet_tipus": "jelmondat",
-        "prompt": "Isaac Albeniz, stout man, thick dark moustache, genial face, dark late-19th-century suit. Seated at an open grand piano with hand-written sheet music on the stand and a Spanish guitar propped against its leg, heavy curtains behind him. Golden lamplight."
+        "prompt": "Isaac Albeniz, stout man with a round genial face, full thick dark beard and moustache, dark wavy hair, dark late-19th-century suit. Seated at an open grand piano with a plain black fallboard (no brand name or lettering on the piano), hand-written sheet music on the stand and a Spanish guitar propped against its leg, heavy curtains behind him. Golden lamplight."
     },
     {
         "id": "es_efisica_3_coubertin",
@@ -680,7 +680,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Hizo famosa la frase de que lo importante no es ganar sino participar, aunque no fue él quien la dijo primero: la escuchó en un sermón.",
         "idezet": "Lo importante no es ganar, sino participar.",
         "idezet_tipus": "idezet",
-        "prompt": "Pierre de Coubertin, small man with a very large dark moustache, formal 1890s suit and hat. Standing in Olympia before ancient stadium ruins with a laurel wreath and an unrolled olympic charter on a stone bench beside him, marble columns and dry grass. Clear Greek morning light."
+        "prompt": "Pierre de Coubertin, small man with a very large dark moustache, formal 1890s suit and hat. Standing in Olympia before ancient stadium ruins with a laurel wreath and an unrolled handwritten charter on a stone bench beside him, marble columns and dry grass. Clear Greek morning light. No Olympic rings, no logos or emblems anywhere."
     },
     {
         "id": "es_extranjera_3_battuta",
