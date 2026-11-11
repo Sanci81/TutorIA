@@ -297,6 +297,11 @@ MÉG HÁTRA (később):
       SÜN: a kérdés „Hány betűből…” (Sándor: a gyereknek betű, a tanító szövegében marad a hang).
 - [x] Sándor 11.11: mintaleckék rendben → élesre (proba:main; Railway web: MINTALECKE=1, TANITO_PONTOS=1).
 - [x] fix134 (11.11): ES 1. o. mintalecke – OSO: betűk összekeverve (S, A, O).
+- [x] fix135 (11.11): főoldal (HU+ES) – „A tanár kérdezi” buborék gépen keskenyebb és balrább, nem lóg a kisfiúra;
+      tableten (761–1180 px) elrejtve, mert a csempés kártyára lógott. Telefon nem változott.
+- [x] fix135: HU 1. o. ALMA – a kérdés „betűvel”, a válaszok keverve (labda, mókus, autó).
+- [ ] Mintaleckék: sok lépésnél az első gomb a jó válasz (8. o.-ban mindhárom) → Sándor döntsön: keverjük-e mind.
+- [ ] 2FA Railway: Sándor képernyőképén látszott a beállító kód → Cancel, újrakezdés (új kód), kézi bevitel.
 - [x] fix134: AJANDEK_CIMEK Railway-változó (web): vesszővel elválasztott e-mailek → bő teszt keret, „elfogyott”
       levél nélkül. Clara családjának (Sándor kérése). Visszavonás: cím törlése.
 - [x] fix134: kartya_muhely_es.html – spanyol kártyaműhely a 26 ES kártyával (kartyak_es.py), spanyol kártyaszövegek.

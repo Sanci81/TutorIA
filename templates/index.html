@@ -410,6 +410,10 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
   .fo .fo-hero .fo-abc-uj span{width:48px;height:48px;font-size:24px}
 }
 @media (max-width:760px){ .fo .fo-hero .fo-abc-uj{display:none} }
+/* fix135: gépen a buborék ne lógjon rá a kisfiúra – keskenyebb, balrább (tablet/telefon nem változik) */
+@media (min-width:1181px){ .fo .fo-hero .fo-bubor-uj{right:222px;width:158px;font-size:13.5px;padding:10px 12px} }
+/* tableten (761–1180 px) a buborék a csempés kártyára lógott → ott nem mutatjuk */
+@media (min-width:761px) and (max-width:1180px){ .fo .fo-hero .fo-bubor-uj{display:none} }
 
 {% endif %}</style>
 

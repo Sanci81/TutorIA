@@ -14,8 +14,8 @@ LECKEK = {
     "hu": {
         1: {"targy": "Magyar nyelv", "tema": "Betűk és hangok", "lepesek": [
             {"tanit": "Minden szó <b>hangokból</b> áll. Mondd ki lassan: <b>a-l-m-a</b>. Az <b>alma</b> első hangja: <b>a</b>.",
-             "kep": "img:alma", "kerdes": "Melyik szó kezdődik ugyanazzal a hanggal, mint az ALMA?",
-             "opciok": ["autó", "labda", "mókus"], "jo": 0, "miert": "Az <b>a</b>utó is <b>a</b> hanggal kezdődik."},
+             "kep": "img:alma", "kerdes": "Melyik szó kezdődik ugyanazzal a betűvel, mint az ALMA?",
+             "opciok": ["labda", "mókus", "autó"], "jo": 2, "miert": "Az <b>a</b>utó is <b>a</b> betűvel kezdődik."},
             {"tanit": "Figyeld meg a szó elejét! A <b>hal</b> szót így mondjuk ki: <b>h-a-l</b>.",
              "kep": "img:hal", "kerdes": "Melyik betűvel kezdődik a HAL szó?",
              "opciok": ["L", "H", "A"], "jo": 1, "miert": "<b>H</b>-a-l: az első betű a <b>H</b>."},
