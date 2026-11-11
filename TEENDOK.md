@@ -269,11 +269,20 @@ MÉG HÁTRA (később):
       AI nélkül), mintalecke.py (HU 1–8, ES 1–6, évfolyamonként más tárgy). Főoldal: középen csempés kártya
       (buborék + ABC marad). Kapcsoló: MINTALECKE (próbán BE, élesen Railway =1; 0 = régi főoldal).
       Mérés: látogatottság „#minta_hu_N”, „#minta_vege” események. [ ] Sándor: próbán végignézni mind a 8-at.
+- [x] fix127 (11.11): főoldali kártya 1250–1499 px széles ablakban is 45 px-szel balrább (Sándor 150%-os
+      nagyítással ezt látja); telefonos nézet nem változott.
+- [x] fix128 (11.11): főoldal fejléce is a lebegő világos kapszula (mint a többi oldalon), gépen és telefonon;
+      a telefonos lenyíló menü csempéi változatlanok. (A zöld 10.06 óta volt – a 11.06-i változat is zöld.)
+      Visszaállítás: index.html „fix128” blokk törlése.
+- [x] fix128: gyerekbarát adatvédelmi összefoglaló (GDPR 12. cikk) – adatvedelem.html 8. pont, HU + ES.
+- [ ] ‼️ ADMIN_KOD beállítása: Railway → web szolgáltatás → Variables → ADMIN_KOD (próbán is). Sándor.
+- [ ] Mintalecke élesítése: Sándor átnézi a 8 HU leckét → Railway web: MINTALECKE=1.
+      Spanyol oldal 11.11: a nyilvános oldalak és mind a 6 ES mintalecke gépi ellenőrzéssel magyar szó nélkül.
 - [ ] JOGI KÉRDÉSEK – GYEREKEK (Sándor, 11.11; a gestoríának / jogásznak, a fizetés előtt):
       (1) DPIA – utánanézve: az AEPD listája szerint 2+ kritérium esetén kell; nálunk 3 (14 év alatti
           gyerek, MI, értékelés) → KÖTELEZŐ. Vázlat kész: jogi/DPIA_adatvedelmi_hatasvizsgalat_vazlat.md
-          (Sándor átnézi; nyitott pontjai: személyes adat szűrése az OpenAI előtt, ADMIN_KOD + 2FA,
-          Railway régió, nyilvántartás frissítése, gyerekbarát összefoglaló).
+          (Sándor aláírta 11.11. Kész: szűrő az OpenAI előtt [már megvolt], Railway régió [a tájékoztató
+          US West-et ír], nyilvántartás frissítve 11.11, gyerekbarát összefoglaló fix128. Még: ADMIN_KOD + 2FA).
       (2) AI-rendelet III. melléklet 3(b): a szöveg szerint „oktatási és szakképző INTÉZMÉNYEKBEN” használt,
           tanulási eredményt értékelő MI magas kockázatú. Otthoni, szülő által választott gyakorlásra a
           szövegből nem következik – de ha iskolának adnánk el, az már az lehet. Jogásszal megerősíteni.

@@ -282,18 +282,36 @@
 .fo .fo-minichat{width:86%;text-align:left;font-size:13.5px;line-height:1.45;color:#1f2937}
 .fo .fo-mc-cim{color:#6D3FC0;font-weight:800;font-size:13.5px;margin-bottom:6px}
 
-/* ── A FELSŐ MENÜSÁV CSAK EZEN AZ OLDALON ZÖLD (mint a terven). ── */
+/* ── A tartalom teljes szélességben (a fejléc színe: lásd fix128 lent). ── */
 body:has(.fo) .content{max-width:none;padding:0}
 body:has(.fo) .flash-container{max-width:1100px;margin:12px auto;padding:0 16px}
-body:has(.fo) .navbar{background:#167A5E;border-bottom:0;box-shadow:none}
-body:has(.fo) .brand-name{color:#fff}
-body:has(.fo) .nav-links > a:not(.nav-cta):not(.pin-nyitva){color:#fff;font-weight:700}
+/* fix128 (2026-11-11, Sándor): a főoldalon is a lebegő világos „kapszula” fejléc, mint a
+   többi oldalon (style.css „LEBEGŐ KAPSZULA” szakasz mintájára). A telefonos lenyíló
+   menü csempéi nem változnak. Visszaállítás: ezt a blokkot törölni. */
+body:has(.fo):not(:has(.gymenu)) .navbar{background:transparent !important;box-shadow:none !important;border:0 !important;margin-bottom:-80px}
+body:has(.fo):not(:has(.gymenu)) .navbar-inner{position:relative;isolation:isolate;margin:10px auto;width:calc(100% - 20px);max-width:1260px;
+  border-radius:22px;padding:.55rem 1rem .55rem .7rem;box-shadow:0 12px 32px rgba(10,40,28,.22)}
+body:has(.fo):not(:has(.gymenu)) .navbar-inner::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;
+  background:rgba(255,253,248,.9);border:1px solid rgba(255,255,255,.7);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+body:has(.fo):not(:has(.gymenu)) .navbar .brand-name{color:#0E2A1E !important}
 body:has(.fo) .nav-cta{background:#F5A01E;font-weight:800;box-shadow:0 3px 0 #D27E0B;
   text-shadow:0 1px 2px rgba(120,62,0,.55)}
 body:has(.fo) .nav-cta:hover{background:#F5A01E}
-body:has(.fo) .lang-switch{background:rgba(255,255,255,.16);border-color:transparent}
-body:has(.fo) .lang-btn{color:#fff !important}
-body:has(.fo) .lang-btn.active{background:#fff;color:#167A5E !important}
+body:has(.fo):not(:has(.gymenu)) .nav-links > a:not(.nav-cta):not(.pin-nyitva){color:#163A2E !important}
+body:has(.fo):not(:has(.gymenu)) .navbar .lang-switch{background:#EEF4F0 !important}
+body:has(.fo):not(:has(.gymenu)) .navbar .lang-switch .lang-btn{color:#5f7469 !important}
+body:has(.fo):not(:has(.gymenu)) .navbar .lang-switch .lang-btn.active{background:#167A5E !important;color:#fff !important}
+body:has(.fo):not(:has(.gymenu)) .fo .fo-hero{padding-top:134px}
+body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
+@media (max-width:1180px){
+  body:has(.fo):not(:has(.gymenu)) .navbar-inner{margin:8px auto;width:calc(100% - 16px);border-radius:20px}
+  body:has(.fo):not(:has(.gymenu)) .menu-gomb{background:#EEF4F0 !important}
+  body:has(.fo):not(:has(.gymenu)) .menu-gomb i{background:#0E2A1E !important}
+  body:has(.fo):not(:has(.gymenu)) .navbar::after{inset:0}
+  body:has(.fo):not(:has(.gymenu)) .nav-links > a.mn:not(.nav-cta):not(.pin-nyitva){color:#fff !important}
+  body:has(.fo):not(:has(.gymenu)) .nav-links > a.mn-ki:not(.nav-cta):not(.pin-nyitva){color:#5f7469 !important}
+}
+@media (max-width:760px){ body:has(.fo):not(:has(.gymenu)) .fo .fo-hero{padding-top:108px} }
 
   .fo-ai{margin:10px 0 14px;font-size:1.02rem;background:#EEF4FF;border:1px solid #C9D9F5;color:#24426F;border-radius:12px;padding:8px 12px;display:inline-block}
   .fo-bizalom{margin-top:10px;font-size:.88rem;color:#4A5B53;line-height:1.5}
