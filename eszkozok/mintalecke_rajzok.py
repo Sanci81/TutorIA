@@ -1,4 +1,4 @@
-# Mintalecke rajzok (fix131, 2026-11-11) – futtatás: python eszkozok/mintalecke_rajzok.py
+# Mintalecke rajzok (fix131–132) – futtatás: python eszkozok/mintalecke_rajzok.py
 # A béka (beka.svg) és a fazék (forras.svg) külön, kézzel készült; ezt a fájlt nem írja felül.
 import os
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "static", "img", "minta"); os.makedirs(OUT, exist_ok=True)
@@ -317,3 +317,141 @@ lab += ('<g class="l"><circle cx="100" cy="100" r="40" fill="#fff"/>'
 svg("labda", lab, ".l{animation:l 1.2s cubic-bezier(.5,0,.5,1) infinite}.a{animation:a 1.2s cubic-bezier(.5,0,.5,1) infinite;transform-origin:100px 140px}"
     "@keyframes l{0%,100%{transform:translateY(0) scale(1.06,.94)}50%{transform:translateY(-46px)}}@keyframes a{50%{transform:scale(.55);opacity:.5}}")
 print(sorted(os.listdir(OUT)))
+
+# ═══ fix132 – Sándor visszajelzése után újrarajzolva ═══
+import math
+# TÁNYÉROK felülnézetből, 4-4 alma a körben
+tany = ""
+for cx in (34,100,166):
+    tany += f'<circle cx="{cx}" cy="78" r="31" fill="#F1DDBA"/><circle cx="{cx}" cy="78" r="27" fill="#FFF4E0"/><circle cx="{cx}" cy="78" r="20" fill="none" stroke="#F1DDBA" stroke-width="1.5"/>'
+    for dx,dy in ((-10,-9),(10,-9),(-10,11),(10,11)):
+        tany += alma_rajz(cx+dx, 78+dy, .29)
+svg("tanyerok", tany + arnyek(100,124,80))
+
+# 7 + 6: tízes keret 7 kék + 3 narancs, alatta még 3 narancs (egymás alatt, hogy nagy legyen)
+def keret(x0, y0):
+    s = ""
+    for r in range(2):
+        for c in range(5):
+            s += f'<rect x="{x0+c*26}" y="{y0+r*26}" width="24" height="24" rx="5" fill="#fff" stroke="#BFD8CC" stroke-width="2"/>'
+    return s
+tz = keret(36,8) + keret(36,88)
+for i in range(7):
+    r,c = divmod(i,5); tz += f'<circle cx="{48+c*26}" cy="{20+r*26}" r="9" fill="#2F8FD8"/>'
+for i in (7,8,9):
+    r,c = divmod(i,5); tz += f'<circle class="u1" cx="{48+c*26}" cy="{20+r*26}" r="9" fill="#F59E0B"/>'
+for c in range(3):
+    tz += f'<circle class="u2" cx="{48+c*26}" cy="100" r="9" fill="#F59E0B"/>'
+tz += '<path d="M100 66 v14 M93 73 h14" stroke="#163A2E" stroke-width="3" stroke-linecap="round"/>'
+svg("tizes", tz,
+    ".u1{animation:u1 5s ease-out infinite}.u2{animation:u2 5s ease-out infinite}"
+    "@keyframes u1{0%,12%{opacity:0;transform:translateY(-8px)}25%,92%{opacity:1;transform:none}100%{opacity:0}}"
+    "@keyframes u2{0%,38%{opacity:0;transform:translateY(-8px)}50%,92%{opacity:1;transform:none}100%{opacity:0}}")
+
+# 50 + 20: 5 kék + 2 narancs tízes rúd
+def rud2(x, col, d):
+    s = f'<g class="r" style="animation-delay:{d}s">'
+    for k in range(10):
+        s += f'<rect x="{x}" y="{26+k*10}" width="13" height="9" rx="2" fill="{col}"/>'
+    return s + "</g>"
+body = "".join(rud2(24+i*18, "#2F8FD8", i*.12) for i in range(5))
+body += '<path d="M122 76 h14 M129 69 v14" stroke="#163A2E" stroke-width="4" stroke-linecap="round"/>'
+body += "".join(rud2(148+i*18, "#F59E0B", .8+i*.12) for i in range(2))
+svg("tizesek", body, ".r{animation:rud 5s ease-out infinite}@keyframes rud{0%{opacity:0;transform:translateY(-14px)}10%,90%{opacity:1;transform:none}100%{opacity:0}}")
+
+# 6 × 5: 6 sor, soronként 5 pont – sorról sorra jelenik meg
+racs = ""
+sc = ["#2F8FD8","#8A5CD6","#22A06B","#F59E0B","#D9467F","#0EA5B7"]
+for r in range(6):
+    racs += f'<g class="s" style="animation-delay:{r*.35}s">'
+    for c in range(5):
+        racs += f'<circle cx="{58+c*21}" cy="{20+r*20}" r="8" fill="{sc[r]}"/>'
+    racs += "</g>"
+svg("forgas", racs, ".s{animation:s 5s ease-out infinite}@keyframes s{0%{opacity:0;transform:translateX(-10px)}8%,90%{opacity:1;transform:none}100%{opacity:0}}")
+
+# NYÚL – a farok kívül, jól látható
+ny = arnyek(104,136,50,"a")
+ny += '<g class="v" stroke="#BFD8CC" stroke-width="4" stroke-linecap="round"><path d="M10 74 h24 M2 92 h32 M14 110 h20"/></g>'
+ny += ('<g class="n">'
+       '<path d="M66 112 q-22 4 -20 18 q20 2 32 -8z" fill="#D8CFC4"/>'
+       '<ellipse cx="98" cy="98" rx="40" ry="26" fill="#ECE6DF"/>'
+       '<circle cx="56" cy="86" r="11" fill="#FFFFFF" stroke="#D8CFC4" stroke-width="2.5"/>'
+       '<path d="M124 112 q14 10 26 16 q-14 6 -30 -4z" fill="#D8CFC4"/>'
+       '<path d="M126 60 q-14 -40 -4 -48 q14 6 16 46z" fill="#ECE6DF"/><path d="M128 56 q-9 -30 -3 -38 q8 6 9 36z" fill="#F7C6CF"/>'
+       '<path d="M138 58 q0 -44 12 -48 q8 10 -2 50z" fill="#ECE6DF"/><path d="M141 54 q1 -32 8 -38 q3 8 -2 38z" fill="#F7C6CF"/>'
+       '<ellipse cx="138" cy="80" rx="24" ry="21" fill="#ECE6DF"/>'
+       '<circle cx="146" cy="74" r="4.5" fill="#163A2E"/><circle cx="147.5" cy="72.5" r="1.5" fill="#fff"/>'
+       '<ellipse cx="160" cy="84" rx="3.5" ry="3" fill="#F49BAA"/><path d="M155 90 q3 3 7 0" stroke="#163A2E" stroke-width="2" fill="none" stroke-linecap="round"/>'
+       '<circle cx="140" cy="88" r="5" fill="#F7A6A6" opacity=".5"/>'
+       '</g>')
+svg("nyul", ny, ".n{animation:n .45s ease-in-out infinite alternate}.v{animation:v .45s linear infinite}.a{animation:a .45s ease-in-out infinite alternate;transform-origin:104px 136px}"
+    "@keyframes n{to{transform:translateY(-7px) rotate(-2deg)}}@keyframes v{0%{transform:translateX(0);opacity:1}100%{transform:translateX(-10px);opacity:.3}}@keyframes a{to{transform:scale(.86)}}")
+
+# 2/7 + 3/7: egy 7 részes csík, 2 lila + 3 narancs, alattuk kapcsos zárójel a törttel
+FONT = 'font-family="Arial,Helvetica,sans-serif" font-weight="700" text-anchor="middle"'
+def tort_szoveg(x, y, sz, ne, col="#163A2E"):
+    return (f'<text x="{x}" y="{y}" {FONT} font-size="15" fill="{col}">{sz}</text>'
+            f'<path d="M{x-8} {y+5} h16" stroke="{col}" stroke-width="2.2"/>'
+            f'<text x="{x}" y="{y+21}" {FONT} font-size="15" fill="{col}">{ne}</text>')
+tt = ""
+w = 24; x0 = 16
+for k in range(7):
+    col = "#8A5CD6" if k < 2 else ("#F59E0B" if k < 5 else "#fff")
+    cls = ' class="p1"' if k < 2 else (' class="p2"' if k < 5 else "")
+    tt += f'<rect{cls} x="{x0+k*w}" y="34" width="{w-3}" height="34" rx="5" fill="{col}" stroke="#D5C9EE" stroke-width="2"/>'
+tt += f'<path d="M{x0} 78 q0 8 8 8 h{w-10} q6 0 6 6 q0 -6 6 -6 h{w-10} q8 0 8 -8" fill="none" stroke="#8A5CD6" stroke-width="2.5"/>'
+tt += tort_szoveg(x0+w-1.5, 108, 2, 7, "#6D3FC0")
+x3 = x0 + 2*w
+tt += f'<path d="M{x3} 78 q0 8 8 8 h{1.5*w-10} q6 0 6 6 q0 -6 6 -6 h{1.5*w-10} q8 0 8 -8" fill="none" stroke="#E07B39" stroke-width="2.5"/>'
+tt += tort_szoveg(x3+1.5*w-1.5, 108, 3, 7, "#C2410C")
+svg("tortek", tt, ".p1{animation:p1 4s ease-out infinite}.p2{animation:p2 4s ease-out infinite}"
+    "@keyframes p1{0%,5%{opacity:.25}18%,92%{opacity:1}100%{opacity:.25}}@keyframes p2{0%,30%{opacity:.25}45%,92%{opacity:1}100%{opacity:.25}}")
+
+# 1/2 = 2/4 = 3/6: három egyforma kör, mindegyiknek a fele színes
+def kor_tort(cx, cy, r, n, col):
+    s = f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="#fff" stroke="#CFDDD6" stroke-width="2"/>'
+    for k in range(n):
+        a0 = -math.pi/2 + k*2*math.pi/n; a1 = a0 + 2*math.pi/n
+        x0_,y0_ = cx+r*math.cos(a0), cy+r*math.sin(a0); x1_,y1_ = cx+r*math.cos(a1), cy+r*math.sin(a1)
+        fill = col if k < n//2 else "#fff"
+        s += f'<path d="M{cx} {cy} L{x0_:.1f} {y0_:.1f} A{r} {r} 0 0 1 {x1_:.1f} {y1_:.1f}Z" fill="{fill}" stroke="#fff" stroke-width="2"/>'
+    return s + f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="#CFDDD6" stroke-width="2"/>'
+fl = kor_tort(34,62,24,2,"#22A06B") + kor_tort(100,62,24,4,"#0EA5B7") + kor_tort(166,62,24,6,"#F59E0B")
+for x in (67,133):
+    fl += f'<path d="M{x-6} 58 h12 M{x-6} 66 h12" stroke="#163A2E" stroke-width="2.6" stroke-linecap="round"/>'
+fl += tort_szoveg(34,112,1,2,"#15803D") + tort_szoveg(100,112,2,4,"#0E7490") + tort_szoveg(166,112,3,6,"#B45309")
+svg("fele", fl)
+
+# FÜGGVÉNYGÉP – vízszintesen: bemenet → gép → kimenet
+def gep2(parok, vissza=False):
+    s = arnyek(100,132,64)
+    s += '<rect x="62" y="44" width="76" height="66" rx="12" fill="#2F8FD8"/><rect x="69" y="51" width="62" height="52" rx="8" fill="#5BA7E6"/>'
+    s += fogas(88, 76, 12, "#FCD34D", "g1") + fogas(114, 72, 8.5, "#F59E0B", "g2")
+    s += '<circle cx="120" cy="96" r="3.5" fill="#E5484D"/><circle cx="110" cy="96" r="3.5" fill="#22A06B"/>'
+    s += '<path d="M62 70 h-6 v12 h6z M138 70 h6 v12 h-6z" fill="#0EA5B7"/>'
+    if vissza:
+        s += '<path class="ny" d="M172 56 C160 18 40 18 28 56" fill="none" stroke="#D9467F" stroke-width="3.5" stroke-dasharray="7 6" stroke-linecap="round"/>'
+        s += '<path d="M20 48 L28 58 L36 49" fill="none" stroke="#D9467F" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>'
+    else:
+        s += '<path d="M44 76 h10 M50 71 l5 5 l-5 5 M148 76 h10 M154 71 l5 5 l-5 5" fill="none" stroke="#163A2E" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>'
+    def labda(x, t, col):
+        fs = 15 if len(t) < 2 else 13
+        return (f'<circle cx="{x}" cy="76" r="15" fill="{col}" stroke="#163A2E" stroke-width="2.5"/>'
+                f'<text x="{x}" y="{76+fs*.36:.1f}" {FONT} font-size="{fs}" fill="#163A2E">{t}</text>')
+    if len(parok) == 1:
+        be, ki = parok[0]
+        return s + labda(26, be, "#fff") + labda(174, ki, "#FDE68A")
+    n = len(parok)
+    for i,(be,ki) in enumerate(parok):
+        s += f'<g class="pr" style="animation-delay:{i*2}s">' + labda(26, be, "#fff") + labda(174, ki, "#FDE68A") + "</g>"
+    return s
+GCSS = (".g1{animation:f 3s linear infinite}.g2{animation:fr 2s linear infinite}"
+        "@keyframes f{to{transform:rotate(360deg)}}@keyframes fr{to{transform:rotate(-360deg)}}")
+svg("gep", gep2([("1","3"),("2","5"),("3","7")]),
+    GCSS + ".pr{opacity:0;animation:pr 6s infinite}.pr:first-of-type{opacity:1}"
+    "@keyframes pr{0%{opacity:0}4%,30%{opacity:1}34%,100%{opacity:0}}"
+    "@media (prefers-reduced-motion:reduce){.pr{opacity:0}.pr:first-of-type{opacity:1}}")
+svg("gep_be", gep2([("10","?")]), GCSS)
+svg("gep_vissza", gep2([("?","15")], True),
+    ".g1{animation:fr 3s linear infinite}.g2{animation:f 2s linear infinite}.ny{animation:ny 1.2s linear infinite}"
+    "@keyframes f{to{transform:rotate(360deg)}}@keyframes fr{to{transform:rotate(-360deg)}}@keyframes ny{to{stroke-dashoffset:-26}}")

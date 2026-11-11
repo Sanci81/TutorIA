@@ -289,6 +289,11 @@ MÉG HÁTRA (később):
       „három dolog” ígéret után négy pont (ugyanaz a hibafajta, mint magyarul), 2 kissé természetellenes
       spanyol mondat. Komoly tartalmi hiba nem volt. → döntés: a tanítói szabályokat finomítsuk-e.
 - [x] Mintalecke képek: mind kész (fix131).
+- [x] fix132 (11.11, Sándor visszajelzése): almás tányérok felülről (a körben), 7+6 és 50+20 és 6×5 képe
+      pontosan a kérdés számaival, nyúl farka javítva, 2/7+3/7 egy 7 részes csíkkal, 1/2=2/4=3/6 három körrel,
+      függvénygép: bemenet → gép → kimenet (1→3, 2→5, 3→7 váltakozva). „Fent és lent” szöveg helyett
+      számláló/nevező (HU + ES).
+- [ ] 1. o. „Hány hangból áll a SÜN szó?” – Sándor kérdezte: hang vagy betű? (SÜN-nél mindkettő 3.) Döntésre vár.
 - [ ] Spanyol tanár-teszt Sándor gépén: python tanar_teszt.py --oldal es --gyors (jelentés magyarul, ~1 €).
 - [x] fix128: gyerekbarát adatvédelmi összefoglaló (GDPR 12. cikk) – adatvedelem.html 8. pont, HU + ES.
 - [ ] ‼️ ADMIN_KOD beállítása: Railway → web szolgáltatás → Variables → ADMIN_KOD (próbán is). Sándor.
