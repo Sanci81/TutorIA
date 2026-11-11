@@ -12,6 +12,7 @@
   .ml-fej{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
   .ml-fej b{font-size:15px;color:#17604A}
   .ml-fej span{font-size:13px;font-weight:800;background:#17604A;color:#fff;padding:5px 12px;border-radius:999px}
+  .ml-info{background:#E3F3EA;border-radius:14px;padding:11px 14px;font-size:14.5px;line-height:1.5;color:#17604A;margin:0 0 12px}
   .ml-sav{display:flex;gap:6px;margin:6px 0 16px}.ml-sav i{flex:1;height:7px;border-radius:5px;background:#E2DACB;transition:background .3s}
   .ml-sav i.k{background:#22A06B}
   .ml-tan{display:flex;gap:12px;align-items:flex-start}
@@ -70,6 +71,7 @@
 {% else %}
   <div id="mlLecke">
     <div class="ml-fej"><b>{{ lecke.targy }} · {{ lecke.tema }}</b><span>{{ (evf ~ '.º curso') if es else (evf ~ '. osztály') }}</span></div>
+    <div class="ml-info">👀 {{ 'Esto es una muestra de 3 minutos. En la lección real, el profesor (una inteligencia artificial) conversa con tu hijo: pregunta, espera su respuesta, le contesta y, si algo no sale, lo explica de otra manera. También se le puede hablar en voz alta.' if es else 'Ez egy 3 perces bemutató. A valódi leckében a tanító (mesterséges intelligencia) beszélget a gyerekkel: kérdez, megvárja a választ, válaszol neki, és ha valami nem megy, másképp is elmagyarázza. Hangosan is lehet beszélni vele.' }}</div>
     <div class="ml-sav">{% for s in lecke.lepesek %}<i></i>{% endfor %}</div>
     <div class="ml-tan"><div class="ml-av"><img src="{{ url_for('static', filename='img/tutoria_logo.png') }}" alt=""></div>
       <div class="ml-bub" id="mlTanit"></div></div>
@@ -79,7 +81,6 @@
       <div class="ml-visza" id="mlVisza"></div>
       <div style="text-align:center"><button class="ml-tovabb" id="mlTovabb" type="button">{{ 'Siguiente →' if es else 'Tovább →' }}</button></div>
     </div>
-    <p class="ml-megj">{{ 'En la versión completa, el profesor (una inteligencia artificial) conversa con tu hijo, le responde y también se le puede hablar en voz alta.' if es else 'A teljes változatban a tanító (mesterséges intelligencia) beszélget a gyerekkel, válaszol neki, és hangosan is lehet beszélni vele.' }}</p>
   </div>
   <div id="mlVege" class="ml-vege" style="display:none">
     <div class="nagy">🏆</div><h1>{{ '¡Muy bien!' if es else 'Ügyes volt!' }}</h1>
@@ -123,12 +124,12 @@
         g.addEventListener('click', function () {
           if (kesz || g.disabled) { return; }
           if (k === s.jo) {
-            kesz = true; g.classList.add('jo'); g.textContent = '✓ ' + o; $('mlSzuper').classList.add('lat'); konfetti(g);
+            kesz = true; savok[i].classList.add('k'); g.classList.add('jo'); g.textContent = '✓ ' + o; $('mlSzuper').classList.add('lat'); konfetti(g);
             $('mlVisza').className = 'ml-visza jo'; $('mlVisza').innerHTML = s.miert; $('mlTovabb').style.display = 'inline-block';
           } else {
             probalt++; g.classList.add('rossz'); g.disabled = true;
             if (probalt >= 2) {
-              kesz = true; var jg = h.children[s.jo]; jg.classList.add('jo'); jg.textContent = '✓ ' + s.opciok[s.jo];
+              kesz = true; savok[i].classList.add('k'); var jg = h.children[s.jo]; jg.classList.add('jo'); jg.textContent = '✓ ' + s.opciok[s.jo];
               $('mlVisza').className = 'ml-visza jo'; $('mlVisza').innerHTML = s.miert; $('mlTovabb').style.display = 'inline-block';
             } else {
               $('mlVisza').className = 'ml-visza rossz';

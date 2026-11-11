@@ -269,6 +269,22 @@ MÉG HÁTRA (később):
       AI nélkül), mintalecke.py (HU 1–8, ES 1–6, évfolyamonként más tárgy). Főoldal: középen csempés kártya
       (buborék + ABC marad). Kapcsoló: MINTALECKE (próbán BE, élesen Railway =1; 0 = régi főoldal).
       Mérés: látogatottság „#minta_hu_N”, „#minta_vege” események. [ ] Sándor: próbán végignézni mind a 8-at.
+- [ ] JOGI KÉRDÉSEK – GYEREKEK (Sándor, 11.11; a gestoríának / jogásznak, a fizetés előtt):
+      (1) DPIA – utánanézve: az AEPD listája szerint 2+ kritérium esetén kell; nálunk 3 (14 év alatti
+          gyerek, MI, értékelés) → KÖTELEZŐ. Vázlat kész: jogi/DPIA_adatvedelmi_hatasvizsgalat_vazlat.md
+          (Sándor átnézi; nyitott pontjai: személyes adat szűrése az OpenAI előtt, ADMIN_KOD + 2FA,
+          Railway régió, nyilvántartás frissítése, gyerekbarát összefoglaló).
+      (2) AI-rendelet III. melléklet 3(b): a szöveg szerint „oktatási és szakképző INTÉZMÉNYEKBEN” használt,
+          tanulási eredményt értékelő MI magas kockázatú. Otthoni, szülő által választott gyakorlásra a
+          szövegből nem következik – de ha iskolának adnánk el, az már az lehet. Jogásszal megerősíteni.
+      (3) Gyerekbarát nyelvű adatvédelmi összefoglaló (GDPR 12. cikk) – rövid változat a gyereknek.
+      Rendben van: szülő regisztrál + hozzájárul (GDPR 8. cikk; HU 16, ES 14 év), e-mail-megerősítés,
+      a mintalecke nem gyűjt adatot. COPPA (USA) nem vonatkozik ránk.
+- [ ] ‼️ TELJES JOGI ELLENŐRZŐLISTA (Sándor: „ha nem kérdezek rá, magadtól nem mondod?”): egy listában
+      végigmenni GDPR, AI-rendelet, fogyasztóvédelem (EU/HU/ES), LSSI, adó, gyerekvédelem pontjain, mi kész,
+      mi hiányzik – a fizetés bekötése ELŐTT.
+- [x] fix126: mintalecke – felül magyarázó sáv („3 perces bemutató… a valódi leckében a tanító beszélget…”),
+      a 3. csík is zöld lesz a jó válasz után; főoldal – széles képernyőn a csempés kártya kicsit balra.
 - [ ] Facebook-hozzászólás (Ágnes, AI-ellenes): ne rejtsük el; udvarias, egyetértő válasz, név nélkül.
 - [x] Videó „Este 7.” helyett „Hosszú nap volt.” (v7), főoldali cím: „Te pihensz, ő tanul.” (fix120).
       Hirdetéshez: kinézet képek/facebook/hirdetes/tutoria_reel_este_v7.mp4.
