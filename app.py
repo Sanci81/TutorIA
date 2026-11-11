@@ -11464,6 +11464,25 @@ POTLAS_JO = (_PJO in ("1", "igen", "true", "be")
 _FTP = os.environ.get("FELADAT_TIPP", "").strip().lower()
 FELADAT_TIPP = (_FTP in ("1", "igen", "true", "be")
                 or (PROBA_OLDAL and _FTP not in ("0", "nem", "false", "ki")))
+# ── TANÍTÓ PONTOSSÁG (2026-11-11, spanyol tanár-teszt): két apró szabály a tanítónak –
+# (1) ha előre megmondja, hány dolgot sorol fel, pontosan annyit soroljon;
+# (2) helyes vagy a tanítottak szerint elfogadható választ ne minősítsen rossznak.
+# Kapcsoló: TANITO_PONTOS – próbaoldalon magától BE, élesen csak =1-gyel; 0 = ki.
+_TPO = os.environ.get("TANITO_PONTOS", "").strip().lower()
+TANITO_PONTOS = (_TPO in ("1", "igen", "true", "be")
+                 or (PROBA_OLDAL and _TPO not in ("0", "nem", "false", "ki")))
+_TANITO_PONTOS_HU = (
+    "\n\n=== KÉT FONTOS APRÓSÁG ===\n"
+    "- Ha előre megmondod, hány dolgot tanítasz vagy sorolsz fel (pl. „két új szó”, „három fontos dolog”), "
+    "PONTOSAN annyit sorolj fel – se többet, se kevesebbet. Ha nem vagy biztos, ne mondj számot.\n"
+    "- Ha a gyerek válasza helyes, vagy az alapján, amit tanítottál, elfogadható (pl. két jó megoldás közül a másikat "
+    "mondja), NE mondd, hogy nem jó. Dicsérd meg, és csak utána, kedvesen tedd hozzá a másik lehetőséget.\n")
+_TANITO_PONTOS_ES = (
+    "\n\n=== DOS DETALLES IMPORTANTES ===\n"
+    "- Si anuncias cuántas cosas vas a enseñar o enumerar (p. ej. «dos palabras nuevas», «tres cosas importantes»), "
+    "enumera EXACTAMENTE esas, ni más ni menos. Si no estás seguro, no digas un número.\n"
+    "- Si la respuesta del niño es correcta, o aceptable según lo que le has enseñado (p. ej. dice la otra de dos "
+    "respuestas válidas), NO le digas que está mal. Felicítale y solo después, con cariño, añade la otra posibilidad.\n")
 
 
 _GEP_SZABALY = re.compile(r"\bg[ée]p.{0,120}szab[áa]ly|szab[áa]ly.{0,120}\bg[ée]p|m[áa]quina.{0,120}regla|regla.{0,120}m[áa]quina",
@@ -15063,6 +15082,9 @@ def child_chat_send(child_id: int):
             _sess_curr_send, session_id, child_id, language,
         )
         history = []
+    if TANITO_PONTOS:
+        system_prompt += (_TANITO_PONTOS_ES if (_active_curriculum() or "HU").upper() == "ES"
+                          else _TANITO_PONTOS_HU)
     if FELADAT_TIPP:
         try:
             _ftipp = _feladat_tipp_blokk(history, (_active_curriculum() or "HU").upper() == "ES")

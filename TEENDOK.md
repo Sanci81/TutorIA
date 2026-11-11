@@ -279,13 +279,16 @@ MÉG HÁTRA (később):
       („img:nev” a mintalecke.py-ban). Főoldali fejléc gépen fehérebb + keret (telefon változatlan).
 - [x] fix130 (11.11): béka újrarajzolva (szemből, ugrál), fazék mozog (buborék, gőz, láng) – SVG-n belüli
       CSS-animáció, „kevesebb mozgás” beállításnál áll. Mintalecke kártyáján halvány konfetti háttér.
-- [ ] Főoldali fejléc színe (Sándor: „túl egyszerű”) – 3 változat mutatva (A menta, B zöld kapszula,
-      C fehér + színes csík), választásra vár. Csak gépen; telefon marad.
+- [x] fix131 (11.11): főoldali fejléc – Sándor a C-t választotta (fehér + színes csík alul), csak gépen.
+- [x] fix131: mind a 42 mintalecke-kép saját rajz (27 SVG, static/img/minta; mozognak, ahol van értelme).
+      Javítva: ES 1. o. MESA-nál szék volt → asztal. Rajzoló: eszkozok/mintalecke_rajzok.py.
+- [x] fix131: TANITO_PONTOS kapcsoló (próbán BE, élesen =1): „annyit sorolj, amennyit ígérsz” + helyes/elfogadható
+      választ ne minősítsen rossznak (a spanyol teszt két hibafajtája). HU + ES. Csak a beírt chatnél.
+      [ ] Sándor: próbán spanyol leckével kipróbálni; élesen Railway web: TANITO_PONTOS=1.
 - [ ] Spanyol tanár-teszt 11.11 (3 óra, gpt-5.4-mini): 5 apró jelzés – „hi” vs „hello” fölösleges javítás,
       „három dolog” ígéret után négy pont (ugyanaz a hibafajta, mint magyarul), 2 kissé természetellenes
       spanyol mondat. Komoly tartalmi hiba nem volt. → döntés: a tanítói szabályokat finomítsuk-e.
-- [ ] Mintalecke: a többi kép is emoji – Sándor 11.11: „az összeset ilyen jóra vagy jobbra”, mozgókép is jöhet (Sándor: „nem profi”) → ha a béka/fazék stílus tetszik, a többit is
-      így megrajzolni (főleg a jelképes emojik: 🔟 🔁 ➕ ⚙️ 🔢 🔙 ⚖️ 📅).
+- [x] Mintalecke képek: mind kész (fix131).
 - [ ] Spanyol tanár-teszt Sándor gépén: python tanar_teszt.py --oldal es --gyors (jelentés magyarul, ~1 €).
 - [x] fix128: gyerekbarát adatvédelmi összefoglaló (GDPR 12. cikk) – adatvedelem.html 8. pont, HU + ES.
 - [ ] ‼️ ADMIN_KOD beállítása: Railway → web szolgáltatás → Variables → ADMIN_KOD (próbán is). Sándor.
