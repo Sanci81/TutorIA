@@ -277,7 +277,14 @@ MÉG HÁTRA (később):
 - [x] fix129 (11.11): mintalecke – almák tányéronként 2×2 rácsban (laptopon kicsúsztak a körből);
       béka (5. o. ige, HU+ES) és fazék (7. o. forrás) emoji helyett saját rajz: static/img/minta/*.svg
       („img:nev” a mintalecke.py-ban). Főoldali fejléc gépen fehérebb + keret (telefon változatlan).
-- [ ] Mintalecke: a többi kép is emoji (Sándor: „nem profi”) → ha a béka/fazék stílus tetszik, a többit is
+- [x] fix130 (11.11): béka újrarajzolva (szemből, ugrál), fazék mozog (buborék, gőz, láng) – SVG-n belüli
+      CSS-animáció, „kevesebb mozgás” beállításnál áll. Mintalecke kártyáján halvány konfetti háttér.
+- [ ] Főoldali fejléc színe (Sándor: „túl egyszerű”) – 3 változat mutatva (A menta, B zöld kapszula,
+      C fehér + színes csík), választásra vár. Csak gépen; telefon marad.
+- [ ] Spanyol tanár-teszt 11.11 (3 óra, gpt-5.4-mini): 5 apró jelzés – „hi” vs „hello” fölösleges javítás,
+      „három dolog” ígéret után négy pont (ugyanaz a hibafajta, mint magyarul), 2 kissé természetellenes
+      spanyol mondat. Komoly tartalmi hiba nem volt. → döntés: a tanítói szabályokat finomítsuk-e.
+- [ ] Mintalecke: a többi kép is emoji – Sándor 11.11: „az összeset ilyen jóra vagy jobbra”, mozgókép is jöhet (Sándor: „nem profi”) → ha a béka/fazék stílus tetszik, a többit is
       így megrajzolni (főleg a jelképes emojik: 🔟 🔁 ➕ ⚙️ 🔢 🔙 ⚖️ 📅).
 - [ ] Spanyol tanár-teszt Sándor gépén: python tanar_teszt.py --oldal es --gyors (jelentés magyarul, ~1 €).
 - [x] fix128: gyerekbarát adatvédelmi összefoglaló (GDPR 12. cikk) – adatvedelem.html 8. pont, HU + ES.
