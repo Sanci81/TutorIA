@@ -18,10 +18,10 @@ LECKEK = {
              "opciok": ["autó", "labda", "mókus"], "jo": 0, "miert": "Az <b>a</b>utó is <b>a</b> hanggal kezdődik."},
             {"tanit": "Figyeld meg a szó elejét! A <b>hal</b> szót így mondjuk ki: <b>h-a-l</b>.",
              "kep": "img:hal", "kerdes": "Melyik betűvel kezdődik a HAL szó?",
-             "opciok": ["H", "A", "L"], "jo": 0, "miert": "<b>H</b>-a-l: az első hang a <b>h</b>."},
+             "opciok": ["L", "H", "A"], "jo": 1, "miert": "<b>H</b>-a-l: az első betű a <b>H</b>."},
             {"tanit": "Meg is számolhatjuk a hangokat. Tapsolj minden hangnál: <b>s – ü – n</b>.",
-             "kep": "img:sun", "kerdes": "Hány hangból áll a SÜN szó?",
-             "opciok": ["2", "3", "4"], "jo": 1, "miert": "S – ü – n: három hang, három taps."},
+             "kep": "img:sun", "kerdes": "Hány betűből áll a SÜN szó?",
+             "opciok": ["2", "3", "4"], "jo": 1, "miert": "S – ü – n: három betű, három taps."},
         ]},
         2: {"targy": "Matematika", "tema": "Összeadás tízesátlépéssel", "lepesek": [
             {"tanit": "A <b>8 + 5</b>-öt könnyebb két lépésben: először <b>10-ig</b> megyünk (8 + 2 = 10), aztán a maradék: 10 + 3 = <b>13</b>.",

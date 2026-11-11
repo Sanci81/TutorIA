@@ -293,7 +293,9 @@ MÉG HÁTRA (később):
       pontosan a kérdés számaival, nyúl farka javítva, 2/7+3/7 egy 7 részes csíkkal, 1/2=2/4=3/6 három körrel,
       függvénygép: bemenet → gép → kimenet (1→3, 2→5, 3→7 váltakozva). „Fent és lent” szöveg helyett
       számláló/nevező (HU + ES).
-- [ ] 1. o. „Hány hangból áll a SÜN szó?” – Sándor kérdezte: hang vagy betű? (SÜN-nél mindkettő 3.) Döntésre vár.
+- [x] fix133 (11.11): HU 1. o. mintalecke – HAL: a betűk összekeverve (L, H, A; eddig a szó sorrendjében álltak);
+      SÜN: a kérdés „Hány betűből…” (Sándor: a gyereknek betű, a tanító szövegében marad a hang).
+- [ ] Élesre (proba:main + MINTALECKE=1) csak akkor, ha Sándor a mintaleckéket rendben találta.
 - [ ] Spanyol tanár-teszt Sándor gépén: python tanar_teszt.py --oldal es --gyors (jelentés magyarul, ~1 €).
 - [x] fix128: gyerekbarát adatvédelmi összefoglaló (GDPR 12. cikk) – adatvedelem.html 8. pont, HU + ES.
 - [ ] ‼️ ADMIN_KOD beállítása: Railway → web szolgáltatás → Variables → ADMIN_KOD (próbán is). Sándor.
