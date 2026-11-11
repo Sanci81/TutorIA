@@ -254,6 +254,13 @@ MÉG HÁTRA (később):
 - [x] Szülői jelentés-levél új kinézetben (fix119, level.py): TutorIAcademia fejléc, számdobozok,
       tantárgyi csíkok – zsiráf nélkül.
 - [ ] KÖVETKEZŐ (Sándor kérte): mintalecke regisztráció nélkül; képek a nehéz fogalmakhoz.
+- [ ] MINTALECKE – terv (fix121, mintalecke_terv2.png, fooldal_gomb_terv.png): főoldalon a „Hogyan
+      működik?” helyén „▶ Nézz bele egy leckébe” gomb; évfolyamonként KÜLÖN (1–8, nem párosítva), és
+      NEM mindig matek: 1. betűk (magyar), 2. összeadás, 3. évszakok (környezet), 4. szorzás,
+      5. szófajok (magyar), 6. törtek, 7. halmazállapot (kémia), 8. függvénygép. Előre megírt
+      szöveg (nincs AI-költség), valódi interaktív feladatok, a végén „Regisztrálok” gomb.
+      Spanyol oldal: 1–6. Kérdés szövege: „Szerinted hány alma van összesen?”. Jóváhagyásra vár.
+- [x] Blog link a láblécben (csak a magyar oldalon; a blog magyar) – fix121.
 - [x] Videó „Este 7.” helyett „Hosszú nap volt.” (v7), főoldali cím: „Te pihensz, ő tanul.” (fix120).
       Hirdetéshez: kinézet képek/facebook/hirdetes/tutoria_reel_este_v7.mp4.
 - [ ] ‼️ ADMIN_KOD beállítása a Railway-en (web + próba) – Sándor: ne felejtsük el.
