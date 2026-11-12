@@ -546,7 +546,7 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
     <div class="fo-box"><div class="fo-kepresz fo-k2"><img loading="lazy" src="{{ url_for('static', filename='bemutato/lany_integet.png') }}" alt=""></div>
       {% if es %}<h3>Paciente como un buen maestro</h3><p>No tiene prisa ni regaña. Si no le sale, se lo explica de otra forma.</p>
       {% else %}<h3>Türelmes, mint egy jó tanító</h3><p>Nem siet, nem szid. Ha nem megy, máshonnan magyarázza el.</p>{% endif %}</div>
-    <div class="fo-box"><div class="fo-kepresz fo-k3"><div class="fo-legyezo"><img loading="lazy" src="{{ url_for('static', filename='bemutato/curie.jpg') }}" alt=""><img loading="lazy" src="{{ url_for('static', filename='bemutato/newton.jpg') }}" alt=""><img loading="lazy" src="{{ url_for('static', filename='bemutato/darwin.jpg') }}" alt=""></div></div>
+    <div class="fo-box"><div class="fo-kepresz fo-k3"><div class="fo-legyezo">{% for k in (['es_cajal.jpg','es_velazquez.jpg','es_mutis.jpg'] if es else ['curie.jpg','newton.jpg','darwin.jpg']) %}<img loading="lazy" src="{{ url_for('static', filename='bemutato/' ~ k) }}" alt="">{% endfor %}</div></div>
       {% if es %}<h3>Colecciona cromos</h3><p>Cada tema terminado da monedas, y con ellas consigue cromos de científicos famosos.</p>
       {% else %}<h3>Kártyákat gyűjt érte</h3><p>Minden kész témakörért érme jár, abból híres tudósok kártyái lesznek.</p>{% endif %}</div>
     <div class="fo-box"><div class="fo-kepresz fo-k4"><div class="fo-jelentes">
@@ -615,33 +615,38 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
     </div>
     <div class="fo-allomas">
       <div class="fo-jelvény">4</div>
-      <div class="fo-lap fo-jutalom"><div class="fo-ermek"><i>🪙</i><i>🪙</i><i>🪙</i></div><img loading="lazy" src="{{ url_for('static', filename='bemutato/curie.jpg') }}" alt=""></div>
+      <div class="fo-lap fo-jutalom"><div class="fo-ermek"><i>🪙</i><i>🪙</i><i>🪙</i></div><img loading="lazy" src="{{ url_for('static', filename='bemutato/' ~ ('es_cajal.jpg' if es else 'curie.jpg')) }}" alt=""></div>
       <b>{{ t('bem_l4_cim') }}</b><span>{{ 'Con ellas consigue cromos, fondos y avatares.' if es else 'Abból lesz kártya, háttér és avatar.' }}</span>
     </div>
   </div>
 </section>
 
-{# Az album a spanyol oldalon is látszik – amíg nincs spanyol kártya,
-   ugyanazokkal a lapokkal, mint a magyar oldalon. #}
+{# fix150 (11.12): a spanyol oldalon a SPANYOL album képei (borító, lapok, egy albumoldal). #}
 <section class="fo-album">
   <h2>{{ t('bem_album_cim') }}</h2><p class="fo-al">{{ t('bem_album_alcim') }}</p>
   <div class="fo-album-sor">
-    <img class="fo-borito" loading="lazy" src="{{ url_for('static', filename='bemutato/album_borito.jpg') }}" alt="{{ t('bem_album_cim') }}">
+    <img class="fo-borito" loading="lazy" src="{{ url_for('static', filename='bemutato/' ~ ('album_borito_es.jpg' if es else 'album_borito.jpg')) }}" alt="{{ t('bem_album_cim') }}">
     <div class="fo-lapok">
       {# 2026-10-29: két ARANY lap is a sorban – a gyerek lássa, hogy van ritkább, csillogóbb változat. #}
-      {% for kep, nev, arany in [('curie.jpg', 'Marie Curie', 0), ('newton_arany.jpg', 'Isaac Newton', 1), ('galilei.jpg', 'Galileo Galilei', 0),
-                          ('mengyelejev.jpg', 'Mengyelejev', 0), ('szechenyi_arany.jpg', 'Széchenyi István', 1), ('darwin.jpg', 'Charles Darwin', 0)] %}
+      {% set lapsor = [('es_cajal.jpg', 'Santiago Ramón y Cajal', 0), ('es_cervantes_arany.jpg', 'Miguel de Cervantes', 1), ('es_velazquez.jpg', 'Diego Velázquez', 0),
+                       ('es_mutis.jpg', 'José Celestino Mutis', 0), ('es_goya_arany.jpg', 'Francisco de Goya', 1), ('es_sorolla.jpg', 'Joaquín Sorolla', 0)] if es else
+                      [('curie.jpg', 'Marie Curie', 0), ('newton_arany.jpg', 'Isaac Newton', 1), ('galilei.jpg', 'Galileo Galilei', 0),
+                       ('mengyelejev.jpg', 'Mengyelejev', 0), ('szechenyi_arany.jpg', 'Széchenyi István', 1), ('darwin.jpg', 'Charles Darwin', 0)] %}
+      {% for kep, nev, arany in lapsor %}
       <img loading="lazy" {% if arany %}class="fo-arany"{% endif %} src="{{ url_for('static', filename='bemutato/' ~ kep) }}" alt="{{ nev }}{{ (' – aranylap' if not es else ' – cromo dorado') if arany else '' }}">
       {% endfor %}
     </div>
   </div>
-  {% if not es %}
-  {# 2026-10-29: egy albumoldal is, ahogy a gyerek látja – a kép magyar feliratú, ezért csak a magyar oldalon. #}
+  {# egy albumoldal is, ahogy a gyerek látja – mindkét nyelven a saját albumából #}
   <figure class="fo-albumlap">
+    {% if es %}
+    <img loading="lazy" src="{{ url_for('static', filename='bemutato/album_lap_es.jpg') }}" alt="Una página del álbum: Santiago Ramón y Cajal, con sus dos cromos pegados">
+    <figcaption>Cada cromo tiene su propia página en el álbum: una curiosidad, un dato y el hueco donde pegarlo.</figcaption>
+    {% else %}
     <img loading="lazy" src="{{ url_for('static', filename='bemutato/album_lap.jpg') }}" alt="Egy oldal a gyűjtőalbumból: Marie Curie, a két beragasztott lapjával">
     <figcaption>Minden lapnak saját oldala van az albumban: érdekesség, tény, és a hely, ahová beragasztja.</figcaption>
+    {% endif %}
   </figure>
-  {% endif %}
 </section>
 
 <section class="fo-osztaly">
