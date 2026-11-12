@@ -323,7 +323,13 @@ MÉG HÁTRA (később):
 - [x] fix142: ÁSZF 6. pont (HU+ES): a kártyaképek MI-vel készült művészi illusztrációk, nem hiteles portrék; panasz
       esetén levesszük. Spanyol műhely kártyafelirata: „Ilustración creada con IA”. /admin/ (perjellel) is működik.
 - [ ] Pinterest-kampány fut (11.11-ig 9,89 €, 97 kattintás, 0 regisztráció) → link a mintaleckére vagy szüneteltetés.
-- [ ] Látogatottság oldal: Sándor szerint „fura számok” – képet kérni.
+- [x] Látogatottság (11.12, 4 letöltés összevetve): a számok következetesek (a lezárt napok nem változnak).
+- [ ] ‼️ FŐ SZIVÁRGÁS: 30 nap alatt 1123 látogató → 157 jutott el a regisztrációs oldalra → csak 2 küldte be.
+      A regisztrációs oldal a gond (facebook: 100 a reg. oldalon, 1 regisztrált). Főoldalon a medián idő 5 mp.
+      → Regisztráció egyszerűsítése (kevesebb mező, PIN később?) – Sándorral egyeztetni, mielőtt hozzányúlunk.
+- [ ] Sándor 11.12: az oktatási részt mindkét oldalon fejleszteni, több interaktív feladat (HU + ES) – terv kell.
+- [ ] Spanyol kártyák: 14 kész a static/kartyak/es-ben; 8 fájlt át kell nevezni (_2, _3, (1), másolata) – parancs megadva.
+      Sorolla új képén a vásznon halvány „Fig. 22” felirat.
 - [ ] Spanyol képek ÚJRA átnézve (Claude, 11.11, Sándor jelezte, hogy az első átnézés felületes volt):
       ÚJRA kell 10: Goya, Sorolla, Albéniz (fix140) + Torres Quevedo (szakáll hiányzott), Peral (makett + modern
       tengeralattjáró), Las Casas (rossz szerzetesi ruha – domonkos: fehér + fekete köpeny), Elcano (távcső – akkor
