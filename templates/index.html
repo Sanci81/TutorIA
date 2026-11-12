@@ -472,12 +472,11 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
   <div class="fo-sav-belso">
     <h2>{{ '¿Qué es TutorIA?' if es else 'Mi a TutorIA?' }}</h2>
     <p class="fo-al">{{ 'Un profesor paciente en el móvil, la tableta o el ordenador. Enseña lo mismo que en el colegio: pregunta, espera la respuesta y se queda en cada paso hasta que tu hijo lo entiende.' if es else 'Egy türelmes tanár a telefonon, a tableten vagy a gépen. Ugyanazt tanítja, amit a suliban vesznek — kérdez, megvárja a választ, és addig marad egy lépésnél, amíg a gyerek meg nem érti.' }}</p>
-    {# A képernyőképek magyar feliratúak; amíg nincs spanyol, a spanyol
-       oldalon is ezek látszanak (Sándor kérése, 2026-10-06). #}
+    {# fix151 (2026-11-12): a spanyol oldalon spanyol képernyőképek (app_*_es.jpg). #}
     <div class="fo-telefonok">
-      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_matek.jpg') }}" alt="{{ 'Clase de matemáticas' if es else 'Matekóra a programban' }}"></div>{% if es %}<b>Enseña paso a paso</b><span>Una idea, una pregunta.</span>{% else %}<b>Lépésenként tanít</b><span>Egy gondolat, egy kérdés.</span>{% endif %}</div>
-      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_nyelv.jpg') }}" alt="{{ 'Clase de idiomas' if es else 'Nyelvóra a programban' }}"></div>{% if es %}<b>También idiomas</b><span>Cada clase tiene su propio vocabulario.</span>{% else %}<b>Nyelvet is</b><span>Saját szójegyzéke van minden órának.</span>{% endif %}</div>
-      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/app_hang.jpg') }}" alt="{{ 'Hablando con el profesor' if es else 'Beszélgetés hanggal' }}"></div>{% if es %}<b>También se le puede hablar</b><span>Dice la respuesta en vez de escribirla.</span>{% else %}<b>Beszélni is lehet vele</b><span>Gépelés helyett mondja a választ.</span>{% endif %}</div>
+      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/' ~ ('app_matek_es.jpg' if es else 'app_matek.jpg')) }}" alt="{{ 'Clase de matemáticas' if es else 'Matekóra a programban' }}"></div>{% if es %}<b>Enseña paso a paso</b><span>Una idea, una pregunta.</span>{% else %}<b>Lépésenként tanít</b><span>Egy gondolat, egy kérdés.</span>{% endif %}</div>
+      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/' ~ ('app_nyelv_es.jpg' if es else 'app_nyelv.jpg')) }}" alt="{{ 'Clase de idiomas' if es else 'Nyelvóra a programban' }}"></div>{% if es %}<b>También idiomas</b><span>Cada clase tiene su propio vocabulario.</span>{% else %}<b>Nyelvet is</b><span>Saját szójegyzéke van minden órának.</span>{% endif %}</div>
+      <div class="fo-telefon"><div class="fo-keret"><img loading="lazy" src="{{ url_for('static', filename='bemutato/' ~ ('app_hang_es.jpg' if es else 'app_hang.jpg')) }}" alt="{{ 'Hablando con el profesor' if es else 'Beszélgetés hanggal' }}"></div>{% if es %}<b>También se le puede hablar</b><span>Dice la respuesta en vez de escribirla.</span>{% else %}<b>Beszélni is lehet vele</b><span>Gépelés helyett mondja a választ.</span>{% endif %}</div>
     </div>
     <ul class="fo-tel-lista">
       {% if es %}

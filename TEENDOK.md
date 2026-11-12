@@ -347,6 +347,11 @@ MÉG HÁTRA (később):
 - [x] fix149: spanyol album képei – a fájlok évfolyamszám nélkül vannak (medio_cajal.png), ezért kartyak_es.py
       "kep" és a kártyaműhely fájlnevei is szám nélkül. Új generált képeknél: kartya_kepek_uj/es/album1/ név szám nélkül.
 - [ ] Következő feladatok sorban: 3) diktálás/dictado, 4) tangram, 5) növény/sejt feliratozás.
+- [x] fix150 (11.12): spanyol főoldal – spanyol kártyák (doboz, 4. lépés, kártyasor), spanyol albumborító és belső
+      albumoldal (static/bemutato/*_es.jpg, es_*.jpg).
+- [x] fix151 (11.12): HIBA – a spanyol leckében ÍROTT módban az AI-tájékoztató („Szia! Mesterséges intelligencia…”),
+      a kabala dicsérete és pár feladat-tipp MAGYARUL jelent meg (a chat-frame mező csak hangos módban volt).
+      Javítva (chat.html). Spanyol telefonos képernyőképek a főoldalra (app_*_es.jpg).
 - [ ] Szövegértés: évfolyamonként a NAT / LOMLOE olvasási szintje szerint (1–2.: 3–5 mondat; 3–4.: 1 bekezdés;
       5–6.: ismeretterjesztő szöveg; 7–8.: tantárgyi forrásszöveg, következtetés). Bekötés a tanítóba ezután.
 - [ ] Spanyol kártyák: 14 kész a static/kartyak/es-ben; 8 fájlt át kell nevezni (_2, _3, (1), másolata) – parancs megadva.

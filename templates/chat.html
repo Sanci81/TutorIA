@@ -1847,6 +1847,10 @@
         </div>
         </div><!-- /munka-sav -->
 
+        {# fix151 (2026-11-12): a „chat-frame” eddig CSAK hangos módban volt az oldalon, ezért írott módban a
+           spanyol oldalon az AI-tájékoztató, a kabala és pár feladat-tipp MAGYARUL jelent meg. #}
+        {% if chat_mode != 'voice' %}<input type="hidden" id="chat-frame" value="{{ 'es' if active_curriculum == 'ES' else 'hu' }}">{% endif %}
+
         {% if chat_mode == 'voice' %}
         <input type="hidden" id="chat-subject" value="{{ subject }}">
         <input type="hidden" id="chat-session-id" value="{{ session_id }}">
