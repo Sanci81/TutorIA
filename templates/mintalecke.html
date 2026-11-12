@@ -46,6 +46,19 @@
   .ml-vege p{color:#4D665D;font-size:16.5px;line-height:1.5}
   .ml-lista{text-align:left;background:#fff;border-radius:18px;padding:14px 18px;margin:16px 0 20px;font-size:16px;line-height:2;box-shadow:0 4px 14px rgba(23,96,74,.08)}
   .ml-cta,.ml-cta2{text-decoration:none!important}
+  .ml-lep{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:4px 0 12px;font-size:14px;font-weight:800}
+  .ml-lep span{padding:6px 12px;border-radius:999px;background:#EEF4F0;color:#5f7469}.ml-lep .k{background:#22A06B;color:#fff}
+  .ml-ajandek{display:flex;align-items:stretch;border-radius:22px;overflow:hidden;text-decoration:none!important;text-align:left;
+    box-shadow:0 6px 0 #4B3A9E,0 14px 30px rgba(91,108,224,.30);margin-bottom:12px;transition:transform .15s}
+  .ml-ajandek:hover{transform:translateY(-2px)}
+  .ml-ajandek .bal{flex:1;background:linear-gradient(160deg,#8A5CD6,#5B6CE0);color:#fff;padding:16px 18px}
+  .ml-ajandek .bal b{display:block;font-size:21px;font-weight:900}
+  .ml-ajandek .bal small{display:block;font-size:14.5px;font-weight:700;opacity:.93;margin-top:3px}
+  .ml-ajandek .cs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .ml-ajandek .cs i{font-style:normal;background:rgba(255,255,255,.2);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:800}
+  .ml-ajandek .jobb{background:#F5A01E;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 22px;
+    font-size:20px;font-weight:900;white-space:nowrap;text-shadow:0 1px 2px rgba(120,62,0,.4)}
+  @media (max-width:520px){.ml-ajandek{flex-direction:column}.ml-ajandek .jobb{padding:14px}}
   .ml-cta{display:block;text-align:center;background:#F5A01E;color:#fff!important;text-decoration:none;font-weight:800;font-size:19px;padding:16px;
     border-radius:16px;box-shadow:0 5px 0 #C97F0E}
   .ml-cta2{display:block;text-align:center;border:2px solid #17604A;color:#17604A!important;text-decoration:none;font-weight:800;font-size:16px;padding:12px;
@@ -89,9 +102,15 @@
     <div class="nagy">🏆</div><h1>{{ '¡Muy bien!' if es else 'Ügyes volt!' }}</h1>
     <p>{{ 'Esto ha sido una lección real en pequeño. En la versión completa hay mucho más:' if es else 'Ez egy igazi lecke volt kicsiben. A teljes TutorIAcademiában ennél sokkal több van:' }}</p>
     <div class="ml-lista">{% if es %}✅ Todo el temario de 1.º a 6.º de Primaria<br>✅ El profesor responde y lo explica de otra manera<br>✅ Modo voz: también se le puede hablar<br>✅ Álbum de cromos con científicos famosos<br>✅ Informe por correo: ves lo que ha aprendido{% else %}✅ Az egész tananyag, 1–8. osztály<br>✅ A tanító válaszol, és másképp is elmagyarázza<br>✅ Hangos mód: beszélni is lehet vele<br>✅ Kártyagyűjtés híres tudósokkal<br>✅ Jelentés e-mailben: látod, mit tanult{% endif %}</div>
-    <a class="ml-cta" href="{{ url_for('register') }}" data-mer="Mintalecke vége: regisztráció">{{ 'Registrarme – 120 minutos gratis' if es else 'Regisztrálok – 120 perc ingyen' }}</a>
+    {# fix147 (Sándor: a B és a C változat ötvözve) #}
+    <div class="ml-lep"><span class="k">✓ {{ 'Lección de prueba' if es else 'Mintalecke' }}</span><span>2 · {{ 'Cuenta (1 min)' if es else 'Fiók (1 perc)' }}</span><span>3 · {{ 'Primera clase de verdad' if es else 'Első igazi óra' }}</span></div>
+    <a class="ml-ajandek" href="{{ url_for('register') }}" data-mer="Mintalecke vége: regisztráció">
+      <span class="bal"><b>🎁 {{ '120 minutos de estudio de regalo' if es else '120 tanulási perc ajándékba' }}</b>
+        <small>{{ 'El profesor de verdad conversa con tu hijo y espera su respuesta.' if es else 'A valódi tanító beszélget a gyerekkel, és megvárja a válaszát.' }}</small>
+        <span class="cs"><i>{{ 'sin tarjeta' if es else 'bankkártya nélkül' }}</i><i>{{ 'cancelas cuando quieras' if es else 'bármikor törölhető' }}</i></span></span>
+      <span class="jobb">{{ '¡Lo quiero!' if es else 'Kérem' }} →</span></a>
     <a class="ml-cta2" href="{{ url_for('mintalecke_valaszt') }}" data-mer="Mintalecke vége: másik">{{ 'Otra lección de prueba' if es else 'Másik mintalecke' }}</a>
-    <p class="ml-megj">{{ 'No hace falta tarjeta.' if es else 'Bankkártya nem kell.' }}</p>
+
   </div>
   <canvas id="mlKonf"></canvas>
   <script>

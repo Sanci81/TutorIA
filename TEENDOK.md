@@ -332,7 +332,17 @@ MÉG HÁTRA (később):
       (Sándor: két jelszó és PIN kell; a „120 perc ingyen” már ott van).
 - [ ] Interaktív feladatok (Sándor 11.12): ~120 típus már van. Hiányok (javaslat, Sándor választ): kémiai egyenlet
       rendezése (7–8.), szövegértés kiemeléssel (minden évf., HU+ES), diktálás/dictado (helyesírás hanggal), tangram /
-      alakzat-kirakó (1–4.), növény/sejt részeinek feliratozása (3–6.), mértékegység-átváltó létra (3–6.).
+      alakzat-kirakó (1–4.), növény/sejt részeinek feliratozása (3–6.).
+      Sándor 11.12: sorban mind; először 2) szövegértés, aztán 1) kémiai egyenlet. Szövegértés vázlat kész (válasz →
+      bizonyító mondat kijelölése, HU+ES) – jóváhagyásra vár, utána bekötés a tanítóba („szovegertes” típus).
+- [x] fix147 (11.12): mintalecke vége – B+C ötvözve: lépések (✓ Mintalecke · 2 Fiók · 3 Első igazi óra) +
+      lila „🎁 120 tanulási perc ajándékba … Kérem →” gomb (HU+ES), a külön „Bankkártya nem kell” sor törölve.
+- [x] fix146 (11.12): SPANYOL ALBUM – album.html eddig magyar tantárgylistával csoportosított, ezért a spanyol
+      album üres volt (csak borító+lista). Most a spanyol tantárgyak a kártyákból jönnek, minden felirat
+      spanyolul (Álbum, Índice, Pegadas, EL DATO, HABILIDAD, SABER…). Magyar album változatlan (ellenőrizve).
+- [ ] Kémiai egyenletrendezés vázlat kész (golyós mérleg, + / − együttható, egyszerűsítés-figyelés) – jóváhagyásra vár.
+- [ ] Szövegértés: évfolyamonként a NAT / LOMLOE olvasási szintje szerint (1–2.: 3–5 mondat; 3–4.: 1 bekezdés;
+      5–6.: ismeretterjesztő szöveg; 7–8.: tantárgyi forrásszöveg, következtetés). Bekötés a tanítóba ezután.
 - [ ] Spanyol kártyák: 14 kész a static/kartyak/es-ben; 8 fájlt át kell nevezni (_2, _3, (1), másolata) – parancs megadva.
       Sorolla új képén a vásznon halvány „Fig. 22” felirat.
 - [ ] Spanyol képek ÚJRA átnézve (Claude, 11.11, Sándor jelezte, hogy az első átnézés felületes volt):

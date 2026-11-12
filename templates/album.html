@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="hu"><head><meta charset="utf-8">
+{% set es = (lang == 'es') %}<!DOCTYPE html><html lang="{{ 'es' if es else 'hu' }}"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TutorIA – Gyűjtőalbum</title><style>
+<title>{{ 'TutorIA – Álbum' if es else 'TutorIA – Gyűjtőalbum' }}</title><style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"Segoe UI",system-ui,sans-serif;
  background:radial-gradient(circle at 50% 0%,#22284d,#141830 45%,#080a16);color:#e8e8f0;
@@ -545,30 +545,30 @@ body{overflow-x:clip}
 
 
 <div class="top">
- <a class="vissza-gomb" href="{{ vissza_url }}">← Vissza a tanuláshoz</a>
- <div class="topkozep"><h1>TutorIA – Gyűjtőalbum <small class="kotet-cim">Nagy nevek · 1. kötet</small></h1>
-   <div class="sub">Húzd vagy koppintsd a lapjaidat a saját helyükre. A sima lap a sima helyre, az arany az aranyra.</div></div>
- <div class="prog">Beragasztva: <b id="db">0</b> / <span id="ossz"></span></div>
+ <a class="vissza-gomb" href="{{ vissza_url }}">← {{ 'Volver a aprender' if es else 'Vissza a tanuláshoz' }}</a>
+ <div class="topkozep"><h1>{{ 'TutorIA – Álbum' if es else 'TutorIA – Gyűjtőalbum' }} <small class="kotet-cim">{{ 'Grandes nombres · Tomo 1' if es else 'Nagy nevek · 1. kötet' }}</small></h1>
+   <div class="sub">{{ 'Arrastra o toca tus cartas hasta su sitio. La carta normal va en el hueco normal y la dorada en el dorado.' if es else 'Húzd vagy koppintsd a lapjaidat a saját helyükre. A sima lap a sima helyre, az arany az aranyra.' }}</div></div>
+ <div class="prog">{{ 'Pegadas' if es else 'Beragasztva' }}: <b id="db">0</b> / <span id="ossz"></span></div>
 </div>
 <div class="szinpad"><div class="album"><div class="lapdoboz" id="lapdoboz"><div class="lap" id="lap"></div></div></div></div>
 <div class="lapozo" id="lapozo">
- <button class="gomb halvany" id="elore" aria-label="Előző oldal">‹<span class="szo"> Előző</span></button>
- <div class="dokk-kartyak" id="dokk"><div class="dokk-cim">A kártyáid<small>húzd a helyére,<br>vagy koppints</small></div>
+ <button class="gomb halvany" id="elore" aria-label="{{ 'Página anterior' if es else 'Előző oldal' }}">‹<span class="szo"> {{ 'Anterior' if es else 'Előző' }}</span></button>
+ <div class="dokk-kartyak" id="dokk"><div class="dokk-cim">{{ 'Tus cartas' if es else 'A kártyáid' }}<small>{{ 'arrástrala a su sitio,<br>o tócala'|safe if es else 'húzd a helyére,<br>vagy koppints'|safe }}</small></div>
   <div class="pakli" id="pakli"></div></div>
  <span class="kozepgomb">
-  <button class="gomb halvany" id="tartalomGomb">☰ Tartalomjegyzék</button>
+  <button class="gomb halvany" id="tartalomGomb">☰ {{ 'Índice' if es else 'Tartalomjegyzék' }}</button>
   <span class="oldalszam" id="oldalszam"></span>
  </span>
- <button class="gomb" id="hatra">Következő ›</button>
+ <button class="gomb" id="hatra">{{ 'Siguiente' if es else 'Következő' }} ›</button>
  <div class="uzenet" id="uzenet" aria-live="polite"></div>
 </div>
-<div class="nagy-hatter" id="nagyHatter" role="dialog" aria-label="A kártya nagyban">
- <img id="nagyKep" alt=""><button class="nagy-zar" id="nagyZar" type="button" aria-label="Bezárom">✕</button></div>
+<div class="nagy-hatter" id="nagyHatter" role="dialog" aria-label="{{ 'La carta en grande' if es else 'A kártya nagyban' }}">
+ <img id="nagyKep" alt=""><button class="nagy-zar" id="nagyZar" type="button" aria-label="{{ 'Cerrar' if es else 'Bezárom' }}">✕</button></div>
 <div class="tj-hatter" id="tjHatter"><div class="tj">
-  <h3>Tartalomjegyzék</h3>
-  <p class="sug">Koppints egy névre vagy egy tantárgyra, és a könyv odalapoz. ✓ = beragasztva, ★ = arany lap is.</p>
+  <h3>{{ 'Índice' if es else 'Tartalomjegyzék' }}</h3>
+  <p class="sug">{{ 'Toca un nombre o una asignatura y el álbum pasará a esa página. ✓ = pegada, ★ = también la dorada.' if es else 'Koppints egy névre vagy egy tantárgyra, és a könyv odalapoz. ✓ = beragasztva, ★ = arany lap is.' }}</p>
   <div id="tjLista"></div>
-  <button class="zar" id="tjZar">Bezárom</button>
+  <button class="zar" id="tjZar">{{ 'Cerrar' if es else 'Bezárom' }}</button>
 </div></div>
 <script>
 /* Ezt a blokkot a Flask tölti ki. Fájlból megnyitva hibás marad – külön
@@ -579,8 +579,10 @@ window.BERAGASZT_URL = "{{ beragaszt_url }}";
 
 <script>
 const ADAT = window.ADAT || {kartyak:[], kezben:[], beragasztva:[], kepgyoker:"static/kartyak/hu/"};
-const UZ_KEPBETOLTVE = "Kép betöltve a(z) {n}. helyre.";
-const T = {"hivatalos": "HIVATALOS · TUDÁSKÁRTYÁK", "focim": "GYŰJTŐALBUM", "szemely": " SZEMÉLY", "lap": " LAP", "targy": " TANTÁRGY", "motto": "TANULJ · GYŰJTS · GYŐZZ", "zaro": "Minden lap egy felfedezés: egy ember, egy hely, egy hangszer, egy gondolat — valami, ami megváltoztatta, ahogyan a világot látjuk. Aki minden lapot megszerez, annak ez az album nyomtatva is a sajátja lehet.", "tulajdonos": "EZ AZ ALBUM A KÖVETKEZŐ TULAJDONA:"};
+const ES = {{ 'true' if es else 'false' }};
+const L = (hu, es) => ES ? es : hu;   /* fix146: a spanyol album szövegei */
+const UZ_KEPBETOLTVE = L("Kép betöltve a(z) {n}. helyre.", "Imagen cargada en el hueco {n}.");
+const T = ES ? {"hivatalos": "CARTAS DEL SABER · OFICIAL", "focim": "ÁLBUM", "szemely": " PERSONAJES", "lap": " CARTAS", "targy": " ASIGNATURAS", "motto": "APRENDE · COLECCIONA · GANA", "zaro": "Cada carta es un descubrimiento: una persona, un lugar, un instrumento, una idea… algo que cambió nuestra forma de ver el mundo. Quien consiga todas las cartas podrá tener este álbum también impreso.", "tulajdonos": "ESTE ÁLBUM PERTENECE A:"} : {"hivatalos": "HIVATALOS · TUDÁSKÁRTYÁK", "focim": "GYŰJTŐALBUM", "szemely": " SZEMÉLY", "lap": " LAP", "targy": " TANTÁRGY", "motto": "TANULJ · GYŰJTS · GYŐZZ", "zaro": "Minden lap egy felfedezés: egy ember, egy hely, egy hangszer, egy gondolat — valami, ami megváltoztatta, ahogyan a világot látjuk. Aki minden lapot megszerez, annak ez az album nyomtatva is a sajátja lehet.", "tulajdonos": "EZ AZ ALBUM A KÖVETKEZŐ TULAJDONA:"};
 /* ── HÁTTÉRMINTA ────────────────────────────────────────────────────────────
    Minden személy mögé a SAJÁT jelképeiből szórunk halvány mintát.
    Vektor, nulla képgenerálás. A szín a tantárgy színe.
@@ -840,7 +842,12 @@ function hatsoHTML(T){
 }
 
 const K = ADAT.kartyak;
-const TARGYAK = ["Kémia", "Fizika", "Matematika", "Biológia", "Földrajz", "Történelem", "Magyar nyelv és irodalom", "Ének-zene", "Digitális kultúra"];
+const RITKA_ES = {"gyakori":"común","ritka":"rara","nagyon_ritka":"muy rara","legendas":"legendaria"};
+if (ES) K.forEach(k => { if (RITKA_ES[k.ritkasag]) k.cimke = RITKA_ES[k.ritkasag]; });
+const TARGYAK = ES
+  /* a spanyol tantárgyak a kártyák sorrendjéből (fix146) – eddig a magyar lista miatt üres volt a spanyol album */
+  ? [...new Set([...K].sort((a,b)=>(a.sorszam||0)-(b.sorszam||0)).map(k=>k.targy))]
+  : ["Kémia", "Fizika", "Matematika", "Biológia", "Földrajz", "Történelem", "Magyar nyelv és irodalom", "Ének-zene", "Digitális kultúra"];
 const BE = {};   /* az appban a static mappából jönnek a képek */
 // A katalógusban a tantárgy előtagja 8 karakterre van vágva
 // (matemati_7_euklidesz), a KÉPFÁJL neve viszont teljes. Enélkül a matek
@@ -913,10 +920,10 @@ function rajzol(){
     // a fenti sor hibára futott, és az egész album JS-e megállt.
     lap.style.background=`linear-gradient(150deg,${(o.tagok[0]||{}).szin||'#3f6fd8'},#141a3c)`;
     lap.innerHTML=`<div class="szfej"><h2>${o.targy.toUpperCase()}</h2>
-       <div class="kicsi" style="margin-top:6px">${o.tagok.length} SZEMÉLY</div>
-       <div class="db"><span>${o.tagok.length*2} HELYBŐL</span>
+       <div class="kicsi" style="margin-top:6px">${o.tagok.length} ${L("SZEMÉLY","PERSONAJES")}</div>
+       <div class="db"><span>${o.tagok.length*2} ${L("HELYBŐL","HUECOS")}</span>
          <b>${o.tagok.reduce((n,k)=>n+(beragasztva.has(k.hely1)?1:0)+(beragasztva.has(k.hely2)?1:0),0)}</b>
-         <span>BERAGASZTVA</span></div></div>
+         <span>${L("BERAGASZTVA","PEGADAS")}</span></div></div>
       <div class="arcsor">${o.tagok.map(k=>{
         const van=beragasztva.has(k.hely1)||beragasztva.has(k.hely2);
         return `<div class="arc"><div class="ker ${van?'':'hianyzik'}">
@@ -936,22 +943,22 @@ function rajzol(){
      <div class="pl" style="--fo:${k.szin}">
       <div class="pl-kep" style="--kep:url('${KEPUT(k)}')">
        <img src="${KEPUT(k)}" alt="" ${HIBAKEP}>
-       <span class="nincs"><b>?</b>${k.nev} képe még készül</span>
+       <span class="nincs"><b>?</b>${L(k.nev+" képe még készül","La imagen de "+k.nev+" está en preparación")}</span>
        <div class="pl-nev"><h2>${k.nev}</h2><p>${k.alnev}</p></div>
       </div>
       <div class="pl-jobb">
        <div class="pl-bn"><b>${k.becenev}</b><span>${k.leiras}</span></div>
-       <div class="pl-doboz sarga"><b>A TÉNY</b>${k.teny}</div>
-       <div class="pl-doboz kek"><b>AMIT KEVESEN TUDNAK</b>${k.erd}</div>
+       <div class="pl-doboz sarga"><b>${L("A TÉNY","EL DATO")}</b>${k.teny}</div>
+       <div class="pl-doboz kek"><b>${L("AMIT KEVESEN TUDNAK","LO QUE POCOS SABEN")}</b>${k.erd}</div>
        <div class="pl-also">
         <div class="pl-helyek">${helyHTML(k,k.hely1,false)}${helyHTML(k,k.hely2,true)}
-          <div class="pl-idezet">„${k.idezet}”</div></div>
+          <div class="pl-idezet">${ES?"«":"„"}${k.idezet}${ES?"»":"”"}</div></div>
         <div class="pl-kepesseg">
-         <span class="pill">KÉPESSÉG</span>
+         <span class="pill">${L("KÉPESSÉG","HABILIDAD")}</span>
          <div class="pl-knev"><span>${k.kepesseg}</span><b>${k.kepero||''}</b></div>
-         <div class="pl-tudas"><i class="erme"></i><b>${k.ero}</b><span>TUDÁS</span></div>
+         <div class="pl-tudas"><i class="erme"></i><b>${k.ero}</b><span>${L("TUDÁS","SABER")}</span></div>
          <div class="pl-ritka">${k.csillag} ${k.cimke}</div>
-         <div class="pl-lecke"><i>LECKE</i>${k.lecke}</div>
+         <div class="pl-lecke"><i>${L("LECKE","LECCIÓN")}</i>${k.lecke}</div>
         </div>
        </div>
       </div>
@@ -959,7 +966,7 @@ function rajzol(){
     kotesek();
   } else if(o.t==="checklist"){
     lap.className="lap checklist";
-    let h=`<h2>CHECKLIST</h2>`;
+    let h=`<h2>${L("CHECKLIST","LISTA")}</h2>`;
     TARGYAK.forEach(t=>{
       h+=`<div class="clsz">${t.toUpperCase()}</div><div class="clracs">`;
       K.filter(x=>x.targy===t).forEach(k=>{
@@ -993,7 +1000,7 @@ function kivalaszt(id){
   KIVALASZTOTT = (id && KIVALASZTOTT!==id) ? id : null;
   document.querySelectorAll('#pakli .mini').forEach(x=>x.classList.toggle('kivalasztva', x.dataset.id===KIVALASZTOTT));
   const c=PAKLI.find(x=>x.id===KIVALASZTOTT);
-  sugo(c ? `${c.k.nev}${c.arany?' arany lapja':''}: lapozz a helyéhez, és koppints rá!` : '');
+  sugo(c ? (ES ? `${c.k.nev}${c.arany?' (carta dorada)':''}: pasa a su página y tócala.` : `${c.k.nev}${c.arany?' arany lapja':''}: lapozz a helyéhez, és koppints rá!`) : '');
   jeloles();
 }
 
@@ -1055,7 +1062,7 @@ function ragaszt(c, h, kep, honnan){
   if(!c || !h) { if(kep) kep.remove(); return false; }
   if(Number(h.dataset.n)!==c.hova){
     h.classList.add('rossz'); setTimeout(()=>h.classList.remove('rossz'),400);
-    sugo('Nem ez a helye. Melyik tantárgyban és melyik leckében tanultál róla?','baj');
+    sugo(L('Nem ez a helye. Melyik tantárgyban és melyik leckében tanultál róla?','No es su sitio. ¿En qué asignatura y en qué lección aprendiste sobre este personaje?'),'baj');
     if(kep) visszarepul(kep, honnan);
     return false;
   }
@@ -1071,7 +1078,7 @@ function ragaszt(c, h, kep, honnan){
     if(uj){ uj.insertAdjacentHTML('beforeend','<span class="fenycsik"></span>');
             if(_mozgas()) uj.classList.add('uj-matrica'); szikrak(uj.getBoundingClientRect()); }
     ragasztHang();
-    sugo(`Megvan! ${c.k.nev}${c.arany?' arany lapja':''} a helyére került.`,'jo');
+    sugo(ES ? `¡Hecho! ${c.k.nev}${c.arany?' (carta dorada)':''} ya está en su sitio.` : `Megvan! ${c.k.nev}${c.arany?' arany lapja':''} a helyére került.`,'jo');
   });
   /* Mentés: enélkül újratöltéskor kiesne a lap az albumból. */
   if (window.BERAGASZT_URL) {
@@ -1099,7 +1106,7 @@ function kotesek(){
     im.parentElement.addEventListener('click',()=>nagyit(im.currentSrc||im.src));});
   lap.querySelectorAll('.hely[data-n]').forEach(h=>{
     h.addEventListener('click',()=>{
-      if(!KIVALASZTOTT){ sugo('Előbb válassz egy kártyát lent, aztán koppints ide – vagy húzd ide.'); return; }
+      if(!KIVALASZTOTT){ sugo(L('Előbb válassz egy kártyát lent, aztán koppints ide – vagy húzd ide.','Primero elige una carta abajo y luego toca aquí, o arrástrala aquí.')); return; }
       ragaszt(PAKLI.find(x=>x.id===KIVALASZTOTT), h);});
   });
   jeloles();
@@ -1161,9 +1168,9 @@ document.addEventListener('pointercancel', e=>{
 
 function ugrosav(){
   const e=document.getElementById('ugrosav'); if(!e) return;
-  const elemek=[{cim:"Borító",i:0}];
+  const elemek=[{cim:L("Borító","Portada"),i:0}];
   OLDALAK.forEach((o,i)=>{ if(o.t==="szakasz") elemek.push({cim:o.targy,i:i,szin:(o.tagok[0]||{}).szin||"#3f6fd8"}); });
-  elemek.push({cim:"Lista",i:OLDALAK.findIndex(o=>o.t==="checklist")});
+  elemek.push({cim:L("Lista","Lista"),i:OLDALAK.findIndex(o=>o.t==="checklist")});
   e.innerHTML=elemek.map(x=>{
     // hány lap van meg ebből a tantárgyból – a gyerek lássa, hol áll
     let jel="";
@@ -1185,13 +1192,13 @@ function ugrosav(){
 function pakli(){
   const p=document.getElementById('pakli');
   if(!PAKLI.length){
-    p.innerHTML=`<div class="pakli-ures">${beragasztva.size ? 'Minden lapodat beragasztottad.' : 'Még nincs beragasztanivaló lapod – tasakot a Boltban bonthatsz.'}</div>`;
+    p.innerHTML=`<div class="pakli-ures">${beragasztva.size ? L('Minden lapodat beragasztottad.','Has pegado todas tus cartas.') : L('Még nincs beragasztanivaló lapod – tasakot a Boltban bonthatsz.','Aún no tienes cartas para pegar: puedes abrir sobres en la Tienda.')}</div>`;
     return;
   }
   p.innerHTML=PAKLI.slice(0,40).map(c=>`<div class="mini ${c.arany?'aranylap':''} ${c.id===KIVALASZTOTT?'kivalasztva':''}" data-id="${c.id}"
      role="button" tabindex="0" aria-label="${c.k.nev}${c.arany?' arany':''} lapja, ${c.hova}. hely">
      <span class="cimke">${c.hova}</span>
-     <button class="nagyit" type="button" aria-label="Nagyítás">🔍</button>
+     <button class="nagyit" type="button" aria-label="${L('Nagyítás','Ampliar')}">🔍</button>
      <img src="${KARTYAUT_SZIG(c.k,c.arany)}" alt="" draggable="false" ${HIBAKEP}><div class="c">${c.k.nev}</div></div>`).join('');
   p.querySelectorAll('.mini').forEach(m=>{
     const ng=m.querySelector('.nagyit');
@@ -1350,8 +1357,8 @@ document.addEventListener('drop',e=>e.preventDefault());
 function tartalomEpit(){
   const cel=document.getElementById('tjLista');
   const lista=OLDALAK.findIndex(o=>o.t==='checklist');
-  let h=`<div class="elejen"><button class="sor-ugras" data-i="0">Borító</button>`
-       + (lista>=0?`<button class="sor-ugras" data-i="${lista}">Mi van meg? – lista</button>`:'')+`</div>`;
+  let h=`<div class="elejen"><button class="sor-ugras" data-i="0">${L("Borító","Portada")}</button>`
+       + (lista>=0?`<button class="sor-ugras" data-i="${lista}">${L('Mi van meg? – lista','¿Qué tengo? – lista')}</button>`:'')+`</div>`;
   let nyitva=false;
   OLDALAK.forEach((o,i)=>{
     if(o.t==='szakasz'){
@@ -1364,13 +1371,13 @@ function tartalomEpit(){
       if(!nyitva){ h+='<div class="sorok">'; nyitva=true; }
       const sima=beragasztva.has(o.k.hely1), arany=beragasztva.has(o.k.hely2);
       h+=`<button class="sor ${i===oldal?'itt':''}" data-i="${i}"><span>${o.k.nev||''}`
-       + (sima?'<span class="jel" title="beragasztva">✓</span>':'')
+       + (sima?'<span class="jel" title="'+L('beragasztva','pegada')+'">✓</span>':'')
        + (arany?'<span class="jel arany" title="arany lap is">★</span>':'')
        + `</span><span class="o">${i+1}. oldal</span></button>`;
     }
   });
   if(nyitva) h+='</div>';
-  cel.innerHTML = h || '<p class="sug">Ebben az albumban még nincs lap.</p>';
+  cel.innerHTML = h || '<p class="sug">'+L('Ebben az albumban még nincs lap.','Este álbum aún no tiene cartas.')+'</p>';
   cel.querySelectorAll('.sor,.sor-ugras').forEach(b=>b.addEventListener('click',()=>{
     tartalomZar(); lapozzIde(Number(b.dataset.i));
   }));
