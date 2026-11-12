@@ -6941,6 +6941,103 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         return {"tipus": "epito", "elemek": tiszta,
                 "kerdes": str(adat.get("kerdes") or "").strip()[:140]}
 
+    # ══ ÚJ FELADATOK (fix149, 2026-11-12, Sándor) ═══════════════════════════════
+    if tipus == "szovegertes":
+        # SZÖVEGÉRTÉS + BIZONYÍTÉK: választ ad, aztán kijelöli a mondatot, ami bizonyítja.
+        mondatok = adat.get("mondatok")
+        opciok = adat.get("opciok")
+        if not isinstance(mondatok, list) or not (3 <= len(mondatok) <= 10):
+            return None
+        if not isinstance(opciok, list) or not (2 <= len(opciok) <= 4):
+            return None
+        mondatok = [_rov(m, 240) for m in mondatok]
+        opciok = [_rov(o, 90) for o in opciok]
+        if None in mondatok or None in opciok or len(set(opciok)) != len(opciok):
+            return None
+        try:
+            jo = int(adat.get("jo"))
+            biz = adat.get("bizonyitek")
+            biz = [int(x) for x in (biz if isinstance(biz, list) else [biz])]
+        except Exception:
+            return None
+        if not (0 <= jo < len(opciok)) or not (1 <= len(biz) <= 2) or any(not (0 <= i < len(mondatok)) for i in biz):
+            return None
+        kerdes = _rov(adat.get("kerdes"), 160)
+        if not kerdes:
+            return None
+        return {"tipus": "szovegertes", "kerdes": kerdes, "mondatok": mondatok, "opciok": opciok,
+                "jo": jo, "bizonyitek": sorted(set(biz)), "cim": _rov(adat.get("cim"), 60) or ""}
+
+    if tipus == "egyenlet":
+        # KÉMIAI EGYENLET RENDEZÉSE. A képletekből MI számoljuk az atomokat, és MI keressük meg a
+        # megoldást (legkisebb egész együtthatók, 1–9) – ha nincs ilyen, a feladat nem jelenik meg.
+        def _keplet(k):
+            k = str(k or "").strip()
+            if not re.fullmatch(r"[A-Z][A-Za-z0-9()]{0,14}", k):
+                return None
+            vere = [{}]
+            for t in re.findall(r"([A-Z][a-z]?|\(|\)|\d+)", k):
+                if t == "(":
+                    vere.append({})
+                elif t == ")":
+                    if len(vere) < 2:
+                        return None
+                    vere[-1]["__zar"] = 1
+                elif t.isdigit():
+                    n = int(t)
+                    if vere[-1].pop("__zar", None):
+                        belso = vere.pop()
+                        for e, db in belso.items():
+                            vere[-1][e] = vere[-1].get(e, 0) + db * n
+                    else:
+                        utso = vere[-1].get("__utso")
+                        if not utso:
+                            return None
+                        vere[-1][utso] += n - 1
+                else:
+                    if vere[-1].pop("__zar", None):
+                        belso = vere.pop()
+                        for e, db in belso.items():
+                            vere[-1][e] = vere[-1].get(e, 0) + db
+                    vere[-1][t] = vere[-1].get(t, 0) + 1
+                    vere[-1]["__utso"] = t
+            if vere[-1].pop("__zar", None):
+                belso = vere.pop()
+                for e, db in belso.items():
+                    if e != "__utso":
+                        vere[-1][e] = vere[-1].get(e, 0) + db
+            if len(vere) != 1:
+                return None
+            ki = {e: db for e, db in vere[0].items() if e != "__utso"}
+            return ki or None
+        bal, jobb = adat.get("bal"), adat.get("jobb")
+        if not isinstance(bal, list) or not isinstance(jobb, list) or not bal or not jobb or len(bal) + len(jobb) > 5:
+            return None
+        molek = []
+        for k in list(bal) + list(jobb):
+            a_ = _keplet(k)
+            if not a_:
+                return None
+            molek.append({"k": str(k).strip(), "a": a_})
+        elemek = sorted({e for m in molek for e in m["a"]})
+        if {e for m in molek[:len(bal)] for e in m["a"]} != {e for m in molek[len(bal):] for e in m["a"]}:
+            return None
+        import itertools
+        megold = None
+        for egy in itertools.product(range(1, 10), repeat=len(molek)):
+            if all(sum(egy[i] * molek[i]["a"].get(e, 0) for i in range(len(bal))) ==
+                   sum(egy[i] * molek[i]["a"].get(e, 0) for i in range(len(bal), len(molek))) for e in elemek):
+                if megold is None or sum(egy) < sum(megold):
+                    megold = egy
+        if not megold or all(x == 1 for x in megold):
+            return None          # nincs megoldás, vagy már eleve rendezett (nincs mit gyakorolni)
+        kerdes = _rov(adat.get("kerdes"), 120) or (
+            "Ajusta la ecuación: el mismo número de átomos a cada lado."
+            if es_tanterv else
+            "Rendezd az egyenletet: mindkét oldalon ugyanannyi atom legyen!")
+        return {"tipus": "egyenlet", "kerdes": kerdes, "bal": molek[:len(bal)], "jobb": molek[len(bal):],
+                "megoldas": list(megold)}
+
     if tipus == "szoveg":
         # SZÖVEG-FELÜLET: a gyerek nem beír, hanem BELEJELÖL a szövegbe.
         # Erre épül a magyar nyelvtan (húzd alá az állítmányt), az irodalom
@@ -10632,6 +10729,28 @@ _DM_FELULETEK = [
      'DIÁLOGO – dos personajes (A y B) en burbujas; donde le toca al niño, 2–4 opciones, una correcta ("jo" desde 0). En el idioma que se aprende:\n'
      '   <FELADAT>{"tipus":"parbeszed","kerdes":"Completa la conversación.","sorok":[{"ki":"A","szoveg":"Hi! What\'s your name?"},{"ki":"B","opciok":["My name is Tom.","I\'m fine.","Yes, I do."],"jo":0},{"ki":"A","szoveg":"How old are you?"},{"ki":"B","opciok":["I\'m ten.","I\'m Tom.","It\'s blue."],"jo":0}]}</FELADAT>',
      'párbeszéd, kérdés-válasz, beszélgetés → parbeszed', 'diálogo, pregunta y respuesta      → parbeszed'),
+    # fix149 (2026-11-12): szövegértés bizonyítékkal (minden tárgy, HU+ES) és kémiai egyenletrendezés (7–8.)
+    ("szovegertes", {"*"}, 1, 8,
+     'SZÖVEGÉRTÉS + BIZONYÍTÉK – rövid szöveg a mostani témáról, egy kérdés, 2–4 válasz; utána a gyerek '
+     'kijelöli azt a mondatot, ami a választ BIZONYÍTJA. "mondatok": 3–10 mondat (a szöveg mondatonként), '
+     '"jo": a jó válasz sorszáma 0-tól, "bizonyitek": a bizonyító mondat(ok) sorszáma 0-tól (1–2). A válasz NE '
+     'szó szerint álljon a kérdésben. Hossz az évfolyamhoz: 1–2.: 3–5 rövid mondat; 3–4.: 5–7 mondat; 5–6.: '
+     'ismeretterjesztő bekezdés; 7–8.: tantárgyi forrásszöveg, következtetést kérő kérdés:\n'
+     '   <FELADAT>{"tipus":"szovegertes","kerdes":"Miért nem vitte haza Panni a békát?","mondatok":["Panni nagymamája falun lakik.","Minden nyáron két hetet tölt nála.","Idén Panni egy kis békát talált a patak partján.","Hazavitte volna, de nagymama azt mondta, hogy a béka a patakban érzi jól magát."],"opciok":["Mert a béka elugrott.","Mert nagymama szerint a patakban érzi jól magát.","Mert félt tőle."],"jo":1,"bizonyitek":[3]}</FELADAT>',
+     'COMPRENSIÓN LECTORA + PRUEBA – texto breve sobre el tema actual, una pregunta, 2–4 respuestas; después el '
+     'niño marca la frase que DEMUESTRA la respuesta. "mondatok": 3–10 frases (el texto frase a frase), "jo": '
+     'número de la respuesta correcta desde 0, "bizonyitek": número(s) de la(s) frase(s) que lo demuestran desde 0 '
+     '(1–2). La respuesta NO debe estar copiada en la pregunta. Longitud: 1.º–2.º: 3–5 frases cortas; 3.º–4.º: '
+     '5–7 frases; 5.º–6.º: párrafo divulgativo con inferencia:\n'
+     '   <FELADAT>{"tipus":"szovegertes","kerdes":"¿Por qué guardó Lucía la concha?","mondatok":["Lucía vive en un pueblo cerca del mar.","Cada sábado va al mercado con su abuelo.","Este sábado el abuelo le regaló una concha muy bonita.","Lucía la guardó en una caja porque quería enseñársela a su clase."],"opciok":["Porque estaba rota.","Para enseñársela a su clase.","Porque era del abuelo."],"jo":1,"bizonyitek":[3]}</FELADAT>',
+     'szövegértés, bizonyító mondat        → szovegertes', 'comprensión lectora, frase-prueba   → szovegertes'),
+    ("egyenlet", {"kemia"}, 7, 8,
+     'KÉMIAI EGYENLET RENDEZÉSE – a gyerek az együtthatókat állítja, az atomokat golyókként látja. Csak a '
+     'képleteket add meg együttható NÉLKÜL ("bal", "jobb", összesen legfeljebb 5 molekula, pl. "Ca(OH)2" is jó); '
+     'a megoldást mi számoljuk ki:\n'
+     '   <FELADAT>{"tipus":"egyenlet","bal":["CH4","O2"],"jobb":["CO2","H2O"]}</FELADAT>',
+     '',
+     'kémiai egyenlet rendezése            → egyenlet', 'ajustar ecuación química           → egyenlet'),
 ]
 
 
@@ -10644,6 +10763,8 @@ def _dm_cimkek(subject_label: str, idegen: bool) -> set:
     if any(k in s for k in ("kornyezet", "termeszet", "conocimiento", "ciencia", "biolog", "fizika", "fisica",
                             "kemia", "quimica", "foldrajz", "geograf", "technika", "tecnolog")):
         c.add("kornyezet")
+    if "kemia" in s or "quimica" in s:
+        c.add("kemia")
     if any(k in s for k in ("magyar nyelv", "irodalom", "lengua")):
         c.add("magyar")
     if any(k in s for k in ("enek", "zene", "music", "artistic")):

@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Tutoria Kartya Muhely ES",
+  "schemaVersion": 1,
+  "description": "TutorIA kártyaműhely – Leonardo beállítások, közös stílus- és tiltóprompt, kész személypromptok másolható formában, és élő kártyaelőnézet négyzetes képmezővel, amibe rá lehet húzni a legenerált képet.",
+  "mcpTools": [],
+  "mcpServerNames": []
+}
+</script>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TutorIA – Kártyaműhely (SPANYOL)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+  background:radial-gradient(circle at 50% 0%,#26305c 0%,#141a33 45%,#080a14 100%);
+  color:#e8e8f0;min-height:100vh;padding:26px 18px 70px;}
+h1{font-size:1.55rem;margin-bottom:5px;}
+.sub{opacity:.7;font-size:.92rem;max-width:900px;line-height:1.55;margin-bottom:22px;}
+.wrap{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start;max-width:1240px;}
+.col-l{flex:1 1 520px;min-width:340px;}
+.col-r{flex:0 0 auto;position:sticky;top:20px;}
+
+h2{font-size:1.05rem;margin:22px 0 8px;color:#ffd76a;}
+.box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+.box p{font-size:.88rem;line-height:1.6;opacity:.85;}
+.box p+p{margin-top:9px;}
+code{background:rgba(0,0,0,.4);padding:2px 6px;border-radius:4px;font-size:.85em;}
+
+.prompt{background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.13);border-radius:9px;
+  padding:11px 13px;margin-bottom:10px;font-size:.8rem;line-height:1.5;position:relative;}
+.prompt .lbl{font-weight:800;color:#ffd76a;font-size:.82rem;display:block;margin-bottom:5px;}
+.prompt .txt{font-family:"Consolas",monospace;opacity:.88;word-break:break-word;white-space:pre-wrap;}
+.copy{position:absolute;top:9px;right:9px;border:none;cursor:pointer;font-family:inherit;
+  font-size:.72rem;font-weight:800;padding:5px 11px;border-radius:999px;
+  background:linear-gradient(180deg,#ffe08a,#e8a33c);color:#1a1430;}
+.copy:hover{filter:brightness(1.08);}
+.copy.ok{background:linear-gradient(180deg,#9ff0c8,#2f8f60);color:#0d2018;}
+
+.neg{border-color:rgba(255,120,120,.35);}
+.neg .lbl{color:#ff9b9b;}
+
+/* ── DROP ZÓNA ── */
+#drop{border:2px dashed rgba(255,255,255,.28);border-radius:12px;padding:22px;text-align:center;
+  font-size:.88rem;opacity:.8;cursor:pointer;margin-bottom:16px;transition:.2s;}
+#drop.hot{border-color:#ffd76a;background:rgba(255,215,106,.1);opacity:1;}
+select,input[type=text],input[type=number],textarea{
+  width:100%;padding:8px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.2);
+  background:rgba(0,0,0,.35);color:#e8e8f0;font-family:inherit;font-size:.85rem;margin-bottom:9px;}
+textarea{min-height:64px;resize:vertical;}
+label{font-size:.76rem;opacity:.65;display:block;margin-bottom:3px;font-weight:700;}
+.row{display:flex;gap:9px;}
+.row>div{flex:1;}
+
+/* ══ KÁRTYA (5:7, a mintádhoz igazítva) ══ */
+.tc{width:340px;height:548px;border-radius:15px;padding:8px;position:relative;
+  background:var(--edge);box-shadow:0 20px 50px rgba(0,0,0,.65);}
+.tc.rare{--edge:linear-gradient(150deg,#fff2bd,#e8b544 28%,#fffdf2 46%,#d99b2c 62%,#a8720f);}
+.tc.norm{--edge:linear-gradient(150deg,#f2f2f4,#b9bcc4 30%,#ffffff 47%,#9fa3ad 64%,#7d818a);}
+.tc-in{height:100%;border-radius:9px;background:var(--bg);border:1px solid rgba(0,0,0,.35);
+  padding:7px 8px 6px;display:flex;flex-direction:column;position:relative;overflow:hidden;}
+.tc.nincs-holo .tc-in::after{display:none !important;}
+.tc.rare .tc-in::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+  background:linear-gradient(112deg,transparent 36%,rgba(255,255,255,.4) 48%,transparent 59%);
+  mix-blend-mode:screen;animation:holo 3.6s infinite;}
+@keyframes holo{0%{transform:translateX(-65%)}55%{transform:translateX(65%)}100%{transform:translateX(65%)}}
+
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:2px 3px 4px;}
+.hdr .stg{font-size:8px;font-weight:800;letter-spacing:.6px;opacity:.6;text-transform:uppercase;}
+.hdr .nm{font-size:23px;font-weight:900;line-height:.98;letter-spacing:-.5px;color:#15121c;}
+.hdr .rt{display:flex;align-items:center;gap:5px;padding-top:6px;}
+.hdr .rt i{font-style:normal;font-size:8.5px;font-weight:800;opacity:.55;}
+.hdr .rt b{font-size:22px;font-weight:900;color:#15121c;line-height:1;}
+.orb{width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:14px;background:var(--orb);border:2px solid rgba(255,255,255,.7);
+  box-shadow:inset 0 -3px 5px rgba(0,0,0,.35),0 1px 3px rgba(0,0,0,.45);}
+
+.who{font-size:9px;font-weight:700;opacity:.62;padding:0 3px 5px;letter-spacing:.2px;}
+
+.art{border:5px solid #d3ab4e;border-radius:2px;background:#0e1424;position:relative;
+  aspect-ratio:1/1;overflow:hidden;box-shadow:inset 0 0 20px rgba(0,0,0,.5);}
+.tc.norm .art{border-color:#b0b4bd;}
+.art img{width:100%;height:100%;display:block;
+  object-fit:var(--fit,contain);object-position:center var(--posy,50%);
+  transform:scale(var(--zoom,1));transform-origin:center var(--posy,50%);}
+.art .empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:6px;color:#8fa0c8;font-size:11px;text-align:center;padding:16px;}
+.art .empty b{font-size:30px;opacity:.4;}
+.illus{font-size:6.5px;opacity:.5;text-align:right;padding:2px 3px 0;}
+
+.ribbon{display:flex;align-items:center;gap:7px;margin-top:4px;}
+.ribbon .tag{background:linear-gradient(180deg,#d84a4a,#a82323);color:#fff;font-size:8px;
+  font-weight:900;letter-spacing:.6px;padding:3px 8px;border-radius:3px;white-space:nowrap;
+  box-shadow:0 1px 3px rgba(0,0,0,.4);}
+.ribbon .cost{display:flex;gap:2px;}
+.ribbon .cost i{width:15px;height:15px;border-radius:50%;background:var(--orb);display:block;
+  border:1.3px solid rgba(255,255,255,.7);box-shadow:inset 0 -1px 3px rgba(0,0,0,.3);}
+.ribbon .mv{flex:1;font-size:14px;font-weight:900;color:#15121c;line-height:1;}
+.ribbon .dmg{font-size:19px;font-weight:900;color:#15121c;}
+.desc{font-size:10px;line-height:1.4;color:#241f2e;padding:5px 3px 0;}
+
+.bars{margin-top:auto;padding-top:5px;}
+.bar1{display:flex;justify-content:space-between;gap:6px;font-size:7.5px;font-weight:700;
+  color:#241f2e;border-top:1.5px solid rgba(0,0,0,.3);padding-top:4px;}
+.bar1 span{opacity:.55;}
+.flav{font-size:8px;font-style:italic;opacity:.68;color:#241f2e;padding:4px 3px 3px;line-height:1.35;}
+.setl{display:flex;justify-content:space-between;font-size:7.5px;font-weight:800;opacity:.55;
+  color:#241f2e;padding:0 3px;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+<h1>TutorIA – Kártyaműhely · SPANYOL oldal (1–6. Primaria, 26 kártya)</h1>
+<p class="sub">Bal oldalon a Leonardo-beállítások és a kész promptok másolható formában. Jobb oldalon élő kártya: húzd rá a Leonardóból letöltött képet, és rögtön látod, hogy néz ki keretben. A szövegeket a kód írja, nem a képgenerátor — ezért lesz minden betű hibátlan.</p>
+
+<div class="wrap">
+<div class="col-l">
+
+  <div class="box">
+    <p><b>A legfontosabb szabály:</b> a Leonardo CSAK a portrét rajzolja. Semmi keret, semmi felirat, semmi szám. Ezért van a tiltólistán a „text", „letters", „frame", „card border". A kártyát utána a program rakja össze.</p>
+    <p>Így a nevet, a leckét, a képességszöveget bármikor átírhatod – a képhez hozzá se kell nyúlni.</p>
+  </div>
+
+  <h2>Leonardo beállítások</h2>
+  <div class="box">
+    <p><b>Modell:</b> <b>Leonardo Lightning</b> – ez van a listádban, és tökéletesen megfelel. Anime modellt SOHA: az minden nőalakot ezüsthajú, nagy szemű lánnyá alakít, akkor is, ha mást írsz be.</p><p><b>A többi beállítás:</b> Prompt Enhance <b>Off</b> (ez a legfontosabb – bekapcsolva átírja a promptot), Style <b>Dynamic</b>, Contrast <b>High</b>, Generation Mode <b>Fast</b>, méret <b>1:1 / 960×960</b>. A Platform Elements és a Your Elements maradjon üresen.</p><p><b>A többi 59 képhez:</b> a nyertes képnél válaszd a <b>Use as reference → Style Reference</b> lehetőséget. Csak azt, semmi mást – a Character Reference mindenkit Curie-re hasonlítana, a Content/Depth/Edge/Pose pedig ugyanazt a beállítást másolná mind a hatvan lapra.</p>
+    <p><b>Képarány:</b> <b>1:1 négyzet</b> (1024 × 1024). A kártya képmezője is négyzet, így semmi nem vágódik le a hajból vagy a válláról. Az Einstein-képed pont ilyen volt – ezért illeszkedik tökéletesen.</p>
+    <p><b>Alchemy:</b> be. <b>Prompt Magic:</b> be. <b>Képek száma:</b> 4 – mindig a legjobbat választod ki.</p>
+    <p><b>Fontos:</b> ha egy arc nem hasonlít, kattints a prompt sáv bal oldalán az <b>Image Guidance</b> ikonra, tölts fel róla egy valódi fényképet vagy festményt, a típusa legyen <b>Character Reference</b>, az erőssége <b>Low</b>. Így megtartja a hasonlóságot, de a stílus a tiéd marad. Fontos, hogy mindig az ADOTT ember saját képét töltsd fel — egy közös referenciakép mindenkit egyformává tenne.</p>
+  </div>
+
+  <h2>Közös stílus – NEM kell külön másolni</h2>
+  <div class="prompt">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">STÍLUS (állandó) — CSAK TÁJÉKOZTATÁSUL, már benne van minden kártya promptjában</span>
+    <span class="txt" id="p-style">trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows</span>
+  </div>
+
+  <div class="prompt neg">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">TILTÓLISTA (Negative prompt – mindig ugyanez)</span>
+    <span class="txt" id="p-neg">text, letters, words, typography, caption, watermark, signature, artist signature, handwriting, logo, emblem, star, symbol, numbers, frame, border, card layout, UI elements, anime, manga, cartoon, chibi, cel shading, huge sparkling eyes, silver or pastel hair, cute idol face, fashion model, modern makeup, lipstick, jewellery, hair ribbon, unrealistically young, unrealistically pretty, generic beautiful face, multiple people, crowd, cropped head, out of frame, deformed hands, extra fingers, extra limbs, blurry, low quality, jpeg artifacts</span>
+  </div>
+
+
+  <h2>A győztes recept — ez van eldöntve</h2>
+  <div class="box" style="border-color:rgba(120,230,170,.45);background:rgba(120,230,170,.08);">
+    <p><b>A Curie-teszt lezárult.</b> A nyertes a laborjelenet: az alak a munkája közben, a saját
+    eszközével, mögötte mélység és háttér. Az alábbi váz szerint készül mind a hatvan prompt –
+    a kapcsos zárójeles részeket személyenként én töltöm ki.</p>
+  </div>
+  <div class="prompt">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">VÁZ — minden kártyához ez, személyre szabott behelyettesítéssel</span>
+    <span class="txt">dynamic trading card hero art, edge to edge full bleed illustration, no border, no frame, half figure from the waist up with space above the head, {SZEMELY} working in {HELYSZIN}, {CSELEKVES}, {HATTER}, {FENY} lighting the face and hands, wide awestruck eyes and slightly parted lips, wonder not anger, {ARC}, {RUHA}, deep {ARNYEK} shadows, warm rim light behind, bold saturated colours, high contrast, painterly digital illustration, no text, no letters, no signature, no watermark</span>
+  </div>
+  <div class="box">
+    <p><b>Két hiba, amit tanultunk.</b> A „glow bursting from the flask” hatására a modell LÁNGOT
+    tett a lombik tetejére – ezért szerepel most külön, hogy a fény belülről jöjjön, és hogy
+    <code>NO flame, no fire, no candle</code>. A tiltószavakat pedig a prompt VÉGÉBE is beírjuk,
+    mert auto módban nincs külön Negative Prompt mező.</p>
+  </div>
+
+  <h2>Stílusirányok – ELDÖNTVE, csak emlékeztetőül</h2>
+  <div class="box">
+    <p>A mostani Curie-kép azért nem elég jó, mert <b>portré</b>: valaki áll és néz. A gyűjthető
+    kártyák egy PILLANATOT mutatnak — a figura csinál valamit, van mozgás és energia.
+    Az alábbi három irány ezt oldja meg másképp. Ezt a hármat teszteltük le; a nyertes az A lett, a fenti recept ebből született. Itt hagyom őket, ha később mégis váltani akarnál.</p>
+    <p>A másolás gomb a teljes promptot adja: irány + Curie. A tiltólista változatlan marad.</p>
+  </div>
+
+  <div class="prompt" data-full="dynamic trading card hero art, a decisive moment of discovery, three-quarter action pose, low heroic camera angle, the subject caught mid-gesture and leaning into the light, strong dramatic key light with deep shadows, glowing energy swirling around their hands and their invention, sparks and drifting light motes, bold saturated colours, high contrast, painterly digital illustration, cinematic depth, the whole figure and head inside a square frame with margin, Marie Curie in her laboratory at the instant the radium salt begins to glow, she leans over the flask with a fierce exhausted stare, one hand shielding her eyes, fierce green-white light bursting upward from the flask and lighting her face from below, dark chestnut hair in a low bun coming loose, plain black high-necked dress of the 1900s, glass vessels around her catching the glare">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">A · HŐSPILLANAT — a felfedezés pillanata, mozgással és fénnyel</span>
+    <span class="txt">dynamic trading card hero art, a decisive moment of discovery, three-quarter action pose, low heroic camera angle, the subject caught mid-gesture and leaning into the light, strong dramatic key light with deep shadows, glowing energy swirling around their hands and their invention, sparks and drifting light motes, bold saturated colours, high contrast, painterly digital illustration, cinematic depth, the whole figure and head inside a square frame with margin</span>
+  </div>
+  <div class="prompt" data-full="bold graphic poster art for a collectible card, stylised flat illustration with thick clean shapes, limited palette of three strong colours plus deep black, a large simple emblem of their field filling the background behind the figure, screen-print look, crisp geometric composition, confident heroic stance, square format with generous margin, no fine detail, no photo texture, Marie Curie holding a flask aloft, plain black high-necked dress, hair in a low bun, a huge stylised atom symbol filling the background, palette of deep teal, cream and luminous green">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">B · GRAFIKUS PLAKÁT — letisztult, erős formák, három szín</span>
+    <span class="txt">bold graphic poster art for a collectible card, stylised flat illustration with thick clean shapes, limited palette of three strong colours plus deep black, a large simple emblem of their field filling the background behind the figure, screen-print look, crisp geometric composition, confident heroic stance, square format with generous margin, no fine detail, no photo texture</span>
+  </div>
+  <div class="prompt" data-full="epic fantasy trading card art, the historical figure reimagined as a heroic guardian of their field, flowing period clothing with a hint of magic, their tool or discovery glowing like an enchanted artifact in their hands, swirling light and floating symbols around them, dramatic backlight and volcanic contrast, storybook grandeur, rich jewel colours, painterly digital illustration, square composition, full figure and head inside the frame, Marie Curie as the keeper of a glowing element, holding a crystal flask of radiant green light that spills between her fingers, plain black high-necked dress of the 1900s with a long dark coat, hair in a low bun, luminous particles and faint element symbols orbiting her, a dark vaulted laboratory behind">
+    <button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">C · MESÉS HŐS — kalandos, varázslatos, ragyogó tárggyal</span>
+    <span class="txt">epic fantasy trading card art, the historical figure reimagined as a heroic guardian of their field, flowing period clothing with a hint of magic, their tool or discovery glowing like an enchanted artifact in their hands, swirling light and floating symbols around them, dramatic backlight and volcanic contrast, storybook grandeur, rich jewel colours, painterly digital illustration, square composition, full figure and head inside the frame</span>
+  </div>
+
+  <div class="box">
+    <p><b>Mit várj tőlük.</b> Az <b>A</b> a leginkább „igazi kártya”, viszont a legnehezebb
+    egyformán tartani hatvan képen át. A <b>B</b> a legbiztosabb: gyorsan generálódik, sosem
+    lesz csúnya, az arc pontossága nem is számít, és hatvan lapon is egységes marad – viszont
+    kevésbé látványos. A <b>C</b> fogja meg legjobban a gyerekeket, de a legkevésbé komoly.</p>
+    <p>Az én tippem: <b>A</b> a ritka és legendás lapokra, <b>B</b> a gyakoriakra. Így a ritka
+    kártya ránézésre is más – és pont ettől lesz értékes.</p>
+  </div>
+
+  <h2>A 26 spanyol kártya promptjai – 1–6. Primaria</h2>
+  <div class="box" style="border-color:rgba(120,230,170,.45);background:rgba(120,230,170,.08);"><p><b>Mind a 26 spanyol kártya (1–6. Primaria), ugyanazzal a győztes recepttel, mint a magyarnál.</b> A kártyán minden szöveg spanyolul van. Kattints egy promptra, és a jobb oldali kártya átvált arra a személyre. Generálás után húzd rá a képet a kártyára, aztán a „Mentés képként” gomb már a HELYES fájlnéven tölti le.</p></div>
+  <div id="plist"></div>
+
+  <h2>Fájlnevek</h2>
+  <div class="box">
+    <p>Mentsd a képeket ezzel a névvel, és a program magától megtalálja őket:</p>
+    <p><b>A spanyol képek a <code>static/kartyak/es/</code> mappába kerülnek.</b> A pontos név minden prompt alatt ott van.<br>
+       Kártyánként 2 fájl kell: a portré (pl. <code>medio_3_cajal.png</code>) és a kész kártya, amit a „Kártya mentése” gomb ad (pl. <code>medio_3_cajal_kartya_arany.png</code>).
+       A kártyát mentsd sima és arany keretben is, mint a magyarnál.</p>
+    <p>Vagyis: <code>tantárgy_évfolyam_vezetéknév.png</code>, kisbetűvel, ékezet nélkül. A spanyol oldal külön mappába.</p>
+  </div>
+
+  <h2>Ha valami elrontódott</h2>
+  <div class="box">
+    <p><b>Betűk vagy keret került a képre:</b> a tiltólista hiányzott, vagy a modell mégis írt. Vágd le, vagy generáld újra – ne próbáld javítani.</p>
+    <p><b>Nem hasonlít az arc:</b> ez a leggyakoribb baj – a modell alapból egy általános szép arcot rajzol. Két dolog segít, együtt a legjobban. Egy: írd le magát az ARCOT is szavakkal – állkapocs, homlok, orr, ajak, tekintet –, ne csak a hajat és a ruhát. Kettő: tedd be a valódi fényképét az <b>Image Guidance</b> mezőbe 0,25–0,4 erősséggel. Ez utóbbi hozza a tényleges hasonlóságot, a stílus közben a tiéd marad.</p><p><b>Aláírás, csillag vagy firka került a képre:</b> a modell néha „szignózza” a művét. A tiltólistán rajta van, de ha mégis megjelenik, generáld újra – egy-két próba után tiszta lesz.</p>
+    <p><b>Rossz kéz, furcsa ujjak:</b> a Leonardo Canvas eszközében jelöld ki a kezet és generáld újra csak azt a részt. Vagy egyszerűbb: írd a promptba, hogy a keze ne látszódjon („hands out of frame").</p>
+    <p><b>Túl sötét vagy fakó:</b> a kártyakeret ezt felnagyítja. Kérj erősebb megvilágítást: „strong key light on the face".</p>
+  </div>
+
+</div>
+
+<div class="col-r">
+  <div id="drop">📥 Húzd ide a Leonardo-képet<br><span style="font-size:.78rem;opacity:.7">vagy kattints és válaszd ki</span></div>
+  <input type="file" id="file" accept="image/*" style="display:none">
+
+  <div style="width:340px;margin-bottom:12px;background:rgba(255,255,255,.05);
+              border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:11px 13px;">
+    <label>Kép igazítása</label>
+    <div class="row" style="align-items:center;">
+      <div style="flex:0 0 auto;">
+        <button class="copy" style="position:static;" id="fitBtn">Teljes kép</button>
+      </div>
+      <div><label style="margin-top:2px;">Nagyítás</label>
+        <input type="range" id="zoom" min="100" max="220" value="100" style="width:100%;padding:0;"></div>
+      <div><label style="margin-top:2px;">Függőleges</label>
+        <input type="range" id="posy" min="0" max="100" value="50" style="width:100%;padding:0;"></div>
+    </div>
+    <p style="font-size:.72rem;opacity:.6;line-height:1.45;margin-top:4px;">
+      „Teljes kép” = semmi nem vágódik le. „Kitöltés” = kitölti a keretet, de a széle levágódhat.</p>
+  </div>
+
+  <div class="tc rare" id="card">
+    <div class="tc-in" style="--bg:linear-gradient(165deg,#fdf6e3,#f0dfb4);--orb:radial-gradient(circle at 35% 30%,#ffd76a,#d88a1f)">
+      <div class="hdr">
+        <div><div class="stg" id="v-stg">Conocimiento del Medio · 6.º</div><div class="nm" id="v-nm">Santiago Ramón y Cajal</div></div>
+        <div class="rt"><i>SABER</i><b id="v-hp">480</b><span class="orb" id="v-orb">⚛</span></div>
+      </div>
+      <div class="who" id="v-who">fizikus · 1879 – 1955 · német</div>
+      <div class="art" id="v-art">
+        <div class="empty"><b>🖼️</b>Ide jön a Leonardo-kép<br>(3:4 álló)</div>
+      </div>
+      <div class="illus">Ilustración creada con IA · TutorIA</div>
+      <div class="ribbon">
+        <span class="tag">HABILIDAD</span>
+        <span class="cost"><i></i><i></i><i></i></span>
+        <span class="mv" id="v-mv">Relativitás</span>
+        <span class="dmg" id="v-dmg">400</span>
+      </div>
+      <div class="desc" id="v-desc">Rájött, hogy az idő nem mindenkinek telik egyformán, és hogy a tömeg energiává alakulhat. Ebből lett az atomkorszak.</div>
+      <div class="bars">
+        <div class="bar1"><div id="v-b1">Lecke · Energia és tömeg</div><div id="v-b2">★★★ legendás</div></div>
+        <div class="flav" id="v-fl">„A képzelet fontosabb, mint a tudás."</div>
+        <div class="setl"><span id="v-s1">TutorIA · Primaria</span><span id="v-s2">012/60</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="width:340px;display:flex;gap:8px;margin-top:14px;">
+    <button class="copy" style="position:static;flex:1;padding:10px;" id="valtoKeret">Keret: ARANY</button>
+    <button class="copy" style="position:static;flex:1;padding:10px;" id="dlWeb">Kártya mentése</button>
+    <button class="copy" style="position:static;flex:1;padding:10px;" id="dlPrint">Nyomdai méret (pólóhoz)</button>
+  </div>
+  <div id="dlStat" style="width:340px;font-size:.75rem;opacity:.6;margin-top:6px;min-height:16px;"></div>
+
+  <div style="width:340px;margin-top:16px;">
+    <label>Kártya kiválasztása</label>
+    <select id="pick"></select>
+    <div class="row">
+      <div><label>Név</label><input type="text" id="i-nm"></div>
+      <div><label>Tudás</label><input type="number" id="i-hp"></div>
+    </div>
+    <label>Alcím</label><input type="text" id="i-who">
+    <div class="row">
+      <div><label>Képesség</label><input type="text" id="i-mv"></div>
+      <div><label>Erő</label><input type="text" id="i-dmg"></div>
+    </div>
+    <label>Leírás</label><textarea id="i-desc"></textarea>
+    <label>Idézet</label><input type="text" id="i-fl">
+  </div>
+</div>
+</div>
+
+<script>
+const STYLE = document.getElementById('p-style').textContent.trim();
+
+const PEOPLE = [
+ {
+  "id": "es_medio_3_cajal",
+  "nm": "Santiago Ramón y Cajal",
+  "stg": "Conocimiento del Medio · 6.º",
+  "who": "médico e investigador · 1852–1934",
+  "hp": 450,
+  "orb": "★",
+  "rare": true,
+  "mv": "Neuronas",
+  "dmg": "380",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Demostró que el cerebro no es una red continua, sino millones de células separadas que se hablan entre sí. Por eso recibió el Premio Nobel en 1906.",
+  "fl": "«Todo hombre puede ser, si se lo propone, escultor de su propio cerebro.»",
+  "b1": "Lección · Iniciación en la actividad científica",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "001/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Santiago Ramon y Cajal, balding head, short grey beard, deep-set intense eyes, dark late-19th-century jacket and waistcoat. Seated at his desk with one eye at a brass microscope, his own ink drawings of branching neurons pinned on the wall and spread across the desk. Warm lamplight and deep shadow.",
+  "fajl": "medio_cajal"
+ },
+ {
+  "id": "es_medio_2_mutis",
+  "nm": "José Celestino Mutis",
+  "stg": "Conocimiento del Medio · 4.º",
+  "who": "médico y botánico · 1732–1808",
+  "hp": 320,
+  "orb": "★",
+  "rare": false,
+  "mv": "Expedición botánica",
+  "dmg": "260",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Dirigió durante treinta años una expedición que recorrió las selvas del Nuevo Reino de Granada para dibujar y describir cada planta que encontraba.",
+  "fl": "«Treinta años dibujando una selva entera, hoja por hoja.»",
+  "b1": "Lección · La vida en nuestro planeta",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 4.º Primaria",
+  "s2": "002/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Jose Celestino Mutis, powdered white hair, calm lined face, dark 18th-century coat. Studying a large open botanical folio of hand-painted flower plates on a table, pressed plants and glass jars around him, an open window showing green tropical forest. Warm daylight.",
+  "fajl": "medio_mutis"
+ },
+ {
+  "id": "es_medio_3_elhuyar",
+  "nm": "Fausto Elhuyar",
+  "stg": "Conocimiento del Medio · 6.º",
+  "who": "químico y mineralogista · 1755–1833",
+  "hp": 400,
+  "orb": "★",
+  "rare": true,
+  "mv": "Wolframio",
+  "dmg": "330",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Junto a su hermano Juan José consiguió aislar por primera vez el wolframio, el metal que aguanta más calor sin fundirse.",
+  "fl": "«1783, Bergara: de una piedra oscura salió el metal más duro de fundir.»",
+  "b1": "Lección · Materia, fuerzas y energía",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "003/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Fausto Elhuyar, young serious face, tied-back powdered hair, dark coat with rolled sleeves and a leather apron. Lifting a glowing crucible from a stone furnace beside a dark chunk of wolframite ore, bellows and assay balances around him. Orange furnace glow against cold stone walls.",
+  "fajl": "medio_elhuyar"
+ },
+ {
+  "id": "es_medio_3_peral",
+  "nm": "Isaac Peral",
+  "stg": "Conocimiento del Medio · 6.º",
+  "who": "marino e ingeniero · 1851–1895",
+  "hp": 340,
+  "orb": "★",
+  "rare": false,
+  "mv": "Submarino eléctrico",
+  "dmg": "280",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Construyó un submarino movido solo por electricidad, capaz de navegar sumergido, orientarse y lanzar un torpedo.",
+  "fl": "«Funcionaba. Y aun así lo dejaron en el muelle.»",
+  "b1": "Lección · Materia, fuerzas y energía",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "004/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Isaac Peral, dark hair, full dark beard, 19th-century Spanish naval officer uniform with braid. Standing on a stone quay beside a riveted iron submarine with a small conning tower floating in the water, coiled ropes and gas lamps on the dock. Grey Atlantic dawn light.",
+  "fajl": "medio_peral"
+ },
+ {
+  "id": "es_medio_3_cabrera",
+  "nm": "Blas Cabrera",
+  "stg": "Conocimiento del Medio · 6.º",
+  "who": "físico · 1878–1945",
+  "hp": 330,
+  "orb": "★",
+  "rare": false,
+  "mv": "Magnetismo",
+  "dmg": "270",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Midió con una precisión enorme cómo responden los materiales al imán, y sus datos se usaron en laboratorios de toda Europa.",
+  "fl": "«Lo que no se puede ver, se puede medir.»",
+  "b1": "Lección · Materia, fuerzas y energía",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "005/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Blas Cabrera, short dark hair, round glasses, neat moustache, dark three-piece suit. Adjusting a large brass electromagnet with copper coils on a laboratory bench, galvanometers and mirror scales around him. Cool blue-white light in an early-20th-century physics laboratory.",
+  "fajl": "medio_cabrera"
+ },
+ {
+  "id": "es_medio_3_torres",
+  "nm": "Leonardo Torres Quevedo",
+  "stg": "Conocimiento del Medio · 6.º",
+  "who": "ingeniero e inventor · 1852–1936",
+  "hp": 440,
+  "orb": "★",
+  "rare": true,
+  "mv": "Automática",
+  "dmg": "370",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Construyó máquinas que decidían solas qué hacer, mucho antes de que existieran los ordenadores. También inventó el mando a distancia.",
+  "fl": "«Una máquina que piensa el final de la partida, en 1912.»",
+  "b1": "Lección · Proyectos de diseño y pensamiento computacional",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "006/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Leonardo Torres Quevedo, white hair, thick white moustache, dark early-1900s suit. Standing beside a wooden chess automaton cabinet with a chessboard on top and exposed brass gears inside, technical drawings and cable-car models on the walls. Warm workshop light.",
+  "fajl": "medio_torres"
+ },
+ {
+  "id": "es_medio_3_elcano",
+  "nm": "Juan Sebastián Elcano",
+  "stg": "Conocimiento del Medio · 6.º",
+  "who": "marino · 1476–1526",
+  "hp": 480,
+  "orb": "★",
+  "rare": true,
+  "mv": "La primera vuelta al mundo",
+  "dmg": "400",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Completó el primer viaje alrededor de la Tierra. Salió con cinco barcos y volvió con uno solo, tres años después.",
+  "fl": "«Primus circumdedisti me.»",
+  "b1": "Lección · Sociedades en el tiempo",
+  "b2": "★★★★ legendaria",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "007/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Juan Sebastian Elcano, weathered sunburnt face, short dark beard, 16th-century sailor's coat and cap. On the deck of a battered wooden caravel with torn sails, a large brass globe on the rail beside him, ropes and empty water barrels. Open ocean and low golden light.",
+  "fajl": "medio_elcano"
+ },
+ {
+  "id": "es_medio_3_alfonsox",
+  "nm": "Alfonso X el Sabio",
+  "stg": "Conocimiento del Medio · 6.º",
+  "who": "rey y erudito · 1221–1284",
+  "hp": 420,
+  "orb": "★",
+  "rare": true,
+  "mv": "La Escuela de Traductores",
+  "dmg": "350",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Reunió en Toledo a sabios cristianos, musulmanes y judíos para traducir juntos los libros de ciencia que había en árabe, hebreo y latín.",
+  "fl": "«Que se escriba en la lengua que la gente entiende.»",
+  "b1": "Lección · Sociedades en el tiempo",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "008/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Alfonso X, crowned middle-aged king, trimmed beard, rich red and gold medieval robes. Seated in a scriptorium before a great illuminated manuscript on a lectern, gold letters and star charts on the page, scribes of different cultures working at desks behind him. Warm candlelight on stone arches.",
+  "fajl": "medio_alfonsox"
+ },
+ {
+  "id": "es_medio_3_lascasas",
+  "nm": "Bartolomé de las Casas",
+  "stg": "Conocimiento del Medio · 6.º",
+  "who": "fraile y cronista · 1484–1566",
+  "hp": 330,
+  "orb": "★",
+  "rare": false,
+  "mv": "La denuncia",
+  "dmg": "270",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Vio de cerca cómo se trataba a los pueblos indígenas de América y dedicó el resto de su vida a denunciarlo delante del rey.",
+  "fl": "«Todos son hombres, y todos tienen los mismos derechos.»",
+  "b1": "Lección · Alfabetización cívica",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "009/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Bartolome de las Casas, elderly gaunt face, white beard, tonsure, plain grey Dominican habit. Standing at a table with a heavy open chronicle and a quill resting on the page, a barred window with harsh tropical light outside. Sober muted colours.",
+  "fajl": "medio_lascasas"
+ },
+ {
+  "id": "es_matematicas_3_juarismi",
+  "nm": "Al-Juarismi",
+  "stg": "Matemáticas · 6.º",
+  "who": "matemático · h. 780–850",
+  "hp": 470,
+  "orb": "★",
+  "rare": true,
+  "mv": "Álgebra",
+  "dmg": "390",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Escribió el libro que enseñó a resolver problemas con incógnitas, es decir, con letras en lugar de números conocidos.",
+  "fl": "«Del título de un libro salió el álgebra; de un nombre, el algoritmo.»",
+  "b1": "Lección · Sentido algebraico",
+  "b2": "★★★★ legendaria",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "010/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Al-Khwarizmi, dignified bearded scholar in a green and cream robe and turban. Seated on cushions before a large open manuscript covered in Arabic geometric diagrams and calculations, shelves of scrolls and an astrolabe beside him. Warm desert daylight through a carved screen.",
+  "fajl": "matematicas_juarismi"
+ },
+ {
+  "id": "es_matematicas_3_azarquiel",
+  "nm": "Azarquiel",
+  "stg": "Matemáticas · 6.º",
+  "who": "astrónomo de Toledo · 1029–1087",
+  "hp": 410,
+  "orb": "★",
+  "rare": true,
+  "mv": "La azafea",
+  "dmg": "340",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Construyó un astrolabio que servía en cualquier lugar del mundo, no solo en la ciudad para la que estaba hecho.",
+  "fl": "«Un instrumento que funciona en cualquier punto de la Tierra.»",
+  "b1": "Lección · Sentido de la medida",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "011/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Azarquiel, bearded man in an ochre robe and turban. Holding a large engraved brass astrolabe upright on the stone parapet of a rooftop terrace in medieval Toledo at night, engraving tools and charts beside him. Star-filled sky, dark city roofs, deep blue and warm lamp light.",
+  "fajl": "matematicas_azarquiel"
+ },
+ {
+  "id": "es_matematicas_3_jorgejuan",
+  "nm": "Jorge Juan",
+  "stg": "Matemáticas · 6.º",
+  "who": "marino y científico · 1713–1773",
+  "hp": 340,
+  "orb": "★",
+  "rare": false,
+  "mv": "El meridiano",
+  "dmg": "280",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Viajó hasta el ecuador para medir cuánto mide un grado del meridiano y averiguar así la forma exacta de la Tierra.",
+  "fl": "«Casi diez años de viaje para medir un solo grado.»",
+  "b1": "Lección · Sentido de la medida",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "012/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Jorge Juan, young officer in an 18th-century Spanish naval coat and tricorn hat. Sighting through a large brass quadrant on a tripod on a high Andean ridge, measuring chains and a survey notebook beside him. Snow-capped mountains, clear pale light.",
+  "fajl": "matematicas_jorgejuan"
+ },
+ {
+  "id": "es_matematicas_3_hipatia",
+  "nm": "Hipatia de Alejandría",
+  "stg": "Matemáticas · 6.º",
+  "who": "matemática y astrónoma · h. 355–415",
+  "hp": 400,
+  "orb": "★",
+  "rare": true,
+  "mv": "Astrolabio",
+  "dmg": "330",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Enseñaba matemáticas y astronomía en Alejandría, y alumnos de todo el Mediterráneo viajaban hasta allí para escucharla.",
+  "fl": "«Enseñó cuando casi ninguna mujer podía hacerlo.»",
+  "b1": "Lección · Sentido espacial",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "013/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Hypatia of Alexandria, calm woman with dark hair gathered under a pale headband, simple white and blue draped robes. Holding a bronze astrolabe over a marble table of papyrus scrolls, geometric figures drawn on a wax board beside her, columns behind. Bright Mediterranean light.",
+  "fajl": "matematicas_hipatia"
+ },
+ {
+  "id": "es_matematicas_2_firnas",
+  "nm": "Abbás Ibn Firnás",
+  "stg": "Matemáticas · 4.º",
+  "who": "inventor de Córdoba · 810–887",
+  "hp": 330,
+  "orb": "★",
+  "rare": false,
+  "mv": "El vuelo",
+  "dmg": "270",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Se fabricó unas alas y se lanzó desde una altura para intentar volar. Planeó un rato de verdad, aunque el aterrizaje salió mal.",
+  "fl": "«Le faltó la cola, no las ganas.»",
+  "b1": "Lección · Sentido espacial",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 4.º Primaria",
+  "s2": "014/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Abbas Ibn Firnas, older bearded man in a light ochre robe and turban. Standing at the edge of a stone rooftop with a large pair of feathered wooden wings strapped to a frame beside him, the city of Cordoba and the river far below. Warm morning light and a strong wind.",
+  "fajl": "matematicas_firnas"
+ },
+ {
+  "id": "es_lengua_3_cervantes",
+  "nm": "Miguel de Cervantes",
+  "stg": "Lengua · 6.º",
+  "who": "escritor · 1547–1616",
+  "hp": 480,
+  "orb": "★",
+  "rare": true,
+  "mv": "Don Quijote",
+  "dmg": "400",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Escribió Don Quijote, el libro más traducido del mundo después de la Biblia, y con él inventó la novela tal como la leemos hoy.",
+  "fl": "«La libertad, Sancho, es uno de los más preciosos dones que a los hombres dieron los cielos.»",
+  "b1": "Lección · Educación literaria",
+  "b2": "★★★★ legendaria",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "015/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Miguel de Cervantes, lean older face, pointed grey beard, high forehead, dark doublet with a white ruff collar. Seated at a worn wooden table with a stack of books and a quill in an inkwell, his left hand resting still in his lap. Candlelight and deep shadow in a bare 17th-century room.",
+  "fajl": "lengua_cervantes"
+ },
+ {
+  "id": "es_lengua_3_nebrija",
+  "nm": "Elio Antonio de Nebrija",
+  "stg": "Lengua · 6.º",
+  "who": "gramático · 1444–1522",
+  "hp": 420,
+  "orb": "★",
+  "rare": true,
+  "mv": "La gramática",
+  "dmg": "350",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Escribió las primeras reglas del castellano: cómo se ordenan las palabras, cómo se escriben, por qué una frase suena bien.",
+  "fl": "«Siempre la lengua fue compañera del imperio.»",
+  "b1": "Lección · Las lenguas y sus hablantes",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "016/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Elio Antonio de Nebrija, older scholar, lined face, dark scholar's cap and gown. Standing at a lectern with a printed grammar book open on it, a printing press behind him, trays of metal type and freshly printed sheets hanging to dry. Warm lamplight.",
+  "fajl": "lengua_nebrija"
+ },
+ {
+  "id": "es_lengua_3_lorca",
+  "nm": "Federico García Lorca",
+  "stg": "Lengua · 6.º",
+  "who": "poeta y dramaturgo · 1898–1936",
+  "hp": 410,
+  "orb": "★",
+  "rare": true,
+  "mv": "La Barraca",
+  "dmg": "340",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Escribió poemas y obras de teatro con el ritmo del habla popular andaluza, y consiguió que sonaran modernos y antiguos a la vez.",
+  "fl": "«El teatro es la poesía que se levanta del libro y se hace humana.»",
+  "b1": "Lección · Educación literaria",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "017/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Federico Garcia Lorca, young man, dark hair, thick eyebrows, broad open face, plain blue workman's overall over a shirt. Beside a small wooden travelling stage on the back of an old truck with painted backdrops and a guitar leaning against it, villagers gathering in a village square. Bright dusty afternoon light.",
+  "fajl": "lengua_lorca"
+ },
+ {
+  "id": "es_lengua_2_rosalia",
+  "nm": "Rosalía de Castro",
+  "stg": "Lengua · 4.º",
+  "who": "poeta · 1837–1885",
+  "hp": 330,
+  "orb": "★",
+  "rare": false,
+  "mv": "Cantares gallegos",
+  "dmg": "270",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Escribió poemas en gallego cuando casi nadie publicaba en esa lengua, y consiguió que volviera a considerarse una lengua de literatura.",
+  "fl": "«Adiós ríos, adiós fontes.»",
+  "b1": "Lección · Educación literaria",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 4.º Primaria",
+  "s2": "018/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Rosalia de Castro, serious young woman, dark hair parted in the middle, dark 19th-century dress with a lace collar. Seated by the window of a Galician stone house with an open handwritten poetry notebook and a black shawl on the sill, green rainy hills outside. Soft grey northern light.",
+  "fajl": "lengua_rosalia"
+ },
+ {
+  "id": "es_lengua_3_sorjuana",
+  "nm": "Sor Juana Inés de la Cruz",
+  "stg": "Lengua · 6.º",
+  "who": "poeta y pensadora · 1648–1695",
+  "hp": 400,
+  "orb": "★",
+  "rare": true,
+  "mv": "La biblioteca",
+  "dmg": "330",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Fue la escritora más admirada de su tiempo en toda América y España, y defendió por escrito que las mujeres tenían derecho a estudiar.",
+  "fl": "«Hombres necios que acusáis a la mujer sin razón.»",
+  "b1": "Lección · Educación literaria",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "019/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Sor Juana Ines de la Cruz, young woman with a calm direct gaze, white nun's habit with a large round medallion on the chest and a black veil. Seated at a writing desk with a quill, tall shelves of leather books and a globe behind her. Warm candlelight on colonial tiled walls.",
+  "fajl": "lengua_sorjuana"
+ },
+ {
+  "id": "es_artistica_3_velazquez",
+  "nm": "Diego Velázquez",
+  "stg": "Educación Artística · 6.º",
+  "who": "pintor · 1599–1660",
+  "hp": 470,
+  "orb": "★",
+  "rare": true,
+  "mv": "Las Meninas",
+  "dmg": "390",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Pintó la luz y el aire como nadie lo había hecho antes: de cerca son manchas sueltas, y de lejos parece una fotografía.",
+  "fl": "«De cerca, manchas. De lejos, el aire.»",
+  "b1": "Lección · Artes plásticas, visuales y audiovisuales",
+  "b2": "★★★★ legendaria",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "020/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Diego Velazquez, dark curled hair, upturned moustache, black 17th-century doublet with a white collar. Standing before a huge canvas on a wooden easel with a loaded palette and long brushes in hand, a tall shadowed palace room with a distant mirror. Cool silvery daylight.",
+  "fajl": "artistica_velazquez"
+ },
+ {
+  "id": "es_artistica_3_goya",
+  "nm": "Francisco de Goya",
+  "stg": "Educación Artística · 6.º",
+  "who": "pintor y grabador · 1746–1828",
+  "hp": 430,
+  "orb": "★",
+  "rare": true,
+  "mv": "Pinturas negras",
+  "dmg": "360",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Empezó pintando fiestas alegres para la corte y acabó pintando la guerra y el miedo tal como eran, sin adornarlos.",
+  "fl": "«El sueño de la razón produce monstruos.»",
+  "b1": "Lección · Artes plásticas, visuales y audiovisuales",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "021/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Francisco de Goya, older man, wild grey hair, heavy brows, stubborn stare, dark coat with a loose neckcloth. At a workbench with a copper etching plate and a burin, beside a wall half-covered with a dark unfinished mural. Oil lamp light and deep brown shadow.",
+  "fajl": "artistica_goya"
+ },
+ {
+  "id": "es_artistica_2_sorolla",
+  "nm": "Joaquín Sorolla",
+  "stg": "Educación Artística · 4.º",
+  "who": "pintor · 1863–1923",
+  "hp": 340,
+  "orb": "★",
+  "rare": false,
+  "mv": "La luz",
+  "dmg": "280",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Sacó el caballete a la playa y pintó al aire libre el sol sobre el agua, la ropa mojada y la arena caliente.",
+  "fl": "«La luz cambia mientras la miras: hay que pintar deprisa.»",
+  "b1": "Lección · Artes plásticas, visuales y audiovisuales",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 4.º Primaria",
+  "s2": "022/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Joaquin Sorolla, middle-aged man, dark moustache, straw hat, white shirt with rolled sleeves. Painting at a wooden easel planted in wet sand, a bright half-finished beach painting on it and a palette of white and blue in his hand, sea foam and children in the distance. Dazzling Mediterranean midday light.",
+  "fajl": "artistica_sorolla"
+ },
+ {
+  "id": "es_artistica_3_falla",
+  "nm": "Manuel de Falla",
+  "stg": "Educación Artística · 6.º",
+  "who": "compositor · 1876–1946",
+  "hp": 350,
+  "orb": "★",
+  "rare": false,
+  "mv": "El amor brujo",
+  "dmg": "290",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Convirtió el flamenco y la música popular andaluza en música de orquesta, sin quitarle la fuerza que tenía.",
+  "fl": "«La música popular no se copia: se escucha y se sigue.»",
+  "b1": "Lección · Música y artes escénicas y performativas",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "023/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Manuel de Falla, small thin man, bald head, sharp features, dark suit. Seated at a piano in a Granada house with a hand-written orchestral score on the music stand and a guitar leaning against the instrument, whitewashed walls and a window onto a garden with cypresses. Warm southern evening light.",
+  "fajl": "artistica_falla"
+ },
+ {
+  "id": "es_artistica_2_albeniz",
+  "nm": "Isaac Albéniz",
+  "stg": "Educación Artística · 4.º",
+  "who": "compositor y pianista · 1860–1909",
+  "hp": 320,
+  "orb": "★",
+  "rare": false,
+  "mv": "Iberia",
+  "dmg": "260",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Escribió para piano piezas que suenan a guitarra española, a fiesta y a calle, y que hoy tocan pianistas de todo el mundo.",
+  "fl": "«Doce piezas que casi nadie podía tocar.»",
+  "b1": "Lección · Música y artes escénicas y performativas",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 4.º Primaria",
+  "s2": "024/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Isaac Albeniz, stout man, thick dark moustache, genial face, dark late-19th-century suit. Seated at an open grand piano with hand-written sheet music on the stand and a Spanish guitar propped against its leg, heavy curtains behind him. Golden lamplight.",
+  "fajl": "artistica_albeniz"
+ },
+ {
+  "id": "es_efisica_3_coubertin",
+  "nm": "Pierre de Coubertin",
+  "stg": "Educación Física · 6.º",
+  "who": "pedagogo · 1863–1937",
+  "hp": 330,
+  "orb": "★",
+  "rare": false,
+  "mv": "Los Juegos",
+  "dmg": "270",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Convenció a media Europa de recuperar los Juegos Olímpicos después de mil quinientos años sin celebrarse.",
+  "fl": "«Lo importante no es ganar, sino participar.»",
+  "b1": "Lección · Manifestaciones de la cultura motriz",
+  "b2": "★★ rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "025/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Pierre de Coubertin, small man with a very large dark moustache, formal 1890s suit and hat. Standing in Olympia before ancient stadium ruins with a laurel wreath and an unrolled olympic charter on a stone bench beside him, marble columns and dry grass. Clear Greek morning light.",
+  "fajl": "efisica_coubertin"
+ },
+ {
+  "id": "es_extranjera_3_battuta",
+  "nm": "Ibn Battuta",
+  "stg": "Inglés · 6.º",
+  "who": "viajero y cronista · 1304–1368",
+  "hp": 400,
+  "orb": "★",
+  "rare": true,
+  "mv": "La Rihla",
+  "dmg": "330",
+  "bg": "linear-gradient(165deg,#fdf6e3,#f0dfb4)",
+  "oc": "radial-gradient(circle at 35% 30%,#ffe6a8,#d88a1f)",
+  "desc": "Se pasó veintinueve años viajando y recorrió unos ciento veinte mil kilómetros, mucho más que ningún otro viajero de su época.",
+  "fl": "«Salí solo, sin compañero de viaje y sin caravana.»",
+  "b1": "Lección · Interculturalidad",
+  "b2": "★★★ muy rara",
+  "s1": "TutorIA · 6.º Primaria",
+  "s2": "026/26",
+  "p": "trading card art, painterly digital illustration, waist-up portrait, bold saturated colours, warm rim light, deep shadows, Ibn Battuta, bearded traveller in a dusty cream robe and turban. Standing at a caravanserai gate beside a worn leather travel satchel, a rolled map and a walking staff resting against the stone wall, camels and a busy market street behind him. Warm dusty afternoon light.",
+  "fajl": "extranjera_battuta"
+ }
+];
+
+
+
+
+
+/* ── promptlista ── */
+const plist=document.getElementById('plist');
+PEOPLE.forEach((p,i)=>{
+  const d=document.createElement('div');
+  d.className='prompt';
+  d.innerHTML=`<button class="copy" onclick="cp(this)">Másolás</button>
+    <span class="lbl">${String(i+1).padStart(2,'0')} · ${p.nm} — ${p.stg}</span>
+    <span class="txt">${p.p}</span>
+    <span class="txt" style="opacity:.5;display:block;margin-top:5px;">
+      mentsd: static/kartyak/es/${p.fajl}.png</span>`;
+  d.dataset.full = p.p;   // = a kijelzett szöveg, betűre
+  d.addEventListener('click',ev=>{ if(ev.target.tagName!=='BUTTON'){ pick.value=i; show(i); } });
+  d.style.cursor='pointer';
+  plist.appendChild(d);
+});
+
+function cp(btn){
+  const box=btn.parentElement;
+  const t=box.dataset.full || box.querySelector('.txt').textContent.trim();
+  navigator.clipboard.writeText(t).then(()=>{
+    btn.textContent='Kimásolva ✓'; btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Másolás';btn.classList.remove('ok');},1500);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);
+    ta.select();document.execCommand('copy');ta.remove();
+    btn.textContent='Kimásolva ✓'; btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='Másolás';btn.classList.remove('ok');},1500);
+  });
+}
+
+/* ── kártya kitöltése ── */
+const pick=document.getElementById('pick');
+PEOPLE.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p.nm;pick.appendChild(o);});
+const card=document.getElementById('card');
+const F={nm:'v-nm',hp:'v-hp',who:'v-who',mv:'v-mv',dmg:'v-dmg',desc:'v-desc',fl:'v-fl',
+         stg:'v-stg',b1:'v-b1',b2:'v-b2',s1:'v-s1',s2:'v-s2',orb:'v-orb'};
+function show(i){
+  const p=PEOPLE[i];
+  for(const k in F) document.getElementById(F[k]).textContent = p[k]!==undefined?p[k]:'';
+  const inn=card.querySelector('.tc-in');
+  inn.style.setProperty('--bg',p.bg); inn.style.setProperty('--orb',p.oc);
+  card.className='tc '+(p.rare?'rare':'norm');
+  document.getElementById('i-nm').value=p.nm;
+  document.getElementById('i-hp').value=p.hp;
+  document.getElementById('i-who').value=p.who;
+  document.getElementById('i-mv').value=p.mv;
+  document.getElementById('i-dmg').value=p.dmg;
+  document.getElementById('i-desc').value=p.desc;
+  document.getElementById('i-fl').value=p.fl;
+}
+pick.addEventListener('change',()=>show(pick.value));
+[['i-nm','v-nm'],['i-hp','v-hp'],['i-who','v-who'],['i-mv','v-mv'],
+ ['i-dmg','v-dmg'],['i-desc','v-desc'],['i-fl','v-fl']].forEach(([a,b])=>{
+  document.getElementById(a).addEventListener('input',e=>{
+    document.getElementById(b).textContent=e.target.value;});
+});
+show(0);
+
+/* ── kép betöltése ── */
+const drop=document.getElementById('drop'), file=document.getElementById('file');
+drop.addEventListener('click',()=>file.click());
+file.addEventListener('change',e=>{ if(e.target.files[0]) load(e.target.files[0]); });
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{
+  e.preventDefault();drop.classList.add('hot');}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{
+  e.preventDefault();drop.classList.remove('hot');}));
+drop.addEventListener('drop',e=>{ const f=e.dataTransfer.files[0]; if(f) load(f); });
+document.addEventListener('drop',e=>e.preventDefault());
+document.addEventListener('dragover',e=>e.preventDefault());
+function load(f){
+  const r=new FileReader();
+  r.onload=()=>{ document.getElementById('v-art').innerHTML=`<img src="${r.result}" alt="">`; };
+  r.readAsDataURL(f);
+}
+
+/* ── kép igazítása ── */
+const art=document.getElementById('v-art');
+const fitBtn=document.getElementById('fitBtn');
+let fitCover=false;
+fitBtn.addEventListener('click',()=>{
+  fitCover=!fitCover;
+  art.style.setProperty('--fit', fitCover?'cover':'contain');
+  fitBtn.textContent = fitCover?'Kitöltés':'Teljes kép';
+});
+document.getElementById('zoom').addEventListener('input',e=>{
+  art.style.setProperty('--zoom',(e.target.value/100).toFixed(2));});
+document.getElementById('posy').addEventListener('input',e=>{
+  art.style.setProperty('--posy',e.target.value+'%');});
+art.style.setProperty('--fit','contain');
+
+/* ── kártya mentése képként ─────────────────────────────── */
+const stat=document.getElementById('dlStat');
+function fajlnev(){
+  const n=document.getElementById('v-nm').textContent.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'_')
+    .replace(/^_|_$/g,'');
+  return 'tutoria_kartya_'+(n||'kartya');
+}
+async function mentes(scale, utotag){
+  if(typeof html2canvas==='undefined'){
+    stat.textContent='A mentéshez internet kell (a html2canvas könyvtár nem töltődött be).';
+    return;
+  }
+  const kartya=document.getElementById('card');
+  stat.textContent='Készítés… ('+Math.round(340*scale)+' × '+Math.round(548*scale)+' képpont)';
+  kartya.classList.add('nincs-holo');           // a csillogás félremenne a képen
+  try{
+    const nyers=await html2canvas(kartya,{scale:scale,backgroundColor:null,useCORS:true,logging:false});
+
+    /* A html2canvas NEM vágja le a lekerekített sarkot – négyzetes képet ad,
+       és a sarkokban ottmarad a háttér. Ezért utólag mi vágjuk ki:
+       ugyanazzal a 15 px-es sugárral, a nagyítás arányában. */
+    const c=document.createElement('canvas');
+    c.width=nyers.width; c.height=nyers.height;
+    const g=c.getContext('2d');
+    const r=15*scale;                       // a .tc border-radius értéke
+    g.beginPath();
+    g.moveTo(r,0);
+    g.lineTo(c.width-r,0);      g.quadraticCurveTo(c.width,0,c.width,r);
+    g.lineTo(c.width,c.height-r);g.quadraticCurveTo(c.width,c.height,c.width-r,c.height);
+    g.lineTo(r,c.height);       g.quadraticCurveTo(0,c.height,0,c.height-r);
+    g.lineTo(0,r);              g.quadraticCurveTo(0,0,r,0);
+    g.closePath();
+    g.clip();
+    g.drawImage(nyers,0,0);
+
+    const a=document.createElement('a');
+    const _p=PEOPLE[pick.value];
+    a.download=(_p&&_p.fajl?_p.fajl:fajlnev())+'_kartya'+(aranyKeret?'_arany':'')+utotag+'.png';
+    a.href=c.toDataURL('image/png');
+    a.click();
+    stat.textContent='Kész: '+a.download+'  ('+c.width+' × '+c.height+' képpont)';
+  }catch(e){
+    stat.textContent='Nem sikerült: '+e.message;
+  }finally{
+    kartya.classList.remove('nincs-holo');
+  }
+}
+document.getElementById('dlWeb').addEventListener('click',()=>mentes(3,''));
+document.getElementById('dlPrint').addEventListener('click',()=>mentes(9,'_nyomdai'));
+
+/* ── sima / arany keret kapcsolo ── */
+let aranyKeret = true;
+const vk=document.getElementById('valtoKeret');
+function keretFrissit(){
+  vk.textContent='Keret: '+(aranyKeret?'ARANY':'SIMA');
+  card.classList.toggle('rare', aranyKeret);
+  card.classList.toggle('norm', !aranyKeret);
+}
+vk.addEventListener('click',()=>{aranyKeret=!aranyKeret;keretFrissit();});
+const _regiShow=show;
+show=function(i){_regiShow(i);keretFrissit();};
+keretFrissit();
+</script>
+</body>
+</html>

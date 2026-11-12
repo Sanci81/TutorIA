@@ -1459,6 +1459,32 @@
 .dm .fuzet .szo.nagy{color:#1F6FB0;background:#E3F1FC}
 .dm .fuzet .szo.hibas{background:#FDE8F1;color:#A8326A}
 .dm .tilde-kep{font-size:74px;text-align:center;line-height:1.1;margin:4px 0}
+/* fix149: SZÖVEGÉRTÉS + BIZONYÍTÉK, KÉMIAI EGYENLET */
+.dm .se-szoveg{font-size:19px;line-height:1.75;background:#FFFBF2;border:2px solid #F1E4CA;border-radius:16px;padding:12px 16px;margin:4px 0 12px;color:var(--szoveg)}
+.dm .se-m{border-radius:7px;padding:1px 2px;transition:background .25s}
+.dm .se-szoveg.keres .se-m{cursor:pointer;background-image:linear-gradient(transparent 88%,#F5C66B 88%)}
+.dm .se-szoveg.keres .se-m:hover{background-color:#FFF0C7}
+.dm .se-m.jel{background:linear-gradient(transparent 12%,#FFE27A 12%,#FFE27A 94%,transparent 94%)}
+.dm .se-m.jo{background:linear-gradient(transparent 12%,#BDEFC9 12%,#BDEFC9 94%,transparent 94%);box-shadow:0 0 0 2px #22A06B inset}
+.dm .se-m.rossz{background:linear-gradient(transparent 12%,#FDD5D5 12%,#FDD5D5 94%,transparent 94%)}
+.dm .se-ops{display:grid;gap:8px}
+.dm .se-op{border:0;border-radius:14px;padding:12px 14px;font-size:17px;font-weight:800;text-align:left;color:#fff;cursor:pointer;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.dm .se-op:nth-child(4n+1){background:#2F8FD8}.dm .se-op:nth-child(4n+2){background:#8A5CD6}.dm .se-op:nth-child(4n+3){background:#F59E0B}.dm .se-op:nth-child(4n+4){background:#0EA5B7}
+.dm .se-op.ki{opacity:.35;pointer-events:none}.dm .se-op.ok{background:#22A06B!important;box-shadow:0 0 0 4px #BDEFC9}
+.dm .eq{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px;font-size:22px;font-weight:900;color:var(--szoveg)}
+.dm .eq-tag{display:flex;align-items:center;gap:5px;background:#F6F2E8;border-radius:14px;padding:6px 8px}
+.dm .eq-eh{display:flex;flex-direction:column;align-items:center}
+.dm .eq-eh button{width:32px;height:24px;border:0;border-radius:7px;background:#E3F3EA;color:#167A5E;font-weight:900;font-size:17px;cursor:pointer}
+.dm .eq-eh b{font-size:22px;min-width:26px;text-align:center;color:#D9467F}
+.dm .eq-ny{font-size:26px;color:#5f7469;margin:0 4px}
+.dm .eq-merleg{display:grid;grid-template-columns:1fr 54px 1fr;align-items:end;margin:14px 0 4px}
+.dm .eq-tal{background:#F6F2E8;border-radius:14px;min-height:96px;padding:8px;display:flex;flex-wrap:wrap;gap:5px;align-content:flex-end;justify-content:center;transition:transform .4s}
+.dm .eq-osz{text-align:center;font-size:30px}
+.dm .eq-at{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:900;color:#fff;box-shadow:inset -3px -3px 0 rgba(0,0,0,.15)}
+.dm .eq-tobb{font-size:13px;font-weight:900;color:#5f7469;align-self:center}
+.dm .eq-szaml{display:grid;grid-template-columns:1fr 54px 1fr;text-align:center;font-weight:800;font-size:14px;margin-top:4px}
+.dm .eq-szaml span{display:inline-block;margin:2px 3px;padding:2px 8px;border-radius:999px}
+.dm .eq-szaml .ok{background:#BDEFC9;color:#0E5A40}.dm .eq-szaml .nem{background:#FDD5D5;color:#9B1C1C}
 .dm .szotagok{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
 .dm .szotag{font-size:28px;padding:10px 16px;background:#FFF4E0;border:2.5px solid #F5C77A;color:var(--szoveg);border-radius:14px}
 .dm .szotag.tonica{background:#F5A01E;border-color:#D27E0B;color:#fff;transform:scale(1.12)}
@@ -7756,6 +7782,114 @@
     };
 
     /* ── HANGSÚLYOS SZÓTAG (sílaba tónica) – spanyol ──────────────────── */
+    /* ── SZÖVEGÉRTÉS + BIZONYÍTÉK (fix149) – Feladat-próba: „szövegértés, bizonyító mondat”, HU + ES ── */
+    DM.szovegertes = function (f, D) {
+        var lepes = 0, hibak = 0, valaszSz = '';
+        D.html('<div class="allas">' + D.T('Olvasd el figyelmesen, aztán válaszolj!', '¡Lee con atención y luego responde!') + '</div>' +
+            '<div class="se-szoveg" data-id="sz"></div><div class="se-ops" data-id="ops"></div>');
+        var sz = D.$('sz'), ops = D.$('ops');
+        f.mondatok.forEach(function (m, i) { var s = document.createElement('span'); s.className = 'se-m'; s.textContent = m; s.setAttribute('data-i', i);
+            sz.appendChild(s); sz.appendChild(document.createTextNode(' ')); });
+        f.opciok.forEach(function (o, i) {
+            var b = document.createElement('button'); b.type = 'button'; b.className = 'se-op'; b.textContent = o;
+            b.onclick = function () {
+                if (D.kesz() || lepes) { return; }
+                if (i === f.jo) {
+                    lepes = 1; valaszSz = o;
+                    Array.prototype.forEach.call(ops.children, function (x, j) { x.classList.add(j === i ? 'ok' : 'ki'); });
+                    sz.classList.add('keres');
+                    D.jelez(true, D.T('Szuper! Most keresd meg a szövegben: melyik mondat bizonyítja? Koppints rá!',
+                        '¡Genial! Ahora búscalo en el texto: ¿qué frase lo demuestra? ¡Tócala!'));
+                } else {
+                    hibak++; b.classList.add('ki'); D.animal(b, 'rezeg');
+                    D.jelez(false, D.T('Nem ez. Olvasd el újra a szöveget!', 'No es esa. ¡Vuelve a leer el texto!'));
+                    if (hibak >= 2) { lepes = 9; D.kuld(D.T('A szövegértés kérdésére kétszer rossz választ adtam: „' + o + '”.',
+                        'En la pregunta de comprensión he fallado dos veces: «' + o + '».'), 2600); }
+                }
+            };
+            ops.appendChild(b);
+        });
+        var mhibak = 0;
+        Array.prototype.forEach.call(sz.querySelectorAll('.se-m'), function (s) {
+            s.onclick = function () {
+                if (D.kesz() || lepes !== 1) { return; }
+                Array.prototype.forEach.call(sz.querySelectorAll('.se-m'), function (x) { x.classList.remove('rossz'); });
+                var i = +s.getAttribute('data-i');
+                if (f.bizonyitek.indexOf(i) >= 0) {
+                    lepes = 2; s.classList.add('jo'); sz.classList.remove('keres');
+                    D.vege(true, D.T('Ügyes! Nemcsak tudtad, hanem be is bizonyítottad.', '¡Muy bien! No solo lo sabías: además lo has demostrado.'),
+                        D.T('Válaszom: „' + valaszSz + '”. Ez a mondat bizonyítja: „' + s.textContent + '”.',
+                            'Mi respuesta: «' + valaszSz + '». Lo demuestra esta frase: «' + s.textContent + '».'));
+                } else {
+                    mhibak++; s.classList.add('rossz'); D.animal(s, 'rezeg');
+                    if (mhibak >= 2) {
+                        lepes = 2; sz.classList.remove('keres');
+                        var j = sz.querySelector('.se-m[data-i="' + f.bizonyitek[0] + '"]'); if (j) { j.classList.add('jel'); }
+                        D.vege(false, D.T('Ez az a mondat – nézd meg, itt van a válasz.', 'Es esta frase: mira, aquí está la respuesta.'),
+                            D.T('Jól válaszoltam („' + valaszSz + '”), de a bizonyító mondatot nem találtam meg.',
+                                'He respondido bien («' + valaszSz + '»), pero no he encontrado la frase que lo demuestra.'));
+                    } else {
+                        D.jelez(false, D.T('Ez a mondat nem erről szól. Keress tovább!', 'Esta frase no habla de eso. ¡Sigue buscando!'));
+                    }
+                }
+            };
+        });
+    };
+
+    /* ── KÉMIAI EGYENLET RENDEZÉSE (fix149) – Feladat-próba: „kémiai egyenlet rendezése”, csak HU 7–8. ── */
+    DM.egyenlet = function (f, D) {
+        var SZIN = {H: '#9AA5AE', O: '#E5484D', C: '#3F4A52', N: '#2F8FD8', Fe: '#B45309', Cl: '#22A06B', Na: '#8A5CD6',
+                    S: '#D4A017', Ca: '#0EA5B7', Al: '#7C8B99', Mg: '#5B6CE0', K: '#D9467F', Cu: '#C2410C', Zn: '#64748B', P: '#E07B39'};
+        var mol = f.bal.concat(f.jobb), nb = f.bal.length, egy = mol.map(function () { return 1; });
+        function keplet(k) { return k.replace(/(\d+)/g, '<sub>$1</sub>'); }
+        var h = [];
+        mol.forEach(function (m, i) {
+            if (i === nb) { h.push('<span class="eq-ny">→</span>'); } else if (i) { h.push('<span>+</span>'); }
+            h.push('<span class="eq-tag"><span class="eq-eh"><button type="button" data-i="' + i + '" data-d="1">+</button><b data-id="e' + i + '">1</b>' +
+                '<button type="button" data-i="' + i + '" data-d="-1">−</button></span><span>' + keplet(m.k) + '</span></span>');
+        });
+        D.html('<div class="allas">' + D.T('Állítsd be a molekulák előtti számokat! Az alsó indexet nem szabad átírni.',
+            'Cambia los números delante de las moléculas. Los subíndices no se cambian.') + '</div>' +
+            '<div class="eq" data-id="eq">' + h.join('') + '</div>' +
+            '<div class="eq-merleg"><div class="eq-tal" data-id="bal"></div><div class="eq-osz">⚖️</div><div class="eq-tal" data-id="jobb"></div></div>' +
+            '<div class="eq-szaml" data-id="szaml"></div>');
+        function szamol(t, k) { var s = {}; for (var i = t; i < k; i++) { for (var e in mol[i].a) { s[e] = (s[e] || 0) + mol[i].a[e] * egy[i]; } } return s; }
+        function golyok(s) { var o = ''; for (var e in s) { var n = s[e], m = Math.min(n, 12);
+            for (var i = 0; i < m; i++) { o += '<span class="eq-at" style="background:' + (SZIN[e] || '#94A3B8') + '">' + e + '</span>'; }
+            if (n > m) { o += '<span class="eq-tobb">+' + (n - m) + ' ' + e + '</span>'; } } return o; }
+        function frissit() {
+            egy.forEach(function (v, i) { D.$('e' + i).textContent = v; });
+            var b = szamol(0, nb), j = szamol(nb, mol.length), sb = [], sj = [], nB = 0, nJ = 0;
+            D.$('bal').innerHTML = golyok(b); D.$('jobb').innerHTML = golyok(j);
+            Object.keys(Object.assign({}, b, j)).sort().forEach(function (e) { var ok = (b[e] || 0) === (j[e] || 0);
+                sb.push('<span class="' + (ok ? 'ok' : 'nem') + '">' + e + ': ' + (b[e] || 0) + '</span>');
+                sj.push('<span class="' + (ok ? 'ok' : 'nem') + '">' + e + ': ' + (j[e] || 0) + '</span>'); nB += b[e] || 0; nJ += j[e] || 0; });
+            D.$('szaml').innerHTML = '<div>' + sb.join('') + '</div><div></div><div>' + sj.join('') + '</div>';
+            D.$('bal').style.transform = 'translateY(' + (nB > nJ ? 6 : nB < nJ ? -6 : 0) + 'px)';
+            D.$('jobb').style.transform = 'translateY(' + (nJ > nB ? 6 : nJ < nB ? -6 : 0) + 'px)';
+            D.torol();
+        }
+        Array.prototype.forEach.call(D.$('eq').querySelectorAll('button'), function (b) {
+            b.onclick = function () { if (D.kesz()) { return; } var i = +b.getAttribute('data-i');
+                egy[i] = Math.max(1, Math.min(9, egy[i] + (+b.getAttribute('data-d')))); frissit(); };
+        });
+        function felirat() { return mol.map(function (m, i) { return (egy[i] > 1 ? egy[i] + ' ' : '') + m.k; })
+            .reduce(function (a, x, i) { return a + (i === nb ? ' → ' : i ? ' + ' : '') + x; }, ''); }
+        D.ellenoriz(function () {
+            var b = szamol(0, nb), j = szamol(nb, mol.length), jo = true;
+            Object.keys(Object.assign({}, b, j)).forEach(function (e) { if ((b[e] || 0) !== (j[e] || 0)) { jo = false; } });
+            var g = egy.reduce(function (a, c) { while (c) { var t = a % c; a = c; c = t; } return a; });
+            var mo = f.megoldas.map(function (x, i) { return (x > 1 ? x + ' ' : '') + mol[i].k; })
+                .reduce(function (a, x, i) { return a + (i === nb ? ' → ' : i ? ' + ' : '') + x; }, '');
+            var valasz = D.T('Így rendeztem az egyenletet: ' + felirat() + '.', 'He ajustado así la ecuación: ' + felirat() + '.');
+            if (jo && g === 1) { return {jo: true, uzenet: D.T('Rendezve! Mindkét oldalon ugyanannyi atom van: ', '¡Ajustada! Hay los mismos átomos a cada lado: ') + mo, valasz: valasz}; }
+            if (jo) { return {hianyzik: D.T('Egyensúlyban van, de egyszerűsíthető: oszd el mindegyik számot ' + g + '-vel!',
+                'Está equilibrada, pero se puede simplificar: ¡divide todos los números entre ' + g + '!')}; }
+            return {jo: false, uzenet: D.T('Még nem egyezik – nézd a piros címkéket!', 'Todavía no coincide: ¡mira las etiquetas rojas!'), valasz: valasz};
+        }, D.T('Kész', 'Listo'));
+        frissit();
+    };
+
     DM.tilde = function (f, D) {
         var SZ = [
             ['🚚', 'ca-mión', 1], ['🌳', 'ár-bol', 0], ['🐦', 'pá-ja-ro', 0], ['🍽️', 'me-sa', 0],
