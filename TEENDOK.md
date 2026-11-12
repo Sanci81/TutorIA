@@ -316,10 +316,19 @@ MÉG HÁTRA (később):
 - [ ] ‼️ FELTÖLTÉSRE VÁR (Sándor 11.11 este: még NEM futott le, a kártyagenerálás miatt):
       (1) fejléc: git add static/css/style.css → proba → main;
       (2) kártyák: static/kartyak/es + kartyak.py kartyak_es.py kartya_kesz.py app.py TEENDOK.md.
-- [ ] Spanyol képek átnézve (Claude, 11.11): 21 jó. ÚJRA kell: Goya (Beethovenre hasonlított), Sorolla (szöveg a vásznon,
-      szakáll hiányzott), Albéniz (márkanév a zongorán, szakáll hiányzott) – promptok javítva (fix140).
-      Apróság, maradhat: Torres Quevedo sakkautomatáján teljes bábukészlet (valójában csak pár bábu), Elcano kezében
-      kitalált műszer, Azarquiel mögött későbbi toledói katedrális, Peral egy tengeralattjáró-makettet tart.
+- [ ] ‼️ SPANYOL KÉPEK – SZÜNET (Sándor 11.12: kb. 100 € ment el képekre, bevétel 0). Ne generáljunk többet, amíg nincs
+      regisztráció. Az arcok hasonlósága csak valódi (közkincs) fénykép mintaként való megadásával javítható
+      (kartya_kesz.py-ba bekötni, ha egyszer folytatjuk). Promptok javítva: Las Casas (borotvált, kopasz), Elcano és
+      Alfonso X (nincs földgömb), Jorge Juan (paróka).
+- [x] fix142: ÁSZF 6. pont (HU+ES): a kártyaképek MI-vel készült művészi illusztrációk, nem hiteles portrék; panasz
+      esetén levesszük. Spanyol műhely kártyafelirata: „Ilustración creada con IA”. /admin/ (perjellel) is működik.
+- [ ] Pinterest-kampány fut (11.11-ig 9,89 €, 97 kattintás, 0 regisztráció) → link a mintaleckére vagy szüneteltetés.
+- [ ] Látogatottság oldal: Sándor szerint „fura számok” – képet kérni.
+- [ ] Spanyol képek ÚJRA átnézve (Claude, 11.11, Sándor jelezte, hogy az első átnézés felületes volt):
+      ÚJRA kell 10: Goya, Sorolla, Albéniz (fix140) + Torres Quevedo (szakáll hiányzott), Peral (makett + modern
+      tengeralattjáró), Las Casas (rossz szerzetesi ruha – domonkos: fehér + fekete köpeny), Elcano (távcső – akkor
+      még nem volt), Lorca (rossz kéz, furcsa bábu), Ibn Firnas (szárny szoknyaként), Azarquiel (gótikus templom
+      Toledóban 1087 előtt). Promptok javítva (fix141). Rendben: a többi 14 + Cajal, Mutis.
 - [x] fix138: egységes fejléc GÉPEN minden oldalon (fehér kapszula + színes csík, narancs Regisztráció) –
       style.css végén; gyerek-munkamenet és telefon nem változik.
 - [ ] Kártyapontok (Sándor kérdése): most a ritkasághoz kötött – ritka 300–360, nagyon ritka 400–450,

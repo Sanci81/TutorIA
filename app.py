@@ -18530,7 +18530,7 @@ def admin_latogatottsag_letoltes():
                     headers={"Content-Disposition": f'attachment; filename="{fajl}"'})
 
 
-@app.route("/admin")
+@app.route("/admin", strict_slashes=False)   # /admin/ is működjön (Sándor, 11.12)
 @login_required
 def admin_attekintes():
     tiltas = _admin_kapu()

@@ -113,7 +113,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Para saber dónde estaba bajo el agua inventó un aparato propio que le permitía ver la superficie sin salir a ella.",
         "idezet": "Funcionaba. Y aun así lo dejaron en el muelle.",
         "idezet_tipus": "jelmondat",
-        "prompt": "Isaac Peral, dark hair, full dark beard, 19th-century Spanish naval officer uniform with braid. Standing on a stone quay beside a riveted iron submarine with a small conning tower floating in the water, coiled ropes and gas lamps on the dock. Grey Atlantic dawn light."
+        "prompt": "Isaac Peral, dark hair, full dark beard, 19th-century Spanish naval officer uniform with braid. Standing on a stone quay holding a large rolled paper plan of his submarine in both hands, beside his low cigar-shaped 1888 riveted iron submarine floating in the water, with only a very small low conning tower (no tall modern tower, no periscope masts, no small model), coiled ropes and gas lamps on the dock. Grey Atlantic dawn light."
     },
     {
         "id": "es_medio_3_cabrera",
@@ -167,7 +167,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Diseñó el teleférico que cruza el remolino del Niágara. Se abrió en 1916 y más de cien años después sigue llevando pasajeros.",
         "idezet": "Una máquina que piensa el final de la partida, en 1912.",
         "idezet_tipus": "jelmondat",
-        "prompt": "Leonardo Torres Quevedo, white hair, thick white moustache, dark early-1900s suit. Standing beside a wooden chess automaton cabinet with a chessboard on top and exposed brass gears inside, technical drawings and cable-car models on the walls. Warm workshop light."
+        "prompt": "Leonardo Torres Quevedo, elderly man, white hair, thick white moustache AND a short neatly trimmed full white beard, dark early-1900s suit. Standing beside a wooden chess automaton cabinet with a chessboard on top holding only three pieces (two kings and one rook) and exposed brass gears inside, technical drawings and cable-car models on the walls. Warm workshop light."
     },
     {
         "id": "es_medio_3_elcano",
@@ -194,7 +194,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "El emperador le concedió un escudo con un globo terráqueo y una frase en latín: Primus circumdedisti me, «el primero que me rodeaste».",
         "idezet": "Primus circumdedisti me.",
         "idezet_tipus": "idezet",
-        "prompt": "Juan Sebastian Elcano, weathered sunburnt face, short dark beard, 16th-century sailor's coat and cap. On the deck of a battered wooden caravel with torn sails, a large brass globe on the rail beside him, ropes and empty water barrels. Open ocean and low golden light."
+        "prompt": "Juan Sebastian Elcano, weathered sunburnt face, short dark beard, 16th-century sailor's coat and cap. Holding a simple flat brass mariner's astrolabe (a plain ring with a sighting bar – no telescope, no gears, telescopes did not exist yet). On the deck of a battered wooden caravel with torn sails, a rolled sea chart on a barrel beside him, ropes and empty water barrels. No globe. Open ocean and low golden light."
     },
     {
         "id": "es_medio_3_alfonsox",
@@ -221,7 +221,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Mandó calcular unas tablas del movimiento de los astros tan buenas que en Europa se usaron durante casi trescientos años.",
         "idezet": "Que se escriba en la lengua que la gente entiende.",
         "idezet_tipus": "jelmondat",
-        "prompt": "Alfonso X, crowned middle-aged king, trimmed beard, rich red and gold medieval robes. Seated in a scriptorium before a great illuminated manuscript on a lectern, gold letters and star charts on the page, scribes of different cultures working at desks behind him. Warm candlelight on stone arches."
+        "prompt": "Alfonso X, crowned middle-aged king, trimmed beard, rich red and gold medieval robes. Seated in a scriptorium before a great illuminated manuscript on a lectern, gold letters and star charts on the page, scribes of different cultures working at desks behind him. Warm candlelight on stone arches. No terrestrial globe (an armillary sphere is fine)."
     },
     {
         "id": "es_medio_3_lascasas",
@@ -248,7 +248,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Al principio él mismo tuvo tierras y trabajadores a su cargo. Renunció a todo cuando entendió que aquello no podía defenderse.",
         "idezet": "Todos son hombres, y todos tienen los mismos derechos.",
         "idezet_tipus": "jelmondat",
-        "prompt": "Bartolome de las Casas, elderly gaunt face, white beard, tonsure, plain grey Dominican habit. Standing at a table with a heavy open chronicle and a quill resting on the page, a barred window with harsh tropical light outside. Sober muted colours."
+        "prompt": "Bartolome de las Casas, elderly gaunt clean-shaven face (no beard), almost completely bald high domed head, long thin nose, Dominican friar's habit: white tunic and white scapular under a black cloak with a black hood (no rope belt, not brown or grey). Standing at a table with a heavy open chronicle and a quill resting on the page, a barred window with harsh tropical light outside. Sober muted colours."
     },
     {
         "id": "es_matematicas_3_juarismi",
@@ -302,7 +302,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Empezó como artesano fabricando instrumentos para otros astrónomos. Aprendió mirándolos trabajar, hasta que los superó.",
         "idezet": "Un instrumento que funciona en cualquier punto de la Tierra.",
         "idezet_tipus": "jelmondat",
-        "prompt": "Azarquiel, bearded man in an ochre robe and turban. Holding a large engraved brass astrolabe upright on the stone parapet of a rooftop terrace in medieval Toledo at night, engraving tools and charts beside him. Star-filled sky, dark city roofs, deep blue and warm lamp light."
+        "prompt": "Azarquiel, bearded man in an ochre robe and turban. Holding a large engraved brass astrolabe upright on the stone parapet of a rooftop terrace in 11th-century Islamic Toledo at night (flat roofs, city walls, a slender mosque minaret – no Gothic church or cathedral towers), engraving tools and charts beside him. Star-filled sky, dark city roofs, deep blue and warm lamp light."
     },
     {
         "id": "es_matematicas_3_jorgejuan",
@@ -329,7 +329,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "En aquel viaje él y su compañero Antonio de Ulloa describieron por primera vez para la ciencia europea un metal nuevo: el platino.",
         "idezet": "Casi diez años de viaje para medir un solo grado.",
         "idezet_tipus": "jelmondat",
-        "prompt": "Jorge Juan, young officer in an 18th-century Spanish naval coat and tricorn hat. Sighting through a large brass quadrant on a tripod on a high Andean ridge, measuring chains and a survey notebook beside him. Snow-capped mountains, clear pale light."
+        "prompt": "Jorge Juan, young officer in an 18th-century Spanish naval coat and tricorn hat. Sighting through a large brass quadrant on a tripod on a high Andean ridge, measuring chains and a survey notebook beside him. Snow-capped mountains, clear pale light. He wears a short white powdered 18th-century wig under the tricorn."
     },
     {
         "id": "es_matematicas_3_hipatia",
@@ -383,7 +383,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "También montó en su casa una sala que imitaba el cielo, con estrellas, nubes y hasta truenos, para enseñar astronomía.",
         "idezet": "Le faltó la cola, no las ganas.",
         "idezet_tipus": "jelmondat",
-        "prompt": "Abbas Ibn Firnas, older bearded man in a light ochre robe and turban. Standing at the edge of a stone rooftop with a large pair of feathered wooden wings strapped to a frame beside him, the city of Cordoba and the river far below. Warm morning light and a strong wind."
+        "prompt": "Abbas Ibn Firnas, older bearded man in a light ochre robe and turban. Standing at the edge of a stone rooftop holding up a pair of large bird-like wings made of real feathers on a light wooden frame, the wings spread wide to his sides like a glider (not worn around his waist), the city of Cordoba and the river far below. Warm morning light and a strong wind."
     },
     {
         "id": "es_lengua_3_cervantes",
@@ -464,7 +464,7 @@ KARTYAK_ES: list[dict] = [
         "erdekesseg": "Era muy buen pianista. Antes de dedicarse a escribir, recogió y armonizó canciones populares antiguas para que no se perdieran.",
         "idezet": "El teatro es la poesía que se levanta del libro y se hace humana.",
         "idezet_tipus": "idezet",
-        "prompt": "Federico Garcia Lorca, young man, dark hair, thick eyebrows, broad open face, plain blue workman's overall over a shirt. Beside a small wooden travelling stage on the back of an old truck with painted backdrops and a guitar leaning against it, villagers gathering in a village square. Bright dusty afternoon light."
+        "prompt": "Federico Garcia Lorca, young man, dark hair, thick eyebrows, broad open face, plain blue workman's overall over a shirt, holding a rolled theatre script in one hand, both hands natural with five fingers each. Beside a small wooden travelling stage on the back of an old truck with painted backdrops and a guitar leaning against it, villagers gathering in a village square. Bright dusty afternoon light."
     },
     {
         "id": "es_lengua_2_rosalia",
