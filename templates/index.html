@@ -429,12 +429,17 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
         {% if belepve %}
         <a class="fo-gomb" href="{{ url_for('dashboard') }}">{{ t('landing_cta') }} <span class="fo-nyil">→</span></a>
     {% else %}
-        <a class="fo-gomb" href="{{ url_for('register') }}">{{ 'Quiero probarlo gratis' if es else 'Kipróbálom ingyen' }} <span class="fo-nyil">→</span></a>
+        {# fix144 (Sándor, 11.12): a fő gomb előbb a mintaleckére visz – kipróbálja, a végén regisztrál. #}
+        <a class="fo-gomb" href="{{ url_for('mintalecke_valaszt') if mintalecke_be else url_for('register') }}" data-mer="Főoldal: Kipróbálom ingyen">{{ 'Quiero probarlo gratis' if es else 'Kipróbálom ingyen' }} <span class="fo-nyil">→</span></a>
         {% endif %}
         <a class="fo-gomb-ures" href="#hogyan">{{ '¿Cómo funciona?' if es else 'Hogyan működik?' }}</a>
       </div>
       {% if not belepve %}
+      {% if mintalecke_be %}
+      <div class="fo-apro">{% if es %}<b>Gratis, sin dar ningún dato.</b> Si te gusta: 120 minutos gratis, sin tarjeta.{% else %}<b>Ingyenes, semmit nem kell megadni.</b> Ha tetszik: 120 perc ingyen, bankkártya nélkül.{% endif %}</div>
+      {% else %}
       <div class="fo-apro">{% if es %}<b>Los primeros 120 minutos son gratis.</b> No hace falta tarjeta.{% else %}<b>Az első 120 perc ingyen.</b> Bankkártya nem kell.{% endif %}</div>
+      {% endif %}
     {% endif %}
       <div class="fo-bizalom">🛡️ {% if es %}Sin anuncios · No vendemos datos · Sin cookies de seguimiento · La IA no aprende de los datos de tu hijo · <a href="{{ url_for('adatvedelem') }}">Privacidad</a>{% else %}Reklámmentes · Az adatokat nem adjuk el · Nincs követő süti · Az AI nem tanul a gyerek adataiból · <a href="{{ url_for('adatvedelem') }}">Adatvédelem</a>{% endif %}</div>
   </div>

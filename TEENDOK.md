@@ -327,7 +327,12 @@ MÉG HÁTRA (később):
 - [ ] ‼️ FŐ SZIVÁRGÁS: 30 nap alatt 1123 látogató → 157 jutott el a regisztrációs oldalra → csak 2 küldte be.
       A regisztrációs oldal a gond (facebook: 100 a reg. oldalon, 1 regisztrált). Főoldalon a medián idő 5 mp.
       → Regisztráció egyszerűsítése (kevesebb mező, PIN később?) – Sándorral egyeztetni, mielőtt hozzányúlunk.
-- [ ] Sándor 11.12: az oktatási részt mindkét oldalon fejleszteni, több interaktív feladat (HU + ES) – terv kell.
+- [x] fix144 (11.12): főoldali „Kipróbálom ingyen” → mintalecke (/minta), alatta „Ingyenes, semmit nem kell megadni.
+      Ha tetszik: 120 perc ingyen, bankkártya nélkül.” (HU+ES, csak MINTALECKE kapcsolóval). Regisztrációs űrlap marad
+      (Sándor: két jelszó és PIN kell; a „120 perc ingyen” már ott van).
+- [ ] Interaktív feladatok (Sándor 11.12): ~120 típus már van. Hiányok (javaslat, Sándor választ): kémiai egyenlet
+      rendezése (7–8.), szövegértés kiemeléssel (minden évf., HU+ES), diktálás/dictado (helyesírás hanggal), tangram /
+      alakzat-kirakó (1–4.), növény/sejt részeinek feliratozása (3–6.), mértékegység-átváltó létra (3–6.).
 - [ ] Spanyol kártyák: 14 kész a static/kartyak/es-ben; 8 fájlt át kell nevezni (_2, _3, (1), másolata) – parancs megadva.
       Sorolla új képén a vásznon halvány „Fig. 22” felirat.
 - [ ] Spanyol képek ÚJRA átnézve (Claude, 11.11, Sándor jelezte, hogy az első átnézés felületes volt):
