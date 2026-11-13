@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}{% if lang == 'es' %}Blog · TutorIAcademia{% else %}Blog · TutorIAcademia{% endif %}{% endblock %}
+{% block title %}{% if lang == 'es' %}Blog · Profesor de IA para niños de Primaria | TutorIAcademia{% else %}Blog · TutorIAcademia{% endif %}{% endblock %}
 
-{% block meta_description %}{% if lang == 'es' %}Artículos sobre el aprendizaje en línea y el profesor de IA para niños: práctica de matemáticas, feedback paciente y un entorno seguro.{% else %}Cikkek az online tanulásról és az AI tanárról gyerekeknek: matematika gyakorlás, türelmes visszajelzés, biztonságos környezet.{% endif %}{% endblock %}
+{% block meta_description %}{% if lang == 'es' %}Artículos sobre el aprendizaje en línea y el profesor de IA para niños de 1.º a 6.º de Primaria (LOMLOE): práctica de matemáticas, comentarios pacientes y un entorno seguro.{% else %}Cikkek az online tanulásról és az AI tanárról gyerekeknek: matematika gyakorlás, türelmes visszajelzés, biztonságos környezet.{% endif %}{% endblock %}
 
 {% block head_extra %}
 {# BlogPosting – a listán az egyetlen cikk adatai (nincs kitalált értékelés). #}
@@ -12,7 +12,7 @@
   "@type": "BlogPosting",
   "headline": ("Cómo ayuda la IA en el aprendizaje de los niños" if lang == "es" else "Hogyan segít az AI a gyerekek tanulásában?"),
   "datePublished": "2026-09-23",
-  "inLanguage": "hu",
+  "inLanguage": ("es" if lang == "es" else "hu"),
   "author": {"@type": "Organization", "name": "TutorIAcademia"},
   "publisher": {"@type": "Organization", "name": "TutorIAcademia"}
 }|tojson }}
@@ -56,7 +56,7 @@
       <div class="fp-borito"><span>{{ 'Artículo' if lang == 'es' else 'Cikk' }}</span></div>
       {% if lang == 'es' %}
         <h2>Cómo ayuda la IA en el aprendizaje de los niños</h2>
-        <p>Aprendizaje personalizado, feedback paciente y un entorno cerrado, que el padre puede seguir.</p>
+        <p>Aprendizaje personalizado, comentarios pacientes y un entorno cerrado, que puedes seguir tú como padre o madre.</p>
       {% else %}
         <h2>Hogyan segít az AI a gyerekek tanulásában?</h2>
         <p>Személyre szabott tanulás, türelmes visszajelzés, és egy zárt környezet, amit a szülő átlát.</p>

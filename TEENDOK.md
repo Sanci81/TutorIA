@@ -354,8 +354,11 @@ MÉG HÁTRA (később):
       Javítva (chat.html). Spanyol telefonos képernyőképek a főoldalra (app_*_es.jpg).
 - [x] fix152 (SEO): title HU+ES a főoldalon; JSON-LD a főoldalon (EducationalOrganization + WebSite +
       SoftwareApplication); BlogPosting a /blog oldalon és a cikken. Search Console bekötve (Cloudflare),
-      sitemap beküldve. Még nyitott: spanyol útvonalnevek (/es/csomagok → /es/precios), spanyol blog,
+      sitemap beküldve. Még nyitott: spanyol útvonalnevek (/es/csomagok → /es/precios),
       GYIK FAQPage csak a valódi GYIK-szövegből generálva.
+- [x] fix153 (spanyol blog): a magyar cikk ES változata (1.º–6.º Primaria, LOMLOE); title/meta/BlogPosting
+      inLanguage "es"; lábléc Blog link ES-en is; Pruébalo gratis → /es/minta; sitemap + hreflang
+      (HU ↔ ES cikk) már a KERESO_OLDALAK-ból jön.
 - [ ] Szövegértés: évfolyamonként a NAT / LOMLOE olvasási szintje szerint (1–2.: 3–5 mondat; 3–4.: 1 bekezdés;
       5–6.: ismeretterjesztő szöveg; 7–8.: tantárgyi forrásszöveg, következtetés). Bekötés a tanítóba ezután.
 - [ ] Spanyol kártyák: 14 kész a static/kartyak/es-ben; 8 fájlt át kell nevezni (_2, _3, (1), másolata) – parancs megadva.
@@ -705,7 +708,7 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 - [ ] A spanyol oldalak magyar útvonalneveket használnak (`/es/csomagok`,
       `/es/gyik`). Spanyol keresésre rossz; később `/es/precios`,
       `/es/preguntas`. (fix152: még nyitott)
-- [ ] Spanyol blog.
+- [x] Spanyol blog (fix153).
 - [ ] GYIK FAQPage csak a valódi GYIK-szövegből generálva.
 
 ## Tartalom
