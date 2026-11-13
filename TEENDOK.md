@@ -352,6 +352,10 @@ MÉG HÁTRA (később):
 - [x] fix151 (11.12): HIBA – a spanyol leckében ÍROTT módban az AI-tájékoztató („Szia! Mesterséges intelligencia…”),
       a kabala dicsérete és pár feladat-tipp MAGYARUL jelent meg (a chat-frame mező csak hangos módban volt).
       Javítva (chat.html). Spanyol telefonos képernyőképek a főoldalra (app_*_es.jpg).
+- [x] fix152 (SEO): title HU+ES a főoldalon; JSON-LD a főoldalon (EducationalOrganization + WebSite +
+      SoftwareApplication); BlogPosting a /blog oldalon és a cikken. Search Console bekötve (Cloudflare),
+      sitemap beküldve. Még nyitott: spanyol útvonalnevek (/es/csomagok → /es/precios), spanyol blog,
+      GYIK FAQPage csak a valódi GYIK-szövegből generálva.
 - [ ] Szövegértés: évfolyamonként a NAT / LOMLOE olvasási szintje szerint (1–2.: 3–5 mondat; 3–4.: 1 bekezdés;
       5–6.: ismeretterjesztő szöveg; 7–8.: tantárgyi forrásszöveg, következtetés). Bekötés a tanítóba ezután.
 - [ ] Spanyol kártyák: 14 kész a static/kartyak/es-ben; 8 fájlt át kell nevezni (_2, _3, (1), másolata) – parancs megadva.
@@ -689,6 +693,8 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 
 ## SEO — amit a 2026-09-27-i kör NEM ért el
 
+- [x] fix152: title HU+ES; JSON-LD főoldal; BlogPosting (/blog + cikk).
+      Search Console bekötve (Cloudflare), sitemap beküldve.
 - [ ] **Hreflang sehol nincs kint.** A magyar főoldalon, a spanyol
       főoldalon és a blogcikken sem találtam. A sitemapban sincsenek
       `xhtml:link` sorok. Enélkül a Google két különálló, azonos tartalmú
@@ -698,7 +704,9 @@ Kell hozzá: témakörönként (utolsó_siker, következő_esedékes) — egy t�
 - [ ] A `/login` és a `/register` fölösleges a sitemapban.
 - [ ] A spanyol oldalak magyar útvonalneveket használnak (`/es/csomagok`,
       `/es/gyik`). Spanyol keresésre rossz; később `/es/precios`,
-      `/es/preguntas`.
+      `/es/preguntas`. (fix152: még nyitott)
+- [ ] Spanyol blog.
+- [ ] GYIK FAQPage csak a valódi GYIK-szövegből generálva.
 
 ## Tartalom
 

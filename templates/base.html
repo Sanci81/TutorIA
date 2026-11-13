@@ -60,6 +60,7 @@
     {% for _kod, _cim in hreflang %}
     <link rel="alternate" hreflang="{{ _kod }}" href="{{ _cim }}">
     {%- endfor %}
+    {% block head_extra %}{% endblock %}
 </head>
 {# A gyerek háttere CSAK a gyerek saját oldalain van. A bemutató oldalon
    nincs (ott a felső szakasz mögött van a saját mintája), különben a jelek

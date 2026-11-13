@@ -15,6 +15,48 @@
    magyaron (amíg nincs spanyol képernyőkép és kártya). A 2–3. lépés képe
    helyett ugyanaz HTML-ben, spanyolul. Spanyol osztályok: 1–6. #}
 
+{% block title %}{% if lang == 'es' %}TutorIAcademia – Profesor de IA para niños de 1.º a 6.º de Primaria | 120 min gratis{% else %}TutorIAcademia – AI-tanár gyerekeknek, 1–8. osztály | 120 perc ingyen{% endif %}{% endblock %}
+
+{% block head_extra %}
+{# Strukturált adat (JSON-LD) – csak a főoldalon. Nincs aggregateRating / review / FAQPage / sameAs. #}
+{% set es = (lang == 'es') %}
+{% set _site_url = 'https://tutoriacademia.com/es/' if es else 'https://tutoriacademia.com/' %}
+{% set _logo = url_for('static', filename='img/tutoria_logo.png', _external=True) %}
+{% set _app_desc = 'Profesor de IA para niños de 1.º a 6.º de Primaria, según el currículo LOMLOE. 120 minutos de prueba gratis, sin tarjeta.' if es else 'AI-tanár 1–8. osztályos gyerekeknek, az évfolyam témakörei szerint. 120 perc ingyenes kipróbálás, bankkártya nélkül.' %}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "EducationalOrganization",
+      "name": "TutorIAcademia",
+      "url": _site_url,
+      "logo": _logo
+    },
+    {
+      "@type": "WebSite",
+      "name": "TutorIAcademia",
+      "url": _site_url
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "TutorIAcademia",
+      "url": _site_url,
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "es" if es else "hu",
+      "description": _app_desc,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    }
+  ]
+}|tojson }}
+</script>
+{% endblock %}
+
 {% block content %}
 {% set es = (lang == 'es') %}
 {% set belepve = session.get('parent_id') %}

@@ -4,6 +4,20 @@
 
 {% block meta_description %}{% if lang == 'es' %}La inteligencia artificial en la educación: aprendizaje personalizado, feedback paciente y un entorno seguro. Práctica de matemáticas y aprendizaje en línea con un profesor de IA.{% else %}Hogyan segít az AI a gyerekek tanulásában: személyre szabott tanulás, türelmes visszajelzés, biztonságos környezet. Matematika gyakorlás és online tanulás AI tanárral.{% endif %}{% endblock %}
 
+{% block head_extra %}
+<script type="application/ld+json">
+{{ {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": ("Cómo ayuda la IA en el aprendizaje de los niños" if lang == "es" else "Hogyan segít az AI a gyerekek tanulásában?"),
+  "datePublished": "2026-09-23",
+  "inLanguage": "hu",
+  "author": {"@type": "Organization", "name": "TutorIAcademia"},
+  "publisher": {"@type": "Organization", "name": "TutorIAcademia"}
+}|tojson }}
+</script>
+{% endblock %}
+
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/fo_oldalak.css') }}">
 <style>
@@ -126,7 +140,7 @@
 
       <div class="cikk-cta">
         <p>Si quieres probar una lección de verdad con el profesor de IA, el registro es el siguiente paso. La demostración de matemáticas se puede abrir sin cuenta.</p>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Quiero probarlo gratis</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('mintalecke_valaszt') }}">Pruébalo gratis</a>
       </div>
     {% else %}
       <p>Egy gyerek nem ugyanakkor fárad el, nem ugyanott akad el, és nem ugyanazt a magyarázatot érti meg, mint a padtársa. Az iskolában egy tanár húsz-harminc gyerek között osztja meg a figyelmét. Otthon a szülő gyakran munka után ül le a lecke mellé, és közben főz, vagy a kisebb testvérre is figyel. Ebben a résben tud hasznos lenni a mesterséges intelligencia: nem helyettesíti a tanárt és a szülőt. Ad egy nyugodt helyet, ahol még egy kört lehet gyakorolni, amikor a gyereknek éppen arra van szüksége.</p>
@@ -162,7 +176,7 @@
 
       <div class="cikk-cta">
         <p>Ha egy igazi leckét is ki szeretnél próbálni az AI tanárral, a regisztráció a következő lépés. A matematika demót fiók nélkül is meg lehet nyitni.</p>
-        <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Kipróbálom ingyen</a>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('mintalecke_valaszt') }}">Próbáld ki ingyen</a>
       </div>
     {% endif %}
   </div>
