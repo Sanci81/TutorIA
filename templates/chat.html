@@ -11759,7 +11759,8 @@
         params.set('mode', chatMode);
         var lang = getChatLanguage();
         if (lang) params.set('language', lang);
-        window.location.href = '/children/' + childId + '/chat?' + params.toString();
+        // fix165: a spanyol oldalon a spanyol címre (/es/hijos/5/clase)
+        window.location.href = {{ url_for('child_chat', child_id=0)|tojson }}.replace('/0/', '/' + childId + '/') + '?' + params.toString();
     }
 
     function bindTopicClicks() {

@@ -1005,7 +1005,7 @@ def _erdeklodes_visszaigazolas(cimzett: str, kulcs: str, nyelv: str) -> None:
             "suscribir, te escribimos a esta dirección — antes no.\n\n"
             "Esto no es un pago ni un compromiso: puedes cambiar de opinión "
             "cuando quieras.\n\n"
-            f"{_oldal_url('/csomagok')}\n\nTutorIA"
+            f"{_oldal_url(nyelv_utvonal.nyelvi_cim('/csomagok', 'es'))}\n\nTutorIA"
         )
     else:
         targy = "TutorIA – szólunk, amikor indul"
@@ -1031,7 +1031,7 @@ def _indulas_level(cimzett: str, kulcs: str, nyelv: str, leiratkozo: str) -> boo
             "Nos pediste que te avisáramos cuando se pudiera suscribir a "
             f"TutorIA. Ya está: el plan {nev} —y los demás— se pueden "
             "contratar desde aquí:\n\n"
-            f"{_oldal_url('/csomagok')}\n\n"
+            f"{_oldal_url(nyelv_utvonal.nyelvi_cim('/csomagok', 'es'))}\n\n"
             "El progreso, las monedas y las cartas de tu hijo o hija siguen "
             "donde estaban.\n\nTutorIA"
         )
@@ -2931,11 +2931,15 @@ def _leiratkozo_jel():
     return URLSafeSerializer(app.config["SECRET_KEY"], salt="ertesites")
 
 
-def _leiratkozo_url(parent_id: int) -> str:
+def _leiratkozo_url(parent_id: int, nyelv: str | None = None) -> str:
     try:
-        return url_for("ertesites_leiratkozas",
-                       jegy=_leiratkozo_jel().dumps(int(parent_id)),
-                       _external=True)
+        cim = url_for("ertesites_leiratkozas",
+                      jegy=_leiratkozo_jel().dumps(int(parent_id)),
+                      _external=True)
+        if nyelv:   # fix165: a levél nyelvén (spanyolnak /es/baja/…)
+            r = urllib.parse.urlsplit(cim)
+            cim = urllib.parse.urlunsplit(r._replace(path=nyelv_utvonal.nyelvi_cim(r.path, nyelv)))
+        return cim
     except Exception:
         return ""
 
@@ -3008,7 +3012,8 @@ def teszt_emlekezteto():
         # A TESZTLEVÉL LINKJEI A PRÓBAOLDALRA mutatnak (ahonnan küldted) –
         # az éles levél linkjei a főoldalra.
         alap = request.host_url.rstrip("/")
-        leir = alap + "/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(pid))
+        leir = alap + nyelv_utvonal.nyelvi_cim(   # fix165: spanyolnak spanyol cím
+            "/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(pid)), g.lang)
         fizetos, maradek = _emlekezteto_adatok(sz, date.today())
         ma = date.today()
         utolso = max([d for d in (sz.get("utolso_tanulas"), sz.get("regisztralt")) if d] or [ma])
@@ -3095,7 +3100,7 @@ def feladat_ertesites():
             jelentes,
             nyelv=_szulo_level_nyelve(szulo["id"]),   # fix162: a család nyelvén, nem az oldal alapnyelvén
             app_url=url_for("index", _external=True),
-            leiratkozo_url=_leiratkozo_url(szulo["id"]))
+            leiratkozo_url=_leiratkozo_url(szulo["id"], _szulo_level_nyelve(szulo["id"])))
         if proba:
             szam["kuldenenk"] += 1
             kimenet.append(f'{_takart(szulo["email"])}: KÜLDENÉNK – {targy}')
@@ -14950,7 +14955,8 @@ def child_chat(child_id: int):
         if _admin_kapu() is None:
             _es_t = (_active_curriculum() or "HU").upper() == "ES"
             _proba_lista = [(t, "alap feladat") for t in _alap_feladat_peldak(_es_t)] + [
-                (f[0], (f[7] if _es_t else f[6]).split("→")[0].strip()) for f in _DM_FELULETEK]
+                (f[0], (f[7] if _es_t else f[6]).split("→")[0].strip()) for f in _DM_FELULETEK
+                if (f[7] if _es_t else f[6])]   # fix165: csak-magyar típus (pl. egyenlet) ne döntse el a spanyol listát
             _proba_feladat = _proba_feladat_keszit(request.args.get("proba"), grade_num, _es_t, language)
     except Exception:
         logger.exception("Feladat-proba hiba")
@@ -19206,7 +19212,7 @@ def _keret_level(cimzett: str, nyelv: str, ingyenes: bool, *, perc: float = 0,
     gomb, egy narancs doboz. A próbában nincs album/kártya, ezért ott csak a haladást írjuk.
     Tesztidőszakban (FIZETES_ELERHETO nélkül) nem „vásárolj”, hanem „jelezd, melyik érdekel”."""
     alap = (alap or _oldal_url("/")).rstrip("/")
-    csomag_url = alap + "/csomagok"
+    csomag_url = alap + nyelv_utvonal.nyelvi_cim("/csomagok", nyelv)   # fix165
     kep = alap + ("/static/email/tanito_es.gif" if nyelv == "es" else "/static/email/tanito_hu.gif")
     from markupsafe import escape as e
     jogi = _jogi_adatok()
@@ -19379,7 +19385,7 @@ def _emlekezteto_level(cimzett: str, nyelv: str, hanyadik: int, leiratkozo: str,
     levél a CSOMAGHOZ igazodik (próbában nincs kártya/album), és ha még nincs
     gyerek felvéve, arra biztat. Nevet csak biztos keresztnévnél ír."""
     alap = (alap or _oldal_url("/")).rstrip("/")
-    folytat = folytat or (alap + "/dashboard")
+    folytat = folytat or (alap + nyelv_utvonal.nyelvi_cim("/dashboard", nyelv))   # fix165
     kep = alap + ("/static/email/tanito_es.gif" if nyelv == "es" else "/static/email/tanito_hu.gif")
     from markupsafe import escape as e
     perc = int(max(0, round(maradek_perc)))
@@ -19500,7 +19506,9 @@ def _emlekezteto_kor() -> None:
                 continue
             if csomagok.egyszeri(kulcs) and sz.get("perc_ossz", 0) >= csomagok.havi_perc(kulcs):
                 continue
-            leir = _oldal_url("/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(sz["id"])))
+            leir = _oldal_url(nyelv_utvonal.nyelvi_cim(   # fix165
+                "/leiratkozas-emlekezteto/" + _emlekezteto_jel().dumps(int(sz["id"])),
+                sz.get("nyelv") or "hu"))
             fizetos, maradek = _emlekezteto_adatok(sz, ma)
             nyelv = sz.get("nyelv") or "hu"
             nevek, gyerek_db = _emlekezteto_nevek(sz["id"], nyelv)
@@ -19589,7 +19597,7 @@ def _megujitas_kor() -> None:
                 app.logger.warning("Megujitasi ertesito KESVE (%s nap): %s", (fordulo - ma).days, sz["email"])
             nyelv = sz.get("nyelv") or "hu"
             if _megujitas_level(sz["email"], nyelv, csomagok.nev(kulcs, nyelv),
-                                csomagok.ar(kulcs), fordulo, _oldal_url("/fiok")):
+                                csomagok.ar(kulcs), fordulo, _oldal_url(nyelv_utvonal.nyelvi_cim("/fiok", nyelv))):
                 database.megujitas_ertesitve_jelol(sz["id"], fordulo)
                 app.logger.warning("Megujitasi ertesito kiment: %s (%s)", sz["email"], fordulo)
         except Exception:                                  # pragma: no cover
@@ -19789,7 +19797,7 @@ def admin_indulas_level():
     ment, nem_ment = 0, 0
     for sor in varok:
         if _indulas_level(sor["email"], sor["csomag"], sor["nyelv"],
-                          _leiratkozo_url(sor["id"])):
+                          _leiratkozo_url(sor["id"], sor.get("nyelv"))):
             database.erdeklodes_ertesitve_jelol(sor["id"])
             ment += 1
         else:

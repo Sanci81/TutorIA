@@ -60,11 +60,47 @@ SPANYOL_CIMEK: dict[str, str] = {
     "/fiok/torles": "/mi-cuenta/borrar",
     "/szuloi-pin": "/pin-parental",
     "/szuloi-pin/elfelejtettem": "/pin-parental/olvidado",
-    "/children/add": "/hijos/nuevo",
+    # fix165: minden látható spanyol cím
+    "/logout": "/salir",
+    "/lang": "/idioma",
+    "/szuloi-pin/bezar": "/pin-parental/cerrar",
+    "/leiratkozas": "/baja",
+    "/leiratkozas-emlekezteto": "/baja-recordatorio",
+    "/megerosites": "/confirmar",
+    "/megerosites-ujra": "/confirmar-de-nuevo",
+    "/reset-password": "/restablecer-contrasena",
+    "/ertesites/beallit": "/avisos/ajustar",
+    "/emlekezteto/valt": "/recordatorio/cambiar",
+    "/csomagok/erdekel": "/precios/me-interesa",
+    "/csomagok/most-nem": "/precios/ahora-no",
+    "/ne-merj": "/no-medir",
+    "/fiok/pin": "/mi-cuenta/pin",
     "/blog/hogyan-segit-az-ai-a-gyerekek-tanulasaban":
         "/blog/como-ayuda-la-ia-al-aprendizaje-de-los-ninos",
 }
 _SPANYOLBOL = {v: k for k, v in SPANYOL_CIMEK.items()}
+
+# fix165: a gyerekek oldalai (/children/5/chat → /hijos/5/clase). Itt nem az
+# eleje, hanem MINDEN szó fordul, a szám (gyerek-azonosító) marad. A párosítás
+# kölcsönösen egyértelmű – két szó soha nem fordulhat ugyanarra.
+GYEREK_ELO = ("/children", "/hijos")
+GYEREK_SZAVAK: dict[str, str] = {
+    "add": "nuevo", "chat": "clase", "progress": "progreso", "send": "enviar",
+    "test": "prueba", "generate": "generar", "submit": "entregar",
+    "edit": "editar", "tasks": "tareas", "check": "comprobar",
+    "regenerate": "regenerar", "torles": "borrar", "vocabulary": "vocabulario",
+    "gyujtemeny": "coleccion", "kinezet": "apariencia", "valasztas": "eleccion",
+    "vasarlas": "compra", "bolt": "tienda", "beragaszt": "pegar",
+    "album": "album", "avatar": "avatar",
+}
+_GYEREK_VISSZA = {v: k for k, v in GYEREK_SZAVAK.items()}
+
+
+def _gyerek_csere(ut: str, honnan: str, hova: str, szavak: dict[str, str]) -> str | None:
+    if ut != honnan and not ut.startswith(honnan + "/"):
+        return None
+    reszek = ut[len(honnan):].split("/")
+    return hova + "/".join(szavak.get(r, r) for r in reszek)
 
 
 def _csere(ut: str, szotar: dict[str, str]) -> str | None:
@@ -77,12 +113,18 @@ def _csere(ut: str, szotar: dict[str, str]) -> str | None:
 
 def spanyolra(ut: str) -> str:
     """Belső (magyar) útvonal → spanyol cím. Ha nincs fordítása, marad."""
-    return _csere(ut, SPANYOL_CIMEK) or ut
+    if not SPANYOL_CIMEK:
+        return ut
+    return (_gyerek_csere(ut, GYEREK_ELO[0], GYEREK_ELO[1], GYEREK_SZAVAK)
+            or _csere(ut, SPANYOL_CIMEK) or ut)
 
 
 def spanyolbol(ut: str) -> str:
     """Spanyol cím → belső útvonal. Ha nem spanyol cím, marad."""
-    return _csere(ut, _SPANYOLBOL) or ut
+    if not SPANYOL_CIMEK:
+        return ut
+    return (_gyerek_csere(ut, GYEREK_ELO[1], GYEREK_ELO[0], _GYEREK_VISSZA)
+            or _csere(ut, _SPANYOLBOL) or ut)
 
 
 def kimeno_cim(cim: str) -> str:
