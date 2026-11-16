@@ -356,6 +356,21 @@ MÉG HÁTRA (később):
       SoftwareApplication); BlogPosting a /blog oldalon és a cikken. Search Console bekötve (Cloudflare),
       sitemap beküldve. Még nyitott: spanyol útvonalnevek (/es/csomagok → /es/precios),
       GYIK FAQPage csak a valódi GYIK-szövegből generálva.
+- [ ] ‼️ JOGI – „Az Ön Európája” válasz (2026-11-15) alapján, a fizetés bekötése ELŐTT:
+      • ÁFA: elektronikus szolgáltatás (automatizált távoktatás). Uniós határon átnyúló B2C eladás összesen
+        10 000 € (áfa nélkül, naptári év) alatt: spanyol IVA; fölötte a vevő országáé (HU: magyar áfa) – OSS
+        (spanyol AEAT) vagy NAV-regisztráció. Spanyol vevőnek mindig spanyol IVA. Számla minden eladásról.
+      • ELÁLLÁS: a fizetésnél 3 dolog kell: (1) pipa: kéri, hogy azonnal induljon, (2) pipa: tudomásul veszi az
+        elállási jog elvesztését/korlátozását, (3) visszaigazoló e-mail erről. FIGYELEM: a TutorIA inkább
+        „digitális SZOLGÁLTATÁS” (előfizetés), ott elálláskor az addig használt rész arányos díja jár, a jog nem
+        szűnik meg teljesen – jogász/gestoría döntsön. Új EU-szabály (2023/2673 irányelv, 2026-06-19-től):
+        online szerződésnél kötelező „elállás itt” gomb – ellenőrizni.
+      • GDPR korhatár: HU 16, ES 14 – nálunk a szülő hozza létre a fiókot és mindig ő járul hozzá → rendben
+        (nyilvántartás frissítve 11.16).
+      • Emlékeztető levél (7./21. nap): jogos érdek + LIA kész (jogi/LIA_emlekezteto_level.md); reklám NEM
+        kerülhet bele.
+- [ ] GEO (AI-keresők ajánlása): tényszerű, jól tagolt oldalak és blog, JSON-LD (kész), említés más oldalakon
+      (iskolai/szülői fórumok, katalógusok). Később.
 - [x] fix153 (spanyol blog): a magyar cikk ES változata (1.º–6.º Primaria, LOMLOE); title/meta/BlogPosting
       inLanguage "es"; lábléc Blog link ES-en is; Pruébalo gratis → /es/minta; sitemap + hreflang
       (HU ↔ ES cikk) már a KERESO_OLDALAK-ból jön.
