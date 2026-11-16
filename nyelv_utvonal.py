@@ -32,6 +32,71 @@ ELOTAGOK: dict[str, str] = {
 # A kérés megjelölése ezen a kulcson megy át a Flask felé.
 KULCS = "tutoria.nyelv"
 
+# ── SPANYOL CÍMEK (fix163, SEO) ──────────────────────────────────────────
+# A spanyol oldal eddig magyar szavakkal élt (/es/csomagok). A spanyol
+# kereső a címben lévő szavakat is nézi, ezért spanyol cím kell. A program
+# BELÜL továbbra is a magyar útvonalat használja – ez a réteg fordít oda-
+# vissza: bejövő /es/precios → /csomagok, kimenő url_for /es/csomagok →
+# /es/precios. A régi /es/csomagok címek 301-gyel átirányítanak (a Google
+# így átviszi az eddigi értékelést). Kikapcsolás: SPANYOL_CIMEK = {}.
+# Bővíteni csak ide kell. Az alcímek is fordulnak (/minta/3 → /clase-de-prueba/3).
+SPANYOL_CIMEK: dict[str, str] = {
+    "/csomagok": "/precios",
+    "/register": "/registro",
+    "/login": "/iniciar-sesion",
+    "/gyik": "/preguntas-frecuentes",
+    "/adatvedelem": "/privacidad",
+    "/feltetelek": "/condiciones",
+    "/impresszum": "/aviso-legal",
+    "/hogy-megy": "/como-funciona",
+    "/minta": "/clase-de-prueba",
+    "/forgot-password": "/recuperar-contrasena",
+    "/blog/hogyan-segit-az-ai-a-gyerekek-tanulasaban":
+        "/blog/como-ayuda-la-ia-al-aprendizaje-de-los-ninos",
+}
+_SPANYOLBOL = {v: k for k, v in SPANYOL_CIMEK.items()}
+
+
+def _csere(ut: str, szotar: dict[str, str]) -> str | None:
+    """A leghosszabb illeszkedő elejét cseréli (pontos egyezés vagy alcím)."""
+    for kulcs in sorted(szotar, key=len, reverse=True):
+        if ut == kulcs or ut.startswith(kulcs + "/"):
+            return szotar[kulcs] + ut[len(kulcs):]
+    return None
+
+
+def spanyolra(ut: str) -> str:
+    """Belső (magyar) útvonal → spanyol cím. Ha nincs fordítása, marad."""
+    return _csere(ut, SPANYOL_CIMEK) or ut
+
+
+def spanyolbol(ut: str) -> str:
+    """Spanyol cím → belső útvonal. Ha nem spanyol cím, marad."""
+    return _csere(ut, _SPANYOLBOL) or ut
+
+
+def kimeno_cim(cim: str) -> str:
+    """url_for eredménye: ha /es/ alatti lap, a spanyol szót teszi bele.
+    Sima (/es/...) és teljes (https://…/es/...) címmel is működik."""
+    if not SPANYOL_CIMEK:
+        return cim
+    for elo, ny in ELOTAGOK.items():
+        if ny != "es":
+            continue
+        if "://" in cim:
+            eleje, _, maradek = cim.partition("://")
+            gep, per, ut = maradek.partition("/")
+            if not per:
+                return cim
+            uj = kimeno_cim("/" + ut)
+            return f"{eleje}://{gep}{uj}"
+        ut, kerdo, query = cim.partition("?")
+        ut, hash_, horgony = ut.partition("#")
+        if ut.startswith(elo + "/") and not ut.startswith(elo + "/static/"):
+            ut = elo + spanyolra(ut[len(elo):])
+        return ut + hash_ + horgony + kerdo + query
+    return cim
+
 
 class NyelvElotag:
     """WSGI köztes réteg: a nyelvi előtagot leszedi a címről."""
@@ -46,9 +111,22 @@ class NyelvElotag:
             # második fele nélkül egy „/estebanjaimes" nevű útvonal is
             # beleesne – ilyen ma nincs, de egyszer lehet.
             if utvonal == elotag or utvonal.startswith(elotag + "/"):
+                belso = utvonal[len(elotag):] or "/"
+                if nyelv == "es" and SPANYOL_CIMEK:
+                    spanyol = spanyolra(belso)
+                    # Régi, magyar szavas cím a spanyol oldalon → 301 az újra.
+                    if (spanyol != belso
+                            and environ.get("REQUEST_METHOD", "GET") in ("GET", "HEAD")):
+                        cel = environ.get("SCRIPT_NAME", "") + elotag + spanyol
+                        if environ.get("QUERY_STRING"):
+                            cel += "?" + environ["QUERY_STRING"]
+                        start_response("301 Moved Permanently",
+                                       [("Location", cel), ("Content-Length", "0")])
+                        return [b""]
+                    belso = spanyolbol(belso)
                 environ["SCRIPT_NAME"] = (
                     environ.get("SCRIPT_NAME", "") + elotag)
-                environ["PATH_INFO"] = utvonal[len(elotag):] or "/"
+                environ["PATH_INFO"] = belso
                 environ[KULCS] = nyelv
                 break
         return self._wsgi_app(environ, start_response)
@@ -68,7 +146,7 @@ def alap_utvonal(utvonal: str) -> str:
     """
     for elotag in ELOTAGOK:
         if utvonal == elotag or utvonal.startswith(elotag + "/"):
-            return utvonal[len(elotag):] or "/"
+            return spanyolbol(utvonal[len(elotag):] or "/")   # fix163
     return utvonal or "/"
 
 
@@ -83,7 +161,10 @@ def elotag(nyelv: str) -> str:
 def nyelvi_cim(utvonal: str, nyelv: str) -> str:
     """Ugyanaz a tartalom a kért nyelv címén. A hreflang és a nyelvváltó
     gomb is ezt használja, hogy a kettő soha ne mondjon mást."""
-    return (elotag(nyelv) + alap_utvonal(utvonal)) or "/"
+    alap = alap_utvonal(utvonal)
+    if nyelv == "es":
+        alap = spanyolra(alap)                                  # fix163
+    return (elotag(nyelv) + alap) or "/"
 
 
 def statikus_elotag_nelkul(cim: str) -> str:

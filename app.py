@@ -458,7 +458,7 @@ def meres_fogad():
                 continue
             oldal = re.sub(r"[^\w/\-]", "", str(t.get("p") or "/"))[:60] or "/"
             if oldal.startswith("/es/") or oldal == "/es":
-                oldal = oldal[3:] or "/"
+                oldal = nyelv_utvonal.alap_utvonal(oldal)   # fix163: /es/precios → /csomagok
             cimke = re.sub(r"\s+", " ", str(t.get("c") or "")).strip()[:60]
             try:
                 ertek = int(float(t.get("v") or 0))
@@ -539,6 +539,17 @@ app.config["PREFERRED_URL_SCHEME"] = os.environ.get("PREFERRED_URL_SCHEME", "htt
 # kellett megduplázni. A részletek a nyelv_utvonal.py-ban vannak.
 app.wsgi_app = nyelv_utvonal.NyelvElotag(app.wsgi_app)
 
+# fix163: a spanyol lapok linkjei spanyol szavas címre mutassanak
+# (/es/precios, nem /es/csomagok). A flask.url_for is ezt hívja.
+_app_url_for_eredeti = app.url_for
+
+
+def _app_url_for_spanyol(endpoint, *args, **ertekek):
+    return nyelv_utvonal.kimeno_cim(_app_url_for_eredeti(endpoint, *args, **ertekek))
+
+
+app.url_for = _app_url_for_spanyol
+
 # A CSS és a képek viszont EGY címen éljenek. A fenti réteg a lapokra
 # ráteszi az előtagot (ez a cél), de a fájloknál ez csak annyit érne el,
 # hogy aki mindkét nyelvet megnézi, kétszer töltse le ugyanazt a CSS-t.
@@ -608,7 +619,10 @@ def inject_helpers():
     # onnantól a Facebooknak le KELL töltenie, mert még sosem látta.
     og_kepfajl = "img/og_es2.png" if g.lang == "es" else "img/og_hu3.png"
     try:
-        og_url = _oldal_url(request.path or "/")
+        # fix163: a spanyol lap kanonikus címe a SPANYOL cím legyen (eddig a
+        # magyarra mutatott, így a Google a spanyolt a magyar másolatának hitte).
+        og_url = _oldal_url(nyelv_utvonal.nyelvi_cim(
+            request.path or "/", nyelv_utvonal.nyelv_a_cimbol(request.environ) or "hu"))
         # A Python-beli url_for NINCS átkötve: a Jinja-s igen. Itt ezért
         # kézzel kell levenni az /es előtagot, különben a Facebook-kép
         # /es/static/ alá kerül, és a gyorstár kétszer töltené.
@@ -2388,6 +2402,13 @@ def robots_txt():
         "Disallow: /fiok",
         "Disallow: /children/",
         "Disallow: /hogy-megy",
+        # fix163: ugyanezek a spanyol oldalon
+        "Disallow: /es/admin",
+        "Disallow: /es/api/",
+        "Disallow: /es/dashboard",
+        "Disallow: /es/fiok",
+        "Disallow: /es/children/",
+        "Disallow: /es/como-funciona",
         f"Sitemap: {_kereso_alap_url()}/sitemap.xml",
     ]
     return Response("\n".join(sorok) + "\n", mimetype="text/plain")
