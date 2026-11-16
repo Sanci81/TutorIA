@@ -51,6 +51,16 @@ SPANYOL_CIMEK: dict[str, str] = {
     "/hogy-megy": "/como-funciona",
     "/minta": "/clase-de-prueba",
     "/forgot-password": "/recuperar-contrasena",
+    # fix164: a szülői oldalak is (a gyerekek oldalai /children/… maradnak –
+    # azokat a kereső nem látja, és a chat sok helyen épít rájuk).
+    "/dashboard": "/panel",
+    "/fiok": "/mi-cuenta",
+    "/fiok/adatok": "/mi-cuenta/datos",
+    "/fiok/adatok.pdf": "/mi-cuenta/datos.pdf",
+    "/fiok/torles": "/mi-cuenta/borrar",
+    "/szuloi-pin": "/pin-parental",
+    "/szuloi-pin/elfelejtettem": "/pin-parental/olvidado",
+    "/children/add": "/hijos/nuevo",
     "/blog/hogyan-segit-az-ai-a-gyerekek-tanulasaban":
         "/blog/como-ayuda-la-ia-al-aprendizaje-de-los-ninos",
 }

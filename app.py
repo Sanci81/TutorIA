@@ -860,6 +860,16 @@ def _van_pin() -> bool:
     return bool(szulo and szulo.get("szuloi_pin"))
 
 
+def _tovabb_cim() -> str:
+    """fix164: a PIN utáni visszatérés címe a NYELVI ELŐTAGGAL és a spanyol
+    szóval (/es/mi-cuenta), és a végén nincs üres „?”. Eddig /fiok? ment a
+    spanyol szülőnek is, és a PIN után prefix nélküli címre esett vissza."""
+    cim = nyelv_utvonal.kimeno_cim((request.script_root or "") + (request.path or "/"))
+    if request.query_string:
+        cim += "?" + request.query_string.decode("utf-8", "ignore")
+    return cim
+
+
 def pin_required(view):
     """Szülői rész: PIN kell hozzá, ha a fiókhoz be van állítva."""
     @wraps(view)
@@ -868,7 +878,7 @@ def pin_required(view):
             flash(i18n.t("flash_login_required", g.lang), "info")
             return redirect(url_for("login"))
         if _van_pin() and not _pin_ervenyes():
-            return redirect(url_for("szuloi_pin", tovabb=request.full_path))
+            return redirect(url_for("szuloi_pin", tovabb=_tovabb_cim()))
         return view(*args, **kwargs)
 
     return wrapped
@@ -2207,6 +2217,7 @@ def register():
                 flash(i18n.t("flash_email_taken", g.lang), "error")
                 return render_template("register.html", email=email)
             _latogatas_esemeny("regisztralt")
+            database.szulo_nyelv_beallit(parent_id, g.lang)   # fix164: levelek nyelve gyerek nélkül is
             if not _megerosito_level(parent_id, email.strip().lower(), g.lang):
                 logger.error("Megerősítő levél NEM ment ki: %s", email)
             return render_template("megerosites.html", email=email.strip().lower())
@@ -2220,6 +2231,7 @@ def register():
             return render_template("register.html", email=email)
 
         _latogatas_esemeny("regisztralt")
+        database.szulo_nyelv_beallit(parent_id, g.lang)   # fix164
         session["parent_id"] = parent_id
         _pin_megujit()          # regisztráció után ne kérje rögtön újra
         flash(i18n.t("flash_registered", g.lang), "success")
@@ -2409,6 +2421,10 @@ def robots_txt():
         "Disallow: /es/fiok",
         "Disallow: /es/children/",
         "Disallow: /es/como-funciona",
+        "Disallow: /es/panel",
+        "Disallow: /es/mi-cuenta",
+        "Disallow: /es/hijos/",
+        "Disallow: /es/pin-parental",
         f"Sitemap: {_kereso_alap_url()}/sitemap.xml",
     ]
     return Response("\n".join(sorok) + "\n", mimetype="text/plain")
@@ -3321,7 +3337,7 @@ def _gyerek_kapu(child_id: int):
         # visszalépés az ő művelete, nem a gyereké.
         session.pop(_PIN_KULCS, None)
         return None
-    return redirect(url_for("szuloi_pin", tovabb=request.full_path))
+    return redirect(url_for("szuloi_pin", tovabb=_tovabb_cim()))
 
 
 @app.route("/dashboard")
@@ -16042,6 +16058,9 @@ def _szulo_level_nyelve(parent_id: int) -> str:
         gyerekek = []
     tant = {str(k.get("curriculum") or k.get("country") or "HU").upper() for k in gyerekek}
     if not tant:
+        regisztralt = database.szulo_nyelve(parent_id)          # fix164
+        if regisztralt in ("hu", "es"):
+            return regisztralt
         return "es" if (os.environ.get("ALAP_NYELV") or "hu") == "es" else "hu"
     return "es" if tant == {"ES"} else "hu"
 

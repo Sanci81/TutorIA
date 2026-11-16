@@ -769,7 +769,7 @@ def szulok_keret_allapota() -> list[dict]:
 
         ki = []
         for p in db.scalars(select(Parent)).all():
-            tant = tantervek.get(p.id) or {"HU"}
+            tant = tantervek.get(p.id)
             ki.append({
                 "id": p.id,
                 "email": p.email,
@@ -788,7 +788,9 @@ def szulok_keret_allapota() -> list[dict]:
                 "megujitas_ertesitve": p.megujitas_ertesitve,
                 "megerositesre_var": bool(p.megerositesre_var),
                 # Ha a családnak CSAK spanyol tantervű gyereke van, spanyolul írunk.
-                "nyelv": "es" if tant == {"ES"} else "hu",
+                # fix164: gyerek nélkül a regisztráció nyelvén (eddig mindig magyar).
+                "nyelv": (("es" if tant == {"ES"} else "hu") if tant
+                          else (p.erdeklodes_nyelv or "hu")),
             })
         return ki
     except Exception:                                      # pragma: no cover
@@ -909,6 +911,32 @@ def erdeklodes_ertesitve_jelol(parent_id: int) -> bool:
         db.rollback()
         logger.exception("erdeklodes_ertesitve_jelol(%s)", parent_id)
         return False
+    finally:
+        db.close()
+
+
+def szulo_nyelv_beallit(parent_id: int, nyelv: str) -> None:
+    """fix164: a regisztráció nyelve. Az erdeklodes_nyelv oszlopba kerül, CSAK
+    ha még üres (az indulás-levél is ezt a nyelvet használja – ugyanaz a cél:
+    milyen nyelven írjunk neki). Új oszlop nem kell."""
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        if p and not p.erdeklodes_nyelv:
+            p.erdeklodes_nyelv = "es" if (nyelv or "").lower().startswith("es") else "hu"
+            db.commit()
+    except Exception:
+        db.rollback()
+        logger.warning("szulo_nyelv_beallit sikertelen", exc_info=True)
+    finally:
+        db.close()
+
+
+def szulo_nyelve(parent_id: int) -> str | None:
+    db = _session()
+    try:
+        p = db.get(Parent, parent_id)
+        return (p.erdeklodes_nyelv or None) if p else None
     finally:
         db.close()
 
