@@ -18588,7 +18588,7 @@ def admin_latogatottsag():
     tiltas = _admin_kapu()
     if tiltas is not None:
         return tiltas
-    napok = max(7, min(90, int(request.args.get("napok", 30) or 30)))
+    napok = max(1, min(90, int(request.args.get("napok", 30) or 30)))  # 1 = csak a mai nap (fix159)
     sorok = database.latogatas_osszesites(napok)
     het = sorok[:7]
     osszes = {"latogato": sum(x["latogato"] for x in het), "megnyitas": sum(x["megnyitas"] for x in het),
@@ -18633,7 +18633,7 @@ def admin_latogatottsag_letoltes():
     tiltas = _admin_kapu()
     if tiltas is not None:
         return tiltas
-    napok = max(7, min(90, int(request.args.get("napok", 30) or 30)))
+    napok = max(1, min(90, int(request.args.get("napok", 30) or 30)))  # 1 = csak a mai nap (fix159)
     adat: dict[str, Any] = {"keszult": datetime.now().isoformat(timespec="minutes"),
                             "napok": napok}
     for nev, fv in (("naponta", lambda: database.latogatas_osszesites(napok)),

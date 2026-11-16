@@ -1602,7 +1602,7 @@ Tervezett elemek:
 - [ ] (fix157) Fiókom oldalon 3 külön gomb: "Előfizetés lemondása" (nincs több levonás) · "Elállás a szerződéstől itt" (csak a vásárlástól 14 napig látszik, arányos visszatérítés) · "Fiók törlése" (marad; jelszó + figyelmeztetés: "Aktív előfizetésed van, a törlés azt is lemondja, a maradék perc elvész").
 - [ ] (fix157) Elállás → automatikus e-mail Sándornak (Resend) a kiszámolt összeggel + admin "Jóváhagyom" gomb → Stripe részleges visszatérítés. Kezdetben mindig kézi jóváhagyás (pénz-kód), később esetleg automatikus kis összegnél.
 - [ ] (fix157) HU oldalon forint ár? A magyar pénznem-szabály NEM ellenőrzött → legbiztosabb: HU-n Ft-ban árazni (Stripe tud HUF-ot). Gestoría/HU könyvelő döntse el.
-- [ ] (fix157) Rövid PROJEKT_LEIRAS.md a repó gyökerébe (felépítés, fő fájlok, tilalmak, tesztelés) → minden új munkamenet olcsóbb, kevesebb keresés az 1 MB-os app.py-ban.
+- [x] (fix157→fix158 KÉSZ: AGENTS.md lett) Rövid PROJEKT_LEIRAS.md a repó gyökerébe (felépítés, fő fájlok, tilalmak, tesztelés) → minden új munkamenet olcsóbb, kevesebb keresés az 1 MB-os app.py-ban.
 - [ ] (fix157) Fizetés előtt: automata teszt a pénzes utakra (fizetés, lemondás, elállás, visszatérítés, fióktörlés). Ellenőrizni: Railway-en milyen adatbázis fut (helyi teszt SQLite-on megy).
 - [ ] (fix158) Gombok alatti magyarázó szöveg (Fiókom):
   Lemondás: "A hónap végéig használhatod, utána nem vonunk le többet. Visszatérítés nincs." / "Puedes usarlo hasta fin de mes; después no se cobra más. Sin reembolso."
@@ -1611,3 +1611,5 @@ Tervezett elemek:
 - [ ] (fix158) SZÁMLÁK MEGŐRZÉSE fióktörlés után is (spanyol könyvelési szabály, gestoríával pontosítani az évek számát). database.delete_parent_account NE törölje a számlákat; adatvédelmi tájékoztatóba + adatkezelési nyilvántartásba beírni (jogalap: jogi kötelezettség, GDPR 6(1)(c), 17(3)(b)).
 - [x] (fix158) AGENTS.md frissítve projekttérképnek (régi: 2026-09-03).
 - [ ] (fix158) Your Europe Advice levél elküldve? (forint, áfa-kiírás, arányos visszatérítés, számlamegőrzés vs. törlés) – a válasz alapján frissíteni.
+- [x] (fix159) Látogatottság oldalon „Ma” (1 nap) nézet.
+- [ ] (fix159) Élő adatbázis = PostgreSQL, helyi teszt = SQLite → a pénzes teszteket PostgreSQL-en is futtatni (pl. a próba adatbázis másolatán).
