@@ -1613,3 +1613,6 @@ Tervezett elemek:
 - [ ] (fix158) Your Europe Advice levél elküldve? (forint, áfa-kiírás, arányos visszatérítés, számlamegőrzés vs. törlés) – a válasz alapján frissíteni.
 - [x] (fix159) Látogatottság oldalon „Ma” (1 nap) nézet.
 - [ ] (fix159) Élő adatbázis = PostgreSQL, helyi teszt = SQLite → a pénzes teszteket PostgreSQL-en is futtatni (pl. a próba adatbázis másolatán).
+- [ ] (fix160) MÉRÉSI VAKFOLT: a főoldali gomb már a mintaleckére visz, de a mintalecke oldalak (mintalecke_valaszt, mintalecke) NINCSENEK a _LATOGATAS_OLDALAK-ban, és a tölcsérben sincs „elkezdte / befejezte a mintaleckét” sor (a minta_vege esemény rögzül, de nem látszik). Pótolni: tölcsér = megnyitotta → mintaleckét kezdett → befejezte → regisztrált.
+- [ ] (fix160) Látogatottság 11.12–16 (hirdetés nélkül): 38–63 látogató/nap, többség „közvetlen”, főoldalon medián 3 mp; Google csak 2–4/hét (új domain, SEO hónapok alatt hat). /login sok közvetlen belépés.
+- [ ] (fix160) Sorrend: 1) spanyol szülői oldalak magyar szöveg-ellenőrzése (Gyerekeim, Fiókom, riport e-mail, regisztráció utáni lépések) 2) spanyol URL-ek (/es/precios stb. + átirányítás) 3) havi 1 hasznos blogcikk HU+ES 4) GEO: őszinte katalógus-bejegyzések (AI-eszköz listák, szülői fórumok nyílt bemutatkozással).
