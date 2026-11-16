@@ -1594,3 +1594,8 @@ Tervezett elemek:
 - [ ] Visszaigazoló e-mail a pipák tartalmával + ÁSZF + elállási tájékoztató (tartós adathordozó, 8. cikk (7)).
 - [ ] ELÁLLÁS GOMB (2023/2673 irányelv, új 11a. cikk, 2026-06-19-től kötelező): "Elállás a szerződéstől itt" / "Desistir del contrato aquí" – jól látható, a 14 nap alatt végig elérhető (Fiókom + lábléc). Lépései: név, melyik csomag/előfizetés, e-mail → "Elállás megerősítése" gomb → automatikus visszaigazoló e-mail dátummal/idővel. A fióktörlés gomb NEM helyettesíti.
 - [ ] Árak: áfával/IVA incluido kiírás a csomagok oldalon (HU+ES) – ellenőrizni. Euró HU-nak: EU-jog szerint OK; magyar árfeltüntetési szabály (4/2009 NFGM-SZMM r.) pénznem-kérdése NEM ellenőrzött → gestoría/HU könyvelő kérdés.
+- [ ] (fix156) Jelenleg NINCS fizetési rendszer a kódban (nincs Stripe) → a fióktörlés most nem érint fizetést. Stripe bevezetésekor: fióktörlés = Stripe előfizetés automatikus lemondása is (különben tovább vonna le!).
+- [ ] (fix156) ÁSZF 8. pont pontosítása (HU+ES): "a felhasznált tanulási percek arányában" (most: "ameddig rendelkezésedre állt"), + az e-mail mellé az online "Elállás a szerződéstől itt" gomb.
+- [ ] (fix156) Elállás: a rendszer számolja ki a visszajáró összeget (fizetett × (1 − felhasznált perc / csomag perc)), admin oldalon 1 kattintás a Stripe részleges visszatérítéshez. Határidő: 14 nap az elállás beérkezésétől.
+- [ ] (fix156) Csomagok oldal: az ár mellé "áfával" / "IVA incluido" (most egyik nyelven sincs kiírva). HU ÁSZF-ben sincs áfa-mondat (ES-ben van).
+- [ ] (fix156) Admin számláló: nem spanyol EU-s vevők éves bevétele (a 10 000 €-s OSS-határhoz); figyelmeztetés 8 000 €-nál.
