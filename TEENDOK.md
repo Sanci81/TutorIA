@@ -1599,3 +1599,8 @@ Tervezett elemek:
 - [ ] (fix156) Elállás: a rendszer számolja ki a visszajáró összeget (fizetett × (1 − felhasznált perc / csomag perc)), admin oldalon 1 kattintás a Stripe részleges visszatérítéshez. Határidő: 14 nap az elállás beérkezésétől.
 - [ ] (fix156) Csomagok oldal: az ár mellé "áfával" / "IVA incluido" (most egyik nyelven sincs kiírva). HU ÁSZF-ben sincs áfa-mondat (ES-ben van).
 - [ ] (fix156) Admin számláló: nem spanyol EU-s vevők éves bevétele (a 10 000 €-s OSS-határhoz); figyelmeztetés 8 000 €-nál.
+- [ ] (fix157) Fiókom oldalon 3 külön gomb: "Előfizetés lemondása" (nincs több levonás) · "Elállás a szerződéstől itt" (csak a vásárlástól 14 napig látszik, arányos visszatérítés) · "Fiók törlése" (marad; jelszó + figyelmeztetés: "Aktív előfizetésed van, a törlés azt is lemondja, a maradék perc elvész").
+- [ ] (fix157) Elállás → automatikus e-mail Sándornak (Resend) a kiszámolt összeggel + admin "Jóváhagyom" gomb → Stripe részleges visszatérítés. Kezdetben mindig kézi jóváhagyás (pénz-kód), később esetleg automatikus kis összegnél.
+- [ ] (fix157) HU oldalon forint ár? A magyar pénznem-szabály NEM ellenőrzött → legbiztosabb: HU-n Ft-ban árazni (Stripe tud HUF-ot). Gestoría/HU könyvelő döntse el.
+- [ ] (fix157) Rövid PROJEKT_LEIRAS.md a repó gyökerébe (felépítés, fő fájlok, tilalmak, tesztelés) → minden új munkamenet olcsóbb, kevesebb keresés az 1 MB-os app.py-ban.
+- [ ] (fix157) Fizetés előtt: automata teszt a pénzes utakra (fizetés, lemondás, elállás, visszatérítés, fióktörlés). Ellenőrizni: Railway-en milyen adatbázis fut (helyi teszt SQLite-on megy).
