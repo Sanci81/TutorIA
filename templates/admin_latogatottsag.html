@@ -67,17 +67,21 @@
 
   {% if reszlet %}
   {% set T = reszlet.tolcser %}
-  {% set NEV = {'/':'Főoldal','/csomagok':'Csomagok','/register':'Regisztráció','/login':'Belépés','/gyik':'GYIK','/blog':'Blog','/adatvedelem':'Adatvédelem','/feltetelek':'Feltételek'} %}
+  {% set NEV = {'/minta':'Mintalecke (évfolyamválasztó)','/':'Főoldal','/csomagok':'Csomagok','/register':'Regisztráció','/login':'Belépés','/gyik':'GYIK','/blog':'Blog','/adatvedelem':'Adatvédelem','/feltetelek':'Feltételek'} %}
   {% set HIBA = {'hiba_jelszo_rovid':'Túl rövid jelszó','hiba_jelszo_nem_egyezik':'A két jelszó nem egyezett','hiba_nem_fogadta_el':'Nem pipálta be az elfogadást','hiba_pin':'Rossz szülői PIN (nem 4 számjegy)','hiba_email_foglalt':'Már regisztrált e-mail'} %}
   {% set FN = {'facebook':'Facebook','facebook_hirdetes':'Facebook-hirdetés','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Ismeretlen'} %}
   <h2 style="font-size:20px;margin:22px 0 10px">Hol akadnak el? <small style="font-weight:600;color:#5f7469">(utolsó {{ napok }} nap)</small></h2>
   <div class="tolcser">
-    {% for cim, n in [('Megnyitotta az oldalt', T.latogato), ('Megnézte a csomagokat', T.csomagok), ('Eljutott a regisztrációhoz', T.reg_oldal), ('Beküldte az űrlapot', T.bekuldte), ('Regisztrált', T.regisztralt)] %}
+    {% for cim, n in [('Megnyitotta az oldalt', T.latogato), ('Mintaleckét kezdett', T.minta_kezdte or 0), ('Végigcsinálta a mintaleckét', T.minta_vege or 0), ('Megnézte a csomagokat', T.csomagok), ('Eljutott a regisztrációhoz', T.reg_oldal), ('Beküldte az űrlapot', T.bekuldte), ('Regisztrált', T.regisztralt)] %}
     <div class="t-sor"><span class="t-cim">{{ cim }}</span>
       <span class="t-sav"><i style="width:{{ (100 * n / T.latogato)|round|int if T.latogato else 0 }}%"></i></span>
       <b>{{ n }}</b><small>{{ (100 * n / T.latogato)|round|int if T.latogato else 0 }}%</small></div>
     {% endfor %}
   </div>
+  {% if reszlet.minta_evf %}
+  <p class="al" style="margin-top:10px"><b>Melyik mintaleckét kezdték:</b>
+    {% for k, v in reszlet.minta_evf %}{{ 'magyar' if k.startswith('hu') else 'spanyol' }} {{ k.split('_')[-1] }}. évf.: {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
+  {% endif %}
   {% if reszlet.hibak %}
   <p class="figy" style="margin-top:12px"><b>Ezen akadtak el a regisztrációnál:</b>
     {% for k, v in reszlet.hibak %}{{ HIBA.get(k, k) }}: {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
@@ -86,8 +90,8 @@
     <div><h3>Melyik oldalt nézték</h3>
       <table>{% for o, v in reszlet.oldalak[:10] %}<tr><td>{{ NEV.get(o, o) }}</td><td class="sz">{{ v }}</td></tr>{% else %}<tr><td>–</td></tr>{% endfor %}</table></div>
     <div><h3>Honnan jöttek → regisztráltak</h3>
-      <table><tr><th>Forrás</th><th class="sz">Látogató</th><th class="sz">Reg. oldal</th><th class="sz">Regisztrált</th></tr>
-      {% for f, v in reszlet.forras %}<tr><td>{{ FN.get(f, f) }}</td><td class="sz">{{ v.latogato }}</td><td class="sz">{{ v.reg_oldal }}</td><td class="sz">{{ v.regisztralt }}</td></tr>{% endfor %}</table></div>
+      <table><tr><th>Forrás</th><th class="sz">Látogató</th><th class="sz">Minta</th><th class="sz">Reg. oldal</th><th class="sz">Regisztrált</th></tr>
+      {% for f, v in reszlet.forras %}<tr><td>{{ FN.get(f, f) }}</td><td class="sz">{{ v.latogato }}</td><td class="sz">{{ v.minta or 0 }}</td><td class="sz">{{ v.reg_oldal }}</td><td class="sz">{{ v.regisztralt }}</td></tr>{% endfor %}</table></div>
   </div>
   {% endif %}
 

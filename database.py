@@ -4018,7 +4018,8 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
     belepes: dict[str, int] = {}
     forras_t: dict[str, dict[str, int]] = {}
     hibak: dict[str, int] = {}
-    t = {"latogato": 0, "csomagok": 0, "reg_oldal": 0, "bekuldte": 0, "regisztralt": 0}
+    t = {"latogato": 0, "minta_kezdte": 0, "minta_vege": 0, "csomagok": 0, "reg_oldal": 0, "bekuldte": 0, "regisztralt": 0}
+    minta_evf: dict[str, int] = {}   # fix160: melyik nyelv/évfolyam mintaleckéjét kezdték
     for kulcs, u in ut.items():
         oldalak = [norm(x) for x in u["oldalak"]]
         if not oldalak and not u["esemeny"]:
@@ -4033,9 +4034,14 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
         bek = "bekuldte" in u["esemeny"]
         reg = "regisztralt" in u["esemeny"]
         t["csomagok"] += latta_cs; t["reg_oldal"] += latta_reg; t["bekuldte"] += bek; t["regisztralt"] += reg
+        # fix160: mintalecke – esemény: minta_<hu|es>_<évf>, befejezés: minta_vege
+        kezdett = sorted(e for e in u["esemeny"] if e.startswith("minta_") and e != "minta_vege")
+        t["minta_kezdte"] += bool(kezdett); t["minta_vege"] += "minta_vege" in u["esemeny"]
+        for e in kezdett:
+            minta_evf[e[6:]] = minta_evf.get(e[6:], 0) + 1
         f = u["forras"] or "belso"
-        ft = forras_t.setdefault(f, {"latogato": 0, "reg_oldal": 0, "regisztralt": 0})
-        ft["latogato"] += 1; ft["reg_oldal"] += latta_reg; ft["regisztralt"] += reg
+        ft = forras_t.setdefault(f, {"latogato": 0, "minta": 0, "reg_oldal": 0, "regisztralt": 0})
+        ft["latogato"] += 1; ft["minta"] += bool(kezdett); ft["reg_oldal"] += latta_reg; ft["regisztralt"] += reg
         for e in u["esemeny"]:
             if e.startswith("hiba_"):
                 hibak[e] = hibak.get(e, 0) + 1
@@ -4045,6 +4051,7 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
         "belepes": sorted(belepes.items(), key=lambda x: -x[1]),
         "forras": sorted(forras_t.items(), key=lambda x: -x[1]["latogato"]),
         "hibak": sorted(hibak.items(), key=lambda x: -x[1]),
+        "minta_evf": sorted(minta_evf.items(), key=lambda x: -x[1]),
     }
 
 

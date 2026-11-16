@@ -361,7 +361,8 @@ def _biztonsagi_fejlecek(resp):
 # nem érdeklődő. Sándor gépeit a „ne számolj” süti zárja ki (/nem-szamolj).
 # IP-t nem tárolunk: naponta cserélődő, visszafejthetetlen kódot (HMAC).
 _LATOGATAS_OLDALAK = {"index", "register", "csomagok", "csomagok_oldal", "gyik", "adatvedelem", "feltetelek", "impresszum",
-                      "blog", "blog_ai_tanulas", "login"}
+                      "blog", "blog_ai_tanulas", "login",
+                      "mintalecke_valaszt"}   # fix160: a mintalecke évfolyamválasztója is számít
 _NEM_SZAMOL_SUTI = "tutoria_nem_szamol"
 _ROBOT_UA = re.compile(
     r"bot|crawl|spider|slurp|facebookexternalhit|facebot|meta-external|preview|curl|wget|python|httpx|"
