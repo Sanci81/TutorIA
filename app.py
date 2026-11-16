@@ -3056,7 +3056,7 @@ def feladat_ertesites():
             continue
         targy, html, szoveg = level.keszit(
             jelentes,
-            nyelv="es" if (os.environ.get("ALAP_NYELV") or "hu") == "es" else "hu",
+            nyelv=_szulo_level_nyelve(szulo["id"]),   # fix162: a család nyelvén, nem az oldal alapnyelvén
             app_url=url_for("index", _external=True),
             leiratkozo_url=_leiratkozo_url(szulo["id"]))
         if proba:
@@ -16011,6 +16011,20 @@ def child_chat_send(child_id: int):
     )
 
 
+def _szulo_level_nyelve(parent_id: int) -> str:
+    """fix162: a szülői jelentés nyelve. Ugyanaz a szabály, mint az emlékeztető-
+    és keretlevélnél: ha a családnak CSAK spanyol tantervű gyereke van, spanyolul.
+    Gyerek nélkül marad a régi viselkedés (ALAP_NYELV)."""
+    try:
+        gyerekek = database.get_children_for_parent(parent_id) or []
+    except Exception:
+        gyerekek = []
+    tant = {str(k.get("curriculum") or k.get("country") or "HU").upper() for k in gyerekek}
+    if not tant:
+        return "es" if (os.environ.get("ALAP_NYELV") or "hu") == "es" else "hu"
+    return "es" if tant == {"ES"} else "hu"
+
+
 @app.route("/children/<int:child_id>/gyujtemeny")
 @login_required
 def child_collection(child_id: int):
@@ -17526,7 +17540,7 @@ def child_shop(child_id: int):
             "tasakok": _bolt_tasakok(oldal == "es"),
         },
         vasarlas_url=url_for("child_shop_buy", child_id=child_id),
-        album_url=url_for("child_collection", child_id=child_id),
+        album_url=url_for("child_album", child_id=child_id),   # fix162: a régi „Kártyák” lista helyett a Gyűjtőalbum (a menüből már kikerült)
     )
 
 
