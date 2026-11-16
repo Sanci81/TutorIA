@@ -1,91 +1,104 @@
-# TutorIA — amit tudnod kell, mielőtt hozzányúlsz
+# TutorIA – térkép az AI-asszisztensnek (Claude, Cursor, bármelyik modell)
 
-Ez a fájl AZ AI-ASSZISZTENSNEK szól (Cursor, Composer, bármelyik modell).
-Olvasd el végig, mielőtt bármit módosítasz. Magyarul válaszolj.
+Olvasd el ELŐSZÖR. Ez csak térkép: a részletek a kódban és a `TEENDOK.md`-ben
+vannak. Magyarul válaszolj, röviden. Frissítve: 2026-11-16.
 
 ## MI EZ
 
-Kétnyelvű (magyar/spanyol) AI-tanár gyerekeknek. Flask + PostgreSQL,
-Railway-en fut. A tulajdonos: Sándor, NEM programozó. Magyarul beszélj vele,
-és úgy magyarázz, ahogy egy türelmes kollégának — ne szórd tele szakszóval.
+Kétnyelvű AI-tanár gyerekeknek. Magyar oldal: 1–8. osztály (NAT kerettanterv).
+Spanyol oldal: 1.º–6.º Primaria (LOMLOE). Flask + SQLAlchemy, Railway-en fut,
+élesben **PostgreSQL** (a helyi teszt SQLite-on megy – eltérhet!).
+Tulajdonos: Sándor, NEM programozó, magánszemélyként fizet mindent.
 
-A cél NEM a gyors szállítás. A cél az, hogy amit a gyerek lát, az HIBÁTLAN
-legyen. Egyetlen rossz mondat többet árt, mint amennyit tíz új funkció használ.
+- `proba` ág → próba oldal (web-production-fb5a05.up.railway.app), saját adatbázis
+- `main` ág → éles: tutoriacademia.com
+- Mindig: először `git push origin proba`, ellenőrzés, csak utána `proba:main`.
 
-## HÁROM SZABÁLY, AMIT NEM SZEGHETSZ MEG
+## SZABÁLYOK (nem szeghetők meg)
 
-1. **Külalak-változtatás előtt MUTASD MEG.**
-   Ha a felületen bármi látszani fog másképp (szín, elrendezés, gomb, betű),
-   előbb készíts egy önálló HTML mintát, és kérdezd meg, jó-e. Csak utána
-   nyúlj a valódi fájlhoz. Ez nem udvariasság: már volt olyan, hogy egy
-   „gyors" módosítás elrontotta a fejlécet, és nem derült ki napokig.
+1. **Külalak előtt MUTASD MEG** (kép/HTML minta), csak utána módosíts.
+2. **Csak azt változtasd, amit kértek.** Ha más útban van: szólj, ne javítsd.
+3. **A tanítás minősége nem romolhat.** Minden új viselkedés env flaggel
+   kikapcsolható legyen, és először a próba oldalra menjen.
+4. **Push előtt:** `python -m py_compile app.py` és `python hang_teszt.py`
+   (ingyenes, mind "ok" kell). Minden javított hiba kerüljön be a tesztbe.
+5. **`static/kartyak/` mappába NEM írunk** (átnevezés = duplikátum). Mondd meg
+   Sándornak, mit nevezzen át / másoljon.
+6. **Kulcsot soha** ne írj ki; példában: `ide-a-sajat-kulcsod`.
+7. **Gyerekek mentett beszélgetéseit (`mentes_*.json`) nem olvassuk.**
+8. **Hang/TTS viselkedéshez** csak Sándor engedélyével nyúlunk.
+9. **Pénzbe kerülő futtatás** (AI, képgenerálás) csak kérdés után. A kártyakép-
+   generálás SZÜNETEL, amíg nincs regisztráció.
+10. **Git:** `git add <konkrét fájlok>`, soha `-A`.
+11. Ami nincs kész, vagy fontos később: **automatikusan a `TEENDOK.md`-be.**
+12. Jog: nincs kamu vélemény, nincs követő süti / Facebook Pixel.
 
-2. **Push előtt kötelező:** `python hang_teszt.py`
-   49 esetet néz meg AI nélkül, két másodperc, ingyenes. MINDNEK "ok"-nak
-   kell lennie. Minden sor egy VALÓDI hiba emléke, amit egy gyerek talált
-   meg használat közben. Ha új hibát javítasz, oda is vedd fel — a javítás
-   önmagában kevés, az emlék kell.
-
-3. **Ne nyúlj ahhoz, amiről nem kérdeztek.**
-   Ez a program 438 KB-os `app.py`-t tartalmaz, sok egymásra épülő résszel.
-   Ha valami útban van, SZÓLJ, ne javítsd ki magadtól. Sándor kifejezett
-   kérése: „csak kérlek máshoz ne nyúlj, mást ne tegyünk tönkre".
-
-## TECHNIKAI TUDNIVALÓK, AMIK IDŐT SPÓROLNAK
-
-- Az `app.py` **csak Python 3.12-vel fordul**: `python3.12 -m py_compile app.py`
-- A felület a nyelvet **ékezet nélkül** küldi (`value="nemet"`), a régi kód
-  helyenként ékezetest várt. Mindkét alakot fogadd el.
-- Az OpenAI JSON-válaszhoz a kérésben szerepelnie kell a "json" szónak.
-- Egy sortörést tartalmazó API-kulcs félrevezető `APIConnectionError:
-  Connection error.` hibát ad. Ha ilyet látsz, ELŐSZÖR a kulcsot nézd.
-- A böngésző kb. 6 AudioContextet enged. Újat NE hozz létre hívásonként.
-
-## A FÁJLOK, AMIK SZÁMÍTANAK
+## FŐ FÁJLOK
 
 | fájl | mit csinál |
 |---|---|
-| `app.py` | minden: útvonalak, a tanári prompt, a chat |
-| `curriculum_loader.py` | a kerettantervi JSON-ok betöltése |
-| `oraterv.py` | az előre elkészített óratervet teszi a promptba |
-| `oraterv_keszito.py` | a terveket készíti (külön futtatva, pénzbe kerül) |
-| `oratervek/` | a kész tervek. Csak a matek 4. osztály van meg |
-| `hang.py` | AMIT A GYEREK HALL: számok, ragok kiejtése |
+| `app.py` (~1 MB, ~100 útvonal) | minden útvonal, tanári prompt, chat, admin |
+| `database.py` | táblák, lekérdezések (DATABASE_URL) |
+| `translations.py` / `i18n` | HU/ES felületi szövegek |
+| `curriculum_loader.py` | kerettantervi JSON-ok (`hu_kerettanterv_*`, `es_kerettanterv/`) |
+| `oraterv.py`, `oratervek/` | előre kész óratervek a promptba |
+| `hang.py`, `kiejtes.py` | AMIT A GYEREK HALL (számok, ragok kiejtése) |
 | `szamellenor.py` | AMIT A GYEREK LÁT: rossz kérdésformák javítása |
-| `hang_teszt.py` | a fenti kettő regressziós tesztje – INGYENES |
-| `tanar_teszt.py` | órákat játszik le hibakeresésre – PÉNZBE KERÜL |
-| `TENNIVALO.md` | a nyitott feladatok. Ha lezársz egyet, húzd ki |
+| `hang_teszt.py` | ingyenes regressziós teszt (fenti kettő) |
+| `tanar_teszt.py` | órákat játszik le – PÉNZBE KERÜL |
+| `mintalecke.py` + `templates/mintalecke.html` | ingyenes mintalecke (regisztráció nélkül), képek: `static/img/minta/*.svg` |
+| `kartyak.py`, `kartyak_es.py`, `tasak.py`, `pontok.py` | tudáskártyák, pontok, album |
+| `csomagok.py` | csomagok/bérletek (fizetés MÉG NINCS, nincs Stripe) |
+| `level.py` | e-mailek (Resend) |
+| `jogi/` | DPIA, adatkezelési nyilvántartás, LIA |
+| `templates/` | Jinja oldalak (index, chat, album, feltetelek, adatvedelem…) |
+| `static/css/style.css` | közös stílus (asztali fejléc a végén) |
+| `TEENDOK.md` | nyitott feladatok, fix-számokkal (fixNNN) |
+
+## FONTOS HELYEK AZ `app.py`-BAN (keress a névre, ne sorszámra)
+
+- `child_chat_send` – a gyerek chatje, ide fűződnek a prompt-blokkok
+  (`_TANITO_PONTOS_HU/_ES`, FELADAT_TIPP stb.)
+- `_DM_FELULETEK` – interaktív feladattípusok listája. Tuple:
+  `(tipus, cimkek, min_evf, max_evf, HU leírás, ES leírás, "HU név → tipus", "ES név → tipus")`.
+  A Feladat-próba neve: a HU sor `→` előtti része.
+- `_feladat_parse_belso` – a feladatok ellenőrzője (típusonként egy `if tipus ==` ág)
+- `_dm_cimkek` – tantárgy → címke
+- Frontend párja: `templates/chat.html` → `DM.<tipus> = function(f, D)`
+- `_szulo_csomag`, `_ajandek_cimek` – csomag, ajándék percek
+- `fiok`, `fiok_torles`, `csomagok_oldal`, `register`, `mintalecke*`, `admin_*`
+
+Minden új feladattípusnál írd meg: Feladat-próba név, melyik évfolyam,
+működik-e a spanyol oldalon.
+
+## ENV FLAGEK (Railway; a próba és az éles KÜLÖN állítandó)
+
+Funkciók: `MINTALECKE`, `TANITO_PONTOS`, `FELADAT_TIPP`, `NYITO_FELADAT`,
+`POTLAS_JO`, `KERDES_LEKTOR`, `EMAIL_MEGEROSITES`, `EMLEKEZTETO`,
+`FIZETES_ELERHETO`, `PROBA_OLDAL`. Admin: `ADMIN_EMAILEK`, `ADMIN_KOD`,
+`AJANDEK_CIMEK` (vesszővel elválasztott e-mailek → TESZT csomag).
+Modellek: `MODELL_*`, `TANAR_API_*`. A `0` érték kikapcsol.
+
+## TECHNIKAI CSAPDÁK
+
+- Python 3.12 kell a fordításhoz.
+- A felület a nyelvet ékezet nélkül küldi (`nemet`); fogadd el mindkét alakot.
+- OpenAI JSON-válaszhoz a kérésben legyen benne a "json" szó.
+- Sortörést tartalmazó API-kulcs → félrevezető `Connection error`.
+- Böngésző kb. 6 AudioContextet enged – ne hozz létre újat hívásonként.
+- Spanyol chat: `chat-frame` rejtett mező kell szöveges módban is (különben
+  magyar bevezető jön).
+- Kártyák: `kartyak.mappa(oldal)` – lapos `static/kartyak/<oldal>/`; spanyol
+  `kep` nevekben nincs évfolyamszám.
 
 ## MÉRÉS ÉS JAVÍTÁS NEM EGYSZERRE
 
-Ha azt akarod tudni, hogy egy változtatás segített-e:
-1. az ellenőrző listáját RÖGZÍTED (nem nyúlsz hozzá),
-2. futtatsz → ez a kiindulás,
-3. javítasz CSAK a programon,
-4. újra futtatsz UGYANAZZAL a paranccsal.
+Az ellenőrző listát rögzítsd → mérj → csak a programot javítsd → mérj újra
+ugyanazzal. Ha közben az ellenőrzőt is módosítod, a két szám értéktelen.
 
-Ha közben az ellenőrzőt is módosítod, a két szám nem hasonlítható össze.
-Ez már egyszer megtörtént, és egy egész napi mérés lett tőle értéktelen.
+## FIZETÉS ELŐTT KÖTELEZŐ (részletek: TEENDOK fix155–157)
 
-## A PÉNZ SZÁMÍT
-
-Sándor nem cég, magánszemélyként fizeti. Minden AI-hívásnak ára van.
-- Ne futtass olyat, ami pénzbe kerül, amíg meg nem kérdezted.
-- Az ingyenes ellenőrzést (`hang_teszt.py`) futtasd bátran.
-- Ha drágább modellt javasolsz, írd oda, körülbelül mennyivel drágább.
-
-## HOL TART MOST (2026-09-03)
-
-Kész és él: a témakörönkénti óraterv. A tanár már nem improvizál — előre
-elkészített, tényellenőrzött lépéssorrendet követ, egyszerre egy lépést.
-DE ez EGYELŐRE CSAK a 4. osztályos matekra van meg (`oratervek/`).
-
-A következő lépések, fontossági sorrendben:
-1. Egyetlen évfolyam végigvitele hibátlanra — nem az összes.
-2. A 888 soros tanári utasítás megrövidítése. Önmagának mond ellent
-   („taníts 3-4 dolgot egyszerre" vs. „egyszerre csak egyet"), és most már
-   az óratervnek is. CSAK külön lépésben, hogy mérhető legyen.
-3. A spanyol oldalon nincs album.
-4. Kb. 18 magyar kártyakép hiányzik.
-
-A részletek a `TENNIVALO.md`-ben vannak. Azt olvasd el másodikként.
+Pipák + „Fizetési kötelezettséggel járó megrendelés” gomb, visszaigazoló
+e-mail, „Elállás a szerződéstől itt” gomb (14 napig), arányos visszatérítés
+jóváhagyással, lemondás ≠ fióktörlés, számlák megőrzése törlés után is,
+áfával/IVA incluido kiírás, automata teszt a pénzes utakra (Stripe tesztmód).

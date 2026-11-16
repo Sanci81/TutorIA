@@ -1604,3 +1604,10 @@ Tervezett elemek:
 - [ ] (fix157) HU oldalon forint ár? A magyar pénznem-szabály NEM ellenőrzött → legbiztosabb: HU-n Ft-ban árazni (Stripe tud HUF-ot). Gestoría/HU könyvelő döntse el.
 - [ ] (fix157) Rövid PROJEKT_LEIRAS.md a repó gyökerébe (felépítés, fő fájlok, tilalmak, tesztelés) → minden új munkamenet olcsóbb, kevesebb keresés az 1 MB-os app.py-ban.
 - [ ] (fix157) Fizetés előtt: automata teszt a pénzes utakra (fizetés, lemondás, elállás, visszatérítés, fióktörlés). Ellenőrizni: Railway-en milyen adatbázis fut (helyi teszt SQLite-on megy).
+- [ ] (fix158) Gombok alatti magyarázó szöveg (Fiókom):
+  Lemondás: "A hónap végéig használhatod, utána nem vonunk le többet. Visszatérítés nincs." / "Puedes usarlo hasta fin de mes; después no se cobra más. Sin reembolso."
+  Elállás (csak 14 napig): "Azonnal megszűnik, a fel nem használt percek arányos részét 14 napon belül visszautaljuk." / "Se cancela ya; te devolvemos la parte proporcional de los minutos no usados en 14 días."
+  Fióktörlés: "Minden adat törlődik (gyerekprofilok, haladás, album), az előfizetés is leáll. A számlákat a törvény miatt megőrizzük." / "Se borran todos los datos…; las facturas se conservan por obligación legal."
+- [ ] (fix158) SZÁMLÁK MEGŐRZÉSE fióktörlés után is (spanyol könyvelési szabály, gestoríával pontosítani az évek számát). database.delete_parent_account NE törölje a számlákat; adatvédelmi tájékoztatóba + adatkezelési nyilvántartásba beírni (jogalap: jogi kötelezettség, GDPR 6(1)(c), 17(3)(b)).
+- [x] (fix158) AGENTS.md frissítve projekttérképnek (régi: 2026-09-03).
+- [ ] (fix158) Your Europe Advice levél elküldve? (forint, áfa-kiírás, arányos visszatérítés, számlamegőrzés vs. törlés) – a válasz alapján frissíteni.
