@@ -1635,3 +1635,5 @@ Tervezett elemek:
 - [ ] (fix167) Search Console: „Átirányítást tartalmazó oldal” = SZÁNDÉKOS (régi /es/csomagok → /es/precios, http → https). Nem kell javítani.
 - [x] (fix168) Tollbamondás javítások: 💡 „Mutasd, mi a hiba” gomb (első hiba után; a beíró mező ALÁ írja szavanként: amit írt → ahogy helyes, a rossz betűk kiemelve); a szavak párosítása hasonlóság szerint (hoy ↔ Hoy); elsőre hibátlan mondatnál ünneplés („Szuper!”). Idegen nyelvórán is (HU és ES oldal), a célnyelven.
 - [ ] (fix168) Kipróbálni valódi eszközön: iPhone (Safari) – az első automatikus felolvasást az iPhone letilthatja koppintás előtt; a 🔊 gomb működik. Android Chrome, Windows/Mac böngésző.
+- [x] (fix169) Tollbamondás: a hibás szóban CSAK a rossz betű piros, és ahol betű/írásjel hiányzik, ott kis szaggatott „?” (nem az egész szó aláhúzva). Feladat-próbán idegen nyelvórán (angol/német/spanyol/francia) a próba mondata a tanult nyelven.
+- [ ] (fix169) Ötlet (Sándor): a 💡 segítség lehetne fokozatos (1. nyomás: csak a hiba fajtája, 2.: a betű) – csak ha a gyerekeknél kell.

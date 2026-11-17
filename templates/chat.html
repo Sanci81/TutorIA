@@ -1470,6 +1470,9 @@
 .dm .dk-jav .hiba{color:#B42318;font-weight:800;background:#FDECEA;border-radius:6px;padding:0 3px;text-decoration:underline wavy #E0609B}
 .dm .dk-jav .hiany{color:#B42318;font-weight:800;border:2px dashed #E0609B;border-radius:6px;padding:0 4px}
 .dm .dk-tipp{font-size:15px;color:#5B6B63;margin:2px 0 6px}
+.dm .dk-jav .hiba2{color:var(--szoveg)}
+.dm .dk-jav .hiba2 b{color:#B42318;background:#FDECEA;border-radius:4px;padding:0 1px}
+.dm .dk-jav .kell{font-style:normal;display:inline-block;min-width:.75em;text-align:center;border:2px dashed #E0609B;border-radius:5px;color:#B42318;font-size:.75em;line-height:1.15;padding:0 2px;margin-left:2px;vertical-align:middle}
 .dm .dk-seg{font-size:18px;line-height:1.7;background:#EEF6FF;border:2px solid #BFD9F5;border-radius:14px;padding:8px 14px;margin:4px 0 8px;color:var(--szoveg)}
 .dm .dk-seg-cim{font-weight:800;color:#1E5A96;font-size:15px}
 .dm .dk-seg s{color:#8A9690}
@@ -7840,6 +7843,22 @@
                 else if (i > 0 && Math.abs(d[i][j] - (d[i - 1][j] + K)) < 1e-9) { ki.unshift(['hiany', a[i - 1]]); i--; }
                 else { ki.unshift(['tobb', b[j - 1]]); j--; } }
             return ki; }
+        /* fix169: a GYEREK szava, benne CSAK a hibás betű piros, és ahol betű/írásjel
+           hiányzik, ott egy kis szaggatott „?” – nem az egész szó aláhúzva. */
+        function hibaJelol(jo, irt) { var a = irt, b = jo, n = a.length, m = b.length, L = [], i, j, t = [];
+            for (i = 0; i <= n; i++) { L[i] = []; for (j = 0; j <= m; j++) { L[i][j] = 0; } }
+            for (i = n - 1; i >= 0; i--) { for (j = m - 1; j >= 0; j--) { L[i][j] = a[i] === b[j] ? L[i + 1][j + 1] + 1 : Math.max(L[i + 1][j], L[i][j + 1]); } }
+            i = 0; j = 0;
+            while (i < n || j < m) {
+                if (i < n && j < m && a[i] === b[j]) { t.push(['ok', a[i]]); i++; j++; }
+                else if (j < m && (i >= n || L[i][j + 1] >= L[i + 1][j])) { t.push(['kell', b[j]]); j++; }
+                else { t.push(['rossz', a[i]]); i++; } }
+            var ki = '', voltKell = false;
+            t.forEach(function (x, k) {
+                if (x[0] === 'kell') { var szomszed = (t[k - 1] && t[k - 1][0] === 'rossz') || (t[k + 1] && t[k + 1][0] === 'rossz');
+                    if (!szomszed && !voltKell) { ki += '<i class="kell">?</i>'; } voltKell = true; return; }
+                voltKell = false; ki += x[0] === 'ok' ? esc(x[1]) : '<b>' + esc(x[1]) + '</b>'; });
+            return ki; }
         /* A jó szó, benne kiemelve azok a betűk, amiket a gyerek nem így írt. */
         function betukiemel(jo, irt) { var a = jo, b = irt, n = a.length, m = b.length, L = [], i, j, jel = [];
             for (i = 0; i <= n; i++) { L[i] = []; for (j = 0; j <= m; j++) { L[i][j] = 0; } }
@@ -7901,15 +7920,15 @@
             il.forEach(function (x) {
                 if (x[0] === 'jo') { h.push('<span class="ok">' + esc(x[1]) + '</span>'); }
                 else if (x[0] === 'mas') { var fj = fajta(x[1], x[2]); if (tippek.indexOf(fj) < 0) { tippek.push(fj); }
-                    h.push('<span class="hiba">' + esc(probak >= 2 ? x[1] : x[2]) + '</span>');
+                    h.push('<span class="hiba2">' + (probak >= 2 ? betukiemel(x[1], x[2]) : hibaJelol(x[1], x[2])) + '</span>');
                     if (probak >= 2) { hibalista.push(x[2] + ' → ' + x[1]); } }
                 else if (x[0] === 'hiany') { h.push('<span class="hiany">' + (probak >= 2 ? esc(x[1]) : '?') + '</span>'); if (probak >= 2) { hibalista.push(D.T('kimaradt: ', 'falta: ') + x[1]); } }
                 else { h.push('<span class="hiba"><s>' + esc(x[1]) + '</s></span>'); if (probak >= 2) { hibalista.push(D.T('fölösleges: ', 'sobra: ') + x[1]); } } });
             jav.innerHTML = h.join(' '); jav.hidden = false;
             if (probak === 1) {
                 tipp.textContent = D.T('Tipp: ', 'Pista: ') + tippek.slice(0, 3).join(' · ');
-                D.jelez(false, D.T('Majdnem! A pirossal jelölt szónál van hiba. Hallgasd meg újra, és javítsd ki! Ha nem jössz rá, nyomd meg a 💡 gombot.',
-                    '¡Casi! Hay un error en la palabra marcada en rojo. Escucha otra vez y corrígela. Si no lo ves, pulsa 💡.'));
+                D.jelez(false, D.T('Majdnem! A piros betű hibás, a <b>?</b> helyén pedig hiányzik valami. Hallgasd meg újra, és javítsd ki! Ha nem jössz rá, nyomd meg a 💡 gombot.',
+                    '¡Casi! La letra en rojo está mal y donde ves <b>?</b> falta algo. Escucha otra vez y corrígelo. Si no lo ves, pulsa 💡.'));
                 if (!gs.querySelector('.dk-seg-gomb')) { gs.appendChild(D.gomb('💡 ' + D.T('Mutasd, mi a hiba', 'Muéstrame el error'), 'masik dk-seg-gomb', segitseg)); }
                 try { be.focus(); } catch (e) {}
                 return; }

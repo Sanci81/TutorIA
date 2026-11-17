@@ -18452,6 +18452,17 @@ def _proba_feladat_keszit(tipus, grade, es, language):
         fel = _feladat_parse(m.group(0), grade=grade, es_tanterv=es, temakor=None)
         if isinstance(fel, dict):
             _feladat_nyelvre(fel, language)
+            # fix169: idegen nyelvórán a diktálás próbája a tanult nyelven szóljon
+            # (élesben az AI amúgy is a célnyelven írja).
+            if tipus == "diktalas" and language:
+                _ny = str(language).lower()
+                _minta = (["I have a red ball.", "My cat is small."] if any(k in _ny for k in ("angol", "ingl", "engl", "extranj"))
+                          else ["Ich habe einen roten Ball.", "Mein Hund ist klein."] if any(k in _ny for k in ("nemet", "alem", "deut"))
+                          else ["Tengo una pelota roja.", "Mi gato es pequeño."] if "spany" in _ny
+                          else ["J'ai un ballon rouge.", "Mon chat est petit."] if "franc" in _ny
+                          else None)
+                if _minta:
+                    fel["mondatok"] = _minta
             fel["proba"] = True
         return fel
     # Az alap feladatok (memória, pizza, óra, párosítás…) a fő tanári blokk példáiból.
