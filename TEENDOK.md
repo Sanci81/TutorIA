@@ -1657,3 +1657,7 @@ Tervezett elemek:
 - [ ] (fix174) PLUSZ LECKÉK / óratervek a spanyol oldalra (oratervek/ csak HU 4. o. matek van) – mely tárgyak/évfolyamok elsőként?
 - [ ] (fix174) SPANYOL KÁRTYÁK befejezése (26 kártya; 10 újra: Torres, Peral, Lorca, Las Casas, Elcano, Firnas, Azarquiel, Goya, Sorolla, Albéniz – Goya_2, Albéniz_2, Peral_2 elfogadva; Sorolla_3-on halvány „Fig. 22”). Képgenerálás pénzbe kerül – Sándor dönt.
 - [x] (fix174) Felolvasás: a FŐ hang az Azure (Noémi / Elvira), az OpenAI gpt-4o-mini-tts csak tartalék. A diktálás költsége ezért az Azure árán megy (kb. ugyanannyi vagy kevesebb).
+- [x] (fix175) Spanyol újramérés (14:53, gpt-5.4-mini, TANITO_PONTOS-szal): 4 biztos + 9 gyanús (előtte 12–13 biztos). Maradt: „¡Sí, verdad!”, „venir al juego” → prompt; „Hello! How are you?” válaszlehetőség hiányzott. Teszt-javítás: a felszólító feladat („Dime…”, „Mondj…”) nem számít „nincs kérdés”-nek; a listában lévő számok (🍎 4) is látszanak.
+- [ ] (fix175) Teljes spanyol kör: `python tanar_teszt.py --oldal es --mind` (38 óra; becslés 3,5–12 $, Sándor egyenlege 16,09 $). Utána Claude elolvassa.
+- [ ] (fix175) ÚJ FUNKCIÓ ötlet: a szülő NAPI tanulási időkorlátot állíthasson gyerekenként (most NINCS ilyen – Claude tévesen állította). Tanároknak/szülőknek (pl. Jorge) erős érv.
+- [ ] (fix175) Árazás ötlet: „annyit fizet, amennyit tanul” – a perccsomagok (bono) már ilyenek; utólagos percdíj jogilag lehetséges, de bonyolultabb (kártya mentése, havi számla). Döntés fizetés előtt.

@@ -305,7 +305,8 @@ def _gepi_tanar(nyers: str, latott: str) -> list[str]:
     if not tiszta.strip():
         ki.append("[üres] a válaszból a gyerek semmit nem lát")
     elif ("?" not in tiszta and "¿" not in tiszta
-          and "[A szöveg alatt ez a feladat" not in latott):
+          and "[A szöveg alatt ez a feladat" not in latott
+          and not _felszolitas(tiszta)):
         ki.append(f"[nincs kérdés] se kérdés, se feladat: "
                   f"„…{tiszta[-80:].strip()}”")
     return ki
@@ -343,6 +344,16 @@ def _gepi_spanyol(tiszta: str) -> list[str]:
     if mj:
         ki.append(f"[magyar szó] a spanyol órán: „{tiszta[max(0, mj.start() - 25):mj.end() + 25]}”")
     return ki
+
+
+def _felszolitas(tiszta: str) -> bool:
+    """fix175: a „Dime una razón.” / „Mondj egy példát!” is feladat, nem csak a
+    kérdőjeles mondat – eddig ezt is „nincs kérdés”-nek számolta (téves)."""
+    import re
+    vege = tiszta.strip()[-220:].lower()
+    return bool(re.search(
+        r"\b(dime|di una|di un|escribe|elige|cuéntame|piensa en|nombra|te toca|prueba a|intenta|"
+        r"mondj|írj|válassz|sorolj|meséld|próbáld|rajtad a sor|te jössz)\b", vege))
 
 
 def _json_kibont(szoveg: str) -> dict:
@@ -532,8 +543,7 @@ def _adatai(f: dict) -> str:
             elif isinstance(v, bool):
                 return
             elif isinstance(v, (int, float)):
-                if kulcs:
-                    reszek.append(f"{kulcs} {v}")
+                reszek.append(f"{kulcs} {v}" if kulcs else str(v))   # fix175: listában is (pl. 🍎 4)
             elif isinstance(v, dict):
                 for k, x in v.items():
                     jar(x, k)

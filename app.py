@@ -11687,7 +11687,8 @@ _TANITO_PONTOS_ES = (
     "respuestas válidas), NO le digas que está mal. Felicítale y solo después, con cariño, añade la otra posibilidad.\n"
     # fix174: a spanyol tanárteszt visszatérő tükörfordításai
     "- Habla como un maestro de Primaria de España, con frases naturales, no traducidas: «mejor» (nunca «más bueno/más "
-    "buena»), «alimentos procesados» (no «comida muy hecha»), «si hace 3 grados bajo cero» (no «si fuera hace»).\n"
+    "buena»), «alimentos procesados» (no «comida muy hecha»), «si hace 3 grados bajo cero» (no «si fuera hace»), «¡Sí, es verdad!» o «¡Exacto!» (no «¡Sí, verdad!»), "
+    "«salir a jugar o dar un paseo» (no «venir al juego»).\n"
     "- En inglés: good afternoon / good evening = buenas tardes (saludo); good night = buenas noches (al despedirse "
     "o irse a dormir). No digas que good evening es «buenas noches».\n")
 
