@@ -10813,14 +10813,16 @@ _DM_FELULETEK = [
      '5–7 frases; 5.º–6.º: párrafo divulgativo con inferencia:\n'
      '   <FELADAT>{"tipus":"szovegertes","kerdes":"¿Por qué guardó Lucía la concha?","mondatok":["Lucía vive en un pueblo cerca del mar.","Cada sábado va al mercado con su abuelo.","Este sábado el abuelo le regaló una concha muy bonita.","Lucía la guardó en una caja porque quería enseñársela a su clase."],"opciok":["Porque estaba rota.","Para enseñársela a su clase.","Porque era del abuelo."],"jo":1,"bizonyitek":[3]}</FELADAT>',
      'szövegértés, bizonyító mondat        → szovegertes', 'comprensión lectora, frase-prueba   → szovegertes'),
-    ("diktalas", {"magyar"}, 1, 4,
+    ("diktalas", {"magyar", "nyelv"}, 1, 4,   # fix168: idegen nyelvórán is
      'TOLLBAMONDÁS (diktálás) – a felolvasó kimondja a mondatot, a gyerek leírja, a program szóról szóra ellenőrzi '
      '(helyesírás, nagybetű, írásjel). 1–3 rövid mondat, SZÁMJEGY NÉLKÜL, csak olyan helyesírási jelenség, amit már tanult; '
-     '1. o.: 2–4 szó, 2. o.: 3–6 szó, 3–4. o.: 5–9 szó (ly/j, hosszú mássalhangzó, ékezet, tulajdonnév):\n'
+     '1. o.: 2–4 szó, 2. o.: 3–6 szó, 3–4. o.: 5–9 szó (ly/j, hosszú mássalhangzó, ékezet, tulajdonnév). '
+     'IDEGEN NYELVÓRÁN a célnyelven, csak már tanult szavakból (pl. "I have a red ball."):\n'
      '   <FELADAT>{"tipus":"diktalas","mondatok":["A kutya ugat.","Anya almát vesz."]}</FELADAT>',
      'DICTADO – se lee la frase en voz alta, el niño la escribe y el programa la corrige palabra por palabra '
      '(ortografía, mayúscula, puntuación). 1–3 frases cortas SIN cifras, solo con lo que ya ha aprendido; '
-     '1.º: 2–4 palabras, 2.º: 3–6, 3.º–4.º: 5–9 (b/v, h, ll/y, tildes, nombres propios):\n'
+     '1.º: 2–4 palabras, 2.º: 3–6, 3.º–4.º: 5–9 (b/v, h, ll/y, tildes, nombres propios). '
+     'EN LENGUA EXTRANJERA, en esa lengua y solo con palabras ya aprendidas (p. ej. "I have a red ball."):\n'
      '   <FELADAT>{"tipus":"diktalas","mondatok":["Mi perro es grande.","Hoy hace sol."]}</FELADAT>',
      'tollbamondás (diktálás)              → diktalas', 'dictado                             → diktalas'),
     ("egyenlet", {"kemia"}, 7, 8,
