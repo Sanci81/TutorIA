@@ -1684,3 +1684,6 @@ Tervezett elemek:
 - [x] (fix182) Éles ES főoldal ellenőrizve: minden link spanyol (/es/precios, /es/registro, /es/clase-de-prueba…). A „Salir” → /es/pin-parental?tovabb=/es/salir SZÁNDÉKOS (kilépéshez szülői PIN kell, hogy a gyerek ne lépjen ki).
 - [ ] (fix182) ES főoldal lábléc Facebook-linkje még a MAGYAR oldalra mutat (profile.php?id=61594854042337?) → a spanyol FB-oldal címére cserélni (Sándor küldje el a spanyol oldal linkjét).
 - [ ] (fix182) Spanyol hirdetés: Sándor küldje a két magyar videó hirdetési eredményét (Hirdetéskezelő: megjelenés, kattintás, CTR, kattintásonkénti ár) → a jobbat spanyolul elkészíteni. Előtte ajánlott: iPhone-teszt (BrowserStack).
+- [x] (fix183) Spanyol lábléc Facebook-link → a spanyol oldal (profile.php?id=61596506557900), a magyar marad. A „?tovabb=” paraméter a spanyol címekben „?volver=” (a régi is működik). Alaposabb tanár (TANAR_EFFORT_MATEK) HANGOS módban NEM kapcsol be (élőszóban a 6 mp csend sok).
+- [ ] (fix183) Railway: TANAR_EFFORT_MATEK=medium a PROBA service-nél is (élesen Sándor beállította 11.17).
+- [ ] (fix183) Hirdetés: a kampánylista nem mutatja videónként – a kampányon belül „Hirdetések” fül kell (melyik videó hány kattintás). Eddig: kattintás olcsó (0,07–0,09 €/érkezés), a gond a regisztráció.

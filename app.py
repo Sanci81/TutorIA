@@ -3296,7 +3296,7 @@ def logout():
 @login_required
 def szuloi_pin():
     """A szülői rész kódbekérője."""
-    tovabb = request.values.get("tovabb") or url_for("dashboard")
+    tovabb = request.values.get("tovabb") or request.values.get("volver") or url_for("dashboard")   # fix183: ES címben „volver”
     # Csak a saját oldalunkra engedünk vissza – külső cím soha.
     if not tovabb.startswith("/"):
         tovabb = url_for("dashboard")
@@ -15309,8 +15309,10 @@ def child_chat_send(child_id: int):
         teszt_info=("" if GYORSITOTAR else _teszt_szoveg),
         uj_tantargy=_uj_tantargy(progress),
     )
-    if TANAR_EFFORT_MATEK and _matek_targy(subject_label):
-        g.tanar_effort = TANAR_EFFORT_MATEK          # fix181: matekórán alaposabb
+    if TANAR_EFFORT_MATEK and _matek_targy(subject_label) and chat_mode != "voice":
+        # fix181/183: matek és természettudomány órán alaposabb – de HANGOS módban
+        # nem, mert ott a 6 mp csend élőszóban túl hosszú (gyors marad).
+        g.tanar_effort = TANAR_EFFORT_MATEK
     system_prompt += _topic_teaching_prompt_block(
         current_topic_item,
         es_curriculum=_active_curriculum() == "ES",

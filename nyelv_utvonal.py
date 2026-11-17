@@ -146,6 +146,9 @@ def kimeno_cim(cim: str) -> str:
         ut, hash_, horgony = ut.partition("#")
         if ut.startswith(elo + "/") and not ut.startswith(elo + "/static/"):
             ut = elo + spanyolra(ut[len(elo):])
+            # fix183: a címsorban látszó paraméter neve is spanyol (?tovabb= → ?volver=)
+            if query.startswith("tovabb=") or "&tovabb=" in query:
+                query = ("&" + query).replace("&tovabb=", "&volver=")[1:]
         return ut + hash_ + horgony + kerdo + query
     return cim
 
