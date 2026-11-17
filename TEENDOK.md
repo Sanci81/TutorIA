@@ -1680,3 +1680,7 @@ Tervezett elemek:
 - [ ] (fix181) Más tárgyakra (Conocimiento, Lengua) is mérni a medium-ot, ha ott is maradnak tárgyi hibák.
 - [ ] (fix181) „OKOS TANÁR” ötlet (Sándor): gyerekenkénti tanulóprofil – a visszatérő hibák (EREDMENY:rossz, diktálás hibalista) eltárolva, és a promptba: „ebben gyenge, magyarázd másképp (rajz, példa, lépésekre bontva)”. Nagyobb fejlesztés, előbb terv.
 - [x] (fix181) Facebook ES hivatkozás: a főoldal (https://tutoriacademia.com/es/) – NEM a /es/pin-parental… cím (az belépés utáni oldal).
+- [x] (fix182) TANAR_EFFORT_MATEK most matek ÉS természettudomány (Conocimiento, Ciencias, Fizika, Kémia, Biológia, Környezet, Földrajz) órán hat. Railway-en MÉG NINCS beállítva → most mindenhol low.
+- [x] (fix182) Éles ES főoldal ellenőrizve: minden link spanyol (/es/precios, /es/registro, /es/clase-de-prueba…). A „Salir” → /es/pin-parental?tovabb=/es/salir SZÁNDÉKOS (kilépéshez szülői PIN kell, hogy a gyerek ne lépjen ki).
+- [ ] (fix182) ES főoldal lábléc Facebook-linkje még a MAGYAR oldalra mutat (profile.php?id=61594854042337?) → a spanyol FB-oldal címére cserélni (Sándor küldje el a spanyol oldal linkjét).
+- [ ] (fix182) Spanyol hirdetés: Sándor küldje a két magyar videó hirdetési eredményét (Hirdetéskezelő: megjelenés, kattintás, CTR, kattintásonkénti ár) → a jobbat spanyolul elkészíteni. Előtte ajánlott: iPhone-teszt (BrowserStack).

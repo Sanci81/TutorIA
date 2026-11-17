@@ -248,7 +248,7 @@ AKT_TARGY = ""      # fix181: az épp lejátszott óra tantárgya (matekórán T
 def _effort_most() -> str:
     alap = getattr(app, "TANAR_EFFORT", "low")
     matek = getattr(app, "TANAR_EFFORT_MATEK", "")
-    return matek if (matek and "matem" in AKT_TARGY.lower()) else alap
+    return matek if (matek and app._matek_targy(AKT_TARGY)) else alap
 
 
 def _tanar_valaszol(kliens, uzenetek: list[dict]) -> str:

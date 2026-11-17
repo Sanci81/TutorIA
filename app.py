@@ -137,7 +137,11 @@ if TANAR_EFFORT_MATEK not in ("low", "medium", "high"):
 
 
 def _matek_targy(cimke: str | None) -> bool:
-    return "matem" in (cimke or "").lower()
+    """fix182: matek ÉS természettudomány (ott is volt tárgyi hiba: kísérlet, levél erezete)."""
+    s = unicodedata.normalize("NFD", (cimke or "").lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    return any(k in s for k in ("matem", "conocimiento", "ciencia", "fisica", "quimica", "biolog",
+                                 "geolog", "termeszet", "kornyezet", "fizika", "kemia", "foldrajz", "geograf"))
 
 
 def _tanar_effort() -> str:
