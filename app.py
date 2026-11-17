@@ -7011,6 +7011,32 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         return {"tipus": "szovegertes", "kerdes": kerdes, "mondatok": mondatok, "opciok": opciok,
                 "jo": jo, "bizonyitek": sorted(set(biz)), "cim": _rov(adat.get("cim"), 60) or ""}
 
+    if tipus == "diktalas":
+        # TOLLBAMONDÁS / DICTADO (fix167): a felolvasó kimondja, a gyerek leírja,
+        # a böngésző szóról szóra összeveti. Szám nincs benne (kimondva kétértelmű),
+        # és csak betű + egyszerű írásjel – különben a gyerek nem tudhatja, mit írjon.
+        nyers = adat.get("mondatok")
+        if not isinstance(nyers, list):
+            nyers = [adat.get("mondat")] if adat.get("mondat") else []
+        mondatok = []
+        for m in nyers:
+            if not isinstance(m, str):
+                return None
+            m = re.sub(r"\s+", " ", m).strip()
+            if not m or len(m) > 90 or re.search(r"\d", m):
+                return None
+            if not re.fullmatch(r"[¿¡]?[^\W\d_]+(?:[ ,.;:!?¿¡'’\-]+[^\W\d_]*)*[.!?…]?", m):
+                return None
+            if not (1 <= len(m.split()) <= 12):
+                return None
+            mondatok.append(m)
+        if not (1 <= len(mondatok) <= 4):
+            return None
+        kerdes = ("Escucha la frase y escríbela exactamente. Puedes escucharla las veces que quieras."
+                  if es_tanterv else
+                  "Hallgasd meg a mondatot, és írd le pontosan! Annyiszor hallgathatod meg, ahányszor kell.")
+        return {"tipus": "diktalas", "mondatok": mondatok, "kerdes": kerdes}
+
     if tipus == "egyenlet":
         # KÉMIAI EGYENLET RENDEZÉSE. A képletekből MI számoljuk az atomokat, és MI keressük meg a
         # megoldást (legkisebb egész együtthatók, 1–9) – ha nincs ilyen, a feladat nem jelenik meg.
@@ -10787,6 +10813,16 @@ _DM_FELULETEK = [
      '5–7 frases; 5.º–6.º: párrafo divulgativo con inferencia:\n'
      '   <FELADAT>{"tipus":"szovegertes","kerdes":"¿Por qué guardó Lucía la concha?","mondatok":["Lucía vive en un pueblo cerca del mar.","Cada sábado va al mercado con su abuelo.","Este sábado el abuelo le regaló una concha muy bonita.","Lucía la guardó en una caja porque quería enseñársela a su clase."],"opciok":["Porque estaba rota.","Para enseñársela a su clase.","Porque era del abuelo."],"jo":1,"bizonyitek":[3]}</FELADAT>',
      'szövegértés, bizonyító mondat        → szovegertes', 'comprensión lectora, frase-prueba   → szovegertes'),
+    ("diktalas", {"magyar"}, 1, 4,
+     'TOLLBAMONDÁS (diktálás) – a felolvasó kimondja a mondatot, a gyerek leírja, a program szóról szóra ellenőrzi '
+     '(helyesírás, nagybetű, írásjel). 1–3 rövid mondat, SZÁMJEGY NÉLKÜL, csak olyan helyesírási jelenség, amit már tanult; '
+     '1. o.: 2–4 szó, 2. o.: 3–6 szó, 3–4. o.: 5–9 szó (ly/j, hosszú mássalhangzó, ékezet, tulajdonnév):\n'
+     '   <FELADAT>{"tipus":"diktalas","mondatok":["A kutya ugat.","Anya almát vesz."]}</FELADAT>',
+     'DICTADO – se lee la frase en voz alta, el niño la escribe y el programa la corrige palabra por palabra '
+     '(ortografía, mayúscula, puntuación). 1–3 frases cortas SIN cifras, solo con lo que ya ha aprendido; '
+     '1.º: 2–4 palabras, 2.º: 3–6, 3.º–4.º: 5–9 (b/v, h, ll/y, tildes, nombres propios):\n'
+     '   <FELADAT>{"tipus":"diktalas","mondatok":["Mi perro es grande.","Hoy hace sol."]}</FELADAT>',
+     'tollbamondás (diktálás)              → diktalas', 'dictado                             → diktalas'),
     ("egyenlet", {"kemia"}, 7, 8,
      'KÉMIAI EGYENLET RENDEZÉSE – a gyerek az együtthatókat állítja, az atomokat golyókként látja. Csak a '
      'képleteket add meg együttható NÉLKÜL ("bal", "jobb", összesen legfeljebb 5 molekula, pl. "Ca(OH)2" is jó); '
