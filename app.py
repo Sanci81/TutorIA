@@ -11684,7 +11684,12 @@ _TANITO_PONTOS_ES = (
     "- Si anuncias cuántas cosas vas a enseñar o enumerar (p. ej. «dos palabras nuevas», «tres cosas importantes»), "
     "enumera EXACTAMENTE esas, ni más ni menos. Si no estás seguro, no digas un número.\n"
     "- Si la respuesta del niño es correcta, o aceptable según lo que le has enseñado (p. ej. dice la otra de dos "
-    "respuestas válidas), NO le digas que está mal. Felicítale y solo después, con cariño, añade la otra posibilidad.\n")
+    "respuestas válidas), NO le digas que está mal. Felicítale y solo después, con cariño, añade la otra posibilidad.\n"
+    # fix174: a spanyol tanárteszt visszatérő tükörfordításai
+    "- Habla como un maestro de Primaria de España, con frases naturales, no traducidas: «mejor» (nunca «más bueno/más "
+    "buena»), «alimentos procesados» (no «comida muy hecha»), «si hace 3 grados bajo cero» (no «si fuera hace»).\n"
+    "- En inglés: good afternoon / good evening = buenas tardes (saludo); good night = buenas noches (al despedirse "
+    "o irse a dormir). No digas que good evening es «buenas noches».\n")
 
 
 _GEP_SZABALY = re.compile(r"\bg[ée]p.{0,120}szab[áa]ly|szab[áa]ly.{0,120}\bg[ée]p|m[áa]quina.{0,120}regla|regla.{0,120}m[áa]quina",

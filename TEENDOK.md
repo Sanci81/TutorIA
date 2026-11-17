@@ -1648,4 +1648,12 @@ Tervezett elemek:
 - [x] (fix173) tanar_teszt.py javítva: a teszt-gyerek eddig NEM látta a „szám” feladat szövegét és az interaktív feladatok adatait (pl. csoportosítandó elemek) → téves „hiányzik a feladat” hibák. Most látja.
 - [x] (fix173) Spanyol prompt: „esto se escribe así de corto” (tükörfordítás, a tanár szó szerint mondta) → „Con la fórmula… / En matemáticas se escribe así…”.
 - [ ] (fix173) Újramérés UGYANAZZAL a paranccsal (`python tanar_teszt.py --oldal es`, gpt-5.4-mini) a javítások után.
-- [ ] (fix173) Modell-figyelő ütemezett feladat (2 naponta): OpenAI kivezetések/új modellek/árak → Sándornak értesítés; új modellnél tanárteszt-javaslat.
+- [x] (fix174 KÉSZ, HETENTE hétfőn 11:13) Modell-figyelő ütemezett feladat: OpenAI kivezetések/új modellek/árak → Sándornak értesítés; új modellnél tanárteszt-javaslat.
+- [x] (fix174) Újramérés (13:42, gpt-5.4-mini): 13 biztos + 8 gyanús – DE 6 ebből a teszt hibája volt (a feladatadatokat JSON-ként mutatta → „technikai szemét”, „nyelvet váltott”). Javítva: olvasható felsorolás. „manejar” kivéve a latin-amerikai listából (Spanyolországban is jelent „kezelni”-t).
+- [x] (fix174) FONTOS: a tanárteszt eddig a TANITO_PONTOS blokk NÉLKÜL mérte a tanárt, pedig élesen BE van („annyit sorolj, amennyit ígérsz”, „jó választ ne javíts ki”) → a „3-at ígér, 4-et mond” hibák részben ezért jöttek. Most a teszt is hozzáfűzi (TANITO_PONTOS=0 → nélküle).
+- [x] (fix174) Spanyol TANITO_PONTOS blokk bővítve: természetes spanyolországi mondatok („mejor”, nem „más bueno”), good evening = buenas tardes / good night = buenas noches.
+- [ ] (fix174) ‼️ SPANYOL MINŐSÉG – Sándor: a spanyol piac nagyobb, a minőség az első, tesztre max. ~20 € mehet. Következő: újramérés (8 óra, ~0,7 $), aztán TELJES spanyol kör `python tanar_teszt.py --oldal es --mind` (minden tárgy × évfolyam, becslés ~4–6 $) → Claude elolvassa, magyar összefoglaló, javítás, újramérés.
+- [ ] (fix174) MARKETING spanyolul: Facebook-bejegyzések (spanyol oldal), rövid videók, Pinterest – terv + szövegek.
+- [ ] (fix174) PLUSZ LECKÉK / óratervek a spanyol oldalra (oratervek/ csak HU 4. o. matek van) – mely tárgyak/évfolyamok elsőként?
+- [ ] (fix174) SPANYOL KÁRTYÁK befejezése (26 kártya; 10 újra: Torres, Peral, Lorca, Las Casas, Elcano, Firnas, Azarquiel, Goya, Sorolla, Albéniz – Goya_2, Albéniz_2, Peral_2 elfogadva; Sorolla_3-on halvány „Fig. 22”). Képgenerálás pénzbe kerül – Sándor dönt.
+- [x] (fix174) Felolvasás: a FŐ hang az Azure (Noémi / Elvira), az OpenAI gpt-4o-mini-tts csak tartalék. A diktálás költsége ezért az Azure árán megy (kb. ugyanannyi vagy kevesebb).

@@ -317,7 +317,7 @@ def _gepi_tanar(nyers: str, latott: str) -> list[str]:
 _LATAM_SZAVAK = {   # latin-amerikai szó → spanyolországi megfelelője
     "computadora": "ordenador", "computadoras": "ordenadores", "celular": "móvil",
     "celulares": "móviles", "carro": "coche", "carros": "coches", "jugo": "zumo",
-    "manejar": "conducir", "lentes": "gafas", "anteojos": "gafas", "boleto": "billete",
+"lentes": "gafas", "anteojos": "gafas", "boleto": "billete",
     "durazno": "melocotón", "frutilla": "fresa", "elevador": "ascensor",
     "refrigerador": "nevera", "heladera": "nevera", "pizarrón": "pizarra",
     "computación": "informática", "lapicera": "bolígrafo", "plumón": "rotulador",
@@ -408,6 +408,11 @@ def _tanari_prompt_belul(gyerek: dict, tantargy: str, nyelv: str | None,
     )
     prompt += app._topic_teaching_prompt_block(
         temakor, es_curriculum=(OLDAL == "es"), grade=gyerek.get("grade"))
+    # fix174: élesen a TANITO_PONTOS kapcsoló BE van, és a chat a végére fűzi
+    # ezt a blokkot – a teszt eddig NÉLKÜLE mérte a tanárt (ezért jött újra és
+    # újra a „hármat ígér, négyet mond”). Ugyanúgy, mint élesben; 0 = ki.
+    if os.environ.get("TANITO_PONTOS", "1").strip().lower() not in ("0", "nem", "false", "ki"):
+        prompt += app._TANITO_PONTOS_ES if OLDAL == "es" else app._TANITO_PONTOS_HU
     return prompt
 
 
@@ -514,11 +519,30 @@ def _adatai(f: dict) -> str:
     a táblán látja – enélkül a teszt-gyerek „nem látja” őket, és az ellenőrző
     hiányzó feladatot jelez, ami élesben ott van."""
     try:
-        adat = {k: v for k, v in f.items() if k not in ("tipus", "kerdes", "proba", "es", "jo")}
+        adat = {k: v for k, v in f.items() if k not in ("tipus", "kerdes", "proba", "es", "jo", "bizonyitek", "megoldas", "helyes")}
         if not adat:
             return ""
-        s = json.dumps(adat, ensure_ascii=False)
-        return " | a táblán: " + (s if len(s) <= 400 else s[:400] + "…")
+        # fix174: OLVASHATÓAN, nem JSON-ként – különben az ellenőrző „technikai
+        # szemetet” lát, ami a gyereknek élesben nem jelenik meg.
+        reszek: list[str] = []
+        def jar(v, kulcs=""):
+            if isinstance(v, str):
+                if v.strip() and v not in reszek:
+                    reszek.append(v)
+            elif isinstance(v, bool):
+                return
+            elif isinstance(v, (int, float)):
+                if kulcs:
+                    reszek.append(f"{kulcs} {v}")
+            elif isinstance(v, dict):
+                for k, x in v.items():
+                    jar(x, k)
+            elif isinstance(v, (list, tuple)):
+                for x in v:
+                    jar(x, kulcs if not isinstance(x, (list, dict)) else "")
+        jar(adat)
+        s = " · ".join(reszek)
+        return (" – a táblán látható: " + (s if len(s) <= 350 else s[:350] + "…")) if s else ""
     except Exception:
         return ""
 
