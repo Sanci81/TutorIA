@@ -4025,6 +4025,60 @@ _CHAT_MARKER_FELADAT = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 
+# HIÁNYZÓ ZÁRÓJEL (fix176). A 38 órás spanyol teszt: a tanári válaszok ~3%-ában
+# a modell kiírta a <FELADAT>{…} JSON-t, de a </FELADAT>-ot elfelejtette – és
+# a gyerek a NYERS kódot látta a feladat helyett. A JSON maga hibátlan volt,
+# ezért itt a kapcsos zárójelek alapján megkeressük a végét, és pótoljuk.
+_FELADAT_NYIT = re.compile(r"[<\[]\s*F\s*E\s*L\s*A\s*D\s*A\s*T\s*[>\]]", re.IGNORECASE)
+_FELADAT_ZAR = re.compile(r"[<\[]\s*/\s*F\s*E\s*L\s*A\s*D\s*A\s*T\s*[>\]]", re.IGNORECASE)
+
+
+def _feladat_zar(text: str) -> str:
+    if not text or "F" not in text.upper() or not _FELADAT_NYIT.search(text):
+        return text
+    ki, pos, n = [], 0, len(text)
+    while True:
+        m = _FELADAT_NYIT.search(text, pos)
+        if not m:
+            ki.append(text[pos:])
+            break
+        ki.append(text[pos:m.end()])
+        k = m.end()
+        while k < n and text[k] in " \t\r\n":
+            k += 1
+        if k >= n or text[k] != "{":
+            pos = m.end()
+            continue
+        mely, szoveg_ben, esc, veg = 0, False, False, None
+        for q in range(k, n):
+            ch = text[q]
+            if szoveg_ben:
+                if esc:
+                    esc = False
+                elif ch == "\\":
+                    esc = True
+                elif ch == '"':
+                    szoveg_ben = False
+                continue
+            if ch == '"':
+                szoveg_ben = True
+            elif ch == "{":
+                mely += 1
+            elif ch == "}":
+                mely -= 1
+                if mely == 0:
+                    veg = q + 1
+                    break
+        if veg is None:
+            pos = m.end()
+            continue
+        ki.append(text[m.end():veg])
+        if not _FELADAT_ZAR.match(text[veg:].lstrip()):
+            ki.append("</FELADAT>")
+        pos = veg
+    return "".join(ki)
+
+
 _FELADAT_JELEK = {"+": "+", "-": "−", "−": "−", "*": "×", "x": "×",
                   "×": "×", "/": "÷", ":": "÷", "÷": "÷"}
 
@@ -13924,7 +13978,7 @@ def _call_ai_for_chat(
             tartalom = "".join(
                 (r.get("text", "") if isinstance(r, dict) else getattr(r, "text", ""))
                 or "" for r in tartalom)
-        return (tartalom or "").strip()
+        return _feladat_zar((tartalom or "").strip())
 
     client = _openai_client(api_key, request_timeout=max(8.0, idokorlat),
                             max_retries=max(0, ujra))
@@ -13938,7 +13992,7 @@ def _call_ai_for_chat(
     )
     # A mérést a burkolt kliens végzi (_MertKliens), ezért itt NINCS külön
     # add_usage – különben kétszer könyvelnénk ugyanazt a hívást.
-    return (response.choices[0].message.content or "").strip()
+    return _feladat_zar((response.choices[0].message.content or "").strip())   # fix176
 
 
 # ── Magyar szöveg detektáló ──────────────────────────────────────────────────

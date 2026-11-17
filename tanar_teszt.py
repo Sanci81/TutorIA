@@ -277,7 +277,12 @@ def _tanar_valaszol(kliens, uzenetek: list[dict]) -> str:
         tartalom = "".join(
             (r.get("text", "") if isinstance(r, dict) else getattr(r, "text", ""))
             or "" for r in tartalom)
-    return (tartalom or "").strip()
+    nyers = (tartalom or "").strip()
+    # fix176: ugyanaz a javítás, mint élesben (hiányzó </FELADAT> pótlása) – de számoljuk.
+    javitott = app._feladat_zar(nyers) if hasattr(app, "_feladat_zar") else nyers
+    if javitott != nyers:
+        STAT["zar_potolva"] = STAT.get("zar_potolva", 0) + 1
+    return javitott
 
 
 def _gepi_tanar(nyers: str, latott: str) -> list[str]:
@@ -340,7 +345,7 @@ def _gepi_spanyol(tiszta: str) -> list[str]:
             ki.append(f"[latin-amerikai] „{latam}” – Spanyolországban: „{spanyol}”")
     if re.search(r"\bustedes\b", kis):
         ki.append("[latin-amerikai?] „ustedes” – gyerekeknek Spanyolországban „vosotros” a szokás")
-    mj = re.search(_MAGYAR_JEL, tiszta, re.IGNORECASE)
+    mj = re.search(_MAGYAR_JEL, re.sub(r"<[^>]*>", " ", tiszta), re.IGNORECASE)   # fix176: a jelölő nem magyar szó
     if mj:
         ki.append(f"[magyar szó] a spanyol órán: „{tiszta[max(0, mj.start() - 25):mj.end() + 25]}”")
     return ki
@@ -552,7 +557,7 @@ def _adatai(f: dict) -> str:
                     jar(x, kulcs if not isinstance(x, (list, dict)) else "")
         jar(adat)
         s = " · ".join(reszek)
-        return (" – a táblán látható: " + (s if len(s) <= 350 else s[:350] + "…")) if s else ""
+        return (" – a táblán látható: " + (s if len(s) <= 1200 else s[:1200] + "…")) if s else ""   # fix177: 350 helyett 1200 (levágás → téves hiba)
     except Exception:
         return ""
 
