@@ -477,11 +477,14 @@ def _feladat_leiras(f: dict) -> str:
                  "urmertek", "nezet", "betu", "szofaj",
                  "nagybetu", "tilde", "nevelo", "gerinces",
                  "ciklus", "szin", "hangszer", "szoba", "tapl"):
-        return f"interaktív feladat ({tipus}): {f.get('kerdes', '')}"
+        return f"interaktív feladat ({tipus}): {f.get('kerdes', '')}" + _adatai(f)
     if tipus == "osztas":
         return f"írásbeli osztás balról jobbra: {f.get('a')} : {f.get('b')}, a gyerek a hányadost írja be"
     if tipus in ("szam", "szamolo"):
-        return "szám beírása egy mezőbe"
+        # fix173: a feladat SZÖVEGE is látszik a gyereknek – eddig a teszt
+        # elhallgatta, és a „gyerek” azt mondta: nem látom a feladatot (téves hiba).
+        mit = f.get("muvelet") or (f"{f.get('a')} {f.get('jel', '')} {f.get('b')}" if f.get("a") is not None else "")
+        return "szám beírása egy mezőbe" + (f" – a feladat: „{mit}”" if mit else "")
     if tipus == "pizza":
         return (f"pizza {f.get('osztas')} szeletre vágva, a gyerek {f.get('cel')} "
                 "szeletet színez ki")
@@ -503,7 +506,21 @@ def _feladat_leiras(f: dict) -> str:
             f"{a} ↔ {b}" for a, b in (f.get("parok") or []))
     if tipus == "szoveg":
         return f"szavak kijelölése a szövegben: „{f.get('szoveg', '')}”"
-    return f"feladat ({tipus})"
+    return f"feladat ({tipus})" + _adatai(f)
+
+
+def _adatai(f: dict) -> str:
+    """fix173: a feladat ADATAI (pl. a szétválogatandó elemek), ahogy a gyerek
+    a táblán látja – enélkül a teszt-gyerek „nem látja” őket, és az ellenőrző
+    hiányzó feladatot jelez, ami élesben ott van."""
+    try:
+        adat = {k: v for k, v in f.items() if k not in ("tipus", "kerdes", "proba", "es", "jo")}
+        if not adat:
+            return ""
+        s = json.dumps(adat, ensure_ascii=False)
+        return " | a táblán: " + (s if len(s) <= 400 else s[:400] + "…")
+    except Exception:
+        return ""
 
 
 def _lathato(tanar_valasz: str, evfolyam) -> str:

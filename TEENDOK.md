@@ -1644,3 +1644,8 @@ Tervezett elemek:
 - [x] (fix171) Spanyol Facebook-oldal szövegei megadva (név, kategória, ≤100 karakteres bemutatkozás, hosszú „Información” szöveg).
 - [x] (fix172) tanar_teszt.py: spanyol oldalon GÉPI ellenőrzés is (tizedespont, latin-amerikai szavak, „ustedes”, magyar szó a spanyol órán). Az órák kiválasztása fix (seed 12345) → két tanármodell UGYANAZOKAT az órákat kapja, összevethető. Éles tanár: MODELL_TANAR nincs a Railway-en → a kód alapértéke: gpt-5.4-mini.
 - [ ] (fix172) Kimi-ötlet, később: előre megírt „csapda-órák” (a gyerek tökéletesen válaszol → kijavítja-e; magyar szót ír; tizedes) – ha a sima teszt után még kell.
+- [x] (fix173) SPANYOL TANÁRTESZT eredménye (2026-11-17, 8 óra, ugyanazok az órák): gpt-5.4-mini 12 biztos + 9 gyanús, 0,73 $, 2,8 mp/válasz · gpt-5.4 14 biztos + 12 gyanús, 6,8 mp/válasz, drágább. Gépi spanyol hiba (tizedespont, latin-amerikai szó, magyar szó) egyik sem. Döntés-javaslat: MARAD a gpt-5.4-mini. Claude átolvasta: a spanyol jó, főleg apró tükörfordítások; több „biztos” hiba a TESZT hibája volt.
+- [x] (fix173) tanar_teszt.py javítva: a teszt-gyerek eddig NEM látta a „szám” feladat szövegét és az interaktív feladatok adatait (pl. csoportosítandó elemek) → téves „hiányzik a feladat” hibák. Most látja.
+- [x] (fix173) Spanyol prompt: „esto se escribe así de corto” (tükörfordítás, a tanár szó szerint mondta) → „Con la fórmula… / En matemáticas se escribe así…”.
+- [ ] (fix173) Újramérés UGYANAZZAL a paranccsal (`python tanar_teszt.py --oldal es`, gpt-5.4-mini) a javítások után.
+- [ ] (fix173) Modell-figyelő ütemezett feladat (2 naponta): OpenAI kivezetések/új modellek/árak → Sándornak értesítés; új modellnél tanárteszt-javaslat.

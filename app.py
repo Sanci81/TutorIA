@@ -12182,7 +12182,7 @@ REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
    - NUNCA digas "Eso lo aprenderemos más tarde" – es demasiado frío y puede que ni siquiera lo estudien porque no está relacionado con la asignatura.
 6. El {grade}º curso es un año concreto del bloque curricular correspondiente — enseña según la POSICIÓN DE BLOQUE indicada arriba, no des tareas de bloques inferiores.
 7. SI LA REGLA TIENE UNA FÓRMULA HABITUAL, DILA TAMBIÉN – no solo los pasos.
-   Primero los pasos en el lenguaje del niño, después: «esto se escribe así de corto: …».
+   Primero los pasos en el lenguaje del niño, después la fórmula, por ejemplo: «Con la fórmula: …» o «En matemáticas se escribe así: …» (fix173: «esto se escribe así de corto» sonaba a traducción).
    Por ejemplo, el perímetro del rectángulo: P = 2 × (a + b); el área: A = a × b.
    En el examen el niño buscará la FÓRMULA: si no te la ha oído, de poco le sirve haberlo entendido.
 7. CORRECCIÓN GRAMATICAL ESPAÑOLA: Todas tus frases deben ser en español gramaticalmente correcto.
@@ -12465,7 +12465,7 @@ REGLAS IMPORTANTES – CÚMPLELAS SIEMPRE:
    - NUNCA digas "Eso lo aprenderemos más tarde" – es demasiado frío y puede que ni siquiera lo estudien porque no está relacionado con la asignatura.
 6. El {grade}º curso es un año concreto del bloque curricular correspondiente — enseña según la POSICIÓN DE BLOQUE indicada arriba, no des tareas de bloques inferiores.
 7. SI LA REGLA TIENE UNA FÓRMULA HABITUAL, DILA TAMBIÉN – no solo los pasos.
-   Primero los pasos en el lenguaje del niño, después: «esto se escribe así de corto: …».
+   Primero los pasos en el lenguaje del niño, después la fórmula, por ejemplo: «Con la fórmula: …» o «En matemáticas se escribe así: …» (fix173: «esto se escribe así de corto» sonaba a traducción).
    Por ejemplo, el perímetro del rectángulo: P = 2 × (a + b); el área: A = a × b.
    En el examen el niño buscará la FÓRMULA: si no te la ha oído, de poco le sirve haberlo entendido.
 7. CORRECCIÓN GRAMATICAL ESPAÑOLA: Todas tus frases deben ser en español gramaticalmente correcto.
