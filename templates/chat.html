@@ -7933,7 +7933,7 @@
                 try { be.focus(); } catch (e) {}
                 return; }
             be.disabled = true; seg.hidden = true;
-            tipp.textContent = D.T('Így helyes – figyeld meg a piros szavakat: ', 'Así es correcto – fíjate en las palabras en rojo: ') + tippek.slice(0, 3).join(' · ');
+            tipp.textContent = D.T('Így helyes – figyeld meg a piros betűket: ', 'Así es correcto – fíjate en las letras en rojo: ') + tippek.slice(0, 3).join(' · ');
             D.jelez(false, D.T('Semmi baj! Nézd meg, hogyan kell, és jöhet a következő.', '¡No pasa nada! Mira cómo se escribe y seguimos.'));
             gs.innerHTML = '';
             gs.appendChild(D.gomb(D.T('Tovább →', 'Siguiente →'), 'fo', function () { kor++; kor_(); })); }
