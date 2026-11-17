@@ -121,6 +121,13 @@ AZURE_VOICE_ES = "es-ES-ElviraNeural"
 
 # A TANÁR. Ez beszélget a gyerekkel – innen jön a számla java.
 MODELL_TANAR = os.environ.get("MODELL_TANAR", "gpt-5.4-mini")
+# fix178: mennyit „gondolkodjon” a tanár válasz előtt (low / medium / high).
+# A spanyol matekteszt: low-on a tanár mondat közben javította ki magát
+# („71 … 7 decenas … espera, aquí hay que mirar bien”). Alapérték marad low;
+# Railway: TANAR_EFFORT=medium – előbb tanárteszttel mérni.
+TANAR_EFFORT = (os.environ.get("TANAR_EFFORT", "low").strip().lower() or "low")
+if TANAR_EFFORT not in ("low", "medium", "high"):
+    TANAR_EFFORT = "low"
 # GYORSÍTÓTÁR (2026-11-05). Az OpenAI tized áron számolja a kérés ELEJÉT, ha az
 # szóról szóra ugyanaz, mint az előző kérésé. Eddig a tanár utasításainak
 # KÖZEPÉN állt a percenként változó „A TESZT ÁLLAPOTA” bekezdés („Még 23 perc
@@ -11732,7 +11739,11 @@ _TANITO_PONTOS_HU = (
     "- Ha előre megmondod, hány dolgot tanítasz vagy sorolsz fel (pl. „két új szó”, „három fontos dolog”), "
     "PONTOSAN annyit sorolj fel – se többet, se kevesebbet. Ha nem vagy biztos, ne mondj számot.\n"
     "- Ha a gyerek válasza helyes, vagy az alapján, amit tanítottál, elfogadható (pl. két jó megoldás közül a másikat "
-    "mondja), NE mondd, hogy nem jó. Dicsérd meg, és csak utána, kedvesen tedd hozzá a másik lehetőséget.\n")
+    "mondja), NE mondd, hogy nem jó. Dicsérd meg, és csak utána, kedvesen tedd hozzá a másik lehetőséget.\n"
+    # fix179: a tanár mondat közben javította ki magát („… várj, nézzük jobban”)
+    "- Gondold végig, MIELŐTT leírod. Soha ne javítsd ki magad a gyerek előtt, és ne írj le hibás gondolatmenetet "
+    "(ne írd: „várj”, „pontosabban”, „nézzük meg jobban”). Ha hibát látsz, rögtön a helyes magyarázatot írd le, "
+    "magabiztosan. A példáid számait (tízesek, egyesek, osztók) ellenőrizd, mielőtt leírod.\n")
 _TANITO_PONTOS_ES = (
     "\n\n=== DOS DETALLES IMPORTANTES ===\n"
     "- Si anuncias cuántas cosas vas a enseñar o enumerar (p. ej. «dos palabras nuevas», «tres cosas importantes»), "
@@ -11744,7 +11755,11 @@ _TANITO_PONTOS_ES = (
     "buena»), «alimentos procesados» (no «comida muy hecha»), «si hace 3 grados bajo cero» (no «si fuera hace»), «¡Sí, es verdad!» o «¡Exacto!» (no «¡Sí, verdad!»), "
     "«salir a jugar o dar un paseo» (no «venir al juego»).\n"
     "- En inglés: good afternoon / good evening = buenas tardes (saludo); good night = buenas noches (al despedirse "
-    "o irse a dormir). No digas que good evening es «buenas noches».\n")
+    "o irse a dormir). No digas que good evening es «buenas noches».\n"
+    # fix179: el profesor se corregía a mitad de frase («… espera, aquí hay que mirar bien»)
+    "- Piensa ANTES de escribir. Nunca te corrijas delante del niño ni escribas un razonamiento equivocado (no "
+    "escribas «espera», «mejor dicho», «aquí hay que mirar bien»). Si ves un error, escribe directamente la explicación "
+    "correcta, con seguridad. Comprueba las cifras de tus ejemplos (decenas, unidades, divisores) antes de darlos.\n")
 
 
 _GEP_SZABALY = re.compile(r"\bg[ée]p.{0,120}szab[áa]ly|szab[áa]ly.{0,120}\bg[ée]p|m[áa]quina.{0,120}regla|regla.{0,120}m[áa]quina",
@@ -13987,7 +14002,7 @@ def _call_ai_for_chat(
     response = _ai_keszit(client, 
         model=MODELL_TANAR,
         messages=messages,
-        reasoning_effort="low",
+        reasoning_effort=TANAR_EFFORT,
         **_kulcs,
     )
     # A mérést a burkolt kliens végzi (_MertKliens), ezért itt NINCS külön

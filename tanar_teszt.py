@@ -255,10 +255,10 @@ def _tanar_valaszol(kliens, uzenetek: list[dict]) -> str:
         k = _TANAR_KLIENS
         # A Gemini ismeri a reasoning_effort-ot, a Mistral nem (hibát adna).
         if "generativelanguage" in TANAR_API_BASE:
-            extra["reasoning_effort"] = "low"
+            extra["reasoning_effort"] = getattr(app, "TANAR_EFFORT", "low")
     else:
         k = kliens
-        extra["reasoning_effort"] = "low"
+        extra["reasoning_effort"] = getattr(app, "TANAR_EFFORT", "low")
     kezd = time.monotonic()
     STAT["hivas"] += 1
     try:
@@ -307,6 +307,11 @@ def _gepi_tanar(nyers: str, latott: str) -> list[str]:
                   f"„{tiszta[max(0, szemet.start() - 20):szemet.start() + 50]}”")
     if OLDAL == "es":
         ki.extend(_gepi_spanyol(tiszta))
+    # fix179: önjavítás a gyerek előtt („espera, aquí hay que mirar bien” / „várj, nézzük jobban”)
+    mo = re.search(r"\b(espera|mejor dicho|aquí hay que mirar bien|aquí miramos bien|v[áa]rj|pontosabban mondva|"
+                   r"n[ée]zz[üu]k (meg )?jobban)\b", tiszta, re.IGNORECASE)
+    if mo:
+        ki.append(f"[önjavítás] a gyerek előtt javítja ki magát: „{tiszta[max(0, mo.start() - 60):mo.end() + 30]}”")
     if not tiszta.strip():
         ki.append("[üres] a válaszból a gyerek semmit nem lát")
     elif ("?" not in tiszta and "¿" not in tiszta
@@ -548,7 +553,7 @@ def _adatai(f: dict) -> str:
             elif isinstance(v, bool):
                 return
             elif isinstance(v, (int, float)):
-                reszek.append(f"{kulcs} {v}" if kulcs else str(v))   # fix175: listában is (pl. 🍎 4)
+                reszek.append(str(v))   # fix178: kulcsnév nélkül (a „szam 624” magyar kulcsot mutatott)
             elif isinstance(v, dict):
                 for k, x in v.items():
                     jar(x, k)
