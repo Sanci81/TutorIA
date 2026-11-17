@@ -300,12 +300,48 @@ def _gepi_tanar(nyers: str, latott: str) -> list[str]:
     if szemet:
         ki.append(f"[jelölőhiba] a gyerek ezt is látja: "
                   f"„{tiszta[max(0, szemet.start() - 20):szemet.start() + 50]}”")
+    if OLDAL == "es":
+        ki.extend(_gepi_spanyol(tiszta))
     if not tiszta.strip():
         ki.append("[üres] a válaszból a gyerek semmit nem lát")
     elif ("?" not in tiszta and "¿" not in tiszta
           and "[A szöveg alatt ez a feladat" not in latott):
         ki.append(f"[nincs kérdés] se kérdés, se feladat: "
                   f"„…{tiszta[-80:].strip()}”")
+    return ki
+
+
+# ══ SPANYOL OLDAL: GÉPPEL MÉRHETŐ HIBÁK (fix172) ═════════════════════════
+# Sándor spanyolul nem tudja átnézni az órákat, ezért ami szabállyal
+# eldönthető, azt a gép jelzi – nem az AI-ellenőrző véleménye.
+_LATAM_SZAVAK = {   # latin-amerikai szó → spanyolországi megfelelője
+    "computadora": "ordenador", "computadoras": "ordenadores", "celular": "móvil",
+    "celulares": "móviles", "carro": "coche", "carros": "coches", "jugo": "zumo",
+    "manejar": "conducir", "lentes": "gafas", "anteojos": "gafas", "boleto": "billete",
+    "durazno": "melocotón", "frutilla": "fresa", "elevador": "ascensor",
+    "refrigerador": "nevera", "heladera": "nevera", "pizarrón": "pizarra",
+    "computación": "informática", "lapicera": "bolígrafo", "plumón": "rotulador",
+    "kínder": "infantil", "chévere": "genial", "platicar": "charlar",
+    "salón de clases": "aula", "salón de clase": "aula", "videojuego": None,
+}
+_MAGYAR_JEL = r"[őűŐŰ]|\b(?:és|hogy|nagyon|ügyes|igen|szia|feladat|kérdés|válasz|tanulunk|osztály)\b"
+
+
+def _gepi_spanyol(tiszta: str) -> list[str]:
+    import re
+    ki: list[str] = []
+    m = re.search(r"(?<![\d.])\d+\.\d+(?![\d.])", tiszta)
+    if m and not re.search(r"\d+\.\d{3}(?!\d)", m.group(0)):   # 1.000 = ezres elválasztó, az jó
+        ki.append(f"[tizedespont] Spanyolországban tizedesVESSZŐ kell: „{m.group(0)}”")
+    kis = tiszta.lower()
+    for latam, spanyol in _LATAM_SZAVAK.items():
+        if spanyol and re.search(r"\b" + re.escape(latam) + r"\b", kis):
+            ki.append(f"[latin-amerikai] „{latam}” – Spanyolországban: „{spanyol}”")
+    if re.search(r"\bustedes\b", kis):
+        ki.append("[latin-amerikai?] „ustedes” – gyerekeknek Spanyolországban „vosotros” a szokás")
+    mj = re.search(_MAGYAR_JEL, tiszta, re.IGNORECASE)
+    if mj:
+        ki.append(f"[magyar szó] a spanyol órán: „{tiszta[max(0, mj.start() - 25):mj.end() + 25]}”")
     return ki
 
 
