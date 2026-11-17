@@ -128,6 +128,24 @@ MODELL_TANAR = os.environ.get("MODELL_TANAR", "gpt-5.4-mini")
 TANAR_EFFORT = (os.environ.get("TANAR_EFFORT", "low").strip().lower() or "low")
 if TANAR_EFFORT not in ("low", "medium", "high"):
     TANAR_EFFORT = "low"
+# fix181: CSAK matekórán más gondolkodási szint. Mérés (spanyol matek, 6 óra):
+# low 12 biztos hiba / 2,9 mp, medium 4 biztos hiba / 5,8 mp, ár +13%.
+# Railway: TANAR_EFFORT_MATEK=medium. Üres = ugyanaz, mint a TANAR_EFFORT.
+TANAR_EFFORT_MATEK = os.environ.get("TANAR_EFFORT_MATEK", "").strip().lower()
+if TANAR_EFFORT_MATEK not in ("low", "medium", "high"):
+    TANAR_EFFORT_MATEK = ""
+
+
+def _matek_targy(cimke: str | None) -> bool:
+    return "matem" in (cimke or "").lower()
+
+
+def _tanar_effort() -> str:
+    """A kérésre beállított szint (matekórán TANAR_EFFORT_MATEK), különben az alap."""
+    try:
+        return getattr(g, "tanar_effort", None) or TANAR_EFFORT
+    except RuntimeError:          # kéréskörnyezeten kívül (pl. teszt, háttérfeladat)
+        return TANAR_EFFORT
 # GYORSÍTÓTÁR (2026-11-05). Az OpenAI tized áron számolja a kérés ELEJÉT, ha az
 # szóról szóra ugyanaz, mint az előző kérésé. Eddig a tanár utasításainak
 # KÖZEPÉN állt a percenként változó „A TESZT ÁLLAPOTA” bekezdés („Még 23 perc
@@ -14011,7 +14029,7 @@ def _call_ai_for_chat(
     response = _ai_keszit(client, 
         model=MODELL_TANAR,
         messages=messages,
-        reasoning_effort=TANAR_EFFORT,
+        reasoning_effort=_tanar_effort(),
         **_kulcs,
     )
     # A mérést a burkolt kliens végzi (_MertKliens), ezért itt NINCS külön
@@ -15287,6 +15305,8 @@ def child_chat_send(child_id: int):
         teszt_info=("" if GYORSITOTAR else _teszt_szoveg),
         uj_tantargy=_uj_tantargy(progress),
     )
+    if TANAR_EFFORT_MATEK and _matek_targy(subject_label):
+        g.tanar_effort = TANAR_EFFORT_MATEK          # fix181: matekórán alaposabb
     system_prompt += _topic_teaching_prompt_block(
         current_topic_item,
         es_curriculum=_active_curriculum() == "ES",

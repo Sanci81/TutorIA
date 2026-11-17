@@ -242,6 +242,15 @@ def _valaszol(kliens, modell: str, uzenetek: list[dict], **extra) -> str:
     return (valasz.choices[0].message.content or "").strip()
 
 
+AKT_TARGY = ""      # fix181: az épp lejátszott óra tantárgya (matekórán TANAR_EFFORT_MATEK)
+
+
+def _effort_most() -> str:
+    alap = getattr(app, "TANAR_EFFORT", "low")
+    matek = getattr(app, "TANAR_EFFORT_MATEK", "")
+    return matek if (matek and "matem" in AKT_TARGY.lower()) else alap
+
+
 def _tanar_valaszol(kliens, uzenetek: list[dict]) -> str:
     """A TANÁR hívása – a beállított szolgáltatónál, időt és tokent mérve."""
     global _TANAR_KLIENS
@@ -255,10 +264,10 @@ def _tanar_valaszol(kliens, uzenetek: list[dict]) -> str:
         k = _TANAR_KLIENS
         # A Gemini ismeri a reasoning_effort-ot, a Mistral nem (hibát adna).
         if "generativelanguage" in TANAR_API_BASE:
-            extra["reasoning_effort"] = getattr(app, "TANAR_EFFORT", "low")
+            extra["reasoning_effort"] = _effort_most()
     else:
         k = kliens
-        extra["reasoning_effort"] = getattr(app, "TANAR_EFFORT", "low")
+        extra["reasoning_effort"] = _effort_most()
     kezd = time.monotonic()
     STAT["hivas"] += 1
     try:
@@ -598,6 +607,8 @@ def _lathato(tanar_valasz: str, evfolyam) -> str:
 
 def _ora(kliens, gyerek_adat, tantargy_fajl, cimke, evfolyam, nyelv,
          fordulok, naplo_ki):
+    global AKT_TARGY
+    AKT_TARGY = str(cimke or "")
     nev, kor, jellem = gyerek_adat
     adat, temakor = _temakor(tantargy_fajl, evfolyam, nyelv)
     if not temakor:

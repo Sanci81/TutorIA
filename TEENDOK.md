@@ -1676,3 +1676,7 @@ Tervezett elemek:
 - [ ] (fix180) Következő mérés: low újra (`--tantargy Matem --mind`), majd medium (`$env:TANAR_EFFORT="medium"`) → döntés a válaszidő és a hibák alapján.
 - [ ] (fix180) SEO (Cursor fix152/153: címek, JSON-LD, spanyol blog) Sándor szerint NINCS élesen – ellenőrizni: `git status`, `git log --oneline -5`, `git log origin/main --oneline -5`.
 - [ ] (fix180) Facebook ES „Hivatkozások”: „Prueba una clase gratis” → https://tutoriacademia.com/es/clase-de-prueba
+- [x] (fix181) MATEK low vs medium (spanyol, 6 óra, fix180 után): low 17:28 → 12 biztos (köztük TÁRGYI: „0–5-re végződő lefelé kerekít”, „7.041-ben nincs tízes”, „a négyzet kétszer szorozza önmagát”, és újra önjavítás „espera”), 2,9 mp; medium 17:32 → 4 biztos, 0 önjavítás, 5,8 mp, ár +13% (0,654 vs 0,579 $). Új kapcsoló: TANAR_EFFORT_MATEK (csak matekórán). JAVASLAT: Railway (proba+main) TANAR_EFFORT_MATEK=medium.
+- [ ] (fix181) Más tárgyakra (Conocimiento, Lengua) is mérni a medium-ot, ha ott is maradnak tárgyi hibák.
+- [ ] (fix181) „OKOS TANÁR” ötlet (Sándor): gyerekenkénti tanulóprofil – a visszatérő hibák (EREDMENY:rossz, diktálás hibalista) eltárolva, és a promptba: „ebben gyenge, magyarázd másképp (rajz, példa, lépésekre bontva)”. Nagyobb fejlesztés, előbb terv.
+- [x] (fix181) Facebook ES hivatkozás: a főoldal (https://tutoriacademia.com/es/) – NEM a /es/pin-parental… cím (az belépés utáni oldal).
