@@ -474,6 +474,16 @@ def _gepi_ellenorzes(szoveg: str) -> list[str]:
 # ALATTA a feladatot (ugyanazzal az ellenőrzéssel, mint élesben), és egy
 # sort arról, ha ábra is van.
 def _feladat_leiras(f: dict) -> str:
+    # fix180: a feladat KÉRDÉSE élesben a gombok fölött látszik – a tesztben eddig
+    # a választós feladatnál nem, és a teszt-gyerek „nem látta”, mit kérdeznek.
+    k = str(f.get("kerdes") or "").strip()
+    alap = _feladat_leiras_belso(f)
+    if k and k not in alap:
+        return f"kérdés: „{k}” – {alap}"
+    return alap
+
+
+def _feladat_leiras_belso(f: dict) -> str:
     tipus = f.get("tipus")
     if tipus == "valaszt":
         return "választható gombok: " + " / ".join(f.get("opciok") or [])

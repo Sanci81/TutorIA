@@ -11743,7 +11743,11 @@ _TANITO_PONTOS_HU = (
     # fix179: a tanár mondat közben javította ki magát („… várj, nézzük jobban”)
     "- Gondold végig, MIELŐTT leírod. Soha ne javítsd ki magad a gyerek előtt, és ne írj le hibás gondolatmenetet "
     "(ne írd: „várj”, „pontosabban”, „nézzük meg jobban”). Ha hibát látsz, rögtön a helyes magyarázatot írd le, "
-    "magabiztosan. A példáid számait (tízesek, egyesek, osztók) ellenőrizd, mielőtt leírod.\n")
+    "magabiztosan. A példáid számait (tízesek, egyesek, osztók) ellenőrizd, mielőtt leírod.\n"
+    # fix180: magabiztos tévedés + rossz feladattípus a kérdés mellé
+    "- Ha nem vagy biztos egy példában, NE állítsd: válassz olyan példát, amit biztosan ellenőrizni tudsz.\n"
+    "- A <FELADAT> PONTOSAN azt kérje, amit a szövegben kérdezel (ha „bontsd fel a 6430-at”, ne dobókocka legyen; "
+    "ha „mennyi az IX?”, ne „írd le a 9-et római számmal”).\n")
 _TANITO_PONTOS_ES = (
     "\n\n=== DOS DETALLES IMPORTANTES ===\n"
     "- Si anuncias cuántas cosas vas a enseñar o enumerar (p. ej. «dos palabras nuevas», «tres cosas importantes»), "
@@ -11759,7 +11763,12 @@ _TANITO_PONTOS_ES = (
     # fix179: el profesor se corregía a mitad de frase («… espera, aquí hay que mirar bien»)
     "- Piensa ANTES de escribir. Nunca te corrijas delante del niño ni escribas un razonamiento equivocado (no "
     "escribas «espera», «mejor dicho», «aquí hay que mirar bien»). Si ves un error, escribe directamente la explicación "
-    "correcta, con seguridad. Comprueba las cifras de tus ejemplos (decenas, unidades, divisores) antes de darlos.\n")
+    "correcta, con seguridad. Comprueba las cifras de tus ejemplos (decenas, unidades, divisores) antes de darlos.\n"
+    # fix180: afirmación segura pero falsa («531 > 528 porque 1 unidad es más que 8») + actividad que no corresponde
+    "- Si no estás seguro de un ejemplo, NO lo afirmes: elige uno que puedas comprobar con seguridad. Al comparar "
+    "números, la razón está en la PRIMERA cifra distinta empezando por la izquierda.\n"
+    "- La <FELADAT> debe pedir EXACTAMENTE lo mismo que tu pregunta (si dices «Descompón 6.430», no pongas dados; "
+    "si preguntas «¿Cuánto vale IX?», no pidas «Escribe 9 en números romanos»).\n")
 
 
 _GEP_SZABALY = re.compile(r"\bg[ée]p.{0,120}szab[áa]ly|szab[áa]ly.{0,120}\bg[ée]p|m[áa]quina.{0,120}regla|regla.{0,120}m[áa]quina",
