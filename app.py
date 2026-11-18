@@ -11030,7 +11030,7 @@ _DM_FELULETEK = [
      '"feladatok" opcional: 1–4 parejas [a,b], 2–9, suma 11–18:\n'
      '   <FELADAT>{"tipus":"cseresznye","feladatok":[[8,5],[7,6],[9,4]]}</FELADAT>',
      'összeadás 20-ig tízes átlépéssel      → cseresznye', 'sumas hasta 20 pasando la decena   → cseresznye'),
-    ("szalag", {"matek"}, 1, 6,   # fix199 – Szingapúr (bar model)
+    ("szalag", {"matek"}, 2, 6,   # fix199 – Szingapúr (bar model)
      'SZALAGMODELL szöveges feladathoz – a program írja a szöveget; a gyerek előbb megmutatja a rajzon, mit keresünk, aztán kiszámolja. '
      '"fajta": egesz (a+b=?), resz (összesen és az egyik rész adott) vagy tobb (b-vel több); "a","b": 1–999 (alsóban kicsi számok):\n'
      '   <FELADAT>{"tipus":"szalag","fajta":"tobb","a":7,"b":3}</FELADAT>',
@@ -11038,19 +11038,19 @@ _DM_FELULETEK = [
      '"fajta": egesz (a+b=?), resz (total y una parte) o tobb (b más); "a","b": 1–999:\n'
      '   <FELADAT>{"tipus":"szalag","fajta":"tobb","a":7,"b":3}</FELADAT>',
      'szöveges feladat, összesen, több mint → szalag', 'problema, en total, más que         → szalag'),
-    ("szoroban", {"matek"}, 1, 4,   # fix199 – Japán abakusz
+    ("szoroban", {"matek"}, 2, 5,   # fix199 – Japán abakusz
      'GOLYÓS SZÁMOLÓ (szorobán) – helyiérték: a gyerek kirakja a számot (felső golyó 5, alsók 1). Opcionális "szamok": 1–4 szám 0–999:\n'
      '   <FELADAT>{"tipus":"szoroban","szamok":[7,46,305]}</FELADAT>',
      'ÁBACO (soroban) – valor posicional: el niño representa el número (cuenta de arriba 5, de abajo 1). "szamok" opcional: 1–4 números 0–999:\n'
      '   <FELADAT>{"tipus":"szoroban","szamok":[7,46,305]}</FELADAT>',
      'helyiérték, egyes tízes százas         → szoroban', 'valor posicional, unidades decenas → szoroban'),
-    ("racsszorzas", {"matek"}, 3, 6,   # fix199 – India (rácsos szorzás)
+    ("racsszorzas", {"matek"}, 4, 6,   # fix199 – India (rácsos szorzás)
      'RÁCSOS SZORZÁS (lépésről lépésre vezetve) – a gyerek kitölti a rácsot (cellánként tízes/egyes), majd összeadja a ferde sávokat. "a": 10–999, "b": 2–99:\n'
      '   <FELADAT>{"tipus":"racsszorzas","a":34,"b":6}</FELADAT>',
      'MULTIPLICACIÓN EN REJILLA (guiada paso a paso) – el niño rellena la rejilla y suma las diagonales. "a": 10–999, "b": 2–99:\n'
      '   <FELADAT>{"tipus":"racsszorzas","a":34,"b":6}</FELADAT>',
      'szorzás többjegyűvel, rácsban         → racsszorzas', 'multiplicar por varias cifras      → racsszorzas'),
-    ("uszik", {"kornyezet"}, 1, 7,   # fix199 – japán „jósold meg” kísérlet
+    ("uszik", {"kornyezet"}, 1, 6,   # fix199 – japán „jósold meg” kísérlet
      'ÚSZIK VAGY ELSÜLLYED? (előbb tippel, aztán kipróbálja) – a gyerek tippel, a tárgy beleesik a vízbe, magyarázat. Opcionális "targyak": 2–6 ezekből: '
      'fa, ko, alma, szolo, kulcs, jeg, kacsa, erme, gyertya (legyen úszó és süllyedő is):\n'
      '   <FELADAT>{"tipus":"uszik","targyak":["fa","szolo","jeg","erme"]}</FELADAT>',

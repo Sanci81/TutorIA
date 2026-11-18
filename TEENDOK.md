@@ -1763,3 +1763,10 @@ Tervezett elemek:
       • csirkék és nyuszik: egész testes állatok, alattuk „2 láb / 4 láb”, egyszerűbb szöveg, nincs „japán”.
       • Ország nevét (japán, indiai, szingapúri) sehol nem írjuk ki a gyereknek, a tanár leírásából is kivéve.
 - [ ] (fix200) Szalagmodell: még nincs előtte példa – ha Sándor szerint kell, ugyanígy.
+- [x] (fix201) A PÉLDA nem vált magától: a gyerek lépteti (Példa 1/3 … Tovább ▶), a végén „Megpróbálom! ▶” és „↺ Még egyszer” (a „Most te jössz” furcsa volt, mert a gyerek nyomja).
+- [x] (fix201) Szalagmodell: nincs több „koppints a részre” lépés (nem volt egyértelmű) – a rajzon piros ? van, alatta azonnal a számbillentyű; ELŐTTE PÉLDA (5 és 2, ugyanolyan fajta feladat). Magyar mondatok javítva: „Hány almája van Bencének?”, „Hány almájuk van összesen?”, „Bencének 3-mal több van.”
+- [x] (fix201) Rácsos szorzás: rossz válasznál a segítség FELÜL, pirossal látszik (pl. „Nem 12. Segítség: 4 × 6 = 4 + 4 + 4 + 4 + 4 + 4 = ?”), 3. hiba után a jó szám.
+- [x] (fix201) Évfolyamok (Sándor: a szorobán inkább nagyobbaknak): golyós számoló 2–5., rácsos szorzás 4–6., szalagmodell 2–6., úszik 1–6. Az évfolyam azt jelenti, MELYIK osztálynál adhatja a tanár – nem nehézségi fokot.
+- [x] (fix201) LOMLOE / NAT kérdés (Sándor): a tanterv azt mondja meg, MIT kell tanulni (tartalom, évfolyam), a módszert a tanárra bízza. A tízes keret, golyós számoló, szalagos rajz a spanyol és a magyar tankönyvekben is megvan (pl. Spanyolországban az ABN- és a szingapúri módszer elterjedt). Ezért nem ellentmondás – csak a tartalom és az évfolyam stimmeljen. (Nem jogi tanács.)
+- [ ] (fix201) Hangmódos felolvasás: helyben MŰKÖDIK (hangmódban 7 mp után felolvassa az utasítást, rossz válasznál a tippet). Sándor nem hallotta → próbálja így: proba oldal, HANGOS MÓDRA váltva, „🧪 Hangkeret: VAN”, Feladat-próba: krokodil, vár 7 mp-et. Ha így sem szól: szólni.
+- [ ] (fix201) Ötlet (Sándor): úszik-feladatnál a gyerek is indokoljon („Miért úszik? a) könnyű az anyaga b) nagy”) – később.
