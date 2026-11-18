@@ -7479,7 +7479,7 @@
                 D.el('image', {href: KR + 'merleg.webp?v=1', x: 180 - mw / 2, y: PH - mh - 22 + em, width: mw, height: mh}, reteg);
                 return;
             }
-            var w = 214, h = 115, x = 180 - w / 2, y = PH - h - 18 + em;
+            var w = 186, h = 100, x = 180 - w / 2, y = PH - h - 22 + em;   // fix195: az orra ne lógjon a kártyába
             var nyit = o > .55, rug = nyit ? 1 + .08 * Math.sin(Math.min(1, (o - .55) / .45) * Math.PI) : 1;
             var g = D.el('g', {transform: 'translate(180,' + (y + h / 2) + ') scale(' + (j === '>' ? -rug : rug) + ',' + rug + ') translate(-180,' + (-(y + h / 2)) + ')'}, reteg);
             D.el('image', {href: KR + (nyit ? 'nyitott' : 'csukott') + '.webp?v=1', x: x, y: y, width: w, height: h}, g);
