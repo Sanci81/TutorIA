@@ -1735,3 +1735,8 @@ Tervezett elemek:
       esely – biztos / lehetséges / lehetetlen, golyók üvegben (matek 1–4.)
   Kihagyva, mert MÁR VAN: írásbeli összeadás-kivonás átvitellel = a meglévő „szamolo” (oszlopos) feladat.
 - [ ] Következő kör (matek 2.º / 2. o.): óra – megvan (ora); pénz – megvan (penz, euróval is?) – ellenőrizni; szorzás 2,5,10 – megvan (villam, csop). Utána: magyar/lengua 1–2. o. leckék feladatai.
+- [x] (fix197) Mérleg (nehezebb): VÍZSZINTESEN indul, a gyerek tippel, a koppintás után billen le (Sándor kérése). Rossz tippnél megmutatja és továbblép.
+- [x] (fix197) Strigula LÉPÉSENKÉNT (Sándor: egy 6 éves nem érti): előbb csak a katicák, aztán a pillangók, végül a méhek; a táblázatban az aktuális sor sárgán kiemelve; ha rossz állatra koppint: „Most még csak a katicákat számoljuk!”.
+- [x] (fix197) HANGMÓDBAN (csak próbaoldal) 🔊 gomb a feladat utasítása előtt – a nem olvasó gyerek meghallgathatja (a gombnyomásra az AKTUÁLIS szöveget mondja). Minden új típusú (DM) feladatnál.
+- [ ] (fix197) GÉPEN EGÉRREL egy 6 éves nehezen boldogul – minden koppintós feladatnál igaz. Javaslat: 1–2. osztálynak telefon/tablet ajánlása a szülőnek (GYIK / regisztráció után tipp); vagy gépen + hangmódban + 1–2. o. a tanár inkább szóban kérdezzen. Sándor dönt.
+- [ ] (fix197) Hangmód próbája: a próbaoldalon a chat fejlécében a „🧪 Hangkeret: ELFOGYOTT/VAN” gombbal visszakapcsolható. Ha VAN-t mutat, és mégis elfogyott → a teszt csomag hangos ideje fogyott el, szólni Claude-nak.
