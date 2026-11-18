@@ -10845,16 +10845,14 @@ _DM_FELULETEK = [
      'kor, negyzet, haromszog, teglalap (planas), kocka, teglatest, gomb, henger, kup (cuerpos) – de los dos tipos:\n'
      '   <FELADAT>{"tipus":"alakzat"}</FELADAT>',
      'síkidom vagy test, kör, kocka, gömb   → alakzat', 'figura plana o cuerpo, cubo, esfera → alakzat'),
-    # fix190: a KROKODIL („krokodil”) bejegyzés kivéve, amíg nincs szép rajz hozzá (Sándor: „ultra gagyi”).
-    # A feladat kódja (ellenőrző + chat.html DM.krokodil) megmaradt; visszakapcsolás = ez a sor:
-    # ("krokodil", {"matek"}, 1, 4,   # fix188
-    #  'KROKODIL – nagyobb, kisebb, egyenlő: a gyerek két szám közé a <, = vagy > jelet teszi (a krokodil a nagyobb felé tátja a száját). '
-    #  '"parok": 2–6 számpár (0–10000), VAGY csak "max" (10/20/100/1000/10000) és a program választ:\n'
-    #  '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
-    #  'COCODRILO – mayor, menor, igual: el niño pone <, = o > entre dos números (el cocodrilo abre la boca hacia el mayor). '
-    #  '"parok": 2–6 parejas (0–10000), O solo "max" (10/20/100/1000/10000) y el programa elige:\n'
-    #  '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
-    #  'nagyobb, kisebb, egyenlő, <, >, =    → krokodil', 'mayor, menor, igual, <, >, =        → krokodil'),
+    ("krokodil", {"matek"}, 1, 4,   # fix188; fix194: AI-képes krokodil, újra bekapcsolva
+     'KROKODIL – nagyobb, kisebb, egyenlő: a gyerek két szám közé a <, = vagy > jelet teszi (a krokodil a nagyobb felé tátja a száját). '
+     '"parok": 2–6 számpár (0–10000), VAGY csak "max" (10/20/100/1000/10000) és a program választ:\n'
+     '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
+     'COCODRILO – mayor, menor, igual: el niño pone <, = o > entre dos números (el cocodrilo abre la boca hacia el mayor). '
+     '"parok": 2–6 parejas (0–10000), O solo "max" (10/20/100/1000/10000) y el programa elige:\n'
+     '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
+     'nagyobb, kisebb, egyenlő, <, >, =    → krokodil', 'mayor, menor, igual, <, >, =        → krokodil'),
     ("urmertek", {"matek"}, 2, 4,
      'ŰRMÉRTÉK – mérőkancsó (dl/liter). Opcionális "cel" 1–10:\n'
      '   <FELADAT>{"tipus":"urmertek","cel":7}</FELADAT>',

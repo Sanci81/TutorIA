@@ -3,7 +3,8 @@
 
 Sándor 11.18: a rajzolt (SVG) krokodil „ultra gagyi”. Ezért ugyanúgy
 AI-képet kap, mint a cica-feladat cicája: mesekönyv-stílus, átlátszó háttér.
-Két kép kell: TÁTOTT szájú és CSUKOTT szájú – ugyanaz a krokodil.
+Három kép kell, ugyanaz a krokodil: TÁTOTT szájú, CSUKOTT szájú, és az
+EGYENLŐ jelhez (=) ÁLLÓ krokodil, kezében egyensúlyban lévő mérleggel.
 A < és a > jelnél a program tükrözi a képet, nem kell külön kép.
 
 1. LÉPÉS – 3 JELÖLT (ebből választasz)
@@ -12,13 +13,14 @@ A < és a > jelnél a program tükrözi a képet, nem kell külön kép.
 
 2. LÉPÉS – A KIVÁLASZTOTT + A CSUKOTT SZÁJÚ VÁLTOZAT
     python krokodil_kepek.py --valaszt 2
-        A 2. jelölt lesz a tátott szájú; ebből készül a csukott szájú.
+        A 2. jelölt lesz a tátott szájú; ebből készül a csukott szájú és a mérleges.
         Nézd meg újra az attekinto.html-t. Ha a csukott nem jó:
     python krokodil_kepek.py --csukott-ujra
+    python krokodil_kepek.py --merleg-ujra
 
 3. LÉPÉS – JÓVÁHAGYÁS
     python krokodil_kepek.py --jovahagy
-        static/figurak/krokodil/nyitott.webp és csukott.webp lesz belőle.
+        static/figurak/krokodil/nyitott.webp, csukott.webp és merleg.webp lesz belőle.
         Töltsd fel: git add static/figurak/krokodil
 
 MI KELL HOZZÁ: OPENAI_API_KEY és a Pillow (ugyanaz, mint a figura_kepek.py-nál).
@@ -64,6 +66,15 @@ CSUKOTT = (
     "colours, same size, same position in the picture, same body, legs, tail, eyes, "
     "same plain white background. Only change one thing: its mouth is now CLOSED, "
     "the two jaws lie together in a gentle happy smile, no teeth gaps, calm and content."
+)
+MERLEG = (
+    "This is the same crocodile character. Keep the same character, the same colours, "
+    "the same friendly face and the same picture-book style, the same plain white "
+    "background. Now it STANDS upright on its two hind legs like a cartoon character, "
+    "facing the viewer, smiling, and holds in its front paws a small golden balance "
+    "scale. The scale is perfectly LEVEL: both pans hang at exactly the same height "
+    "and each pan holds one identical red apple. Mouth closed, calm and pleased. "
+    "Whole body visible from head to feet, centred."
 )
 
 
@@ -123,6 +134,23 @@ def csukott(minoseg: str) -> int:
     return 0
 
 
+def merleg(minoseg: str) -> int:
+    alap = os.path.join(MAPPA, "nyitott.png")
+    if not os.path.exists(alap):
+        print("Előbb: python krokodil_kepek.py --valaszt <szám>")
+        return 1
+    print("  mérleges (egyenlő) változat …", flush=True)
+    kl = _kliens()
+    with open(alap, "rb") as kep:
+        v = fk._hivas(kl.images.edit, model=fk.MODELL, image=kep, size="1024x1536",
+                      prompt=MERLEG, input_fidelity="high", quality=minoseg)
+    with open(os.path.join(MAPPA, "merleg.png"), "wb") as ki:
+        ki.write(fk._kep_bajt(v))
+    attekinto()
+    print("OK: merleg.png. Ha jó: python krokodil_kepek.py --jovahagy")
+    return 0
+
+
 def valaszt(sz: int, minoseg: str) -> int:
     forras = os.path.join(MAPPA, f"jelolt_{sz}.png")
     if not os.path.exists(forras):
@@ -130,7 +158,7 @@ def valaszt(sz: int, minoseg: str) -> int:
         return 1
     shutil.copyfile(forras, os.path.join(MAPPA, "nyitott.png"))
     print(f"OK: a {sz}. jelölt lett a tátott szájú.")
-    return csukott(minoseg)
+    return csukott(minoseg) or merleg(minoseg)
 
 
 def jovahagy() -> int:
@@ -152,6 +180,17 @@ def jovahagy() -> int:
         k.thumbnail((640, 640), Image.LANCZOS)
         k.save(os.path.join(VEGLEGES, nev + ".webp"), "WEBP", quality=88, method=6)
         print(f"  kész: static/figurak/krokodil/{nev}.webp  {k.size}")
+    # A mérleges külön kép (álló krokodil) – saját kivágással.
+    ut = os.path.join(MAPPA, "merleg.png")
+    if os.path.exists(ut):
+        k = fk._hatter_le(Image.open(ut))
+        d = k.getchannel("A").getbbox()
+        k = k.crop((max(0, d[0] - 8), max(0, d[1] - 8), d[2] + 8, d[3] + 8))
+        k.thumbnail((640, 640), Image.LANCZOS)
+        k.save(os.path.join(VEGLEGES, "merleg.webp"), "WEBP", quality=88, method=6)
+        print(f"  kész: static/figurak/krokodil/merleg.webp  {k.size}")
+    else:
+        print("  ! merleg.png hiányzik: python krokodil_kepek.py --merleg-ujra")
     print("\nTöltsd fel: git add static/figurak/krokodil  – és szólj Claude-nak, beépíti a feladatba.")
     return 0
 
@@ -162,6 +201,7 @@ def main() -> int:
     ap.add_argument("--db", type=int, default=3)
     ap.add_argument("--valaszt", type=int)
     ap.add_argument("--csukott-ujra", action="store_true")
+    ap.add_argument("--merleg-ujra", action="store_true")
     ap.add_argument("--jovahagy", action="store_true")
     ap.add_argument("--minoseg", default="medium", choices=["low", "medium", "high"])
     a = ap.parse_args()
@@ -171,6 +211,8 @@ def main() -> int:
         return valaszt(a.valaszt, a.minoseg)
     if a.csukott_ujra:
         return csukott(a.minoseg)
+    if a.merleg_ujra:
+        return merleg(a.minoseg)
     if a.jovahagy:
         return jovahagy()
     ap.print_help()
