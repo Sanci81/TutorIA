@@ -11023,44 +11023,44 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"allitas"}</FELADAT>',
      'állítás, igaz hamis, léggömb         → allitas', 'afirmación, verdadero falso        → allitas'),
     ("cseresznye", {"matek"}, 1, 2,   # fix199 – Japán (sakuranbo)
-     'CSERESZNYE-SZÁMOLÁS (japán módszer, tízes átlépés) – 8+5: a gyerek a 5-öt 2-re és 3-ra bontja a cseresznyén (tízes keret mutatja), aztán 10+3. '
+     'CSERESZNYÉS ÖSSZEADÁS (tízes átlépés, tízes kerettel) – 8+5: a gyerek a 5-öt 2-re és 3-ra bontja a cseresznyén (tízes keret mutatja), aztán 10+3. '
      'Opcionális "feladatok": 1–4 pár [a,b], 2–9, összeg 11–18:\n'
      '   <FELADAT>{"tipus":"cseresznye","feladatok":[[8,5],[7,6],[9,4]]}</FELADAT>',
-     'CÁLCULO DE LAS CEREZAS (método japonés, pasar la decena) – 8+5: parte el 5 en 2 y 3 (lo muestra el marco de diez) y luego 10+3. '
+     'SUMAS CON CEREZAS (pasar la decena, con marco de diez) – 8+5: parte el 5 en 2 y 3 (lo muestra el marco de diez) y luego 10+3. '
      '"feladatok" opcional: 1–4 parejas [a,b], 2–9, suma 11–18:\n'
      '   <FELADAT>{"tipus":"cseresznye","feladatok":[[8,5],[7,6],[9,4]]}</FELADAT>',
      'összeadás 20-ig tízes átlépéssel      → cseresznye', 'sumas hasta 20 pasando la decena   → cseresznye'),
     ("szalag", {"matek"}, 1, 6,   # fix199 – Szingapúr (bar model)
-     'SZALAGMODELL (szingapúri módszer) szöveges feladathoz – a program írja a szöveget; a gyerek előbb megmutatja a rajzon, mit keresünk, aztán kiszámolja. '
+     'SZALAGMODELL szöveges feladathoz – a program írja a szöveget; a gyerek előbb megmutatja a rajzon, mit keresünk, aztán kiszámolja. '
      '"fajta": egesz (a+b=?), resz (összesen és az egyik rész adott) vagy tobb (b-vel több); "a","b": 1–999 (alsóban kicsi számok):\n'
      '   <FELADAT>{"tipus":"szalag","fajta":"tobb","a":7,"b":3}</FELADAT>',
-     'MODELO DE BARRAS (método de Singapur) para problemas – el programa escribe el enunciado; el niño señala en el dibujo qué buscamos y luego calcula. '
+     'MODELO DE BARRAS para problemas – el programa escribe el enunciado; el niño señala en el dibujo qué buscamos y luego calcula. '
      '"fajta": egesz (a+b=?), resz (total y una parte) o tobb (b más); "a","b": 1–999:\n'
      '   <FELADAT>{"tipus":"szalag","fajta":"tobb","a":7,"b":3}</FELADAT>',
      'szöveges feladat, összesen, több mint → szalag', 'problema, en total, más que         → szalag'),
     ("szoroban", {"matek"}, 1, 4,   # fix199 – Japán abakusz
-     'SZOROBÁN (japán abakusz) – helyiérték: a gyerek kirakja a számot (felső golyó 5, alsók 1). Opcionális "szamok": 1–4 szám 0–999:\n'
+     'GOLYÓS SZÁMOLÓ (szorobán) – helyiérték: a gyerek kirakja a számot (felső golyó 5, alsók 1). Opcionális "szamok": 1–4 szám 0–999:\n'
      '   <FELADAT>{"tipus":"szoroban","szamok":[7,46,305]}</FELADAT>',
-     'SOROBAN (ábaco japonés) – valor posicional: el niño representa el número (cuenta de arriba 5, de abajo 1). "szamok" opcional: 1–4 números 0–999:\n'
+     'ÁBACO (soroban) – valor posicional: el niño representa el número (cuenta de arriba 5, de abajo 1). "szamok" opcional: 1–4 números 0–999:\n'
      '   <FELADAT>{"tipus":"szoroban","szamok":[7,46,305]}</FELADAT>',
      'helyiérték, egyes tízes százas         → szoroban', 'valor posicional, unidades decenas → szoroban'),
     ("racsszorzas", {"matek"}, 3, 6,   # fix199 – India (rácsos szorzás)
-     'RÁCSOS SZORZÁS (indiai módszer) – a gyerek kitölti a rácsot (cellánként tízes/egyes), majd összeadja a ferde sávokat. "a": 10–999, "b": 2–99:\n'
+     'RÁCSOS SZORZÁS (lépésről lépésre vezetve) – a gyerek kitölti a rácsot (cellánként tízes/egyes), majd összeadja a ferde sávokat. "a": 10–999, "b": 2–99:\n'
      '   <FELADAT>{"tipus":"racsszorzas","a":34,"b":6}</FELADAT>',
-     'MULTIPLICACIÓN EN REJILLA (método indio) – el niño rellena la rejilla y suma las diagonales. "a": 10–999, "b": 2–99:\n'
+     'MULTIPLICACIÓN EN REJILLA (guiada paso a paso) – el niño rellena la rejilla y suma las diagonales. "a": 10–999, "b": 2–99:\n'
      '   <FELADAT>{"tipus":"racsszorzas","a":34,"b":6}</FELADAT>',
      'szorzás többjegyűvel, rácsban         → racsszorzas', 'multiplicar por varias cifras      → racsszorzas'),
     ("uszik", {"kornyezet"}, 1, 7,   # fix199 – japán „jósold meg” kísérlet
-     'ÚSZIK VAGY ELSÜLLYED? (jósold meg, aztán nézd meg) – a gyerek tippel, a tárgy beleesik a vízbe, magyarázat. Opcionális "targyak": 2–6 ezekből: '
+     'ÚSZIK VAGY ELSÜLLYED? (előbb tippel, aztán kipróbálja) – a gyerek tippel, a tárgy beleesik a vízbe, magyarázat. Opcionális "targyak": 2–6 ezekből: '
      'fa, ko, alma, szolo, kulcs, jeg, kacsa, erme, gyertya (legyen úszó és süllyedő is):\n'
      '   <FELADAT>{"tipus":"uszik","targyak":["fa","szolo","jeg","erme"]}</FELADAT>',
      '¿FLOTA O SE HUNDE? (predice y comprueba) – el niño adivina, el objeto cae al agua y se explica. "targyak" opcional: 2–6 de las mismas claves:\n'
      '   <FELADAT>{"tipus":"uszik","targyak":["fa","szolo","jeg","erme"]}</FELADAT>',
      'úszik, elsüllyed, anyagok, víz        → uszik', 'flota, se hunde, materiales, agua  → uszik'),
     ("fejlab", {"matek"}, 4, 6,   # fix199 – Japán (tsurukame-zan)
-     'FEJEK ÉS LÁBAK (japán fejtörő) – csirkék és nyuszik: a gyerek csirkéből nyuszit csinál, amíg a lábak száma stimmel. Opcionális "fej": 4–12, "nyul": 1..fej-1:\n'
+     'CSIRKÉK ÉS NYUSZIK – fejek és lábak – csirkék és nyuszik: a gyerek csirkéből nyuszit csinál, amíg a lábak száma stimmel. Opcionális "fej": 4–12, "nyul": 1..fej-1:\n'
      '   <FELADAT>{"tipus":"fejlab","fej":8,"nyul":3}</FELADAT>',
-     'CABEZAS Y PATAS (acertijo japonés) – gallinas y conejos: el niño convierte gallinas en conejos hasta que cuadran las patas. "fej": 4–12, "nyul": 1..fej-1:\n'
+     'GALLINAS Y CONEJOS – cabezas y patas – gallinas y conejos: el niño convierte gallinas en conejos hasta que cuadran las patas. "fej": 4–12, "nyul": 1..fej-1:\n'
      '   <FELADAT>{"tipus":"fejlab","fej":8,"nyul":3}</FELADAT>',
      'logikai fejtörő, fejek és lábak       → fejlab', 'acertijo lógico, cabezas y patas   → fejlab'),
     ("mintasor", {"matek"}, 1, 3,   # fix196

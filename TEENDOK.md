@@ -1753,3 +1753,13 @@ Tervezett elemek:
       fejlab – japán „tsurukame-zan”: csirkék és nyuszik, fejek és lábak (matek 4–6.; problémamegoldás, az egyenlet előfutára)
 - [x] (fix199) Hangmód (próba): az utasítást NEM olvassa fel újra, ha a tanár utolsó üzenete már tartalmazza a szavai többségét (Sándor: „sokszor az oktatás részben is benne van”).
 - [ ] (fix199) Feladat-próba: a próbában csak a feladat látszik, magyarázat nélkül – élesben a tanár előbb tanít, aztán adja a feladatot. (Sándor kérdése, válasz megadva.)
+- [x] (fix200) ÉRTHETŐBB FELADATOK (Sándor 11.18: „a 9 éves sem érti”, „túl gyorsan vált”, „ne írjuk bele, hogy japán”):
+      • PÉLDA a feladat előtt („Nézd meg, hogyan kell!”), a program magától lejátssza, aztán „Most te jössz! ▶” / „↺ Még egyszer”: cseresznye (9+4), golyós számoló (7, aztán 23), rácsos szorzás (mit hova kell írni).
+      • TOVÁBB GOMB a körök között (nem vált magától): úszik, mérleg, biztos/lehetséges/lehetetlen, cseresznye, golyós számoló.
+      • cseresznye: a kék golyók a dobozban beköltöznek a tízes keretbe; kérdés: „Hány üres hely maradt?” – nem kell fejben bontani.
+      • golyós számoló: 2 rúd, ha a számok 100 alattiak; rudak fölött a nevük, alattuk a rúd értéke; jelmagyarázat (5 / 1).
+      • rácsos szorzás: LÉPÉSRŐL LÉPÉSRE vezetve – sárga négyzet: „Mennyi 4 × 6?”, sárga ferde sáv: „4 + 1 = ?”, átvitel kiírva.
+      • úszik: „a szőlő” (a kép egy fürt), a magyarázat kint marad, amíg a gyerek tovább nem lép.
+      • csirkék és nyuszik: egész testes állatok, alattuk „2 láb / 4 láb”, egyszerűbb szöveg, nincs „japán”.
+      • Ország nevét (japán, indiai, szingapúri) sehol nem írjuk ki a gyereknek, a tanár leírásából is kivéve.
+- [ ] (fix200) Szalagmodell: még nincs előtte példa – ha Sándor szerint kell, ugyanígy.
