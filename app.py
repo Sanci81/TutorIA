@@ -6534,6 +6534,42 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             out["hiany"] = hiany
         return out
 
+    if tipus == "krokodil":   # fix188: nagyobb / kisebb / egyenlő (relációs jelek)
+        out = {"tipus": "krokodil"}
+        parok = adat.get("parok")
+        if parok is not None:
+            if not isinstance(parok, list) or not (2 <= len(parok) <= 6):
+                return None
+            tiszta = []
+            for p in parok:
+                if not isinstance(p, (list, tuple)) or len(p) != 2:
+                    return None
+                try:
+                    a, b = int(p[0]), int(p[1])
+                except Exception:
+                    return None
+                if not (0 <= a <= 10000 and 0 <= b <= 10000):
+                    return None
+                tiszta.append([a, b])
+            out["parok"] = tiszta
+        else:
+            mx = adat.get("max")
+            if mx is not None:
+                try:
+                    mx = int(mx)
+                except Exception:
+                    return None
+            if mx not in (10, 20, 100, 1000, 10000):
+                # évfolyam szerint: ES 1.º 99-ig, 2.º 999-ig; HU 1. o. 20-ig, 2. o. 100-ig
+                g = grade or 2
+                mx = ({1: 100, 2: 1000} if es_tanterv else {1: 20, 2: 100, 3: 1000}).get(g, 10000)
+            out["max"] = mx
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Mayor, menor o igual? ¿Qué signo se come el cocodrilo?"
+            if es_tanterv else
+            "Nagyobb, kisebb vagy egyenlő? Melyik jelet kapja a krokodil?")
+        return out
+
     if tipus == "zokni":
         n = adat.get("n")
         if n is not None:
@@ -10781,6 +10817,14 @@ _DM_FELULETEK = [
      'VERDADERO/FALSO – globos. "szoveg" + "igaz" opcionales:\n'
      '   <FELADAT>{"tipus":"allitas"}</FELADAT>',
      'állítás, igaz hamis, léggömb         → allitas', 'afirmación, verdadero falso        → allitas'),
+    ("krokodil", {"matek"}, 1, 4,   # fix188
+     'KROKODIL – nagyobb, kisebb, egyenlő: a gyerek két szám közé a <, = vagy > jelet teszi (a krokodil a nagyobb felé tátja a száját). '
+     '"parok": 2–6 számpár (0–10000), VAGY csak "max" (10/20/100/1000/10000) és a program választ:\n'
+     '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
+     'COCODRILO – mayor, menor, igual: el niño pone <, = o > entre dos números (el cocodrilo abre la boca hacia el mayor). '
+     '"parok": 2–6 parejas (0–10000), O solo "max" (10/20/100/1000/10000) y el programa elige:\n'
+     '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
+     'nagyobb, kisebb, egyenlő, <, >, =    → krokodil', 'mayor, menor, igual, <, >, =        → krokodil'),
     ("urmertek", {"matek"}, 2, 4,
      'ŰRMÉRTÉK – mérőkancsó (dl/liter). Opcionális "cel" 1–10:\n'
      '   <FELADAT>{"tipus":"urmertek","cel":7}</FELADAT>',

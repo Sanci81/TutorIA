@@ -7362,6 +7362,144 @@
     };
 
 
+    /* ── KROKODIL – nagyobb, kisebb, egyenlő (fix188) ─────────────────── */
+    DM.krokodil = function (f, D) {
+        var uid = 'kr' + D.rnd(1000, 999999);
+        var HELY = D.es ? ['unidades', 'decenas', 'centenas', 'unidades de millar', 'decenas de millar']
+            : ['egyeseket', 'tízeseket', 'százasokat', 'ezreseket', 'tízezreseket'];
+        function gen(mx) {
+            var t = [], a, b, k = 0;
+            function r(lo, hi) { return D.rnd(lo, hi); }
+            var also = mx >= 100 ? 10 : 0, felso = mx >= 10000 ? 9999 : mx - 1;
+            a = r(also, felso); do { b = r(also, felso); } while (b === a); t.push([a, b]);
+            a = r(also, felso); t.push([a, a]);
+            if (mx >= 100) {          // felcserélt számjegyek: 23 – 32
+                do { a = r(1, 9); b = r(1, 9); } while (a === b);
+                t.push([a * 10 + b, b * 10 + a]);
+                a = r(1, 9) * 10; t.push([a + r(0, 4), a + r(5, 9)].sort(function () { return Math.random() - .5; }));
+            } else {
+                a = r(0, Math.min(10, felso)); do { b = r(0, Math.min(10, felso)); } while (b === a); t.push([a, b]);
+                a = r(0, felso); do { b = r(0, felso); } while (b === a); t.push([a, b]);
+            }
+            return D.kever(t);
+        }
+        var P = (f.parok && f.parok.length) ? f.parok : gen(f.max || 20);
+        var N = P.length, i = 0, hibaMost = 0, elsore = 0, napl = [], fut = false;
+        var PH = P.some(function (p) { return Math.max(p[0], p[1]) <= 10; }) ? 210 : 136;   // pöttyöknek kell a hely
+        D.html('<div class="allas" data-id="allas"></div><div class="vaszon"><svg data-id="svg" viewBox="0 0 360 ' + PH + '"></svg></div>' +
+            '<div class="gombok kozep" data-id="gombok"></div>');
+        var svg = D.$('svg'), allas = D.$('allas');
+        D.defs(svg, '<linearGradient id="' + uid + 'h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8F7EE"/><stop offset="1" stop-color="#C9EBD6"/></linearGradient>' +
+            '<linearGradient id="' + uid + 'k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#F1F5F9"/></linearGradient>');
+        var reteg = D.el('g', {}, svg);
+        ['<', '=', '>'].forEach(function (j) {
+            var b = D.gomb('<span style="font-size:30px;line-height:1;font-weight:900">' + j + '</span>', 'fo', function () { valasz(j); });
+            b.style.minWidth = '64px'; D.$('gombok').appendChild(b);
+        });
+        function jel(a, b) { return a > b ? '>' : (a < b ? '<' : '='); }
+        function kartya(x, n) {
+            D.el('rect', {x: x - 58, y: 34, width: 116, height: 74, rx: 16, fill: 'url(#' + uid + 'k)', stroke: '#1E7F4F', 'stroke-width': 3}, reteg);
+            D.txt(x, 84, String(n), {'font-size': String(n).length > 3 ? 32 : 40, fill: '#0E2A1E'}, reteg);
+            if (n <= 10) {           // pöttyök a kicsiknek
+                for (var k = 0; k < n; k++) {
+                    var sor = Math.floor(k / 5), osz = k % 5;
+                    D.el('circle', {cx: x - 40 + osz * 20, cy: 136 + sor * 22, r: 8, fill: '#FFB300', stroke: '#E08E00', 'stroke-width': 2}, reteg);
+                }
+            }
+        }
+        function krok(j, o) {        // o: 0 = csukott száj, 1 = tátva
+            var g = D.el('g', {}, reteg), cx = 180, cy = 71;
+            function allkapocs(V, E, fel) {
+                D.el('line', {x1: V[0], y1: V[1], x2: E[0], y2: E[1], stroke: '#1B5E20', 'stroke-width': 15, 'stroke-linecap': 'round'}, g);
+                D.el('line', {x1: V[0], y1: V[1], x2: E[0], y2: E[1], stroke: '#4CAF50', 'stroke-width': 10, 'stroke-linecap': 'round'}, g);
+                [.4, .62, .84].forEach(function (t) {
+                    var x = V[0] + t * (E[0] - V[0]), y = V[1] + t * (E[1] - V[1]), s = fel ? 1 : -1;
+                    D.el('path', {d: 'M' + (x - 4) + ' ' + (y + s * 4) + ' L' + (x + 4) + ' ' + (y + s * 4) + ' L' + x + ' ' + (y + s * 12) + 'Z', fill: '#FFFFFF', stroke: '#B0BEC5', 'stroke-width': .8}, g);
+                });
+            }
+            if (j === '=') {
+                allkapocs([152, cy - 12], [208, cy - 12], true); allkapocs([152, cy + 12], [208, cy + 12], false);
+                D.el('circle', {cx: 200, cy: cy - 24, r: 6, fill: '#FFFFFF', stroke: '#1B5E20', 'stroke-width': 2}, g);
+                D.el('circle', {cx: 201, cy: cy - 24, r: 2.6, fill: '#0E2A1E'}, g);
+                return;
+            }
+            var jobbra = j === '<';  // '<' : a száj JOBBRA nyílik (a jobb oldali szám a nagyobb)
+            var V = [jobbra ? 154 : 206, cy], ex = jobbra ? 210 : 150, d = 6 + 30 * o;
+            allkapocs(V, [ex, cy - d], true); allkapocs(V, [ex, cy + d], false);
+            var sz = V[0] + (jobbra ? 14 : -14);
+            D.el('circle', {cx: sz, cy: cy - 18 - o * 6, r: 6, fill: '#FFFFFF', stroke: '#1B5E20', 'stroke-width': 2}, g);
+            D.el('circle', {cx: sz + (jobbra ? 1.5 : -1.5), cy: cy - 18 - o * 6, r: 2.6, fill: '#0E2A1E'}, g);
+        }
+        function rajz(j, o) {
+            reteg.innerHTML = '';
+            D.el('rect', {x: 0, y: 0, width: 360, height: PH, rx: 16, fill: 'url(#' + uid + 'h)'}, reteg);
+            kartya(70, P[i][0]); kartya(290, P[i][1]);
+            if (j) { krok(j, o); }
+            else {
+                D.el('circle', {cx: 180, cy: 71, r: 24, fill: '#FFFFFF', stroke: '#1E7F4F', 'stroke-width': 3, 'stroke-dasharray': '6 5'}, reteg);
+                D.txt(180, 82, '?', {'font-size': 30, fill: '#1E7F4F'}, reteg);
+            }
+        }
+        function kiir() {
+            allas.innerHTML = D.T('<b>' + (i + 1) + ' / ' + N + '</b> – Melyik jel kerül a két szám közé? A krokodil a <b>nagyobb</b> szám felé tátja a száját.',
+                '<b>' + (i + 1) + ' / ' + N + '</b> – ¿Qué signo va entre los dos números? El cocodrilo abre la boca hacia el número <b>mayor</b>.');
+        }
+        function tipp(a, b) {
+            var sa = String(a), sb = String(b);
+            if (sa === sb) { return D.T('A két szám ugyanaz – ilyenkor a krokodil becsukja a száját: <b>=</b>.', 'Los dos números son iguales: el cocodrilo cierra la boca: <b>=</b>.'); }
+            if (Math.max(a, b) <= 10) { return D.T('Számold meg a pöttyöket! A krokodil a <b>több</b> felé tátja a száját.', '¡Cuenta los puntos! El cocodrilo abre la boca hacia donde hay <b>más</b>.'); }
+            if (sa.length !== sb.length) { return D.T('Nézd meg, hány jegyű a két szám! A több jegyű szám a nagyobb.', '¡Mira cuántas cifras tiene cada número! El que tiene más cifras es el mayor.'); }
+            for (var k = 0; k < sa.length; k++) {
+                if (sa[k] !== sb[k]) {
+                    var h = HELY[sa.length - 1 - k];
+                    return D.T('Hasonlítsd össze először a ' + h + ': ' + sa[k] + ' és ' + sb[k] + '.', 'Compara primero las ' + h + ': ' + sa[k] + ' y ' + sb[k] + '.');
+                }
+            }
+            return '';
+        }
+        function valasz(j) {
+            if (fut || D.kesz()) { return; }
+            var a = P[i][0], b = P[i][1], jo = jel(a, b);
+            if (j === jo) {
+                fut = true; D.torol();
+                if (!hibaMost) { elsore++; }
+                napl.push(a + ' ' + jo + ' ' + b + (hibaMost ? D.T(' (2. próbára)', ' (al 2.º intento)') : ''));
+                D.hang('sine', 660); D.hang('sine', 880, .1);
+                D.tween(500, function (e) { rajz(jo, e); }, function () {
+                    setTimeout(function () {
+                        i++; hibaMost = 0; fut = false;
+                        if (i < N) { kiir(); rajz(); return; }
+                        D.vege(elsore >= N - 1, D.T('Kész! <b>' + elsore + ' / ' + N + '</b> elsőre jó. Ne feledd: a krokodil mindig a nagyobb számot akarja megenni.',
+                            '¡Hecho! <b>' + elsore + ' / ' + N + '</b> bien a la primera. Recuerda: el cocodrilo siempre quiere comerse el número mayor.'),
+                            D.T('Krokodilos feladat (<, =, >): ' + elsore + '/' + N + ' elsőre jó. ' + napl.join('; '),
+                                'Tarea del cocodrilo (<, =, >): ' + elsore + '/' + N + ' bien a la primera. ' + napl.join('; ')));
+                    }, 900);
+                });
+            } else {
+                hibaMost++;
+                D.animal(svg, 'rezeg');
+                if (hibaMost >= 2) {        // második hiba: megmutatjuk, és megyünk tovább
+                    fut = true;
+                    napl.push(a + ' ' + jo + ' ' + b + D.T(' (nem sikerült, a gyerek ezt tippelte: ', ' (no lo consiguió, eligió: ') + j + ')');
+                    D.jelez(false, D.T('A jó jel: <b>' + a + ' ' + jo + ' ' + b + '</b>. ', 'El signo correcto: <b>' + a + ' ' + jo + ' ' + b + '</b>. ') + tipp(a, b));
+                    D.tween(500, function (e) { rajz(jo, e); }, function () {
+                        setTimeout(function () {
+                            i++; hibaMost = 0; fut = false; D.torol();
+                            if (i < N) { kiir(); rajz(); return; }
+                            D.vege(elsore >= N - 1, D.T('Vége! ' + elsore + ' / ' + N + ' elsőre jó.', '¡Fin! ' + elsore + ' / ' + N + ' bien a la primera.'),
+                                D.T('Krokodilos feladat (<, =, >): ' + elsore + '/' + N + ' elsőre jó. ' + napl.join('; '),
+                                    'Tarea del cocodrilo (<, =, >): ' + elsore + '/' + N + ' bien a la primera. ' + napl.join('; ')));
+                        }, 2600);
+                    });
+                } else {
+                    D.jelez(false, D.T('Még nem. ', 'Todavía no. ') + tipp(a, b));
+                }
+            }
+        }
+        kiir(); rajz();
+    };
+
+
     // ── 8. csomag (8. minta folyt.) ──
     /* ── ŰRMÉRTÉK – mérőkancsó ─────────────────────────────────────────── */
     DM.urmertek = function (f, D) {
