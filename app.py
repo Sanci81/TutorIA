@@ -6537,6 +6537,88 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             out["hiany"] = hiany
         return out
 
+    # ══ 1–2. OSZTÁLYOS MATEK FELADATOK (fix196) ═════════════════════════
+    _SZINEK_196 = ("piros", "kek", "sarga", "zold", "lila")
+    if tipus == "mintasor":
+        out = {"tipus": "mintasor"}
+        m = adat.get("minta")
+        if m is not None:
+            if (not isinstance(m, list) or not (2 <= len(m) <= 4) or any(x not in _SZINEK_196 for x in m)
+                    or len(set(m)) < 2):
+                return None
+            out["minta"] = list(m)
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué cuentas vienen después?" if es_tanterv else "Mi jön a gyöngysorban?")
+        return out
+
+    if tipus == "nehezebb":
+        SULY = {"elefant": 5000, "eger": 20, "dinnye": 3000, "alma": 200, "toll": 1, "lufi": 2, "tegla": 2500,
+                "konyv": 1500, "ceruza": 8, "cica": 4000, "ananasz": 1200, "labda": 400}
+        out = {"tipus": "nehezebb"}
+        p = adat.get("parok")
+        if p is not None:
+            if not isinstance(p, list) or not (2 <= len(p) <= 4):
+                return None
+            for x in p:
+                if (not isinstance(x, (list, tuple)) or len(x) != 2 or x[0] not in SULY or x[1] not in SULY
+                        or SULY[x[0]] == SULY[x[1]]):
+                    return None
+            out["parok"] = [list(x) for x in p]
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué pesa más? Mira la balanza." if es_tanterv else "Melyik a nehezebb? Nézd a mérleget!")
+        return out
+
+    if tipus == "gemkapocs":
+        out = {"tipus": "gemkapocs"}
+        h = adat.get("hossz")
+        if h is not None:
+            try:
+                h = int(h)
+            except Exception:
+                return None
+            if not (3 <= h <= 8):
+                return None
+            out["hossz"] = h
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Cuántos clips mide el lápiz?" if es_tanterv else "Hány gemkapocs hosszú a ceruza?")
+        return out
+
+    if tipus == "strigula":
+        out = {"tipus": "strigula"}
+        d = adat.get("db")
+        if d is not None:
+            try:
+                d = [int(x) for x in d]
+            except Exception:
+                return None
+            if len(d) != 3 or any(not (1 <= x <= 9) for x in d) or d.count(max(d)) > 1:
+                return None
+            out["db"] = d
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "Cuenta los bichitos con palotes." if es_tanterv else "Számold meg az állatkákat strigulával!")
+        return out
+
+    if tipus == "esely":
+        out = {"tipus": "esely"}
+        k = adat.get("korok")
+        if k is not None:
+            if not isinstance(k, list) or not (2 <= len(k) <= 4):
+                return None
+            for kor in k:
+                try:
+                    cel, csop = kor[0], kor[1]
+                    ossz = sum(int(c[1]) for c in csop)
+                    ok = (cel in _SZINEK_196[:4] and all(c[0] in _SZINEK_196[:4] and 1 <= int(c[1]) <= 8 for c in csop)
+                          and 1 <= ossz <= 12)
+                except Exception:
+                    return None
+                if not ok:
+                    return None
+            out["korok"] = k
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Seguro, posible o imposible?" if es_tanterv else "Biztos, lehetséges vagy lehetetlen?")
+        return out
+
     if tipus == "alakzat":   # fix191: síkidom vagy test?
         KULCS = ("kor", "negyzet", "haromszog", "teglalap", "kocka", "teglatest", "gomb", "henger", "kup")
         out = {"tipus": "alakzat"}
@@ -10837,6 +10919,42 @@ _DM_FELULETEK = [
      'VERDADERO/FALSO – globos. "szoveg" + "igaz" opcionales:\n'
      '   <FELADAT>{"tipus":"allitas"}</FELADAT>',
      'állítás, igaz hamis, léggömb         → allitas', 'afirmación, verdadero falso        → allitas'),
+    ("mintasor", {"matek"}, 1, 3,   # fix196
+     'MINTASOR – színes gyöngysor: a gyerek a 2 hiányzó gyöngyöt fűzi fel. Opcionális "minta": az ismétlődő egység 2–4 színből '
+     '(piros, kek, sarga, zold, lila), pl. ["piros","kek"] vagy ["piros","piros","kek"]:\n'
+     '   <FELADAT>{"tipus":"mintasor"}</FELADAT>',
+     'SERIE DE CUENTAS – el niño pone las 2 cuentas que faltan. "minta" opcional: la unidad que se repite, 2–4 colores '
+     '(piros, kek, sarga, zold, lila):\n'
+     '   <FELADAT>{"tipus":"mintasor"}</FELADAT>',
+     'mintasor, ismétlődés, mi jön utána   → mintasor', 'serie, patrón, ¿qué viene después?  → mintasor'),
+    ("nehezebb", {"matek"}, 1, 3,   # fix196
+     'MELYIK NEHEZEBB? – kétkarú mérleg, a gyerek a lejjebb billent oldalon lévőre koppint (3 kör). Opcionális "parok": 2–4 pár ezekből: '
+     'elefant, eger, dinnye, alma, toll, lufi, tegla, konyv, ceruza, cica, ananasz, labda:\n'
+     '   <FELADAT>{"tipus":"nehezebb","parok":[["lufi","tegla"],["eger","elefant"]]}</FELADAT>',
+     '¿QUÉ PESA MÁS? – balanza de dos platos, el niño toca lo que está en el plato que baja. "parok" opcional (mismas claves):\n'
+     '   <FELADAT>{"tipus":"nehezebb","parok":[["lufi","tegla"],["eger","elefant"]]}</FELADAT>',
+     'nehezebb, könnyebb, mérleg           → nehezebb', 'pesa más, pesa menos, balanza      → nehezebb'),
+    ("gemkapocs", {"matek"}, 1, 2,   # fix196
+     'MÉRÉS GEMKAPOCCSAL – a ceruza alá gemkapcsokat rak, amíg pont olyan hosszú. Opcionális "hossz": 3–8:\n'
+     '   <FELADAT>{"tipus":"gemkapocs","hossz":5}</FELADAT>',
+     'MEDIR CON CLIPS – pone clips debajo del lápiz hasta que mida lo mismo. "hossz" opcional: 3–8:\n'
+     '   <FELADAT>{"tipus":"gemkapocs","hossz":5}</FELADAT>',
+     'mérés gemkapoccsal, araszolás        → gemkapocs', 'medir con clips, palmos            → gemkapocs'),
+    ("strigula", {"matek"}, 1, 3,   # fix196
+     'STRIGULÁS SZÁMLÁLÁS – a gyerek koppint az állatkákra (katica, pillangó, méh), mindegyikből strigula lesz a táblázatban, '
+     'végén: melyikből van a legtöbb? Opcionális "db": 3 szám 1–9, egy legnagyobb:\n'
+     '   <FELADAT>{"tipus":"strigula"}</FELADAT>',
+     'RECUENTO CON PALOTES – el niño toca cada bichito (mariquita, mariposa, abeja), cada uno es un palote en la tabla; '
+     'al final: ¿de cuál hay más? "db" opcional: 3 números 1–9, uno mayor:\n'
+     '   <FELADAT>{"tipus":"strigula"}</FELADAT>',
+     'adatgyűjtés, strigula, táblázat      → strigula', 'recuento, palotes, tabla de datos  → strigula'),
+    ("esely", {"matek"}, 1, 4,   # fix196
+     'BIZTOS, LEHETSÉGES, LEHETETLEN – golyók egy üvegben; „húzok egy pirosat” – a gyerek eldönti (3 kör). Opcionális "korok": '
+     '[["piros",[["piros",3],["kek",2]]], …] (színek: piros, kek, sarga, zold):\n'
+     '   <FELADAT>{"tipus":"esely"}</FELADAT>',
+     'SEGURO, POSIBLE, IMPOSIBLE – bolas en un bote; «saco una roja»: el niño decide (3 rondas). "korok" opcional:\n'
+     '   <FELADAT>{"tipus":"esely"}</FELADAT>',
+     'biztos, lehetséges, lehetetlen        → esely', 'seguro, posible, imposible         → esely'),
     ("alakzat", {"matek"}, 1, 3,   # fix191
      'SÍKIDOM VAGY TEST? – rajzolt alakzatok két csoportba (lapos síkidom / térbeli test). Opcionális "elemek": 4–9 kulcs ezekből: '
      'kor, negyzet, haromszog, teglalap (síkidomok), kocka, teglatest, gomb, henger, kup (testek) – mindkettőből legyen:\n'
