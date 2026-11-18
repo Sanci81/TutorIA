@@ -3229,11 +3229,11 @@
         var lista = (f.elemek && f.elemek.length) ? f.elemek : D.kever(['kor', 'negyzet', 'haromszog', 'teglalap']).slice(0, 4)
             .concat(D.kever(['kocka', 'teglatest', 'gomb', 'henger', 'kup']).slice(0, 4));
         DM.csoport({
-            csoportok: D.es ? ['figura plana', 'cuerpo geométrico'] : ['síkidom', 'test'],
+            csoportok: D.es ? ['✏️ plana (se dibuja)', '✋ cuerpo (se puede coger)'] : ['✏️ síkidom (lerajzolod)', '✋ test (megfogod)'],   // fix192: 6 évesnek is érthető
             elemek: lista.map(function (k) { return [NEV[k], SIK[k] ? 0 : 1, RAJZ[k]]; })
         }, D);
-        D.html('<p class="allas" data-id="tipp" style="margin-top:6px">' + D.T('Tipp: a síkidom lapos, mint egy papírlap. A testet körbe lehet járni, és meg lehet fogni.',
-            'Pista: la figura plana es lisa, como un papel. El cuerpo se puede coger y mirar por todos lados.') + '</p>');
+        D.html('<p class="allas" data-id="tipp" style="margin-top:6px">' + D.T('Lapos, mint a papír? Akkor síkidom. Kézbe tudod venni? Akkor test.',
+            '¿Es lisa como un papel? Es plana. ¿La puedes coger con la mano? Es un cuerpo.') + '</p>');
         var tp = D.$('tipp'), sor = tp && tp.parentNode.querySelector('.dm-kesz-sor');
         if (sor) { sor.parentNode.insertBefore(tp, sor); }
     };
@@ -7517,8 +7517,8 @@
             }
         }
         function kiir() {
-            allas.innerHTML = D.T('<b>' + (i + 1) + ' / ' + N + '</b> – Melyik jel kerül a két szám közé? A krokodil a <b>nagyobb</b> szám felé tátja a száját.',
-                '<b>' + (i + 1) + ' / ' + N + '</b> – ¿Qué signo va entre los dos números? El cocodrilo abre la boca hacia el número <b>mayor</b>.');
+            allas.innerHTML = D.T('<b>' + (i + 1) + ' / ' + N + '</b> – A krokodil mindig a <b>nagyobbat</b> eszi meg. Melyik jel kell?',
+                '<b>' + (i + 1) + ' / ' + N + '</b> – El cocodrilo siempre se come el número <b>mayor</b>. ¿Qué signo va?');
         }
         function tipp(a, b) {
             var sa = String(a), sb = String(b);
