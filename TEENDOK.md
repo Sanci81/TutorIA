@@ -1770,3 +1770,11 @@ Tervezett elemek:
 - [x] (fix201) LOMLOE / NAT kérdés (Sándor): a tanterv azt mondja meg, MIT kell tanulni (tartalom, évfolyam), a módszert a tanárra bízza. A tízes keret, golyós számoló, szalagos rajz a spanyol és a magyar tankönyvekben is megvan (pl. Spanyolországban az ABN- és a szingapúri módszer elterjedt). Ezért nem ellentmondás – csak a tartalom és az évfolyam stimmeljen. (Nem jogi tanács.)
 - [ ] (fix201) Hangmódos felolvasás: helyben MŰKÖDIK (hangmódban 7 mp után felolvassa az utasítást, rossz válasznál a tippet). Sándor nem hallotta → próbálja így: proba oldal, HANGOS MÓDRA váltva, „🧪 Hangkeret: VAN”, Feladat-próba: krokodil, vár 7 mp-et. Ha így sem szól: szólni.
 - [ ] (fix201) Ötlet (Sándor): úszik-feladatnál a gyerek is indokoljon („Miért úszik? a) könnyű az anyaga b) nagy”) – később.
+- [x] (fix202) A PÉLDÁK MEGMUTATJÁK, nem csak leírják (Sándor: „gyerekaggyal nem érthető, csak leírás van”):
+      • golyós számoló: KEREK golyók (eddig lencse alakú volt – „ez nem golyó”); a példában egy 👆 kéz odamutat, és a golyó odacsúszik; jelmagyarázat „fent: 5 / lent: 1”.
+      • rácsos szorzás: a példa egy valódi szorzást tölt ki lépésenként (23 × 4): nyilak a két számtól a négyzetig, beíródik 12 → 1 | 2, aztán a sárga sávok összege, végül 92.
+      • szalagmodell: a szalag KOCKÁKBÓL áll, minden kockában a tárgy képe (🍎/⭐/🔵) – „minden kocka 1 alma”; a példa szövege gyerekes és kérdéssel zárul („Hány almája van Bencének? Megszámoljuk az ő szalagját: 5 + 2 = 7.”).
+      • úszik: a magyarázat egy KÉPPEL: ugyanakkora darab tárgy és víz a mérleghintán – amelyik nehezebb, az lent van; szöveg: „Képzeld el: egy kő és ugyanakkora víz. A kő a nehezebb…”.
+      • tízes átlépés (cseresznye): a cseresznye helyett a kék szám kettébontása KÉK körökkel, „be” / „kint” felirattal (Sándor: cseresznyét mutatunk, lejjebb golyót).
+- [x] (fix202) Hangmód Sándornál: a képen a „Hangos mód” gomb látszik → ez a ÁTVÁLTÓ gomb, vagyis épp CHAT módban volt. Rá kell kattintani, és utána olvas fel.
+- [ ] (fix202) Kérdés (Sándor): sokféle módszer → összezavarja-e a gyereket? Válasz: egy órán belül EGY módszer maradjon (a tanári promptban már benne: „EGY FELADAT – EGY MÓDSZER”). Később érdemes lehet: témakörönként rögzíteni, melyik feladatot adja elsőként (pl. tízes átlépés → mindig a tízes keret).

@@ -3233,22 +3233,23 @@
         if (ok) { ok.textContent = 'OK'; ok.classList.add('ok'); }
     }
 
-    /* ── SZALAGMODELL szöveges feladathoz (fix201: egyszerűbb, példával) ───── */
+    /* ── SZALAGMODELL – fix202: a szalag KOCKÁKBÓL áll, minden kocka 1 tárgy (alma, csillag…) ── */
     DM.szalag = function (f, D) {
-        var NEV = D.es ? [['Lucía'], ['Hugo']] : [['Anna', 'Annának'], ['Bence', 'Bencének']];
-        var TARGY = D.es ? [['cromos', 'm'], ['canicas', 'f'], ['pegatinas', 'f']] : [['almája', 'almájuk'], ['matricája', 'matricájuk'], ['golyója', 'golyójuk']];
+        var NEV = D.es ? [['Lucía', 'Lucía', 'la de Lucía'], ['Hugo', 'Hugo', 'la de Hugo']] : [['Anna', 'Annának', 'Annáé'], ['Bence', 'Bencének', 'Bencéé']];
+        /* HU: [birtokos 3. sz., birtokos többes, alapszó, emoji]  ES: [többes, egyes, emoji] */
+        var TARGY = D.es ? [['manzanas', 'manzana', '🍎'], ['pegatinas', 'pegatina', '⭐'], ['canicas', 'canica', '🔵']]
+            : [['almája', 'almájuk', 'alma', '🍎'], ['matricája', 'matricájuk', 'matrica', '⭐'], ['golyója', 'golyójuk', 'golyó', '🔵']];
         var VAL = {1: 'gyel', 2: 'vel', 3: 'mal', 4: 'gyel', 5: 'tel', 6: 'tal', 7: 'tel', 8: 'cal', 9: 'cel', 10: 'zel'};
-        var fajta = f.fajta || ['egesz', 'resz', 'tobb'][D.rnd(0, 2)], t = TARGY[D.rnd(0, TARGY.length - 1)];
+        var fajta = f.fajta || ['egesz', 'resz', 'tobb'][D.rnd(0, 2)], t = TARGY[D.rnd(0, TARGY.length - 1)], EMO = D.es ? t[2] : t[3];
         var a = f.a || D.rnd(4, 9), b = f.b || D.rnd(2, 8);
-        function cuantos() { return t[1] === 'f' ? 'Cuántas' : 'Cuántos'; }
         function szoveg(fj, a, b) {
             return {
                 egesz: D.T(NEV[0][1] + ' ' + a + ' ' + t[0] + ' van, ' + NEV[1][1] + ' ' + b + '. Hány ' + t[1] + ' van összesen?',
-                    NEV[0][0] + ' tiene ' + a + ' ' + t[0] + ' y ' + NEV[1][0] + ' tiene ' + b + '. ¿' + cuantos() + ' tienen entre los dos?'),
+                    NEV[0][0] + ' tiene ' + a + ' ' + t[0] + ' y ' + NEV[1][0] + ' tiene ' + b + '. ¿Cuántas tienen entre los dos?'),
                 resz: D.T(NEV[0][1] + ' és ' + NEV[1][1] + ' összesen ' + (a + b) + ' ' + t[1] + ' van. ' + NEV[0][1] + ' ' + a + ' van. Hány ' + t[0] + ' van ' + NEV[1][1] + '?',
-                    NEV[0][0] + ' y ' + NEV[1][0] + ' tienen ' + (a + b) + ' ' + t[0] + ' en total. ' + NEV[0][0] + ' tiene ' + a + '. ¿' + cuantos() + ' tiene ' + NEV[1][0] + '?'),
+                    NEV[0][0] + ' y ' + NEV[1][0] + ' tienen ' + (a + b) + ' ' + t[0] + ' en total. ' + NEV[0][0] + ' tiene ' + a + '. ¿Cuántas tiene ' + NEV[1][0] + '?'),
                 tobb: D.T(NEV[0][1] + ' ' + a + ' ' + t[0] + ' van. ' + NEV[1][1] + ' ' + b + '-' + (VAL[b] || 'el') + ' több van. Hány ' + t[0] + ' van ' + NEV[1][1] + '?',
-                    NEV[0][0] + ' tiene ' + a + ' ' + t[0] + '. ' + NEV[1][0] + ' tiene ' + b + ' más que ' + NEV[0][0] + '. ¿' + cuantos() + ' tiene ' + NEV[1][0] + '?')
+                    NEV[0][0] + ' tiene ' + a + ' ' + t[0] + '. ' + NEV[1][0] + ' tiene ' + b + ' más que ' + NEV[0][0] + '. ¿Cuántas tiene ' + NEV[1][0] + '?')
             }[fj];
         }
         function keresett(fj, a, b) { return fj === 'resz' ? b : a + b; }
@@ -3257,10 +3258,15 @@
             '<div class="allas" data-id="allas"></div><div class="vaszon"><svg data-id="svg" viewBox="0 0 360 190"></svg></div>' +
             '<div data-id="bemenet" style="display:none"><div class="kijelzo nagy" data-id="be">?</div><div data-id="bill"></div></div>');
         var svg = D.$('svg'), allas = D.$('allas');
-        function szal(x, y, w, egys, szin, felirat) {
+        function szal(x, y, n, egys, szin, kiir, kocka) {
+            var w = n * egys;
             D.el('rect', {x: x, y: y, width: w, height: 34, rx: 6, fill: szin, stroke: '#37474F', 'stroke-width': 1.6}, svg);
-            for (var k = 1; k < Math.round(w / egys); k++) { D.el('line', {x1: x + k * egys, y1: y + 4, x2: x + k * egys, y2: y + 30, stroke: '#FFFFFF', 'stroke-width': 1, opacity: .45}, svg); }
-            D.txt(x + w / 2, y + 23, felirat, {'font-size': 17, fill: felirat === '?' ? '#C62828' : '#0E2A1E'}, svg);
+            for (var k = 0; k < n; k++) {
+                if (k) { D.el('line', {x1: x + k * egys, y1: y + 3, x2: x + k * egys, y2: y + 31, stroke: '#37474F', 'stroke-width': 1, opacity: .35}, svg); }
+                if (kocka) { var e = D.el('text', {x: x + k * egys + egys / 2, y: y + 24, 'text-anchor': 'middle', 'font-size': Math.min(18, egys * .72)}, svg); e.textContent = EMO; }
+            }
+            if (!kocka || kiir === '?') { D.txt(x + w / 2, y + 23, kiir, {'font-size': 17, fill: kiir === '?' ? '#C62828' : '#0E2A1E'}, svg); }
+            else { D.el('rect', {x: x + w / 2 - 13, y: y - 13, width: 26, height: 18, rx: 9, fill: '#FFFFFF', stroke: '#37474F', 'stroke-width': 1}, svg); D.txt(x + w / 2, y + 1, kiir, {'font-size': 12, fill: '#0E2A1E'}, svg); }
         }
         function kapocs(x, y, w, felirat, fel) {
             var s = fel ? -1 : 1;
@@ -3269,21 +3275,19 @@
             D.el('rect', {x: x + w / 2 - 26, y: y + s * 22 - 13, width: 52, height: 26, rx: 13, fill: felirat === '?' ? '#FFF3C4' : '#FFFFFF', stroke: felirat === '?' ? '#C62828' : '#1E7F4F', 'stroke-width': 2}, svg);
             D.txt(x + w / 2, y + s * 22 + 6, felirat, {'font-size': 16, fill: felirat === '?' ? '#C62828' : '#1E7F4F'}, svg);
         }
-        /* m: mit mutassunk – {fj, a, b, A: Anna szalagja, B: Bence szalagja, K: kapocs, ker: a keresett szám helyén mi álljon} */
         function rajz(m) {
             svg.innerHTML = '';
             D.el('rect', {x: 0, y: 0, width: 360, height: 190, rx: 16, fill: '#F7FBFF'}, svg);
-            var X = 74, egys = 250 / (m.a + m.b);
+            var X = 74, egys = 262 / (m.a + m.b), kocka = m.a + m.b <= 20;
             if (m.fj === 'tobb') {
                 D.txt(38, 64, NEV[0][0], {'font-size': 14, fill: '#37474F'}, svg); if (m.B) { D.txt(38, 124, NEV[1][0], {'font-size': 14, fill: '#37474F'}, svg); }
-                if (m.A) { szal(X, 40, m.a * egys, egys, '#90CAF9', m.a); }
-                if (m.B) { szal(X, 100, m.a * egys, egys, '#A5D6A7', m.a); szal(X + m.a * egys, 100, m.b * egys, egys, '#FFE082', '+' + m.b); }
-                if (m.K) { kapocs(X, 136, (m.a + m.b) * egys, m.ker, false); }
+                if (m.A) { szal(X, 46, m.a, egys, '#BBDEFB', m.a, kocka); }
+                if (m.B) { szal(X, 106, m.a, egys, '#C8E6C9', m.a, kocka); szal(X + m.a * egys, 106, m.b, egys, '#FFE082', '+' + m.b, kocka); }
+                if (m.K) { kapocs(X, 142, (m.a + m.b) * egys, m.ker, false); }
             } else {
-                D.txt(36, 104, D.T('együtt', 'juntos'), {'font-size': 13, fill: '#37474F'}, svg);
-                if (m.A) { szal(X, 80, m.a * egys, egys, '#90CAF9', m.a); D.txt(X + m.a * egys / 2, 132, NEV[0][0], {'font-size': 12, fill: '#546E7A'}, svg); }
-                if (m.B) { szal(X + m.a * egys, 80, m.b * egys, egys, '#A5D6A7', m.fj === 'resz' ? m.ker : m.b); D.txt(X + m.a * egys + m.b * egys / 2, 132, NEV[1][0], {'font-size': 12, fill: '#546E7A'}, svg); }
-                if (m.K) { kapocs(X, 76, (m.a + m.b) * egys, m.fj === 'egesz' ? m.ker : String(m.a + m.b), true); }
+                if (m.A) { szal(X, 86, m.a, egys, '#BBDEFB', m.a, kocka); D.txt(X + m.a * egys / 2, 138, NEV[0][0], {'font-size': 12, fill: '#546E7A'}, svg); }
+                if (m.B) { szal(X + m.a * egys, 86, m.b, egys, '#C8E6C9', m.fj === 'resz' ? m.ker : m.b, kocka && !(m.fj === 'resz' && m.ker === '?')); D.txt(X + m.a * egys + m.b * egys / 2, 138, NEV[1][0], {'font-size': 12, fill: '#546E7A'}, svg); }
+                if (m.K) { kapocs(X, 82, (m.a + m.b) * egys, m.fj === 'egesz' ? m.ker : String(m.a + m.b), true); D.txt(X - 34, 52, D.T('együtt', 'juntos'), {'font-size': 12, fill: '#1E7F4F'}, svg); }
             }
         }
         function kezd() {
@@ -3302,27 +3306,28 @@
             if (v === jo) { vege = true; rajz({fj: fajta, a: a, b: b, A: 1, B: 1, K: 1, ker: String(jo)}); D.vege(true, D.T('Ügyes! <b>' + muvelet + '</b>. A rajz megmutatta, mit kell számolni.', '¡Muy bien! <b>' + muvelet + '</b>. El dibujo te ha mostrado qué hay que calcular.'), valasz); return; }
             hibak++; D.animal(D.$('be'), 'rezeg'); be = ''; D.$('be').textContent = '?';
             var tipp = fajta === 'resz'
-                ? D.T('Segítség: az <b>együtt</b> szám (' + (a + b) + ') a két szalag együtt. Vedd el belőle ' + NEV[0][0] + ' részét (' + a + ').', 'Ayuda: el total (' + (a + b) + ') son las dos barras juntas. Quítale la parte de ' + NEV[0][0] + ' (' + a + ').')
-                : D.T('Segítség: a <b>?</b> alatt a két darab együtt van: ' + a + ' és ' + b + '. Add össze őket!', 'Ayuda: bajo el <b>?</b> están los dos trozos juntos: ' + a + ' y ' + b + '. ¡Súmalos!');
+                ? D.T('Segítség: együtt ' + (a + b) + '. Ebből ' + a + ' ' + NEV[0][2] + '. Ami megmarad, az ' + NEV[1][2] + ': ' + (a + b) + ' − ' + a + ' = ?', 'Ayuda: juntos son ' + (a + b) + '. De ellos, ' + a + ' son de ' + NEV[0][0] + '. Lo que queda es de ' + NEV[1][0] + ': ' + (a + b) + ' − ' + a + ' = ?')
+                : D.T('Segítség: a <b>?</b> alatt mindkét darab ott van: ' + a + ' és ' + b + '. ' + a + ' + ' + b + ' = ?', 'Ayuda: bajo el <b>?</b> están los dos trozos: ' + a + ' y ' + b + '. ' + a + ' + ' + b + ' = ?');
             allas.innerHTML = tipp; D.jelez(false, tipp);
             if (hibak >= 3) { vege = true; rajz({fj: fajta, a: a, b: b, A: 1, B: 1, K: 1, ker: String(jo)}); D.kuld(valasz, 2600); }
         });
-        // PÉLDA – ugyanolyan fajtájú, kis számokkal
-        var pa = 5, pb = 2;
+        // PÉLDA – ugyanolyan fajta, 5 és 2
+        var pa = 5, pb = 2, n0 = NEV[0][0], n1 = NEV[1][0];
         allas.innerHTML = D.T('<b>Nézd meg, hogyan kell!</b>', '<b>¡Mira cómo se hace!</b>');
         D.$('szov').innerHTML = '📖 ' + szoveg(fajta, pa, pb);
+        var tn = D.es ? t[0] : t[2], te = D.es ? t[1] : t[2];
         var L = fajta === 'tobb' ? [
-            [D.T(NEV[0][0] + ' szalagja <b>5</b> hosszú.', 'La barra de ' + NEV[0][0] + ' mide <b>5</b>.'), function () { rajz({fj: 'tobb', a: pa, b: pb, A: 1}); }],
-            [D.T(NEV[1][0] + ' ugyanannyi, <b>és még 2</b> – ezért hosszabb a szalagja.', NEV[1][0] + ' tiene lo mismo <b>y 2 más</b>: por eso su barra es más larga.'), function () { rajz({fj: 'tobb', a: pa, b: pb, A: 1, B: 1}); }],
-            [D.T('A kérdés: ' + NEV[1][0] + ' egész szalagja. <b>5 + 2 = 7</b>.', 'La pregunta es toda la barra de ' + NEV[1][0] + ': <b>5 + 2 = 7</b>.'), function () { rajz({fj: 'tobb', a: pa, b: pb, A: 1, B: 1, K: 1, ker: '7'}); }]
+            [D.T(NEV[0][1] + ' 5 ' + t[0] + ' van. A szalagon minden kocka 1 ' + te + ': ' + n0 + ' szalagja <b>5 kocka</b>.', n0 + ' tiene 5 ' + tn + '. En la barra cada cuadrado es 1 ' + te + ': la barra de ' + n0 + ' tiene <b>5 cuadrados</b>.'), function () { rajz({fj: 'tobb', a: pa, b: pb, A: 1}); }],
+            [D.T(NEV[1][1] + ' 2-vel több van. Ezért ' + n1 + ' szalagja ugyanolyan, mint ' + NEV[0][2] + ' (5 kocka), és <b>még 2 kocka</b> hozzá.', n1 + ' tiene 2 más. Por eso su barra es igual que ' + NEV[0][2] + ' (5 cuadrados) y <b>2 cuadrados más</b>.'), function () { rajz({fj: 'tobb', a: pa, b: pb, A: 1, B: 1}); }],
+            [D.T('Hány ' + t[0] + ' van ' + NEV[1][1] + '? Megszámoljuk az ő szalagját: <b>5 + 2 = 7</b>.', '¿Cuántas tiene ' + n1 + '? Contamos su barra: <b>5 + 2 = 7</b>.'), function () { rajz({fj: 'tobb', a: pa, b: pb, A: 1, B: 1, K: 1, ker: '7'}); }]
         ] : fajta === 'egesz' ? [
-            [D.T(NEV[0][0] + ' része: <b>5</b>.', 'La parte de ' + NEV[0][0] + ': <b>5</b>.'), function () { rajz({fj: 'egesz', a: pa, b: pb, A: 1}); }],
-            [D.T('Mellé tesszük ' + NEV[1][0] + ' részét: <b>2</b>.', 'Al lado ponemos la parte de ' + NEV[1][0] + ': <b>2</b>.'), function () { rajz({fj: 'egesz', a: pa, b: pb, A: 1, B: 1}); }],
-            [D.T('Összesen a két szalag együtt: <b>5 + 2 = 7</b>.', 'En total, las dos barras juntas: <b>5 + 2 = 7</b>.'), function () { rajz({fj: 'egesz', a: pa, b: pb, A: 1, B: 1, K: 1, ker: '7'}); }]
+            [D.T(NEV[0][1] + ' 5 ' + t[0] + ' van. A szalagon minden kocka 1 ' + te + ': <b>5 kocka</b>.', n0 + ' tiene 5 ' + tn + '. Cada cuadrado es 1 ' + te + ': <b>5 cuadrados</b>.'), function () { rajz({fj: 'egesz', a: pa, b: pb, A: 1}); }],
+            [D.T(NEV[1][1] + ' 2 van: mellé tesszük az ő <b>2 kockáját</b>.', n1 + ' tiene 2: ponemos al lado sus <b>2 cuadrados</b>.'), function () { rajz({fj: 'egesz', a: pa, b: pb, A: 1, B: 1}); }],
+            [D.T('Hány ' + t[1] + ' van összesen? A két szalag együtt: <b>5 + 2 = 7</b>.', '¿Cuántas tienen entre los dos? Las dos barras juntas: <b>5 + 2 = 7</b>.'), function () { rajz({fj: 'egesz', a: pa, b: pb, A: 1, B: 1, K: 1, ker: '7'}); }]
         ] : [
-            [D.T('Együtt <b>7</b>: ez az egész szalag.', 'Juntos son <b>7</b>: es toda la barra.'), function () { rajz({fj: 'resz', a: pa, b: pb, K: 1}); }],
-            [D.T(NEV[0][0] + ' része <b>5</b>.', 'La parte de ' + NEV[0][0] + ' es <b>5</b>.'), function () { rajz({fj: 'resz', a: pa, b: pb, A: 1, K: 1}); }],
-            [D.T('A maradék ' + NEV[1][0] + ' része: <b>7 − 5 = 2</b>.', 'Lo que queda es de ' + NEV[1][0] + ': <b>7 − 5 = 2</b>.'), function () { rajz({fj: 'resz', a: pa, b: pb, A: 1, B: 1, K: 1, ker: '2'}); }]
+            [D.T('Együtt 7 ' + t[1] + ' van: ez az egész szalag, <b>7 kocka</b>.', 'Juntos tienen 7 ' + tn + ': es toda la barra, <b>7 cuadrados</b>.'), function () { rajz({fj: 'resz', a: pa, b: pb, K: 1}); }],
+            [D.T('Ebből <b>5</b> ' + NEV[0][2] + '.', 'De ellas, <b>5</b> son de ' + n0 + '.'), function () { rajz({fj: 'resz', a: pa, b: pb, A: 1, K: 1}); }],
+            [D.T('Hány ' + t[0] + ' van ' + NEV[1][1] + '? Ami megmarad: <b>7 − 5 = 2</b>.', '¿Cuántas tiene ' + n1 + '? Las que quedan: <b>7 − 5 = 2</b>.'), function () { rajz({fj: 'resz', a: pa, b: pb, A: 1, B: 1, K: 1, ker: '2'}); }]
         ];
         dmPelda(D, svg.parentNode, L, kezd);
     };
@@ -3385,15 +3390,14 @@
                 var e = D.el('text', {x: d[0], y: 40, 'text-anchor': 'middle', 'font-size': 32, 'font-weight': 900, fill: d[0] === 190 ? '#1565C0' : (d[0] === 110 ? '#C62828' : '#0E2A1E'), 'font-family': 'Nunito,sans-serif'}, svg);
                 e.textContent = String(d[1]);
             });
-            // cseresznye a „b” alatt
+            /* fix202 (Sándor: „cseresznyét mutatunk, lejjebb golyót”): a kék szám kettébontása
+               KÉK körökkel, felirattal – ugyanaz a szín, mint a kék golyóké */
             var x = 190, y = 100;
-            D.el('path', {d: 'M' + x + ' ' + (y - 46) + ' Q' + (x - 6) + ' ' + (y - 28) + ' ' + (x - 28) + ' ' + (y - 4), stroke: '#5D8C2E', 'stroke-width': 3.5, fill: 'none', 'stroke-linecap': 'round'}, svg);
-            D.el('path', {d: 'M' + x + ' ' + (y - 46) + ' Q' + (x + 6) + ' ' + (y - 28) + ' ' + (x + 28) + ' ' + (y - 4), stroke: '#5D8C2E', 'stroke-width': 3.5, fill: 'none', 'stroke-linecap': 'round'}, svg);
-            D.el('path', {d: 'M' + x + ' ' + (y - 46) + ' q10 -10 22 -6 q-8 10 -22 6Z', fill: '#7CB342', stroke: '#558B2F', 'stroke-width': 1.2}, svg);
-            [[x - 28, S.lep >= 2 ? kell : '?'], [x + 28, S.lep >= 2 ? b - kell : '?']].forEach(function (c) {
-                D.el('circle', {cx: c[0], cy: y + 14, r: 21, fill: 'url(#' + u + 'p)', stroke: '#8E1A1A', 'stroke-width': 1.5}, svg);
-                D.el('ellipse', {cx: c[0] - 8, cy: y + 5, rx: 6, ry: 4, fill: '#FFFFFF', opacity: .55}, svg);
-                D.txt(c[0], y + 22, String(c[1]), {'font-size': 21, fill: '#FFFFFF'}, svg);
+            D.el('path', {d: 'M' + x + ' 52 L' + (x - 34) + ' ' + (y - 4) + ' M' + x + ' 52 L' + (x + 34) + ' ' + (y - 4), stroke: '#1565C0', 'stroke-width': 3, fill: 'none', 'stroke-linecap': 'round'}, svg);
+            [[x - 34, S.lep >= 2 ? kell : '?', D.T('be', 'dentro')], [x + 34, S.lep >= 2 ? b - kell : '?', D.T('kint', 'fuera')]].forEach(function (c) {
+                D.el('circle', {cx: c[0], cy: y + 12, r: 20, fill: 'url(#' + u + 'k)', stroke: '#0D47A1', 'stroke-width': 1.5}, svg);
+                D.txt(c[0], y + 20, String(c[1]), {'font-size': 20, fill: '#FFFFFF'}, svg);
+                D.txt(c[0], y + 47, c[2], {'font-size': 12, fill: '#1565C0'}, svg);
             });
             // tízes keret
             D.el('rect', {x: 14, y: 172, width: 150, height: 60, rx: 8, fill: '#FFFFFF', stroke: '#1E7F4F', 'stroke-width': 2.5}, svg);
@@ -3474,55 +3478,64 @@
         ], function () { i = 0; kor(); });
     };
 
-    /* ── SZOROBÁN – golyós számoló, helyiérték ─────────────────────────────── */
+    /* ── GOLYÓS SZÁMOLÓ (szorobán) – fix202: kerek golyók, a példa MEGMUTATJA (kéz + csúszó golyó) ── */
     DM.szoroban = function (f, D) {
         var u = 'sb' + D.rnd(1000, 999999);
         var SZ = (f.szamok && f.szamok.length) ? f.szamok : [D.rnd(6, 9), D.rnd(12, 49), D.rnd(51, 99)];
-        var R = SZ.some(function (n) { return n > 99; }) ? 3 : 2;            // rudak száma
+        var R = SZ.some(function (n) { return n > 99; }) ? 3 : 2;
         var NEVH = R === 3 ? D.T(['százasok', 'tízesek', 'egyesek'], ['centenas', 'decenas', 'unidades']) : D.T(['tízesek', 'egyesek'], ['decenas', 'unidades']);
         var HE = R === 3 ? [100, 10, 1] : [10, 1];
-        var i = 0, hibaMost = 0, elsore = 0, napl = [], fut = true, all = [];
+        var i = 0, hibaMost = 0, elsore = 0, napl = [], fut = true, all = [], kattinthato = false;
         function ures() { all = []; for (var k = 0; k < R; k++) { all.push([0, 0]); } }
         ures();
-        D.html('<div class="allas" data-id="allas"></div><div class="vaszon"><svg data-id="svg" viewBox="0 0 360 290"></svg></div>' +
+        D.html('<div class="allas" data-id="allas"></div><div class="vaszon"><svg data-id="svg" viewBox="0 0 360 345"></svg></div>' +
             '<div class="gombok dm-kesz-sor" data-id="kesz" style="display:none"></div>');
         var svg = D.$('svg'), allas = D.$('allas');
         D.defs(svg, '<linearGradient id="' + u + 'f" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8D5A2B"/><stop offset="1" stop-color="#5D3A1A"/></linearGradient>' +
-            '<linearGradient id="' + u + 'g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8C69A"/><stop offset=".5" stop-color="#C79A64"/><stop offset="1" stop-color="#8C6239"/></linearGradient>' +
-            '<linearGradient id="' + u + 'a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE58A"/><stop offset=".5" stop-color="#F2B705"/><stop offset="1" stop-color="#A37500"/></linearGradient>');
-        var RX = R === 3 ? [88, 158, 228] : [120, 200], BEAM = 112, X0 = R === 3 ? 40 : 72, XW = R === 3 ? 236 : 176;
-        function ertek() { return all.reduce(function (s, r, k) { return s + (r[0] * 5 + r[1]) * HE[k]; }, 0); }
-        function golyo(x, y, aktiv, cb) {
-            var e = D.el('path', {d: 'M' + (x - 26) + ' ' + y + ' Q' + x + ' ' + (y - 17) + ' ' + (x + 26) + ' ' + y + ' Q' + x + ' ' + (y + 17) + ' ' + (x - 26) + ' ' + y + 'Z',
-                fill: aktiv ? 'url(#' + u + 'a)' : 'url(#' + u + 'g)', stroke: aktiv ? '#8A6508' : '#6D4C41', 'stroke-width': 1.5, style: 'cursor:pointer', opacity: aktiv ? 1 : .8}, svg);
-            if (cb) { var h = D.el('rect', {x: x - 28, y: y - 11, width: 56, height: 22, fill: 'transparent', style: 'cursor:pointer'}, svg); [e, h].forEach(function (z) { z.addEventListener('click', cb); }); }
+            '<radialGradient id="' + u + 'g" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#F3DFC3"/><stop offset=".55" stop-color="#C79A64"/><stop offset="1" stop-color="#7A5230"/></radialGradient>' +
+            '<radialGradient id="' + u + 'a" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#FFF6C8"/><stop offset=".5" stop-color="#F2B705"/><stop offset="1" stop-color="#9A6C00"/></radialGradient>');
+        var RX = R === 3 ? [88, 158, 228] : [120, 200], BEAM = 120, X0 = R === 3 ? 40 : 72, XW = R === 3 ? 236 : 176, ALJ = 280;
+        function poz(r) {              // egy rúd golyóinak helye: [ég, föld0..3]
+            var p = [r[0] ? BEAM - 17 : 58];
+            for (var j = 0; j < 4; j++) { p.push(j < r[1] ? BEAM + 17 + j * 26 : ALJ - 13 - (3 - j) * 26); }
+            return p;
         }
-        function rajz(kattinthato) {
+        function ertek(a) { return (a || all).reduce(function (s, r, k) { return s + (r[0] * 5 + r[1]) * HE[k]; }, 0); }
+        function golyo(x, y, aktiv, cb) {
+            D.el('circle', {cx: x, cy: y, r: 12.5, fill: aktiv ? 'url(#' + u + 'a)' : 'url(#' + u + 'g)', stroke: aktiv ? '#8A6508' : '#6D4C41', 'stroke-width': 1.4, style: cb ? 'cursor:pointer' : ''}, svg);
+            if (cb) { var h = D.el('rect', {x: x - 22, y: y - 13, width: 44, height: 26, fill: 'transparent', style: 'cursor:pointer'}, svg); h.addEventListener('click', cb); }
+        }
+        /* regi + e: animáció a régi állásból az újba; kez: [x, y] – ide mutat a kéz */
+        function rajz(regi, e, kez) {
             svg.innerHTML = svg.querySelector('defs').outerHTML;
-            D.el('rect', {x: 0, y: 0, width: 360, height: 290, rx: 16, fill: '#FFFDF7'}, svg);
+            D.el('rect', {x: 0, y: 0, width: 360, height: 345, rx: 16, fill: '#FFFDF7'}, svg);
             RX.forEach(function (x, k) { D.txt(x, 22, NEVH[k], {'font-size': 13, fill: '#6D4C41'}, svg); });
-            D.el('rect', {x: X0, y: 30, width: XW, height: 214, rx: 10, fill: '#FBF3E4', stroke: 'url(#' + u + 'f)', 'stroke-width': 12}, svg);
+            D.el('rect', {x: X0, y: 30, width: XW, height: 260, rx: 10, fill: '#FBF3E4', stroke: 'url(#' + u + 'f)', 'stroke-width': 12}, svg);
             RX.forEach(function (x, k) {
-                D.el('line', {x1: x, y1: 38, x2: x, y2: 236, stroke: '#6D4C41', 'stroke-width': 4}, svg);
-                var r = all[k];
-                golyo(x, r[0] ? BEAM - 15 : 52, r[0], kattinthato ? function () { if (!fut) { all[k][0] = r[0] ? 0 : 1; D.torol(); rajz(true); D.hang('triangle', 500); } } : null);
+                D.el('line', {x1: x, y1: 38, x2: x, y2: 282, stroke: '#6D4C41', 'stroke-width': 4}, svg);
+                var uj = poz(all[k]), rg = regi ? poz(regi[k]) : uj, r = all[k];
+                function y(n) { return rg[n] + (uj[n] - rg[n]) * (e == null ? 1 : e); }
+                golyo(x, y(0), r[0], kattinthato ? function () { if (!fut) { all[k][0] = r[0] ? 0 : 1; D.torol(); rajz(); D.hang('triangle', 500); } } : null);
                 for (var j = 0; j < 4; j++) {
-                    var fent = j < r[1], y = fent ? BEAM + 15 + j * 21 : 236 - 14 - (3 - j) * 21;
-                    (function (j) { golyo(x, y, fent, kattinthato ? function () { if (fut) { return; } all[k][1] = all[k][1] > j ? j : j + 1; D.torol(); rajz(true); D.hang('triangle', 600 + j * 50); } : null); })(j);
+                    (function (j) { golyo(x, y(j + 1), j < r[1], kattinthato ? function () { if (fut) { return; } all[k][1] = all[k][1] > j ? j : j + 1; D.torol(); rajz(); D.hang('triangle', 600 + j * 50); } : null); })(j);
                 }
-                D.el('rect', {x: x - 22, y: 252, width: 44, height: 32, rx: 8, fill: '#FFFFFF', stroke: '#1E7F4F', 'stroke-width': 2}, svg);
-                D.txt(x, 276, String(r[0] * 5 + r[1]), {'font-size': 22, fill: '#1E7F4F'}, svg);
+                D.el('rect', {x: x - 22, y: 302, width: 44, height: 34, rx: 8, fill: '#FFFFFF', stroke: '#1E7F4F', 'stroke-width': 2}, svg);
+                D.txt(x, 327, String(r[0] * 5 + r[1]), {'font-size': 22, fill: '#1E7F4F'}, svg);
             });
             D.el('rect', {x: X0, y: BEAM - 4, width: XW, height: 8, fill: 'url(#' + u + 'f)'}, svg);
-            RX.forEach(function (x) { D.el('circle', {cx: x, cy: BEAM, r: 3, fill: '#FBF3E4'}, svg); });
-            // jelmagyarázat
-            var lx = R === 3 ? 318 : 308;
-            golyo(lx, 70, true); D.txt(lx, 96, '= 5', {'font-size': 15, fill: '#8A6508'}, svg);
-            golyo(lx, 150, true); D.txt(lx, 176, '= 1', {'font-size': 15, fill: '#8A6508'}, svg);
+            var lx = R === 3 ? 320 : 310;
+            golyo(lx, 76, true); D.txt(lx, 104, D.T('fent: 5', 'arriba: 5'), {'font-size': 13, fill: '#8A6508'}, svg);
+            golyo(lx, 160, true); D.txt(lx, 188, D.T('lent: 1', 'abajo: 1'), {'font-size': 13, fill: '#8A6508'}, svg);
+            if (kez) { var t = D.el('text', {x: kez[0] + 6, y: kez[1] + 36, 'text-anchor': 'middle', 'font-size': 30}, svg); t.textContent = '👆'; }
+        }
+        function mutat(uj, kez, kesz) {      // a példában: a kéz odamutat, a golyó odacsúszik
+            var regi = all.map(function (r) { return r.slice(); });
+            rajz(null, null, kez);
+            setTimeout(function () { all = uj; D.hang('triangle', 600); D.tween(700, function (e) { rajz(regi, e, kez); }, function () { rajz(null, null, null); if (kesz) { kesz(); } }); }, 600);
         }
         function kiir() {
-            allas.innerHTML = '<b>' + (i + 1) + ' / ' + SZ.length + '</b> – ' + D.T('Rakd ki ezt a számot: <b style="font-size:1.4em">' + SZ[i] + '</b><br>Csak a <b>középső léchez tolt</b> (sárga) golyók számítanak. Koppints egy golyóra, és odacsúszik.',
-                'Representa este número: <b style="font-size:1.4em">' + SZ[i] + '</b><br>Solo cuentan las cuentas <b>pegadas a la barra del medio</b> (amarillas). Toca una cuenta y se mueve.');
+            allas.innerHTML = '<b>' + (i + 1) + ' / ' + SZ.length + '</b> – ' + D.T('Rakd ki ezt a számot: <b style="font-size:1.4em">' + SZ[i] + '</b><br>Koppints egy golyóra: a középső léchez csúszik. Csak a léchez tolt (sárga) golyók számítanak.',
+                'Representa este número: <b style="font-size:1.4em">' + SZ[i] + '</b><br>Toca una bola y se mueve a la barra del medio. Solo cuentan las bolas pegadas a la barra (amarillas).');
         }
         var kg = D.$('kesz');
         kg.appendChild(D.gomb(D.T('Kész', 'Listo'), 'fo', function () {
@@ -3532,110 +3545,125 @@
                 if (!hibaMost) { elsore++; } napl.push(cel + (hibaMost ? D.T(' (segítséggel)', ' (con ayuda)') : ''));
                 D.hang('sine', 660); D.hang('sine', 880, .1); fut = true;
                 D.jelez(true, D.T('Igen! Ez a <b>' + cel + '</b>.', '¡Sí! Es el <b>' + cel + '</b>.'));
-                if (i + 1 < SZ.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; fut = false; ures(); D.torol(); kiir(); rajz(true); }); return; }
+                if (i + 1 < SZ.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; fut = false; ures(); D.torol(); kiir(); rajz(); }); return; }
                 D.vege(elsore >= SZ.length - 1, D.T('Ügyes! A golyós számolón látszik, hány tízes és hány egyes van egy számban.', '¡Muy bien! En el ábaco se ve cuántas decenas y unidades tiene un número.'),
                     D.T('Golyós számoló (helyiérték): ' + elsore + '/' + SZ.length + ' elsőre jó. ', 'Ábaco (valor posicional): ' + elsore + '/' + SZ.length + ' a la primera. ') + napl.join('; '));
                 return;
             }
             hibaMost++; D.animal(svg, 'rezeg');
-            var hol = all.map(function (r, x) { return r[0] * 5 + r[1] !== +sz[x] ? x : -1; }).filter(function (x) { return x >= 0; })[0];
-            var d = +sz[hol];
-            D.jelez(false, D.T('Most <b>' + v + '</b> van kirakva. Nézd a <b>' + NEVH[hol] + '</b> rúdját: oda <b>' + d + '</b> kell' + (d >= 5 ? ' = a felső golyó (5) + ' + (d - 5) + ' alsó.' : ' = ' + d + ' alsó golyó.'),
-                'Ahora hay <b>' + v + '</b>. Mira la barra de las <b>' + NEVH[hol] + '</b>: ahí va un <b>' + d + '</b>' + (d >= 5 ? ' = la de arriba (5) + ' + (d - 5) + ' de abajo.' : ' = ' + d + ' de abajo.')));
+            var hol = all.map(function (r, x) { return r[0] * 5 + r[1] !== +sz[x] ? x : -1; }).filter(function (x) { return x >= 0; })[0], d = +sz[hol];
+            D.jelez(false, D.T('Most <b>' + v + '</b> van kirakva. Nézd a <b>' + NEVH[hol] + '</b> rúdját: oda <b>' + d + '</b> kell' + (d >= 5 ? ' = a felső golyó (5) és még ' + (d - 5) + ' alsó.' : ' = ' + d + ' alsó golyó.'),
+                'Ahora hay <b>' + v + '</b>. Mira la barra de las <b>' + NEVH[hol] + '</b>: ahí va un <b>' + d + '</b>' + (d >= 5 ? ' = la de arriba (5) y ' + (d - 5) + ' de abajo.' : ' = ' + d + ' de abajo.')));
             if (hibaMost >= 3) {
                 fut = true; napl.push(cel + D.T(' (megmutattam)', ' (se lo mostré)'));
-                all = sz.split('').map(function (c) { var n = +c; return [n >= 5 ? 1 : 0, n % 5]; }); rajz(false);
-                if (i + 1 < SZ.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; fut = false; ures(); D.torol(); kiir(); rajz(true); }); }
-                else { D.vege(false, D.T('Vége! ' + elsore + ' / ' + SZ.length + ' elsőre jó.', '¡Fin! ' + elsore + ' / ' + SZ.length + ' a la primera.'), D.T('Golyós számoló: ', 'Ábaco: ') + napl.join('; ')); }
+                mutat(sz.split('').map(function (c) { var n = +c; return [n >= 5 ? 1 : 0, n % 5]; }), null, function () {
+                    if (i + 1 < SZ.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; fut = false; ures(); D.torol(); kiir(); rajz(); }); }
+                    else { D.vege(false, D.T('Vége! ' + elsore + ' / ' + SZ.length + ' elsőre jó.', '¡Fin! ' + elsore + ' / ' + SZ.length + ' a la primera.'), D.T('Golyós számoló: ', 'Ábaco: ') + napl.join('; ')); }
+                });
             }
         }));
-        // PÉLDA: 7, aztán (két rúdnál) 23
-        rajz(false);
+        // PÉLDA – a kéz mutatja, a golyók csúsznak
+        var E = R - 1;
+        function allapot(t) { var a = []; for (var k = 0; k < R; k++) { a.push((t[k] || [0, 0]).slice()); } return a; }
+        rajz();
         allas.innerHTML = D.T('<b>Nézd meg, hogyan kell!</b>', '<b>¡Mira cómo se hace!</b>');
-        var E = R - 1;      // az egyesek rúdja
         dmPelda(D, svg.parentNode, [
-            [D.T('Rakjuk ki a <b>7</b>-et! A 7 = 5 + 2.', 'Vamos a poner el <b>7</b>. 7 = 5 + 2.'), function () { ures(); rajz(false); }, 2600],
-            [D.T('A felső golyó <b>5</b>-öt ér: lecsúszik a léchez.', 'La cuenta de arriba vale <b>5</b>: baja hasta la barra.'), function () { all[E][0] = 1; rajz(false); D.hang('triangle', 500); }, 2800],
-            [D.T('Két alsó golyó felcsúszik: <b>1 + 1</b>.', 'Suben dos cuentas de abajo: <b>1 + 1</b>.'), function () { all[E][1] = 2; rajz(false); D.hang('triangle', 650); }, 2800],
-            [D.T('5 + 1 + 1 = <b>7</b>. Kész! Lent a dobozban látod a számot.', '5 + 1 + 1 = <b>7</b>. ¡Listo! Abajo ves el número.'), function () {}, 3000],
-            [D.T('A <b>23</b>: a tízesek rúdján <b>2</b>, az egyesekén <b>3</b> golyó.', 'El <b>23</b>: <b>2</b> en las decenas y <b>3</b> en las unidades.'), function () { ures(); all[E - 1][1] = 2; all[E][1] = 3; rajz(false); D.hang('triangle', 600); }, 3600]
-        ], function () { ures(); fut = false; kg.style.display = ''; i = 0; kiir(); rajz(true); });
+            [D.T('Ez a golyós számoló. Minden rúdon <b>fent 1</b> golyó van, <b>lent 4</b>. Most mind távol van a középső léctől, ezért minden rúd <b>0</b>.',
+                'Este es el ábaco. En cada barra hay <b>1 bola arriba</b> y <b>4 abajo</b>. Ahora todas están lejos de la barra del medio: cada barra vale <b>0</b>.'), function () { ures(); rajz(); }],
+            [D.T('Rakjuk ki a <b>7</b>-et! A felső golyó <b>5</b>-öt ér. Lehúzzuk a léchez…', 'Vamos a poner el <b>7</b>. La bola de arriba vale <b>5</b>. La bajamos a la barra…'),
+                function () { ures(); var t = []; t[E] = [1, 0]; mutat(allapot(t), [RX[E], 58]); }],
+            [D.T('…az alsók <b>1</b>-et érnek. Feltolunk kettőt: 5 + 1 + 1 = <b>7</b>. Lent a dobozban is látod!', '…las de abajo valen <b>1</b>. Subimos dos: 5 + 1 + 1 = <b>7</b>. ¡Abajo también lo ves!'),
+                function () { var t = []; t[E] = [1, 0]; all = allapot(t); t = []; t[E] = [1, 2]; mutat(allapot(t), [RX[E], 215]); }],
+            [D.T('A <b>23</b>: a tízesek rúdján 2 alsó golyót tolunk fel, az egyesekén 3-at.', 'El <b>23</b>: subimos 2 bolas en las decenas y 3 en las unidades.'),
+                function () { ures(); var t = []; t[E - 1] = [0, 2]; t[E] = [0, 3]; mutat(allapot(t), [RX[E - 1], 215]); }]
+        ], function () { ures(); fut = false; kattinthato = true; kg.style.display = ''; i = 0; kiir(); rajz(); });
     };
 
-    /* ── RÁCSOS SZORZÁS – lépésről lépésre vezetve ─────────────────────────── */
+    /* ── RÁCSOS SZORZÁS – fix202: a példa egy valódi szorzást MUTAT MEG lépésenként ── */
     DM.racsszorzas = function (f, D) {
-        var A = f.a || D.rnd(12, 49), B = f.b || D.rnd(3, 9), sa = String(A).split('').map(Number), sb = String(B).split('').map(Number);
-        var C = 70, X0 = 64, Y0 = 50, W = sa.length * C, H = sb.length * C, ND = sa.length + sb.length;
-        var cella = {}, atlo = [], vitel = [], lepesek = [], li = 0, be = '', hibaMost = 0, hibak = 0, vege = false;
-        function szorzat(r, c) { var p = sa[c] * sb[r]; return [Math.floor(p / 10), p % 10]; }
-        for (var r0 = 0; r0 < sb.length; r0++) { for (var c0 = sa.length - 1; c0 >= 0; c0--) { lepesek.push({t: 'c', r: r0, c: c0}); } }
-        (function () { var v = 0; for (var k = 0; k < ND; k++) {
-            var tag = [];
-            for (var r = 0; r < sb.length; r++) { for (var c = 0; c < sa.length; c++) {
-                var dr = sb.length - 1 - r, dc = sa.length - 1 - c;
-                if (dr + dc === k) { tag.push(szorzat(r, c)[1]); } if (dr + dc + 1 === k) { tag.push(szorzat(r, c)[0]); } } }
-            var s = tag.reduce(function (x, y) { return x + y; }, 0) + v;
-            if (k === ND - 1 && s === 0) { break; }
-            lepesek.push({t: 'd', k: k, tagok: tag, be: v, ossz: s}); v = Math.floor(s / 10);
-        } })();
-        D.html('<div class="allas" data-id="allas"></div><div class="vaszon"><svg data-id="svg" viewBox="0 0 ' + (X0 + W + 56) + ' ' + (Y0 + H + 56) + '"></svg></div>' +
-            '<div class="kijelzo nagy" data-id="be">?</div><div data-id="bill"></div>');
-        var svg = D.$('svg'), allas = D.$('allas'), SW = X0 + W + 56, SH = Y0 + H + 56;
-        function rajz() {
+        var A = f.a || D.rnd(12, 49), B = f.b || D.rnd(3, 9);
+        var C = 70, X0 = 64, Y0 = 50;
+        var S, li = 0, be = '', hibaMost = 0, hibak = 0, vege = false, elo = false;
+        function allapot(a, b) {
+            var sa = String(a).split('').map(Number), sb = String(b).split('').map(Number), lep = [];
+            for (var r = 0; r < sb.length; r++) { for (var c = sa.length - 1; c >= 0; c--) { lep.push({t: 'c', r: r, c: c}); } }
+            var ND = sa.length + sb.length, v = 0;
+            for (var k = 0; k < ND; k++) {
+                var tag = [];
+                for (r = 0; r < sb.length; r++) { for (c = 0; c < sa.length; c++) {
+                    var p = sa[c] * sb[r], dr = sb.length - 1 - r, dc = sa.length - 1 - c;
+                    if (dr + dc === k) { tag.push(p % 10); } if (dr + dc + 1 === k) { tag.push(Math.floor(p / 10)); } } }
+                var s = tag.reduce(function (x, y) { return x + y; }, 0) + v;
+                if (k === ND - 1 && s === 0) { break; }
+                lep.push({t: 'd', k: k, tagok: tag, be: v, ossz: s}); v = Math.floor(s / 10);
+            }
+            return {a: a, b: b, sa: sa, sb: sb, ND: ND, lep: lep, cella: {}, atlo: [], vitel: [], W: sa.length * C, H: sb.length * C};
+        }
+        S = allapot(A, B);
+        var SW = X0 + Math.max(S.W, 2 * C) + 56, SH = Y0 + Math.max(S.H, C) + 56;
+        D.html('<div class="allas" data-id="allas"></div><div class="vaszon"><svg data-id="svg" viewBox="0 0 ' + SW + ' ' + SH + '"></svg></div>' +
+            '<div data-id="bemenet" style="display:none"><div class="kijelzo nagy" data-id="be">?</div><div data-id="bill"></div></div>');
+        var svg = D.$('svg'), allas = D.$('allas');
+        function rajz(L, nyil) {
             svg.innerHTML = '';
-            var L = lepesek[li] || {};
+            L = L || {};
+            var W = S.W, H = S.H;
             D.el('rect', {x: 0, y: 0, width: SW, height: SH, rx: 16, fill: '#F7FBFF'}, svg);
-            sa.forEach(function (d, c) { D.txt(X0 + c * C + C / 2, Y0 - 14, d, {'font-size': 26, fill: L.t === 'c' && L.c === c ? '#E65100' : '#1565C0'}, svg); });
-            sb.forEach(function (d, r) { D.txt(X0 + W + 24, Y0 + r * C + C / 2 + 9, d, {'font-size': 26, fill: L.t === 'c' && L.r === r ? '#E65100' : '#C62828'}, svg); });
+            S.sa.forEach(function (d, c) { D.txt(X0 + c * C + C / 2, Y0 - 14, d, {'font-size': 26, fill: L.t === 'c' && L.c === c ? '#E65100' : '#1565C0'}, svg); });
+            S.sb.forEach(function (d, r) { D.txt(X0 + W + 24, Y0 + r * C + C / 2 + 9, d, {'font-size': 26, fill: L.t === 'c' && L.r === r ? '#E65100' : '#C62828'}, svg); });
             D.txt(X0 + W + 24, Y0 - 14, '×', {'font-size': 22, fill: '#546E7A'}, svg);
-            for (var r = 0; r < sb.length; r++) { for (var c = 0; c < sa.length; c++) {
-                var x = X0 + c * C, y = Y0 + r * C, dr = sb.length - 1 - r, dc = sa.length - 1 - c;
-                var akt = L.t === 'c' && L.r === r && L.c === c;
+            for (var r = 0; r < S.sb.length; r++) { for (var c = 0; c < S.sa.length; c++) {
+                var x = X0 + c * C, y = Y0 + r * C, dr = S.sb.length - 1 - r, dc = S.sa.length - 1 - c, akt = L.t === 'c' && L.r === r && L.c === c;
                 D.el('rect', {x: x, y: y, width: C, height: C, fill: akt ? '#FFF3C4' : '#FFFFFF', stroke: '#455A64', 'stroke-width': 2}, svg);
                 if (L.t === 'd' && dr + dc + 1 === L.k) { D.el('path', {d: 'M' + x + ' ' + y + ' L' + (x + C) + ' ' + y + ' L' + x + ' ' + (y + C) + 'Z', fill: '#FFE082'}, svg); }
                 if (L.t === 'd' && dr + dc === L.k) { D.el('path', {d: 'M' + (x + C) + ' ' + y + ' L' + (x + C) + ' ' + (y + C) + ' L' + x + ' ' + (y + C) + 'Z', fill: '#FFE082'}, svg); }
                 D.el('line', {x1: x + C, y1: y, x2: x, y2: y + C, stroke: '#90A4AE', 'stroke-width': 1.5, 'stroke-dasharray': '5 4'}, svg);
-                var v = cella[r + ',' + c];
-                if (v) { D.txt(x + 20, y + 30, v[0], {'font-size': 22, fill: '#0E2A1E'}, svg); D.txt(x + C - 20, y + C - 12, v[1], {'font-size': 22, fill: '#0E2A1E'}, svg); }
+                var v = S.cella[r + ',' + c];
+                if (v) { D.txt(x + 20, y + 30, v[0], {'font-size': 22, fill: '#0E2A1E', 'class': akt ? 'pattan' : ''}, svg); D.txt(x + C - 20, y + C - 12, v[1], {'font-size': 22, fill: '#0E2A1E', 'class': akt ? 'pattan' : ''}, svg); }
+                if (akt && nyil) {   // nyilak a két szorzandó számtól a négyzetig
+                    D.el('path', {d: 'M' + (x + C / 2) + ' ' + (Y0 - 8) + ' L' + (x + C / 2) + ' ' + (y + 10), stroke: '#E65100', 'stroke-width': 2.5, 'stroke-dasharray': '4 3', 'marker-end': ''}, svg);
+                    D.el('path', {d: 'M' + (X0 + W + 12) + ' ' + (y + C / 2) + ' L' + (x + C - 8) + ' ' + (y + C / 2), stroke: '#E65100', 'stroke-width': 2.5, 'stroke-dasharray': '4 3'}, svg);
+                }
             } }
-            for (var k = 0; k < ND; k++) {
-                var p = k < sa.length ? [X0 + W - k * C - C / 2 - 12, Y0 + H + 30] : [X0 - 28, Y0 + H - (k - sa.length) * C - C / 2 + 12];
+            for (var k = 0; k < S.ND; k++) {
+                if (k === S.ND - 1 && !S.lep.some(function (q) { return q.t === 'd' && q.k === k; })) { continue; }
+                var p = k < S.sa.length ? [X0 + W - k * C - C / 2 - 12, Y0 + H + 30] : [X0 - 28, Y0 + H - (k - S.sa.length) * C - C / 2 + 12];
                 var aktd = L.t === 'd' && L.k === k;
                 D.el('rect', {x: p[0] - 15, y: p[1] - 15, width: 30, height: 30, rx: 7, fill: aktd ? '#FFF3C4' : '#FFFFFF', stroke: aktd ? '#F9A825' : '#B0BEC5', 'stroke-width': aktd ? 2.5 : 1.5}, svg);
-                if (atlo[k] != null) { D.txt(p[0], p[1] + 8, atlo[k], {'font-size': 20, fill: '#1E7F4F'}, svg); }
-                if (vitel[k]) { D.txt(p[0] + (k < sa.length ? -26 : 0), p[1] + (k < sa.length ? -20 : -24), '+' + vitel[k], {'font-size': 13, fill: '#E65100'}, svg); }
+                if (S.atlo[k] != null) { D.txt(p[0], p[1] + 8, S.atlo[k], {'font-size': 20, fill: '#1E7F4F'}, svg); }
+                if (S.vitel[k]) { D.txt(p[0] + (k < S.sa.length ? -26 : 0), p[1] + (k < S.sa.length ? -20 : -24), '+' + S.vitel[k], {'font-size': 13, fill: '#E65100'}, svg); }
             }
         }
+        function lepesKesz(L) {         // egy lépés eredményét beírja
+            if (L.t === 'c') { var p = S.sa[L.c] * S.sb[L.r]; S.cella[L.r + ',' + L.c] = [Math.floor(p / 10), p % 10]; }
+            else { S.atlo[L.k] = L.ossz % 10; if (L.ossz >= 10) { S.vitel[L.k + 1] = Math.floor(L.ossz / 10); } }
+        }
         function kiir() {
-            var L = lepesek[li];
-            if (!L) { return; }
+            var L = S.lep[li]; if (!L) { return; }
             be = ''; D.$('be').textContent = '?';
             if (L.t === 'c') {
-                allas.innerHTML = D.T('<b>1. lépés:</b> töltsd ki a sárga négyzetet! Mennyi <b>' + sa[L.c] + ' × ' + sb[L.r] + '</b>? (A tízes a ferde vonal fölé, az egyes alá kerül – ezt én írom be.)',
-                    '<b>Paso 1:</b> rellena el cuadro amarillo. ¿Cuánto es <b>' + sa[L.c] + ' × ' + sb[L.r] + '</b>? (Las decenas van encima de la diagonal y las unidades debajo: eso lo escribo yo.)');
+                allas.innerHTML = D.T('<b>1. lépés:</b> a sárga négyzetbe a felette és mellette lévő szám szorzata kerül. Mennyi <b>' + S.sa[L.c] + ' × ' + S.sb[L.r] + '</b>?',
+                    '<b>Paso 1:</b> en el cuadro amarillo va el producto de los números de arriba y del lado. ¿Cuánto es <b>' + S.sa[L.c] + ' × ' + S.sb[L.r] + '</b>?');
             } else {
                 var t = L.tagok.concat(L.be ? [L.be] : []);
-                if (t.length === 1) {
-                    allas.innerHTML = D.T('<b>2. lépés:</b> a <b>sárga sávban</b> csak egy szám van: <b>' + t[0] + '</b>. Írd be ide!', '<b>Paso 2:</b> en la <b>franja amarilla</b> solo hay un número: <b>' + t[0] + '</b>. ¡Escríbelo!');
-                    return;
-                }
-                allas.innerHTML = D.T('<b>2. lépés:</b> add össze a <b>sárga sávban</b> lévő számokat' + (L.be ? ' és az átvitt <b>' + L.be + '</b>-et' : '') + ': <b>' + t.join(' + ') + '</b> = ?',
-                    '<b>Paso 2:</b> suma los números de la <b>franja amarilla</b>' + (L.be ? ' y la <b>' + L.be + '</b> que te llevabas' : '') + ': <b>' + t.join(' + ') + '</b> = ?');
+                allas.innerHTML = t.length === 1
+                    ? D.T('<b>2. lépés:</b> a <b>sárga sávban</b> csak egy szám van: <b>' + t[0] + '</b>. Írd be!', '<b>Paso 2:</b> en la <b>franja amarilla</b> solo hay un número: <b>' + t[0] + '</b>. ¡Escríbelo!')
+                    : D.T('<b>2. lépés:</b> add össze a <b>sárga sáv</b> számait' + (L.be ? ' és a fölötte lévő <b>+' + L.be + '</b>-et' : '') + ': <b>' + t.join(' + ') + '</b> = ?',
+                        '<b>Paso 2:</b> suma los números de la <b>franja amarilla</b>' + (L.be ? ' y el <b>+' + L.be + '</b>' : '') + ': <b>' + t.join(' + ') + '</b> = ?');
             }
         }
         dmBill(D, D.$('bill'), function (k) {
-            if (vege || D.kesz()) { return; }
+            if (vege || !elo || D.kesz()) { return; }
             if (k === '⌫') { be = be.slice(0, -1); D.$('be').textContent = be || '?'; return; }
             if (k !== 'OK') { if (be.length < 2) { be += k; } D.$('be').textContent = be; D.torol(); return; }
             if (!be) { return; }
-            var L = lepesek[li], v = +be, jo = L.t === 'c' ? sa[L.c] * sb[L.r] : L.ossz;
+            var L = S.lep[li], v = +be, jo = L.t === 'c' ? S.sa[L.c] * S.sb[L.r] : L.ossz;
             if (v === jo) {
-                if (L.t === 'c') { cella[L.r + ',' + L.c] = szorzat(L.r, L.c); D.jelez(true, D.T('Igen! ' + jo + ' → ' + Math.floor(jo / 10) + ' fent, ' + (jo % 10) + ' lent.', '¡Sí! ' + jo + ' → ' + Math.floor(jo / 10) + ' arriba, ' + (jo % 10) + ' abajo.')); }
-                else { atlo[L.k] = jo % 10; if (jo >= 10) { vitel[L.k + 1] = Math.floor(jo / 10); }
-                    D.jelez(true, jo >= 10 ? D.T('Igen, ' + jo + '! A <b>' + (jo % 10) + '</b> ide kerül, az <b>1</b>-et átvisszük a következő sávba.', '¡Sí, ' + jo + '! El <b>' + (jo % 10) + '</b> va aquí y te llevas <b>1</b> a la siguiente franja.')
-                        : D.T('Igen, ' + jo + '!', '¡Sí, ' + jo + '!')); }
-                D.hang('sine', 660); li++; hibaMost = 0; rajz(); kiir();
-                if (li >= lepesek.length) {
+                lepesKesz(L);
+                D.jelez(true, L.t === 'c' ? D.T('Igen! ' + jo + ' → ' + Math.floor(jo / 10) + ' fent, ' + (jo % 10) + ' lent.', '¡Sí! ' + jo + ' → ' + Math.floor(jo / 10) + ' arriba, ' + (jo % 10) + ' abajo.')
+                    : (jo >= 10 ? D.T('Igen, ' + jo + '! A <b>' + (jo % 10) + '</b> ide kerül, az <b>1</b>-et átvisszük a következő sávba.', '¡Sí, ' + jo + '! El <b>' + (jo % 10) + '</b> va aquí y te llevas <b>1</b>.') : D.T('Igen, ' + jo + '!', '¡Sí, ' + jo + '!')));
+                D.hang('sine', 660); li++; hibaMost = 0; rajz(S.lep[li], true); kiir();
+                if (li >= S.lep.length) {
                     vege = true; D.$('be').textContent = String(A * B);
                     allas.innerHTML = D.T('Olvasd le az eredményt <b>balról jobbra</b>, a zöld számokat!', 'Lee el resultado <b>de izquierda a derecha</b>: los números verdes.');
                     D.vege(hibak <= 1, D.T('Kiváló! <b>' + A + ' × ' + B + ' = ' + (A * B) + '</b>. A nagy szorzást kis szorzásokra bontottuk.', '¡Excelente! <b>' + A + ' × ' + B + ' = ' + (A * B) + '</b>. Hemos partido la multiplicación grande en pequeñas.'),
@@ -3644,38 +3672,56 @@
                 return;
             }
             hibaMost++; hibak++; D.animal(D.$('be'), 'rezeg');
-            /* fix201 (Sándor: „nem segít, ha elrontom”): a segítség FELÜL, a feladat mellett látszik */
             var h;
             if (hibaMost >= 3) { h = D.T('A jó válasz: <b>' + jo + '</b>. Írd be!', 'La respuesta es <b>' + jo + '</b>. ¡Escríbela!'); }
-            else if (L.t === 'c') {
-                var ism = []; for (var q = 0; q < sb[L.r]; q++) { ism.push(sa[L.c]); }
-                h = D.T('Nem ' + v + '. Segítség: ' + sa[L.c] + ' × ' + sb[L.r] + ' = ' + (ism.length ? ism.join(' + ') : '0') + ' = ?', 'No es ' + v + '. Ayuda: ' + sa[L.c] + ' × ' + sb[L.r] + ' = ' + (ism.length ? ism.join(' + ') : '0') + ' = ?');
-            } else {
-                h = D.T('Nem ' + v + '. Add össze lassan, egyesével: ' + L.tagok.concat(L.be ? [L.be] : []).join(' + ') + ' = ?', 'No es ' + v + '. Suma despacio: ' + L.tagok.concat(L.be ? [L.be] : []).join(' + ') + ' = ?');
-            }
+            else if (L.t === 'c') { var ism = []; for (var q = 0; q < S.sb[L.r]; q++) { ism.push(S.sa[L.c]); }
+                h = D.T('Nem ' + v + '. Segítség: ' + S.sa[L.c] + ' × ' + S.sb[L.r] + ' = ' + (ism.length ? ism.join(' + ') : '0') + ' = ?', 'No es ' + v + '. Ayuda: ' + S.sa[L.c] + ' × ' + S.sb[L.r] + ' = ' + (ism.length ? ism.join(' + ') : '0') + ' = ?'); }
+            else { h = D.T('Nem ' + v + '. Add össze lassan: ' + L.tagok.concat(L.be ? [L.be] : []).join(' + ') + ' = ?', 'No es ' + v + '. Suma despacio: ' + L.tagok.concat(L.be ? [L.be] : []).join(' + ') + ' = ?'); }
             kiir(); allas.innerHTML += '<div style="color:#C62828;margin-top:6px;font-weight:800">' + h + '</div>'; D.jelez(false, h);
         });
-        allas.innerHTML = '';
+        // PÉLDA: 23 × 4 – a program maga tölti ki, lépésenként
+        S = allapot(23, 4); rajz();
+        allas.innerHTML = D.T('<b>Nézd meg, hogyan kell!</b>', '<b>¡Mira cómo se hace!</b>');
+        var P = S.lep;
         dmPelda(D, svg.parentNode, [
-            [D.T('A rácsban a nagy szorzást <b>kis szorzásokra</b> bontjuk. Fent és jobbra a két szám jegyei.', 'En la rejilla partimos la multiplicación grande en <b>multiplicaciones pequeñas</b>. Arriba y a la derecha están las cifras.'), function () { li = -1; rajz(); }, 3600],
-            [D.T('Minden négyzetbe a <b>felette és mellette</b> lévő szám szorzata kerül: a tízes fent, az egyes lent.', 'En cada cuadro va el producto de las cifras de <b>arriba y del lado</b>: decenas arriba, unidades abajo.'), function () {}, 3600],
-            [D.T('A végén a <b>ferde sávokat</b> adjuk össze, jobbról kezdve. Mindig mondom, mit kell csinálni!', 'Al final sumamos las <b>franjas diagonales</b>, empezando por la derecha. ¡Siempre te diré qué hacer!'), function () {}, 3600]
-        ], function () { li = 0; rajz(); kiir(); });
-        rajz();
+            [D.T('Példa: <b>23 × 4</b>. Fent a 23 két számjegye: 2 és 3. Jobbra a 4.', 'Ejemplo: <b>23 × 4</b>. Arriba las cifras del 23: 2 y 3. A la derecha el 4.'), function () { S = allapot(23, 4); P = S.lep; rajz(); }],
+            [D.T('Jobb oldali négyzet: a fölötte lévő <b>3</b> és a mellette lévő <b>4</b>: 3 × 4 = <b>12</b>. Az 1 a ferde vonal fölé, a 2 alá.', 'Cuadro de la derecha: el <b>3</b> de arriba y el <b>4</b> del lado: 3 × 4 = <b>12</b>. El 1 encima de la diagonal, el 2 debajo.'),
+                function () { lepesKesz(P[0]); rajz(P[0], true); D.hang('sine', 600); }],
+            [D.T('Bal oldali négyzet: 2 × 4 = <b>8</b>, vagyis <b>08</b>. A 0 fölé, a 8 alá.', 'Cuadro de la izquierda: 2 × 4 = <b>8</b>, es decir <b>08</b>. El 0 arriba, el 8 abajo.'),
+                function () { lepesKesz(P[1]); rajz(P[1], true); D.hang('sine', 650); }],
+            [D.T('Most a <b>ferde sávok</b>, jobbról kezdve. Az első sárga sávban csak a <b>2</b> van → 2.', 'Ahora las <b>franjas diagonales</b>, desde la derecha. En la primera franja amarilla solo está el <b>2</b> → 2.'),
+                function () { lepesKesz(P[2]); rajz(P[2]); D.hang('sine', 700); }],
+            [D.T('A következő sávban: <b>1 + 8 = 9</b>.', 'En la siguiente franja: <b>1 + 8 = 9</b>.'), function () { lepesKesz(P[3]); rajz(P[3]); D.hang('sine', 750); }],
+            [D.T('Az utolsó sávban csak a 0 van, azt nem írjuk ki. Az eredmény balról jobbra: <b>92</b>. Tehát 23 × 4 = <b>92</b>.', 'En la última franja solo hay un 0: no se escribe. El resultado de izquierda a derecha: <b>92</b>. Así que 23 × 4 = <b>92</b>.'),
+                function () { rajz(); }]
+        ], function () { S = allapot(A, B); li = 0; elo = true; D.$('bemenet').style.display = ''; rajz(S.lep[0], true); kiir(); });
     };
 
     /* ── ÚSZIK VAGY ELSÜLLYED? (előbb tippel, aztán kipróbálja) ────────────── */
     DM.uszik = function (f, D) {
         var u = 'us' + D.rnd(1000, 999999);
-        var T = {fa: ['🪵', 1, 'a farönk', 'el tronco', 'A fa könnyebb, mint ugyanannyi víz – még a nagy farönk is úszik.', 'La madera pesa menos que la misma cantidad de agua: hasta un tronco grande flota.'],
-            ko: ['🪨', 0, 'a kő', 'la piedra', 'A kő nehezebb, mint ugyanannyi víz, ezért lesüllyed.', 'La piedra pesa más que la misma cantidad de agua, por eso se hunde.'],
-            alma: ['🍎', 1, 'az alma', 'la manzana', 'Az almában sok a levegő, ezért úszik.', 'La manzana tiene mucho aire dentro, por eso flota.'],
-            szolo: ['🍇', 0, 'a szőlő', 'las uvas', 'A szőlő kicsi, mégis elsüllyed: nem a méret számít, hanem hogy miből van.', 'Las uvas son pequeñas y aun así se hunden: no importa el tamaño, sino de qué están hechas.'],
-            kulcs: ['🔑', 0, 'a kulcs', 'la llave', 'A kulcs fémből van. A fém nehezebb, mint ugyanannyi víz – elsüllyed.', 'La llave es de metal. El metal pesa más que la misma cantidad de agua: se hunde.'],
-            jeg: ['🧊', 1, 'a jégkocka', 'el cubito de hielo', 'A jég könnyebb, mint a víz – ezért úszik a jéghegy is.', 'El hielo pesa menos que el agua: por eso flotan hasta los icebergs.'],
-            kacsa: ['🦆', 1, 'a gumikacsa', 'el patito de goma', 'A gumikacsa belül üres, levegő van benne – úszik.', 'El patito está hueco, lleno de aire: flota.'],
-            erme: ['🪙', 0, 'a pénzérme', 'la moneda', 'Az érme kicsi és vékony, mégis elsüllyed: fémből van.', 'La moneda es pequeña y fina, pero se hunde: es de metal.'],
-            gyertya: ['🕯️', 1, 'a gyertya', 'la vela', 'A viasz egy kicsit könnyebb a víznél – úszik.', 'La cera pesa un poco menos que el agua: flota.']};
+        /* fix202 (Sándor: „gyerekaggyal nem érthető”): a magyarázat egy KÉPPEL: ugyanakkora darab
+           tárgy és víz egy mérleghintán – amelyik nehezebb, az lent van. */
+        var T = {fa: ['🪵', 1, 'a farönk', 'el tronco', 'Képzeld el: egy darab fa és <b>ugyanakkora</b> darab víz. A <b>víz a nehezebb</b>. Ami a víznél könnyebb, az fennmarad – a nagy farönk is!', 'Imagina un trozo de madera y un trozo de agua <b>del mismo tamaño</b>. <b>El agua pesa más</b>. Lo que pesa menos que el agua, flota: ¡hasta un tronco grande!'],
+            ko: ['🪨', 0, 'a kő', 'la piedra', 'Képzeld el: egy kő és <b>ugyanakkora</b> víz. A <b>kő a nehezebb</b>. Ami a víznél nehezebb, az lemegy az aljára.', 'Imagina una piedra y agua <b>del mismo tamaño</b>. <b>La piedra pesa más</b>. Lo que pesa más que el agua, se va al fondo.'],
+            alma: ['🍎', 1, 'az alma', 'la manzana', 'Az almában sok a levegő. Ezért <b>könnyebb</b>, mint ugyanakkora víz – úszik.', 'La manzana tiene mucho aire dentro. Por eso <b>pesa menos</b> que el agua del mismo tamaño: flota.'],
+            szolo: ['🍇', 0, 'a szőlő', 'las uvas', 'A szőlőszem pici – de <b>nehezebb</b>, mint ugyanakkora pici víz. Ezért lemegy. Nem a méret számít!', 'Una uva es pequeña, pero <b>pesa más</b> que el agua del mismo tamaño. Por eso se hunde. ¡No importa el tamaño!'],
+            kulcs: ['🔑', 0, 'a kulcs', 'la llave', 'A kulcs vasból van. A vas sokkal <b>nehezebb</b>, mint ugyanakkora víz – lemegy.', 'La llave es de hierro. El hierro <b>pesa mucho más</b> que el agua del mismo tamaño: se hunde.'],
+            jeg: ['🧊', 1, 'a jégkocka', 'el cubito de hielo', 'A jég egy kicsit <b>könnyebb</b>, mint ugyanakkora víz – ezért úszik.', 'El hielo <b>pesa un poco menos</b> que el agua del mismo tamaño: por eso flota.'],
+            kacsa: ['🦆', 1, 'a gumikacsa', 'el patito de goma', 'A gumikacsa belül üres, levegő van benne. Így <b>könnyebb</b>, mint ugyanakkora víz – úszik.', 'El patito está hueco, con aire dentro. Así <b>pesa menos</b> que el agua del mismo tamaño: flota.'],
+            erme: ['🪙', 0, 'a pénzérme', 'la moneda', 'Az érme fémből van. <b>Nehezebb</b>, mint ugyanakkora víz – lemegy, pedig kicsi.', 'La moneda es de metal. <b>Pesa más</b> que el agua del mismo tamaño: se hunde, aunque es pequeña.'],
+            gyertya: ['🕯️', 1, 'a gyertya', 'la vela', 'A gyertya viaszból van. Egy kicsit <b>könnyebb</b>, mint ugyanakkora víz – úszik.', 'La vela es de cera. <b>Pesa un poco menos</b> que el agua del mismo tamaño: flota.']};
+        function hinta(t) {    // kis rajz: tárgy-kocka és víz-kocka a mérleghintán
+            var fok = t[1] ? 12 : -12;
+            return '<svg viewBox="0 -20 240 112" width="240" height="112" style="display:block;margin:6px auto 0">' +
+                '<path d="M120 84 L106 60 L134 60Z" fill="#8D6E63"/>' +
+                '<g transform="rotate(' + fok + ' 120 60)"><rect x="20" y="56" width="200" height="7" rx="3.5" fill="#A1887F"/>' +
+                '<rect x="32" y="22" width="34" height="34" rx="5" fill="#FFF3E0" stroke="#8D6E63" stroke-width="2"/><text x="49" y="47" text-anchor="middle" font-size="22">' + t[0] + '</text>' +
+                '<rect x="174" y="22" width="34" height="34" rx="5" fill="#4FC3F7" stroke="#0277BD" stroke-width="2"/><text x="191" y="46" text-anchor="middle" font-size="18">💧</text></g>' +
+                '<text x="120" y="-6" text-anchor="middle" font-size="11" fill="#5D4037" font-weight="800">' + D.T('ugyanakkora darabok', 'trozos del mismo tamaño') + '</text>' +
+                '<text x="49" y="90" text-anchor="middle" font-size="11" fill="#5D4037" font-weight="800">' + (D.es ? t[3] : t[2]).replace(/^(az|a|el|la|las|los) /, '') + '</text>' +
+                '<text x="191" y="90" text-anchor="middle" font-size="11" fill="#0277BD" font-weight="800">' + D.T('víz', 'agua') + '</text></svg>';
+        }
         var L = (f.targyak && f.targyak.length) ? f.targyak : (function () {
             var u2 = D.kever(['fa', 'alma', 'jeg', 'kacsa', 'gyertya']).slice(0, 2), s = D.kever(['ko', 'szolo', 'kulcs', 'erme']).slice(0, 2);
             return D.kever(u2.concat(s));
@@ -3714,7 +3760,7 @@
             }, function () {
                 if (jo) { elsore++; D.hang('sine', 660); D.hang('sine', 880, .1); }
                 napl.push((D.es ? t[3] : t[2]) + ': ' + (t[1] ? D.T('úszik', 'flota') : D.T('elsüllyed', 'se hunde')) + (jo ? '' : D.T(' (rossz tipp)', ' (falló)')));
-                D.jelez(jo, (jo ? D.T('Jól tippeltél! ', '¡Bien pensado! ') : D.T('Meglepődtél? ', '¿Te ha sorprendido? ')) + (D.es ? t[5] : t[4]));
+                D.jelez(jo, (jo ? D.T('Jól tippeltél! ', '¡Bien pensado! ') : D.T('Meglepődtél? ', '¿Te ha sorprendido? ')) + (D.es ? t[5] : t[4]) + hinta(t));
                 if (i + 1 < L.length) { dmTovabb(D, allas, function () { i++; fut = false; D.torol(); kiir(); }); return; }
                 dmTovabb(D, allas, function () {
                     D.vege(elsore >= L.length - 1, D.T('Kész! <b>' + elsore + ' / ' + L.length + '</b> jó tipp. Nem a méret számít, hanem hogy miből van a tárgy.',

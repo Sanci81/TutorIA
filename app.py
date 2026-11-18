@@ -6560,7 +6560,7 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
                 tiszta.append(p)
             out["feladatok"] = tiszta
         out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
-            "Suma pasando por el 10, con las cerezas." if es_tanterv else "Adj össze a cseresznyékkel, a tízen át!")
+            "Suma pasando por el 10." if es_tanterv else "Adj össze a tízen át!")
         return out
 
     if tipus == "szalag":
@@ -11023,10 +11023,10 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"allitas"}</FELADAT>',
      'állítás, igaz hamis, léggömb         → allitas', 'afirmación, verdadero falso        → allitas'),
     ("cseresznye", {"matek"}, 1, 2,   # fix199 – Japán (sakuranbo)
-     'CSERESZNYÉS ÖSSZEADÁS (tízes átlépés, tízes kerettel) – 8+5: a gyerek a 5-öt 2-re és 3-ra bontja a cseresznyén (tízes keret mutatja), aztán 10+3. '
+     'ÖSSZEADÁS A TÍZEN ÁT (tízes keret, golyók) – 8+5: a gyerek megszámolja az üres helyeket a tízes keretben (2), a kék golyók beköltöznek, aztán 10+3. '
      'Opcionális "feladatok": 1–4 pár [a,b], 2–9, összeg 11–18:\n'
      '   <FELADAT>{"tipus":"cseresznye","feladatok":[[8,5],[7,6],[9,4]]}</FELADAT>',
-     'SUMAS CON CEREZAS (pasar la decena, con marco de diez) – 8+5: parte el 5 en 2 y 3 (lo muestra el marco de diez) y luego 10+3. '
+     'SUMAR PASANDO LA DECENA (marco de diez, bolas) – 8+5: el niño cuenta los huecos del marco (2), entran las bolas azules y luego 10+3. '
      '"feladatok" opcional: 1–4 parejas [a,b], 2–9, suma 11–18:\n'
      '   <FELADAT>{"tipus":"cseresznye","feladatok":[[8,5],[7,6],[9,4]]}</FELADAT>',
      'összeadás 20-ig tízes átlépéssel      → cseresznye', 'sumas hasta 20 pasando la decena   → cseresznye'),
