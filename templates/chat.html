@@ -1117,6 +1117,8 @@
 .dm .ck-tabla .c-sarok{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:4px 6px;font-size:10.5px;color:#8FB4A3;font-weight:800}
 .dm .ck-tabla .c-fej{border-radius:0;background:#123328!important;color:#E6F2EC!important;font-size:13px;font-family:inherit}
 .dm .ck-tabla .c-b,.dm .ck-tabla .c-a{color:#9FE3C1!important}
+/* fix185: hosszú spanyol sorfejléc („invertebrado”) ne lógjon ki – törjön, kisebb betűvel */
+.dm .ck-tabla .c-fej{overflow-wrap:anywhere;hyphens:auto}
 .dm .ck-tabla .ck-ossz{color:#F5C46B!important;font-size:16px}
 .dm .ck-tabla .c-mezo{background:#0F2A22;border:0;border-right:1px solid #2C5244;border-bottom:1px solid #2C5244;border-radius:0;min-height:92px;position:relative;padding:6px 6px 18px}
 .dm .ck-tabla .c-mezo.cel{background:#1A4637}
@@ -1188,7 +1190,7 @@
 .dm .pb-op.rossz-op{border-color:var(--pink);background:#FDE8F1;opacity:.75}
 @media (max-width:600px){.dm .carroll{grid-template-columns:62px 1fr 1fr}.dm .carroll .c-fej{font-size:12.5px}
     .dm .ih-szoveg{font-size:19px}.dm .hv-szoveg{font-size:19px}
-    .dm .carroll.ck-tabla{grid-template-columns:66px 1fr 1fr 36px}.dm .ck-tabla .c-sarok{font-size:9.5px;padding:4px}.dm .ck-kutato{padding:12px 10px 10px}}
+    .dm .carroll.ck-tabla{grid-template-columns:66px 1fr 1fr 36px}.dm .ck-tabla .c-sarok{font-size:9.5px;padding:4px}.dm .ck-tabla .c-a,.dm .ck-tabla .c-na{font-size:11px;padding:4px 3px}.dm .ck-kutato{padding:12px 10px 10px}}
 .dm .betuk{display:flex;align-items:center;font-size:40px;font-weight:900;flex-wrap:wrap;justify-content:center}
 .dm .res{width:20px;height:56px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 .dm .res::after{content:"";width:2px;height:26px;background:#DDE7E1;border-radius:2px;transition:all .15s}
@@ -3204,7 +3206,7 @@
             (bolt ? '<i class="cb-deszka"></i>' : '<span class="ck-n" data-n></span>') + '</div>'; }
         if (bolt) {
             D.html('<div class="cb-bolt"><div class="cb-ponyva"></div><div class="cb-cegtabla">' + D.T('JÁTÉKBOLT', 'JUGUETERÍA') + '</div>' +
-                '<div class="cb-kosar"><span class="cb-kosar-nev">' + D.T('Pakold ki a kosárból a polcra!', '¡Saca los juguetes de la cesta y ponlos en la estantería!') + '</span>' +
+                '<div class="cb-kosar"><span class="cb-kosar-nev">' + D.T('Pakold ki a kosárból a polcra!', '¡Pon los juguetes en la estantería!') + '</span>' +
                 '<div class="kartyak" data-id="kt"></div></div>' +
                 '<div class="carroll cb-polc" data-id="tab"><div class="c-sarok"></div>' +
                 '<div class="c-fej c-b"><span>' + f.b + '</span></div><div class="c-fej c-nb"><span>' + NB + '</span></div>' +
