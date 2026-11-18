@@ -6537,6 +6537,109 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             out["hiany"] = hiany
         return out
 
+    # ══ INNOVATÍV FELADATOK MÁS ORSZÁGOKBÓL (fix199) ════════════════════
+    def _egeszek(x, db_tol, db_ig):
+        if not isinstance(x, list) or not (db_tol <= len(x) <= db_ig):
+            return None
+        try:
+            return [int(v) for v in x]
+        except Exception:
+            return None
+
+    if tipus == "cseresznye":
+        out = {"tipus": "cseresznye"}
+        fl = adat.get("feladatok")
+        if fl is not None:
+            if not isinstance(fl, list) or not (1 <= len(fl) <= 4):
+                return None
+            tiszta = []
+            for p in fl:
+                p = _egeszek(p, 2, 2)
+                if not p or not (2 <= p[0] <= 9 and 2 <= p[1] <= 9 and 11 <= p[0] + p[1] <= 18):
+                    return None
+                tiszta.append(p)
+            out["feladatok"] = tiszta
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "Suma pasando por el 10, con las cerezas." if es_tanterv else "Adj össze a cseresznyékkel, a tízen át!")
+        return out
+
+    if tipus == "szalag":
+        out = {"tipus": "szalag"}
+        fajta = adat.get("fajta")
+        if fajta is not None and fajta not in ("egesz", "resz", "tobb"):
+            return None
+        if fajta:
+            out["fajta"] = fajta
+        for k in ("a", "b"):
+            v = adat.get(k)
+            if v is not None:
+                try:
+                    v = int(v)
+                except Exception:
+                    return None
+                if not (1 <= v <= 999):
+                    return None
+                out[k] = v
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "Dibuja el problema con barras." if es_tanterv else "Rajzold le a feladatot szalagokkal!")
+        return out
+
+    if tipus == "szoroban":
+        out = {"tipus": "szoroban"}
+        sz = adat.get("szamok")
+        if sz is not None:
+            sz = _egeszek(sz, 1, 4)
+            if not sz or any(not (0 <= v <= 999) for v in sz):
+                return None
+            out["szamok"] = sz
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "Representa los números en el soroban." if es_tanterv else "Rakd ki a számokat a szorobánon!")
+        return out
+
+    if tipus == "racsszorzas":
+        out = {"tipus": "racsszorzas"}
+        a_, b_ = adat.get("a"), adat.get("b")
+        if a_ is not None or b_ is not None:
+            try:
+                a_, b_ = int(a_), int(b_)
+            except Exception:
+                return None
+            if not (10 <= a_ <= 999 and 2 <= b_ <= 99):
+                return None
+            out["a"], out["b"] = a_, b_
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "Multiplica en la rejilla." if es_tanterv else "Szorozz a rácsban!")
+        return out
+
+    if tipus == "uszik":
+        USZIK = {"fa": 1, "ko": 0, "alma": 1, "szolo": 0, "kulcs": 0, "jeg": 1, "kacsa": 1, "erme": 0, "gyertya": 1}
+        out = {"tipus": "uszik"}
+        t = adat.get("targyak")
+        if t is not None:
+            if not isinstance(t, list) or not (2 <= len(t) <= 6) or any(x not in USZIK for x in t) or len(set(t)) != len(t):
+                return None
+            if len({USZIK[x] for x in t}) < 2:        # legyen úszó ÉS süllyedő is
+                return None
+            out["targyak"] = list(t)
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Flota o se hunde? Primero adivina." if es_tanterv else "Úszik vagy elsüllyed? Előbb tippelj!")
+        return out
+
+    if tipus == "fejlab":
+        out = {"tipus": "fejlab"}
+        fej, nyul = adat.get("fej"), adat.get("nyul")
+        if fej is not None or nyul is not None:
+            try:
+                fej, nyul = int(fej), int(nyul)
+            except Exception:
+                return None
+            if not (4 <= fej <= 12 and 1 <= nyul <= fej - 1):
+                return None
+            out["fej"], out["nyul"] = fej, nyul
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "Cabezas y patas: ¿cuántos conejos hay?" if es_tanterv else "Fejek és lábak: hány nyuszi van?")
+        return out
+
     # ══ 1–2. OSZTÁLYOS MATEK FELADATOK (fix196) ═════════════════════════
     _SZINEK_196 = ("piros", "kek", "sarga", "zold", "lila")
     if tipus == "mintasor":
@@ -10919,6 +11022,47 @@ _DM_FELULETEK = [
      'VERDADERO/FALSO – globos. "szoveg" + "igaz" opcionales:\n'
      '   <FELADAT>{"tipus":"allitas"}</FELADAT>',
      'állítás, igaz hamis, léggömb         → allitas', 'afirmación, verdadero falso        → allitas'),
+    ("cseresznye", {"matek"}, 1, 2,   # fix199 – Japán (sakuranbo)
+     'CSERESZNYE-SZÁMOLÁS (japán módszer, tízes átlépés) – 8+5: a gyerek a 5-öt 2-re és 3-ra bontja a cseresznyén (tízes keret mutatja), aztán 10+3. '
+     'Opcionális "feladatok": 1–4 pár [a,b], 2–9, összeg 11–18:\n'
+     '   <FELADAT>{"tipus":"cseresznye","feladatok":[[8,5],[7,6],[9,4]]}</FELADAT>',
+     'CÁLCULO DE LAS CEREZAS (método japonés, pasar la decena) – 8+5: parte el 5 en 2 y 3 (lo muestra el marco de diez) y luego 10+3. '
+     '"feladatok" opcional: 1–4 parejas [a,b], 2–9, suma 11–18:\n'
+     '   <FELADAT>{"tipus":"cseresznye","feladatok":[[8,5],[7,6],[9,4]]}</FELADAT>',
+     'összeadás 20-ig tízes átlépéssel      → cseresznye', 'sumas hasta 20 pasando la decena   → cseresznye'),
+    ("szalag", {"matek"}, 1, 6,   # fix199 – Szingapúr (bar model)
+     'SZALAGMODELL (szingapúri módszer) szöveges feladathoz – a program írja a szöveget; a gyerek előbb megmutatja a rajzon, mit keresünk, aztán kiszámolja. '
+     '"fajta": egesz (a+b=?), resz (összesen és az egyik rész adott) vagy tobb (b-vel több); "a","b": 1–999 (alsóban kicsi számok):\n'
+     '   <FELADAT>{"tipus":"szalag","fajta":"tobb","a":7,"b":3}</FELADAT>',
+     'MODELO DE BARRAS (método de Singapur) para problemas – el programa escribe el enunciado; el niño señala en el dibujo qué buscamos y luego calcula. '
+     '"fajta": egesz (a+b=?), resz (total y una parte) o tobb (b más); "a","b": 1–999:\n'
+     '   <FELADAT>{"tipus":"szalag","fajta":"tobb","a":7,"b":3}</FELADAT>',
+     'szöveges feladat, összesen, több mint → szalag', 'problema, en total, más que         → szalag'),
+    ("szoroban", {"matek"}, 1, 4,   # fix199 – Japán abakusz
+     'SZOROBÁN (japán abakusz) – helyiérték: a gyerek kirakja a számot (felső golyó 5, alsók 1). Opcionális "szamok": 1–4 szám 0–999:\n'
+     '   <FELADAT>{"tipus":"szoroban","szamok":[7,46,305]}</FELADAT>',
+     'SOROBAN (ábaco japonés) – valor posicional: el niño representa el número (cuenta de arriba 5, de abajo 1). "szamok" opcional: 1–4 números 0–999:\n'
+     '   <FELADAT>{"tipus":"szoroban","szamok":[7,46,305]}</FELADAT>',
+     'helyiérték, egyes tízes százas         → szoroban', 'valor posicional, unidades decenas → szoroban'),
+    ("racsszorzas", {"matek"}, 3, 6,   # fix199 – India (rácsos szorzás)
+     'RÁCSOS SZORZÁS (indiai módszer) – a gyerek kitölti a rácsot (cellánként tízes/egyes), majd összeadja a ferde sávokat. "a": 10–999, "b": 2–99:\n'
+     '   <FELADAT>{"tipus":"racsszorzas","a":34,"b":6}</FELADAT>',
+     'MULTIPLICACIÓN EN REJILLA (método indio) – el niño rellena la rejilla y suma las diagonales. "a": 10–999, "b": 2–99:\n'
+     '   <FELADAT>{"tipus":"racsszorzas","a":34,"b":6}</FELADAT>',
+     'szorzás többjegyűvel, rácsban         → racsszorzas', 'multiplicar por varias cifras      → racsszorzas'),
+    ("uszik", {"kornyezet"}, 1, 7,   # fix199 – japán „jósold meg” kísérlet
+     'ÚSZIK VAGY ELSÜLLYED? (jósold meg, aztán nézd meg) – a gyerek tippel, a tárgy beleesik a vízbe, magyarázat. Opcionális "targyak": 2–6 ezekből: '
+     'fa, ko, alma, szolo, kulcs, jeg, kacsa, erme, gyertya (legyen úszó és süllyedő is):\n'
+     '   <FELADAT>{"tipus":"uszik","targyak":["fa","szolo","jeg","erme"]}</FELADAT>',
+     '¿FLOTA O SE HUNDE? (predice y comprueba) – el niño adivina, el objeto cae al agua y se explica. "targyak" opcional: 2–6 de las mismas claves:\n'
+     '   <FELADAT>{"tipus":"uszik","targyak":["fa","szolo","jeg","erme"]}</FELADAT>',
+     'úszik, elsüllyed, anyagok, víz        → uszik', 'flota, se hunde, materiales, agua  → uszik'),
+    ("fejlab", {"matek"}, 4, 6,   # fix199 – Japán (tsurukame-zan)
+     'FEJEK ÉS LÁBAK (japán fejtörő) – csirkék és nyuszik: a gyerek csirkéből nyuszit csinál, amíg a lábak száma stimmel. Opcionális "fej": 4–12, "nyul": 1..fej-1:\n'
+     '   <FELADAT>{"tipus":"fejlab","fej":8,"nyul":3}</FELADAT>',
+     'CABEZAS Y PATAS (acertijo japonés) – gallinas y conejos: el niño convierte gallinas en conejos hasta que cuadran las patas. "fej": 4–12, "nyul": 1..fej-1:\n'
+     '   <FELADAT>{"tipus":"fejlab","fej":8,"nyul":3}</FELADAT>',
+     'logikai fejtörő, fejek és lábak       → fejlab', 'acertijo lógico, cabezas y patas   → fejlab'),
     ("mintasor", {"matek"}, 1, 3,   # fix196
      'MINTASOR – színes gyöngysor: a gyerek a 2 hiányzó gyöngyöt fűzi fel. Opcionális "minta": az ismétlődő egység 2–4 színből '
      '(piros, kek, sarga, zold, lila), pl. ["piros","kek"] vagy ["piros","piros","kek"]:\n'

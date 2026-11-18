@@ -1740,3 +1740,16 @@ Tervezett elemek:
 - [x] (fix197) HANGMÓDBAN (csak próbaoldal) 🔊 gomb a feladat utasítása előtt – a nem olvasó gyerek meghallgathatja (a gombnyomásra az AKTUÁLIS szöveget mondja). Minden új típusú (DM) feladatnál.
 - [ ] (fix197) GÉPEN EGÉRREL egy 6 éves nehezen boldogul – minden koppintós feladatnál igaz. Javaslat: 1–2. osztálynak telefon/tablet ajánlása a szülőnek (GYIK / regisztráció után tipp); vagy gépen + hangmódban + 1–2. o. a tanár inkább szóban kérdezzen. Sándor dönt.
 - [ ] (fix197) Hangmód próbája: a próbaoldalon a chat fejlécében a „🧪 Hangkeret: ELFOGYOTT/VAN” gombbal visszakapcsolható. Ha VAN-t mutat, és mégis elfogyott → a teszt csomag hangos ideje fogyott el, szólni Claude-nak.
+- [x] (fix198) Hangmódban (próba) a feladat utasítását MAGÁTÓL is felolvassa – a tanár beszéde UTÁN (nem beszélnek egymásra); ha a tanár nem szólal meg, 7 mp múlva. A 🔊 gomb megmarad az újrahallgatáshoz.
+- [x] (fix198) Mérleg alap-párjai: kivéve az elefánt–egér és cica–egér (ez nem matek, hanem köztudás). Helyette olyan párok, ahol a MÉRET becsap: lufi–tégla, toll–alma, ananász–lufi, labda–ananász. (LOMLOE 1.º „pesado y ligero”, NAT 1–2.: tömeg összehasonlítása.) Ötlet később: hány kocka tart egyensúlyt egy almával (nem szabványos mértékegység).
+- [x] (fix198) Gép + egér + 1–2. o.: a strigulát és a koppintós feladatokat szóban NEM lehet (Sándor: belekeveredik) → marad a javaslat: 1–2. osztálynak telefon/tablet (szülői tipp). Sándor dönt, hova kerüljön.
+- [x] (fix198→fix199 KÉSZ) INNOVATÍV FELADATOK más országokból: cseresznye-számolás (Japán, tízes átlépés, 1. o.), szalagmodell szöveges feladathoz (Szingapúr, 2–6. o.), szorobán / számológolyós abakusz (Japán–Kína, helyiérték, 1–4. o.), rácsos szorzás (India, 4–5. o.), „Jósold meg, aztán nézd meg!” kísérletek – úszik vagy elsüllyed (japán természettudomány-óra, 2–6. o.), daru–teknős fejek–lábak fejtörő (Japán, 4–6. o.).
+- [x] (fix199) HAT INNOVATÍV FELADAT (mind MAGYAR ÉS SPANYOL oldalon is; Feladat-próba név → tananyag):
+      cseresznye – japán „sakuranbo”: összeadás 20-ig tízes átlépéssel, tízes kerettel (matek 1–2.; HU 1. o. 20-as számkör, ES 1.º sumar hasta 20)
+      szalag – szingapúri szalagmodell szöveges feladathoz: előbb a rajzon megmutatja, mit keresünk, aztán számol; egesz / resz / tobb (matek 1–6.; ES 2.º problemas, HU szöveges feladatok)
+      szoroban – japán abakusz, helyiérték (matek 1–4.; HU helyiérték 1–4., ES 1.º–2.º decenas, centenas)
+      racsszorzas – indiai rácsos szorzás, átlós összeadás átvitellel (matek 3–6.; HU 4. o. írásbeli szorzás, ES 3.º–4.º multiplicación)
+      uszik – „Jósold meg, aztán nézd meg!”: úszik vagy elsüllyed (környezet / Conocimiento / fizika 1–7.); a meglepő tárgyak: szőlőszem elsüllyed, farönk úszik, jég úszik
+      fejlab – japán „tsurukame-zan”: csirkék és nyuszik, fejek és lábak (matek 4–6.; problémamegoldás, az egyenlet előfutára)
+- [x] (fix199) Hangmód (próba): az utasítást NEM olvassa fel újra, ha a tanár utolsó üzenete már tartalmazza a szavai többségét (Sándor: „sokszor az oktatás részben is benne van”).
+- [ ] (fix199) Feladat-próba: a próbában csak a feladat látszik, magyarázat nélkül – élesben a tanár előbb tanít, aztán adja a feladatot. (Sándor kérdése, válasz megadva.)
