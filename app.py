@@ -5991,7 +5991,10 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             return None
         mondat = {"on": "The cat is on the table.", "under": "The cat is under the table.",
                   "in": "The cat is in the box.", "next to": "The cat is next to the table."}[hol]
-        return {"tipus": "elolj", "hol": hol, "mondat": mondat, "kerdes": "“" + mondat + "”"}
+        # fix190: matekórán (nem nyelvórán) a gyerek SAJÁT nyelvén szól – ezt a
+        # _feladat_nyelvre dönti el; ide csak felírjuk, mi az anyanyelve.
+        return {"tipus": "elolj", "hol": hol, "mondat": mondat, "kerdes": "“" + mondat + "”",
+                "anya": "spanyol" if es_tanterv else "magyar"}
 
     if tipus == "rovar":
         return {"tipus": "rovar", "kerdes": ("Nombra las partes del cuerpo de la hormiga." if es_tanterv
@@ -6532,6 +6535,23 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             out["sor"] = sor
         if hiany is not None:
             out["hiany"] = hiany
+        return out
+
+    if tipus == "alakzat":   # fix191: síkidom vagy test?
+        KULCS = ("kor", "negyzet", "haromszog", "teglalap", "kocka", "teglatest", "gomb", "henger", "kup")
+        out = {"tipus": "alakzat"}
+        elemek = adat.get("elemek")
+        if elemek is not None:
+            if not isinstance(elemek, list) or not (4 <= len(elemek) <= 9) or len(set(elemek)) != len(elemek):
+                return None
+            if any(e not in KULCS for e in elemek):
+                return None
+            sik = sum(1 for e in elemek if e in KULCS[:4])
+            if sik == 0 or sik == len(elemek):          # mindkét csoportba jusson
+                return None
+            out["elemek"] = list(elemek)
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Figura plana o cuerpo geométrico?" if es_tanterv else "Síkidom vagy test?")
         return out
 
     if tipus == "krokodil":   # fix188: nagyobb / kisebb / egyenlő (relációs jelek)
@@ -10617,7 +10637,7 @@ _DM_FELULETEK = [
      'VISTE AL OSITO – instrucción en el idioma que se aprende (el programa la dice y la escribe); el niño pone al osito la ropa del color pedido. "ruhak": 1–2 pares [color, prenda], SIEMPRE con claves en inglés; color: red, blue, green, yellow; prenda: hat, scarf, shirt, pants, boots (si se omite, lo elige el programa):\n'
      '   <FELADAT>{"tipus":"oltoz","ruhak":[["red","hat"],["blue","boots"]]}</FELADAT>',
      'ruhák és színek                       → oltoz', 'ropa y colores                       → oltoz'),
-    ("elolj", {"nyelv"}, 2, 5,
+    ("elolj", {"nyelv", "matek"}, 1, 5,   # fix190: matekon is (fent/lent/benne/mellette), a gyerek nyelvén
      'HOL A CICA? – mondat a tanult nyelven (a program írja: on/auf/sur/encima…), a gyerek oda húzza a cicát. "hol" MINDIG angol kulcs: on, under, in vagy next to (elhagyva: a program választ):\n'
      '   <FELADAT>{"tipus":"elolj","hol":"under"}</FELADAT>',
      '¿DÓNDE ESTÁ EL GATO? – frase en el idioma que se aprende (la escribe el programa); el niño arrastra el gato. "hol" SIEMPRE clave en inglés: on, under, in o next to (si se omite, lo elige el programa):\n'
@@ -10817,14 +10837,24 @@ _DM_FELULETEK = [
      'VERDADERO/FALSO – globos. "szoveg" + "igaz" opcionales:\n'
      '   <FELADAT>{"tipus":"allitas"}</FELADAT>',
      'állítás, igaz hamis, léggömb         → allitas', 'afirmación, verdadero falso        → allitas'),
-    ("krokodil", {"matek"}, 1, 4,   # fix188
-     'KROKODIL – nagyobb, kisebb, egyenlő: a gyerek két szám közé a <, = vagy > jelet teszi (a krokodil a nagyobb felé tátja a száját). '
-     '"parok": 2–6 számpár (0–10000), VAGY csak "max" (10/20/100/1000/10000) és a program választ:\n'
-     '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
-     'COCODRILO – mayor, menor, igual: el niño pone <, = o > entre dos números (el cocodrilo abre la boca hacia el mayor). '
-     '"parok": 2–6 parejas (0–10000), O solo "max" (10/20/100/1000/10000) y el programa elige:\n'
-     '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
-     'nagyobb, kisebb, egyenlő, <, >, =    → krokodil', 'mayor, menor, igual, <, >, =        → krokodil'),
+    ("alakzat", {"matek"}, 1, 3,   # fix191
+     'SÍKIDOM VAGY TEST? – rajzolt alakzatok két csoportba (lapos síkidom / térbeli test). Opcionális "elemek": 4–9 kulcs ezekből: '
+     'kor, negyzet, haromszog, teglalap (síkidomok), kocka, teglatest, gomb, henger, kup (testek) – mindkettőből legyen:\n'
+     '   <FELADAT>{"tipus":"alakzat"}</FELADAT>',
+     '¿FIGURA PLANA O CUERPO? – formas dibujadas en dos grupos. "elemek" opcional: 4–9 claves de: '
+     'kor, negyzet, haromszog, teglalap (planas), kocka, teglatest, gomb, henger, kup (cuerpos) – de los dos tipos:\n'
+     '   <FELADAT>{"tipus":"alakzat"}</FELADAT>',
+     'síkidom vagy test, kör, kocka, gömb   → alakzat', 'figura plana o cuerpo, cubo, esfera → alakzat'),
+    # fix190: a KROKODIL („krokodil”) bejegyzés kivéve, amíg nincs szép rajz hozzá (Sándor: „ultra gagyi”).
+    # A feladat kódja (ellenőrző + chat.html DM.krokodil) megmaradt; visszakapcsolás = ez a sor:
+    # ("krokodil", {"matek"}, 1, 4,   # fix188
+    #  'KROKODIL – nagyobb, kisebb, egyenlő: a gyerek két szám közé a <, = vagy > jelet teszi (a krokodil a nagyobb felé tátja a száját). '
+    #  '"parok": 2–6 számpár (0–10000), VAGY csak "max" (10/20/100/1000/10000) és a program választ:\n'
+    #  '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
+    #  'COCODRILO – mayor, menor, igual: el niño pone <, = o > entre dos números (el cocodrilo abre la boca hacia el mayor). '
+    #  '"parok": 2–6 parejas (0–10000), O solo "max" (10/20/100/1000/10000) y el programa elige:\n'
+    #  '   <FELADAT>{"tipus":"krokodil","parok":[[12,21],[45,45],[38,29],[7,9]]}</FELADAT>',
+    #  'nagyobb, kisebb, egyenlő, <, >, =    → krokodil', 'mayor, menor, igual, <, >, =        → krokodil'),
     ("urmertek", {"matek"}, 2, 4,
      'ŰRMÉRTÉK – mérőkancsó (dl/liter). Opcionális "cel" 1–10:\n'
      '   <FELADAT>{"tipus":"urmertek","cel":7}</FELADAT>',
@@ -18545,6 +18575,8 @@ _ELOLJ_MONDAT = {
                 "in": "Le chat est dans la boîte.", "next to": "Le chat est à côté de la table."},
     "spanyol": {"on": "El gato está encima de la mesa.", "under": "El gato está debajo de la mesa.",
                 "in": "El gato está dentro de la caja.", "next to": "El gato está al lado de la mesa."},
+    "magyar": {"on": "A cica az asztalon van.", "under": "A cica az asztal alatt van.",   # fix190: matekóra
+               "in": "A cica a dobozban van.", "next to": "A cica az asztal mellett van."},
 }
 
 
@@ -18586,7 +18618,8 @@ def _feladat_nyelvre(feladat, language):
     spanyol) – 2026-10-27, Sándor: „minden idegen nyelvre, mindkét oldalon”."""
     if not isinstance(feladat, dict) or feladat.get("tipus") not in ("arcresz", "elolj", "oltoz", "szamangol", "idojaras", "szoba"):
         return feladat
-    nyelv = _normalize_chat_language(language) or "angol"
+    nyelv = _normalize_chat_language(language) or (
+        feladat.get("anya") if feladat.get("tipus") == "elolj" else None) or "angol"   # fix190
     feladat["nyelv"] = nyelv
     if feladat.get("tipus") == "oltoz":
         m = _oltoz_mondat(feladat.get("ruhak") or [], nyelv)

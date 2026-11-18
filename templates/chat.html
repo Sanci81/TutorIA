@@ -3191,6 +3191,53 @@
         });
     };
 
+    /* ── SÍKIDOM VAGY TEST? (fix191) ─────────────────────────────────────
+       A síkidom LAPOS rajz (egy szín, árnyék nélkül), a test TÉRBELI
+       (fény, árnyék, oldallapok) – így a kép maga is segít eldönteni.
+       A kártyázás a csoportosító feladaté (DM.csoport), itt csak a rajzok. */
+    DM.alakzat = function (f, D) {
+        var u = 'ak' + D.rnd(1000, 999999);
+        function svg(belso) { return '<svg viewBox="0 0 64 64" width="46" height="46" style="display:block;margin:0 auto;overflow:visible">' + belso + '</svg>'; }
+        function lg(id, a, b, c, vizsz) { return '<linearGradient id="' + u + id + '" x1="0" y1="0" x2="' + (vizsz ? 1 : 0) + '" y2="' + (vizsz ? 0 : 1) + '">' +
+            '<stop offset="0" stop-color="' + a + '"/><stop offset=".55" stop-color="' + b + '"/><stop offset="1" stop-color="' + (c || b) + '"/></linearGradient>'; }
+        var arny = '<ellipse cx="32" cy="60" rx="20" ry="3.5" fill="#000" opacity=".13"/>';
+        var RAJZ = {
+            kor: svg('<circle cx="32" cy="32" r="25" fill="#F06292" stroke="#AD1457" stroke-width="2.5"/>'),
+            negyzet: svg('<rect x="9" y="9" width="46" height="46" rx="1.5" fill="#4FC3F7" stroke="#0277BD" stroke-width="2.5"/>'),
+            haromszog: svg('<path d="M32 7 L58 56 L6 56Z" fill="#FFD54F" stroke="#E0A800" stroke-width="2.5" stroke-linejoin="round"/>'),
+            teglalap: svg('<rect x="3" y="17" width="58" height="30" rx="1.5" fill="#81C784" stroke="#2E7D32" stroke-width="2.5"/>'),
+            kocka: svg(arny + '<path d="M8 22 L22 10 L56 10 L42 22Z" fill="#FFB199" stroke="#BF360C" stroke-width="2" stroke-linejoin="round"/>' +
+                '<path d="M42 22 L56 10 L56 44 L42 56Z" fill="#E2582B" stroke="#BF360C" stroke-width="2" stroke-linejoin="round"/>' +
+                '<rect x="8" y="22" width="34" height="34" fill="#FF8A65" stroke="#BF360C" stroke-width="2" stroke-linejoin="round"/>'),
+            teglatest: svg(arny + '<path d="M3 30 L15 20 L61 20 L49 30Z" fill="#D1B3FF" stroke="#4A148C" stroke-width="2" stroke-linejoin="round"/>' +
+                '<path d="M49 30 L61 20 L61 44 L49 56Z" fill="#7E57C2" stroke="#4A148C" stroke-width="2" stroke-linejoin="round"/>' +
+                '<rect x="3" y="30" width="46" height="26" fill="#B39DDB" stroke="#4A148C" stroke-width="2"/>'),
+            gomb: svg('<defs><radialGradient id="' + u + 'g" cx="36%" cy="30%" r="72%"><stop offset="0" stop-color="#E3F2FD"/><stop offset=".35" stop-color="#64B5F6"/><stop offset="1" stop-color="#0D47A1"/></radialGradient></defs>' +
+                arny + '<circle cx="32" cy="31" r="25" fill="url(#' + u + 'g)" stroke="#0D47A1" stroke-width="1.5"/>' +
+                '<ellipse cx="23" cy="21" rx="7" ry="4.5" fill="#FFFFFF" opacity=".55" transform="rotate(-30 23 21)"/>'),
+            henger: svg('<defs>' + lg('h', '#2E7D32', '#A5D6A7', '#388E3C', true) + '</defs>' + arny +
+                '<path d="M12 14 L12 50 A20 7 0 0 0 52 50 L52 14Z" fill="url(#' + u + 'h)" stroke="#1B5E20" stroke-width="2" stroke-linejoin="round"/>' +
+                '<ellipse cx="32" cy="14" rx="20" ry="7" fill="#C8E6C9" stroke="#1B5E20" stroke-width="2"/>'),
+            kup: svg('<defs>' + lg('k', '#E65100', '#FFCC80', '#F57C00', true) + '</defs>' + arny +
+                '<path d="M32 5 L12 50 A20 7 0 0 0 52 50Z" fill="url(#' + u + 'k)" stroke="#BF360C" stroke-width="2" stroke-linejoin="round"/>' +
+                '<path d="M12 50 A20 7 0 0 1 52 50" fill="none" stroke="#BF360C" stroke-width="1.2" stroke-dasharray="3 3" opacity=".6"/>')
+        };
+        var NEV = D.es
+            ? {kor: 'círculo', negyzet: 'cuadrado', haromszog: 'triángulo', teglalap: 'rectángulo', kocka: 'cubo', teglatest: 'prisma', gomb: 'esfera', henger: 'cilindro', kup: 'cono'}
+            : {kor: 'kör', negyzet: 'négyzet', haromszog: 'háromszög', teglalap: 'téglalap', kocka: 'kocka', teglatest: 'téglatest', gomb: 'gömb', henger: 'henger', kup: 'kúp'};
+        var SIK = {kor: 1, negyzet: 1, haromszog: 1, teglalap: 1};
+        var lista = (f.elemek && f.elemek.length) ? f.elemek : D.kever(['kor', 'negyzet', 'haromszog', 'teglalap']).slice(0, 4)
+            .concat(D.kever(['kocka', 'teglatest', 'gomb', 'henger', 'kup']).slice(0, 4));
+        DM.csoport({
+            csoportok: D.es ? ['figura plana', 'cuerpo geométrico'] : ['síkidom', 'test'],
+            elemek: lista.map(function (k) { return [NEV[k], SIK[k] ? 0 : 1, RAJZ[k]]; })
+        }, D);
+        D.html('<p class="allas" data-id="tipp" style="margin-top:6px">' + D.T('Tipp: a síkidom lapos, mint egy papírlap. A testet körbe lehet járni, és meg lehet fogni.',
+            'Pista: la figura plana es lisa, como un papel. El cuerpo se puede coger y mirar por todos lados.') + '</p>');
+        var tp = D.$('tipp'), sor = tp && tp.parentNode.querySelector('.dm-kesz-sor');
+        if (sor) { sor.parentNode.insertBefore(tp, sor); }
+    };
+
     /* ══ ÚJ FELADATOK (2026-10-30) ═══════════════════════════════════════ */
 
     /* ── CARROLL-TÁBLA: két szempont, 2×2 mező ─────────────────────────── */
@@ -5134,7 +5181,8 @@
         var NY = ({angol: {'on': 'on', 'under': 'under', 'in': 'in', 'next to': 'next to'},
             nemet: {'on': 'auf', 'under': 'unter', 'in': 'in', 'next to': 'neben'},
             francia: {'on': 'sur', 'under': 'sous', 'in': 'dans', 'next to': 'à côté de'},
-            spanyol: {'on': 'encima de', 'under': 'debajo de', 'in': 'dentro de', 'next to': 'al lado de'}})[f.nyelv] ||
+            spanyol: {'on': 'encima de', 'under': 'debajo de', 'in': 'dentro de', 'next to': 'al lado de'},
+            magyar: {'on': 'az asztalon', 'under': 'az asztal alatt', 'in': 'a dobozban', 'next to': 'az asztal mellett'}})[f.nyelv] ||
             {'on': 'on', 'under': 'under', 'in': 'in', 'next to': 'next to'};
         var ZONA = {'on': function (x, y) { return x > 110 && x < 250 && y > 50 && y < 104; },
             'under': function (x, y) { return x > 125 && x < 235 && y > 118 && y < 200; },
@@ -7390,7 +7438,10 @@
             '<div class="gombok kozep" data-id="gombok"></div>');
         var svg = D.$('svg'), allas = D.$('allas');
         D.defs(svg, '<linearGradient id="' + uid + 'h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8F7EE"/><stop offset="1" stop-color="#C9EBD6"/></linearGradient>' +
-            '<linearGradient id="' + uid + 'k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#F1F5F9"/></linearGradient>');
+            '<linearGradient id="' + uid + 'k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#F1F5F9"/></linearGradient>' +
+            '<linearGradient id="' + uid + 'zf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#81C784"/><stop offset="1" stop-color="#388E3C"/></linearGradient>' +
+            '<linearGradient id="' + uid + 'za" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#66BB6A"/><stop offset="1" stop-color="#A5D6A7"/></linearGradient>' +
+            '<linearGradient id="' + uid + 'v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B3E5FC"/><stop offset="1" stop-color="#4FC3F7"/></linearGradient>');
         var reteg = D.el('g', {}, svg);
         ['<', '=', '>'].forEach(function (j) {
             var b = D.gomb('<span style="font-size:30px;line-height:1;font-weight:900">' + j + '</span>', 'fo', function () { valasz(j); });
@@ -7398,42 +7449,67 @@
         });
         function jel(a, b) { return a > b ? '>' : (a < b ? '<' : '='); }
         function kartya(x, n) {
-            D.el('rect', {x: x - 58, y: 34, width: 116, height: 74, rx: 16, fill: 'url(#' + uid + 'k)', stroke: '#1E7F4F', 'stroke-width': 3}, reteg);
+            D.el('rect', {x: x - 48, y: 39, width: 100, height: 74, rx: 16, fill: '#0E2A1E', opacity: .12}, reteg);
+            D.el('rect', {x: x - 50, y: 34, width: 100, height: 74, rx: 16, fill: 'url(#' + uid + 'k)', stroke: '#1E7F4F', 'stroke-width': 3}, reteg);
             D.txt(x, 84, String(n), {'font-size': String(n).length > 3 ? 32 : 40, fill: '#0E2A1E'}, reteg);
             if (n <= 10) {           // pöttyök a kicsiknek
                 for (var k = 0; k < n; k++) {
                     var sor = Math.floor(k / 5), osz = k % 5;
-                    D.el('circle', {cx: x - 40 + osz * 20, cy: 136 + sor * 22, r: 8, fill: '#FFB300', stroke: '#E08E00', 'stroke-width': 2}, reteg);
+                    D.el('circle', {cx: x - 36 + osz * 18, cy: 136 + sor * 20, r: 7.5, fill: '#FFB300', stroke: '#E08E00', 'stroke-width': 2}, reteg);
                 }
             }
         }
+        /* A krokodil feje oldalról: az állkapcsai maguk adják a jelet.
+           Helyi rajz: a fej a (0,0) pontban, az állkapcsok +x felé nyúlnak;
+           a '>' jelnél tükrözzük, így a száj mindig a NAGYOBB szám felé nyílik. */
+        function allkapocs(szulo, fok, dy, felso) {
+            var g = D.el('g', {transform: 'translate(0,' + dy + ') rotate(' + fok + ')'}, szulo), s = felso ? -1 : 1;
+            [20, 32, 44].forEach(function (x) {      // fogak a belső élen
+                D.el('path', {d: 'M' + (x - 3) + ' ' + (s * 1) + ' L' + (x + 3) + ' ' + (s * 1) + ' L' + x + ' ' + (-s * 5.5) + 'Z',
+                    fill: '#FFFFFF', stroke: '#CFD8DC', 'stroke-width': .8, 'stroke-linejoin': 'round'}, g);
+            });
+            D.el('path', {d: 'M-2 0 L52 ' + (s * .5) + ' Q60 ' + (s * 1) + ' 60 ' + (s * 6) + ' Q60 ' + (s * 12) + ' 52 ' + (s * 12) + ' L-2 ' + (s * 15) + 'Z',
+                fill: 'url(#' + uid + (felso ? 'zf' : 'za') + ')', stroke: '#1B5E20', 'stroke-width': 2, 'stroke-linejoin': 'round'}, g);
+            [[16, 9], [28, 9.5], [40, 9]].forEach(function (p) {   // pikkelyek
+                D.el('ellipse', {cx: p[0], cy: s * p[1], rx: 3.2, ry: 2.2, fill: '#2E7D32', opacity: .55}, g);
+            });
+            if (felso) {             // orrlyuk a pofa végén
+                D.el('circle', {cx: 53, cy: -12, r: 4.5, fill: '#5CB860', stroke: '#1B5E20', 'stroke-width': 1.6}, g);
+                D.el('ellipse', {cx: 54, cy: -13, rx: 1.6, ry: 1.1, fill: '#1B5E20'}, g);
+            }
+        }
         function krok(j, o) {        // o: 0 = csukott száj, 1 = tátva
-            var g = D.el('g', {}, reteg), cx = 180, cy = 71;
-            function allkapocs(V, E, fel) {
-                D.el('line', {x1: V[0], y1: V[1], x2: E[0], y2: E[1], stroke: '#1B5E20', 'stroke-width': 15, 'stroke-linecap': 'round'}, g);
-                D.el('line', {x1: V[0], y1: V[1], x2: E[0], y2: E[1], stroke: '#4CAF50', 'stroke-width': 10, 'stroke-linecap': 'round'}, g);
-                [.4, .62, .84].forEach(function (t) {
-                    var x = V[0] + t * (E[0] - V[0]), y = V[1] + t * (E[1] - V[1]), s = fel ? 1 : -1;
-                    D.el('path', {d: 'M' + (x - 4) + ' ' + (y + s * 4) + ' L' + (x + 4) + ' ' + (y + s * 4) + ' L' + x + ' ' + (y + s * 12) + 'Z', fill: '#FFFFFF', stroke: '#B0BEC5', 'stroke-width': .8}, g);
-                });
+            var tukor = j === '>', cy = 74;
+            var g = D.el('g', {transform: 'translate(' + (tukor ? 198 : 162) + ',' + cy + ')' + (tukor ? ' scale(-1.2,1.2)' : ' scale(1.2)')}, reteg);
+            var fok = j === '=' ? 0 : 3 + 21 * o, dy = j === '=' ? 10 : 0;
+            if (j !== '=') {         // a száj belseje
+                var r = fok * Math.PI / 180, x = 60 * Math.cos(r), y = 60 * Math.sin(r);
+                var x2 = 50 * Math.cos(r), y2 = 50 * Math.sin(r);
+                D.el('path', {d: 'M2 0 L' + x2 + ' ' + (-y2) + ' Q' + (x2 + 6) + ' 0 ' + x2 + ' ' + y2 + 'Z', fill: '#C62828'}, g);
+                D.el('ellipse', {cx: 24, cy: 2 + 3 * o, rx: 15, ry: 1 + 4 * o, fill: '#F48FB1'}, g);
+            } else {
+                D.el('rect', {x: 0, y: -2, width: 52, height: 4, rx: 2, fill: '#8BC34A', opacity: .5}, g);
             }
-            if (j === '=') {
-                allkapocs([152, cy - 12], [208, cy - 12], true); allkapocs([152, cy + 12], [208, cy + 12], false);
-                D.el('circle', {cx: 200, cy: cy - 24, r: 6, fill: '#FFFFFF', stroke: '#1B5E20', 'stroke-width': 2}, g);
-                D.el('circle', {cx: 201, cy: cy - 24, r: 2.6, fill: '#0E2A1E'}, g);
-                return;
-            }
-            var jobbra = j === '<';  // '<' : a száj JOBBRA nyílik (a jobb oldali szám a nagyobb)
-            var V = [jobbra ? 154 : 206, cy], ex = jobbra ? 210 : 150, d = 6 + 30 * o;
-            allkapocs(V, [ex, cy - d], true); allkapocs(V, [ex, cy + d], false);
-            var sz = V[0] + (jobbra ? 14 : -14);
-            D.el('circle', {cx: sz, cy: cy - 18 - o * 6, r: 6, fill: '#FFFFFF', stroke: '#1B5E20', 'stroke-width': 2}, g);
-            D.el('circle', {cx: sz + (jobbra ? 1.5 : -1.5), cy: cy - 18 - o * 6, r: 2.6, fill: '#0E2A1E'}, g);
+            allkapocs(g, -fok, -dy, true);
+            allkapocs(g, fok, dy, false);
+            D.el('ellipse', {cx: -4, cy: 0, rx: 16, ry: 19 + dy * .6, fill: 'url(#' + uid + 'zf)', stroke: '#1B5E20', 'stroke-width': 2}, g);
+            D.el('path', {d: 'M-14 ' + (7 + dy * .5) + ' Q-4 ' + (14 + dy * .5) + ' 6 ' + (8 + dy * .5), stroke: '#1B5E20', 'stroke-width': 1.6, fill: 'none', opacity: .6}, g);
+            var sy = -20 - dy - 4 * o;   // szem a fej tetején
+            D.el('circle', {cx: 0, cy: sy, r: 10.5, fill: 'url(#' + uid + 'zf)', stroke: '#1B5E20', 'stroke-width': 2}, g);
+            D.el('circle', {cx: 1, cy: sy + 1, r: 6.8, fill: '#FFFFFF'}, g);
+            D.el('circle', {cx: 3.4, cy: sy + 1.5, r: 3.6, fill: '#0E2A1E'}, g);
+            D.el('circle', {cx: 4.6, cy: sy, r: 1.3, fill: '#FFFFFF'}, g);
+            D.el('path', {d: 'M-7 ' + (sy - 3) + ' Q1 ' + (sy - 11) + ' 9 ' + (sy - 3), stroke: '#1B5E20', 'stroke-width': 2.2, fill: 'none', 'stroke-linecap': 'round'}, g);
         }
         function rajz(j, o) {
             reteg.innerHTML = '';
             D.el('rect', {x: 0, y: 0, width: 360, height: PH, rx: 16, fill: 'url(#' + uid + 'h)'}, reteg);
-            kartya(70, P[i][0]); kartya(290, P[i][1]);
+            var vt = PH - 22;        // víz az alján, hullámokkal
+            D.el('path', {d: 'M0 ' + vt + ' Q30 ' + (vt - 6) + ' 60 ' + vt + ' T120 ' + vt + ' T180 ' + vt + ' T240 ' + vt + ' T300 ' + vt + ' T360 ' + vt + ' V' + (PH - 16) + ' Q360 ' + PH + ' 344 ' + PH + ' H16 Q0 ' + PH + ' 0 ' + (PH - 16) + 'Z', fill: 'url(#' + uid + 'v)', opacity: .85}, reteg);
+            [[40, 8], [150, 12], [270, 7]].forEach(function (h) {
+                D.el('path', {d: 'M' + h[0] + ' ' + (vt + h[1]) + ' q8 -4 16 0 t16 0', stroke: '#FFFFFF', 'stroke-width': 2, fill: 'none', opacity: .7, 'stroke-linecap': 'round'}, reteg);
+            });
+            kartya(62, P[i][0]); kartya(298, P[i][1]);
             if (j) { krok(j, o); }
             else {
                 D.el('circle', {cx: 180, cy: 71, r: 24, fill: '#FFFFFF', stroke: '#1E7F4F', 'stroke-width': 3, 'stroke-dasharray': '6 5'}, reteg);
