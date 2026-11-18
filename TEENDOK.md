@@ -1695,3 +1695,5 @@ Tervezett elemek:
 - [x] (fix185) HIBA a spanyol feladatokban (videókészítés közben derült ki): a játékbolt felirata („¡Saca los juguetes de la cesta…”) túl hosszú volt, rácsúszott a kártyákra → „¡Pon los juguetes en la estantería!”; a kutatói táblán telefonon az „invertebrado” kilógott → törik, kisebb betű.
 - [x] (fix185) Meta „Követés” (képpont/Pixel): NEM kapcsoljuk be – „nincs követő süti” ígéret; a saját mérésünk a Facebook-forrást enélkül is látja.
 - [ ] (fix185) BrowserStack: a SmartBear (BitBar) oldal NEM a BrowserStack – a browserstack.com/users/sign_in → Live.
+- [x] (fix186) Látogatottság NYELV SZERINT (Sándor 11.16-án kérte): a napi táblában „ebből 🇪🇸” oszlop, a tölcsér alatt Magyar/Spanyol sor (látogató, mintalecke, reg. oldal, regisztrált). IP nélkül: az /es/ előtagot tároljuk az útvonalban. 11.18 előtti adatoknál a spanyol nem látszik külön (akkor még nem tároltuk).
+- [x] (fix186) iPhone + iPad teszt (BrowserStack): a főoldali gyakorló feladat (mintalecke) rendben. Hang nem tesztelhető így.

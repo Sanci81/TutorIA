@@ -512,7 +512,10 @@ def _latogatas_szamol(resp):
                 ki = _latogato_kod()
                 eszkoz = ("tablet" if re.search(r"ipad|tablet", ua, re.I)
                           else "mobil" if re.search(r"mobi|android|iphone", ua, re.I) else "gep")
-                database.latogatas_rogzit(ma, ki, request.path, eszkoz, _latogatas_forras())
+                # fix186: a nyelvi előtaggal együtt (/es/…), hogy a magyar és a spanyol
+                # látogató külön látsszon. IP-t, sütit továbbra sem tárolunk.
+                database.latogatas_rogzit(ma, ki, (request.script_root or "") + request.path,
+                                          eszkoz, _latogatas_forras())
     except Exception:
         logger.warning("Latogatas szamlalo hiba", exc_info=True)
     return resp

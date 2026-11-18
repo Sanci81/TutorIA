@@ -78,6 +78,13 @@
       <b>{{ n }}</b><small>{{ (100 * n / T.latogato)|round|int if T.latogato else 0 }}%</small></div>
     {% endfor %}
   </div>
+  {% if reszlet.nyelvi %}
+  {# fix186: magyar és spanyol oldal külön (11.18 előtti adatoknál a spanyol még nem látszik külön) #}
+  <table style="margin-top:12px"><tr><th>Oldal</th><th class="sz">Látogató</th><th class="sz">Mintaleckét kezdett</th><th class="sz">Reg. oldal</th><th class="sz">Regisztrált</th></tr>
+  {% for ny, cim in [('hu','🇭🇺 Magyar'),('es','🇪🇸 Spanyol')] %}{% set v = reszlet.nyelvi[ny] %}
+  <tr><td>{{ cim }}</td><td class="sz">{{ v.latogato }}</td><td class="sz">{{ v.minta_kezdte }}</td><td class="sz">{{ v.reg_oldal }}</td><td class="sz">{{ v.regisztralt }}</td></tr>{% endfor %}
+  </table>
+  {% endif %}
   {% if reszlet.minta_evf %}
   <p class="al" style="margin-top:10px"><b>Melyik mintaleckét kezdték:</b>
     {% for k, v in reszlet.minta_evf %}{{ 'magyar' if k.startswith('hu') else 'spanyol' }} {{ k.split('_')[-1] }}. évf.: {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
@@ -114,11 +121,12 @@
     {% for n in [1, 7, 30, 90] %}<a href="{{ url_for('admin_latogatottsag', napok=n) }}"{% if n == napok %} style="text-decoration:underline"{% endif %}>{{ 'Ma' if n == 1 else n ~ ' nap' }}</a>{% endfor %}
   </p>
   <table>
-    <tr><th>Nap</th><th class="sz">Látogató</th><th class="sz">Megnyitás</th><th class="sz mob-rejt">Telefon</th><th class="mob-rejt">Honnan</th><th class="sz">Regisztráció</th></tr>
+    <tr><th>Nap</th><th class="sz">Látogató</th><th class="sz">ebből 🇪🇸</th><th class="sz">Megnyitás</th><th class="sz mob-rejt">Telefon</th><th class="mob-rejt">Honnan</th><th class="sz">Regisztráció</th></tr>
     {% for x in sorok %}
     <tr class="{{ 'nul' if not x.latogato and not x.reg }}">
       <td>{{ x.nap.strftime('%m.%d.') }} <small>{{ ['H','K','Sze','Cs','P','Szo','V'][x.nap.weekday()] }}</small></td>
       <td class="sz">{{ x.latogato }}</td>
+      <td class="sz">{{ x.es or 0 }}</td>
       <td class="sz">{{ x.megnyitas }}</td>
       <td class="sz mob-rejt">{{ x.mobil }}</td>
       <td class="mob-rejt"><small>{% for k, v in x.forras.items() %}{{ {'facebook':'Facebook','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Belső'}.get(k, k) }} {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</small></td>

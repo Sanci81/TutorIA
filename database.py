@@ -3978,7 +3978,7 @@ def latogatas_osszesites(napok: int = 30) -> list[dict[str, Any]]:
     db = _session()
     try:
         sorok = db.execute(
-            select(Latogatas.nap, Latogatas.latogato, Latogatas.eszkoz, Latogatas.forras)
+            select(Latogatas.nap, Latogatas.latogato, Latogatas.eszkoz, Latogatas.forras, Latogatas.utvonal)
             .where(Latogatas.nap >= kezdo)
         ).all()
         regek = db.execute(
@@ -3989,11 +3989,14 @@ def latogatas_osszesites(napok: int = 30) -> list[dict[str, Any]]:
     napi: dict[date, dict[str, Any]] = {}
     for i in range(max(1, napok)):
         d = kezdo + timedelta(days=i)
-        napi[d] = {"nap": d, "latogatok": set(), "megnyitas": 0, "mobil": set(), "forras": {}, "reg": 0}
-    for nap, ki, eszkoz, forras in sorok:
+        napi[d] = {"nap": d, "latogatok": set(), "megnyitas": 0, "mobil": set(), "forras": {}, "reg": 0,
+                   "es": set()}
+    for nap, ki, eszkoz, forras, ut in sorok:
         n = napi.get(nap)
         if n is None or forras == "esemeny":
             continue
+        if (ut or "").startswith("/es"):          # fix186: spanyol oldalt nézett
+            n["es"].add(ki)
         n["megnyitas"] += 1
         if ki not in n["latogatok"]:
             n["forras"][forras] = n["forras"].get(forras, 0) + 1
@@ -4011,7 +4014,7 @@ def latogatas_osszesites(napok: int = 30) -> list[dict[str, Any]]:
         n = napi[d]
         ki.append({"nap": d, "latogato": len(n["latogatok"]), "megnyitas": n["megnyitas"],
                    "mobil": len(n["mobil"]), "forras": dict(sorted(n["forras"].items(), key=lambda x: -x[1])),
-                   "reg": n["reg"]})
+                   "reg": n["reg"], "es": len(n["es"])})
     return ki
 
 
@@ -4047,6 +4050,8 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
     forras_t: dict[str, dict[str, int]] = {}
     hibak: dict[str, int] = {}
     t = {"latogato": 0, "minta_kezdte": 0, "minta_vege": 0, "csomagok": 0, "reg_oldal": 0, "bekuldte": 0, "regisztralt": 0}
+    # fix186: ugyanez nyelvenként (hu = magyar oldal, es = /es/ oldal)
+    nyelvi = {ny: {"latogato": 0, "minta_kezdte": 0, "reg_oldal": 0, "regisztralt": 0} for ny in ("hu", "es")}
     minta_evf: dict[str, int] = {}   # fix160: melyik nyelv/évfolyam mintaleckéjét kezdték
     for kulcs, u in ut.items():
         oldalak = [norm(x) for x in u["oldalak"]]
@@ -4065,6 +4070,10 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
         # fix160: mintalecke – esemény: minta_<hu|es>_<évf>, befejezés: minta_vege
         kezdett = sorted(e for e in u["esemeny"] if e.startswith("minta_") and e != "minta_vege")
         t["minta_kezdte"] += bool(kezdett); t["minta_vege"] += "minta_vege" in u["esemeny"]
+        _ny = "es" if (any((x or "").startswith("/es") for x in u["oldalak"])
+                       or any(e.startswith("minta_es_") for e in u["esemeny"])) else "hu"
+        _nt = nyelvi[_ny]
+        _nt["latogato"] += 1; _nt["minta_kezdte"] += bool(kezdett); _nt["reg_oldal"] += latta_reg; _nt["regisztralt"] += reg
         for e in kezdett:
             minta_evf[e[6:]] = minta_evf.get(e[6:], 0) + 1
         f = u["forras"] or "belso"
@@ -4080,6 +4089,7 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
         "forras": sorted(forras_t.items(), key=lambda x: -x[1]["latogato"]),
         "hibak": sorted(hibak.items(), key=lambda x: -x[1]),
         "minta_evf": sorted(minta_evf.items(), key=lambda x: -x[1]),
+        "nyelvi": nyelvi,
     }
 
 
