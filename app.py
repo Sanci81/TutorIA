@@ -507,7 +507,11 @@ def _latogatas_szamol(resp):
                 and not session.get("parent_id")
                 and request.cookies.get(_NEM_SZAMOL_SUTI) != "1"):
             ua = request.headers.get("User-Agent") or ""
-            if ua and not _ROBOT_UA.search(ua):
+            # fix187: a Facebook app (és a böngészők) a hirdetés oldalát ELŐRE
+            # betölthetik, mielőtt bárki rákoppintana. Ez nem látogató.
+            elotoltes = " ".join(request.headers.get(h, "") for h in
+                                 ("X-Purpose", "Purpose", "Sec-Purpose", "X-Moz")).lower()
+            if ua and not _ROBOT_UA.search(ua) and not re.search(r"preview|prefetch|prerender", elotoltes):
                 ma = date.today()
                 ki = _latogato_kod()
                 eszkoz = ("tablet" if re.search(r"ipad|tablet", ua, re.I)
