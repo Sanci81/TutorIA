@@ -769,7 +769,7 @@ TRANSLATIONS = {
         "hu": "Mielőtt újra próbálod, tanulj még kb. {minutes} percet ebben "
              "a témakörben!",
         "es": "Antes de volver a intentarlo, estudia unos {minutes} minutos "
-             "mas en este tema!",
+             "más en este tema.",
     },
     "flash_tul_sok_proba": {
         "hu": "Túl sok próbálkozás. Várj egy kicsit, és próbáld újra!",

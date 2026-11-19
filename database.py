@@ -378,6 +378,9 @@ class ChildTopicScore(Base):
     # Hányszor kapott már PONTOT ebből a témakörből. Ebből tudjuk, hogy a
     # mostani sikeres teszt az első teljesítés-e, vagy már ismétlés.
     pont_jutalom: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    # fix211 (Sándor): a legutóbbi teszt HIBÁI (kérdés → helyes válasz, soronként).
+    # A tanár ebből tudja, mit kell a gyerekkel újra gyakorolnia.
+    teszt_hibak: Mapped[str | None] = mapped_column(Text, nullable=True)
 
 
 class ChildUsage(Base):
@@ -630,6 +633,7 @@ def init_db() -> None:
     ensure_children_kabala_nev_column()
     ensure_chat_messages_feladat_column()
     ensure_learning_time_keszulek_column()
+    ensure_topic_scores_hibak_column()
     ensure_wallet_avatar_columns()
     ensure_parents_csomag_columns()
 
@@ -1220,6 +1224,28 @@ def ensure_chat_messages_feladat_column() -> None:
                 conn.execute(text("ALTER TABLE chat_messages ADD COLUMN feladat TEXT"))
     except Exception as exc:
         logger.warning("ensure_chat_messages_feladat_column (sqlite): kihagyva: %s", exc)
+
+
+def ensure_topic_scores_hibak_column() -> None:
+    """child_topic_scores.teszt_hibak – a legutóbbi teszt hibái (fix211)."""
+    from sqlalchemy import text
+
+    try:
+        with _get_engine().begin() as conn:
+            conn.execute(text(
+                "ALTER TABLE child_topic_scores ADD COLUMN IF NOT EXISTS teszt_hibak TEXT"))
+        return
+    except Exception as exc:
+        logger.warning("ensure_topic_scores_hibak_column: kihagyva: %s", exc)
+
+    # SQLite nem ismeri az „IF NOT EXISTS" alakot – ott megnézzük előbb.
+    try:
+        with _get_engine().begin() as conn:
+            oszlopok = {sor[1] for sor in conn.execute(text("PRAGMA table_info(child_topic_scores)"))}
+            if "teszt_hibak" not in oszlopok:
+                conn.execute(text("ALTER TABLE child_topic_scores ADD COLUMN teszt_hibak TEXT"))
+    except Exception as exc:
+        logger.warning("ensure_topic_scores_hibak_column (sqlite): kihagyva: %s", exc)
 
 
 def ensure_learning_time_keszulek_column() -> None:
@@ -2647,6 +2673,7 @@ def _topic_score_dict(row: ChildTopicScore) -> dict[str, Any]:
         "topic_attempts": row.topic_attempts,
         "topic_learning_minutes": row.topic_learning_minutes,
         "pont_jutalom": getattr(row, "pont_jutalom", 0) or 0,
+        "teszt_hibak": getattr(row, "teszt_hibak", None) or "",
     }
 
 
@@ -2743,6 +2770,7 @@ def save_topic_test_result(
     *,
     pass_threshold: int = 70,
     topic_learning_minutes: float = 0.0,
+    hibak: str | None = None,
 ) -> dict[str, Any]:
     passed = score >= pass_threshold
     now = datetime.now(timezone.utc)
@@ -2763,6 +2791,7 @@ def save_topic_test_result(
             row.completed_at = now
             row.topic_attempts = (row.topic_attempts or 0) + 1
             row.topic_learning_minutes = topic_learning_minutes
+            row.teszt_hibak = hibak or None
         else:
             row = ChildTopicScore(
                 child_id=child_id,
@@ -2775,6 +2804,7 @@ def save_topic_test_result(
                 completed_at=now,
                 topic_attempts=1,
                 topic_learning_minutes=topic_learning_minutes,
+                teszt_hibak=hibak or None,
             )
             db.add(row)
         db.commit()

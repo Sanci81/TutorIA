@@ -12015,6 +12015,8 @@ def _teszt_kapu_szoveg(
         )
         probak = (pont or {}).get("topic_attempts", 0) or 0
         kesz = bool((pont or {}).get("passed"))
+        hibak = str((pont or {}).get("teszt_hibak") or "").strip()
+        elozo = float((pont or {}).get("topic_learning_minutes") or 0)
     except Exception:
         # Ha bármi félremegy, inkább hallgasson a tesztről, mint hogy
         # rosszat mondjon.
@@ -12024,25 +12026,40 @@ def _teszt_kapu_szoveg(
     fej = "\nA TESZT ÁLLAPOTA (a gyerek ezt látja, te ehhez igazodj):\n"
     zaras = ("SOHA ne küldd a gyereket olyan gombra, amiről itt nem írtuk,"
              " hogy ott van.\n")
+    # fix211 (Sándor): a teszt hibáit a tanár PONTOSAN azokkal gyakoroltassa.
+    hiba_blokk = ""
+    if hibak:
+        hiba_blokk = (
+            "A LEGUTÓBBI TESZTEN EZEKBEN HIBÁZOTT (kérdés → helyes válasz):\n"
+            + "\n".join("  - " + h for h in hibak.splitlines()[:6]) + "\n"
+            "MOST ELSŐSORBAN EZEKET GYAKOROLTASD: egyenként, új példákkal (ne ugyanazt a"
+            " kérdést add vissza), előbb röviden elmagyarázva, amíg biztosan megy."
+            " Mást csak utána. Ne szidd a hibákért, és ne sorold fel neki egyszerre.\n")
 
     if kesz:
         return (fej + "Ezt a leckét már sikeresen lezárta. Most gyakorol."
-                " Ne beszélj újabb tesztről.\n" + zaras)
+                " Ne beszélj újabb tesztről.\n" + hiba_blokk + zaras)
+    if req and tanult >= req and probak and elozo >= req and tanult < elozo + TEST_RETRY_STUDY_MINUTES:
+        hiany = int(round(elozo + TEST_RETRY_STUDY_MINUTES - tanult))
+        return (fej + "A leckezáró teszt most NEM sikerült (70% alatt). Újra akkor"
+                f" írhatja meg, ha még kb. {hiany} percet gyakorolt – addig a teszt gombja"
+                " NINCS OTT. Biztasd: a hiba nem baj, most együtt gyakoroltok, és utána"
+                " újra megpróbálhatja.\n" + hiba_blokk + zaras)
     if req and tanult >= req:
-        return (fej + "A lecke ideje letelt, a LECKEZÁRÓ teszt gombja OTT VAN"
+        return (fej + hiba_blokk + "A lecke ideje letelt, a LECKEZÁRÓ teszt gombja OTT VAN"
                 " a fejlécben. Mondd el neki, hogy jöhet a lecke záró tesztje,"
                 " és biztasd rá.\n" + zaras)
     if probak >= 3:
         return (fej + "Elfogyott a három próbálkozás, a gomb NINCS OTT."
                 " A leckét végig kell tanulni. NE említsd a tesztet.\n"
-                + zaras)
+                + hiba_blokk + zaras)
     if tanult < TESZT_MIN_PERC:
         return (fej + f"Még {TESZT_MIN_PERC - int(tanult)} perc tanulás kell,"
                 " mire a teszt egyáltalán elindítható. NE említsd a tesztet,"
                 " és ne mondd, hogy kész a lecke – taníts tovább.\n" + zaras)
     return (fej + f"A gyerek {int(probak)}/3 próbálkozást használt el. A gomb"
             " ott van, de a döntés az övé: legfeljebb EGYSZER említheted meg,"
-            " hogy ki is próbálhatja, ha szeretné. Ne sürgesd.\n" + zaras)
+            " hogy ki is próbálhatja, ha szeretné. Ne sürgesd.\n" + hiba_blokk + zaras)
 
 
 def _lecke_felulet_tipp(child, subject_label: str, current_topic: str, idegen: bool) -> str:
@@ -17058,6 +17075,21 @@ def child_chat_test_generate(child_id: int):
     )
     mar_megvan = bool(existing and existing.get("passed"))
 
+    # fix211: ha a LECKEZÁRÓ nem sikerült, újra csak akkor írhatja, ha azóta
+    # még TEST_RETRY_STUDY_MINUTES percet tanult (eddig a gyerek csak üzenetet
+    # kapott erről, de a kapu nem figyelte). Korlát nincs: tanul, újra próbál.
+    if leckezaro and not mar_megvan and existing:
+        _elozo = float(existing.get("topic_learning_minutes") or 0)
+        if _elozo >= total_req_minutes:          # a legutóbbi próba már leckezáró volt
+            _hiany = int(round(_elozo + TEST_RETRY_STUDY_MINUTES - topic_learning_minutes))
+            if _hiany > 0:
+                return jsonify({
+                    "ok": False,
+                    "reason": "study_more",
+                    "minutes_needed": _hiany,
+                    "message": i18n.t("test_gate_study_more", g.lang).format(minutes=_hiany),
+                }), 200
+
     if not (leckezaro or mar_megvan):
         # Korai szintfelmérő — itt van a két feltétel.
         if topic_attempts >= 3:
@@ -17263,6 +17295,16 @@ def child_chat_test_submit(child_id: int):
     )
 
     # ── Save result first (this increments topic_attempts) ───────────
+    # fix211 (Sándor): a teszt HIBÁIT is elmentjük, hogy a tanár utána
+    # pontosan azokat gyakoroltassa, amikben a gyerek hibázott.
+    _hibak_sorok = []
+    for _r in review:
+        if _r.get("is_correct"):
+            continue
+        _k = re.sub(r"\s+", " ", str(_r.get("q") or "")).strip()[:140]
+        _h = re.sub(r"\s+", " ", str(_r.get("correct_answer") or "")).strip()[:80]
+        if _k:
+            _hibak_sorok.append(f"{_k} → {_h}" if _h else _k)
     database.save_topic_test_result(
         child_id,
         progress_subject,
@@ -17272,6 +17314,7 @@ def child_chat_test_submit(child_id: int):
         score,
         pass_threshold=phase_pass_threshold,
         topic_learning_minutes=topic_learning_minutes,
+        hibak="\n".join(_hibak_sorok[:6]),
     )
 
     # Re-fetch updated topic score to get the new attempts count
