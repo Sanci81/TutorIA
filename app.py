@@ -6682,6 +6682,8 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             me = str(me).strip().lower()
             if es_tanterv:
                 me = ATIR.get(me, me)
+                if me == "zanahoria":       # fix207: a kép sárgarépa → „La zanahoria gigante”
+                    me = "nabo"
                 if me not in ("nabo", "cerditos", "caperucita"):
                     return None
             else:
@@ -10071,9 +10073,12 @@ def _azure_tts_speak(text: str) -> bytes | None:
             print(f"[TTS-DEBUG] tobbnyelvu ssml: {len(segments)} szegmens", flush=True)
         else:
             escaped = _ssml_escape(cleaned)
+            # fix206 (Sándor: az egyszavas kimondásnál „leharapja a szó elejét”):
+            # rövid szöveg elé kis csend, hogy a lejátszás indulása ne vágja le az elejét.
+            _elotte = '<break time="300ms"/>' if len(cleaned) <= 40 else ""
             ssml = (
                 f'<speak version="1.0" xml:lang="{lang}">'
-                f'<voice name="{voice}">'
+                f'<voice name="{voice}">{_elotte}'
                 f'<prosody rate="{TTS_TEMPO_SSML}">{escaped}</prosody>'
                 f'</voice></speak>'
             )
@@ -11147,7 +11152,7 @@ _DM_FELULETEK = [
     ("mesesor", {"magyar"}, 1, 2,   # fix204 – a mesék saját, rövid újramesélése (népmese, közkincs)
      'MESE SORRENDBEN – 4 képes kártya egy ismert népmeséből, a gyerek sorba rakja: mi történt először, aztán, végül (eleje, közepe, vége). "mese": repa (A répa), malac (A három kismalac) vagy piroska (elhagyva: a program választ):\n'
      '   <FELADAT>{"tipus":"mesesor","mese":"repa"}</FELADAT>',
-     'CUENTO EN ORDEN – 4 tarjetas con dibujos de un cuento popular; el niño las ordena: principio, desarrollo y final. "mese": nabo (El nabo gigante), cerditos (Los tres cerditos) o caperucita (si se omite, lo elige el programa):\n'
+     'CUENTO EN ORDEN – 4 tarjetas con dibujos de un cuento popular; el niño las ordena: principio, desarrollo y final. "mese": nabo (La zanahoria gigante), cerditos (Los tres cerditos) o caperucita (si se omite, lo elige el programa):\n'
      '   <FELADAT>{"tipus":"mesesor","mese":"cerditos"}</FELADAT>',
      'mese eleje, közepe, vége, sorrend    → mesesor', 'principio y final del cuento, orden → mesesor'),
     ("hangsuly", {"magyar"}, 1, 3,   # fix204 – csak spanyol (magyarban mindig az első szótag)
@@ -17879,6 +17884,10 @@ def api_voice_speak():
     # A visszatérő mondatok ("Ügyes vagy!") egyszer készülnek el. A mentett
     # hang ingyen van, és azonnal érkezik – nincs várakozás.
     _hangnev = _azure_target_voice() or "alap"
+    # fix206: a rövid szövegek új (csenddel kezdődő) változata – a régi, levágott
+    # elejű mentett hang ne jöjjön vissza a gyorstárból.
+    if len(text) <= 40:
+        _hangnev += "~cs1"
     # A gyorstár NEM a static alatt van: a felolvasott mondatban ott lehet
     # a gyerek neve ("Ügyes vagy, Leila!"), és a static mappát a világ is
     # látja. Így a mentett hangot csak a szerver éri el.

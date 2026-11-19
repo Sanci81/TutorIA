@@ -1792,3 +1792,33 @@ Tervezett elemek:
   - signos – ¿? ¡! , CSAK spanyol (a magyar oldalon a meglévő irasjel).
 - [ ] (fix204) Feladatszám (Sándor kérdése): 142 feladattípus. Cél NEM több ezer, hanem hogy minden lecke kapjon 2–3 ráillő típust (~150–250). Következő hiánylista: Matek 3–4., majd Magyar/Lengua 3–4.
 - [ ] (fix204) Később: további népmesék a mesesorba (pl. A kiskakas gyémánt félkrajcárja; ES: La ratita presumida) – mindig saját, rövid újramesélés.
+- [ ] (11.19) VERSENYTÁRS: isiestudio.app (ES, 4–6. Primaria, quiz + vizsgajavítás, pingvin kabala). Árak: 19,99 €/hó, 50,99 €/negyedév, 143,99 €/év; testvér +12,99 €/hó; 7 nap ingyen. Cégadat (név, cím, CIF) nincs az oldalon. Bevétel/felhasználószám nem látszik. Csak ÖTLETET veszünk át, szöveget/képet/figurát nem.
+  - [ ] Szülő által megadott VALÓDI jutalom (pl. „fél óra mese”, „fagyi”): a szülő beírja, a gyerek a heti cél teljesítésével feloldja. Olcsó, erős.
+  - [ ] Heti szülői jelentés: rövid, AI-fogalmazta szöveges összefoglaló (miben javult, mit érdemes ismételni) a számok mellé.
+  - [ ] Figyelemzavaros gyerekek: CSAK visszafogott saját mondat („rövid lépések, egy feladat egyszerre, megvárja a gyereket”), orvosi/terápiás ígéret NÉLKÜL; szervezeti ajánlás csak valódi együttműködéssel.
+  - [ ] Árazás tervezésénél viszonyítás: havi/negyedéves/éves váltó, testvérkedvezmény (fizetés még szünetel).
+  - [ ] Rövid (20–30 mp) bemutató klipek témánként, később.
+  - [ ] Ellenőrizni: a mi oldalunkon (ES és HU) szerepel-e a szolgáltató neve és elérhetősége a jogi oldalon (LSSI / ekertv. kötelező) – ez nálunk bizalmi előny lehet.
+  - [ ] Ötletek még az oldalukról (Sándor 11.19): részletes GYIK, rövid videók témánként, ÁSZF/adatvédelem átlátható tagolása. Saját szöveggel!
+  - Miért olcsóbbak: előre elkészített tartalom (összefoglaló, kvíz, teszt), az AI csak javításra fut; nincs folyamatos beszélgetés és felolvasás. Nálunk a fő költség a beszélgető tanár + a hang percenként.
+  - TDAH-állításuk: egy szervezet ajánlása, orvosi/klinikai bizonyíték az oldalon nincs. A „rövid lépés, egy feladat egyszerre, azonnali visszajelzés” elv általános jó gyakorlat, nem gyógyító ígéret.
+- [x] (11.19) EU-s jogi válasz – a FIZETÉS előkészítéséhez:
+  - Az árat mindig a TELJES, áfával növelt összeggel kell kiírni (előfizetésnél a számlázási időszak teljes díja); nem elég az „+ áfa %”.
+  - Határon átnyúló szolgáltatásnál (spanyol cég → magyar vásárló) NEM kötelező forintban kiírni.
+  - Elállás 14 napon belül, ha a szolgáltatás a vevő kérésére már elindult: az addig eltelt idővel arányos díj tartható meg (EUB C-641/19, PE Digital – időarányosan).
+  - Fióktörlés / GDPR 17. cikk: a számlákat a törvényes ideig MEG KELL őrizni (GDPR 17(3)(b), jogalap 6(1)(c)); a többi adat törölhető.
+  - [ ] Ezt a fizetés bevezetésekor az ÁSZF-be és az adatkezelésibe beírni (nem jogi tanács – könyvelővel átnézni).
+- [x] (fix206) Sándor visszajelzése a fix204 feladatokra:
+  - A hangmódos 🔊 gomb (CSAK hangmódban, a próbaoldalon látszik, a főoldalon nem) rálógott a szövegre → most az utasítás mellett áll egy sorban.
+  - Hangmódban csak a „Nézd meg, hogyan kell!”-t olvasta, a szót előtte → most a PÉLDA SZÖVEGÉT olvassa fel (benne a szóval), lépésenként; a kérdéseket is elmondja („Hol hallod a pé hangot? A szó: kalap.”).
+  - Betűnév: a K-t „kö”-nek, az R-t „rö”-nek ejtette → a felolvasó most a betű NEVÉT mondja (ká, er, el, em…; spanyolul ese, erre…). Megoldás: data-mond="…" a szövegben.
+  - Egyszavas kimondás elején levágás: rövid szöveg elé 0,3 mp csend (Azure SSML), és a régi mentett hangok helyett újak készülnek.
+  - „5 / 5 elsőre jó” → „5 osztva 5” lett belőle, és nem érthető: MINDEN feladatban „5 közül 5 elsőre sikerült” (ES: „5 de 5 bien a la primera”); a „2 / 4 –” körszámlálót nem olvassa fel.
+  - Emoji-képek „gagyik”: hanghely, helyesiras, hangsuly, signos → a meglévő szóképtár képei (static/szokepek/nyelv). Szavak ehhez igazítva.
+  - mesesor: a 👆 nem takarja a szöveget; képek: mese_kepek.py (12 kép, Sándor futtatja a saját kulcsával). Amíg nincsenek fent, emoji marad.
+- [ ] (fix206) Azure magyar hang egyes szavakat „furán” ejt (Sándor). Később: másik magyar hang kipróbálása (Noémi ↔ Tamás) egyszavas kimondásra; ha az sem jó, a feladat-szavakhoz előre felvett/ellenőrzött hang.
+- [x] (fix207) Az első mese-képek rosszak (hiányzó részletek; a „répa” retek/fehérrépa lett lila tetővel). Új mese_kepek.py: mesénként SZEREPLŐLAP + 4 pontosan leírt jelenet, a répa SÁRGARÉPA; új mappa: szokep_uj/mese2. A spanyol cím ezért „La zanahoria gigante” (kulcs marad: nabo).
+- [ ] (fix207) Mese-képek (Sándor, egyenként): --szereplok repa → megnéz → --mese repa → megnéz → (malac, piroska ugyanígy) → --jovahagy → git add static/figurak/mese
+- [ ] (fix207) Sándor kérése: a parancsokat MINDIG külön blokkban, soronként adni; a képgenerálást külön a feltöltéstől (ha az egyik nem fut le, a másik ne akadjon el).
+- [ ] (fix207) Hangmódos felolvasás költsége: Azure karakter, a napi keretbe számít; a példák és a gyakori kérdések szövege mindig ugyanaz → a gyorstárból ingyen jön. Ha sok lesz: csak 1–2. osztálynak.
+- [ ] (fix207) Fizetés bekötésekor (EU-levél): ár „áfával együtt” felirattal; digitális szolgáltatásnál a vevő országának áfája (HU 27%, ES 21%) – az árból ennyivel kevesebb marad. Könyvelővel egyeztetni.

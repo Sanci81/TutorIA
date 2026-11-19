@@ -3077,7 +3077,7 @@
         D.gomb = function (sz, cls, f) { var b = document.createElement('button'); b.type = 'button'; b.innerHTML = sz; if (cls) { b.className = cls; }
             b.onclick = function (e) { if (!D.kesz()) { f.call(b, e); } }; return b; };
         D.vesszo = function (n) { return D.es ? String(n).replace('.', ',') : String(n).replace('.', ','); };
-        D.mond = function (sz) { try { ieSzoKimond(sz); } catch (e) {} };
+        D.mond = function (sz) { if (D._csend) { return; } try { ieSzoKimond(sz); } catch (e) {} };
         D.hangVan = function () { try { return !hangKeretElfogyott; } catch (e) { return true; } };
         D.kesz = function () { return doboz.classList.contains('feladat-kesz'); };
         var vj = document.createElement('div'); vj.className = 'visszajelzes';
@@ -3085,7 +3085,7 @@
            nem tudó elsősöknek. Egyelőre CSAK a próbaoldalon (Sándor kérése, 11.18). */
         D.hangosan = chatMode === 'voice' && {{ proba_oldal|tojson }};
         D.jelez = function (jo, h) { vj.className = 'visszajelzes ' + (jo ? 'jo' : 'rossz'); vj.innerHTML = h; lap.appendChild(vj);
-            if (D.hangosan && h) { var _sz = String(h).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 200); if (_sz) { setTimeout(function () { D.mond(_sz); }, 150); } }
+            if (D.hangosan && h) { var _sz = dmKimondhato(h).slice(0, 200); if (_sz) { setTimeout(function () { D.mond(_sz); }, 150); } }
             if (!jo && !D._nemRossz && typeof kabalaSzomoru === 'function') { try { kabalaSzomoru(); } catch (e) {} } };
         D.torol = function () { vj.className = 'visszajelzes'; vj.innerHTML = ''; };
         D.unnep = function () { ieUnnep(doboz); };
@@ -3172,10 +3172,13 @@
         if (_al) {
             var _hb = document.createElement('button'); _hb.type = 'button'; _hb.textContent = '🔊';
             _hb.setAttribute('aria-label', Dk.T('Meghallgatom', 'Escuchar'));
-            _hb.style.cssText = 'float:left;margin:0 8px 4px 0;border:2px solid #1E7F4F;background:#E8F5EE;border-radius:999px;width:40px;height:40px;font-size:20px;line-height:1;cursor:pointer';
-            function _olvas() { Dk.mond(_al.textContent.replace(/\s+/g, ' ').trim().slice(0, 200)); }
+            /* fix206 (Sándor: a zöld kör rálóg a szövegre): egy sorban az utasítással, mellette. */
+            _hb.style.cssText = 'flex:0 0 auto;margin:0;padding:0;border:2px solid #1E7F4F;background:#E8F5EE;border-radius:999px;width:36px;height:36px;font-size:18px;line-height:1;cursor:pointer';
+            function _olvas() { var _p = lap.querySelector('.dm-pelda');
+                Dk.mond((dmKimondhato(_al.innerHTML) + (_p ? ' ' + dmKimondhato(_p.innerHTML) : '')).slice(0, 260)); }
             _hb.onclick = _olvas;
-            _al.parentNode.insertBefore(_hb, _al);
+            var _hsor = document.createElement('div'); _hsor.style.cssText = 'display:flex;align-items:center;gap:8px';
+            _al.parentNode.insertBefore(_hsor, _al); _hsor.appendChild(_hb); _hsor.appendChild(_al); _al.style.flex = '1'; _al.style.margin = '0';
             /* fix198 (Sándor: hangmódban miért kell megnyomni?): MAGÁTÓL is felolvassa –
                de csak miután a tanár befejezte a beszédet, hogy ne beszéljenek egymásra.
                Ha a tanár nem szólal meg (pl. elfogyott a hang), 7 mp után olvassa. */
@@ -3343,23 +3346,39 @@
         lap.appendChild(sor);
         return sor;
     }
+    /* fix206: felolvasáshoz – a data-mond="…" elem helyett azt mondja (pl. a K betű
+       helyett „ká”, az R helyett „er”), az elejéről a „2 / 4 –” számlálót
+       elhagyja (különben „kettő osztva néggyel”-t mondana). */
+    function dmKimondhato(h) {
+        var d = document.createElement('div'); d.innerHTML = String(h || '');
+        d.querySelectorAll('[data-mond]').forEach(function (e) { e.replaceWith(document.createTextNode(' ' + e.getAttribute('data-mond') + ' ')); });
+        return d.textContent.replace(/\s+/g, ' ').trim().replace(/^\d+\s*\/\s*\d+\s*[–-]\s*/, '').slice(0, 240);
+    }
+    function dmKep(kulcs, meret) {
+        return '<img src="/static/szokepek/nyelv/' + kulcs + '.webp" alt="" draggable="false" style="width:' + meret + 'px;height:' + meret + 'px;object-fit:contain;border-radius:14px">';
+    }
     function dmPelda(D, valahol, lepesek, kesz) {
         /* fix201 (Sándor: „túl gyorsan vált”): a példa NEM megy magától – a gyerek
            lépteti (Tovább ▶). A végén „Megpróbálom! ▶” és „↺ Még egyszer”. */
-        var doboz = document.createElement('div');
+        var doboz = document.createElement('div'); doboz.className = 'dm-pelda';
         doboz.style.cssText = 'background:#EAF6FF;border:2px solid #90CAF9;border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:800;color:#0D47A1;min-height:2.6em';
         valahol.parentNode.insertBefore(doboz, valahol);
         var k = 0, sor = null;
-        function lep() {
+        /* fix206 (Sándor: hangmódban csak a „Nézd meg, hogyan kell!”-t mondta, a szót
+           előtte érthetetlenül): hangmódban a lépés SZÖVEGÉT olvassuk fel (benne a
+           szóval), a lépés saját szó-kimondása ilyenkor hallgat. Az 1. lépést a
+           feladat-felolvasó mondja el, miután a tanár befejezte. */
+        function lep(beszel) {
             if (sor) { sor.remove(); sor = null; }
-            doboz.innerHTML = '👀 <span style="opacity:.6">' + D.T('Példa', 'Ejemplo') + ' ' + (k + 1) + '/' + lepesek.length + ':</span> ' + lepesek[k][0];
-            lepesek[k][1]();
-            if (k + 1 < lepesek.length) { k++; sor = dmTovabb(D, valahol, lep); return; }
+            doboz.innerHTML = '👀 <span data-mond="" style="opacity:.6">' + D.T('Példa', 'Ejemplo') + ' ' + (k + 1) + '/' + lepesek.length + ':</span> ' + lepesek[k][0];
+            D._csend = D.hangosan; try { lepesek[k][1](); } finally { D._csend = false; }
+            if (beszel && D.hangosan) { D.mond(dmKimondhato(doboz.innerHTML)); }
+            if (k + 1 < lepesek.length) { k++; sor = dmTovabb(D, valahol, function () { lep(true); }); return; }
             sor = dmTovabb(D, valahol, function () { doboz.remove(); kesz(); }, D.T('Megpróbálom! ▶', '¡Lo intento! ▶'));
-            var u = D.gomb(D.T('↺ Még egyszer', '↺ Otra vez'), '', function () { k = 0; lep(); });
+            var u = D.gomb(D.T('↺ Még egyszer', '↺ Otra vez'), '', function () { k = 0; lep(true); });
             sor.appendChild(u);
         }
-        lep();
+        lep(false);
     }
 
 
@@ -3371,12 +3390,16 @@
 
     /* ── HOL HALLOD A HANGOT? – a szó elején vagy végén ─────────────────── */
     DM.hanghely = function (f, D) {
+        /* fix206: képek a közös szóképtárból (static/szokepek/nyelv), nem emoji. */
         var L = D.es
-            ? [['n', 'nube', '☁️', 0], ['n', 'tren', '🚂', 1], ['s', 'sol', '☀️', 0], ['s', 'autobús', '🚌', 1], ['l', 'luna', '🌙', 0], ['l', 'sol', '☀️', 1],
-               ['r', 'ratón', '🐭', 0], ['r', 'flor', '🌸', 1], ['z', 'zapato', '👞', 0], ['z', 'lápiz', '✏️', 1]]
-            : [['m', 'méz', '🍯', 0], ['m', 'szem', '👁️', 1], ['r', 'róka', '🦊', 0], ['r', 'kör', '⭕', 1], ['l', 'labda', '⚽', 0], ['l', 'fül', '👂', 1],
-               ['t', 'tojás', '🥚', 0], ['t', 'sajt', '🧀', 1], ['k', 'kutya', '🐶', 0], ['k', 'tök', '🎃', 1], ['s', 'sapka', '🧢', 0], ['s', 'kés', '🔪', 1]];
-        var AZ = {m: 'az', r: 'az', l: 'az', s: 'az', t: 'a', k: 'a'};
+            ? [['s', 'silla', 'chair', 0], ['s', 'zapatos', 'shoes', 1], ['l', 'libro', 'book', 0], ['l', 'árbol', 'tree', 1],
+               ['r', 'ratón', 'mouse', 0], ['r', 'flor', 'flower', 1], ['z', 'zapatos', 'shoes', 0], ['z', 'lápiz', 'pencil', 1]]
+            : [['m', 'madár', 'bird', 0], ['m', 'szem', 'eye', 1], ['r', 'ruha', 'dress', 0], ['r', 'kenyér', 'bread', 1], ['l', 'labda', 'ball', 0], ['l', 'fül', 'ear', 1],
+               ['t', 'tojás', 'egg', 0], ['t', 'sajt', 'cheese', 1], ['s', 'sajt', 'cheese', 0], ['s', 'tojás', 'egg', 1], ['z', 'zokni', 'socks', 0], ['z', 'kéz', 'hand', 1],
+               ['p', 'póló', 't_shirt', 0], ['p', 'kalap', 'hat', 1]];
+        var AZ = {m: 'az', r: 'az', l: 'az', s: 'az', t: 'a', k: 'a', z: 'a', p: 'a'};
+        /* A betű NEVÉT mondja a felolvasó (Sándor: a K-t „kö”-nek, az R-t „rö”-nek ejtette). */
+        var NEV = D.es ? {n: 'ene', s: 'ese', l: 'ele', r: 'erre', z: 'zeta'} : {m: 'em', r: 'er', l: 'el', s: 'es', t: 'té', k: 'ká', z: 'zé', p: 'pé'};
         var K = (function () {
             var ki = [], szavak = {};
             [0, 1, 0, 1].forEach(function (hol) {
@@ -3388,20 +3411,21 @@
         var i = 0, hibaMost = 0, elsore = 0, napl = [], fut = true;
         D.html('<div class="allas" data-id="allas"></div><div data-id="lap" style="text-align:center"></div><div class="gombok kozep" data-id="g" style="display:none"></div>');
         var allas = D.$('allas'), lap = D.$('lap'), g = D.$('g');
-        function betu(b) { return b.toUpperCase(); }
+        function betu(b) { return '<b data-mond="' + (NEV[b] || b) + '">' + b.toUpperCase() + '</b>'; }
         function mutat(x, kiemel) {
             var szo = x[1], hol = x[3] ? szo.length - 1 : 0;
-            lap.innerHTML = '<div style="font-size:72px;line-height:1.1">' + x[2] + '</div>' +
+            lap.innerHTML = '<div style="line-height:1">' + dmKep(x[2], 120) + '</div>' +
                 '<div style="font-size:30px;font-weight:900;letter-spacing:4px;margin:6px 0;min-height:40px">' + (kiemel ? szo.split('').map(function (c, k) {
                     return k === hol ? '<span style="color:#FFFFFF;background:#1E7F4F;border-radius:6px;padding:0 4px">' + c + '</span>' : c; }).join('') : '') + '</div>';
             var h = dmHallgat(D, szo); h.style.margin = '0 auto 6px'; lap.appendChild(h);
         }
         function kiir() {
             var x = K[i];
-            allas.innerHTML = '<b>' + (i + 1) + ' / ' + K.length + '</b> – ' + D.T('Hallgasd meg a szót! Hol hallod ' + AZ[x[0]] + ' <b style="font-size:1.4em">' + betu(x[0]) + '</b> hangot?',
-                'Escucha la palabra. ¿Dónde oyes la <b style="font-size:1.4em">' + betu(x[0]) + '</b>?');
+            allas.innerHTML = '<b>' + (i + 1) + ' / ' + K.length + '</b> – ' + D.T('Hallgasd meg a szót! Hol hallod ' + AZ[x[0]] + ' <span style="font-size:1.4em">' + betu(x[0]) + '</span> hangot?',
+                'Escucha la palabra. ¿Dónde oyes la <span style="font-size:1.4em">' + betu(x[0]) + '</span>?');
             mutat(x, false); g.style.display = ''; fut = false;
-            setTimeout(function () { D.mond(x[1]); }, 400);
+            /* hangmódban a kérdést is elmondja (az elsős még nem olvas) */
+            setTimeout(function () { D.mond(D.hangosan ? dmKimondhato(allas.innerHTML) + ' ' + D.T('A szó: ', 'La palabra: ') + x[1] + '.' : x[1]); }, 400);
         }
         [[0, D.T('⬅️ A szó elején', '⬅️ Al principio')], [1, D.T('A szó végén ➡️', 'Al final ➡️')]].forEach(function (o) {
             g.appendChild(D.gomb(o[1], 'fo', function () { valasz(o[0]); }));
@@ -3410,12 +3434,12 @@
             if (fut || D.kesz()) { return; }
             var x = K[i], hely = x[3] ? D.T('a végén', 'al final') : D.T('az elején', 'al principio');
             if (v === x[3]) {
-                fut = true; if (!hibaMost) { elsore++; } napl.push(x[1] + ': ' + betu(x[0]) + ' ' + hely);
+                fut = true; if (!hibaMost) { elsore++; } napl.push(x[1] + ': ' + x[0].toUpperCase() + ' ' + hely);
                 mutat(x, true); D.hang('sine', 660); D.hang('sine', 880, .1);
                 D.jelez(true, D.T('Igen! <b>' + x[1] + '</b> – ' + AZ[x[0]] + ' ' + betu(x[0]) + ' ' + hely + ' van.', '¡Sí! <b>' + x[1] + '</b>: la ' + betu(x[0]) + ' está ' + hely + '.'));
                 g.style.display = 'none';
                 if (i + 1 < K.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; D.torol(); kiir(); }); return; }
-                D.vege(elsore >= K.length - 1, D.T((elsore >= K.length - 1 ? 'Ügyes! ' : 'Vége! ') + '<b>' + elsore + ' / ' + K.length + '</b> elsőre jó.', (elsore >= K.length - 1 ? '¡Muy bien! ' : '¡Fin! ') + '<b>' + elsore + ' / ' + K.length + '</b> a la primera.'),
+                D.vege(elsore >= K.length - 1, D.T((elsore >= K.length - 1 ? 'Ügyes! ' : 'Vége! ') + '' + K.length + ' közül <b>' + elsore + '</b> elsőre sikerült.', (elsore >= K.length - 1 ? '¡Muy bien! ' : '¡Fin! ') + '<b>' + elsore + ' de ' + K.length + '</b> bien a la primera.'),
                     D.T('Hang helye a szóban: ', 'Sonido inicial o final: ') + napl.join('; '));
                 return;
             }
@@ -3425,18 +3449,18 @@
                 D.jelez(false, D.T('Nézd: <b>' + x[1] + '</b> – ' + AZ[x[0]] + ' ' + betu(x[0]) + ' ' + hely + ' van.', 'Mira: <b>' + x[1] + '</b>: la ' + betu(x[0]) + ' está ' + hely + '.'));
                 D.mond(x[1]);
                 if (i + 1 < K.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; D.torol(); kiir(); }); }
-                else { dmTovabb(D, allas, function () { D.vege(false, D.T('Vége! ' + elsore + ' / ' + K.length + ' elsőre jó.', '¡Fin! ' + elsore + ' / ' + K.length + ' a la primera.'), D.T('Hang helye a szóban: ', 'Sonido inicial o final: ') + napl.join('; ')); }, D.T('Befejezem ✓', 'Terminar ✓')); }
+                else { dmTovabb(D, allas, function () { D.vege(false, D.T('Vége! ' + K.length + ' közül ' + elsore + ' elsőre sikerült.', '¡Fin! ' + elsore + ' de ' + K.length + ' bien a la primera.'), D.T('Hang helye a szóban: ', 'Sonido inicial o final: ') + napl.join('; ')); }, D.T('Befejezem ✓', 'Terminar ✓')); }
                 return;
             }
             D.jelez(false, D.T('Hallgasd meg újra, lassan! Mondd ki te is: az első vagy az utolsó hang ' + AZ[x[0]] + ' ' + betu(x[0]) + '?', 'Escúchala otra vez, despacio. Dila tú también: ¿la ' + betu(x[0]) + ' es el primer o el último sonido?'));
             D.mond(x[1]);
         }
         // PÉLDA
-        var P1 = D.es ? ['n', 'nariz', '👃', 0] : ['m', 'macska', '🐱', 0], P2 = D.es ? ['n', 'pan', '🍞', 1] : ['m', 'citrom', '🍋', 1];
+        var P1 = D.es ? ['n', 'nariz', 'nose', 0] : ['l', 'ló', 'horse', 0], P2 = D.es ? ['n', 'pan', 'bread', 1] : ['l', 'hal', 'fish', 1];
         allas.innerHTML = D.T('<b>Nézd meg, hogyan kell!</b>', '<b>¡Mira cómo se hace!</b>');
         dmPelda(D, lap, [
-            [D.T('Ez egy <b>macska</b>. Mondd lassan: <b>m</b>-m-macska. Az <b>M</b> a szó <b>elején</b> van.', 'Esto es una <b>nariz</b>. Dilo despacio: <b>n</b>-n-nariz. La <b>N</b> está <b>al principio</b>.'), function () { mutat(P1, true); D.mond(P1[1]); }],
-            [D.T('Ez egy <b>citrom</b>. Mondd lassan: citro-<b>m</b>-m. Itt az <b>M</b> a szó <b>végén</b> van.', 'Esto es <b>pan</b>. Dilo despacio: pa-<b>n</b>-n. Aquí la <b>N</b> está <b>al final</b>.'), function () { mutat(P2, true); D.mond(P2[1]); }]
+            [D.T('Ez egy <b>ló</b>. Mondd lassan: <b>l-l-l</b>ó. Az ' + betu('l') + ' a szó <b>elején</b> van.', 'Esto es una <b>nariz</b>. Dilo despacio: <b>n-n-n</b>ariz. La ' + betu('n') + ' está <b>al principio</b>.'), function () { mutat(P1, true); D.mond(P1[1]); }],
+            [D.T('Ez egy <b>hal</b>. Mondd lassan: ha<b>l-l-l</b>. Itt az ' + betu('l') + ' a szó <b>végén</b> van.', 'Esto es <b>pan</b>. Dilo despacio: pa<b>n-n-n</b>. Aquí la ' + betu('n') + ' está <b>al final</b>.'), function () { mutat(P2, true); D.mond(P2[1]); }]
         ], function () { i = 0; kiir(); });
     };
 
@@ -3514,18 +3538,18 @@
     DM.helyesiras = function (f, D) {
         var SZ = {
             hosszu: {cim: 'Rövid vagy hosszú hang?', tipp: 'Mondd ki lassan! Ha <b>hosszan</b> mondjuk, ékezet kell rá (á, é, í, ó, ő, ú, ű).',
-                l: [['h', 'z', ['a', 'á'], 'á', '🏠', 'ház'], ['h', 'l', ['a', 'á'], 'a', '🐟', 'hal'], ['m', 'z', ['e', 'é'], 'é', '🍯', 'méz'], ['l', '', ['o', 'ó'], 'ó', '🐴', 'ló'],
-                    ['t', 'll', ['o', 'ó'], 'o', '🪶', 'toll'], ['t', '', ['ü', 'ű'], 'ű', '🪡', 'tű'], ['f', 'l', ['ü', 'ű'], 'ü', '👂', 'fül'], ['k', '', ['ö', 'ő'], 'ő', '🪨', 'kő'],
-                    ['t', 'k', ['ö', 'ő'], 'ö', '🎃', 'tök'], ['v', 'z', ['i', 'í'], 'í', '💧', 'víz'], ['cs', 'ga', ['i', 'í'], 'i', '🐌', 'csiga'], ['h', '', ['o', 'ó'], 'ó', '❄️', 'hó']]},
+                l: [['h', 'z', ['a', 'á'], 'á', 'house', 'ház'], ['h', 'l', ['a', 'á'], 'a', 'fish', 'hal'], ['k', 'z', ['e', 'é'], 'é', 'hand', 'kéz'], ['l', '', ['o', 'ó'], 'ó', 'horse', 'ló'],
+                    ['z', 'kni', ['o', 'ó'], 'o', 'socks', 'zokni'], ['cip', '', ['ö', 'ő'], 'ő', 'shoes', 'cipő'], ['f', 'l', ['ü', 'ű'], 'ü', 'ear', 'fül'], ['k', 'nyv', ['ö', 'ő'], 'ö', 'book', 'könyv'],
+                    ['t', 'j', ['e', 'é'], 'e', 'milk', 'tej'], ['v', 'z', ['i', 'í'], 'í', 'water', 'víz'], ['v', 'rág', ['i', 'í'], 'i', 'flower', 'virág'], ['h', '', ['o', 'ó'], 'ó', 'snow', 'hó']]},
             cqu: {cim: '¿c o qu?', tipp: 'Delante de <b>a, o, u</b> se escribe <b>c</b> (casa). Delante de <b>e, i</b> se escribe <b>qu</b> (queso).',
-                l: [['', 'asa', ['c', 'qu'], 'c', '🏠', 'casa'], ['', 'eso', ['c', 'qu'], 'qu', '🧀', 'queso'], ['', 'onejo', ['c', 'qu'], 'c', '🐰', 'conejo'],
-                    ['mos', 'ito', ['c', 'qu'], 'qu', '🦟', 'mosquito'], ['', 'uchara', ['c', 'qu'], 'c', '🥄', 'cuchara'], ['ra', 'eta', ['c', 'qu'], 'qu', '🏸', 'raqueta']]},
-            mn: {cim: '¿m o n?', tipp: 'Antes de <b>p</b> y de <b>b</b> siempre se escribe <b>m</b> (campana, bombilla). Si no, <b>n</b>.',
-                l: [['ca', 'pana', ['m', 'n'], 'm', '🔔', 'campana'], ['bo', 'billa', ['m', 'n'], 'm', '💡', 'bombilla'], ['tro', 'peta', ['m', 'n'], 'm', '🎺', 'trompeta'],
-                    ['so', 'brero', ['m', 'n'], 'm', '🎩', 'sombrero'], ['ma', 'zana', ['m', 'n'], 'n', '🍎', 'manzana'], ['nara', 'ja', ['m', 'n'], 'n', '🍊', 'naranja']]},
-            rrr: {cim: '¿r o rr?', tipp: 'Entre dos vocales: sonido <b>fuerte</b> → <b>rr</b> (perro); sonido <b>suave</b> → <b>r</b> (pera).',
-                l: [['pe', 'o', ['r', 'rr'], 'rr', '🐶', 'perro'], ['pe', 'a', ['r', 'rr'], 'r', '🍐', 'pera'], ['zo', 'o', ['r', 'rr'], 'rr', '🦊', 'zorro'],
-                    ['lo', 'o', ['r', 'rr'], 'r', '🦜', 'loro'], ['to', 'e', ['r', 'rr'], 'rr', '🗼', 'torre'], ['to', 'o', ['r', 'rr'], 'r', '🐂', 'toro']]}
+                l: [['', 'asa', ['c', 'qu'], 'c', 'house', 'casa'], ['', 'eso', ['c', 'qu'], 'qu', 'cheese', 'queso'], ['', 'onejo', ['c', 'qu'], 'c', 'rabbit', 'conejo'],
+                    ['par', 'e', ['c', 'qu'], 'qu', 'park', 'parque'], ['', 'ama', ['c', 'qu'], 'c', 'bed', 'cama'], ['', 'oche', ['c', 'qu'], 'c', 'car', 'coche']]},
+            mn: {cim: '¿m o n?', tipp: 'Antes de <b>p</b> y de <b>b</b> siempre se escribe <b>m</b> (sombrero, cumpleaños). Si no, <b>n</b>.',
+                l: [['so', 'brero', ['m', 'n'], 'm', 'hat', 'sombrero'], ['cu', 'pleaños', ['m', 'n'], 'm', 'birthday', 'cumpleaños'], ['co', 'prar', ['m', 'n'], 'm', 'buy', 'comprar'],
+                    ['ma', 'zana', ['m', 'n'], 'n', 'apple', 'manzana'], ['i', 'vierno', ['m', 'n'], 'n', 'winter', 'invierno'], ['mo', 'taña', ['m', 'n'], 'n', 'mountain', 'montaña']]},
+            rrr: {cim: '¿r o rr?', tipp: 'Entre dos vocales: sonido <b>fuerte</b> → <b>rr</b> (perro); sonido <b>suave</b> → <b>r</b> (oreja).',
+                l: [['pe', 'o', ['r', 'rr'], 'rr', 'dog', 'perro'], ['piza', 'a', ['r', 'rr'], 'rr', 'board', 'pizarra'], ['o', 'eja', ['r', 'rr'], 'r', 'ear', 'oreja'],
+                    ['pája', 'o', ['r', 'rr'], 'r', 'bird', 'pájaro'], ['dine', 'o', ['r', 'rr'], 'r', 'money', 'dinero']]}
         };
         var kulcs = D.es ? (SZ[f.szabaly] && f.szabaly !== 'hosszu' ? f.szabaly : ['cqu', 'mn', 'rrr'][D.rnd(0, 2)]) : 'hosszu';
         var S = SZ[kulcs], K = D.kever(S.l.slice()).slice(0, 5);
@@ -3534,7 +3558,7 @@
         var allas = D.$('allas'), lap = D.$('lap'), g = D.$('g');
         function mutat(x, beirt, jo) {
             var res = '<span style="display:inline-block;min-width:' + (beirt ? 0 : 38) + 'px;padding:0 4px;border-bottom:4px ' + (beirt ? 'solid ' + (jo ? '#1E7F4F' : '#C62828') : 'dashed #F9A825') + ';color:' + (jo ? '#1E7F4F' : '#C62828') + '">' + (beirt || '&nbsp;') + '</span>';
-            lap.innerHTML = '<div style="font-size:70px;line-height:1.1">' + x[4] + '</div><div style="font-size:34px;font-weight:900;margin:8px 0">' + x[0] + res + x[1] + '</div>';
+            lap.innerHTML = '<div style="line-height:1">' + dmKep(x[4], 120) + '</div><div style="font-size:34px;font-weight:900;margin:8px 0">' + x[0] + res + x[1] + '</div>';
         }
         function kiir() {
             var x = K[i];
@@ -3552,7 +3576,7 @@
                 D.jelez(true, D.T('Igen! <b>' + x[5] + '</b>', '¡Sí! <b>' + x[5] + '</b>'));
                 g.innerHTML = '';
                 if (i + 1 < K.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; D.torol(); kiir(); }); return; }
-                D.vege(elsore >= K.length - 1, D.T((elsore >= K.length - 1 ? 'Ügyes! ' : 'Vége! ') + '<b>' + elsore + ' / ' + K.length + '</b> elsőre jó.', (elsore >= K.length - 1 ? '¡Muy bien! ' : '¡Fin! ') + '<b>' + elsore + ' / ' + K.length + '</b> a la primera.'),
+                D.vege(elsore >= K.length - 1, D.T((elsore >= K.length - 1 ? 'Ügyes! ' : 'Vége! ') + '' + K.length + ' közül <b>' + elsore + '</b> elsőre sikerült.', (elsore >= K.length - 1 ? '¡Muy bien! ' : '¡Fin! ') + '<b>' + elsore + ' de ' + K.length + '</b> bien a la primera.'),
                     D.T('Helyesírás (' + S.cim + '): ', 'Ortografía (' + S.cim + '): ') + elsore + '/' + K.length + D.T(' elsőre jó; ', ' a la primera; ') + napl.join(', '));
                 return;
             }
@@ -3560,7 +3584,7 @@
             D.jelez(false, D.T('Nem egészen. ', 'No del todo. ') + S.tipp);
             if (hibaMost >= 2) { fut = true; napl.push(x[5] + D.T(' (segítséggel)', ' (con ayuda)')); setTimeout(function () { mutat(x, x[3], true); }, 900); g.innerHTML = '';
                 if (i + 1 < K.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; D.torol(); kiir(); }); }
-                else { dmTovabb(D, allas, function () { D.vege(false, D.T('Vége! ' + elsore + ' / ' + K.length + ' elsőre jó.', '¡Fin! ' + elsore + ' / ' + K.length + ' a la primera.'), D.T('Helyesírás: ', 'Ortografía: ') + napl.join(', ')); }, D.T('Befejezem ✓', 'Terminar ✓')); } }
+                else { dmTovabb(D, allas, function () { D.vege(false, D.T('Vége! ' + K.length + ' közül ' + elsore + ' elsőre sikerült.', '¡Fin! ' + elsore + ' de ' + K.length + ' bien a la primera.'), D.T('Helyesírás: ', 'Ortografía: ') + napl.join(', ')); }, D.T('Befejezem ✓', 'Terminar ✓')); } }
         }
         // PÉLDA
         var P = S.l[1];
@@ -3578,7 +3602,7 @@
     /* ── MESE SORRENDBEN – mi történt előbb? ───────────────────────────────── */
     DM.mesesor = function (f, D) {
         var MESE = D.es ? {
-            nabo: ['El nabo gigante', [['👴🌱', 'Un abuelo planta un nabo.'], ['🥕⬆️', 'El nabo crece muchísimo.'], ['👴👵👧🐶', 'Todos tiran juntos.'], ['🎉🥕', '¡Por fin sale el nabo!']]],
+            nabo: ['La zanahoria gigante', [['👴🌱', 'Un abuelo planta una zanahoria.'], ['🥕⬆️', 'La zanahoria crece muchísimo.'], ['👴👵👧🐶', 'Todos tiran juntos.'], ['🎉🥕', '¡Por fin sale la zanahoria!']]],
             cerditos: ['Los tres cerditos', [['🐷🐷🐷', 'Tres cerditos construyen casas.'], ['🌾🏠', 'El primero la hace de paja.'], ['🐺💨', 'Llega el lobo y la tira soplando.'], ['🧱🏠😊', 'La casa de ladrillo aguanta. ¡Están a salvo!']]],
             caperucita: ['Caperucita Roja', [['👧🧺', 'Caperucita va a casa de su abuela.'], ['🐺🌲', 'En el bosque se encuentra con el lobo.'], ['🐺🛏️', 'El lobo se mete en la cama de la abuela.'], ['🧑‍🌾👵👧', 'El cazador las salva.']]]
         } : {
@@ -3592,14 +3616,24 @@
             '<div class="allas" style="text-align:center;margin:4px 0" data-id="cim2"></div><div data-id="kartyak" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px"></div>' +
             '<div class="gombok dm-kesz-sor" data-id="kesz" style="display:none"></div>');
         var allas = D.$('allas'), helyek = D.$('helyek'), kartyak = D.$('kartyak');
+        /* fix206 (Sándor: az emoji „gagyi”): ha megvannak a mese képei
+           (static/figurak/mese/<mese>_<1-4>.webp, mese_kepek.py készíti), azokat mutatja,
+           addig az emojit. A magyar és a spanyol mese ugyanazokat a képeket használja. */
+        var KEPNEV = {repa: 'repa', malac: 'malac', piroska: 'piroska', nabo: 'repa', cerditos: 'malac', caperucita: 'piroska'}[nev];
+        function kepUt(k) { return '/static/figurak/mese/' + KEPNEV + '_' + (k + 1) + '.webp'; }
+        var vanKep = false, utolso = null;
+        (function () { var im = new Image(); im.onload = function () { vanKep = true; if (utolso) { rajz.apply(null, utolso); } }; im.src = kepUt(3); })();   // a 4. kép is megvan → mind kész
         function kartya(k, szam, rossz, kez) {
             var x = M[1][k];
             return '<div style="position:relative;background:#FFFFFF;border:2.5px solid ' + (rossz ? '#E53935' : '#F5C77A') + ';border-radius:12px;padding:6px;text-align:center;cursor:pointer;min-height:96px">' +
                 (szam ? '<span style="position:absolute;left:6px;top:4px;background:#1E7F4F;color:#fff;border-radius:999px;width:24px;height:24px;font-weight:900;line-height:24px">' + szam + '</span>' : '') +
-                '<div style="font-size:34px">' + x[0] + '</div><div style="font-size:14px;font-weight:800;color:#3E2723">' + x[1] + '</div>' +
-                (kez ? '<div style="position:absolute;right:4px;bottom:-6px;font-size:30px">👆</div>' : '') + '</div>';
+                (vanKep ? '<img src="' + kepUt(k) + '" alt="" draggable="false" style="display:block;width:100%;max-width:150px;aspect-ratio:1/1;object-fit:contain;margin:0 auto 2px;border-radius:8px">'
+                        : '<div style="font-size:34px">' + x[0] + '</div>') +
+                '<div style="font-size:14px;font-weight:800;color:#3E2723">' + x[1] + '</div>' +
+                (kez ? '<div style="position:absolute;right:-6px;top:-12px;font-size:32px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))">👆</div>' : '') + '</div>';
         }
         function rajz(kattinthato, rossz, kez) {
+            utolso = [kattinthato, rossz, kez];
             helyek.innerHTML = '';
             for (var s = 0; s < N; s++) {
                 var d = document.createElement('div');
@@ -3637,14 +3671,15 @@
 
     /* ── SÍLABA TÓNICA (csak spanyol) – melyik szótag a hangsúlyos? ─────────── */
     DM.hangsuly = function (f, D) {
-        var L = [[['ca', 'sa'], 0, '🏠'], [['ár', 'bol'], 0, '🌳'], [['can', 'ción'], 1, '🎵'], [['pe', 'lo', 'ta'], 1, '⚽'], [['ra', 'tón'], 1, '🐭'],
-            [['lá', 'piz'], 0, '✏️'], [['ma', 'ri', 'po', 'sa'], 2, '🦋'], [['mú', 'si', 'ca'], 0, '🎶'], [['ven', 'ta', 'na'], 1, '🪟'], [['ca', 'fé'], 1, '☕']];
+        var L = [[['ca', 'sa'], 0, 'house'], [['ár', 'bol'], 0, 'tree'], [['can', 'ción'], 1, 'song'], [['pe', 'lo', 'ta'], 1, 'ball'], [['ra', 'tón'], 1, 'mouse'],
+            [['lá', 'piz'], 0, 'pencil'], [['ca', 'mi', 'se', 'ta'], 2, 't_shirt'], [['mú', 'si', 'ca'], 0, 'music'], [['ven', 'ta', 'na'], 1, 'window'],
+            [['me', 'sa'], 0, 'table'], [['co', 'ne', 'jo'], 1, 'rabbit'], [['za', 'pa', 'tos'], 1, 'shoes']];
         var K = D.kever(L.slice()).slice(0, 4), i = 0, hibaMost = 0, elsore = 0, napl = [], fut = true;
         D.html('<div class="allas" data-id="allas"></div><div data-id="lap" style="text-align:center"></div><div class="gombok kozep" data-id="g"></div>');
         var allas = D.$('allas'), lap = D.$('lap'), g = D.$('g');
         function szo(x) { return x[0].join(''); }
         function mutat(x, kiemel) {
-            lap.innerHTML = '<div style="font-size:70px;line-height:1.1">' + x[2] + '</div><div style="font-size:30px;font-weight:900;margin:6px 0">' +
+            lap.innerHTML = '<div style="line-height:1">' + dmKep(x[2], 120) + '</div><div style="font-size:30px;font-weight:900;margin:6px 0">' +
                 x[0].map(function (s, k) { return kiemel && k === x[1] ? '<span style="font-size:1.35em;color:#C62828">' + s.toUpperCase() + '</span>' : s; }).join('<span style="color:#B0BEC5">-</span>') + '</div>';
         }
         function kiir() {
@@ -3653,7 +3688,7 @@
             mutat(x, false); g.innerHTML = '';
             x[0].forEach(function (s, k) { var b = D.gomb('<span style="font-size:24px;font-weight:900">' + s + '</span>', 'fo', function () { valasz(k); }); b.style.minWidth = '70px'; g.appendChild(b); });
             g.appendChild(dmHallgat(D, szo(x)));
-            fut = false; setTimeout(function () { D.mond(szo(x)); }, 400);
+            fut = false; setTimeout(function () { D.mond(D.hangosan ? dmKimondhato(allas.innerHTML) + ' La palabra: ' + szo(x) + '.' : szo(x)); }, 400);
         }
         function valasz(k) {
             if (fut || D.kesz()) { return; }
@@ -3663,16 +3698,16 @@
                 mutat(x, true); D.hang('sine', 660); g.innerHTML = '';
                 D.jelez(true, '¡Sí! En <b>' + szo(x) + '</b> la sílaba fuerte es <b>' + x[0][x[1]] + '</b>.');
                 if (i + 1 < K.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; D.torol(); kiir(); }); return; }
-                D.vege(elsore >= K.length - 1, (elsore >= K.length - 1 ? '¡Muy bien! ' : '¡Fin! ') + '<b>' + elsore + ' / ' + K.length + '</b> a la primera.', 'Sílaba tónica: ' + elsore + '/' + K.length + ' a la primera; ' + napl.join(', '));
+                D.vege(elsore >= K.length - 1, (elsore >= K.length - 1 ? '¡Muy bien! ' : '¡Fin! ') + '<b>' + elsore + ' de ' + K.length + '</b> bien a la primera.', 'Sílaba tónica: ' + elsore + '/' + K.length + ' a la primera; ' + napl.join(', '));
                 return;
             }
             hibaMost++; D.animal(lap, 'rezeg'); D.mond(szo(x));
             D.jelez(false, 'Dila como si llamaras a alguien de lejos, alargando: ¿qué sílaba se alarga y suena más fuerte?');
             if (hibaMost >= 2) { fut = true; mutat(x, true); g.innerHTML = ''; napl.push(szo(x) + ' (con ayuda)');
                 if (i + 1 < K.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; D.torol(); kiir(); }); }
-                else { dmTovabb(D, allas, function () { D.vege(false, '¡Fin! ' + elsore + ' / ' + K.length + ' a la primera.', 'Sílaba tónica: ' + napl.join(', ')); }, 'Terminar ✓'); } }
+                else { dmTovabb(D, allas, function () { D.vege(false, '¡Fin! ' + elsore + ' de ' + K.length + ' bien a la primera.', 'Sílaba tónica: ' + napl.join(', ')); }, 'Terminar ✓'); } }
         }
-        var P = [['ga', 'to'], 0, '🐱'];
+        var P = [['ga', 'to'], 0, 'cat'];
         allas.innerHTML = '<b>¡Mira cómo se hace!</b>';
         dmPelda(D, lap, [
             ['Esto es un <b>gato</b>: ga-to. Tiene dos sílabas.', function () { mutat(P, false); D.mond('gato'); }],
@@ -3682,9 +3717,9 @@
 
     /* ── ¿? ¡! (csak spanyol) – pregunta, exclamación o punto ──────────────── */
     DM.signos = function (f, D) {
-        var L = [['Cuántos años tienes', 1, '🎂'], ['Dónde está mi lápiz', 1, '✏️'], ['Quieres jugar conmigo', 1, '⚽'],
-            ['Qué bonito es el mar', 2, '🌊'], ['Qué frío hace', 2, '🥶'], ['Qué rico está el pastel', 2, '🍰'],
-            ['Mi perro se llama Toby', 0, '🐶'], ['Hoy hace sol', 0, '☀️'], ['Me gustan las manzanas', 0, '🍎']];
+        var L = [['Cuántos años tienes', 1, 'birthday'], ['Dónde está mi lápiz', 1, 'pencil'], ['Quieres jugar conmigo', 1, 'ball'],
+            ['Qué bonita es la montaña', 2, 'mountain'], ['Qué frío hace', 2, 'cold'], ['Qué rico está', 2, 'tasty'],
+            ['Mi perro se llama Toby', 0, 'dog'], ['Hoy hace sol', 0, 'sunny'], ['Me gustan las manzanas', 0, 'apple']];
         var K = D.kever([D.kever(L.filter(function (x) { return x[1] === 0; }))[0], D.kever(L.filter(function (x) { return x[1] === 1; }))[0], D.kever(L.filter(function (x) { return x[1] === 2; }))[0], D.kever(L.slice())[0]]);
         var JEL = [['', '.'], ['¿', '?'], ['¡', '!']], NEV = ['punto', 'pregunta', 'exclamación'];
         var i = 0, hibaMost = 0, elsore = 0, napl = [], fut = true;
@@ -3692,7 +3727,7 @@
         var allas = D.$('allas'), lap = D.$('lap'), g = D.$('g');
         function mutat(x, j, jo) {
             var c = jo ? '#1E7F4F' : '#C62828';
-            lap.innerHTML = '<div style="font-size:64px;line-height:1.1">' + x[2] + '</div><div style="font-size:26px;font-weight:900;margin:8px 0">' +
+            lap.innerHTML = '<div style="line-height:1">' + dmKep(x[2], 110) + '</div><div style="font-size:26px;font-weight:900;margin:8px 0">' +
                 (j != null ? '<span style="color:' + c + '">' + JEL[j][0] + '</span>' : '<span style="color:#F9A825">▢</span>') + x[0] + (j != null ? '<span style="color:' + c + '">' + JEL[j][1] + '</span>' : '<span style="color:#F9A825">▢</span>') + '</div>';
         }
         function kiir() {
@@ -3709,16 +3744,16 @@
                 fut = true; if (!hibaMost) { elsore++; } napl.push(JEL[j][0] + x[0] + JEL[j][1]); mutat(x, j, true); D.hang('sine', 660); g.innerHTML = '';
                 D.jelez(true, j === 0 ? '¡Sí! Es una frase normal: termina en <b>punto</b>.' : '¡Sí! En español la ' + NEV[j] + ' lleva signo <b>al principio y al final</b>: <b>' + JEL[j][0] + ' … ' + JEL[j][1] + '</b>');
                 if (i + 1 < K.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; D.torol(); kiir(); }); return; }
-                D.vege(elsore >= K.length - 1, (elsore >= K.length - 1 ? '¡Muy bien! ' : '¡Fin! ') + '<b>' + elsore + ' / ' + K.length + '</b> a la primera.', 'Signos ¿? ¡!: ' + elsore + '/' + K.length + ' a la primera; ' + napl.join(' '));
+                D.vege(elsore >= K.length - 1, (elsore >= K.length - 1 ? '¡Muy bien! ' : '¡Fin! ') + '<b>' + elsore + ' de ' + K.length + '</b> bien a la primera.', 'Signos ¿? ¡!: ' + elsore + '/' + K.length + ' a la primera; ' + napl.join(' '));
                 return;
             }
             hibaMost++; mutat(x, j, false); D.animal(lap, 'rezeg');
             D.jelez(false, 'Escucha cómo suena. ¿Preguntas algo (¿?), te sorprendes o te emocionas (¡!), o solo cuentas algo (.)?');
             if (hibaMost >= 2) { fut = true; setTimeout(function () { mutat(x, x[1], true); }, 900); g.innerHTML = ''; napl.push(x[0] + ' (con ayuda)');
                 if (i + 1 < K.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; D.torol(); kiir(); }); }
-                else { dmTovabb(D, allas, function () { D.vege(false, '¡Fin! ' + elsore + ' / ' + K.length + ' a la primera.', 'Signos: ' + napl.join(' ')); }, 'Terminar ✓'); } }
+                else { dmTovabb(D, allas, function () { D.vege(false, '¡Fin! ' + elsore + ' de ' + K.length + ' bien a la primera.', 'Signos: ' + napl.join(' ')); }, 'Terminar ✓'); } }
         }
-        var P = ['Dónde vives', 1, '🏡'];
+        var P = ['Dónde vives', 1, 'house'];
         allas.innerHTML = '<b>¡Mira cómo se hace!</b>';
         dmPelda(D, lap, [
             ['Esta frase es una <b>pregunta</b>: «Dónde vives».', function () { mutat(P); }],
@@ -3922,7 +3957,7 @@
                 fut = true; napl.push(cel + D.T(' (megmutattam)', ' (se lo mostré)'));
                 mutat(sz.split('').map(function (c) { var n = +c; return [n >= 5 ? 1 : 0, n % 5]; }), null, function () {
                     if (i + 1 < SZ.length) { dmTovabb(D, allas, function () { i++; hibaMost = 0; fut = false; ures(); D.torol(); kiir(); rajz(); }); }
-                    else { D.vege(false, D.T('Vége! ' + elsore + ' / ' + SZ.length + ' elsőre jó.', '¡Fin! ' + elsore + ' / ' + SZ.length + ' a la primera.'), D.T('Golyós számoló: ', 'Ábaco: ') + napl.join('; ')); }
+                    else { D.vege(false, D.T('Vége! ' + SZ.length + ' közül ' + elsore + ' elsőre sikerült.', '¡Fin! ' + elsore + ' de ' + SZ.length + ' bien a la primera.'), D.T('Golyós számoló: ', 'Ábaco: ') + napl.join('; ')); }
                 });
             }
         }));
@@ -4316,7 +4351,7 @@
         function tovabb() {
             i++; hibaMost = 0; fut = false; D.torol();
             if (i < P.length) { kiir(); return; }
-            D.vege(elsore >= P.length - 1, D.T('Kész! <b>' + elsore + ' / ' + P.length + '</b> elsőre jó. A mérleg a nehezebb oldalra billen.', '¡Hecho! <b>' + elsore + ' / ' + P.length + '</b> bien a la primera. La balanza baja hacia lo que pesa más.'),
+            D.vege(elsore >= P.length - 1, D.T('Kész! ' + P.length + ' közül <b>' + elsore + '</b> elsőre sikerült. A mérleg a nehezebb oldalra billen.', '¡Hecho! <b>' + elsore + ' de ' + P.length + '</b> bien a la primera. La balanza baja hacia lo que pesa más.'),
                 D.T('Mérleges feladat: ' + elsore + '/' + P.length + ' elsőre jó. ', 'Balanza: ' + elsore + '/' + P.length + ' bien a la primera. ') + napl.join('; '));
         }
         kiir();
@@ -4524,7 +4559,7 @@
         function tovabb() {
             i++; hibaMost = 0; fut = false; D.torol();
             if (i < K.length) { kiir(); return; }
-            D.vege(elsore >= K.length - 1, D.T('Kész! <b>' + elsore + ' / ' + K.length + '</b> elsőre jó.', '¡Hecho! <b>' + elsore + ' / ' + K.length + '</b> bien a la primera.'),
+            D.vege(elsore >= K.length - 1, D.T('Kész! ' + K.length + ' közül <b>' + elsore + '</b> elsőre sikerült.', '¡Hecho! <b>' + elsore + ' de ' + K.length + '</b> bien a la primera.'),
                 D.T('Biztos–lehetséges–lehetetlen: ' + elsore + '/' + K.length + ' elsőre jó. ', 'Seguro–posible–imposible: ' + elsore + '/' + K.length + ' bien a la primera. ') + napl.join('; '));
         }
         kiir();
@@ -4784,8 +4819,8 @@
         }
         function zar() {
             D.vege(jo === valasztas, jo === valasztas ? D.T('Kész a párbeszéd – minden válaszod talált!', '¡Diálogo terminado: todas tus respuestas encajan!')
-                    : D.T('Kész a párbeszéd. ' + jo + ' / ' + valasztas + ' válasz elsőre jó.', 'Diálogo terminado. ' + jo + ' de ' + valasztas + ' respuestas bien a la primera.'),
-                D.T('Párbeszéd: ' + jo + ' / ' + valasztas + ' válasz elsőre jó.', 'Diálogo: ' + jo + ' de ' + valasztas + ' bien a la primera.') +
+                    : D.T('Kész a párbeszéd. ' + valasztas + ' közül ' + jo + ' válasz elsőre sikerült.', 'Diálogo terminado. ' + jo + ' de ' + valasztas + ' respuestas bien a la primera.'),
+                D.T('Párbeszéd: ' + valasztas + ' közül ' + jo + ' válasz elsőre sikerült.', 'Diálogo: ' + jo + ' de ' + valasztas + ' bien a la primera.') +
                 (rossz.length ? D.T(' Ezeket választottam rosszul: ', ' Elegí mal: ') + rossz.join('; ') + '.' : ''));
         }
         kov();
@@ -5090,8 +5125,8 @@
         D.html('<div class="allas" data-id="all"></div><div class="gombok" style="justify-content:center;margin:8px 0" data-id="hs"></div><div class="kepek" data-id="kepek"></div>');
         D.$('hs').appendChild(D.gomb('🔊 ' + D.T('Meghallgatom', 'Escuchar'), 'hangszoro', function () { if (akt) { D.mond(akt[1]); } }));
         function kor_() {
-            if (kor === korok) { D.$('all').textContent = ''; D.vege(pont >= korok - 1, D.T('Vége! ' + pont + ' / ' + korok + ' elsőre jó.', '¡Fin! ' + pont + ' / ' + korok + ' a la primera.'),
-                D.T('Hallás utáni értés: ' + pont + ' / ' + korok + ' elsőre jó.', 'Comprensión auditiva: ' + pont + ' / ' + korok + ' a la primera.')); return; }
+            if (kor === korok) { D.$('all').textContent = ''; D.vege(pont >= korok - 1, D.T('Vége! ' + korok + ' közül ' + pont + ' elsőre sikerült.', '¡Fin! ' + pont + ' de ' + korok + ' bien a la primera.'),
+                D.T('Hallás utáni értés: ' + korok + ' közül ' + pont + ' elsőre sikerült.', 'Comprensión auditiva: ' + pont + ' de ' + korok + ' bien a la primera.')); return; }
             akt = sor[kor]; var tobbi = D.kever(SZO.filter(function (s) { return s !== akt; })).slice(0, 3), negy = D.kever(tobbi.concat([akt])), elso = true;
             D.$('all').textContent = (kor + 1) + ' / ' + korok;
             var d = D.$('kepek'); d.innerHTML = '';
@@ -8861,8 +8896,8 @@
                     setTimeout(function () {
                         i++; hibaMost = 0; fut = false;
                         if (i < N) { kiir(); rajz(); return; }
-                        D.vege(elsore >= N - 1, D.T('Kész! <b>' + elsore + ' / ' + N + '</b> elsőre jó. Ne feledd: a krokodil mindig a nagyobb számot akarja megenni.',
-                            '¡Hecho! <b>' + elsore + ' / ' + N + '</b> bien a la primera. Recuerda: el cocodrilo siempre quiere comerse el número mayor.'),
+                        D.vege(elsore >= N - 1, D.T('Kész! ' + N + ' közül <b>' + elsore + '</b> elsőre sikerült. Ne feledd: a krokodil mindig a nagyobb számot akarja megenni.',
+                            '¡Hecho! <b>' + elsore + ' de ' + N + '</b> bien a la primera. Recuerda: el cocodrilo siempre quiere comerse el número mayor.'),
                             D.T('Krokodilos feladat (<, =, >): ' + elsore + '/' + N + ' elsőre jó. ' + napl.join('; '),
                                 'Tarea del cocodrilo (<, =, >): ' + elsore + '/' + N + ' bien a la primera. ' + napl.join('; ')));
                     }, 900);
@@ -8878,7 +8913,7 @@
                         setTimeout(function () {
                             i++; hibaMost = 0; fut = false; D.torol();
                             if (i < N) { kiir(); rajz(); return; }
-                            D.vege(elsore >= N - 1, D.T('Vége! ' + elsore + ' / ' + N + ' elsőre jó.', '¡Fin! ' + elsore + ' / ' + N + ' bien a la primera.'),
+                            D.vege(elsore >= N - 1, D.T('Vége! ' + N + ' közül ' + elsore + ' elsőre sikerült.', '¡Fin! ' + elsore + ' de ' + N + ' bien a la primera.'),
                                 D.T('Krokodilos feladat (<, =, >): ' + elsore + '/' + N + ' elsőre jó. ' + napl.join('; '),
                                     'Tarea del cocodrilo (<, =, >): ' + elsore + '/' + N + ' bien a la primera. ' + napl.join('; ')));
                         }, 2600);
