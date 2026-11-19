@@ -1974,7 +1974,9 @@ def mintalecke(evf: int):
     if not lk:
         return redirect(url_for("mintalecke_valaszt"))
     _latogatas_esemeny(f"minta_{ny}_{evf}")
-    return render_template("mintalecke.html", lecke=lk, evf=evf,
+    # fix217: ahol van beszélgetős változat, az megy (most: 2. osztály HU+ES)
+    _chat = getattr(_ml, "chat", lambda *_: None)(ny, evf)
+    return render_template("mintalecke.html", lecke=lk, evf=evf, chat=_chat,
                            evfolyamok=_ml.evfolyamok(ny), gyerek_menu_nelkul=True)
 
 

@@ -193,3 +193,81 @@ def ellenoriz() -> list[str]:
                 if len(set(s["opciok"])) != len(s["opciok"]):
                     hibak.append(f"{ny}/{e}/{i}: ismétlődő opció")
     return hibak
+
+
+# ── BESZÉLGETŐS MINTALECKE (fix217, Sándor 11.19) ───────────────────────────
+# A régi mintalecke 3 választós kérdés volt – „sima kvíznek” látszott, és pont
+# azt nem mutatta, amiben jók vagyunk: a tanító BESZÉLGET, a rossz válaszra
+# MÁSKÉPP magyaráz, és van valódi, megfogható feladat (tízes keret).
+# Továbbra is előre megírt, AI nélkül, ingyen. Lépésfajták:
+#   {"tan": [üzenetek]}                       – a tanító ír (gépelés-jelzővel)
+#   {"val": [opciók], "jo": i, "ha_jo": [...], "ha_rossz": [...]}
+#        – a gyerek válaszgombjai; rossznál a tanító másképp magyaráz, és újra kérdez
+#   {"tizes": [a, b], "tan": [üzenet a feladathoz]} – tízes keret: a kék pöttyöket
+#        koppintással átrakja, amíg 10 nem lesz
+#   {"kerdez": [[kérdés, válasz], ...], "tovabb": felirat}
+#        – „te is kérdezhetsz”: a gyerek választ egy kérdést, a tanító válaszol
+CHAT = {
+    "hu": {
+        2: [
+            {"tan": ["Szia! 👋 Én vagyok a tanítód.",
+                     "Ma egy ügyes trükköt tanulunk: hogyan adjunk össze, ha <b>átlépjük a 10-et</b>.",
+                     "Kezdjük egy kérdéssel: mennyi <b>8 + 5</b>?"]},
+            {"val": ["12", "13", "14"], "jo": 1,
+             "ha_jo": ["Igen, <b>13</b>! 🎉 Most megmutatom, hogyan lehet ezt fejben is könnyen kiszámolni."],
+             "ha_rossz": ["Majdnem! Semmi baj – nézzük meg együtt, lépésenként. 🙂"], "tovabb_rosszra": True},
+            {"tizes": [8, 5], "tan": ["Itt van <b>8 piros</b> pötty a tízes keretben, és <b>5 kék</b> mellette.",
+                                       "Koppints a kék pöttyökre, és rakd át őket, amíg <b>tele nem lesz a keret</b>!"],
+             "kesz": "Pont <b>10</b> lett! 🙌 Kint maradt még <b>3</b> kék."},
+            {"tan": ["Tehát 8 + 5 ugyanannyi, mint <b>10 + 3</b>. Mennyi az?"]},
+            {"val": ["103", "13", "11"], "jo": 1,
+             "ha_jo": ["Úgy van, <b>13</b>! A 10-hez könnyű hozzáadni: 10 + 3 = 13."],
+             "ha_rossz": ["Nézd meg így: <b>1 teli tízes</b> és még <b>3</b>. A tízes 10, mellé 3: az <b>13</b>. Próbáld újra!"]},
+            {"kerdez": [["Miért pont 10-ig töltjük fel? 🤔",
+                         "Mert a 10-hez a legkönnyebb hozzáadni! 10 + 3, 10 + 6 – ezt már számolni sem kell. Ezért előbb kiegészítjük 10-re, és csak utána jön a maradék."],
+                        ["Az ujjaimon is lehet?",
+                         "Persze! A két kezeden pont 10 ujj van – ez is egy tízes keret. 😊 De a trükk nagy számoknál is működik, ott már nem lesz elég az ujj."]],
+             "tovabb": "Értem, jöhet a következő! ✅",
+             "tan": ["Ha valami nem világos, <b>kérdezz bátran</b> – válaszolok. 🙂"]},
+            {"tizes": [7, 6], "tan": ["Most te jössz egyedül: <b>7 + 6</b>.", "Töltsd fel a tízes keretet!"],
+             "kesz": "Tele van! Kint maradt <b>3</b>. Mennyi lett összesen?"},
+            {"val": ["12", "13", "14"], "jo": 1,
+             "ha_jo": ["Szuper! 🎉 <b>7 + 6 = 13</b>. Először 10-ig (7 + 3), aztán a maradék 3."],
+             "ha_rossz": ["Számold meg a kintieket: <b>3</b> maradt. 10 + 3 = ? Próbáld újra!"]},
+            {"tan": ["Ügyes voltál! 💪 A valódi órán így haladunk tovább: egyre nehezebb feladatokkal, és ha elakadsz, másképp is elmagyarázom."]},
+        ],
+    },
+    "es": {
+        2: [
+            {"tan": ["¡Hola! 👋 Soy tu profe.",
+                     "Hoy aprendemos un truco para sumar cuando <b>pasamos del 10</b>.",
+                     "Empezamos con una pregunta: ¿cuánto es <b>8 + 5</b>?"]},
+            {"val": ["12", "13", "14"], "jo": 1,
+             "ha_jo": ["¡Sí, <b>13</b>! 🎉 Ahora te enseño cómo calcularlo fácil, de cabeza."],
+             "ha_rossz": ["¡Casi! No pasa nada: lo vemos juntos, paso a paso. 🙂"], "tovabb_rosszra": True},
+            {"tizes": [8, 5], "tan": ["Aquí hay <b>8 puntos rojos</b> en la caja de diez y <b>5 azules</b> al lado.",
+                                       "Toca los puntos azules para pasarlos hasta que <b>la caja esté llena</b>."],
+             "kesz": "¡Justo <b>10</b>! 🙌 Fuera quedan <b>3</b> azules."},
+            {"tan": ["Entonces 8 + 5 es lo mismo que <b>10 + 3</b>. ¿Cuánto es?"]},
+            {"val": ["103", "13", "11"], "jo": 1,
+             "ha_jo": ["¡Eso es, <b>13</b>! Al 10 es fácil sumarle: 10 + 3 = 13."],
+             "ha_rossz": ["Míralo así: <b>una decena llena</b> y <b>3</b> más. La decena es 10, y 3 más: <b>13</b>. ¡Prueba otra vez!"]},
+            {"kerdez": [["¿Por qué llenamos hasta 10? 🤔",
+                         "¡Porque al 10 es lo más fácil sumarle! 10 + 3, 10 + 6… eso casi ni se calcula. Por eso primero completamos el 10 y luego sumamos lo que queda."],
+                        ["¿Puedo usar los dedos?",
+                         "¡Claro! En las dos manos tienes justo 10 dedos: también es una caja de diez. 😊 Pero el truco sirve también con números grandes, donde los dedos ya no llegan."]],
+             "tovabb": "¡Entendido, sigamos! ✅",
+             "tan": ["Si algo no está claro, <b>pregúntame</b>: te contesto. 🙂"]},
+            {"tizes": [7, 6], "tan": ["Ahora tú solo: <b>7 + 6</b>.", "¡Llena la caja de diez!"],
+             "kesz": "¡Llena! Fuera quedan <b>3</b>. ¿Cuánto es en total?"},
+            {"val": ["12", "13", "14"], "jo": 1,
+             "ha_jo": ["¡Genial! 🎉 <b>7 + 6 = 13</b>. Primero hasta 10 (7 + 3) y luego lo que queda, 3."],
+             "ha_rossz": ["Cuenta los de fuera: quedan <b>3</b>. 10 + 3 = ? ¡Prueba otra vez!"]},
+            {"tan": ["¡Muy bien! 💪 En la clase de verdad seguimos así: con ejercicios cada vez más difíciles y, si te atascas, te lo explico de otra manera."]},
+        ],
+    },
+}
+
+
+def chat(nyelv: str, evfolyam: int) -> list | None:
+    return (CHAT.get(nyelv) or {}).get(int(evfolyam))

@@ -73,6 +73,37 @@
   .ml-c5{background:#5B6CE0}.ml-c6{background:#D9467F}.ml-c7{background:#22A06B}.ml-c8{background:#E07B39}
   #mlKonf{position:fixed;inset:0;pointer-events:none;z-index:50}
   @media (max-width:520px){.ml-racs{grid-template-columns:repeat(4,1fr);gap:8px}.ml-cs b{font-size:26px}.ml-bub{font-size:16px}}
+  /* ── BESZÉLGETŐS MINTALECKE (fix217) ── */
+  .mc-lista{display:flex;flex-direction:column;gap:10px;margin:10px 0 14px}
+  .mc-sor{display:flex;gap:9px;align-items:flex-end}
+  .mc-sor.gy{justify-content:flex-end}
+  .mc-av{flex:0 0 38px;height:38px;border-radius:50%;background:#E3F3EA;display:flex;align-items:center;justify-content:center}
+  .mc-av img{width:26px;height:26px}
+  .mc-b{max-width:82%;background:#fff;border-radius:18px 18px 18px 4px;padding:11px 14px;font-size:16.5px;line-height:1.5;color:#1F2D28;
+    box-shadow:0 3px 10px rgba(23,96,74,.10);animation:mcBe .25s ease-out}
+  .mc-sor.gy .mc-b{background:#17604A;color:#fff;border-radius:18px 18px 4px 18px;font-weight:700}
+  .mc-gep span{display:inline-block;width:7px;height:7px;border-radius:50%;background:#9DB5AA;margin:0 2px;animation:mcPont 1s infinite}
+  .mc-gep span:nth-child(2){animation-delay:.15s}.mc-gep span:nth-child(3){animation-delay:.3s}
+  @keyframes mcPont{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+  @keyframes mcBe{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .mc-valasz{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;min-height:8px;margin-bottom:6px}
+  .mc-gomb{border:2px solid #17604A;background:#fff;color:#17604A;font-weight:800;font-size:16.5px;font-family:inherit;border-radius:999px;
+    padding:10px 18px;cursor:pointer;animation:mcBe .25s ease-out;box-shadow:0 3px 0 rgba(23,96,74,.18)}
+  .mc-gomb.szam{min-width:70px;font-size:21px}
+  .mc-gomb.rossz{opacity:.5;text-decoration:line-through;border-color:#E5484D;color:#B42318;cursor:default}
+  .mc-gomb.fo{background:#F5A01E;border-color:#F5A01E;color:#fff;box-shadow:0 3px 0 #C97F0E}
+  .mc-tk{background:#fff;border-radius:18px;padding:14px 10px;box-shadow:0 4px 14px rgba(23,96,74,.10);margin-left:47px;animation:mcBe .3s ease-out}
+  .mc-keret{display:grid;grid-template-columns:repeat(5,44px);gap:6px;background:#FFF4E0;border:3px solid #F1DDBA;border-radius:14px;padding:8px;width:max-content;margin:0 auto}
+  .mc-cella{width:44px;height:44px;border-radius:10px;background:#fff;border:2px dashed #E2D3B5;display:flex;align-items:center;justify-content:center}
+  .mc-p{width:34px;height:34px;border-radius:50%;display:inline-block;animation:mcBe .25s ease-out}
+  .mc-p.piros{background:radial-gradient(circle at 35% 30%,#FFB4B4,#E53935 50%,#9B1B1B)}
+  .mc-p.kek{background:radial-gradient(circle at 35% 30%,#D6E8FF,#42A5F5 50%,#1565C0)}
+  .mc-kint{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;min-height:40px}
+  .mc-kint .mc-p.ugro{cursor:pointer;animation:mcPulz 1.3s infinite}
+  @keyframes mcPulz{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+  .mc-tk-sz{text-align:center;font-weight:800;color:#17342C;margin-top:10px;font-size:18px}
+  .mc-tk-sz b{color:#1565C0}.mc-tk-sz i{font-style:normal;color:#C62828}
+  @media (max-width:420px){.mc-tk{margin-left:0}.mc-b{font-size:16px}}
 </style>
 <div class="ml"><div class="ml-belso">
 {% if not lecke %}
@@ -83,6 +114,14 @@
       {% for n in evfolyamok %}<a class="ml-cs ml-c{{ n }}" href="{{ url_for('mintalecke', evf=n) }}" data-mer="Mintalecke: {{ n }}. évfolyam"><b>{{ n }}.</b><span>{{ 'curso' if es else 'osztály' }}</span></a>{% endfor %}
     </div>
     <p class="ml-megj">🛡️ {{ 'No guardamos nada. No hace falta ningún nombre.' if es else 'Semmit nem mentünk el. Nevet sem kell megadni.' }}</p>
+  </div>
+{% else %}
+{% if chat %}
+  <div id="mlChat">
+    <div class="ml-fej"><b>{{ lecke.targy }} · {{ lecke.tema }}</b><span>{{ (evf ~ '.º curso') if es else (evf ~ '. osztály') }}</span></div>
+    <div class="ml-info">👀 {{ 'Esto es una muestra corta de cómo enseña el profesor (una inteligencia artificial): conversa, espera la respuesta y, si algo no sale, lo explica de otra manera. En la clase de verdad se le puede preguntar lo que sea, y también hablar en voz alta.' if es else 'Ez egy rövid bemutató arról, hogyan tanít a tanító (mesterséges intelligencia): beszélget, megvárja a választ, és ha valami nem megy, másképp magyarázza el. A valódi órán szabadon kérdezhetsz tőle, és hangosan is lehet beszélni vele.' }}</div>
+    <div class="mc-lista" id="mcLista"></div>
+    <div class="mc-valasz" id="mcValasz"></div>
   </div>
 {% else %}
   <div id="mlLecke">
@@ -98,6 +137,7 @@
       <div style="text-align:center"><button class="ml-tovabb" id="mlTovabb" type="button">{{ 'Siguiente →' if es else 'Tovább →' }}</button></div>
     </div>
   </div>
+{% endif %}
   <div id="mlVege" class="ml-vege" style="display:none">
     <div class="nagy">🏆</div><h1>{{ '¡Muy bien!' if es else 'Ügyes volt!' }}</h1>
     <p>{{ 'Esto ha sido una lección real en pequeño. En la versión completa hay mucho más:' if es else 'Ez egy igazi lecke volt kicsiben. A teljes TutorIAcademiában ennél sokkal több van:' }}</p>
@@ -113,6 +153,121 @@
 
   </div>
   <canvas id="mlKonf"></canvas>
+{% if chat %}
+  <script>
+  /* fix217: BESZÉLGETŐS MINTALECKE – előre megírt, AI nélkül (mintalecke.py CHAT). */
+  (function () {
+    var C = {{ chat|tojson }}, ES = {{ 'true' if es else 'false' }};
+    var LOGO = "{{ url_for('static', filename='img/tutoria_logo.png') }}";
+    var lista = document.getElementById('mcLista'), val = document.getElementById('mcValasz');
+    var SZ = ['#2F8FD8', '#8A5CD6', '#F59E0B', '#0EA5B7', '#5B6CE0', '#D9467F'];
+    function konfetti(el) {
+      var c = document.getElementById('mlKonf'), x = c.getContext('2d'); c.width = innerWidth; c.height = innerHeight;
+      var r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, p = [];
+      for (var k = 0; k < 80; k++) { var a = Math.random() * 6.28, s = 4 + Math.random() * 7;
+        p.push({x: cx, y: cy, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 4, m: 5 + Math.random() * 6, c: SZ[k % 6], t: 0}); }
+      (function rajz() { x.clearRect(0, 0, c.width, c.height); var el2 = false;
+        p.forEach(function (q) { if (q.t > 70) { return; } el2 = true; q.t++; q.vy += .25; q.x += q.vx; q.y += q.vy; x.fillStyle = q.c; x.fillRect(q.x, q.y, q.m, q.m * .6); });
+        if (el2) { requestAnimationFrame(rajz); } else { x.clearRect(0, 0, c.width, c.height); } })();
+    }
+    function le() { try { val.scrollIntoView({behavior: 'smooth', block: 'end'}); } catch (e) {} }
+    function sor(gyerek, html) {
+      var s = document.createElement('div'); s.className = 'mc-sor' + (gyerek ? ' gy' : '');
+      s.innerHTML = (gyerek ? '' : '<div class="mc-av"><img src="' + LOGO + '" alt=""></div>') + '<div class="mc-b">' + html + '</div>';
+      lista.appendChild(s); le(); return s;
+    }
+    // A tanító „gépel”, aztán megjelenik az üzenet – mint a valódi órán.
+    function mond(uzenetek, kesz) {
+      var i = 0;
+      (function egy() {
+        if (i >= (uzenetek || []).length) { if (kesz) { kesz(); } return; }
+        var g = sor(false, '<span class="mc-gep"><span></span><span></span><span></span></span>');
+        setTimeout(function () { g.remove(); sor(false, uzenetek[i]); i++; setTimeout(egy, 350); },
+                   Math.min(1400, 500 + uzenetek[i].replace(/<[^>]+>/g, '').length * 12));
+      })();
+    }
+    function gomb(felirat, cls, fn) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'mc-gomb ' + (cls || ''); b.innerHTML = felirat;
+      b.addEventListener('click', function () { if (!b.disabled) { fn(b); } }); val.appendChild(b); le(); return b;
+    }
+    function tizes(a, b, kesz) {
+      var d = document.createElement('div'); d.className = 'mc-tk';
+      d.innerHTML = '<div class="mc-keret"></div><div class="mc-kint"></div><div class="mc-tk-sz"></div>';
+      lista.appendChild(d);
+      var keret = d.querySelector('.mc-keret'), kint = d.querySelector('.mc-kint'), sz = d.querySelector('.mc-tk-sz'), bent = 0;
+      function rajz() {
+        keret.innerHTML = ''; kint.innerHTML = '';
+        for (var k = 0; k < 10; k++) {
+          var c = document.createElement('div'); c.className = 'mc-cella';
+          if (k < a) { c.innerHTML = '<span class="mc-p piros"></span>'; }
+          else if (k < a + bent) { c.innerHTML = '<span class="mc-p kek"></span>'; }
+          keret.appendChild(c);
+        }
+        var tele = a + bent >= 10;
+        for (var j = 0; j < b - bent; j++) {
+          var p = document.createElement('span'); p.className = 'mc-p kek' + (tele ? '' : ' ugro');
+          if (!tele) { p.addEventListener('click', function () { bent++; rajz(); if (a + bent >= 10) { setTimeout(kesz, 400); } }); }
+          kint.appendChild(p);
+        }
+        sz.innerHTML = '<i>' + a + '</i> + <b>' + bent + '</b> = ' + (a + bent) + (tele ? ' ✓' : '') +
+          (tele ? ' &nbsp;·&nbsp; ' + (ES ? 'fuera: ' : 'kint: ') + '<b>' + (b - bent) + '</b>' : '');
+      }
+      rajz(); le();
+    }
+    var i = 0;
+    function kovetkezo() { i++; lep(); }
+    function lep() {
+      val.innerHTML = '';
+      if (i >= C.length) {
+        setTimeout(function () {
+          document.getElementById('mlChat').style.display = 'none';
+          document.getElementById('mlVege').style.display = 'block'; window.scrollTo(0, 0);
+          try { fetch('{{ url_for('mintalecke_vege', evf=evf) }}', {method: 'POST'}); } catch (e) {}
+        }, 1600);
+        return;
+      }
+      var s = C[i];
+      if (s.val) {
+        var hiba = 0;
+        s.val.forEach(function (o, k) {
+          gomb(o, 'szam', function (b) {
+            sor(true, o);
+            if (k === s.jo) {
+              val.innerHTML = ''; konfetti(lista.lastChild); mond(s.ha_jo, kovetkezo);
+            } else {
+              hiba++; b.disabled = true; b.classList.add('rossz');
+              if (s.tovabb_rosszra) { val.innerHTML = ''; mond(s.ha_rossz, kovetkezo); return; }
+              val.style.visibility = 'hidden';
+              mond(hiba >= 2 ? [s.ha_rossz[0], (ES ? 'La respuesta es: <b>' : 'A helyes válasz: <b>') + s.val[s.jo] + '</b>.'] : s.ha_rossz,
+                   function () { if (hiba >= 2) { kovetkezo(); } val.style.visibility = ''; le(); });
+            }
+          });
+        });
+        return;
+      }
+      if (s.tizes) {
+        mond(s.tan, function () { tizes(s.tizes[0], s.tizes[1], function () { konfetti(lista.lastChild); mond([s.kesz], kovetkezo); }); });
+        return;
+      }
+      if (s.kerdez) {
+        mond(s.tan, function () {
+          (function gombok() {
+            val.innerHTML = '';
+            s.kerdez.forEach(function (q) {
+              if (q.volt) { return; }
+              gomb(q[0], '', function () { q.volt = true; val.innerHTML = ''; sor(true, q[0]); mond([q[1]], gombok); });
+            });
+            gomb(s.tovabb, 'fo', function () { val.innerHTML = ''; sor(true, s.tovabb); kovetkezo(); });
+          })();
+        });
+        return;
+      }
+      mond(s.tan, kovetkezo);
+    }
+    lep();
+  })();
+  </script>
+{% else %}
   <script>
   (function () {
     var L = {{ lecke|tojson }}, ES = {{ 'true' if es else 'false' }};
@@ -185,6 +340,7 @@
     lepes();
   })();
   </script>
+{% endif %}
 {% endif %}
 </div></div>
 {% endblock %}
