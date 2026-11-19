@@ -3319,7 +3319,8 @@ def szuloi_pin():
             return redirect(tovabb)
         flash(i18n.t("pin_rossz", g.lang), "error")
 
-    return render_template("szuloi_pin.html", tovabb=tovabb)
+    # fix219 (Sándor): a szülői kódnál NE a gyerek sávja látszódjon.
+    return render_template("szuloi_pin.html", tovabb=tovabb, gyerek_menu_nelkul=True)
 
 
 @app.route("/szuloi-pin/bezar")

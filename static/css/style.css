@@ -3992,8 +3992,10 @@ body:has(.fp-sav):not(:has(.gymenu)) .flash-container { margin-top: 92px; }
    gyereksáv nem csúszik alá. Csak gépen (1181 px fölött), mint a fix138.
    Visszaállítás: ezt a blokkot törölni. */
 @media (min-width: 1181px) {
-    body.gyerek-hatter .navbar, body:has(.gymenu) .navbar { background: transparent !important; box-shadow: none !important; border: 0 !important; }
-    body.gyerek-hatter .navbar-inner, body:has(.gymenu) .navbar-inner { position: relative; isolation: isolate; overflow: hidden; margin: 10px auto;
+    /* fix218 (Sándor: görgetéskor a tartalom látszott a kapszula körül): a sáv mögötte TÖMÖR,
+       így a fejléc a helyén marad, és semmi nem lóg be mögé. */
+    body.gyerek-hatter .navbar, body:has(.gymenu) .navbar { background: #F4F7F3 !important; box-shadow: 0 3px 12px rgba(20,60,40,.08) !important; border: 0 !important; }
+    body.gyerek-hatter .navbar-inner, body:has(.gymenu) .navbar-inner { position: relative; isolation: isolate; overflow: hidden; margin: 8px auto;
         width: calc(100% - 20px); max-width: 1260px; border-radius: 22px; padding: .55rem 1rem .55rem .7rem;
         box-shadow: 0 10px 28px rgba(10,40,28,.20), 0 0 0 1px rgba(22,58,46,.10); }
     body.gyerek-hatter .navbar-inner::before, body:has(.gymenu) .navbar-inner::before { content: ""; position: absolute; inset: 0; z-index: -1;

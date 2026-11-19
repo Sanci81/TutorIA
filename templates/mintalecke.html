@@ -104,8 +104,32 @@
   .mc-tk-sz{text-align:center;font-weight:800;color:#17342C;margin-top:10px;font-size:18px}
   .mc-tk-sz b{color:#1565C0}.mc-tk-sz i{font-style:normal;color:#C62828}
   @media (max-width:420px){.mc-tk{margin-left:0}.mc-b{font-size:16px}}
+  /* fix218: TÁBLA – mint a valódi órán: gépen bal oldalt a tábla, jobbra a beszélgetés */
+  .mc-zold{color:#22A06B}
+  .mc-tabla{display:none}
+  .mc-tk-cim{font-size:24px;font-weight:900;color:#17342C;text-align:center;margin:2px 0 12px}
+  .mc-tk .mc-tk-lista{margin:0 auto;max-width:360px}
+  .mc-tk-lista div{background:#F3F8F5;border-radius:12px;padding:10px 14px;margin:8px 0;font-size:17px;font-weight:700;color:#17342C}
+  .mc-statikus .mc-p{animation:none}
+  @media (min-width:900px){
+    .ml-belso.mc-szeles{max-width:1120px}
+    .mc-racs{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:start}
+    .mc-tabla{display:block;position:sticky;top:100px;background:#fff;border-radius:24px;padding:16px 18px 22px;min-height:440px;
+      box-shadow:0 8px 24px rgba(23,96,74,.12);border:1px solid #E3EEE8}
+    .mc-tabla-fej{display:flex;align-items:center;justify-content:space-between;font-weight:800;color:#5f7469;font-size:13px;
+      text-transform:uppercase;letter-spacing:.08em;border-bottom:2px dashed #E3EEE8;padding-bottom:10px;margin-bottom:6px}
+    .mc-tabla .mc-tk{margin:0;box-shadow:none;padding:6px 0 0}
+    .mc-tabla .mc-tk-cim{font-size:40px;margin:18px 0 22px}
+    .mc-tabla .mc-keret{grid-template-columns:repeat(5,58px);gap:8px;padding:10px}
+    .mc-tabla .mc-cella{width:58px;height:58px}
+    .mc-tabla .mc-p{width:44px;height:44px}
+    .mc-tabla .mc-tk-sz{font-size:24px;margin-top:16px}
+    .mc-tabla .mc-tk-lista div{font-size:20px;padding:13px 18px}
+    .mc-tabla-ures{text-align:center;color:#9DB5AA;font-weight:700;margin-top:120px}
+    .mc-chat .mc-tk{display:none}
+  }
 </style>
-<div class="ml"><div class="ml-belso">
+<div class="ml"><div class="ml-belso{% if chat %} mc-szeles{% endif %}">
 {% if not lecke %}
   <div class="ml-valaszt">
     <h1>{{ '¿En qué curso está tu hijo?' if es else 'Hányadik osztályos a gyereked?' }}</h1>
@@ -120,8 +144,12 @@
   <div id="mlChat">
     <div class="ml-fej"><b>{{ lecke.targy }} · {{ lecke.tema }}</b><span>{{ (evf ~ '.º curso') if es else (evf ~ '. osztály') }}</span></div>
     <div class="ml-info">👀 {{ 'Esto es una muestra corta de cómo enseña el profesor (una inteligencia artificial): conversa, espera la respuesta y, si algo no sale, lo explica de otra manera. En la clase de verdad se le puede preguntar lo que sea, y también hablar en voz alta.' if es else 'Ez egy rövid bemutató arról, hogyan tanít a tanító (mesterséges intelligencia): beszélget, megvárja a választ, és ha valami nem megy, másképp magyarázza el. A valódi órán szabadon kérdezhetsz tőle, és hangosan is lehet beszélni vele.' }}</div>
-    <div class="mc-lista" id="mcLista"></div>
-    <div class="mc-valasz" id="mcValasz"></div>
+    <div class="mc-racs">
+      <div class="mc-tabla" id="mcTabla"><div class="mc-tabla-fej"><span>🧑‍🏫 {{ 'Pizarra' if es else 'Tábla' }}</span><span>{{ lecke.targy }}</span></div>
+        <div id="mcTablaBel"><div class="mc-tabla-ures">✏️</div></div></div>
+      <div class="mc-chat"><div class="mc-lista" id="mcLista"></div>
+        <div class="mc-valasz" id="mcValasz"></div></div>
+    </div>
   </div>
 {% else %}
   <div id="mlLecke">
@@ -190,10 +218,36 @@
       var b = document.createElement('button'); b.type = 'button'; b.className = 'mc-gomb ' + (cls || ''); b.innerHTML = felirat;
       b.addEventListener('click', function () { if (!b.disabled) { fn(b); } }); val.appendChild(b); le(); return b;
     }
-    function tizes(a, b, kesz) {
+    /* fix218: gépen (900 px fölött) a rajz a TÁBLÁRA kerül, mint a valódi órán; telefonon a beszélgetésbe. */
+    var NAGY = window.matchMedia && window.matchMedia('(min-width: 900px)').matches;
+    var tablaBel = document.getElementById('mcTablaBel');
+    function tablaLap(cim) {
       var d = document.createElement('div'); d.className = 'mc-tk';
-      d.innerHTML = '<div class="mc-keret"></div><div class="mc-kint"></div><div class="mc-tk-sz"></div>';
-      lista.appendChild(d);
+      d.innerHTML = (cim ? '<div class="mc-tk-cim">' + cim + '</div>' : '');
+      if (NAGY) { tablaBel.innerHTML = ''; tablaBel.appendChild(d); } else { lista.appendChild(d); le(); }
+      return d;
+    }
+    function tablaCim(cim) {
+      if (!NAGY) { return; }
+      var c = tablaBel.querySelector('.mc-tk-cim'); if (c) { c.innerHTML = cim; }
+    }
+    function keretHtml(a, b, bent) {
+      var h = '<div class="mc-keret">';
+      for (var k = 0; k < 10; k++) { h += '<div class="mc-cella">' + (k < a ? '<span class="mc-p piros"></span>' : (k < a + bent ? '<span class="mc-p kek"></span>' : '')) + '</div>'; }
+      h += '</div><div class="mc-kint">';
+      for (var j = 0; j < b - bent; j++) { h += '<span class="mc-p kek"></span>'; }
+      return h + '</div>';
+    }
+    function tabla(t) {
+      if (!t) { return; }
+      var d = tablaLap(t.cim);
+      if (t.keret) { var k = document.createElement('div'); k.className = 'mc-statikus'; k.innerHTML = keretHtml(t.keret[0], t.keret[1], 0); d.appendChild(k); }
+      if (t.lista) { var l = document.createElement('div'); l.className = 'mc-tk-lista';
+        l.innerHTML = t.lista.map(function (x) { return '<div>' + x + '</div>'; }).join(''); d.appendChild(l); }
+    }
+    function tizes(a, b, kesz, cim) {
+      var d = tablaLap(cim);
+      d.insertAdjacentHTML('beforeend', '<div class="mc-keret"></div><div class="mc-kint"></div><div class="mc-tk-sz"></div>');
       var keret = d.querySelector('.mc-keret'), kint = d.querySelector('.mc-kint'), sz = d.querySelector('.mc-tk-sz'), bent = 0;
       function rajz() {
         keret.innerHTML = ''; kint.innerHTML = '';
@@ -227,13 +281,17 @@
         return;
       }
       var s = C[i];
+      /* gépen a tábla AZONNAL frissül; telefonon a tanító üzenetei UTÁN jön a rajz */
+      if (s.tabla && NAGY) { tabla(s.tabla); }
+      function utana(cb) { return function () { if (s.tabla && !NAGY) { tabla(s.tabla); } if (cb) { cb(); } }; }
+      if (s.tabla_cim) { tablaCim(s.tabla_cim); }
       if (s.val) {
         var hiba = 0;
         s.val.forEach(function (o, k) {
           gomb(o, 'szam', function (b) {
             sor(true, o);
             if (k === s.jo) {
-              val.innerHTML = ''; konfetti(lista.lastChild); mond(s.ha_jo, kovetkezo);
+              val.innerHTML = ''; konfetti(lista.lastChild); if (s.tabla_jo) { tablaCim(s.tabla_jo); } mond(s.ha_jo, kovetkezo);
             } else {
               hiba++; b.disabled = true; b.classList.add('rossz');
               if (s.tovabb_rosszra) { val.innerHTML = ''; mond(s.ha_rossz, kovetkezo); return; }
@@ -246,11 +304,11 @@
         return;
       }
       if (s.tizes) {
-        mond(s.tan, function () { tizes(s.tizes[0], s.tizes[1], function () { konfetti(lista.lastChild); mond([s.kesz], kovetkezo); }); });
+        mond(s.tan, function () { tizes(s.tizes[0], s.tizes[1], function () { konfetti(NAGY ? tablaBel : lista.lastChild); mond([s.kesz], kovetkezo); }, s.cim); });
         return;
       }
       if (s.kerdez) {
-        mond(s.tan, function () {
+        mond(s.tan, utana(function () {
           (function gombok() {
             val.innerHTML = '';
             s.kerdez.forEach(function (q) {
@@ -259,10 +317,10 @@
             });
             gomb(s.tovabb, 'fo', function () { val.innerHTML = ''; sor(true, s.tovabb); kovetkezo(); });
           })();
-        });
+        }));
         return;
       }
-      mond(s.tan, kovetkezo);
+      mond(s.tan, utana(kovetkezo));
     }
     lep();
   })();
