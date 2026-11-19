@@ -1783,3 +1783,12 @@ Tervezett elemek:
 - [x] (fix203) Rácsos szorzás a tanárnak: KIEGÉSZÍTŐ módszer – először mindig az iskolai írásbeli szorzás (szamolo); a rácsot csak ellenőrzésre / érdekességként, vagy ha a gyerek az átvitelben rendre elakad. Ok: sem a magyar, sem a spanyol iskola nem ezt tanítja, ne zavarjuk össze.
 - [ ] (fix203) KÖVETKEZŐ KÖR (javaslat): Magyar nyelv / Lengua castellana 1–2. osztály (olvasás-írás tanulás) – előbb hiánylista a leckékből, a meglévő feladatokkal (szotag, betukev, maganh, diktalas, rim, nagybetu…) összevetve; aztán Matek 3–4.
 - [ ] (fix203) Regisztráció: Sándor csalódott (hirdetés fut, nincs regisztráció). Péntek után a látogatottsági adatból: hányan jutnak el a próbaleckéig / regisztrációig, és hol esnek ki.
+- [x] (fix204) ANYANYELV 1–2. osztály – 6 új feladat (mind léptethető példával, 🔊 Meghallgatom gombbal, Tovább gombokkal):
+  - hanghely – „Hol hallod a hangot?” (szó elején / végén), 1–2., HU + ES.
+  - szokoz – „Hol a szóköz?” (Akutyaugat. → koppint a szóhatárra), 1–2., HU + ES. Mondat max. 14 betű (a túl hosszút a program kihagyja).
+  - helyesiras – HU: rövid/hosszú magánhangzó (h_z: a/á), 1–3.; ES: c/qu, m antes de p/b, r/rr (szabaly: cqu|mn|rrr).
+  - mesesor – mese 4 képes kártyán sorba rakva (eleje–közepe–vége): HU répa / három kismalac / Piroska; ES nabo / cerditos / caperucita. SAJÁT rövid újramesélés (a népmese közkincs; mások mai átirata, fordítása, illusztrációja NEM).
+  - hangsuly – sílaba tónica, CSAK spanyol.
+  - signos – ¿? ¡! , CSAK spanyol (a magyar oldalon a meglévő irasjel).
+- [ ] (fix204) Feladatszám (Sándor kérdése): 142 feladattípus. Cél NEM több ezer, hanem hogy minden lecke kapjon 2–3 ráillő típust (~150–250). Következő hiánylista: Matek 3–4., majd Magyar/Lengua 3–4.
+- [ ] (fix204) Később: további népmesék a mesesorba (pl. A kiskakas gyémánt félkrajcárja; ES: La ratita presumida) – mindig saját, rövid újramesélés.

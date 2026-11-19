@@ -6640,6 +6640,69 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             "Cabezas y patas: ¿cuántos conejos hay?" if es_tanterv else "Fejek és lábak: hány nyuszi van?")
         return out
 
+    # ══ ANYANYELV 1–2. OSZTÁLY (fix204): magyar és Lengua castellana ═══════
+    if tipus == "hanghely":
+        return {"tipus": "hanghely", "kerdes": _rov(adat.get("kerdes"), 120) or (
+            "¿El sonido está al principio o al final?" if es_tanterv else "Hol hallod a hangot: a szó elején vagy a végén?")}
+
+    if tipus == "szokoz":
+        out = {"tipus": "szokoz"}
+        m = adat.get("mondatok")
+        if m is not None:
+            jo = []
+            for x in (m if isinstance(m, list) else [])[:4]:
+                x = re.sub(r"\s+", " ", str(x or "")).strip()
+                betuk = len(x.replace(" ", ""))
+                # túl hosszú vagy furcsa mondat: kimarad (a program a sajátjait adja helyette)
+                if re.fullmatch(r"[^\W\d_]+( [^\W\d_]+){1,5}[.!?]", x) and betuk <= 14:
+                    jo.append(x[0].upper() + x[1:])
+            if jo:
+                out["mondatok"] = jo
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Dónde van los espacios?" if es_tanterv else "Hol vannak a szóközök?")
+        return out
+
+    if tipus == "helyesiras":
+        out = {"tipus": "helyesiras"}
+        sz = adat.get("szabaly")
+        if es_tanterv:
+            if sz is not None:
+                if sz not in ("cqu", "mn", "rrr"):
+                    return None
+                out["szabaly"] = sz
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué letra falta?" if es_tanterv else "Melyik betű kell a szóba?")
+        return out
+
+    if tipus == "mesesor":
+        ATIR = {"repa": "nabo", "malac": "cerditos", "piroska": "caperucita"}
+        out = {"tipus": "mesesor"}
+        me = adat.get("mese")
+        if me is not None:
+            me = str(me).strip().lower()
+            if es_tanterv:
+                me = ATIR.get(me, me)
+                if me not in ("nabo", "cerditos", "caperucita"):
+                    return None
+            else:
+                me = {v: k for k, v in ATIR.items()}.get(me, me)
+                if me not in ATIR:
+                    return None
+            out["mese"] = me
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "Ordena el cuento." if es_tanterv else "Rakd sorba a mesét!")
+        return out
+
+    if tipus == "hangsuly":          # csak spanyol: sílaba tónica
+        if not es_tanterv:
+            return None
+        return {"tipus": "hangsuly", "kerdes": _rov(adat.get("kerdes"), 120) or "¿Qué sílaba suena más fuerte?"}
+
+    if tipus == "signos":            # csak spanyol: ¿? ¡! (a magyar oldalon: irasjel)
+        if not es_tanterv:
+            return None
+        return {"tipus": "signos", "kerdes": _rov(adat.get("kerdes"), 120) or "¿Pregunta, exclamación o punto?"}
+
     # ══ 1–2. OSZTÁLYOS MATEK FELADATOK (fix196) ═════════════════════════
     _SZINEK_196 = ("piros", "kek", "sarga", "zold", "lila")
     if tipus == "mintasor":
@@ -11063,6 +11126,40 @@ _DM_FELULETEK = [
      'GALLINAS Y CONEJOS – cabezas y patas – gallinas y conejos: el niño convierte gallinas en conejos hasta que cuadran las patas. "fej": 4–12, "nyul": 1..fej-1:\n'
      '   <FELADAT>{"tipus":"fejlab","fej":8,"nyul":3}</FELADAT>',
      'logikai fejtörő, fejek és lábak       → fejlab', 'acertijo lógico, cabezas y patas   → fejlab'),
+    ("hanghely", {"magyar"}, 1, 2,   # fix204
+     'HOL HALLOD A HANGOT? – képes szó (a program ki is mondja), a gyerek eldönti: a kért hang a szó ELEJÉN vagy VÉGÉN van (4 szó, előtte példa). Paraméter nem kell:\n'
+     '   <FELADAT>{"tipus":"hanghely"}</FELADAT>',
+     '¿DÓNDE OYES EL SONIDO? – palabra con dibujo (el programa la dice); el niño decide si el sonido pedido está AL PRINCIPIO o AL FINAL (4 palabras, antes un ejemplo). Sin parámetros:\n'
+     '   <FELADAT>{"tipus":"hanghely"}</FELADAT>',
+     'hang a szó elején, végén, hangfelismerés → hanghely', 'sonido inicial, sonido final       → hanghely'),
+    ("szokoz", {"magyar"}, 1, 2,   # fix204
+     'HOL A SZÓKÖZ? – a mondat szóközök nélkül jelenik meg (Akutyaugat.), a gyerek koppint oda, ahol egy szó véget ér. Opcionális "mondatok": 1–4 rövid mondat, 2–6 szó, legfeljebb 14 betű, csak betűk és a végén . ! vagy ?:\n'
+     '   <FELADAT>{"tipus":"szokoz","mondatok":["A kutya ugat.","Süt a nap."]}</FELADAT>',
+     '¿DÓNDE VAN EL ESPACIO? – la frase aparece sin espacios (Elperroladra.), el niño toca donde termina cada palabra. "mondatok" opcional: 1–4 frases cortas, 2–6 palabras, máximo 14 letras, solo letras y al final . ! o ?:\n'
+     '   <FELADAT>{"tipus":"szokoz","mondatok":["El perro ladra.","Hace sol."]}</FELADAT>',
+     'szavak elválasztása, szóköz, mondat   → szokoz', 'separar palabras, espacios         → szokoz'),
+    ("helyesiras", {"magyar"}, 1, 3,   # fix204
+     'RÖVID VAGY HOSSZÚ HANG? – képes szó, egy magánhangzó hiányzik (h_z), a gyerek választ: a vagy á, o vagy ó, ü vagy ű… (5 szó, előtte példa). Paraméter nem kell:\n'
+     '   <FELADAT>{"tipus":"helyesiras"}</FELADAT>',
+     '¿QUÉ LETRA FALTA? – palabra con dibujo y una letra que falta; el niño elige entre dos (5 palabras, antes un ejemplo). "szabaly": cqu (casa/queso), mn (m antes de p y b) o rrr (perro/pera); si se omite, lo elige el programa:\n'
+     '   <FELADAT>{"tipus":"helyesiras","szabaly":"cqu"}</FELADAT>',
+     'rövid és hosszú magánhangzó, ékezet  → helyesiras', 'c/qu, m antes de p y b, r/rr        → helyesiras'),
+    ("mesesor", {"magyar"}, 1, 2,   # fix204 – a mesék saját, rövid újramesélése (népmese, közkincs)
+     'MESE SORRENDBEN – 4 képes kártya egy ismert népmeséből, a gyerek sorba rakja: mi történt először, aztán, végül (eleje, közepe, vége). "mese": repa (A répa), malac (A három kismalac) vagy piroska (elhagyva: a program választ):\n'
+     '   <FELADAT>{"tipus":"mesesor","mese":"repa"}</FELADAT>',
+     'CUENTO EN ORDEN – 4 tarjetas con dibujos de un cuento popular; el niño las ordena: principio, desarrollo y final. "mese": nabo (El nabo gigante), cerditos (Los tres cerditos) o caperucita (si se omite, lo elige el programa):\n'
+     '   <FELADAT>{"tipus":"mesesor","mese":"cerditos"}</FELADAT>',
+     'mese eleje, közepe, vége, sorrend    → mesesor', 'principio y final del cuento, orden → mesesor'),
+    ("hangsuly", {"magyar"}, 1, 3,   # fix204 – csak spanyol (magyarban mindig az első szótag)
+     '',
+     'SÍLABA TÓNICA – palabra con dibujo dividida en sílabas (el programa la dice); el niño toca la sílaba que suena más fuerte (4 palabras, antes un ejemplo). Sin parámetros:\n'
+     '   <FELADAT>{"tipus":"hangsuly"}</FELADAT>',
+     None, 'sílaba tónica, sílaba que suena más fuerte → hangsuly'),
+    ("signos", {"magyar"}, 1, 3,   # fix204 – csak spanyol (a magyar oldalon: irasjel)
+     '',
+     'SIGNOS ¿? ¡! – una frase sin signos; el niño elige: punto, pregunta (¿…?) o exclamación (¡…!), y ve que en español van al principio Y al final (4 frases, antes un ejemplo). Sin parámetros:\n'
+     '   <FELADAT>{"tipus":"signos"}</FELADAT>',
+     None, 'signos de interrogación y exclamación ¿? ¡! → signos'),
     ("mintasor", {"matek"}, 1, 3,   # fix196
      'MINTASOR – színes gyöngysor: a gyerek a 2 hiányzó gyöngyöt fűzi fel. Opcionális "minta": az ismétlődő egység 2–4 színből '
      '(piros, kek, sarga, zold, lila), pl. ["piros","kek"] vagy ["piros","piros","kek"]:\n'
