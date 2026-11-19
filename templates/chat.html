@@ -3603,11 +3603,11 @@
     DM.mesesor = function (f, D) {
         var MESE = D.es ? {
             nabo: ['La zanahoria gigante', [['👴🌱', 'Un abuelo planta una zanahoria.'], ['🥕⬆️', 'La zanahoria crece muchísimo.'], ['👴👵👧🐶', 'Todos tiran juntos.'], ['🎉🥕', '¡Por fin sale la zanahoria!']]],
-            cerditos: ['Los tres cerditos', [['🐷🐷🐷', 'Tres cerditos construyen casas.'], ['🌾🏠', 'El primero la hace de paja.'], ['🐺💨', 'Llega el lobo y la tira soplando.'], ['🧱🏠😊', 'La casa de ladrillo aguanta. ¡Están a salvo!']]],
+            cerditos: ['Los tres cerditos', [['🐷🐷🐷', 'Tres cerditos se van a construir sus casas.'], ['🐺🌾', 'El lobo sopla y tira la casa de paja.'], ['🐺🪵', 'También tira la casa de madera.'], ['🧱🏠😊', 'La casa de ladrillo aguanta. ¡Están a salvo!']]],
             caperucita: ['Caperucita Roja', [['👧🧺', 'Caperucita va a casa de su abuela.'], ['🐺🌲', 'En el bosque se encuentra con el lobo.'], ['🐺🛏️', 'El lobo se mete en la cama de la abuela.'], ['🧑‍🌾👵👧', 'El cazador las salva.']]]
         } : {
             repa: ['A répa', [['👴🌱', 'Nagyapó elültetett egy répát.'], ['🥕⬆️', 'A répa óriásira nőtt.'], ['👴👵👧🐶', 'Mindenki együtt húzta.'], ['🎉🥕', 'Végül kihúzták a répát!']]],
-            malac: ['A három kismalac', [['🐷🐷🐷', 'Három kismalac házat épít.'], ['🌾🏠', 'Az első szalmából épít.'], ['🐺💨', 'Jön a farkas, és elfújja.'], ['🧱🏠😊', 'A téglaház erős marad. Megmenekültek!']]],
+            malac: ['A három kismalac', [['🐷🐷🐷', 'Három kismalac házat indul építeni.'], ['🐺🌾', 'A farkas elfújja a szalmaházat.'], ['🐺🪵', 'Elfújja a faházat is.'], ['🧱🏠😊', 'A téglaház erős marad. Megmenekültek!']]],
             piroska: ['Piroska és a farkas', [['👧🧺', 'Piroska elindul a nagymamához.'], ['🐺🌲', 'Az erdőben találkozik a farkassal.'], ['🐺🛏️', 'A farkas befekszik a nagymama ágyába.'], ['🧑‍🌾👵👧', 'A vadász megmenti őket.']]]
         };
         var nev = (f.mese && MESE[f.mese]) ? f.mese : D.kever(Object.keys(MESE))[0], M = MESE[nev], N = M[1].length;

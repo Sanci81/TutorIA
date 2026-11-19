@@ -1,5 +1,15 @@
 # -*- coding: utf-8 -*-
-"""TutorIA – A „MESE SORRENDBEN” (mesesor) feladat képei (fix207, második változat)
+"""TutorIA – A „MESE SORRENDBEN” (mesesor) feladat képei (fix210, harmadik változat)
+
+fix210 (Sándor 11.19): a Piroska 2–3. képén a háttérben ott állt az egész család,
+a malacnál csak 2 ház volt a 3 helyett. OK: a jelenet a TELJES szereplőlapot
+kapta mintának, és átmásolta a szereplőket. Most minden jelenet CSAK a benne
+szereplők kivágott képét kapja (szokep_uj/mese2/szereplo_<mese>_<nev>.png –
+ezeket Claude vágta ki és ellenőrizte), így más nem kerülhet a képre.
+Malac: 1. indulnak · 2. szalmaház elfújva · 3. faház elfújva · 4. téglaház áll.
+Újra kell: piroska 2, 3 és malac 2, 3 (a többi jó).
+
+ELŐZŐ VÁLTOZAT:
 
 Sándor 11.19: az első képek nem jók – hiányzó részletek, a „répa” retek/fehérrépa
 lett lila tetővel. Ezért most:
@@ -77,6 +87,7 @@ MESEK = {
             "and pointed, with faint horizontal lines, and a bushy bright GREEN leafy top. "
             "Nothing on it is purple or white."
         ),
+        "kik": None,   # a répa jó lett a teljes szereplőlappal – nem bántjuk
         "jelenetek": [
             "Only GRANDPA. He kneels in a vegetable garden at a bed of dark brown soil and with "
             "both hands plants ONE tiny carrot seedling (a small green sprout). A green watering "
@@ -110,18 +121,25 @@ MESEK = {
             "light grey muzzle, big round eyes, a brown patched waistcoat, mouth closed or "
             "grinning without showing teeth."
         ),
+        "kik": [["malac1", "malac2", "malac3"], ["farkas", "malac1"], ["farkas", "malac1", "malac2"],
+                ["farkas", "malac1", "malac2", "malac3"]],
         "jelenetek": [
             "Only the THREE LITTLE PIGS, side by side on a sunny green meadow, ready to build "
             "their houses: PIG 1 (yellow shirt) carries a big bundle of golden straw, PIG 2 "
             "(blue shirt) carries a bundle of wooden sticks, PIG 3 (red shirt) pushes a "
             "wheelbarrow full of red bricks. They smile and wave. No wolf.",
-            "Only PIG 1 (yellow shirt), standing proudly in front of his small finished house "
-            "made ENTIRELY of golden straw: straw walls, a straw roof, a little round window and "
-            "a small wooden door. Sunny meadow. No other pigs, no wolf.",
-            "THE WOLF stands on the left with his cheeks puffed up like balloons and blows a big "
-            "white swirl of wind at the straw house; the straw house flies apart, bits of straw "
-            "whirl in the air; PIG 1 (yellow shirt) runs away to the right, surprised but safe. "
-            "Funny, not scary.",
+            "EXACTLY TWO characters: THE WOLF and PIG 1 (yellow shirt). A small house made "
+            "ENTIRELY of golden STRAW (straw walls, straw roof, a little round window, a wooden "
+            "door) on a sunny meadow. THE WOLF stands on the left with his cheeks puffed up like "
+            "balloons and blows a big white swirl of wind at it; the straw house flies apart, bits "
+            "of straw whirl in the air. PIG 1 (yellow shirt) runs away to the right, surprised but "
+            "safe. PIG 2 (blue) and PIG 3 (red) are NOT in this picture. Funny, not scary.",
+            "EXACTLY THREE characters: THE WOLF, PIG 1 (yellow shirt) and PIG 2 (blue shirt). A "
+            "small house made ENTIRELY of brown WOODEN STICKS and branches (stick walls, a stick "
+            "roof, a wooden door) – clearly NOT straw and NOT bricks – on a meadow at the edge of "
+            "a wood. THE WOLF blows hard at it with puffed cheeks; the sticks fly apart in the "
+            "wind. PIG 1 (yellow) and PIG 2 (blue) run away together to the right, holding hands, "
+            "surprised but safe. PIG 3 (red) is NOT in this picture. Funny, not scary.",
             "A sturdy RED BRICK house with a chimney and a green door. All THREE LITTLE PIGS "
             "(yellow, blue and red shirts) look out happily from the open door and the window, "
             "safe. Outside on the left THE WOLF sits on the ground, exhausted, out of breath, with "
@@ -141,18 +159,23 @@ MESEK = {
             "THE HUNTER: a friendly man with a brown moustache, a green hat with a feather, a "
             "brown jacket and boots, NO gun or weapon."
         ),
+        "kik": [["lany", "anya"], ["lany", "farkas"], ["farkas", "lany"],
+                ["vadasz", "nagymama", "lany", "farkas"]],
         "jelenetek": [
             "THE GIRL in the red hooded cape, with her basket, waves goodbye as she sets off "
             "from the door of a small cottage; MOTHER stands in the doorway and waves back. A "
             "path leads towards a green forest in the background. No wolf.",
-            "A sunny forest path between tall trees with flowers at the side. THE GIRL in the "
-            "red hooded cape, holding her basket, meets THE WOLF, who bows politely and points "
-            "down the path with one paw, smiling slyly. The girl looks curious, not afraid.",
+            "EXACTLY TWO characters: THE GIRL in the red hooded cape and THE WOLF – nobody else, "
+            "the forest is empty around them. A sunny forest path between tall trees with "
+            "flowers at the side. THE GIRL, holding her basket, meets THE WOLF, who bows politely "
+            "and points down the path with one paw, smiling slyly. The girl looks curious, not "
+            "afraid. MOTHER, GRANDMA and THE HUNTER are NOT in this picture.",
+            "EXACTLY TWO characters: THE WOLF and THE GIRL – nobody else in the room. "
             "Grandma's cosy little bedroom: THE WOLF lies in grandma's bed under a colourful "
             "patchwork quilt, wearing grandma's white lace NIGHTCAP and her round glasses, "
             "pulling the quilt up to his chin; his big ears stick out of the nightcap. THE GIRL "
             "in the red hooded cape stands at the door with her basket, looking surprised. "
-            "Grandma is NOT in the picture.",
+            "GRANDMA, MOTHER and THE HUNTER are NOT in this picture.",
             "Grandma's cosy room: THE HUNTER, GRANDMA and THE GIRL in the red hooded cape stand "
             "together, hugging and smiling happily. Through the window, far away, THE WOLF runs "
             "off into the forest. No weapons anywhere.",
@@ -209,17 +232,43 @@ def szereplok(mese: str, minoseg: str) -> int:
     return 0
 
 
+NEVEK = {"malac1": "PIG 1 (yellow shirt)", "malac2": "PIG 2 (blue shirt)", "malac3": "PIG 3 (red shirt)",
+         "farkas": "THE WOLF", "lany": "THE GIRL in the red hooded cape", "anya": "MOTHER",
+         "nagymama": "GRANDMA", "vadasz": "THE HUNTER"}
+
+
 def jelenet(kl, mese: str, n: int, minoseg: str) -> None:
-    lap = _ut(mese, "szereplok")
     print(f"  {mese} {n}. kép …", flush=True)
-    prompt = (f"Use the attached character sheet ONLY to see what the characters look like (faces, "
-              f"clothes, colours, proportions) – keep them exactly like that. Draw a completely NEW "
-              f"single scene with its own composition (not a row of characters). "
-              f"The characters: {MESEK[mese]['szereplok']} "
-              f"THE SCENE: {MESEK[mese]['jelenetek'][n - 1]} {STILUS} {TILTAS}")
-    with open(lap, "rb") as ref:
-        v = fk._hivas(kl.images.edit, model=fk.MODELL, image=ref, size=MERET, quality=minoseg,
-                      input_fidelity="high", prompt=prompt)
+    kik = (MESEK[mese].get("kik") or [None] * 4)[n - 1]
+    if kik:
+        # fix210: CSAK a jelenet szereplőinek kivágott képe megy mintának.
+        utak = [os.path.join(MAPPA, f"szereplo_{mese}_{k}.png") for k in kik]
+        hiany = [u for u in utak if not os.path.exists(u)]
+        if hiany:
+            raise RuntimeError(f"Hiányzik a szereplő képe: {hiany[0]}")
+        lista = "; ".join(f"picture {i} = {NEVEK[k]}" for i, k in enumerate(kik, 1))
+        prompt = (f"The attached pictures are reference pictures, ONE character per picture: {lista}. "
+                  f"Use them ONLY to see what these characters look like (faces, clothes, colours, "
+                  f"proportions) and keep them exactly like that. Draw ONE completely new scene with its "
+                  f"own composition. ONLY these {len(kik)} characters may appear in the picture – nobody "
+                  f"else, not even small in the background. "
+                  f"THE SCENE: {MESEK[mese]['jelenetek'][n - 1]} {STILUS} {TILTAS}")
+        fajlok = [open(u, "rb") for u in utak]
+        try:
+            v = fk._hivas(kl.images.edit, model=fk.MODELL, image=fajlok, size=MERET, quality=minoseg,
+                          input_fidelity="high", prompt=prompt)
+        finally:
+            for f in fajlok:
+                f.close()
+    else:
+        prompt = (f"Use the attached character sheet ONLY to see what the characters look like (faces, "
+                  f"clothes, colours, proportions) – keep them exactly like that. Draw a completely NEW "
+                  f"single scene with its own composition (not a row of characters). "
+                  f"The characters: {MESEK[mese]['szereplok']} "
+                  f"THE SCENE: {MESEK[mese]['jelenetek'][n - 1]} {STILUS} {TILTAS}")
+        with open(_ut(mese, "szereplok"), "rb") as ref:
+            v = fk._hivas(kl.images.edit, model=fk.MODELL, image=ref, size=MERET, quality=minoseg,
+                          input_fidelity="high", prompt=prompt)
     with open(_ut(mese, n), "wb") as ki:
         ki.write(fk._kep_bajt(v))
 
