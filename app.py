@@ -11150,9 +11150,9 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"helyesiras","szabaly":"cqu"}</FELADAT>',
      'rövid és hosszú magánhangzó, ékezet  → helyesiras', 'c/qu, m antes de p y b, r/rr        → helyesiras'),
     ("mesesor", {"magyar"}, 1, 2,   # fix204 – a mesék saját, rövid újramesélése (népmese, közkincs)
-     'MESE SORRENDBEN – 4 képes kártya egy ismert népmeséből, a gyerek sorba rakja: mi történt először, aztán, végül (eleje, közepe, vége). "mese": repa (A répa), malac (A három kismalac) vagy piroska (elhagyva: a program választ):\n'
+     'MESE SORRENDBEN – 4 képes kártya egy ismert népmeséből, a gyerek sorba rakja: mi történt először, aztán, végül (eleje, közepe, vége). "mese": repa (A répa), malac (A három kismalac) vagy piroska (Piroska és a farkas) – MINDIG add meg. ELŐTTE meséld el röviden (3–4 egyszerű mondat) PONTOSAN ezt a mesét, szelíd változatban: senkit nem esznek meg, senkit nem lőnek le (Piroska: a farkas befekszik a nagymama ágyába, a vadász elkergeti, mindenki megmenekül; malacok: a farkas elfújja a szalma- és a faházat, a téglaház megmarad). Csak utána add a feladatot:\n'
      '   <FELADAT>{"tipus":"mesesor","mese":"repa"}</FELADAT>',
-     'CUENTO EN ORDEN – 4 tarjetas con dibujos de un cuento popular; el niño las ordena: principio, desarrollo y final. "mese": nabo (La zanahoria gigante), cerditos (Los tres cerditos) o caperucita (si se omite, lo elige el programa):\n'
+     'CUENTO EN ORDEN – 4 tarjetas con dibujos de un cuento popular; el niño las ordena: principio, desarrollo y final. "mese": nabo (La zanahoria gigante), cerditos (Los tres cerditos) o caperucita (Caperucita Roja) – indícalo SIEMPRE. ANTES cuéntale brevemente (3–4 frases sencillas) JUSTO ese cuento, en versión suave: nadie es devorado ni muere (Caperucita: el lobo se mete en la cama de la abuela, el cazador lo ahuyenta y todos se salvan; cerditos: el lobo tira la casa de paja y la de madera, la de ladrillo aguanta). Después da la tarea:\n'
      '   <FELADAT>{"tipus":"mesesor","mese":"cerditos"}</FELADAT>',
      'mese eleje, közepe, vége, sorrend    → mesesor', 'principio y final del cuento, orden → mesesor'),
     ("hangsuly", {"magyar"}, 1, 3,   # fix204 – csak spanyol (magyarban mindig az első szótag)

@@ -1828,6 +1828,10 @@ Tervezett elemek:
 - [x] (fix211) A teszt HIBÁI mentődnek (child_topic_scores.teszt_hibak, új oszlop, magától létrejön), a tanár utána elsősorban ezeket gyakoroltatja, új példákkal (Sándor kérése).
 - [ ] (fix211) Régi apróság: ha egy már sikeres leckéből újra tesztet ír és elrontja, a „sikeres” jelzés elveszhet (database.save_topic_test_result: row.passed = passed). Kérdés Sándornak: maradjon-e meg a „sikeres”.
 - [x] (fix211) GYIK javítva Sándor szerint: a leckék SORBAN jönnek (nem a gyerek választja); hol lehet hangos/írásos módra váltani; az időmérés (a tétlen 3 perc sem számít); a teszt szabályai.
+- [x] (fix212) mesesor: a tanár ELŐTTE elmeséli a mesét 3–4 mondatban, szelíd változatban (senkit nem esznek meg / lőnek le), és mindig megadja, melyik mesét. Piroska Spanyolországban is ismert (Caperucita Roja).
+- [x] (fix212) Szülői PIN marad a regisztrációnál (Sándor: fontos, később elfelejtené) – nem ez a fő ok.
+- [ ] (fix212) DÖNTÉS KELL (Sándor): bukott leckezáró után MINDEN újabb próba előtt 60 perc tanulás kell-e (most így működik), vagy 60 perc után már egymás után próbálhatja. Claude javaslata: minden próba előtt kelljen tanulás (különben találgatással átjut).
+- [ ] (fix212) Mintalecke: 59 kezdte, 4 fejezte be. Sándor gyanúja: túl egyszerű, nincs benne igazi magyarázat, és azt hiszik, ezt kapják. Végig kell nézni együtt.
 - [ ] (fix207) Sándor kérése (pontosítva 11.19): a FELADATOKAT kell szétválasztani (pl. feltöltés külön, képkészítés külön), de egy feladat parancsai EGY blokkban jöjjenek – nem soronként.
 - [ ] (fix207) Hangmódos felolvasás költsége: Azure karakter, a napi keretbe számít; a példák és a gyakori kérdések szövege mindig ugyanaz → a gyorstárból ingyen jön. Ha sok lesz: csak 1–2. osztálynak.
 - [ ] (fix207) Fizetés bekötésekor (EU-levél): ár „áfával együtt” felirattal; digitális szolgáltatásnál a vevő országának áfája (HU 27%, ES 21%) – az árból ennyivel kevesebb marad. Könyvelővel egyeztetni.
