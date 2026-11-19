@@ -1763,9 +1763,9 @@
                 {% if not show_chat_switch %}
                     <span class="chat-mode-toggle chat-mode-voice">{{ t('chat_mode_voice') }}</span>
                 {% elif chat_mode == 'voice' %}
-                    <a class="chat-mode-toggle chat-mode-chat" href="{{ chat_switch_url }}">{{ t('chat_mode_chat') }}</a>
+                    <a class="chat-mode-toggle chat-mode-chat" href="{{ chat_switch_url }}">{{ t('chat_valt_irasra') }}</a>
                 {% elif not hang_elfogyott %}
-                    <a class="chat-mode-toggle chat-mode-voice" href="{{ voice_switch_url }}">{{ t('chat_mode_voice') }}</a>
+                    <a class="chat-mode-toggle chat-mode-voice" href="{{ voice_switch_url }}">{{ t('chat_valt_hangra') }}</a>
                 {% endif %}
                 {% if proba_oldal %}
                 {# CSAK A PRÓBAOLDALON látszik: a hangos idő lejáratának tesztje. #}
@@ -3703,13 +3703,13 @@
         /* fix202 (Sándor: „gyerekaggyal nem érthető”): a magyarázat egy KÉPPEL: ugyanakkora darab
            tárgy és víz egy mérleghintán – amelyik nehezebb, az lent van. */
         var T = {fa: ['🪵', 1, 'a farönk', 'el tronco', 'Képzeld el: egy darab fa és <b>ugyanakkora</b> darab víz. A <b>víz a nehezebb</b>. Ami a víznél könnyebb, az fennmarad – a nagy farönk is!', 'Imagina un trozo de madera y un trozo de agua <b>del mismo tamaño</b>. <b>El agua pesa más</b>. Lo que pesa menos que el agua, flota: ¡hasta un tronco grande!'],
-            ko: ['🪨', 0, 'a kő', 'la piedra', 'Képzeld el: egy kő és <b>ugyanakkora</b> víz. A <b>kő a nehezebb</b>. Ami a víznél nehezebb, az lemegy az aljára.', 'Imagina una piedra y agua <b>del mismo tamaño</b>. <b>La piedra pesa más</b>. Lo que pesa más que el agua, se va al fondo.'],
+            ko: ['🪨', 0, 'a kő', 'la piedra', 'Képzeld el: egy kő és <b>ugyanakkora</b> víz. A <b>kő a nehezebb</b>. Ami a víznél nehezebb, az elsüllyed.', 'Imagina una piedra y agua <b>del mismo tamaño</b>. <b>La piedra pesa más</b>. Lo que pesa más que el agua, se va al fondo.'],
             alma: ['🍎', 1, 'az alma', 'la manzana', 'Az almában sok a levegő. Ezért <b>könnyebb</b>, mint ugyanakkora víz – úszik.', 'La manzana tiene mucho aire dentro. Por eso <b>pesa menos</b> que el agua del mismo tamaño: flota.'],
-            szolo: ['🍇', 0, 'a szőlő', 'las uvas', 'A szőlőszem pici – de <b>nehezebb</b>, mint ugyanakkora pici víz. Ezért lemegy. Nem a méret számít!', 'Una uva es pequeña, pero <b>pesa más</b> que el agua del mismo tamaño. Por eso se hunde. ¡No importa el tamaño!'],
-            kulcs: ['🔑', 0, 'a kulcs', 'la llave', 'A kulcs vasból van. A vas sokkal <b>nehezebb</b>, mint ugyanakkora víz – lemegy.', 'La llave es de hierro. El hierro <b>pesa mucho más</b> que el agua del mismo tamaño: se hunde.'],
+            szolo: ['🍇', 0, 'a szőlő', 'las uvas', 'A szőlőszem pici – de <b>nehezebb</b>, mint ugyanakkora pici víz. Ezért elsüllyed. Nem a méret számít!', 'Una uva es pequeña, pero <b>pesa más</b> que el agua del mismo tamaño. Por eso se hunde. ¡No importa el tamaño!'],
+            kulcs: ['🔑', 0, 'a kulcs', 'la llave', 'A kulcs vasból van. A vas sokkal <b>nehezebb</b>, mint ugyanakkora víz – elsüllyed.', 'La llave es de hierro. El hierro <b>pesa mucho más</b> que el agua del mismo tamaño: se hunde.'],
             jeg: ['🧊', 1, 'a jégkocka', 'el cubito de hielo', 'A jég egy kicsit <b>könnyebb</b>, mint ugyanakkora víz – ezért úszik.', 'El hielo <b>pesa un poco menos</b> que el agua del mismo tamaño: por eso flota.'],
             kacsa: ['🦆', 1, 'a gumikacsa', 'el patito de goma', 'A gumikacsa belül üres, levegő van benne. Így <b>könnyebb</b>, mint ugyanakkora víz – úszik.', 'El patito está hueco, con aire dentro. Así <b>pesa menos</b> que el agua del mismo tamaño: flota.'],
-            erme: ['🪙', 0, 'a pénzérme', 'la moneda', 'Az érme fémből van. <b>Nehezebb</b>, mint ugyanakkora víz – lemegy, pedig kicsi.', 'La moneda es de metal. <b>Pesa más</b> que el agua del mismo tamaño: se hunde, aunque es pequeña.'],
+            erme: ['🪙', 0, 'a pénzérme', 'la moneda', 'Az érme fémből van. <b>Nehezebb</b>, mint ugyanakkora víz – elsüllyed, pedig kicsi.', 'La moneda es de metal. <b>Pesa más</b> que el agua del mismo tamaño: se hunde, aunque es pequeña.'],
             gyertya: ['🕯️', 1, 'a gyertya', 'la vela', 'A gyertya viaszból van. Egy kicsit <b>könnyebb</b>, mint ugyanakkora víz – úszik.', 'La vela es de cera. <b>Pesa un poco menos</b> que el agua del mismo tamaño: flota.']};
         function hinta(t) {    // kis rajz: tárgy-kocka és víz-kocka a mérleghintán
             var fok = t[1] ? 12 : -12;

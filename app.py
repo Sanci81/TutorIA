@@ -11045,9 +11045,9 @@ _DM_FELULETEK = [
      '   <FELADAT>{"tipus":"szoroban","szamok":[7,46,305]}</FELADAT>',
      'helyiérték, egyes tízes százas         → szoroban', 'valor posicional, unidades decenas → szoroban'),
     ("racsszorzas", {"matek"}, 4, 6,   # fix199 – India (rácsos szorzás)
-     'RÁCSOS SZORZÁS (lépésről lépésre vezetve) – a gyerek kitölti a rácsot (cellánként tízes/egyes), majd összeadja a ferde sávokat. "a": 10–999, "b": 2–99:\n'
+     'RÁCSOS SZORZÁS (lépésről lépésre vezetve) – KIEGÉSZÍTŐ módszer: NE ezzel tanítsd a szorzást, az iskolai írásbeli szorzás (szamolo) az első. Csak ha az már megy, ellenőrzésre vagy érdekességként, vagy ha a gyerek a sok átvitelben rendre elakad. A gyerek kitölti a rácsot, majd összeadja a ferde sávokat. "a": 10–999, "b": 2–99:\n'
      '   <FELADAT>{"tipus":"racsszorzas","a":34,"b":6}</FELADAT>',
-     'MULTIPLICACIÓN EN REJILLA (guiada paso a paso) – el niño rellena la rejilla y suma las diagonales. "a": 10–999, "b": 2–99:\n'
+     'MULTIPLICACIÓN EN REJILLA (guiada paso a paso) – método COMPLEMENTARIO: NO enseñes a multiplicar con ella; primero el algoritmo escolar (szamolo). Úsala solo cuando ya lo domina, para comprobar o como curiosidad, o si se atasca una y otra vez con las llevadas. El niño rellena la rejilla y suma las diagonales. "a": 10–999, "b": 2–99:\n'
      '   <FELADAT>{"tipus":"racsszorzas","a":34,"b":6}</FELADAT>',
      'szorzás többjegyűvel, rácsban         → racsszorzas', 'multiplicar por varias cifras      → racsszorzas'),
     ("uszik", {"kornyezet"}, 1, 6,   # fix199 – japán „jósold meg” kísérlet

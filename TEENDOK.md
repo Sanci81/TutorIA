@@ -1778,3 +1778,8 @@ Tervezett elemek:
       • tízes átlépés (cseresznye): a cseresznye helyett a kék szám kettébontása KÉK körökkel, „be” / „kint” felirattal (Sándor: cseresznyét mutatunk, lejjebb golyót).
 - [x] (fix202) Hangmód Sándornál: a képen a „Hangos mód” gomb látszik → ez a ÁTVÁLTÓ gomb, vagyis épp CHAT módban volt. Rá kell kattintani, és utána olvas fel.
 - [ ] (fix202) Kérdés (Sándor): sokféle módszer → összezavarja-e a gyereket? Válasz: egy órán belül EGY módszer maradjon (a tanári promptban már benne: „EGY FELADAT – EGY MÓDSZER”). Később érdemes lehet: témakörönként rögzíteni, melyik feladatot adja elsőként (pl. tízes átlépés → mindig a tízes keret).
+- [x] (fix203) Úszik: „lemegy” → „elsüllyed” (Sándor).
+- [x] (fix203) A chat fejlécében a módváltó gomb felirata CSELEKVÉS lett: „🎙️ Váltás hangosra” / „💬 Váltás írásra” (ES: „Pasar a voz” / „Pasar a escribir”). Sándor azt hitte, a gomb a jelenlegi módot mutatja.
+- [x] (fix203) Rácsos szorzás a tanárnak: KIEGÉSZÍTŐ módszer – először mindig az iskolai írásbeli szorzás (szamolo); a rácsot csak ellenőrzésre / érdekességként, vagy ha a gyerek az átvitelben rendre elakad. Ok: sem a magyar, sem a spanyol iskola nem ezt tanítja, ne zavarjuk össze.
+- [ ] (fix203) KÖVETKEZŐ KÖR (javaslat): Magyar nyelv / Lengua castellana 1–2. osztály (olvasás-írás tanulás) – előbb hiánylista a leckékből, a meglévő feladatokkal (szotag, betukev, maganh, diktalas, rim, nagybetu…) összevetve; aztán Matek 3–4.
+- [ ] (fix203) Regisztráció: Sándor csalódott (hirdetés fut, nincs regisztráció). Péntek után a látogatottsági adatból: hányan jutnak el a próbaleckéig / regisztrációig, és hol esnek ki.

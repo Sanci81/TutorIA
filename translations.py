@@ -494,6 +494,10 @@ TRANSLATIONS = {
     "chat_voice_switch_chat": {"hu": "← Inkább írok", "es": "← Prefiero escribir"},
     "chat_mode_voice": {"hu": "🎙️ Hangos mód", "es": "🎙️ Modo voz"},
     "chat_mode_chat": {"hu": "💬 Chat mód", "es": "💬 Modo chat"},
+    # fix203 (Sándor): a gomb azt írta ki, AMIRE vált – ő azt hitte, abban a módban van.
+    # Ezért a felirat cselekvés: „Váltás …”.
+    "chat_valt_hangra": {"hu": "🎙️ Váltás hangosra", "es": "🎙️ Pasar a voz"},
+    "chat_valt_irasra": {"hu": "💬 Váltás írásra", "es": "💬 Pasar a escribir"},
     "chat_vocab_title": {"hu": "Szójegyzék", "es": "Vocabulario"},
     "chat_vocab_empty": {
         "hu": "Még nincs szó – tanulás közben töltődik fel.",
