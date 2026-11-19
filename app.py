@@ -14030,6 +14030,19 @@ def _call_ai_for_quiz(
                 f"Topics the student found difficult: {', '.join(failed_topics)}. "
             )
         _history_block += "\n"
+        # fix212 (Sándor): ha EZT a tesztet már egyszer elrontotta, az új teszt
+        # legyen más, de nézze meg azt is, amit azóta gyakorolt (a hibáit).
+        _ez = [h for h in history
+               if h.get("topic_name") == topic_name and str(h.get("teszt_hibak") or "").strip()]
+        if _ez:
+            _history_block += (
+                "PREVIOUS ATTEMPT OF THIS SAME TEST – the student got these wrong "
+                "(question → correct answer):\n"
+                + "\n".join("  - " + x for x in str(_ez[-1]["teszt_hibak"]).splitlines()[:6])
+                + "\nThe student has practised these since. Include 2–3 NEW questions that check "
+                "exactly these points, with different numbers and wording. Do NOT repeat any of "
+                "these questions word for word, and make the rest of the test new questions from "
+                "this topic as well.\n")
 
     _adapt_block_en = (
         "\nADAPT THE TEST TO THE STUDENT'S LEVEL:\n"
@@ -19066,6 +19079,10 @@ def _proba_feladat_keszit(tipus, grade, es, language):
                           else None)
                 if _minta:
                     fel["mondatok"] = _minta
+            # fix213: a mesesor próbája ne mindig ugyanazt a mesét hozza – így
+            # újratöltéssel mindhárom mese (képei) megnézhető.
+            if tipus == "mesesor":
+                fel.pop("mese", None)
             fel["proba"] = True
         return fel
     # Az alap feladatok (memória, pizza, óra, párosítás…) a fő tanári blokk példáiból.
