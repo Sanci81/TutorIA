@@ -1819,11 +1819,11 @@ Tervezett elemek:
 - [ ] (fix206) Azure magyar hang egyes szavakat „furán” ejt (Sándor). Később: másik magyar hang kipróbálása (Noémi ↔ Tamás) egyszavas kimondásra; ha az sem jó, a feladat-szavakhoz előre felvett/ellenőrzött hang.
 - [x] (fix207) Az első mese-képek rosszak (hiányzó részletek; a „répa” retek/fehérrépa lett lila tetővel). Új mese_kepek.py: mesénként SZEREPLŐLAP + 4 pontosan leírt jelenet, a répa SÁRGARÉPA; új mappa: szokep_uj/mese2. A spanyol cím ezért „La zanahoria gigante” (kulcs marad: nabo).
 - [ ] (fix207) Mese-képek (Sándor, egyenként): --szereplok repa → megnéz → --mese repa → megnéz → (malac, piroska ugyanígy) → --jovahagy → git add static/figurak/mese
-- [ ] (fix207) Sándor kérése: a parancsokat MINDIG külön blokkban, soronként adni; a képgenerálást külön a feltöltéstől (ha az egyik nem fut le, a másik ne akadjon el).
+- [ ] (fix207) Sándor kérése (pontosítva 11.19): a FELADATOKAT kell szétválasztani (pl. feltöltés külön, képkészítés külön), de egy feladat parancsai EGY blokkban jöjjenek – nem soronként.
 - [ ] (fix207) Hangmódos felolvasás költsége: Azure karakter, a napi keretbe számít; a példák és a gyakori kérdések szövege mindig ugyanaz → a gyorstárból ingyen jön. Ha sok lesz: csak 1–2. osztálynak.
 - [ ] (fix207) Fizetés bekötésekor (EU-levél): ár „áfával együtt” felirattal; digitális szolgáltatásnál a vevő országának áfája (HU 27%, ES 21%) – az árból ennyivel kevesebb marad. Könyvelővel egyeztetni.
-- [ ] (11.19) ÖTLET (Sándor): hangmódban az oktató részek ELŐRE FELVÉVE (mentett hangról), a gyerek kérdéseire élő válasz. Terv, ha mehet:
-  1. ELŐBB a Railway hang-gyorstár Volume (/data/hangcache) – enélkül minden push után kiürül a mentett hang, és újra fizetünk érte. Ez a legolcsóbb nyereség.
+- [x] (11.19) ELVETVE (Sándor döntése): előre felvett magyarázat NEM kell – a jó tanár mindig a gyerekhez igazodik, a sablon unalmas, és a tanár sem tudja meg, min kell segíteni. Marad az élő tanár. Ami megmarad belőle: a Volume (1. pont). A régi terv:
+  1. [ ] MARAD: a Railway hang-gyorstár Volume (/data/hangcache) – enélkül minden push után kiürül a mentett hang, és újra fizetünk érte. Ez a legolcsóbb nyereség.
   2. Leckénként 1–2 rövid, ELLENŐRZÖTT magyarázó blokk (szöveg + egyszer legenerált hang); a tanár (AI) tudja, hogy ez elhangzott, és onnan folytatja kérdésekkel, feladatokkal.
   3. A gyerek bármikor közbeszólhat / kérdezhet → arra MINDIG élő AI-válasz.
   4. Előbb 1–2 témán kipróbálni, mérni: hány karakter spórolás, és a gyerek érzi-e a különbséget.
