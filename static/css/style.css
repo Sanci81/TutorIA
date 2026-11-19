@@ -4007,3 +4007,21 @@ body:has(.fp-sav):not(:has(.gymenu)) .flash-container { margin-top: 92px; }
     body.gyerek-hatter .navbar .lang-btn, body:has(.gymenu) .navbar .lang-btn { color: #5f7469 !important; }
     body.gyerek-hatter .navbar .lang-btn.active, body:has(.gymenu) .navbar .lang-btn.active { background: #167A5E !important; color: #fff !important; }
 }
+
+/* ═══ fix220 (Sándor) ═══════════════════════════════════════════════════
+   1) A gyerek oldalain a fejléc NE maradjon fent görgetéskor – tűnjön el, mert
+      a kapszula így mindig „belelógott” valamibe. (Minden szélességen.)
+   2) A mintalecke oldalán is biztosan a kapszula legyen (gépen), akkor is, ha
+      a szülő be van lépve. */
+body.gyerek-hatter .navbar, body:has(.gymenu) .navbar, body:has(.ml) .navbar { position: relative !important; top: auto !important; }
+@media (min-width: 1181px) {
+    body:has(.ml) .navbar { background: transparent !important; box-shadow: none !important; border: 0 !important; }
+    body:has(.ml) .navbar-inner { position: relative; isolation: isolate; overflow: hidden; margin: 10px auto;
+        width: calc(100% - 20px); max-width: 1260px; border-radius: 22px; padding: .55rem 1rem .55rem .7rem;
+        box-shadow: 0 10px 28px rgba(10,40,28,.20), 0 0 0 1px rgba(22,58,46,.10); }
+    body:has(.ml) .navbar-inner::before { content: ""; position: absolute; inset: 0; z-index: -1;
+        border-radius: inherit; background: rgba(255,255,255,.97);
+        -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+    body:has(.ml) .navbar-inner::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+        height: 5px; pointer-events: none; background: linear-gradient(90deg,#2F8FD8 0 12.5%,#8A5CD6 0 25%,#F59E0B 0 37.5%,#0EA5B7 0 50%,#5B6CE0 0 62.5%,#D9467F 0 75%,#22A06B 0 87.5%,#E07B39 0); }
+}

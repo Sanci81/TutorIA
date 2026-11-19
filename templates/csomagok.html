@@ -282,7 +282,8 @@
       </span>
       <h2>{{ cs.nev }}</h2>
 
-      {% if cs.fizetos and session.get('parent_id') %}
+      {# fix220 (Sándor): a tervezett ár mindenkinek látszik, belépés nélkül is. #}
+      {% if cs.fizetos %}
         <span class="terv-cimke">{{ t('csomag_tervezett_ar') }}</span>
         <p class="ar">{{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €<small> / {{ t('csomag_ho') }}</small></p>
         <p class="ar-alatt">{{ t('csomag_havi_alatt') }}</p>

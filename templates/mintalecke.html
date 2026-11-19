@@ -78,7 +78,9 @@
   .mc-sor{display:flex;gap:9px;align-items:flex-end}
   .mc-sor.gy{justify-content:flex-end}
   .mc-av{flex:0 0 38px;height:38px;border-radius:50%;background:#E3F3EA;display:flex;align-items:center;justify-content:center}
-  .mc-av img{width:26px;height:26px}
+  .mc-av{background:transparent!important}
+  .mc-av svg{width:38px;height:38px;display:block}
+  .mc-izzo svg{width:1em;height:1em;vertical-align:-.12em;display:inline-block}
   .mc-b{max-width:82%;background:#fff;border-radius:18px 18px 18px 4px;padding:11px 14px;font-size:16.5px;line-height:1.5;color:#1F2D28;
     box-shadow:0 3px 10px rgba(23,96,74,.10);animation:mcBe .25s ease-out}
   .mc-sor.gy .mc-b{background:#17604A;color:#fff;border-radius:18px 18px 4px 18px;font-weight:700}
@@ -114,7 +116,7 @@
   @media (min-width:900px){
     .ml-belso.mc-szeles{max-width:1120px}
     .mc-racs{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:start}
-    .mc-tabla{display:block;position:sticky;top:100px;background:#fff;border-radius:24px;padding:16px 18px 22px;min-height:440px;
+    .mc-tabla{display:block;position:sticky;top:20px;background:#fff;border-radius:24px;padding:16px 18px 22px;min-height:440px;
       box-shadow:0 8px 24px rgba(23,96,74,.12);border:1px solid #E3EEE8}
     .mc-tabla-fej{display:flex;align-items:center;justify-content:space-between;font-weight:800;color:#5f7469;font-size:13px;
       text-transform:uppercase;letter-spacing:.08em;border-bottom:2px dashed #E3EEE8;padding-bottom:10px;margin-bottom:6px}
@@ -186,7 +188,9 @@
   /* fix217: BESZÉLGETŐS MINTALECKE – előre megírt, AI nélkül (mintalecke.py CHAT). */
   (function () {
     var C = {{ chat|tojson }}, ES = {{ 'true' if es else 'false' }};
-    var LOGO = "{{ url_for('static', filename='img/tutoria_logo.png') }}";
+    /* fix220 (Sándor): ugyanaz a lámpa, ami az oldal fejlécében van (nem a kis PNG, és nem a 💡 emoji). */
+    var IZZO = '<svg viewBox="0 0 120 120" aria-hidden="true"><rect width="120" height="120" rx="30" fill="#0e2a1e"/><circle cx="60" cy="52" r="44" fill="#3ddc97" fill-opacity=".12"/><path d="M60 17c-15 0-26.5 11.3-26.5 25.4 0 8.8 4.2 15 8.4 19.9 2.9 3.4 4.6 6.4 5.1 10.3h26c.5-3.9 2.2-6.9 5.1-10.3 4.2-4.9 8.4-11.1 8.4-19.9C86.5 28.3 75 17 60 17Z" fill="none" stroke="#3ddc97" stroke-width="5" stroke-linejoin="round"/><path d="M49 81h22M51 89h18M55 96h10" fill="none" stroke="#f2dd8a" stroke-width="5" stroke-linecap="round"/><path d="M45 37h30M60 37v25" stroke="#f2dd8a" stroke-width="3.4" stroke-linecap="round"/><g fill="#f2dd8a"><circle cx="45" cy="37" r="5.4"/><circle cx="60" cy="37" r="5.4"/><circle cx="75" cy="37" r="5.4"/><circle cx="60" cy="62" r="5.4"/></g></svg>';
+    function izzo(h) { return String(h).replace(/💡/g, '<span class="mc-izzo">' + IZZO + '</span>'); }
     var lista = document.getElementById('mcLista'), val = document.getElementById('mcValasz');
     var SZ = ['#2F8FD8', '#8A5CD6', '#F59E0B', '#0EA5B7', '#5B6CE0', '#D9467F'];
     function konfetti(el) {
@@ -201,7 +205,7 @@
     function le() { try { val.scrollIntoView({behavior: 'smooth', block: 'end'}); } catch (e) {} }
     function sor(gyerek, html) {
       var s = document.createElement('div'); s.className = 'mc-sor' + (gyerek ? ' gy' : '');
-      s.innerHTML = (gyerek ? '' : '<div class="mc-av"><img src="' + LOGO + '" alt=""></div>') + '<div class="mc-b">' + html + '</div>';
+      s.innerHTML = (gyerek ? '' : '<div class="mc-av">' + IZZO + '</div>') + '<div class="mc-b">' + izzo(html) + '</div>';
       lista.appendChild(s); le(); return s;
     }
     // A tanító „gépel”, aztán megjelenik az üzenet – mint a valódi órán.
@@ -223,13 +227,13 @@
     var tablaBel = document.getElementById('mcTablaBel');
     function tablaLap(cim) {
       var d = document.createElement('div'); d.className = 'mc-tk';
-      d.innerHTML = (cim ? '<div class="mc-tk-cim">' + cim + '</div>' : '');
+      d.innerHTML = (cim ? '<div class="mc-tk-cim">' + izzo(cim) + '</div>' : '');
       if (NAGY) { tablaBel.innerHTML = ''; tablaBel.appendChild(d); } else { lista.appendChild(d); le(); }
       return d;
     }
     function tablaCim(cim) {
       if (!NAGY) { return; }
-      var c = tablaBel.querySelector('.mc-tk-cim'); if (c) { c.innerHTML = cim; }
+      var c = tablaBel.querySelector('.mc-tk-cim'); if (c) { c.innerHTML = izzo(cim); }
     }
     function keretHtml(a, b, bent) {
       var h = '<div class="mc-keret">';
@@ -243,7 +247,7 @@
       var d = tablaLap(t.cim);
       if (t.keret) { var k = document.createElement('div'); k.className = 'mc-statikus'; k.innerHTML = keretHtml(t.keret[0], t.keret[1], 0); d.appendChild(k); }
       if (t.lista) { var l = document.createElement('div'); l.className = 'mc-tk-lista';
-        l.innerHTML = t.lista.map(function (x) { return '<div>' + x + '</div>'; }).join(''); d.appendChild(l); }
+        l.innerHTML = t.lista.map(function (x) { return '<div>' + izzo(x) + '</div>'; }).join(''); d.appendChild(l); }
     }
     function tizes(a, b, kesz, cim) {
       var d = tablaLap(cim);
