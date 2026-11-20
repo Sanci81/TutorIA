@@ -63,7 +63,7 @@
     // (a lámpa szélessége szerint igazítva), a lámpa közepe mindig ugyanott marad, így a
     // testtartás-váltás nem „ugrik”.
     var KICSI = function () { return innerWidth < 700; };
-    var MAGAS = function () { return KICSI() ? 96 : 132; };          // a figura magassága px-ben
+    var MAGAS = function () { return KICSI() ? 86 : 116; };   // fix238: kicsit kisebb – így a mezők között is elfér          // a figura magassága px-ben
     var KEPUT = (D.currentScript && D.currentScript.src) ? D.currentScript.src.replace(/js\/lumi\.js.*$/, 'figurak/lumi/') : '/static/figurak/lumi/';
     // név: [szélesség, magasság, lámpa-szélesség, lámpa közepe (x arány), talp (y arány)]
     var META = {"alap": [334, 640, 286, 0.503, 0.991], "orul": [372, 640, 258, 0.5, 0.991], "gondolkodik": [334, 640, 287, 0.501, 0.989], "integet": [347, 640, 269, 0.546, 0.991], "biztat": [326, 640, 272, 0.5, 0.991], "tapsol": [368, 640, 274, 0.5, 0.991], "aha": [335, 640, 277, 0.512, 0.991], "maszik": [306, 640, 266, 0.5, 0.992], "ul": [311, 640, 269, 0.503, 0.992], "meglepodik": [340, 640, 272, 0.491, 0.992], "lenez": [378, 640, 299, 0.538, 0.991]};
@@ -188,12 +188,13 @@
     }
     /* fix237 (Sándor: „ha nem jó valami, fogja a fejét – de csak ha végzett”) */
     function fejetFog() {
-        if (P.kep === 'ul') { legyen('alap'); }
+        var ult = P.kep === 'ul';
+        if (ult) { legyen('alap'); }
         legyen(META.fejfogas ? 'fejfogas' : 'gondolkodik');
         return jel('!', true)
             .then(function () { return anim({}, 900, 'lin', function (u) { P.dol = Math.sin(u * Math.PI * 6) * 3; }); })
             .then(function () { P.dol = 0; return jel('!', false); }).then(function () { return var_(350); })
-            .then(function () { legyen('alap'); });
+            .then(function () { legyen(ult ? 'ul' : 'alap'); });
     }
     function lenez() { legyen('lenez'); return var_(900).then(function () { legyen('alap'); }); }
     function ul() { if (P.kep !== 'alap') { return Promise.resolve(); } legyen('ul'); return anim({ny: .95}, 160, 'ki').then(function () { return anim({ny: 1}, 300, 'rugo'); }); }
@@ -312,8 +313,9 @@
         var h = MAGAS(), fel = ules ? .82 : .99, al = ules ? .22 : 0;
         return {l: x - h * .25, r: x + h * .25, t: y - h * fel, b: y + h * al};
     }
-    function utkozik(d, sajatMezo) {
-        var a = akadalyGyujt();
+    function utkozik(d, sajatMezo) { return takaras(d, sajatMezo) > 0; }
+    function takaras(d, sajatMezo) {          // fix238: MENNYI szöveget/elemet takarna (terület, px²)
+        var a = akadalyGyujt(), ossz = 0;
         for (var i = 0; i < a.length; i++) {
             var o = a[i], l = o.l, r = o.r;
             if (o.tip === 'mezo') {                       // a mezőn ülhet/állhat – csak a beírt szövegre nem lóghat
@@ -321,21 +323,29 @@
                 else if (d.b <= o.t + 3) { continue; }    // fölötte áll: nem ütközés
                 else { r = l + szovegSzeles(o.el); }
             }
-            if (d.l < r + 4 && d.r > l - 4 && d.t < o.b + 3 && d.b > o.t + 3) { return true; }
+            var ww = Math.min(d.r, r + 4) - Math.max(d.l, l - 4), hh = Math.min(d.b, o.b + 3) - Math.max(d.t, o.t + 3);
+            if (ww > 0 && hh > 0) { ossz += ww * hh * (o.tip === 'szoveg' ? 1 : 1.5); }
         }
-        return false;
+        return ossz;
     }
     function felulet(el) { var p = lap(el); return {l: p.x, r: p.x + p.w, y: p.y, w: p.w}; }
-    function keres(feluletek, sajatMezo, ules) {
-        var h = MAGAS(), fel = h * .28, lx = scrollX + 6, rx = scrollX + innerWidth - 6;
-        for (var i = 0; i < feluletek.length; i++) {
-            var f = feluletek[i]; if (!f || f.w < h * .6) { continue; }
-            var bal = Math.max(f.l + fel, lx + fel), jobb = Math.min(f.r - fel, rx - fel);
-            for (var x = jobb; x >= bal; x -= 10) {
-                if (!utkozik(dobozom(x, f.y + 1, ules), sajatMezo)) { return {x: x, y: f.y + 1}; }
+    /* fix238 (Sándor: „ne oldalt a levegőben – találja meg a helyet, ahol nem takar”): mindig VALÓDI felületen
+       marad. Sorrend: állva semmit nem takar → ülve (a lába a mező üres részén) semmit nem takar → ahol a
+       legkevesebbet takarná. Kötélen oldalt már nem lóg. */
+    function keres(feluletek, sajatMezo) {
+        var h = MAGAS(), fel = h * .28, lx = scrollX + 6, rx = scrollX + innerWidth - 6, legjobb = null;
+        for (var mod = 0; mod < 2; mod++) {
+            for (var i = 0; i < feluletek.length; i++) {
+                var f = feluletek[i]; if (!f || f.w < h * .6) { continue; }
+                var bal = Math.max(f.l + fel, lx + fel), jobb = Math.min(f.r - fel, rx - fel);
+                for (var x = jobb; x >= bal; x -= 8) {
+                    var t = takaras(dobozom(x, f.y + 1, mod === 1), sajatMezo) + (jobb - x) * .01 + i * 50;
+                    if (t < 1 + (jobb - x) * .01 + i * 50) { return {x: x, y: f.y + 1, ul: mod === 1}; }
+                    if (!legjobb || t < legjobb.t) { legjobb = {x: x, y: f.y + 1, ul: mod === 1, t: t}; }
+                }
             }
         }
-        return null;
+        return legjobb;
     }
     function kartyaja(el) { return el.closest('.fp-kartya, .auth-card, .doboz, .card, details, form, main section') || el.parentElement; }
     function kotelHely(el) {                     // nincs szabad felület: a doboz mellett, a margón lóg a kötélen
@@ -349,9 +359,9 @@
         if (m.type === 'checkbox' || m.type === 'radio') { c = m.closest('label, .field') || m; }
         var mezo = m.matches('input, textarea, select') && m.type !== 'checkbox' ? m : null;
         // csak a mező közelében keres (a doboz tetejére nem ugrik el – ott messze lenne attól, amit csinálsz)
-        return keres([felulet(c), m.closest('.field') && felulet(m.closest('.field'))], mezo, false) || kotelHely(m);
+        return keres([felulet(c), m.closest('.field') && felulet(m.closest('.field'))], mezo) || {x: lap(c).x + lap(c).w - MAGAS() * .4, y: lap(c).y + 1};
     }
-    function helyDoboz(el) { return keres([felulet(el), kartyaja(el) && kartyaja(el) !== el && felulet(kartyaja(el))], null, false) || kotelHely(el); }
+    function helyDoboz(el) { return keres([felulet(el), kartyaja(el) && kartyaja(el) !== el && felulet(kartyaja(el))], null) || {x: lap(el).x + lap(el).w * .62, y: lap(el).y + 2}; }
     function ulhet() {                           // leülhet-e ott, ahol áll (a lába se takarjon szöveget)
         return horgony && !utkozik(dobozom(P.x, P.y, true), horgony.matches && horgony.matches('input, textarea') ? horgony : null);
     }
@@ -402,7 +412,7 @@
             return ut;
         }).then(function () {
             if (hely.kotel) { legyen('maszik'); P.arnyek = 0; lognak = {x: hely.x, ky: P.y - h * .62}; kotelRajz(hely.x, 0, lognak.ky); rajzol(); }
-            else { P.arnyek = 1; }
+            else { P.arnyek = 1; if (hely.ul && P.kep === 'alap') { return ul(); } }
         });
     }
 
@@ -449,7 +459,7 @@
             m.addEventListener('focus', function () {
                 if (tevekeny(m)) { return; }
                 if (fut > 1) { return; }
-                tedd(function () { return menj(helyMezo(m)).then(lenez); });
+                tedd(function () { return menj(helyMezo(m)).then(function () { if (P.kep !== 'ul') { return lenez(); } }); });
             });
             var gepel = function () {
                 utolsoMozdulat = Date.now();
@@ -530,6 +540,8 @@
                     if (h0) {
                         var dx = Math.abs(h0.x - P.x), dy = Math.abs(h0.y - P.y);
                         if (!!h0.kotel !== !!lognak || dx > 30) { tedd(function () { return menj(most()); }); }      // fix237: új szabad hely → odaugrik
+                        else if (h0.ul && P.kep === 'alap') { tedd(ul); }                                                 // fix238: ott csak ülve fér el
+                        else if (!h0.ul && P.kep === 'ul' && takaras(dobozom(P.x, P.y, false), null) < 1) { legyen('alap'); }
                         else if (dx > 1 || dy > 1) { P.x = h0.x; P.y = h0.y; if (lognak) { lognak.ky = P.y - MAGAS() * .62; kotelRajz(lognak.x, 0, lognak.ky); } }
                     }
                 }
