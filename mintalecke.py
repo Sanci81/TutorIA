@@ -767,7 +767,7 @@ CHAT["hu"].update({
                 {"cim": "0 → ×2 → +1 → ?", "kep": "gep_be"}, "0 → " + _Z + "1 ✓</span>")]},
         {"gep": {"be": [1, 2, 3, 4], "ki": [4, 5, 6, 7]}, "cim": "A titkos gép",
          "tan": ["Most egy <b>titkos gép</b> jön! Tegyél bele számokat (koppints rájuk), és figyeld, mi jön ki."],
-         "kesz": "Látod a mintát? Ami kijön, mindig ugyanannyival több, mint amit betettél."},
+         "kesz": "Megvan mind a 4 szám! 👀 Nézd meg a táblázatot: mi történt a számokkal a gépben?"},
         {"tan": ["Mi a titkos gép <b>szabálya</b>?"]},
         {"val": ["×3", "+3", "−3"], "jo": 1,
          "ha_jo": ["Igen, <b>+3</b>! 🎉 1 → 4, 2 → 5, 3 → 6: mindig 3-mal több."], "tabla_jo": "szabály: " + _Z + "+3 ✓</span>",

@@ -311,7 +311,7 @@
       var d = tablaLap(t.cim);
       if (t.kep) { d.insertAdjacentHTML('beforeend', kep(t.kep)); }
       if (t.dobozok) { d.insertAdjacentHTML('beforeend', dobozSvg(t.dobozok[0], t.dobozok[1])); }
-      if (t.tortek) { d.insertAdjacentHTML('beforeend', '<div class="mc-tortsor">' + t.tortek.map(function (x) { return '<div>' + tortSvg(x[0], x[1]) + '<b>' + x[1] + '/' + x[0] + '</b></div>'; }).join('') + '</div>'); }
+      if (t.tortek) { d.insertAdjacentHTML('beforeend', '<div class="mc-tortsor">' + t.tortek.map(function (x) { return '<div>' + tortSvg(x[0], x[1]) + (t.tortek.length > 1 ? '<b>' + x[1] + '/' + x[0] + '</b>' : '') + '</div>'; }).join('') + '</div>'); }
       if (t.keret) { var k = document.createElement('div'); k.className = 'mc-statikus'; k.innerHTML = keretHtml(t.keret[0], t.keret[1], 0); d.appendChild(k); }
       if (t.lista) { var l = document.createElement('div'); l.className = 'mc-tk-lista';
         l.innerHTML = t.lista.map(function (x) { return '<div>' + izzo(x) + '</div>'; }).join(''); d.appendChild(l); }
@@ -502,7 +502,10 @@
         var b = document.createElement('button'); b.type = 'button'; b.className = 'mc-lap'; b.textContent = x; b.style.background = '#2F8FD8';
         b.addEventListener('click', function () {
           if (b.disabled) { return; } b.disabled = true; b.style.opacity = '.45';
-          tb.insertAdjacentHTML('beforeend', '<div class="uj"><span>' + x + '</span><span>' + g.ki[n] + '</span></div>'); volt++; le();
+          /* fix229: a sorok mindig növekvő sorrendben – így könnyebb észrevenni a szabályt */
+          var sor = document.createElement('div'); sor.className = 'uj'; sor.dataset.x = x; sor.innerHTML = '<span>' + x + '</span><span>' + g.ki[n] + '</span>';
+          var utana = [].filter.call(tb.querySelectorAll('div.uj'), function (r) { return +r.dataset.x > x; })[0];
+          if (utana) { tb.insertBefore(sor, utana); } else { tb.appendChild(sor); } volt++; le();
           if (volt >= g.be.length) { setTimeout(function () { kesz(false); }, 700); }
         });
         gb.appendChild(b);
