@@ -269,10 +269,23 @@
     }
     var KEPUT = "{{ url_for('static', filename='img/minta/X.svg') }}";
     function kep(nev) { return '<img class="mc-tabla-kep" alt="" src="' + KEPUT.replace('X.svg', nev + '.svg') + '">'; }
+    /* fix226 (Sándor: „3 × 6-ot kérdez, de 4 doboz van, bennük 8-8 ceruza”): a rajz a feladat számaiból
+       készül – n doboz, mindegyikben k ceruza (ugyanaz a stílus, mint a ceruzak.svg). */
+    function dobozSvg(n, k) {
+      var SZ = ['#E5484D', '#F59E0B', '#FCD34D', '#22A06B', '#2F8FD8', '#8A5CD6', '#D9467F', '#0EA5B7'], o = '', W = 47 * n + 10;
+      for (var d = 0; d < n; d++) {
+        var x0 = 10 + d * 47, kezd = x0 + 21 - (k * 4.6 - 0.6) / 2;
+        for (var c = 0; c < k; c++) { var x = kezd + c * 4.6, y = c % 2 ? 52 : 58;
+          o += '<rect x="' + x + '" y="' + y + '" width="4" height="40" fill="' + SZ[c % 8] + '"/><path d="M' + x + ' ' + y + ' l2 -7 l2 7z" fill="#F2D3B0"/>'; }
+        o += '<rect x="' + x0 + '" y="84" width="42" height="46" rx="5" fill="#8A5CD6"/><rect x="' + x0 + '" y="84" width="42" height="9" rx="3" fill="#6D3FC0"/>';
+      }
+      return '<svg class="mc-tabla-kep" viewBox="0 0 ' + W + ' 150" xmlns="http://www.w3.org/2000/svg"><ellipse cx="' + W / 2 + '" cy="136" rx="' + (W / 2 - 10) + '" ry="7" fill="#E3EEE8"/>' + o + '</svg>';
+    }
     function tabla(t) {
       if (!t) { return; }
       var d = tablaLap(t.cim);
       if (t.kep) { d.insertAdjacentHTML('beforeend', kep(t.kep)); }
+      if (t.dobozok) { d.insertAdjacentHTML('beforeend', dobozSvg(t.dobozok[0], t.dobozok[1])); }
       if (t.keret) { var k = document.createElement('div'); k.className = 'mc-statikus'; k.innerHTML = keretHtml(t.keret[0], t.keret[1], 0); d.appendChild(k); }
       if (t.lista) { var l = document.createElement('div'); l.className = 'mc-tk-lista';
         l.innerHTML = t.lista.map(function (x) { return '<div>' + izzo(x) + '</div>'; }).join(''); d.appendChild(l); }
