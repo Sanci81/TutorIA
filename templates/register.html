@@ -90,7 +90,7 @@
             <div class="field">
                 <label for="password">{{ t('label_password') }}</label>
                 <div class="password-field">
-                    <input type="password" id="password" name="password" required minlength="6" autocomplete="new-password">
+                    <input type="password" id="password" name="password" required minlength="8" pattern="(?=.*[A-Za-zÀ-ÿŐőŰű])(?=.*[0-9]).{8,}" autocomplete="new-password">
                     <button type="button" class="password-toggle" data-password-toggle="password"
                             aria-label="{{ t('show_password') }}" data-label-hide="{{ t('hide_password') }}">
                         <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -105,12 +105,14 @@
                         </svg>
                     </button>
                 </div>
+                <div class="jelszo-mero" id="jelszoMero" aria-live="polite"><i><b></b></i><span></span></div>
+                <p class="field-hint" style="margin-top:4px">{{ t('jelszo_sugo') }}</p>
             </div>
 
             <div class="field">
                 <label for="password_confirm">{{ t('label_password_confirm') }}</label>
                 <div class="password-field">
-                    <input type="password" id="password_confirm" name="password_confirm" required minlength="6" autocomplete="new-password">
+                    <input type="password" id="password_confirm" name="password_confirm" required minlength="8" autocomplete="new-password">
                     <button type="button" class="password-toggle" data-password-toggle="password_confirm"
                             aria-label="{{ t('show_password') }}" data-label-hide="{{ t('hide_password') }}">
                         <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -173,4 +175,35 @@
     </div>
   </section>
 </div>
+{% endblock %}
+
+{% block scripts %}
+{# fix233: jelszó-erősség jelző (gyenge / közepes / erős) #}
+<style>
+  .jelszo-mero{display:none;align-items:center;gap:10px;margin-top:8px}
+  .jelszo-mero i{flex:1;height:8px;border-radius:99px;background:#E7ECE9;overflow:hidden}
+  .jelszo-mero b{display:block;height:100%;width:0;border-radius:99px;transition:width .25s,background .25s}
+  .jelszo-mero span{font-size:.86rem;font-weight:800;min-width:68px}
+</style>
+<script>
+(function () {
+  var be = document.getElementById('password'), m = document.getElementById('jelszoMero');
+  if (!be || !m) { return; }
+  var b = m.querySelector('b'), sz = m.querySelector('span');
+  var NEV = [{{ t('jelszo_gyenge')|tojson }}, {{ t('jelszo_kozepes')|tojson }}, {{ t('jelszo_eros')|tojson }}];
+  var SZIN = ['#E5484D', '#F5A01E', '#22A06B'];
+  function frissit() {
+    var p = be.value || '';
+    if (!p) { m.style.display = 'none'; return; }
+    var betu = /[A-Za-zÀ-ÿŐőŰű]/.test(p), szam = /\d/.test(p), pont = 0;
+    if (p.length >= 8 && betu && szam) {
+      pont = 1;
+      if (p.length >= 12 || /[^A-Za-z0-9À-ÿŐőŰű]/.test(p) || (/[a-zà-ÿőű]/.test(p) && /[A-ZÀ-ÞŐŰ]/.test(p))) { pont = 2; }
+    }
+    m.style.display = 'flex'; b.style.width = (pont + 1) * 33.4 + '%'; b.style.background = SZIN[pont];
+    sz.textContent = NEV[pont]; sz.style.color = SZIN[pont];
+  }
+  be.addEventListener('input', frissit); frissit();
+})();
+</script>
 {% endblock %}

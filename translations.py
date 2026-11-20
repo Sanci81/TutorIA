@@ -267,8 +267,8 @@ TRANSLATIONS = {
         "es": "Las contraseñas no coinciden.",
     },
     "flash_password_short": {
-        "hu": "A jelszónak legalább 6 karakter hosszúnak kell lennie.",
-        "es": "La contraseña debe tener al menos 6 caracteres.",
+        "hu": "A jelszó legyen legalább 8 karakter, és legyen benne betű és szám is.",
+        "es": "La contraseña debe tener al menos 8 caracteres e incluir letras y números.",
     },
     "flash_invalid_login": {
         "hu": "Hibás e-mail cím vagy jelszó.",
@@ -906,6 +906,11 @@ TRANSLATIONS = {
         "es": "Ahora no se ha podido crear el PDF. Puede descargar sus datos "
               "igualmente con el botón JSON.",
     },
+    # fix233: jelszó-erősség jelző a regisztrációnál és az új jelszónál
+    "jelszo_sugo": {"hu": "Legalább 8 karakter, betű és szám is.", "es": "Al menos 8 caracteres, con letras y números."},
+    "jelszo_gyenge": {"hu": "Gyenge", "es": "Débil"},
+    "jelszo_kozepes": {"hu": "Közepes", "es": "Media"},
+    "jelszo_eros": {"hu": "Erős", "es": "Fuerte"},
     "account_delete_title": {"hu": "A fiók törlése", "es": "Borrar la cuenta"},
     "account_delete_warning": {
         "hu": "Ez végleges. A gyerekeid haladása, eredményei, érméi és "

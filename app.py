@@ -399,6 +399,12 @@ _ROBOT_UA = re.compile(
     r"telegram|discord|node-fetch|axios|java/|okhttp|postman|insomnia", re.IGNORECASE)
 
 
+def _jelszo_eleg_eros(jelszo: str) -> bool:
+    """fix233 (Sándor: „a jelszó erőssége is fontos”): új jelszónál legalább 8 karakter, benne betű ÉS
+    szám. A régi (6 karakteres) jelszavakkal továbbra is be lehet lépni – csak az újakra vonatkozik."""
+    return (len(jelszo or "") >= 8 and any(c.isalpha() for c in jelszo) and any(c.isdigit() for c in jelszo))
+
+
 def _latogatas_forras() -> str:
     utm = (request.args.get("utm_source") or "").strip().lower()
     if utm:
@@ -2213,7 +2219,7 @@ def register():
             return render_template("register.html", email=email)
 
         _latogatas_esemeny("bekuldte")
-        if len(password) < 6:
+        if not _jelszo_eleg_eros(password):
             _latogatas_esemeny("hiba_jelszo_rovid")
             flash(i18n.t("flash_password_short", g.lang), "error")
             return render_template("register.html", email=email)
@@ -3275,7 +3281,7 @@ def reset_password(token):
         password = request.form.get("password") or ""
         confirm = request.form.get("password_confirm") or ""
 
-        if len(password) < 6:
+        if not _jelszo_eleg_eros(password):
             flash(i18n.t("flash_password_short", g.lang), "error")
             return render_template("reset_password.html", token=token)
 
