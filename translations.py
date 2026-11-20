@@ -909,6 +909,8 @@ TRANSLATIONS = {
     # fix233: jelszó-erősség jelző a regisztrációnál és az új jelszónál
     "jelszo_sugo": {"hu": "Legalább 8 karakter, betű és szám is.", "es": "Al menos 8 caracteres, con letras y números."},
     "jelszo_gyenge": {"hu": "Gyenge", "es": "Débil"},
+    "jelszo_egyezik": {"hu": "✓ A két jelszó egyezik", "es": "✓ Las dos contraseñas coinciden"},
+    "jelszo_nem_egyezik": {"hu": "✗ A két jelszó nem egyezik", "es": "✗ Las dos contraseñas no coinciden"},
     "jelszo_kozepes": {"hu": "Közepes", "es": "Media"},
     "jelszo_eros": {"hu": "Erős", "es": "Fuerte"},
     "account_delete_title": {"hu": "A fiók törlése", "es": "Borrar la cuenta"},

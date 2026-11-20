@@ -127,6 +127,7 @@
                         </svg>
                     </button>
                 </div>
+                <p class="jelszo-egyezes" id="jelszoEgyezes" aria-live="polite"></p>
             </div>
 
             {# SZÜLŐI KÓD. Azért itt, a regisztrációban, mert később senki nem
@@ -178,6 +179,22 @@
 {% endblock %}
 
 {% block scripts %}
+
+<script>
+/* fix234 (Sándor: „nézzük, hogy a két jelszó megegyezzen?”): a megerősítő mező alatt azonnal látszik */
+(function () {
+  var a = document.getElementById('password'), b = document.getElementById('password_confirm'), k = document.getElementById('jelszoEgyezes');
+  if (!a || !b || !k) { return; }
+  var IGEN = {{ t('jelszo_egyezik')|tojson }}, NEM = {{ t('jelszo_nem_egyezik')|tojson }};
+  function nez() {
+    if (!b.value) { k.textContent = ''; return; }
+    var ok = a.value === b.value;
+    k.textContent = ok ? IGEN : NEM; k.style.color = ok ? '#22A06B' : '#E5484D';
+  }
+  a.addEventListener('input', nez); b.addEventListener('input', nez); nez();
+})();
+</script>
+<style>.jelszo-egyezes{margin:6px 0 0;font-size:.86rem;font-weight:800;min-height:1.2em}</style>
 {# fix233: jelszó-erősség jelző (gyenge / közepes / erős) #}
 <style>
   .jelszo-mero{display:none;align-items:center;gap:10px;margin-top:8px}

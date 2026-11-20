@@ -67,7 +67,7 @@
     var KEPUT = (D.currentScript && D.currentScript.src) ? D.currentScript.src.replace(/js\/lumi\.js.*$/, 'figurak/lumi/') : '/static/figurak/lumi/';
     // név: [szélesség, magasság, lámpa-szélesség, lámpa közepe (x arány), talp (y arány)]
     var META = {"alap": [334, 640, 286, 0.503, 0.991], "orul": [372, 640, 258, 0.5, 0.991], "gondolkodik": [334, 640, 287, 0.501, 0.989], "integet": [347, 640, 269, 0.546, 0.991], "biztat": [326, 640, 272, 0.5, 0.991], "tapsol": [368, 640, 274, 0.5, 0.991], "aha": [335, 640, 277, 0.512, 0.991], "maszik": [306, 640, 266, 0.5, 0.992], "ul": [311, 640, 269, 0.503, 0.992], "meglepodik": [340, 640, 272, 0.491, 0.992], "lenez": [378, 640, 299, 0.538, 0.991]};
-    var ULES = .74;                                                    // az „ül” képen az ülés magassága (y arány)
+    var ULES = .80;                                                    // fix234: a kezei a mező vonalán – a vonalon ül, nem alatta                                                    // az „ül” képen az ülés magassága (y arány)
     Object.keys(META).forEach(function (n) { var i = new Image(); i.src = KEPUT + n + '.webp'; });
     var doboz = D.createElement('div');
     doboz.id = 'lumi';
@@ -413,7 +413,14 @@
         // pihenés: lélegzik, a fény pislákol
         var t0 = performance.now();
         (function el(t) {
-            if (kint && !fut && P.lat > .9) { var s = (t - t0) / 1000; P.ny = 1 + Math.sin(s * 2.2) * .012; rajzol(); }
+            if (kint && !fut && P.lat > .9) {
+                var s = (t - t0) / 1000; P.ny = 1 + Math.sin(s * 2.2) * .012;
+                /* fix234: ha az oldal elmozdul alatta (pl. megjelenik a jelszó-csík, és lejjebb csúsznak a mezők),
+                   vele megy – mindig a mező vonalán marad */
+                if (horgony && (P.kep === 'alap' || P.kep === 'ul')) { var h0 = most();
+                    if (h0 && (Math.abs(h0.x - P.x) > 1 || Math.abs(h0.y - P.y) > 1)) { P.x = h0.x; P.y = h0.y; } }
+                rajzol();
+            }
             requestAnimationFrame(el);
         })(t0);
     }
