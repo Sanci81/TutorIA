@@ -914,6 +914,25 @@ TRANSLATIONS = {
               "resultados, las monedas y las cartas de sus hijos, sin "
               "posibilidad de recuperarlos.",
     },
+    # fix224 (Sándor: „nem kellene leírni, mi történik, ha törli? mi van az előfizetéssel?”)
+    "account_delete_mi_cim": {"hu": "Mi történik a törléskor?", "es": "¿Qué pasa al borrarla?"},
+    "account_delete_mi_1": {
+        "hu": "Azonnal törlődik: a fiókod, minden gyerekprofil, a haladás, a teszteredmények, "
+              "az érmék, a kártyák és a beszélgetések.",
+        "es": "Se borra al instante: su cuenta, todos los perfiles de sus hijos, el progreso, los "
+              "resultados de los tests, las monedas, los cromos y las conversaciones.",
+    },
+    "account_delete_mi_2": {
+        "hu": "A biztonsági mentésekből legfeljebb 30 napon belül tűnik el.",
+        "es": "De las copias de seguridad desaparece en un máximo de 30 días.",
+    },
+    "account_delete_mi_3": {
+        "hu": "Előfizetés: fizetős csomag jelenleg még nincs, így nincs mit lemondani, és nem vonunk le semmit.",
+        "es": "Suscripción: todavía no hay planes de pago, así que no hay nada que cancelar y no se cobra nada.",
+    },
+    "account_delete_reszletek": {"hu": "Részletek:", "es": "Más detalles:"},
+    "account_delete_adat_link": {"hu": "Adatkezelési tájékoztató, 6. pont", "es": "Política de privacidad, punto 6"},
+    "account_delete_aszf_link": {"hu": "Felhasználási feltételek, 9. pont", "es": "Condiciones de uso, punto 9"},
     "account_delete_text": {
         "hu": "Ha biztos vagy benne, add meg a jelszavadat.",
         "es": "Si está seguro, introduzca su contraseña.",
@@ -1536,20 +1555,23 @@ TRANSLATIONS = {
     "feladat_maradek": {"hu": "Átvitel (ide írhatod a fölvitt számot)",
                         "es": "Llevada (apunta aquí lo que te llevas)"},
 
-    # ── A GYEREK NEME (csak a kabala figurához) ──────────────────────────
-    "nem_cimke": {"hu": "A gyerek neme", "es": "Niño o niña"},
-    "nem_fiu": {"hu": "Bence (fiú)", "es": "Hugo (niño)"},
-    "nem_lany": {"hu": "Lili (lány)", "es": "Lucía (niña)"},
-    "nem_robot": {"hu": "Robi robot", "es": "Robot Robi"},
-    "nem_robot_kep": {"hu": "Pixi robot", "es": "Robot Pixi"},
-    "nem_nincs": {"hu": "Nem adom meg", "es": "Prefiero no decirlo"},
-    "kabala_nev_cimke": {"hu": "A kabala neve", "es": "Nombre de la mascota"},
-    "kabala_nev_hint": {"hu": "Ha üresen hagyod: Bence, Lili, Robi vagy Pixi",
-                        "es": "Si lo dejas vacío: Hugo, Lucía, Robi o Pixi"},
+    # ── KÍSÉRŐ FIGURA (kabala). fix224 (Sándor: „a gyerek neme? itt kabalát választunk, nem?”):
+    #    a mező neve maradt (gyerek_neme), de a szülő már csak a FIGURÁT választja – nemet nem kérdezünk.
+    "nem_cimke": {"hu": "Kísérő figura (kabala)", "es": "Personaje que le acompaña (mascota)"},
+    "nem_fiu": {"hu": "Bence (fiú figura)", "es": "Hugo (niño)"},
+    "nem_lany": {"hu": "Lili (lány figura)", "es": "Lucía (niña)"},
+    "nem_robot": {"hu": "Robi (mozgó robot)", "es": "Robi (robot animado)"},
+    "nem_robot_kep": {"hu": "Pixi (robot)", "es": "Pixi (robot)"},
+    "nem_nincs": {"hu": "Nem kérek figurát", "es": "Sin personaje"},
+    "kabala_nev_cimke": {"hu": "Saját nevet is adhattok neki (nem kötelező)",
+                         "es": "Podéis ponerle otro nombre (opcional)"},
+    "kabala_nev_hint": {"hu": "Ha üresen hagyod, marad a neve: Bence, Lili, Robi vagy Pixi",
+                        "es": "Si lo dejas vacío, se queda su nombre: Hugo, Lucía, Robi o Pixi"},
+    "kabala_nev_ures": {"hu": "Ha üresen hagyod, marad a neve: ", "es": "Si lo dejas vacío, se queda su nombre: "},
     "nem_miert": {
-        "hu": "Csak azt dönti el, melyik rajzfigura kíséri a tanulásban. "
+        "hu": "Ez a rajzfigura áll a gyerek mellett tanulás közben. "
               "A tananyagra nincs hatással.",
-        "es": "Solo decide qué personaje le acompaña mientras aprende. "
+        "es": "Es el personaje que acompaña al niño mientras aprende. "
               "No afecta al contenido.",
     },
 

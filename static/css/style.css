@@ -4025,3 +4025,13 @@ body.gyerek-hatter .navbar, body:has(.gymenu) .navbar, body:has(.ml) .navbar { p
     body:has(.ml) .navbar-inner::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0;
         height: 5px; pointer-events: none; background: linear-gradient(90deg,#2F8FD8 0 12.5%,#8A5CD6 0 25%,#F59E0B 0 37.5%,#0EA5B7 0 50%,#5B6CE0 0 62.5%,#D9467F 0 75%,#22A06B 0 87.5%,#E07B39 0); }
 }
+
+/* fix224: a kísérő-figura választó kerek jelölője a szöveggel egy vonalban, mindig kicsi
+   (egy általános input-szabály nagyra és feljebb tolta). */
+.nemgomb input[type="radio"] {
+    flex: 0 0 18px; width: 18px !important; height: 18px !important; min-height: 0 !important;
+    padding: 0 !important; margin: 0 !important; align-self: center; box-shadow: none;
+}
+.nemgomb span { line-height: 1.2; }
+/* fix224: a „Részletek” linkek a pontra ugranak – a fejléc ne takarja ki a címet */
+h2[id] { scroll-margin-top: 96px; }

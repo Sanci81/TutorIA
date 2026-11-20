@@ -69,22 +69,22 @@
                 <div class="nemvalaszto">
                     {% set jelenlegi = form.get('gyerek_neme', '') %}
                     <label class="nemgomb">
-                        <input type="radio" name="gyerek_neme" value="robot"
+                        <input type="radio" name="gyerek_neme" value="robot" data-nev="{{ 'Robi' }}"
                                {{ 'checked' if jelenlegi == 'robot' else '' }}>
                         <span>{{ t('nem_robot') }}</span>
                     </label>
                     <label class="nemgomb">
-                        <input type="radio" name="gyerek_neme" value="robot_kep"
+                        <input type="radio" name="gyerek_neme" value="robot_kep" data-nev="{{ 'Pixi' }}"
                                {{ 'checked' if jelenlegi == 'robot_kep' else '' }}>
                         <span>{{ t('nem_robot_kep') }}</span>
                     </label>
                     <label class="nemgomb">
-                        <input type="radio" name="gyerek_neme" value="fiu"
+                        <input type="radio" name="gyerek_neme" value="fiu" data-nev="{{ ('Hugo' if g.lang == 'es' else 'Bence') }}"
                                {{ 'checked' if jelenlegi == 'fiu' else '' }}>
                         <span>{{ t('nem_fiu') }}</span>
                     </label>
                     <label class="nemgomb">
-                        <input type="radio" name="gyerek_neme" value="lany"
+                        <input type="radio" name="gyerek_neme" value="lany" data-nev="{{ ('Lucía' if g.lang == 'es' else 'Lili') }}"
                                {{ 'checked' if jelenlegi == 'lany' else '' }}>
                         <span>{{ t('nem_lany') }}</span>
                     </label>
@@ -95,9 +95,26 @@
                     </label>
                 </div>
                 <p class="field-hint">{{ t('nem_miert') }}</p>
+                <div id="kabalaNevBlokk">
                 <label for="kabala_nev" style="margin-top:10px;display:block">{{ t('kabala_nev_cimke') }}</label>
                 <input type="text" id="kabala_nev" name="kabala_nev" maxlength="30"
                        value="{{ form.get('kabala_nev', '') }}" placeholder="{{ t('kabala_nev_hint') }}">
+                </div>
+                {# fix224: a név-mező a választott figura nevét mutatja; „nem kérek figurát” esetén eltűnik. #}
+                <script>
+                (function () {
+                    var blokk = document.getElementById('kabalaNevBlokk'), be = document.getElementById('kabala_nev');
+                    var elotag = {{ t('kabala_nev_ures')|tojson }};
+                    function frissit() {
+                        var r = document.querySelector('input[name="gyerek_neme"]:checked');
+                        var nev = r && r.getAttribute('data-nev');
+                        blokk.style.display = nev ? '' : 'none';
+                        if (nev) { be.placeholder = elotag + nev; }
+                    }
+                    document.querySelectorAll('input[name="gyerek_neme"]').forEach(function (r) { r.addEventListener('change', frissit); });
+                    frissit();
+                })();
+                </script>
             </div>
 
             {# CSAK AZ AKTUÁLIS TANTERV OSZTÁLYA LÁTSZIK.

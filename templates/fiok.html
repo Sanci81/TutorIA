@@ -201,6 +201,16 @@
   <div class="doboz veszelyes">
     <h2>{{ t('account_delete_title') }}</h2>
     <div class="figyelmeztetes">{{ t('account_delete_warning') }}</div>
+    {# fix224: mi történik pontosan, és hol van leírva (két helyen is meglegyen) #}
+    <p style="margin:12px 0 4px"><strong>{{ t('account_delete_mi_cim') }}</strong></p>
+    <ul style="margin:0 0 8px;padding-left:20px;line-height:1.5">
+      <li>{{ t('account_delete_mi_1') }}</li>
+      <li>{{ t('account_delete_mi_2') }}</li>
+      <li>{{ t('account_delete_mi_3') }}</li>
+    </ul>
+    <p class="adat" style="margin-top:0">{{ t('account_delete_reszletek') }}
+      <a href="{{ url_for('adatvedelem') }}#megorzes">{{ t('account_delete_adat_link') }}</a> ·
+      <a href="{{ url_for('feltetelek') }}#torles">{{ t('account_delete_aszf_link') }}</a></p>
     <p>{{ t('account_delete_text') }}</p>
     <form method="post" action="{{ url_for('fiok_torles') }}"
           onsubmit="return confirm({{ t('account_delete_confirm')|tojson }});">

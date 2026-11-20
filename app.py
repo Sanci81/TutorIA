@@ -11404,6 +11404,14 @@ def _dm_feladat_blokk(subject_label: str, grade: int, *, es: bool, idegen: bool 
     if es:
         sorok = ["\n=== MÁS SUPERFICIES INTERACTIVAS PARA ESTA ASIGNATURA ===",
                  "Valen las mismas reglas: enseña ANTES, una sola tarea por respuesta, al final.",
+                 # fix223 (Sándor): ha a gyerek csak segítséggel / megmutatva jutott el a megoldásig, ne dicsérjük hibátlannak.
+                 # fix224 (Sándor): dicsérni KELL (biztatás), és addig folytatni, amíg egyedül nem megy.
+                 "EL RESULTADO de una superficie llega como mensaje del niño. Si dice «con ayuda», «se lo mostré», o pocas "
+                 "«a la primera»: felicítale DE CORAZÓN por no rendirse y por haberlo logrado con ayuda (para animarle), "
+                 "pero sin decir que estaba perfecto o que salió a la primera. Luego explica OTRA VEZ, DE OTRA MANERA, lo que "
+                 "costó (otro ejemplo, un dibujo, paso a paso) y da enseguida UNA tarea parecida y nueva (otros números o "
+                 "palabras; puede ser la misma superficie). Repítelo hasta que la resuelva SOLO, sin ayuda; solo entonces "
+                 "sigue adelante. Si tras varios intentos sigue costando, vuelve a un paso más fácil y construye desde ahí.",
                  "A los niños les ENCANTAN: si una de estas superficies encaja con lo que se practica ahora, "
                  "úsala EN LUGAR de una pregunta normal de número o de elegir. En una clase, al menos cada "
                  "segunda o tercera tarea debe ser una de estas (o de la lista anterior)."]
@@ -11414,6 +11422,14 @@ def _dm_feladat_blokk(subject_label: str, grade: int, *, es: bool, idegen: bool 
     else:
         sorok = ["\n=== TOVÁBBI INTERAKTÍV FELÜLETEK EHHEZ A TANTÁRGYHOZ ===",
                  "Ugyanazok a szabályok: ELŐTTE taníts, egy válaszban egy feladat, a válasz végén.",
+                 # fix223 (Sándor): ha a gyerek csak segítséggel / megmutatva jutott el a megoldásig, ne dicsérjük hibátlannak.
+                 # fix224 (Sándor): dicsérni KELL (biztatás), és addig folytatni, amíg egyedül nem megy.
+                 "A FELÜLET EREDMÉNYE a gyerek üzeneteként érkezik. Ha benne van, hogy „segítséggel”, „megmutattam”, vagy "
+                 "kevés „elsőre sikerült”: dicsérd meg SZÍVBŐL, hogy nem adta fel, és segítséggel megcsinálta (ez biztatja), "
+                 "de ne mondd, hogy hibátlan volt vagy elsőre ment. Utána magyarázd el MÁSKÉPP, ami nehéz volt (más példa, "
+                 "rajz, lépésenként), és rögtön adj rá EGY hasonló, új feladatot (új számokkal/szavakkal, lehet ugyanez a "
+                 "felület is). Ezt ismételd, amíg egyszer EGYEDÜL, segítség nélkül meg nem oldja – csak utána lépj tovább. "
+                 "Ha több próbálkozás után is nehéz, lépj vissza egy könnyebb lépésre, és onnan építkezz újra.",
                  "A gyerekek EZEKET SZERETIK a legjobban: ha valamelyik illik ahhoz, amit most gyakorol, "
                  "EZT add a sima szám- vagy választós kérdés HELYETT. Egy órán legalább minden második-"
                  "harmadik feladat ilyen legyen (vagy a fenti listából egy interaktív)."]

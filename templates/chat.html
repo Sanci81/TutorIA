@@ -3084,12 +3084,22 @@
         /* fix196: HANGMÓDBAN a feladat visszajelzését a felolvasó is kimondja – az olvasni még
            nem tudó elsősöknek. Egyelőre CSAK a próbaoldalon (Sándor kérése, 11.18). */
         D.hangosan = chatMode === 'voice' && {{ proba_oldal|tojson }};
-        D.jelez = function (jo, h) { vj.className = 'visszajelzes ' + (jo ? 'jo' : 'rossz'); vj.innerHTML = h; lap.appendChild(vj);
+        /* fix223 (Sándor: „rosszat írtam, megmutatta, aztán azt írta: ügyes voltál”): ha ennél a lépésnél
+           már volt hiba, a jó válasz után NEM „Ügyes!”, hanem „Most már megvan!” – az igyekezetet
+           elismerjük, de nem tesszük úgy, mintha elsőre ment volna. A „Tovább” új lépést kezd. */
+        D.jelez = function (jo, h) {
+            if (jo && D._volHiba && h) { h = dmDicseretNelkul(String(h), D.es); }
+            if (jo) { D._volHiba = false; } else if (!D._nemRossz) { D._volHiba = true; D._segitseg = true; }
+            vj.className = 'visszajelzes ' + (jo ? 'jo' : 'rossz'); vj.innerHTML = h; lap.appendChild(vj);
             if (D.hangosan && h) { var _sz = dmKimondhato(h).slice(0, 200); if (_sz) { setTimeout(function () { D.mond(_sz); }, 150); } }
             if (!jo && !D._nemRossz && typeof kabalaSzomoru === 'function') { try { kabalaSzomoru(); } catch (e) {} } };
         D.torol = function () { vj.className = 'visszajelzes'; vj.innerHTML = ''; };
         D.unnep = function () { ieUnnep(doboz); };
+        /* fix224: ha a feladatban volt hiba, a tanár MINDIG tudja meg (ne csak ott, ahol a felület maga
+           írja, hogy „segítséggel”) – ő folytatja: dicsér, másképp magyaráz, és hasonlót ad, amíg megy. */
         D.kuld = function (valasz, varj) { if (D._elkuldve) { return; } D._elkuldve = true;
+            if (D._segitseg && valasz) { doboz.dataset.segitseg = '1';
+                if (!/segítség|megmutat|con ayuda|se lo mostr/i.test(String(valasz))) { valasz = String(valasz) + D.T(' (volt, ami csak segítséggel ment)', ' (algo solo salió con ayuda)'); } }
             setTimeout(function () { feladatKuld(doboz, valasz); }, varj == null ? 1600 : varj); };
         /* KÉSZ GOMB. A fn {hianyzik, jo, uzenet, valasz} objektumot ad vissza.
            Jó: ünneplés, magyarázat, és megy a válasz. Rossz: tipp; másodszorra
@@ -3101,7 +3111,10 @@
                 hibak++; D.jelez(false, r.uzenet || ''); if (hibak >= 2) { b.disabled = true; D.kuld(r.valasz, 2600); } });
             sor.appendChild(b); lap.appendChild(sor); return b; };
         /* Önmagától befejeződő feladat (pl. koppintós): itt dől el, és megy a válasz. */
-        D.vege = function (jo, uzenet, valasz) { D.jelez(jo, uzenet); if (jo) { D.unnep(); } D.kuld(valasz, 2600); };
+        /* fix224 (Sándor: „nem azt üzenjük, hogy ennyi volt, lépünk tovább”): ha volt hiba, a záró szöveg
+           nem „Vége!/Ügyes!”, hanem biztatás + „ezt még gyakoroljuk” – órán a tanár folytatja. */
+        D.vege = function (jo, uzenet, valasz) { if (D._segitseg && uzenet) { uzenet = dmZaroSegitseggel(String(uzenet), D.es); D._volHiba = false; }
+            D.jelez(jo || !!D._segitseg, uzenet); if (jo) { D.unnep(); } D.kuld(valasz, 2600); };
         D.tween = function (ido, lepes, kesz) { var t0 = performance.now();
             (function f(t) { var u = Math.min(1, (t - t0) / ido), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; lepes(e);
                 if (u < 1) { requestAnimationFrame(f); } else if (kesz) { kesz(); } })(t0); };
@@ -3339,10 +3352,23 @@
        Minden nehezebb feladat előtt PÉLDA, amit a program magától lejátszik
        („Nézd meg, hogyan kell!”), aztán „Most te jössz!”. A körök között a
        gyerek maga lép tovább (Tovább gomb), hogy legyen ideje elolvasni. */
+    /* fix223: a jó válasz eleji dicséret cseréje, ha előtte hibázott (lásd D.jelez). */
+    function dmDicseretNelkul(h, es) {
+        var mintaHu = /^\s*(Nagyon ügyes|Ügyes|Szuper|Igen|Pontosan|Úgy van|Hibátlan|Remek|Bravó)\s*[!,.]*\s*(🎉|👏|🙌|⭐)?\s*/i;
+        var mintaEs = /^\s*(¡Muy bien|¡Sí|¡Genial|¡Perfecto|¡Eso es|¡Exacto|¡Bravo|¡Estupendo)\s*[!,.]*\s*(🎉|👏|🙌|⭐)?\s*/i;
+        /* fix224 (Sándor: segítséggel is dicsérjük meg, hogy biztassuk – csak ne „hibátlannak”) */
+        var m = es ? mintaEs : mintaHu, uj = es ? '¡Ahora sí! Muy bien por no rendirte. ' : 'Most már megvan – ügyes vagy, hogy nem adtad fel! ';
+        return m.test(h) ? h.replace(m, uj) : uj + h;
+    }
+    function dmZaroSegitseggel(h, es) {
+        var m = es ? /^\s*(¡Muy bien|¡Fin|¡Hecho|¡Genial|¡Perfecto)\s*[!,.]*\s*/i : /^\s*(Nagyon ügyes|Ügyes|Vége|Kész|Szuper)\s*[!,.]*\s*/i;
+        return (es ? '¡Muy bien por no rendirte! 💪 ' : 'Ügyes vagy, hogy nem adtad fel! 💪 ') + h.replace(m, '') +
+            (es ? ' Lo que costó, lo seguimos practicando.' : ' Ami nehezen ment, azt most még gyakoroljuk.');
+    }
     function dmTovabb(D, valahol, cb, felirat) {
         var lap = valahol.closest('.dm') || valahol.parentNode, sor = document.createElement('div');
         sor.className = 'gombok kozep dm-tovabb';
-        sor.appendChild(D.gomb(felirat || D.T('Tovább ▶', 'Siguiente ▶'), 'fo', function () { sor.remove(); cb(); }));
+        sor.appendChild(D.gomb(felirat || D.T('Tovább ▶', 'Siguiente ▶'), 'fo', function () { D._volHiba = false; sor.remove(); cb(); }));
         lap.appendChild(sor);
         return sor;
     }
@@ -11876,7 +11902,9 @@
             /* A gyerek órán ez a válasz a TANÁRHOZ menne, ő értékelné – a próbában kiírjuk. */
             var pv = document.createElement('div'); pv.className = 'visszajelzes jo';
             pv.style.cssText = 'margin-top:10px;background:#FFF8E1;color:#5B4A00;border:2px dashed #F5A01E';
-            pv.textContent = 'Próba – órán ez menne a tanárnak, ő értékelné: „' + szoveg + '”';
+            pv.textContent = 'Próba – órán ez menne a tanárnak, ő értékelné: „' + szoveg + '”' +
+                (doboz.dataset.segitseg === '1' ? ' – Mivel volt, ami csak segítséggel ment, órán a tanár ezután: megdicséri, hogy nem adta fel, '
+                    + 'másképp is elmagyarázza, és ad egy hasonló, új feladatot – addig, amíg egyedül, segítség nélkül meg nem oldja.' : '');
             try { doboz.appendChild(pv); } catch (e) {}
             return; }
 
