@@ -1976,10 +1976,10 @@ def mintalecke(evf: int):
     _latogatas_esemeny(f"minta_{ny}_{evf}")
     # fix217: ahol van beszélgetős változat, az megy (most: 2. osztály HU+ES)
     _chat = getattr(_ml, "chat", lambda *_: None)(ny, evf)
-    # fix221 (Sándor): a beszélgetős mintalecke egyelőre CSAK a próbaoldalon –
-    # élesen a régi marad, amíg minden évfolyam el nem készül. Élesen bekapcsolni:
-    # MINTALECKE_BESZELGETES=1 (Railway változó).
-    if not (PROBA_OLDAL or os.environ.get("MINTALECKE_BESZELGETES", "").strip() in ("1", "igen", "be")):
+    # fix231 (Sándor: „ha jó, mehet a főoldalra”): minden évfolyam kész (HU 1–8, ES 1–6),
+    # ezért élesen is a beszélgetős mintalecke megy. Vissza a régire (vészfék):
+    # Railway változó MINTALECKE_BESZELGETES=0.
+    if os.environ.get("MINTALECKE_BESZELGETES", "").strip() in ("0", "nem", "ki"):
         _chat = None
     return render_template("mintalecke.html", lecke=lk, evf=evf, chat=_chat,
                            evfolyamok=_ml.evfolyamok(ny), gyerek_menu_nelkul=True)
