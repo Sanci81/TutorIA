@@ -92,6 +92,31 @@
   .mc-gomb{border:2px solid #17604A;background:#fff;color:#17604A;font-weight:800;font-size:16.5px;font-family:inherit;border-radius:999px;
     padding:10px 18px;cursor:pointer;animation:mcBe .25s ease-out;box-shadow:0 3px 0 rgba(23,96,74,.18)}
   .mc-gomb.szam{min-width:70px;font-size:21px}
+
+  /* fix228: válogató, tört, függvénygép */
+  .mc-rekesz.szos span{width:auto;min-width:74px;padding:0 10px;font-size:17px}
+  .mc-lap.szo{width:auto;min-width:64px;padding:0 14px;font-size:18px;height:48px}
+  .mc-lap.kij{outline:4px solid #F5A01E;outline-offset:2px;transform:translateY(-3px)}
+  .mc-kosarak{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 14px}
+  @media (max-width:520px){.mc-kosar b{font-size:12.5px}.mc-kosar{padding:6px 4px;min-height:84px}}
+  .mc-kosar{border:3px dashed #9CC9B3;background:#F3FAF6;border-radius:16px;min-height:96px;padding:8px;font-family:inherit;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:6px;color:#17604A}
+  .mc-kosar b{font-size:14.5px;line-height:1.25}
+  .mc-kosar span{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+  .mc-kosar i{font-style:normal;background:#22A06B;color:#fff;border-radius:999px;padding:2px 10px;font-weight:800;font-size:14px;animation:mcBe .25s ease-out}
+  .mc-kosar.rossz{animation:mcRezeg .35s}
+  @keyframes mcRezeg{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  .mc-tortdoboz{display:flex;justify-content:center}
+  .mc-tort{width:96px;height:96px}
+  .mc-tort.nagy{width:170px;height:170px}
+  .mc-tortsor{display:flex;justify-content:center;gap:26px;margin:6px 0}
+  .mc-tortsor div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:20px;color:#17604A}
+  .mc-gepjel{text-align:center;font-size:46px;margin:2px 0 8px}
+  .mc-szavak{justify-content:center}
+  .mc-geptabla{display:grid;gap:4px;max-width:220px;margin:4px auto 12px}
+  .mc-geptabla div{display:grid;grid-template-columns:1fr 1fr;text-align:center;font-size:20px;font-weight:800}
+  .mc-geptabla div:first-child{color:#5f7469;font-size:14px;text-transform:uppercase}
+  .mc-geptabla div.uj{background:#EEF7F2;border-radius:10px;padding:4px 0;animation:mcBe .25s ease-out}
   .mc-gomb.kepes{padding:6px 10px;border-radius:18px}
   .mc-valkep{width:78px;height:78px;display:block}
   .mc-sor.gy .mc-valkep{width:56px;height:56px}
@@ -286,6 +311,7 @@
       var d = tablaLap(t.cim);
       if (t.kep) { d.insertAdjacentHTML('beforeend', kep(t.kep)); }
       if (t.dobozok) { d.insertAdjacentHTML('beforeend', dobozSvg(t.dobozok[0], t.dobozok[1])); }
+      if (t.tortek) { d.insertAdjacentHTML('beforeend', '<div class="mc-tortsor">' + t.tortek.map(function (x) { return '<div>' + tortSvg(x[0], x[1]) + '<b>' + x[1] + '/' + x[0] + '</b></div>'; }).join('') + '</div>'); }
       if (t.keret) { var k = document.createElement('div'); k.className = 'mc-statikus'; k.innerHTML = keretHtml(t.keret[0], t.keret[1], 0); d.appendChild(k); }
       if (t.lista) { var l = document.createElement('div'); l.className = 'mc-tk-lista';
         l.innerHTML = t.lista.map(function (x) { return '<div>' + izzo(x) + '</div>'; }).join(''); d.appendChild(l); }
@@ -315,19 +341,19 @@
     }
     /* fix222: BETŰK – a szót a betűlapokból rakja ki, sorban */
     function betuk(s, kesz) {
-      var d = tablaLap(s.cim), szo = s.betuk.split(''), pos = 0, SZ2 = ['#2F8FD8', '#8A5CD6', '#0EA5B7', '#D9467F', '#5B6CE0', '#E07B39'];
+      var d = tablaLap(s.cim), szo = Array.isArray(s.betuk) ? s.betuk : s.betuk.split(''), pos = 0, SZOS = Array.isArray(s.betuk), SZ2 = ['#2F8FD8', '#8A5CD6', '#0EA5B7', '#D9467F', '#5B6CE0', '#E07B39'];
       if (s.kep) { d.insertAdjacentHTML('beforeend', kep(s.kep)); }
-      d.insertAdjacentHTML('beforeend', '<div class="mc-rekesz">' + szo.map(function () { return '<span></span>'; }).join('') +
+      d.insertAdjacentHTML('beforeend', '<div class="mc-rekesz' + (SZOS ? ' szos' : '') + '">' + szo.map(function () { return '<span></span>'; }).join('') +
         '</div><div class="mc-lapok"></div><div class="mc-tipp"></div>');
       var rek = d.querySelectorAll('.mc-rekesz span'), lapok = d.querySelector('.mc-lapok'), tipp = d.querySelector('.mc-tipp');
       var cim = d.querySelector('.mc-tk-cim');
       s.lapok.forEach(function (b, k) {
-        var g = document.createElement('button'); g.type = 'button'; g.className = 'mc-lap'; g.textContent = b; g.style.background = SZ2[k % SZ2.length];
+        var g = document.createElement('button'); g.type = 'button'; g.className = 'mc-lap' + (SZOS ? ' szo' : ''); g.textContent = b; g.style.background = SZ2[k % SZ2.length];
         g.addEventListener('click', function () {
           if (pos >= szo.length || g.disabled) { return; }
           if (b === szo[pos]) {
             rek[pos].textContent = b; rek[pos].classList.add('tele'); g.style.visibility = 'hidden'; g.disabled = true; pos++; tipp.textContent = '';
-            if (cim) { cim.textContent = szo.slice(0, pos).join('') + szo.slice(pos).map(function () { return ' _'; }).join(''); }
+            if (cim && !SZOS) { cim.textContent = szo.slice(0, pos).join('') + szo.slice(pos).map(function () { return ' _'; }).join(''); }
             if (pos >= szo.length) { setTimeout(kesz, 450); }
           } else {
             g.classList.remove('rossz'); void g.offsetWidth; g.classList.add('rossz');
@@ -405,6 +431,83 @@
         })();
       });
       sor2.appendChild(g); sor2.appendChild(k); d.appendChild(sor2); le();
+    }
+
+    /* fix228: VÁLOGATÓ – koppints egy szóra, aztán a dobozra, ahová tartozik (szófajok, halmazállapotok) */
+    function valogat(s, kesz) {
+      var d = tablaLap(s.cim), v = s.valogat, kij = null, kesz_db = 0, hiba = 0;
+      d.insertAdjacentHTML('beforeend', '<div class="mc-kosarak"></div><div class="mc-lapok mc-szavak"></div><div class="mc-tipp"></div>');
+      var kos = d.querySelector('.mc-kosarak'), szk = d.querySelector('.mc-szavak'), tipp = d.querySelector('.mc-tipp');
+      var KB = v.kosarak.map(function (k, n) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'mc-kosar';
+        b.innerHTML = '<b>' + k + '</b><span></span>'; kos.appendChild(b);
+        b.addEventListener('click', function () {
+          if (!kij) { tipp.textContent = ES ? 'Primero toca una palabra.' : 'Előbb koppints egy szóra.'; return; }
+          var g = kij;
+          if (+g.dataset.k === n) {
+            g.classList.remove('kij'); g.disabled = true; g.style.visibility = 'hidden'; kij = null; tipp.textContent = '';
+            b.querySelector('span').insertAdjacentHTML('beforeend', '<i>' + g.textContent + '</i>'); kesz_db++;
+            if (kesz_db >= v.szavak.length) { setTimeout(function () { kesz(hiba > 0); }, 450); }
+          } else {
+            hiba++; b.classList.remove('rossz'); void b.offsetWidth; b.classList.add('rossz');
+            tipp.innerHTML = (g.dataset.t || s.tipp || '');
+          }
+        });
+        return b;
+      });
+      var SZ3 = ['#2F8FD8', '#8A5CD6', '#0EA5B7', '#D9467F', '#5B6CE0', '#E07B39'];
+      v.szavak.forEach(function (x, n) {
+        var g = document.createElement('button'); g.type = 'button'; g.className = 'mc-lap szo'; g.textContent = x[0]; g.dataset.k = x[1]; g.style.background = SZ3[n % SZ3.length];
+        if (x[2]) { g.dataset.t = x[2]; }
+        g.addEventListener('click', function () { if (g.disabled) { return; } if (kij) { kij.classList.remove('kij'); } kij = g; g.classList.add('kij'); tipp.textContent = ''; });
+        szk.appendChild(g);
+      });
+      le();
+    }
+    /* fix228: TÖRT – kör (pizza) n egyforma szeletre vágva; koppintással színezel, aztán „Kész” */
+    function tortSvg(n, k, id) {
+      var o = '', r = 64, cx = 70, cy = 70;
+      for (var i = 0; i < n; i++) {
+        var a1 = -Math.PI / 2 + i * 2 * Math.PI / n, a2 = a1 + 2 * Math.PI / n;
+        var d = n === 1 ? 'M' + (cx - r) + ' ' + cy + ' a' + r + ' ' + r + ' 0 1 0 ' + 2 * r + ' 0 a' + r + ' ' + r + ' 0 1 0 ' + (-2 * r) + ' 0' :
+          'M' + cx + ' ' + cy + ' L' + (cx + r * Math.cos(a1)).toFixed(1) + ' ' + (cy + r * Math.sin(a1)).toFixed(1) + ' A' + r + ' ' + r + ' 0 0 1 ' + (cx + r * Math.cos(a2)).toFixed(1) + ' ' + (cy + r * Math.sin(a2)).toFixed(1) + 'Z';
+        o += '<path data-i="' + i + '" d="' + d + '" fill="' + (i < k ? '#F59E0B' : '#FFF3D6') + '" stroke="#C97F0E" stroke-width="2.5"/>';
+      }
+      return '<svg ' + (id ? 'class="' + id + '" ' : 'class="mc-tort" ') + 'viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">' + o + '</svg>';
+    }
+    function tort(s, kesz) {
+      var d = tablaLap(s.cim), n = s.tort[0], k = s.tort[1], hiba = 0, be = {};
+      d.insertAdjacentHTML('beforeend', '<div class="mc-tortdoboz">' + tortSvg(n, 0, 'mc-tort nagy') + '</div><div class="mc-tk-sz">0 / ' + n + '</div><div class="mc-tipp"></div>');
+      var sv = d.querySelector('.mc-tort'), sz = d.querySelector('.mc-tk-sz'), tipp = d.querySelector('.mc-tipp');
+      [].forEach.call(sv.querySelectorAll('path'), function (p) {
+        p.style.cursor = 'pointer';
+        p.addEventListener('click', function () { var i = p.dataset.i; be[i] = !be[i]; p.setAttribute('fill', be[i] ? '#F59E0B' : '#FFF3D6');
+          var db = Object.keys(be).filter(function (x) { return be[x]; }).length; sz.innerHTML = '<b>' + db + '</b> / ' + n; tipp.textContent = ''; });
+      });
+      var g = document.createElement('button'); g.type = 'button'; g.className = 'mc-tapsgomb'; g.textContent = ES ? 'Listo ✓' : 'Kész ✓';
+      g.style.background = '#22A06B'; g.style.boxShadow = '0 5px 0 #17604A';
+      g.addEventListener('click', function () {
+        var db = Object.keys(be).filter(function (x) { return be[x]; }).length;
+        if (db === k) { g.disabled = true; setTimeout(function () { kesz(hiba > 0); }, 300); return; }
+        hiba++; tipp.innerHTML = s.tipp + (hiba >= 2 ? ' ' + (ES ? 'Ahora tienes <b>' + db + '</b>: necesitas <b>' + k + '</b>.' : 'Most <b>' + db + '</b> van kiszínezve, <b>' + k + '</b> kell.') : '');
+      });
+      var sor2 = document.createElement('div'); sor2.style.cssText = 'display:flex;justify-content:center;margin-top:8px'; sor2.appendChild(g); d.appendChild(sor2); le();
+    }
+    /* fix228: FÜGGVÉNYGÉP – a gyerek számokat tesz a gépbe, és figyeli, mi jön ki */
+    function gep(s, kesz) {
+      var d = tablaLap(s.cim), g = s.gep, volt = 0;
+      d.insertAdjacentHTML('beforeend', '<div class="mc-gepjel">⚙️❓⚙️</div><div class="mc-geptabla"><div><b>' + (ES ? 'entra' : 'be') + '</b><b>' + (ES ? 'sale' : 'ki') + '</b></div></div><div class="mc-lapok mc-gepgombok"></div>');
+      var tb = d.querySelector('.mc-geptabla'), gb = d.querySelector('.mc-gepgombok');
+      g.be.forEach(function (x, n) {
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'mc-lap'; b.textContent = x; b.style.background = '#2F8FD8';
+        b.addEventListener('click', function () {
+          if (b.disabled) { return; } b.disabled = true; b.style.opacity = '.45';
+          tb.insertAdjacentHTML('beforeend', '<div class="uj"><span>' + x + '</span><span>' + g.ki[n] + '</span></div>'); volt++; le();
+          if (volt >= g.be.length) { setTimeout(function () { kesz(false); }, 700); }
+        });
+        gb.appendChild(b);
+      });
+      le();
     }
     var i = 0, segitett = false;
     function kerdes(s, H, k, tovabb) {
@@ -497,6 +600,13 @@
          hogy a valódi órán így folytatnánk. */
       if (s.val) { kerdes(s, s.hasonlo || [], 0, kovetkezo); return; }
       if (s.hangszam) { mond(s.tan, function () { hangKor(s, s.hasonlo || [], 0, kovetkezo); }); return; }
+      if (s.valogat || s.tort || s.gep) {
+        var fv2 = s.valogat ? valogat : (s.tort ? tort : gep);
+        mond(s.tan, function () { fv2(s, function (seg) {
+          if (seg) { mond([(ES ? '¡Ahora sí, todo en su sitio! 💪 Muy bien por no rendirte.' : 'Most már minden a helyén! 💪 Ügyes vagy, hogy nem adtad fel.')], kovetkezo); return; }
+          konfetti(NAGY ? tablaBel : lista.lastChild); mond([s.kesz], kovetkezo); }); });
+        return;
+      }
       if (s.betuk || s.taps || s.tanyer) {
         var fv = s.betuk ? betuk : (s.taps ? taps : tanyer);
         mond(s.tan, function () { fv(s, function () { konfetti(NAGY ? tablaBel : lista.lastChild); mond([s.kesz], kovetkezo); }); });
