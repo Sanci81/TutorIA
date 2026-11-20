@@ -235,7 +235,7 @@
     })();
     </script>
     {% endif %}
-    {# fix233: LUMI – egyelőre CSAK a próbaoldalon (Sándor jóváhagyásáig az élesen nincs). Kikapcsolás: ez a sor. #}
-    {% if proba_oldal %}<script src="{{ url_for('static', filename='js/lumi.js') }}?v={{ statik_v }}" defer></script>{% endif %}
+    {# fix236 (Sándor: „küldjük fel”): LUMI élesen is. Kikapcsolás: ez a sor (vagy elé: {% if proba_oldal %} … {% endif %}). #}
+    <script src="{{ url_for('static', filename='js/lumi.js') }}?v={{ statik_v }}" defer></script>
 </body>
 </html>
