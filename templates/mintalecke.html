@@ -113,7 +113,27 @@
   .mc-tk .mc-tk-lista{margin:0 auto;max-width:360px}
   .mc-tk-lista div{background:#F3F8F5;border-radius:12px;padding:10px 14px;margin:8px 0;font-size:17px;font-weight:700;color:#17342C}
   .mc-statikus .mc-p{animation:none}
+  /* fix222: képek a táblán + új megfogható feladatok (betűk, taps, tányérok) */
+  .mc-tabla-kep{display:block;height:110px;width:auto;max-width:100%;margin:0 auto 10px}
+  .mc-rekesz{display:flex;justify-content:center;gap:8px;margin:6px 0 14px}
+  .mc-rekesz span{width:46px;height:54px;border-radius:12px;border:3px dashed #CFE2D8;display:flex;align-items:center;justify-content:center;
+    font-size:28px;font-weight:900;color:#17342C;background:#F7FBF9}
+  .mc-rekesz span.tele{border-style:solid;border-color:#22A06B;background:#E3F3EA;animation:mcBe .25s ease-out}
+  .mc-lapok{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+  .mc-lap{width:56px;height:60px;border:0;border-radius:14px;font-size:28px;font-weight:900;font-family:inherit;color:#fff;cursor:pointer;
+    box-shadow:0 4px 0 rgba(0,0,0,.18)}
+  .mc-lap.rossz{animation:mlRez .35s;background:#B8C0C9!important}
+  .mc-tipp{text-align:center;color:#B42318;font-weight:700;min-height:1.4em;margin-top:8px;font-size:15px}
+  .mc-tapsgomb{display:block;margin:6px auto 0;border:0;background:#F5A01E;color:#fff;font-weight:900;font-size:22px;font-family:inherit;
+    padding:14px 30px;border-radius:999px;box-shadow:0 5px 0 #C97F0E;cursor:pointer}
+  .mc-tapsgomb:active{transform:translateY(3px);box-shadow:0 2px 0 #C97F0E}
+  .mc-tanyerok{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;min-height:96px;margin-bottom:10px}
+  .mc-tanyer{width:90px;height:90px;border-radius:50%;background:#FFF4E0;border:4px solid #F1DDBA;display:grid;grid-template-columns:repeat(2,26px);
+    place-content:center;gap:4px;animation:mcBe .3s ease-out}
+  .mc-tanyer i{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFB4B4,#E53935 50%,#9B1B1B);position:relative}
+  .mc-tanyer i::after{content:"";position:absolute;width:6px;height:9px;background:#3E7B2F;border-radius:3px;left:12px;top:-5px}
   @media (min-width:900px){
+    .mc-tabla .mc-tabla-kep{height:150px}
     .ml-belso.mc-szeles{max-width:1120px}
     .mc-racs{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:start}
     .mc-tabla{display:block;position:sticky;top:20px;background:#fff;border-radius:24px;padding:16px 18px 22px;min-height:440px;
@@ -242,9 +262,12 @@
       for (var j = 0; j < b - bent; j++) { h += '<span class="mc-p kek"></span>'; }
       return h + '</div>';
     }
+    var KEPUT = "{{ url_for('static', filename='img/minta/X.svg') }}";
+    function kep(nev) { return '<img class="mc-tabla-kep" alt="" src="' + KEPUT.replace('X.svg', nev + '.svg') + '">'; }
     function tabla(t) {
       if (!t) { return; }
       var d = tablaLap(t.cim);
+      if (t.kep) { d.insertAdjacentHTML('beforeend', kep(t.kep)); }
       if (t.keret) { var k = document.createElement('div'); k.className = 'mc-statikus'; k.innerHTML = keretHtml(t.keret[0], t.keret[1], 0); d.appendChild(k); }
       if (t.lista) { var l = document.createElement('div'); l.className = 'mc-tk-lista';
         l.innerHTML = t.lista.map(function (x) { return '<div>' + izzo(x) + '</div>'; }).join(''); d.appendChild(l); }
@@ -271,6 +294,64 @@
           (tele ? ' &nbsp;·&nbsp; ' + (ES ? 'fuera: ' : 'kint: ') + '<b>' + (b - bent) + '</b>' : '');
       }
       rajz(); le();
+    }
+    /* fix222: BETŰK – a szót a betűlapokból rakja ki, sorban */
+    function betuk(s, kesz) {
+      var d = tablaLap(s.cim), szo = s.betuk.split(''), pos = 0, SZ2 = ['#2F8FD8', '#8A5CD6', '#0EA5B7', '#D9467F', '#5B6CE0', '#E07B39'];
+      if (s.kep) { d.insertAdjacentHTML('beforeend', kep(s.kep)); }
+      d.insertAdjacentHTML('beforeend', '<div class="mc-rekesz">' + szo.map(function () { return '<span></span>'; }).join('') +
+        '</div><div class="mc-lapok"></div><div class="mc-tipp"></div>');
+      var rek = d.querySelectorAll('.mc-rekesz span'), lapok = d.querySelector('.mc-lapok'), tipp = d.querySelector('.mc-tipp');
+      var cim = d.querySelector('.mc-tk-cim');
+      s.lapok.forEach(function (b, k) {
+        var g = document.createElement('button'); g.type = 'button'; g.className = 'mc-lap'; g.textContent = b; g.style.background = SZ2[k % SZ2.length];
+        g.addEventListener('click', function () {
+          if (pos >= szo.length || g.disabled) { return; }
+          if (b === szo[pos]) {
+            rek[pos].textContent = b; rek[pos].classList.add('tele'); g.style.visibility = 'hidden'; g.disabled = true; pos++; tipp.textContent = '';
+            if (cim) { cim.textContent = szo.slice(0, pos).join('') + szo.slice(pos).map(function () { return ' _'; }).join(''); }
+            if (pos >= szo.length) { setTimeout(kesz, 450); }
+          } else {
+            g.classList.remove('rossz'); void g.offsetWidth; g.classList.add('rossz');
+            setTimeout(function () { g.classList.remove('rossz'); }, 400);
+            tipp.textContent = s.tipp || '';
+          }
+        });
+        lapok.appendChild(g);
+      });
+      le();
+    }
+    /* fix222: TAPS – minden koppintásra előbukkan a következő hang / szótag */
+    function taps(s, kesz) {
+      var d = tablaLap(s.cim), n = 0;
+      if (s.kep) { d.insertAdjacentHTML('beforeend', kep(s.kep)); }
+      d.insertAdjacentHTML('beforeend', '<div class="mc-rekesz">' + s.taps.map(function () { return '<span>?</span>'; }).join('') + '</div>');
+      var rek = d.querySelectorAll('.mc-rekesz span'), cim = d.querySelector('.mc-tk-cim');
+      rek.forEach(function (r) { if (s.taps[0].length > 1) { r.style.width = '64px'; } });
+      var g = document.createElement('button'); g.type = 'button'; g.className = 'mc-tapsgomb'; g.textContent = s.gomb;
+      g.addEventListener('click', function () {
+        if (n >= s.taps.length) { return; }
+        rek[n].textContent = s.taps[n]; rek[n].classList.add('tele'); n++;
+        if (cim) { cim.textContent = n + ' 👏'; }
+        if (n >= s.taps.length) { g.disabled = true; g.style.opacity = '.5'; setTimeout(kesz, 450); }
+      });
+      d.appendChild(g); le();
+    }
+    /* fix222: TÁNYÉROK – minden koppintás egy új tányér (k almával); a sor alatt az összeadás */
+    function tanyer(s, kesz) {
+      var d = tablaLap(s.cim), db = 0, cel = s.tanyer[0], k = s.tanyer[1];
+      d.insertAdjacentHTML('beforeend', '<div class="mc-tanyerok"></div><div class="mc-tk-sz">0</div>');
+      var hely = d.querySelector('.mc-tanyerok'), sz = d.querySelector('.mc-tk-sz');
+      var g = document.createElement('button'); g.type = 'button'; g.className = 'mc-tapsgomb'; g.textContent = s.gomb;
+      g.addEventListener('click', function () {
+        if (db >= cel) { return; }
+        db++;
+        var t = document.createElement('div'); t.className = 'mc-tanyer'; t.innerHTML = new Array(k + 1).join('<i></i>'); hely.appendChild(t);
+        var tagok = []; for (var j = 0; j < db; j++) { tagok.push(k); }
+        sz.innerHTML = tagok.join(' + ') + ' = <b>' + db * k + '</b>' + (db >= cel ? ' &nbsp;→&nbsp; <span class="mc-zold">' + cel + ' × ' + k + ' = ' + cel * k + '</span>' : '');
+        if (db >= cel) { g.disabled = true; g.style.opacity = '.5'; setTimeout(kesz, 600); }
+      });
+      d.appendChild(g); le();
     }
     var i = 0;
     function kovetkezo() { i++; lep(); }
@@ -305,6 +386,11 @@
             }
           });
         });
+        return;
+      }
+      if (s.betuk || s.taps || s.tanyer) {
+        var fv = s.betuk ? betuk : (s.taps ? taps : tanyer);
+        mond(s.tan, function () { fv(s, function () { konfetti(NAGY ? tablaBel : lista.lastChild); mond([s.kesz], kovetkezo); }); });
         return;
       }
       if (s.tizes) {
