@@ -55,7 +55,7 @@
   {% endif %}
 
   <div class="kartyak">
-    <div class="k"><b>{{ osszes.latogato }}</b><span>látogató {{ 'ma' if napok == 1 else 'az utolsó 7 napban' }}</span></div>
+    <div class="k"><b>{{ osszes.latogato }}</b><span>látogató {{ 'ma' if napok == 1 else 'az utolsó ' ~ napok ~ ' napban' }}</span></div>
     <div class="k"><b>{{ osszes.megnyitas }}</b><span>oldalmegnyitás</span></div>
     <div class="k"><b>{{ (100 * osszes.mobil / osszes.latogato)|round|int if osszes.latogato else 0 }}%</b><span>telefonról</span></div>
     <div class="k"><b>{{ osszes.reg }}</b><span>új regisztráció</span></div>

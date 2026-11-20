@@ -19344,7 +19344,9 @@ def admin_latogatottsag():
         return tiltas
     napok = max(1, min(90, int(request.args.get("napok", 30) or 30)))  # 1 = csak a mai nap (fix159)
     sorok = database.latogatas_osszesites(napok)
-    het = sorok[:7]
+    # fix225 (Sándor: „90 napra kevesebbet mutat, mint anno”): a felső összesítő eddig MINDIG csak az
+    # utolsó 7 napot adta össze, bármit választott. Most a választott időszakot.
+    het = sorok
     osszes = {"latogato": sum(x["latogato"] for x in het), "megnyitas": sum(x["megnyitas"] for x in het),
               "mobil": sum(x["mobil"] for x in het), "reg": sum(x["reg"] for x in het)}
     forras_het: dict = {}

@@ -926,9 +926,23 @@ TRANSLATIONS = {
         "hu": "A biztonsági mentésekből legfeljebb 30 napon belül tűnik el.",
         "es": "De las copias de seguridad desaparece en un máximo de 30 días.",
     },
+    # fix225 (Sándor: „úgy kell megírni, mintha már lenne fizetés”) – a korábbi döntés szerint (fix85/fix158):
+    # a törlés az előfizetést is megszünteti, a maradék órák elvesznek, a számlák megmaradnak.
     "account_delete_mi_3": {
-        "hu": "Előfizetés: fizetős csomag jelenleg még nincs, így nincs mit lemondani, és nem vonunk le semmit.",
-        "es": "Suscripción: todavía no hay planes de pago, así que no hay nada que cancelar y no se cobra nada.",
+        "hu": "Előfizetés: a törlés azt is azonnal megszünteti, utána nem vonunk le többet. A bérletben maradt "
+              "órák elvesznek, és a már kifizetett időszakot a törlés nem téríti vissza.",
+        "es": "Suscripción: el borrado también la cancela al instante y después no se cobra nada más. Las horas "
+              "que queden se pierden y el borrado no devuelve el periodo ya pagado.",
+    },
+    "account_delete_mi_4": {
+        "hu": "Ha a vásárlástól még nem telt el 14 nap, törlés előtt élhetsz az elállási jogoddal – akkor "
+              "arányos visszatérítés jár.",
+        "es": "Si aún no han pasado 14 días desde la compra, antes de borrar puede desistir del contrato y "
+              "recibir la devolución proporcional.",
+    },
+    "account_delete_mi_5": {
+        "hu": "A számláidat a törvény miatt a törlés után is megőrizzük.",
+        "es": "Sus facturas se conservan después del borrado porque lo exige la ley.",
     },
     "account_delete_reszletek": {"hu": "Részletek:", "es": "Más detalles:"},
     "account_delete_adat_link": {"hu": "Adatkezelési tájékoztató, 6. pont", "es": "Política de privacidad, punto 6"},

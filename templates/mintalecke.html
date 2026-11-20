@@ -92,6 +92,9 @@
   .mc-gomb{border:2px solid #17604A;background:#fff;color:#17604A;font-weight:800;font-size:16.5px;font-family:inherit;border-radius:999px;
     padding:10px 18px;cursor:pointer;animation:mcBe .25s ease-out;box-shadow:0 3px 0 rgba(23,96,74,.18)}
   .mc-gomb.szam{min-width:70px;font-size:21px}
+  .mc-gomb.kepes{padding:6px 10px;border-radius:18px}
+  .mc-valkep{width:78px;height:78px;display:block}
+  .mc-sor.gy .mc-valkep{width:56px;height:56px}
   .mc-gomb.rossz{opacity:.5;text-decoration:line-through;border-color:#E5484D;color:#B42318;cursor:default}
   .mc-gomb.fo{background:#F5A01E;border-color:#F5A01E;color:#fff;box-shadow:0 3px 0 #C97F0E}
   .mc-tk{background:#fff;border-radius:18px;padding:14px 10px;box-shadow:0 4px 14px rgba(23,96,74,.10);margin-left:47px;animation:mcBe .3s ease-out}
@@ -136,6 +139,8 @@
     .mc-tabla .mc-tabla-kep{height:150px}
     .ml-belso.mc-szeles{max-width:1120px}
     .mc-racs{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:start}
+    /* fix225: a tábla görgetéskor is látsszon – a .ml „overflow:hidden”-je elrontotta a sticky-t; a clip ugyanúgy vág, de nem rontja el */
+    .ml{overflow:clip !important}
     .mc-tabla{display:block;position:sticky;top:20px;background:#fff;border-radius:24px;padding:16px 18px 22px;min-height:440px;
       box-shadow:0 8px 24px rgba(23,96,74,.12);border:1px solid #E3EEE8}
     .mc-tabla-fej{display:flex;align-items:center;justify-content:space-between;font-weight:800;color:#5f7469;font-size:13px;
@@ -392,13 +397,15 @@
     function kerdes(s, H, k, tovabb) {
       var hiba = 0;
       val.innerHTML = '';
+      /* fix225: képes válasz (s.kepek): a gomb a KÉP, a gyerek a képre koppint */
+      function felirat(n) { return s.kepek ? '<img class="mc-valkep" alt="" src="' + KEPUT.replace('X.svg', s.kepek[n] + '.svg') + '">' : s.val[n]; }
       s.val.forEach(function (o, n) {
-        gomb(o, 'szam', function (b) {
-          sor(true, o);
+        gomb(felirat(n), s.kepek ? 'kepes' : 'szam', function (b) {
+          sor(true, felirat(n));
           if (n === s.jo) {
             val.innerHTML = ''; if (s.tabla_jo) { tablaCim(s.tabla_jo); }
             if (!hiba || s.tovabb_rosszra) { konfetti(lista.lastChild); mond(s.ha_jo, tovabb); return; }
-            var d = [(ES ? '¡Ahora sí: <b>' : 'Most már megvan: <b>') + o + (ES ? '</b>! 💪 Muy bien por no rendirte.' : '</b>! 💪 Ügyes vagy, hogy nem adtad fel.')];
+            var d = [(ES ? '¡Ahora sí: <b>' : 'Most már megvan: <b>') + (s.tabla_jo || o) + (ES ? '</b>! 💪 Muy bien por no rendirte.' : '</b>! 💪 Ügyes vagy, hogy nem adtad fel.')];
             if (k < H.length) { kovHasonlo(H, k, tovabb, d.concat([ES ? 'Vamos a ver si ahora te sale solo, con uno parecido:' : 'Nézzük, egyedül is megy-e – itt egy hasonló:'])); }
             else { mond(d, tovabb); }
             return;
@@ -411,7 +418,7 @@
           if (hiba === 2 && s.lepes) { mond([s.lepes], vissza); return; }
           val.innerHTML = ''; val.style.visibility = '';
           if (s.tabla_jo) { tablaCim(s.tabla_jo); }
-          var m = (ES ? 'Mira, la respuesta es <b>' : 'Nézd, a megoldás: <b>') + s.val[s.jo] + '</b>. ';
+          var m = (ES ? 'Mira, la respuesta es <b>' : 'Nézd, a megoldás: <b>') + (s.tabla_jo || s.val[s.jo]) + '</b>. ';
           if (k < H.length) { kovHasonlo(H, k, tovabb, [m + (ES ? 'Lo hemos resuelto juntos. Ahora viene uno parecido: ¡este lo haces tú! 💪' : 'Ezt most együtt oldottuk meg. Most jön egy hasonló – ezt már te csinálod! 💪')]); }
           else { segitett = true; mond([m + (ES ? 'Esto lo seguimos practicando: en la clase de verdad el profe te lo explicaría de otra manera y te daría ejercicios nuevos hasta que te salga solo. 🙂'
                                                  : 'Ezt még gyakoroljuk: a valódi órán a tanító most másképp is elmagyarázná, és addig hozna új feladatokat, amíg egyedül is megy. 🙂')], tovabb); }
@@ -421,13 +428,17 @@
     }
     function kovHasonlo(H, k, tovabb, bevezeto) {
       var h = H[k];
-      mond(bevezeto, function () {
+      mond(bevezeto, function () { setTimeout(function () {
         if (h.tabla && NAGY) { tabla(h.tabla); }
         mond(h.tan, function () {
           if (h.tabla && !NAGY) { tabla(h.tabla); }
-          if (h.hangszam) { hangKor(h, H, k + 1, tovabb); } else { kerdes(h, H, k + 1, tovabb); }
+          if (h.hangszam) { hangKor(h, H, k + 1, tovabb); return; }
+          /* fix225 (Sándor: „a pöttyös számolás a lényeg”): a hasonló is a tízes kerettel indul */
+          if (h.tizes) { tizes(h.tizes[0], h.tizes[1], function () { konfetti(NAGY ? tablaBel : lista.lastChild);
+              mond([h.tizes_kesz], function () { kerdes(h, H, k + 1, tovabb); }); }, h.cim); return; }
+          kerdes(h, H, k + 1, tovabb);
         });
-      });
+      }, 1800); });
     }
     function hangKor(s, H, k, tovabb) {
       hangszam(s, function (seg) {
@@ -446,13 +457,16 @@
     function lep() {
       val.innerHTML = '';
       if (i >= C.length) {
-        setTimeout(function () {
+        /* fix225 (Sándor: „olyan gyorsan átvált, azt sem látom, mit írt ki”): nem vált magától –
+           a gyerek elolvassa a zárást, és ő nyomja meg a gombot. */
+        setTimeout(function () { gomb(ES ? 'Ver el resultado ▶' : 'Tovább az eredményhez ▶', 'fo', function () {
+          val.innerHTML = '';
           document.getElementById('mlChat').style.display = 'none';
           if (segitett) { var vh = document.querySelector('#mlVege h1'), vn = document.querySelector('#mlVege .nagy');
             if (vh) { vh.textContent = ES ? '¡Muy bien! Esto lo seguimos practicando juntos.' : 'Ügyes vagy! Ezt még gyakoroljuk együtt.'; } if (vn) { vn.textContent = '💪'; } }
           document.getElementById('mlVege').style.display = 'block'; window.scrollTo(0, 0);
           try { fetch('{{ url_for('mintalecke_vege', evf=evf) }}', {method: 'POST'}); } catch (e) {}
-        }, 1600);
+        }); }, 900);
         return;
       }
       var s = C[i];
