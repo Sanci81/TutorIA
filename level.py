@@ -189,6 +189,37 @@ def _gyerek_blokk(gy: dict, sz: dict) -> str:
             f'border-radius:18px;margin:0 0 16px"><tr><td style="padding:18px 16px">{fej}{belso}</td></tr></table>')
 
 
+_HO = {
+    "hu": ["január", "február", "március", "április", "május", "június", "július",
+           "augusztus", "szeptember", "október", "november", "december"],
+    "es": ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+           "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+}
+
+
+def _datumok(tol, ig, nyelv: str) -> str:
+    """fix242 (Sándor: „jó lenne, ha időpontot is írnánk, nem csak általánosságban”):
+    a jelentés pontos időszaka, pl. „november 14–21.” / „del 14 al 21 de noviembre”.
+    Ha a hívó nem adja meg a dátumokat, üres – ilyenkor marad a régi szöveg."""
+    try:
+        h = _HO.get(nyelv) or _HO["hu"]
+        if not tol or not ig:
+            return ""
+        if nyelv == "es":
+            if tol == ig:
+                return f"el {ig.day} de {h[ig.month - 1]}"
+            if tol.month == ig.month:
+                return f"del {tol.day} al {ig.day} de {h[ig.month - 1]}"
+            return f"del {tol.day} de {h[tol.month - 1]} al {ig.day} de {h[ig.month - 1]}"
+        if tol == ig:
+            return f"{h[ig.month - 1]} {ig.day}."
+        if tol.month == ig.month:
+            return f"{h[ig.month - 1]} {tol.day}–{ig.day}."
+        return f"{h[tol.month - 1]} {tol.day}. – {h[ig.month - 1]} {ig.day}."
+    except Exception:
+        return ""
+
+
 def keszit(jelentes: dict, *, nyelv: str = "hu",
            app_url: str = "", leiratkozo_url: str = "") -> tuple[str, str, str]:
     """(tárgy, HTML, egyszerű szöveg). A sima szöveg azoknak kell, akiknek a
@@ -196,6 +227,12 @@ def keszit(jelentes: dict, *, nyelv: str = "hu",
     sz = SZOVEG.get(nyelv) or SZOVEG["hu"]
     gyerekek = jelentes.get("gyerekek") or []
     idoszak = sz.get(jelentes.get("mod", "heti"), sz["heti"])
+    datum = _datumok(jelentes.get("tol"), jelentes.get("ig"), nyelv)
+    if datum:                                  # fix242: „az elmúlt héten (november 14–21.)”
+        idoszak = f"{idoszak} ({datum})"
+        sz = dict(sz)
+        sz["nem_tanult"] = (f"No ha estudiado {datum}." if nyelv == "es"
+                            else f"{datum[0].upper()}{datum[1:]} között nem tanult.")
 
     if not jelentes.get("van_tanulas"):
         targy = sz.get("targy_ures_" + jelentes.get("mod", "heti"),
