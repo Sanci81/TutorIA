@@ -75,9 +75,9 @@
     var doboz = D.createElement('div');
     doboz.id = 'lumi';
     doboz.setAttribute('aria-hidden', 'true');
-    doboz.style.cssText = 'position:absolute;left:0;top:0;width:0;height:0;z-index:950;pointer-events:none;';
+    doboz.style.cssText = 'position:absolute;left:0;top:0;width:0;height:0;z-index:45;pointer-events:none;';
     var kotel = D.createElementNS(NS, 'svg');
-    kotel.style.cssText = 'position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:948';
+    kotel.style.cssText = 'position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:44';
     kotel.innerHTML = '<path d="" fill="none" stroke="#9A6A32" stroke-width="3.4" stroke-linecap="round"/><path d="" fill="none" stroke="#E0B47A" stroke-width="1.4" stroke-dasharray="3 5" stroke-linecap="round"/>';
     var arny = D.createElement('div');
     arny.style.cssText = 'position:absolute;border-radius:50%;background:radial-gradient(closest-side,rgba(14,42,30,.22),rgba(14,42,30,0));pointer-events:none;opacity:0';
@@ -302,7 +302,7 @@
             .then(function () { return Promise.all([kuszik(x1, ay, y1), anim({lat: 1}, 260, 'ki')]); })
             .then(function () { return lelep(x1, ay); });
     }
-    var kint = false, alattam = null;           // alattam: a felület (elem), amin épp áll
+    var kint = false, alattam = null, kijott = false, bentIdo = 0;           // alattam: a felület (elem), amin épp áll
     function logoPont() { var l = lap(logo); return {x: l.x + l.w / 2, y: l.y + l.h * .55, al: l.y + l.h}; }
     function kijon(cel) {
         var lp = logoPont(), x = lp.x, fent = lp.al - 2, h = MAGAS();
@@ -312,21 +312,31 @@
         return var_(450)
             .then(function () { return anim({}, 380, 'ki', function (u, e) { kotelRajz(x, fent, fent + h * 1.6 * e); }); })   // ledobja a kötelet
             .then(function () {
-                logoAllapot(false); kint = true;
+                logoAllapot(false); kint = true; reteg(true);
                 P.x = x; P.y = lp.y + h * .35; P.meret = .4; P.lat = 1; P.feny = 0; Object.assign(P, NYUGI); maszik(0); P.arnyek = 0;
                 return anim({meret: 1}, 420, 'ki', function (u) { P.y = lp.y + h * (.35 + .9 * u); kotelTest(x, fent); });       // kibújik
             })
             .then(function () { return kuszik(x, fent, Math.min(c.y, fent + h * 1.3)); })                    // lejjebb mászik
+            .then(function () { reteg(false); })
             .then(function () { return kotelut(c.x, c.y, {ax0: x, ay: fent, marKotelen: true}); })           // átlendül, lemászik, lelép
             .then(function () { alattam = c.f || null; return integet(); })
             .then(function () { if (c.ul && P.kep === 'alap') { return ul(); } });
+    }
+    /* fix241 (Sándor: „a fejléc lefejezi Lumit”): Lumi a lap része – a fejléc ALATT halad el (a fejléc eltakarja,
+       nem ő a fejlécet). Csak amíg a logóból kibújik / visszabújik, addig van a fejléc fölött. */
+    function reteg(fent) { doboz.style.zIndex = fent ? 950 : 45; kotel.style.zIndex = fent ? 948 : 44; }
+    function fejAlatt() { return P.y - MAGAS() * .9 < fejlecAlja() - 2; }      // a feje a fejléc alá csúszott
+    function hazaCsendben() {                    // fix239: nem látszik, és a képernyőn sehol nincs neki szabad hely
+        kotelKi(); kint = false; alattam = null; P.lat = 0; rajzol(); logoAllapot(true); bentIdo = Date.now();
+        if (logoG) { logoG.style.transform = 'scale(.7)'; setTimeout(function () { logoAllapot(true); }, 60); }
+        return Promise.resolve('bent');
     }
     function visszamaszik() {
         var lp = logoPont(), ay = lp.al - 2, sajat = megszakit, h = MAGAS(), ax = P.x, y0 = P.y;
         if (!lathato(lp.al + 40) || !latszik()) { return Promise.resolve(); }      // a logó (vagy ő) nem látszik: marad
         var stop = function () { return sajat !== megszakit; };
         function meggondol(x) {                                    // félúton „jé, megint csinál valamit!” – visszamászik
-            var c = most() || {x: ax, y: y0, f: alattam};
+            var c = most() || {x: ax, y: y0, f: alattam}; reteg(false);
             return jel('!', true).then(function () { return var_(400); }).then(function () { return jel('!', false); })
                 .then(function () { return kotelut(c.x, c.y, {ax0: x, ay: ay, marKotelen: true}); })
                 .then(function () { alattam = c.f || null; if (c.ul && P.kep === 'alap') { return ul(); } })
@@ -336,10 +346,11 @@
             .then(function () { return kuszik(ax, ay, ay + h * 1.2, stop); })
             .then(function (s) { if (s) { return meggondol(ax); }
                 return lendul(ax, lp.x, ay).then(function () { if (stop()) { return meggondol(lp.x); }
+                    reteg(true);
                     return kuszik(lp.x, ay, lp.y + h * 1.05, stop).then(function (s2) { if (s2) { return meggondol(lp.x); }
                         var y1 = P.y;
                         return anim({meret: .4, lat: 0}, 380, 'be', function (u) { P.y = y1 - u * 6; kotelRajz(lp.x, ay, ay + (P.y - ay) * (1 - u)); })   // be a logóba
-                            .then(function () { kotelKi(); kint = false; alattam = null; logoAllapot(true); return 'bent'; });
+                            .then(function () { kotelKi(); kint = false; alattam = null; reteg(false); logoAllapot(true); bentIdo = Date.now(); return 'bent'; });
                     });
                 });
             });
@@ -358,14 +369,15 @@
             akadalyok.push({l: r.left + sx, t: r.top + sy, r: r.right + sx, b: r.bottom + sy, tip: tip, el: el}); } }
         var w = D.createTreeWalker(D.body, NodeFilter.SHOW_TEXT, {acceptNode: function (n) {
             if (!n.nodeValue || !n.nodeValue.trim()) { return NodeFilter.FILTER_REJECT; }
-            var p = n.parentElement; if (!p || p.closest('#lumi, script, style, noscript, .navbar, header')) { return NodeFilter.FILTER_REJECT; }
+            var p = n.parentElement; if (!p || p.closest('#lumi, script, style, noscript')) { return NodeFilter.FILTER_REJECT; }
             if (p.closest('details:not([open]) > :not(summary)') || (p.checkVisibility && !p.checkVisibility({visibilityProperty: true}))) { return NodeFilter.FILTER_REJECT; }   // fix239: a becsukott GYIK-válasz szövege nem akadály
             return NodeFilter.FILTER_ACCEPT; }});
         var rg = D.createRange(), n;
         while ((n = w.nextNode())) { rg.selectNodeContents(n); [].forEach.call(rg.getClientRects(), function (r) { tesz(r, 'szoveg'); }); }
         D.querySelectorAll('button, img, video, canvas, select, textarea, input, svg, .fp-nyil, .password-toggle, a.fp-gomb, [role=button]').forEach(function (e) {
-            if (e.closest('#lumi, .navbar, header, details:not([open]) > :not(summary)') || e.type === 'hidden' || (e.checkVisibility && !e.checkVisibility())) { return; }
+            if (e.closest('#lumi, details:not([open]) > :not(summary)') || e.type === 'hidden' || (e.checkVisibility && !e.checkVisibility())) { return; }
             var cs = getComputedStyle(e); if (cs.visibility === 'hidden' || cs.display === 'none' || +cs.opacity < .2) { return; }
+            if (e.tagName.toLowerCase() === 'svg') { var rs = e.getBoundingClientRect(); if (e.parentElement && e.parentElement.closest('svg')) { return; } var nagy = Math.max(rs.width, rs.height), kis = Math.min(rs.width, rs.height); if (nagy > 90 && (kis < 26 || nagy / Math.max(1, kis) > 6 || e.getAttribute('aria-hidden') === 'true')) { return; } }   // fix239: a nagy díszítő vonal (pl. pöttyözött út) nem akadály, az ikon igen
             tesz(e.getBoundingClientRect(), e.matches('input, textarea, select') ? 'mezo' : 'elem', e);
         });
         return akadalyok;
@@ -381,8 +393,14 @@
         return {l: x - h * .25, r: x + h * .25, t: y - h * fel, b: y + h * al};
     }
     function utkozik(d, sajatMezo) { return takaras(d, sajatMezo) > 0; }
+    var fejAljaIdo = 0, fejAlja = 0;
+    function fejlecAlja() {                     // fix239: a (ragadós) fejléc alja lapkoordinátában – Lumi teste ennél feljebb nem lóghat
+        if (performance.now() - fejAljaIdo > 300) { fejAljaIdo = performance.now(); var hd = D.querySelector('.navbar, header'); fejAlja = hd ? hd.getBoundingClientRect().bottom : 0; }
+        return scrollY + Math.max(0, fejAlja);
+    }
     function takaras(d, sajatMezo) {          // fix238: MENNYI szöveget/elemet takarna (terület, px²)
-        var a = akadalyGyujt(), ossz = 0;
+        var a = akadalyGyujt(), ossz = 0, fa = fejlecAlja();
+        if (d.t < fa + 2) { ossz += (fa + 2 - d.t) * (d.r - d.l) * 3; }       // belelógna a fejlécbe
         for (var i = 0; i < a.length; i++) {
             var o = a[i], l = o.l, r = o.r;
             if (o.tip === 'mezo') {                       // a mezőn ülhet/állhat – csak a beírt szövegre nem lóghat
@@ -399,20 +417,40 @@
     /* fix238 (Sándor: „ne oldalt a levegőben – találja meg a helyet, ahol nem takar”): mindig VALÓDI felületen
        marad. Sorrend: állva semmit nem takar → ülve (a lába a mező üres részén) semmit nem takar → ahol a
        legkevesebbet takarná. Kötélen oldalt már nem lóg. */
+    /* fix239 (Sándor: „belelóg a szövegbe”, csomagok: a levegőben ült): csak LÁTHATÓ felületen áll – aminek
+       háttere, kerete vagy árnyéka van (kártya, mező, sáv) –, és csak ott, ahol a talpa alatt tényleg az a
+       felület van (nem takarja el más). Az átlátszó „láthatatlan dobozok” teteje nem felület. */
+    function alfa(c) { if (!c || c === 'transparent') { return 0; } var m = c.match(/rgba?\(([^)]+)\)/); if (!m) { return 1; }
+        var p = m[1].split(/[\s,\/]+/).filter(Boolean); return p.length > 3 ? parseFloat(p[3]) : 1; }
+    function valodi(el) {
+        if (!el || el.nodeType !== 1) { return false; }
+        if (el.matches('input:not([type=checkbox]):not([type=radio]), textarea, select, button, img, video, canvas')) { return true; }
+        var cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || +cs.opacity < .3) { return false; }
+        return alfa(cs.backgroundColor) > .15 || cs.backgroundImage !== 'none' || cs.boxShadow !== 'none' ||
+            (parseFloat(cs.borderTopWidth) > .5 && cs.borderTopStyle !== 'none' && alfa(cs.borderTopColor) > .15);
+    }
+    function alatta(x, y, el) {                 // a talpa alatt (pár px-szel lejjebb) tényleg ez a felület van-e
+        var vx = x - scrollX, vy = y + 3 - scrollY;
+        if (vx < 1 || vy < 1 || vx > innerWidth - 1 || vy > innerHeight - 1) { return true; }   // nem látszik – nem tudjuk ellenőrizni
+        var t = D.elementsFromPoint(vx, vy);
+        for (var i = 0; i < t.length; i++) { if (t[i].closest('#lumi')) { continue; } return el.contains(t[i]); }
+        return false;
+    }
     function keres(feluletek, sajatMezo) {
         var h = MAGAS(), fel = h * .28, lx = scrollX + 6, rx = scrollX + innerWidth - 6, legjobb = null;
+        feluletek = feluletek.filter(function (f) { return f && f.w >= h * .6 && f.y > scrollY + 20 && f.y < scrollY + innerHeight - 8 && valodi(f.el); });   // csak látható, valódi felület
         for (var mod = 0; mod < 2; mod++) {
             for (var i = 0; i < feluletek.length; i++) {
-                var f = feluletek[i]; if (!f || f.w < h * .6) { continue; }
+                var f = feluletek[i];
                 var bal = Math.max(f.l + fel, lx + fel), jobb = Math.min(f.r - fel, rx - fel);
                 for (var x = jobb; x >= bal; x -= 8) {
                     var t = takaras(dobozom(x, f.y + 1, mod === 1), sajatMezo) + (jobb - x) * .01 + i * 50;
-                    if (t < 1 + (jobb - x) * .01 + i * 50) { return {x: x, y: f.y + 1, ul: mod === 1, f: f.el}; }
-                    if (!legjobb || t < legjobb.t) { legjobb = {x: x, y: f.y + 1, ul: mod === 1, t: t, f: f.el}; }
+                    if (t < 1 + (jobb - x) * .01 + i * 50) { if (alatta(x, f.y, f.el)) { return {x: x, y: f.y + 1, ul: mod === 1, f: f.el}; } continue; }
                 }
             }
         }
-        return legjobb;
+        return null;            // fix239 (Sándor: „belelóg a szövegbe”): ha mindenhol takarna, itt nincs helye – inkább máshová megy
     }
     function kartyaja(el) { return el.closest('.fp-kartya, .auth-card, .doboz, .card, details, form, main section') || el.parentElement; }
     function helyMezo(m) {
@@ -420,28 +458,39 @@
         if (m.type === 'checkbox' || m.type === 'radio') { c = m.closest('label, .field') || m; }
         var mezo = m.matches('input, textarea, select') && m.type !== 'checkbox' ? m : null;
         // csak a mező közelében keres (a doboz tetejére nem ugrik el – ott messze lenne attól, amit csinálsz)
-        return keres([felulet(c), m.closest('.field') && felulet(m.closest('.field'))], mezo) || {x: lap(c).x + lap(c).w - MAGAS() * .4, y: lap(c).y + 1, f: c};
+        return keres([felulet(c), c !== m && felulet(m), m.closest('.field') && felulet(m.closest('.field'))], mezo);
     }
     function helyDoboz(el) {
         var k = kartyaja(el), fl = [felulet(el), k && k !== el && felulet(k)], n = (k && k !== el ? k : el).nextElementSibling;
         // fix239: ha ott nincs szabad hely (pl. a doboz fölött szöveg van), a következő 1-3 dobozon keres – nem lóg bele a szövegbe
-        for (var i = 0; i < 3 && n; i++, n = n.nextElementSibling) { var r = n.getBoundingClientRect(); if (r.width > 200 && r.height > 30) { fl.push(felulet(n.matches('details') && n.querySelector('summary') || n)); } }
-        return keres(fl, null) || {x: lap(el).x + lap(el).w * .62, y: lap(el).y + 2, f: el};
+        for (var i = 0; i < 3 && n; i++, n = n.nextElementSibling) { var r = n.getBoundingClientRect(); if (r.width > 200 && r.height > 30) { fl.push(felulet(n)); } }
+        return keres(fl, null);
     }
     function ulhet() {                           // leülhet-e ott, ahol áll (a lába se takarjon szöveget)
         return horgony && !utkozik(dobozom(P.x, P.y, true), horgony.matches && horgony.matches('input, textarea') ? horgony : null);
     }
-    function fodoboz() {                          // fix239: a látható rész egyik doboza (kártya, GYIK-kérdés…)
+    function fodoboz() {                          // fix239: a látható rész egyik VALÓDI doboza, ahol nem takar szöveget
         var jel_ = ['.fp-kartya', '.auth-card', '.doboz', 'details.fp-k', '.fp-k', '.cs-lap', '.card', 'details', 'main section', 'main form', 'main h2', '.content'];
-        var fent = tetoY() - scrollY + MAGAS() * 1.1;
+        var fent = tetoY() - scrollY + MAGAS() * 1.1, legjobb = null, lt = 1e12, volt = [];
+        function probal(e) {
+            if (volt.indexOf(e) >= 0 || e.closest('#lumi, .navbar, header')) { return false; }
+            volt.push(e);
+            var r = e.getBoundingClientRect();
+            if (!(r.width > 120 && r.height > 24 && r.top > fent && r.top < innerHeight - 30)) { return false; }
+            var hh = helyDoboz(e); if (!hh) { return false; }
+            legjobb = e; return true;
+        }
         for (var i = 0; i < jel_.length; i++) {
             var t = D.querySelectorAll(jel_[i]);
-            for (var j = 0; j < t.length; j++) {
-                if (t[j].closest('#lumi, .navbar, header, footer')) { continue; }
-                var r = t[j].getBoundingClientRect();
-                if (r.width > 220 && r.height > 36 && r.top > fent && r.top < innerHeight - 120) { return t[j].matches('details') ? (t[j].querySelector('summary') || t[j]) : t[j]; }
-            }
+            for (var j = 0; j < t.length; j++) { if (probal(t[j])) { return legjobb; } }
         }
+        // bármilyen más látható felület (sáv, kép, gomb, táblázat…), a képernyő közepéhez legközelebb
+        var mind = [].slice.call(D.querySelectorAll('body *')).filter(function (e) {
+            if (e.closest('#lumi, .navbar, header, script, style')) { return false; }
+            var r = e.getBoundingClientRect(); return r.width > 120 && r.height > 24 && r.top > fent && r.top < innerHeight - 30 && valodi(e); });
+        mind.sort(function (a, b) { return Math.abs(a.getBoundingClientRect().top - innerHeight * .45) - Math.abs(b.getBoundingClientRect().top - innerHeight * .45); });
+        var tetok = {};
+        for (var k = 0, n = 0; k < mind.length && n < 90; k++) { var tk = Math.round(mind[k].getBoundingClientRect().top / 4); if (tetok[tk] > 2) { continue; } tetok[tk] = (tetok[tk] || 0) + 1; n++; if (probal(mind[k])) { return legjobb; } }
         return null;
     }
     var horgony = null;
@@ -450,7 +499,8 @@
         return horgony.matches && horgony.matches('input, select, textarea') ? helyMezo(horgony) : helyDoboz(horgony);
     }
     function lathato(y) { return y > scrollY + 50 && y < scrollY + innerHeight - 10; }
-    function latszik() { return P.y > scrollY + 20 && P.y - MAGAS() * .9 < scrollY + innerHeight; }   // Lumi bármely része látszik
+    function latszik() { return P.y > scrollY + 5 && P.y - MAGAS() * .9 < scrollY + innerHeight - 5; }   // Lumi bármely része látszik
+    function rendben() { return P.y > scrollY + 5 && P.y < scrollY + innerHeight - 2 && !fejAlatt(); }   // fix241: EGÉSZEN látszik (a lába sem lóg ki alul, a feje sincs a fejléc alatt)
     function menj(hely) {                       // fix239: séta / kis ugrás / kötélút – sosem teleportál
         hely = hely || most();
         if (!hely || !lathato(hely.y)) { return Promise.resolve(); }      // a cél nem látszik: marad
@@ -466,17 +516,25 @@
     // ── EGYÜTT ÉL VELÜNK: ha hozzáérsz, odébb ugrik ───────────────────────
     var csikiIdo = -1e9;
     function csiki(ev) {
-        if (!kint || performance.now() - csikiIdo < 900) { return; }
+        if (!kint || fut > 1 || performance.now() - csikiIdo < 900) { return; }
         csikiIdo = performance.now();
-        var ex = (ev && ev.pageX) || P.x, irany = ex < P.x ? 1 : -1, tav = MAGAS() * .75;
-        // fix231: a helyén marad – mezőn a mező szélén belül ugrik odébb, nem a levegőbe
-        var hat = horgony ? lap(horgony.closest && horgony.closest('.password-field, .field, details, .fp-kartya') || horgony) : {x: scrollX + 30, w: innerWidth - 60};
-        var balSz = Math.max(scrollX + 30, hat.x + 34), jobbSz = Math.min(scrollX + innerWidth - 30, hat.x + hat.w - 34);
-        if (P.x + irany * tav > jobbSz || P.x + irany * tav < balSz) { irany = -irany; }
-        tav = Math.max(20, Math.min(tav, irany > 0 ? jobbSz - P.x : P.x - balSz));
+        var ex = (ev && ev.pageX) || P.x, irany = ex < P.x ? 1 : -1, h = MAGAS();
+        // fix239: ugyanazon a felületen ugrik odébb, és csak oda, ahol nem takar szöveget; ha nincs ilyen hely, csak összerezzen
+        var f = alattam && felulet(alattam), sm = horgony && horgony.matches && horgony.matches('input, textarea') ? horgony : null, cel = null;
+        [irany, -irany].some(function (ir) {
+            if (!f) { return true; }
+            for (var d = h * .6; d <= h * 1.6; d += 8) {
+                var x = P.x + ir * d;
+                if (x < f.l + h * .28 || x > f.r - h * .28 || x < scrollX + 20 || x > scrollX + innerWidth - 20) { break; }
+                if (takaras(dobozom(x, P.y, false), sm) < 1 && alatta(x, P.y - 1, alattam)) { cel = x; irany = ir; return true; }
+            }
+            return false;
+        });
         megszakit++; utolsoMozdulat = Date.now();
         tedd(function () {
-            return jel('!', true).then(function () { return ugras(P.x + irany * tav, P.y, MAGAS() * .35, 330); })
+            if (P.kep === 'ul') { legyen('alap'); }
+            var mozdul = cel != null ? ugras(cel, P.y, h * .35, 330) : anim({ny: .9, dol: -irany * 6}, 160, 'ki').then(function () { return anim(NYUGI, 420, 'rugo'); });
+            return jel('!', true).then(function () { return mozdul; })
                 .then(function () { return jel('!', false); }).then(function () { return anim({fej: -irany * 10}, 300); })
                 .then(function () { return var_(500); }).then(function () { return alap(300); });
         });
@@ -536,15 +594,13 @@
     // ── INDULÁS ─────────────────────────────────────────────────────────
     function indul() {
         D.body.appendChild(doboz);
-        var cel = fodoboz();
-        if (!cel) { return; }
+        var cel = fodoboz(), h = cel && helyDoboz(cel);
         horgony = cel;
-        var h = helyDoboz(cel);
         // ha van űrlap, egyenesen az első mezőre ugrik (a doboz tetején a fölötte lévő szöveget takarná)
         var elso = [].slice.call(D.querySelectorAll('main form input, .fp form input, .content form input')).filter(function (m) {
             var r = m.getBoundingClientRect(); return m.type !== 'hidden' && m.offsetParent && r.width > 120 && r.left >= 0 && r.right <= innerWidth && r.top > 80 && r.bottom < innerHeight - 20; })[0];
-        if (elso) { horgony = elso; h = helyMezo(elso); }
-        tedd(function () { return var_(400).then(function () { return kijon({y: h.y, hely2: h}); }); });
+        var hm = elso && helyMezo(elso); if (hm) { horgony = elso; h = hm; }
+        if (h) { kijott = true; tedd(function () { return var_(400).then(function () { return kijon({y: h.y, hely2: h}); }); }); }
         D.querySelectorAll('main form, .content form, .fp form').forEach(function (f) { if (!f.closest('header, nav')) { urlap(f); } });
         D.querySelectorAll('details').forEach(function (d) {
             d.addEventListener('toggle', function () {
@@ -559,9 +615,16 @@
         addEventListener('scroll', function () {
             clearTimeout(gIdo);
             gIdo = setTimeout(function bejon() {                      // fix239: ha épp mást csinál, kicsit később jön le
-                if (!kint || latszik()) { return; }
+                if (!kint && (fut || (kijott && Date.now() - bentIdo < 2500))) { gIdo = setTimeout(bejon, 600); return; }
+                if (!kint) { var c0 = fodoboz(); if (c0) { kijott = true; horgony = c0; tedd(function () { var h1 = helyDoboz(c0); return kijon({y: h1.y, hely2: h1}); }); } return; }   // fix239: ha betöltéskor nem volt hova, görgetéskor jön ki
+                if (!kint || rendben()) { return; }
+                if (latszik()) {            // fix241: csak részben látszik (a fejléc alatt / alul kilóg) – kötélen átmegy egy egészen látható helyre (vagy hazamászik)
+                    if (fut) { gIdo = setTimeout(bejon, 500); return; }
+                    var c1 = fodoboz(); if (c1) { horgony = c1; tedd(function () { return menj(helyDoboz(c1)); }); } else { tedd(visszamaszik); }
+                    return;
+                }
                 if (fut) { gIdo = setTimeout(bejon, 500); return; }
-                var uj = fodoboz(); if (uj) { horgony = uj; tedd(function () { return menj(helyDoboz(uj)); }); }
+                var uj = fodoboz(); if (uj) { horgony = uj; tedd(function () { return menj(helyDoboz(uj)); }); } else { tedd(hazaCsendben); }
             }, 450);
         }, {passive: true});
         var rIdo = null;
@@ -577,11 +640,25 @@
         setInterval(function () {
             if (!kint || fut || D.hidden) { return; }
             var tetlen = Date.now() - utolsoMozdulat;
-            if (!latszik()) { var uj = fodoboz(); if (uj) { horgony = uj; tedd(function () { return menj(helyDoboz(uj)); }); } return; }
+            if (latszik() && !rendben() && (P.kep === 'alap' || P.kep === 'ul')) { var c3 = fodoboz(); if (c3) { horgony = c3; tedd(function () { return menj(helyDoboz(c3)); }); } else { tedd(visszamaszik); } return; }
+            if (!latszik()) { var uj = fodoboz(); if (uj) { horgony = uj; tedd(function () { return menj(helyDoboz(uj)); }); } else { tedd(hazaCsendben); } return; }
+            // fix239: ha a lap megváltozott alatta, és most szöveget takar – keres szabad helyet; ha nincs, hazamászik
+            if (P.kep === 'alap' || P.kep === 'ul') {
+                var most_ = dobozom(P.x, P.y, P.kep === 'ul'), sm = horgony && horgony.matches && horgony.matches('input, textarea') ? horgony : null;
+                if (takaras(most_, sm) > 40) {
+                    var h2 = most(), c2 = !h2 && fodoboz();
+                    if (h2) { tedd(function () { return menj(h2); }); }
+                    else if (c2) { horgony = c2; tedd(function () { return menj(helyDoboz(c2)); }); }
+                    else { tedd(visszamaszik); }
+                    return;
+                }
+            }
             if (tetlen > 40000) { tedd(visszamaszik); return; }
             // fix231: ha egy mezőn áll, és egy ideje nem történik semmi, leül a mező szélére
-            if (tetlen > 5000 && P.kep === 'alap' && horgony && horgony.matches && horgony.matches('input, select, textarea')
-                && jo(horgony) && ulhet()) { tedd(ul); return; }                   // fix237: csak ha a mező jó, és a lába se takar szöveget
+            // fix239 (Sándor: „üljön le, ahogy a főoldalon”): ha egy ideje nem történik semmi, leül a felület szélére –
+            // csak ha a lába sem takar szöveget, és nem egy rosszul kitöltött mezőn van
+            if (tetlen > 5000 && P.kep === 'alap' && horgony && rendben() && ulhet()
+                && !(horgony.matches && horgony.matches('input, select, textarea') && (horgony.value || '').trim() && !jo(horgony))) { tedd(ul); return; }
             if (tetlen > 9000 && Math.random() < .35 && lathato(P.y)) {
                 tedd(Math.random() < .5 ? integet : function () { return anim({fej: 12}, 500).then(function () { return var_(600); }).then(function () { return anim({fej: -10}, 700); }).then(function () { return alap(500); }); });
             }
@@ -599,9 +676,10 @@
                     if (h0) {
                         var sajat = h0.f === alattam, dx = Math.abs(h0.x - P.x), dy = Math.abs(h0.y - P.y);
                         if (sajat && dy > 1) { P.y = h0.y; dy = 0; }                                               // a felülete mozdult: vele megy
-                        if (!sajat || dx > 8) { if (lathato(h0.y) && latszik()) { tedd(function () { return menj(most()); }); } }   // fix239: odasétál / -ugrik / kötélen megy
+                        var itt = sajat && takaras(dobozom(P.x, P.y, P.kep === 'ul'), horgony.matches && horgony.matches('input, textarea') ? horgony : null) < 1;
+                        if (!sajat || (dx > 8 && !itt)) { if (lathato(h0.y) && rendben()) { tedd(function () { return menj(most()); }); } }   // fix239: csak ha a mostani helyén takarna, vagy másik felületre kell
+                        else if (itt) { /* jó helyen van: marad */ }
                         else if (h0.ul && P.kep === 'alap') { tedd(ul); }                                           // fix238: ott csak ülve fér el
-                        else if (!h0.ul && P.kep === 'ul' && takaras(dobozom(P.x, P.y, false), null) < 1) { legyen('alap'); }
                         else if (sajat && dx > 1) { P.x = h0.x; }
                     }
                 }
@@ -610,7 +688,9 @@
             requestAnimationFrame(el);
         })(t0);
     }
-    window.__lumi = {poz: function (o) { Object.assign(P, o); rajzol(); }, hely: function () { var h = most(); return h && {x: h.x, y: h.y, ul: h.ul, t: h.t, P: [P.x, P.y, P.kep]}; }, orul: function () { return tedd(function () { return orul(true); }); }, gondolkodik: function () { return tedd(gondolkodik); },
+    window.__lumi = {poz: function (o) { Object.assign(P, o); rajzol(); }, hely: function () { var h = most(); return h && {x: h.x, y: h.y, ul: h.ul, t: h.t, P: [P.x, P.y, P.kep]}; },
+        doboz: function () { var e = fodoboz(); return e && (e.tagName + '.' + e.className); },
+        allapot: function () { return {x: P.x, y: P.y, kep: P.kep, kint: kint, fut: fut, lat: P.lat, h: MAGAS()}; }, orul: function () { return tedd(function () { return orul(true); }); }, gondolkodik: function () { return tedd(gondolkodik); },
         integet: function () { return tedd(integet); }, aha: function () { return tedd(aha); }, vissza: function () { return tedd(visszamaszik); }};
     if (D.readyState === 'loading') { D.addEventListener('DOMContentLoaded', function () { setTimeout(indul, 600); }); } else { setTimeout(indul, 600); }
 })();

@@ -312,6 +312,24 @@ def kesztyu_narancs(k):
     return Image.fromarray(a.astype(np.uint8))
 
 
+def fej_sarga(k):
+    """fix241 (Sándor: „a fejénél miért fehér a kör, miért nem sárga, mint egy lámpa?”): a lámpa körüli
+    fehér / halványzöld szegély meleg lámpasárga fényt kap. Csak a kép felső felében (a fej magasságában),
+    folyamatos átmenettel (a fehérebb rész sárgább), így a ragyogó képeken sincs lyuk a fényben."""
+    import numpy as np
+    from PIL import Image
+    a = np.array(k.convert('RGBA')).astype(np.float32)
+    rgb = a[..., :3] / 255.0; al = a[..., 3]
+    mx = rgb.max(-1); mn = rgb.min(-1); s = np.where(mx > 0, (mx - mn) / np.maximum(mx, 1e-6), 0)
+    sor = np.arange(a.shape[0])[:, None] < a.shape[0] * 0.52
+    def ss(e0, e1, x):
+        t = np.clip((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t)
+    w = ss(0.55, 0.85, mx) * (1 - ss(0.22, 0.42, s)) * sor * (al > 0)
+    cel = np.array([255, 222, 105], np.float32)
+    a[..., :3] = a[..., :3] * (1 - w[..., None]) + cel * w[..., None]
+    return Image.fromarray(a.clip(0, 255).astype(np.uint8), 'RGBA')
+
+
 def jovahagy(csak: list[str] | None = None) -> int:
     from PIL import Image
     os.makedirs(VEGLEGES, exist_ok=True)
@@ -326,6 +344,7 @@ def jovahagy(csak: list[str] | None = None) -> int:
             k = k.crop((max(0, bb[0] - 8), max(0, bb[1] - 8), bb[2] + 8, bb[3] + 8))
         k.thumbnail((640, 640), Image.LANCZOS)
         k = kesztyu_narancs(k)                    # fix232/233: narancs kesztyű (scipy nélkül is)
+        k = fej_sarga(k)                          # fix241: sárga lámpafény a fej körül (nem fehér)
         k.save(os.path.join(VEGLEGES, nev + ".webp"), "WEBP", quality=88, method=6)
         db += 1
         print(f"  kész: static/figurak/lumi/{nev}.webp")
