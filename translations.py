@@ -1197,12 +1197,14 @@ TRANSLATIONS = {
     "pin_reg_sugo": {
         "hu": "A gyerek a te telefonodon vagy gépeden tanul. Tanulni és kártyát gyűjteni kód "
               "nélkül is tud, de e nélkül a 4 számjegy nélkül nem tud kijelentkezni, nem tudja "
-              "átírni a saját adatait (név, évfolyam), és nem lát bele a fiókodba (e-mail-cím, "
-              "jelszó). A kódot csak te tudod – bármikor megváltoztathatod.",
+              "átírni a saját adatait (név, évfolyam), nem tud fizetni (előfizetést venni vagy "
+              "módosítani), és nem lát bele a fiókodba (e-mail-cím, jelszó). A kódot csak te "
+              "tudod – bármikor megváltoztathatod.",
         "es": "El niño aprende en tu móvil u ordenador. Puede aprender y coleccionar cartas sin "
               "código, pero sin estas 4 cifras no puede cerrar sesión, no puede cambiar sus datos "
-              "(nombre, curso) y no puede entrar en tu cuenta (correo, contraseña). El código solo "
-              "lo sabes tú, y puedes cambiarlo cuando quieras.",
+              "(nombre, curso), no puede pagar (contratar o cambiar una suscripción) y no puede "
+              "entrar en tu cuenta (correo, contraseña). El código solo lo sabes tú, y puedes "
+              "cambiarlo cuando quieras.",
     },
     "pin_info_gomb": {"hu": "Mire jó a szülői kód?", "es": "¿Para qué sirve el código de padres?"},
     "pin_uj_cimke": {"hu": "Új szülői kód", "es": "Nuevo código de padres"},

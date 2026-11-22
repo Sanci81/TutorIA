@@ -1888,6 +1888,8 @@ Tervezett elemek:
 - [x] (fix246) Szülői kód „i” magyarázata: elöl, vastagon a lényeg („Hogy a gyerek ne tudjon belenyúlni a te részedbe.”), utána röviden a többi.
 - [x] (fix247) Szülői kód „i”: hétköznapi hasonlat – „Ez egy gyerekzár.” / „Es como un control parental.”, utána konkrétan, mit NEM tud a gyerek nélküle (kilépni, a nevét/évfolyamát átírni, a fiókodba belenézni) és mit IGEN (tanulni, gyűjteni).
 - [x] (fix247) Mintalecke lépésenkénti mérése: minden lépésnél egy jelzés (99 = a végére ért); az admin Látogatottság oldalon „Mintalecke – meddig jutottak”, a „Letöltés Claude-nak” JSON-ban „minta_lepesek”. Pár nap múlva elemezni: melyik lépésnél esik le a legtöbb (azt rövidíteni / javítani).
+- [x] (fix248) Szülői kód „i”: belekerült, hogy a gyerek kód nélkül nem tud fizetni, előfizetést venni vagy módosítani (HU+ES).
+- [ ] FIZETÉS INDÍTÁSAKOR KÖTELEZŐ: minden fizetés / előfizetés-vásárlás / -módosítás / lemondás szülői kódhoz kötve (@pin_required) – ezt ígérjük a regisztrációnál! (Most a /csomagok oldal kód nélkül nézhető, de ott még nem lehet fizetni.)
 - [ ] (11.22) 90 napos mérés elemzése: 1789 látogató, 2 regisztráció. A regisztrációs oldalt 183-an nyitották meg, 2-en küldték be; a hirdetésből jövők 2–7 mp után elmennek (a spanyol „fb” 2 mp). Javaslatok Sándornak: (1) hirdetés csak Facebook/Instagram hírfolyamban (Audience Network ki), (2) a hirdetés a regisztráció helyett az ingyenes mintaleckére vigyen, (3) mintalecke: 92 kezdte, 8 fejezte be – rövidíteni / megnézni, hol hagyják abba.
 - [ ] Jorge felajánlotta, hogy továbbküldi a kollégáinak → rövid, továbbküldhető spanyol szöveget írni neki (Sándor jóváhagyásával).
 - [ ] Lumi: Sándor új hibáit javítani, ha jelzi (a főoldalon még vannak apró hibák – Sándor jelzi, melyek).
