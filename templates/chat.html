@@ -15280,6 +15280,16 @@
         if (!oszlop) { return; }
 
         var TAROLO = 'tutoria-kabala-hely';
+        /* KIKAPCSOLVA (2026-11-22, fix250). A gyerek által odahúzott figura
+           a KÉPERNYŐHÖZ ragadt (position:fixed), és görgetéskor ráült a
+           lecke címére és a szövegre. Most a figura a helyén marad, és ha
+           szöveg kerülne alá, magától félreáll (lásd lent: „kabala-felre").
+           A régi, elmentett helyet töröljük. Visszakapcsolás: true. */
+        var HUZHATO = false;
+        if (!HUZHATO) {
+            try { localStorage.removeItem(TAROLO); } catch (e) {}
+            return;
+        }
         var KUSZOB = 8;          /* ennyi képpont alatt még görgetés */
         var SZEL = 10;           /* ennyit hagyunk a képernyő szélén */
 
@@ -15447,6 +15457,135 @@
         betolt();
     } catch (e) {
         if (window.console) { console.error('kabala-huzas:', e); }
+    }
+})();
+</script>
+
+{# ══ A FIGURA SOHA NEM TAKAR SZÖVEGET (2026-11-22, fix250) ═════════════════
+   Ugyanaz az elv, mint Luminál: a figura csak üres helyen állhat. Ha
+   szöveg, gomb, kép vagy beviteli mező kerülne alá (görgetés, hosszú
+   magyarázat, kis képernyő), a figura FÉLREÁLL – halványan eltűnik –, és
+   amint újra szabad a helye, visszajön. A buborék ugyanígy.
+   Magyar és spanyol oldalon egyformán (ez a sablon szolgálja ki mindkettőt).
+   Ha bármi hibára fut, minden marad úgy, ahogy eddig volt. #}
+<style>
+  .chat-kabala-oszlop{transition:opacity .25s ease}
+  .chat-kabala-oszlop.kabala-felre{opacity:0;visibility:hidden}
+  .kabala-buborek.kabala-felre{visibility:hidden}
+</style>
+<script>
+(function () {
+    "use strict";
+    try {
+        var oszlop = document.querySelector('.chat-kabala-oszlop');
+        if (!oszlop) { return; }
+        var bub = document.getElementById('kabala-buborek');
+        var VALASZT = 'button,a,input,textarea,select,img,svg,canvas,video,[role=button]';
+
+        function ures(r) { return !r || r.width <= 0 || r.height <= 0; }
+        function metsz(a, b) {
+            return a.left < b.right && a.right > b.left
+                && a.top < b.bottom && a.bottom > b.top;
+        }
+        /* A figura TÉNYLEGES teste: a kép (vagy a robot vászna), nem a
+           280×300-as doboz. A robot vásznán sok az üres hely – szűkítjük. */
+        function test() {
+            var f = oszlop.querySelector('#kabala-kep, #kabala-rive, .chat-kabala');
+            var r = (f || oszlop).getBoundingClientRect();
+            if (ures(r)) { return null; }
+            var sz = (f && f.id === 'kabala-rive') ? 0.22 : 0.06;
+            return { left: r.left + r.width * sz, right: r.right - r.width * sz,
+                     top: r.top + r.height * sz, bottom: r.bottom - 2 };
+        }
+        /* A görgethető dobozból KILÓGÓ (levágott) rész nem látszik – pl. a
+           témalista alsó, elrejtett sorai –, az nem foglal helyet. */
+        function vagott(el, b) {
+            var r = { left: b.left, right: b.right, top: b.top, bottom: b.bottom };
+            for (var a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+                var cs = getComputedStyle(a);
+                if (cs.overflowX === 'visible' && cs.overflowY === 'visible') { continue; }
+                var k = a.getBoundingClientRect();
+                r.left = Math.max(r.left, k.left); r.right = Math.min(r.right, k.right);
+                r.top = Math.max(r.top, k.top); r.bottom = Math.min(r.bottom, k.bottom);
+                if (r.right <= r.left || r.bottom <= r.top) { return null; }
+            }
+            return r;
+        }
+        function latszik(el) {
+            var cs = getComputedStyle(el);
+            return cs.visibility !== 'hidden' && cs.display !== 'none'
+                && parseFloat(cs.opacity || '1') > 0.05;
+        }
+        /* Van-e szöveg vagy kezelőelem a téglalap alatt? */
+        function foglalt(r, kiveve) {
+            if (!r) { return false; }
+            var els = document.querySelectorAll(VALASZT);
+            for (var i = 0; i < els.length; i++) {
+                var e = els[i];
+                if (oszlop.contains(e) || (kiveve && kiveve.contains(e))) { continue; }
+                var b = e.getBoundingClientRect();
+                if (ures(b) || !metsz(r, b) || !latszik(e)) { continue; }
+                var v = vagott(e, b);
+                if (v && metsz(r, v)) { return true; }
+            }
+            var jaro = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+                acceptNode: function (n) {
+                    if (!/\S/.test(n.nodeValue)) { return NodeFilter.FILTER_REJECT; }
+                    var sz = n.parentNode;
+                    if (!sz || oszlop.contains(sz) || (kiveve && kiveve.contains(sz))) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    var tag = sz.nodeName;
+                    if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEMPLATE') {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    return NodeFilter.FILTER_ACCEPT;
+                }
+            });
+            var tart = document.createRange(), n;
+            while ((n = jaro.nextNode())) {
+                var pr = n.parentNode.getBoundingClientRect();
+                if (ures(pr) || !metsz(r, pr)) { continue; }
+                tart.selectNodeContents(n);
+                var sorok = tart.getClientRects();
+                for (var k = 0; k < sorok.length; k++) {
+                    if (!ures(sorok[k]) && metsz(r, sorok[k])) {
+                        var vs = vagott(n.parentNode, sorok[k]);
+                        if (vs && metsz(r, vs) && latszik(n.parentNode)) { return true; }
+                    }
+                }
+            }
+            return false;
+        }
+
+        var var_ = false;
+        function nez() {
+            var_ = false;
+            try {
+                var kep = oszlop.querySelector('.chat-kabala');
+                /* Ugrás közben (öröm) nem mérünk: a fej egy pillanatra feljebb van. */
+                if (kep && kep.classList.contains('kabala-ugrik')) { return; }
+                var r = test();
+                if (!r) { return; }
+                oszlop.classList.toggle('kabala-felre', foglalt(r, null));
+                if (bub && !bub.hidden) {
+                    var br = bub.getBoundingClientRect();
+                    bub.classList.toggle('kabala-felre',
+                        !ures(br) && foglalt(br, bub));
+                }
+            } catch (e) {}
+        }
+        function kesobb() {
+            if (var_) { return; }
+            var_ = true;
+            (window.requestAnimationFrame || setTimeout)(nez);
+        }
+        window.addEventListener('scroll', kesobb, { passive: true, capture: true });
+        window.addEventListener('resize', kesobb);
+        setInterval(nez, 400);
+        nez();
+    } catch (e) {
+        if (window.console) { console.error('kabala-felre:', e); }
     }
 })();
 </script>
