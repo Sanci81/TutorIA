@@ -18404,6 +18404,54 @@ def avatar_kep(kulcs: str):
                     headers={"Cache-Control": "public, max-age=604800"})
 
 
+# ── KICSINYÍTETT KÁRTYAKÉPEK (2026-11-22, fix251) ──────────────────────
+# Az album borítóján a ~80 képpontos hatszögekbe is az EREDETI, 1024×1024-es,
+# 1,5–2,4 MB-os PNG töltődött be – 16 lap = kb. 25 MB, ezért kellett 10 mp,
+# mire a képek megjelentek. Most a böngésző akkora képet kap, amekkora kell
+# (WebP). A kicsinyített kép a cache/ mappába kerül (nem a static/kartyak-
+# ba, ahhoz nem nyúlunk). A nagyítás továbbra is az eredetit mutatja.
+_KARTYA_KIS_SZELESSEG = (160, 240, 400, 800)
+_KARTYA_KIS_MAPPA = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                 "cache", "kartya_kicsi")
+
+
+@app.route("/kartyakep/<path:fajl>")
+def kartya_kiskep(fajl: str):
+    from werkzeug.utils import safe_join
+    try:
+        w = int(request.args.get("w", "240"))
+    except ValueError:
+        w = 240
+    w = min(_KARTYA_KIS_SZELESSEG, key=lambda x: abs(x - w))
+    if not fajl.startswith("kartyak/") or not fajl.lower().endswith(".png"):
+        abort(404)
+    forras = safe_join(app.static_folder, fajl)
+    if not forras or not os.path.isfile(forras):
+        abort(404)
+    try:
+        from PIL import Image
+    except Exception:
+        return redirect(url_for("static", filename=fajl))
+    mt = int(os.path.getmtime(forras))
+    nev = fajl.replace("/", "__")[:-4] + f"_{w}_{mt}.webp"
+    cel = os.path.join(_KARTYA_KIS_MAPPA, nev)
+    if not os.path.isfile(cel):
+        try:
+            os.makedirs(_KARTYA_KIS_MAPPA, exist_ok=True)
+            with Image.open(forras) as im:
+                im = im.convert("RGBA") if im.mode in ("P", "LA", "RGBA") else im.convert("RGB")
+                im.thumbnail((w, w * 2), Image.LANCZOS)
+                ideig = cel + f".{os.getpid()}.tmp"
+                im.save(ideig, "WEBP", quality=82, method=4)
+            os.replace(ideig, cel)
+        except Exception:
+            logger.exception("kartya_kiskep: %s", fajl)
+            return redirect(url_for("static", filename=fajl))
+    resp = send_from_directory(_KARTYA_KIS_MAPPA, nev, mimetype="image/webp")
+    resp.headers["Cache-Control"] = "public, max-age=2592000"
+    return resp
+
+
 @app.route("/children/<int:child_id>/avatar/vasarlas", methods=["POST"])
 @login_required
 def child_avatar_buy(child_id: int):
@@ -18991,6 +19039,8 @@ def child_album(child_id: int):
             "kezben": kezben,
             "beragasztva": beragasztva,
             "kepgyoker": url_for("static", filename=kartyak.mappa(oldal) + "/"),
+            # fix251: ugyanez kicsinyítve (lásd kartya_kiskep)
+            "kisgyoker": "/kartyakep/" + kartyak.mappa(oldal) + "/",
             "hatterek": url_for("static", filename="kartyak/hatterek/"),
             # MELYIK KÁRTYÁHOZ VAN MÁR KÉP.
             # MIÉRT: a borítón eddig a katalógus ELSŐ 14 lapja szerepelt,

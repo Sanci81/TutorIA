@@ -482,6 +482,7 @@ body{overflow-x:clip}
 .pl-nev h2{font-size:3rem;font-weight:900;line-height:.95;letter-spacing:-1.3px;text-shadow:0 4px 18px rgba(0,0,0,.55)}
 .pl-nev p{font-weight:800;font-size:.95rem;margin-top:8px;letter-spacing:.3px;
   color:color-mix(in srgb,var(--fo) 35%,#fff);text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.pl-targy{font-size:.68rem;font-weight:900;letter-spacing:1.6px;line-height:1.3;margin-bottom:-4px}
 .pl-jobb{padding:38px 28px 24px 30px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .pl-bn b{display:block;font-size:2.6rem;font-weight:900;color:var(--fo);letter-spacing:-.8px;line-height:1}
 .pl-bn span{display:block;font-size:1rem;font-weight:700;line-height:1.45;margin-top:7px;color:#2b2f45}
@@ -806,7 +807,7 @@ function mehsejtHTML(lapok){
   let i=0;
   return `<div class="meh" style="--c:${r.c};max-width:${r.c*96}px">`
     + r.sorok.map(db=>`<div class="meh-sor">`+lapok.slice(i,i+=db).map(k=>
-      `<div class="hx"><img src="${KEPUT(k)}" onerror="this.style.display='none';`
+      `<div class="hx"><img src="${KIS(KEPUT(k),160)}" decoding="async" onerror="this.style.display='none';`
       + `this.nextElementSibling.style.display='flex'"><span style="display:none">?</span></div>`
       ).join('')+`</div>`).join('') + `</div>`;
 }
@@ -862,6 +863,10 @@ const KEPUT = k => BE[k.kep] || (ADAT.kepgyoker + KEPFAJL(k) + ".png");
 const KARTYAUT = (k,arany) => BE[k.kep+(arany?"_kartya_arany":"_kartya")] 
   || (ADAT.kepgyoker + k.kep + (arany?"_kartya_arany.png":"_kartya.png"));
 
+/* fix251: kicsinyített kép (a szerver WebP-ben, a kért szélességben adja).
+   Ha nincs kisgyoker (pl. a próbafájlban), az eredeti marad. */
+const KIS = (url, w) => (ADAT.kisgyoker && url && url.indexOf(ADAT.kepgyoker) === 0)
+  ? ADAT.kisgyoker + url.slice(ADAT.kepgyoker.length) + "?w=" + w : url;
 const FRISS = "?v=" + Date.now();   /* a bongeszo ne a regi kepet mutassa */
 
 /* A lap képe: ha az ARANY fájl hiányzik, NEM esünk vissza a simára –
@@ -904,7 +909,7 @@ const lap=document.getElementById('lap'), uzenet=document.getElementById('uzenet
 
 function helyHTML(k,n,arany){
   if(beragasztva.has(n))
-    return `<div class="hely kesz" data-k="${n}"><img src="${SAJATKEP[n]||KARTYAUT(k,arany)}" ${HIBAKEP}></div>`;
+    return `<div class="hely kesz" data-k="${n}"><img src="${SAJATKEP[n]||KIS(KARTYAUT(k,arany),400)}" data-nagy="${SAJATKEP[n]||KARTYAUT(k,arany)}" ${HIBAKEP}></div>`;
   return `<div class="hely ${arany?'arany':''}" data-n="${n}">
     <span class="szam">${n}</span><span class="fajta">${arany?'ARANY':'sima'}</span>
     <span class="q">?</span><span class="lecke">${k.lecke}</span></div>`;
@@ -929,7 +934,7 @@ function rajzol(){
       <div class="arcsor">${o.tagok.map(k=>{
         const van=beragasztva.has(k.hely1)||beragasztva.has(k.hely2);
         return `<div class="arc"><div class="ker ${van?'':'hianyzik'}">
-          <img src="${KEPUT(k)}" ${HIBAKEP}></div>
+          <img src="${KIS(KEPUT(k),160)}" ${HIBAKEP}></div>
           <div class="n">${k.nev}</div><div class="l">${k.lecke}</div></div>`;}).join('')}</div>`;
   } else if(o.t==="szemely"){
     const k=o.k; lap.className="lap szemely";
@@ -941,14 +946,16 @@ function rajzol(){
         nem osztályhoz tartozik, hanem a gyerek megszerzi és beragasztja.
         Egy másodikos ugyanúgy megkaphat egy olyan lapot, ami hetedikes
         anyaghoz készült – a leírás abból is tanít. Csak a tantárgy marad. #}
-     <div class="sz-tag" style="background:${k.szin}">${k.targy.toUpperCase()}</div>
+     {# fix251: a tantárgy NEM a képen van (spanyolul hosszú, eltakarta a
+        képet), hanem a jobb oldali szöveg fölött, kis színes felirat. #}
      <div class="pl" style="--fo:${k.szin}">
-      <div class="pl-kep" style="--kep:url('${KEPUT(k)}')">
-       <img src="${KEPUT(k)}" alt="" ${HIBAKEP}>
+      <div class="pl-kep" style="--kep:url('${KIS(KEPUT(k),160)}')">
+       <img src="${KIS(KEPUT(k),800)}" alt="" ${HIBAKEP}>
        <span class="nincs"><b>?</b>${L(k.nev+" képe még készül","La imagen de "+k.nev+" está en preparación")}</span>
        <div class="pl-nev"><h2>${k.nev}</h2><p>${k.alnev}</p></div>
       </div>
       <div class="pl-jobb">
+       <div class="pl-targy" style="color:${k.szin}">${k.targy.toUpperCase()}</div>
        <div class="pl-bn"><b>${k.becenev}</b><span>${k.leiras}</span></div>
        <div class="pl-doboz sarga"><b>${L("A TÉNY","EL DATO")}</b>${k.teny}</div>
        <div class="pl-doboz kek"><b>${L("AMIT KEVESEN TUDNAK","LO QUE POCOS SABEN")}</b>${k.erd}</div>
@@ -975,7 +982,7 @@ function rajzol(){
         [[k.hely1,''],[k.hely2,' ★']].forEach(([n,cs])=>{
           const van=beragasztva.has(n);
           h+=`<div class="cl ${van?'van':''}"><div class="k">${van
-            ?`<img src="${KEPUT(k)}" ${HIBAKEP}>`:'<span>?</span>'}</div>
+            ?`<img src="${KIS(KEPUT(k),160)}" ${HIBAKEP}>`:'<span>?</span>'}</div>
             <div class="sav"><span class="box">${van?'✓':''}</span>
             <span class="n">${n}${cs}</span></div></div>`;});});
       h+=`</div>`;});
@@ -1055,7 +1062,7 @@ function repul(kep, honnan, hova, kesz){
 }
 function kepKlon(c, r){
   const k=document.createElement('img');
-  k.src=KARTYAUT_SZIG(c.k,c.arany); k.alt='';
+  k.src=KIS(KARTYAUT_SZIG(c.k,c.arany),400); k.alt='';
   k.className='kezben-kartya'+(c.arany?' arany':'');
   k.style.left=r.left+'px'; k.style.top=r.top+'px'; k.style.width=r.width+'px'; k.style.height=r.height+'px';
   document.body.appendChild(k); return k;
@@ -1105,7 +1112,7 @@ document.getElementById('nagyHatter').addEventListener('click',nagyZar);
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') nagyZar(); });
 function kotesek(){
   lap.querySelectorAll('.hely.kesz img').forEach(im=>{
-    im.parentElement.addEventListener('click',()=>nagyit(im.currentSrc||im.src));});
+    im.parentElement.addEventListener('click',()=>nagyit(im.dataset.nagy||im.currentSrc||im.src));});
   lap.querySelectorAll('.hely[data-n]').forEach(h=>{
     h.addEventListener('click',()=>{
       if(!KIVALASZTOTT){ sugo(L('Előbb válassz egy kártyát lent, aztán koppints ide – vagy húzd ide.','Primero elige una carta abajo y luego toca aquí, o arrástrala aquí.')); return; }
@@ -1201,7 +1208,7 @@ function pakli(){
      role="button" tabindex="0" aria-label="${c.k.nev}${c.arany?' arany':''} lapja, ${c.hova}. hely">
      <span class="cimke">${c.hova}</span>
      <button class="nagyit" type="button" aria-label="${L('Nagyítás','Ampliar')}">🔍</button>
-     <img src="${KARTYAUT_SZIG(c.k,c.arany)}" alt="" draggable="false" ${HIBAKEP}><div class="c">${c.k.nev}</div></div>`).join('');
+     <img src="${KIS(KARTYAUT_SZIG(c.k,c.arany),240)}" alt="" draggable="false" ${HIBAKEP}><div class="c">${c.k.nev}</div></div>`).join('');
   p.querySelectorAll('.mini').forEach(m=>{
     const ng=m.querySelector('.nagyit');
     if(ng){ ng.addEventListener('pointerdown',e=>e.stopPropagation());
@@ -1412,7 +1419,7 @@ rajzol(); pakli(); igazit();
 /* csak azok a lapok kerulnek a pakliba, amelyeknek tenyleg van kepuk */
 (async () => {
   const jo = [];
-  for (const c of PAKLI) if (await kepBetolt(KARTYAUT_SZIG(c.k, c.arany))) jo.push(c);
+  for (const c of PAKLI) if (await kepBetolt(KIS(KARTYAUT_SZIG(c.k, c.arany), 240))) jo.push(c);
   PAKLI = jo;
   pakli();
 })();

@@ -43,8 +43,8 @@
 .gymenu .gyerme{display:inline-flex;align-items:center;gap:6px;margin-left:auto;
   font-weight:800;font-size:15px;color:#9a5e0c;background:#fff6e6;
   border:2px solid #f3d9ad;border-radius:999px;padding:6px 14px}
-.gymenu .gyerme svg{width:17px;height:17px;fill:none;stroke:#c77f10;
-  stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* fix251: valódi (arany) érme a szám mellett */
+.gymenu .gyerme svg{width:20px;height:20px;flex:none}
 .gymenu .gyszulo{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;
   border:1px solid #dbe5df;border-radius:999px;font-size:13.5px;font-weight:600;
   color:#5d6b64;text-decoration:none}
@@ -56,6 +56,15 @@
   .gymenu a.gyg{padding:9px 11px}
   .gymenu .gynev,.gymenu .gyszulo span{display:none}
   .gymenu .gyszulo{padding:9px 11px}
+}
+/* fix251: TELEFONON egy sorban: kép, 4 gomb, érme, lakat (a lakat nem esik
+   külön sorba). */
+@media(max-width:520px){
+  .gymenu{flex-wrap:nowrap;gap:6px;padding:8px 10px}
+  .gymenu .gyavatar{width:34px;height:34px}
+  .gymenu a.gyg{padding:8px 9px;flex:none}
+  .gymenu .gyerme{padding:5px 10px 5px 6px;font-size:14px;gap:5px;flex:none}
+  .gymenu .gyszulo{padding:8px 9px;flex:none}
 }
 </style>
 
@@ -101,7 +110,7 @@
     <span>{{ t('gy_kinezet') }}</span></a>
 
   <span class="gyerme" title="{{ t('gy_erme') }}">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9.5 9.5h5M9.5 14.5h5"/></svg>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="#F5B82E" stroke="#C98A12" stroke-width="1.5"/><circle cx="12" cy="12" r="7" fill="#FBCB4A" stroke="#E3A21A" stroke-width="1.2"/><path d="M12 7.6l1.3 2.7 3 .4-2.2 2 .6 2.9-2.7-1.5-2.7 1.5.6-2.9-2.2-2 3-.4z" fill="#FFF4CC"/></svg>
     {{ aktiv_gyerek.erme }}</span>
 
   <a class="gyszulo" href="{{ url_for('szuloi_pin') }}">
