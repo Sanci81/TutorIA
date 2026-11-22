@@ -15657,7 +15657,10 @@
   }
   /* Ha nem fér el egy sorban: a lépések a címkék ALÁ, teljes szélességben. */
   @media (min-width:601px) and (max-width:1350px){
-    .fej2 .fej2-al{grid-column:2 / -1}
+    /* fix254: a címkék sora is a teljes szélességet kitölti (egyforma cellák). */
+    .fej2 .fej2-al{grid-column:2 / -1;display:flex}
+    .chat-header.fej2 .fej2-al > span{flex:1 1 0;min-width:0;text-align:center;
+        overflow:hidden;text-overflow:ellipsis}
     .fej2 .chat-header-also{grid-column:2 / -1;grid-row:3}
   }
   @media (max-width:600px){
