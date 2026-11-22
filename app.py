@@ -2551,7 +2551,9 @@ def _jelentes_targynev(nyers: str) -> str:
     try:
         import curriculum_loader as _cl
         for kulcs, fajl in _cl.ES_LOE_FILES.items():
-            if fajl == nyers:
+            # fix244: a tanulási idő a tantárgy KULCSÁVAL is el van mentve („matematicas”) –
+            # abból eddig „Matematicas” lett a levélben (ékezet nélkül, félbe vágott névvel)
+            if fajl == nyers or kulcs == nyers.strip().lower():
                 return _cl._ES_LOE_SUBJECT_LABELS.get(kulcs) or nyers
     except Exception:
         pass

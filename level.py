@@ -45,7 +45,7 @@ SZOVEG = {
         "gyenge_alcim": "Ezeket érdemes vele átnézni.",
         "gyujtemeny": "{szavak} szó a szójegyzékben · {kartyak} kártya a gyűjteményben",
         "gomb": "Megnézem az oldalon",
-        "cim": "Haladás-jelentés", "c_perc": "perc", "c_nap": "nap", "c_kartya": "kártya összesen",
+        "cim": "Haladás-jelentés", "c_perc": "perc", "c_nap": "napon tanult", "c_kartya": "kártya összesen",
         "c_szo": "szó",
         "labjegyzet": (
             "Ezt a levelet azért kapod, mert TutorIAcademia-fiókod van. "
@@ -75,7 +75,7 @@ SZOVEG = {
         "gyenge_alcim": "Merece la pena repasarlo con él o ella.",
         "gyujtemeny": "{szavak} palabras en el vocabulario · {kartyak} cartas",
         "gomb": "Verlo en la página",
-        "cim": "Informe de progreso", "c_perc": "minutos", "c_nap": "días", "c_kartya": "cartas en total",
+        "cim": "Informe de progreso", "c_perc": "minutos", "c_nap": "días de estudio", "c_kartya": "cartas en total",
         "c_szo": "palabras",
         "labjegyzet": (
             "Recibes este correo porque tienes una cuenta en TutorIAcademia. "

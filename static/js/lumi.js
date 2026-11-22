@@ -331,8 +331,8 @@
             reteg(true);
             return kuszik(lv.x, av, function () { return scrollY + logoV().y + h * 1.05; });
         }).then(function () {
-            var y1 = P.y;
-            return anim({meret: .4, lat: 0}, 380, 'be', function (u) { P.y = y1 - u * 6; var ay = scrollY + av; kotelRajz(lv.x, ay, ay + (P.y - ay) * (1 - u)); });
+            var y1v = P.y - scrollY;
+            return anim({meret: .4, lat: 0}, 380, 'be', function (u) { P.y = scrollY + y1v - u * 6; var ay = scrollY + av; kotelRajz(lv.x, ay, ay + (P.y - ay) * (1 - u)); });
         }).then(function () { kotelKi(); kint = false; alattam = null; reteg(false); logoAllapot(true); bentIdo = Date.now(); P.meret = 1; return 'haza'; });
     }
     function kotelut(x1, y1, o) {                // nagy távolság: felmászik, átlendül, lemászik
@@ -353,7 +353,7 @@
         var h = MAGAS(), av = tetoV(), xa = horgonyX(x1);
         kotelBe(); P.x = xa; P.y = scrollY + av + h * .9; P.kep = 'maszik'; Object.assign(P, NYUGI); P.arnyek = 0; P.lat = 0; P.meret = 1; P.emel = 0; P.feny = 0;
         return anim({}, 320, 'ki', function (u, e) { var ay = scrollY + av; kotelRajz(xa, ay, ay + (P.y + 14 - ay) * e); })
-            .then(function () { return Promise.all([kuszik(xa, av, Math.min(y1, scrollY + av + h * 1.3)), anim({lat: 1}, 260, 'ki')]); })
+            .then(function () { return Promise.all([kuszik(xa, av, function () { return Math.min(y1, scrollY + av + h * 1.3); }), anim({lat: 1}, 260, 'ki')]); })
             .then(function () { return leszall(xa, x1, y1, f, av); });
     }
     var kint = false, alattam = null, kijott = false, bentIdo = 0;           // alattam: a felület (elem), amin épp áll
@@ -371,7 +371,7 @@
                 var y0 = lv.y;
                 return anim({meret: 1}, 420, 'ki', function (u) { P.y = scrollY + y0 + h * (.35 + .9 * u); kotelTest(x, av); });       // kibújik
             })
-            .then(function () { return kuszik(x, av, Math.min(c.y, fejlecAlja() + h * 1.3 + 14)); })      // lejjebb mászik, amíg az egész teste a fejléc alá ér
+            .then(function () { return kuszik(x, av, function () { return Math.min(c.y, fejlecAlja() + h * 1.3 + 14); }); })      // lejjebb mászik, amíg az egész teste a fejléc alá ér
             .then(function () { reteg(false); })
             .then(function () { return kotelut(c.x, c.y, {ax0: x, av: av, marKotelen: true, f: c.f}); })           // átlendül, lemászik, lelép
             .then(function (r) { if (r === 'haza' || !kint) { return 'haza'; } if (r && r.x != null) { c = r; } alattam = c.f || null; return integet(); })
@@ -399,13 +399,13 @@
         }
         var axh = horgonyX(ax);
         return megfog(axh, av)
-            .then(function () { return kuszik(P.x, av, fejlecAlja() + h * 1.3 + 14, stop, axh); })       // a fejléc alatt lóg (nem bújik alá)
+            .then(function () { return kuszik(P.x, av, function () { return fejlecAlja() + h * 1.3 + 14; }, stop, axh); })       // a fejléc alatt lóg (nem bújik alá)
             .then(function (s) { if (s) { return meggondol(axh); }
                 return lendul(axh, lv.x, av).then(function () { if (stop()) { return meggondol(lv.x); }
                     reteg(true);                                                                     // innen a fejléc előtt mászik fel a logóba
-                    return kuszik(lv.x, av, scrollY + logoV().y + h * 1.05, stop).then(function (s2) { if (s2) { reteg(false); return meggondol(lv.x); }
-                        var y1 = P.y;
-                        return anim({meret: .4, lat: 0}, 380, 'be', function (u) { P.y = y1 - u * 6; var ay = scrollY + av; kotelRajz(lv.x, ay, ay + (P.y - ay) * (1 - u)); })   // be a logóba
+                    return kuszik(lv.x, av, function () { return scrollY + logoV().y + h * 1.05; }, stop).then(function (s2) { if (s2) { reteg(false); return meggondol(lv.x); }
+                        var y1v = P.y - scrollY;            // fix244: a logóhoz mérve – ha közben görgetsz, nem mászik a logó fölé
+                        return anim({meret: .4, lat: 0}, 380, 'be', function (u) { P.y = scrollY + y1v - u * 6; var ay = scrollY + av; kotelRajz(lv.x, ay, ay + (P.y - ay) * (1 - u)); })   // be a logóba
                             .then(function () { kotelKi(); kint = false; alattam = null; reteg(false); logoAllapot(true); bentIdo = Date.now(); return 'bent'; });
                     });
                 });
