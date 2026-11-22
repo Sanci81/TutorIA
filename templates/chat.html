@@ -1741,8 +1741,9 @@
                         <span class="lecke-hatra" id="lecke-hatra"
                            data-hossz="{{ lecke_hossz_perc }}"
                            data-tanult="{{ lecke_tanult_perc }}"
-                           data-sablon="{{ t('lecke_hatra') }}"
-                           data-kesz="{{ t('lecke_ideje_letelt') }}">{% if lecke_hatra_perc > 0 %}⏳ {{ t('lecke_hatra').replace('{perc}', lecke_hatra_perc|string) }}{% else %}✅ {{ t('lecke_ideje_letelt') }}{% endif %}</span>
+                           title="{{ t('lecke_hatra').replace('{perc}', lecke_hatra_perc|string) }}"
+                           data-sablon="{{ t('lecke_hatra_rovid') }}"
+                           data-kesz="{{ t('lecke_ideje_letelt') }}">{% if lecke_hatra_perc > 0 %}⏳ {{ t('lecke_hatra_rovid').replace('{perc}', lecke_hatra_perc|string) }}{% else %}✅ {{ t('lecke_ideje_letelt') }}{% endif %}</span>
                         {% endif %}
                     </p>
                 </div>
@@ -1754,7 +1755,7 @@
                    <span id="pont-display" hidden>{{ pont }}</span></div>
                 {% if show_early_test %}
                 <button type="button" class="btn-test-start btn-test-start-playful" id="btn-test-start">
-                    {{ t('chat_test_start') }}
+                    <span class="teszt-elo">{{ t('chat_test_elo') }}</span>{{ t('chat_test_start') }}
                 </button>
                 {% endif %}
                 <button type="button" class="chat-teljes-gomb" id="chat-teljes"
@@ -1767,14 +1768,7 @@
                 {% elif not hang_elfogyott %}
                     <a class="chat-mode-toggle chat-mode-voice" href="{{ voice_switch_url }}">{{ t('chat_valt_hangra') }}</a>
                 {% endif %}
-                {% if proba_oldal %}
-                {# CSAK A PRÓBAOLDALON látszik: a hangos idő lejáratának tesztje. #}
-                <form method="post" action="{{ url_for('teszt_hangkeret') }}" style="display:inline;margin:0">
-                    <button type="submit" title="Csak a próbaoldalon"
-                            style="border:2px dashed #b45309;background:#fff7ed;color:#7c2d12;border-radius:999px;padding:4px 10px;font-weight:800;font-size:12px;cursor:pointer">
-                        🧪 Hangkeret: {{ 'ELFOGYOTT' if teszt_hang_elfogyott else 'VAN' }}</button>
-                </form>
-                {% endif %}
+                {# fix252: a „Hangkeret” próbagomb lent, a Feladat-próba mellett van. #}
             </div>
 
             <div class="chat-header-also">
@@ -1908,6 +1902,14 @@
        gyerek nemét; keskeny képernyőn nem jelenik meg. #}
     {# KABALA: a szülő négy közül választ a profilban — fiú, lány, mozgó
        robot, vagy semmi. A fiú és a lány állókép marad, a robot mozog. #}
+    {% if proba_oldal %}
+    {# CSAK A PRÓBAOLDALON (fix252: a fejlécből ide került): a hangos idő lejáratának tesztje. #}
+    <form method="post" action="{{ url_for('teszt_hangkeret') }}" style="position:fixed;right:12px;bottom:{{ '96px' if proba_lista else '12px' }};z-index:9999;margin:0">
+        <button type="submit" title="Csak a próbaoldalon"
+                style="border:2px dashed #b45309;background:#fff7ed;color:#7c2d12;border-radius:999px;padding:4px 10px;font-weight:800;font-size:12px;cursor:pointer">
+            🧪 Hangkeret: {{ 'ELFOGYOTT' if teszt_hang_elfogyott else 'VAN' }}</button>
+    </form>
+    {% endif %}
     {% if proba_lista %}
     <form method="get" style="position:fixed;left:12px;bottom:12px;z-index:9999;background:#fff;border:2px solid #1F7A4D;border-radius:12px;padding:8px 10px;font:14px Nunito,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.12)">
         {% for k, v in request.args.items() %}{% if k != 'proba' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endif %}{% endfor %}
@@ -13612,6 +13614,13 @@
         if (xpEl) xpEl.textContent = xp;
         if (levelEl) levelEl.textContent = gameLevel;
         if (coinsEl && coins !== undefined) coinsEl.textContent = coins;
+        /* fix252: a felső menü érméje is (telefonon csak az látszik). */
+        try {
+            var gyM = document.querySelector('.gymenu .gyerme');
+            if (gyM && coins !== undefined && gyM.lastChild && gyM.lastChild.nodeType === 3) {
+                gyM.lastChild.nodeValue = ' ' + coins;
+            }
+        } catch (e) {}
         /* A pont a tasakbolt fizetőeszköze – a pénztárcából jön, hogy a
            gyerek rögtön lássa, mennyivel került közelebb a következő laphoz. */
         if (pontEl && penztarca && penztarca.pont !== undefined) {
@@ -15599,19 +15608,54 @@
       „Szia, … vagyok!" eltakarta a figurát).
    Magyar és spanyol oldalon egyformán. Csak 600 képpont alatt. #}
 <style>
-  @media (max-width:600px){
-    .fej2 .chat-header-topbar{display:grid;grid-template-columns:34px minmax(0,1fr) auto auto;
-        column-gap:8px;row-gap:2px;align-items:center}
+  /* ══ A LECKE FEJLÉCE – „A” TERV (fix252, Sándor választása) ══════════
+     Gépen: ← | cím | érme | Teszt | hangos mód | ⛶ egy sorban, mind
+     38 képpont magas; alatta a címkék (tantárgy, AI, szint, idő), alatta
+     a 4 lépés. Telefonon: ← | cím | ⛶; címkék; lépések; alattuk egy kis
+     „Már tudod? ⭐ Teszt” ajánlat. Az érme telefonon csak a felső
+     menüsorban van (eddig kétszer látszott). */
+  .fej2 .teszt-elo{display:none}
+  .chat-header.fej2 .fej2-al{gap:6px}
+  .chat-header.fej2 .fej2-al > span{background:rgba(255,255,255,.75);border:1px solid #e2ebe5;
+      border-radius:999px;padding:3px 10px;line-height:1.35}
+  .fej2 .chat-coins-pill{height:38px;box-sizing:border-box}
+  .chat-header.fej2 .btn-test-start{height:38px;margin:0;padding:0 16px;border-radius:999px;
+      background:#fff;border:2px solid #F5C451;color:#8a6410;font-weight:900;font-size:14px;
+      box-shadow:none;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;min-height:0}
+  .chat-header.fej2 .btn-test-start:hover{background:#FFF7E0}
+  .chat-header.fej2 .chat-header-topbar > .chat-mode-toggle{height:38px;box-sizing:border-box;
+      padding:0 16px;font-size:14px}
+  @media (min-width:601px){
+    .fej2 .chat-header-topbar{display:grid;
+        grid-template-columns:38px minmax(0,1fr) auto auto auto auto;
+        column-gap:10px;row-gap:6px;align-items:center}
     .fej2 .fej2-cim{display:contents}
     .fej2 .chat-back{grid-column:1;grid-row:1}
-    .fej2 .chat-current-topic{grid-column:2;grid-row:1;align-self:center}
-    .fej2 .chat-coins-pill{grid-column:3;grid-row:1;padding:3px 10px 3px 4px;font-size:14px}
+    .fej2 .chat-current-topic{grid-column:2;grid-row:1;font-size:20px}
+    .fej2 .chat-coins-pill{grid-column:3;grid-row:1}
+    .fej2 .btn-test-start{grid-column:4;grid-row:1}
+    .fej2 .chat-header-topbar > .chat-mode-toggle{grid-column:5;grid-row:1}
+    .fej2 .chat-teljes-gomb{grid-column:6;grid-row:1}
+    .fej2 .fej2-al{grid-column:2 / -1;grid-row:2;margin:0}
+    .fej2 .chat-header-also{margin:12px 0 2px 48px}
+  }
+  @media (max-width:600px){
+    .chat-header.fej2{display:grid;grid-template-columns:34px minmax(0,1fr) 34px;
+        column-gap:8px;row-gap:8px;align-items:center}
+    .fej2 .chat-header-topbar,.fej2 .fej2-cim{display:contents}
+    .fej2 .chat-back{grid-column:1;grid-row:1}
+    .fej2 .chat-current-topic{grid-column:2;grid-row:1}
     .fej2 .chat-teljes-gomb{display:flex;align-items:center;justify-content:center;
-        grid-column:4;grid-row:1;margin:0}
-    .fej2 .fej2-al{grid-column:2 / 5;grid-row:2;margin-top:2px}
-    .fej2 .btn-test-start{grid-column:1 / -1;grid-row:3}
-    .fej2 .chat-header-topbar > form,
-    .fej2 .chat-header-topbar > .chat-mode-toggle{grid-column:1 / -1}
+        grid-column:3;grid-row:1;margin:0}
+    .fej2 .chat-coins-pill{display:none}
+    .fej2 .fej2-al{grid-column:2 / -1;grid-row:2;margin:0}
+    .fej2 .chat-header-also{grid-column:1 / -1;grid-row:3;margin:0}
+    .chat-header.fej2 .btn-test-start{grid-column:1 / -1;grid-row:4;justify-self:center;
+        order:0;flex:none;height:auto;background:none;border:0;padding:2px 8px;
+        font-size:13.5px;color:#8a6410}
+    .chat-header.fej2 .btn-test-start:hover{background:none;text-decoration:underline}
+    .fej2 .teszt-elo{display:inline;color:#5F7469;font-weight:700;margin-right:6px}
+    .fej2 .chat-header-topbar > .chat-mode-toggle{grid-column:1 / -1;grid-row:5;justify-self:center}
   }
   @media (max-width:759px){
     .chat-layout:has(.uj-felulet) .kabala-buborek{top:auto;right:auto;bottom:18px;
