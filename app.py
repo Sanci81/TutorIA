@@ -2224,7 +2224,9 @@ def register():
             flash(i18n.t("flash_password_short", g.lang), "error")
             return render_template("register.html", email=email)
 
-        if password != confirm:
+        # fix245 (Sándor: „a jelszó-megerősítést vegyük ki”): a regisztrációban már nincs megerősítő mező
+        # (a jelszót a szemecskével meg lehet nézni). Ha egy régi, még megnyitott lap küldi, azt még ellenőrizzük.
+        if confirm and password != confirm:
             _latogatas_esemeny("hiba_jelszo_nem_egyezik")
             flash(i18n.t("flash_password_mismatch", g.lang), "error")
             return render_template("register.html", email=email)

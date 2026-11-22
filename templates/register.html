@@ -109,35 +109,19 @@
                 <p class="field-hint" style="margin-top:4px">{{ t('jelszo_sugo') }}</p>
             </div>
 
-            <div class="field">
-                <label for="password_confirm">{{ t('label_password_confirm') }}</label>
-                <div class="password-field">
-                    <input type="password" id="password_confirm" name="password_confirm" required minlength="8" autocomplete="new-password">
-                    <button type="button" class="password-toggle" data-password-toggle="password_confirm"
-                            aria-label="{{ t('show_password') }}" data-label-hide="{{ t('hide_password') }}">
-                        <svg class="icon-eye" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                            <circle cx="12" cy="12" r="3"/>
-                        </svg>
-                        <svg class="icon-eye-off" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                            <path d="M1 1l22 22"/>
-                            <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
-                        </svg>
-                    </button>
-                </div>
-                <p class="jelszo-egyezes" id="jelszoEgyezes" aria-live="polite"></p>
-            </div>
-
             {# SZÜLŐI KÓD. Azért itt, a regisztrációban, mert később senki nem
                állítja be – és addig a gyerek mindenhez hozzáfér. #}
+            {# fix245 (Sándor: „a szülői kód maradjon, de csak egy kis i-betűs pont legyen ott: mire jó és miért kell”) #}
             <div class="field">
-                <label for="szuloi_pin">{{ t('pin_reg_cimke') }}</label>
+                <div class="cimke-sor">
+                    <label for="szuloi_pin">{{ t('pin_reg_cimke') }}</label>
+                    <button type="button" class="info-i" aria-expanded="false" aria-controls="pinSugo"
+                            aria-label="{{ t('pin_info_gomb') }}" title="{{ t('pin_info_gomb') }}">i</button>
+                </div>
                 <input type="password" id="szuloi_pin" name="szuloi_pin"
                        inputmode="numeric" pattern="[0-9]{4}" maxlength="4"
                        autocomplete="off" required>
-                <p class="mezo-sugo">{{ t('pin_reg_sugo') }}</p>
+                <p class="mezo-sugo info-sugo" id="pinSugo" hidden>{{ t('pin_reg_sugo') }}</p>
             </div>
 
             <label class="elfogado">
@@ -180,21 +164,22 @@
 
 {% block scripts %}
 
+<style>
+  .cimke-sor{display:flex;align-items:center;gap:8px}
+  .cimke-sor label{margin:0}
+  .info-i{width:22px;height:22px;flex:0 0 22px;border-radius:50%;border:2px solid #22A06B;background:#fff;color:#17604A;
+          font:900 13px/18px Nunito,Arial,sans-serif;font-style:italic;padding:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+  .info-i[aria-expanded="true"]{background:#22A06B;color:#fff}
+  .info-sugo{background:#EEF7F2;border-radius:12px;padding:10px 12px;margin-top:8px}
+</style>
 <script>
-/* fix234 (Sándor: „nézzük, hogy a két jelszó megegyezzen?”): a megerősítő mező alatt azonnal látszik */
+/* fix245: a szülői kód magyarázata az „i” gombra nyílik / csukódik */
 (function () {
-  var a = document.getElementById('password'), b = document.getElementById('password_confirm'), k = document.getElementById('jelszoEgyezes');
-  if (!a || !b || !k) { return; }
-  var IGEN = {{ t('jelszo_egyezik')|tojson }}, NEM = {{ t('jelszo_nem_egyezik')|tojson }};
-  function nez() {
-    if (!b.value) { k.textContent = ''; return; }
-    var ok = a.value === b.value;
-    k.textContent = ok ? IGEN : NEM; k.style.color = ok ? '#22A06B' : '#E5484D';
-  }
-  a.addEventListener('input', nez); b.addEventListener('input', nez); nez();
+  var g = document.querySelector('.info-i'), p = document.getElementById('pinSugo');
+  if (!g || !p) { return; }
+  g.addEventListener('click', function () { var ny = p.hidden; p.hidden = !ny; g.setAttribute('aria-expanded', ny ? 'true' : 'false'); });
 })();
 </script>
-<style>.jelszo-egyezes{margin:6px 0 0;font-size:.86rem;font-weight:800;min-height:1.2em}</style>
 {# fix233: jelszó-erősség jelző (gyenge / közepes / erős) #}
 <style>
   .jelszo-mero{display:none;align-items:center;gap:10px;margin-top:8px}

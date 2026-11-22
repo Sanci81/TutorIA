@@ -1189,13 +1189,16 @@ TRANSLATIONS = {
     "pin_reg_cimke": {"hu": "Szülői kód (4 számjegy)",
                       "es": "Código de padres (4 cifras)"},
     "pin_reg_sugo": {
-        "hu": "Ez választja el a szülői részt a gyerekétől. A gyerek szabadon "
-              "tanul és gyűjt, de a profil szerkesztéséhez, a fiókodhoz és a "
-              "kijelentkezéshez ez a kód kell.",
-        "es": "Esto separa la zona de padres de la del niño. El niño aprende y "
-              "colecciona con libertad, pero para editar el perfil, entrar en "
-              "tu cuenta o cerrar sesión hace falta este código.",
+        "hu": "Mire jó? Ezzel jutsz be a szülői részbe: a gyerek profiljához, a fiókodhoz "
+              "és a kijelentkezéshez. Miért kell? Hogy a gyerek szabadon tanulhasson és "
+              "gyűjthessen, de ne tudja átállítani a beállításokat, és ne tudjon kilépni. "
+              "Bármikor megváltoztathatod a Fiókom oldalon.",
+        "es": "¿Para qué sirve? Con él entras en la zona de padres: el perfil del niño, tu "
+              "cuenta y cerrar sesión. ¿Por qué hace falta? Para que el niño aprenda y "
+              "coleccione con libertad, pero no pueda cambiar los ajustes ni salir. "
+              "Puedes cambiarlo cuando quieras en Mi cuenta.",
     },
+    "pin_info_gomb": {"hu": "Mire jó a szülői kód?", "es": "¿Para qué sirve el código de padres?"},
     "pin_uj_cimke": {"hu": "Új szülői kód", "es": "Nuevo código de padres"},
     "pin_mentes": {"hu": "Kód mentése", "es": "Guardar código"},
     "pin_jelszo_cimke": {"hu": "A bejelentkezési jelszavad",
