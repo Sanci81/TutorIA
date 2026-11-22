@@ -1879,6 +1879,9 @@ Tervezett elemek:
 - [x] (fix242) Hullámos / tépett szélű sávon (svg) a LÁTHATÓ szélére áll, nem a felette lévő üres részre (nem ül a semmibe).
 - [x] (fix242) Szülői levél: pontos időszak („Az elmúlt héten (november 14–21.) nem volt tanulás.”, „November 14–21. között nem tanult.”) – HU+ES (level.py).
 - [x] (fix242) Teljes ellenőrzés újra: 17 oldal × HU/ES × 3 képernyő (gép, nagy monitor, telefon) – 312 állapot, 266-ban kint van: 0 szövegtakarás, 0 levegőben, 0 fejléc alatt, 0 JS-hiba; a többiben (sűrű szöveg, nincs hely) a logóban vár.
+- [x] (fix243) Lumi a talajt a KÉPPONTOK alapján keresi (nem a dobozok méretéből): ott áll, ahol tényleg látható felület kezdődik (kártya, mező, gomb, a hullám / tépett szél rajza, lábléc); az egyszínű folytatás (zöld hullám alatt zöld sáv) nem határ. Ugyanazzal a szabállyal választ és ellenőriz – nem áll a levegőben, és nem mászik vissza értelmetlenül.
+- [x] (fix243) Lumi figyel: fejét az egér / ujj felé fordítja, gomb fölött a lámpája ragyog, kattintásra odanéz és bólint. Ha útközben görgetsz, új látható helyet keres (vagy a kötélen a logóba mászik).
+- [ ] Lumi: a vezérlőpulton telefonon a „Gyerek hozzáadása” gomb jobb, lekerekített végén ül – nézd meg, tetszik-e.
 - [ ] Lumi: Sándor új hibáit javítani, ha jelzi.
 - [x] (fix237) LUMI SOSEM TAKAR SZÖVEGET ÉS NEM LÓG A LEVEGŐBEN: minden oldalon megkeresi azt a helyet a mező/doboz felső szélén, ahol a teste nem takar szöveget, gombot, képet; ha nincs ilyen, a doboz mellett (telefonon a képernyő szélén) kötélen lóg. Csak akkor ül le, ha a mező jó, és a lába sem takar. Hibás kitöltésnél (ha abbahagytad a gépelést) a fejét fogja.
 - [ ] (fix237) FEJFOGÁS kép: python lumi_kepek.py --allapot fejfogas, majd --jovahagy --csak fejfogas → a lumi.js magától használja (addig a „gondolkodik” megy helyette).

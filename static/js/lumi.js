@@ -260,15 +260,16 @@
         }).then(function () { P.x = x; P.emel = 0; P.dol = 0; P.tukor = 0; rajzol(); });
     }
     function kuszik(x, av, yc, stop, ax) {       // mászik a kötélen (fel vagy le), kézen-kézen; ax: a kötél felső pontja (ha nem éppen fölötte)
-        var y0 = P.y, d = yc - y0; if (ax == null) { ax = x; } if (Math.abs(d) < 2) { return Promise.resolve(false); }
+        var ycF = typeof yc === 'function' ? yc : function () { return yc; };   // fix243: a cél lehet a fejléchez mért magasság is (görgetéskor vele megy)
+        var y0 = P.y, d = ycF() - y0; if (ax == null) { ax = x; } if (Math.abs(d) < 2) { return Promise.resolve(false); }
         P.kep = 'maszik'; P.arnyek = 0;
         var n = Math.max(2, Math.round(Math.abs(d) / 36));
         var s0 = scrollY;                        // fix242: a kötelet fogja – ha görgetsz, a kiindulópont a fejléccel (a kötéllel) megy, a cél a lappal
-        return mozog(Math.min(2800, 380 + Math.abs(d) * 3.6), function (u) { P.x = x; P.y = (y0 + scrollY - s0) * (1 - u) + yc * u; maszik(u, n); kotelTest(ax, av); }, stop);
+        return mozog(Math.min(2800, 380 + Math.abs(d) * 3.6), function (u) { P.x = x; P.y = (y0 + scrollY - s0) * (1 - u) + ycF() * u; maszik(u, n); kotelTest(ax, av); }, stop);
     }
     function lendul(ax0, ax1, av) {              // a fogópont a fejléc alján átcsúszik, Lumi ingaként lendül utána
-        var Dx = ax1 - ax0, ay0 = scrollY + av, L0 = Math.max(70, Math.hypot(P.x - ax0, P.y - ay0));
-        var phi = Math.atan2(P.x - ax0, Math.max(1, P.y - ay0)), hatar = Math.max(.5, Math.abs(phi));   // ha nem éppen a fogópont alatt van, onnan lendül
+        var Dx = ax1 - ax0, ay0 = scrollY + av, L0 = Math.max(70, Math.hypot(P.x - ax0, Math.max(0, P.y - ay0)));
+        var phi = Math.max(-1, Math.min(1, Math.atan2(P.x - ax0, Math.max(40, P.y - ay0)))), hatar = Math.max(.5, Math.abs(phi));   // ha nem éppen a fogópont alatt van, onnan lendül
         if (Math.abs(Dx) < 8 && Math.abs(phi) < .02) { P.x = ax1; return Promise.resolve(); }
         var L = L0, g = 2600, om = 0, T = Math.min(1.7, .65 + Math.abs(Dx) * .0011), Ts = .8;
         P.kep = 'maszik'; P.tukor = Dx < 0 ? 1 : 0; P.emel = 0;
@@ -292,7 +293,8 @@
         var h = MAGAS();
         if (Math.abs(x1 - xa) < 4) { return kuszik(xa, av, y1).then(function () { return lelep(xa, av); }); }
         var fr = f && felulet(f);
-        if (fr && xa > fr.l + h * .28 && xa < fr.r - h * .28 && alatta(xa, y1 - 1, f) && talajY(xa, {l: fr.l, r: fr.r, y: y1 - 1, w: fr.w, el: f}) === y1 - 1) {
+        var gx = talajKeres(xa, y1 - 1, 8, 8);
+        if (gx && Math.abs(gx.y - y1) < 5 && takaras(dobozom(xa, gx.y, false), null) < 1) {
             return kuszik(xa, av, y1).then(function () { return lelep(xa, av); }).then(function () { return seta(x1); });     // ugyanarra a felületre ér le, onnan sétál
         }
         if (Math.abs(x1 - xa) < h * 2.2) {                                    // közel van: a kötélről ugrik át
@@ -320,12 +322,32 @@
             .then(function () { return anim({ny: .9}, 110, 'ki'); })
             .then(function () { P.kep = 'maszik'; P.arnyek = 0; Object.assign(P, NYUGI); P.x = x0; kotelTest(ax, av); rajzol(); });
     }
+    /* fix243: ha útközben görgetsz, és a cél kiesik a képből, nem mászik le a semmibe: új, látható helyet keres
+       (ha nincs, a kötélen a logóba mászik). A lengés magassága a fejléchez mért – görgetéskor a kötéllel megy. */
+    function ujHely() { var m = most(); if (m && lathato(m.y)) { return m; } var c = fodoboz(); return c ? (horgony = c, helyDoboz(c)) : null; }
+    function logobaFel(xFrom, av) {
+        var lv = logoV(), h = MAGAS();
+        return lendul(xFrom, lv.x, av).then(function () {
+            reteg(true);
+            return kuszik(lv.x, av, function () { return scrollY + logoV().y + h * 1.05; });
+        }).then(function () {
+            var y1 = P.y;
+            return anim({meret: .4, lat: 0}, 380, 'be', function (u) { P.y = y1 - u * 6; var ay = scrollY + av; kotelRajz(lv.x, ay, ay + (P.y - ay) * (1 - u)); });
+        }).then(function () { kotelKi(); kint = false; alattam = null; reteg(false); logoAllapot(true); bentIdo = Date.now(); P.meret = 1; return 'haza'; });
+    }
     function kotelut(x1, y1, o) {                // nagy távolság: felmászik, átlendül, lemászik
-        o = o || {}; var av = o.av != null ? o.av : tetoV(), ax = o.ax0 != null ? o.ax0 : horgonyX(P.x), xa = horgonyX(x1);
+        o = o || {}; var av = o.av != null ? o.av : tetoV(), ax = o.ax0 != null ? o.ax0 : horgonyX(P.x), cel = {x: x1, y: y1, f: o.f, ul: o.ul};
         return (o.marKotelen ? Promise.resolve() : megfog(ax, av))
-            .then(function () { return kuszik(P.x, av, lengoSzint(y1), null, ax); })
-            .then(function () { return lendul(ax, xa, av); })
-            .then(function () { return leszall(xa, x1, y1, o.f, av); });
+            .then(function () { var lv = lengoSzint(cel.y) - fejlecAlja(); return kuszik(P.x, av, function () { return fejlecAlja() + lv; }, null, ax); })
+            .then(function () {
+                if (!lathato(cel.y)) { var u = ujHely(); if (!u) { return logobaFel(ax, av); } cel = u; }
+                var xa = horgonyX(cel.x);
+                return lendul(ax, xa, av).then(function () {
+                    if (!lathato(cel.y)) { var u2 = ujHely(); if (!u2) { return logobaFel(xa, av); } cel = u2; var xb = horgonyX(cel.x);
+                        return lendul(xa, xb, av).then(function () { return leszall(xb, cel.x, cel.y, cel.f, av); }).then(function () { return cel; }); }
+                    return leszall(xa, cel.x, cel.y, cel.f, av).then(function () { return cel; });
+                });
+            });
     }
     function leereszkedik(x1, y1, f) {           // nem látszott: felülről, kötélen ereszkedik le a látható részre
         var h = MAGAS(), av = tetoV(), xa = horgonyX(x1);
@@ -352,8 +374,8 @@
             .then(function () { return kuszik(x, av, Math.min(c.y, fejlecAlja() + h * 1.3 + 14)); })      // lejjebb mászik, amíg az egész teste a fejléc alá ér
             .then(function () { reteg(false); })
             .then(function () { return kotelut(c.x, c.y, {ax0: x, av: av, marKotelen: true, f: c.f}); })           // átlendül, lemászik, lelép
-            .then(function () { alattam = c.f || null; return integet(); })
-            .then(function () { if (c.ul && P.kep === 'alap') { return ul(); } });
+            .then(function (r) { if (r === 'haza' || !kint) { return 'haza'; } if (r && r.x != null) { c = r; } alattam = c.f || null; return integet(); })
+            .then(function (r) { if (r !== 'haza' && kint && c.ul && P.kep === 'alap') { return ul(); } });
     }
     /* fix241 (Sándor: „a fejléc lefejezi Lumit”): Lumi a lap része – a fejléc ALATT halad el (a fejléc eltakarja,
        nem ő a fejlécet). Csak amíg a logóból kibújik / visszabújik, addig van a fejléc fölött. */
@@ -372,8 +394,8 @@
             var c = most() || {x: ax, y: y0, f: alattam}; reteg(false);
             return jel('!', true).then(function () { return var_(400); }).then(function () { return jel('!', false); })
                 .then(function () { return kotelut(c.x, c.y, {ax0: x, av: av, marKotelen: true, f: c.f}); })
-                .then(function () { alattam = c.f || null; if (c.ul && P.kep === 'alap') { return ul(); } })
-                .then(function () { return 'meggondolta'; });
+                .then(function (r) { if (r === 'haza' || !kint) { return; } if (r && r.x != null) { c = r; } alattam = c.f || null; if (c.ul && P.kep === 'alap') { return ul(); } })
+                .then(function () { return kint ? 'meggondolta' : 'bent'; });
         }
         var axh = horgonyX(ax);
         return megfog(axh, av)
@@ -475,17 +497,54 @@
        kezdődik, mint a látható széle – ott a doboz teteje még levegő. Ilyenkor lejjebb keresi, hol kezdődik
        ténylegesen a felület ezen az x-en (az svg átlátszó részén a böngésző magát az <svg>-t „találja el”, a
        festett részen a rajzot). */
-    function talajY(x, f) {
-        var vx = x - scrollX; if (vx < 1 || vx > innerWidth - 1) { return f.y; }
-        for (var dy = 0; dy <= 70; dy += 3) {
-            var vy = f.y + dy + 3 - scrollY; if (vy < 1 || vy > innerHeight - 1) { return dy === 0 ? f.y : null; }
-            var t = D.elementsFromPoint(vx, vy), e = null;
-            for (var i = 0; i < t.length; i++) { if (!t[i].closest('#lumi')) { e = t[i]; break; } }
-            if (!e) { return null; }
-            if (e.tagName && e.tagName.toLowerCase() === 'svg' && f.el.contains(e)) { continue; }    // átlátszó rész: lejjebb
-            return f.el.contains(e) ? f.y + dy : null;
+    /* fix243 (Sándor: „a levegőben áll meg, pár másodperc múlva visszamászik”): a talajt a KÉPPONTOK alapján
+       keresi, nem a dobozok méretéből. Egy oszlopban (x) ott kezdődik felület, ahol fölötte (6 px-szel) még
+       más látszik, alatta pedig egy festett, ELŐRÉBB lévő dolog: kártya, mező, gomb, kép, a zöld hullám rajza…
+       A doboz átlátszó része, a kártya alja (alatta a háttér) vagy a szöveg sora nem talaj. Ugyanezzel a
+       szabállyal választ helyet ÉS ezzel ellenőrzi utána is magát – így nem mond ellent saját magának. */
+    function festett(e) {
+        if (!e || e === D.body || e === D.documentElement || !e.tagName) { return false; }
+        if (e.tagName.toLowerCase() === 'svg') { return false; }            // az svg átlátszó része
+        if (typeof SVGElement !== 'undefined' && e instanceof SVGElement) { return true; }   // a rajz festett része (path, rect…)
+        return valodi(e);
+    }
+    function verem(x, y) {
+        var vx = x - scrollX, vy = y - scrollY;
+        if (vx < 1 || vy < 1 || vx > innerWidth - 1 || vy > innerHeight - 1) { return null; }
+        return D.elementsFromPoint(vx, vy).filter(function (e) { return !e.closest('#lumi'); });
+    }
+    function elso(st) { if (!st) { return null; } for (var i = 0; i < st.length; i++) { if (festett(st[i])) { return st[i]; } } return null; }
+    function szine(e) {                          // a festett elem színe (svg: kitöltés, egyébként háttér); null, ha nem egyszínű
+        try { var cs = getComputedStyle(e), c = (typeof SVGElement !== 'undefined' && e instanceof SVGElement) ? cs.fill : cs.backgroundColor;
+            if (!(typeof SVGElement !== 'undefined' && e instanceof SVGElement) && cs.backgroundImage !== 'none') { return null; }
+            var m = c && c.match(/rgba?\(([^)]+)\)/); if (!m) { return null; }
+            var p = m[1].split(/[\s,\/]+/).filter(Boolean).map(parseFloat); return p.length > 3 && p[3] < .5 ? null : p.slice(0, 3);
+        } catch (er) { return null; }
+    }
+    function egyszinu(a, b) { var ca = szine(a), cb = szine(b); return ca && cb && Math.abs(ca[0] - cb[0]) + Math.abs(ca[1] - cb[1]) + Math.abs(ca[2] - cb[2]) < 36; }
+    function talajE(x, y) {                     // y-nál (lapkoordináta) kezdődik-e látható felület ebben az oszlopban
+        var s2 = verem(x, y + 2), s1 = verem(x, y - 6); if (!s2 || !s1) { return null; }
+        var lent = elso(s2), fent = elso(s1);
+        if (!lent || lent === fent) { return null; }
+        if (fent && egyszinu(fent, lent)) { return null; }                 // ugyanaz a szín folytatódik (pl. a zöld hullám alatt a zöld sáv) – nem látszik határ
+        if (fent) {
+            var fi = s2.indexOf(fent);
+            if (fi >= 0 && fi < s2.indexOf(lent)) { return null; }        // a fenti tart tovább, és előrébb van
+            if (fi < 0 && lent.contains(fent)) { return null; }            // a kártya alja: alatta a saját háttere – nem talaj
+        }
+        return lent;
+    }
+    function talajKeres(x, y0, fel, le) {        // a y0-hoz legközelebbi talaj ebben az oszlopban (fel: ennyit felfelé, le: ennyit lefelé)
+        fel = fel == null ? 140 : fel; le = le == null ? 40 : le;
+        for (var d = 0; d <= Math.max(fel, le); d += 3) {
+            if (d <= fel) { var e1 = talajE(x, y0 - d); if (e1) { return {y: y0 - d + 1, el: e1}; } }
+            if (d && d <= le) { var e2 = talajE(x, y0 + d); if (e2) { return {y: y0 + d + 1, el: e2}; } }
         }
         return null;
+    }
+    function talajItt(x, y) {                    // áll-e valamin (ül vagy áll) – a figyelő és a csiklandozás ezt nézi
+        if (!verem(x, y + 2)) { return true; }                                  // nem látszik – nem tudjuk ellenőrizni
+        return !!talajKeres(x, y - 1, 6, 6) || !!talajKeres(x - 8, y - 1, 6, 6) || !!talajKeres(x + 8, y - 1, 6, 6);
     }
     function keres(feluletek, sajatMezo) {
         var h = MAGAS(), fel = h * .28, lx = scrollX + 6, rx = scrollX + innerWidth - 6, legjobb = null;
@@ -497,9 +556,10 @@
                 for (var x = jobb; x >= bal; x -= 8) {
                     var t = takaras(dobozom(x, f.y + 1, mod === 1), sajatMezo) + (jobb - x) * .01 + i * 50;
                     if (t < 1 + (jobb - x) * .01 + i * 50) {
-                        var yy = talajY(x, f); if (yy == null) { continue; }
-                        if (yy !== f.y && takaras(dobozom(x, yy + 1, mod === 1), sajatMezo) >= 1) { continue; }
-                        return {x: x, y: yy + 1, ul: mod === 1, f: f.el};
+                        var g = talajKeres(x, f.y); if (!g) { continue; }
+                        var yy = g.y;
+                        if (Math.abs(yy - f.y - 1) > 1 && (yy < scrollY + 20 || takaras(dobozom(x, yy, mod === 1), sajatMezo) >= 1)) { continue; }
+                        return {x: x, y: yy, ul: mod === 1, f: f.el};
                     }
                 }
             }
@@ -564,7 +624,10 @@
         else if (dy < 3 && (hely.f === alattam || dx < h * .9)) { ut = seta(hely.x); }
         else if (dx < h * 2.2 && dy < h * 1.4) { ut = ugras(hely.x, hely.y, Math.max(h * .3, (P.y - hely.y) + h * .35), Math.min(650, 340 + Math.hypot(dx, dy) * .5)); }
         else { ut = kotelut(hely.x, hely.y, {f: hely.f}); }
-        return ut.then(function () { alattam = hely.f || null; P.arnyek = 1; if (hely.ul && P.kep === 'alap') { return ul(); } });
+        return ut.then(function (r) {
+            if (r === 'haza' || !kint) { return; }                        // útközben hazament (nem volt látható hely)
+            var hh = r && r.x != null ? r : hely;                         // fix243: ha útközben új helyet választott, az számít
+            alattam = hh.f || null; P.arnyek = 1; if (hh.ul && P.kep === 'alap') { return ul(); } });
     }
 
     // ── EGYÜTT ÉL VELÜNK: ha hozzáérsz, odébb ugrik ───────────────────────
@@ -580,7 +643,7 @@
             for (var d = h * .6; d <= h * 1.6; d += 8) {
                 var x = P.x + ir * d;
                 if (x < f.l + h * .28 || x > f.r - h * .28 || x < scrollX + 20 || x > scrollX + innerWidth - 20) { break; }
-                if (takaras(dobozom(x, P.y, false), sm) < 1 && alatta(x, P.y - 1, alattam)) { cel = x; irany = ir; return true; }
+                if (takaras(dobozom(x, P.y, false), sm) < 1 && talajItt(x, P.y)) { cel = x; irany = ir; return true; }
             }
             return false;
         });
@@ -713,7 +776,7 @@
             if (!rendben()) { return 'reszben'; }
             var sm = horgony && horgony.matches && horgony.matches('input, textarea') ? horgony : null;
             if (takaras(dobozom(P.x, P.y, P.kep === 'ul'), sm) > 40) { return 'takar'; }
-            if (alattam && !alatta(P.x, P.y - 1, alattam)) { return 'levego'; }
+            if (!talajItt(P.x, P.y)) { return 'levego'; }
             return '';
         }
         function javit(ok) {
@@ -732,11 +795,39 @@
             if (bajSzam >= 2) { bajSzam = 0; akadalyIdo = 0; javit(b); }     // kétszer egymás után (1 mp) – görgetés közben nem kapkod
         }, 500);
         ['pointerdown', 'keydown'].forEach(function (t) { addEventListener(t, function () { utolsoMozdulat = Date.now(); megszakit++; }, true); });
+        /* fix243 (Sándor: „figyeljen mindenre, mint egy igazi kabala”): FIGYEL RÁD –
+           · a fejét arra fordítja, amerre az egér / az ujjad van (ha közel vagy hozzá);
+           · ha egy gomb vagy link fölé viszed az egeret, a lámpája felragyog (a fő gomboknál jobban);
+           · ha rákattintasz valamire, odanéz és bólint egyet. */
+        var mut = {x: -1e4, y: -1e4, t: 0}, ragyog = 0;
+        addEventListener('pointermove', function (e) { mut.x = e.pageX; mut.y = e.pageY; mut.t = performance.now(); }, {passive: true});
+        var GOMB = 'a, button, summary, [role=button], input[type=submit], .fp-gomb, .nav-cta';
+        D.addEventListener('pointerover', function (e) {
+            var g = e.target && e.target.closest && e.target.closest(GOMB);
+            if (!g || g.closest('#lumi')) { return; }
+            ragyog = g.matches('.fp-gomb, .nav-cta, button[type=submit], .fp-teli') ? .75 : .35;
+        });
+        D.addEventListener('pointerout', function (e) {
+            var g = e.target && e.target.closest && e.target.closest(GOMB);
+            if (g && !(e.relatedTarget && g.contains(e.relatedTarget))) { ragyog = 0; }
+        });
+        D.addEventListener('pointerdown', function (e) {
+            mut.x = e.pageX; mut.y = e.pageY; mut.t = performance.now();
+            var g = e.target && e.target.closest && e.target.closest(GOMB);
+            if (!kint || fut || !g || g.closest('#lumi') || !rendben()) { return; }
+            tedd(function () { return anim({ny: .9, fej: (e.pageX < P.x ? -1 : 1) * 9}, 130, 'ki').then(function () { return anim({ny: 1}, 380, 'rugo'); }); });
+        }, true);
         // pihenés: lélegzik, a fény pislákol
         var t0 = performance.now();
         (function el(t) {
             if (kint && !fut && P.lat > .9) {
                 var s = (t - t0) / 1000; P.ny = 1 + Math.sin(s * 2.2) * .012;
+                if (P.kep === 'alap' || P.kep === 'ul') {      // fix243: odafordul, ahol az egér / az ujjad van; a lámpa ragyog, ha gombon vagy
+                    var tav = Math.hypot(mut.x - P.x, mut.y - (P.y - MAGAS() * .6)), friss = t - mut.t < 4000;
+                    var cel = friss && tav < 650 ? Math.max(-10, Math.min(10, (mut.x - P.x) / 25)) : 0;
+                    P.fej += (cel - P.fej) * .08;
+                    P.feny += (ragyog - P.feny) * .08;
+                }
                 /* fix234: ha az oldal elmozdul alatta (pl. megjelenik a jelszó-csík, és lejjebb csúsznak a mezők),
                    vele megy – mindig a mező vonalán marad */
                 if (horgony && (P.kep === 'alap' || P.kep === 'ul') && t - (el.utolso || 0) > 400 && performance.now() - csikiIdo > 5000) {
