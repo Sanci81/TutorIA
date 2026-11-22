@@ -89,6 +89,14 @@
   <p class="al" style="margin-top:10px"><b>Melyik mintaleckét kezdték:</b>
     {% for k, v in reszlet.minta_evf %}{{ 'magyar' if k.startswith('hu') else 'spanyol' }} {{ k.split('_')[-1] }}. évf.: {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</p>
   {% endif %}
+  {% if reszlet.minta_lepesek %}
+  {# fix247: mintaleckénként meddig jutottak – ahol nagy a visszaesés, ott hagyják abba #}
+  <p class="al" style="margin-top:10px"><b>Mintalecke – meddig jutottak (lépésenként, hány látogató):</b></p>
+  {% for k, lep in reszlet.minta_lepesek %}
+  <p class="al" style="margin:2px 0 0"><small>{{ 'magyar' if k.startswith('hu') else 'spanyol' }} {{ k.split('_')[-1] }}. évf.:
+    {% for n, db in lep %}{% if n == 99 %}<b>végére ért: {{ db }}</b>{% else %}{{ n + 1 }}. lépés: {{ db }}{% endif %}{% if not loop.last %} → {% endif %}{% endfor %}</small></p>
+  {% endfor %}
+  {% endif %}
   {% if reszlet.hibak %}
   <p class="figy" style="margin-top:12px"><b>Ezen akadtak el a regisztrációnál:</b>
     {% for k, v in reszlet.hibak %}{{ HIBA.get(k, k) }}: {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</p>

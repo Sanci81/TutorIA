@@ -1188,15 +1188,21 @@ TRANSLATIONS = {
                          "es": "La contraseña no es correcta."},
     "pin_reg_cimke": {"hu": "Szülői kód (4 számjegy)",
                       "es": "Código de padres (4 cifras)"},
+    # fix247 (Sándor: „a szülő még nem tudja, mit véd, amíg nem regisztrált”): hétköznapi
+    # hasonlattal (gyerekzár), és konkrétan: mit NEM tud a gyerek nélküle, és mit IGEN
+    "pin_reg_sugo_fo": {
+        "hu": "Ez egy gyerekzár.",
+        "es": "Es como un control parental.",
+    },
     "pin_reg_sugo": {
-        "hu": "Mire jó? Ezzel jutsz be a szülői részbe: a gyerek profiljához, a fiókodhoz "
-              "és a kijelentkezéshez. Miért kell? Hogy a gyerek szabadon tanulhasson és "
-              "gyűjthessen, de ne tudja átállítani a beállításokat, és ne tudjon kilépni. "
-              "Bármikor megváltoztathatod a Fiókom oldalon.",
-        "es": "¿Para qué sirve? Con él entras en la zona de padres: el perfil del niño, tu "
-              "cuenta y cerrar sesión. ¿Por qué hace falta? Para que el niño aprenda y "
-              "coleccione con libertad, pero no pueda cambiar los ajustes ni salir. "
-              "Puedes cambiarlo cuando quieras en Mi cuenta.",
+        "hu": "A gyerek a te telefonodon vagy gépeden tanul. Tanulni és kártyát gyűjteni kód "
+              "nélkül is tud, de e nélkül a 4 számjegy nélkül nem tud kijelentkezni, nem tudja "
+              "átírni a saját adatait (név, évfolyam), és nem lát bele a fiókodba (e-mail-cím, "
+              "jelszó). A kódot csak te tudod – bármikor megváltoztathatod.",
+        "es": "El niño aprende en tu móvil u ordenador. Puede aprender y coleccionar cartas sin "
+              "código, pero sin estas 4 cifras no puede cerrar sesión, no puede cambiar sus datos "
+              "(nombre, curso) y no puede entrar en tu cuenta (correo, contraseña). El código solo "
+              "lo sabes tú, y puedes cambiarlo cuando quieras.",
     },
     "pin_info_gomb": {"hu": "Mire jó a szülői kód?", "es": "¿Para qué sirve el código de padres?"},
     "pin_uj_cimke": {"hu": "Új szülői kód", "es": "Nuevo código de padres"},

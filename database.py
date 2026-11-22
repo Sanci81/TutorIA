@@ -4083,6 +4083,7 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
     # fix186: ugyanez nyelvenként (hu = magyar oldal, es = /es/ oldal)
     nyelvi = {ny: {"latogato": 0, "minta_kezdte": 0, "reg_oldal": 0, "regisztralt": 0} for ny in ("hu", "es")}
     minta_evf: dict[str, int] = {}   # fix160: melyik nyelv/évfolyam mintaleckéjét kezdték
+    minta_lep: dict[str, dict[int, int]] = {}   # fix247: mintaleckénként hányan jutottak el az egyes lépésekig
     for kulcs, u in ut.items():
         oldalak = [norm(x) for x in u["oldalak"]]
         if not oldalak and not u["esemeny"]:
@@ -4106,6 +4107,13 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
         _nt["latogato"] += 1; _nt["minta_kezdte"] += bool(kezdett); _nt["reg_oldal"] += latta_reg; _nt["regisztralt"] += reg
         for e in kezdett:
             minta_evf[e[6:]] = minta_evf.get(e[6:], 0) + 1
+        for e in u["esemeny"]:
+            if e.startswith("mlepes_"):
+                try:
+                    _ml, _n = e[7:].rsplit("_", 1)
+                    _d = minta_lep.setdefault(_ml, {}); _d[int(_n)] = _d.get(int(_n), 0) + 1
+                except Exception:
+                    pass
         f = u["forras"] or "belso"
         ft = forras_t.setdefault(f, {"latogato": 0, "minta": 0, "reg_oldal": 0, "regisztralt": 0})
         ft["latogato"] += 1; ft["minta"] += bool(kezdett); ft["reg_oldal"] += latta_reg; ft["regisztralt"] += reg
@@ -4119,6 +4127,9 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
         "forras": sorted(forras_t.items(), key=lambda x: -x[1]["latogato"]),
         "hibak": sorted(hibak.items(), key=lambda x: -x[1]),
         "minta_evf": sorted(minta_evf.items(), key=lambda x: -x[1]),
+        # fix247: [(„hu_2”, [[lépés, hányan], …]), …] – a 99 = a végére ért
+        "minta_lepesek": sorted(((k, sorted(v.items())) for k, v in minta_lep.items()),
+                                key=lambda x: -max(n for _, n in x[1])),
         "nyelvi": nyelvi,
     }
 

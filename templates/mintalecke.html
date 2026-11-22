@@ -573,8 +573,13 @@
       });
     }
     function kovetkezo() { i++; lep(); }
+    /* fix247: mérés – melyik lépésig jutnak el (csak darabszám; 99 = a végére ért) */
+    var jelzett = {};
+    function jelez(n) { if (jelzett[n]) { return; } jelzett[n] = 1;
+      try { fetch('{{ url_for('mintalecke_lepes', evf=evf, n=0) }}'.replace(/\/0$/, '/' + n), {method: 'POST', keepalive: true}); } catch (e) {} }
     function lep() {
       val.innerHTML = '';
+      jelez(i >= C.length ? 99 : i);
       if (i >= C.length) {
         /* fix225 (Sándor: „olyan gyorsan átvált, azt sem látom, mit írt ki”): nem vált magától –
            a gyerek elolvassa a zárást, és ő nyomja meg a gombot. */

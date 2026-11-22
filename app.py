@@ -1991,6 +1991,17 @@ def mintalecke(evf: int):
                            evfolyamok=_ml.evfolyamok(ny), gyerek_menu_nelkul=True)
 
 
+@app.route("/minta/<int:evf>/lepes/<int:n>", methods=["POST"])
+def mintalecke_lepes(evf: int, n: int):
+    """fix247 (Sándor: „92-en kezdték, 8-an fejezték be – hol hagyják abba?”): a mintalecke
+    minden lépésénél egy jelzés (n = a lépés sorszáma, 99 = a végére ért). Csak darabszám,
+    süti és IP nélkül – ugyanúgy, mint a többi tölcsér-lépés."""
+    if MINTALECKE and 1 <= evf <= 8 and (0 <= n <= 60 or n == 99):
+        ny = "es" if g.lang == "es" else "hu"
+        _latogatas_esemeny(f"mlepes_{ny}_{evf}_{n}")
+    return ("", 204)
+
+
 @app.route("/minta/<int:evf>/vege", methods=["POST"])
 def mintalecke_vege(evf: int):
     if MINTALECKE:
