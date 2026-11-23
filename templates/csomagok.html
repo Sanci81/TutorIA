@@ -254,6 +254,8 @@
   .fp-csom .lap.ki .lap-valto button{color:#E6F4EE}
   .fp-csom .lap.ki .lap-valto button.be{background:#fff;color:#167A5E}
   .lap [hidden]{display:none!important}
+  .valto-sor{margin:-4px 0 10px;font-size:13px;font-weight:700;color:#4E6B5E;line-height:1.35;text-align:center}
+  .fp-csom .lap.ki .valto-sor{color:#E6F4EE}
   @media (max-width:600px){.lapon-valt{margin-bottom:60px;width:auto;border-radius:16px;padding:8px 14px}}
 </style>
 
@@ -304,6 +306,8 @@
         <button type="button" class="be" data-v="iras" aria-pressed="true">{{ t('csomag_mod_iras') }}</button>
         <button type="button" data-v="hang" aria-pressed="false">{{ t('csomag_mod_hang') }}</button>
       </div>
+      <p class="valto-sor v-iras">{{ t('csomag_iras_sor') }}</p>
+      <p class="valto-sor v-hang" hidden>{{ t('csomag_hang_sor') }}</p>
       {% endif %}
 
       {# fix220 (Sándor): a tervezett ár mindenkinek látszik, belépés nélkül is. #}

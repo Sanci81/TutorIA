@@ -1346,6 +1346,11 @@ TRANSLATIONS = {
     "csomag_mod_hang_leiras": {
         "hu": "A tanár felolvassa a magyarázatot, és a gyerek beszélhet is vele. Kicsiknek ajánljuk, akik még nehezen olvasnak.",
         "es": "El profe lee las explicaciones en voz alta y el niño puede hablar con él. Recomendado para los más pequeños, que aún leen con dificultad."},
+    # fix260: egy sor a lapon lévő kapcsoló alatt
+    "csomag_iras_sor": {"hu": "A gyerek olvas és ír – a tanár írásban válaszol.",
+                        "es": "El niño lee y escribe; el profe responde por escrito."},
+    "csomag_hang_sor": {"hu": "A tanár felolvas, és a gyerek beszélhet is vele.",
+                        "es": "El profe lee en voz alta y el niño también puede hablarle."},
     "csomag_lapon_valt": {
         "hu": "Minden bérlet kérhető hang nélkül vagy hanggal – a lapon tudsz váltani.",
         "es": "Cada bono se puede elegir sin voz o con voz: cámbialo en la propia tarjeta."},
