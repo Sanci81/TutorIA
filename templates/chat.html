@@ -1913,9 +1913,9 @@
     </form>
     {% endif %}
     {% if proba_lista %}
-    <form method="get" style="position:fixed;left:12px;bottom:12px;z-index:9999;background:#fff;border:2px solid #1F7A4D;border-radius:12px;padding:8px 10px;font:14px Nunito,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.12)">
+    <form method="get" id="feladat-proba-doboz" style="position:fixed;left:12px;bottom:12px;z-index:9999;background:#fff;border:2px solid #1F7A4D;border-radius:12px;padding:8px 10px;font:14px Nunito,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.12)">
         {% for k, v in request.args.items() %}{% if k != 'proba' %}<input type="hidden" name="{{ k }}" value="{{ v }}">{% endif %}{% endfor %}
-        <b>Feladat-próba:</b>
+        <b class="fp-fogo" style="touch-action:none">✥ Feladat-próba:</b>
         {# KERESŐ (2026-10-30): sok feladat van már – gépelésre szűri a listát (ékezet nélkül is). #}
         <input type="search" placeholder="keresés… (pl. carroll, venn)" autocomplete="off" style="width:190px;padding:3px 6px;border:1px solid #9BC3AE;border-radius:8px;font:inherit"
                oninput="(function(i){var n=function(x){return x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');},q=n(i.value.trim()),s=i.nextElementSibling,db=0,elso=null;Array.prototype.forEach.call(s.options,function(o,k){if(!k){return;}var l=!q||n(o.text).indexOf(q)>-1;o.hidden=!l;if(l){db++;elso=elso||o;}});s.options[0].text=q?('– ' + db + ' találat –'):'– válassz –';if(db===1&&elso.value!==s.value){s.value=elso.value;s.onchange();}})(this)">
@@ -14698,7 +14698,16 @@
             for (var i = 0; i < kiszed.length; i++) {
                 kiszed[i].parentNode.removeChild(kiszed[i]);
             }
-            szoveg.textContent = (masolat.textContent || '').trim();
+            /* fix255: a tanár néha **így** jelöli a fontos szót – a táblán
+               vastag betű legyen belőle, ne látsszanak a csillagok. */
+            var nyersSz = (masolat.textContent || '').trim();
+            if (nyersSz.indexOf('**') > -1) {
+                szoveg.innerHTML = nyersSz.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/\*\*([^*\n]+?)\*\*/g, '<b>$1</b>').replace(/\*\*/g, '');
+            } else {
+                szoveg.textContent = nyersSz;
+            }
 
             abra.innerHTML = '';
             /* A rajz (svg) MELLETT a kép (img) is a táblára kerül – eddig
@@ -15628,7 +15637,7 @@
      Az alsó sáv egy sor: 💬 | üzenetmező | Küldés. */
   .fej2 .tsz-rovid{display:none}
   .chat-header.fej2 .fej2-al{gap:6px}
-  .chat-header.fej2 .fej2-al > span{background:rgba(255,255,255,.75);border:1px solid #e2ebe5;
+  .chat-header.fej2 .fej2-al > span{background:rgba(255,255,255,.38);border:1px solid rgba(160,190,175,.35);
       border-radius:999px;padding:3px 10px;line-height:1.35;white-space:nowrap}
   .fej2 .chat-coins-pill{height:38px;box-sizing:border-box}
   .chat-header.fej2 .btn-test-start{height:38px;margin:0;padding:0 16px;border-radius:999px;
@@ -15710,5 +15719,35 @@
         margin-top:-8px;border:8px solid transparent;border-right-color:#fff;border-left:0}
   }
 </style>
+
+{# fix255: a Feladat-próba doboz (CSAK az üzemeltető látja) telefonon
+   a „✥ Feladat-próba” feliratnál fogva elhúzható – eddig eltakarta az
+   alsó sávot. Gépen semmi nem változik. #}
+<script>
+(function () {
+    try {
+        var d = document.getElementById('feladat-proba-doboz');
+        if (!d) { return; }
+        var fogo = d.querySelector('.fp-fogo');
+        if (!fogo) { return; }
+        var x0 = 0, y0 = 0, l0 = 0, t0 = 0, fog = false;
+        fogo.addEventListener('touchstart', function (ev) {
+            if (window.innerWidth > 759 || ev.touches.length !== 1) { return; }
+            var r = d.getBoundingClientRect();
+            x0 = ev.touches[0].clientX; y0 = ev.touches[0].clientY;
+            l0 = r.left; t0 = r.top; fog = true;
+        }, { passive: true });
+        document.addEventListener('touchmove', function (ev) {
+            if (!fog) { return; }
+            if (ev.cancelable) { ev.preventDefault(); }
+            var r = d.getBoundingClientRect();
+            var x = Math.min(Math.max(4, l0 + ev.touches[0].clientX - x0), window.innerWidth - r.width - 4);
+            var y = Math.min(Math.max(4, t0 + ev.touches[0].clientY - y0), window.innerHeight - r.height - 4);
+            d.style.left = x + 'px'; d.style.top = y + 'px'; d.style.bottom = 'auto';
+        }, { passive: false });
+        document.addEventListener('touchend', function () { fog = false; });
+    } catch (e) {}
+})();
+</script>
 
 {% endblock %}
