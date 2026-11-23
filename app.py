@@ -253,6 +253,10 @@ CSOMAG_AVATAR = {
     "pro": "dino",
     "max": "urhajos",
     "teszt": "bagoly",
+    # fix258: a hang nélküli változatok ugyanazt a figurát kapják.
+    "alap_iras": "roka",
+    "pro_iras": "dino",
+    "max_iras": "urhajos",
 }
 
 
@@ -2672,9 +2676,11 @@ def csomagok_oldal():
     sajat = _szulo_csomag() if belepett else None
     szulo = (database.get_parent_by_id(session["parent_id"]) or {}) if belepett else {}
     lista = csomagok.valaszthato(g.lang)
+    lista_iras = csomagok.valaszthato(g.lang, iras=True)     # fix258
     return render_template(
         "csomagok.html",
         csomag_lista=lista,
+        csomag_lista_iras=lista_iras,
         # A lapok tetején egy-egy avatar a SAJÁT készletünkből – a gyerek is
         # felismeri őket, és a lap rögtön a miénk lesz, nem akárkié.
         csomag_avatar=CSOMAG_AVATAR,

@@ -1337,6 +1337,17 @@ TRANSLATIONS = {
     # mennyi belőle hangos, hány profil. Ha az egyiknél kiírjuk és a
     # másiknál nem, a szülő joggal érzi félrevezetőnek.
     "csomag_havonta": {"hu": "Havonta", "es": "Al mes"},
+    # fix258: hang nélküli / hangos kapcsoló a csomagok oldalán
+    "csomag_mod_iras": {"hu": "✍️ Hang nélkül", "es": "✍️ Sin voz"},
+    "csomag_mod_hang": {"hu": "🔊 Hanggal", "es": "🔊 Con voz"},
+    "csomag_mod_iras_leiras": {
+        "hu": "Írásban tanul: olvas, ír, koppint és húzogat a táblán – felolvasás nélkül. Minden más ugyanaz.",
+        "es": "Aprende por escrito: lee, escribe, toca y arrastra en la pizarra, sin voz. Todo lo demás es igual."},
+    "csomag_mod_hang_leiras": {
+        "hu": "A tanár felolvassa a magyarázatot, és a gyerek beszélhet is vele. Kicsiknek ajánljuk, akik még nehezen olvasnak.",
+        "es": "El profe lee las explicaciones en voz alta y el niño puede hablar con él. Recomendado para los más pequeños, que aún leen con dificultad."},
+    "csomag_iras_csak": {"hu": "Írásos tanulás, hang nélkül",
+                         "es": "Aprendizaje por escrito, sin voz"},
     "csomag_perc_sima": {"hu": "tanulási perc", "es": "minutos de estudio"},
     "csomag_perc_egyszer": {"hu": "tanulási perc, egyszeri keret",
                             "es": "minutos de estudio, por una sola vez"},

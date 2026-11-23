@@ -242,6 +242,17 @@
   .fp-csom .sajat{background:#fff;border:2px dashed #F5A01E}
   /* egymás alatti lapoknál az avatar ne lógjon bele a fölötte lévő lapba */
   .fp-csom .kartyak{row-gap:62px}
+  /* fix258: hang nélkül / hanggal kapcsoló */
+  .mod-valto{display:flex;justify-content:center;gap:0;margin:0 auto 10px;width:max-content;
+    background:#fff;border-radius:999px;padding:5px;box-shadow:0 2px 0 #F4EAD6,0 10px 24px rgba(22,58,46,.10)}
+  .mod-valto button{border:0;background:none;font:800 16px Nunito,sans-serif;color:#17604A;
+    padding:11px 22px;border-radius:999px;cursor:pointer}
+  .mod-valto button.be{background:#167A5E;color:#fff;box-shadow:0 3px 0 #0E5A45}
+  .mod-leiras{text-align:center;color:#17604A;font-weight:700;max-width:620px;margin:0 auto 70px;
+    line-height:1.45}
+  .kartyak[hidden],.mod-leiras[hidden]{display:none!important}
+  @media (max-width:600px){.mod-valto button{padding:10px 14px;font-size:15px}
+    .mod-leiras{margin-bottom:60px;padding:0 6px}}
 </style>
 
 <div class="fo fp fp-csom">
@@ -270,8 +281,18 @@
   </div>
   {% endif %}
 
-  <div class="kartyak">
-    {% for cs in csomag_lista %}
+  {# fix258: HANG NÉLKÜL / HANGGAL kapcsoló – ugyanaz a három bérlet, két
+     árral. Alapból a hang nélküli látszik (Sándor: elsőre az ár számít). #}
+  <div class="mod-valto" role="tablist">
+    <button type="button" class="be" data-mod="iras" role="tab" aria-selected="true">{{ t('csomag_mod_iras') }}</button>
+    <button type="button" data-mod="hang" role="tab" aria-selected="false">{{ t('csomag_mod_hang') }}</button>
+  </div>
+  <p class="mod-leiras" data-mod="iras">{{ t('csomag_mod_iras_leiras') }}</p>
+  <p class="mod-leiras" data-mod="hang" hidden>{{ t('csomag_mod_hang_leiras') }}</p>
+
+  {% for mod, mod_lista in [('iras', csomag_lista_iras), ('hang', csomag_lista)] %}
+  <div class="kartyak" data-mod="{{ mod }}"{% if mod == 'hang' %} hidden{% endif %}>
+    {% for cs in mod_lista %}
     <div class="lap lap-{{ cs.kulcs }}{% if cs.ajanlott %} ki{% endif %}{% if cs.kulcs == sajat_csomag %} enyem{% endif %}">
       <div class="lyukak"><i></i><i></i><i></i></div>
       <span class="avatar-kor">
@@ -315,7 +336,9 @@
       {% endif %}
 
       <ul class="jellemzok">
-        {% if cs.fizetos and cs.hangos_perc >= cs.havi_perc %}
+        {% if cs.fizetos and cs.hangos_perc == 0 %}
+          <li>{{ t('csomag_iras_csak') }}</li>
+        {% elif cs.fizetos and cs.hangos_perc >= cs.havi_perc %}
           <li>{{ t('csomag_hang_minden_ora') }}</li>
         {% elif cs.fizetos %}
           <li>{{ t('csomag_hang_ebbol') }} {{ (cs.hangos_perc / 45)|round(0)|int }} {{ t('csomag_ora') }} ·
@@ -365,6 +388,7 @@
     </div>
     {% endfor %}
   </div>
+  {% endfor %}
 
   {# Ami MINDEN csomagban ugyanaz, azt egyszer írjuk le, nem négyszer. #}
   <p class="mindben">{{ t('csomag_mindben') }}</p>
@@ -416,6 +440,24 @@
 </div>
 
 <script>
+// fix258: a hang nélküli / hangos kapcsoló
+(function () {
+    var gombok = document.querySelectorAll('.mod-valto button');
+    gombok.forEach(function (g) {
+        g.addEventListener('click', function () {
+            var mod = g.getAttribute('data-mod');
+            gombok.forEach(function (x) {
+                var be = x === g;
+                x.classList.toggle('be', be);
+                x.setAttribute('aria-selected', be ? 'true' : 'false');
+            });
+            document.querySelectorAll('.kartyak[data-mod], .mod-leiras[data-mod]').forEach(function (el) {
+                el.hidden = el.getAttribute('data-mod') !== mod;
+            });
+            if (window.__sgSzamol) { window.__sgSzamol(); }
+        });
+    });
+})();
 // ── „Melyik csomag kell nekünk?" ──────────────────────────────────────────
 // Heti öt tanulónappal számolunk (≈ 21,5 nap havonta).
 (function () {
@@ -447,10 +489,12 @@
             ? AJANLAT + ' <span class="ajanl">' + NEVEK[talalt] + '</span>'
             : TULSOK;
 
-        document.querySelectorAll('.lap').forEach(function (k, i) {
+        document.querySelectorAll('.lap').forEach(function (k) { k.classList.remove('talalat'); });
+        document.querySelectorAll('.kartyak:not([hidden]) .lap').forEach(function (k, i) {
             k.classList.toggle('talalat', i === talalt);
         });
     }
+    window.__sgSzamol = szamol;
 
     gy.addEventListener('input', szamol);
     pc.addEventListener('input', szamol);

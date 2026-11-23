@@ -147,8 +147,22 @@ CSOMAGOK: dict[str, dict] = {
     },
 }
 
+# ── HANG NÉLKÜLI CSOMAGOK (2026-11-23, fix258, Sándor döntése) ──────────
+# Ugyanaz a három bérlet, ugyanannyi idővel, csak felolvasás és hangos mód
+# NÉLKÜL – olcsóbban. A csomagok oldalán egy kapcsoló vált a kettő között
+# (alapból a hang nélküli látszik). Óvatos számítással a maradék kb. ugyanannyi,
+# mint a hangosnál: 6 óra 9,90 € → ~3,75 €; 10 óra 14,90 € → ~5,20 €;
+# 18 óra 24,90 € → ~8,10 € (TEENDOK, 11-23).
+# FIGYELEM, a fizetés indítása ELŐTT: hangos_perc = 0 családnál a 🔊 gombok
+# és a hangos mód gombja egyáltalán ne jelenjenek meg (TEENDOK).
+for _k, _ar in (("alap", 9.90), ("pro", 14.90), ("max", 24.90)):
+    _uj = dict(CSOMAGOK[_k])
+    _uj.update({"hangos_perc": 0, "ar_honap": _ar, "ar_ev": 0.0, "iras": True})
+    CSOMAGOK[_k + "_iras"] = _uj
+
 # Milyen sorrendben mutatjuk őket az előfizetés oldalon.
 SORREND = (FREE, "alap", "pro", "max")
+SORREND_IRAS = (FREE, "alap_iras", "pro_iras", "max_iras")
 
 # Melyiket emeljük ki. Nem a legdrágább: azt ajánljuk, ami a legtöbb
 # családnak tényleg jó — a hamis ajánlás egyszer működik, utána soha.
@@ -237,10 +251,11 @@ def fizetos(kulcs: str | None) -> bool:
     return ar(kulcs) > 0
 
 
-def valaszthato(nyelv: str = "hu") -> list[dict]:
-    """A megjelenítendő csomagok, a megadott sorrendben."""
+def valaszthato(nyelv: str = "hu", iras: bool = False) -> list[dict]:
+    """A megjelenítendő csomagok, a megadott sorrendben. iras=True: a hang
+    nélküli változatok (fix258)."""
     ki = []
-    for kulcs in SORREND:
+    for kulcs in (SORREND_IRAS if iras else SORREND):
         c = CSOMAGOK.get(kulcs)
         if not c or c.get("rejtett"):
             continue
@@ -257,7 +272,8 @@ def valaszthato(nyelv: str = "hu") -> list[dict]:
             "ar_ev": c["ar_ev"],
             # Az éves díj havi bontásban – ezt hasonlítja össze a szülő.
             "ar_ev_havonta": round(c["ar_ev"] / 12.0, 2) if c["ar_ev"] else 0.0,
-            "ajanlott": kulcs == AJANLOTT,
+            "ajanlott": kulcs in (AJANLOTT, AJANLOTT + "_iras"),
+            "iras": bool(c.get("iras")),
             "fizetos": c["ar_honap"] > 0,
         })
     return ki
