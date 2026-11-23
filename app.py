@@ -2681,6 +2681,8 @@ def csomagok_oldal():
         "csomagok.html",
         csomag_lista=lista,
         csomag_lista_iras=lista_iras,
+        # fix259: a lapon lévő kapcsolóhoz a hangos párok (kulcs → csomag)
+        csomag_hang={c["kulcs"]: c for c in lista},
         # A lapok tetején egy-egy avatar a SAJÁT készletünkből – a gyerek is
         # felismeri őket, és a lap rögtön a miénk lesz, nem akárkié.
         csomag_avatar=CSOMAG_AVATAR,

@@ -242,17 +242,19 @@
   .fp-csom .sajat{background:#fff;border:2px dashed #F5A01E}
   /* egymás alatti lapoknál az avatar ne lógjon bele a fölötte lévő lapba */
   .fp-csom .kartyak{row-gap:62px}
-  /* fix258: hang nélkül / hanggal kapcsoló */
-  .mod-valto{display:flex;justify-content:center;gap:0;margin:0 auto 10px;width:max-content;
-    background:#fff;border-radius:999px;padding:5px;box-shadow:0 2px 0 #F4EAD6,0 10px 24px rgba(22,58,46,.10)}
-  .mod-valto button{border:0;background:none;font:800 16px Nunito,sans-serif;color:#17604A;
-    padding:11px 22px;border-radius:999px;cursor:pointer}
-  .mod-valto button.be{background:#167A5E;color:#fff;box-shadow:0 3px 0 #0E5A45}
-  .mod-leiras{text-align:center;color:#17604A;font-weight:700;max-width:620px;margin:0 auto 70px;
-    line-height:1.45}
-  .kartyak[hidden],.mod-leiras[hidden]{display:none!important}
-  @media (max-width:600px){.mod-valto button{padding:10px 14px;font-size:15px}
-    .mod-leiras{margin-bottom:60px;padding:0 6px}}
+  /* fix259: a hang nélkül / hanggal kapcsoló a lapon */
+  .lapon-valt{text-align:center;color:#17604A;font-weight:700;margin:0 auto 70px;max-width:620px;line-height:1.45;
+    background:#fff;border-radius:999px;padding:8px 18px;width:max-content;box-shadow:0 6px 18px rgba(22,58,46,.10)}
+  .lap-valto{display:flex;gap:0;margin:4px auto 10px;background:#F2F6F4;border-radius:999px;padding:3px;
+    width:100%;box-sizing:border-box}
+  .lap-valto button{flex:1;border:0;background:none;font:800 13px Nunito,sans-serif;color:#17604A;
+    padding:7px 6px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .lap-valto button.be{background:#167A5E;color:#fff}
+  .fp-csom .lap.ki .lap-valto{background:rgba(255,255,255,.16)}
+  .fp-csom .lap.ki .lap-valto button{color:#E6F4EE}
+  .fp-csom .lap.ki .lap-valto button.be{background:#fff;color:#167A5E}
+  .lap [hidden]{display:none!important}
+  @media (max-width:600px){.lapon-valt{margin-bottom:60px;width:auto;border-radius:16px;padding:8px 14px}}
 </style>
 
 <div class="fo fp fp-csom">
@@ -281,19 +283,14 @@
   </div>
   {% endif %}
 
-  {# fix258: HANG NÉLKÜL / HANGGAL kapcsoló – ugyanaz a három bérlet, két
-     árral. Alapból a hang nélküli látszik (Sándor: elsőre az ár számít). #}
-  <div class="mod-valto" role="tablist">
-    <button type="button" class="be" data-mod="iras" role="tab" aria-selected="true">{{ t('csomag_mod_iras') }}</button>
-    <button type="button" data-mod="hang" role="tab" aria-selected="false">{{ t('csomag_mod_hang') }}</button>
-  </div>
-  <p class="mod-leiras" data-mod="iras">{{ t('csomag_mod_iras_leiras') }}</p>
-  <p class="mod-leiras" data-mod="hang" hidden>{{ t('csomag_mod_hang_leiras') }}</p>
+  {# fix259 (Sándor): a HANG NÉLKÜL / HANGGAL kapcsoló MINDEN LAPON külön
+     van, nem egy közös a lapok fölött. Alapból a hang nélküli ár látszik. #}
+  <p class="lapon-valt">{{ t('csomag_lapon_valt') }}</p>
 
-  {% for mod, mod_lista in [('iras', csomag_lista_iras), ('hang', csomag_lista)] %}
-  <div class="kartyak" data-mod="{{ mod }}"{% if mod == 'hang' %} hidden{% endif %}>
-    {% for cs in mod_lista %}
-    <div class="lap lap-{{ cs.kulcs }}{% if cs.ajanlott %} ki{% endif %}{% if cs.kulcs == sajat_csomag %} enyem{% endif %}">
+  <div class="kartyak">
+    {% for cs in csomag_lista_iras %}
+    {% set hv = csomag_hang.get(cs.kulcs[:-5]) if cs.iras else None %}
+    <div class="lap lap-{{ cs.kulcs }}{% if cs.ajanlott %} ki{% endif %}{% if sajat_csomag and (cs.kulcs == sajat_csomag or (hv and hv.kulcs == sajat_csomag)) %} enyem{% endif %}"{% if hv %} data-iras="{{ cs.kulcs }}" data-hang="{{ hv.kulcs }}"{% endif %}>
       <div class="lyukak"><i></i><i></i><i></i></div>
       <span class="avatar-kor">
         <img src="{{ url_for('avatar_kep', kulcs=csomag_avatar[cs.kulcs]) }}" alt="">
@@ -302,11 +299,17 @@
         {%- if cs.ajanlott %}<span class="cimke">{{ t('csomag_ajanlott') }}</span>{% endif -%}
       </span>
       <h2>{{ cs.nev }}</h2>
+      {% if hv %}
+      <div class="lap-valto" role="group">
+        <button type="button" class="be" data-v="iras" aria-pressed="true">{{ t('csomag_mod_iras') }}</button>
+        <button type="button" data-v="hang" aria-pressed="false">{{ t('csomag_mod_hang') }}</button>
+      </div>
+      {% endif %}
 
       {# fix220 (Sándor): a tervezett ár mindenkinek látszik, belépés nélkül is. #}
       {% if cs.fizetos %}
         <span class="terv-cimke">{{ t('csomag_tervezett_ar') }}</span>
-        <p class="ar">{{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €<small> / {{ t('csomag_ho') }}</small></p>
+        <p class="ar"><span class="v-iras">{{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €</span>{% if hv %}<span class="v-hang" hidden>{{ '%.2f'|format(hv.ar_honap)|replace('.', ',') }} €</span>{% endif %}<small> / {{ t('csomag_ho') }}</small></p>
         <p class="ar-alatt">{{ t('csomag_havi_alatt') }}</p>
       {% elif cs.fizetos %}
         <span class="terv-cimke">{{ t('csomag_hamarosan_cimke') }}</span>
@@ -336,7 +339,10 @@
       {% endif %}
 
       <ul class="jellemzok">
-        {% if cs.fizetos and cs.hangos_perc == 0 %}
+        {% if hv %}
+          <li class="v-iras">{{ t('csomag_iras_csak') }}</li>
+          <li class="v-hang" hidden>{{ t('csomag_hang_minden_ora') }}</li>
+        {% elif cs.fizetos and cs.hangos_perc == 0 %}
           <li>{{ t('csomag_iras_csak') }}</li>
         {% elif cs.fizetos and cs.hangos_perc >= cs.havi_perc %}
           <li>{{ t('csomag_hang_minden_ora') }}</li>
@@ -364,7 +370,7 @@
         {% endif %}
       </ul>
 
-      {% if cs.kulcs == sajat_csomag %}
+      {% if sajat_csomag and (cs.kulcs == sajat_csomag or (hv and hv.kulcs == sajat_csomag)) %}
         <span class="gomb enyem">{{ t('csomag_ez_a_tied') }}</span>
       {% elif not cs.fizetos %}
         <a class="gomb" data-mer="Csomag: {{ cs.kulcs }} – ingyenes" href="{{ url_for('register') if not session.get('parent_id') else url_for('dashboard') }}">
@@ -374,11 +380,11 @@
       {% elif session.get('parent_id') %}
         {# Még nincs fizetés. Nem ígérünk semmit – csak eltároljuk, hogy ez
            a szülő ezt a csomagot kérné. Ebből tudjuk meg, mikor indulhatunk. #}
-        {% if erdeklodes == cs.kulcs %}
+        {% if erdeklodes and (erdeklodes == cs.kulcs or (hv and erdeklodes == hv.kulcs)) %}
           <span class="gomb mar">{{ t('csomag_erdekel_mar') }}</span>
         {% else %}
         <form method="post" action="{{ url_for('csomag_erdekel') }}">
-          <input type="hidden" name="csomag" value="{{ cs.kulcs }}">
+          <input type="hidden" name="csomag" value="{{ cs.kulcs }}" class="csomag-kulcs">
           <button type="submit" class="gomb" data-mer="Csomag: {{ cs.kulcs }} – ennyiért kérném">{{ t('csomag_erdekel_gomb') }}</button>
         </form>
         {% endif %}
@@ -388,7 +394,6 @@
     </div>
     {% endfor %}
   </div>
-  {% endfor %}
 
   {# Ami MINDEN csomagban ugyanaz, azt egyszer írjuk le, nem négyszer. #}
   <p class="mindben">{{ t('csomag_mindben') }}</p>
@@ -440,21 +445,28 @@
 </div>
 
 <script>
-// fix258: a hang nélküli / hangos kapcsoló
+// fix259: lapon belüli kapcsoló – ár, leírás és a kért csomag kulcsa vált
 (function () {
-    var gombok = document.querySelectorAll('.mod-valto button');
-    gombok.forEach(function (g) {
-        g.addEventListener('click', function () {
-            var mod = g.getAttribute('data-mod');
-            gombok.forEach(function (x) {
-                var be = x === g;
-                x.classList.toggle('be', be);
-                x.setAttribute('aria-selected', be ? 'true' : 'false');
+    document.querySelectorAll('.lap[data-hang]').forEach(function (lap) {
+        var gombok = lap.querySelectorAll('.lap-valto button');
+        gombok.forEach(function (g) {
+            g.addEventListener('click', function () {
+                var hang = g.getAttribute('data-v') === 'hang';
+                gombok.forEach(function (x) {
+                    var be = x === g;
+                    x.classList.toggle('be', be);
+                    x.setAttribute('aria-pressed', be ? 'true' : 'false');
+                });
+                lap.querySelectorAll('.v-iras').forEach(function (e) { e.hidden = hang; });
+                lap.querySelectorAll('.v-hang').forEach(function (e) { e.hidden = !hang; });
+                var k = lap.querySelector('.csomag-kulcs');
+                if (k) { k.value = lap.getAttribute(hang ? 'data-hang' : 'data-iras'); }
+                lap.querySelectorAll('[data-mer]').forEach(function (e) {
+                    e.setAttribute('data-mer', (e.getAttribute('data-mer') || '')
+                        .replace(lap.getAttribute(hang ? 'data-iras' : 'data-hang'),
+                                 lap.getAttribute(hang ? 'data-hang' : 'data-iras')));
+                });
             });
-            document.querySelectorAll('.kartyak[data-mod], .mod-leiras[data-mod]').forEach(function (el) {
-                el.hidden = el.getAttribute('data-mod') !== mod;
-            });
-            if (window.__sgSzamol) { window.__sgSzamol(); }
         });
     });
 })();
