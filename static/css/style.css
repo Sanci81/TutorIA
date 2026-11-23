@@ -4035,3 +4035,9 @@ body.gyerek-hatter .navbar, body:has(.gymenu) .navbar, body:has(.ml) .navbar { p
 .nemgomb span { line-height: 1.2; }
 /* fix224: a „Részletek” linkek a pontra ugranak – a fejléc ne takarja ki a címet */
 h2[id] { scroll-margin-top: 96px; }
+
+/* fix257: A ZÁSZLÓK körvonal nélkül. A .targy-jel svg szabály (stroke: zöld,
+   2px) a zászló csíkjaira is ráment: zöld vonal a német és a spanyol
+   csíkok között, világos szegély fent és lent. A brit zászló vonalainak
+   saját színe van (attribútum), azt ez nem bántja. */
+.targy-zaszlo svg { stroke: none; stroke-width: 0; }

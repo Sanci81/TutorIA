@@ -15762,4 +15762,39 @@
 })();
 </script>
 
+{# fix257: BIZTONSÁGI HÁLÓ A KÉPERNYŐN. Ha a tanár egy jelölője (<FL:en>,
+   </FL>, <VOCAB>…</VOCAB>) valahogy mégis a gyerek elé jutna – a táblán, a
+   feladatban vagy egy buborékban –, itt eltűnik. A szerver már tisztít, ez
+   csak a háló alatta, hogy a régi hiba új úton se jöhessen vissza. #}
+<script>
+(function () {
+    "use strict";
+    try {
+        var FL = /<\s*\/?\s*FL(?::[a-z]{2})?\s*>/gi;
+        var VOCAB = /<\s*VOCAB\s*>[^<\n]*(?:<\s*\/\s*VOCAB\s*>)?/gi;
+        var VOCAB_ZARO = /<\s*\/\s*VOCAB\s*>/gi;
+        function tisztit(gyoker) {
+            if (!gyoker) { return; }
+            var j = document.createTreeWalker(gyoker, NodeFilter.SHOW_TEXT, null), n, l = [];
+            while ((n = j.nextNode())) {
+                var v = n.nodeValue;
+                if (v && v.indexOf('<') > -1 && /FL|VOCAB/i.test(v)) { l.push(n); }
+            }
+            l.forEach(function (n) {
+                n.nodeValue = n.nodeValue.replace(VOCAB, '').replace(VOCAB_ZARO, '')
+                    .replace(FL, '').replace(/[ \t]{2,}/g, ' ');
+            });
+        }
+        var hol = ['munka-sav', 'chat-messages'];
+        hol.forEach(function (id) {
+            var el = document.getElementById(id);
+            if (!el) { return; }
+            tisztit(el);
+            new MutationObserver(function () { tisztit(el); })
+                .observe(el, { childList: true, subtree: true, characterData: true });
+        });
+    } catch (e) {}
+})();
+</script>
+
 {% endblock %}

@@ -4302,6 +4302,25 @@ def _jelolo_nelkul(szoveg: str) -> str:
     return t.strip()
 
 
+_GYEREK_VOCAB_BLOKK = re.compile(
+    r"[<\[]\s*VOCAB\s*[>\]][^<\[\n]*?(?:[<\[]\s*/\s*VOCAB\s*[>\]]|$)",
+    re.IGNORECASE | re.MULTILINE)
+
+
+def _gyerek_uzenet_tisztit(szoveg: str) -> str:
+    """fix257: a GYEREK üzenetéből a tanári jelölők eltűnnek. Éles hiba: a
+    gyerek kék buborékjában „I finish at school at eight. <VOCAB>büszke=
+    proud</VOCAB>…” állt (egy választógomb a tanár jelölőivel együtt küldte
+    el a mondatot). A gyerek soha nem ír ilyet, tehát ez mindig szemét."""
+    if not szoveg or "<" not in szoveg and "[" not in szoveg:
+        return szoveg
+    t = _GYEREK_VOCAB_BLOKK.sub("", szoveg)
+    t = _fl_lathatatlan(t)
+    t = re.sub(r"[ \t]+\n", "\n", t)
+    t = re.sub(r"\n{3,}", "\n\n", t)
+    return t.strip()
+
+
 def _feladat_jelolok_nelkul(feladat):
     """A feladat minden szöveges mezőjét megtisztítja, mélységben is."""
     if isinstance(feladat, str):
@@ -7879,6 +7898,16 @@ _SZOVEG_HIANY = re.compile(r"[^\n]*_{3,}[^\n]*")
 def _feladat_szovegbol(szoveg: str, *, grade: int | None = None,
                        es_tanterv: bool = False,
                        temakor: str | None = None) -> dict | None:
+    """fix257: mint a belső, de a kinyert feladatból a jelölők (<FL:en>,
+    <VOCAB>…) MINDIG eltűnnek. Éles hiba: „<FL:en>I have ___ finished</FL>”
+    állt a beírós feladaton, mert ez az út kimaradt a tisztításból."""
+    return _feladat_jelolok_nelkul(_feladat_szovegbol_belso(
+        szoveg, grade=grade, es_tanterv=es_tanterv, temakor=temakor))
+
+
+def _feladat_szovegbol_belso(szoveg: str, *, grade: int | None = None,
+                             es_tanterv: bool = False,
+                             temakor: str | None = None) -> dict | None:
     """Feladat kinyerése a tanár SZÖVEGÉBŐL, jelölő nélkül."""
     if not szoveg:
         return None
@@ -15066,6 +15095,7 @@ def _nyito_feladat(nyers: str, tiszta: str, grade_num, active_curr, temakor, nye
         pk = re.sub(r"^[\s)\].,:;–—*_#>]+", "", kk[-1]).strip() if kk else ""
         if 3 <= len(pk) <= 120:
             f["cim"] = pk
+    f = _feladat_jelolok_nelkul(f)      # fix257: végső háló a nyitó feladatnál is
     _feladat_nyelvre(f, nyelv)
     print(f"[NYITO-FELADAT] {f.get('tipus')}", flush=True)
     return f
@@ -15748,6 +15778,7 @@ def child_chat_send(child_id: int):
 
     data = request.get_json(silent=True) or {}
     user_text = (data.get("message") or request.form.get("message") or "").strip()
+    user_text = _gyerek_uzenet_tisztit(user_text)      # fix257
     _eredeti = user_text
     user_text = _szemelyes_kitakar(user_text)
     if user_text != _eredeti:
@@ -16182,6 +16213,10 @@ def child_chat_send(child_id: int):
                 feladat["cim"] = _pk
         except Exception:
             logger.exception("Kerdes-potlas hiba")
+    # fix257 – VÉGSŐ HÁLÓ: bármelyik úton jött a feladat (jelölő, szövegből,
+    # csoport-, választék-, függvénygép-pótlás), a jelölők itt MINDIG eltűnnek.
+    # Ha később új út kerül be, az sem tudja megkerülni.
+    feladat = _feladat_jelolok_nelkul(feladat)
     # A nyelvi feladatok (arcrész, elöljárószók) a lecke nyelvén szólnak.
     _feladat_nyelvre(feladat, teaching_language)
     if not feladat:

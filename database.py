@@ -3127,6 +3127,14 @@ def _tanulas_targy_kulcsok(subject: str) -> list[str]:
         alap = s.split("@", 1)[0]
         if alap and alap not in kulcsok:
             kulcsok.append(alap)
+    # fix257: NYELVÓRÁN a haladás-kulcs „fájl::angol@HU”, a tanulási időt
+    # viszont a /api/learning/start a nyers fájlnévvel menti
+    # („elo_idegen_nyelv_5-8.json”). Ezért a nyelvórák ideje MINDIG nulla
+    # volt („Még 179 perc” 20 perc tanulás után is). A nyers név is számít.
+    if "::" in s:
+        nyers = s.split("::", 1)[0]
+        if nyers and nyers not in kulcsok:
+            kulcsok.append(nyers)
     return kulcsok
 
 

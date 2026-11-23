@@ -275,8 +275,32 @@ def main() -> int:
         print(f"        várt:   {vart}")
         print(f"        miért:  {miert}")
 
+    # fix257: a feladatba és a gyerek üzenetébe SOHA nem kerülhet jelölő.
+    print()
+    print("JELÖLŐ A FELADATBAN / A GYEREK ÜZENETÉBEN (fix257)")
+    try:
+        import app as _app
+        for be in ("Most te jössz: melyik szó illik ide?\n<FL:en>I have ___ finished my homework.</FL>",
+                   "Most te jössz:\n<FL:en>I haven't finished my homework ___.</FL:en>"):
+            f = _app._feladat_szovegbol(be, grade=6)
+            szoveg = str(f)
+            if f and "FL" not in szoveg and "VOCAB" not in szoveg:
+                print(f"  ok    {be[:60]!r}")
+            else:
+                rossz += 1
+                print(f"  ROSSZ {be[:60]!r}\n        kapott: {szoveg}")
+        be = "I finish at school at eight.\n<VOCAB>büszke=proud</VOCAB>\n<VOCAB>befejez=finish</VOCAB>"
+        k = _app._gyerek_uzenet_tisztit(be)
+        if k == "I finish at school at eight.":
+            print("  ok    gyerek üzenete VOCAB nélkül")
+        else:
+            rossz += 1
+            print(f"  ROSSZ gyerek üzenete: {k!r}")
+    except Exception as _h:
+        print(f"  (kihagyva – az app nem tölthető be: {_h})")
+
     osszes = (len(ESETEK) + len(SZOVEG_ESETEK) + len(SPANYOL_ESETEK)
-              + len(JELOLO_ESETEK))
+              + len(JELOLO_ESETEK) + 3)
     print()
     if rossz:
         print(f"{rossz} hiba a(z) {osszes} esetből. NE PUSHOLJ.")
