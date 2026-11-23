@@ -1738,6 +1738,9 @@
                         <span class="ai-jelzes" title="{{ 'Tu profesor es una inteligencia artificial (IA).' if g.lang == 'es' else 'A tanárod mesterséges intelligencia (AI).' }}">🤖 {{ 'Profesor de IA' if g.lang == 'es' else 'AI-tanár' }}</span>
                         <span>🏆 {{ t('chat_level_fmt').replace('{n}', '<span id="level-display">' ~ progress.get('game_level', 1) ~ '</span>')|safe }}</span>
                         {% if lecke_hossz_perc %}
+                        {# fix256: mennyit tanult MA ebből a tantárgyból (a szívverés frissíti). #}
+                        <span class="lecke-ma" id="lecke-ma" data-ma="{{ (learning_today or 0)|round|int }}"
+                           data-sablon="{{ t('lecke_ma') }}">⏱ {{ t('lecke_ma').replace('{perc}', ((learning_today or 0)|round|int)|string) }}</span>
                         <span class="lecke-hatra" id="lecke-hatra"
                            data-hossz="{{ lecke_hossz_perc }}"
                            data-tanult="{{ lecke_tanult_perc }}"
@@ -2477,6 +2480,15 @@
         if (learningMinutesEl) {
             learningMinutesEl.textContent = Math.round(elapsed);
         }
+        /* fix256: „Ma 12 perc” – a betöltéskori mai idő + a mostani óra. */
+        try {
+            var maEl = document.getElementById('lecke-ma');
+            if (maEl) {
+                var ma0 = parseFloat(maEl.getAttribute('data-ma') || '0') || 0;
+                maEl.textContent = '\u23F1 ' + (maEl.getAttribute('data-sablon') || '')
+                    .replace('{perc}', String(Math.round(ma0 + elapsed)));
+            }
+        } catch (e) {}
         hatraFrissit();
     }
 
@@ -15668,7 +15680,7 @@
   @media (min-width:601px) and (max-width:1350px){
     /* fix254: a címkék sora is a teljes szélességet kitölti (egyforma cellák). */
     .fej2 .fej2-al{grid-column:2 / -1;display:flex}
-    .chat-header.fej2 .fej2-al > span{flex:1 1 0;min-width:0;text-align:center;
+    .chat-header.fej2 .fej2-al > span{flex:1 1 auto;min-width:0;text-align:center;
         overflow:hidden;text-overflow:ellipsis}
     .fej2 .chat-header-also{grid-column:2 / -1;grid-row:3}
   }

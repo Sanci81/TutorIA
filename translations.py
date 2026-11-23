@@ -666,6 +666,7 @@ TRANSLATIONS = {
     "lecke_hatra": {"hu": "Még {perc} perc ebből a leckéből",
                     "es": "Quedan {perc} minutos de esta lección"},
     # fix252: rövid változat a fejléc címkéjébe (a teljes mondat a súgóban marad)
+    "lecke_ma": {"hu": "Ma {perc} perc", "es": "Hoy {perc} min"},   # fix256
     "lecke_hatra_rovid": {"hu": "Még {perc} perc a leckéből", "es": "Quedan {perc} min de lección"},
     "chat_test_elo": {"hu": "Már tudod?", "es": "¿Ya lo sabes?"},   # fix253 óta nem használt
     "chat_test_rovid": {"hu": "⭐ Teszt", "es": "⭐ Test"},

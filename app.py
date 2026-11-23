@@ -11996,9 +11996,49 @@ def _temakor_suly(t: dict) -> float:
     return (szoveg / 400.0) + ora + (tetelek / 3.0) + 1.0
 
 
+# ── LECKEHOSSZ, ÚJ SZABÁLY (2026-11-23, fix256, Sándor: „a 180 perc sok”) ──
+# Az iskolai óraszám 30%-a szinte minden témakörnél elérte a 180 perces
+# plafont (a spanyol oldalon MINDEN lecke 180 volt). Új alap: egy lecke kb.
+# 4 alkalom, évfolyam szerint (egy 2. osztályos kb. 20 percet bír egyhuzamban).
+# A témakör súlya ±25%-ot változtat rajta; a készségtárgyak (rajz, ének,
+# testnevelés, dráma) fele ennyi. VISSZAÁLLÁS: Railway Variables
+# LECKE_HOSSZ_REGI=1 → a régi számítás.
+LECKE_EVF_PERC = {1: 80, 2: 80, 3: 100, 4: 100, 5: 120, 6: 120, 7: 140, 8: 140}
+_LECKE_KESZSEG = ("enek", "zene", "musica", "vizualis", "artistica",
+                  "plastica", "testneveles", "fisica", "drama")
+LECKE_HOSSZ_REGI = os.environ.get("LECKE_HOSSZ_REGI", "").strip().lower() in ("1", "igen", "true")
+
+
 def _lecke_hossz_perc(topic: dict | None, catalog: list | None,
-                      grade_num: int | None) -> int:
-    """Egy lecke hossza percben, a témakör nehézsége szerint (30–90)."""
+                      grade_num: int | None, targy: str = "") -> int:
+    """Egy lecke hossza percben (fix256): évfolyam-alap × témakör-súly (±25%),
+    készségtárgynál fele."""
+    if LECKE_HOSSZ_REGI:
+        return _lecke_hossz_perc_regi(topic, catalog, grade_num)
+    try:
+        evf = max(1, min(8, int(grade_num or 5)))
+    except Exception:
+        evf = 5
+    alap = float(LECKE_EVF_PERC.get(evf, 120))
+    arany = 1.0
+    try:
+        sulyok = [_temakor_suly(t) for t in (catalog or []) if isinstance(t, dict)]
+        atlag = (sum(sulyok) / len(sulyok)) if sulyok else 0.0
+        if isinstance(topic, dict) and atlag > 0:
+            arany = max(0.75, min(1.25, _temakor_suly(topic) / atlag))
+    except Exception:
+        arany = 1.0
+    import unicodedata as _ud
+    t = _ud.normalize("NFD", str(targy or "")).encode("ascii", "ignore").decode().lower()
+    if t and any(k in t for k in _LECKE_KESZSEG):
+        alap *= 0.5
+    perc = int(round((alap * arany) / 5.0)) * 5
+    return max(LECKE_MIN_PERC, min(LECKE_UJ_MAX_PERC, perc))
+
+
+def _lecke_hossz_perc_regi(topic: dict | None, catalog: list | None,
+                           grade_num: int | None) -> int:
+    """A RÉGI számítás (fix256 előtt) – csak visszaállításhoz."""
     try:
         evf = int(grade_num or 5)
     except Exception:
@@ -12054,7 +12094,7 @@ def _teszt_kapu_szoveg(
             child_id, progress_subject, topic_id, grade_num
         )
         topic = get_topic_from_catalog(catalog, topic_id)
-        req = _lecke_hossz_perc(topic, catalog, grade_num)
+        req = _lecke_hossz_perc(topic, catalog, grade_num, progress_subject)
         pont = database.get_topic_score(
             child_id, progress_subject, grade_num, topic_id
         )
@@ -15518,7 +15558,7 @@ def child_chat(child_id: int):
         child_id, progress_subject, current_topic_id, grade_num
     )
     _teszt_topic = get_topic_from_catalog(catalog, current_topic_id)
-    _teszt_req = _lecke_hossz_perc(_teszt_topic, catalog, grade_num)
+    _teszt_req = _lecke_hossz_perc(_teszt_topic, catalog, grade_num, progress_subject)
     _teszt_score = database.get_topic_score(
         child_id, progress_subject, grade_num, current_topic_id
     )
@@ -17112,7 +17152,7 @@ def child_chat_test_generate(child_id: int):
     progress_subject = _chat_progress_subject(subject, language or None)
     grade_num = _chat_grade_num(child)
     ora_szam = topic.get("ora_szam", 0)
-    total_req_minutes = _lecke_hossz_perc(topic, catalog, grade_num)
+    total_req_minutes = _lecke_hossz_perc(topic, catalog, grade_num, progress_subject)
     topic_learning_minutes = database.get_topic_learning_minutes(
         child_id, progress_subject, topic_id, grade_num
     )
@@ -17331,7 +17371,7 @@ def child_chat_test_submit(child_id: int):
     ora_szam = topic.get("ora_szam", 0) if topic else data.get("ora_szam", 0)
 
     # ── Determine phase and pass threshold (before save) ─────────────
-    total_req_minutes = _lecke_hossz_perc(topic, catalog, grade_num)
+    total_req_minutes = _lecke_hossz_perc(topic, catalog, grade_num, progress_subject)
     topic_learning_minutes = database.get_topic_learning_minutes(
         child_id, progress_subject, topic_id, grade_num
     )
