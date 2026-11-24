@@ -385,6 +385,26 @@ def _biztonsagi_fejlecek(resp):
     resp.headers.setdefault("Permissions-Policy", "camera=(), geolocation=(), microphone=(self)")
     if _ELES:
         resp.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+    # fix262 – GYORSÍTÓTÁR A STATIKUS FÁJLOKRA (PageSpeed: „hatékony gyorsítótár-
+    # élettartam”, ~1–1,8 MB minden látogatáskor újra letöltve). A böngésző
+    # ezentúl megjegyzi: betűtípus 1 évig (sosem változik), kép 7 napig,
+    # verziószámos (?v=) CSS/JS 1 évig (új telepítésnél új verziószám jön).
+    # A verzió NÉLKÜLI CSS/JS-hez nem nyúlunk – az mindig friss marad.
+    # FIGYELEM: ha egy képet UGYANAZZAL a névvel cserélsz, a visszatérő
+    # látogató legfeljebb 7 napig a régit láthatja.
+    try:
+        if resp.status_code in (200, 304):
+            ut = (request.path or "").lower()
+            if ut.startswith("/static/") or ut.startswith("/kartyakep/"):
+                if ut.endswith((".woff2", ".woff", ".ttf", ".otf")):
+                    resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+                elif ut.endswith((".png", ".jpg", ".jpeg", ".webp", ".svg", ".gif", ".ico", ".avif")):
+                    if "max-age" not in (resp.headers.get("Cache-Control") or ""):
+                        resp.headers["Cache-Control"] = "public, max-age=604800"
+                elif ut.endswith((".css", ".js")) and request.args.get("v"):
+                    resp.headers["Cache-Control"] = "public, max-age=31536000, immutable"
+    except Exception:
+        pass
     return resp
 
 
