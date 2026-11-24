@@ -494,6 +494,16 @@ def _feladat_leiras(f: dict) -> str:
 
 def _feladat_leiras_belso(f: dict) -> str:
     tipus = f.get("tipus")
+    if tipus == "robot" and f.get("start") and f.get("cel"):
+        # fix265: a pályát eddig puszta számsorként kapta a teszt-gyerek
+        # („nem látom a táblát”) – élesben 6×6-os rajzolt pálya van.
+        def _m(p):
+            return f"{int(p[0]) + 1}. oszlop, {int(p[1]) + 1}. sor"
+        kovek = "; ".join(_m(k) for k in (f.get("kovek") or [])) or "nincs"
+        return (f"robotos pálya (6×6 mező, rajzolva) – {f.get('kerdes', '')} "
+                f"A 🤖 robot: {_m(f['start'])}. A ⭐ csillag: {_m(f['cel'])}. "
+                f"🪨 Kövek (ide nem léphet): {kovek}. A gyerek a ⬆️ ➡️ ⬇️ ⬅️ "
+                "gombokkal rakja össze a programot, aztán elindítja.")
     if tipus == "valaszt":
         return "választható gombok: " + " / ".join(f.get("opciok") or [])
     if tipus == "hianyzo":
