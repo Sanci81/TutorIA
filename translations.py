@@ -1118,10 +1118,24 @@ TRANSLATIONS = {
         "es": "El niño responde en voz alta y recibe también corrección de pronunciación.",
     },
 
-    "bem_biz_cim": {"hu": "Nyugodtan otthagyhatod vele", "es": "Puedes dejarle a solas con él"},
+    # fix266 (Sándor, 11-24, egy FB-hozzászólás után: „leülök olvasni, tanítás
+    # helyett?”): nem a szülő helyett tanít – vele együtt; a hibázás félelmét
+    # nem hessegetjük el. Régi: „Nyugodtan otthagyhatod vele” / „Nem attól
+    # félsz, hogy rosszul tanít…”.
+    "bem_biz_cim": {"hu": "Nem helyetted tanít – veled együtt", "es": "No enseña en tu lugar, sino contigo"},
     "bem_biz_alcim": {
-        "hu": "Nem attól félsz, hogy rosszul tanít. Attól, hogy a gyereked mást csinál majd.",
-        "es": "No te preocupa que enseñe mal. Te preocupa que tu hijo acabe haciendo otra cosa.",
+        "hu": "A szülőt semmi nem pótolja. A TutorIA a gyakorlásban segít, te pedig mindent látsz.",
+        "es": "Nada sustituye a los padres. TutorIA ayuda a practicar, y tú lo ves todo.",
+    },
+    "bem_biz_4_cim": {"hu": "És ha téved?", "es": "¿Y si se equivoca?"},
+    "bem_biz_4": {
+        "hu": "Az AI is tévedhet. Ezért az órákat rendszeresen gépi ellenőrzéssel teszteljük és javítjuk.",
+        "es": "La IA también puede equivocarse. Por eso probamos las clases con controles automáticos y las mejoramos.",
+    },
+    "bem_ki_cim": {"hu": "Ki áll mögötte?", "es": "¿Quién está detrás?"},
+    "bem_ki": {
+        "hu": "Egy kétgyerekes apa készítette, mert a saját gyerekeinek ilyen türelmes tanárt szeretett volna. A nagyobbik már ezzel gyakorol.",
+        "es": "Lo ha creado un padre de dos hijos, porque quería un profesor así de paciente para los suyos. Su hija mayor ya practica con él.",
     },
     "bem_biz_1_cim": {"hu": "Csak a tanulásról beszél", "es": "Solo habla de estudiar"},
     "bem_biz_1": {
