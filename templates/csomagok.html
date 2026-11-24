@@ -313,7 +313,7 @@
       {# fix220 (Sándor): a tervezett ár mindenkinek látszik, belépés nélkül is. #}
       {% if cs.fizetos %}
         <span class="terv-cimke">{{ t('csomag_tervezett_ar') }}</span>
-        <p class="ar"><span class="v-iras">{{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €</span>{% if hv %}<span class="v-hang" hidden>{{ '%.2f'|format(hv.ar_honap)|replace('.', ',') }} €</span>{% endif %}<small> / {{ t('csomag_ho') }}</small></p>
+        <p class="ar"><span class="v-iras">{{ '%.2f'|format(cs.ar_honap)|replace('.', ',') }} €</span>{% if hv %}<span class="v-hang" hidden>{{ '%.2f'|format(hv.ar_honap)|replace('.', ',') }} €</span>{% endif %}<small> / {{ t('csomag_ho') }} · {{ t('csomag_afaval') }}</small></p>
         <p class="ar-alatt">{{ t('csomag_havi_alatt') }}</p>
       {% elif cs.fizetos %}
         <span class="terv-cimke">{{ t('csomag_hamarosan_cimke') }}</span>

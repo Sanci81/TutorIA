@@ -101,7 +101,7 @@
   background:var(--menta);border-radius:58% 42% 47% 53%/52% 46% 54% 48%;opacity:.9}
 .fo .fo-folt2{position:absolute;right:250px;top:20px;width:120px;height:120px;background:var(--narancs);
   border-radius:50%;opacity:.95}
-.fo .fo-kep img.fo-diak{position:absolute;right:46px;bottom:0;height:430px;filter:drop-shadow(0 16px 20px rgba(14,42,30,.18))}
+.fo .fo-kep img.fo-diak{width:auto;position:absolute;right:46px;bottom:0;height:430px;filter:drop-shadow(0 16px 20px rgba(14,42,30,.18))}
 .fo .fo-forma{position:absolute}
 .fo .fo-kocka{left:20px;bottom:40px;width:70px;height:70px;background:#2F8FD8;border-radius:12px;transform:rotate(-10deg);
   color:#fff;font-weight:800;font-size:30px;display:flex;align-items:center;justify-content:center;
@@ -489,7 +489,7 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
       <div class="fo-folt"></div><div class="fo-folt2"></div>
       <div class="fo-forma fo-haromszog"></div>
       {% if not mintalecke_be %}<div class="fo-forma fo-abc"><span class="fo-k-a">A</span><span class="fo-k-b">B</span><span class="fo-k-c">C</span></div>{% endif %}
-      <img class="fo-diak" src="{{ url_for('static', filename='img/diak.png') }}" alt="{{ 'Chico con cuadernos' if es else 'Kisfiú füzetekkel' }}">
+      <img class="fo-diak" width="293" height="556" src="{{ url_for('static', filename='img/diak.png') }}" alt="{{ 'Chico con cuadernos' if es else 'Kisfiú füzetekkel' }}">
       {% if mintalecke_be %}
       <div class="fo-forma fo-bubor fo-bubor-uj"><small>{{ 'El profesor pregunta:' if es else 'A tanár kérdezi:' }}</small>{{ '¿Cuánto es 3 × 5? ¡Piénsalo con calma!' if es else 'Mennyi 3 × 5? Gondold végig nyugodtan!' }}</div>
       <div class="fo-forma fo-abc fo-abc-uj"><span class="fo-k-a">A</span><span class="fo-k-b">B</span><span class="fo-k-c">C</span></div>

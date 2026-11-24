@@ -1329,6 +1329,7 @@ TRANSLATIONS = {
     "csomag_jelenlegi": {"hu": "A csomagod", "es": "Tu plan"},
     "csomag_ajanlott": {"hu": "Ezt ajánljuk", "es": "Recomendado"},
     "csomag_ho": {"hu": "hó", "es": "mes"},
+    "csomag_afaval": {"hu": "áfával", "es": "IVA incluido"},   # fix263
     "csomag_evente": {"hu": "Egy évre előre", "es": "Pago anual"},
     "csomag_ingyen": {"hu": "Ingyenes", "es": "Gratis"},
     "csomag_ingyen_alatt": {

@@ -851,5 +851,20 @@
         doboz: function () { var e = fodoboz(); return e && (e.tagName + '.' + e.className); },
         allapot: function () { return {x: P.x, y: P.y, kep: P.kep, kint: kint, fut: fut, lat: P.lat, h: MAGAS()}; }, orul: function () { return tedd(function () { return orul(true); }); }, gondolkodik: function () { return tedd(gondolkodik); },
         integet: function () { return tedd(integet); }, aha: function () { return tedd(aha); }, vissza: function () { return tedd(visszamaszik); }};
-    if (D.readyState === 'loading') { D.addEventListener('DOMContentLoaded', function () { setTimeout(indul, 600); }); } else { setTimeout(indul, 600); }
+    /* fix263: Lumi csak akkor indul, amikor az oldal MÁR BETÖLTÖTT (képek is),
+       és a böngésző ráér – így az első másodpercekben nem lassítja az oldalt
+       (PageSpeed/Geekflare: sok hosszú feladat a főoldalon). Ha a betöltés
+       4 mp alatt sem fejeződik be, akkor is elindul. */
+    var lumiIndult = false;
+    function lumiIndit() {
+        if (lumiIndult) { return; }
+        lumiIndult = true;
+        var ura = window.requestIdleCallback || function (f) { return setTimeout(f, 1); };
+        ura(function () { setTimeout(indul, 400); }, {timeout: 2000});
+    }
+    if (D.readyState === 'complete') { lumiIndit(); }
+    else {
+        window.addEventListener('load', lumiIndit);
+        setTimeout(lumiIndit, 4000);
+    }
 })();
