@@ -2001,3 +2001,5 @@ Tervezett elemek:
 - [ ] ÉVES ELŐFIZETÉS (Sándor fél tőle): óvatos számokkal (gyorsítótárral) minden csomagon marad pénz (pl. írásos 6 óra 99 €/év → ~2,70 €/hó; hangos 159 €/év → ~2,90 €/hó). Ha a gyorsítótár NEM működne, havonta és évesen is mínusz lenne – ezért a [CACHE] naplót figyelni kell. Döntés a fizetés bekötése előtt.
 - [ ] RÖVIDEBB TANÁRI VÁLASZOK: Sándor kérdése, mennyire befolyásolja a tanítást → előbb tanar_teszt (pár €): ugyanazok a leckék rövidebb utasítással, összevetve.
 - [x] Gemini 4 Neon ára ~3 / 15 $ (be/ki, 1M token) – kb. 4× drágább a mostaninál.
+- [ ] (fix264) RÖVIDEBB TANÁRI ÜZENETEK – PRÓBA: app.py TANAR_ROVID kapcsoló (alapból KI, élesen semmi nem változik). Mérés Sándor gépén: `python tanar_teszt.py --ora 6` kétszer – egyszer simán, egyszer `$env:TANAR_ROVID = "1"` után (ugyanaz a véletlen sorrend, seed 12345). A két jelentést (tanar_teszt_jelentes_hu_…md) Claude összeveti: hiba, érthetőség, kimenő token / ár. Csak akkor élesítjük (Railway: TANAR_ROVID=1), ha a tanítás nem romlik.
+- [ ] RAILWAY [CACHE] (11-23 napló): a nagy hívások 88–96%-a gyorsítótárból – rendben. Elég havonta egyszer ránézni.

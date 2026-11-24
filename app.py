@@ -12618,6 +12618,35 @@ _TJ = os.environ.get("TANAR_JAVITAS", "").strip().lower()
 # nem segített mérhetően, ezért a próbaoldalon sem kapcsol be magától.
 TANAR_JAVITAS = _TJ in ("1", "igen", "true", "be")
 
+# ── RÖVIDEBB TANÁRI ÜZENETEK – CSAK PRÓBA (2026-11-24, fix264) ───────────
+# Ötlet: a költség nagyobb része a tanár szövege, és a gyereknek is jobb a
+# rövidebb üzenet (Sándor: „szövegfal”). ALAPBÓL KI – az éles és a próbaoldal
+# NEM változik. Mérés: tanar_teszt.py-val, TANAR_ROVID=1 és nélküle, ugyanazzal
+# a véletlen sorrenddel; csak ha a tanítás nem romlik, kapcsolunk be.
+TANAR_ROVID = os.environ.get("TANAR_ROVID", "").strip().lower() in ("1", "igen", "true", "be")
+
+_TANAR_ROVID_SZABALY = """
+
+=== RÖVID ÜZENETEK (ez felülír minden korábbi hosszúsági szabályt) ===
+- Egy üzenetben EGY gondolat: legfeljebb 3–4 rövid mondat (kb. 50–70 szó), a
+  végén egy kérdéssel vagy feladattal.
+- Ha a magyarázat hosszabb, DARABOLD: most csak az első lépést mondd el és
+  kérdezz; a következő lépés a gyerek válasza UTÁN jön.
+- Ne ismételd meg, amit már elmondtál, és ne hozz három példát, ha egy is elég.
+- A TARTALOM NEM RÖVIDÜLHET: ami a megértéshez kell, az mind elhangzik – csak
+  több, rövidebb üzenetben. Pontosság és helyes magyarázat előbb, rövidség utána.
+
+=== MENSAJES CORTOS (esto prevalece sobre cualquier regla anterior de extensión) ===
+- Una sola idea por mensaje: como mucho 3–4 frases cortas (unas 50–70 palabras),
+  y al final una pregunta o una tarea.
+- Si la explicación es más larga, DIVÍDELA: ahora solo el primer paso y una
+  pregunta; el siguiente paso, DESPUÉS de la respuesta del niño.
+- No repitas lo que ya has dicho ni des tres ejemplos si basta con uno.
+- EL CONTENIDO NO SE RECORTA: todo lo necesario para entender se dice, pero en
+  más mensajes y más cortos. Primero la exactitud y una buena explicación;
+  después, la brevedad.
+"""
+
 _TANAR_JAVITAS_SZABALY = """
 
 === ÖT FONTOS SZABÁLY (ezek MINDEN korábbinál erősebbek) ===
@@ -12778,6 +12807,8 @@ def _build_chat_system_prompt(*args, **kwargs) -> str:
         "conjuntos → venn) y dala como <FELADAT>.\n")
     if TANAR_JAVITAS:
         prompt += _TANAR_JAVITAS_SZABALY
+    if TANAR_ROVID:                     # fix264: csak próbára (alapból ki)
+        prompt += _TANAR_ROVID_SZABALY
     if not ABRA_RAJZOK:
         prompt += (
             "\n\n=== RAJZ: MOST NINCS (ez felülír minden korábbi ábra-szabályt) ===\n"
