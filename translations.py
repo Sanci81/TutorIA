@@ -942,8 +942,8 @@ TRANSLATIONS = {
     # a törlés az előfizetést is megszünteti, a maradék órák elvesznek, a számlák megmaradnak.
     "account_delete_mi_3": {
         "hu": "Előfizetés: a törlés azt is azonnal megszünteti, utána nem vonunk le többet. A bérletben maradt "
-              "órák elvesznek, és a már kifizetett időszakot a törlés nem téríti vissza.",
-        "es": "Suscripción: el borrado también la cancela al instante y después no se cobra nada más. Las horas "
+              "percek elvesznek, és a már kifizetett időszakot a törlés nem téríti vissza.",
+        "es": "Suscripción: el borrado también la cancela al instante y después no se cobra nada más. Los minutos "
               "que queden se pierden y el borrado no devuelve el periodo ya pagado.",
     },
     "account_delete_mi_4": {
@@ -1285,12 +1285,14 @@ TRANSLATIONS = {
         "es": "1 hora = 45 min de estudio, en cualquier asignatura",
     },
     "csomag_ora_irasban": {"hu": "óra írásban (ajándék)", "es": "h por escrito (regalo)"},
-    "csomag_hang_minden_ora": {"hu": "Hangos tanítás minden órában",
-                               "es": "Clases con voz en todas las horas"},
+    "csomag_hang_minden_ora": {"hu": "Hangos tanítás a teljes keretben",
+                               "es": "Clases con voz en todo el tiempo"},
+    # fix261: a lapon az órák helyett ez áll
+    "csomag_barmelyik": {"hu": "Bármelyik tantárgyra", "es": "Para cualquier asignatura"},
     "csomag_megmarad": {
-        "hu": "A fel nem használt óra átvihető: minden hónap órái 3 hónapig "
+        "hu": "A fel nem használt perc átvihető: minden hónap percei 3 hónapig "
               "érvényesek (a vásárlás hónapjával együtt)",
-        "es": "Las horas no usadas se acumulan: las de cada mes valen 3 meses "
+        "es": "Los minutos no usados se acumulan: los de cada mes valen 3 meses "
               "(contando el mes de compra)",
     },
     "csomag_hang_elfogyott": {
@@ -1419,8 +1421,8 @@ TRANSLATIONS = {
     "csomag_segito_ajanlat": {"hu": "Ehhez ez a csomag elég:",
                               "es": "Para eso basta este plan:"},
     "csomag_segito_tul_sok": {
-        "hu": "Ennyi időhöz a 18 órás bérlet sem elég — írj nekünk, és megoldjuk.",
-        "es": "Para tanto tiempo ni el bono de 18 horas basta: escríbenos y lo vemos.",
+        "hu": "Ennyi időhöz a legnagyobb, 810 perces bérlet sem elég — írj nekünk, és megoldjuk.",
+        "es": "Para tanto tiempo ni el bono más grande, de 810 minutos, basta: escríbenos y lo vemos.",
     },
     "csomag_valto_havi": {"hu": "Havonta", "es": "Mensual"},
     "csomag_valto_eves": {"hu": "Évente", "es": "Anual"},
@@ -1464,10 +1466,10 @@ TRANSLATIONS = {
               "14 días para cambiar de opinión, sin dar explicaciones.",
     },
     "notify_daily_csomag": {
-        "hu": "A napi jelentés a 10 és a 18 órás bérletben érhető el. A heti "
+        "hu": "A napi jelentés a 450 és a 810 perces bérletben érhető el. A heti "
               "és a havi minden csomagban jár.",
-        "es": "El informe diario está disponible en los bonos de 10 y 18 "
-              "horas. El semanal y el mensual van incluidos en todos.",
+        "es": "El informe diario está disponible en los bonos de 450 y 810 "
+              "minutos. El semanal y el mensual van incluidos en todos.",
     },
     "csomag_napi_jelentes": {"hu": "Napi, heti és havi jelentés",
                              "es": "Informe diario, semanal y mensual"},
@@ -1551,31 +1553,31 @@ TRANSLATIONS = {
         "hu": "Ebben a csomagban {db} gyerekprofil hozható létre.",
         "es": "Este plan permite crear {db} perfiles de niño.",
     },
-    "csomag_gyik_perc_cim": {"hu": "Mi számít egy órának?",
-                             "es": "¿Qué cuenta como una hora?"},
+    "csomag_gyik_perc_cim": {"hu": "Mi számít tanulási percnek?",
+                             "es": "¿Qué cuenta como minuto de estudio?"},
     "csomag_gyik_perc": {
-        "hu": "1 óra = 45 perc tanulás a TutorIA tanítójával (mesterséges "
-              "intelligencia), bármelyik tantárgyban. Csak azt az időt "
-              "számoljuk, amíg a gyerek ténylegesen dolgozik: ha három percig "
-              "nem ír, nem beszél és nem nyom meg semmit, az óra az utolsó "
+        "hu": "A bérlet havi tanulási perceket tartalmaz a TutorIA tanítójával "
+              "(mesterséges intelligencia), bármelyik tantárgyban. Csak azt az "
+              "időt számoljuk, amíg a gyerek ténylegesen dolgozik: ha három percig "
+              "nem ír, nem beszél és nem nyom meg semmit, a számláló az utolsó "
               "mozdulatánál megáll, és akkor is megáll, ha másik lapra vált. "
-              "A nyitva felejtett oldal tehát nem fogyaszt. Hangos órának az "
-              "számít, amelyben a gyerek hangos módban tanult. A bérletben "
-              "minden hónap órái 3 hónapig érvényesek (a vásárlás hónapjával "
-              "együtt), és mindig a legrégebbi óra fogy először – így "
-              "egyszerre legfeljebb 3 havi óra gyűlhet össze. Hogy mennyi van "
-              "még, azt a Fiókom oldalon mindig látod. Minden órát naplózunk, "
+              "A nyitva felejtett oldal tehát nem fogyaszt. Hangos időnek az "
+              "számít, amikor a gyerek hangos módban tanul. A bérletben "
+              "minden hónap percei 3 hónapig érvényesek (a vásárlás hónapjával "
+              "együtt), és mindig a legrégebbi perc fogy először – így "
+              "egyszerre legfeljebb 3 havi keret gyűlhet össze. Hogy mennyi van "
+              "még, azt a Fiókom oldalon mindig látod. Minden tanulást naplózunk, "
               "és a program a gyerek tényleges lépéseiből (üzenetek, "
               "feladatok) is ellenőrzi az időt – kérésre megmutatjuk.",
-        "es": "1 hora = 45 minutos de estudio con el profesor de TutorIA "
-              "(inteligencia artificial), en cualquier asignatura. Solo cuenta "
-              "el tiempo ACTIVO: si durante tres minutos el niño no escribe, no "
-              "habla ni pulsa nada, el reloj se para en su último movimiento, "
+        "es": "El bono incluye minutos de estudio al mes con el profesor de "
+              "TutorIA (inteligencia artificial), en cualquier asignatura. Solo "
+              "cuenta el tiempo ACTIVO: si durante tres minutos el niño no escribe, "
+              "no habla ni pulsa nada, el contador se para en su último movimiento, "
               "y también se para si cambia de pestaña. Una página olvidada no "
-              "consume. Cuenta como hora con voz la que el niño estudia en modo "
-              "voz. En el bono, las horas de cada mes valen 3 meses (contando "
-              "el mes de compra) y siempre se gastan primero las más antiguas: "
-              "como mucho se juntan 3 meses de horas. Lo que te queda lo ves "
+              "consume. Cuenta como tiempo con voz el que el niño estudia en modo "
+              "voz. En el bono, los minutos de cada mes valen 3 meses (contando "
+              "el mes de compra) y siempre se gastan primero los más antiguos: "
+              "como mucho se juntan 3 meses de minutos. Lo que te queda lo ves "
               "siempre en Mi cuenta. Registramos cada clase y el programa "
               "comprueba el tiempo también con los pasos reales del niño "
               "(mensajes, ejercicios); si lo pides, te lo mostramos.",
@@ -1583,27 +1585,27 @@ TRANSLATIONS = {
     "csomag_gyik_profil_cim": {"hu": "Több gyereknek külön kell fizetni?",
                                "es": "¿Hay que pagar por cada hijo?"},
     "csomag_gyik_profil": {
-        "hu": "Nem. Egy profil létrehozása ingyen van, és a bérlet óráit a "
+        "hu": "Nem. Egy profil létrehozása ingyen van, és a bérlet perceit a "
               "testvérek együtt használják. Ha ketten tanulnak, gyorsabban "
               "fogy – ezért érdemes olyan bérletet választani, amiben "
               "mindannyiuknak jut idő.",
         "es": "No. Crear un perfil es gratis y los hermanos comparten las "
-              "horas del bono. Si estudian dos, se gastan más rápido: por eso "
+              "minutos del bono. Si estudian dos, se gastan más rápido: por eso "
               "conviene elegir un bono con tiempo para todos.",
     },
     "csomag_gyik_valtas_cim": {"hu": "Lehet váltani vagy lemondani?",
                                "es": "¿Se puede cambiar o cancelar?"},
     "csomag_gyik_valtas": {
         "hu": "Bármikor, indoklás nélkül, hűségidő nélkül. Ha lemondod, vagy "
-              "nem fizeted ki a következő hónapot, a már kifizetett órák "
+              "nem fizeted ki a következő hónapot, a már kifizetett percek "
               "megmaradnak: mindegyiket a saját 3 hónapos érvényességének a "
               "végéig felhasználhatjátok. Utána a gyerekeid adatai és "
-              "gyűjteményük megmaradnak – csak új óra nem indul.",
+              "gyűjteményük megmaradnak – csak új perckeret nem indul.",
         "es": "Cuando quieras, sin explicaciones y sin permanencia. Si "
-              "cancelas o no pagas el mes siguiente, las horas ya pagadas no se "
-              "pierden: podéis usar cada una hasta el final de sus 3 meses de "
+              "cancelas o no pagas el mes siguiente, los minutos ya pagados no se "
+              "pierden: podéis usar cada uno hasta el final de sus 3 meses de "
               "validez. Después, los datos y la colección de tus hijos siguen "
-              "ahí; solo no se empiezan horas nuevas.",
+              "ahí; solo dejan de añadirse minutos nuevos.",
     },
 
     # ── GYAKORLÓ FELADAT A BESZÉLGETÉSBEN ────────────────────────────────

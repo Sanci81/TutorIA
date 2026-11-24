@@ -336,10 +336,9 @@
         <p class="ido-szoveg">{{ cs.havi_perc }} {{ t('csomag_perc_egyszer') }}</p>
         <p class="ido-alatt">{{ t('csomag_nem_ujul') }}</p>
       {% else %}
-        {# BÉRLET: órában (1 óra = 45 perc), bármelyik tantárgyra. #}
-        <p class="ido-szoveg">{{ t('csomag_havonta') }} {{ (cs.havi_perc / 45)|round(0)|int }}
-           {{ t('csomag_ora') }} <span style="font-weight:600;opacity:.75">· {{ cs.havi_perc }} {{ t('csomag_perc') }}</span></p>
-        <p class="ido-alatt">{{ t('csomag_ora_45') }}</p>
+        {# BÉRLET (fix261): PERCBEN – a perc a lap címében áll („270 perc / hó”).
+           Az órát „alkalomnak” értették (Sándor, 11-24). #}
+        <p class="ido-szoveg">{{ t('csomag_barmelyik') }}</p>
       {% endif %}
 
       <ul class="jellemzok">
@@ -351,8 +350,8 @@
         {% elif cs.fizetos and cs.hangos_perc >= cs.havi_perc %}
           <li>{{ t('csomag_hang_minden_ora') }}</li>
         {% elif cs.fizetos %}
-          <li>{{ t('csomag_hang_ebbol') }} {{ (cs.hangos_perc / 45)|round(0)|int }} {{ t('csomag_ora') }} ·
-              {{ ((cs.havi_perc - cs.hangos_perc) / 45)|round(0)|int }} {{ t('csomag_ora_irasban') }}</li>
+          <li>{{ t('csomag_hang_ebbol') }} {{ cs.hangos_perc }} {{ t('csomag_perc') }} ·
+              {{ cs.havi_perc - cs.hangos_perc }} {{ t('csomag_perc') }} {{ t('csomag_iras_csak')|lower }}</li>
         {% elif cs.hangos_perc >= cs.havi_perc %}
           <li>{{ t('csomag_hang_mind') }}</li>
         {% elif cs.egyszeri %}

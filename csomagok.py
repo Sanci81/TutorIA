@@ -107,14 +107,15 @@ CSOMAGOK: dict[str, dict] = {
     },
 
     # ── TERVEZETT BÉRLETEK (2026-11-06, Sándor döntése) ──
-    # Havi ÓRAKERET, 1 óra = 45 perc tanulás a TutorIA tanítójával, BÁRMELYIK
-    # tantárgyra. Még NEM vásárolható: a belépett szülő „tervezett árként”
+    # Havi PERCKERET (fix261, 11-24: órák helyett percben írjuk ki, mert az
+    # „6 órás” bérletet „6 alkalomnak” értették) a TutorIA tanítójával,
+    # BÁRMELYIK tantárgyra. Még NEM vásárolható: a belépett szülő „tervezett árként”
     # látja, és jelezheti, melyiket kérné. A kulcsok (alap/pro/max) maradtak,
     # hogy a már leadott „Érdekel” jelzések és az admin lista ne vesszenek el.
     # Számítás: TEENDOK.md „BÉRLET – PONTOSÍTVA”.
     "alap": {
-        "nev_hu": "6 órás bérlet",
-        "nev_es": "Bono de 6 horas",
+        "nev_hu": "270 perc / hó",
+        "nev_es": "270 min / mes",
         "tantervek": (HU, ES),
         "havi_perc": 270,         # 6 × 45 perc – kb. egy tantárgy egész éves anyaga
         "hangos_perc": 270,
@@ -124,8 +125,8 @@ CSOMAGOK: dict[str, dict] = {
         "ar_ev": 0.0,             # tanév-bérlet később
     },
     "pro": {
-        "nev_hu": "10 órás bérlet",
-        "nev_es": "Bono de 10 horas",
+        "nev_hu": "450 perc / hó",
+        "nev_es": "450 min / mes",
         "tantervek": (HU, ES),
         "havi_perc": 450,         # 10 × 45 perc – kb. matek + magyar egész évre
         "hangos_perc": 450,
@@ -135,8 +136,8 @@ CSOMAGOK: dict[str, dict] = {
         "ar_ev": 0.0,
     },
     "max": {
-        "nev_hu": "18 órás bérlet",
-        "nev_es": "Bono de 18 horas",
+        "nev_hu": "810 perc / hó",
+        "nev_es": "810 min / mes",
         "tantervek": (HU, ES),
         "havi_perc": 810,         # 18 × 45 perc, mind lehet hangos (2026-11-06)
         "hangos_perc": 810,
