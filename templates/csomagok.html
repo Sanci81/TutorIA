@@ -175,7 +175,7 @@
   .lap.ki .gomb{background:#3ddc97;color:#08251a}
   .lap.ki .gomb:hover{background:#5ee6ab}
   .csom .gomb.mar{background:#eef6f1;color:#166534;cursor:default;border:1px solid #bcdccb}
-  .csom .gomb-alatt{display:block;text-align:center;font-size:13.5px;line-height:1.35;margin-top:9px;opacity:.85}
+  .csom .gomb-alatt{display:block;text-align:center;font-size:13.5px;line-height:1.35;margin-top:9px;opacity:.85;min-height:4.05em}   /* fix278: minden lapon azonos magas → a gombok egy sorban */
   .lap.ki .gomb.mar{background:rgba(255,255,255,.14);color:#dff5ea;border:0}
   .csom .gomb.enyem{background:#1e7a4d;cursor:default}
 
@@ -376,9 +376,11 @@
 
       {% if sajat_csomag and (cs.kulcs == sajat_csomag or (hv and hv.kulcs == sajat_csomag)) %}
         <span class="gomb enyem">{{ t('csomag_ez_a_tied') }}</span>
+        <small class="gomb-alatt"></small>
       {% elif not cs.fizetos %}
         <a class="gomb" data-mer="Csomag: {{ cs.kulcs }} – ingyenes" href="{{ url_for('register') if not session.get('parent_id') else url_for('dashboard') }}">
           {{ t('csomag_ingyen_gomb') }}</a>
+        <small class="gomb-alatt">{{ t('csomag_ingyen_alatt') }}</small>
       {% elif fizetes_el %}
         <a class="gomb" data-mer="Csomag: {{ cs.kulcs }} – előfizetek" href="{{ url_for('fiok') }}">{{ t('csomag_elofizetek') }}</a>
       {% elif session.get('parent_id') %}
@@ -397,6 +399,7 @@
         {% endif %}
       {% else %}
         <a class="gomb" data-mer="Csomag: {{ cs.kulcs }} – regisztrálok" href="{{ url_for('register') }}">{{ t('csomag_ingyen_gomb') }}</a>
+        <small class="gomb-alatt">{{ t('csomag_kint_alatt') }}</small>
       {% endif %}
     </div>
     {% endfor %}

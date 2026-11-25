@@ -2778,11 +2778,15 @@ def csomag_erdekel():
     kulcs = (request.form.get("csomag") or "").strip()
     if kulcs not in csomagok.CSOMAGOK:
         abort(400)
+    _elozo = ((database.get_parent_by_id(session["parent_id"]) or {}).get("erdeklodes") or "")
     database.set_erdeklodes(session["parent_id"], kulcs, g.lang)
     # VISSZAIGAZOLÁS. Enélkül a szülő csak egy villanó üzenetet lát a lapon,
     # és két nap múlva már nem tudja, felkerült-e egyáltalán a listára.
     # A levél a bizonyíték a kezében, és egyben az első levelünk tőlünk.
-    _erdeklodes_visszaigazolas(_belepett_szulo_email(), kulcs, g.lang)
+    # fix278: ugyanarra a csomagra másodszor nem küldünk levelet (a gomb már
+    # akkor is látszik, ha jelezte – a „Jelezted” felirat megszűnt).
+    if _elozo != kulcs:
+        _erdeklodes_visszaigazolas(_belepett_szulo_email(), kulcs, g.lang)
     flash(i18n.t("csomag_erdekel_koszonjuk", g.lang), "success")
     return redirect(url_for("csomagok_oldal"))
 

@@ -1520,6 +1520,10 @@ TRANSLATIONS = {
     # A gomb ugyanúgy méri, melyik csomag érdekelné (csomag_erdekel), csak a szöveg más.
     "csomag_erdekel_gomb": {"hu": "Ezt választanám",
                             "es": "Elegiría este"},
+    "csomag_ingyen_alatt": {"hu": "120 perc ingyen, bankkártya nélkül.",
+                            "es": "120 minutos gratis, sin tarjeta."},
+    "csomag_kint_alatt": {"hu": "Előbb ingyen kipróbálod. Fizetni még nem lehet.",
+                          "es": "Primero lo pruebas gratis. Todavía no se puede pagar."},
     "csomag_erdekel_alatt": {"hu": "A gombbal csak jelzed, melyiket választanád. Fizetni még nem lehet.",
                              "es": "Con el botón solo nos indicas cuál elegirías. Todavía no se puede pagar."},
     "csomag_erdekel_mar": {"hu": "Jelezted – szólunk, amint indul",
