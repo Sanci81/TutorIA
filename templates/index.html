@@ -163,8 +163,6 @@
 .fo .fo-zaro .fo-szel-fent svg{display:block;width:100%;height:100%}
 .fo .fo-zaro h2{font-size:34px;margin:0 0 10px}
 .fo .fo-zaro p{font-size:18px;margin:0 0 28px}
-.fo .fo-zaro .fo-ki{position:relative;max-width:520px;margin:40px auto 0;font-size:15px;line-height:1.55;opacity:.88}
-.fo .fo-zaro .fo-ki b{display:block;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-bottom:4px}
 .fo .fo-zaro img{position:absolute;bottom:0;height:150px}
 .fo .fo-zaro .fo-bal{left:4%}
 .fo .fo-zaro .fo-jobb{right:4%}
@@ -480,9 +478,9 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
       </div>
       {% if not belepve %}
       {% if mintalecke_be %}
-      <div class="fo-apro">{% if es %}<b>Gratis, sin dar ningún dato.</b> Si te gusta: 120 minutos gratis, sin tarjeta. Después, desde 9,90 € al mes.{% else %}<b>Ingyenes, semmit nem kell megadni.</b> Ha tetszik: 120 perc ingyen, bankkártya nélkül. Utána havi 9,90 €-tól.{% endif %}</div>
+      <div class="fo-apro">{% if es %}<b>Gratis, sin dar ningún dato.</b> Si te gusta: 120 minutos gratis, sin tarjeta.{% else %}<b>Ingyenes, semmit nem kell megadni.</b> Ha tetszik: 120 perc ingyen, bankkártya nélkül.{% endif %}</div>
       {% else %}
-      <div class="fo-apro">{% if es %}<b>Los primeros 120 minutos son gratis.</b> No hace falta tarjeta. Después, desde 9,90 € al mes.{% else %}<b>Az első 120 perc ingyen.</b> Bankkártya nem kell. Utána havi 9,90 €-tól.{% endif %}</div>
+      <div class="fo-apro">{% if es %}<b>Los primeros 120 minutos son gratis.</b> No hace falta tarjeta.{% else %}<b>Az első 120 perc ingyen.</b> Bankkártya nem kell.{% endif %}</div>
       {% endif %}
     {% endif %}
       <div class="fo-bizalom">🛡️ {% if es %}Sin anuncios · No vendemos datos · Sin cookies de seguimiento · La IA no aprende de los datos de tu hijo · <a href="{{ url_for('adatvedelem') }}">Privacidad</a>{% else %}Reklámmentes · Az adatokat nem adjuk el · Nincs követő süti · Az AI nem tanul a gyerek adataiból · <a href="{{ url_for('adatvedelem') }}">Adatvédelem</a>{% endif %}</div>
@@ -551,9 +549,9 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
       <figcaption>{{ '18 s' if es else '18 mp' }}</figcaption>
     </figure>
     <div>
-      <h2>{{ 'Él practica, tú ves lo que aprende.' if es else 'Ő gyakorol, te látod, mit tanult.' }}</h2>
+      <h2>{{ 'Tú descansas, él aprende.' if es else 'Te pihensz, ő tanul.' }}</h2>
       <div class="fo-este-pont"><i>📚</i><div><b>{{ 'Se sienta con tu hijo' if es else 'Leül a gyerekkel' }}</b><span>{{ 'Explica paso a paso y espera la respuesta.' if es else 'Lépésről lépésre magyaráz, és megvárja a választ.' }}</span></div></div>
-      <div class="fo-este-pont"><i>🤝</i><div><b>{{ 'Con los pequeños, juntos' if es else 'Kicsiknél együtt' }}</b><span>{{ 'En 1.º y 2.º, sentaos juntos. Los mayores pueden practicar solos.' if es else '1–2. osztályban üljetek le együtt. A nagyobbak önállóan is gyakorolhatnak.' }}</span></div></div>
+      <div class="fo-este-pont"><i>☕</i><div><b>{{ 'Tú puedes descansar' if es else 'Te közben pihenhetsz' }}</b><span>{{ 'No hace falta estar a su lado todo el rato.' if es else 'Nem kell végig mellette ülnöd.' }}</span></div></div>
       <div class="fo-este-pont"><i>✉️</i><div><b>{{ 'Ves lo que ha aprendido' if es else 'Látod, mit tanult' }}</b><span>{{ 'Por correo, cada día, cada semana o cada mes: tú eliges.' if es else 'E-mailben naponta, hetente vagy havonta – te döntöd el.' }}</span></div></div>
     </div>
   </div>
@@ -609,7 +607,6 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
       <div class="fo-pont"><div class="fo-ik"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6Z"/></svg></div><div><b>{{ t('bem_biz_1_cim') }}</b><span>{{ t('bem_biz_1') }}</span></div></div>
       <div class="fo-pont"><div class="fo-ik"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div><div><b>{{ t('bem_biz_2_cim') }}</b><span>{{ t('bem_biz_2') }}</span></div></div>
       <div class="fo-pont"><div class="fo-ik"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></div><div><b>{{ t('bem_biz_3_cim') }}</b><span>{{ t('bem_biz_3') }}</span></div></div>
-      <div class="fo-pont"><div class="fo-ik"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div><div><b>{{ t('bem_biz_4_cim') }}</b><span>{{ t('bem_biz_4') }}</span></div></div>
     </div>
     <div class="fo-csevegés">
       <div class="fo-bub fo-t"><small>{{ t('bem_cimke_tanar') }}</small>{{ t('bem_pelda_1') }}</div>
@@ -709,7 +706,6 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
   <h2>{{ t('bem_zaro_cim') }}</h2>
   <p>{{ t('bem_zaro_alcim') }}</p>
   <a class="fo-gomb" href="{{ cel }}">{{ t('bem_zaro_cta') }} <span class="fo-nyil">→</span></a>
-  <p class="fo-ki"><b>{{ t('bem_ki_cim') }}</b>{{ t('bem_ki') }}</p>
 </section>
 
 </div>
