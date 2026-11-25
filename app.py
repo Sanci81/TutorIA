@@ -377,9 +377,11 @@ if _ELES and app.config["SECRET_KEY"] == "dev-only-insecure-key":
 # fix269: TÖMÖRÍTÉS (gzip). A Flask/gunicorn magától nem tömörít: a főoldal HTML-je
 # ~70 KB, a style.css ~130 KB tömörítetlenül ment ki – lassú mobilneten ez másodpercek.
 # Tömörítve kb. ötöde. Csak szöveges válaszok, 1 KB–3 MB között; folyamatos (stream)
-# választ nem bánt. Vészfék: Railway változó TOMORITES=0.
+# választ nem bánt.
+# fix275: ALAPBÓL KI. A próbaoldalon bekapcsolva Lumi a GYIK-nál nem jött ki (Sándor;
+# TOMORITES=0-val újra jó) – az okát még nem tudjuk. Bekapcsolni: TOMORITES=1.
 # (Ezt regisztráljuk ELŐSZÖR, így fut UTOLJÁRA – a többi fejléc után.)
-_TOMORITES = os.environ.get("TOMORITES", "1").strip() not in ("0", "nem", "ki")
+_TOMORITES = os.environ.get("TOMORITES", "0").strip().lower() in ("1", "igen", "be", "true")
 _TOMORIT_TIPUS = ("text/html", "text/css", "text/plain", "application/javascript",
                   "text/javascript", "application/json", "image/svg+xml")
 
