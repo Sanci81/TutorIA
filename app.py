@@ -374,6 +374,45 @@ if _ELES and app.config["SECRET_KEY"] == "dev-only-insecure-key":
     print("!!! BIZTONSÁGI HIBA: a SECRET_KEY nincs beállítva a Railway-en !!!", flush=True)
 
 
+# fix269: TÖMÖRÍTÉS (gzip). A Flask/gunicorn magától nem tömörít: a főoldal HTML-je
+# ~70 KB, a style.css ~130 KB tömörítetlenül ment ki – lassú mobilneten ez másodpercek.
+# Tömörítve kb. ötöde. Csak szöveges válaszok, 1 KB–3 MB között; folyamatos (stream)
+# választ nem bánt. Vészfék: Railway változó TOMORITES=0.
+# (Ezt regisztráljuk ELŐSZÖR, így fut UTOLJÁRA – a többi fejléc után.)
+_TOMORITES = os.environ.get("TOMORITES", "1").strip() not in ("0", "nem", "ki")
+_TOMORIT_TIPUS = ("text/html", "text/css", "text/plain", "application/javascript",
+                  "text/javascript", "application/json", "image/svg+xml")
+
+
+@app.after_request
+def _tomorit(resp):
+    try:
+        if not _TOMORITES or resp.status_code != 200 or resp.headers.get("Content-Encoding"):
+            return resp
+        if "gzip" not in (request.headers.get("Accept-Encoding") or "").lower():
+            return resp
+        if not (resp.mimetype or "").startswith(_TOMORIT_TIPUS):
+            return resp
+        if resp.is_streamed and not resp.direct_passthrough:
+            return resp                      # generátoros/SSE válasz – nem nyúlunk hozzá
+        resp.direct_passthrough = False      # statikus fájl: beolvassuk
+        adat = resp.get_data()
+        if not (1024 <= len(adat) <= 3_000_000):
+            return resp
+        import gzip as _gz
+        resp.set_data(_gz.compress(adat, compresslevel=6))
+        resp.headers["Content-Encoding"] = "gzip"
+        resp.headers["Content-Length"] = str(len(resp.get_data()))
+        _v = resp.headers.get("Vary")
+        if not _v or "accept-encoding" not in _v.lower():
+            resp.headers["Vary"] = (_v + ", " if _v else "") + "Accept-Encoding"
+        if resp.headers.get("ETag") and not resp.headers["ETag"].startswith("W/"):
+            resp.headers["ETag"] = "W/" + resp.headers["ETag"]
+    except Exception:                        # noqa: BLE001 – tömörítés nélkül is jó a válasz
+        logger.exception("[TOMORITES] hiba") if "logger" in globals() else None
+    return resp
+
+
 @app.after_request
 def _biztonsagi_fejlecek(resp):
     """Böngészőnek szóló védőfejlécek: más oldal nem ágyazhatja be az
