@@ -384,7 +384,9 @@
       {% elif session.get('parent_id') %}
         {# Még nincs fizetés. Nem ígérünk semmit – csak eltároljuk, hogy ez
            a szülő ezt a csomagot kérné. Ebből tudjuk meg, mikor indulhatunk. #}
-        {% if erdeklodes and (erdeklodes == cs.kulcs or (hv and erdeklodes == hv.kulcs)) %}
+        {# fix277 (Sándor): akkor is ugyanaz a gomb és szöveg, ha már jelezte – a „Jelezted…”
+           felirat a kiemelt lapon összeolvadt a háttérrel, és mást mondott, mint a többi. #}
+        {% if false %}
           <span class="gomb mar">{{ t('csomag_erdekel_mar') }}</span>
         {% else %}
         <form method="post" action="{{ url_for('csomag_erdekel') }}">
