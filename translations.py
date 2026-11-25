@@ -1516,8 +1516,12 @@ TRANSLATIONS = {
     "csomag_ingyen_gomb": {"hu": "Kipróbálom", "es": "Probar"},
     "csomag_elofizetek": {"hu": "Előfizetek", "es": "Suscribirme"},
     "csomag_regisztralok": {"hu": "Regisztrálok", "es": "Registrarme"},
-    "csomag_erdekel_gomb": {"hu": "Ennyiért kérném",
-                            "es": "Lo querría a este precio"},
+    # fix274 (Sándor: „azt hiszik, egyből fizetni kell” – most még tesztidőszak).
+    # A gomb ugyanúgy méri, melyik csomag érdekelné (csomag_erdekel), csak a szöveg más.
+    "csomag_erdekel_gomb": {"hu": "Ezt választanám",
+                            "es": "Elegiría este"},
+    "csomag_erdekel_alatt": {"hu": "A gombbal csak jelzed, melyiket választanád. Fizetni még nem lehet.",
+                             "es": "Con el botón solo nos indicas cuál elegirías. Todavía no se puede pagar."},
     "csomag_erdekel_mar": {"hu": "Jelezted – szólunk, amint indul",
                            "es": "Anotado: te avisaremos al empezar"},
     "csomag_most_nem_koszonjuk": {

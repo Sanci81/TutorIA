@@ -175,6 +175,7 @@
   .lap.ki .gomb{background:#3ddc97;color:#08251a}
   .lap.ki .gomb:hover{background:#5ee6ab}
   .csom .gomb.mar{background:#eef6f1;color:#166534;cursor:default;border:1px solid #bcdccb}
+  .csom .gomb-alatt{display:block;text-align:center;font-size:13.5px;line-height:1.35;margin-top:9px;opacity:.85}
   .lap.ki .gomb.mar{background:rgba(255,255,255,.14);color:#dff5ea;border:0}
   .csom .gomb.enyem{background:#1e7a4d;cursor:default}
 
@@ -212,8 +213,8 @@
   .fp-csom .lap.ki .ar-valto button.be{background:#fff;color:#167A5E}
   .fp-csom .lap.ki .ar-valto button{color:#E6F4EE}
   .fp-csom .cimke{background:#F5A01E;color:#fff;text-shadow:0 1px 2px rgba(120,62,0,.55)}
-  .fp-csom .gomb{border-radius:999px;background:#0E2A1E;box-shadow:0 4px 0 #000}
-  .fp-csom .gomb:hover{background:#0E2A1E}
+  .fp-csom .gomb{border-radius:999px;background:#167A5E;box-shadow:0 4px 0 #0E5A45}   /* fix274: zöld (a fekete nem tetszett) */
+  .fp-csom .gomb:hover{background:#13694F}
   .fp-csom .lap.ki .gomb{background:#F5A01E;color:#fff;box-shadow:0 4px 0 #D27E0B;
     text-shadow:0 1px 2px rgba(120,62,0,.55)}
   .fp-csom .lap.ki .gomb:hover{background:#F5A01E}
@@ -389,6 +390,7 @@
         <form method="post" action="{{ url_for('csomag_erdekel') }}">
           <input type="hidden" name="csomag" value="{{ cs.kulcs }}" class="csomag-kulcs">
           <button type="submit" class="gomb" data-mer="Csomag: {{ cs.kulcs }} – ennyiért kérném">{{ t('csomag_erdekel_gomb') }}</button>
+          <small class="gomb-alatt">{{ t('csomag_erdekel_alatt') }}</small>
         </form>
         {% endif %}
       {% else %}
