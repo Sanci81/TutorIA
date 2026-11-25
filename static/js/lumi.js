@@ -512,10 +512,17 @@
         if (typeof SVGElement !== 'undefined' && e instanceof SVGElement) { return true; }   // a rajz festett része (path, rect…)
         return valodi(e);
     }
+    /* fix271: a helykeresés ugyanazt a pontot sokszor kérdezi le (induláskor ~6000 hívás, fele
+       ismétlés) – ez volt a főoldal leghosszabb blokkolása. Egy lefutáson belül (amíg semmi nem
+       mozdul) a választ megjegyezzük; a következő pillanatban (mikrofeladat) törlődik. Az eredmény
+       ugyanaz, csak kevesebb munkával. */
+    var veremTar = null;
     function verem(x, y) {
         var vx = x - scrollX, vy = y - scrollY;
         if (vx < 1 || vy < 1 || vx > innerWidth - 1 || vy > innerHeight - 1) { return null; }
-        return D.elementsFromPoint(vx, vy).filter(function (e) { return !e.closest('#lumi'); });
+        if (!veremTar) { veremTar = {}; Promise.resolve().then(function () { veremTar = null; }); }
+        var k = vx + '|' + vy;
+        return veremTar[k] || (veremTar[k] = D.elementsFromPoint(vx, vy).filter(function (e) { return !e.closest('#lumi'); }));
     }
     function elso(st) { if (!st) { return null; } for (var i = 0; i < st.length; i++) { if (festett(st[i])) { return st[i]; } } return null; }
     function szine(e) {                          // a festett elem színe (svg: kitöltés, egyébként háttér); null, ha nem egyszínű
