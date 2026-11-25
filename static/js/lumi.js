@@ -68,14 +68,10 @@
     // név: [szélesség, magasság, lámpa-szélesség, lámpa közepe (x arány), talp (y arány)]
     var META = {"alap": [334, 640, 286, 0.503, 0.991], "orul": [372, 640, 258, 0.5, 0.991], "gondolkodik": [334, 640, 287, 0.501, 0.989], "integet": [347, 640, 269, 0.546, 0.991], "biztat": [326, 640, 272, 0.5, 0.991], "tapsol": [368, 640, 274, 0.5, 0.991], "aha": [335, 640, 277, 0.512, 0.991], "maszik": [306, 640, 266, 0.5, 0.992], "ul": [311, 640, 269, 0.503, 0.992], "meglepodik": [340, 640, 272, 0.491, 0.992], "lenez": [378, 640, 299, 0.538, 0.991]};
     var ULES = .80;                                                    // fix234: a kezei a mező vonalán – a vonalon ül, nem alatta                                                    // az „ül” képen az ülés magassága (y arány)
-    /* fix269: a 13 Lumi-képet (~450 KB) eddig AZONNAL letöltötte, az oldal első képeivel
-       versenyezve (lassú mobilneten a főkép később jelent meg). Most csak indul()-kor. */
-    function kepekElore() {
     Object.keys(META).forEach(function (n) { var i = new Image(); i.src = KEPUT + n + '.webp'; });
     /* fix237: új testtartás (fejfogás) – ha a kép már megvan, magától használja; addig a „gondolkodik” megy helyette */
     ['fejfogas'].forEach(function (n) { if (META[n]) { return; } var i = new Image();
         i.onload = function () { META[n] = [i.naturalWidth * 640 / i.naturalHeight, 640, META.alap[2], .5, .99]; }; i.src = KEPUT + n + '.webp'; });
-    }
     var doboz = D.createElement('div');
     doboz.id = 'lumi';
     doboz.setAttribute('aria-hidden', 'true');
@@ -512,17 +508,10 @@
         if (typeof SVGElement !== 'undefined' && e instanceof SVGElement) { return true; }   // a rajz festett része (path, rect…)
         return valodi(e);
     }
-    /* fix271: a helykeresés ugyanazt a pontot sokszor kérdezi le (induláskor ~6000 hívás, fele
-       ismétlés) – ez volt a főoldal leghosszabb blokkolása. Egy lefutáson belül (amíg semmi nem
-       mozdul) a választ megjegyezzük; a következő pillanatban (mikrofeladat) törlődik. Az eredmény
-       ugyanaz, csak kevesebb munkával. */
-    var veremTar = null;
     function verem(x, y) {
         var vx = x - scrollX, vy = y - scrollY;
         if (vx < 1 || vy < 1 || vx > innerWidth - 1 || vy > innerHeight - 1) { return null; }
-        if (!veremTar) { veremTar = {}; Promise.resolve().then(function () { veremTar = null; }); }
-        var k = vx + '|' + vy;
-        return veremTar[k] || (veremTar[k] = D.elementsFromPoint(vx, vy).filter(function (e) { return !e.closest('#lumi'); }));
+        return D.elementsFromPoint(vx, vy).filter(function (e) { return !e.closest('#lumi'); });
     }
     function elso(st) { if (!st) { return null; } for (var i = 0; i < st.length; i++) { if (festett(st[i])) { return st[i]; } } return null; }
     function szine(e) {                          // a festett elem színe (svg: kitöltés, egyébként háttér); null, ha nem egyszínű
@@ -721,7 +710,6 @@
 
     // ── INDULÁS ─────────────────────────────────────────────────────────
     function indul() {
-        kepekElore();                                  // fix269
         D.body.appendChild(doboz);
         var cel = fodoboz(), h = cel && helyDoboz(cel);
         horgony = cel;
