@@ -1955,6 +1955,14 @@
     <aside class="chat-sidebar chat-sidebar-vocab">
         <h2 class="chat-sidebar-title">{{ t('chat_vocab_title') }}</h2>
         <p class="chat-vocab-lang">{{ language|display_language }}</p>
+        {# fix290 (Sándor): kereső a szójegyzékben – mindkét nyelven lehet keresni, ékezet nélkül is.
+           Csak akkor látszik, ha már legalább 6 szó van. #}
+        <div class="vocab-kereso-doboz" id="vocab-kereso-doboz" hidden>
+            <input type="search" id="vocab-kereso" autocomplete="off"
+                   placeholder="{{ 'Buscar palabra…' if lang == 'es' else 'Keresés a szavak között…' }}"
+                   aria-label="{{ 'Buscar palabra' if lang == 'es' else 'Keresés a szójegyzékben' }}">
+            <small id="vocab-kereso-nincs" hidden>{{ 'No hay ninguna palabra así.' if lang == 'es' else 'Nincs ilyen szó a listában.' }}</small>
+        </div>
         <ul class="chat-vocab-list" id="vocab-list">
             {% for w in vocabulary %}
                 <li{% if w['kep'] %} class="van-kep"{% endif %}>
@@ -1972,6 +1980,32 @@
     {% endif %}
 </section>
 
+<style>
+  /* fix290: szójegyzék-kereső */
+  .vocab-kereso-doboz{margin:4px 0 10px}
+  .vocab-kereso-doboz input{width:100%;box-sizing:border-box;padding:8px 12px;border:1.5px solid #cfe0d6;border-radius:999px;
+    font:inherit;font-size:15px;background:#fff;color:#1d2b25;outline:none}
+  .vocab-kereso-doboz input:focus{border-color:#22A06B;box-shadow:0 0 0 3px rgba(34,160,107,.15)}
+  .vocab-kereso-doboz small{display:block;color:#7a8b83;font-size:13px;margin:6px 4px 0}
+  .vocab-kereso-doboz[hidden],.vocab-kereso-doboz small[hidden]{display:none}
+</style>
+<script>
+(function () {
+    var doboz = document.getElementById('vocab-kereso-doboz'), mezo = document.getElementById('vocab-kereso'),
+        lista = document.getElementById('vocab-list'), nincs = document.getElementById('vocab-kereso-nincs');
+    if (!doboz || !mezo || !lista) { return; }
+    function norm(t) { return (t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ').trim(); }
+    function szur() {
+        var lik = lista.querySelectorAll('li'), q = norm(mezo.value), van = 0;
+        doboz.hidden = lik.length < 6 && !q;
+        lik.forEach(function (li) { var ok = !q || norm(li.textContent).indexOf(q) >= 0; li.style.display = ok ? '' : 'none'; if (ok) { van++; } });
+        nincs.hidden = !q || van > 0;
+    }
+    mezo.addEventListener('input', szur);
+    new MutationObserver(function () { szur(); }).observe(lista, {childList: true});
+    szur();
+})();
+</script>
 <div class="test-overlay" id="test-overlay" hidden>
     <div class="test-modal">
         <button type="button" class="test-close" id="test-close" aria-label="{{ t('test_close') }}">×</button>
