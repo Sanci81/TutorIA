@@ -531,7 +531,8 @@ def _feladat_leiras_belso(f: dict) -> str:
                  "sorozat", "zokni", "becsles", "allitas",
                  "urmertek", "nezet", "betu", "szofaj",
                  "nagybetu", "tilde", "nevelo", "gerinces",
-                 "ciklus", "szin", "hangszer", "szoba", "tapl"):
+                 "ciklus", "szin", "hangszer", "szoba", "tapl",
+                 "irasbeli", "szamvonal", "muveletisor", "kombinacio", "merlegkg"):
         return f"interaktív feladat ({tipus}): {f.get('kerdes', '')}" + _adatai(f)
     if tipus == "osztas":
         return f"írásbeli osztás balról jobbra: {f.get('a')} : {f.get('b')}, a gyerek a hányadost írja be"

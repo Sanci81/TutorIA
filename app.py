@@ -6944,6 +6944,204 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
             "¿Figura plana o cuerpo geométrico?" if es_tanterv else "Síkidom vagy test?")
         return out
 
+    # ══ fix292: ÖT ÚJ MATEK-FELÜLET 3–4. OSZTÁLYRA (2026-11-26) ═════════════
+    #    írásbeli lépésről lépésre, számegyenes nagyítóval, műveleti sorrend,
+    #    kombinációk (öltöztetés), mérleg súlyokkal. A jó eredményt itt is
+    #    mi számoljuk; a böngésző csak a lépéseket vezeti.
+    if tipus == "irasbeli":
+        out = {"tipus": "irasbeli"}
+        nyers = adat.get("muveletek")
+        if nyers is None and adat.get("a") is not None:
+            nyers = [[adat.get("a"), adat.get("jel") or "+", adat.get("b")]]
+        if nyers is not None:
+            if not isinstance(nyers, list) or not (1 <= len(nyers) <= 3):
+                return None
+            tiszta = []
+            for m in nyers:
+                if not isinstance(m, (list, tuple)) or len(m) != 3:
+                    return None
+                try:
+                    a, b = int(m[0]), int(m[2])
+                except Exception:
+                    return None
+                j = str(m[1]).strip()
+                j = "+" if j == "+" else ("-" if j in ("-", "−", "–") else None)
+                if j is None or not (10 <= a <= 9999 and 1 <= b <= 9999):
+                    return None
+                if j == "+" and a + b > 19998:
+                    return None
+                if j == "-" and not (b < a):
+                    return None
+                tiszta.append([a, j, b])
+            out["muveletek"] = tiszta
+        else:
+            out["jegy"] = 4 if (grade or 3) >= 4 else 3
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "Cuenta en columna, paso a paso, empezando por las unidades."
+            if es_tanterv else
+            "Számolj írásban, lépésről lépésre – jobbról, az egyesekkel kezdjük!")
+        return out
+
+    if tipus == "szamvonal":
+        out = {"tipus": "szamvonal"}
+        mx = adat.get("max")
+        try:
+            mx = int(mx) if mx is not None else None
+        except Exception:
+            return None
+        if mx not in (100, 1000, 10000):
+            mx = 10000 if (grade or 3) >= 4 else 1000
+        lepes = mx // 100
+        sz = adat.get("szamok")
+        if sz is not None:
+            if not isinstance(sz, list) or not (1 <= len(sz) <= 4):
+                return None
+            tiszta = []
+            for x in sz:
+                try:
+                    x = int(x)
+                except Exception:
+                    return None
+                # pont a nagyító rácsára essen (1000-ig tízesek, 10000-ig százasok)
+                if not (0 < x < mx) or x % lepes:
+                    return None
+                tiszta.append(x)
+            out["szamok"] = tiszta
+        out["max"] = mx
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Dónde está el número en la recta numérica?"
+            if es_tanterv else
+            "Hol van a szám a számegyenesen?")
+        return out
+
+    if tipus == "muveletisor":
+        out = {"tipus": "muveletisor"}
+
+        def _kif_ellenoriz(s):
+            """Tokenek, ha a kifejezés egész számokkal végig kijön (osztás maradék
+            nélkül, nincs negatív részeredmény), különben None."""
+            s = str(s or "").replace("×", "*").replace("·", "*").replace("x", "*").replace("X", "*")
+            s = s.replace("÷", ":").replace("/", ":").replace("−", "-").replace("–", "-")
+            if not re.fullmatch(r"[0-9+\-*:() ]{3,60}", s):
+                return None
+            tok = re.findall(r"\d+|[+\-*:()]", s)
+            muv = sum(1 for t in tok if t in "+-*:")
+            if not (2 <= muv <= 4) or tok.count("(") != tok.count(")") or tok.count("(") > 2:
+                return None
+            pos = [0]
+
+            def kif():
+                v = tag()
+                while v is not None and pos[0] < len(tok) and tok[pos[0]] in "+-":
+                    o = tok[pos[0]]; pos[0] += 1
+                    w = tag()
+                    if w is None:
+                        return None
+                    v = v + w if o == "+" else v - w
+                    if v < 0:
+                        return None
+                return v
+
+            def tag():
+                v = ten()
+                while v is not None and pos[0] < len(tok) and tok[pos[0]] in "*:":
+                    o = tok[pos[0]]; pos[0] += 1
+                    w = ten()
+                    if w is None:
+                        return None
+                    if o == "*":
+                        v = v * w
+                    else:
+                        if w == 0 or v % w:
+                            return None
+                        v = v // w
+                return v
+
+            def ten():
+                if pos[0] >= len(tok):
+                    return None
+                t = tok[pos[0]]
+                if t == "(":
+                    pos[0] += 1
+                    v = kif()
+                    if v is None or pos[0] >= len(tok) or tok[pos[0]] != ")":
+                        return None
+                    pos[0] += 1
+                    return v
+                if t.isdigit():
+                    pos[0] += 1
+                    n = int(t)
+                    return n if n <= 1000 else None
+                return None
+
+            try:
+                v = kif()
+            except Exception:
+                return None
+            if v is None or pos[0] != len(tok) or v > 10000:
+                return None
+            return " ".join(tok)
+
+        k = adat.get("kifejezesek")
+        if k is None and adat.get("kifejezes") is not None:
+            k = [adat.get("kifejezes")]
+        if k is not None:
+            if not isinstance(k, list) or not (1 <= len(k) <= 3):
+                return None
+            tiszta = []
+            for x in k:
+                t = _kif_ellenoriz(x)
+                if t is None:
+                    return None
+                tiszta.append(t)
+            out["kifejezesek"] = tiszta
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿Qué operación se hace primero? Tócala y calcúlala."
+            if es_tanterv else
+            "Melyik műveletet kell elsőnek elvégezni? Koppints rá, és számold ki!")
+        return out
+
+    if tipus == "kombinacio":
+        SZINEK = ("piros", "kek", "sarga", "zold", "lila", "narancs")
+        out = {"tipus": "kombinacio"}
+        for kulcs, lo, hi in (("felso", 2, 4), ("also", 2, 3)):
+            v = adat.get(kulcs)
+            if v is None:
+                continue
+            if (not isinstance(v, list) or not (lo <= len(v) <= hi)
+                    or any(x not in SZINEK for x in v) or len(set(v)) != len(v)):
+                return None
+            out[kulcs] = list(v)
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "¿De cuántas formas distintas se puede vestir el osito?"
+            if es_tanterv else
+            "Hányféleképpen öltöztethető fel a maci?")
+        return out
+
+    if tipus == "merlegkg":
+        out = {"tipus": "merlegkg"}
+        c = adat.get("celok")
+        if c is not None:
+            if not isinstance(c, list) or not (1 <= len(c) <= 3):
+                return None
+            tiszta = []
+            for x in c:
+                try:
+                    x = int(x)
+                except Exception:
+                    return None
+                if not (100 <= x <= 3000) or x % 10:
+                    return None
+                tiszta.append(x)
+            out["celok"] = tiszta
+        else:
+            out["finom"] = (grade or 3) >= 4
+        out["kerdes"] = _rov(adat.get("kerdes"), 120) or (
+            "Pon pesas en la balanza hasta que quede equilibrada."
+            if es_tanterv else
+            "Rakj súlyokat a mérlegre, amíg egyensúlyba nem kerül!")
+        return out
+
     if tipus == "krokodil":   # fix188: nagyobb / kisebb / egyenlő (relációs jelek)
         out = {"tipus": "krokodil"}
         parok = adat.get("parok")
@@ -11372,6 +11570,51 @@ _DM_FELULETEK = [
      'kor, negyzet, haromszog, teglalap (planas), kocka, teglatest, gomb, henger, kup (cuerpos) – de los dos tipos:\n'
      '   <FELADAT>{"tipus":"alakzat"}</FELADAT>',
      'síkidom vagy test, kör, kocka, gömb   → alakzat', 'figura plana o cuerpo, cubo, esfera → alakzat'),
+    ("irasbeli", {"matek"}, 3, 4,   # fix292
+     'ÍRÁSBELI LÉPÉSRŐL LÉPÉSRE – összeadás vagy kivonás egymás alatt; a gyerek jobbról balra, oszloponként írja be a számjegyet, '
+     'a maradék (átvitel) magától átkerül a következő oszlopba, hibánál azonnal segítséget kap. "muveletek": 1–3 művelet '
+     '[szám, "+" vagy "-", szám] (10–9999, kivonásnál a második kisebb); ha elhagyod, az évfolyamhoz illőt választ:\n'
+     '   <FELADAT>{"tipus":"irasbeli","muveletek":[[456,"+",378],[702,"-",265]]}</FELADAT>',
+     'CUENTA EN COLUMNA PASO A PASO – suma o resta; el niño escribe cifra a cifra de derecha a izquierda, la que se lleva '
+     'pasa sola a la columna siguiente y si falla recibe ayuda al momento. "muveletek": 1–3 operaciones '
+     '[número, "+" o "-", número] (10–9999, en la resta el segundo menor); si se omite, el programa elige:\n'
+     '   <FELADAT>{"tipus":"irasbeli","muveletek":[[456,"+",378],[702,"-",265]]}</FELADAT>',
+     'írásbeli összeadás/kivonás, maradék  → irasbeli', 'sumas y restas llevando, en columna → irasbeli'),
+    ("szamvonal", {"matek"}, 3, 4,   # fix292
+     'SZÁMEGYENES NAGYÍTÓVAL – a gyerek először a jó szakaszra koppint (pl. 300 és 400 közé), az kinagyul, és ott a pontos helyre. '
+     '"max": 100, 1000 vagy 10000; "szamok": 1–4 szám, 1000-ig kerek tízes, 10000-ig kerek százas (pl. 370, 6400):\n'
+     '   <FELADAT>{"tipus":"szamvonal","max":1000,"szamok":[370,820,150]}</FELADAT>',
+     'RECTA NUMÉRICA CON LUPA – el niño toca primero el tramo correcto (p. ej. entre 300 y 400), se amplía y allí toca el lugar exacto. '
+     '"max": 100, 1000 o 10000; "szamok": 1–4 números, hasta 1000 decenas exactas, hasta 10000 centenas exactas (370, 6400):\n'
+     '   <FELADAT>{"tipus":"szamvonal","max":1000,"szamok":[370,820,150]}</FELADAT>',
+     'számegyenes, számok helye, számkör   → szamvonal', 'recta numérica, situar números      → szamvonal'),
+    ("muveletisor", {"matek"}, 3, 4,   # fix292
+     'MŰVELETI SORREND – a gyerek a kifejezésben arra a műveletre koppint, amelyik elsőként jön (zárójel, aztán szorzás/osztás, '
+     'aztán balról jobbra), kiszámolja, és a kifejezés lépésenként rövidül. "kifejezesek": 1–3 kifejezés 2–4 művelettel '
+     '(+ - * : és zárójel, egész részeredmények, nem negatív):\n'
+     '   <FELADAT>{"tipus":"muveletisor","kifejezesek":["24 - 3 * 5 + 2","(8 + 4) : 3 * 2"]}</FELADAT>',
+     'JERARQUÍA DE OPERACIONES – el niño toca la operación que va primero (paréntesis, luego multiplicación/división, luego de '
+     'izquierda a derecha), la calcula y la expresión se acorta paso a paso. "kifejezesek": 1–3 expresiones con 2–4 operaciones '
+     '(+ - * : y paréntesis, resultados enteros, no negativos):\n'
+     '   <FELADAT>{"tipus":"muveletisor","kifejezesek":["24 - 3 * 5 + 2","(8 + 4) : 3 * 2"]}</FELADAT>',
+     'műveleti sorrend, zárójel            → muveletisor', 'jerarquía de operaciones, paréntesis → muveletisor'),
+    ("kombinacio", {"matek"}, 3, 4,   # fix292
+     'KOMBINÁCIÓK – a gyerek felöltözteti a macit minden lehetséges módon (sapka × póló), a megtaláltak sorba kerülnek, '
+     'a végén szorzással ellenőrzi, hány lett. "felso": 2–4 sapkaszín, "also": 2–3 pólószín (piros, kek, sarga, zold, lila, narancs):\n'
+     '   <FELADAT>{"tipus":"kombinacio","felso":["piros","kek","sarga"],"also":["zold","lila"]}</FELADAT>',
+     'COMBINACIONES – el niño viste al osito de todas las formas posibles (gorro × camiseta), las encontradas se guardan '
+     'y al final comprueba con una multiplicación cuántas hay. "felso": 2–4 colores de gorro, "also": 2–3 de camiseta '
+     '(piros, kek, sarga, zold, lila, narancs):\n'
+     '   <FELADAT>{"tipus":"kombinacio","felso":["piros","kek","sarga"],"also":["zold","lila"]}</FELADAT>',
+     'kombinációk, hányféleképpen, összes lehetőség → kombinacio', 'combinaciones, de cuántas formas    → kombinacio'),
+    ("merlegkg", {"matek"}, 3, 4,   # fix292
+     'MÉRLEG SÚLYOKKAL (kg, dkg, g) – a bal serpenyőben liszt (pl. 1 kg 30 dkg), a gyerek súlyokat rak a jobb oldalra, '
+     'amíg a mérleg egyensúlyba kerül, aztán átváltja (hány dkg?). "celok": 1–3 tömeg GRAMMBAN, 100–3000, tízzel osztható:\n'
+     '   <FELADAT>{"tipus":"merlegkg","celok":[1300,750]}</FELADAT>',
+     'BALANZA CON PESAS (kg, g) – en el plato izquierdo hay harina (p. ej. 1 kg 300 g); el niño pone pesas a la derecha hasta '
+     'equilibrar y luego lo pasa a gramos. "celok": 1–3 masas EN GRAMOS, 100–3000, múltiplos de 10:\n'
+     '   <FELADAT>{"tipus":"merlegkg","celok":[1300,750]}</FELADAT>',
+     'tömeg, kg, dkg, g, mérés mérleggel   → merlegkg', 'masa, kilo, gramo, pesar en balanza   → merlegkg'),
     ("krokodil", {"matek"}, 1, 4,   # fix188; fix194: AI-képes krokodil, újra bekapcsolva
      'KROKODIL – nagyobb, kisebb, egyenlő: a gyerek két szám közé a <, = vagy > jelet teszi (a krokodil a nagyobb felé tátja a száját). '
      '"parok": 2–6 számpár (0–10000), VAGY csak "max" (10/20/100/1000/10000) és a program választ:\n'
