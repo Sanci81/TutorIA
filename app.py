@@ -538,7 +538,21 @@ def _meres_sablonba():
     return {"meres_be": be}
 
 
-_MERES_FAJTAK = {"katt", "gorget", "ido"}
+_MERES_FAJTAK = {"katt", "gorget", "ido", "lat"}   # fix285: „lat” = a böngésző megnyitotta (valódi látogató)
+
+
+def _admin_idoszak():
+    """fix285: Időszak a látogatottsághoz – ?napok=N, vagy naptárból ?tol=ÉÉÉÉ-HH-NN&ig=ÉÉÉÉ-HH-NN."""
+    try:
+        tol = date.fromisoformat(request.args.get("tol", ""))
+        ig = date.fromisoformat(request.args.get("ig", ""))
+        if tol > ig:
+            tol, ig = ig, tol
+        ig = min(ig, date.today())
+        return max(1, min(400, (ig - tol).days + 1)), ig, tol.isoformat(), ig.isoformat()
+    except Exception:
+        napok = max(1, min(400, int(request.args.get("napok", 30) or 30)))
+        return napok, None, "", ""
 
 
 @app.route("/_m", methods=["POST"])
@@ -19642,28 +19656,30 @@ def admin_latogatottsag():
     tiltas = _admin_kapu()
     if tiltas is not None:
         return tiltas
-    napok = max(1, min(90, int(request.args.get("napok", 30) or 30)))  # 1 = csak a mai nap (fix159)
-    sorok = database.latogatas_osszesites(napok)
+    napok, veg, tol_s, ig_s = _admin_idoszak()              # fix285: naptár is
+    sorok = database.latogatas_osszesites(napok, veg)
     # fix225 (Sándor: „90 napra kevesebbet mutat, mint anno”): a felső összesítő eddig MINDIG csak az
     # utolsó 7 napot adta össze, bármit választott. Most a választott időszakot.
     het = sorok
     osszes = {"latogato": sum(x["latogato"] for x in het), "megnyitas": sum(x["megnyitas"] for x in het),
-              "mobil": sum(x["mobil"] for x in het), "reg": sum(x["reg"] for x in het)}
+              "mobil": sum(x["mobil"] for x in het), "reg": sum(x["reg"] for x in het),
+              "valodi": sum(x.get("valodi", 0) for x in het)}
     forras_het: dict = {}
     for x in het:
         for k, v in x["forras"].items():
             forras_het[k] = forras_het.get(k, 0) + v
     try:
-        reszlet = database.latogatas_reszletek(napok)
+        reszlet = database.latogatas_reszletek(napok, veg)
     except Exception:
         logger.exception("latogatas_reszletek hiba")
         reszlet = None
     try:
-        meres = database.meres_osszesites(napok)
+        meres = database.meres_osszesites(napok, veg)
     except Exception:
         logger.exception("meres_osszesites hiba")
         meres = []
     return render_template("admin_latogatottsag.html", sorok=sorok, napok=napok, osszes=osszes, reszlet=reszlet, meres=meres,
+                           tol_s=tol_s, ig_s=ig_s, ma_s=date.today().isoformat(),
                            forras_het=sorted(forras_het.items(), key=lambda x: -x[1]),
                            kizarva=request.cookies.get(_NEM_SZAMOL_SUTI) == "1")
 
@@ -19689,12 +19705,12 @@ def admin_latogatottsag_letoltes():
     tiltas = _admin_kapu()
     if tiltas is not None:
         return tiltas
-    napok = max(1, min(90, int(request.args.get("napok", 30) or 30)))  # 1 = csak a mai nap (fix159)
+    napok, veg, tol_s, ig_s = _admin_idoszak()              # fix285
     adat: dict[str, Any] = {"keszult": datetime.now().isoformat(timespec="minutes"),
-                            "napok": napok}
-    for nev, fv in (("naponta", lambda: database.latogatas_osszesites(napok)),
-                    ("reszlet", lambda: database.latogatas_reszletek(napok)),
-                    ("meres", lambda: database.meres_osszesites(napok))):
+                            "napok": napok, "tol": tol_s, "ig": ig_s}
+    for nev, fv in (("naponta", lambda: database.latogatas_osszesites(napok, veg)),
+                    ("reszlet", lambda: database.latogatas_reszletek(napok, veg)),
+                    ("meres", lambda: database.meres_osszesites(napok, veg))):
         try:
             adat[nev] = fv()
         except Exception:

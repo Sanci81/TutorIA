@@ -4009,19 +4009,46 @@ def latogatas_rogzit(nap: date, latogato: str, utvonal: str, eszkoz: str, forras
         db.close()
 
 
-def latogatas_osszesites(napok: int = 30) -> list[dict[str, Any]]:
+# fix285 (Sándor: „a látogatottság adja az infót – pontos, mindenre kiterjedő legyen”):
+# VALÓDI LÁTOGATÓ = akinek a böngészője ténylegesen futtatta az oldalt (jelzett: idő,
+# görgetés, kattintás, mintalecke-lépés, űrlap). A böngészőnek álcázott gépek (linkbejárók)
+# csak letöltik az oldalt, jelezni nem jeleznek – ők a „gép” számba kerülnek.
+_JS_ESEMENY = ("mlepes_", "minta_vege", "bekuldte", "regisztralt", "hiba_")
+
+
+def _idoszak(napok: int, veg: date | None) -> tuple[date, date]:
+    veg = veg or date.today()
+    return veg - timedelta(days=max(1, napok) - 1), veg
+
+
+def _valodi_kulcsok(db, kezdo: date, veg: date) -> set:
+    """(nap, látogatói kód) párok, akiknél a böngésző jelzett (mérés-sor van róluk)."""
+    k = set(db.execute(select(Meres.nap, Meres.latogato)
+                       .where(Meres.nap >= kezdo, Meres.nap <= veg)).all())
+    for nap, ki, ut in db.execute(select(Latogatas.nap, Latogatas.latogato, Latogatas.utvonal)
+                                  .where(Latogatas.nap >= kezdo, Latogatas.nap <= veg,
+                                         Latogatas.forras == "esemeny")).all():
+        if (ut or "").lstrip("#").startswith(_JS_ESEMENY):
+            k.add((nap, ki))
+    return k
+
+
+def latogatas_osszesites(napok: int = 30, veg: date | None = None) -> list[dict[str, Any]]:
     """Naponként: egyedi látogató, oldalmegnyitás, mobilos látogató, források,
-    és hány új szülői fiók jött létre aznap. A legfrissebb nap van elöl."""
-    kezdo = date.today() - timedelta(days=max(1, napok) - 1)
+    és hány új szülői fiók jött létre aznap. A legfrissebb nap van elöl.
+    fix285: „valodi” = ebből hánynál jelzett a böngésző is (a többi gép)."""
+    kezdo, veg = _idoszak(napok, veg)
     db = _session()
     try:
         sorok = db.execute(
             select(Latogatas.nap, Latogatas.latogato, Latogatas.eszkoz, Latogatas.forras, Latogatas.utvonal)
-            .where(Latogatas.nap >= kezdo)
+            .where(Latogatas.nap >= kezdo, Latogatas.nap <= veg)
         ).all()
         regek = db.execute(
-            select(Parent.created_at).where(Parent.created_at >= datetime.combine(kezdo, datetime.min.time()))
+            select(Parent.created_at).where(Parent.created_at >= datetime.combine(kezdo, datetime.min.time()),
+                                            Parent.created_at < datetime.combine(veg + timedelta(days=1), datetime.min.time()))
         ).all()
+        valodi = _valodi_kulcsok(db, kezdo, veg)
     finally:
         db.close()
     napi: dict[date, dict[str, Any]] = {}
@@ -4052,21 +4079,23 @@ def latogatas_osszesites(napok: int = 30) -> list[dict[str, Any]]:
         n = napi[d]
         ki.append({"nap": d, "latogato": len(n["latogatok"]), "megnyitas": n["megnyitas"],
                    "mobil": len(n["mobil"]), "forras": dict(sorted(n["forras"].items(), key=lambda x: -x[1])),
-                   "reg": n["reg"], "es": len(n["es"])})
+                   "reg": n["reg"], "es": len(n["es"]),
+                   "valodi": sum(1 for x in n["latogatok"] if (d, x) in valodi)})
     return ki
 
 
-def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
+def latogatas_reszletek(napok: int = 30, veg: date | None = None, csak_valodi: bool = True) -> dict[str, Any]:
     """Részletes kép (2026-11-04): melyik oldalt nézik, honnan érkeznek, és a
     regisztrációs tölcsér – hányan jutnak el a regisztrációs oldalig, hányan
     küldik be, hol akadnak el. Egy „látogató” = egy napi kód egy adott napon."""
-    kezdo = date.today() - timedelta(days=max(1, napok) - 1)
+    kezdo, veg = _idoszak(napok, veg)
     db = _session()
     try:
         sorok = db.execute(
             select(Latogatas.nap, Latogatas.latogato, Latogatas.utvonal, Latogatas.forras, Latogatas.ido)
-            .where(Latogatas.nap >= kezdo).order_by(Latogatas.ido)
+            .where(Latogatas.nap >= kezdo, Latogatas.nap <= veg).order_by(Latogatas.ido)
         ).all()
+        valodi = _valodi_kulcsok(db, kezdo, veg)
     finally:
         db.close()
     ut: dict[tuple, dict[str, Any]] = {}
@@ -4087,7 +4116,8 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
     belepes: dict[str, int] = {}
     forras_t: dict[str, dict[str, int]] = {}
     hibak: dict[str, int] = {}
-    t = {"latogato": 0, "minta_kezdte": 0, "minta_vege": 0, "csomagok": 0, "reg_oldal": 0, "bekuldte": 0, "regisztralt": 0}
+    t = {"latogato": 0, "minta_kezdte": 0, "minta_vege": 0, "csomagok": 0, "reg_oldal": 0, "bekuldte": 0, "regisztralt": 0,
+         "osszes": 0, "gep": 0}
     # fix186: ugyanez nyelvenként (hu = magyar oldal, es = /es/ oldal)
     nyelvi = {ny: {"latogato": 0, "minta_kezdte": 0, "reg_oldal": 0, "regisztralt": 0} for ny in ("hu", "es")}
     minta_evf: dict[str, int] = {}   # fix160: melyik nyelv/évfolyam mintaleckéjét kezdték
@@ -4095,6 +4125,10 @@ def latogatas_reszletek(napok: int = 30) -> dict[str, Any]:
     for kulcs, u in ut.items():
         oldalak = [norm(x) for x in u["oldalak"]]
         if not oldalak and not u["esemeny"]:
+            continue
+        t["osszes"] += 1
+        if csak_valodi and kulcs not in valodi:     # fix285: a gép nem látogató
+            t["gep"] += 1
             continue
         t["latogato"] += 1
         for o in set(oldalak):
@@ -4173,18 +4207,18 @@ def meres_rogzit(nap: date, latogato: str, oldal: str, fajta: str, cimke: str, e
         db.close()
 
 
-def meres_osszesites(napok: int = 30) -> list[dict[str, Any]]:
+def meres_osszesites(napok: int = 30, veg: date | None = None) -> list[dict[str, Any]]:
     """Oldalanként: hány látogató mérhető, mire kattintottak (egyedi látogató
     szerint), hányan jutottak le 25/50/75/100 %-ig, és a medián idő (mp)."""
-    kezdo = date.today() - timedelta(days=max(1, napok) - 1)
+    kezdo, veg = _idoszak(napok, veg)
     db = _session()
     try:
         sorok = db.execute(select(Meres.nap, Meres.latogato, Meres.oldal, Meres.fajta, Meres.cimke, Meres.ertek)
-                           .where(Meres.nap >= kezdo)).all()
+                           .where(Meres.nap >= kezdo, Meres.nap <= veg)).all()
         # 2026-11-05: honnan jött – hogy látsszon, a hirdetésből jövők
         # maradnak-e rövidebb ideig (első nem belső forrás aznap).
         lat_sorok = db.execute(select(Latogatas.nap, Latogatas.latogato, Latogatas.forras)
-                               .where(Latogatas.nap >= kezdo).order_by(Latogatas.ido)).all()
+                               .where(Latogatas.nap >= kezdo, Latogatas.nap <= veg).order_by(Latogatas.ido)).all()
     finally:
         db.close()
     honnan: dict[tuple, str] = {}

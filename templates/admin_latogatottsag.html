@@ -44,10 +44,20 @@
   <h1>Látogatottság</h1>
   {# Claude-nak: egy gombbal letölthető, kis szövegfájl. Csak összesített
      számok, személyes adat nincs benne. A TutorIA\adatok mappába mentsd. #}
-  <p style="margin:0 0 14px"><a href="{{ url_for('admin_latogatottsag_letoltes', napok=napok) }}"
+  <p style="margin:0 0 14px"><a href="{{ url_for('admin_latogatottsag_letoltes', tol=tol_s, ig=ig_s) if tol_s else url_for('admin_latogatottsag_letoltes', napok=napok) }}"
      style="display:inline-block;background:#17604A;color:#fff;font-weight:800;padding:8px 16px;border-radius:999px;text-decoration:none">
      ⬇ Letöltés Claude-nak ({{ napok }} nap)</a></p>
-  <p class="al">Nyilvános oldalak (főoldal, csomagok, regisztráció, GYIK, blog), be nem jelentkezett látogatók. Robotok és a saját eszközeid nélkül.</p>
+  <p class="al">Nyilvános oldalak (főoldal, csomagok, regisztráció, GYIK, blog, mintalecke), be nem jelentkezett látogatók. Robotok és a saját eszközeid nélkül.</p>
+  {# fix285: időszak naptárral is #}
+  <form method="get" action="{{ url_for('admin_latogatottsag') }}" class="valt" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px">
+    <b>Időszak:</b>
+    {% for n in [1, 7, 30, 90] %}<a href="{{ url_for('admin_latogatottsag', napok=n) }}"{% if n == napok and not tol_s %} style="text-decoration:underline"{% endif %}>{{ 'Ma' if n == 1 else n ~ ' nap' }}</a>{% endfor %}
+    <span>· vagy naptárból:</span>
+    <input type="date" name="tol" value="{{ tol_s }}" max="{{ ma_s }}" required style="padding:5px 8px;border:1px solid #cfe0d6;border-radius:8px">
+    <span>–</span>
+    <input type="date" name="ig" value="{{ ig_s or ma_s }}" max="{{ ma_s }}" required style="padding:5px 8px;border:1px solid #cfe0d6;border-radius:8px">
+    <button type="submit" style="background:#17604A;color:#fff;border:0;border-radius:999px;padding:6px 14px;font-weight:800;cursor:pointer">Mutasd</button>
+  </form>
   {% if kizarva %}
   <p class="ok">✅ Ez az eszköz ki van zárva a számolásból.</p>
   {% else %}
@@ -55,7 +65,8 @@
   {% endif %}
 
   <div class="kartyak">
-    <div class="k"><b>{{ osszes.latogato }}</b><span>látogató {{ 'ma' if napok == 1 else 'az utolsó ' ~ napok ~ ' napban' }}</span></div>
+    <div class="k"><b>{{ osszes.valodi }}</b><span>valódi látogató {{ (tol_s ~ ' – ' ~ ig_s) if tol_s else ('ma' if napok == 1 else 'az utolsó ' ~ napok ~ ' napban') }}</span>
+      <small style="display:block;color:#7a8b83;font-size:12px;margin-top:4px">+ {{ osszes.latogato - osszes.valodi }} gép vagy azonnal távozó (összesen {{ osszes.latogato }})</small></div>
     <div class="k"><b>{{ osszes.megnyitas }}</b><span>oldalmegnyitás</span></div>
     <div class="k"><b>{{ (100 * osszes.mobil / osszes.latogato)|round|int if osszes.latogato else 0 }}%</b><span>telefonról</span></div>
     <div class="k"><b>{{ osszes.reg }}</b><span>új regisztráció</span></div>
@@ -70,7 +81,9 @@
   {% set NEV = {'/minta':'Mintalecke (évfolyamválasztó)','/':'Főoldal','/csomagok':'Csomagok','/register':'Regisztráció','/login':'Belépés','/gyik':'GYIK','/blog':'Blog','/adatvedelem':'Adatvédelem','/feltetelek':'Feltételek'} %}
   {% set HIBA = {'hiba_jelszo_rovid':'Túl rövid jelszó','hiba_jelszo_nem_egyezik':'A két jelszó nem egyezett','hiba_nem_fogadta_el':'Nem pipálta be az elfogadást','hiba_pin':'Rossz szülői PIN (nem 4 számjegy)','hiba_email_foglalt':'Már regisztrált e-mail'} %}
   {% set FN = {'facebook':'Facebook','facebook_hirdetes':'Facebook-hirdetés','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Ismeretlen'} %}
-  <h2 style="font-size:20px;margin:22px 0 10px">Hol akadnak el? <small style="font-weight:600;color:#5f7469">(utolsó {{ napok }} nap)</small></h2>
+  <h2 style="font-size:20px;margin:22px 0 10px">Hol akadnak el? <small style="font-weight:600;color:#5f7469">({{ (tol_s ~ ' – ' ~ ig_s) if tol_s else 'utolsó ' ~ napok ~ ' nap' }}, csak valódi látogatók)</small></h2>
+  <p class="al" style="margin:-4px 0 10px"><small>Valódi látogató = akinek a böngészője ténylegesen megnyitotta az oldalt (görgetett, kattintott, vagy legalább 1 mp-ig ott volt).
+    A böngészőnek álcázott gépeket ({{ T.gep or 0 }} db) kihagytuk. Egy látogató = egy eszköz egy napon. A százalék mindig a „Megnyitotta az oldalt” sorhoz képest.</small></p>
   <div class="tolcser">
     {% for cim, n in [('Megnyitotta az oldalt', T.latogato), ('Mintaleckét kezdett', T.minta_kezdte or 0), ('Végigcsinálta a mintaleckét', T.minta_vege or 0), ('Megnézte a csomagokat', T.csomagok), ('Eljutott a regisztrációhoz', T.reg_oldal), ('Beküldte az űrlapot', T.bekuldte), ('Regisztrált', T.regisztralt)] %}
     <div class="t-sor"><span class="t-cim">{{ cim }}</span>
@@ -129,10 +142,11 @@
     {% for n in [1, 7, 30, 90] %}<a href="{{ url_for('admin_latogatottsag', napok=n) }}"{% if n == napok %} style="text-decoration:underline"{% endif %}>{{ 'Ma' if n == 1 else n ~ ' nap' }}</a>{% endfor %}
   </p>
   <table>
-    <tr><th>Nap</th><th class="sz">Látogató</th><th class="sz">ebből 🇪🇸</th><th class="sz">Megnyitás</th><th class="sz mob-rejt">Telefon</th><th class="mob-rejt">Honnan</th><th class="sz">Regisztráció</th></tr>
+    <tr><th>Nap</th><th class="sz">Valódi</th><th class="sz">Látogató</th><th class="sz">ebből 🇪🇸</th><th class="sz">Megnyitás</th><th class="sz mob-rejt">Telefon</th><th class="mob-rejt">Honnan</th><th class="sz">Regisztráció</th></tr>
     {% for x in sorok %}
     <tr class="{{ 'nul' if not x.latogato and not x.reg }}">
       <td>{{ x.nap.strftime('%m.%d.') }} <small>{{ ['H','K','Sze','Cs','P','Szo','V'][x.nap.weekday()] }}</small></td>
+      <td class="sz"><b>{{ x.valodi or 0 }}</b></td>
       <td class="sz">{{ x.latogato }}</td>
       <td class="sz">{{ x.es or 0 }}</td>
       <td class="sz">{{ x.megnyitas }}</td>

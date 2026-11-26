@@ -233,6 +233,9 @@
         if (sz > max) { max = sz; [25, 50, 75, 100].forEach(function (k) { if (max >= k && !jelzett[k]) { jelzett[k] = 1; sor.push({f: 'gorget', p: P, v: k}); } }); } }
       addEventListener('scroll', function () { if (!gorg._t) { gorg._t = setTimeout(function () { gorg._t = 0; gorg(); }, 250); } }, {passive: true});
       setTimeout(gorg, 1200);
+      /* fix285: „itt vagyok” – csak valódi böngésző küldi, a linkbejáró gépek nem; ebből
+         számoljuk a valódi látogatót. Személyes adat nincs benne. */
+      setTimeout(function () { sor.push({f: 'lat', p: P, v: 1}); kuld(); }, 1000);
       function ido() { var most = Date.now(); if (lathato) { aktiv += most - utolso; } utolso = most; }
       document.addEventListener('visibilitychange', function () { ido(); lathato = !document.hidden;
         if (document.hidden) { sor.push({f: 'ido', p: P, v: Math.round(aktiv / 1000)}); kuld(); } });
