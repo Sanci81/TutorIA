@@ -709,8 +709,12 @@
     }
 
     // ── INDULÁS ─────────────────────────────────────────────────────────
-    function indul() {
-        D.body.appendChild(doboz);
+    /* fix284 (a main GYIK-oldalán Lumi nem jött ki, a próbán igen – Sándor gépén, azonos ablakban
+       nézve): induláskor még nem talált helyet, és többé nem is próbálta; pár másodperccel később
+       ugyanott már talált volna. Most ha elsőre nincs hely, 0,7 mp-enként még 6-szor megpróbálja. */
+    function kijonHaLehet(proba) {
+        if (kijott) { return; }
+        akadalyIdo = 0;
         var cel = fodoboz(), h = cel && helyDoboz(cel);
         horgony = cel;
         // ha van űrlap, egyenesen az első mezőre ugrik (a doboz tetején a fölötte lévő szöveget takarná)
@@ -718,6 +722,11 @@
             var r = m.getBoundingClientRect(); return m.type !== 'hidden' && m.offsetParent && r.width > 120 && r.left >= 0 && r.right <= innerWidth && r.top > 80 && r.bottom < innerHeight - 20; })[0];
         var hm = elso && helyMezo(elso); if (hm) { horgony = elso; h = hm; }
         if (h) { kijott = true; tedd(function () { return var_(400).then(function () { return kijon({y: h.y, hely2: h}); }); }); }
+        else if (proba < 6) { setTimeout(function () { kijonHaLehet(proba + 1); }, 700); }
+    }
+    function indul() {
+        D.body.appendChild(doboz);
+        kijonHaLehet(0);
         D.querySelectorAll('main form, .content form, .fp form').forEach(function (f) { if (!f.closest('header, nav')) { urlap(f); } });
         D.querySelectorAll('details').forEach(function (d) {
             d.addEventListener('toggle', function () {
