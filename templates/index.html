@@ -300,6 +300,9 @@
   .fo .fo-osveny .fo-ut{display:none}
   .fo .fo-allomas:not(:last-child)::after{content:"";position:absolute;left:50%;bottom:-32px;height:28px;border-left:4px dotted var(--narancs)}
   .fo .fo-allomas .fo-lap{height:180px}
+  /* fix288 (Sándor, telefon): a „Választ tantárgyat” kép alja (Matematika) le volt vágva – telefonon a teljes kép látszik */
+  .fo .fo-allomas .fo-lap.fo-kep{height:auto}
+  .fo .fo-allomas .fo-lap.fo-kep img{height:auto;display:block}
 }
 .fo .fo-kep::before{content:"";position:absolute;right:-70px;top:-70px;width:580px;height:720px;
   background:radial-gradient(closest-side,var(--bezs) 72%,rgba(251,245,234,0) 100%);z-index:0}
@@ -640,7 +643,7 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
         <div class="fo-targy"><i class="fo-ti1">📖</i>Lengua Castellana</div>
         <div class="fo-targy"><i class="fo-ti2">➕</i>Matemáticas</div></div></div>
       {% else %}
-      <div class="fo-lap fo-kep"><img loading="lazy" src="{{ url_for('static', filename='bemutato/lepes2.png') }}" alt=""></div>
+      <div class="fo-lap fo-kep"><img loading="lazy" width="700" height="518" src="{{ url_for('static', filename='bemutato/lepes2.png') }}" alt=""></div>
       {% endif %}
       <b>{{ t('bem_l2_cim') }}</b><span>{{ 'Los temas se abren en orden, como en el colegio.' if es else 'A témakörök sorban nyílnak, mint a suliban.' }}</span>
     </div>
@@ -650,7 +653,7 @@ body:has(.fo):not(:has(.gymenu)) .flash-container{margin-top:92px}
       <div class="fo-lap"><div class="fo-minichat"><div class="fo-mc-cim">Las tablas de multiplicar</div>
         ¡Muy bien! 👏 Multiplicar es sumar varias veces: 3 × 4 significa sumar el cuatro tres veces.<br>¿Cuánto es 3 × 5?</div></div>
       {% else %}
-      <div class="fo-lap fo-kep"><img loading="lazy" src="{{ url_for('static', filename='bemutato/lepes3.png') }}" alt=""></div>
+      <div class="fo-lap fo-kep"><img loading="lazy" width="696" height="500" src="{{ url_for('static', filename='bemutato/lepes3.png') }}" alt=""></div>
       {% endif %}
       <b>{{ t('bem_l3_cim') }}</b><span>{{ t('bem_l3') }}</span>
     </div>
