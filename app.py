@@ -8328,6 +8328,10 @@ def _vocab_valaszlehetosegek(szoveg: str) -> str:
     if "<VOCAB" not in szoveg:
         return szoveg
     feladat_van = bool(_CHAT_MARKER_FELADAT.search(szoveg))
+    try:
+        _hu_oldal = (_active_curriculum() or "HU").upper() != "ES"     # fix281: egyelőre csak a magyar oldal
+    except Exception:
+        _hu_oldal = True
 
     def csere(m: "re.Match[str]") -> str:
         blokk = m.group(0)
@@ -8344,6 +8348,15 @@ def _vocab_valaszlehetosegek(szoveg: str) -> str:
         if feladat_van:
             return ""
         elotte = szoveg[:m.start()].casefold()
+        # fix281 (Sándor, 8. o. spanyol: a kérdés után 10 szó állt egy sorban – „kaotikus”):
+        # (1) több mint 4 jelölő egyben nem választék, hanem szólista → nem látszik;
+        # (2) ha a kérdés maga már felsorolta a lehetőségeket, a lista csak ismétlés.
+        # A szójegyzékbe mindkét esetben bekerülnek.
+        if _hu_oldal:
+            if len(szavak) > 4:
+                return ""
+            if sum(1 for sz in szavak if sz.casefold() in elotte[-300:]) >= 2:
+                return ""
         # ÖSSZEFOGLALÓ: ha a mondat már kimondta mindegyik szót, a felsorolás
         # csak ismétlés — a szójegyzékbe ettől még bekerül, a képernyőre nem.
         if all(sz.casefold() in elotte for sz in szavak):
@@ -13744,6 +13757,21 @@ Jelenlegi témakör: {current_topic}
     if teszt_info:
         prompt += teszt_info
 
+    if is_foreign_language and lang and not es_curriculum:
+        # fix281 (Sándor, 8. o. spanyol, 1. lecke: ötször ugyanaz a kérdés ugyanazzal a három
+        # közeli szóval, két jó válasszal; a végén a lecke összes szava egy sorban).
+        prompt += f"""
+=== VÁLASZTÓS KÉRDÉS NYELVÓRÁN ===
+- Ha választást kérsz („melyik szó jelenti…”), a lehetőségek közül csak EGY lehet helyes.
+  Közeli jelentésű szavakat (pl. seguramente – probablemente – tal vez, vagy always – usually)
+  ne tegyél egymás mellé rossz lehetőségnek: a rossz lehetőségek jelentése legyen
+  egyértelműen más (pl. el mundo, el cambio). A közeli szavak KÜLÖNBSÉGÉT külön tanítsd,
+  példamondattal, ne találós kérdéssel.
+- Ugyanazt a kérdést ugyanazzal a szóhármassal ne tedd fel újra meg újra. Ha a gyerek már
+  tudja, lépj tovább; ha nem, kérdezd másképp (mondatban, vagy fordítva: {lang} → {native_label}).
+- Egy üzenetben csak annak a szónak (legfeljebb 3-nak) írj <VOCAB> jelölőt, amit ABBAN az
+  üzenetben tanítasz. Ne sorold fel újra a lecke összes szavát.
+"""
     if is_foreign_language and lang:
         prompt += f"""
 EMLÉKEZTETŐ: Ne felejtsd el a <VOCAB>{native_label}={lang}</VOCAB> markereket minden új szónál!
