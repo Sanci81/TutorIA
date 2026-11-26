@@ -2044,7 +2044,10 @@ def mintalecke(evf: int):
     lk = _ml.lecke(ny, evf)
     if not lk:
         return redirect(url_for("mintalecke_valaszt"))
-    _latogatas_esemeny(f"minta_{ny}_{evf}")
+    # fix280: a „kezdte” jelzés NEM itt megy, hanem az első lépésnél (mintalecke_lepes, n=0),
+    # amit a böngésző JS-e küld. Ok: 11-25-én 21 „kezdés” volt, évfolyamonként 3–4, de egyetlen
+    # lépés-jelzés sem – böngészőnek álcázott gépek (linkbejárók) nyitották meg sorban az
+    # összes évfolyamot. Ezek JS-t nem futtatnak, így most nem számítanak kezdésnek.
     # fix217: ahol van beszélgetős változat, az megy (most: 2. osztály HU+ES)
     _chat = getattr(_ml, "chat", lambda *_: None)(ny, evf)
     # fix231 (Sándor: „ha jó, mehet a főoldalra”): minden évfolyam kész (HU 1–8, ES 1–6),
@@ -2063,6 +2066,8 @@ def mintalecke_lepes(evf: int, n: int):
     süti és IP nélkül – ugyanúgy, mint a többi tölcsér-lépés."""
     if MINTALECKE and 1 <= evf <= 8 and (0 <= n <= 60 or n == 99):
         ny = "es" if g.lang == "es" else "hu"
+        if n == 0:
+            _latogatas_esemeny(f"minta_{ny}_{evf}")      # fix280: a valódi kezdés
         _latogatas_esemeny(f"mlepes_{ny}_{evf}_{n}")
     return ("", 204)
 
