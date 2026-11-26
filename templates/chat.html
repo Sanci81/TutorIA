@@ -1431,8 +1431,10 @@
 .dm .ib-c.akt[data-sor="v"]{background:var(--narancs-a)}
 .dm .ib-tabla.ib-kesz .ib-c[data-sor="e"]{border-color:var(--menta);background:#E7F6EE}
 .dm .ib-m{color:#D27E0B;font-size:16px;font-weight:900;line-height:1}
-.dm .ib-c[data-sor="b"] .ib-m{position:absolute;top:1px;right:1px;font-size:14px;background:#FFF1D6;border-radius:6px;padding:0 3px}
+.dm .ib-c[data-sor="b"] .ib-m{position:absolute;top:-6px;right:-7px;font-size:14px;background:#FFF1D6;border-radius:6px;padding:0 3px;z-index:1}
+.dm .ib-c[data-sor="b"] .ib-m.ib-mhely{min-width:19px;height:19px;font-size:12px;padding:0}
 .dm .ib-mszin{color:#D27E0B}
+.dm .ib-m.ib-mhely{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border:2px dashed var(--narancs);border-radius:6px;background:#FFF8EA;color:#E0A040}
 .dm .ib-beiro{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:4px 0 8px}
 .dm .ib-kerdes{font-size:19px;font-weight:800;text-align:center}
 .dm .ib-kerdes small{font-weight:700;color:var(--halvany);font-size:14px}
@@ -1452,13 +1454,15 @@
 .dm .ms-uj{background:#E7F6EE;color:var(--zold-s)}
 .dm .kb-fo{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0}
 .dm .kb-oszlop{display:flex;flex-direction:column;gap:6px}
-.dm button.kb-val{padding:4px 6px;background:#fff;border:3px solid #E3ECE6;border-radius:14px;line-height:0;touch-action:manipulation}
+.dm button.kb-val{padding:3px;background:#fff;border:3px solid #E3ECE6;border-radius:14px;line-height:0;touch-action:manipulation}
 .dm button.kb-val.kijelolt{border-color:var(--narancs);background:#FFF8EA}
-.dm .kb-maci{width:150px;height:auto;max-width:42vw}
 .dm .kb-galeria{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin:10px 0 4px;min-height:10px}
-.dm .kb-galeria svg{width:54px;height:auto;background:#fff;border-radius:12px;border:2px solid #E3ECE6}
 .dm .kb-galeria.kb-tabla{display:grid;justify-content:center;gap:6px}
-.dm .kb-galeria.kb-tabla svg{width:100%;max-width:70px;justify-self:center;border-color:#CFE3D7}
+.dm .kb-m{position:relative;aspect-ratio:640/710;width:100%}
+.dm .kb-m img{position:absolute;inset:0;width:100%;height:100%}
+.dm .kb-nagy{width:170px;max-width:44vw}
+.dm .kb-galeria .kb-m{width:60px;background:#fff;border-radius:12px;border:2px solid #E3ECE6}
+.dm .kb-galeria.kb-tabla .kb-m{width:70px;border-color:#CFE3D7}
 .dm .mk-sulyok{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:2px 0 4px}
 .dm button.mk-gomb{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;background:#fff;border:2px solid #E0D6C8;border-radius:12px;font-size:14px;touch-action:manipulation}
 .dm button.mk-gomb:active{transform:translateY(2px)}
@@ -9026,6 +9030,7 @@
         }
         function valasz(v) {
             if (fut || D.kesz()) { return; }
+            if (mar) { maradek(v); return; }
             var x = L[li], m = M[mi], jo = v === x.jegy || (m[1] === '+' && x.ossz >= 10 && v === x.ossz);
             if (jo) {
                 fut = true; if (!hibaMost) { elsore++; } osszLepes++; beir(x, true);
@@ -9044,18 +9049,49 @@
             D.jelez(false, D.T('Nem ennyi. Számold újra: <b>' + sz.m + '</b>.' + t, 'No es eso. Vuelve a calcular: <b>' + sz.m + '</b>.' + t));
             bill.torol();
         }
+        /* fix293 (Sándor: a régi oszlopos táblában a gyerek MAGA írta fel az egyest – ez kell itt is):
+           ha az oszlop eredménye kétjegyű (vagy kölcsönkértünk), a maradékot a gyerek írja be a
+           következő oszlopba – összeadásnál felülre, kivonásnál a lenti szám mellé. */
+        var mar = null;
         function beir(x, jo) {
             var h = hely('e', li); h.textContent = x.jegy; D.animal(h, 'pattan');
             D.hang('sine', 660 + li * 60);
-            var msg = '';
-            if (x.uj) {
-                var cel = M[mi][1] === '+' ? hely('m', li + 1) : hely('b', li + 1);
-                if (cel) { var s = document.createElement('span'); s.className = 'ib-m'; s.textContent = '1'; cel.appendChild(s); D.animal(s, 'pattan'); }
-                msg = M[mi][1] === '+' ? D.T('Leírom ' + HU_T[x.jegy].replace(/^(az?) /, '$1 <b>') + '</b>, marad <b>1</b> – átvisszük a következő oszlopba.', 'Escribo el <b>' + x.jegy + '</b> y me llevo <b>1</b> a la columna siguiente.')
-                    : D.T('Leírom ' + HU_T[x.jegy].replace(/^(az?) /, '$1 <b>') + '</b>, és <b>1</b> marad – a következő oszlopban hozzáadjuk a lenti számhoz.', 'Escribo el <b>' + x.jegy + '</b> y me llevo <b>1</b>: en la columna siguiente se suma al número de abajo.');
+            var cel = x.uj ? (M[mi][1] === '+' ? hely('m', li + 1) : hely('b', li + 1)) : null;
+            if (cel) {
+                var s = document.createElement('span'); s.className = 'ib-m ib-mhely'; s.textContent = '?'; cel.appendChild(s);
+                mar = {cel: s, hiba: 0, x: x};
+                if (jo) { D.jelez(true, D.T('Jó! Leírtuk ' + HU_T[x.jegy] + '.', '¡Bien! Escribimos el ' + x.jegy + '.')); }
+                setTimeout(function () {
+                    fut = false; D.animal(s, 'pattan');
+                    D.$('kerd').innerHTML = M[mi][1] === '+' ? D.T('<b>Mennyi marad?</b> Írd fel a következő oszlop tetejére!', '<b>¿Cuánto me llevo?</b> Escríbelo arriba de la columna siguiente.')
+                        : D.T('<b>Mennyi marad?</b> Írd a következő oszlopban a lenti szám mellé!', '<b>¿Cuánto me llevo?</b> Escríbelo junto al número de abajo de la columna siguiente.');
+                    bill.torol();
+                }, jo ? 700 : 1400);
+                return;
             }
-            if (jo) { D.jelez(true, msg || D.T('Jó!', '¡Bien!')); } else if (msg) { D.jelez(false, msg); }
-            setTimeout(function () { hibaMost = 0; fut = false; li++; D.torol(); if (li < L.length) { mutat(); } else { kesz(); } }, x.uj ? 1500 : 800);
+            if (jo) { D.jelez(true, D.T('Jó!', '¡Bien!')); }
+            setTimeout(tovabb, 800);
+        }
+        function tovabb() { hibaMost = 0; fut = false; li++; D.torol(); if (li < L.length) { mutat(); } else { kesz(); } }
+        function maradek(v) {
+            var x = mar.x, osz = M[mi][1] === '+';
+            if (v === 1) {
+                fut = true; mar.cel.textContent = '1'; mar.cel.classList.remove('ib-mhely'); D.animal(mar.cel, 'pattan');
+                if (!mar.hiba) { elsore++; } osszLepes++; mar = null; D.hang('sine', 900);
+                D.jelez(true, osz ? D.T('Igen! Az 1-et visszük tovább, a következő oszlopban hozzáadjuk.', '¡Sí! Me llevo 1 y lo sumo en la columna siguiente.')
+                    : D.T('Igen! Az 1-et a következő oszlopban hozzáadjuk a lenti számhoz.', '¡Sí! Me llevo 1: en la columna siguiente se suma al número de abajo.'));
+                setTimeout(tovabb, 1300); return;
+            }
+            mar.hiba++; D.animal(D.$('ki'), 'rezeg');
+            if (mar.hiba >= 2) {
+                fut = true; osszLepes++; mar.cel.textContent = '1'; mar.cel.classList.remove('ib-mhely'); mar = null;
+                napl.push(D.T('a maradékot nem tudta', 'no supo lo que se lleva'));
+                D.jelez(false, D.T('A maradék <b>1</b> – ezt írjuk fel, és a következő oszlopban hozzáadjuk.', 'Me llevo <b>1</b>: lo escribimos y lo sumamos en la columna siguiente.'));
+                setTimeout(tovabb, 1800); return;
+            }
+            D.jelez(false, osz ? D.T('Az összeg <b>' + x.ossz + '</b> volt. Az utolsó jegyét leírtuk – az első jegye megy tovább.', 'La suma era <b>' + x.ossz + '</b>. Escribimos la última cifra; la primera me la llevo.')
+                : D.T('Kölcsönkértünk (' + x.da + ' helyett ' + x.fe + ' lett) – ezt kell a következő oszlopban visszaadni.', 'Pedimos prestado (' + x.da + ' pasó a ' + x.fe + '): eso es lo que me llevo.'));
+            bill.torol();
         }
         function kesz() {
             var m = M[mi], e = m[1] === '+' ? m[0] + m[2] : m[0] - m[2];
@@ -9315,64 +9351,49 @@
 
     /* ── 4. KOMBINÁCIÓK – öltöztesd fel a macit minden módon ── */
     DM.kombinacio = function (f, D) {
-        var SZIN = {piros: '#E53935', kek: '#1E88E5', sarga: '#FBC02D', zold: '#43A047', lila: '#8E24AA', narancs: '#FB8C00'};
-        var NEV = D.es ? {piros: ['rojo', 'roja'], kek: ['azul', 'azul'], sarga: ['amarillo', 'amarilla'], zold: ['verde', 'verde'], lila: ['morado', 'morada'], narancs: ['naranja', 'naranja']}
-            : {piros: ['piros', 'piros'], kek: ['kék', 'kék'], sarga: ['sárga', 'sárga'], zold: ['zöld', 'zöld'], lila: ['lila', 'lila'], narancs: ['narancs', 'narancs']};
-        var kulcs = Object.keys(SZIN), kev = D.kever(kulcs.slice());
+        /* fix293 (Sándor: a rajzolt maci „nagyon gagyi”): az öltöztetős feladat AI-rajzolt macija és
+           ruharétegei (static/figurak/maci) – a rétegek pontosan ráillenek, bármelyik bármelyikkel felvehető. */
+        var MK = {{ url_for('static', filename='figurak/maci/')|tojson }}, V = '.webp?v=3';
+        var FAJL = {piros: 'red', kek: 'blue', zold: 'green', sarga: 'yellow'};
+        var NEV = D.es ? {piros: ['rojo', 'roja'], kek: ['azul', 'azul'], sarga: ['amarillo', 'amarilla'], zold: ['verde', 'verde']}
+            : {piros: ['piros', 'piros'], kek: ['kék', 'kék'], sarga: ['sárga', 'sárga'], zold: ['zöld', 'zöld']};
+        var kulcs = Object.keys(FAJL), kev = D.kever(kulcs.slice());
         var F = f.felso && f.felso.length ? f.felso : kev.slice(0, 3);
-        var A = f.also && f.also.length ? f.also : D.kever(kulcs.filter(function (k) { return F.indexOf(k) < 0; })).slice(0, 2);
+        var A = f.also && f.also.length ? f.also : D.kever(kulcs.slice()).slice(0, 2);
         var OSSZ = F.length * A.length, talalt = [], sap = null, pol = null, hibaKesz = 0, hibaSzam = 0, fut = false;
-        function maci(s, h, p, x, y) {     // s: méret, h/p: sapka- és pólószín (null: nincs)
-            var t = 'translate(' + x + ',' + y + ') scale(' + s + ')', o = '<g transform="' + t + '">';
-            o += '<circle cx="-26" cy="-58" r="12" fill="#A1724E"/><circle cx="26" cy="-58" r="12" fill="#A1724E"/>' +
-                '<circle cx="-26" cy="-58" r="6" fill="#E6B98F"/><circle cx="26" cy="-58" r="6" fill="#E6B98F"/>';
-            o += '<rect x="-30" y="2" width="60" height="58" rx="22" fill="' + (p ? SZIN[p] : '#C99B73') + '" stroke="#5C3B22" stroke-width="2.5"/>';
-            o += '<ellipse cx="-34" cy="22" rx="10" ry="18" fill="' + (p ? SZIN[p] : '#A1724E') + '" stroke="#5C3B22" stroke-width="2.5" transform="rotate(20 -34 22)"/>' +
-                '<ellipse cx="34" cy="22" rx="10" ry="18" fill="' + (p ? SZIN[p] : '#A1724E') + '" stroke="#5C3B22" stroke-width="2.5" transform="rotate(-20 34 22)"/>';
-            if (p) { o += '<path d="M-14 4 Q0 16 14 4" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="3"/>'; }
-            o += '<circle cx="0" cy="-34" r="34" fill="#A1724E" stroke="#5C3B22" stroke-width="2.5"/>' +
-                '<ellipse cx="0" cy="-22" rx="16" ry="12" fill="#E6B98F"/><ellipse cx="0" cy="-27" rx="6" ry="4.5" fill="#3B2414"/>' +
-                '<path d="M-5 -17 Q0 -13 5 -17" fill="none" stroke="#3B2414" stroke-width="2" stroke-linecap="round"/>' +
-                '<circle cx="-12" cy="-40" r="4.5" fill="#1B1B1B"/><circle cx="12" cy="-40" r="4.5" fill="#1B1B1B"/>' +
-                '<circle cx="-10.5" cy="-41.5" r="1.5" fill="#fff"/><circle cx="13.5" cy="-41.5" r="1.5" fill="#fff"/>';
-            if (h) {
-                o += '<path d="M-34 -50 Q-32 -86 0 -88 Q32 -86 34 -50 Z" fill="' + SZIN[h] + '" stroke="#5C3B22" stroke-width="2.5"/>' +
-                    '<rect x="-37" y="-56" width="74" height="12" rx="6" fill="' + SZIN[h] + '" stroke="#5C3B22" stroke-width="2.5"/>' +
-                    '<circle cx="0" cy="-92" r="8" fill="#fff" stroke="#5C3B22" stroke-width="2"/>';
-            }
-            return o + '</g>';
+        kulcs.forEach(function (c) { ['hat', 'tshirt'].forEach(function (r) { (new Image()).src = MK + 'reteg/' + r + '_' + FAJL[c] + V; }); });
+        function maci(h, p) {      // HTML: alap maci + sapka + póló rétegek
+            return '<div class="kb-m"><img alt="" src="' + MK + 'alap_pad' + V + '">' +
+                (p ? '<img alt="" src="' + MK + 'reteg/tshirt_' + FAJL[p] + V + '">' : '') +
+                (h ? '<img alt="" src="' + MK + 'reteg/hat_' + FAJL[h] + V + '">' : '') + '</div>';
         }
-        function sapkaIkon(h) { return '<svg viewBox="-40 -100 80 60" width="52" height="40"><path d="M-34 -50 Q-32 -86 0 -88 Q32 -86 34 -50 Z" fill="' + SZIN[h] + '" stroke="#5C3B22" stroke-width="3"/>' +
-            '<rect x="-37" y="-56" width="74" height="12" rx="6" fill="' + SZIN[h] + '" stroke="#5C3B22" stroke-width="3"/><circle cx="0" cy="-92" r="7" fill="#fff" stroke="#5C3B22" stroke-width="2"/></svg>'; }
-        function polIkon(p) { return '<svg viewBox="-44 -4 88 60" width="52" height="36"><path d="M-22 0 L-42 12 L-34 28 L-24 22 L-24 54 L24 54 L24 22 L34 28 L42 12 L22 0 Q0 12 -22 0Z" fill="' + SZIN[p] + '" stroke="#5C3B22" stroke-width="3" stroke-linejoin="round"/></svg>'; }
+        function ikon(r, c) { return '<img alt="" src="' + MK + 'reteg/ikon_' + r + '_' + FAJL[c] + V + '" style="width:54px;height:54px;object-fit:contain">'; }
         D.html('<div class="allas" data-id="allas"></div>' +
-            '<div class="kb-fo"><div class="kb-oszlop" data-id="sapkak"></div><svg class="kb-maci" data-id="maci" viewBox="-60 -110 120 180"></svg><div class="kb-oszlop" data-id="polok"></div></div>' +
+            '<div class="kb-fo"><div class="kb-oszlop" data-id="sapkak"></div><div class="kb-nagy" data-id="maci"></div><div class="kb-oszlop" data-id="polok"></div></div>' +
             '<div class="gombok kozep"><span data-id="mentes"></span><span data-id="keszg"></span></div>' +
             '<div class="kb-galeria" data-id="gal"></div><div class="gombok kozep" data-id="valasz"></div>');
         var allas = D.$('allas');
-        F.forEach(function (h) { var b = D.gomb(sapkaIkon(h), 'kb-val', function () { sap = h; frissit(); }); b.dataset.k = h;
+        F.forEach(function (h) { var b = D.gomb(ikon('hat', h), 'kb-val', function () { sap = h; frissit(); }); b.dataset.k = h;
             b.setAttribute('aria-label', D.T(NEV[h][0] + ' sapka', 'gorro ' + NEV[h][0])); D.$('sapkak').appendChild(b); });
-        A.forEach(function (p) { var b = D.gomb(polIkon(p), 'kb-val', function () { pol = p; frissit(); }); b.dataset.k = p;
+        A.forEach(function (p) { var b = D.gomb(ikon('tshirt', p), 'kb-val', function () { pol = p; frissit(); }); b.dataset.k = p;
             b.setAttribute('aria-label', D.T(NEV[p][1] + ' póló', 'camiseta ' + NEV[p][1])); D.$('polok').appendChild(b); });
         var mentB = D.gomb(D.T('📸 Lefényképezem', '📸 Foto'), 'fo', ment); D.$('mentes').appendChild(mentB);
         var keszB = D.gomb(D.T('Megvan mind!', '¡Ya están todas!'), 'masik', keszNyom); D.$('keszg').appendChild(keszB);
         function frissit() {
-            D.$('maci').innerHTML = maci(1, sap, pol, 0, 0);
+            D.$('maci').innerHTML = maci(sap, pol);
             D.$('sapkak').querySelectorAll('button').forEach(function (b) { b.classList.toggle('kijelolt', b.dataset.k === sap); });
             D.$('polok').querySelectorAll('button').forEach(function (b) { b.classList.toggle('kijelolt', b.dataset.k === pol); });
-            allas.innerHTML = D.T('Válassz sapkát és pólót, aztán fényképezd le! Minden öltözet csak egyszer kell. <b>Eddig: ' + talalt.length + '</b>',
-                'Elige gorro y camiseta y hazle una foto. Cada conjunto solo una vez. <b>Llevas: ' + talalt.length + '</b>');
+            allas.innerHTML = D.T('A macinak ' + F.length + ' sapkája és ' + A.length + ' pólója van. <b>Hányféleképpen öltöztethető fel?</b> Rakj rá egy sapkát és egy pólót, és fényképezd le – keresd meg az összes különböző öltözetet! <b>Eddig: ' + talalt.length + '</b>',
+                'El osito tiene ' + F.length + ' gorros y ' + A.length + ' camisetas. <b>¿De cuántas formas se puede vestir?</b> Ponle un gorro y una camiseta y hazle una foto: ¡encuentra todos los conjuntos distintos! <b>Llevas: ' + talalt.length + '</b>');
         }
         function galeria(tabla) {
             var g = D.$('gal'); g.innerHTML = '';
             if (tabla) {
-                g.classList.add('kb-tabla'); g.style.gridTemplateColumns = 'repeat(' + A.length + ', 66px)';
-                F.forEach(function (h) { A.forEach(function (p) { var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '-60 -110 120 180');
-                    s.innerHTML = maci(1, h, p, 0, 0); s.classList.add('pattan'); g.appendChild(s); }); });
+                g.classList.add('kb-tabla'); g.style.gridTemplateColumns = 'repeat(' + A.length + ', 70px)';
+                F.forEach(function (h) { A.forEach(function (p) { g.insertAdjacentHTML('beforeend', maci(h, p)); g.lastChild.classList.add('pattan'); }); });
                 return;
             }
-            talalt.forEach(function (x, n) { var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); s.setAttribute('viewBox', '-60 -110 120 180');
-                s.innerHTML = maci(1, x[0], x[1], 0, 0); if (n === talalt.length - 1) { s.classList.add('pattan'); } g.appendChild(s); });
+            talalt.forEach(function (x, n) { g.insertAdjacentHTML('beforeend', maci(x[0], x[1])); if (n === talalt.length - 1) { g.lastChild.classList.add('pattan'); } });
         }
         function ment() {
             if (fut) { return; }

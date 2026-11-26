@@ -7102,7 +7102,7 @@ def _feladat_parse_belso(text: str, *, grade: int | None = None,
         return out
 
     if tipus == "kombinacio":
-        SZINEK = ("piros", "kek", "sarga", "zold", "lila", "narancs")
+        SZINEK = ("piros", "kek", "sarga", "zold")   # fix293: az AI-maci rétegei ebben a 4 színben vannak
         out = {"tipus": "kombinacio"}
         for kulcs, lo, hi in (("felso", 2, 4), ("also", 2, 3)):
             v = adat.get(kulcs)
@@ -11590,22 +11590,22 @@ _DM_FELULETEK = [
      'számegyenes, számok helye, számkör   → szamvonal', 'recta numérica, situar números      → szamvonal'),
     ("muveletisor", {"matek"}, 3, 4,   # fix292
      'MŰVELETI SORREND – a gyerek a kifejezésben arra a műveletre koppint, amelyik elsőként jön (zárójel, aztán szorzás/osztás, '
-     'aztán balról jobbra), kiszámolja, és a kifejezés lépésenként rövidül. "kifejezesek": 1–3 kifejezés 2–4 művelettel '
+     'aztán balról jobbra), kiszámolja, és a kifejezés lépésenként rövidül. ELŐTTE magyarázd el a sorrendet egy példán. "kifejezesek": 1–3 kifejezés 2–4 művelettel '
      '(+ - * : és zárójel, egész részeredmények, nem negatív):\n'
      '   <FELADAT>{"tipus":"muveletisor","kifejezesek":["24 - 3 * 5 + 2","(8 + 4) : 3 * 2"]}</FELADAT>',
      'JERARQUÍA DE OPERACIONES – el niño toca la operación que va primero (paréntesis, luego multiplicación/división, luego de '
-     'izquierda a derecha), la calcula y la expresión se acorta paso a paso. "kifejezesek": 1–3 expresiones con 2–4 operaciones '
+     'izquierda a derecha), la calcula y la expresión se acorta paso a paso. ANTES explica el orden con un ejemplo. "kifejezesek": 1–3 expresiones con 2–4 operaciones '
      '(+ - * : y paréntesis, resultados enteros, no negativos):\n'
      '   <FELADAT>{"tipus":"muveletisor","kifejezesek":["24 - 3 * 5 + 2","(8 + 4) : 3 * 2"]}</FELADAT>',
      'műveleti sorrend, zárójel            → muveletisor', 'jerarquía de operaciones, paréntesis → muveletisor'),
     ("kombinacio", {"matek"}, 3, 4,   # fix292
      'KOMBINÁCIÓK – a gyerek felöltözteti a macit minden lehetséges módon (sapka × póló), a megtaláltak sorba kerülnek, '
-     'a végén szorzással ellenőrzi, hány lett. "felso": 2–4 sapkaszín, "also": 2–3 pólószín (piros, kek, sarga, zold, lila, narancs):\n'
-     '   <FELADAT>{"tipus":"kombinacio","felso":["piros","kek","sarga"],"also":["zold","lila"]}</FELADAT>',
+     'a végén szorzással ellenőrzi, hány lett (összes eset, rendszerezés → szorzás). ELŐTTE mondd el a célt: hányféleképpen öltöztethető fel, ha minden sapka minden pólóval mehet. "felso": 2–4 sapkaszín, "also": 2–3 pólószín (piros, kek, sarga, zold):\n'
+     '   <FELADAT>{"tipus":"kombinacio","felso":["piros","kek","sarga"],"also":["zold","piros"]}</FELADAT>',
      'COMBINACIONES – el niño viste al osito de todas las formas posibles (gorro × camiseta), las encontradas se guardan '
-     'y al final comprueba con una multiplicación cuántas hay. "felso": 2–4 colores de gorro, "also": 2–3 de camiseta '
-     '(piros, kek, sarga, zold, lila, narancs):\n'
-     '   <FELADAT>{"tipus":"kombinacio","felso":["piros","kek","sarga"],"also":["zold","lila"]}</FELADAT>',
+     'y al final comprueba con una multiplicación cuántas hay. ANTES explica el objetivo: de cuántas formas se puede vestir si cada gorro va con cada camiseta. "felso": 2–4 colores de gorro, "also": 2–3 de camiseta '
+     '(piros, kek, sarga, zold):\n'
+     '   <FELADAT>{"tipus":"kombinacio","felso":["piros","kek","sarga"],"also":["zold","piros"]}</FELADAT>',
      'kombinációk, hányféleképpen, összes lehetőség → kombinacio', 'combinaciones, de cuántas formas    → kombinacio'),
     ("merlegkg", {"matek"}, 3, 4,   # fix292
      'MÉRLEG SÚLYOKKAL (kg, dkg, g) – a bal serpenyőben liszt (pl. 1 kg 30 dkg), a gyerek súlyokat rak a jobb oldalra, '
