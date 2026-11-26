@@ -13,6 +13,11 @@
     'use strict';
     if (window.__lumi) { return; }
     var D = document, NS = 'http://www.w3.org/2000/svg';
+    /* fix286: HIBAKERESŐ NAPLÓ – csak ha a címben ott van: ?lumi=nez. Máskor nem csinál semmit.
+       A napló: window.__lumiNaplo (Claude a böngészőből olvassa ki). */
+    var NAPLO = /[?&]lumi=nez/.test(location.search);
+    function nl() { if (NAPLO) { (window.__lumiNaplo = window.__lumiNaplo || []).push([Math.round(performance.now())].concat([].slice.call(arguments))); } }
+    nl('betoltve', D.readyState);
     var kevesMozgas = false;
     try { kevesMozgas = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
 
@@ -138,7 +143,7 @@
     }
     function var_(ms) { return new Promise(function (ok) { setTimeout(ok, ms); }); }
     var sor = Promise.resolve(), fut = 0;
-    function tedd(fv) { fut++; sor = sor.then(fv).catch(function (e) { if (window.console) { console.warn('lumi', e); } }).then(function () { fut--; }); return sor; }
+    function tedd(fv) { fut++; sor = sor.then(fv).catch(function (e) { nl('HIBA', String(e && e.message || e)); if (window.console) { console.warn('lumi', e); } }).then(function () { fut--; }); return sor; }
     function legyen(k) { P.kep = k; P.tukor = 0; rajzol(); }
 
     // ── MOZDULATOK (a testtartás a kép, a mozgás a kódé) ──────────────────
@@ -713,6 +718,7 @@
        nézve): induláskor még nem talált helyet, és többé nem is próbálta; pár másodperccel később
        ugyanott már talált volna. Most ha elsőre nincs hely, 0,7 mp-enként még 6-szor megpróbálja. */
     function kijonHaLehet(proba) {
+        nl('kijonHaLehet', proba, 'kijott=' + kijott, 'kint=' + kint, 'scrollY=' + Math.round(scrollY));
         if (kijott) { return; }
         akadalyIdo = 0;
         var cel = fodoboz(), h = cel && helyDoboz(cel);
@@ -721,10 +727,18 @@
         var elso = [].slice.call(D.querySelectorAll('main form input, .fp form input, .content form input')).filter(function (m) {
             var r = m.getBoundingClientRect(); return m.type !== 'hidden' && m.offsetParent && r.width > 120 && r.left >= 0 && r.right <= innerWidth && r.top > 80 && r.bottom < innerHeight - 20; })[0];
         var hm = elso && helyMezo(elso); if (hm) { horgony = elso; h = hm; }
-        if (h) { kijott = true; tedd(function () { return var_(400).then(function () { return kijon({y: h.y, hely2: h}); }); }); }
+        nl('hely', cel && cel.className, h ? Math.round(h.x) + ',' + Math.round(h.y) : null);
+        if (h) {
+            kijott = true;
+            tedd(function () { return var_(400).then(function () { return kijon({y: h.y, hely2: h}); }); });
+            /* fix286: ha a kijövés valamiért elakadt (hiba, vagy közben máshová ment), 4 mp múlva
+               újra próbálja – eddig a „kijott” jelző ilyenkor örökre lezárta az utat. */
+            setTimeout(function () { if (!kint && !fut && proba < 6) { nl('nem jott ki - ujra'); kijott = false; kijonHaLehet(proba + 1); } }, 4000);
+        }
         else if (proba < 6) { setTimeout(function () { kijonHaLehet(proba + 1); }, 700); }
     }
     function indul() {
+        nl('indul');
         D.body.appendChild(doboz);
         kijonHaLehet(0);
         D.querySelectorAll('main form, .content form, .fp form').forEach(function (f) { if (!f.closest('header, nav')) { urlap(f); } });
@@ -742,7 +756,7 @@
             clearTimeout(gIdo);
             gIdo = setTimeout(function bejon() {                      // fix239: ha épp mást csinál, kicsit később jön le
                 if (!kint && (fut || (kijott && Date.now() - bentIdo < 2500))) { gIdo = setTimeout(bejon, 600); return; }
-                if (!kint) { var c0 = fodoboz(); if (c0) { kijott = true; horgony = c0; tedd(function () { var h1 = helyDoboz(c0); return kijon({y: h1.y, hely2: h1}); }); } return; }   // fix239: ha betöltéskor nem volt hova, görgetéskor jön ki
+                if (!kint) { var c0 = fodoboz(); if (c0) { kijott = true; horgony = c0; tedd(function () { var h1 = helyDoboz(c0); nl('gorgetes-kijon', h1 ? 'van hely' : 'NINCS hely'); if (!h1) { kijott = false; return; } return kijon({y: h1.y, hely2: h1}); }); } return; }   // fix286: ha nincs hely, ne zárja le az utat   // fix239: ha betöltéskor nem volt hova, görgetéskor jön ki
                 if (!kint || rendben()) { return; }
                 if (latszik()) {            // fix241: csak részben látszik (a fejléc alatt / alul kilóg) – kötélen átmegy egy egészen látható helyre (vagy hazamászik)
                     if (fut) { gIdo = setTimeout(bejon, 500); return; }
