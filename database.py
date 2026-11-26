@@ -4013,7 +4013,7 @@ def latogatas_rogzit(nap: date, latogato: str, utvonal: str, eszkoz: str, forras
 # VALÓDI LÁTOGATÓ = akinek a böngészője ténylegesen futtatta az oldalt (jelzett: idő,
 # görgetés, kattintás, mintalecke-lépés, űrlap). A böngészőnek álcázott gépek (linkbejárók)
 # csak letöltik az oldalt, jelezni nem jeleznek – ők a „gép” számba kerülnek.
-_JS_ESEMENY = ("mlepes_", "minta_vege", "bekuldte", "regisztralt", "hiba_")
+_JS_ESEMENY = ("mlepes_", "minta_vege", "bekuldte", "regisztralt", "hiba_", "elso_ora")
 
 
 def _idoszak(napok: int, veg: date | None) -> tuple[date, date]:
@@ -4117,7 +4117,7 @@ def latogatas_reszletek(napok: int = 30, veg: date | None = None, csak_valodi: b
     forras_t: dict[str, dict[str, int]] = {}
     hibak: dict[str, int] = {}
     t = {"latogato": 0, "minta_kezdte": 0, "minta_vege": 0, "csomagok": 0, "reg_oldal": 0, "bekuldte": 0, "regisztralt": 0,
-         "osszes": 0, "gep": 0}
+         "osszes": 0, "gep": 0, "elso_ora": 0}
     # fix186: ugyanez nyelvenként (hu = magyar oldal, es = /es/ oldal)
     nyelvi = {ny: {"latogato": 0, "minta_kezdte": 0, "reg_oldal": 0, "regisztralt": 0} for ny in ("hu", "es")}
     minta_evf: dict[str, int] = {}   # fix160: melyik nyelv/évfolyam mintaleckéjét kezdték
@@ -4140,6 +4140,7 @@ def latogatas_reszletek(napok: int = 30, veg: date | None = None, csak_valodi: b
         bek = "bekuldte" in u["esemeny"]
         reg = "regisztralt" in u["esemeny"]
         t["csomagok"] += latta_cs; t["reg_oldal"] += latta_reg; t["bekuldte"] += bek; t["regisztralt"] += reg
+        t["elso_ora"] += "elso_ora" in u["esemeny"]       # fix287: a regisztráció napján el is kezdte a tanulást
         # fix160: mintalecke – esemény: minta_<hu|es>_<évf>, befejezés: minta_vege
         kezdett = sorted(e for e in u["esemeny"] if e.startswith("minta_") and e != "minta_vege")
         t["minta_kezdte"] += bool(kezdett); t["minta_vege"] += "minta_vege" in u["esemeny"]

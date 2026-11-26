@@ -73,20 +73,28 @@
   </div>
 
   {% if forras_het %}
-  <div class="forras">{% for k, v in forras_het %}<span>{{ {'facebook':'Facebook','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Oldalon belül'}.get(k, k) }}: {{ v }}</span>{% endfor %}</div>
+  <div class="forras">{% for k, v in forras_het %}<span>{{ forras_nev.get(k, k) }}: {{ v }}</span>{% endfor %}</div>
   {% endif %}
 
   {% if reszlet %}
   {% set T = reszlet.tolcser %}
   {% set NEV = {'/minta':'Mintalecke (évfolyamválasztó)','/':'Főoldal','/csomagok':'Csomagok','/register':'Regisztráció','/login':'Belépés','/gyik':'GYIK','/blog':'Blog','/adatvedelem':'Adatvédelem','/feltetelek':'Feltételek'} %}
   {% set HIBA = {'hiba_jelszo_rovid':'Túl rövid jelszó','hiba_jelszo_nem_egyezik':'A két jelszó nem egyezett','hiba_nem_fogadta_el':'Nem pipálta be az elfogadást','hiba_pin':'Rossz szülői PIN (nem 4 számjegy)','hiba_email_foglalt':'Már regisztrált e-mail'} %}
-  {% set FN = {'facebook':'Facebook','facebook_hirdetes':'Facebook-hirdetés','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Ismeretlen'} %}
+  {% set FN = forras_nev %}
   <h2 style="font-size:20px;margin:22px 0 10px">Hol akadnak el? <small style="font-weight:600;color:#5f7469">({{ (tol_s ~ ' – ' ~ ig_s) if tol_s else 'utolsó ' ~ napok ~ ' nap' }}, csak valódi látogatók)</small></h2>
   <p class="al" style="margin:-4px 0 10px"><small>Valódi látogató = akinek a böngészője ténylegesen megnyitotta az oldalt (görgetett, kattintott, vagy legalább 1 mp-ig ott volt).
     A böngészőnek álcázott gépeket ({{ T.gep or 0 }} db) kihagytuk. Egy látogató = egy eszköz egy napon. A százalék mindig a „Megnyitotta az oldalt” sorhoz képest.</small></p>
   <div class="tolcser">
-    {% for cim, n in [('Megnyitotta az oldalt', T.latogato), ('Mintaleckét kezdett', T.minta_kezdte or 0), ('Végigcsinálta a mintaleckét', T.minta_vege or 0), ('Megnézte a csomagokat', T.csomagok), ('Eljutott a regisztrációhoz', T.reg_oldal), ('Beküldte az űrlapot', T.bekuldte), ('Regisztrált', T.regisztralt)] %}
-    <div class="t-sor"><span class="t-cim">{{ cim }}</span>
+    {% for cim, n, mit in [
+        ('Megnyitotta az oldalt', T.latogato, 'valódi látogató, bármelyik nyilvános oldalon'),
+        ('Mintaleckét kezdett', T.minta_kezdte or 0, 'elindította a regisztráció nélküli mintaleckét (legalább az 1. lépés)'),
+        ('Végigcsinálta a mintaleckét', T.minta_vege or 0, 'eljutott a mintalecke végéig'),
+        ('Megnézte a csomagokat', T.csomagok, 'megnyitotta az árakat'),
+        ('Eljutott a regisztrációhoz', T.reg_oldal, 'megnyitotta a regisztrációs oldalt'),
+        ('Beküldte az űrlapot', T.bekuldte, 'rányomott a Regisztráció gombra (hibásan is)'),
+        ('Regisztrált', T.regisztralt, 'létrejött a fiókja'),
+        ('Elkezdte az első órát', T.elso_ora or 0, 'a regisztráció napján megnyitotta a gyereke első óráját (ugyanazon az eszközön)')] %}
+    <div class="t-sor"><span class="t-cim">{{ cim }}<small style="display:block;color:#7a8b83;font-size:12px;font-weight:400">{{ mit }}</small></span>
       <span class="t-sav"><i style="width:{{ (100 * n / T.latogato)|round|int if T.latogato else 0 }}%"></i></span>
       <b>{{ n }}</b><small>{{ (100 * n / T.latogato)|round|int if T.latogato else 0 }}%</small></div>
     {% endfor %}
@@ -107,7 +115,7 @@
   <p class="al" style="margin-top:10px"><b>Mintalecke – meddig jutottak (lépésenként, hány látogató):</b></p>
   {% for k, lep in reszlet.minta_lepesek %}
   <p class="al" style="margin:2px 0 0"><small>{{ 'magyar' if k.startswith('hu') else 'spanyol' }} {{ k.split('_')[-1] }}. évf.:
-    {% for n, db in lep %}{% if n == 99 %}<b>végére ért: {{ db }}</b>{% else %}{{ n + 1 }}. lépés: {{ db }}{% endif %}{% if not loop.last %} → {% endif %}{% endfor %}</small></p>
+    {% for n, db in lep %}{% if n == 99 %}<b>végére ért: {{ db }}</b>{% else %}{{ n + 1 }}. lépés{% if lepes_nev.get(k) and n < lepes_nev[k]|length %} <i>({{ lepes_nev[k][n] }})</i>{% endif %}: {{ db }}{% endif %}{% if not loop.last %} → {% endif %}{% endfor %}</small></p>
   {% endfor %}
   {% endif %}
   {% if reszlet.hibak %}
@@ -151,7 +159,7 @@
       <td class="sz">{{ x.es or 0 }}</td>
       <td class="sz">{{ x.megnyitas }}</td>
       <td class="sz mob-rejt">{{ x.mobil }}</td>
-      <td class="mob-rejt"><small>{% for k, v in x.forras.items() %}{{ {'facebook':'Facebook','google':'Google','instagram':'Instagram','kozvetlen':'Közvetlen','belso':'Belső'}.get(k, k) }} {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</small></td>
+      <td class="mob-rejt"><small>{% for k, v in x.forras.items() %}{{ forras_nev.get(k, k) }} {{ v }}{% if not loop.last %} · {% endif %}{% endfor %}</small></td>
       <td class="sz">{{ x.reg }}</td>
     </tr>
     {% endfor %}

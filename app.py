@@ -15279,6 +15279,15 @@ def child_chat(child_id: int):
     child = database.get_child_by_id(child_id, session["parent_id"])
     if not child:
         abort(404)
+    # fix287 (látogatottság): ha a szülő MA regisztrált, és most nyitja az első órát, ez a
+    # tölcsér utolsó lépése („Elkezdte az első órát”). Ugyanaz a napi kód, IP és süti nélkül.
+    try:
+        _cr = (database.get_parent_by_id(session["parent_id"]) or {}).get("created_at")
+        _crd = _cr.date() if hasattr(_cr, "date") else _cr
+        if _crd == date.today() and request.cookies.get(_NEM_SZAMOL_SUTI) != "1":
+            database.latogatas_rogzit(date.today(), _latogato_kod(), "#elso_ora", "gep", "esemeny")
+    except Exception:
+        logger.warning("elso_ora jel hiba", exc_info=True)
 
     # Emlékezés CSAK gyerekváltáskor – oldalbetöltés nem kényszeríti a kapcsolót.
     _sync_switch_on_child_change(child)
@@ -19678,7 +19687,30 @@ def admin_latogatottsag():
     except Exception:
         logger.exception("meres_osszesites hiba")
         meres = []
+    # fix287: a mintalecke lépéseinek neve (ne csak sorszám)
+    lepes_nev: dict = {}
+    try:
+        import mintalecke as _ml
+        def _nev(s: dict) -> str:
+            sz = re.sub(r"<[^>]+>", "", " ".join((s.get("tan") or [])[:1]) or s.get("cim") or "").strip()
+            fajta = ("választós kérdés" if "val" in s else "tízes keret" if "tizes" in s else "betűkirakó" if "betuk" in s
+                     else "tányérok" if "tanyer" in s else "„kérdezz bátran”" if "kerdez" in s else "magyarázat")
+            if "val" in s and not sz:
+                sz = " / ".join(str(v) for v in s["val"])
+            return (fajta + (": " + sz[:45] + ("…" if len(sz) > 45 else "") if sz else ""))
+        for _ny in ("hu", "es"):
+            for _e in _ml.evfolyamok(_ny):
+                _c = _ml.chat(_ny, _e) or []
+                lepes_nev[f"{_ny}_{_e}"] = [_nev(s) for s in _c]
+    except Exception:
+        logger.warning("lepes_nev hiba", exc_info=True)
     return render_template("admin_latogatottsag.html", sorok=sorok, napok=napok, osszes=osszes, reszlet=reszlet, meres=meres,
+                           lepes_nev=lepes_nev,
+                           forras_nev={"facebook": "Facebook", "fb": "Facebook", "facebook_hirdetes": "Facebook-hirdetés (régi link)",
+                                       "fb_hirdetes_hu": "Facebook-hirdetés (magyar)", "fb_hirdetes_es": "Facebook-hirdetés (spanyol)",
+                                       "fb_fooldal": "Facebook-oldalunk", "google": "Google", "instagram": "Instagram",
+                                       "kozvetlen": "Közvetlen (link, könyvjelző, vagy a Facebook-app nem árulta el)",
+                                       "belso": "Ismeretlen / oldalon belül"},
                            tol_s=tol_s, ig_s=ig_s, ma_s=date.today().isoformat(),
                            forras_het=sorted(forras_het.items(), key=lambda x: -x[1]),
                            kizarva=request.cookies.get(_NEM_SZAMOL_SUTI) == "1")
