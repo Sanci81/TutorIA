@@ -8329,7 +8329,7 @@ def _vocab_valaszlehetosegek(szoveg: str) -> str:
         return szoveg
     feladat_van = bool(_CHAT_MARKER_FELADAT.search(szoveg))
     try:
-        _hu_oldal = (_active_curriculum() or "HU").upper() != "ES"     # fix281: egyelőre csak a magyar oldal
+        _hu_oldal = True      # fix282: a spanyol oldalon is (Sándor OK) – a név maradt
     except Exception:
         _hu_oldal = True
 
@@ -13197,6 +13197,20 @@ las respuestas en ESPAÑOL, no solo las palabras extranjeras. Ejemplos: «beinti
 - Solo márcalo como error si el SIGNIFICADO de la respuesta es claramente OTRO.
 """
         prompt += _KERDES_HIGIENIA_ES
+        # fix282 (Sándor OK): ugyanaz a szabály, mint a magyar oldal nyelvóráin (fix281)
+        prompt += (
+            "\n=== PREGUNTAS DE ELEGIR EN LA CLASE DE IDIOMA ===\n"
+            "- Si pides elegir («¿qué palabra significa…?»), solo UNA opción puede ser correcta. No pongas "
+            "como opciones incorrectas palabras de significado parecido (p. ej. always – usually, already – "
+            "just): las incorrectas deben significar algo claramente distinto. La diferencia entre palabras "
+            "parecidas enséñala aparte, con una frase de ejemplo, no como adivinanza.\n"
+            "- En una frase para completar (___) la frase debe decidir sin duda la respuesta: solo UNA opción "
+            "puede encajar (p. ej. «I have ___ finished» admite already y just → añade una palabra o la "
+            "traducción que lo decida, o no pongas las dos como opciones).\n"
+            "- No repitas la misma pregunta con las mismas tres palabras una y otra vez. Si ya la sabe, avanza; "
+            "si no, pregúntalo de otra forma (en una frase, o al revés).\n"
+            "- En un mensaje marca con <VOCAB> solo la palabra (máximo 3) que enseñas EN ESE mensaje. No vuelvas "
+            "a listar todas las palabras de la lección.\n")
         prompt += _NYELVORA_FORDULAT_ES
         prompt += _spiral_block
         prompt += _FELADAT_BLOKK_ES
@@ -13767,6 +13781,9 @@ Jelenlegi témakör: {current_topic}
   ne tegyél egymás mellé rossz lehetőségnek: a rossz lehetőségek jelentése legyen
   egyértelműen más (pl. el mundo, el cambio). A közeli szavak KÜLÖNBSÉGÉT külön tanítsd,
   példamondattal, ne találós kérdéssel.
+- Kiegészítős mondatnál (___) a mondat döntse el egyértelműen a választ: csak EGY lehetőség
+  illhessen bele. Pl. already / yet / just közül a „I have ___ finished” mindkettőre jó → adj
+  hozzá szót vagy magyar fordítást, ami eldönti („épp most”), vagy ne tedd mindkettőt a lehetőségek közé.
 - Ugyanazt a kérdést ugyanazzal a szóhármassal ne tedd fel újra meg újra. Ha a gyerek már
   tudja, lépj tovább; ha nem, kérdezd másképp (mondatban, vagy fordítva: {lang} → {native_label}).
 - Egy üzenetben csak annak a szónak (legfeljebb 3-nak) írj <VOCAB> jelölőt, amit ABBAN az

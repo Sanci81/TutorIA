@@ -10,9 +10,8 @@
     {# fix271: a betűfájlok ELŐRE indulnak (a CSS-sel együtt, nem utána) – eddig a szöveg
        először tartalék betűvel jelent meg, aztán átugrott (gépen „elrendezés-ugrás”, CLS 0,2).
        A latin-ext (ő, ű) csak a magyar oldalon kell. #}
-    {% for _bt in ['latin-400', 'latin-600', 'latin-700', 'latin-800'] + (['latin-ext-400', 'latin-ext-700', 'latin-ext-800'] if lang == 'hu' else []) %}
-    <link rel="preload" href="{{ url_for('static', filename='fonts/nunito-' ~ _bt ~ '-normal.woff2') }}" as="font" type="font/woff2" crossorigin>
-    {% endfor %}
+    {# fix282: KIKAPCSOLVA – Sándor: 11-25 óta Lumi a GYIK-nál nem jön ki (előtte 10/10 jó);
+       a mai feltöltésekből ez az egyetlen minden oldalt érintő változás, ami még kint volt. #}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/betutipus.css', v=statik_v) }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v=statik_v) }}">
     {# Az új kinézet közös része. A szülői és bemutató oldalakon csak a
