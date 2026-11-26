@@ -11572,13 +11572,13 @@ _DM_FELULETEK = [
      'síkidom vagy test, kör, kocka, gömb   → alakzat', 'figura plana o cuerpo, cubo, esfera → alakzat'),
     ("irasbeli", {"matek"}, 3, 4,   # fix292
      'ÍRÁSBELI LÉPÉSRŐL LÉPÉSRE – összeadás vagy kivonás egymás alatt; a gyerek jobbról balra, oszloponként írja be a számjegyet, '
-     'a maradék (átvitel) magától átkerül a következő oszlopba, hibánál azonnal segítséget kap. "muveletek": 1–3 művelet '
+     'és a maradékot is ő írja fel. Minden fajta első példáját lépésenként vezetjük, a többit EGYEDÜL csinálja (hibánál magyarázat). "muveletek": 1–3 művelet '
      '[szám, "+" vagy "-", szám] (10–9999, kivonásnál a második kisebb); ha elhagyod, az évfolyamhoz illőt választ:\n'
-     '   <FELADAT>{"tipus":"irasbeli","muveletek":[[456,"+",378],[702,"-",265]]}</FELADAT>',
+     '   <FELADAT>{"tipus":"irasbeli","muveletek":[[456,"+",378],[267,"+",485]]}</FELADAT>',
      'CUENTA EN COLUMNA PASO A PASO – suma o resta; el niño escribe cifra a cifra de derecha a izquierda, la que se lleva '
-     'pasa sola a la columna siguiente y si falla recibe ayuda al momento. "muveletek": 1–3 operaciones '
+     'también la escribe él. El primer ejemplo de cada tipo va guiado paso a paso; los demás, SOLO (con explicación si falla). "muveletek": 1–3 operaciones '
      '[número, "+" o "-", número] (10–9999, en la resta el segundo menor); si se omite, el programa elige:\n'
-     '   <FELADAT>{"tipus":"irasbeli","muveletek":[[456,"+",378],[702,"-",265]]}</FELADAT>',
+     '   <FELADAT>{"tipus":"irasbeli","muveletek":[[456,"+",378],[267,"+",485]]}</FELADAT>',
      'írásbeli összeadás/kivonás, maradék  → irasbeli', 'sumas y restas llevando, en columna → irasbeli'),
     ("szamvonal", {"matek"}, 3, 4,   # fix292
      'SZÁMEGYENES NAGYÍTÓVAL – a gyerek először a jó szakaszra koppint (pl. 300 és 400 közé), az kinagyul, és ott a pontos helyre. '

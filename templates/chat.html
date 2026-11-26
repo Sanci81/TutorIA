@@ -1426,6 +1426,7 @@
 .dm .ib-c[data-sor="v"]{height:6px;background:var(--szoveg);border-radius:2px}
 .dm .ib-c.ib-jel{width:30px;color:var(--zold)}
 .dm .ib-c[data-sor="e"]{background:#fff;border:2px dashed #CFE3D7;border-radius:10px;margin:4px 2px 0;width:calc(var(--ib-w) - 4px);color:var(--zold-s)}
+.dm .ib-c.ib-jel[data-sor="e"]{border:0;background:none}
 .dm .ib-c.akt{background:#FFF1D6}
 .dm .ib-c.akt[data-sor="e"]{border:3px solid var(--narancs);background:#FFF8EA}
 .dm .ib-c.akt[data-sor="v"]{background:var(--narancs-a)}
@@ -1434,6 +1435,9 @@
 .dm .ib-c[data-sor="b"] .ib-m{position:absolute;top:-6px;right:-7px;font-size:14px;background:#FFF1D6;border-radius:6px;padding:0 3px;z-index:1}
 .dm .ib-c[data-sor="b"] .ib-m.ib-mhely{min-width:19px;height:19px;font-size:12px;padding:0}
 .dm .ib-mszin{color:#D27E0B}
+.dm .ib-ir{cursor:pointer}
+.dm .ib-c.ib-kiv[data-sor="e"],.dm .ib-m.ib-kiv{border:3px solid var(--narancs)!important;background:#FFF1D6!important}
+.dm .ib-c.ib-rossz[data-sor="e"]{border:3px solid #E53935;background:#FFEBEE;color:#B71C1C}
 .dm .ib-m.ib-mhely{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;border:2px dashed var(--narancs);border-radius:6px;background:#FFF8EA;color:#E0A040}
 .dm .ib-beiro{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:4px 0 8px}
 .dm .ib-kerdes{font-size:19px;font-weight:800;text-align:center}
@@ -1460,6 +1464,8 @@
 .dm .kb-galeria.kb-tabla{display:grid;justify-content:center;gap:6px}
 .dm .kb-m{position:relative;aspect-ratio:640/710;width:100%}
 .dm .kb-m img{position:absolute;inset:0;width:100%;height:100%}
+.dm .kb-kerdes{text-align:center;font-size:18px;font-weight:800;margin:10px 0 8px;line-height:1.4}
+.dm .kb-kerdes small{color:var(--halvany);font-weight:700}
 .dm .kb-nagy{width:170px;max-width:44vw}
 .dm .kb-galeria .kb-m{width:60px;background:#fff;border-radius:12px;border:2px solid #E3ECE6}
 .dm .kb-galeria.kb-tabla .kb-m{width:70px;border-color:#CFE3D7}
@@ -8923,16 +8929,17 @@
        (D.T), számbillentyűvel (dmBill), a hiba után segítség, a második
        hibánál megmutatjuk és megyünk tovább (mint a krokodilnál). */
     function dm292Szam(n, es) { n = String(n); return n.length > 4 ? n.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : n; }
-    function dm292Bill(D, hova, kijelzo, max, ok) {
+    function dm292Bill(D, hova, kijelzo, max, ok, nyers) {
         var be = '';
         function mutat() { kijelzo.textContent = be || '?'; kijelzo.classList.toggle('ures', !be); }
         dmBill(D, hova, function (k) {
+            if (nyers && nyers(k)) { return; }
             if (k === 'OK') { if (be) { ok(+be); } return; }
             if (k === '⌫') { be = be.slice(0, -1); } else if (be.length < max) { be = (be === '0' ? '' : be) + k; }
             D.torol(); mutat();
         });
         mutat();
-        return { torol: function () { be = ''; mutat(); }, beir: function (k) { if (k === 'OK') { if (be) { ok(+be); } return; }
+        return { torol: function () { be = ''; mutat(); }, beir: function (k) { if (nyers && nyers(k)) { return; } if (k === 'OK') { if (be) { ok(+be); } return; }
             if (k === '⌫') { be = be.slice(0, -1); } else if (be.length < max) { be = (be === '0' ? '' : be) + k; } D.torol(); mutat(); } };
     }
     /* Asztali gépen a billentyűzet számjegyei is működjenek (ha nem a chat mezőjébe ír). */
@@ -8967,20 +8974,27 @@
         }
         function atvitel(a, j, b) { return lepesek(a, j, b).filter(function (x) { return x.uj; }).length; }
         function gen(jegy) {
-            var lo = jegy >= 4 ? 1000 : 100, hi = jegy >= 4 ? 9999 : 999, t = [], a, b, v = 0;
-            do { a = D.rnd(lo, hi - lo); b = D.rnd(lo, hi - a); v++; } while ((atvitel(a, '+', b) < 2 || a + b > hi) && v < 400);
-            t.push([a, '+', b]); v = 0;
-            do { a = D.rnd(lo * 2, hi); b = D.rnd(lo, a - lo); v++; } while ((atvitel(a, '-', b) < 2 || String(a - b).length < String(a).length) && v < 400);
-            t.push([a, '-', b]);
+            var lo = jegy >= 4 ? 1000 : 100, hi = jegy >= 4 ? 9999 : 999, t = [], a, b, v, n, j = Math.random() < .5 ? '+' : '-';
+            for (n = 0; n < 2; n++) {
+                v = 0;
+                if (j === '+') { do { a = D.rnd(lo, hi - lo); b = D.rnd(lo, hi - a); v++; } while ((atvitel(a, '+', b) < 2 || a + b > hi) && v < 400); }
+                else { do { a = D.rnd(lo * 2, hi); b = D.rnd(lo, a - lo); v++; } while ((atvitel(a, '-', b) < 2 || String(a - b).length < String(a).length) && v < 400); }
+                t.push([a, j, b]);
+            }
             return t;
         }
         var M = (f.muveletek && f.muveletek.length) ? f.muveletek : gen(f.jegy || 3);
         var mi = 0, L, li, hibaMost = 0, elsore = 0, osszLepes = 0, napl = [], fut = false;
+        /* fix294 (Sándor: „elején segítség, aztán önállóan”): minden művelet-fajta ELSŐ példáját
+           lépésenként vezetjük, a többit a gyerek EGYEDÜL csinálja, mint a régi oszlopos táblában
+           (ő írja le a számjegyeket és a maradékot is) – hibánál itt is jön a magyarázat. */
+        var VEZ = M.map(function (m, n) { return !M.slice(0, n).some(function (e) { return e[1] === m[1]; }); });
+        var ON = null;
         D.html('<div class="allas" data-id="allas"></div><div class="ib-keret"><div class="ib-tabla" data-id="tabla"></div></div>' +
             '<div class="ib-beiro"><span class="ib-kerdes" data-id="kerd"></span><span class="kijelzo nagy ib-ki" data-id="ki">?</span></div>' +
             '<div data-id="bill"></div>');
         var tabla = D.$('tabla'), allas = D.$('allas');
-        var bill = dm292Bill(D, D.$('bill'), D.$('ki'), 2, valasz);
+        var bill = dm292Bill(D, D.$('bill'), D.$('ki'), 2, valasz, onBill);
         dm292Gepel(D, tabla, bill);
         function cella(sor, k, tart, cls) {
             var c = document.createElement('div'); c.className = 'ib-c ' + (cls || ''); c.dataset.sor = sor; if (k != null) { c.dataset.k = k; }
@@ -9000,7 +9014,8 @@
                     tabla.appendChild(cella(sor, p, t, sor === 'v' ? 'ib-vonal' : ''));
                 }
             });
-            mutat();
+            D.$('ki').hidden = !VEZ[mi];
+            if (VEZ[mi]) { mutat(); } else { onallo(); }
         }
         function oszlop(k) { return tabla.querySelectorAll('[data-k="' + k + '"]'); }
         function hely(sor, k) { return tabla.querySelector('[data-sor="' + sor + '"][data-k="' + k + '"]'); }
@@ -9029,7 +9044,7 @@
             D.$('kerd').innerHTML = sz.k.replace(/ ([−+=]) /g, '\u00a0$1\u00a0'); bill.torol();
         }
         function valasz(v) {
-            if (fut || D.kesz()) { return; }
+            if (fut || D.kesz() || ON) { return; }
             if (mar) { maradek(v); return; }
             var x = L[li], m = M[mi], jo = v === x.jegy || (m[1] === '+' && x.ossz >= 10 && v === x.ossz);
             if (jo) {
@@ -9092,6 +9107,58 @@
             D.jelez(false, osz ? D.T('Az összeg <b>' + x.ossz + '</b> volt. Az utolsó jegyét leírtuk – az első jegye megy tovább.', 'La suma era <b>' + x.ossz + '</b>. Escribimos la última cifra; la primera me la llevo.')
                 : D.T('Kölcsönkértünk (' + x.da + ' helyett ' + x.fe + ' lett) – ezt kell a következő oszlopban visszaadni.', 'Pedimos prestado (' + x.da + ' pasó a ' + x.fe + '): eso es lo que me llevo.'));
             bill.torol();
+        }
+        function az(sz) { return /^[aeiouáéíóöőúüű]/i.test(sz) ? 'az' : 'a'; }
+        function onallo() {
+            var m = M[mi]; li = L.length; ON = {hiba: 0, kiv: null};
+            allas.innerHTML = '<b>' + (mi + 1) + ' / ' + M.length + '</b> – ' + D.T('<b>Most egyedül!</b> Jobbról kezdd, és a maradékot is írd fel.', '<b>¡Ahora tú solo!</b> Empieza por la derecha y escribe también lo que te llevas.');
+            D.$('kerd').innerHTML = D.T('Koppints egy négyzetre, és írd be a számjegyet. A maradék a kis szaggatott négyzetbe megy. Ha kész vagy: <b>OK</b>.',
+                'Toca una casilla y escribe la cifra. Lo que te llevas va en la casilla pequeña. Cuando acabes: <b>OK</b>.');
+            L.forEach(function (x, k) {
+                if (x.elol) { return; }
+                var c = hely('e', k); c.classList.add('ib-ir'); c.onclick = function () { valaszt(c); };
+                if (k > 0) {
+                    var cel = hely(m[1] === '+' ? 'm' : 'b', k);
+                    if (cel) { var sp = document.createElement('span'); sp.className = 'ib-m ib-mhely ib-ir'; sp.textContent = ''; sp.dataset.mk = k; cel.appendChild(sp);
+                        sp.onclick = function (e) { e.stopPropagation(); valaszt(sp); }; }
+                }
+            });
+            valaszt(hely('e', 0));
+        }
+        function valaszt(c) { if (!ON || fut) { return; } if (ON.kiv) { ON.kiv.classList.remove('ib-kiv'); } ON.kiv = c; c.classList.add('ib-kiv'); D.torol(); }
+        function onBill(k) {
+            if (!ON) { return false; }
+            if (fut || D.kesz()) { return true; }
+            if (k === 'OK') { onEllenoriz(); return true; }
+            var c = ON.kiv; if (!c) { return true; }
+            c.classList.remove('ib-rossz'); D.torol();
+            if (k === '⌫') { c.textContent = ''; return true; }
+            c.textContent = k; D.animal(c, 'pattan');
+            if (c.dataset.sor === 'e') { var bal = hely('e', +c.dataset.k + 1); if (bal && bal.classList.contains('ib-ir')) { valaszt(bal); } }
+            return true;
+        }
+        function onEllenoriz() {
+            var m = M[mi], hibas = [], ures = false;
+            L.forEach(function (x, k) { if (x.elol) { return; } var t = hely('e', k).textContent.trim();
+                if (!t) { ures = true; } else if (+t !== x.jegy) { hibas.push(k); } });
+            if (ures) { D._nemRossz = true; D.jelez(false, D.T('Lent még van üres négyzet!', 'Abajo aún queda una casilla vacía.')); D._nemRossz = false; return; }
+            if (!hibas.length) {
+                osszLepes++; if (!ON.hiba) { elsore++; } ON = null;
+                tabla.querySelectorAll('.ib-kiv').forEach(function (c) { c.classList.remove('ib-kiv'); });
+                D.jelez(true, D.T('Hibátlan! Egyedül is megy.', '¡Perfecto! Ya sabes hacerlo solo.')); kesz(); return;
+            }
+            ON.hiba++; D.animal(tabla, 'rezeg');
+            hibas.forEach(function (k) { hely('e', k).classList.add('ib-rossz'); });
+            var k = hibas[0], x = L[k], sz = szoveg(x, m[1]), h = HELY[k].toLowerCase();
+            if (ON.hiba >= 2) {
+                fut = true; osszLepes++; ON = null; napl.push(D.T('egyedül nem ment, megmutattuk', 'solo no le salió, se le mostró'));
+                L.forEach(function (y, n) { if (y.elol) { return; } var c = hely('e', n); c.textContent = y.jegy; c.classList.remove('ib-rossz', 'ib-kiv');
+                    if (y.uj) { var sp = tabla.querySelector('[data-mk="' + (n + 1) + '"]'); if (sp) { sp.textContent = '1'; sp.classList.remove('ib-mhely'); } } });
+                D.jelez(false, D.T('Így helyes. ' + az(h).replace(/^a/, 'A') + ' ' + h + ' oszlopában: <b>' + sz.m + '</b>.', 'Así es. En las ' + h + ': <b>' + sz.m + '</b>.'));
+                setTimeout(function () { fut = false; kesz(); }, 2200); return;
+            }
+            D.jelez(false, D.T(az(h).replace(/^a/, 'A') + ' ' + h + ' oszlopában van hiba. ' + (x.c ? 'Ne felejtsd el a maradékot! ' : '') + 'Számold újra: <b>' + sz.m + '</b>.',
+                'Hay un error en las ' + h + '. ' + (x.c ? '¡No olvides lo que te llevas! ' : '') + 'Vuelve a calcular: <b>' + sz.m + '</b>.'));
         }
         function kesz() {
             var m = M[mi], e = m[1] === '+' ? m[0] + m[2] : m[0] - m[2];
@@ -9424,6 +9491,9 @@
         function kerdez() {
             allas.innerHTML = D.T('<b>Hány öltözet lett?</b> Számold ki szorzással: ' + F.length + ' sapka, ' + A.length + ' póló.',
                 '<b>¿Cuántos conjuntos hay?</b> Calcúlalo con una multiplicación: ' + F.length + ' gorros, ' + A.length + ' camisetas.');
+            /* fix294 (Sándor: „mik azok a számok alul?”): a kérdés közvetlenül a számgombok fölött is ott legyen. */
+            D.$('valasz').insertAdjacentHTML('beforebegin', '<div class="kb-kerdes">' + D.T('Hány különböző öltözet lett összesen? <small>(' + F.length + ' sapka, ' + A.length + ' póló)</small><br>Válaszd ki a jó számot:',
+                '¿Cuántos conjuntos distintos hay en total? <small>(' + F.length + ' gorros, ' + A.length + ' camisetas)</small><br>Elige el número correcto:') + '</div>');
             var opc = [OSSZ, F.length + A.length]; [OSSZ + 1, OSSZ - 1, OSSZ + 2].forEach(function (x) { if (opc.length < 4 && opc.indexOf(x) < 0 && x > 0) { opc.push(x); } });
             D.kever(opc).forEach(function (x) {
                 var b = D.gomb(String(x), 'fo', function () {
