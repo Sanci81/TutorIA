@@ -1466,6 +1466,8 @@
 .dm .kb-m img{position:absolute;inset:0;width:100%;height:100%}
 .dm .kb-kerdes{text-align:center;font-size:18px;font-weight:800;margin:10px 0 8px;line-height:1.4}
 .dm .kb-kerdes small{color:var(--halvany);font-weight:700}
+.dm .gombok.kb-szamitas{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:340px;margin:0 auto}
+.dm .gombok.kb-szamitas button{font-size:20px;padding:12px 6px}
 .dm .kb-nagy{width:170px;max-width:44vw}
 .dm .kb-galeria .kb-m{width:60px;background:#fff;border-radius:12px;border:2px solid #E3ECE6}
 .dm .kb-galeria.kb-tabla .kb-m{width:70px;border-color:#CFE3D7}
@@ -9489,26 +9491,33 @@
             setTimeout(kerdez, 1500);
         }
         function kerdez() {
-            allas.innerHTML = D.T('<b>Hány öltözet lett?</b> Számold ki szorzással: ' + F.length + ' sapka, ' + A.length + ' póló.',
-                '<b>¿Cuántos conjuntos hay?</b> Calcúlalo con una multiplicación: ' + F.length + ' gorros, ' + A.length + ' camisetas.');
-            /* fix294 (Sándor: „mik azok a számok alul?”): a kérdés közvetlenül a számgombok fölött is ott legyen. */
-            D.$('valasz').insertAdjacentHTML('beforebegin', '<div class="kb-kerdes">' + D.T('Hány különböző öltözet lett összesen? <small>(' + F.length + ' sapka, ' + A.length + ' póló)</small><br>Válaszd ki a jó számot:',
-                '¿Cuántos conjuntos distintos hay en total? <small>(' + F.length + ' gorros, ' + A.length + ' camisetas)</small><br>Elige el número correcto:') + '</div>');
-            var opc = [OSSZ, F.length + A.length]; [OSSZ + 1, OSSZ - 1, OSSZ + 2].forEach(function (x) { if (opc.length < 4 && opc.indexOf(x) < 0 && x > 0) { opc.push(x); } });
-            D.kever(opc).forEach(function (x) {
-                var b = D.gomb(String(x), 'fo', function () {
-                    if (x === OSSZ) {
+            /* fix295 (Sándor: „mik ezek a számok?” – a macikat csak meg kellett számolni, nem tanult belőle):
+               SZÁMÍTÁSOK közül választ – arra jön rá, hogy ez SZORZÁS, nem összeadás. */
+            var f = F.length, a = A.length, X = D.T(' · ', ' × ');
+            allas.innerHTML = D.T('<b>Megvan mind a ' + OSSZ + ' öltözet!</b> De hogyan lehet ezt kiszámolni, számolgatás nélkül?',
+                '<b>¡Están los ' + OSSZ + ' conjuntos!</b> ¿Cómo se puede calcular sin contarlos uno a uno?');
+            D.$('valasz').insertAdjacentHTML('beforebegin', '<div class="kb-kerdes">' + D.T('Melyik számítással kapod meg, hány öltözet van?<br><small>(' + f + ' sapka, ' + a + ' póló)</small>',
+                '¿Con qué cuenta sabes cuántos conjuntos hay?<br><small>(' + f + ' gorros, ' + a + ' camisetas)</small>') + '</div>');
+            var opc = [[f + X + a + ' = ' + OSSZ, 'jo']]; if (f + a !== OSSZ) { opc.push([f + ' + ' + a + ' = ' + (f + a), 'osszead']); }
+            [[f + X + f, f * f], [a + X + a, a * a], [f + ' + ' + f, f + f], [a + ' + ' + a + ' + 1', a + a + 1]].forEach(function (o) {
+                var sz = o[0] + ' = ' + o[1];
+                if (opc.length < 4 && o[1] !== OSSZ && !opc.some(function (q) { return q[0] === sz; })) { opc.push([sz, 'mas']); }
+            });
+            D.$('valasz').classList.add('kb-szamitas');
+            D.kever(opc).forEach(function (o) {
+                var b = D.gomb(o[0], 'fo', function () {
+                    if (o[1] === 'jo') {
                         D.$('valasz').querySelectorAll('button').forEach(function (c) { c.disabled = true; });
-                        D.vege(!hibaKesz && !hibaSzam, D.T('Igen! <b>' + F.length + ' · ' + A.length + ' = ' + OSSZ + '</b> – minden sapkához mindegyik póló, ezért szorzunk.',
-                            '¡Sí! <b>' + F.length + ' × ' + A.length + ' = ' + OSSZ + '</b>: cada gorro con cada camiseta, por eso multiplicamos.'),
-                            D.T('Kombinációk (maci öltöztetése): ' + F.length + ' sapka × ' + A.length + ' póló = ' + OSSZ + '. Mind a ' + OSSZ + ' öltözetet megtalálta' + (hibaKesz ? ' (segítséggel)' : '') + ', a szorzásos kérdés: ' + (hibaSzam ? 'második próbára' : 'elsőre') + ' jó.',
-                                'Combinaciones (vestir al osito): ' + F.length + ' gorros × ' + A.length + ' camisetas = ' + OSSZ + '. Encontró los ' + OSSZ + (hibaKesz ? ' (con ayuda)' : '') + '; la multiplicación: ' + (hibaSzam ? 'al 2.º intento' : 'a la primera') + '.'));
+                        D.vege(!hibaKesz && !hibaSzam, D.T('Igen! <b>' + f + ' · ' + a + ' = ' + OSSZ + '</b> – minden sapkához mindegyik póló jár, ezért <b>szorzunk</b>: ' + f + ' sor, mindegyikben ' + a + ' maci.',
+                            '¡Sí! <b>' + f + ' × ' + a + ' = ' + OSSZ + '</b>: cada gorro va con cada camiseta, por eso <b>multiplicamos</b>: ' + f + ' filas de ' + a + ' ositos.'),
+                            D.T('Kombinációk (maci öltöztetése): ' + f + ' sapka × ' + a + ' póló = ' + OSSZ + '. Mind a ' + OSSZ + ' öltözetet megtalálta' + (hibaKesz ? ' (segítséggel)' : '') + ', a szorzást ' + (hibaSzam ? 'második próbára' : 'elsőre') + ' választotta.',
+                                'Combinaciones (vestir al osito): ' + f + ' gorros × ' + a + ' camisetas = ' + OSSZ + '. Encontró los ' + OSSZ + (hibaKesz ? ' (con ayuda)' : '') + '; eligió la multiplicación ' + (hibaSzam ? 'al 2.º intento' : 'a la primera') + '.'));
                         return;
                     }
                     hibaSzam++; D.animal(b, 'rezeg'); b.disabled = true;
-                    D.jelez(false, x === F.length + A.length ? D.T('Nem összeadunk! Minden sapkához ' + A.length + ' póló jár – nézd a sorokat: ' + F.length + ' sor, mindegyikben ' + A.length + '.',
-                        '¡No se suma! Cada gorro va con ' + A.length + ' camisetas: mira las filas, ' + F.length + ' filas de ' + A.length + '.')
-                        : D.T('Számold meg a macikat a táblázatban: ' + F.length + ' sor, mindegyikben ' + A.length + '.', 'Cuenta los ositos de la tabla: ' + F.length + ' filas de ' + A.length + '.'));
+                    D.jelez(false, o[1] === 'osszead' ? D.T('Ez csak ' + (f + a) + ', de ' + OSSZ + ' maci van! Nem összeadunk: minden sapkához mindegyik póló jár. Nézd a táblázatot: ' + f + ' sor, mindegyikben ' + a + '.',
+                        '¡Eso da ' + (f + a) + ', pero hay ' + OSSZ + ' ositos! No se suma: cada gorro va con cada camiseta. Mira la tabla: ' + f + ' filas de ' + a + '.')
+                        : D.T('Ennek nem ' + OSSZ + ' az eredménye. Nézd a táblázatot: hány sor van, és hány maci egy sorban?', 'Eso no da ' + OSSZ + '. Mira la tabla: ¿cuántas filas hay y cuántos ositos en cada fila?'));
                 });
                 D.$('valasz').appendChild(b);
             });
