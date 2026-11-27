@@ -546,7 +546,7 @@
       le();
     }
     function kovHasonlo(H, k, tovabb, bevezeto) {
-      var h = H[k];
+      var h = H[k]; h.volt = true;
       mond(bevezeto, function () { setTimeout(function () {
         if (h.tabla && NAGY) { tabla(h.tabla); }
         mond(h.tan, function () {
@@ -573,6 +573,12 @@
       });
     }
     function kovetkezo() { i++; lep(); }
+    /* fix296: a legutóbbi kérdés még fel nem használt hasonló feladata ({H, k}), vagy null */
+    function megHasonlo() {
+      for (var j = i - 1; j >= 0; j--) { var H = C[j].hasonlo;
+        if (H && H.length) { for (var k = 0; k < H.length; k++) { if (!H[k].volt) { return {H: H, k: k}; } } return null; } }
+      return null;
+    }
     /* fix247: mérés – melyik lépésig jutnak el (csak darabszám; 99 = a végére ért) */
     var jelzett = {};
     function jelez(n) { if (jelzett[n]) { return; } jelzett[n] = 1;
@@ -632,6 +638,17 @@
               if (q.volt) { return; }
               gomb(q[0], '', function () { q.volt = true; val.innerHTML = ''; sor(true, q[0]); mond([q[1]], gombok); });
             });
+            /* fix296 (Sándor: „kérek még feladatot erre” – aki elsőre jól válaszolt, annak a hasonló
+               feladatok kimaradtak, és a „jöhet a következő” után rögtön vége lett). Egyelőre CSAK a
+               magyar oldalon: ha az előző kérdésnek van még fel nem használt hasonló feladata, kérhet. */
+            var mH = megHasonlo();
+            if (mH && !ES) {
+              gomb('Kérek még egy feladatot erre 💪', '', function () {
+                val.innerHTML = ''; sor(true, 'Kérek még egy feladatot erre 💪');
+                kovHasonlo(mH.H, mH.k, function () { if (s.tabla && NAGY) { tabla(s.tabla); } gombok(); },
+                           ['Rendben, jöjjön még egy! 💪']);
+              });
+            }
             gomb(s.tovabb, 'fo', function () { val.innerHTML = ''; sor(true, s.tovabb); kovetkezo(); });
           })();
         }));
