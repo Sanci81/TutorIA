@@ -765,6 +765,13 @@ CHAT["hu"].update({
                 ["Igen, <b>1</b>! 🎉 0 × 2 = 0, 0 + 1 = 1. Most már egyedül is ment!"],
                 ["A 0-t is előbb szorozd 2-vel, utána adj hozzá 1-et. Próbáld újra!"], "0 × 2 = 0. És még +1…",
                 {"cim": "0 → ×2 → +1 → ?", "kep": "gep:0:?"}, "0 → " + _Z + "1 ✓</span>")]},
+        # fix298 (Sándor): a „kérdezz bátran” után is jöjjön feladat – ezért a titkos gép elé került.
+        _kerdez(False, [
+            ["Mire jó a függvény? 🤔",
+             "Arra, hogy leírjuk, <b>hogyan függ</b> az egyik szám a másiktól. Ha 1 kg alma 400 Ft, akkor <b>x</b> kg ára <b>400 · x</b> Ft – ez is egy függvénygép."],
+            ["Le lehet rajzolni?",
+             "Igen! Ha a be- és kijövő számpárokat pontként berajzolod egy <b>koordináta-rendszerbe</b>, a ×2 + 1 gép pontjai egy <b>egyenesre</b> esnek. Ezt a valódi órán meg is rajzoljuk."]],
+            {"cim": "Függvény = szabály 💡", "lista": ["x → ×2 → +1", "3 → 7, 5 → 11"]}),
         {"gep": {"be": [1, 2, 3, 4], "ki": [4, 5, 6, 7]}, "cim": "A titkos gép",
          "tan": ["Most egy <b>titkos gép</b> jön! Tegyél bele számokat (koppints rájuk), és figyeld, mi jön ki."],
          "kesz": "Megvan mind a 4 szám! 👀 Nézd meg a táblázatot: mi történt a számokkal a gépben?"},
@@ -784,12 +791,6 @@ CHAT["hu"].update({
                 ["Nagyobb vagy kisebb lett a szám? Mennyivel? Próbáld újra!"],
                 "Minden szám eggyel kisebb lett, mint amit betettél. Melyik szabály ez?",
                 {"cim": "2 → 1, 6 → 5, 10 → 9"}, "szabály: " + _Z + "−1 ✓</span>")]},
-        _kerdez(False, [
-            ["Mire jó a függvény? 🤔",
-             "Arra, hogy leírjuk, <b>hogyan függ</b> az egyik szám a másiktól. Ha 1 kg alma 400 Ft, akkor <b>x</b> kg ára <b>400 · x</b> Ft – ez is egy függvénygép."],
-            ["Le lehet rajzolni?",
-             "Igen! Ha a be- és kijövő számpárokat pontként berajzolod egy <b>koordináta-rendszerbe</b>, a ×2 + 1 gép pontjai egy <b>egyenesre</b> esnek. Ezt a valódi órán meg is rajzoljuk."]],
-            {"cim": "Függvény = szabály 💡", "lista": ["x → ×2 → +1", "3 → 7, 5 → 11", "titkos gép: +3"]}),
         _zaro(False, ["×2 + 1: 3 → 7", "A szabályt a számpárokból találjuk ki", "Függvény = szabály"]),
     ],
 })

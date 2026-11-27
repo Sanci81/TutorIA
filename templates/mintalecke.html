@@ -588,6 +588,13 @@
       });
     }
     function kovetkezo() { i++; lep(); }
+    /* fix298: van-e még igazi feladat a lecke hátralévő részében (nem csak beszéd / zárás) */
+    function vanMegFeladat() {
+      for (var j = i + 1; j < C.length; j++) {
+        if (Object.keys(C[j]).some(function (k) { return ['tan', 'tan_seg', 'tabla', 'tabla_cim'].indexOf(k) < 0; })) { return true; }
+      }
+      return false;
+    }
     /* fix296: a legutóbbi kérdés még fel nem használt hasonló feladata ({H, k}), vagy null */
     function megHasonlo() {
       for (var j = i - 1; j >= 0; j--) { var H = C[j].hasonlo;
@@ -653,19 +660,18 @@
               if (q.volt) { return; }
               gomb(q[0], '', function () { q.volt = true; val.innerHTML = ''; sor(true, q[0]); mond([q[1]], gombok); });
             });
-            /* fix296 (Sándor: „kérek még feladatot erre” – aki elsőre jól válaszolt, annak a hasonló
-               feladatok kimaradtak, és a „jöhet a következő” után rögtön vége lett). Egyelőre CSAK a
-               magyar oldalon: ha az előző kérdésnek van még fel nem használt hasonló feladata, kérhet. */
-            var mH = megHasonlo();
-            if (mH) {
-              var kerek = ES ? 'Quiero otro ejercicio de esto 💪' : 'Kérek még egy feladatot erre 💪';
-              gomb(kerek, '', function () {
-                val.innerHTML = ''; sor(true, kerek);
-                kovHasonlo(mH.H, mH.k, function () { if (s.tabla && NAGY) { tabla(s.tabla); } gombok(); },
-                           [ES ? '¡Vale, vamos con otro! 💪' : 'Rendben, jöjjön még egy! 💪']);
-              });
-            }
-            gomb(s.tovabb, 'fo', function () { val.innerHTML = ''; sor(true, s.tovabb); kovetkezo(); });
+            /* fix298 (Sándor: „utána nincs feladat, nem a gombbal van gond”): ha a „kérdezz bátran” után
+               már NINCS több feladat a leckében, a „jöhet a következő” ne ígérjen olyat, ami nem jön.
+               Ilyenkor a gomb a legutóbbi kérdés még fel nem használt hasonló feladatát adja (egyet),
+               és csak utána jön a zárás. Ha már nincs hasonló sem, a gomb felirata őszintén mondja,
+               hogy az eredmény következik. (Ez váltja a fix296 külön „Kérek még” gombját.) */
+            var tovabbVan = vanMegFeladat(), mH = tovabbVan ? null : megHasonlo();
+            var felirat = (tovabbVan || mH) ? s.tovabb : (ES ? '¡Entendido, a ver cómo me ha ido! ✅' : 'Értem, nézzük, hogy ment! ✅');
+            gomb(felirat, 'fo', function () {
+              val.innerHTML = ''; sor(true, felirat);
+              if (mH) { kovHasonlo(mH.H, mH.k, kovetkezo, [ES ? '¡Vamos con uno más! Este lo haces tú solo. 💪' : 'Jöjjön még egy – ezt már egyedül csinálod! 💪']); return; }
+              kovetkezo();
+            });
           })();
         }));
         return;
