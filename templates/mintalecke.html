@@ -293,7 +293,22 @@
       return h + '</div>';
     }
     var KEPUT = "{{ url_for('static', filename='img/minta/X.svg') }}";
-    function kep(nev) { return '<img class="mc-tabla-kep" alt="" src="' + KEPUT.replace('X.svg', nev + '.svg') + '">'; }
+    function kep(nev) {
+      /* fix297 (Sándor: „a szöveg meg a kép is más”): a függvénygép képe a FELADAT számait mutatja
+         („gep:3:?” → 3 megy be, ? jön ki). Eddig a régi kép 1→3, 2→5, 3→7 példákat pörgetett –
+         vagyis elárulta a választ –, a hasonlóknál pedig 10-et mutatott 5 és 0 helyett. */
+      var g = /^gep:([^:]*):(.*)$/.exec(nev || '');
+      if (g) {
+        var id = 'gk' + Math.random().toString(36).slice(2);
+        fetch(KEPUT.replace('X.svg', 'gep_be.svg')).then(function (r) { return r.text(); }).then(function (t) {
+          var el = document.getElementById(id), n = 0; if (!el) { return; }
+          t = t.replace(/(<text[^>]*>)[^<]*(<\/text>)/g, function (a, x, y) { n++; return x + (n === 1 ? g[1] : g[2]) + y; });
+          el.outerHTML = t.replace('<svg ', '<svg class="mc-tabla-kep" ');
+        }).catch(function () {});
+        return '<span id="' + id + '" class="mc-tabla-kep" style="display:block"></span>';
+      }
+      return '<img class="mc-tabla-kep" alt="" src="' + KEPUT.replace('X.svg', nev + '.svg') + '">';
+    }
     /* fix226 (Sándor: „3 × 6-ot kérdez, de 4 doboz van, bennük 8-8 ceruza”): a rajz a feladat számaiból
        készül – n doboz, mindegyikben k ceruza (ugyanaz a stílus, mint a ceruzak.svg). */
     function dobozSvg(n, k) {
@@ -642,11 +657,12 @@
                feladatok kimaradtak, és a „jöhet a következő” után rögtön vége lett). Egyelőre CSAK a
                magyar oldalon: ha az előző kérdésnek van még fel nem használt hasonló feladata, kérhet. */
             var mH = megHasonlo();
-            if (mH && !ES) {
-              gomb('Kérek még egy feladatot erre 💪', '', function () {
-                val.innerHTML = ''; sor(true, 'Kérek még egy feladatot erre 💪');
+            if (mH) {
+              var kerek = ES ? 'Quiero otro ejercicio de esto 💪' : 'Kérek még egy feladatot erre 💪';
+              gomb(kerek, '', function () {
+                val.innerHTML = ''; sor(true, kerek);
                 kovHasonlo(mH.H, mH.k, function () { if (s.tabla && NAGY) { tabla(s.tabla); } gombok(); },
-                           ['Rendben, jöjjön még egy! 💪']);
+                           [ES ? '¡Vale, vamos con otro! 💪' : 'Rendben, jöjjön még egy! 💪']);
               });
             }
             gomb(s.tovabb, 'fo', function () { val.innerHTML = ''; sor(true, s.tovabb); kovetkezo(); });
